@@ -28,7 +28,7 @@
 #include "io/session/helper.hpp"
 #include "io/session/macros.hpp"
 
-//#define FW_PROFILING_DISABLED
+#define FW_PROFILING_DISABLED
 #include <core/profiling.hpp>
 
 #include <data/image.hpp>
@@ -330,8 +330,8 @@ inline static void write(
         const auto& ostream = _archive.open_file(
             get_file_path(image->get_uuid()),
             _password,
-            sight::io::zip::method::DEFAULT,
-            sight::io::zip::level::best
+            sight::io::zip::method::zstd,
+            sight::io::zip::level::fast
         );
 
         // From nifti1_io.c

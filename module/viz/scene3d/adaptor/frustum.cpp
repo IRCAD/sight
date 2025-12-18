@@ -27,6 +27,7 @@
 #include <viz/scene3d/helper/camera.hpp>
 #include <viz/scene3d/helper/manual_object.hpp>
 #include <viz/scene3d/helper/scene.hpp>
+#include <viz/scene3d/ogre.hpp>
 
 #include <OgreCamera.h>
 #include <OgreEntity.h>
@@ -101,6 +102,7 @@ void frustum::starting()
     m_material->material()->setDiffuse(Ogre::ColourValue(color[0], color[1], color[2], color[3]));
 
     m_frustum = this->get_scene_manager()->createManualObject(gen_id("frustum"));
+    m_frustum->setRenderQueueGroup(sight::viz::scene3d::rq::SURFACE);
     sight::viz::scene3d::helper::manual_object::create_frustum(m_frustum, m_material->name(), *m_ogre_camera);
     trans_node->attachObject(m_frustum);
 

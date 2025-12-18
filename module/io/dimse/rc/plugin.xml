@@ -23,7 +23,7 @@
         <type>sight::ui::editor</type>
         <service>sight::module::io::dimse::query_editor</service>
         <object key="pacsConfig">sight::io::dimse::data::pacs_configuration</object>
-        <object key="seriesSet">sight::data::object</object>
+        <object key="series_set">sight::data::object</object>
         <desc>This editor allows to perform queries on a pacs.</desc>
     </extension>
 
@@ -32,7 +32,7 @@
         <service>sight::module::io::dimse::series_puller</service>
         <object key="pacsConfig">sight::io::dimse::data::pacs_configuration</object>
         <object key="selectedSeries">sight::data::vector</object>
-        <object key="seriesSet">sight::data::series_set</object>
+        <object key="series_set">sight::data::series_set</object>
         <desc>This service is used to pull series from a PACS.</desc>
     </extension>
 
@@ -47,7 +47,7 @@
         <type>sight::ui::editor</type>
         <service>sight::module::io::dimse::slice_index_dicom_editor</service>
         <object key="pacsConfig">sight::io::dimse::data::pacs_configuration</object>
-        <object key="series">sight::data::dicom_series</object>
+        <object key="series">sight::data::series</object>
         <object key="image">sight::data::image</object>
         <desc>This editor service is used to select a slice index and pull the image from the pacs if it is not</desc>
     </extension>

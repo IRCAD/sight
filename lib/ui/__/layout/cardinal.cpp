@@ -31,6 +31,7 @@
 #include <core/base.hpp>
 
 #include <boost/lexical_cast.hpp>
+#include <boost/range/iterator_range.hpp>
 
 namespace sight::ui::layout
 {
@@ -62,8 +63,9 @@ void cardinal::initialize(const ui::config_t& _configuration)
         {
             if(const auto align = view_cfg->get_optional<std::string>("align"); align.has_value())
             {
-                SIGHT_ASSERT("Align " << *align << " unknown", STRING_TO_ALIGN.find(*align) != STRING_TO_ALIGN.end());
-                vi.m_align = STRING_TO_ALIGN.find(*align)->second;
+                const auto found = STRING_TO_ALIGN.find(*align);
+                SIGHT_ASSERT("Align " << *align << " unknown", found != STRING_TO_ALIGN.end());
+                vi.m_align = found->second;
             }
 
             vi.m_min_size = detail::parse_min_size(*view_cfg);

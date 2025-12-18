@@ -512,6 +512,19 @@
     </extension>
 
     <extension implements="sight::app::extension::config">
+        <id>properties_map_element_parameter_subconfig</id>
+        <parameters>
+            <object uid="map" type="sight::data::map" />
+        </parameters>
+        <desc>Specifically check to access map elements in a property in a sub-config</desc>
+        <config>
+            <service uid="test_service_parse_props_1" type="sight::app::ut::test_service_with_properties">
+                <properties string="${map}.string2" />
+            </service>
+        </config>
+    </extension>
+
+    <extension implements="sight::app::extension::config">
         <id>properties_map_element_parameter_test</id>
         <parameters>
             <param name="data1" default="data1Id" />
@@ -522,12 +535,119 @@
                 <item key="string">
                     <object uid="data1_in_map" type="sight::data::string" value="yeah" />
                 </item>
+                <item key="string2">
+                    <object uid="data222_in_map" type="sight::data::string" value="yeah2" />
+                </item>
             </object>
 
             <service uid="test1_srv" type="sight::app::config_launcher">
                 <properties config="default_object_id_test_sub_config" />
                 <inout group="object">
                     <key name="data1" uid="${properties_map}.string" />
+                </inout>
+            </service>
+
+            <service uid="test2_srv" type="sight::app::config_launcher">
+                <properties config="properties_map_element_parameter_subconfig" />
+                <inout group="object">
+                    <key name="map" uid="${properties_map}" />
+                </inout>
+            </service>
+        </config>
+    </extension>
+
+    <extension implements="sight::app::extension::config">
+        <id>properties_map_element_deferred_test</id>
+        <parameters>
+            <param name="data1" default="data1Id" />
+        </parameters>
+        <desc>Test configuration for passing map element</desc>
+        <config>
+            <object uid="properties_map" type="sight::data::map">
+                <item key="string">
+                    <object uid="data1_in_map" type="sight::data::string" value="yeah" />
+                </item>
+            </object>
+            <object uid="data_deferred" type="sight::data::string" deferred="true" />
+
+            <service uid="test3_srv" type="sight::app::config_launcher">
+                <properties config="default_object_id_test_sub_config" />
+                <inout group="object">
+                    <key name="data1" uid="${properties_map}.string" />
+                    <!-- Not declared but allows to make the service deferred and delay the start -->
+                    <key name="data_unused" uid="${data_deferred}" />
+                </inout>
+            </service>
+
+            <service uid="generate_data" type="sight::app::ut::test_out">
+                <out key="out" uid="${data_deferred}" />
+            </service>
+        </config>
+    </extension>
+
+    <extension implements="sight::data::extension::config">
+        <id>map_config</id>
+        <object>sight::data::map</object>
+        <desc>map_config</desc>
+        <config>
+            <item key="integer" type="sight::data::integer" value="1" />
+            <item key="string" type="sight::data::string" value="abc" />
+            <item key="boolean" type="sight::data::boolean" value="true" />
+            <item key="ivec3" type="sight::data::ivec3" value="0;0;0" />
+            <item key="dvec3" type="sight::data::dvec3" value="1.0;1.0;1.0" />
+            <item key="transfer_function">
+                <object uid="tfInit0_0" type="sight::data::transfer_function">
+                    <name>CT-GreyLevel</name>
+                    <colors is_clamped="false">
+                        <step color="#00000000" value="-200" />
+                        <step color="#FFFFFFFF" value="300" />
+                    </colors>
+                </object>
+            </item>
+        </config>
+    </extension>
+
+    <extension implements="sight::app::extension::config">
+        <id>map_config_test</id>
+        <desc>Test configuration for data object initialization by a configuration</desc>
+        <config>
+            <object uid="map" type="sight::data::map" config="map_config" />
+
+            <service uid="test1_srv" type="sight::app::config_launcher">
+                <properties start="false" config="default_object_id_test_sub_config" />
+                <inout group="object">
+                    <key name="data1" uid="map" />
+                </inout>
+            </service>
+        </config>
+    </extension>
+
+    <extension implements="sight::data::extension::config">
+        <id>matrix_config</id>
+        <object>sight::data::matrix4</object>
+        <desc>matrix_config</desc>
+        <config>
+            <matrix>
+                <![CDATA[
+                    1    0    0    5
+                    0    1    0    0
+                    0    0    1    0
+                    0    0    0    1
+                ]]>
+            </matrix>
+        </config>
+    </extension>
+
+    <extension implements="sight::app::extension::config">
+        <id>matrix_config_test</id>
+        <desc>Test configuration for data object initialization by a configuration</desc>
+        <config>
+            <object uid="matrix" type="sight::data::matrix4" config="matrix_config" />
+
+            <service uid="test1_srv" type="sight::app::config_launcher">
+                <properties start="false" config="default_object_id_test_sub_config" />
+                <inout group="object">
+                    <key name="data1" uid="matrix" />
                 </inout>
             </service>
         </config>

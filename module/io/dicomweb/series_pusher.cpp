@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2025 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,8 +28,7 @@
 #include <core/com/slots.hxx>
 #include <core/tools/failed.hpp>
 
-#include <data/dicom_series.hpp>
-#include <data/series.hpp>
+#include <data/image_series.hpp>
 #include <data/vector.hpp>
 
 #include <io/http/exceptions/base.hpp>
@@ -147,76 +146,76 @@ void series_pusher::updating()
 
 void series_pusher::push_series()
 {
-    m_is_pushing = true;
+    // m_is_pushing = true;
 
-    const auto series_vector = m_selected_series.lock();
+    // const auto series_vector = m_selected_series.lock();
 
-    // Connect to PACS
-    std::size_t nb_series_success = 0;
-    for(const auto& series : *series_vector)
-    {
-        const auto& dicom_series = std::dynamic_pointer_cast<data::dicom_series>(series);
+    // // Connect to PACS
+    // std::size_t nb_series_success = 0;
+    // for(const auto& series : *series_vector)
+    // {
+    //     const auto& image_series = std::dynamic_pointer_cast<data::image_series>(series);
 
-        if(!dicom_series)
-        {
-            continue;
-        }
+    //     if(!image_series)
+    //     {
+    //         continue;
+    //     }
 
-        nb_series_success++;
+    //     nb_series_success++;
 
-        data::dicom_series::dicom_container_t dicom_container = dicom_series->get_dicom_container();
-        const std::size_t dicom_container_size                = dicom_container.size();
+    //     data::image_series::dicom_container_t dicom_container = image_series->get_dicom_container();
+    //     const std::size_t dicom_container_size                = dicom_container.size();
 
-        try
-        {
-            std::size_t nb_instance_success = 0;
-            for(const auto& item : dicom_container)
-            {
-                const core::memory::buffer_object::sptr buffer_obj = item.second;
-                const core::memory::buffer_object::lock_t locker_dest(buffer_obj);
-                const char* buffer     = static_cast<char*>(locker_dest.buffer());
-                const std::size_t size = buffer_obj->size();
+    //     try
+    //     {
+    //         std::size_t nb_instance_success = 0;
+    //         for(const auto& item : dicom_container)
+    //         {
+    //             const core::memory::buffer_object::sptr buffer_obj = item.second;
+    //             const core::memory::buffer_object::lock_t locker_dest(buffer_obj);
+    //             const char* buffer     = static_cast<char*>(locker_dest.buffer());
+    //             const std::size_t size = buffer_obj->size();
 
-                const QByteArray file_buffer = QByteArray::fromRawData(buffer, int(size));
+    //             const QByteArray file_buffer = QByteArray::fromRawData(buffer, int(size));
 
-                /// Url PACS
-                const std::string pacs_server("http://" + m_server_hostname + ":" + std::to_string(m_server_port));
-                sight::io::http::request::sptr request =
-                    sight::io::http::request::New(pacs_server + "/instances");
-                QByteArray series_answer;
-                if(file_buffer.size() != 0)
-                {
-                    series_answer = m_client_qt.post(request, file_buffer);
-                    if(!series_answer.isEmpty())
-                    {
-                        nb_instance_success++;
-                    }
-                }
+    //             /// Url PACS
+    //             const std::string pacs_server("http://" + m_server_hostname + ":" + std::to_string(m_server_port));
+    //             sight::io::http::request::sptr request =
+    //                 sight::io::http::request::New(pacs_server + "/instances");
+    //             QByteArray series_answer;
+    //             if(file_buffer.size() != 0)
+    //             {
+    //                 series_answer = m_client_qt.post(request, file_buffer);
+    //                 if(!series_answer.isEmpty())
+    //                 {
+    //                     nb_instance_success++;
+    //                 }
+    //             }
 
-                if(dicom_container_size == nb_instance_success)
-                {
-                    sight::module::io::dicomweb::series_pusher::display_message(
-                        "Upload successful: " + std::to_string(nb_series_success) + "/"
-                        + std::to_string(series_vector->size()),
-                        false
-                    );
-                }
-            }
-        }
-        catch(sight::io::http::exceptions::host_not_found& exception)
-        {
-            std::stringstream ss;
-            ss << "Host not found.\n"
-            << "Please check your configuration: \n"
-            << "Pacs host name: " << m_server_hostname << "\n"
-            << "Pacs port: " << m_server_port << "\n";
-            sight::module::io::dicomweb::series_pusher::display_message(ss.str(), true);
-            SIGHT_WARN(exception.what());
-        }
-    }
+    //             if(dicom_container_size == nb_instance_success)
+    //             {
+    //                 sight::module::io::dicomweb::series_pusher::display_message(
+    //                     "Upload successful: " + std::to_string(nb_series_success) + "/"
+    //                     + std::to_string(series_vector->size()),
+    //                     false
+    //                 );
+    //             }
+    //         }
+    //     }
+    //     catch(sight::io::http::exceptions::host_not_found& exception)
+    //     {
+    //         std::stringstream ss;
+    //         ss << "Host not found.\n"
+    //         << "Please check your configuration: \n"
+    //         << "Pacs host name: " << m_server_hostname << "\n"
+    //         << "Pacs port: " << m_server_port << "\n";
+    //         sight::module::io::dicomweb::series_pusher::display_message(ss.str(), true);
+    //         SIGHT_WARN(exception.what());
+    //     }
+    // }
 
-    // Set pushing boolean to false
-    m_is_pushing = false;
+    // // Set pushing boolean to false
+    // m_is_pushing = false;
 }
 
 //------------------------------------------------------------------------------

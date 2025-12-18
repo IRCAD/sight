@@ -33,6 +33,7 @@ CPPUNIT_TEST_SUITE(filled_test);
 CPPUNIT_TEST(image);
 CPPUNIT_TEST(model_series);
 CPPUNIT_TEST(point_list);
+CPPUNIT_TEST(string_serializable);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -44,6 +45,7 @@ public:
     static void image();
     static void model_series();
     static void point_list();
+    static void string_serializable();
 };
 
 } // namespace sight::data::validator::ut

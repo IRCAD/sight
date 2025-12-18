@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,8 +20,6 @@
  *
  ***********************************************************************/
 
-#include "image_conversion_test.hpp"
-
 #include "helper.hpp"
 
 #include <core/base.hpp>
@@ -33,126 +31,134 @@
 
 #include <utest_data/generator/image.hpp>
 
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::itk::ut::image_conversion_test);
+#include <doctest/doctest.h>
 
-namespace sight::io::itk::ut
+using sight::core::tools::random::safe_rand;
+
+//-----------------------------------------------------------------------------
+
+template<class TYPE>
+static void stress_test_for_a_type()
 {
+    for(unsigned char k = 0 ; k < 5 ; k++)
+    {
+        auto image = std::make_shared<sight::data::image>();
+        sight::utest_data::generator::image::generate_random_image(image, sight::core::type::get<TYPE>());
 
-using core::tools::random::safe_rand;
+        constexpr sight::data::image::orientation_t orientation = {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6};
+        image->set_orientation(orientation);
 
-//------------------------------------------------------------------------------
+        using image_t = ::itk::Image<TYPE, 3>;
+        typename image_t::Pointer itk_image = sight::io::itk::move_to_itk<image_t>(image);
 
-void image_conversion_test::setUp()
-{
+        sight::data::image::sptr image2 = std::make_shared<sight::data::image>();
+        sight::io::itk::move_from_itk<image_t>(itk_image, *image2, false);
+
+        image2->set_window_center(image->window_center());
+        image2->set_window_width(image->window_width());
+
+        CHECK(*image == *image2);
+
+        sight::data::image::sptr image3 = sight::io::itk::move_from_itk<image_t>(itk_image, false);
+        image3->set_window_center(image->window_center());
+        image3->set_window_width(image->window_width());
+
+        CHECK(*image == *image3);
+    }
 }
 
-//------------------------------------------------------------------------------
-
-void image_conversion_test::tearDown()
+TEST_SUITE("sight::io::itk::image_conversion")
 {
-    // Clean up after the test run.
-}
+    TEST_CASE("conversion")
+    {
+        // create Image
+        sight::data::image::sptr image = std::make_shared<sight::data::image>();
+        sight::utest_data::generator::image::generate_random_image(image, sight::core::type::INT16);
+        const sight::data::image::orientation_t orientation = {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6};
+        image->set_orientation(orientation);
 
-//------------------------------------------------------------------------------
+        using image_t = ::itk::Image<std::int16_t, 3>;
+        image_t::Pointer itk_image      = sight::io::itk::move_to_itk<image_t>(image);
+        sight::data::image::sptr image2 = std::make_shared<sight::data::image>();
+        sight::io::itk::move_from_itk<image_t>(itk_image, *image2, false);
 
-void image_conversion_test::test_conversion()
-{
-    // create Image
-    data::image::sptr image = std::make_shared<data::image>();
-    utest_data::generator::image::generate_random_image(image, core::type::INT16);
-    const data::image::orientation_t orientation = {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6};
-    image->set_orientation(orientation);
+        sight::io::itk::ut::helper::round_spacing(image);
+        sight::io::itk::ut::helper::round_spacing(image2);
 
-    using image_t = ::itk::Image<std::int16_t, 3>;
-    image_t::Pointer itk_image = io::itk::move_to_itk<image_t>(image);
+        image2->set_window_center(image->window_center());
+        image2->set_window_width(image->window_width());
 
-    data::image::sptr image2 = std::make_shared<data::image>();
-    io::itk::move_from_itk<image_t>(itk_image, image2, false);
+        CHECK(*image == *image2);
 
-    io::itk::ut::helper::round_spacing(image);
-    io::itk::ut::helper::round_spacing(image2);
+        sight::data::image::sptr image3 = sight::io::itk::move_from_itk<image_t>(itk_image, false);
+        image3->set_window_center(image->window_center());
+        image3->set_window_width(image->window_width());
 
-    image2->set_window_center(image->window_center());
-    image2->set_window_width(image->window_width());
+        CHECK(*image == *image3);
+    }
 
-    CPPUNIT_ASSERT(*image == *image2);
+    TEST_CASE("stress")
+    {
+        stress_test_for_a_type<std::int8_t>();
+        stress_test_for_a_type<std::uint8_t>();
 
-    data::image::sptr image3 = io::itk::move_from_itk<image_t>(itk_image, false);
-    image3->set_window_center(image->window_center());
-    image3->set_window_width(image->window_width());
+        stress_test_for_a_type<std::int16_t>();
+        stress_test_for_a_type<std::uint16_t>();
 
-    CPPUNIT_ASSERT(*image == *image3);
-}
+        stress_test_for_a_type<std::int32_t>();
+        stress_test_for_a_type<std::uint32_t>();
 
-//------------------------------------------------------------------------------
+        stress_test_for_a_type<std::int64_t>();
+        stress_test_for_a_type<std::uint64_t>();
 
-void image_conversion_test::stress_test()
-{
-    stress_test_for_a_type<std::int8_t>();
-    stress_test_for_a_type<std::uint8_t>();
+        stress_test_for_a_type<float>();
+        stress_test_for_a_type<double>();
+    }
 
-    stress_test_for_a_type<std::int16_t>();
-    stress_test_for_a_type<std::uint16_t>();
+    TEST_CASE("conversion_2d")
+    {
+        // create Image
+        sight::data::image::sptr image  = std::make_shared<sight::data::image>();
+        sight::data::image::size_t size = {
+            static_cast<std::size_t>(safe_rand() % 100 + 2), static_cast<std::size_t>(safe_rand() % 100 + 2), 0
+        };
+        sight::data::image::spacing_t spacing = {(safe_rand() % 200 + 1) / 100., (safe_rand() % 200 + 1) / 100., 0.
+        };
+        sight::data::image::origin_t origin = {(safe_rand() % 200 - 100) / 3., (safe_rand() % 200 - 100) / 3., 0.
+        };
+        sight::data::image::orientation_t orientation = {0.36F, 0.48F, 0.0F, -0.8F, 0.6F, 0.0F, 0.0F, 0.0F, 1.0F};
+        sight::core::type type                        = sight::core::type::INT16;
 
-    stress_test_for_a_type<std::int32_t>();
-    stress_test_for_a_type<std::uint32_t>();
+        sight::utest_data::generator::image::generate_image(
+            image,
+            size,
+            spacing,
+            origin,
+            orientation,
+            type,
+            sight::data::image::gray_scale,
+            0
+        );
 
-    stress_test_for_a_type<std::int64_t>();
-    stress_test_for_a_type<std::uint64_t>();
+        using image_t = ::itk::Image<std::int16_t, 2>;
 
-    stress_test_for_a_type<float>();
-    stress_test_for_a_type<double>();
-}
+        image_t::Pointer itk_image = sight::io::itk::move_to_itk<image_t>(image);
 
-//------------------------------------------------------------------------------
+        sight::data::image::sptr image2 = std::make_shared<sight::data::image>();
+        bool image2_manages_his_buffer  = false;
+        sight::io::itk::move_from_itk<image_t>(itk_image, *image2, image2_manages_his_buffer);
+        sight::io::itk::ut::helper::round_spacing(image);
+        sight::io::itk::ut::helper::round_spacing(image2);
 
-void image_conversion_test::test_conversion_2d()
-{
-    // create Image
-    data::image::sptr image  = std::make_shared<data::image>();
-    data::image::size_t size = {
-        static_cast<std::size_t>(safe_rand() % 100 + 2), static_cast<std::size_t>(safe_rand() % 100 + 2), 0
-    };
-    data::image::spacing_t spacing         = {(safe_rand() % 200 + 1) / 100., (safe_rand() % 200 + 1) / 100., 0.};
-    data::image::origin_t origin           = {(safe_rand() % 200 - 100) / 3., (safe_rand() % 200 - 100) / 3., 0.};
-    data::image::orientation_t orientation = {0.36F, 0.48F, 0.0F, -0.8F, 0.6F, 0.0F, 0.0F, 0.0F, 1.0F};
-    core::type type                        = core::type::INT16;
+        image2->set_window_center(image->window_center());
+        image2->set_window_width(image->window_width());
 
-    utest_data::generator::image::generate_image(
-        image,
-        size,
-        spacing,
-        origin,
-        orientation,
-        type,
-        data::image::gray_scale,
-        0
-    );
+        CHECK(*image == *image2);
 
-    using image_t = ::itk::Image<std::int16_t, 2>;
+        sight::data::image::sptr image3 = sight::io::itk::move_from_itk<image_t>(itk_image, false);
+        image3->set_window_center(image->window_center());
+        image3->set_window_width(image->window_width());
 
-    image_t::Pointer itk_image = io::itk::move_to_itk<image_t>(image);
-
-    data::image::sptr image2       = std::make_shared<data::image>();
-    bool image2_manages_his_buffer = false;
-    io::itk::move_from_itk<image_t>(itk_image, image2, image2_manages_his_buffer);
-
-    io::itk::ut::helper::round_spacing(image);
-    io::itk::ut::helper::round_spacing(image2);
-
-    image2->set_window_center(image->window_center());
-    image2->set_window_width(image->window_width());
-
-    CPPUNIT_ASSERT(*image == *image2);
-
-    data::image::sptr image3 = io::itk::move_from_itk<image_t>(itk_image, false);
-    image3->set_window_center(image->window_center());
-    image3->set_window_width(image->window_width());
-
-    CPPUNIT_ASSERT(*image == *image3);
-}
-
-//------------------------------------------------------------------------------
-
-} // namespace sight::io::itk::ut
+        CHECK(*image == *image3);
+    }
+} // TEST_SUITE

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2025 IRCAD France
  * Copyright (C) 2017-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,72 +20,49 @@
  *
  ***********************************************************************/
 
-#include "transform_test.hpp"
-
 #include <data/matrix4.hpp>
 
 #include <io/itk/helper/transform.hpp>
 
+#include <doctest/doctest.h>
+
 #include <itkMatrix.h>
 
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::itk::ut::transform_test);
-
-namespace sight::io::itk::ut
+TEST_SUITE("sight::io::itk::transform")
 {
-
-//------------------------------------------------------------------------------
-
-void transform_test::setUp()
-{
-    // Set up context before running a test.
-}
-
-//------------------------------------------------------------------------------
-
-void transform_test::tearDown()
-{
-    // Clean up after the test run.
-}
-
-//------------------------------------------------------------------------------
-
-void transform_test::test_conversion()
-{
-    ::itk::Matrix<double, 4, 4> mat;
-    data::matrix4::sptr sight_mat = std::make_shared<data::matrix4>();
-
-    for(std::uint8_t i = 0 ; i < 4 ; ++i)
+    TEST_CASE("conversion")
     {
-        for(std::uint8_t j = 0 ; j < 4 ; j++)
+        ::itk::Matrix<double, 4, 4> mat;
+        auto sight_mat = std::make_shared<sight::data::matrix4>();
+
+        for(std::uint8_t i = 0 ; i < 4 ; ++i)
         {
-            mat(i, j) = i + j * 4.0;
+            for(std::uint8_t j = 0 ; j < 4 ; j++)
+            {
+                mat(i, j) = i + j * 4.0;
+            }
+        }
+
+        sight::io::itk::helper::transform::convert_from_itk(mat, sight_mat);
+
+        for(std::uint8_t i = 0 ; i < 4 ; ++i)
+        {
+            for(std::uint8_t j = 0 ; j < 4 ; j++)
+            {
+                CHECK_EQ(mat(i, j), (*sight_mat)(i, j));
+            }
+        }
+
+        sight::data::matrix4::csptr sight_mat2 = sight_mat;
+
+        ::itk::Matrix<double, 4, 4> mat2 = sight::io::itk::helper::transform::convert_to_itk(sight_mat2);
+
+        for(std::uint8_t i = 0 ; i < 4 ; ++i)
+        {
+            for(std::uint8_t j = 0 ; j < 4 ; j++)
+            {
+                CHECK_EQ(mat(i, j), mat2(i, j));
+            }
         }
     }
-
-    io::itk::helper::transform::convert_from_itk(mat, sight_mat);
-
-    for(std::uint8_t i = 0 ; i < 4 ; ++i)
-    {
-        for(std::uint8_t j = 0 ; j < 4 ; j++)
-        {
-            CPPUNIT_ASSERT_EQUAL(mat(i, j), (*sight_mat)(i, j));
-        }
-    }
-
-    data::matrix4::csptr sight_mat2 = sight_mat;
-
-    ::itk::Matrix<double, 4, 4> mat2 = io::itk::helper::transform::convert_to_itk(sight_mat2);
-
-    for(std::uint8_t i = 0 ; i < 4 ; ++i)
-    {
-        for(std::uint8_t j = 0 ; j < 4 ; j++)
-        {
-            CPPUNIT_ASSERT_EQUAL(mat(i, j), mat2(i, j));
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
-
-} // namespace sight::io::itk::ut
+} // TEST_SUITE

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2025 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,7 +41,6 @@ namespace sight::core::tools
  * @brief   Template specialization for defining key_t mapping ( here numeric) with their value.
  *
  * Header declare function already specialized while src provide definition
- * @warning isMapping does not need to be exported since fwTools Library is builded as static
  */
 template<>
 SIGHT_CORE_API

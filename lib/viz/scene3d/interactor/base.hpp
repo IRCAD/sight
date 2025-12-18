@@ -65,7 +65,8 @@ public:
         left,
         middle,
         right,
-        unknown
+        unknown,
+        _num_values
     };
 
     /// Defines the list of recognized mouse modifier.

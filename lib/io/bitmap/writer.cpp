@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -60,9 +60,10 @@ std::string writer::extension() const
 
 //------------------------------------------------------------------------------
 
-void writer::write()
+void writer::write(sight::core::progress::observer::sptr _progress)
 {
     write(backend::any, mode::fast);
+    _progress->done();
 }
 
 //------------------------------------------------------------------------------
@@ -97,12 +98,11 @@ std::size_t writer::write(backend _backend, mode _mode)
 
             SIGHT_THROW_IF(
                 "Unsupported image extension: '" << file.extension().string() << "'",
-                std::none_of(
-                    extensions_to_use.cbegin(),
-                    extensions_to_use.cend(),
-                    [&](const auto& extension)
+                std::ranges::none_of(
+                    extensions_to_use,
+                    [&](const auto& _extension)
                 {
-                    return current_extension.ends_with(extension);
+                    return current_extension.ends_with(_extension);
                 })
             );
         }

@@ -24,7 +24,6 @@
 
 #include <core/runtime/path.hpp>
 
-#include <data/dicom_series.hpp>
 #include <data/series_set.hpp>
 
 #include <io/dimse/exceptions/base.hpp>
@@ -311,9 +310,8 @@ void query_editor::execute_query()
         [](std::string _s)
         {
             std::string res = _s;
-            std::transform(
-                _s.begin(),
-                _s.end(),
+            std::ranges::transform(
+                _s,
                 res.begin(),
                 [](unsigned char _c)
             {
@@ -399,9 +397,8 @@ void query_editor::execute_query()
                 OFString series_uid;
                 response->m_dataset->findAndGetOFStringArray(DCM_SeriesInstanceUID, series_uid);
 
-                const auto finded_it = std::find_if(
-                    series_response.begin(),
-                    series_response.end(),
+                const auto finded_it = std::ranges::find_if(
+                    series_response,
                     [&](const QRResponse* _res) -> bool
                     {
                         OFString data;
@@ -512,16 +509,6 @@ void query_editor::execute_query()
         // Clean memory.
         sight::io::dimse::helper::series::release_responses(responses);
 
-        // Check whether the instance number start at 1 or 0.
-        for(const data::series::sptr& s : series)
-        {
-            data::dicom_series::sptr dicom_series = std::dynamic_pointer_cast<data::dicom_series>(s);
-            SIGHT_ASSERT("The PACS response should contain only DicomSeries", dicom_series);
-            const std::string instance_uid =
-                series_enquirer->find_sop_instance_uid(dicom_series->get_series_instance_uid(), 0);
-            dicom_series->set_first_instance_number((instance_uid.empty() ? 1 : 0));
-        }
-
         this->update_series_set(series);
     }
     catch(const sight::io::dimse::exceptions::base& e)
@@ -551,7 +538,7 @@ void query_editor::update_series_set(const data::series_set::container_t& _serie
     // Push new series in the series_set.
     for(const auto& s : _series)
     {
-        series_set->push_back(std::dynamic_pointer_cast<data::dicom_series>(s));
+        series_set->push_back(std::dynamic_pointer_cast<data::series>(s));
     }
 }
 

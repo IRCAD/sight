@@ -59,6 +59,7 @@ public:
     struct slots
     {
         static inline const core::com::slots::key_t UPDATE_IMAGE             = "update_image";
+        static inline const core::com::slots::key_t UPDATE_MASK              = "update_mask";
         static inline const core::com::slots::key_t UPDATE_IMAGE_BUFFER      = "update_image_buffer";
         static inline const core::com::slots::key_t UPDATE_TF                = "update_tf";
         static inline const core::com::slots::key_t SLICE_TYPE               = "slice_type";
@@ -119,6 +120,11 @@ private:
 
     /// Sets the filtering type.
     void set_filtering(sight::viz::scene3d::plane::filter_t _filtering);
+
+    /**
+     * @brief Updates the mask texture.
+     */
+    void update_mask();
 
     /** Uploads the input image into the texture buffer and recomputes the negato geometry.
      * @param _new true if the image was reallocated, false if only pixel values changed.
@@ -187,7 +193,7 @@ protected:
     std::uint32_t m_query_flags {Ogre::SceneManager::ENTITY_TYPE_MASK};
 
     sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, "image"};
-    sight::data::ptr<sight::data::transfer_function, sight::data::access::inout> m_tf {this, "tf"};
+    sight::data::ptr<sight::data::transfer_function, sight::data::access::inout> m_tf {this, "tf", true};
 
 private:
 
@@ -219,12 +225,14 @@ private:
     {
         IMAGE,
         IMAGE_BUFFER,
+        MASK,
         TF
     };
 
     sight::data::ptr<sight::data::image, sight::data::access::in> m_mask {this, "mask", true};
     sight::data::property<sight::data::string> m_classification {this, "classification", std::string("post")};
     sight::data::property<sight::data::real> m_depth_bias {this, "depth_bias", 0.};
+    sight::data::property<sight::data::boolean> m_rgb_negato {this, "rgb_negato", false};
 };
 
 //------------------------------------------------------------------------------

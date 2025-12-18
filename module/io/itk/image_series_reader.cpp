@@ -24,8 +24,6 @@
 #include "module/io/itk/image_reader.hpp"
 
 #include <core/com/signal.hxx>
-#include <core/jobs/base.hpp>
-#include <core/jobs/job.hpp>
 #include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
 #include <core/tools/date_and_time.hpp>
@@ -37,8 +35,6 @@
 
 #include <io/__/service/io_types.hpp>
 #include <io/__/service/reader.hpp>
-
-#include <service/macros.hpp>
 
 #include <ui/__/cursor.hpp>
 #include <ui/__/dialog/location.hpp>
@@ -119,7 +115,7 @@ void image_series_reader::info(std::ostream& _sstream)
 
 //------------------------------------------------------------------------------
 
-void init_series(data::series::sptr _series)
+static void init_series(data::series::sptr _series)
 {
     const std::string instance_uid     = core::tools::uuid::generate();
     const boost::posix_time::ptime now = boost::posix_time::second_clock::local_time();
@@ -166,7 +162,8 @@ void image_series_reader::updating()
 
         try
         {
-            if(image_reader::load_image(this->get_file(), image_series))
+            auto read_observer = std::make_shared<sight::core::progress::observer>("Loading image... ");
+            if(image_reader::load_image(this->get_file(), image_series, read_observer))
             {
                 init_series(image_series);
 

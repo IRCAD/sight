@@ -1,6 +1,6 @@
 <!--
     This configuration allows to launch activities sequentially. It should be called from an activity like:
-    It displays a "stepper" that allows to select the current activity, they are enabled sequencially when their
+    It displays a "stepper" that allows to select the current activity, they are enabled sequentially when their
     inputs are present.
 
     The configuration can be launched by a 'config_launcher':
@@ -238,11 +238,6 @@
         <!-- The activity sequencer should receive the call from the "previous" action. -->
         <connect channel="validation_channel">
             <slot>activity_sequencer/check_next</slot>
-        </connect>
-
-        <!-- The activity sequencer should receive the call from the "go_to" action. -->
-        <connect channel="go_to_channel">
-            <slot>activity_sequencer/go_to</slot>
         </connect>
 
         <!-- *************************************** update **************************************** -->

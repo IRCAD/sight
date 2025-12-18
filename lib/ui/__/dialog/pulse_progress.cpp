@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,7 +33,7 @@ pulse_progress::pulse_progress(
     const std::string& _title,
     ui::dialog::pulse_progress_base::Stuff _stuff,
     const std::string& _msg,
-    ui::dialog::pulse_progress_base::MilliSecond _frequence_refresh,
+    ui::dialog::pulse_progress_base::MilliSecond _frequency_refresh,
     bool _cancellable
 )
 {
@@ -47,7 +47,7 @@ pulse_progress::pulse_progress(
                 m_implementation->set_stuff(_stuff);
                 m_implementation->set_title(_title);
                 m_implementation->set_message(_msg);
-                m_implementation->set_frequence(_frequence_refresh);
+                m_implementation->set_frequency(_frequency_refresh);
                 m_implementation->set_cancellable(_cancellable);
             }
             else

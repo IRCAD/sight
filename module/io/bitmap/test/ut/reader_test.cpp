@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -137,7 +137,7 @@ void reader_test::config_test()
         test_enable(actual_image, false);
     }
 
-    if(sight::io::bitmap::nv_jpeg())
+    if(sight::io::bitmap::nvjpeg())
     {
         auto actual_image = std::make_shared<sight::data::image>();
         test_enable(actual_image, true);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -69,6 +69,15 @@ struct end_type_list_action
     }
 
     /// Throw an exception to inform end-user that key_t value have no correspondence in type list
+    template<class key_type, class ... Args>
+    static void invoke(const key_type& _key_t, Args&& ... /*_args*/)
+    {
+        std::string msg = _key_t.name()
+                          + " : key_t value incorrect : no corresponding Type in typelist";
+        throw std::invalid_argument(msg);
+    }
+
+    /// Throw an exception to inform end-user that key_t value have no correspondence in type list
     template<class base_class_t, class key_type>
     static base_class_t* instantiate(const key_type& _key_t)
     {
@@ -82,7 +91,7 @@ struct end_type_list_action
 /**
  * @brief   Create an automatic template instantiater example Dispatcher< TYPESEQUENCE , FUNCTOR>::invoke("int");
  *
- * Will instanciante class FUNCTOR then for a type T in TYPESEQUENCE (here int) call the corresponding operator() method
+ * Will instantiate class FUNCTOR then for a type T in TYPESEQUENCE (here int) call the corresponding operator() method
  * according to parameter of invoke static method. ie FUNCTOR().operator<int>();
  */
 template<class TSEQ, class FUNCTOR>
@@ -111,11 +120,11 @@ struct dispatcher
 #endif
 
             // recursively call other element in the list
-            typedef BOOST_DEDUCED_TYPENAME mpl::if_<
-                    mpl::empty<tail>,
-                    end_type_list_action,
-                    dispatcher<tail, FUNCTOR>
-            >::type type_x;
+            using type_x = BOOST_DEDUCED_TYPENAME mpl::if_<
+                mpl::empty<tail>,
+                end_type_list_action,
+                dispatcher<tail, FUNCTOR>
+                           >::type;
             type_x::invoke();
         }
 
@@ -140,11 +149,11 @@ struct dispatcher
             else
             {
                 // recursively call other element in the list
-                typedef BOOST_DEDUCED_TYPENAME mpl::if_<
-                        mpl::empty<tail>,
-                        end_type_list_action,
-                        dispatcher<tail, FUNCTOR>
-                >::type type_x;
+                using type_x = BOOST_DEDUCED_TYPENAME mpl::if_<
+                    mpl::empty<tail>,
+                    end_type_list_action,
+                    dispatcher<tail, FUNCTOR>
+                               >::type;
                 type_x::invoke(_key_t);
             }
         }
@@ -174,18 +183,50 @@ struct dispatcher
             else
             {
                 // recursively call other element in the list
-                typedef BOOST_DEDUCED_TYPENAME mpl::if_<
-                        mpl::empty<tail>,
-                        end_type_list_action,
-                        dispatcher<tail, FUNCTOR>
-                >::type type_x;
+                using type_x = BOOST_DEDUCED_TYPENAME mpl::if_<
+                    mpl::empty<tail>,
+                    end_type_list_action,
+                    dispatcher<tail, FUNCTOR>
+                               >::type;
                 type_x::invoke(_key_t, _param);
+            }
+        }
+
+        /**
+         * @brief Invoke only the specified Type only with a variable number of parameters
+         * @note The parameters are perfectly forwarded to the functor
+         */
+        template<class key_type, class ... Args>
+        static void invoke(const key_type& _key_t, Args&& ... _args)
+        {
+            namespace mpl = boost::mpl;
+
+            if(is_mapping<head>(_key_t))
+            {
+                // create the functor then execute it
+                FUNCTOR f;
+            #ifdef _WIN32
+                f.operator()<head>(std::forward<Args>(_args) ...);
+            #else
+                f.template operator()<head>(std::forward<Args>(_args) ...);
+            #endif
+            }
+            else
+            {
+                // recursively call other element in the list
+                using type_x = BOOST_DEDUCED_TYPENAME mpl::if_<
+                    mpl::empty<tail>,
+                    end_type_list_action,
+                    dispatcher<tail, FUNCTOR>
+                               >::type;
+                type_x::invoke(_key_t, std::forward<Args>(_args) ...);
             }
         }
 };
 
-using integer_types = boost::mpl::vector<std::int8_t, std::uint8_t, std::int16_t, std::uint16_t, std::int32_t,
-                                         std::uint32_t>::type;
+using integer_types = boost::mpl::vector<std::int8_t, std::uint8_t,
+                                         std::int16_t, std::uint16_t,
+                                         std::int32_t, std::uint32_t>::type;
 
 #ifdef DEBUG
 using intrinsic_types = boost::mpl::push_back<integer_types, float>::type;

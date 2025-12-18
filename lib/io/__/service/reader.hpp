@@ -26,6 +26,7 @@
 
 #include "io/__/service/io_types.hpp"
 
+#include <core/progress/has_monitors.hpp>
 #include <core/tools/failed.hpp>
 
 #include <data/string.hpp>
@@ -60,7 +61,8 @@ namespace sight::io::service
  * - \b resources : When files / folder to open are resources and need to be found in the module or libraries.
  */
 
-class SIGHT_IO_CLASS_API reader : public sight::service::base
+class SIGHT_IO_CLASS_API reader : public sight::service::base,
+                                  public sight::core::progress::has_monitors
 {
 public:
 
@@ -75,17 +77,25 @@ public:
         invalid = 255 /// Used for error management
     };
 
+    struct signals
+    {
+        using void_signal_t = core::com::signal<void ()>;
+        static inline const signal_key_t FAILED    = "failed";
+        static inline const signal_key_t SUCCEEDED = "succeeded";
+    };
+
     /**
      * @name Slots API
      * @{
      */
     struct slots
     {
-        using key_t = sight::core::com::slots::key_t;
-        static inline const key_t OPEN_LOCATION_DIALOG     = "open_location_dialog";
-        static inline const key_t UPDATE_DEFAULT_LOCATIONS = "update_default_locations";
+        static inline const slot_key_t OPEN_LOCATION_DIALOG     = "open_location_dialog";
+        static inline const slot_key_t UPDATE_DEFAULT_LOCATIONS = "update_default_locations";
     };
     //@}
+
+    SIGHT_IO_API ~reader() noexcept override = default;
 
     /**
      * @name    Specific service methods for reading
@@ -213,9 +223,7 @@ public:
 
 protected:
 
-    SIGHT_IO_API reader(const std::string& _default_window_title = s_DEFAULT_WINDOW_TITLE) noexcept;
-
-    SIGHT_IO_API ~reader() noexcept override = default;
+    SIGHT_IO_API explicit reader(const std::string& _default_window_title = S_DEFAULT_WINDOW_TITLE) noexcept;
 
     /**
      * @brief This method proposes to parse xml configuration to retrieve file/files/folder paths.
@@ -233,7 +241,7 @@ protected:
     data::ptr<data::object, data::access::inout> m_data {this, sight::io::service::DATA_KEY};
 
     /// Window title for the file dialog
-    sight::data::property<sight::data::string> m_window_title {this, WINDOW_TITLE_KEY, s_DEFAULT_WINDOW_TITLE};
+    sight::data::property<sight::data::string> m_window_title {this, WINDOW_TITLE_KEY, S_DEFAULT_WINDOW_TITLE};
 
 private:
 
@@ -256,7 +264,7 @@ private:
     );
 
     /// Default window title
-    inline static const std::string s_DEFAULT_WINDOW_TITLE = "Choose a file";
+    inline static const std::string S_DEFAULT_WINDOW_TITLE = "Choose a file";
 
     /// Value to stock file or folder paths
     io::service::locations_t m_locations;

@@ -35,6 +35,9 @@
 
 #include <OgreCamera.h>
 
+#include <algorithm>
+#include <utility>
+
 namespace sight::module::viz::scene3d::adaptor
 {
 
@@ -98,8 +101,8 @@ shape_extruder::triangle2_d::triangle2_d(
     center = Ogre::Vector2(intersect_x, intersect_y);
     radius = a.distance(center);
 
-    const Ogre::Vector2 bary_dir(((a + b) / 2.F) - c);
-    barycentre = c + 2.F / 3.F * bary_dir;
+    const Ogre::Vector2 barycenter_dir(((a + b) / 2.F) - c);
+    barycentre = c + 2.F / 3.F * barycenter_dir;
 }
 
 //------------------------------------------------------------------------------
@@ -173,12 +176,12 @@ void shape_extruder::configuring()
     const auto hexa_line_color = config.get<std::string>(s_LINE_COLOR_CONFIG, "#FFFFFF");
     std::array<std::uint8_t, 4> line_color {};
     data::tools::color::hexa_string_to_rgba(hexa_line_color, line_color);
-    std::transform(line_color.begin(), line_color.end(), m_line_color.ptr(), divide_by255);
+    std::ranges::transform(line_color, m_line_color.ptr(), divide_by255);
 
     const auto hexa_edge_color = config.get<std::string>(s_EDGE_COLOR_CONFIG, "#FFFFFF");
     std::array<std::uint8_t, 4> edge_color {};
     data::tools::color::hexa_string_to_rgba(hexa_edge_color, edge_color);
-    std::transform(edge_color.begin(), edge_color.end(), m_edge_color.ptr(), divide_by255);
+    std::ranges::transform(edge_color, m_edge_color.ptr(), divide_by255);
 }
 
 //-----------------------------------------------------------------------------
@@ -203,6 +206,8 @@ void shape_extruder::starting()
 
     m_lasso           = scene_mng->createManualObject(gen_id("lasso"));
     m_last_lasso_line = scene_mng->createManualObject(gen_id("lastLassoLine"));
+    m_lasso->setRenderQueueGroup(sight::viz::scene3d::rq::OVERLAY);
+    m_last_lasso_line->setRenderQueueGroup(sight::viz::scene3d::rq::OVERLAY);
 
     m_lasso_node->attachObject(m_lasso);
     m_lasso_node->attachObject(m_last_lasso_line);
@@ -914,7 +919,7 @@ void shape_extruder::generate_delaunay_triangulation(
     {
         old_points = new_points;
         new_points.clear();
-        for(std::int64_t index = 0 ; index < static_cast<std::int64_t>(old_points.size()) ; ++index)
+        for(std::int64_t index = 0 ; std::cmp_less(index, old_points.size()) ; ++index)
         {
             const std::size_t previous_index = index - 1
                                                < 0 ? old_points.size() - 1 : static_cast<std::size_t>(index - 1);
@@ -952,7 +957,7 @@ void shape_extruder::generate_delaunay_triangulation(
         const edge ray(it->barycentre, super_triangle.a);
 
         bool inside = false;
-        for(std::int64_t i = 0 ; i < static_cast<std::int64_t>(points.size()) ; ++i)
+        for(std::int64_t i = 0 ; std::cmp_less(i, points.size()) ; ++i)
         {
             const std::size_t previous_i = i - 1 < 0 ? points.size() - 1 : static_cast<std::size_t>(i - 1);
             const edge edge(points[previous_i], points[static_cast<std::size_t>(i)]);
@@ -1054,9 +1059,9 @@ void shape_extruder::add_delaunay_point(std::vector<triangle2_d>& _triangulation
         }
 
         _triangulation.erase(
-            std::find_if(
-                _triangulation.begin(),
-                _triangulation.end(),
+            std::ranges::find_if(
+                _triangulation,
+
                 [&](const triangle2_d& _tri) -> bool
             {
                 return _tri.id == triangle.id;

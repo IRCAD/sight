@@ -21,17 +21,30 @@ if(SIGHT_ENABLE_NVJPEG)
         target_link_libraries(io_bitmap PRIVATE CUDA::cudart CUDA::nvjpeg CUDA::cuda_driver CUDA::nppidei)
 
         if(SIGHT_ENABLE_NVJPEG2K)
-            if("${NVJPEG2K_LIB}" STREQUAL "" OR "${NVJPEG2K_LIB}" STREQUAL "NVJPEG2K_LIB-NOTFOUND")
-                # Search for nvJPEG2000
+            # Search for nvJPEG2000
+            if(UNIX)
+                find_library(
+                    NVJPEG2K_LIB NAMES nvjpeg2k_static PATH_SUFFIXES "libnvjpeg2k/${CUDAToolkit_VERSION_MAJOR}"
+                )
+            else()
                 find_library(NVJPEG2K_LIB NAMES nvjpeg2k)
             endif()
 
             if("${NVJPEG2K_LIB}" STREQUAL "" OR "${NVJPEG2K_LIB}" STREQUAL "NVJPEG2K_LIB-NOTFOUND")
                 message(FATAL_ERROR "nvjpeg2k library was not found.")
             else()
-                message("-- Found nvJPEG2000: ${NVJPEG2K_LIB}")
+
                 target_compile_definitions(io_bitmap PUBLIC SIGHT_ENABLE_NVJPEG2K)
-                target_link_libraries(io_bitmap PRIVATE ${NVJPEG2K_LIB})
+                message("-- Found nvJPEG2000: ${NVJPEG2K_LIB}")
+                target_link_libraries(io_bitmap PRIVATE "${NVJPEG2K_LIB}")
+
+                if(UNIX)
+                    find_file(NVJPEG2K_HEADER NAMES nvjpeg2k.h PATH_SUFFIXES "libnvjpeg2k/${CUDAToolkit_VERSION_MAJOR}"
+                                                                             REQUIRED
+                    )
+                    cmake_path(GET NVJPEG2K_HEADER PARENT_PATH NVJPEG2K_INCLUDE_DIR)
+                    target_include_directories(io_bitmap PRIVATE "${NVJPEG2K_INCLUDE_DIR}")
+                endif()
             endif()
         endif()
     else()

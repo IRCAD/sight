@@ -70,8 +70,9 @@ public:
     /**
      * @brief Retrieves data over network
      * @param _request the request
+     * @param _output_path path where to save the file
      */
-    SIGHT_IO_HTTP_API std::string get_file(request::sptr _request);
+    SIGHT_IO_HTTP_API void get_file(request::sptr _request, const std::filesystem::path& _output_path);
 
     /**
      * @brief Performs head request

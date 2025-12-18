@@ -81,6 +81,7 @@
         <xs:attribute name='value' type='xs:string' />
         <xs:attribute name='deferred' type='boolean_t' />
         <xs:attribute name='preference' type='boolean_t' />
+        <xs:attribute name='config' type='xs:string' />
     </xs:complexType>
 
     <!-- Item Type -->

@@ -140,23 +140,11 @@ private:
     /// Enables the axes visibility.
     bool m_axis_visibility {true};
 
-    /// Contains the line along the x axis.
-    Ogre::ManualObject* m_x_line {nullptr};
+    /// Contains the lines along the x,y,z axis.
+    Ogre::ManualObject* m_line[3] {nullptr, nullptr, nullptr};
 
-    /// Contains the line along the y axis.
-    Ogre::ManualObject* m_y_line {nullptr};
-
-    /// Contains the line along the z axis.
-    Ogre::ManualObject* m_z_line {nullptr};
-
-    /// Contains the arrow of the x axis.
-    Ogre::ManualObject* m_x_cone {nullptr};
-
-    /// Contains the arrow of the y axis.
-    Ogre::ManualObject* m_y_cone {nullptr};
-
-    /// Contains the arrow of the z axis.
-    Ogre::ManualObject* m_z_cone {nullptr};
+    /// Contains the arrows along the x,y,z axis.
+    Ogre::ManualObject* m_cone[3] {nullptr, nullptr, nullptr};
 
     /// Contains the scene node where all of manual objects are attached.
     Ogre::SceneNode* m_scene_node {nullptr};

@@ -127,12 +127,12 @@ public:
         static inline const key_t MODIFY_POSITION = "modifyPosition";
         static inline const key_t MODIFY_DURATION = "modifyDuration";
 
-        static inline const key_t FWD_START_CAMERA  = "forwardStartCamera";
-        static inline const key_t FWD_STOP_CAMERA   = "forwardStopCamera";
-        static inline const key_t FWD_NOTIFY        = "forwardNotify";
-        static inline const key_t FWD_SET_PARAMETER = "forwardSetParameter";
-        static inline const key_t FWD_PRESENT_FRAME = "forwardPresentFrame";
-        static inline const key_t FWD_CREATE_JOB    = "forwardCreateJob";
+        static inline const key_t FWD_START_CAMERA   = "forward_start_camera";
+        static inline const key_t FWD_STOP_CAMERA    = "forward_stop_camera";
+        static inline const key_t FWD_NOTIFY         = "forward_notify";
+        static inline const key_t FWD_SET_PARAMETER  = "forward_set_parameter";
+        static inline const key_t FWD_PRESENT_FRAME  = "forward_present_frame";
+        static inline const key_t FWD_CREATE_MONITOR = "forward_create_monitor";
     };
 
 protected:
@@ -233,8 +233,8 @@ private:
     /// A named parameter has been emitted in the sub-service.
     void fwd_set_parameter(ui::parameter_t _value, std::string _key);
 
-    /// A job has been created in the proxied service.
-    void fwd_create_job(sight::core::jobs::base::sptr _job);
+    /// A monitor has been created in the proxied service.
+    void fwd_create_monitor(sight::core::progress::monitor::sptr _monitor);
 
     // Forwards notifications
     void fwd_notify(service::notification _notification);

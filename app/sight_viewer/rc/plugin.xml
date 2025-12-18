@@ -74,7 +74,7 @@
                     <frame>
                         <name>Sight Viewer</name>
                         <version>@sight_viewer_VERSION@</version>
-                        <icon>sight_viewer/Ogre_logo.svg</icon>
+                        <icon>sight::module::ui::icons/liver.svg</icon>
                         <min_size width="1280" height="720" />
                         <style QSSClass="Background" />
                     </frame>
@@ -120,8 +120,21 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view wid="scene_view" />
+                    <view sid="scene_overlay_view" />
                     <view sid="parameter_view" />
+                </registry>
+            </service>
+
+            <service uid="scene_overlay_view" type="sight::module::ui::view">
+                <gui>
+                    <layout type="sight::ui::layout::overlay">
+                        <view />
+                        <view x="25%" y="5%" height="50" width="50%" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view wid="scene_view" />
+                    <view sid="progress_bar_srv" />
                 </registry>
             </service>
 
@@ -306,7 +319,7 @@
             <service uid="open_series_set_act" type="sight::module::ui::action" />
 
             <!-- Read a series -->
-            <service uid="open_series_set_srv" type="sight::module::ui::io::selector" worker="COMPUTE">
+            <service uid="open_series_set_srv" type="sight::module::ui::io::selector">
                 <inout key="data" uid="series_set" />
                 <type mode="reader" />
                 <selection mode="exclude" />
@@ -490,7 +503,7 @@
                     <key name="output_series_set" uid="pacs_series_set" />
                 </inout>
                 <param name="WINDOW_TITLE" value="PACS" />
-                <param name="WINDOW_ICON" value="sight_viewer/Ogre_logo.svg" />
+                <param name="WINDOW_ICON" value="sight::module::ui::icons/liver.svg" />
             </service>
 
             <!-- ******************************* Services ***************************************** -->
@@ -538,11 +551,20 @@
             <!-- Transparency for the 3D negato -->
             <service uid="transparency_parameter_srv" type="sight::module::ui::qt::parameters">
                 <parameters>
-                    <param type="double" name="Negatoscope transparency" key="transparency" defaultValue="0.0" min="0.0" max="1.0" reset="false" widget="slider" />
+                    <param type="double" name="Negatoscope opacity" key="transparency" defaultValue="0.0" min="0.0" max="1.0" reset="false" widget="slider" />
                 </parameters>
             </service>
 
+            <service uid="progress_bar_srv" type="sight::module::ui::qt::progress_bar">
+                <config show_cancel="false" />
+            </service>
+
             <!-- ******************************* Connections ***************************************** -->
+
+            <connect>
+                <signal>open_series_set_srv/monitor_created</signal>
+                <slot>progress_bar_srv/add_monitor</slot>
+            </connect>
 
             <connect>
                 <signal>open_series_set_act/clicked</signal>

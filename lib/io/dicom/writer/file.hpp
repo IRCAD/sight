@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,10 +23,8 @@
 
 #include <sight/io/dicom/config.hpp>
 
-#include <core/jobs/job.hpp>
 #include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
-#include <core/tools/progress_adviser.hpp>
 
 #include <data/series_set.hpp>
 
@@ -37,8 +35,7 @@ namespace sight::io::dicom::writer
 
 class SIGHT_IO_DICOM_CLASS_API file final : public sight::io::writer::generic_object_writer<data::series_set>,
                                             public core::location::single_folder,
-                                            public core::location::single_file,
-                                            public core::tools::progress_adviser
+                                            public core::location::single_file
 {
 public:
 
@@ -55,15 +52,11 @@ public:
     SIGHT_IO_DICOM_API ~file() noexcept override;
 
     /// Main writing method from generic_object_writer
-    SIGHT_IO_DICOM_API void write() override;
+    SIGHT_IO_DICOM_API void write(SPTR(sight::core::progress::observer) _progress) override;
 
     /// Return the extension to use, by default, or the one from file set by single_file::set_file(), if valid
     /// @return an extension as string
     [[nodiscard]] SIGHT_IO_DICOM_API std::string extension() const override;
-
-    /// Set/get the current job
-    SIGHT_IO_DICOM_API core::jobs::base::sptr get_job() const override;
-    SIGHT_IO_DICOM_API void set_job(core::jobs::job::sptr _job);
 
     /// Allow to force the use of a cpu backend, even if SIGHT_ENABLE_NVJPEG2K is set.
     /// This can be useful in case of an unit test executed on a machine without GPU.

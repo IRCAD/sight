@@ -9,7 +9,6 @@ target_link_libraries(io_dicom PRIVATE Boost::locale PUBLIC gdcmMSFF)
 target_link_libraries(
     io_dicom
     PUBLIC io
-           filter_dicom
            core
            geometry
            geometry_data

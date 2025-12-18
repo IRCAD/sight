@@ -56,9 +56,6 @@ inline static void write(
     image::write(_archive, _tree, image_series, _children, _password);
 
     _children[data::fiducials_series::classname()] = image_series->get_fiducials();
-
-    // Serialize other attributes
-    _children[DICOM_REFERENCE] = image_series->get_dicom_reference();
 }
 
 //------------------------------------------------------------------------------
@@ -87,9 +84,6 @@ inline static data::image_series::sptr read(
     image::read(_archive, _tree, _children, image_series, _password);
     // Deserialize series last since it overwrites some attributes of image.
     series::read(_archive, _tree, _children, image_series, _password);
-
-    // Deserialize other attributes
-    image_series->set_dicom_reference(std::dynamic_pointer_cast<data::dicom_series>(_children.at(DICOM_REFERENCE)));
 
     return image_series;
 }

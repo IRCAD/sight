@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,6 +23,7 @@
 #include "dictionary_reader_test.hpp"
 
 #include <core/os/temp_path.hpp>
+#include <core/progress/observer.hpp>
 
 #include <data/structure_traits.hpp>
 #include <data/structure_traits_dictionary.hpp>
@@ -86,7 +87,9 @@ void dictionary_reader_test::test_1()
     auto dictionary_reader = std::make_shared<io::reader::dictionary_reader>();
     dictionary_reader->set_object(struct_dico);
     dictionary_reader->set_file(m_tmp_dictionary_file_path);
-    dictionary_reader->read();
+
+    auto observer = std::make_shared<core::progress::observer>("Test read");
+    dictionary_reader->read(observer);
 
     data::structure_traits::sptr struct1 = struct_dico->get_structure("Skin");
     CPPUNIT_ASSERT(struct1);
@@ -123,7 +126,8 @@ void dictionary_reader_test::test_2()
     dictionary_reader->set_object(struct_dico);
     dictionary_reader->set_file(m_tmp_dictionary_file_path);
 
-    CPPUNIT_ASSERT_THROW(dictionary_reader->read(), core::exception);
+    auto observer = std::make_shared<core::progress::observer>("Test read");
+    CPPUNIT_ASSERT_THROW(dictionary_reader->read(observer), core::exception);
 }
 
 //------------------------------------------------------------------------------
@@ -137,7 +141,8 @@ void dictionary_reader_test::test_3()
     dictionary_reader->set_object(struct_dico);
     dictionary_reader->set_file(m_tmp_dictionary_file_path);
 
-    CPPUNIT_ASSERT_THROW(dictionary_reader->read(), core::exception);
+    auto observer = std::make_shared<core::progress::observer>("Test read");
+    CPPUNIT_ASSERT_THROW(dictionary_reader->read(observer), core::exception);
 }
 
 //------------------------------------------------------------------------------
@@ -154,7 +159,8 @@ void dictionary_reader_test::test_4()
     dictionary_reader->set_object(struct_dico);
     dictionary_reader->set_file(m_tmp_dictionary_file_path);
 
-    CPPUNIT_ASSERT_THROW(dictionary_reader->read(), core::exception);
+    auto observer = std::make_shared<core::progress::observer>("Test read");
+    CPPUNIT_ASSERT_THROW(dictionary_reader->read(observer), core::exception);
 }
 
 //------------------------------------------------------------------------------
@@ -171,7 +177,8 @@ void dictionary_reader_test::test_5()
     dictionary_reader->set_object(struct_dico);
     dictionary_reader->set_file(m_tmp_dictionary_file_path);
 
-    CPPUNIT_ASSERT_THROW(dictionary_reader->read(), core::exception);
+    auto observer = std::make_shared<core::progress::observer>("Test read");
+    CPPUNIT_ASSERT_THROW(dictionary_reader->read(observer), core::exception);
 }
 
 //------------------------------------------------------------------------------

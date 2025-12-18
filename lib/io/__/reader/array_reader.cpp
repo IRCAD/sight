@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,6 +23,7 @@
 #include "io/__/reader/array_reader.hpp"
 
 #include <core/exception.hpp>
+#include <core/progress/observer.hpp>
 
 #include <fstream>
 #include <iostream>
@@ -32,7 +33,7 @@ namespace sight::io::reader
 
 //------------------------------------------------------------------------------
 
-void array_reader::read()
+void array_reader::read(sight::core::progress::observer::sptr _progress)
 {
     std::filesystem::path file = this->get_file();
 
@@ -58,6 +59,8 @@ void array_reader::read()
     fs.read(buff, static_cast<std::streamsize>(array_size_in_bytes));
 
     fs.close();
+
+    _progress->done();
 }
 
 //------------------------------------------------------------------------------

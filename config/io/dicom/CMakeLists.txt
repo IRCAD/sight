@@ -10,7 +10,6 @@ add_dependencies(
     module_memory
     module_io_dicom
     module_activity
-    module_ui_dicom
     module_io_dimse
     module_io_dicomweb
     module_service

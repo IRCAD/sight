@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2025 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -76,8 +76,8 @@ namespace sight::module::filter::image
  * NormalizedCorrelation : works when the intensity values are within a linear transform from each other.
  * MutualInformation : most generic metric, based on entropy. Can match images with different modalities.
  */
-class automatic_registration : public service::filter,
-                               public ui::has_parameters
+class automatic_registration final : public service::filter,
+                                     public ui::has_parameters
 {
 public:
 
@@ -87,21 +87,21 @@ public:
     automatic_registration();
 
     /// Destructor, does nothing.
-    ~automatic_registration() override;
+    ~automatic_registration() final = default;
 
 protected:
 
     /// Configure registration parameters.
-    void configuring() override;
+    void configuring() final;
 
     /// Does nothing.
-    void starting() override;
+    void starting() final;
 
     /// Do the registration.
-    void updating() override;
+    void updating() final;
 
     /// Does nothing.
-    void stopping() override;
+    void stopping() final;
 
     /**
      * @brief Auto connections
@@ -109,18 +109,18 @@ protected:
      * - Update service when one of the two images is modified.
      * - Update service when the transform matrix is modified.
      */
-    connections_t auto_connections() const override;
+    connections_t auto_connections() const final;
 
 private:
 
     /// Set the metric to be used. Key must be 'metric', values are the same as for the configuration.
-    void set_enum_parameter(std::string _val, std::string _key) override;
+    void set_enum_parameter(std::string _val, std::string _key) final;
 
     /// Set the minimum and maximum step sizes. keys are "minStep" and "maxStep".
-    void set_double_parameter(double _val, std::string _key) override;
+    void set_double_parameter(double _val, std::string _key) final;
 
     /// Set the maximum number of iterations, key must be "maxIterations".
-    void set_int_parameter(int _val, std::string _key) override;
+    void set_int_parameter(int _val, std::string _key) final;
 
     /// Sets the metric, possible values are : MeanSquares, NormalizedCorrelation, MutualInformation.
     void set_metric(const std::string& _metric_name);
@@ -142,10 +142,10 @@ private:
     sight::filter::image::metric_t m_metric {sight::filter::image::metric_t::mean_squares};
 
     /// Shrink factors per level and smoothing sigmas per level.
-    sight::filter::image::automatic_registration::multi_resolution_parameters_t m_multi_resolution_parameters;
+    sight::filter::image::multi_resolution_parameters_t m_multi_resolution_parameters;
 
     /// Percentage of samples used for registration.
-    sight::filter::image::automatic_registration::real_t m_sampling_percentage {};
+    double m_sampling_percentage {};
 
     static constexpr std::string_view TRANSFORM_INOUT = "transform";
     static constexpr std::string_view TARGET_IN       = "target";

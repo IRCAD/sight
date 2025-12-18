@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -73,7 +73,9 @@ inline static void write(
     // Create the output file inside the archive
     const auto& ostream = _archive.open_file(
         std::filesystem::path(mesh->get_uuid() + MESH),
-        _password
+        _password,
+        sight::io::zip::method::zstd,
+        sight::io::zip::level::fast
     );
 
     // Write back to the archive

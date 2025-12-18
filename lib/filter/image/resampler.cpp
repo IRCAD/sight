@@ -38,6 +38,7 @@
 #include <itkBSplineInterpolateImageFunction.h>
 #include <itkMatrix.h>
 #include <itkMinimumMaximumImageCalculator.h>
+#include <itkNearestNeighborInterpolateImageFunction.h>
 #include <itkResampleImageFilter.h>
 
 namespace sight::filter::image
@@ -50,10 +51,7 @@ struct resampling
         itk::AffineTransform<double, 3>::Pointer i_trf;
         data::image::csptr i_image;
         data::image::sptr o_image;
-        std::optional<std::tuple<data::image::size_t,
-                                 data::image::origin_t,
-                                 data::image::orientation_t,
-                                 data::image::spacing_t> > i_parameters;
+        std::optional<resampler::parameters_t> i_parameters;
     };
 
     //------------------------------------------------------------------------------
@@ -64,11 +62,8 @@ struct resampling
         using image_t = typename itk::Image<PIXELTYPE, 3>;
         const typename image_t::Pointer itk_image = io::itk::move_to_itk<image_t>(_params.i_image);
 
-        typename itk::ResampleImageFilter<image_t, image_t>::Pointer resampler =
-            itk::ResampleImageFilter<image_t, image_t>::New();
-
-        typename itk::MinimumMaximumImageCalculator<image_t>::Pointer min_calculator =
-            itk::MinimumMaximumImageCalculator<image_t>::New();
+        auto resampler      = itk::ResampleImageFilter<image_t, image_t>::New();
+        auto min_calculator = itk::MinimumMaximumImageCalculator<image_t>::New();
 
         min_calculator->SetImage(itk_image);
         min_calculator->ComputeMinimum();
@@ -86,7 +81,7 @@ struct resampling
 
         if(_params.i_parameters.has_value())
         {
-            const auto& [out_size, out_origin, out_orientation, out_spacing] = _params.i_parameters.value();
+            const auto& [out_size, out_origin, out_orientation, out_spacing, interp] = _params.i_parameters.value();
 
             for(std::uint8_t i = 0 ; i < 3 ; ++i)
             {
@@ -108,6 +103,26 @@ struct resampling
             direction(2, 0) = out_orientation[6];
             direction(2, 1) = out_orientation[7];
             direction(2, 2) = out_orientation[8];
+
+            if(interp == filter::image::interpolation_t::NEAREST)
+            {
+                auto interpolator = itk::NearestNeighborInterpolateImageFunction<image_t, double>::New();
+                resampler->SetInterpolator(interpolator);
+            }
+            else if(interp == filter::image::interpolation_t::LINEAR)
+            {
+                auto interpolator = itk::LinearInterpolateImageFunction<image_t, double>::New();
+                resampler->SetInterpolator(interpolator);
+            }
+            else if(interp == filter::image::interpolation_t::BSPLINE)
+            {
+                auto interpolator = itk::BSplineInterpolateImageFunction<image_t, double>::New();
+                resampler->SetInterpolator(interpolator);
+            }
+            else
+            {
+                SIGHT_ERROR("Unsupported interpolation type.");
+            }
         }
 
         resampler->SetSize(size);
@@ -119,7 +134,7 @@ struct resampling
 
         typename image_t::Pointer output_image = resampler->GetOutput();
 
-        io::itk::move_from_itk(output_image, _params.o_image);
+        io::itk::move_from_itk<image_t>(output_image, *_params.o_image);
     }
 };
 
@@ -129,10 +144,7 @@ void resampler::resample(
     const data::image::csptr& _in_image,
     const data::image::sptr& _out_image,
     const data::matrix4::csptr& _trf,
-    std::optional<std::tuple<data::image::size_t,
-                             data::image::origin_t,
-                             data::image::orientation_t,
-                             data::image::spacing_t> > _parameters
+    std::optional<resampler::parameters_t> _parameters
 )
 {
     const itk::Matrix<double, 4, 4> itk_matrix = io::itk::helper::transform::convert_to_itk(_trf);
@@ -155,7 +167,7 @@ void resampler::resample(
         translation.SetElement(i, itk_matrix(i, 3));
     }
 
-    itk::AffineTransform<double, 3>::Pointer transf = itk::AffineTransform<double, 3>::New();
+    auto transf = itk::AffineTransform<double, 3>::New();
     transf->SetMatrix(transform_mat);
     transf->SetTranslation(translation);
 
@@ -174,7 +186,8 @@ void resampler::resample(
 data::image::sptr resampler::resample(
     const data::image::csptr& _img,
     const data::matrix4::csptr& _trf,
-    const data::image::spacing_t& _output_spacing
+    const data::image::spacing_t& _output_spacing,
+    filter::image::interpolation_t _interpolation
 )
 {
     const auto& input_origin      = _img->origin();
@@ -232,7 +245,8 @@ data::image::sptr resampler::resample(
             output_size,
             output->origin(),
             output->orientation(),
-            _output_spacing
+            _output_spacing,
+            _interpolation
         )
     );
 

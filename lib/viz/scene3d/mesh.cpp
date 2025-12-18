@@ -55,7 +55,7 @@ using attribute = data::mesh::attribute;
 //-----------------------------------------------------------------------------
 
 template<typename T>
-void copy_indices(
+static void copy_indices(
     void* _cells,
     const data::mesh& _mesh
 )
@@ -560,6 +560,7 @@ std::pair<bool, std::vector<r2vb_renderable*> > mesh::update_r2vb(
         if(m_r2vb_entity == nullptr)
         {
             m_r2vb_entity = _scene_mgr.createEntity(m_r2vb_mesh);
+            m_r2vb_entity->setRenderQueueGroup(rq::SURFACE);
         }
 
         const std::size_t num_sub_entities = m_r2vb_entity->getNumSubEntities();
@@ -572,7 +573,7 @@ std::pair<bool, std::vector<r2vb_renderable*> > mesh::update_r2vb(
                                                              : b_tetra ? data::mesh::cell_type_t::tetra
                                                                        : data::mesh::cell_type_t::triangle;
 
-            if(m_r2vb_object.find(cell_type) == m_r2vb_object.end())
+            if(!m_r2vb_object.contains(cell_type))
             {
                 const std::string name             = std::to_string(static_cast<int>(cell_type));
                 const std::string r2vb_object_name = m_ogre_mesh->getName() + "_r2vbObject_" + name;
@@ -583,6 +584,7 @@ std::pair<bool, std::vector<r2vb_renderable*> > mesh::update_r2vb(
                     cell_type,
                     _material_name
                 );
+                m_r2vb_object[cell_type]->setRenderQueueGroup(sight::viz::scene3d::rq::SURFACE);
             }
 
             m_r2vb_object[cell_type]->set_output_settings(
@@ -640,100 +642,89 @@ void mesh::update_vertices(const data::mesh::csptr& _mesh)
         ui_stride_float += 3;
     }
 
-    using position_t = data::mesh::position_t;
-    using normal_t   = data::mesh::normal_t;
-
     // Copy position and normal of each vertices
     // Compute bounding box (for culling)
-    position_t x_min = std::numeric_limits<position_t>::max();
-    position_t y_min = std::numeric_limits<position_t>::max();
-    position_t z_min = std::numeric_limits<position_t>::max();
-    position_t x_max = std::numeric_limits<position_t>::lowest();
-    position_t y_max = std::numeric_limits<position_t>::lowest();
-    position_t z_max = std::numeric_limits<position_t>::lowest();
 
     {
-        FW_PROFILE_AVG("UPDATE BBOX", 5);
-        for(const auto& p : _mesh->crange<data::iterator::point::xyz>())
+        sight::data::mesh::axis_aligned_box_t bbox = std::const_pointer_cast<data::mesh>(_mesh)->get_bounding_box();
+
+        using position_t = data::mesh::position_t;
+        using normal_t   = data::mesh::normal_t;
         {
-            const auto& pt0 = p.x;
-            x_min = std::min(x_min, pt0);
-            x_max = std::max(x_max, pt0);
-
-            const auto& pt1 = p.y;
-            y_min = std::min(y_min, pt1);
-            y_max = std::max(y_max, pt1);
-
-            const auto& pt2 = p.z;
-            z_min = std::min(z_min, pt2);
-            z_max = std::max(z_max, pt2);
-        }
-    }
-    {
-        FW_PROFILE_AVG("UPDATE POS AND NORMALS", 5);
-        auto* __restrict p_pos = static_cast<position_t*>(p_vertex);
-        for(const auto& p : _mesh->crange<data::iterator::point::xyz>())
-        {
-            memcpy(p_pos, &p.x, 3 * sizeof(position_t));
-            p_pos += ui_stride_float;
-        }
-
-        normal_t* __restrict p_normal = nullptr;
-
-        if(data::mesh::has<attribute::point_normals>(m_layout))
-        {
-            p_normal = static_cast<normal_t*>(p_vertex) + 3;
-
-            for(const auto& n : _mesh->crange<data::iterator::point::nxyz>())
+            FW_PROFILE_AVG("UPDATE POS AND NORMALS", 5);
+            auto* __restrict p_pos = static_cast<position_t*>(p_vertex);
+            for(const auto& p : _mesh->crange<data::iterator::point::xyz>())
             {
-                memcpy(p_normal, &n.nx, 3 * sizeof(normal_t));
-                p_normal += ui_stride_float;
+                memcpy(p_pos, &p.x, 3 * sizeof(position_t));
+                p_pos += ui_stride_float;
+            }
+
+            normal_t* __restrict p_normal = nullptr;
+
+            if(data::mesh::has<attribute::point_normals>(m_layout))
+            {
+                p_normal = static_cast<normal_t*>(p_vertex) + 3;
+
+                for(const auto& n : _mesh->crange<data::iterator::point::nxyz>())
+                {
+                    memcpy(p_normal, &n.nx, 3 * sizeof(normal_t));
+                    p_normal += ui_stride_float;
+                }
             }
         }
-    }
 
-    // Unlock vertex data
-    vertex_buffer->unlock();
+        // Unlock vertex data
+        vertex_buffer->unlock();
 
-    if(x_min < std::numeric_limits<position_t>::max()
-       && y_min < std::numeric_limits<position_t>::max()
-       && z_min < std::numeric_limits<position_t>::max()
-       && x_max > std::numeric_limits<position_t>::lowest()
-       && y_max > std::numeric_limits<position_t>::lowest()
-       && z_max > std::numeric_limits<position_t>::lowest())
-    {
-        m_ogre_mesh->_setBounds(Ogre::AxisAlignedBox(x_min, y_min, z_min, x_max, y_max, z_max));
-
-        // Check again the bounds, since ogre may add some extent that could give infinite bounds
-        const bool valid = sight::viz::scene3d::mesh::are_bounds_valid(m_ogre_mesh);
-        SIGHT_ASSERT("Invalid bounds found...", valid);
-
-        if(valid)
+        if(bbox.min[0]<std::numeric_limits<position_t>::max()
+                       && bbox.min[1]<std::numeric_limits<position_t>::max()
+                                      && bbox.min[2]<std::numeric_limits<position_t>::max()
+                                                     && bbox.max[0]> std::numeric_limits<position_t>::lowest()
+                                      && bbox.max[1]> std::numeric_limits<position_t>::lowest()
+                       && bbox.max[2]> std::numeric_limits<position_t>::lowest())
         {
-            m_ogre_mesh->_setBoundingSphereRadius(
-                Ogre::Math::Sqrt(
-                    Ogre::Math::Sqr(x_max - x_min)
-                    + Ogre::Math::Sqr(y_max - y_min)
-                    + Ogre::Math::Sqr(z_max - z_min)
-                ) / 2
+            m_ogre_mesh->_setBounds(
+                Ogre::AxisAlignedBox(
+                    bbox.min[0],
+                    bbox.min[1],
+                    bbox.min[2],
+                    bbox.max[0],
+                    bbox.max[1],
+                    bbox.max[2]
+                )
             );
+
+            // Check again the bounds, since ogre may add some extent that could give infinite bounds
+            const bool valid = sight::viz::scene3d::mesh::are_bounds_valid(m_ogre_mesh);
+            SIGHT_ASSERT("Invalid bounds found...", valid);
+
+            if(valid)
+            {
+                m_ogre_mesh->_setBoundingSphereRadius(
+                    Ogre::Math::Sqrt(
+                        Ogre::Math::Sqr(bbox.max[0] - bbox.min[0])
+                        + Ogre::Math::Sqr(bbox.max[1] - bbox.min[1])
+                        + Ogre::Math::Sqr(bbox.max[2] - bbox.min[2])
+                    ) / 2
+                );
+            }
+            else
+            {
+                SIGHT_ERROR("Infinite or NaN values for the bounding box. Check the mesh validity.");
+
+                // This silent the problem so there is no crash in Ogre
+                m_ogre_mesh->_setBounds(Ogre::AxisAlignedBox::EXTENT_NULL);
+            }
         }
         else
         {
-            SIGHT_ERROR("Infinite or NaN values for the bounding box. Check the mesh validity.");
-
-            // This silent the problem so there is no crash in Ogre
+            // An extent was not found or is NaN
             m_ogre_mesh->_setBounds(Ogre::AxisAlignedBox::EXTENT_NULL);
         }
-    }
-    else
-    {
-        // An extent was not found or is NaN
-        m_ogre_mesh->_setBounds(Ogre::AxisAlignedBox::EXTENT_NULL);
-    }
 
-    /// Notify mesh object that it has been modified
-    m_ogre_mesh->load();
+        /// Notify mesh object that it has been modified
+        m_ogre_mesh->load();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -1066,7 +1057,9 @@ bool mesh::has_color_layer_changed(const data::mesh::csptr& _mesh) const
 
 Ogre::Entity* mesh::create_entity(Ogre::SceneManager& _scene_mgr)
 {
-    return _scene_mgr.createEntity(m_ogre_mesh);
+    auto* entity = _scene_mgr.createEntity(m_ogre_mesh);
+    entity->setRenderQueueGroup(rq::SURFACE);
+    return entity;
 }
 
 //------------------------------------------------------------------------------

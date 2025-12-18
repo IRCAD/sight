@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2025 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,6 +40,13 @@ SIGHT_FILTER_IMAGE_API void compute_centroids(
     data::image::sptr _image,
     std::vector<data::point_list::sptr> _point_list_centroids,
     std::vector<std::vector<std::size_t> > _point_list_labels
+);
+
+/// Convert a label image to a binary mask image.
+SIGHT_FILTER_IMAGE_API void convert_label_image_to_binary_mask(
+    const data::image& label_image,
+    data::image& mask_image,
+    const std::string& label_field_name
 );
 
 } //namespace sight::filter::image.

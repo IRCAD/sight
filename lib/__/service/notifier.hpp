@@ -39,9 +39,11 @@ namespace sight::service
 struct SIGHT_SERVICE_CLASS_API notification final
 {
     // Notification Type (changes Qss style).
+    // Used for sound reproduction, beware when modifying the order.
     enum class type : uint8_t
     {
         info = 0,
+        progress,
         success,
         failure
     } m_type {type::info};

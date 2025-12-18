@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024 IRCAD France
+ * Copyright (C) 2024-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,14 +23,15 @@
 
 #include <sight/ex_progress_bar/config.hpp>
 
-#include <core/jobs/base.hpp>
+#include <core/progress/has_monitors.hpp>
 
 #include <service/base.hpp>
 
 namespace ex_progress_bar
 {
 
-class long_job : public sight::service::base
+class long_job : public sight::service::base,
+                 public sight::core::progress::has_monitors
 {
 public:
 
@@ -41,14 +42,6 @@ public:
 
     /// Destructor.
     ~long_job() noexcept override = default;
-
-    struct signals final
-    {
-        using job_created_t = sight::core::com::signal<void (sight::core::jobs::base::sptr)>;
-        using key_t         = sight::core::com::signals::key_t;
-
-        static inline const key_t JOB_CREATED = "job_created";
-    };
 
 protected:
 

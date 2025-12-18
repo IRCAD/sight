@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,16 +22,19 @@
 
 #include "io/__/reader/gz_array_reader.hpp"
 
+#include <core/progress/observer.hpp>
+
 #include <zlib.h>
 
 #include <iostream>
+#include <utility>
 
 namespace sight::io::reader
 {
 
 //------------------------------------------------------------------------------
 
-void gz_array_reader::read()
+void gz_array_reader::read(sight::core::progress::observer::sptr _progress)
 {
     std::filesystem::path file = this->get_file();
 
@@ -49,17 +52,21 @@ void gz_array_reader::read()
         gzclose(raw_file);
         std::string str = "Unable to open ";
         str += file.string();
+        _progress->done();
         throw std::ios_base::failure(str);
     }
 
     const int un_compressed_bytes_read = gzread(raw_file, buff, static_cast<unsigned int>(array_size_in_bytes));
     gzclose(raw_file);
-    if(un_compressed_bytes_read != static_cast<int>(array_size_in_bytes))
+    if(std::cmp_not_equal(un_compressed_bytes_read, array_size_in_bytes))
     {
         std::string str = "Unable to read ";
         str += file.string();
+        _progress->done();
         throw std::ios_base::failure(str);
     }
+
+    _progress->done();
 }
 
 //------------------------------------------------------------------------------

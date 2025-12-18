@@ -25,6 +25,7 @@
 #include <core/com/slots.hxx>
 
 #include <viz/scene3d/helper/manual_object.hpp>
+#include <viz/scene3d/ogre.hpp>
 #include <viz/scene3d/registry/macros.hpp>
 #include <viz/scene3d/render.hpp>
 #include <viz/scene3d/utils.hpp>
@@ -125,6 +126,7 @@ void light::starting()
 
         // Creates the commun sphere position
         m_light_position = scene_mgr->createManualObject(gen_id("origin"));
+        m_light_position->setRenderQueueGroup(sight::viz::scene3d::rq::SURFACE);
         sight::viz::scene3d::helper::manual_object::create_sphere(
             m_light_position,
             m_material->name(),
@@ -136,8 +138,10 @@ void light::starting()
         m_light_node->attachObject(m_light_position);
 
         // Create the directional light feedback
-        m_directional_feedback.first  = scene_mgr->createManualObject(gen_id("line"));
+        m_directional_feedback.first = scene_mgr->createManualObject(gen_id("line"));
+        m_directional_feedback.first->setRenderQueueGroup(sight::viz::scene3d::rq::SURFACE);
         m_directional_feedback.second = scene_mgr->createManualObject(gen_id("cone"));
+        m_directional_feedback.second->setRenderQueueGroup(sight::viz::scene3d::rq::SURFACE);
 
         sight::viz::scene3d::helper::manual_object::create_cylinder(
             m_directional_feedback.first,

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,18 +22,16 @@
 
 #include "series_pusher.hpp"
 
-#include <core/com/signal.hpp>
 #include <core/com/signal.hxx>
-#include <core/com/slots.hpp>
 #include <core/com/slots.hxx>
+#include <core/progress/observer.hpp>
 
-#include <data/dicom_series.hpp>
 #include <data/series.hpp>
 
+#include <io/dicom/helper/series.hpp>
+#include <io/dicom/writer/file.hpp>
 #include <io/dimse/exceptions/base.hpp>
 #include <io/dimse/helper/series.hpp>
-
-#include <service/macros.hpp>
 
 #include <ui/__/dialog/message.hpp>
 
@@ -46,25 +44,18 @@ namespace sight::module::io::dimse
 
 const core::com::slots::key_t series_pusher::DISPLAY_SLOT = "displayMessage";
 
-const core::com::signals::key_t series_pusher::PROGRESSED_SIG       = "progressed";
 const core::com::signals::key_t series_pusher::STARTED_PROGRESS_SIG = "started_progress";
 const core::com::signals::key_t series_pusher::STOPPED_PROGRESS_SIG = "stopped_progress";
 
 //------------------------------------------------------------------------------
 
 series_pusher::series_pusher() noexcept :
-    m_progressbar_id("pushDicomProgressBar")
+    has_monitors(m_signals)
 {
     // Internal slots
-    m_slot_display_message   = new_slot(DISPLAY_SLOT, &series_pusher::display_message);
-    m_slot_progress_callback = new_slot(
-        sight::io::dimse::series_enquirer::PROGRESS_CALLBACK_SLOT,
-        &series_pusher::progress_callback,
-        this
-    );
+    m_slot_display_message = new_slot(DISPLAY_SLOT, &series_pusher::display_message);
 
     // Public signals
-    m_sig_progressed       = new_signal<progressed_signal_t>(PROGRESSED_SIG);
     m_sig_started_progress = new_signal<started_progress_signal_t>(STARTED_PROGRESS_SIG);
     m_sig_stopped_progress = new_signal<stopped_progress_signal_t>(STOPPED_PROGRESS_SIG);
 }
@@ -91,9 +82,6 @@ void series_pusher::configuring()
 
 void series_pusher::starting()
 {
-    // Create enquirer
-    m_series_enquirer = std::make_shared<sight::io::dimse::series_enquirer>();
-
     // Worker
     m_push_series_worker = core::thread::worker::make();
 }
@@ -139,16 +127,6 @@ void series_pusher::updating()
     {
         const auto pacs_configuration = m_config.lock();
 
-        // Initialize enquirer
-        m_series_enquirer->initialize(
-            pacs_configuration->get_local_application_title(),
-            pacs_configuration->get_pacs_host_name(),
-            pacs_configuration->get_pacs_application_port(),
-            pacs_configuration->get_pacs_application_title(),
-            pacs_configuration->get_move_application_title(),
-            m_slot_progress_callback
-        );
-
         // Set pushing boolean to true
         m_is_pushing = true;
 
@@ -176,8 +154,21 @@ bool series_pusher::check_series_on_pacs()
         // Find which selected series must be pushed
         dicom_series_container_t duplicate_series_vector;
 
+        // Create enquirer
+        auto series_enquirer = std::make_shared<sight::io::dimse::series_enquirer>();
+
+        const auto pacs_configuration = m_config.lock();
+
+        // Initialize enquirer
+        series_enquirer->initialize(
+            pacs_configuration->get_local_application_title(),
+            pacs_configuration->get_pacs_host_name(),
+            pacs_configuration->get_pacs_application_port(),
+            pacs_configuration->get_pacs_application_title(),
+            pacs_configuration->get_move_application_title()
+        );
         // Connect to PACS
-        m_series_enquirer->connect();
+        series_enquirer->connect();
 
         for(const auto& object : *series_vector)
         {
@@ -186,7 +177,7 @@ bool series_pusher::check_series_on_pacs()
 
             // Try to find series on PACS
             OFList<QRResponse*> responses;
-            responses = m_series_enquirer->find_series_by_uid(series->get_series_instance_uid());
+            responses = series_enquirer->find_series_by_uid(series->get_series_instance_uid());
 
             // If the series has been found on the PACS
             if(responses.size() > 1)
@@ -198,7 +189,7 @@ bool series_pusher::check_series_on_pacs()
         }
 
         // Disconnect from PACS
-        m_series_enquirer->disconnect();
+        series_enquirer->disconnect();
 
         // Inform the user that some series are already on the PACS
         if(!duplicate_series_vector.empty())
@@ -243,6 +234,7 @@ bool series_pusher::check_series_on_pacs()
 
         // Set pushing boolean to false
         m_is_pushing = false;
+        m_sig_stopped_progress->async_emit();
     }
 
     return result;
@@ -263,48 +255,51 @@ void series_pusher::push_series()
         // Connect to PACS
         for(const auto& series : *series_vector)
         {
-            data::dicom_series::csptr dicom_series = std::dynamic_pointer_cast<data::dicom_series>(series);
+            auto dicom_series = std::dynamic_pointer_cast<data::series>(series);
             SIGHT_ASSERT("The series_set should contain only DicomSeries.", dicom_series);
 
-            for(const auto& item : dicom_series->get_dicom_container())
-            {
-                DcmFileFormat file_format;
-                core::memory::buffer_object::sptr buffer_obj = item.second;
-                const std::size_t buff_size                  = buffer_obj->size();
-                core::memory::buffer_object::lock_t lock(buffer_obj);
-                char* buffer = static_cast<char*>(lock.buffer());
+            auto writing_series = std::make_shared<data::series_set>();
+            auto path           = sight::io::dicom::helper::series::get_path(*dicom_series);
+            auto writer         = std::make_shared<sight::io::dicom::writer::file>();
+            writer->set_object(writing_series);
+            writer->set_folder({path.string()});
 
-                DcmInputBufferStream is;
-                is.setBuffer(buffer, offile_off_t(buff_size));
-                is.setEos();
-
-                file_format.transferInit();
-                if(!file_format.read(is).good())
-                {
-                    SIGHT_THROW("Unable to read Dicom file '" << buffer_obj->get_stream_info().fs_file.string() << "'");
-                }
-
-                file_format.loadAllDataIntoMemory();
-                file_format.transferEnd();
-
-                const DcmDataset* dataset = file_format.getAndRemoveDataset();
-                CSPTR(DcmDataset) dataset_ptr(dataset);
-                dicom_container.push_back(dataset_ptr);
-            }
+            auto observer = std::make_shared<sight::core::progress::observer>("Write");
+            writer->write(observer);
         }
 
         // Number of instances that must be uploaded
         m_instance_count = static_cast<std::uint64_t>(dicom_container.size());
 
+        // Create enquirer
+        auto series_enquirer = std::make_shared<sight::io::dimse::series_enquirer>();
+
+        const auto pacs_configuration = m_config.lock();
+
+        auto progress = std::make_shared<core::progress::observer>(
+            "Push DICOM Series",
+            m_instance_count
+        );
+        this->async_emit(core::progress::has_monitors::signals::MONITOR_CREATED, progress->get_sptr());
+
+        // Initialize enquirer
+        series_enquirer->initialize(
+            pacs_configuration->get_local_application_title(),
+            pacs_configuration->get_pacs_host_name(),
+            pacs_configuration->get_pacs_application_port(),
+            pacs_configuration->get_pacs_application_title(),
+            pacs_configuration->get_move_application_title(),
+            progress
+        );
         // Connect from PACS
-        m_series_enquirer->connect();
-        m_sig_started_progress->async_emit(m_progressbar_id);
+        series_enquirer->connect();
+        m_sig_started_progress->async_emit();
 
         // Push series
-        m_series_enquirer->push_series(dicom_container);
+        series_enquirer->push_series(dicom_container);
 
         // Disconnect from PACS
-        m_series_enquirer->disconnect();
+        series_enquirer->disconnect();
     }
     catch(sight::io::dimse::exceptions::base& exception)
     {
@@ -321,25 +316,6 @@ void series_pusher::push_series()
 
     // Set pushing boolean to false
     m_is_pushing = false;
-}
-
-//------------------------------------------------------------------------------
-
-void series_pusher::progress_callback(
-    const std::string& /*seriesInstanceUID*/,
-    unsigned int _instance_number,
-    const std::string& /*filePath*/
-)
-{
-    if(_instance_number < (m_instance_count - 1))
-    {
-        float percentage = static_cast<float>(_instance_number) / static_cast<float>(m_instance_count);
-        m_sig_progressed->async_emit(m_progressbar_id, percentage, "Pushing series...");
-    }
-    else
-    {
-        m_sig_stopped_progress->async_emit(m_progressbar_id);
-    }
 }
 
 //------------------------------------------------------------------------------

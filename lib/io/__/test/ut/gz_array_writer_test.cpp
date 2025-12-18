@@ -53,7 +53,8 @@ void gz_array_writer_test::basic_test()
     gz_array_writer->set_object(array_in);
     std::filesystem::remove(filepath);
     gz_array_writer->set_file(filepath);
-    CPPUNIT_ASSERT_NO_THROW(gz_array_writer->write());
+    const auto observer = std::make_shared<core::progress::observer>("GZ Array Writer Test");
+    CPPUNIT_ASSERT_NO_THROW(gz_array_writer->write(observer));
     std::array<std::uint8_t, 16> array {};
     gzFile out = gzopen(filepath.string().c_str(), "rb");
     gzread(out, array.data(), 16);

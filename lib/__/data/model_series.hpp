@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,6 @@
 
 #include <sight/data/config.hpp>
 
-#include "data/dicom_series.hpp"
 #include "data/factory/new.hpp"
 #include "data/reconstruction.hpp"
 #include "data/series.hpp"
@@ -67,12 +66,6 @@ public:
     /// Sets the reconstruction container use to store mesh, material and image mask.
     void set_reconstruction_db(const reconstruction_vector_t& _val);
 
-    /// Gets the DICOM reference use to generate valid DICOM Segmentation Surface.
-    dicom_series::csptr get_dicom_reference() const;
-
-    /// Sets the DICOM reference use to generate valid DICOM Segmentation Surface.
-    void set_dicom_reference(const dicom_series::csptr& _reference);
-
     /**
      * @name Signals
      * @{
@@ -113,9 +106,6 @@ protected:
     /// Stores models.
     reconstruction_vector_t m_reconstruction_db;
 
-    /// Stores the DICOM reference used to generate a valid DICOM Segmentation Surface.
-    dicom_series::sptr m_dicom_reference;
-
 private:
 
     /// Stores the signal emitted when reconstructions are added.
@@ -137,20 +127,6 @@ inline const model_series::reconstruction_vector_t& model_series::get_reconstruc
 inline void model_series::set_reconstruction_db(const model_series::reconstruction_vector_t& _val)
 {
     m_reconstruction_db = _val;
-}
-
-//-----------------------------------------------------------------------------
-
-inline dicom_series::csptr model_series::get_dicom_reference() const
-{
-    return m_dicom_reference;
-}
-
-//-----------------------------------------------------------------------------
-
-inline void model_series::set_dicom_reference(const dicom_series::csptr& _reference)
-{
-    m_dicom_reference = std::const_pointer_cast<dicom_series>(_reference);
 }
 
 //-----------------------------------------------------------------------------

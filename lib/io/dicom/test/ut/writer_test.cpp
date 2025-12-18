@@ -59,10 +59,16 @@ inline static std::string format_date_time(const std::chrono::time_point<std::ch
 
     struct tm timeinfo {};
 
-#ifdef WIN32
-    localtime_s(&timeinfo, &now_time);
+#ifdef _WIN32
+    if(const auto result = localtime_s(&timeinfo, &now_time); result != 0)
+    {
+        SIGHT_THROW("localtime_s failed");
+    }
 #else
-    localtime_r(&now_time, &timeinfo);
+    if(const auto* result = localtime_r(&now_time, &timeinfo); result == nullptr)
+    {
+        SIGHT_THROW("localtime_r failed");
+    }
 #endif
 
     const auto truncated_now = std::chrono::system_clock::from_time_t(now_time);
@@ -310,7 +316,8 @@ void writer_test::write_enhanced_us_volume_test()
             writer->set_object(series_set);
             writer->set_folder(tmp_dir);
 
-            CPPUNIT_ASSERT_NO_THROW(writer->write());
+            auto write_observer = std::make_shared<core::progress::observer>("Test write");
+            CPPUNIT_ASSERT_NO_THROW(writer->write(write_observer));
         }
 
         // Read the previously written single frame image
@@ -320,7 +327,8 @@ void writer_test::write_enhanced_us_volume_test()
             reader->set_object(series_set);
             reader->set_folder(tmp_dir);
 
-            CPPUNIT_ASSERT_NO_THROW(reader->read());
+            auto read_observer = std::make_shared<core::progress::observer>("Test read");
+            CPPUNIT_ASSERT_NO_THROW(reader->read(read_observer));
             CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
             compare_enhanced_us_volume(expected, std::dynamic_pointer_cast<data::image_series>(series_set->front()));
@@ -340,7 +348,8 @@ void writer_test::write_enhanced_us_volume_test()
             writer->set_object(series_set);
             writer->set_folder(tmp_dir);
 
-            CPPUNIT_ASSERT_NO_THROW(writer->write());
+            auto write_observer = std::make_shared<core::progress::observer>("Test write");
+            CPPUNIT_ASSERT_NO_THROW(writer->write(write_observer));
         }
 
         // Read the previously written 4 frames image
@@ -350,7 +359,8 @@ void writer_test::write_enhanced_us_volume_test()
             reader->set_object(series_set);
             reader->set_folder(tmp_dir);
 
-            CPPUNIT_ASSERT_NO_THROW(reader->read());
+            auto read_observer = std::make_shared<core::progress::observer>("Test read");
+            CPPUNIT_ASSERT_NO_THROW(reader->read(read_observer));
             CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
             compare_enhanced_us_volume(expected, std::dynamic_pointer_cast<data::image_series>(series_set->front()));
@@ -370,7 +380,8 @@ void writer_test::write_enhanced_us_volume_test()
             writer->set_object(series_set);
             writer->set_folder(tmp_dir);
 
-            CPPUNIT_ASSERT_NO_THROW(writer->write());
+            auto write_observer = std::make_shared<core::progress::observer>("Test write");
+            CPPUNIT_ASSERT_NO_THROW(writer->write(write_observer));
         }
 
         // Read the previously written 4 frames image
@@ -380,7 +391,8 @@ void writer_test::write_enhanced_us_volume_test()
             reader->set_object(series_set);
             reader->set_folder(tmp_dir);
 
-            CPPUNIT_ASSERT_NO_THROW(reader->read());
+            auto read_observer = std::make_shared<core::progress::observer>("Test read");
+            CPPUNIT_ASSERT_NO_THROW(reader->read(read_observer));
             CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
             compare_enhanced_us_volume(expected, std::dynamic_pointer_cast<data::image_series>(series_set->front()));
@@ -401,7 +413,8 @@ void writer_test::write_enhanced_us_volume_test()
             writer->set_folder(tmp_dir);
             writer->set_file("custom_filename.dcm");
 
-            CPPUNIT_ASSERT_NO_THROW(writer->write());
+            auto write_observer = std::make_shared<core::progress::observer>("Test write");
+            CPPUNIT_ASSERT_NO_THROW(writer->write(write_observer));
             CPPUNIT_ASSERT(std::filesystem::exists(tmp_dir / "custom_filename.dcm"));
         }
 
@@ -412,7 +425,8 @@ void writer_test::write_enhanced_us_volume_test()
             reader->set_object(series_set);
             reader->set_folder(tmp_dir);
 
-            CPPUNIT_ASSERT_NO_THROW(reader->read());
+            auto read_observer = std::make_shared<core::progress::observer>("Test read");
+            CPPUNIT_ASSERT_NO_THROW(reader->read(read_observer));
             CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
             compare_enhanced_us_volume(expected, std::dynamic_pointer_cast<data::image_series>(series_set->front()));
@@ -437,7 +451,8 @@ void writer_test::write_enhanced_us_volume_test()
             writer->set_folder(tmp_dir);
             writer->set_file("custom_filename.dcm");
 
-            CPPUNIT_ASSERT_NO_THROW(writer->write());
+            auto write_observer = std::make_shared<core::progress::observer>("Test write");
+            CPPUNIT_ASSERT_NO_THROW(writer->write(write_observer));
             CPPUNIT_ASSERT(std::filesystem::exists(tmp_dir / "000-custom_filename.dcm"));
             CPPUNIT_ASSERT(std::filesystem::exists(tmp_dir / "001-custom_filename.dcm"));
             CPPUNIT_ASSERT(std::filesystem::exists(tmp_dir / "002-custom_filename.dcm"));
@@ -474,7 +489,8 @@ void writer_test::write_enhanced_us_volume_test()
             writer->set_folder(tmp_dir);
             writer->set_file("custom_filename.dcm");
 
-            CPPUNIT_ASSERT_NO_THROW(writer->write());
+            auto write_observer = std::make_shared<core::progress::observer>("Test write");
+            CPPUNIT_ASSERT_NO_THROW(writer->write(write_observer));
             CPPUNIT_ASSERT(std::filesystem::exists(tmp_dir / "custom_filename.dcm"));
         }
 
@@ -485,7 +501,8 @@ void writer_test::write_enhanced_us_volume_test()
             reader->set_object(series_set);
             reader->set_folder(tmp_dir);
 
-            CPPUNIT_ASSERT_NO_THROW(reader->read());
+            auto read_observer = std::make_shared<core::progress::observer>("Test read");
+            CPPUNIT_ASSERT_NO_THROW(reader->read(read_observer));
             CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
             compare_enhanced_us_volume(expected, std::dynamic_pointer_cast<data::image_series>(series_set->front()));
@@ -511,21 +528,24 @@ void writer_test::force_cpu_test()
 
         writer->force_cpu(false);
 
-        if(io::bitmap::nv_jpeg_2k())
+        if(io::bitmap::nvjpeg2k())
         {
-            CPPUNIT_ASSERT_NO_THROW(writer->write());
+            auto write_observer = std::make_shared<core::progress::observer>("Test write");
+            CPPUNIT_ASSERT_NO_THROW(writer->write(write_observer));
         }
 
 #ifdef SIGHT_ENABLE_NVJPEG2K
         else
         {
-            CPPUNIT_ASSERT_THROW(writer->write(), core::exception);
+            auto write_observer = std::make_shared<core::progress::observer>("Test write");
+            CPPUNIT_ASSERT_THROW(writer->write(write_observer), core::exception);
         }
 #endif
 
         writer->force_cpu(true);
 
-        CPPUNIT_ASSERT_NO_THROW(writer->write());
+        auto write_observer = std::make_shared<core::progress::observer>("Test write");
+        CPPUNIT_ASSERT_NO_THROW(writer->write(write_observer));
     }
 }
 
@@ -552,7 +572,8 @@ void writer_test::transfer_syntax_test()
                 SIGHT_PROFILE_FUNC(
                     [&](std::size_t)
                 {
-                    CPPUNIT_ASSERT_NO_THROW(writer->write());
+                    auto write_observer = std::make_shared<core::progress::observer>("Test write");
+                    CPPUNIT_ASSERT_NO_THROW(writer->write(write_observer));
                 },
                     3,
                     "Write (" + std::string(
@@ -574,7 +595,8 @@ void writer_test::transfer_syntax_test()
                 SIGHT_PROFILE_FUNC(
                     [&](std::size_t)
                 {
-                    CPPUNIT_ASSERT_NO_THROW(reader->read());
+                    auto read_observer = std::make_shared<core::progress::observer>("Test read");
+                    CPPUNIT_ASSERT_NO_THROW(reader->read(read_observer));
                 },
                     3,
                     "Read (" + std::string(

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,10 +22,11 @@
 
 #pragma once
 
+#include <core/progress/observer.hpp>
+
 #include <io/__/service/writer.hpp>
 
 #include <filesystem>
-#include <string>
 
 namespace sight::data
 {
@@ -33,13 +34,6 @@ namespace sight::data
 class image;
 
 } // namespace sight::data
-
-namespace sight::core::jobs
-{
-
-class base;
-
-} // namespace sight::core::jobs
 
 namespace sight::module::io::vtk
 {
@@ -50,8 +44,8 @@ namespace sight::module::io::vtk
  * Service writing a VTK Image using the fwVtkIO lib.
  *
  * @section Signals Signals
- * - \b job_created(SPTR(core::jobs::base)): emitted to display a progress bar while the image is written (it should be
- * connected to a job_bar).
+ * - \b monitor_created(SPTR(core::progress::monitor)): emitted to display a progress bar while the image is written,
+ * it should be connected to a progress bar
  *
  * @section XML XML Configuration
  *
@@ -75,13 +69,9 @@ public:
      * @brief Constructor. Do nothing.
      */
     image_writer() noexcept;
-
-    ~image_writer() noexcept override =
-        default;
+    ~image_writer() noexcept override = default;
 
     SIGHT_DECLARE_SERVICE(image_writer, sight::io::service::writer);
-
-    using job_created_signal_t = core::com::signal<void (std::shared_ptr<core::jobs::base>)>;
 
     /**
      * @brief Configure the image path.
@@ -95,7 +85,7 @@ public:
      * @brief Save a VTK image.
      * @param[in] _img_file std::filesystem::path.
      * @param[in] _image std::shared_ptr< data::image >.
-     * @param[in] _sig_job_created signal emitted when the image is saved.
+     * @param[in] _sig_monitor_created signal emitted when the image is saved.
      * @return bool.
      *
      * This method is used to save an image using the file path.
@@ -103,8 +93,8 @@ public:
      */
     static bool save_image(
         const std::filesystem::path& _img_file,
-        const CSPTR(data::image)& _image,
-        const SPTR(job_created_signal_t)& _sig_job_created
+        const CSPTR(data::image) & _image,
+        SPTR(core::progress::observer) _progress
     );
 
 protected:
@@ -154,8 +144,6 @@ private:
      * @brief Image path.
      */
     std::filesystem::path m_fs_img_path;
-
-    SPTR(job_created_signal_t) m_sig_job_created;
 };
 
 } // namespace sight::module::io::vtk

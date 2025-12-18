@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -130,7 +130,7 @@ void calibration_info_test::shallow_copy_test()
 
 void calibration_info_test::deep_copy_test()
 {
-    data::calibration_info::sptr cal_info = std::make_shared<data::calibration_info>();
+    data::calibration_info::sptr cal_info1 = std::make_shared<data::calibration_info>();
 
     data::image::sptr img = std::make_shared<data::image>();
     utest_data::generator::image::generate_random_image(img, core::type::INT16);
@@ -144,49 +144,49 @@ void calibration_info_test::deep_copy_test()
     pl->get_points().push_back(pt2);
     pl->get_points().push_back(pt3);
 
-    cal_info->add_record(img, pl);
+    cal_info1->add_record(img, pl);
 
     data::calibration_info::sptr cal_info2 = std::make_shared<data::calibration_info>();
 
     // == operator test
-    CPPUNIT_ASSERT(*cal_info != *cal_info2);
+    CPPUNIT_ASSERT(*cal_info1 != *cal_info2);
 
-    cal_info2->deep_copy(cal_info);
+    cal_info2->deep_copy(cal_info1);
 
     CPPUNIT_ASSERT_EQUAL(cal_info2->get_image_container().size(), cal_info2->get_point_list_container().size());
 
-    CPPUNIT_ASSERT_EQUAL(cal_info->get_image_container().size(), cal_info2->get_image_container().size());
-    CPPUNIT_ASSERT_EQUAL(cal_info->get_point_list_container().size(), cal_info2->get_point_list_container().size());
+    CPPUNIT_ASSERT_EQUAL(cal_info1->get_image_container().size(), cal_info2->get_image_container().size());
+    CPPUNIT_ASSERT_EQUAL(cal_info1->get_point_list_container().size(), cal_info2->get_point_list_container().size());
 
-    std::list<data::image::sptr>::const_iterator iter_img1;
-    std::list<data::image::sptr>::const_iterator iter_img2;
-    iter_img1 = cal_info->get_image_container().begin();
-    iter_img2 = cal_info2->get_image_container().begin();
+    const auto cal_info1_img_list = cal_info1->get_image_container();
+    const auto cal_info2_img_list = cal_info2->get_image_container();
 
-    std::list<data::point_list::sptr>::const_iterator iter_pl1;
-    std::list<data::point_list::sptr>::const_iterator iter_pl2;
-    iter_pl1 = cal_info->get_point_list_container().begin();
-    iter_pl2 = cal_info2->get_point_list_container().begin();
+    auto iter_img1 = cal_info1_img_list.begin();
+    auto iter_img2 = cal_info2_img_list.begin();
 
-    /* TODO: fix
-       while(iterImg1 != calInfo->getImageContainer().end())
-       {
-        CPPUNIT_ASSERT(*iterImg1 != *iterImg2);
-        CPPUNIT_ASSERT(*iterPl1 != *iterPl2);
+    const auto cal_info1_point_list = cal_info1->get_point_list_container();
+    const auto cal_info2_point_list = cal_info2->get_point_list_container();
 
-        CPPUNIT_ASSERT(**iterImg1 == **iterImg2);
-        CPPUNIT_ASSERT(**iterPl1 == **iterPl2);
+    auto iter_pl1 = cal_info1_point_list.begin();
+    auto iter_pl2 = cal_info2_point_list.begin();
 
-     ++iterPl1;
-     ++iterPl2;
+    while(iter_img1 != cal_info1_img_list.end())
+    {
+        CPPUNIT_ASSERT(*iter_img1 != *iter_img2);
+        CPPUNIT_ASSERT(*iter_pl1 != *iter_pl2);
 
-     ++iterImg1;
-     ++iterImg2;
-       }
-     */
+        CPPUNIT_ASSERT(**iter_img1 == **iter_img2);
+        CPPUNIT_ASSERT(**iter_pl1 == **iter_pl2);
+
+        ++iter_pl1;
+        ++iter_pl2;
+
+        ++iter_img1;
+        ++iter_img2;
+    }
 
     // == operator test
-    CPPUNIT_ASSERT(*cal_info == *cal_info2);
+    CPPUNIT_ASSERT(*cal_info1 == *cal_info2);
 }
 
 //------------------------------------------------------------------------------

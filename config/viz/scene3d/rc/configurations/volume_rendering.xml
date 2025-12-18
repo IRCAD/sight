@@ -179,7 +179,7 @@
         </service>
 
         <service uid="axis_adp" type="sight::module::viz::scene3d::adaptor::axis">
-            <config visible="false" origin="true" label="false" />
+            <config origin="true" label="false" />
             <properties visible="${axis_visibility}" />
         </service>
 
@@ -209,7 +209,7 @@
             <config size="5000" step="50" color="#505050" elevation="400" dashLength="10" />
         </service>
 
-        <!-- Reset the clipping box matreix -->
+        <!-- Reset the clipping box matrix -->
         <service uid="clipping_box_reset_srv" type="sight::module::data::copy">
             <in key="source" uid="identity_matrix" />
             <inout key="target" uid="clipping_matrix" />

@@ -25,6 +25,7 @@
 
 #include <glm/glm.hpp>
 
+#include <array>
 #include <string>
 
 namespace sight::geometry
@@ -39,7 +40,7 @@ namespace sight::geometry
     const ::glm::dvec3& _c
 )
 {
-    ::glm::dvec3 bary_coord;
+    glm::dvec3 barycenter;
 
     const ::glm::dvec3 v0 = _b - _a; // AB Vector
     const ::glm::dvec3 v1 = _c - _a; // AC Vector
@@ -65,11 +66,11 @@ namespace sight::geometry
     const double w = ((d00 * d21) - (d01 * d20)) * invdenom;
     const double u = 1. - v - w; // deduce last coordinate from the two others.
 
-    bary_coord.x = u;
-    bary_coord.y = v;
-    bary_coord.z = w;
+    barycenter.x = u;
+    barycenter.y = v;
+    barycenter.z = w;
 
-    return bary_coord;
+    return barycenter;
 }
 
 //-----------------------------------------------------------------------------
@@ -99,7 +100,7 @@ namespace sight::geometry
           u + v + w + h = 1
      */
 
-    ::glm::dvec4 bary_coord;
+    glm::dvec4 barycenter;
 
     const ::glm::dvec3 vab = _b - _a; // AB Vector
     const ::glm::dvec3 vac = _c - _a; // AC Vector
@@ -125,18 +126,18 @@ namespace sight::geometry
     const double h = volume_d * invdenom;
     const double u = 1. - v - w - h; // deduce last coordinate from the two others.
 
-    bary_coord[0] = u;
-    bary_coord[1] = v;
-    bary_coord[2] = w;
-    bary_coord[3] = h;
+    barycenter[0] = u;
+    barycenter[1] = v;
+    barycenter[2] = w;
+    barycenter[3] = h;
 
-    return bary_coord;
+    return barycenter;
 }
 
 //-----------------------------------------------------------------------------
 
 ::glm::dvec3 from_barycentric_coord(
-    const ::glm::dvec3& _bary_coord,
+    const ::glm::dvec3& _barycenter,
     const ::glm::dvec3& _a,
     const ::glm::dvec3& _b,
     const ::glm::dvec3& _c
@@ -145,9 +146,9 @@ namespace sight::geometry
     ::glm::dvec3 world_coordinates;
 
     // Use standard notation for clarity.
-    const double u = _bary_coord[0];
-    const double v = _bary_coord[1];
-    const double w = _bary_coord[2];
+    const double u = _barycenter[0];
+    const double v = _barycenter[1];
+    const double w = _barycenter[2];
 
     [[maybe_unused]] const double sum = u + v + w; // Only used in the following assertion.
 
@@ -166,7 +167,7 @@ namespace sight::geometry
 //-----------------------------------------------------------------------------
 
 ::glm::dvec3 from_barycentric_coord(
-    const ::glm::dvec4& _bary_coord,
+    const ::glm::dvec4& _barycenter,
     const ::glm::dvec3& _a,
     const ::glm::dvec3& _b,
     const ::glm::dvec3& _c,
@@ -181,10 +182,10 @@ namespace sight::geometry
      */
 
     // Use standard notation for clarity.
-    const double u = _bary_coord[0];
-    const double v = _bary_coord[1];
-    const double w = _bary_coord[2];
-    const double h = _bary_coord[3];
+    const double u = _barycenter[0];
+    const double v = _barycenter[1];
+    const double w = _barycenter[2];
+    const double h = _barycenter[3];
 
     [[maybe_unused]] const double sum = u + v + w + h; // Only used in the following assertion.
 

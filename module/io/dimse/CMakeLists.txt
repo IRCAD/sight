@@ -10,6 +10,7 @@ target_link_libraries(
     PRIVATE core
             ui
             ui_qt
+            io_dicom
             io_dimse
             data
             service

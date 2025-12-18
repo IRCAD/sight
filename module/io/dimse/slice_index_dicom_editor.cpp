@@ -22,14 +22,18 @@
 
 #include "slice_index_dicom_editor.hpp"
 
+#include "core/progress/observer.hpp"
+
 #include <core/com/slots.hxx>
-#include <core/os/temp_path.hpp>
 
 #include <data/helper/medical_image.hpp>
 #include <data/image_series.hpp>
 #include <data/integer.hpp>
 
+#include <io/dicom/helper/series.hpp>
+#include <io/dicom/reader/file.hpp>
 #include <io/dimse/exceptions/base.hpp>
+#include <io/dimse/helper/series.hpp>
 #include <io/dimse/series_enquirer.hpp>
 
 #include <service/extension/config.hpp>
@@ -38,12 +42,13 @@
 
 #include <QHBoxLayout>
 
+#include <memory>
+#include <utility>
+
 namespace sight::module::io::dimse
 {
 
-static const std::string DELAY_CONFIG        = "delay";
-static const std::string DICOM_READER_CONFIG = "dicomReader";
-static const std::string READER_CONFIG       = "readerConfig";
+static const std::string DELAY_CONFIG = "delay";
 
 //------------------------------------------------------------------------------
 
@@ -58,13 +63,7 @@ void slice_index_dicom_editor::configuring(const config_t& _config)
 {
     sight::ui::service::initialize();
 
-    const config_t config = _config.get_child("config.<xmlattr>");
-
-    m_delay                       = config.get<unsigned>(DELAY_CONFIG, m_delay);
-    m_dicom_reader_implementation = config.get(DICOM_READER_CONFIG, m_dicom_reader_implementation);
-    SIGHT_ERROR_IF("'" + DICOM_READER_CONFIG + "' attribute not set", m_dicom_reader_implementation.empty())
-
-    m_reader_config = _config.get(READER_CONFIG, m_reader_config);
+    m_delay = _config.get<unsigned>("config.<xmlattr>." + DELAY_CONFIG, m_delay);
 }
 
 //------------------------------------------------------------------------------
@@ -73,34 +72,6 @@ void slice_index_dicom_editor::starting()
 {
     // Create the worker.
     m_request_worker = core::thread::worker::make();
-
-    // Create the DICOM reader.
-    m_series_set = std::make_shared<data::series_set>();
-
-    m_dicom_reader = this->register_service<sight::io::service::reader>(m_dicom_reader_implementation);
-    SIGHT_ASSERT("Unable to create a reader of type '" + m_dicom_reader_implementation + "'", m_dicom_reader);
-    m_dicom_reader->set_worker(m_request_worker);
-    m_dicom_reader->set_inout(m_series_set, "data");
-
-    if(!m_reader_config.empty())
-    {
-        const auto reader_config =
-            sight::service::extension::config::get_default()->get_service_config(
-                m_reader_config,
-                "sight::io::service::reader"
-            );
-
-        SIGHT_ASSERT(
-            "No service configuration " << m_reader_config << " for sight::io::service::reader",
-            !reader_config.empty()
-        );
-
-        m_dicom_reader->set_config(reader_config);
-    }
-
-    m_dicom_reader->configure();
-    m_dicom_reader->start().wait();
-    SIGHT_ASSERT("'" + m_dicom_reader_implementation + "' is not started", m_dicom_reader->started());
 
     // Create the timer used to retrieve a slice.
     m_slice_trigger = this->worker()->create_timer();
@@ -146,7 +117,7 @@ void slice_index_dicom_editor::starting()
 service::connections_t slice_index_dicom_editor::auto_connections() const
 {
     service::connections_t connections;
-    connections.push(DICOMSERIES_INOUT, data::dicom_series::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(m_series, data::series::MODIFIED_SIG, service::slots::UPDATE);
 
     return connections;
 }
@@ -157,14 +128,14 @@ void slice_index_dicom_editor::updating()
 {
     // Retrieve the DICOM series and its informations.
     const auto dicom_series        = m_series.lock();
-    const std::size_t slice_number = dicom_series->num_instances();
+    const std::size_t slice_number = static_cast<std::size_t>(dicom_series->get_instance_number().value());
 
     if(slice_number > 0)
     {
         // If the current slice index is the initial value of the slider, we just send a signal to trigger other
         // services.
         const int current_slice = m_slider->value();
-        if(current_slice == static_cast<int>(slice_number / 2))
+        if(std::cmp_equal(current_slice, slice_number / 2))
         {
             this->change_slice_index(current_slice);
         }
@@ -217,17 +188,15 @@ void slice_index_dicom_editor::retrieve_slice()
 {
     // Check if the slice already exists.
     const auto dicom_series                = m_series.lock();
-    const std::size_t selected_slice_index = std::size_t(m_slider->value()) + dicom_series->get_first_instance_number();
-    const bool is_instance_available       = dicom_series->is_instance_available(selected_slice_index);
+    const std::size_t selected_slice_index = std::size_t(m_slider->value()) + 1;
 
-    // If the slice is not pulled, pull it.
-    if(!is_instance_available)
+    if(!sight::io::dicom::helper::series::is_instance_available(*dicom_series, selected_slice_index))
     {
         m_request_worker->post([this, selected_slice_index](auto&& ...){pull_slice(selected_slice_index);});
     }
     else
     {
-        this->read_slice(dicom_series, selected_slice_index);
+        this->read_slice(*dicom_series, selected_slice_index);
     }
 }
 
@@ -292,10 +261,7 @@ void slice_index_dicom_editor::pull_slice(std::size_t _selected_slice_index) con
                     break;
             }
 
-            // Compute the path and add it to the DICOM series.
-            std::filesystem::path tmp_path      = core::os::temp_dir::shared_directory() / "dicom";
-            std::filesystem::path download_path = tmp_path / series_instance_uid / sop_instance_uid;
-            dicom_series->add_dicom_path(_selected_slice_index, download_path);
+            sight::io::dicom::helper::series::add_instance(*dicom_series, _selected_slice_index, sop_instance_uid);
 
             success = true;
         }
@@ -322,58 +288,38 @@ void slice_index_dicom_editor::pull_slice(std::size_t _selected_slice_index) con
 
     if(success)
     {
-        this->read_slice(dicom_series, _selected_slice_index);
+        this->read_slice(*dicom_series, _selected_slice_index);
     }
 }
 
 //------------------------------------------------------------------------------
 
 void slice_index_dicom_editor::read_slice(
-    const data::mt::locked_ptr<data::dicom_series>& _dicom_series,
+    const data::series& _dicom_series,
     std::size_t _selected_slice_index
 ) const
 {
     // Retrieve informations.
-    const auto type = _dicom_series->get_dicom_type();
+    const auto type = _dicom_series.get_dicom_type();
     if(type == data::series::dicom_t::image)
     {
-        this->notifier::info("Unable to read the modality '" + _dicom_series->get_modality_string() + "'");
+        this->notifier::info("Unable to read the modality '" + _dicom_series.get_modality_string() + "'");
         return;
     }
 
-    // Get the DICOM buffer to write in a temporary folder.
-    const auto& binaries = _dicom_series->get_dicom_container();
-    auto iter            = binaries.find(_selected_slice_index);
-    SIGHT_ASSERT("Index '" << _selected_slice_index << "' is not found in DicomSeries", iter != binaries.end());
-    const core::memory::buffer_object::sptr buffer_obj = iter->second;
-    const core::memory::buffer_object::lock_t locker_dest(buffer_obj);
-    const char* buffer            = static_cast<char*>(locker_dest.buffer());
-    const std::size_t buffer_size = buffer_obj->size();
+    auto reading_series = std::make_shared<data::series_set>();
+    auto path           = sight::io::dicom::helper::series::get_path(_dicom_series, _selected_slice_index);
+    auto reader         = std::make_shared<sight::io::dicom::reader::file>();
+    reader->set_object(reading_series);
+    reader->set_files({path.string()});
 
-    // Creates unique temporary folder to save the DICOM instance.
-    // Do not delete the folder, as we may use the file in the DicomReference.
-    const auto tmp_dir = core::os::temp_dir::shared_directory("do_not_delete_");
+    auto observer = std::make_shared<sight::core::progress::observer>("Read slice");
+    reader->read(observer);
 
-    // Open the temporary folder and write the buffer.
-    std::filesystem::path path = tmp_dir / std::to_string(_selected_slice_index);
-    std::ofstream fs(path, std::ios::binary | std::ios::trunc);
-    if(!fs.good())
-    {
-        SIGHT_ERROR("Unable to open '" << path << "' for write.");
-        return;
-    }
-
-    fs.write(buffer, std::streamsize(buffer_size));
-    fs.close();
-
-    // Read the image.
-    m_dicom_reader->set_folder(tmp_dir);
-    m_dicom_reader->update().wait();
-
-    if(!m_dicom_reader->has_failed() && !m_series_set->empty())
+    if(!reading_series->empty())
     {
         // Copy the read series to the image.
-        const auto image_series = std::dynamic_pointer_cast<data::image_series>(m_series_set->front());
+        const auto image_series = std::dynamic_pointer_cast<data::image_series>(reading_series->front());
 
         const auto image = m_image.lock();
         image->deep_copy(image_series);

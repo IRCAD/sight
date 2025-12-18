@@ -34,6 +34,7 @@
         <channel name="landmarks_edit_mode_changed" />
     </parameters>
     <config>
+        <object uid="fiducial_size" type="sight::data::real" value="3" />
         <!-- ******************************* UI declaration *********************************** -->
 
         <service uid="main_view" type="sight::module::ui::view">
@@ -126,6 +127,7 @@
             <inout group="object">
                 <key name="image" uid="${image}" optional="true" />
                 <key name="transfer_function" uid="${volume_tf}" />
+                <key name="fiducial_size" uid="${fiducial_size}" />
             </inout>
             <param name="WID_PARENT" value="axial_scene_view" />
             <param name="slice_index" value="axial" />
@@ -145,6 +147,7 @@
             <inout group="object">
                 <key name="image" uid="${image}" optional="true" />
                 <key name="transfer_function" uid="${volume_tf}" />
+                <key name="fiducial_size" uid="${fiducial_size}" />
             </inout>
             <param name="WID_PARENT" value="sagittal_scene_view" />
             <param name="slice_index" value="sagittal" />
@@ -164,6 +167,7 @@
             <inout group="object">
                 <key name="image" uid="${image}" optional="true" />
                 <key name="transfer_function" uid="${volume_tf}" />
+                <key name="fiducial_size" uid="${fiducial_size}" />
             </inout>
             <param name="WID_PARENT" value="frontal_scene_view" />
             <param name="slice_index" value="frontal" />

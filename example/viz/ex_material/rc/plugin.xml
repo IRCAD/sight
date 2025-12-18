@@ -146,8 +146,8 @@ This example shows some possibilities of material configuration in the 3D scene:
 
             <!-- Connects readers to status bar service -->
             <connect>
-                <signal>model_series_reader_srv/job_created</signal>
-                <slot>progress_bar_view/show_job</slot>
+                <signal>model_series_reader_srv/monitor_created</signal>
+                <slot>progress_bar_view/add_monitor</slot>
             </connect>
 
             <connect>

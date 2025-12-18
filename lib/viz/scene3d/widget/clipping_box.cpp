@@ -38,6 +38,7 @@
 #include <OGRE/OgreTechnique.h>
 #include <OGRE/OgreViewport.h>
 
+#include <algorithm>
 #include <numeric>
 #include <utility>
 
@@ -98,7 +99,7 @@ clipping_box::~clipping_box()
 
 bool clipping_box::belongs_to_widget(const Ogre::MovableObject* const _object) const
 {
-    return m_widgets.find(_object) != m_widgets.end();
+    return m_widgets.contains(_object);
 }
 
 //-----------------------------------------------------------------------------
@@ -111,9 +112,8 @@ std::array<Ogre::Vector3,
 
     const auto bb_positions = this->clipping_box_positions();
 
-    std::transform(
-        position_indices.begin(),
-        position_indices.end(),
+    std::ranges::transform(
+        position_indices,
         face_positions.begin(),
         [&](unsigned _i){return bb_positions[_i];});
 
@@ -216,8 +216,8 @@ void clipping_box::init_widgets()
         m_box_face_mtl->setDepthWriteEnabled(false);
     }
 
-    m_bounding_box  = m_scene_manager->createManualObject(m_id + "_VolumeBB");
-    m_selected_face = m_scene_manager->createManualObject(m_id + "_VRSelectedFace");
+    m_bounding_box = m_scene_manager->createManualObject(m_id + "_VolumeBB");
+    m_bounding_box->setRenderQueueGroup(rq::SURFACE);
 
     const auto clipping_box_positions = this->clipping_box_positions();
 
@@ -245,6 +245,7 @@ void clipping_box::init_widgets()
 
     m_widget_scene_node->attachObject(m_bounding_box);
 
+    m_selected_face = m_scene_manager->createManualObject(m_id + "_VRSelectedFace");
     m_selected_face->begin(m_box_face_mtl->getName(), Ogre::RenderOperation::OT_TRIANGLE_STRIP, RESOURCE_GROUP);
     {
         for(unsigned i = 0 ; i < 4 ; ++i)
@@ -255,7 +256,7 @@ void clipping_box::init_widgets()
     m_selected_face->end();
 
     // Render highlighted faces after other surfaces but before volumes.
-    m_selected_face->setRenderQueueGroup(viz::scene3d::rq::SURFACE_ID + 1);
+    m_selected_face->setRenderQueueGroup(viz::scene3d::rq::VOLUME - 1);
 
     // Create a pickable sphere for each cube face
     for(unsigned i = 0 ; i < 6 ; ++i)
@@ -264,6 +265,7 @@ void clipping_box::init_widgets()
 
         Ogre::Entity* new_widget = m_scene_manager->createEntity(Ogre::SceneManager::PT_SPHERE);
         new_widget->setMaterial(m_handle_mtl);
+        new_widget->setRenderQueueGroup(viz::scene3d::rq::SURFACE);
 
         Ogre::SceneNode* sphere_scene_node = m_widget_scene_node->createChildSceneNode();
 
@@ -275,7 +277,7 @@ void clipping_box::init_widgets()
         sphere_scene_node->setInheritScale(false);
 
         const auto vol_scale       = m_volume_scene_node->getScale();
-        const Ogre::Real scale_min = std::min(vol_scale[0], std::min(vol_scale[1], vol_scale[2]));
+        const Ogre::Real scale_min = std::ranges::min({vol_scale[0], vol_scale[1], vol_scale[2]});
 
         // Scale the handle to be 1/100th of the volume's initial size.
         const Ogre::Vector3 widget_scale((0.02F * scale_min) / new_widget->getBoundingRadius());
@@ -338,7 +340,7 @@ void clipping_box::widget_picked(Ogre::MovableObject* _picked_widget, int _scree
         const Ogre::Vector3 new_pos = m_volume_scene_node->convertWorldToLocalPosition(mouse_ray.getPoint(distance));
 
         std::array<Ogre::Vector3, 2> tmp_clipping_cube;
-        std::copy(m_clipping_cube.begin(), m_clipping_cube.end(), tmp_clipping_cube.begin());
+        std::ranges::copy(m_clipping_cube, tmp_clipping_cube.begin());
 
         switch(widget_face)
         {
@@ -382,14 +384,14 @@ void clipping_box::widget_picked(Ogre::MovableObject* _picked_widget, int _scree
             }
         }
 
-        std::copy(tmp_clipping_cube.begin(), tmp_clipping_cube.end(), m_clipping_cube.begin());
+        std::ranges::copy(tmp_clipping_cube, m_clipping_cube.begin());
 
         this->update_widgets();
         this->select_face(widget_face);
 
         m_selected_widget = dynamic_cast<Ogre::Entity*>(_picked_widget);
         m_selected_widget->setMaterialName(m_id + "_SphereHighlight", RESOURCE_GROUP);
-        m_selected_widget->setRenderQueueGroupAndPriority(viz::scene3d::rq::SURFACE_ID, 65535);
+        m_selected_widget->setRenderQueueGroupAndPriority(viz::scene3d::rq::SURFACE, 65535);
 
         m_clipping_update_callback();
     }

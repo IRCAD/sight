@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -96,11 +96,13 @@ extension::validity extension::validate()
         m_validity = invalid;
         const auto id                = this->identifier();
         const std::string identifier = id.empty() ? "anonymous" : id;
-        SIGHT_ERROR(
-            "In bundle " << get_module()->identifier() << ". " << identifier
-            << ": invalid extension XML element node does not respect schema. Verification error log is : "
-            << std::endl << validator->get_error_log()
-        );
+        const std::string error_msg  = "In bundle " + get_module()->identifier() + ". " + identifier
+                                       +
+                                       ": invalid extension XML element node does not respect schema. Verification error log is : \n"
+                                       + validator->get_error_log();
+
+        SIGHT_ASSERT(error_msg, false);
+        SIGHT_ERROR(error_msg);
     }
 
     return m_validity;

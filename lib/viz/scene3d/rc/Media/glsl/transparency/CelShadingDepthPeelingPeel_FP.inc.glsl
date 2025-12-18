@@ -29,7 +29,8 @@ void process()
     vec2 texCoord = gl_FragCoord.xy * u_viewport.zw;
 
     // Front depth buffer
-    float frontDepthBuffer = unpackFloatFromVec4(texture(u_nearestDepthBuffer, texCoord));
+    // Front depth buffer (stored as R32F)
+    float frontDepthBuffer = texture(u_nearestDepthBuffer, texCoord).r;
 
     float currentDepth = gl_FragCoord.z;
 
@@ -57,8 +58,9 @@ void process()
 
         colorOut.rgb *= colorOut.a;
 
-        // Depth sent to the next peel
-        frontDepth = packFloatToVec4(currentDepth);
+        // Depth sent to the next peel (R channel of PF_FLOAT32_R)
+        frontDepth = vec4(currentDepth, 0.0, 0.0, 1.0);
+
         frontColor = colorOut;
 
         bufferNormal.rgb = packNormal(normalize(v_f3Normal_Ws));

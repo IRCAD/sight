@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,8 +26,8 @@
 #include "io/vtk/vtk.hpp"
 
 #include <core/base.hpp>
-#include <core/jobs/base.hpp>
-#include <core/jobs/observer.hpp>
+#include <core/progress/monitor.hpp>
+#include <core/progress/observer.hpp>
 
 #include <vtkGenericDataObjectReader.h>
 #include <vtkImageData.h>
@@ -39,19 +39,7 @@ namespace sight::io::vtk
 
 //------------------------------------------------------------------------------
 
-vti_image_reader::vti_image_reader() :
-    m_job(std::make_shared<core::jobs::observer>("Vti image reader"))
-{
-}
-
-//------------------------------------------------------------------------------
-
-vti_image_reader::~vti_image_reader()
-= default;
-
-//------------------------------------------------------------------------------
-
-void vti_image_reader::read()
+void vti_image_reader::read(sight::core::progress::observer::sptr _progress)
 {
     assert(!m_object.expired());
     assert(m_object.lock());
@@ -69,11 +57,11 @@ void vti_image_reader::read()
         [&](vtkObject* _caller, std::uint64_t, void*)
         {
             auto* filter = static_cast<vtkGenericDataObjectReader*>(_caller);
-            m_job->done_work(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
+            _progress->done_work(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
         });
     reader->AddObserver(vtkCommand::ProgressEvent, progress_callback);
 
-    m_job->add_simple_cancel_hook([&]{reader->AbortExecuteOn();});
+    _progress->add_cancel_hook([&]{reader->AbortExecuteOn();});
 
     reader->Update();
     reader->UpdateInformation();
@@ -81,8 +69,6 @@ void vti_image_reader::read()
 
     vtkDataObject* obj = reader->GetOutput();
     vtkImageData* img  = vtkImageData::SafeDownCast(obj);
-
-    m_job->finish();
 
     SIGHT_THROW_IF("VtiImageReader cannot read Vti image file :" << this->get_file().string(), !img);
     try
@@ -100,13 +86,6 @@ void vti_image_reader::read()
 std::string vti_image_reader::extension() const
 {
     return ".vti";
-}
-
-//------------------------------------------------------------------------------
-
-core::jobs::base::sptr vti_image_reader::get_job() const
-{
-    return m_job;
 }
 
 //------------------------------------------------------------------------------

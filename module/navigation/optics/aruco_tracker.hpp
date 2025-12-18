@@ -91,11 +91,11 @@ namespace sight::module::navigation::optics
  *  - \b cornerRefinement: if true, corner refinement by subpixel will be activated
  *  not.
  */
-class aruco_tracker : public service::tracker
+class aruco_tracker : public service::tracker<service::sensor_t>
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(aruco_tracker, service::tracker);
+    SIGHT_DECLARE_SERVICE(aruco_tracker, service::tracker<service::sensor_t>);
 
     using detection_done_signal_t  = core::com::signal<void (core::clock::type)>;
     using marker_detected_signal_t = core::com::signal<void (bool)>;
@@ -196,7 +196,7 @@ private:
     static constexpr std::string_view MARKER_MAP_INOUT_GROUP = "marker_map";
 
     data::ptr<data::camera, data::access::in> m_camera {this, CAMERA_INPUT};
-    data::ptr<data::image, data::access::inout> m_frame {this, FRAME_INOUT};
+    data::ptr<data::image, data::access::inout> m_frame {this, service::tracker<service::sensor_t>::FRAME_INOUT};
     data::ptr_vector<data::marker_map, data::access::inout> m_marker_map {this, MARKER_MAP_INOUT_GROUP};
 
     /// show marker or not -->

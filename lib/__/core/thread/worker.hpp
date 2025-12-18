@@ -43,7 +43,7 @@ using thread_id_t = std::thread::id;
  *
  * @note The type `thread_id_t` represents the identifier of a thread.
  */
-SIGHT_CORE_API thread_id_t get_current_thread_id();
+[[nodiscard]] SIGHT_CORE_API thread_id_t get_current_thread_id();
 
 /// The type `thread_native_id` represents the native identifier of a thread.
 using thread_native_id_t = std::thread::native_handle_type;
@@ -53,7 +53,7 @@ using thread_native_id_t = std::thread::native_handle_type;
  *
  * @return The native identifier of the current thread.
  */
-SIGHT_CORE_API thread_native_id_t get_current_thread_native_id();
+[[nodiscard]] SIGHT_CORE_API thread_native_id_t get_current_thread_native_id();
 
 /**
  * @brief Sets the name of the specified thread.
@@ -78,7 +78,9 @@ SIGHT_CORE_API void set_thread_name(
  *                   the name of the current thread is retrieved.
  * @return A string containing the name of the specified thread.
  */
-SIGHT_CORE_API std::string get_thread_name(std::optional<std::thread::native_handle_type> _thread_id = std::nullopt);
+[[nodiscard]] SIGHT_CORE_API std::string get_thread_name(
+    std::optional<std::thread::native_handle_type> _thread_id = std::nullopt
+);
 
 /**
  * @brief Retrieves the maximum length of a thread name.
@@ -112,6 +114,8 @@ public:
     using future_t = std::shared_future<exit_return_type>;
     using sptr     = std::shared_ptr<worker>;
 
+    static constexpr std::string_view DEFAULT = "default";
+
     worker()          = default;
     virtual ~worker() = default;
 
@@ -136,7 +140,7 @@ public:
     std::shared_future<R> post_task(CALLABLE _f);
 
     /// Returns the worker's thread id
-    SIGHT_CORE_API virtual thread_id_t get_thread_id() const = 0;
+    [[nodiscard]] SIGHT_CORE_API virtual thread_id_t get_thread_id() const = 0;
 
     /// Sets the worker's name (useful for debugging).
     SIGHT_CORE_API virtual void set_thread_name(const std::string& _thread_name) = 0;

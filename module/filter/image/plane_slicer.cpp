@@ -31,6 +31,7 @@
 #include <geometry/__/line.hpp>
 #include <geometry/data/matrix4.hpp>
 #include <geometry/data/image.hpp>
+#include <filter/image/types.hpp>
 
 #include <io/vtk/vtk.hpp>
 
@@ -126,6 +127,25 @@ void plane_slicer::updating()
         sight::geometry::data::invert(image_pose_to_world_transform, world_to_image_pose_transform);
 
         sight::geometry::data::multiply(world_to_image_pose_transform, *reslice_matrix, *reslice_axes);
+    }
+
+    const auto interpolation = sight::filter::image::string_to_interpolation(*m_interpolation);
+    if(interpolation == sight::filter::image::interpolation_t::NEAREST)
+    {
+        m_reslicer->SetInterpolationModeToNearestNeighbor();
+    }
+    else if(interpolation == sight::filter::image::interpolation_t::LINEAR)
+    {
+        m_reslicer->SetInterpolationModeToLinear();
+    }
+    else if(interpolation == sight::filter::image::interpolation_t::BSPLINE)
+    {
+        m_reslicer->SetInterpolationModeToCubic();
+    }
+    else
+    {
+        SIGHT_ERROR("Unsupported interpolation mode: " << *m_interpolation);
+        return;
     }
 
     // Make a shallow-copied input image, centered at the origin for the resampling

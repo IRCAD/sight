@@ -72,7 +72,7 @@ lightingParams = [ '// Lighting',
 
 lightingParamsFlat = lightingParams + [ 'param_named_auto u_f4LightPosVs light_position_view_space_array 8' ]
 
-lightingParams += [ 'param_named_auto u_f4LightPos light_position_array 10' ]
+lightingParams += [ 'param_named_auto u_f4LightPos light_position_array 6' ]
 
 ## Common parameters used for ambient lighting
 ambientParams = [ '// Ambient',

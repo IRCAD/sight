@@ -24,7 +24,7 @@
 
 #include <core/runtime/path.hpp>
 
-#include <data/dicom_series.hpp>
+#include <data/image_series.hpp>
 
 #include <io/http/helper/series.hpp>
 
@@ -325,8 +325,8 @@ void query_editor::update_series_set(const data::series_set::container_t& _serie
     // Push new series in the series_set
     for(const auto& s : _series)
     {
-        const auto& dicom_series = std::dynamic_pointer_cast<data::dicom_series>(s);
-        series_set->push_back(dicom_series);
+        const auto& series = std::dynamic_pointer_cast<data::series>(s);
+        series_set->push_back(series);
     }
 }
 

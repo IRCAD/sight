@@ -1,4 +1,4 @@
-#define MAX_LIGHTS 10
+#define MAX_LIGHTS 6
 
 uniform vec3 u_f3CameraPos;
 uniform vec4 u_f4AmbientCol;

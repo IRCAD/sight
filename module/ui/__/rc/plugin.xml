@@ -14,12 +14,6 @@
     </extension>
 
     <extension implements="sight::service::extension::factory">
-        <type>sight::ui::dialog_editor</type>
-        <service>sight::module::ui::job_bar</service>
-        <desc>Service displaying a progress bar.</desc>
-    </extension>
-
-    <extension implements="sight::service::extension::factory">
         <type>sight::ui::menu</type>
         <service>sight::module::ui::menu</service>
         <desc>Defines the default menu for standard application</desc>

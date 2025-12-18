@@ -88,7 +88,7 @@ fiducials_series::shape string_to_shape(const std::optional<std::string>& _strin
 
 //------------------------------------------------------------------------------
 
-std::optional<std::string> color_to_string(const std::optional<std::array<float, 4> >& _color)
+std::optional<std::string> color_to_string(const std::optional<sight::vec4f_t>& _color)
 {
     if(!_color.has_value())
     {
@@ -103,7 +103,7 @@ std::optional<std::string> color_to_string(const std::optional<std::array<float,
 
 //------------------------------------------------------------------------------
 
-std::optional<std::array<float, 4> > string_to_color(const std::optional<std::string>& _string)
+std::optional<sight::vec4f_t> string_to_color(const std::optional<std::string>& _string)
 {
     if(!_string.has_value())
     {
@@ -117,7 +117,7 @@ std::optional<std::array<float, 4> > string_to_color(const std::optional<std::st
         return std::nullopt;
     }
 
-    std::array<float, 4> res {};
+    sight::vec4f_t res {};
     std::ranges::transform(splits, res.begin(), [](const std::string& _value){return std::stof(_value);});
     return res;
 }
@@ -459,7 +459,29 @@ void modify_fiducial(
         _pimpl.set_values<kw::ContourData>(*_query.m_contour_data, _fiducial_dataset);
     }
 
-    ///@todo store also the GraphicCoordinatesDataSequence when we have an use for it...
+    if(_query.m_graphic_data && _query.m_referenced_frame_number)
+    {
+        SIGHT_ASSERT("The graphic data is not a multiple of 2.", _query.m_graphic_data->size() % 2 == 0);
+
+        _pimpl.set_values<kw::ReferencedFrameNumber>(
+            *_query.m_referenced_frame_number,
+            0,
+            {{kw::FiducialSetSequence::GetTag(), _query.m_fiducial_set_index},
+                {kw::FiducialSequence::GetTag(), _query.m_fiducial_index},
+                {kw::GraphicCoordinatesDataSequence::GetTag(), _query.m_shape_index},
+                {kw::ReferencedImageSequence::GetTag(), 0
+                }
+            });
+
+        _pimpl.set_values<kw::GraphicData>(
+            *_query.m_graphic_data,
+            0,
+            {{kw::FiducialSetSequence::GetTag(), _query.m_fiducial_set_index},
+                {kw::FiducialSequence::GetTag(), _query.m_fiducial_index},
+                {kw::GraphicCoordinatesDataSequence::GetTag(), _query.m_shape_index
+                }
+            });
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -1808,7 +1830,7 @@ void fiducials_series::set_group_name(std::size_t _fiducial_set_number, const st
 
 //------------------------------------------------------------------------------
 
-std::optional<std::array<float, 4> > fiducials_series::get_color(std::size_t _fiducial_set_number) const noexcept
+std::optional<sight::vec4f_t> fiducials_series::get_color(std::size_t _fiducial_set_number) const noexcept
 {
     return string_to_color(
         m_pimpl->get_private_value(
@@ -1822,7 +1844,7 @@ std::optional<std::array<float, 4> > fiducials_series::get_color(std::size_t _fi
 
 //------------------------------------------------------------------------------
 
-void fiducials_series::set_color(std::size_t _fiducial_set_number, const std::array<float, 4>& _color)
+void fiducials_series::set_color(std::size_t _fiducial_set_number, const sight::vec4f_t& _color)
 {
     m_pimpl->set_private_value(
         std::uint8_t(fiducial_set_element::color),
@@ -2285,7 +2307,7 @@ void fiducials_series::remove_group(const std::string& _group_name)
 
 //------------------------------------------------------------------------------
 
-void fiducials_series::add_group(const std::string& _group_name, const std::array<float, 4>& _color, float _size)
+void fiducials_series::add_group(const std::string& _group_name, const sight::vec4f_t& _color, float _size)
 {
     fiducial_set fiducial_set;
     fiducial_set.group_name = _group_name;

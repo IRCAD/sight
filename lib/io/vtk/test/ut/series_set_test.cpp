@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,10 +20,9 @@
  *
  ***********************************************************************/
 
-#include "series_set_test.hpp"
-
 #include <core/memory/buffer_manager.hpp>
 #include <core/memory/buffer_object.hpp>
+#include <core/progress/observer.hpp>
 
 #include <data/array.hpp>
 #include <data/image.hpp>
@@ -36,88 +35,54 @@
 
 #include <utest_data/data.hpp>
 
-#include <filesystem>
+#include <doctest/doctest.h>
 
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::vtk::ut::series_set_test);
-
-namespace sight::io::vtk::ut
+TEST_SUITE("sight::io::vtk::series_set")
 {
+    TEST_CASE("import_series_set")
+    {
+        auto series_set = std::make_shared<sight::data::series_set>();
 
-//------------------------------------------------------------------------------
+        const std::filesystem::path image_path(sight::utest_data::dir() / "sight/image/vtk/img.vtk");
+        const std::filesystem::path mesh_path(sight::utest_data::dir() / "sight/mesh/vtk/sphere.vtk");
 
-void series_set_test::setUp()
-{
-    // Set up context before running a test.
-}
+        CHECK_MESSAGE(std::filesystem::exists(image_path), "Missing file: ", image_path.string());
+        CHECK_MESSAGE(std::filesystem::exists(mesh_path), "Missing file: ", mesh_path.string());
 
-//------------------------------------------------------------------------------
+        std::vector<std::filesystem::path> paths;
+        paths.push_back(image_path);
+        paths.push_back(mesh_path);
+        paths.push_back(mesh_path);
 
-void series_set_test::tearDown()
-{
-    // Clean up after the test run.
-}
+        auto reader = std::make_shared<sight::io::vtk::series_set_reader>();
+        reader->set_object(series_set);
+        reader->set_files(paths);
+        auto read_observer = std::make_shared<sight::core::progress::observer>("Test read");
+        reader->read(read_observer);
 
-//------------------------------------------------------------------------------
+        CHECK_EQ(series_set->size(), std::size_t(2));
 
-void series_set_test::test_import_series_set()
-{
-    auto series_set = std::make_shared<data::series_set>();
+        auto img_series = std::dynamic_pointer_cast<sight::data::image_series>(series_set->at(0));
+        CHECK_MESSAGE(img_series, "ImageSeries dynamicCast failed");
 
-    const std::filesystem::path image_path(utest_data::dir() / "sight/image/vtk/img.vtk");
-    const std::filesystem::path mesh_path(utest_data::dir() / "sight/mesh/vtk/sphere.vtk");
+        auto model_series = std::dynamic_pointer_cast<sight::data::model_series>(series_set->at(1));
+        CHECK_MESSAGE(model_series, "ModelSeries dynamicCast failed");
 
-    CPPUNIT_ASSERT_MESSAGE(std::string("Missing file: ") + image_path.string(), std::filesystem::exists(image_path));
-    CPPUNIT_ASSERT_MESSAGE(std::string("Missing file: ") + mesh_path.string(), std::filesystem::exists(mesh_path));
+        auto rec_vect = model_series->get_reconstruction_db();
+        CHECK_EQ(rec_vect.size(), std::size_t(2));
 
-    std::vector<std::filesystem::path> paths;
-    paths.push_back(image_path);
-    paths.push_back(mesh_path);
-    paths.push_back(mesh_path);
+        const auto& rec1 = rec_vect.at(0);
+        const auto& rec2 = rec_vect.at(1);
 
-    io::vtk::series_set_reader::sptr reader = std::make_shared<io::vtk::series_set_reader>();
-    reader->set_object(series_set);
-    reader->set_files(paths);
-    reader->read();
+        CHECK_EQ(rec1->get_organ_name(), std::string("sphere"));
+        CHECK_EQ(rec2->get_organ_name(), std::string("sphere"));
 
-    CPPUNIT_ASSERT_EQUAL(std::size_t(2), series_set->size());
+        auto mesh1 = rec1->get_mesh();
+        auto mesh2 = rec2->get_mesh();
 
-    data::image_series::sptr img_series = std::dynamic_pointer_cast<data::image_series>(series_set->at(0));
-    CPPUNIT_ASSERT_MESSAGE("ImageSeries dynamicCast failed", img_series);
+        CHECK_EQ(mesh1->num_cells(), (sight::data::mesh::size_t) 720);
+        CHECK_EQ(mesh1->num_points(), (sight::data::mesh::size_t) 362);
 
-    data::model_series::sptr model_series = std::dynamic_pointer_cast<data::model_series>(series_set->at(1));
-    CPPUNIT_ASSERT_MESSAGE("ModelSeries dynamicCast failed", model_series);
-
-    data::model_series::reconstruction_vector_t rec_vect = model_series->get_reconstruction_db();
-    CPPUNIT_ASSERT_EQUAL(std::size_t(2), rec_vect.size());
-
-    data::reconstruction::sptr rec1 = rec_vect.at(0);
-    data::reconstruction::sptr rec2 = rec_vect.at(1);
-
-    CPPUNIT_ASSERT_EQUAL(std::string("sphere"), rec1->get_organ_name());
-    CPPUNIT_ASSERT_EQUAL(std::string("sphere"), rec2->get_organ_name());
-
-    data::mesh::sptr mesh1 = rec1->get_mesh();
-    data::mesh::sptr mesh2 = rec2->get_mesh();
-
-    CPPUNIT_ASSERT_EQUAL(mesh1->num_cells(), (data::mesh::size_t) 720);
-    CPPUNIT_ASSERT_EQUAL(mesh1->num_points(), (data::mesh::size_t) 362);
-
-    CPPUNIT_ASSERT(*mesh1 == *mesh2);
-}
-
-//------------------------------------------------------------------------------
-
-bool is_loaded(core::memory::buffer_object::sptr _bo)
-{
-    core::memory::buffer_manager::csptr manager                     = core::memory::buffer_manager::get();
-    const core::memory::buffer_manager::buffer_info_map_t map_infos = manager->get_buffer_infos().get();
-
-    auto iter = map_infos.find(_bo->get_buffer_pointer());
-    CPPUNIT_ASSERT_MESSAGE("buffer_info not found.", iter != map_infos.end());
-    const core::memory::buffer_info& info = iter->second;
-
-    return info.loaded;
-}
-
-} // namespace sight::io::vtk::ut
+        CHECK(*mesh1 == *mesh2);
+    }
+} // TEST_SUITE

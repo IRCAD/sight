@@ -9,9 +9,20 @@ uniform sampler2D u_texture;
 in vec4 oColor;
 in vec2 oTexCoord;
 
+#ifdef VERTEX_NORMAL
+in vec3 oPosition_Ws;
+in vec3 oNormal_Ws;
+#include "Lighting.inc.glsl"
+#endif // VERTEX_NORMAL
+
 vec4 getFragmentColor()
 {
-    return oColor * texture(u_texture, oTexCoord);
+    vec4 color = oColor;
+#ifdef VERTEX_NORMAL
+    color = lighting(normalize(oNormal_Ws), oPosition_Ws);
+#endif // VERTEX_NORMAL
+
+    return color * texture(u_texture, oTexCoord);
 }
 
 float getFragmentAlpha()

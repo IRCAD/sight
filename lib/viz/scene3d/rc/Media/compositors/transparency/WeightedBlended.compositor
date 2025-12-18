@@ -24,8 +24,8 @@ compositor WeightedBlended
 
             pass render_scene
             {
-               // Surface models are in render queues 50 and below.
-               last_render_queue 50
+               // Surface models are in render queues 20 and below.
+               last_render_queue 20
             }
         }
 
@@ -44,7 +44,7 @@ compositor WeightedBlended
 
             pass render_scene
             {
-               last_render_queue 50
+               last_render_queue 20
             }
         }
 
@@ -63,7 +63,7 @@ compositor WeightedBlended
 
             pass render_scene
             {
-               last_render_queue 50
+               last_render_queue 20
             }
         }
 
@@ -86,9 +86,9 @@ compositor WeightedBlended
             // Render volumes on top.
             pass render_scene
             {
-                // Volumes are in rq 52 and some of their widgets in rq 51.
-                first_render_queue 51
-                last_render_queue 52
+                // Volumes are in rq 30 and some of their widgets in rq 29.
+                first_render_queue 29
+                last_render_queue 30
             }
         }
     }

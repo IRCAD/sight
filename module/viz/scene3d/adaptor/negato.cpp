@@ -51,7 +51,9 @@ service::connections_t negato::auto_connections() const
         {m_image, data::image::SLICE_INDEX_MODIFIED_SIG, slots::SLICE_INDEX},
         {m_tf, data::transfer_function::MODIFIED_SIG, slots::UPDATE_TF},
         {m_tf, data::transfer_function::POINTS_MODIFIED_SIG, slots::UPDATE_TF},
-        {m_tf, data::transfer_function::WINDOWING_MODIFIED_SIG, slots::UPDATE_TF}
+        {m_tf, data::transfer_function::WINDOWING_MODIFIED_SIG, slots::UPDATE_TF},
+        {m_mask, data::image::MODIFIED_SIG, slots::UPDATE_MASK},
+        {m_mask, data::image::BUFFER_MODIFIED_SIG, slots::UPDATE_MASK}
     };
     return connections + adaptor::auto_connections();
 }
@@ -64,6 +66,7 @@ negato::negato() noexcept
     new_slot(slots::UPDATE_IMAGE, [this](){lazy_update(update_flags::IMAGE);});
     new_slot(slots::UPDATE_IMAGE_BUFFER, [this](){lazy_update(update_flags::IMAGE_BUFFER);});
     new_slot(slots::UPDATE_TF, [this](){lazy_update(update_flags::TF);});
+    new_slot(slots::UPDATE_MASK, [this](){lazy_update(update_flags::MASK);});
 
     // Interaction slots
     new_slot(slots::SLICE_TYPE, &negato::change_slice_type, this);
@@ -143,7 +146,10 @@ void negato::starting()
 
         // TF texture initialization
         const auto tf = m_tf.lock();
-        m_gpu_tf = std::make_unique<sight::viz::scene3d::transfer_function>(tf.get_shared());
+        if(tf)
+        {
+            m_gpu_tf = std::make_unique<sight::viz::scene3d::transfer_function>(tf.get_shared());
+        }
     }
 
     // scene node's instantiation
@@ -152,40 +158,13 @@ void negato::starting()
     m_origin_scene_node = transform_node->createChildSceneNode();
     m_negato_scene_node = m_origin_scene_node->createChildSceneNode();
 
-    const auto mask                 = m_mask.lock();
-    const auto* const material_name = mask
-                                      != nullptr ? "Negato_mask" : (*m_classification == std::string("post"))
-                                      ? "Negato" : "Negato_pre";
-
-    if(mask)
-    {
-        m_mask_texture = std::make_shared<sight::viz::scene3d::texture>(mask.get_shared());
-    }
-
-    // Instantiation of the planes
-    for(auto& plane : m_planes)
-    {
-        plane.first = std::make_shared<sight::viz::scene3d::plane>(
-            this->get_id(),
-            m_negato_scene_node,
-            this->get_scene_manager(),
-            m_3d_ogre_texture,
-            m_mask_texture,
-            m_filtering,
-            material_name,
-            m_border,
-            m_slices_cross,
-            1.0F,
-            static_cast<float>(*m_depth_bias)
-        );
-    }
+    this->update_mask();
+    this->update_image(true);
 
     if(m_auto_reset_camera)
     {
         this->render_service()->reset_camera_coordinates(m_layer_id);
     }
-
-    this->update_image(true);
 
     if(m_interactive)
     {
@@ -198,9 +177,6 @@ void negato::starting()
             *m_negato_scene_node
         );
     }
-
-    // Set the visibility of the 3D Negato
-    this->set_visible(visible());
 }
 
 //------------------------------------------------------------------------------
@@ -251,9 +227,32 @@ void negato::updating()
     {
         this->update_tf();
     }
+    else if(update_needed(update_flags::MASK))
+    {
+        this->update_mask();
+    }
 
     this->update_done();
     this->request_render();
+}
+
+//------------------------------------------------------------------------------
+
+void negato::update_mask()
+{
+    const auto mask = m_mask.lock();
+    if(mask)
+    {
+        if(!m_mask_texture)
+        {
+            m_mask_texture = std::make_shared<sight::viz::scene3d::texture>(mask.get_shared());
+        }
+
+        if(mask->num_elements() > 0)
+        {
+            m_mask_texture->update();
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -281,13 +280,41 @@ void negato::update_image(bool _new)
 
         // Update the texture
         m_3d_ogre_texture->update();
-        if(m_mask_texture)
-        {
-            m_mask_texture->update();
-        }
 
         if(_new)
         {
+            const auto mask = m_mask.lock();
+            std::string material_name;
+            const auto tf = m_tf.lock();
+            if(tf == nullptr)
+            {
+                material_name = mask != nullptr ? "Negato_rgb_mask" : "Negato_rgb";
+            }
+            else
+            {
+                // Default case with gray scale image
+                material_name = (mask != nullptr) ? "Negato_mask" : (*m_classification == std::string("post"))
+                                ? "Negato" : "Negato_pre";
+            }
+
+            // Instantiation of the planes
+            for(auto& plane : m_planes)
+            {
+                plane.first = std::make_shared<sight::viz::scene3d::plane>(
+                    this->get_id(),
+                    m_negato_scene_node,
+                    this->get_scene_manager(),
+                    m_3d_ogre_texture,
+                    m_mask_texture,
+                    m_filtering,
+                    material_name,
+                    m_border,
+                    m_slices_cross,
+                    1.0F,
+                    static_cast<float>(*m_depth_bias)
+                );
+            }
+
             const auto spacing = sight::viz::scene3d::utils::get_ogre_spacing(*image);
             m_origin_scene_node->setPosition(sight::viz::scene3d::utils::get_ogre_origin(*image));
             m_origin_scene_node->setOrientation(sight::viz::scene3d::utils::get_ogre_orientation(*image));
@@ -295,9 +322,9 @@ void negato::update_image(bool _new)
             // Fits the planes to the new texture
             for(const auto& plane : m_planes)
             {
-                plane.first->update(plane.second, spacing, m_enable_alpha);
+                plane.first->update(plane.second, spacing);
                 plane.first->set_query_flags(m_query_flags);
-                plane.first->set_render_queuer_group_and_priority(sight::viz::scene3d::rq::NEGATO_WIDGET_ID, 0);
+                plane.first->set_render_queuer_group_and_priority(sight::viz::scene3d::rq::NEGATO_WIDGET, 0);
             }
 
             // Update Slice
@@ -324,6 +351,11 @@ void negato::change_slice_index(int _axial_index, int _frontal_index, int _sagit
 {
     const auto image = m_image.lock();
 
+    if(!data::helper::medical_image::check_image_validity(image.get_shared()))
+    {
+        return;
+    }
+
     this->render_service()->make_current();
 
     auto img_size = image->size();
@@ -343,7 +375,10 @@ void negato::change_slice_index(int _axial_index, int _frontal_index, int _sagit
 
     for(auto& plane : m_planes)
     {
-        plane.first->change_slice(m_current_slice_index);
+        if(plane.first)
+        {
+            plane.first->change_slice(m_current_slice_index);
+        }
     }
 
     this->signal<signals::slice_index_changed_t>(signals::SLICE_INDEX_CHANGED)->emit();
@@ -378,10 +413,21 @@ void negato::update_slices_from_world(double _x, double _y, double _z)
 void negato::update_tf()
 {
     this->render_service()->make_current();
-    m_gpu_tf->update();
+    if(m_gpu_tf)
+    {
+        m_gpu_tf->update();
 
-    // Sends the TF texture to the negato-related passes
-    std::ranges::for_each(m_planes, [this](auto& _p){_p.first->set_tf_data(*m_gpu_tf.get());});
+        // Sends the TF texture to the negato-related passes
+        std::ranges::for_each(
+            m_planes,
+            [this](auto& _p)
+            {
+                if(_p.first)
+                {
+                    _p.first->set_tf_data(*m_gpu_tf.get(), m_enable_alpha);
+                }
+            });
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -392,10 +438,14 @@ void negato::update_windowing(double _dw, double _dl)
     const double new_level  = m_initial_level - _dl;
 
     {
-        const auto image = m_image.const_lock();
-        const auto tf    = m_tf.lock();
-        tf->set_window(std::copysign(std::max(1.0, std::abs(new_window)), new_window));
-        tf->set_level(new_level);
+        const auto tf = m_tf.lock();
+        if(tf)
+        {
+            const auto image = m_image.const_lock();
+            tf->set_window(std::copysign(std::max(1.0, std::abs(new_window)), new_window));
+            tf->set_level(new_level);
+        }
+
         tf->async_emit(data::transfer_function::WINDOWING_MODIFIED_SIG, new_window, new_level);
     }
 }

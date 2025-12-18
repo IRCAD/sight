@@ -16,4 +16,5 @@ target_link_libraries(
            data
            service
            io
+           io_dicom
 )

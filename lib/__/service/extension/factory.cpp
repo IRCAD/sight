@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,6 +30,7 @@
 
 #include <data/exception.hpp>
 
+#include <algorithm>
 #include <functional>
 #include <vector>
 
@@ -207,7 +208,6 @@ base::sptr factory::create(const std::string& _srv_impl) const
 
     // Setup worker here, this is a better place than the constructor
     // because here, the service slots are also set up
-    // This allows to setup
     service->set_worker(core::thread::get_default_worker());
 
     return service;
@@ -284,7 +284,7 @@ void factory::add_object_factory(const std::string& _srv_impl, const std::string
         if(info.objects_set_from_module)
         {
 #ifdef _DEBUG
-            const auto it_find = std::find(info.object_impl.begin(), info.object_impl.end(), o_impl);
+            const auto it_find = std::ranges::find(info.object_impl, o_impl);
 #endif
             SIGHT_ASSERT(
                 "Try to add factory, but the service '" + srv_impl + "' is already registered and does not have the "
@@ -454,7 +454,6 @@ std::string factory::get_default_implementation_id_from_object_and_type(
 const std::vector<std::string>& factory::get_service_objects(const std::string& _srv_impl) const
 {
     const std::string srv_impl = core::runtime::filter_id(_srv_impl);
-    std::string obj_impl;
     core::mt::read_lock lock(m_srv_impl_to_srv_info_mutex);
     auto iter = m_srv_impl_to_srv_info.find(srv_impl);
     SIGHT_ASSERT("The service " << srv_impl << " is not found.", iter != m_srv_impl_to_srv_info.end());
@@ -592,9 +591,8 @@ factory::key_vector_t factory::get_factory_keys() const
 {
     core::mt::read_lock lock(m_srv_impl_to_srv_info_mutex);
     key_vector_t vect_keys;
-    std::transform(
-        m_srv_impl_to_srv_info.begin(),
-        m_srv_impl_to_srv_info.end(),
+    std::ranges::transform(
+        m_srv_impl_to_srv_info,
         std::back_inserter(vect_keys),
         [](const auto& _e){return _e.first;});
     return vect_keys;

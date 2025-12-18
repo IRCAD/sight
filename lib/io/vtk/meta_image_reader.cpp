@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,8 +26,8 @@
 #include "io/vtk/vtk.hpp"
 
 #include <core/base.hpp>
-#include <core/jobs/base.hpp>
-#include <core/jobs/observer.hpp>
+#include <core/progress/monitor.hpp>
+#include <core/progress/observer.hpp>
 
 #include <vtkImageData.h>
 #include <vtkMetaImageReader.h>
@@ -38,19 +38,7 @@ namespace sight::io::vtk
 
 //------------------------------------------------------------------------------
 
-meta_image_reader::meta_image_reader() :
-    m_job(std::make_shared<core::jobs::observer>("Meta image reader"))
-{
-}
-
-//------------------------------------------------------------------------------
-
-meta_image_reader::~meta_image_reader()
-= default;
-
-//------------------------------------------------------------------------------
-
-void meta_image_reader::read()
+void meta_image_reader::read(sight::core::progress::observer::sptr _progress)
 {
     using helper::vtk_lambda_command;
     assert(!m_object.expired());
@@ -65,14 +53,14 @@ void meta_image_reader::read()
 
     progress_callback = vtkSmartPointer<vtk_lambda_command>::New();
     progress_callback->set_callback(
-        [&](vtkObject* _caller, std::uint64_t, void*)
+        [&_progress](vtkObject* _caller, std::uint64_t, void*)
         {
             auto* filter = static_cast<vtkMetaImageReader*>(_caller);
-            m_job->done_work(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
+            _progress->done_work(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
         });
     reader->AddObserver(vtkCommand::ProgressEvent, progress_callback);
 
-    m_job->add_simple_cancel_hook([&]{reader->AbortExecuteOn();});
+    _progress->add_cancel_hook([&]{reader->AbortExecuteOn();});
 
     reader->Update();
     reader->UpdateInformation();
@@ -80,8 +68,6 @@ void meta_image_reader::read()
 
     vtkDataObject* obj = reader->GetOutput();
     vtkImageData* img  = vtkImageData::SafeDownCast(obj);
-
-    m_job->finish();
 
     SIGHT_THROW_IF("MetaImageReader cannot read mhd image file :" << this->get_file().string(), !img);
     try
@@ -99,13 +85,6 @@ void meta_image_reader::read()
 std::string meta_image_reader::extension() const
 {
     return ".mhd";
-}
-
-//------------------------------------------------------------------------------
-
-core::jobs::base::sptr meta_image_reader::get_job() const
-{
-    return m_job;
 }
 
 //------------------------------------------------------------------------------

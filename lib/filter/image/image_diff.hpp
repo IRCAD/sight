@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2025 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -55,10 +55,10 @@ public:
     /// Move constructor
     SIGHT_FILTER_IMAGE_API image_diff(image_diff&& _other) noexcept = default;
 
-    /// Copy assignement.
+    /// Copy assignment.
     SIGHT_FILTER_IMAGE_API image_diff& operator=(const image_diff& _other) = default;
 
-    /// Move assignement.
+    /// Move assignment.
     SIGHT_FILTER_IMAGE_API image_diff& operator=(image_diff&& _other) noexcept = default;
 
     /// Concatenate two diffs.

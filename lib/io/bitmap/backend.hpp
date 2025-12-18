@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -53,9 +53,9 @@ enum class backend : std::uint8_t
 [[nodiscard]] SIGHT_IO_BITMAP_API std::pair<std::string, std::string> wildcard_filter(backend _backend);
 
 /// @return true is nvJPEG is available (support built in AND CUDA capable GPU available)
-[[nodiscard]] SIGHT_IO_BITMAP_API bool nv_jpeg();
+[[nodiscard]] SIGHT_IO_BITMAP_API bool nvjpeg();
 
-/// @return true is nv_jpeg_2k is available (support built in AND CUDA capable GPU available)
-[[nodiscard]] SIGHT_IO_BITMAP_API bool nv_jpeg_2k();
+/// @return true is nvjpeg2k is available (support built in AND CUDA capable GPU available)
+[[nodiscard]] SIGHT_IO_BITMAP_API bool nvjpeg2k();
 
 } // namespace sight::io::bitmap

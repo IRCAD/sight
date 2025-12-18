@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,9 +23,10 @@
 
 #include "data/model_series.hpp"
 
-#include "io/dicom/codec/nv_jpeg2k.hpp"
+#include "io/dicom/codec/nvjpeg2k.hpp"
 
 #include <core/macros.hpp>
+#include <core/progress/observer.hpp>
 
 #include <data/fiducials_series.hpp>
 #include <data/helper/medical_image.hpp>
@@ -394,7 +395,7 @@ inline static void write_enhanced_us_volume(
 
     gdcm_image.SetDataElement(pixeldata);
 
-    std::unique_ptr<codec::nv_jpeg2_k> nvjpeg2k_codec;
+    std::unique_ptr<codec::nvjpeg2k> nvjpeg2k_codec;
     gdcm::ImageChangeTransferSyntax transfer_syntax_changer;
 
     switch(_transfer_syntax)
@@ -440,10 +441,10 @@ inline static void write_enhanced_us_volume(
                     SIGHT_THROW_IF(
                         "nvJPEG2000 is not available, but the support has been compiled in. "
                         "Check your nvJPEG2000 library installation",
-                        !io::bitmap::nv_jpeg_2k()
+                        !io::bitmap::nvjpeg2k()
                     );
 
-                    nvjpeg2k_codec = std::make_unique<codec::nv_jpeg2_k>();
+                    nvjpeg2k_codec = std::make_unique<codec::nvjpeg2k>();
                     transfer_syntax_changer.SetUserCodec(nvjpeg2k_codec.get());
 
                     SIGHT_INFO("nvJPEG2000 will be used for JPEG2000 compression.");
@@ -511,7 +512,13 @@ inline static void write_enhanced_us_volume(
     auto& changed_gdcm_image = const_cast<gdcm::Image&>(transfer_syntax_changer.GetOutput());
 
     // Correct the Photometric Interpretation (This avoid a warning when GDCM decodes back the image)
-    if(_image_series.pixel_format() != data::image::pixel_format_t::gray_scale)
+    if(_image_series.pixel_format() == data::image::pixel_format_t::gray_scale)
+    {
+        // For grayscale, we must have MONOCHROME2
+        changed_gdcm_image.SetPhotometricInterpretation(gdcm::PhotometricInterpretation::MONOCHROME2);
+        changed_gdcm_image.GetPixelFormat().SetSamplesPerPixel(1);
+    }
+    else
     {
         switch(_transfer_syntax)
         {
@@ -589,23 +596,23 @@ public:
 
     [[nodiscard]] bool cancel_requested() const noexcept
     {
-        return m_job && m_job->cancel_requested();
+        return m_progress && m_progress->cancel_requested();
     }
 
     //------------------------------------------------------------------------------
 
     void progress(std::uint64_t _units) const
     {
-        if(m_job)
+        if(m_progress)
         {
-            m_job->done_work(_units);
+            m_progress->done_work(_units);
         }
     }
 
     //------------------------------------------------------------------------------
 
-    /// The default job. Allows to watch for cancellation and report progress.
-    core::jobs::job::sptr m_job;
+    /// Allows to watch for cancellation and report progress.
+    core::progress::observer::sptr m_progress;
 
     /// True to disable GPU codec
     bool m_force_cpu {false};
@@ -625,8 +632,13 @@ file::~file() noexcept = default;
 
 //------------------------------------------------------------------------------
 
-void file::write()
+void file::write(sight::core::progress::observer::sptr _progress)
 {
+    SIGHT_ASSERT("Some work have already be reported.", _progress->get_done_work_units() == 0);
+    m_pimpl->m_progress = _progress;
+    m_pimpl->m_progress->set_total_work_units(100);
+    m_pimpl->m_progress->done_work(10);
+
     // Get the destination folder
     auto folder = get_folder();
 
@@ -756,23 +768,6 @@ void file::write()
         m_pimpl->progress(progress_step);
         ++index;
     }
-}
-
-//------------------------------------------------------------------------------
-
-core::jobs::base::sptr file::get_job() const
-{
-    return m_pimpl->m_job;
-}
-
-//------------------------------------------------------------------------------
-
-void file::set_job(core::jobs::job::sptr _job)
-{
-    SIGHT_ASSERT("Some work have already be reported.", _job->get_done_work_units() == 0);
-    m_pimpl->m_job = _job;
-    m_pimpl->m_job->set_total_work_units(100);
-    m_pimpl->m_job->done_work(10);
 }
 
 //------------------------------------------------------------------------------

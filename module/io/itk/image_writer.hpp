@@ -22,6 +22,8 @@
 
 #pragma once
 
+#include <core/progress/observer.hpp>
+
 #include <io/__/service/writer.hpp>
 
 #include <filesystem>
@@ -64,7 +66,11 @@ public:
 
     ~image_writer() noexcept override = default;
 
-    static bool save_image(const std::filesystem::path& _img_save_path, const CSPTR(data::image)& _image);
+    static bool save_image(
+        const std::filesystem::path& _img_save_path,
+        const CSPTR(data::image)& _image,
+        const SPTR(core::progress::observer)& _progress
+    );
 
 protected:
 

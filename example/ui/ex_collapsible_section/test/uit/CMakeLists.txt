@@ -2,4 +2,4 @@ sight_add_target(ex_collapsible_section_uit TYPE GUI_TEST)
 
 add_dependencies(ex_collapsible_section_uit ex_collapsible_section)
 
-target_link_libraries(ex_collapsible_section_uit ui_test)
+target_link_libraries(ex_collapsible_section_uit PRIVATE ui_test)

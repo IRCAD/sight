@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,11 +19,10 @@
  *
  ***********************************************************************/
 
-// cspell:ignore Acuson
-
 #include "reader_writer_test.hpp"
 
 #include <core/os/temp_path.hpp>
+#include <core/progress/observer.hpp>
 #include <core/tools/uuid.hpp>
 
 #include <data/image_series.hpp>
@@ -61,7 +60,8 @@ inline static sight::data::series_set::sptr read(const std::filesystem::path _pa
     reader->set_object(series_set);
     reader->set_folder(_path);
 
-    CPPUNIT_ASSERT_NO_THROW(reader->read());
+    const auto observer = std::make_shared<core::progress::observer>("DICOM Reader Test");
+    CPPUNIT_ASSERT_NO_THROW(reader->read(observer));
 
     for(const auto& series : *series_set)
     {
@@ -221,13 +221,15 @@ static void test_image(const std::string& _name)
     auto writer = std::make_shared<io::dicom::writer::file>();
     writer->set_object(expected);
     writer->set_folder(folder);
-    CPPUNIT_ASSERT_NO_THROW(writer->write());
+    auto write_observer = std::make_shared<core::progress::observer>("Test write");
+    CPPUNIT_ASSERT_NO_THROW(writer->write(write_observer));
 
     auto actual = std::make_shared<data::series_set>();
     auto reader = std::make_shared<io::dicom::reader::file>();
     reader->set_object(actual);
     reader->set_folder(folder);
-    CPPUNIT_ASSERT_NO_THROW(reader->read());
+    auto read_observer = std::make_shared<core::progress::observer>("Test read");
+    CPPUNIT_ASSERT_NO_THROW(reader->read(read_observer));
 
     compare_enhanced_us_volume(expected, actual);
 }
@@ -241,6 +243,7 @@ void reader_writer_test::basic_test()
         return;
     }
 
+    // cspell:ignore Acuson
     test_image("us/Enhanced US Volume Storage/GE, 3D+t, lossy JPEG");
     test_image("us/Ultrasound Image Storage/Philips, RLE, palette color");
     test_image("us/Ultrasound Multi-frame Image Storage/Acuson, 2D+t, lossy JPEG");

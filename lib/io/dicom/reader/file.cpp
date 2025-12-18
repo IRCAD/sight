@@ -21,9 +21,8 @@
 
 #include "file.hpp"
 
-#include "core/jobs/job.hpp"
-
 #include <core/compare.hpp>
+#include <core/progress/observer.hpp>
 
 #include <data/dicom/sop.hpp>
 #include <data/helper/medical_image.hpp>
@@ -32,6 +31,8 @@
 #include <data/model_series.hpp>
 
 #include <geometry/__/vector.hpp>
+
+#include <io/bitmap/reader.hpp>
 
 #include <gdcmDirectory.h>
 #include <gdcmImageApplyLookupTable.h>
@@ -48,6 +49,8 @@
 #include <glm/ext/matrix_relational.hpp>
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/glm.hpp>
+
+#include <algorithm>
 
 // cspell: ignore orthogonalize
 namespace sight::io::dicom::reader
@@ -595,7 +598,7 @@ inline static data::image::spacing_t compute_spacing(
 
 inline static data::image_series::sptr new_image_series(
     const data::series& _source,
-    const core::jobs::job::sptr& _job,
+    const core::progress::observer::sptr& _progress,
     const gdcm::Image& _gdcm_image,
     const std::unique_ptr<gdcm::Rescaler>& _gdcm_rescaler,
     const std::string& _filename
@@ -620,7 +623,7 @@ inline static data::image_series::sptr new_image_series(
         type == core::type::NONE || format == data::image::pixel_format_t::undefined
     );
 
-    if(_job && _job->cancel_requested())
+    if(_progress && _progress->cancel_requested())
     {
         return nullptr;
     }
@@ -654,15 +657,66 @@ constexpr static void ybr_to_rgb(T* _buffer, std::size_t _size, std::uint16_t _s
 inline static const char* read_gdcm_buffer(
     const gdcm::Image& _gdcm_image,
     char* const _buffer,
-    const std::string& _filename
+    const std::string& _filename,
+    const bool _jpeg2k_bypass
 )
 {
     SIGHT_ASSERT("Null buffer.", _buffer != nullptr);
 
-    SIGHT_THROW_IF(
-        "Cannot read Pixel Data from DICOM file '" << _filename << "'.",
-        _buffer == nullptr || !_gdcm_image.GetBuffer(_buffer)
-    );
+    // Special case for JPEG2000 compressed images since GDCM could crash when the output size is too big.
+    /// @note this could happen with other compression schemes (RLE, JPEG, ...), but JPEG2000 is what we use the most.
+    if(_jpeg2k_bypass)
+    {
+        const auto& data_element            = _gdcm_image.GetDataElement();
+        const auto* const fragment_sequence = data_element.GetSequenceOfFragments();
+
+        SIGHT_THROW_IF(
+            "Cannot read Pixel Data from DICOM file '" << _filename << "'.",
+            fragment_sequence == nullptr || fragment_sequence->GetNumberOfFragments() <= 0
+        );
+
+        const auto& dimensions   = _gdcm_image.GetDimensions();
+        const auto& pixel_format = _gdcm_image.GetPixelFormat();
+        const auto pixel_size    = pixel_format.GetPixelSize();
+        const auto frame_size    = dimensions[0] * dimensions[1] * pixel_size;
+
+        bitmap::reader reader;
+
+        /// @note Using threads is not really useful here, especially with nvjpeg2k: it is even a bit slower.
+        for(std::size_t i = 0, end = fragment_sequence->GetNumberOfFragments() ; i < end ; ++i)
+        {
+            const auto& fragment = fragment_sequence->GetFragment(i);
+            SIGHT_THROW_IF(
+                "Invalid fragment[" << i << "] in DICOM file '" << _filename << "'.",
+                fragment.GetLength() <= 0
+            );
+
+            const auto* const byte_value = fragment.GetByteValue();
+            SIGHT_THROW_IF(
+                "Invalid fragment[" << i << "] in DICOM file '" << _filename << "'.",
+                byte_value == nullptr
+            );
+
+            reader.read(
+                reinterpret_cast<const uint8_t*>(byte_value->GetPointer()),
+                byte_value->GetLength(),
+#ifdef SIGHT_ENABLE_NVJPEG2K
+                bitmap::backend::nvjpeg2k_j2k,
+#else
+                bitmap::backend::openjpeg_j2k,
+#endif
+                reinterpret_cast<uint8_t*>(_buffer + (i * frame_size))
+            );
+        }
+    }
+    else
+    {
+        // In all other cases, rely on GDCM to decode the Pixel Data
+        SIGHT_THROW_IF(
+            "Cannot read Pixel Data from DICOM file '" << _filename << "'.",
+            !_gdcm_image.GetBuffer(_buffer)
+        );
+    }
 
     return _buffer;
 }
@@ -670,16 +724,17 @@ inline static const char* read_gdcm_buffer(
 //------------------------------------------------------------------------------
 
 inline static bool read_buffer(
-    const core::jobs::job::sptr& _job,
+    const core::progress::observer::sptr& _progress,
     const gdcm::Image& _gdcm_image,
     const std::unique_ptr<gdcm::Rescaler>& _gdcm_rescaler,
     std::unique_ptr<std::vector<char> >& _gdcm_instance_buffer,
     char* const _instance_buffer,
     const std::size_t _instance_buffer_size,
-    const std::string& _filename
+    const std::string& _filename,
+    const bool _jpeg2k_bypass
 )
 {
-    if(_job && _job->cancel_requested())
+    if(_progress && _progress->cancel_requested())
     {
         return false;
     }
@@ -696,15 +751,15 @@ inline static bool read_buffer(
     {
         SIGHT_ASSERT("Instance Buffer size must large enough.", _instance_buffer_size == gdcm_buffer_size * 8);
 
-        if(_job && _job->cancel_requested())
+        if(_progress && _progress->cancel_requested())
         {
             return false;
         }
 
         // Read the buffer. Use the buffer from the image series object
-        read_gdcm_buffer(_gdcm_image, _instance_buffer, _filename);
+        read_gdcm_buffer(_gdcm_image, _instance_buffer, _filename, _jpeg2k_bypass);
 
-        if(_job && _job->cancel_requested())
+        if(_progress && _progress->cancel_requested())
         {
             return false;
         }
@@ -743,7 +798,7 @@ inline static bool read_buffer(
             )
         );
 
-        if(_job && _job->cancel_requested())
+        if(_progress && _progress->cancel_requested())
         {
             return false;
         }
@@ -759,9 +814,14 @@ inline static bool read_buffer(
         }
 
         // Read raw input buffer
-        const char* const gdcm_buffer = read_gdcm_buffer(_gdcm_image, _gdcm_instance_buffer->data(), _filename);
+        const char* const gdcm_buffer = read_gdcm_buffer(
+            _gdcm_image,
+            _gdcm_instance_buffer->data(),
+            _filename,
+            _jpeg2k_bypass
+        );
 
-        if(_job && _job->cancel_requested())
+        if(_progress && _progress->cancel_requested())
         {
             return false;
         }
@@ -783,13 +843,13 @@ inline static bool read_buffer(
             _instance_buffer_size >= gdcm_buffer_size
         );
 
-        if(_job && _job->cancel_requested())
+        if(_progress && _progress->cancel_requested())
         {
             return false;
         }
 
         // Read the buffer. Use the buffer from the image series object
-        read_gdcm_buffer(_gdcm_image, _instance_buffer, _filename);
+        read_gdcm_buffer(_gdcm_image, _instance_buffer, _filename, _jpeg2k_bypass);
 
         // 99% of the time, the pixel type is 8 bits per component, but it can be 16 bits too.
         switch(gdcm_pixel_format.GetBitsAllocated())
@@ -821,7 +881,7 @@ inline static bool read_buffer(
     else
     {
         // Nothing to do other than copying the buffer
-        read_gdcm_buffer(_gdcm_image, _instance_buffer, _filename);
+        read_gdcm_buffer(_gdcm_image, _instance_buffer, _filename, _jpeg2k_bypass);
     }
 
     return true;
@@ -980,13 +1040,13 @@ inline static data::matrix4 compute_image_transform(
 
 inline static data::series_set::sptr read_image_instance(
     const data::series& _source,
-    const core::jobs::job::sptr& _job,
+    const core::progress::observer::sptr& _progress,
     std::unique_ptr<std::vector<char> >& _gdcm_instance_buffer,
     std::size_t _instance                   = 0,
     data::series_set::sptr _splitted_series = nullptr
 )
 {
-    if(_job && _job->cancel_requested())
+    if(_progress && _progress->cancel_requested())
     {
         return nullptr;
     }
@@ -999,15 +1059,16 @@ inline static data::series_set::sptr read_image_instance(
     SIGHT_INFO("Reading DICOM file '" << filename << "'.");
     SIGHT_THROW_IF("Cannot read DICOM file '" << filename << "'.", !gdcm_reader.Read());
 
-    // Get the image and convert it to a suitable format
-    const auto& gdcm_image = convert_gdcm_image(gdcm_reader.GetImage(), filename);
-
     // Get the dataset and the input pixel format
     const auto& gdcm_dataset = gdcm_reader.GetFile().GetDataSet();
 
+    // Get the image and convert it to a suitable format
+    /// @note you *MUST* use a reference here, otherwise GDCM "smart" pointers will not work correctly.
+    auto& gdcm_image = gdcm_reader.GetImage();
+
     // GDCM you are disappointing. gdcm::Image::GetIntercept() and gdcm::Image::GetSlope() doesn't always work.
     const auto& [use_intercept, fixed_intercept] =
-        [&]
+        [&gdcm_image, &gdcm_dataset]
         {
             if(const double gdcm_intercept = gdcm_image.GetIntercept();
                !core::is_equal(gdcm_intercept, 0.0))
@@ -1026,7 +1087,7 @@ inline static data::series_set::sptr read_image_instance(
         }();
 
     const auto& [use_slope, fixed_slope] =
-        [&]
+        [&gdcm_image, &gdcm_dataset]
         {
             if(const double gdcm_slope = gdcm_image.GetSlope();
                !core::is_equal(gdcm_slope, 1.0))
@@ -1044,6 +1105,17 @@ inline static data::series_set::sptr read_image_instance(
             return std::make_pair(false, 1.0);
         }();
 
+    const auto& transfer_syntax = gdcm_image.GetTransferSyntax();
+
+    // Bypass GDCM for JPEG2000 compressed images with no rescale intercept / slope
+    /// @note If we want to use nvjpeg2k with slope / intercept, we need to do it ourselves !
+    const bool jpeg2k_bypass = !use_intercept && !use_slope && transfer_syntax.IsEncapsulated()
+                               && (transfer_syntax == gdcm::TransferSyntax::JPEG2000
+                                   || transfer_syntax == gdcm::TransferSyntax::JPEG2000Lossless
+                                   || transfer_syntax == gdcm::TransferSyntax::JPEG2000Part2
+                                   || transfer_syntax == gdcm::TransferSyntax::JPEG2000Part2Lossless);
+    const auto& converted_gdcm_image = jpeg2k_bypass ? gdcm_image : convert_gdcm_image(gdcm_image, filename);
+
     // Initialize the rescaler if there is a Rescale Intercept / Rescale Slope
     // The Rescale Intercept / Rescale Slope can be specific to each instance !
     std::unique_ptr<gdcm::Rescaler> gdcm_rescaler;
@@ -1052,22 +1124,28 @@ inline static data::series_set::sptr read_image_instance(
         gdcm_rescaler = std::make_unique<gdcm::Rescaler>();
         gdcm_rescaler->SetIntercept(fixed_intercept);
         gdcm_rescaler->SetSlope(fixed_slope);
-        gdcm_rescaler->SetPixelFormat(gdcm_image.GetPixelFormat());
+        gdcm_rescaler->SetPixelFormat(converted_gdcm_image.GetPixelFormat());
     }
 
     // Create the ImageSeries, if needed, get or compute needed image information
     // Special case here: if the current image is a volume, and we have more than one instance, we have no other
     // choice than splitting the series.
-    const bool split = gdcm_image.GetNumberOfDimensions() >= 3 && _source.num_instances() > 1;
+    const bool split = converted_gdcm_image.GetNumberOfDimensions() >= 3 && _source.num_instances() > 1;
     if(!_splitted_series || split)
     {
-        if(_job && _job->cancel_requested())
+        if(_progress && _progress->cancel_requested())
         {
             return nullptr;
         }
 
-        // User may have canceled the job
-        if(const auto& image_series = new_image_series(_source, _job, gdcm_image, gdcm_rescaler, filename);
+        // User may have canceled the task
+        if(const auto& image_series = new_image_series(
+               _source,
+               _progress,
+               converted_gdcm_image,
+               gdcm_rescaler,
+               filename
+        );
            image_series)
         {
             // Add the dataset to allow access to all DICOM attributes (not only the ones we have converted)
@@ -1076,7 +1154,7 @@ inline static data::series_set::sptr read_image_instance(
             // Also save the file path. It could be useful to keep a link to the original file.
             image_series->set_file(filename);
 
-            const auto& transform = compute_image_transform(gdcm_image, image_series);
+            const auto& transform = compute_image_transform(converted_gdcm_image, image_series);
             image_series->data::image::set_origin(transform.position());
             image_series->data::image::set_orientation(transform.orientation());
 
@@ -1096,7 +1174,7 @@ inline static data::series_set::sptr read_image_instance(
         }
     }
 
-    if(_job && _job->cancel_requested())
+    if(_progress && _progress->cancel_requested())
     {
         return nullptr;
     }
@@ -1123,16 +1201,17 @@ inline static data::series_set::sptr read_image_instance(
 
     // Read the image data and fill the image series
     if(!read_buffer(
-           _job,
-           gdcm_image,
+           _progress,
+           converted_gdcm_image,
            gdcm_rescaler,
            _gdcm_instance_buffer,
            instance_buffer,
            instance_buffer_size,
-           filename
+           filename,
+           jpeg2k_bypass
     ))
     {
-        // Job have been canceled
+        // Task have been canceled
         return nullptr;
     }
 
@@ -1141,9 +1220,12 @@ inline static data::series_set::sptr read_image_instance(
 
 //------------------------------------------------------------------------------
 
-inline static data::series_set::sptr read_image(const data::series& _source, const core::jobs::job::sptr& _job)
+inline static data::series_set::sptr read_image(
+    const data::series& _source,
+    const core::progress::observer::sptr& _progress
+)
 {
-    if(_job && _job->cancel_requested())
+    if(_progress && _progress->cancel_requested())
     {
         return nullptr;
     }
@@ -1152,23 +1234,23 @@ inline static data::series_set::sptr read_image(const data::series& _source, con
     // readImageInstance() returns a series set, because the series can be splitted in rare cases,
     // like US 4D Volume.
     std::unique_ptr<std::vector<char> > gdcm_instance_buffer;
-    auto splitted_series = read_image_instance(_source, _job, gdcm_instance_buffer, 0);
+    auto splitted_series = read_image_instance(_source, _progress, gdcm_instance_buffer, 0);
 
     if(!splitted_series)
     {
-        // Job have been canceled
+        // Task have been canceled
         return nullptr;
     }
 
     // Read the other instances if necessary
     for(std::size_t instance = 1, end = _source.num_instances() ; instance < end ; ++instance)
     {
-        if(_job && _job->cancel_requested())
+        if(_progress && _progress->cancel_requested())
         {
             return nullptr;
         }
 
-        read_image_instance(_source, _job, gdcm_instance_buffer, instance, splitted_series);
+        read_image_instance(_source, _progress, gdcm_instance_buffer, instance, splitted_series);
     }
 
     for(const auto& series : *splitted_series)
@@ -1177,7 +1259,7 @@ inline static data::series_set::sptr read_image(const data::series& _source, con
 
         if(data::helper::medical_image::check_image_validity(image_series))
         {
-            data::helper::medical_image::check_image_slice_index(image_series);
+            data::helper::medical_image::check_image_slice_index(*image_series);
         }
 
         ///@todo check if we must rotate the buffer to match ImageOrientationPatient. Not sure it is a good idea...
@@ -1190,7 +1272,7 @@ inline static data::series_set::sptr read_image(const data::series& _source, con
 
 inline static data::series_set::sptr read_model(
     const data::series& /*unused*/,
-    const core::jobs::job::sptr& /*unused*/
+    const core::progress::observer::sptr& /*unused*/
 )
 {
     data::series_set::sptr splitted_series;
@@ -1343,9 +1425,8 @@ public:
         std::vector<std::size_t> sorted;
         sorted.reserve(sorter.size());
 
-        std::transform(
-            sorter.cbegin(),
-            sorter.cend(),
+        std::ranges::transform(
+            sorter,
             std::back_inserter(sorted),
             [](const auto& _v){return _v.second;});
 
@@ -1448,9 +1529,8 @@ public:
         std::vector<std::size_t> sorted;
         sorted.reserve(sorter.size());
 
-        std::transform(
-            sorter.cbegin(),
-            sorter.cend(),
+        std::ranges::transform(
+            sorter,
             std::back_inserter(sorted),
             [](const auto& _v){return _v.second;});
 
@@ -1482,9 +1562,8 @@ public:
         std::vector<std::size_t> sorted;
         sorted.reserve(sorter.size());
 
-        std::transform(
-            sorter.cbegin(),
-            sorter.cend(),
+        std::ranges::transform(
+            sorter,
             std::back_inserter(sorted),
             [](const auto& _v){return _v.second;});
 
@@ -1516,9 +1595,8 @@ public:
         std::vector<std::size_t> sorted;
         sorted.reserve(sorter.size());
 
-        std::transform(
-            sorter.cbegin(),
-            sorter.cend(),
+        std::ranges::transform(
+            sorter,
             std::back_inserter(sorted),
             [](const auto& _v){return _v.second;});
 
@@ -1527,8 +1605,10 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void read()
+    void read(SPTR(sight::core::progress::observer) _progress)
     {
+        m_progress = _progress;
+
         SIGHT_THROW_IF(
             "There is no DICOM file to read.",
             !m_sorted || m_sorted->empty()
@@ -1564,12 +1644,12 @@ public:
             if(source->get_dicom_type() == data::series::dicom_t::image)
             {
                 // Read an image series
-                splitted_series = read_image(*source, m_job);
+                splitted_series = read_image(*source, m_progress);
             }
             else if(source->get_dicom_type() == data::series::dicom_t::model)
             {
                 // Read a model series
-                splitted_series = read_model(*source, m_job);
+                splitted_series = read_model(*source, m_progress);
             }
             else if(source->get_dicom_type() == data::series::dicom_t::fiducials)
             {
@@ -1667,16 +1747,16 @@ public:
 
     [[nodiscard]] bool cancel_requested() const noexcept
     {
-        return m_job && m_job->cancel_requested();
+        return m_progress && m_progress->cancel_requested();
     }
 
     //------------------------------------------------------------------------------
 
     void progress(std::uint64_t _units) const
     {
-        if(m_job)
+        if(m_progress)
         {
-            m_job->done_work(_units);
+            m_progress->done_work(_units);
         }
     }
 
@@ -1689,7 +1769,7 @@ public:
     }
 
     /// The default filter to select only some type (Image, Model, ...) of DICOM files.
-    data::series::SopKeywords m_filters;
+    data::series::sop_keywords_t m_filters;
 
     /// Contains the list of files to sort and read.
     /// Usually, it is filed by user after showing a selection dialog,
@@ -1704,8 +1784,8 @@ public:
     /// This allows to keep a reference as generic_object_reader / object_reader only keep a weak_ptr to the output.
     data::series_set::sptr m_read;
 
-    /// The default job. Allows to watch for cancellation and report progress.
-    core::jobs::job::sptr m_job;
+    /// Allows to watch for cancellation and report progress.
+    core::progress::observer::sptr m_progress;
 };
 
 file::file() :
@@ -1749,9 +1829,8 @@ data::series_set::sptr file::scan()
 
         // We need to transform std::vector<std::string> to std::vector<std::filesystem::path>
         const auto& filenames = gdcm_directory.GetFilenames();
-        std::transform(
-            filenames.cbegin(),
-            filenames.cend(),
+        std::ranges::transform(
+            filenames,
             std::back_inserter(files),
             [](const auto& _v)
             {
@@ -1798,7 +1877,7 @@ data::series_set::sptr file::sort()
 
 //------------------------------------------------------------------------------
 
-void file::read()
+void file::read(sight::core::progress::observer::sptr _progress)
 {
     if(!m_pimpl->m_sorted || m_pimpl->m_sorted->empty())
     {
@@ -1811,14 +1890,14 @@ void file::read()
         return;
     }
 
-    m_pimpl->read();
+    m_pimpl->read(_progress);
 
     m_pimpl->progress(100);
 }
 
 //------------------------------------------------------------------------------
 
-void file::set_filters(const data::series::SopKeywords& _filters)
+void file::set_filters(const data::series::sop_keywords_t& _filters)
 {
     m_pimpl->m_filters = _filters;
 }
@@ -1841,22 +1920,6 @@ void file::set_sorted(const data::series_set::sptr& _sorted)
 
     // No need to keep the scanned files, they are not used anymore
     m_pimpl->m_scanned.reset();
-}
-
-//------------------------------------------------------------------------------
-
-core::jobs::base::sptr file::get_job() const
-{
-    return m_pimpl->m_job;
-}
-
-//------------------------------------------------------------------------------
-
-void file::set_job(core::jobs::job::sptr _job)
-{
-    SIGHT_ASSERT("Some work have already be reported.", _job->get_done_work_units() == 0);
-    m_pimpl->m_job = _job;
-    m_pimpl->m_job->set_total_work_units(100);
 }
 
 } // namespace sight::io::dicom::reader

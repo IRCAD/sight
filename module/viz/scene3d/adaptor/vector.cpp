@@ -30,6 +30,7 @@
 
 #include <viz/scene3d/helper/manual_object.hpp>
 #include <viz/scene3d/helper/scene.hpp>
+#include <viz/scene3d/ogre.hpp>
 #include <viz/scene3d/render.hpp>
 
 #include <OgreNode.h>
@@ -140,7 +141,9 @@ void vector::create_vector()
     // Draw
     Ogre::SceneManager* scene_mgr = this->get_scene_manager();
     m_line = scene_mgr->createManualObject(gen_id("line"));
+    m_line->setRenderQueueGroup(sight::viz::scene3d::rq::SURFACE);
     m_cone = scene_mgr->createManualObject(gen_id("cone"));
+    m_cone->setRenderQueueGroup(sight::viz::scene3d::rq::SURFACE);
 
     // Line
     sight::viz::scene3d::helper::manual_object::create_cylinder(

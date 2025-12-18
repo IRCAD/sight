@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2025 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,14 +27,6 @@
 #include <io/__/service/reader.hpp>
 
 #include <filesystem>
-#include <string>
-
-namespace sight::core::jobs
-{
-
-class base;
-
-} // namespace sight::core::jobs
 
 namespace sight::module::io::vtk
 {
@@ -45,8 +37,8 @@ namespace sight::module::io::vtk
  * Service reading an image series using the fwVtkIO lib.
  *
  * @section Signals Signals
- * - \b job_created(SPTR(core::jobs::base)): emitted to display a progress bar while the image is loading (it should be
- * connected to a job_bar).
+ * - \b monitor_created(SPTR(core::progress::monitor)): emitted to display a progress bar while the image is loading,
+ * it should be connected to a progress bar
  *
  * @section XML Configuration
  * @code{.xml}
@@ -64,15 +56,10 @@ class image_series_reader : public sight::io::service::reader
 {
 public:
 
-    using job_created_signal_t = core::com::signal<void (std::shared_ptr<core::jobs::base>)>;
-
     /**
      * @brief Constructor. Do nothing.
      */
     image_series_reader() noexcept;
-
-    ~image_series_reader() noexcept override =
-        default;
 
     SIGHT_DECLARE_SERVICE(image_series_reader, sight::io::service::reader);
 
@@ -125,8 +112,6 @@ private:
 
     /// Image path.
     std::filesystem::path m_fs_img_path;
-
-    SPTR(job_created_signal_t) m_sig_job_created;
 };
 
 } // namespace sight::module::io::vtk

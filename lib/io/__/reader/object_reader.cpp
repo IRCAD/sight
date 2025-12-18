@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,17 +39,6 @@ core::object::sptr object_reader::get_object() const
     auto object = m_object.lock();
     SIGHT_ASSERT("Object is null", object);
     return object;
-}
-
-//------------------------------------------------------------------------------
-
-void object_reader::cancel() const
-{
-    auto job = this->get_job();
-    if(job)
-    {
-        job->cancel();
-    }
 }
 
 //------------------------------------------------------------------------------

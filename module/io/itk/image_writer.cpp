@@ -38,7 +38,6 @@
 #include <ui/__/cursor.hpp>
 #include <ui/__/dialog/location.hpp>
 #include <ui/__/dialog/message.hpp>
-#include <ui/__/dialog/progress.hpp>
 
 #include <boost/algorithm/string.hpp>
 
@@ -117,7 +116,11 @@ void image_writer::info(std::ostream& _sstream)
 
 //------------------------------------------------------------------------------
 
-bool image_writer::save_image(const std::filesystem::path& _img_save_path, const data::image::csptr& _image)
+bool image_writer::save_image(
+    const std::filesystem::path& _img_save_path,
+    const data::image::csptr& _image,
+    const core::progress::observer::sptr& _progress
+)
 {
     sight::io::writer::object_writer::sptr my_writer;
     std::string ext = _img_save_path.extension().string();
@@ -126,8 +129,6 @@ bool image_writer::save_image(const std::filesystem::path& _img_save_path, const
     if(boost::algorithm::ends_with(_img_save_path.string(), ".inr.gz"))
     {
         auto inr_writer = std::make_shared<sight::io::itk::inr_image_writer>();
-        sight::ui::dialog::progress progress_meter_gui("Saving images... ");
-        inr_writer->add_handler(progress_meter_gui);
         inr_writer->set_file(_img_save_path);
         my_writer = inr_writer;
     }
@@ -140,8 +141,6 @@ bool image_writer::save_image(const std::filesystem::path& _img_save_path, const
     else if(std::filesystem::is_directory(_img_save_path))
     {
         auto jpg_writer = std::make_shared<sight::io::itk::jpg_image_writer>();
-        sight::ui::dialog::progress progress_meter_gui("Saving images... ");
-        jpg_writer->add_handler(progress_meter_gui);
         jpg_writer->set_folder(_img_save_path);
         my_writer = jpg_writer;
     }
@@ -159,7 +158,7 @@ bool image_writer::save_image(const std::filesystem::path& _img_save_path, const
 
     try
     {
-        my_writer->write();
+        my_writer->write(_progress);
     }
     catch(const std::exception& e)
     {
@@ -199,7 +198,8 @@ void image_writer::updating()
         cursor.set_cursor(ui::cursor_base::busy);
         try
         {
-            save_image(this->get_file(), image);
+            auto write_observer = std::make_shared<sight::core::progress::observer>("Saving images... ");
+            save_image(this->get_file(), image, write_observer);
             m_write_failed = false;
         }
         catch(core::tools::failed& e)

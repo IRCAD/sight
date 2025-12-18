@@ -24,7 +24,6 @@
 
 #include <sight/data/config.hpp>
 
-#include "data/dicom_series.hpp"
 #include "data/factory/new.hpp"
 #include "data/image.hpp"
 #include "data/series.hpp"
@@ -63,12 +62,6 @@ public:
 
     /// Destroys the series.
     SIGHT_DATA_API ~image_series() noexcept override = default;
-
-    /// Gets the DICOM reference used to generate valid Dicom Segmentation.
-    dicom_series::csptr get_dicom_reference() const;
-
-    /// Sets the DICOM reference used to generate valid Dicom Segmentation.
-    void set_dicom_reference(const dicom_series::csptr& _reference);
 
     /// Getter/Setter of DICOM VOI LUT Module Module related attributes
     /// @note the definition is in Series.cpp
@@ -173,26 +166,7 @@ public:
     inline static std::vector<double> to_dicom_orientation(const orientation_t& _orientation);
     inline static orientation_t from_dicom_orientation(const std::vector<double>& _orientation);
     /// @}
-
-private:
-
-    /// Contains the DICOM reference used to generate a valid DICOM Segmentation.
-    dicom_series::sptr m_dicom_reference;
 };
-
-//-----------------------------------------------------------------------------
-
-inline dicom_series::csptr image_series::get_dicom_reference() const
-{
-    return m_dicom_reference;
-}
-
-//-----------------------------------------------------------------------------
-
-inline void image_series::set_dicom_reference(const dicom_series::csptr& _reference)
-{
-    m_dicom_reference = std::const_pointer_cast<dicom_series>(_reference);
-}
 
 //------------------------------------------------------------------------------
 

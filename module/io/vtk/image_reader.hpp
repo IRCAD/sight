@@ -22,26 +22,18 @@
 
 #pragma once
 
-// Declaration of class and function export
+#include <core/progress/observer.hpp>
 
-#include <io/__/service/reader.hpp> // Definition of abstract reader class
+#include <io/__/service/reader.hpp>
 
-#include <filesystem> // Used to save the file system path of loaded image
+#include <filesystem>
 
-// Pre-definition of data::image to avoid inclusion file
 namespace sight::data
 {
 
 class image;
 
 } // namespace sight::data
-
-namespace sight::core::jobs
-{
-
-class base;
-
-} // namespace sight::core::jobs
 
 namespace sight::module::io::vtk
 {
@@ -50,8 +42,8 @@ namespace sight::module::io::vtk
  * @brief Service reading a VTK image using the fwVtkIO lib.
  *
  * @section Signals Signals
- * - \b job_created(SPTR(core::jobs::base)): emitted to display a progress bar while the image is loading (it should be
- * connected to a job_bar).
+ * - \b monitor_created(SPTR(core::progress::monitor)): emitted to display a progress bar while the image is loading,
+ * it should be connected to a progress bar.
  *
  * @section Slots Slots
  * - \b readFile(std::filesystem::path) : read the given file
@@ -75,12 +67,9 @@ class image_reader : public sight::io::service::reader
 public:
 
     image_reader() noexcept;
-
     ~image_reader() noexcept override = default;
 
     SIGHT_DECLARE_SERVICE(image_reader, sight::io::service::reader);
-
-    using job_created_signal_t = core::com::signal<void (std::shared_ptr<core::jobs::base>)>;
 
     /**
      * @brief Configure the image path with a dialogBox.
@@ -98,7 +87,7 @@ public:
     static bool load_image(
         const std::filesystem::path& _vtk_file,
         std::shared_ptr<data::image> _image,
-        const SPTR(job_created_signal_t)& _sig_job_created
+        SPTR(core::progress::observer) _progress
     );
 
 protected:
@@ -129,8 +118,6 @@ private:
 
     /// Image path, location of image on filesystem.
     std::filesystem::path m_fs_img_path;
-
-    SPTR(job_created_signal_t) m_sig_job_created;
 };
 
 } // namespace sight::module::io::vtk

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2024 IRCAD France
+ * Copyright (C) 2020-2025 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,13 +45,13 @@ namespace sight::module::io::dimse
 /**
  * @brief This editor allows to perform queries on a pacs.
  *
- * Queries results are stored in a series_set where each Series is a DicomSeries.
+ * Queries results are stored in a series_set.
  *
  * @section XML XML Configuration
  * @code{.xml}
         <service type="sight::module::io::dimse::query_editor">
             <in key="pacsConfig" uid="..." />
-            <inout key="seriesSet" uid="..." />
+            <inout key="series_set" uid="..." />
             <config icon="..." />
        </service>
    @endcode
@@ -60,7 +60,7 @@ namespace sight::module::io::dimse
  * - \b pacsConfig [sight::io::dimse::data::pacs_configuration]: PACS configuration data.
  *
  * @subsection In-Out In-Out:
- * - \b seriesSet [sight::data::object]: series_set where to push the queried data.
+ * - \b series_set [sight::data::object]: series_set where to push the queried data.
  *
  * @subsection Configuration Configuration:
  * - \b advanced (optional, bool, default=true): define if advanced fields are displayed.
@@ -121,7 +121,7 @@ private:
     bool m_advanced {true};
 
     /// Defines the path of the button's icon.
-    std::filesystem::path m_icon_path {};
+    std::filesystem::path m_icon_path;
 
     /// Defines the with of the button's icon.
     unsigned int m_icon_width {20};
@@ -173,7 +173,7 @@ private Q_SLOTS:
 private:
 
     data::ptr<sight::io::dimse::data::pacs_configuration, data::access::in> m_config {this, "pacsConfig"};
-    data::ptr<sight::data::series_set, data::access::inout> m_series_set {this, "seriesSet"};
+    data::ptr<sight::data::series_set, data::access::inout> m_series_set {this, "series_set"};
 };
 
 } // namespace sight::module::io::dimse.

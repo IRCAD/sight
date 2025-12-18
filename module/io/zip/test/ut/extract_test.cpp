@@ -24,6 +24,7 @@
 #include "extract_test.hpp"
 
 #include <core/os/temp_path.hpp>
+#include <core/progress/observer.hpp>
 
 #include <io/vtk/vti_image_reader.hpp>
 
@@ -84,7 +85,8 @@ void extract_test::basic_archive_test()
     vti_reader->set_file(vti_path);
     auto img = std::make_shared<data::image>();
     vti_reader->set_object(img);
-    CPPUNIT_ASSERT_NO_THROW(vti_reader->read());
+    auto observer = std::make_shared<core::progress::observer>("Reading VTI image");
+    CPPUNIT_ASSERT_NO_THROW(vti_reader->read(observer));
 
     ui::test::dialog::location::push_paths(
         {utest_data::dir() / "sight/ui/archive_extractor/non-encrypted-archive.sample"
@@ -166,7 +168,8 @@ void extract_test::encrypted_archive_test()
     vti_reader->set_file(vti_path);
     auto img = std::make_shared<data::image>();
     vti_reader->set_object(img);
-    CPPUNIT_ASSERT_NO_THROW(vti_reader->read());
+    auto observer = std::make_shared<core::progress::observer>("Reading VTI image");
+    CPPUNIT_ASSERT_NO_THROW(vti_reader->read(observer));
 
     CPPUNIT_ASSERT(ui::test::dialog::location::clear());
     CPPUNIT_ASSERT(ui::test::dialog::input::clear());

@@ -21,6 +21,8 @@
 
 #include "filled.hpp"
 
+#include "data/string_serializable.hpp"
+
 #include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
 #include <data/model_series.hpp>
@@ -67,10 +69,18 @@ sight::data::validator::return_t filled::validate(const data::object::csptr& _ob
             validation = {false, "Vector is empty."};
         }
     }
+    else if(const auto string_serializable = std::dynamic_pointer_cast<const data::string_serializable>(_object);
+            string_serializable)
+    {
+        if(string_serializable->to_string().empty())
+        {
+            validation = {false, "String is empty."};
+        }
+    }
     else
     {
         validation = {false, "Current object should be either an image, an image_series a model_series, a vector or"
-                             "a point_list."
+                             "a point_list, or a string_serializable."
         };
     }
 

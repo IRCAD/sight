@@ -23,6 +23,7 @@
 #pragma once
 
 #include <core/macros.hpp>
+#include <core/progress/observer.hpp>
 
 #include <io/__/service/reader.hpp>
 
@@ -65,7 +66,11 @@ public:
 
     ~image_reader() noexcept override = default;
 
-    static bool load_image(const std::filesystem::path& _img_file, const SPTR(data::image)& _img);
+    static bool load_image(
+        const std::filesystem::path& _img_file,
+        const SPTR(data::image)& _img,
+        const SPTR(core::progress::observer)& _read_observer
+    );
 
 protected:
 

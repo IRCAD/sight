@@ -41,6 +41,8 @@
 #include <windows.h>
 #endif
 
+// cspell:ignore hwnd
+
 SIGHT_REGISTER_GUI(sight::ui::qt::layout::frame, sight::ui::layout::frame_manager::REGISTRY_KEY);
 
 namespace sight::ui::qt::layout
@@ -334,6 +336,13 @@ void frame::destroy_frame()
     if((window_states& Qt::WindowFullScreen) == Qt::WindowFullScreen)
     {
         state |= frame_state::full_screen;
+
+#ifdef _WIN32
+        if(m_full_screen_and_maximized)
+        {
+            state |= frame_state::maximized;
+        }
+#endif
     }
 
     if((window_states& Qt::WindowMaximized) == Qt::WindowMaximized)
@@ -389,14 +398,28 @@ void frame::set_full_screen(bool _full_screen)
 {
     if(_full_screen && (m_qt_window->windowState() & Qt::WindowFullScreen) != Qt::WindowFullScreen)
     {
-        m_qt_window->setWindowState(m_qt_window->windowState() | Qt::WindowFullScreen);
+#ifdef _WIN32
+        /// Remember if the window was maximized before going to full screen so that we can
+        /// restore the maximized state when exiting full screen.
+        /// This is needed since Qt reset the windows border "hack" below
+        m_full_screen_and_maximized = (m_qt_window->windowState() & Qt::WindowMaximized) == Qt::WindowMaximized;
+
+        if(m_full_screen_and_maximized)
+        {
+            m_qt_window->setWindowState((m_qt_window->windowState() ^ Qt::WindowMaximized) | Qt::WindowFullScreen);
+        }
+        else
+#endif
+        {
+            m_qt_window->setWindowState(m_qt_window->windowState() | Qt::WindowFullScreen);
+        }
 
 #ifdef _WIN32
         // This is a workaround for OpenGLWidget and fullscreen mode on Windows
         // Without the "fake" border, all popup, dialogs and menu are hidden behind the main window
         // Normally, this "hack" is done inside Qt private code, but it seems to be broken.
         // See https://bugreports.qt.io/browse/QTBUG-104076
-        const auto hwnd  = reinterpret_cast<HWND>(m_qt_window->winId());
+        auto* const hwnd = reinterpret_cast<HWND>(m_qt_window->winId());
         const auto style = GetWindowLongPtr(hwnd, GWL_STYLE) | WS_BORDER;
         SetWindowLongPtr(hwnd, GWL_STYLE, style);
 #endif
@@ -405,11 +428,19 @@ void frame::set_full_screen(bool _full_screen)
     {
 #ifdef _WIN32
         // Revert back the "hack" done in set_full_screen
-        const auto hwnd  = reinterpret_cast<HWND>(m_qt_window->winId());
+        auto* const hwnd = reinterpret_cast<HWND>(m_qt_window->winId());
         const auto style = GetWindowLongPtr(hwnd, GWL_STYLE) ^ WS_BORDER;
         SetWindowLongPtr(hwnd, GWL_STYLE, style);
 #endif
         m_qt_window->setWindowState(m_qt_window->windowState() ^ Qt::WindowFullScreen);
+
+#ifdef _WIN32
+        if(m_full_screen_and_maximized)
+        {
+            m_full_screen_and_maximized = false;
+            m_qt_window->setWindowState(m_qt_window->windowState() | Qt::WindowMaximized);
+        }
+#endif
     }
 }
 

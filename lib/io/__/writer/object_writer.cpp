@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "io/__/writer/object_writer.hpp"
 
-#include <core/jobs/base.hpp>
+#include <core/progress/monitor.hpp>
 
 namespace sight::io::writer
 {
@@ -48,17 +48,6 @@ core::object::csptr object_writer::get_object() const
 std::string object_writer::extension() const
 {
     return {};
-}
-
-//------------------------------------------------------------------------------
-
-void object_writer::cancel()
-{
-    auto job = this->get_job();
-    if(job)
-    {
-        job->cancel();
-    }
 }
 
 //------------------------------------------------------------------------------

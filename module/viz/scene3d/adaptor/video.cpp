@@ -312,6 +312,7 @@ void video::updating()
 
             // Create Ogre Entity
             m_entity = scene_manager->createEntity(entity_name, video_mesh_name);
+            m_entity->setRenderQueueGroup(sight::viz::scene3d::rq::SURFACE);
             m_entity->setMaterial(m_material);
 
             // Add the entity to the scene

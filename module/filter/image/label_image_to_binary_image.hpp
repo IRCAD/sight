@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2025 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 
 #include <service/filter.hpp>
 
-#include <boost/optional.hpp>
+#include <optional>
 
 namespace sight::module::filter::image
 {
@@ -75,21 +75,21 @@ public:
     label_image_to_binary_image();
 
     /// Destroys the service.
-    ~label_image_to_binary_image() override;
+    ~label_image_to_binary_image() final = default;
 
 protected:
 
     /// Configures this service.
-    void configuring() override;
+    void configuring() final;
 
     /// Does nothing.
-    void starting() override;
+    void starting() final;
 
     /// Computes the mask from the labeled image.
-    void updating() override;
+    void updating() final;
 
     /// Does nothing.
-    void stopping() override;
+    void stopping() final;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -98,11 +98,11 @@ protected:
      * Connect data::image::BUFFER_MODIFIED_SIG of s_LABEL_IMAGE_INPUT to service::slots::UPDATE
      * Connect data::image::MODIFIED_SIG of s_LABEL_IMAGE_INPUT to service::slots::UPDATE
      */
-    connections_t auto_connections() const override;
+    connections_t auto_connections() const final;
 
 private:
 
-    boost::optional<std::string> m_label_set_field_name;
+    std::string m_label_set_field_name;
 
     static constexpr std::string_view LABEL_IMAGE_INPUT = "labelImage";
     static constexpr std::string_view BINARY_MASK_INOUT = "binaryMask";

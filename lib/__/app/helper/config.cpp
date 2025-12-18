@@ -35,6 +35,7 @@
 #include <core/ptree.hpp>
 #include <core/runtime/runtime.hpp>
 
+#include <data/extension/config.hpp>
 #include <data/object.hpp>
 
 #include <array>
@@ -214,8 +215,18 @@ void config::parse_object(
             service::base::sptr srv                 = srv_factory->create(srv_impl);
             service::object_parser::sptr obj_parser = std::dynamic_pointer_cast<service::object_parser>(srv);
 
-            // in this case, we try with the xml attributes if the configuration is given
-            // on the same line than the definition, for instance for the generic parser with value=""
+            // If we have an extension config, use it to parse the object
+            if(const auto data_config_id = config.get_optional<std::string>("<xmlattr>.config"); data_config_id)
+            {
+                const auto data_config = data::extension::config::get()->get_data_config(
+                    *data_config_id,
+                    type.second ? type.first : ""
+                );
+
+                obj_parser->parse(data_config, obj, _objects);
+            }
+
+            // We allow direct override of object parameters in the object definition
             obj_parser->parse(config, obj, _objects);
         }
 
@@ -297,39 +308,39 @@ app::detail::service_config config::parse_service(
 #endif
 
     // Get attributes
-    app::detail::service_config srvconfig;
+    app::detail::service_config srv_config;
 
-    srvconfig.m_uid = _srv_elem.get<std::string>("<xmlattr>.uid");
-    SIGHT_ASSERT(_err_msg_head + "'uid' attribute is empty.", !srvconfig.m_uid.empty());
+    srv_config.m_uid = _srv_elem.get<std::string>("<xmlattr>.uid");
+    SIGHT_ASSERT(_err_msg_head + "'uid' attribute is empty.", !srv_config.m_uid.empty());
 
-    std::string err_msg_tail = " when parsing service '" + srvconfig.m_uid + "'.";
+    std::string err_msg_tail = " when parsing service '" + srv_config.m_uid + "'.";
 
     // config
     std::string config = _srv_elem.get<std::string>("<xmlattr>.config", "");
-    SIGHT_ASSERT(_err_msg_head + "'config' attribute is empty.", !srvconfig.m_uid.empty());
+    SIGHT_ASSERT(_err_msg_head + "'config' attribute is empty.", !srv_config.m_uid.empty());
 
     // Type
-    srvconfig.m_type = _srv_elem.get<std::string>("<xmlattr>.type", "");
+    srv_config.m_type = _srv_elem.get<std::string>("<xmlattr>.type", "");
     SIGHT_ASSERT(
         std::string(_err_msg_head) + "Attribute \"type\" is required " + err_msg_tail,
-        !srvconfig.m_type.empty()
+        !srv_config.m_type.empty()
     );
 
     // AutoConnect
-    srvconfig.m_global_auto_connect = core::ptree::get_value(_srv_elem, "<xmlattr>.auto_connect", true);
+    srv_config.m_global_auto_connect = core::ptree::get_value(_srv_elem, "<xmlattr>.auto_connect", true);
 
     // Worker key
-    srvconfig.m_worker = _srv_elem.get<std::string>("<xmlattr>.worker", "");
+    srv_config.m_worker = _srv_elem.get<std::string>("<xmlattr>.worker", "");
 
     // Get service configuration
     if(!config.empty())
     {
         const auto srv_cfg_factory = service::extension::config::get_default();
-        srvconfig.m_config = srv_cfg_factory->get_service_config(config, srvconfig.m_type);
+        srv_config.m_config = srv_cfg_factory->get_service_config(config, srv_config.m_type);
     }
     else
     {
-        srvconfig.m_config = _srv_elem;
+        srv_config.m_config = _srv_elem;
     }
 
     // Check if user did not bind a service to another service
@@ -386,7 +397,7 @@ app::detail::service_config config::parse_service(
         {
             auto key_cfgs                   = cfg.second.equal_range("key");
             const std::string& key          = group.value();
-            const auto default_optional_cfg = is_key_optional(srvconfig.m_type, key);
+            const auto default_optional_cfg = is_key_optional(srv_config.m_type, key);
 
             objconfig.m_auto_connect = cfg.second.get_optional<bool>("<xmlattr>.auto_connect");
 
@@ -437,7 +448,7 @@ app::detail::service_config config::parse_service(
                 }
 
                 // Assign the current object config in the service config
-                srvconfig.m_objects[{key, count++}] = group_objconfig;
+                srv_config.m_objects[{key, count++}] = group_objconfig;
             }
         }
         else
@@ -456,7 +467,7 @@ app::detail::service_config config::parse_service(
                 !objconfig.m_key.empty()
             );
 
-            const auto default_optional_cfg = is_key_optional(srvconfig.m_type, objconfig.m_key);
+            const auto default_optional_cfg = is_key_optional(srv_config.m_type, objconfig.m_key);
 
             // AutoConnect
             objconfig.m_auto_connect = cfg.second.get_optional<bool>("<xmlattr>.auto_connect");
@@ -476,13 +487,13 @@ app::detail::service_config config::parse_service(
             }
 
             // Assign the current object config in the service config
-            srvconfig.m_objects[{objconfig.m_key, std::nullopt}] = objconfig;
+            srv_config.m_objects[{objconfig.m_key, std::nullopt}] = objconfig;
         }
     }
 
     // Collect all properties configurations
     std::vector<std::pair<std::string, std::string> > properties_cfgs;
-    if(const auto& properties = srvconfig.m_config.get_child_optional("properties"); properties.has_value())
+    if(const auto& properties = srv_config.m_config.get_child_optional("properties"); properties.has_value())
     {
         if(const auto& attributes = properties->get_child_optional("<xmlattr>"); attributes.has_value())
         {
@@ -504,47 +515,32 @@ app::detail::service_config config::parse_service(
         }
     }
 
-    const auto parse_object_property =
-        [&_objects](const auto& _uid) -> std::optional<std::string>
+    const auto is_object_property =
+        [&_objects](const auto& _uid) -> bool
         {
             std::vector<std::string> tokens;
             boost::split(tokens, _uid, boost::is_any_of("."));
-
-            if(auto it = _objects.find(tokens[0]); it != _objects.end())
-            {
-                if(tokens.size() > 1)
-                {
-                    if(auto map = std::dynamic_pointer_cast<sight::data::map>(it->second); map != nullptr)
-                    {
-                        return (*map)[tokens[1]]->get_id();
-                    }
-                }
-
-                return _uid;
-            }
-
-            return {};
+            return _objects.contains(tokens[0]);
         };
 
-    for(auto&& [key, value] : properties_cfgs)
+    for(auto&& [key, uid] : properties_cfgs)
     {
-        const auto uid = parse_object_property(value);
-        if(uid.has_value())
+        if(is_object_property(uid))
         {
             app::detail::object_serviceconfig objconfig
             {
                 .m_key          = key,
-                .m_uid          = *uid,
+                .m_uid          = uid,
                 .m_access       = data::access::inout,
                 .m_auto_connect = key != "from",
                 .m_optional     = false
             };
 
-            srvconfig.m_objects[{objconfig.m_key, std::nullopt}] = objconfig;
+            srv_config.m_objects[{objconfig.m_key, std::nullopt}] = objconfig;
         }
     }
 
-    return srvconfig;
+    return srv_config;
 }
 
 //------------------------------------------------------------------------------

@@ -7,7 +7,7 @@ lowest library in _sight_. it defines core classes, communication, logging and t
 here is the list of folders in this library:
 
 - **com**: defines signals, slots, and connections.
-- **jobs**: defines classes to launch jobs that can provide progress feedback.
+- **progress**: defines classes to provide progress feedback.
 - **log**: provides the core developer log features (spy_log), as well as a user log.
 - **memory**: handles memory allocation for big data buffers, like the ones found in images and meshes.
 - **mt**: defines core thread synchronizations objects (mutexes).

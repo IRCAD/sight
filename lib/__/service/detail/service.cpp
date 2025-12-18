@@ -207,7 +207,7 @@ void service::configure()
                 SIGHT_ERROR("Error while configuring the service '" + m_service.get_id() + "' : " + e.what());
 
                 auto config = m_service.get_config();
-                SIGHT_ERROR("With the given configuration:\n" + core::runtime::property_tree::to_string(config));
+                SIGHT_ERROR("With the given configuration:\n" + core::ptree::to_string(config));
             }
             catch(std::exception& e)
             {

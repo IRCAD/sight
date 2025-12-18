@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,100 +47,87 @@ namespace sight::io::itk
 
 //------------------------------------------------------------------------------
 
-struct jpg_itk_saver_functor
+struct itk_jpeg_registry_initializer
 {
-    jpg_itk_saver_functor()
+    itk_jpeg_registry_initializer()
     {
         // force register/link_with JPEGImageIOFactory
         ::itk::JPEGImageIOFactory::RegisterOneFactory();
     }
-
-    struct parameter
-    {
-        std::string m_directory_path;
-        data::image::csptr m_data_image;
-        io::itk::jpg_image_writer::sptr m_fw_writer;
-    };
-
-    //------------------------------------------------------------------------------
-
-    template<class PIXELTYPE>
-    void operator()(const parameter& _param)
-    {
-        SIGHT_DEBUG("itk::image_series_writer with PIXELTYPE " << core::type::get<PIXELTYPE>().name());
-
-        data::image::csptr image = _param.m_data_image;
-
-        // Reader IO (*1*)
-        auto image_io_write = ::itk::ImageIOFactory::CreateImageIO("image.jpg", ::itk::ImageIOFactory::WriteMode);
-        assert(image_io_write.IsNotNull());
-
-        // create writer
-        using itk_image_type = ::itk::Image<PIXELTYPE, 3>;
-        using image_2d_type  = ::itk::Image<unsigned char, 2>;
-        using writer_t       = typename ::itk::ImageSeriesWriter<itk_image_type, image_2d_type>;
-        auto writer = writer_t::New();
-
-        // set observation (*2*)
-        ::itk::LightProcessObject::Pointer cast_helper = (::itk::LightProcessObject*) (image_io_write.GetPointer());
-        assert(cast_helper.IsNotNull());
-        progressor progress(cast_helper, _param.m_fw_writer, _param.m_directory_path);
-
-        // create itk Image
-        auto itk_image = io::itk::move_to_itk<itk_image_type>(image);
-
-        using rescale_filter_t = ::itk::IntensityWindowingImageFilter<itk_image_type, itk_image_type>;
-        typename rescale_filter_t::Pointer rescale_filter = rescale_filter_t::New();
-
-        const auto& [min, max] = data::helper::medical_image::get_min_max<double>(image);
-
-        rescale_filter->SetWindowMinimum(PIXELTYPE(min));
-        rescale_filter->SetWindowMaximum(PIXELTYPE(max));
-        rescale_filter->SetOutputMinimum(PIXELTYPE(0));
-        rescale_filter->SetOutputMaximum(std::numeric_limits<PIXELTYPE>::max());
-        rescale_filter->InPlaceOff();
-        rescale_filter->SetInput(itk_image);
-        rescale_filter->Update();
-
-        writer->SetInput(rescale_filter->GetOutput());
-
-        using name_generator_t = ::itk::NumericSeriesFileNames;
-
-        name_generator_t::Pointer name_generator = name_generator_t::New();
-
-        std::string format = _param.m_directory_path;
-        format += "/%04d.jpg";
-        name_generator->SetSeriesFormat(format.c_str());
-        name_generator->SetStartIndex(1);
-        name_generator->SetEndIndex(image->size()[2]);
-        name_generator->SetIncrementIndex(1);
-
-        writer->SetFileNames(name_generator->GetFileNames());
-
-        writer->SetImageIO(image_io_write);
-
-        // save image;
-        writer->Update();
-    }
 };
+
+static itk_jpeg_registry_initializer global_itk_jpeg_registry_initializer;
 
 //------------------------------------------------------------------------------
 
-void jpg_image_writer::write()
+void jpg_image_writer::write(sight::core::progress::observer::sptr _progress)
 {
-    assert(!m_object.expired());
-    assert(m_object.lock());
+    SIGHT_ASSERT("Object expired", !m_object.expired());
+    SIGHT_ASSERT("Object null", m_object.lock());
 
-    jpg_itk_saver_functor::parameter saver_param;
-    saver_param.m_directory_path = this->get_folder().string();
-    saver_param.m_data_image     = this->get_concrete_object();
-    saver_param.m_fw_writer      = this->get_sptr();
-    assert(saver_param.m_data_image);
+    auto do_read =
+        []<class PIXELTYPE>( const data::image::csptr _image,
+                             const std::filesystem::path& _directory_path,
+                             sight::core::progress::observer::sptr _progress)
+        {
+            SIGHT_DEBUG("itk::image_series_writer with PIXELTYPE " << core::type::get<PIXELTYPE>().name());
 
-    core::tools::dispatcher<core::tools::supported_dispatcher_types, jpg_itk_saver_functor>::invoke(
-        saver_param.m_data_image->type(),
-        saver_param
-    );
+            const data::image::csptr& image = _image;
+
+            // Reader IO (*1*)
+            auto image_io_write = ::itk::ImageIOFactory::CreateImageIO("image.jpg", ::itk::ImageIOFactory::WriteMode);
+            assert(image_io_write.IsNotNull());
+
+            // create writer
+            using itk_image_type = ::itk::Image<PIXELTYPE, 3>;
+            using image_2d_type  = ::itk::Image<unsigned char, 2>;
+            using writer_t       = typename ::itk::ImageSeriesWriter<itk_image_type, image_2d_type>;
+            auto writer = writer_t::New();
+            progressor progress(writer, _progress);
+
+            // create itk Image
+            auto itk_image = io::itk::move_to_itk<itk_image_type>(image);
+
+            using rescale_filter_t = ::itk::IntensityWindowingImageFilter<itk_image_type, itk_image_type>;
+            typename rescale_filter_t::Pointer rescale_filter = rescale_filter_t::New();
+
+            const auto& [min, max] = data::helper::medical_image::get_min_max<double>(image);
+
+            rescale_filter->SetWindowMinimum(PIXELTYPE(min));
+            rescale_filter->SetWindowMaximum(PIXELTYPE(max));
+            rescale_filter->SetOutputMinimum(PIXELTYPE(0));
+            rescale_filter->SetOutputMaximum(std::numeric_limits<PIXELTYPE>::max());
+            rescale_filter->InPlaceOff();
+            rescale_filter->SetInput(itk_image);
+            rescale_filter->Update();
+
+            writer->SetInput(rescale_filter->GetOutput());
+
+            using name_generator_t = ::itk::NumericSeriesFileNames;
+
+            name_generator_t::Pointer name_generator = name_generator_t::New();
+
+            std::string format = _directory_path.string();
+            format += "/%04d.jpg";
+            name_generator->SetSeriesFormat(format.c_str());
+            name_generator->SetStartIndex(1);
+            name_generator->SetEndIndex(image->size()[2]);
+            name_generator->SetIncrementIndex(1);
+
+            writer->SetFileNames(name_generator->GetFileNames());
+
+            writer->SetImageIO(image_io_write);
+
+            // save image;
+            writer->Update();
+        };
+
+    auto directory_path = this->get_folder();
+    auto image          = this->get_concrete_object();
+
+    using sight::core::tools::dispatcher;
+    using sight::core::tools::intrinsic_types;
+    dispatcher<intrinsic_types, decltype(do_read)>::invoke(image->type(), image, directory_path.string(), _progress);
 }
 
 //------------------------------------------------------------------------------

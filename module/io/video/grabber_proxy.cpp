@@ -39,6 +39,8 @@
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/tokenizer.hpp>
 
+#include <algorithm>
+
 namespace sight::module::io::video
 {
 
@@ -61,7 +63,7 @@ grabber_proxy::grabber_proxy() noexcept
     new_slot(slots::FWD_NOTIFY, &grabber_proxy::fwd_notify, this);
 
     new_slot(slots::FWD_SET_PARAMETER, &grabber_proxy::fwd_set_parameter, this);
-    new_slot(slots::FWD_CREATE_JOB, &grabber_proxy::fwd_create_job, this);
+    new_slot(slots::FWD_CREATE_MONITOR, &grabber_proxy::fwd_create_monitor, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -180,7 +182,7 @@ void grabber_proxy::start_camera()
                 "sight::io::service::grabber"
             );
 
-            std::move(rgb_grabbers_impl.begin(), rgb_grabbers_impl.end(), std::back_inserter(grabbers_impl));
+            std::ranges::move(rgb_grabbers_impl, std::back_inserter(grabbers_impl));
 
             if(const auto config = this->get_config().get_child_optional("config"); config.has_value())
             {
@@ -242,6 +244,7 @@ void grabber_proxy::start_camera()
                     auto objects_type = srv_factory->get_service_objects(srv_impl);
                     const auto config = this->get_config();
 
+                    // NOLINTBEGIN(modernize-use-ranges)
                     // 1. Verify that we have the same number of timelines
                     objects_type.erase(
                         std::remove_if(
@@ -253,6 +256,7 @@ void grabber_proxy::start_camera()
                         }),
                         objects_type.end()
                     );
+                    // NOLINTEND(modernize-use-ranges)
 
                     std::size_t num_tl = 0;
                     auto inouts_cfg    = config.equal_range("inout");
@@ -299,18 +303,18 @@ void grabber_proxy::start_camera()
                         for(const auto& token : tokens)
                         {
                             // Remove trailing and leading spaces.
-                            const auto trimed_token = boost::algorithm::trim_copy(token);
+                            const auto trimmed_token = boost::algorithm::trim_copy(token);
 
                             data::camera::source_t handled_source_type = data::camera::unknown;
-                            if(trimed_token == "FILE")
+                            if(trimmed_token == "FILE")
                             {
                                 handled_source_type = data::camera::file;
                             }
-                            else if(trimed_token == "STREAM")
+                            else if(trimmed_token == "STREAM")
                             {
                                 handled_source_type = data::camera::stream;
                             }
-                            else if(trimed_token == "DEVICE")
+                            else if(trimmed_token == "DEVICE")
                             {
                                 handled_source_type = data::camera::device;
                             }
@@ -364,14 +368,15 @@ void grabber_proxy::start_camera()
                             const auto& excluded_configs = configs_it->second;
                             const auto is_excluded_config = [&excluded_configs](const std::string& _cfg_name) -> bool
                                                             {
-                                                                return std::find(
-                                                                    excluded_configs.begin(),
-                                                                    excluded_configs.end(),
+                                                                return std::ranges::find(
+                                                                    excluded_configs,
+
                                                                     _cfg_name
                                                                 ) != excluded_configs.end();
                                                             };
 
                             // Remove the ones excluded by the grabber proxy.
+                            // NOLINTBEGIN(modernize-use-ranges)
                             selectable_configs.erase(
                                 std::remove_if(
                                     selectable_configs.begin(),
@@ -380,6 +385,7 @@ void grabber_proxy::start_camera()
                                 ),
                                 selectable_configs.end()
                             );
+                            // NOLINTEND(modernize-use-ranges)
                         }
                     }
 
@@ -413,7 +419,7 @@ void grabber_proxy::start_camera()
                 else
                 {
                     // Sort the description list.
-                    std::sort(std::begin(descriptions), std::end(descriptions));
+                    std::ranges::sort(descriptions);
 
                     sight::ui::dialog::selector selector;
                     selector.set_title(m_gui_title);
@@ -524,9 +530,9 @@ void grabber_proxy::start_camera()
 
                 m_connections.connect(
                     srv,
-                    grabber::JOB_CREATED_SIG,
+                    grabber::MONITOR_CREATED_SIG,
                     this->get_sptr(),
-                    slots::FWD_CREATE_JOB
+                    slots::FWD_CREATE_MONITOR
                 );
 
                 m_connections.connect(
@@ -781,10 +787,10 @@ void grabber_proxy::fwd_set_parameter(ui::parameter_t _value, std::string _key)
 
 //------------------------------------------------------------------------------
 
-void grabber_proxy::fwd_create_job(sight::core::jobs::base::sptr _job)
+void grabber_proxy::fwd_create_monitor(sight::core::progress::monitor::sptr _monitor)
 {
-    auto sig = this->signal<grabber::job_created_signal_t>(grabber::JOB_CREATED_SIG);
-    sig->async_emit(_job);
+    auto sig = this->signal<grabber::monitor_created_signal_t>(grabber::MONITOR_CREATED_SIG);
+    sig->async_emit(_monitor);
 }
 
 //------------------------------------------------------------------------------

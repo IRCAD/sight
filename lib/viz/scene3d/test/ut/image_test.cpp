@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,62 +19,42 @@
  *
  ***********************************************************************/
 
-#include "image_test.hpp"
-
 #include <viz/scene3d/helper/image.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::viz::scene3d::ut::image_test);
+#include <doctest/doctest.h>
 
-namespace sight::viz::scene3d::ut
+TEST_SUITE("sight::viz::scene3d::image")
 {
+    TEST_CASE("compute_bounding_box_from_mask")
+    {
+        sight::data::image::sptr mask = std::make_shared<sight::data::image>();
 
-//------------------------------------------------------------------------------
+        const sight::core::type type          = sight::core::type::UINT8;
+        const sight::data::image::size_t size = {10, 20, 30};
 
-void image_test::setUp()
-{
-    // Set up context before running a test.
+        mask->resize(size, type, sight::data::image::pixel_format_t::gray_scale);
+
+        const auto lock = mask->dump_lock();
+        std::fill(mask->begin(), mask->end(), std::uint8_t(0));
+
+        const auto index = [&size](std::size_t _x, std::size_t _y, std::size_t _z)
+                           {
+                               return _x + _y * size[0] + _z * size[0] * size[1];
+                           };
+
+        mask->at<std::uint8_t>(index(2, 4, 4))   = std::uint8_t(255);
+        mask->at<std::uint8_t>(index(2, 3, 23))  = std::uint8_t(255);
+        mask->at<std::uint8_t>(index(7, 6, 7))   = std::uint8_t(255);
+        mask->at<std::uint8_t>(index(8, 19, 22)) = std::uint8_t(255);
+
+        auto clipping_box = sight::viz::scene3d::helper::image::compute_bounding_box_from_mask(mask);
+
+        CHECK_EQ(2.F / static_cast<float>(size[0]), clipping_box.getMinimum()[0]);
+        CHECK_EQ(3.F / static_cast<float>(size[1]), clipping_box.getMinimum()[1]);
+        CHECK_EQ(4.F / static_cast<float>(size[2]), clipping_box.getMinimum()[2]);
+
+        CHECK_EQ(8.F / static_cast<float>(size[0]), clipping_box.getMaximum()[0]);
+        CHECK_EQ(19.F / static_cast<float>(size[1]), clipping_box.getMaximum()[1]);
+        CHECK_EQ(23.F / static_cast<float>(size[2]), clipping_box.getMaximum()[2]);
+    }
 }
-
-//------------------------------------------------------------------------------
-
-void image_test::tearDown()
-{
-}
-
-//------------------------------------------------------------------------------
-
-void image_test::compute_bounding_box_from_mask()
-{
-    data::image::sptr mask = std::make_shared<data::image>();
-
-    const core::type type          = core::type::UINT8;
-    const data::image::size_t size = {10, 20, 30};
-
-    mask->resize(size, type, data::image::pixel_format_t::gray_scale);
-
-    const auto lock = mask->dump_lock();
-    std::fill(mask->begin(), mask->end(), std::uint8_t(0));
-
-    const auto index = [&size](std::size_t _x, std::size_t _y, std::size_t _z)
-                       {
-                           return _x + _y * size[0] + _z * size[0] * size[1];
-                       };
-    mask->at<std::uint8_t>(index(2, 4, 4))   = std::uint8_t(255);
-    mask->at<std::uint8_t>(index(2, 3, 23))  = std::uint8_t(255);
-    mask->at<std::uint8_t>(index(7, 6, 7))   = std::uint8_t(255);
-    mask->at<std::uint8_t>(index(8, 19, 22)) = std::uint8_t(255);
-
-    auto clipping_box = sight::viz::scene3d::helper::image::compute_bounding_box_from_mask(mask);
-
-    CPPUNIT_ASSERT_EQUAL(2.F / static_cast<float>(size[0]), clipping_box.getMinimum()[0]);
-    CPPUNIT_ASSERT_EQUAL(3.F / static_cast<float>(size[1]), clipping_box.getMinimum()[1]);
-    CPPUNIT_ASSERT_EQUAL(4.F / static_cast<float>(size[2]), clipping_box.getMinimum()[2]);
-
-    CPPUNIT_ASSERT_EQUAL(8.F / static_cast<float>(size[0]), clipping_box.getMaximum()[0]);
-    CPPUNIT_ASSERT_EQUAL(19.F / static_cast<float>(size[1]), clipping_box.getMaximum()[1]);
-    CPPUNIT_ASSERT_EQUAL(23.F / static_cast<float>(size[2]), clipping_box.getMaximum()[2]);
-}
-
-//------------------------------------------------------------------------------
-
-} // namespace sight::viz::scene3d::ut

@@ -204,7 +204,7 @@ void config_launcher::start_config(
     config_manager->set_config(m_config_key, replace_map);
 
     // When a configuration is launched, deferred objects may already exist.
-    // This loop allow to notify the app config manager that this data exist and can be used by services.
+    // This loop allows to notify the app config manager that this data exist and can be used by services.
     // Without that, the data is considered as null.
 
     for(const auto& [key, value] : m_optional_inputs)

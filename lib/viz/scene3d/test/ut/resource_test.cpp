@@ -20,8 +20,6 @@
  *
  ***********************************************************************/
 
-#include "resource_test.hpp"
-
 #include <data/image.hpp>
 #include <data/transfer_function.hpp>
 
@@ -31,105 +29,77 @@
 #include <viz/scene3d/transfer_function.hpp>
 #include <viz/scene3d/utils.hpp>
 
+#include <doctest/doctest.h>
+
 #include <OGRE/OgreRenderWindow.h>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::viz::scene3d::ut::resource_test);
-
-namespace sight::viz::scene3d::ut
+TEST_SUITE("sight::viz::scene3d::resource")
 {
-
-static Ogre::RenderWindow* s_window = nullptr;
-
-//------------------------------------------------------------------------------
-
-void resource_test::setUp()
-{
-    if(s_window == nullptr)
+    TEST_CASE("texture")
     {
-    }
-}
+        sight::data::image::sptr image = std::make_shared<sight::data::image>();
 
-//------------------------------------------------------------------------------
-
-void resource_test::tearDown()
-{
-}
-
-//------------------------------------------------------------------------------
-
-//------------------------------------------------------------------------------
-
-void resource_test::texture_test()
-{
-    data::image::sptr image = std::make_shared<data::image>();
-
-    utest_data::generator::image::generate_image(
-        image,
-        {40, 40, 40},
-        {1., 1., 1.},
-        {0., 0., 0.},
-        {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6},
-        core::type::UINT8,
-        data::image::pixel_format_t::gray_scale
-    );
-    image->set_id("image1");
-
-    {
-        auto texture1_instance1 = std::make_shared<sight::viz::scene3d::texture>(image);
-        auto texture1_instance2 = std::make_shared<sight::viz::scene3d::texture>(image);
-        CPPUNIT_ASSERT_EQUAL(texture1_instance1->get(), texture1_instance2->get());
-
-        texture1_instance1->update();
-
-        auto texture2_instance1 = std::make_shared<sight::viz::scene3d::texture>(image, "2");
-        CPPUNIT_ASSERT(texture1_instance1->get() != texture2_instance1->get());
-
-        auto texture2_instance2 = std::make_shared<sight::viz::scene3d::texture>(image, "2");
-        CPPUNIT_ASSERT_EQUAL(texture2_instance1->get(), texture2_instance2->get());
-
-        auto texture2_instance3 = std::make_shared<sight::viz::scene3d::texture>(image, "2");
-        CPPUNIT_ASSERT_EQUAL(texture2_instance1->get(), texture2_instance3->get());
-
-        texture2_instance3.reset();
-        texture2_instance2.reset();
-        texture2_instance1.reset();
-
-        texture2_instance1 = std::make_shared<sight::viz::scene3d::texture>(image, "2");
-        texture2_instance2 = std::make_shared<sight::viz::scene3d::texture>(image, "2");
-        CPPUNIT_ASSERT_EQUAL(texture2_instance1->get(), texture2_instance2->get());
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void resource_test::tf_test()
-{
-    {
-        data::transfer_function::sptr tf = data::transfer_function::create_default_tf();
-        tf->set_id("default");
+        sight::utest_data::generator::image::generate_image(
+            image,
+            {40, 40, 40},
+            {1., 1., 1.},
+            {0., 0., 0.},
+            {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6},
+            sight::core::type::UINT8,
+            sight::data::image::pixel_format_t::gray_scale
+        );
+        image->set_id("image1");
 
         {
-            auto tf_instance1 = std::make_shared<sight::viz::scene3d::transfer_function>(tf);
-            tf_instance1->update();
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<double>(tf_instance1->m_window.x), -201.0, 0.01);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<double>(tf_instance1->m_window.y), 301.0, 0.01);
+            auto texture1_instance1 = std::make_shared<sight::viz::scene3d::texture>(image);
+            auto texture1_instance2 = std::make_shared<sight::viz::scene3d::texture>(image);
+            CHECK_EQ(texture1_instance1->get(), texture1_instance2->get());
+
+            texture1_instance1->update();
+
+            auto texture2_instance1 = std::make_shared<sight::viz::scene3d::texture>(image, "2");
+            CHECK(texture1_instance1->get() != texture2_instance1->get());
+
+            auto texture2_instance2 = std::make_shared<sight::viz::scene3d::texture>(image, "2");
+            CHECK_EQ(texture2_instance1->get(), texture2_instance2->get());
+
+            auto texture2_instance3 = std::make_shared<sight::viz::scene3d::texture>(image, "2");
+            CHECK_EQ(texture2_instance1->get(), texture2_instance3->get());
+
+            texture2_instance3.reset();
+            texture2_instance2.reset();
+            texture2_instance1.reset();
+
+            texture2_instance1 = std::make_shared<sight::viz::scene3d::texture>(image, "2");
+            texture2_instance2 = std::make_shared<sight::viz::scene3d::texture>(image, "2");
+            CHECK_EQ(texture2_instance1->get(), texture2_instance2->get());
         }
     }
 
+    TEST_CASE("tf")
     {
-        data::transfer_function::sptr tf = data::transfer_function::create_default_tf();
-        tf->set_id("default");
-        tf->set_resample_to_max_texture_size(false);
+        {
+            sight::data::transfer_function::sptr tf = sight::data::transfer_function::create_default_tf();
+            tf->set_id("default");
+
+            {
+                auto tf_instance1 = std::make_shared<sight::viz::scene3d::transfer_function>(tf);
+                tf_instance1->update();
+                CHECK(doctest::Approx(static_cast<double>(tf_instance1->m_window.x)).epsilon(0.01) == -201.0);
+                CHECK(doctest::Approx(static_cast<double>(tf_instance1->m_window.y)).epsilon(0.01) == 301.0);
+            }
+        }
 
         {
-            auto tf_instance1 = std::make_shared<sight::viz::scene3d::transfer_function>(tf);
-            tf_instance1->update();
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<double>(tf_instance1->m_window.x), -200.0, 0.01);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<double>(tf_instance1->m_window.y), 300.0, 0.01);
+            sight::data::transfer_function::sptr tf = sight::data::transfer_function::create_default_tf();
+            tf->set_id("default");
+
+            {
+                auto tf_instance1 = std::make_shared<sight::viz::scene3d::transfer_function>(tf);
+                tf_instance1->update();
+                CHECK(doctest::Approx(static_cast<double>(tf_instance1->m_window.x)).epsilon(0.01) == -200.0);
+                CHECK(doctest::Approx(static_cast<double>(tf_instance1->m_window.y)).epsilon(0.01) == 300.0);
+            }
         }
     }
 }
-
-//------------------------------------------------------------------------------
-
-} // namespace sight::viz::scene3d::ut

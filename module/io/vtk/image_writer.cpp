@@ -22,9 +22,6 @@
 
 #include "module/io/vtk/image_writer.hpp"
 
-#include <core/base.hpp>
-#include <core/jobs/base.hpp>
-#include <core/jobs/job.hpp>
 #include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
 #include <core/tools/failed.hpp>
@@ -37,8 +34,6 @@
 #include <io/vtk/meta_image_writer.hpp>
 #include <io/vtk/vti_image_writer.hpp>
 
-#include <service/macros.hpp>
-
 #include <ui/__/cursor.hpp>
 #include <ui/__/dialog/location.hpp>
 #include <ui/__/dialog/message.hpp>
@@ -49,13 +44,10 @@
 namespace sight::module::io::vtk
 {
 
-static const core::com::signals::key_t JOB_CREATED_SIGNAL = "job_created";
-
 //------------------------------------------------------------------------------
 
 image_writer::image_writer() noexcept :
-    writer("Choose a file to save image"),
-    m_sig_job_created(new_signal<job_created_signal_t>(JOB_CREATED_SIGNAL))
+    writer("Choose a file to save image")
 {
 }
 
@@ -124,7 +116,7 @@ void image_writer::info(std::ostream& _sstream)
 bool image_writer::save_image(
     const std::filesystem::path& _img_file,
     const CSPTR(data::image)& _image,
-    const SPTR(job_created_signal_t)& _sig_job_created
+    SPTR(core::progress::observer) _progress
 )
 {
     bool b_value = true;
@@ -167,12 +159,10 @@ bool image_writer::save_image(
     data::mt::locked_ptr<const data::image> locked(_image);
     my_writer->set_object(_image);
 
-    _sig_job_created->emit(my_writer->get_job());
-
     try
     {
         // Launch writing process
-        my_writer->write();
+        my_writer->write(_progress);
     }
     catch(const std::exception& e)
     {
@@ -211,9 +201,11 @@ void image_writer::updating()
         sight::ui::cursor cursor;
         cursor.set_cursor(ui::cursor_base::busy);
 
+        auto observer = std::make_shared<core::progress::observer>("Saving image");
+        this->async_emit(has_monitors::signals::MONITOR_CREATED, observer->get_sptr());
         try
         {
-            image_writer::save_image(this->get_file(), p_image, m_sig_job_created);
+            image_writer::save_image(this->get_file(), p_image, observer);
         }
         catch(core::tools::failed& e)
         {

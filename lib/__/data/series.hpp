@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,7 +28,6 @@
 #include "data/dicom/coded_string.hpp"
 #include "data/dicom/sop.hpp"
 #include "data/factory/new.hpp"
-#include "data/landmarks.hpp"
 #include "data/matrix4.hpp"
 #include "data/object.hpp"
 #include "data/types.hpp"
@@ -42,14 +41,14 @@ namespace gdcm
 
 class DataSet;
 
-}
+} // namespace gdcm
 
 namespace sight::data::detail
 {
 
 class series_impl;
 
-}
+} // namespace sight::data::detail
 
 namespace sight::data
 {
@@ -84,8 +83,10 @@ public:
     SIGHT_DATA_API void set_sop_keyword(dicom::sop::Keyword _keyword);
     SIGHT_DATA_API std::string_view get_sop_class_name() const noexcept;
 
-    SIGHT_DATA_API std::string get_sop_instance_uid() const noexcept;
-    SIGHT_DATA_API void set_sop_instance_uid(const std::string& _sop_instance_uid);
+    SIGHT_DATA_API std::string get_sop_instance_uid(
+        std::size_t _instance = 0
+    ) const noexcept;
+    SIGHT_DATA_API void set_sop_instance_uid(const std::string& _sop_instance_uid, std::size_t _instance = 0);
 
     SIGHT_DATA_API std::string get_sop_class_uid() const noexcept;
     SIGHT_DATA_API void set_sop_class_uid(const std::string& _sop_class_uid);
@@ -197,7 +198,7 @@ public:
     SIGHT_DATA_API void set_software_versions(const std::vector<std::string>& _software_versions);
 
     SIGHT_DATA_API std::optional<int> get_depth_of_scan_field_mm() const noexcept;
-    SIGHT_DATA_API void set_depth_of_scan_field_mm(const int _depth_of_scan_field);
+    SIGHT_DATA_API void set_depth_of_scan_field_mm(int _depth_of_scan_field);
 
     SIGHT_DATA_API std::vector<double> get_depths_of_focus_mm() const noexcept;
     SIGHT_DATA_API void set_depths_of_focus_mm(std::vector<double>& _depth_of_focus_mm);
@@ -208,7 +209,7 @@ public:
     SIGHT_DATA_API std::optional<dicom::position_measuring_device_used_t> get_position_measuring_device_used() const
     noexcept;
     SIGHT_DATA_API void set_position_measuring_device_used(
-        const dicom::position_measuring_device_used_t _position_measuring_device_used
+        dicom::position_measuring_device_used_t _position_measuring_device_used
     );
     /// @}
 
@@ -276,6 +277,7 @@ public:
             dicom::patient_examination_characteristics_t::unknown
         };
 
+        // NOLINTNEXTLINE(readability-reduce-member-init)
         std::vector<std::string> other_values {};
     };
 
@@ -389,6 +391,9 @@ public:
 
     /// Getter/Setter of DICOM Image Plane Module related attributes
     /// ...and Multi-frame Functional Groups Module
+    /// @note: a std::nullopt _frame_index means that the attribute is common to all frames if we are in a multi-frame
+    /// DICOM or the simply the first instance.
+    ///        In multi-frame, we will use the shared group and not the per-frame group
     /// @{
     SIGHT_DATA_API std::vector<double> get_image_position_patient(
         const std::optional<std::size_t>& _frame_index = std::nullopt
@@ -456,6 +461,8 @@ public:
     /// @}
 
     /// Getter/Setter of DICOM Multi-frame Functional Groups Module related attributes
+    /// @note: a std::nullopt _frame_index means that the attribute is common to all frames, we will use the shared
+    ///        group and not the per-frame group
     /// @{
     SIGHT_DATA_API std::vector<double> get_image_position_volume(
         const std::optional<std::size_t>& _frame_index = std::nullopt
@@ -725,7 +732,18 @@ public:
         std::size_t _instance = 0
     ) const;
 
-    /// Private values setter.
+    /// Private values getter.
+    /// @throws data::exception if tag doesn't exist
+    /// @param[in] _element private element number in the range of 0x10 to 0xFF
+    /// @param[in] _instance the instance index in case multi-frame is not supported by the current IOD.
+    ///                     (nullopt means the global common instance, for attributes shared by all instance.)
+    /// @return the private values as a double vector
+    SIGHT_DATA_API std::vector<double> get_private_values(
+        std::uint8_t _element,
+        std::size_t _instance = 0
+    ) const;
+
+    /// Private value setter.
     /// @throws data::exception if the data mismatch the tag type
     /// @param[in] _value the string to insert. If empty (std::nullopt), the private tag is removed.
     /// @param[in] _element private element number in the range of 0x10 to 0xFF
@@ -733,6 +751,18 @@ public:
     ///                     (nullopt means the global common instance, for attributes shared by all instance.)
     SIGHT_DATA_API void set_private_value(
         const std::optional<std::string>& _value,
+        std::uint8_t _element,
+        std::size_t _instance = 0
+    );
+
+    /// Private values setter.
+    /// @throws data::exception if the data mismatch the tag type
+    /// @param[in] _value the vector of double to insert (as DICOM string array). If empty, the private tag is removed.
+    /// @param[in] _element private element number in the range of 0x10 to 0xFF
+    /// @param[in] _instance the instance index in case multi-frame is not supported by the current IOD.
+    ///                     (nullopt means the global common instance, for attributes shared by all instance.)
+    SIGHT_DATA_API void set_private_values(
+        const std::vector<double>& _value,
         std::uint8_t _element,
         std::size_t _instance = 0
     );
@@ -748,20 +778,49 @@ public:
         const std::optional<std::size_t>& _frame_index = std::nullopt
     ) const;
 
-    /// Private values setter for a DICOM Multi-frame Functional Groups Module.
+    /// Private values getter for a DICOM Multi-frame Functional Groups Module.
+    /// @throws data::exception if tag doesn't exist
+    /// @param[in] _element private sequence element number in the range of 0x10 to 0xFF.
+    ///                     The corresponding attribute will take element+0x01 as private element number.
+    /// @param[in] _frame_index the frame index where to store the private tag. std::nullopt means that
+    ///                         the attribute is common to all frames, the shared group will be used instead of the
+    ///                         per-frame group
+    /// @return the private values as a double vector
+    SIGHT_DATA_API std::vector<double> get_multi_frame_private_values(
+        std::uint8_t _element,
+        const std::optional<std::size_t>& _frame_index = std::nullopt
+    ) const;
+
+    /// Private value setter for a DICOM Multi-frame Functional Groups Module.
     /// @throws data::exception if the data mismatch the tag type
     /// @param[in] _value the string to insert. If empty (std::nullopt), the private tag is removed.
     /// @param[in] _element private sequence element number in the range of 0x10 to 0xFF.
     ///                    The corresponding attribute will take element+0x01 as private element number.
-    /// @param[in] _frame_index the frame index where to store the private tag.
+    /// @param[in] _frame_index the frame index where to store the private tag. std::nullopt means that
+    ///                         the attribute is common to all frames, the shared group will be used instead of the
+    ///                         per-frame group
     SIGHT_DATA_API void set_multi_frame_private_value(
         const std::optional<std::string>& _value,
         std::uint8_t _element,
         const std::optional<std::size_t>& _frame_index = std::nullopt
     );
 
+    /// Private values setter for a DICOM Multi-frame Functional Groups Module.
+    /// @throws data::exception if the data mismatch the tag type
+    /// @param[in] _value the vector of double to insert (as DICOM string array). If empty, the private tag is removed.
+    /// @param[in] _element private sequence element number in the range of 0x10 to 0xFF.
+    ///                    The corresponding attribute will take element+0x01 as private element number.
+    /// @param[in] _frame_index the frame index where to store the private tag. std::nullopt means that
+    ///                         the attribute is common to all frames, the shared group will be used instead of the
+    ///                         per-frame group
+    SIGHT_DATA_API void set_multi_frame_private_values(
+        const std::vector<double>& _value,
+        std::uint8_t _element,
+        const std::optional<std::size_t>& _frame_index = std::nullopt
+    );
+
     /// Enum that defines the kind of DICOM series we are
-    enum class dicom_t : std::uint64_t
+    enum class dicom_t : std::uint8_t
     {
         unknown = 0,
         image,
@@ -807,22 +866,23 @@ public:
         {
             return dicom_t::image;
         }
-        else if(constexpr auto model = dicom_type_to_string(dicom_t::model); _type == model)
+
+        if(constexpr auto model = dicom_type_to_string(dicom_t::model); _type == model)
         {
             return dicom_t::model;
         }
-        else if(constexpr auto report = dicom_type_to_string(dicom_t::report); _type == report)
+
+        if(constexpr auto report = dicom_type_to_string(dicom_t::report); _type == report)
         {
             return dicom_t::report;
         }
-        else if(constexpr auto fiducials = dicom_type_to_string(dicom_t::fiducials); _type == fiducials)
+
+        if(constexpr auto fiducials = dicom_type_to_string(dicom_t::fiducials); _type == fiducials)
         {
             return dicom_t::fiducials;
         }
-        else
-        {
-            return dicom_t::unknown;
-        }
+
+        return dicom_t::unknown;
     }
 
     /// Convenience function to convert from / to dicom_types values to string
@@ -831,11 +891,11 @@ public:
     SIGHT_DATA_API static std::string dicom_types_to_string(dicom_types _types) noexcept;
     SIGHT_DATA_API static dicom_types string_to_dicom_types(const std::string& _types) noexcept;
 
-    using SopKeywords = std::set<dicom::sop::Keyword>;
-    SIGHT_DATA_API static SopKeywords dicom_types_to_sops(dicom_types _types) noexcept;
-    SIGHT_DATA_API static dicom_types sops_to_dicom_types(const SopKeywords& _sops) noexcept;
-    SIGHT_DATA_API static SopKeywords string_to_sops(const std::string& _sops) noexcept;
-    SIGHT_DATA_API static std::string sops_to_string(const SopKeywords& _sops) noexcept;
+    using sop_keywords_t = std::set<dicom::sop::Keyword>;
+    SIGHT_DATA_API static sop_keywords_t dicom_types_to_sops(dicom_types _types) noexcept;
+    SIGHT_DATA_API static dicom_types sops_to_dicom_types(const sop_keywords_t& _keywords) noexcept;
+    SIGHT_DATA_API static sop_keywords_t string_to_sops(const std::string& _sops) noexcept;
+    SIGHT_DATA_API static std::string sops_to_string(const sop_keywords_t& _sops) noexcept;
     /// @}
 
     /// Returns the type of the series. For now, only "Image", "Model" and "Fiducials" are supported.
@@ -912,7 +972,8 @@ public:
 
 protected:
 
+    /// NOLINTNEXTLINE
     std::unique_ptr<detail::series_impl> m_pimpl;
 };
 
-} // Namespace fwMedData.
+} // namespace sight::data

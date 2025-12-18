@@ -113,12 +113,12 @@ void point_list::configuring()
     if(config.count(s_MATERIAL_TEMPLATE_CONFIG) != 0U)
     {
         // An existing Ogre material will be used for this mesh
-        m_custom_material        = true;
-        m_material_template_name = config.get<std::string>(s_MATERIAL_TEMPLATE_CONFIG);
+        m_custom_material             = true;
+        m_init_material_template_name = config.get<std::string>(s_MATERIAL_TEMPLATE_CONFIG);
     }
     else if(config.get(s_FIXED_SIZE_CONFIG, false))
     {
-        m_material_template_name = "Billboard_FixedSize";
+        m_init_material_template_name = "Billboard_FixedSize";
     }
 
     // The mesh adaptor will pass the texture name to the created material adaptor
@@ -238,6 +238,8 @@ void point_list::updating()
 
     this->destroy_label();
 
+    m_material_template_name = m_init_material_template_name;
+
     if(const auto point_list = m_point_list.lock(); point_list)
     {
         this->update_mesh(point_list.get_shared());
@@ -260,9 +262,14 @@ void point_list::updating()
         {
             if(const auto mesh = m_mesh.lock(); mesh)
             {
+                if(!m_custom_material && mesh->has<data::mesh::attribute::point_normals>())
+                {
+                    m_material_template_name += "_Normal";
+                }
+
                 if(!m_custom_material && mesh->has<data::mesh::attribute::point_colors>())
                 {
-                    m_material_template_name += "_PerPointColor";
+                    m_material_template_name += "_Color";
                 }
 
                 this->update_mesh(mesh.get_shared());

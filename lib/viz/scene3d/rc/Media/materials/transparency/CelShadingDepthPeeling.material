@@ -4,16 +4,16 @@
 
 fragment_program CelShadingDepthPeeling/blend_FP glsl
 {
-        source CelShadingDepthPeelingBlend_FP.glsl
-        default_params
-        {
-                param_named u_bufferColor int 0
-                param_named u_bufferDepth int 1
-                param_named u_bufferNormal int 2
-                param_named_auto u_invTexSize inverse_texture_size 0
-                param_named_auto u_near near_clip_distance
-                param_named_auto u_far far_clip_distance
-        }
+    source CelShadingDepthPeelingBlend_FP.glsl
+    default_params
+    {
+            param_named u_bufferColor int 0
+            param_named u_bufferDepth int 1
+            param_named u_bufferNormal int 2
+            param_named_auto u_invTexSize inverse_texture_size 0
+            param_named_auto u_near near_clip_distance
+            param_named_auto u_far far_clip_distance
+    }
 }
 
 //---------------------------------------------------------------------------
@@ -42,19 +42,19 @@ material CelShadingDepthPeeling/blend
             texture_unit
             {
                 tex_address_mode clamp
-                filtering none
+                filtering bilinear
             }
 
             texture_unit
             {
                 tex_address_mode clamp
-                filtering none
+                filtering bilinear
             }
 
             texture_unit
             {
                 tex_address_mode clamp
-                filtering none
+                filtering bilinear
             }
         }
     }

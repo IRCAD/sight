@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2024 IRCAD France
+ * Copyright (C) 2020-2025 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,11 +41,6 @@ resampler::resampler() :
 
 //------------------------------------------------------------------------------
 
-resampler::~resampler()
-= default;
-
-//------------------------------------------------------------------------------
-
 void resampler::configuring()
 {
 }
@@ -69,16 +64,16 @@ void resampler::updating()
     SIGHT_ASSERT("No '" << IMAGE_IN << "' found !", out_img);
     SIGHT_ASSERT("No '" << TRANSFORM_IN << "' found !", transform);
 
+    const auto interp = sight::filter::image::string_to_interpolation(*m_interpolation);
     sight::filter::image::resampler::resample(
         in_img.get_shared(),
         out_img.get_shared(),
         transform.get_shared(),
-        std::make_tuple(target->size(), target->origin(), target->orientation(), target->spacing())
+        std::make_tuple(target->size(), target->origin(), target->orientation(), target->spacing(), interp)
     );
 
-    this->signal<signals::computed_t>(signals::COMPUTED)->async_emit();
-
-    out_img->signal<data::image::buffer_modified_signal_t>(data::image::BUFFER_MODIFIED_SIG)->async_emit();
+    this->async_emit(signals::COMPUTED);
+    out_img->async_emit(data::image::BUFFER_MODIFIED_SIG);
 }
 
 //------------------------------------------------------------------------------

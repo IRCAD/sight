@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024 IRCAD France
+ * Copyright (C) 2024-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,33 +19,14 @@
  *
  ***********************************************************************/
 
-#include "profile_test.hpp"
-
 #include <core/runtime/path.hpp>
 #include <core/runtime/profile.hpp>
 #include <core/runtime/profile/profile.hpp>
 #include <core/runtime/runtime.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::app::ut::profile_test);
+#include <doctest/doctest.h>
 
-namespace sight::module::app::ut
-{
-
-//------------------------------------------------------------------------------
-
-void profile_test::setUp()
-{
-}
-
-//------------------------------------------------------------------------------
-
-void profile_test::tearDown()
-{
-}
-
-//------------------------------------------------------------------------------
-
-void profile_test::create_profile_test()
+TEST_CASE("sight::module::app::profile")
 {
     sight::core::runtime::init();
 
@@ -64,18 +45,14 @@ void profile_test::create_profile_test()
     }
 
     const auto profile = sight::core::runtime::io::profile_reader::create_profile(profile_file_path);
-    CPPUNIT_ASSERT_EQUAL(profile->name(), std::string("app_test_app"));
-    CPPUNIT_ASSERT_EQUAL(profile->version(), std::string(PROFILE_VERSION));
-    CPPUNIT_ASSERT_EQUAL(profile->file_path(), profile_file_path);
+    CHECK_EQ(profile->name(), std::string("app_test_app"));
+    CHECK_EQ(profile->version(), std::string(PROFILE_VERSION));
+    CHECK_EQ(profile->file_path(), profile_file_path);
 
     sight::core::runtime::profile::params_container in_params {"-one", "--two"};
     profile->set_params(in_params);
 
     sight::core::runtime::profile::params_container params = profile->get_params();
-    CPPUNIT_ASSERT_EQUAL(params[0], in_params[0]);
-    CPPUNIT_ASSERT_EQUAL(params[1], in_params[1]);
+    CHECK_EQ(params[0], in_params[0]);
+    CHECK_EQ(params[1], in_params[1]);
 }
-
-//------------------------------------------------------------------------------
-
-} // namespace sight::module::app::ut

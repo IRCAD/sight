@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -98,6 +98,75 @@ public:
     }
 };
 
+//------------------------------------------------------------------------------
+
+inline static QString get_application_style_sheet()
+{
+    QString app_style;
+
+    // Get the current profile and root directory
+    const auto profile = sight::core::runtime::get_current_profile();
+
+    if(!profile)
+    {
+        return app_style;
+    }
+
+    const auto& profile_path = profile->file_path();
+
+    if(profile_path.empty())
+    {
+        // This could happen in unit tests
+        SIGHT_WARN("Profile path is empty");
+        return app_style;
+    }
+
+    const auto& root = profile_path.parent_path();
+
+    std::set<std::filesystem::path> qss_files;
+
+    // Look for all .qss files and order them in a set
+    for(const auto& entry : std::filesystem::recursive_directory_iterator(root))
+    {
+        if(!entry.is_regular_file())
+        {
+            continue;
+        }
+
+        const auto& qss_path = entry.path();
+
+        if(qss_path.extension() != ".qss")
+        {
+            continue;
+        }
+
+        qss_files.insert(std::filesystem::canonical(qss_path));
+    }
+
+    // ...and read their contents
+    for(const auto& qss_path : qss_files)
+    {
+        QFile qss_file(QString::fromStdString(qss_path.string()));
+
+        if(!qss_file.open(QFile::ReadOnly))
+        {
+            SIGHT_ASSERT("Could not open QSS file: " << qss_path.string(), false);
+            continue;
+        }
+
+        SIGHT_INFO("Reading QSS file: " << qss_path.string());
+        const auto qss_content = QTextStream(&qss_file).readAll().trimmed();
+
+        if(!qss_content.isEmpty())
+        {
+            app_style.append("\n");
+            app_style.append(qss_content);
+        }
+    }
+
+    return app_style;
+}
+
 //-----------------------------------------------------------------------------
 
 void plugin::start()
@@ -108,15 +177,19 @@ void plugin::start()
     char** argv = profile->get_raw_params();
 
     std::function<QSharedPointer<QCoreApplication>(int&, char**)> callback =
-        [](int& _argc, char** _argv)
+        [this](int& _argc, char** _argv)
         {
-            return QSharedPointer<QApplication>(new sight::ui::qt::app(_argc, _argv, true));
+            auto application = QSharedPointer<QApplication>(new sight::ui::qt::app(_argc, _argv, true));
+
+            // Load the style sheet now, before executing the Qt event loop
+            // Otherwise, some unit tests may fail because of the qApp assert
+            load_style_sheet();
+
+            return application;
         };
 
     auto worker_qt = sight::ui::qt::get_qt_worker(argc, argv, callback, profile->name(), profile->version());
     core::thread::set_default_worker(worker_qt);
-
-    worker_qt->post([this](auto&& ...){load_style_sheet();});
 
     core::runtime::get_current_profile()->set_run_callback(run);
 }
@@ -144,62 +217,81 @@ int plugin::run() noexcept
 
 void plugin::load_style_sheet()
 {
-    if(qApp != nullptr)
+    SIGHT_ASSERT("QApplication is not initialized", qApp);
+
+    if(this->get_module()->has_parameter("resource"))
     {
-        if(this->get_module()->has_parameter("resource"))
-        {
-            const std::string resource_file = this->get_module()->get_parameter_value("resource");
-            const auto path                 = core::runtime::get_module_resource_file_path(resource_file);
+        const std::string resource_file = this->get_module()->get_parameter_value("resource");
+        const auto path                 = core::runtime::get_module_resource_file_path(resource_file);
 
-            [[maybe_unused]] const bool resource_loaded = QResource::registerResource(path.string().c_str());
-            SIGHT_ASSERT("Cannot load resources '" + resource_file + "'.", resource_loaded);
-        }
+        [[maybe_unused]] const bool resource_loaded = QResource::registerResource(path.string().c_str());
+        SIGHT_ASSERT("Cannot load resources '" << resource_file << "'.", resource_loaded);
+    }
 
-        // Also apply our proxy style to override default disabled icon look
-        if(this->get_module()->has_parameter("style"))
-        {
-            const std::string style = this->get_module()->get_parameter_value("style");
-            qApp->setStyle(new proxy_style(QStyleFactory::create(QString::fromStdString(style))));
-        }
-        else
-        {
-            qApp->setStyle(new proxy_style);
-        }
+    // Also apply our proxy style to override default disabled icon look
+    if(this->get_module()->has_parameter("style"))
+    {
+        const std::string style = this->get_module()->get_parameter_value("style");
+        qApp->setStyle(new proxy_style(QStyleFactory::create(QString::fromStdString(style))));
+    }
+    else
+    {
+        qApp->setStyle(new proxy_style);
+    }
 
-        QString touch_friendly_style;
-        if(this->get_module()->get_parameter_value("touch_friendly") == "true")
+    // Load the stylesheet from the parameters
+    QString style_sheet;
+
+    if(this->get_module()->has_parameter("stylesheet"))
+    {
+        const auto stylesheet_value = this->get_module()->get_parameter_value("stylesheet");
+        const auto path             = core::runtime::get_module_resource_file_path(stylesheet_value);
+
+        QFile data(QString::fromStdString(path.string()));
+        const bool qss_opened = data.open(QFile::ReadOnly);
+        SIGHT_ASSERT("Cannot open QSS file: " << path.string(), qss_opened);
+
+        if(qss_opened)
         {
-            const std::filesystem::path touch_friendly_style_path = core::runtime::get_module_resource_file_path(
-                "sight::module::ui::qt/touch-friendly.qss"
-            );
+            SIGHT_INFO("Reading QSS file: " << path.string());
+            style_sheet = QTextStream(&data).readAll().trimmed();
+        }
+    }
+
+    // Allow overriding with the touch-friendly style
+    if(this->get_module()->get_parameter_value("touch_friendly") == "true")
+    {
+        const auto path = core::runtime::get_module_resource_file_path(
+            "sight::module::ui::qt/touch-friendly.qss"
+        );
+
+        QFile data(QString::fromStdString(path.string()));
+        const bool qss_opened = data.open(QFile::ReadOnly);
+        SIGHT_ASSERT("Cannot open QSS file: " << path.string(), qss_opened);
+
+        if(qss_opened)
+        {
+            SIGHT_INFO("Reading QSS file: " << path.string());
+            const auto touch_style = QTextStream(&data).readAll().trimmed();
+
+            if(!touch_style.isEmpty())
             {
-                QFile data(QString::fromStdString(touch_friendly_style_path.string()));
-                if(data.open(QFile::ReadOnly))
-                {
-                    touch_friendly_style = QTextStream(&data).readAll();
-                }
+                style_sheet.append("\n");
+                style_sheet.append(touch_style);
             }
         }
+    }
 
-        QString app_style;
-        if(this->get_module()->has_parameter("stylesheet"))
-        {
-            const std::string stylesheet_value = this->get_module()->get_parameter_value("stylesheet");
-            const std::filesystem::path path   = core::runtime::get_module_resource_file_path(stylesheet_value);
-            {
-                QFile data(QString::fromStdString(path.string()));
-                if(data.open(QFile::ReadOnly))
-                {
-                    app_style = QTextStream(&data).readAll();
-                }
-            }
-        }
+    // Style located in the application directory override everything
+    if(const auto application_style = get_application_style_sheet(); !application_style.isEmpty())
+    {
+        style_sheet.append("\n");
+        style_sheet.append(application_style);
+    }
 
-        QString style_result = app_style + touch_friendly_style;
-        if(!style_result.isEmpty())
-        {
-            qApp->setStyleSheet(style_result);
-        }
+    if(!style_sheet.isEmpty())
+    {
+        qApp->setStyleSheet(style_sheet);
     }
 }
 

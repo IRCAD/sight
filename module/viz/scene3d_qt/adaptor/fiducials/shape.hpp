@@ -21,11 +21,11 @@
 
 #pragma once
 
-#include "data/real.hpp"
-
 #include <data/fiducials_series.hpp>
 #include <data/helper/medical_image.hpp>
 #include <data/image_series.hpp>
+#include <data/real.hpp>
+#include <data/string.hpp>
 
 #include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/interactor/base.hpp>
@@ -41,26 +41,33 @@ namespace sight::module::viz::scene3d_qt::adaptor::fiducials
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::adaptor::fiducials::shape" auto_connect="true" >
         <inout key="image" uid="..." />
-        <config fontSource="DejaVuSans.ttf" fontSize="32" radius="4.5" priority="2" />
+        <config fontSource="DejaVuSans.ttf" fontSize="32" priority="2" />
+        <properties visible="..." radius="..." line_width="..." filter="..." />
     </service>
    @endcode
  *
- * @subsection Input Input:
+ * @subsection Input Input
  * - \b image [sight::data::image_series]: image containing the fiducials.
  *
- * @subsection Configuration Configuration:
+ * @subsection Configuration Configuration
  * - \b orientation (optional, string, default="z_axis"): orientation of the image.
  * - \b fontSize (optional, int, default=12): font size in points.
- * - \b radius (optional, float, default=3.0): radius of spheres.
  * - \b interactive (optional, bool, default=true): enable interactions with shapes.
  * - \b priority (optional, int, default=2): priority of the interactor.
  * - \b queryMask (optional, int, default=0xFFFFFFFF): mask used to filter out entities when the shape is auto snapped.
  * - \b queryFlags (optional, int, default=Ogre::SceneManager::ENTITY_TYPE_MASK): mask used to filter shapes, it
- * optimizes the ray launched to retrieve the picked shape.
+ *   optimizes the ray launched to retrieve the picked shape.
  * - \b color (optional, string, default=""): color applied to the shape, generated if empty.
  *
- * @section Slots Slots
+ * @subsection Slots Slots
  * - \b activate_shape_tool(): activates the shape tool by changing the cursor and updating a boolean.
+ *
+ * @subsection Properties Properties
+ * - \b radius (sight::data::real, default=10.0): radius of spheres.
+ * - \b line_width (sight::data::real, default=4.0): line width.
+ * - \b filter (sight::data::string, default="current"): whether to show only the shape
+ *   of the current slice ("current") or all of them ("all")
+ *
  */
 class shape final : public sight::viz::scene3d::adaptor,
                     public sight::viz::scene3d::interactor::base
@@ -161,6 +168,9 @@ private:
 
     /// Defines the width of the lines.
     sight::data::property<sight::data::real> m_line_width {this, "line_width", 4.};
+
+    // Enable seeing only the shape of the current slice ("current") or all of them ("all")
+    sight::data::property<sight::data::string> m_filter {this, "filter", std::string("current")};
 };
 
 } // namespace sight::module::viz::scene3d_qt::adaptor::fiducials

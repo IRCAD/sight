@@ -4,14 +4,14 @@ compositor DepthPeeling
     {
         // Color buffer - used for blending
         texture gbuffer target_width target_height PF_R8G8B8A8
-        // Ping buffer
-        texture ping_buffer target_width target_height PF_R8G8B8A8 PF_R8G8B8A8
-        // Pong buffer
-        texture pong_buffer target_width target_height PF_R8G8B8A8 PF_R8G8B8A8
-        // Depth map
-        texture depth_map target_width target_height PF_R8G8B8A8
+        // Ping buffer: color + depth value (R32F)
+        texture ping_buffer target_width target_height PF_R8G8B8A8 PF_FLOAT32_R
+        // Pong buffer: color + depth value (R32F)
+        texture pong_buffer target_width target_height PF_R8G8B8A8 PF_FLOAT32_R
+        // Depth map stored as single-channel float
+        texture depth_map target_width target_height PF_FLOAT32_R
         // Fake texture for the first peel
-        texture init_buffer target_width target_height PF_R8G8B8A8 depth_pool 0
+        texture init_buffer target_width target_height PF_FLOAT32_R depth_pool 0
 
         // Depth map buffer
         // Used as a stencil for the surrounding background
@@ -28,7 +28,7 @@ compositor DepthPeeling
             pass render_scene
             {
                 // Surface models are in render queues 50 and below.
-                last_render_queue 50
+                last_render_queue 20
             }
         }
 
@@ -55,7 +55,7 @@ compositor DepthPeeling
 
             pass render_scene
             {
-                last_render_queue 50
+                last_render_queue 20
             }
          }
 
@@ -87,7 +87,7 @@ compositor DepthPeeling
 
              pass render_scene
              {
-                last_render_queue 50
+                last_render_queue 20
              }
          }
 
@@ -115,7 +115,7 @@ compositor DepthPeeling
 
              pass render_scene
              {
-                last_render_queue 50
+                last_render_queue 20
              }
          }
 
@@ -149,9 +149,9 @@ compositor DepthPeeling
             // Render volumes on top.
             pass render_scene
             {
-                // Volumes are in rq 52 and some of their widgets in rq 51.
-                first_render_queue 51
-                last_render_queue 52
+                // Volumes are in rq 30 and some of their widgets in rq 29.
+                first_render_queue 29
+                last_render_queue 30
             }
 
         }

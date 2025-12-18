@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,8 +26,8 @@
 #include "io/vtk/helper/vtk_lambda_command.hpp"
 
 #include <core/base.hpp>
-#include <core/jobs/base.hpp>
-#include <core/jobs/observer.hpp>
+#include <core/progress/monitor.hpp>
+#include <core/progress/observer.hpp>
 
 #include <vtkGenericDataObjectWriter.h>
 #include <vtkPolyData.h>
@@ -38,19 +38,7 @@ namespace sight::io::vtk
 
 //------------------------------------------------------------------------------
 
-mesh_writer::mesh_writer() :
-    m_job(std::make_shared<core::jobs::observer>("VTK Mesh writer"))
-{
-}
-
-//------------------------------------------------------------------------------
-
-mesh_writer::~mesh_writer()
-= default;
-
-//------------------------------------------------------------------------------
-
-void mesh_writer::write()
+void mesh_writer::write(sight::core::progress::observer::sptr _progress)
 {
     using helper::vtk_lambda_command;
 
@@ -76,15 +64,13 @@ void mesh_writer::write()
         [&](vtkObject* _caller, std::uint64_t, void*)
         {
             auto* const filter = static_cast<vtkGenericDataObjectWriter*>(_caller);
-            m_job->done_work(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
+            _progress->done_work(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
         });
     writer->AddObserver(vtkCommand::ProgressEvent, progress_callback);
 
-    m_job->add_simple_cancel_hook([&]{writer->AbortExecuteOn();});
+    _progress->add_cancel_hook([&]{writer->AbortExecuteOn();});
 
     writer->Update();
-
-    m_job->finish();
 }
 
 //------------------------------------------------------------------------------
@@ -92,13 +78,6 @@ void mesh_writer::write()
 std::string mesh_writer::extension() const
 {
     return ".vtk";
-}
-
-//------------------------------------------------------------------------------
-
-core::jobs::base::sptr mesh_writer::get_job() const
-{
-    return m_job;
 }
 
 //------------------------------------------------------------------------------

@@ -202,7 +202,7 @@ void to_vtk_image(data::image::csptr _data, vtkImageData* _dst)
 // -----------------------------------------------------------------------------
 
 template<typename IMAGETYPE>
-void* new_buffer(std::size_t _size)
+static void* new_buffer(std::size_t _size)
 {
     IMAGETYPE* dest_buffer = nullptr;
     try
@@ -225,7 +225,7 @@ void* new_buffer(std::size_t _size)
 // -----------------------------------------------------------------------------
 
 template<typename IMAGETYPE>
-void from_rgb_buffer(void* _input, std::size_t _size, void*& _dest_buffer)
+static void from_rgb_buffer(void* _input, std::size_t _size, void*& _dest_buffer)
 {
     if(_dest_buffer == nullptr)
     {
@@ -251,7 +251,7 @@ void from_rgb_buffer(void* _input, std::size_t _size, void*& _dest_buffer)
 // -----------------------------------------------------------------------------
 
 template<typename IMAGETYPE>
-void from_rgb_buffer_color(void* _input, std::size_t _size, void*& _dest_buffer)
+static void from_rgb_buffer_color(void* _input, std::size_t _size, void*& _dest_buffer)
 {
     if(_dest_buffer == nullptr)
     {
@@ -365,7 +365,7 @@ void from_vtk_image(vtkImageData* _source, data::image::sptr _destination)
         const std::size_t size_in_bytes = _destination->size_in_bytes();
         std::memcpy(dest_buffer, input, size_in_bytes);
 
-        sight::data::helper::medical_image::check_image_slice_index(_destination);
+        sight::data::helper::medical_image::check_image_slice_index(*_destination);
     }
 }
 

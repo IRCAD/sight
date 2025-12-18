@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,13 +38,6 @@ class mesh;
 
 } // namespace sight::data
 
-namespace sight::core::jobs
-{
-
-class base;
-
-} // namespace sight::core::jobs
-
 namespace sight::module::io::vtk
 {
 
@@ -54,8 +47,8 @@ namespace sight::module::io::vtk
  * Service writing a model series as .vtk files using the fwVtkIO lib.
  *
  * @section Signals Signals
- * - \b job_created(SPTR(core::jobs::base)): emitted to display a progress bar while the image is written (it should be
- * connected to a job_bar).
+ * - \b monitor_created(SPTR(core::progress::monitor)): emitted to display a progress bar while the image is written,
+ * it should be connected to a progress bar
  *
  * @section XML XML Configuration
  *
@@ -81,13 +74,9 @@ class model_series_writer : public sight::io::service::writer
 public:
 
     model_series_writer() noexcept;
-
-    ~model_series_writer() noexcept override =
-        default;
+    ~model_series_writer() noexcept override = default;
 
     SIGHT_DECLARE_SERVICE(model_series_writer, sight::io::service::writer);
-
-    using job_created_signal_t = core::com::signal<void (std::shared_ptr<core::jobs::base>)>;
 
     /**
      * @brief Configure the mesh path.
@@ -145,9 +134,6 @@ private:
      * @param[in] _mesh : const pointer of the data mesh.
      */
     void write_mesh(const std::filesystem::path& _filename, const data::mesh::csptr _mesh);
-
-    /// Job Created signal
-    SPTR(job_created_signal_t) m_sig_job_created;
 
     ///  Stores the selectedExtension from dialog.
     std::string m_selected_extension;

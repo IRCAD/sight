@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,6 +38,7 @@ private:
     CPPUNIT_TEST(copy);
     CPPUNIT_TEST(allocation_test);
     CPPUNIT_TEST(iterator_test);
+    CPPUNIT_TEST(bounding_box_test);
     CPPUNIT_TEST(iterator_copy_test);
     CPPUNIT_TEST(benchmark_iterator);
     CPPUNIT_TEST(equality_test);
@@ -57,6 +58,7 @@ public:
     static void iterator_test();
     static void iterator_copy_test();
     static void benchmark_iterator();
+    static void bounding_box_test();
     static void equality_test();
 };
 

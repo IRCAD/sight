@@ -1,11 +1,5 @@
 #version 330
 
-#ifdef GLSL_LANG_VALIDATOR
-#extension GL_GOOGLE_include_directive : enable
-#endif // GLSL_LANG_VALIDATOR
-
-#include "DepthPeelingCommon_FP.inc.glsl"
-
 in vec2 uv;
 
 uniform sampler2D u_fragData0;
@@ -19,7 +13,7 @@ out vec4 FragColor;
 void main()
 {
     vec4 frontColorBuffer = texture(u_fragData0, uv);
-    float depthMap = unpackFloatFromVec4(texture(u_fragData1, uv));
+    float depthMap = texture(u_fragData1, uv).r;
 
     // Manage surrounding background (like a stencil)
     if(depthMap == 0)

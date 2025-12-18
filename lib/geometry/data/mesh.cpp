@@ -36,6 +36,7 @@
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 
+#include <algorithm>
 #include <cstdlib>
 #include <ctime>
 #include <functional>
@@ -59,7 +60,7 @@ struct rand_float
 
 //------------------------------------------------------------------------------
 
-glm::vec3 compute_triangle_normal(const glm::vec3& _p1, const glm::vec3& _p2, const glm::vec3& _p3)
+static glm::vec3 compute_triangle_normal(const glm::vec3& _p1, const glm::vec3& _p2, const glm::vec3& _p3)
 {
     glm::vec3 n(_p2 - _p1);
     glm::vec3 v(_p3 - _p1);
@@ -69,7 +70,7 @@ glm::vec3 compute_triangle_normal(const glm::vec3& _p1, const glm::vec3& _p2, co
 
 //------------------------------------------------------------------------------
 
-void generate_region_cell_normals(
+static void generate_region_cell_normals(
     const sight::data::mesh::sptr& _mesh,
     const std::size_t _region_min,
     const std::size_t _region_max
@@ -81,7 +82,7 @@ void generate_region_cell_normals(
         case sight::data::mesh::cell_type_t::line:
         {
             auto cell_range = _mesh->range<cell::nxyz>();
-            std::fill(cell_range.begin(), cell_range.end(), cell::nxyz({0.F, 0.F, 0.F}));
+            std::ranges::fill(cell_range, cell::nxyz({.nx = 0.F, .ny = 0.F, .nz = 0.F}));
             break;
         }
 
@@ -162,7 +163,7 @@ void generate_region_cell_normals(
 //------------------------------------------------------------------------------
 
 template<typename T>
-void vector_sum(std::vector<std::vector<T> >& _vectors, std::size_t _region_min, std::size_t _region_max)
+static void vector_sum(std::vector<std::vector<T> >& _vectors, std::size_t _region_min, std::size_t _region_max)
 {
     if(_vectors.empty())
     {
@@ -218,7 +219,7 @@ using float_vectors_t = std::vector<std::vector<float> >;
 
 //------------------------------------------------------------------------------
 
-void generate_region_cell_normals_by_points(
+static void generate_region_cell_normals_by_points(
     float_vectors_t& _normals_data,
     std::size_t _data_id,
     const sight::data::mesh::sptr& _mesh,
@@ -305,7 +306,7 @@ void generate_region_cell_normals_by_points(
 
 //------------------------------------------------------------------------------
 
-void normalize_region_cell_normals_by_points(
+static void normalize_region_cell_normals_by_points(
     float_vectors_t::value_type& _normals_data,
     sight::data::mesh::sptr _mesh,
     const std::size_t _region_min,
@@ -402,7 +403,7 @@ void mesh::generate_point_normals(sight::data::mesh::sptr _mesh)
 //------------------------------------------------------------------------------
 
 template<typename T>
-void region_shake_normals(T _normals, const std::size_t _region_min, const std::size_t _region_max)
+static void region_shake_normals(T _normals, const std::size_t _region_min, const std::size_t _region_max)
 {
     rand_float rand_float;
     for(std::size_t i = _region_min ; i < _region_max ; ++i)
@@ -720,7 +721,7 @@ void mesh::colorize_mesh_cells(
 //-----------------------------------------------------------------------------
 
 template<typename T, typename U>
-std::pair<T, U> make_ordered_pair(const T _first, const U _second)
+static std::pair<T, U> make_ordered_pair(const T _first, const U _second)
 {
     if(_first < _second)
     {
@@ -746,7 +747,7 @@ bool mesh::is_closed(const sight::data::mesh::csptr& _mesh)
                     {
                         const auto edge = make_ordered_pair(_p1, _p2);
 
-                        if(edges_histogram.find(edge) == edges_histogram.end())
+                        if(!edges_histogram.contains(edge))
                         {
                             edges_histogram[edge] = 1;
                         }
@@ -814,5 +815,32 @@ bool mesh::is_closed(const sight::data::mesh::csptr& _mesh)
 }
 
 //------------------------------------------------------------------------------
+
+bool mesh::is_inside_bounding_box(const sight::vec3d_t& _point, const sight::data::mesh::axis_aligned_box_t& _box)
+{
+    return _point[0] >= _box.min[0]
+           && _point[0] <= _box.max[0]
+           && _point[1] >= _box.min[1]
+           && _point[1] <= _box.max[1]
+           && _point[2] >= _box.min[2]
+           && _point[2] <= _box.max[2];
+}
+
+//------------------------------------------------------------------------------
+
+sight::data::mesh::axis_aligned_box_t mesh::merge_bounding_box(
+    const sight::vec3f_t& _point,
+    const sight::data::mesh::axis_aligned_box_t& _box
+)
+{
+    sight::data::mesh::axis_aligned_box_t result_box = _box;
+    for(std::size_t i = 0 ; i < 3 ; ++i)
+    {
+        result_box.min[i] = std::min(_point[i], result_box.min[i]);
+        result_box.max[i] = std::max(_point[i], result_box.max[i]);
+    }
+
+    return result_box;
+}
 
 } // namespace sight::geometry::data

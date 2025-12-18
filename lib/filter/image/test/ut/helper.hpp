@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2025 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -84,8 +84,5 @@ sight::data::image::sptr create_sphere_image(itk::Vector<double, N> _spacing = i
 
     image->Graft(image_filter->GetOutput());
 
-    auto output_image = std::make_shared<sight::data::image>();
-    sight::io::itk::move_from_itk(image, output_image);
-
-    return output_image;
+    return sight::io::itk::move_from_itk<image_t>(image);
 }

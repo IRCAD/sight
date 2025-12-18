@@ -25,8 +25,6 @@
 
 #include <data/helper/fiducials_series.hpp>
 
-#include <TestAssert.h>
-
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::helper::ut::fiducials_series_test);
 
 namespace sight::data::helper::ut

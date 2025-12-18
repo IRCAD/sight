@@ -26,7 +26,7 @@
     <extension implements="sight::service::extension::factory">
         <type>sight::ui::editor</type>
         <service>sight::module::io::dicomweb::slice_index_dicom_puller_editor</service>
-        <object key="series">sight::data::dicom_series</object>
+        <object key="series">sight::data::image_series</object>
         <desc>This service is used to push a DICOM series to a PACS.</desc>
     </extension>
 </plugin>

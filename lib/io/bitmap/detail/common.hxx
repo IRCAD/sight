@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,8 +21,15 @@
 
 #pragma once
 
+#include "core/exceptionmacros.hpp"
+
+#include "data/image.hpp"
+
 #include "io/bitmap/reader.hpp"
 #include "io/bitmap/writer.hpp"
+
+#include <functional>
+#include <optional>
 
 namespace sight::io::bitmap::detail
 {
@@ -40,10 +47,71 @@ static constexpr auto TIFF_LABEL {"TIFF image"};
 static constexpr auto PNG_LABEL {"PNG image"};
 static constexpr auto J2K_LABEL {"JPEG2000 image"};
 
-enum class flag : std::uint64_t
+enum class flag : std::uint8_t
 {
-    none        = 0,
-    j2_k_stream = 1ULL << 0
+    none       = 0,
+    j2k_stream = 1ULL << 0
+};
+
+class reader_backend
+{
+public:
+
+    reader_backend()          = default;
+    virtual ~reader_backend() = default;
+
+    virtual void read(
+        data::image& _image,
+        std::istream& _istream,
+        flag _flag
+    ) = 0;
+
+    //------------------------------------------------------------------------------
+
+    /// Default implementation using buffer. This is inefficient as it may use a temporary image but should work for
+    /// every backend
+    virtual void read(
+        const std::optional<std::reference_wrapper<data::image> >& _image,
+        const std::uint8_t* const _input,
+        std::size_t _input_size,
+        std::uint8_t* const _output,
+        flag _flag
+)
+    {
+        SIGHT_WARN("Using default inefficient buffer implementation. Prefer stream version.");
+
+        SIGHT_THROW_IF("image or a buffer must be provided", !_image.has_value() && _output == nullptr);
+
+        std::istringstream stream(
+            std::string(
+                reinterpret_cast<const char*>(_input),
+                _input_size
+            )
+        );
+
+        if(_output == nullptr)
+        {
+            read(_image->get(), stream, _flag);
+        }
+        else if(_image.has_value())
+        {
+            data::image& image = _image->get();
+
+            read(image, stream, _flag);
+            std::memcpy(_output, image.buffer(), image.size_in_bytes());
+        }
+        else
+        {
+            // Create a temporary image
+            data::image image;
+            const auto dump_lock = image.dump_lock();
+
+            read(image, stream, _flag);
+            std::memcpy(_output, image.buffer(), image.size_in_bytes());
+        }
+    }
+
+    [[nodiscard]] virtual bool is_valid() const noexcept = 0;
 };
 
 //------------------------------------------------------------------------------
@@ -73,7 +141,7 @@ inline static backend extension_to_backend(const std::string& _extension)
 {
     if(_extension.ends_with(detail::JPEG_EXT) || _extension.ends_with(detail::JPG_EXT))
     {
-        if(nv_jpeg())
+        if(nvjpeg())
         {
             return backend::nvjpeg;
         }
@@ -83,7 +151,7 @@ inline static backend extension_to_backend(const std::string& _extension)
 
     if(_extension.ends_with(detail::J2K_EXT))
     {
-        if(nv_jpeg_2k())
+        if(nvjpeg2k())
         {
             return backend::nvjpeg2k_j2k;
         }
@@ -93,7 +161,7 @@ inline static backend extension_to_backend(const std::string& _extension)
 
     if(_extension.ends_with(detail::JP2_EXT))
     {
-        if(nv_jpeg_2k())
+        if(nvjpeg2k())
         {
             return backend::nvjpeg2k;
         }

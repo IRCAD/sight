@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2024 IRCAD France
+ * Copyright (C) 2022-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -69,7 +69,7 @@ inline static void test_container(const C& _source, const C& _modified_source)
         CPPUNIT_ASSERT(!core::is_equal(container, modified_container));
     }
 
-    // Assignement test
+    // Assignment test
     {
         container container;
         container = _source;

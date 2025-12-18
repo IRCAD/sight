@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -30,44 +30,39 @@
 namespace sight::io::bitmap::detail
 {
 
-class lib_png_writer final
+class libpng_writer final
 {
 public:
 
     /// Delete copy constructors and assignment operators
-    lib_png_writer(const lib_png_writer&)            = delete;
-    lib_png_writer& operator=(const lib_png_writer&) = delete;
+    libpng_writer(const libpng_writer&)            = delete;
+    libpng_writer& operator=(const libpng_writer&) = delete;
 
     /// Constructor
-    inline lib_png_writer() noexcept
-    {
-        m_valid = true;
-    }
+    libpng_writer() noexcept = default;
 
     /// Destructor
-    inline ~lib_png_writer() noexcept = default;
+    ~libpng_writer() noexcept = default;
 
     /// Writing
     template<
-        typename O,
-        std::enable_if_t<
-            std::is_base_of_v<std::ostream, O>
-            || std::is_same_v<std::uint8_t*, O>
-            || std::is_same_v<std::uint8_t**, O>
-            || std::is_same_v<std::vector<uint8_t>, O>,
-            bool
-        > = true
-    >
-    inline std::size_t write(
+        typename O>
+    std::size_t write(
         const data::image& _image,
         O& _output,
         writer::mode _mode,
-        flag = flag::none
+        flag /*_flag*/ = flag::none
 )
+    requires(
+        std::is_base_of_v<std::ostream, O>
+        || std::is_same_v<std::uint8_t*, O>
+        || std::is_same_v<std::uint8_t**, O>
+        || std::is_same_v<std::vector<uint8_t>, O>
+    )
     {
         const auto& type = _image.type();
         SIGHT_THROW_IF(
-            m_name << " - Unsupported image type: " << type,
+            NAME << " - Unsupported image type: " << type,
             type != core::type::UINT8
             && type != core::type::UINT16
             && type != core::type::UINT64
@@ -78,9 +73,9 @@ public:
         // Create an RAII to be sure everything is cleaned at exit
         struct keeper final
         {
-            keeper()
+            keeper() :
+                m_png(png_create_write_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr))
             {
-                m_png = png_create_write_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
                 SIGHT_THROW_IF("png_create_write_struct() failed.", m_png == nullptr);
 
                 // Set error/warning callback because C style setjmp/longjmp error management is dangerous in C++
@@ -120,7 +115,7 @@ public:
                         return PNG_COLOR_TYPE_GRAY;
 
                     default:
-                        SIGHT_THROW(m_name << " - Unsupported pixel format: " << pixel_format);
+                        SIGHT_THROW(NAME << " - Unsupported pixel format: " << pixel_format);
                 }
             }();
 
@@ -176,11 +171,12 @@ public:
         for(std::size_t row = 0 ; row < image_height ; ++row)
         {
             // scanlines should only be read, so the const_cast should be ok..
+            // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
             m_rows[row] = reinterpret_cast<std::uint8_t*>(const_cast<void*>(_image.get_pixel(row * image_width)));
         }
 
         // Use the row pointers vector
-        png_set_rows(keeper.m_png, keeper.m_png_info, &m_rows[0]);
+        png_set_rows(keeper.m_png, keeper.m_png_info, m_rows.data());
 
         int transform = PNG_TRANSFORM_IDENTITY;
 
@@ -246,7 +242,7 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static void write_callback(png_structp _png_ptr, png_bytep _data, png_size_t _length)
+    static void write_callback(png_structp _png_ptr, png_bytep _data, png_size_t _length)
     {
         auto* ostream = reinterpret_cast<std::ostream*>(png_get_io_ptr(_png_ptr));
         ostream->write(reinterpret_cast<char*>(_data), std::streamsize(_length));
@@ -254,24 +250,39 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static void warning_callback(png_structp, png_const_charp _msg)
+    static void warning_callback(png_structp /*_png_ptr*/, png_const_charp _msg)
     {
         SIGHT_WARN(_msg);
     }
 
     //------------------------------------------------------------------------------
 
-    inline static void error_callback(png_structp, png_const_charp _msg)
+    static void error_callback(png_structp /*_png_ptr*/, png_const_charp _msg)
     {
         SIGHT_THROW(_msg);
     }
 
     std::vector<png_bytep> m_rows;
 
+    bool m_valid {true};
+
+    static constexpr std::string_view NAME {"LibPNGWriter"};
+
 public:
 
-    bool m_valid {false};
-    static constexpr std::string_view m_name {"LibPNGWriter"};
+    //------------------------------------------------------------------------------
+
+    [[nodiscard]] bool valid() const noexcept
+    {
+        return m_valid;
+    }
+
+    //------------------------------------------------------------------------------
+
+    [[nodiscard]] static constexpr std::string_view name() noexcept
+    {
+        return NAME;
+    }
 };
 
 } // namespace sight::io::bitmap::detail

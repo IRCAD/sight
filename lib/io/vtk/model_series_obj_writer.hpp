@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,23 +33,9 @@
 namespace sight::data
 {
 
-class Reconstruction;
-
-} // namespace sight::data
-
-namespace sight::data
-{
-
 class model_series;
 
 } // namespace sight::data
-
-namespace sight::core::jobs
-{
-
-class observer;
-
-} // namespace sight::core::jobs
 
 namespace sight::io::vtk
 {
@@ -59,34 +45,20 @@ namespace sight::io::vtk
  *
  * Write a data::reconstruction as .obj file using the VTK lib and the obj format.
  */
-class model_series_obj_writer : public io::writer::generic_object_writer<data::model_series>,
-                                public core::location::single_folder
+class SIGHT_IO_VTK_CLASS_API model_series_obj_writer : public io::writer::generic_object_writer<data::model_series>,
+                                                       public core::location::single_folder
 {
 public:
 
     SIGHT_DECLARE_CLASS(model_series_obj_writer, io::writer::generic_object_writer<data::model_series>)
 
-    /// Constructor.
-    SIGHT_IO_VTK_API model_series_obj_writer();
-
-    /// Destructor.
-    SIGHT_IO_VTK_API ~model_series_obj_writer() override;
-
     /// Writing operator.
-    SIGHT_IO_VTK_API void write() override;
+    SIGHT_IO_VTK_API void write(SPTR(sight::core::progress::observer) _progress) override;
 
     /**
      * @return ".obj"
      */
     SIGHT_IO_VTK_API std::string extension() const override;
-
-    /// @return internal job
-    SIGHT_IO_VTK_API SPTR(core::jobs::base) get_job() const override;
-
-private:
-
-    ///Internal job
-    SPTR(core::jobs::observer) m_job;
 };
 
 } // namespace sight::io::vtk

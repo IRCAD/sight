@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -165,7 +165,6 @@ void model_series_test::equality_test()
             );
 
     TEST(set_reconstruction_db({std::make_shared<data::reconstruction>()}));
-    TEST(set_dicom_reference(std::make_shared<data::dicom_series>()));
 
     #undef TEST
 }

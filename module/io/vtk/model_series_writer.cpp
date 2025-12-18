@@ -22,15 +22,8 @@
 
 #include "module/io/vtk/model_series_writer.hpp"
 
-#include "module/io/vtk/mesh_writer.hpp"
-
-#include <core/base.hpp>
-#include <core/com/has_signals.hpp>
-#include <core/com/signal.hpp>
 #include <core/com/signal.hxx>
-#include <core/jobs/base.hpp>
 #include <core/location/single_folder.hpp>
-#include <core/tools/uuid.hpp>
 
 #include <data/mesh.hpp>
 #include <data/model_series.hpp>
@@ -42,8 +35,6 @@
 #include <io/vtk/stl_mesh_writer.hpp>
 #include <io/vtk/vtp_mesh_writer.hpp>
 
-#include <service/macros.hpp>
-
 #include <ui/__/cursor.hpp>
 #include <ui/__/dialog/location.hpp>
 #include <ui/__/dialog/message.hpp>
@@ -51,18 +42,16 @@
 
 #include <boost/algorithm/string.hpp>
 
+#include <algorithm>
 #include <filesystem>
 
 namespace sight::module::io::vtk
 {
 
-static const core::com::signals::key_t JOB_CREATED_SIGNAL = "job_created";
-
 //------------------------------------------------------------------------------
 
 model_series_writer::model_series_writer() noexcept :
-    writer("Choose a directory to save meshes"),
-    m_sig_job_created(new_signal<job_created_signal_t>(JOB_CREATED_SIGNAL))
+    writer("Choose a directory to save meshes")
 {
 }
 
@@ -126,9 +115,8 @@ void model_series_writer::open_location_dialog()
 
             // Fill the descriptions vector with map keys.
             std::vector<std::string> descriptions;
-            std::transform(
-                std::begin(description_to_extension),
-                std::end(description_to_extension),
+            std::ranges::transform(
+                description_to_extension,
                 std::back_inserter(descriptions),
                 [](auto const& _pair)
                 {
@@ -198,7 +186,7 @@ void model_series_writer::info(std::ostream& _sstream)
 //------------------------------------------------------------------------------
 
 template<typename WRITER>
-typename WRITER::sptr configure_writer(const std::filesystem::path& _filename)
+static typename WRITER::sptr configure_writer(const std::filesystem::path& _filename)
 {
     typename WRITER::sptr writer = std::make_shared<WRITER>();
     writer->set_file(_filename);
@@ -241,10 +229,11 @@ void model_series_writer::write_mesh(const std::filesystem::path& _filename, con
         );
     }
 
-    m_sig_job_created->emit(mesh_writer->get_job());
+    auto observer = std::make_shared<core::progress::observer>("Writing models in " + this->get_folder().string());
+    this->async_emit(has_monitors::signals::MONITOR_CREATED, observer->get_sptr());
 
     mesh_writer->set_object(_mesh);
-    mesh_writer->write();
+    mesh_writer->write(observer);
 }
 
 //------------------------------------------------------------------------------

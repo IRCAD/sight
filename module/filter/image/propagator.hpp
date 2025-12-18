@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024 IRCAD France
+ * Copyright (C) 2024-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include <core/jobs/base.hpp>
+#include <core/progress/has_monitors.hpp>
 
 #include <data/boolean.hpp>
 #include <data/image.hpp>
@@ -75,17 +75,12 @@ namespace sight::module::filter::image
  * - \b mode (optional) : Propagation mode. Possible values are 'min', 'max', 'minmax' and 'stddev'. 'min' by default.
  *  'stddev' stands for standar deviation, in this case the min is set to mean - stddev and mex to mean + stddev.
  */
-class propagator : public service::filter
+class propagator : public service::filter,
+                   public sight::core::progress::has_monitors
 {
 public:
 
     SIGHT_DECLARE_SERVICE(propagator, sight::service::filter);
-
-    struct signals final
-    {
-        using job_created_t = sight::core::com::signal<void (sight::core::jobs::base::sptr)>;
-        static inline const sight::core::com::signals::key_t JOB_CREATED = "job_created";
-    };
 
     struct slots final
     {

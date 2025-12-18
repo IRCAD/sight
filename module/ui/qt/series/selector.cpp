@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,6 +21,8 @@
  ***********************************************************************/
 
 #include "selector.hpp"
+
+#include "core/spy_log.hpp"
 
 #include <core/com/signal.hxx>
 #include <core/com/slot.hxx>
@@ -296,6 +298,7 @@ void selector::add_series(data::series_set::container_t _added_series)
 {
     for(const auto& series : _added_series)
     {
+        SIGHT_ASSERT("Series must not be null",series != nullptr);
         m_selector_widget->add_series(series);
     }
 }
@@ -306,6 +309,7 @@ void selector::remove_series(data::series_set::container_t _removed_series)
 {
     for(const auto& series : _removed_series)
     {
+        SIGHT_ASSERT("Series must not be null",series != nullptr);
         m_selector_widget->remove_series(series);
     }
 }

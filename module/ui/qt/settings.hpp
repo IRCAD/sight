@@ -25,6 +25,7 @@
 
 #include <ui/__/editor.hpp>
 #include <ui/__/parameter.hpp>
+#include <ui/qt/widget/switch_button.hpp>
 #include <ui/qt/widget/tickmarks_slider.hpp>
 
 #include <QCheckBox>
@@ -125,6 +126,7 @@ namespace sight::module::ui::qt
  * - \b widget (optional) : widget type, available for types 'sight::data::integer', 'sight::data::real',
  * 'sight::data::string'.
  * For 'sight::data::real', you can choose between a 'spin' or a 'slider' widget. Defaults to 'spin'.
+ * For 'sight::data::bool', you can choose between a 'check_box' or a 'switch_button' . Defaults to 'check_box'
  * For 'sight::data::integer', you can choose between a 'spin', a 'slider', a 'combobox', a 'comboslider', a 'tickmarks'
  *  , or a 'buttonBar'.
  * For 'string', you can choose between 'text', 'file_[read/write]', 'dir_[read/write]',
@@ -253,6 +255,19 @@ private Q_SLOTS:
     /**
      * @brief Called when a dependency widget state (enable or disable) has changed to modify the state of the child
      * widget.
+     * @param _switch_button Dependency widget.
+     * @param _widget Child widget.
+     * @param _reverse Reverse the state check.
+     */
+    static void on_depends_changed(
+        sight::ui::qt::widget::switch_button* _switch_button,
+        QWidget* _widget,
+        bool _reverse
+    );
+
+    /**
+     * @brief Called when a dependency widget state (enable or disable) has changed to modify the state of the child
+     * widget.
      * @param _combo_box Dependency widget.
      * @param _widget Child widget.
      * @param _value Value of the combo box.
@@ -319,7 +334,12 @@ private:
     /// Create a widget associated with a boolean type
     /// @returns The reset button, to put in a layout of your choice, or nullptr if not required.
     [[nodiscard]]
-    QPushButton* create_bool_widget(QBoxLayout* _layout, const param_widget& _setup, Qt::Orientation _orientation);
+    QPushButton* create_bool_widget(
+        QBoxLayout* _layout,
+        const param_widget& _setup,
+        Qt::Orientation _orientation,
+        std::string _widget_type
+    );
 
     /// Create a widget associated with a color type
     /// @returns The reset button, to put in a layout of your choice, or nullptr if not required.
@@ -448,7 +468,10 @@ private:
     /// @}
 
     /// Updates the values of tickmarks widgets
-    void update_tickmarks(sight::ui::qt::widget::tickmarks_slider* const _tickmarks, const std::string& _options);
+    void update_tickmarks(
+        sight::ui::qt::widget::tickmarks_slider* const _tickmarks,
+        const std::string& _options
+    );
 
     /// Return the widget of the parameter with the given key, or nullptr if it does not exist
     QObject* get_param_widget(const std::string& _key);

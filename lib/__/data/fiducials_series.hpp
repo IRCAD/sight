@@ -23,9 +23,10 @@
 
 #include <sight/data/config.hpp>
 
-#include "core/macros.hpp"
-
 #include "series.hpp"
+
+#include <core/compound_types.hpp>
+#include <core/macros.hpp>
 
 namespace gdcm
 {
@@ -187,7 +188,7 @@ public:
         std::optional<std::string> group_name {std::nullopt};
 
         // float RGBA colors in [0.0, 1.0]
-        std::optional<std::array<float, 4> > color {std::nullopt};
+        std::optional<sight::vec4f_t> color {std::nullopt};
         std::optional<float> size {std::nullopt};
         std::optional<private_shape> shape {std::nullopt};
         std::optional<bool> visibility {std::nullopt};
@@ -715,8 +716,8 @@ public:
      * @param _fiducial_set_number The 0-indexed index of the fiducial set whose data must be fetched.
      * @{
      */
-    SIGHT_DATA_API std::optional<std::array<float, 4> > get_color(std::size_t _fiducial_set_number) const noexcept;
-    SIGHT_DATA_API void set_color(std::size_t _fiducial_set_number, const std::array<float, 4>& _color);
+    SIGHT_DATA_API std::optional<sight::vec4f_t> get_color(std::size_t _fiducial_set_number) const noexcept;
+    SIGHT_DATA_API void set_color(std::size_t _fiducial_set_number, const sight::vec4f_t& _color);
     /// @}
 
     /**
@@ -781,7 +782,7 @@ public:
         std::optional<bool> m_visible {};
         std::optional<float> m_size {};
         std::optional<private_shape> m_private_shape {};
-        std::optional<std::array<float, 4> > m_color {};
+        std::optional<sight::vec4f_t> m_color {};
 
         std::optional<shape> m_shape {};
         std::optional<std::vector<double> > m_contour_data {};
@@ -906,7 +907,7 @@ public:
      * @param _color The color of the new fiducial set
      * @param _size The size of the points in the new fiducial set
      */
-    SIGHT_DATA_API void add_group(const std::string& _group_name, const std::array<float, 4>& _color, float _size);
+    SIGHT_DATA_API void add_group(const std::string& _group_name, const sight::vec4f_t& _color, float _size);
 
     /**
      * Add a point fiducial in a fiducial set

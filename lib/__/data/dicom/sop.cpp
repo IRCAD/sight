@@ -1261,7 +1261,7 @@ const ISop& get(Keyword keyword)
             return get<Keyword::GenericImplantTemplateStorage>();
 
         default:
-            SIGHT_THROW("Unknown Sop Keyword: '" << std::uint8_t(keyword) << "'.");
+            SIGHT_THROW("Unknown Sop Keyword: '" << std::to_string(std::uint8_t(keyword)) << "'.");
     }
 }
 

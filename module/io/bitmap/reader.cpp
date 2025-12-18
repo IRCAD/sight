@@ -22,9 +22,8 @@
 #include "reader.hpp"
 
 #include <core/com/signal.hxx>
-#include <core/jobs/aggregator.hpp>
-#include <core/jobs/job.hpp>
 #include <core/location/single_folder.hpp>
+#include <core/progress/observer.hpp>
 #include <core/tools/system.hpp>
 
 #include <ui/__/cursor.hpp>
@@ -32,6 +31,8 @@
 #include <ui/__/dialog/message.hpp>
 
 #include <boost/algorithm/string.hpp>
+
+#include <algorithm>
 
 // cspell:ignore sreader xmlattr NVJPEG LIBJPEG OPENJPEG
 
@@ -41,9 +42,8 @@ namespace sight::module::io::bitmap
 // Retrieve the backend from the extension
 sight::io::bitmap::backend reader::find_backend(const std::string& _extension) const
 {
-    const auto& it = std::find_if(
-        m_backends.cbegin(),
-        m_backends.cend(),
+    const auto& it = std::ranges::find_if(
+        m_backends,
         [&](const auto& _backend)
         {
             const auto& backend_extensions = sight::io::bitmap::extensions(_backend);
@@ -194,7 +194,7 @@ void reader::configuring()
     m_backends.emplace(sight::io::bitmap::backend::libtiff);
 
 #if defined(SIGHT_ENABLE_NVJPEG)
-    if(sight::io::bitmap::nv_jpeg())
+    if(sight::io::bitmap::nvjpeg())
     {
         m_backends.emplace(sight::io::bitmap::backend::nvjpeg);
     }
@@ -214,7 +214,7 @@ void reader::configuring()
     }
 
 #if defined(SIGHT_ENABLE_NVJPEG2K)
-    if(sight::io::bitmap::nv_jpeg_2k())
+    if(sight::io::bitmap::nvjpeg2k())
     {
         m_backends.emplace(sight::io::bitmap::backend::nvjpeg2k);
     }
@@ -273,9 +273,9 @@ void reader::updating()
             // If the user selected a specific backend, it must match the one given by the file extension.
             SIGHT_THROW(
                 "Backend mismatch: "
-                << std::uint8_t(m_selected_backend)
+                << std::uint32_t(m_selected_backend)
                 << " != "
-                << std::uint8_t(backend_from_extension)
+                << std::uint32_t(backend_from_extension)
             );
         }
     }
@@ -325,41 +325,30 @@ void reader::updating()
 
     SIGHT_THROW_IF("The file '" << file_path << "' is an existing folder.", std::filesystem::is_directory(file_path));
 
-    const auto read_job = std::make_shared<core::jobs::job>(
-        "Writing '" + file_path.string() + "' file",
-        [&](core::jobs::job& _running_job)
-        {
-            _running_job.done_work(10);
-
-            // Create the session reader
-            auto reader = std::make_shared<sight::io::bitmap::reader>();
-            {
-                // The object must be unlocked since it will be locked again when writing
-                auto data = m_data.lock();
-                reader->set_object(data.get_shared());
-                reader->set_file(file_path);
-            }
-
-            // Set cursor to busy state. It will be reset to default even if exception occurs
-            const sight::ui::busy_cursor busy_cursor;
-
-            // Read the file
-            reader->read(m_selected_backend);
-
-            _running_job.done();
-        },
-        this->worker()
-    );
-
-    core::jobs::aggregator::sptr jobs = std::make_shared<core::jobs::aggregator>(file_path.string() + " reader");
-    jobs->add(read_job);
-    jobs->set_cancelable(false);
-
-    m_job_created_signal->emit(jobs);
+    const auto read_progress = std::make_shared<core::progress::observer>("Reading '" + file_path.string() + "' file");
+    this->async_emit(has_monitors::signals::MONITOR_CREATED, read_progress->get_sptr());
 
     try
     {
-        jobs->run().get();
+        read_progress->done_work(10);
+
+        // Create the session reader
+        auto reader = std::make_shared<sight::io::bitmap::reader>();
+        {
+            // The object must be unlocked since it will be locked again when writing
+            auto data = m_data.lock();
+            reader->set_object(data.get_shared());
+            reader->set_file(file_path);
+        }
+
+        // Set cursor to busy state. It will be reset to default even if exception occurs
+        const sight::ui::busy_cursor busy_cursor;
+
+        // Read the file
+        reader->read(m_selected_backend);
+
+        read_progress->done();
+
         m_read_failed = false;
     }
     catch(std::exception& e)

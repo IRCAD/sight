@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2024 IRCAD France
+ * Copyright (C) 2022-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -58,11 +58,7 @@ void has_data::set_input(
     std::optional<std::size_t> _index
 )
 {
-    auto data = m_data_container.find({_key, {}});
-    SIGHT_ASSERT(
-        "Could not find any registered data pointer with key '" << _key << "'",
-        data != m_data_container.end()
-    );
+    auto data = find_object(_key, _obj);
     SIGHT_ASSERT("Key '" << _key << "' is not an input.", data->second->access() == data::access::in);
     data->second->set(std::const_pointer_cast<sight::data::object>(_obj), _auto_connect, _optional, _index);
 }
@@ -77,11 +73,7 @@ void has_data::set_inout(
     std::optional<std::size_t> _index
 )
 {
-    auto data = m_data_container.find({_key, {}});
-    SIGHT_ASSERT(
-        "Could not find any registered data pointer with key '" << _key << "'",
-        data != m_data_container.end()
-    );
+    auto data = find_object(_key, _obj);
     SIGHT_ASSERT("Key '" << _key << "' is not an in/out.", data->second->access() == data::access::inout);
     data->second->set(_obj, _auto_connect, _optional, _index);
 }
@@ -90,11 +82,7 @@ void has_data::set_inout(
 
 void has_data::set_output(data::object::sptr _obj, std::string_view _key, std::optional<std::size_t> _index)
 {
-    auto data = m_data_container.find({_key, {}});
-    SIGHT_ASSERT(
-        "Could not find any registered data pointer with key '" << _key << "'",
-        data != m_data_container.end()
-    );
+    auto data = find_object(_key, _obj);
     SIGHT_ASSERT("Key '" << _key << "' is not an output.", data->second->access() == data::access::out);
     data->second->set(_obj, {}, {}, _index, true);
 }
@@ -110,11 +98,7 @@ void has_data::set_object(
     const bool _optional
 )
 {
-    auto data = m_data_container.find({_key, {}});
-    SIGHT_ASSERT(
-        "Could not find any registered data pointer with key '" << _key << "'",
-        data != m_data_container.end()
-    );
+    auto data = find_object(_key, _obj);
     SIGHT_ASSERT("Key '" << _key << "' is not an in/out.", data->second->access() == _access);
     data->second->set(_obj, _auto_connect, _optional, _index);
 }
@@ -137,7 +121,7 @@ void has_data::set_deferred_id(std::string_view _key, const std::string& _id, st
 {
     auto it_data = m_data_container.find({_key, {}});
     SIGHT_ASSERT(
-        "Could not find any registered data pointer with key '" << _key << "'",
+        "Could not find any declared data::ptr with key '" << _key << "' and id " << std::quoted(_id),
         it_data != m_data_container.end()
     );
     it_data->second->set_deferred_id(_id, _index);

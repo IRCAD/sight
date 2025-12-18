@@ -30,7 +30,6 @@
 #include <gdcmTagKeywords.h>
 #include <gdcmTagToVR.h>
 #include <gdcmUIDs.h>
-#include <TestAssert.h>
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::fiducials_series_test);
 
@@ -156,7 +155,7 @@ void check_fiducial_with_gdcm(
     const gdcm::DataSet& _fiducial_set_dataset,
     const gdcm::DataSet& _fiducial_dataset,
     const std::optional<std::string>& _group_name,
-    const std::optional<std::array<float, 4> >& _color,
+    const std::optional<sight::vec4f_t>& _color,
     const std::optional<float>& _size,
     const std::optional<data::fiducials_series::private_shape>& _private_shape,
     const std::optional<bool>& _visible,
@@ -360,11 +359,11 @@ data::fiducials_series::sptr init_fiducials_series()
     graphic_coordinates_data.referenced_image_sequence.referenced_sop_instance_uid = "9";
     graphic_coordinates_data.referenced_image_sequence.referenced_frame_number     = {10};
     graphic_coordinates_data.referenced_image_sequence.referenced_segment_number   = {11};
-    graphic_coordinates_data.graphic_data                                          = {{12, 13}};
+    graphic_coordinates_data.graphic_data                                          = {{.x = 12, .y = 13}};
     fiducial.graphic_coordinates_data_sequence                                     = {graphic_coordinates_data};
 
     fiducial.fiducial_uid = "14";
-    fiducial.contour_data = {{15, 16, 17}};
+    fiducial.contour_data = {{.x = 15, .y = 16, .z = 17}};
     fiducial_set.fiducial_sequence.push_back(fiducial);
 
     fiducial_set.group_name = "18";
@@ -486,7 +485,7 @@ void fiducials_series_test::simple_setter_getter_test()
     COMPARE_GETSETTERS_DEMI_OPTIONAL(group_name, std::optional<std::string> {}, std::optional {"21"s}, 0);
     COMPARE_GETSETTERS_DEMI_OPTIONAL(
         color,
-        (std::optional<std::array<float, 4> > {}),
+        (std::optional<sight::vec4f_t> {}),
         (std::optional {std::array {22.F, 23.F, 24.F, 25.F}}),
         0
     );
@@ -619,11 +618,11 @@ void fiducials_series_test::fiducial_set_setter_getter_test()
     graphic_coordinates_data.referenced_image_sequence.referenced_sop_instance_uid = "9";
     graphic_coordinates_data.referenced_image_sequence.referenced_frame_number     = {10};
     graphic_coordinates_data.referenced_image_sequence.referenced_segment_number   = {11};
-    graphic_coordinates_data.graphic_data                                          = {{12, 13}};
+    graphic_coordinates_data.graphic_data                                          = {{.x = 12, .y = 13}};
     fiducial.graphic_coordinates_data_sequence                                     = {graphic_coordinates_data};
 
     fiducial.fiducial_uid = "14";
-    fiducial.contour_data = {{15, 16, 17}};
+    fiducial.contour_data = {{.x = 15, .y = 16, .z = 17}};
     fiducial_set.fiducial_sequence.push_back(fiducial);
 
     fiducial_set.group_name = "18";
@@ -771,11 +770,11 @@ void fiducials_series_test::fiducial_setter_getter_test()
     graphic_coordinates_data.referenced_image_sequence.referenced_sop_instance_uid = "4";
     graphic_coordinates_data.referenced_image_sequence.referenced_frame_number     = {5};
     graphic_coordinates_data.referenced_image_sequence.referenced_segment_number   = {6};
-    graphic_coordinates_data.graphic_data                                          = {{7, 8}};
+    graphic_coordinates_data.graphic_data                                          = {{.x = 7, .y = 8}};
     fiducial.graphic_coordinates_data_sequence                                     = {graphic_coordinates_data};
 
     fiducial.fiducial_uid = "9";
-    fiducial.contour_data = {{10, 11, 12}};
+    fiducial.contour_data = {{.x = 10, .y = 11, .z = 12}};
 
     // Test setFiducials method
     fiducials_series->set_fiducials(0, {fiducial});
@@ -861,7 +860,7 @@ void fiducials_series_test::graphic_coordinates_data_setter_getter_test()
     graphic_coordinates_data.referenced_image_sequence.referenced_sop_instance_uid = "2";
     graphic_coordinates_data.referenced_image_sequence.referenced_frame_number     = {3};
     graphic_coordinates_data.referenced_image_sequence.referenced_segment_number   = {4};
-    graphic_coordinates_data.graphic_data                                          = {{5, 6}};
+    graphic_coordinates_data.graphic_data                                          = {{.x = 5, .y = 6}};
 
     // Test setGraphicCoordinatesDataSequence method
     fiducials_series->set_graphic_coordinates_data_sequence(0, 0, {{graphic_coordinates_data}});
@@ -1050,7 +1049,7 @@ void fiducials_series_test::add_fiducial_test()
 
     const std::string group_name {core::tools::uuid::generate()};
 
-    const std::array<float, 4> color {0.1F, 0.2F, 0.3F, 0.4F};
+    const sight::vec4f_t color {0.1F, 0.2F, 0.3F, 0.4F};
     const float size {32.F};
     const data::fiducials_series::private_shape private_shape {data::fiducials_series::private_shape::cube};
     const bool visible {false};
@@ -1179,7 +1178,7 @@ void fiducials_series_test::add_fiducial_test()
     {
         const std::string group_name_2 {core::tools::uuid::generate()};
 
-        const std::array<float, 4> color_2 {0.9F, 0.10F, 0.12F, 0.13F};
+        const sight::vec4f_t color_2 {0.9F, 0.10F, 0.12F, 0.13F};
         const float size_2 {16.F};
         const data::fiducials_series::private_shape private_shape_2 {data::fiducials_series::private_shape::sphere};
         const bool visible_2 {true};

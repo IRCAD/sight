@@ -1,0 +1,23 @@
+<plugin id="ut_config">
+    <extension implements="sight::data::extension::config">
+        <id>ut_config</id>
+        <object>sight::data::map</object>
+        <desc>ut_config</desc>
+        <config>
+            <item key="integer" type="sight::data::integer" value="1" />
+            <item key="string" type="sight::data::string" value="abc" />
+            <item key="boolean" type="sight::data::boolean" value="true" />
+            <item key="ivec3" type="sight::data::ivec3" value="0;0;0" />
+            <item key="dvec3" type="sight::data::dvec3" value="1.0;1.0;1.0" />
+            <item key="transfer_function">
+                <object uid="tfInit0_0" type="sight::data::transfer_function">
+                    <name>CT-GreyLevel</name>
+                    <colors is_clamped="false">
+                        <step color="#00000000" value="-200" />
+                        <step color="#FFFFFFFF" value="300" />
+                    </colors>
+                </object>
+            </item>
+        </config>
+    </extension>
+</plugin>

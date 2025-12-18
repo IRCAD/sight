@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,8 +23,8 @@
 #include "series_retriever.hpp"
 
 #include "io/dimse/exceptions/request_failure.hpp"
+#include "io/dimse/helper/series.hpp"
 
-#include <core/os/temp_path.hpp>
 #include <core/runtime/path.hpp>
 #include <core/thread/worker.hpp>
 
@@ -56,18 +56,11 @@ void series_retriever::initialize(
     const std::string& _application_title,
     std::uint16_t _applicationport,
     int _timeout,
-    progress_callback_slot_t::sptr _progress_callback
+    core::progress::observer::sptr _progress
 )
 {
     //Callback
-    m_progress_callback = _progress_callback;
-
-    //Creating folder
-    m_path = core::os::temp_dir::shared_directory() / "dicom/";
-    if(!std::filesystem::exists(m_path))
-    {
-        std::filesystem::create_directories(m_path);
-    }
+    m_progress = _progress;
 
     //Configure network connection
     this->setAETitle(_application_title.c_str());
@@ -127,36 +120,13 @@ OFCondition series_retriever::handleSTORERequest(
 {
     OFCondition cond;
 
-    // Dump incoming message
-    OFString temp_str;
-
     // Get Dataset
     auto* dataset = new DcmDataset();
     if(this->receiveDIMSEDataset(&_pres_id, &dataset).good())
     {
         if(dataset != nullptr)
         {
-            //Find the series UID
-            OFString series_id;
-            if(dataset->findAndGetOFStringArray(DCM_SeriesInstanceUID, series_id).good())
-            {
-            }
-
-            //Find the instance UID
-            OFString instance_id;
-            if(dataset->findAndGetOFStringArray(DCM_SOPInstanceUID, instance_id).good())
-            {
-            }
-
-            //Create Folder
-            std::filesystem::path series_path = std::filesystem::path(m_path.string() + series_id.c_str() + "/");
-            if(!std::filesystem::exists(series_path))
-            {
-                std::filesystem::create_directories(series_path);
-            }
-
-            //Save the file in the specified folder
-            std::string file_path = series_path.string() + instance_id.c_str();
+            std::string file_path = io::dimse::helper::series::get_path(*dataset).string();
             dataset->saveFile(file_path.c_str());
 
             // Send a store response
@@ -173,9 +143,14 @@ OFCondition series_retriever::handleSTORERequest(
             }
 
             // Notify callback
-            if(m_progress_callback)
+            if(m_progress)
             {
-                m_progress_callback->async_run(series_id.c_str(), ++m_instance_index, file_path);
+                //Find the series UID
+                OFString series_id;
+                if(dataset->findAndGetOFStringArray(DCM_SeriesInstanceUID, series_id).good())
+                {
+                    m_progress->done_work(++m_instance_index);
+                }
             }
         }
     }

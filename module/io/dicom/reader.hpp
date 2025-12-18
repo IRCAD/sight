@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,9 +22,12 @@
 #pragma once
 
 #include <core/com/signal.hpp>
-#include <core/jobs/base.hpp>
+#include <core/progress/monitor.hpp>
+
+#include <data/series_set.hpp>
 
 #include <io/__/service/reader.hpp>
+#include <io/dicom/reader/file.hpp>
 
 namespace sight::module::io::dicom
 {
@@ -38,8 +41,8 @@ namespace sight::module::io::dicom
  *          typeFilter configuration parameters.
  *
  * @section Signals Signals
- * - \b job_created(SPTR(core::jobs::base)): emitted to display a progress bar while the image is read (it should be
- * connected to a job_bar).
+ * - \b monitor_created(SPTR(core::progress::monitor)): emitted to display a progress bar while the image is read,
+ * it should be connected to a progress bar
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -76,39 +79,64 @@ public:
 
     SIGHT_DECLARE_SERVICE(reader, sight::io::service::reader);
 
-    using job_created_signal_t = core::com::signal<void (core::jobs::base::sptr)>;
+    using monitor_created_signal_t = core::com::signal<void (core::progress::monitor::sptr)>;
 
     reader() noexcept;
 
-    ~reader() noexcept;
+    ~reader() noexcept final;
 
     /// Propose to read a session data file
-    void open_location_dialog() override;
+    void open_location_dialog() final;
 
 protected:
 
     /// Does nothing
-    void starting() override;
+    void starting() final;
 
     /// Does nothing
-    void stopping() override;
+    void stopping() final;
 
     /// Parses the configuration
-    void configuring() override;
+    void configuring() final;
 
     /// Read DICOM data from filesystem
-    void updating() override;
+    void updating() final;
 
     /// Returns managed path type, here service manages only single file
-    sight::io::service::path_type_t get_path_type() const override
+    sight::io::service::path_type_t get_path_type() const final
     {
         return sight::io::service::folder;
     }
 
 private:
 
-    class reader_impl;
-    std::unique_ptr<reader_impl> m_pimpl;
+    /// Clear location and selected series
+    void clear();
+
+    [[nodiscard]] bool show_location();
+    [[nodiscard]] bool scan();
+    [[nodiscard]] bool show_selection();
+
+    /// Dialog policy to use for dialogs. By default, always show dialog
+    dialog_policy m_dialog_policy {dialog_policy::always};
+
+    /// Default filters to use when scanning for DICOM files
+    sight::data::series::sop_keywords_t m_filters {
+        data::series::dicom_types_to_sops(
+            static_cast<data::series::dicom_types>(data::series::dicom_t::image)
+            | static_cast<data::series::dicom_types>(data::series::dicom_t::model)
+            | static_cast<data::series::dicom_types>(data::series::dicom_t::report)
+        )
+    };
+
+    std::string m_displayed_columns =
+        "PatientName/SeriesInstanceUID,PatientSex,PatientBirthDate/Icon,Modality,StudyDescription/SeriesDescription,StudyDate/SeriesDate,StudyTime/SeriesTime,PatientAge,BodyPartExamined,PatientPositionString,ContrastBolusAgent,AcquisitionTime,ContrastBolusStartTime";
+
+    /// The reader to use to read all DICOM files
+    sight::io::dicom::reader::file::sptr m_reader;
+
+    /// This will hold the scanned / selected series
+    sight::data::series_set::sptr m_selection;
 };
 
-} // namespace sight::module::io::session
+} // namespace sight::module::io::dicom

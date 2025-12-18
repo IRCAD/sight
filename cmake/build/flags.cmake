@@ -260,9 +260,11 @@ if(NOT TARGET coverage)
 
         string(
             CONCAT coverage_script
-                   "gcovr -j$RUNNER_THREADS -r .. --filter ../lib --filter ../module --exclude '.*test.*' "
+                   "gcovr -j $LINUX_PARALLEL_BUILDS -r .. --filter ../lib --filter ../module --exclude '.*test.*' "
                    "--exclude-noncode-lines --html --html-details coverage/index.html --html-theme github.dark-blue "
-                   "--xml coverage/cobertura-coverage.xml --print-summary ."
+                   "--xml coverage/cobertura-coverage.xml --print-summary "
+                   # suspicious hits are sometimes generated from big multithreaded tests
+                   "--gcov-ignore-parse-errors=suspicious_hits.warn ."
                    "| grep lines"
                    [=[| sed -sE 's/.* \((.*) out of (.*)\)/\1\/\2/']=]
                    "| xargs -i echo 'scale=4;a={}*100;scale=2;a/1'"
@@ -306,16 +308,6 @@ if(MSVC)
     # restore them later, modified or not, in restore_cxx_flags()
     set(SIGHT_CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG_INIT} CACHE STRING "" FORCE)
     set(CMAKE_CXX_FLAGS_DEBUG "" CACHE STRING "" FORCE)
-endif()
-
-# Color for ninja and Clang on Linux and OSX
-if(CMAKE_GENERATOR STREQUAL "Ninja")
-    add_compile_options("$<$<AND:$<CXX_COMPILER_ID:GNU>,$<COMPILE_LANGUAGE:C,CXX>>:-fdiagnostics-color>")
-    add_compile_options(
-        "$<$<AND:$<CXX_COMPILER_ID:GNU,CLANG>,$<COMPILE_LANGUAGE:CUDA>>:-Xcompiler=-fdiagnostics-color>"
-    )
-
-    add_compile_options("$<$<AND:$<CXX_COMPILER_ID:Clang>,$<COMPILE_LANGUAGE:C,CXX>>:-fcolor-diagnostics>")
 endif()
 
 # CUDA specific options: Use the Sight customized CXX/C flags, not the CMAKE default

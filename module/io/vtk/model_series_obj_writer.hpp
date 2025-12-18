@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,6 @@
 #include <io/__/service/writer.hpp>
 
 #include <filesystem>
-#include <string>
 
 namespace sight::data
 {
@@ -35,13 +34,6 @@ namespace sight::data
 class mesh;
 
 } // namespace sight::data
-
-namespace sight::core::jobs
-{
-
-class base;
-
-} // namespace sight::core::jobs
 
 namespace sight::module::io::vtk
 {
@@ -52,8 +44,8 @@ namespace sight::module::io::vtk
  * Service writing a model series as .obj files using the fwVtkIO lib.
  *
  * @section Signals Signals
- * - \b job_created(SPTR(core::jobs::base)): emitted to display a progress bar while the image is written (it should be
- * connected to a job_bar).
+ * - \b monitor_created(SPTR(core::progress::monitor)): emitted to display a progress bar while the image is written,
+ * it should be connected to a progress bar
  *
  * @section XML XML Configuration
  *
@@ -73,15 +65,11 @@ class model_series_obj_writer : public sight::io::service::writer
 {
 public:
 
-    using job_created_signal_t = core::com::signal<void (std::shared_ptr<core::jobs::base>)>;
-
     /**
      * @brief Constructor. Do nothing.
      */
     model_series_obj_writer() noexcept;
-
-    ~model_series_obj_writer() noexcept override =
-        default;
+    ~model_series_obj_writer() noexcept override = default;
 
     SIGHT_DECLARE_SERVICE(model_series_obj_writer, sight::io::service::writer);
 
@@ -139,8 +127,6 @@ private:
      * @brief Mesh path.
      */
     std::filesystem::path m_fs_mesh_path;
-
-    SPTR(job_created_signal_t) m_sig_job_created;
 };
 
 } // namespace sight::module::io::vtk

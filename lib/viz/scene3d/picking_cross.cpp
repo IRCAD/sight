@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -42,6 +42,7 @@ picking_cross::picking_cross(const std::string& _name, Ogre::SceneManager& _scen
         "BasicAmbient",
         sight::viz::scene3d::RESOURCE_GROUP
     );
+    m_cross->setRenderQueueGroup(rq::SURFACE);
     auto cross_mat = basic_ambient_mat->clone(_name + "_CrossMaterial");
     const Ogre::ColourValue yellow(1.F, .75F, 0.F, 1.F);
     cross_mat->setAmbient(yellow);
@@ -57,7 +58,7 @@ picking_cross::picking_cross(const std::string& _name, Ogre::SceneManager& _scen
     m_cross->end();
     m_cross->setVisible(false);
     // Always render the widget after the plane it is displayed on.
-    m_cross->setRenderQueueGroupAndPriority(rq::NEGATO_WIDGET_ID, 1);
+    m_cross->setRenderQueueGroupAndPriority(rq::NEGATO_WIDGET, 1);
 
     _parent.attachObject(m_cross);
 }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,20 +20,14 @@
  *
  ***********************************************************************/
 
-#include <io/itk/itk.hpp>
-
-#include <core/com/signal.hxx>
-
-#include <core/spy_log.hpp>
-
-#include <ui/__/dialog/message.hpp>
-
-// Services tools
-#include <service/macros.hpp>
-
 #include "images_substract.hpp"
 
-#include <itkSubtractImageFilter.h>
+#include <core/com/signal.hxx>
+#include <core/spy_log.hpp>
+
+#include <filter/image/substract.hpp>
+
+#include <ui/__/dialog/message.hpp>
 
 namespace sight::module::filter::image
 {
@@ -82,31 +76,8 @@ void images_substract::updating()
         const bool is_same_size = (image1->size() == image2->size());
         if(is_same_size)
         {
-            using image_t = itk::Image<std::int16_t, 3>;
-
-            image_t::Pointer itk_image1 = io::itk::move_to_itk<image_t>(image1.get_shared());
-            SIGHT_ASSERT("Unable to convert data::image to itkImage", itk_image1);
-
-            image_t::Pointer itk_image2 = io::itk::move_to_itk<image_t>(image2.get_shared());
-            SIGHT_ASSERT("Unable to convert data::image to itkImage", itk_image2);
-
-            image_t::Pointer output;
-
-            //Create filter
-            using subtract_image_filter_t = itk::SubtractImageFilter<image_t, image_t, image_t>;
-            subtract_image_filter_t::Pointer filter;
-            filter = subtract_image_filter_t::New();
-            assert(filter);
-
-            filter->SetInput1(itk_image1);
-            filter->SetInput2(itk_image2);
-            filter->Update();
-            output = filter->GetOutput();
-            assert(output->GetSource());
-            io::itk::move_from_itk<image_t>(output, image_result.get_shared(), true);
-
-            auto sig = image_result->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-            sig->async_emit();
+            sight::filter::image::substract(*image1, *image2, *image_result);
+            image_result->async_emit(data::object::MODIFIED_SIG);
         }
         else
         {

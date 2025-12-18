@@ -23,18 +23,10 @@
 
 #include <core/com/signal.hpp>
 #include <core/com/slots.hpp>
-#include <core/jobs/base.hpp>
+#include <core/progress/monitor.hpp>
 
 #include <ui/__/editor.hpp>
-
-#include <QHBoxLayout>
-#include <QLabel>
-#include <QLayout>
-#include <QObject>
-#include <QPointer>
-#include <QProgressBar>
-#include <QSvgWidget>
-#include <QToolButton>
+#include <ui/qt/widget/progress_bar.hpp>
 
 namespace sight::module::ui::qt
 {
@@ -43,7 +35,7 @@ namespace sight::module::ui::qt
  * @brief Service displaying a progress bar.
  *
  * @section Slots Slots
- * - \b show_job(core::jobs::base::sptr _job): visualize the progression of jobs.
+ * - \b add_monitor(core::progress::monitor::sptr _monitor): visualize the progression of tasks.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -53,17 +45,14 @@ namespace sight::module::ui::qt
    @endcode
  *
  * @subsection Configuration Configuration:
- * - \b show_title : Show the title of the current job if true (default: true)
- * - \b show_cancel : Show the cancel button of the current job if true (default: true)
+ * - \b show_title : Show the title of the current task if true (default: true)
+ * - \b show_cancel : Show the cancel button of the current task if true (default: true)
  * - \b svg : If path is valid, will display an svg for pulse mode
  * - \b svg_size : The default size of the svg. If not set, the svg will be displayed at its original size
  */
 
-class progress_bar : public QObject,
-                     public sight::ui::editor
+class progress_bar : public sight::ui::editor
 {
-Q_OBJECT
-
 public:
 
     SIGHT_DECLARE_SERVICE(progress_bar, sight::ui::editor);
@@ -81,13 +70,15 @@ public:
     struct slots final
     {
         using key_t = sight::core::com::slots::key_t;
-        static inline const key_t SHOW_JOB = "show_job";
+        static inline const key_t ADD_MONITOR = "add_monitor";
     };
 
-    /**
-     * @brief Update widgets visibility. This method is called by the job hooks.
-     */
-    void update_widgets();
+    struct signals final
+    {
+        using finished_t = core::com::signal<void ()>;
+        using key_t      = sight::core::com::signals::key_t;
+        static inline const key_t FINISHED = "finished";
+    };
 
 protected:
 
@@ -112,37 +103,14 @@ protected:
     void stopping() override;
 
     /**
-     * @brief show_job slot's method.
+     * @brief add_monitor slot's method.
      */
-    void show_job(core::jobs::base::sptr _job);
+    void add_monitor(core::progress::monitor::sptr _monitor);
 
 private:
 
-    /// Show the title of the current job if true
-    bool m_show_title {true};
-
-    /// Show the cancel button of the current job if true
-    bool m_show_cancel {true};
-
-    /// True for pulse mode
-    bool m_pulse {false};
-
-    /// If path is valid, will display an svg for pulse mode
-    std::filesystem::path m_svg_path;
-
-    /// The default size of the svg
-    std::optional<int> m_svg_size;
-
-    QPointer<QHBoxLayout> m_layout;
-    QPointer<QLabel> m_title;
-    QPointer<QProgressBar> m_progress_bar;
-    QPointer<QSvgWidget> m_svg_widget;
-    QPointer<QToolButton> m_cancel_button;
-
-    std::vector<core::jobs::base::wptr> m_jobs;
-
-    /// Protect the jobs list
-    std::recursive_mutex m_mutex;
+    /// The progress bar widget. Use a shared ptr to be able to pass it to a lambda function.
+    std::shared_ptr<sight::ui::qt::widget::progress_bar> m_progress_bar_widget;
 };
 
 } // namespace sight::module::ui::qt

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2025 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,7 +23,6 @@
 #pragma once
 
 #include <data/image_series.hpp>
-#include <data/landmarks.hpp>
 #include <data/matrix4.hpp>
 #include <data/mt/locked_ptr.hpp>
 #include <data/point.hpp>
@@ -43,94 +42,6 @@
 
 namespace sight::module::ui::qt::metrics
 {
-
-struct landmarks_or_image_series_const_ptr
-{
-    data::landmarks::csptr landmarks;
-    data::image_series::csptr image_series;
-};
-
-struct landmarks_or_image_series_const_lock
-{
-    data::mt::locked_ptr<const data::landmarks> landmarks;
-    data::mt::locked_ptr<const data::image_series> image_series;
-
-    operator landmarks_or_image_series_const_ptr() const
-    {
-        return {.landmarks = landmarks.get_shared(), .image_series = image_series.get_shared()};
-    }
-};
-
-struct landmarks_or_image_series_ptr
-{
-    data::landmarks::sptr landmarks;
-    data::image_series::sptr image_series;
-
-    operator landmarks_or_image_series_const_ptr() const
-    {
-        return {.landmarks = landmarks, .image_series = image_series};
-    }
-};
-
-struct landmarks_or_image_series_lock
-{
-    data::mt::locked_ptr<data::landmarks> landmarks;
-    data::mt::locked_ptr<data::image_series> image_series;
-
-    operator landmarks_or_image_series_ptr() const
-    {
-        return {.landmarks = landmarks.get_shared(), .image_series = image_series.get_shared()};
-    }
-
-    operator landmarks_or_image_series_const_ptr() const
-    {
-        return {.landmarks = landmarks.get_shared(), .image_series = image_series.get_shared()};
-    }
-};
-
-struct image_or_image_series_const_ptr
-{
-    data::image::csptr image;
-    data::image_series::csptr image_series;
-};
-
-struct image_or_image_series_const_lock
-{
-    data::mt::locked_ptr<const data::image> image;
-    data::mt::locked_ptr<const data::image_series> image_series;
-
-    operator image_or_image_series_const_ptr() const
-    {
-        return {.image = image.get_shared(), .image_series = image_series.get_shared()};
-    }
-};
-
-struct image_or_image_series_ptr
-{
-    data::image::csptr image;
-    data::image_series::sptr image_series;
-
-    operator image_or_image_series_const_ptr() const
-    {
-        return {.image = image, .image_series = image_series};
-    }
-};
-
-struct image_or_image_series_lock
-{
-    data::mt::locked_ptr<const data::image> image;
-    data::mt::locked_ptr<data::image_series> image_series;
-
-    operator image_or_image_series_ptr() const
-    {
-        return {.image = image.get_shared(), .image_series = image_series.get_shared()};
-    }
-
-    operator image_or_image_series_const_ptr() const
-    {
-        return {.image = image.get_shared(), .image_series = image_series.get_shared()};
-    }
-};
 
 /**
  * @brief This service defines a graphical editor to edit landmarks.
@@ -168,7 +79,6 @@ struct image_or_image_series_lock
  * point to the landmarks
  *
  *  @subsection In-Out In-Out
- * - \b landmarks [sight::data::landmarks]: the landmarks structure on which this editor is working.
  * - \b imageSeries [sight::data::image_series]: the imageSeries structure on which this editor is working.
  *  Either landmarks or imageSeries parameter must be set.
  * - \b currentLandmark [sight::data::point]: (optional) the coordinates of the currently selected landmark.
@@ -194,40 +104,19 @@ public:
     landmarks() noexcept;
 
     /// Destroys the service.
-    ~landmarks() noexcept override;
+    ~landmarks() noexcept final = default;
 
     /// Configures the service.
-    void configuring() override;
+    void configuring() final;
 
     /// Installs the layout.
-    void starting() override;
+    void starting() final;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
-     *
-     * Connect data::landmarks::MODIFIED_SIG of s_LANDMARKS_INOUT to
-     * module::ui::qt::metrics::landmarks::service::slots::UPDATE
-     * Connect data::landmarks::POINT_ADDED_SIG of s_LANDMARKS_INOUT to
-     * module::ui::qt::metrics::landmarks::ADD_POINT_SLOT
-     * Connect data::landmarks::POINT_MODIFIED_SIG of s_LANDMARKS_INOUT to
-     * module::ui::qt::metrics::landmarks::MODIFY_POINT_SLOT
-     * Connect data::landmarks::POINT_SELECTED_SIG of s_LANDMARKS_INOUT to
-     * module::ui::qt::metrics::landmarks::SELECT_POINT_SLOT
-     * Connect data::landmarks::POINT_DESELECTED_SIG of s_LANDMARKS_INOUT to
-     * module::ui::qt::metrics::landmarks::DESELECT_POINT_SLOT
-     * Connect data::landmarks::GROUP_ADDED_SIG of s_LANDMARKS_INOUT to
-     * module::ui::qt::metrics::landmarks::ADD_GROUP_SLOT
-     * Connect data::landmarks::GROUP_REMOVED_SIG of s_LANDMARKS_INOUT to
-     * module::ui::qt::metrics::landmarks::REMOVE_GROUP_SLOT
-     * Connect data::landmarks::POINT_REMOVED_SIG of s_LANDMARKS_INOUT to
-     * module::ui::qt::metrics::landmarks::REMOVE_POINT_SLOT
-     * Connect data::landmarks::GROUP_MODIFIED_SIG of s_LANDMARKS_INOUT to
-     * module::ui::qt::metrics::landmarks::MODIFY_GROUP_SLOT
-     * Connect data::landmarks::GROUP_RENAMED_SIG of s_LANDMARKS_INOUT to
-     * module::ui::qt::metrics::landmarks::RENAME_GROUP_SLOT
      */
-    connections_t auto_connections() const override;
+    connections_t auto_connections() const final;
 
     /// Signal send when double clicked on a landmark, send its world coordinates;
     static const core::com::signals::key_t SEND_WORLD_COORD;
@@ -236,10 +125,10 @@ public:
     using group_selected_signal_t = core::com::signal<void (std::string)>;
 
     /// Resets the interface content and create connections between widgets and this service.
-    void updating() override;
+    void updating() final;
 
     /// Destroys the layout.
-    void stopping() override;
+    void stopping() final;
 
     /// Called when a color button is clicked.
     void on_color_button();
@@ -273,7 +162,7 @@ public:
      *
      * @param _world_coord coordinate of the current landmark
      */
-    void update_current_landmark(data::landmarks::point_t& _world_coord) const;
+    void update_current_landmark(sight::vec3d_t& _world_coord) const;
 
     /**
      * @brief Called when a group's point size is modified.
@@ -393,7 +282,7 @@ public:
      * @param _color The landmarks color type.
      * @return A QColor with same colour value than _color.
      */
-    static QColor convert_to_q_color(const data::landmarks::color_t& _color);
+    static QColor convert_to_q_color(const sight::vec4f_t& _color);
 
     /**
      * @brief Draws a colored square on the button.
@@ -401,10 +290,6 @@ public:
      * @param _color the color of the square.
      */
     static void set_color_button_icon(QPushButton* _button, const QColor& _color);
-
-    landmarks_or_image_series_lock lock();
-
-    landmarks_or_image_series_const_lock const_lock() const;
 
     /// Contains a tree representing landmarks sorted by their groups.
     QPointer<QTreeWidget> m_tree_widget;
@@ -448,12 +333,10 @@ public:
     /// Sets the text displayed at the top of this editor.
     std::string m_text;
 
-    static constexpr std::string_view LANDMARKS_INOUT        = "landmarks";
     static constexpr std::string_view IMAGE_SERIES_INOUT     = "imageSeries";
     static constexpr std::string_view MATRIX_IN              = "matrix";
     static constexpr std::string_view CURRENT_LANDMARK_INOUT = "currentLandmark";
     data::ptr<data::matrix4, sight::data::access::in> m_matrix {this, MATRIX_IN, true};
-    data::ptr<data::landmarks, sight::data::access::inout> m_landmarks {this, LANDMARKS_INOUT};
     data::ptr<data::image_series, sight::data::access::inout> m_image_series {this, IMAGE_SERIES_INOUT};
     data::ptr<data::point, sight::data::access::inout> m_current_landmark {this, CURRENT_LANDMARK_INOUT, true};
 

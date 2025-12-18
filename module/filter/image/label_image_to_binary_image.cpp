@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2025 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,12 +27,7 @@
 #include <data/integer.hpp>
 #include <data/vector.hpp>
 
-#include <io/itk/itk.hpp>
-
-#include <service/macros.hpp>
-
-#include <itkImage.h>
-#include <itkUnaryFunctorImageFilter.h>
+#include <filter/image/labeling.hpp>
 
 #include <algorithm>
 #include <bitset>
@@ -41,39 +36,6 @@
 
 namespace sight::module::filter::image
 {
-
-using function_t = std::function<std::uint8_t(const std::uint8_t&)>;
-
-class lambda_functor
-{
-public:
-
-    lambda_functor()
-    = default;
-
-    explicit lambda_functor(function_t _f) :
-        m_function(std::move(_f))
-    {
-    }
-
-    //------------------------------------------------------------------------------
-
-    inline std::uint8_t operator()(const std::uint8_t& _in)
-    {
-        return m_function(_in);
-    }
-
-    // Needs to be implemented because it is called by the itkUnaryFunctorImageFilter when setting the functor.
-    // Always return true to force-set the functor.
-    inline bool operator!=(const lambda_functor& /*unused*/)
-    {
-        return true;
-    }
-
-private:
-
-    function_t m_function;
-};
 
 //------------------------------------------------------------------------------
 
@@ -84,16 +46,11 @@ label_image_to_binary_image::label_image_to_binary_image() :
 
 //------------------------------------------------------------------------------
 
-label_image_to_binary_image::~label_image_to_binary_image()
-= default;
-
-//------------------------------------------------------------------------------
-
 void label_image_to_binary_image::configuring()
 {
     const config_t config = this->get_config();
 
-    m_label_set_field_name = config.get_optional<std::string>("config.<xmlattr>.labelsField");
+    m_label_set_field_name = config.get<std::string>("config.<xmlattr>.labelsField", "");
 }
 
 //------------------------------------------------------------------------------
@@ -106,8 +63,6 @@ void label_image_to_binary_image::starting()
 
 void label_image_to_binary_image::updating()
 {
-    using image_t = typename itk::Image<std::uint8_t, 3>;
-
     const auto label_image = m_label_image.lock();
     SIGHT_ASSERT("No " << LABEL_IMAGE_INPUT << " input.", label_image);
 
@@ -119,70 +74,10 @@ void label_image_to_binary_image::updating()
         label_image->type() == core::type::UINT8 && label_image->num_components() == 1
     );
 
-    lambda_functor functor;
-    if(m_label_set_field_name)
-    {
-        data::vector::csptr labels = label_image->get_field<data::vector>(m_label_set_field_name.value());
+    sight::filter::image::convert_label_image_to_binary_mask(*label_image, *mask_image, m_label_set_field_name);
 
-        if(!labels)
-        {
-            SIGHT_INFO(
-                "No field named '" + m_label_set_field_name.value()
-                + "' in 'labelImage'. No binary mask generated."
-            );
-            return;
-        }
-
-        std::bitset<std::numeric_limits<std::uint8_t>::max() + 1> label_set;
-
-        std::for_each(
-            labels->begin(),
-            labels->end(),
-            [&label_set](data::object::csptr _o)
-            {
-                data::integer::csptr int_obj = std::dynamic_pointer_cast<const data::integer>(_o);
-                SIGHT_ASSERT("The label vector should only contain integers.", int_obj);
-                const int val = int(int_obj->value());
-                SIGHT_ASSERT("The integers in the vector must be in the [0, 255] range.", val >= 0 && val <= 255);
-                label_set.set(static_cast<std::uint8_t>(val), true);
-            });
-
-        functor = lambda_functor(
-            function_t(
-                [label_set](const std::uint8_t& _in)
-            {
-                return label_set[_in] ? 255 : 0;
-            })
-        );
-    }
-    else
-    {
-        functor = lambda_functor(
-            function_t(
-                [](const std::uint8_t& _in)
-            {
-                return _in > 0 ? 255 : 0;
-            })
-        );
-    }
-
-    typename image_t::Pointer itk_label_img = io::itk::move_to_itk<image_t>(label_image.get_shared());
-
-    itk::UnaryFunctorImageFilter<image_t, image_t, lambda_functor>::Pointer label_to_mask_filter =
-        itk::UnaryFunctorImageFilter<image_t, image_t, lambda_functor>::New();
-
-    label_to_mask_filter->SetFunctor(functor);
-    label_to_mask_filter->SetInput(itk_label_img);
-    label_to_mask_filter->Update();
-
-    typename image_t::Pointer itk_mask_img = label_to_mask_filter->GetOutput();
-
-    io::itk::move_from_itk<image_t::Pointer>(itk_mask_img, mask_image.get_shared());
-    const auto modified_sig = mask_image->signal<data::object::modified_signal_t>(data::image::MODIFIED_SIG);
-
-    modified_sig->async_emit();
-
-    this->signal<signals::computed_t>(signals::COMPUTED)->async_emit();
+    mask_image->async_emit(data::image::MODIFIED_SIG);
+    this->async_emit(signals::COMPUTED);
 }
 
 //------------------------------------------------------------------------------

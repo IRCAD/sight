@@ -128,9 +128,9 @@ Ogre::Technique* viz::scene3d::compositor::manager::oit::handleSchemeNotFound(
     }
 
     // DepthPeeling, DualDepthPeeling, WeightedBlended or HybridTransparency
-    const auto algo_name = tokens[0];
+    const auto& algo_name = tokens[0];
     // peel, depthMap, transmittanceBlend, etc...
-    const auto algo_pass_name = tokens[1];
+    const auto& algo_pass_name = tokens[1];
 
     Ogre::Technique* new_tech     = nullptr;
     Ogre::Technique* default_tech = _original_material->getTechnique(0);
@@ -287,6 +287,12 @@ Ogre::Technique* viz::scene3d::compositor::manager::oit::handleSchemeNotFound(
                 if(pass->getName() != viz::scene3d::material::generic::passes::SELECTED)
                 {
                     pass->setSceneBlending(Ogre::SBT_REPLACE);
+                }
+
+                auto params = pass->getFragmentProgramParameters();
+                if(auto defs = params->getConstantDefinitions().map; defs.contains("u_diffuse"))
+                {
+                    params->setNamedAutoConstant("u_diffuse", Ogre::GpuProgramParameters::ACT_SURFACE_DIFFUSE_COLOUR);
                 }
             }
         }
@@ -487,7 +493,7 @@ Ogre::Technique* viz::scene3d::compositor::manager::oit::handleSchemeNotFound(
             params->setNamedConstant("u_forwardAlphasBuffer", int(num_tex_unit + 3));
             params->setNamedAutoConstant("u_viewport", Ogre::GpuProgramParameters::ACT_VIEWPORT_SIZE);
 
-            if(auto defs = params->getConstantDefinitions().map; defs.find("u_diffuse") != defs.end())
+            if(auto defs = params->getConstantDefinitions().map; defs.contains("u_diffuse"))
             {
                 params->setNamedAutoConstant("u_diffuse", Ogre::GpuProgramParameters::ACT_SURFACE_DIFFUSE_COLOUR);
             }
@@ -649,7 +655,7 @@ void oit::setup_depth_peeling(
             {
                 Ogre::CompositionPass* dp_comp_pass_render_scene = dp_comp_target_peel->createPass();
                 dp_comp_pass_render_scene->setType(Ogre::CompositionPass::PT_RENDERSCENE);
-                dp_comp_pass_render_scene->setLastRenderQueue(rq::SURFACE_ID);
+                dp_comp_pass_render_scene->setLastRenderQueue(rq::SURFACE);
             }
         }
 
@@ -726,7 +732,7 @@ void oit::setup_dual_depth_peeling(
             {
                 Ogre::CompositionPass* dp_comp_pass_render_scene = dp_comp_target_peel->createPass();
                 dp_comp_pass_render_scene->setType(Ogre::CompositionPass::PT_RENDERSCENE);
-                dp_comp_pass_render_scene->setLastRenderQueue(rq::SURFACE_ID);
+                dp_comp_pass_render_scene->setLastRenderQueue(rq::SURFACE);
             }
         }
 
@@ -799,7 +805,7 @@ void oit::setup_hybrid_transparency(
             {
                 Ogre::CompositionPass* dp_comp_pass_render_scene = dp_comp_target_peel->createPass();
                 dp_comp_pass_render_scene->setType(Ogre::CompositionPass::PT_RENDERSCENE);
-                dp_comp_pass_render_scene->setLastRenderQueue(rq::SURFACE_ID);
+                dp_comp_pass_render_scene->setLastRenderQueue(rq::SURFACE);
             }
         }
 
@@ -846,7 +852,7 @@ void oit::setup_hybrid_transparency(
         {
             Ogre::CompositionPass* dp_comp_pass_render_scene = dp_comp_target_occlusion->createPass();
             dp_comp_pass_render_scene->setType(Ogre::CompositionPass::PT_RENDERSCENE);
-            dp_comp_pass_render_scene->setLastRenderQueue(rq::SURFACE_ID);
+            dp_comp_pass_render_scene->setLastRenderQueue(rq::SURFACE);
         }
     }
 
@@ -875,7 +881,7 @@ void oit::setup_hybrid_transparency(
         {
             Ogre::CompositionPass* dp_comp_pass_render_scene = dp_comp_target_weight_blend->createPass();
             dp_comp_pass_render_scene->setType(Ogre::CompositionPass::PT_RENDERSCENE);
-            dp_comp_pass_render_scene->setLastRenderQueue(rq::SURFACE_ID);
+            dp_comp_pass_render_scene->setLastRenderQueue(rq::SURFACE);
         }
     }
 
@@ -904,7 +910,7 @@ void oit::setup_hybrid_transparency(
         {
             Ogre::CompositionPass* dp_comp_pass_render_scene = dp_comp_target_transmittance->createPass();
             dp_comp_pass_render_scene->setType(Ogre::CompositionPass::PT_RENDERSCENE);
-            dp_comp_pass_render_scene->setLastRenderQueue(rq::SURFACE_ID);
+            dp_comp_pass_render_scene->setLastRenderQueue(rq::SURFACE);
         }
     }
 

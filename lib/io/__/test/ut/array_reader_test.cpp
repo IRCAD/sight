@@ -22,6 +22,7 @@
 #include "array_reader_test.hpp"
 
 #include <core/os/temp_path.hpp>
+#include <core/progress/observer.hpp>
 
 #include <data/array.hpp>
 
@@ -52,7 +53,8 @@ void array_reader_test::basic_test()
     array_out->resize({16}, core::type::UINT8);
     array_reader->set_object(array_out);
     array_reader->set_file(filepath);
-    CPPUNIT_ASSERT_NO_THROW(array_reader->read());
+    const auto observer = std::make_shared<core::progress::observer>("ARRAY Reader Test");
+    CPPUNIT_ASSERT_NO_THROW(array_reader->read(observer));
     std::uint8_t i = 0;
     {
         auto array_lock = array_out->dump_lock();

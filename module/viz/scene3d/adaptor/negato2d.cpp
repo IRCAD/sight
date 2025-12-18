@@ -33,9 +33,6 @@
 #include <viz/scene3d/utils.hpp>
 
 #include <OgreSceneNode.h>
-
-#include <algorithm>
-
 namespace sight::module::viz::scene3d::adaptor
 {
 
@@ -96,13 +93,13 @@ void negato2d::change_slice_type(int _from, int _to)
                                                           : plane_axis
                             == from_axis ? to_axis : plane_axis;
 
-    if(plane_axis != new_axis)
+    if(plane_axis != new_axis && m_planes[0].first != nullptr)
     {
         m_planes[0].second = new_axis;
         this->render_service()->make_current();
 
         const auto spacing = sight::viz::scene3d::utils::get_ogre_spacing(*image);
-        m_planes[0].first->update(m_planes[0].second, spacing, m_enable_alpha);
+        m_planes[0].first->update(m_planes[0].second, spacing);
 
         // Update threshold if necessary
         this->update_tf();
@@ -197,7 +194,7 @@ void negato2d::pick_intensity(int _x, int _y)
 
     if(result.has_value())
     {
-        if(m_planes[0].first->get_movable_object() == result->first)
+        if(m_planes[0].first->get_movable_object() == result->first && m_planes[0].first != nullptr)
         {
             m_picked = true;
             const auto image = m_image.lock();

@@ -1,4 +1,6 @@
 <plugin id="sight::module::data" library="true">
+    <extension-point id="sight::data::extension::config" schema="config.xsd" />
+
     <extension implements="sight::service::extension::factory">
         <type>sight::service::controller</type>
         <service>sight::module::data::copy</service>
@@ -32,7 +34,7 @@
         <type>sight::service::controller</type>
         <service>sight::module::data::select_object</service>
         <object>sight::data::map</object>
-        <desc>Registers/unregisters the object given by the slots.</desc>
+        <desc>Registers/un-registers the object given by the slots.</desc>
     </extension>
 
     <extension implements="sight::service::extension::factory">
@@ -87,7 +89,15 @@
         <service>sight::module::data::translate</service>
         <object key="key">sight::data::string_serializable</object>
         <object key="value">sight::data::string_serializable</object>
-        <desc>Registers/unregisters the object given by the slots.</desc>
+        <desc>Translate a string to another.</desc>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::service::filter</type>
+        <service>sight::module::data::concat</service>
+        <object key="fragments">sight::data::string_serializable</object>
+        <object key="target">sight::data::string_serializable</object>
+        <desc>Concatenate n "fragments" to a "target".</desc>
     </extension>
 
     <extension implements="sight::service::extension::factory">

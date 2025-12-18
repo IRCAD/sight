@@ -24,12 +24,10 @@
 #include "module/io/session/writer.hpp"
 
 #include <core/com/signal.hxx>
-#include <core/crypto/password_keeper.hpp>
 #include <core/crypto/secure_string.hpp>
-#include <core/jobs/aggregator.hpp>
-#include <core/jobs/job.hpp>
 #include <core/location/single_folder.hpp>
 #include <core/os/temp_path.hpp>
+#include <core/progress/aggregator.hpp>
 #include <core/tools/system.hpp>
 
 #include <io/session/session_writer.hpp>
@@ -39,67 +37,17 @@
 #include <ui/__/dialog/location.hpp>
 #include <ui/__/dialog/message.hpp>
 
+using sight::core::crypto::password_keeper;
+using sight::core::crypto::secure_string;
+using sight::io::zip::archive;
+
 namespace sight::module::io::session
 {
 
-using core::crypto::password_keeper;
-using core::crypto::secure_string;
-using sight::io::zip::archive;
-
-/// Private writer implementation
-class writer::writer_impl
-{
-public:
-
-    /// Delete default constructors and assignment operators
-    writer_impl(const writer_impl&)            = delete;
-    writer_impl(writer_impl&&)                 = delete;
-    writer_impl& operator=(const writer_impl&) = delete;
-    writer_impl& operator=(writer_impl&&)      = delete;
-
-    /// Constructor
-    explicit writer_impl(writer* const _writer) noexcept :
-        m_writer(_writer),
-        m_job_created_signal(_writer->new_signal<job_created_signal_t>("job_created"))
-    {
-    }
-
-    /// Default destructor
-    ~writer_impl() noexcept = default;
-
-    /// Pointer to the public interface
-    writer* const m_writer;
-
-    /// Extension name to use for session file
-    std::string m_extension_name {".zip"};
-
-    /// Extension description to use for file save dialog
-    std::string m_extension_description {"Sight session"};
-
-    /// Dialog policy to use for the file location
-    dialog_policy m_dialog_policy = {dialog_policy::never};
-
-    /// Password policy to use
-    password_keeper::password_policy m_password_policy {password_keeper::password_policy::never};
-
-    /// Encryption policy to use
-    password_keeper::encryption_policy m_encryption_policy {password_keeper::encryption_policy::password};
-
-    /// Archive format to use
-    archive::archive_format m_archive_format {archive::archive_format::DEFAULT};
-
-    /// Signal emitted when job created.
-    job_created_signal_t::sptr m_job_created_signal;
-};
-
 writer::writer() noexcept :
-    sight::io::service::writer("Choose a file to save a session"),
-    m_pimpl(std::make_unique<writer_impl>(this))
+    sight::io::service::writer("Choose a file to save a session")
 {
 }
-
-// Defining the destructor here, allows us to use PImpl with a unique_ptr
-writer::~writer() noexcept = default;
 
 //-----------------------------------------------------------------------------
 
@@ -126,13 +74,13 @@ void writer::configuring()
     const auto& dialog = tree.get_child_optional("dialog.<xmlattr>");
     if(dialog.is_initialized())
     {
-        m_pimpl->m_extension_name        = dialog->get<std::string>("extension");
-        m_pimpl->m_extension_description = dialog->get<std::string>("description");
-        m_pimpl->m_dialog_policy         = string_to_dialog_policy(dialog->get<std::string>("policy", "default"));
+        m_extension_name        = dialog->get<std::string>("extension");
+        m_extension_description = dialog->get<std::string>("description");
+        m_dialog_policy         = string_to_dialog_policy(dialog->get<std::string>("policy", "default"));
 
         SIGHT_THROW_IF(
             "Cannot read dialog policy.",
-            m_pimpl->m_dialog_policy == dialog_policy::invalid
+            m_dialog_policy == dialog_policy::invalid
         );
     }
 
@@ -141,23 +89,23 @@ void writer::configuring()
     if(password.is_initialized())
     {
         // Password policy
-        m_pimpl->m_password_policy = password_keeper::string_to_password_policy(
+        m_password_policy = password_keeper::string_to_password_policy(
             password->get<std::string>("policy", "default")
         );
 
         SIGHT_THROW_IF(
             "Cannot read password policy.",
-            m_pimpl->m_password_policy == password_keeper::password_policy::invalid
+            m_password_policy == password_keeper::password_policy::invalid
         );
 
         // Encryption policy
-        m_pimpl->m_encryption_policy = password_keeper::string_to_encryption_policy(
+        m_encryption_policy = password_keeper::string_to_encryption_policy(
             password->get<std::string>("encryption", "default")
         );
 
         SIGHT_THROW_IF(
             "Cannot read encryption policy.",
-            m_pimpl->m_encryption_policy == password_keeper::encryption_policy::invalid
+            m_encryption_policy == password_keeper::encryption_policy::invalid
         );
     }
 
@@ -165,11 +113,11 @@ void writer::configuring()
     const auto& archive = tree.get_child_optional("archive.<xmlattr>");
     if(archive.is_initialized())
     {
-        m_pimpl->m_archive_format = archive::string_to_archive_format(archive->get<std::string>("format", "default"));
+        m_archive_format = archive::string_to_archive_format(archive->get<std::string>("format", "default"));
 
         SIGHT_THROW_IF(
             "Cannot read archive format.",
-            m_pimpl->m_archive_format == archive::archive_format::invalid
+            m_archive_format == archive::archive_format::invalid
         );
     }
 }
@@ -182,8 +130,8 @@ void writer::updating()
     m_write_failed = true;
 
     // Show the save dialog if the path is empty
-    if((!has_location_defined() && m_pimpl->m_dialog_policy != dialog_policy::never)
-       || m_pimpl->m_dialog_policy == dialog_policy::always)
+    if((!has_location_defined() && m_dialog_policy != dialog_policy::never)
+       || m_dialog_policy == dialog_policy::always)
     {
         open_location_dialog();
     }
@@ -198,7 +146,7 @@ void writer::updating()
     auto filepath = get_file();
     if(!filepath.has_extension())
     {
-        filepath += m_pimpl->m_extension_name;
+        filepath += m_extension_name;
     }
 
     // In case the path is computed instead of user-selected, make sure it exists
@@ -216,7 +164,7 @@ void writer::updating()
     const secure_string& password =
         [&]
         {
-            if(m_pimpl->m_password_policy == password_keeper::password_policy::never)
+            if(m_password_policy == password_keeper::password_policy::never)
             {
                 // No password management
                 return secure_string();
@@ -224,8 +172,8 @@ void writer::updating()
 
             const secure_string& global_password = password_keeper::get_global_password();
 
-            if((m_pimpl->m_password_policy == password_keeper::password_policy::always)
-               || (m_pimpl->m_password_policy == password_keeper::password_policy::global
+            if((m_password_policy == password_keeper::password_policy::always)
+               || (m_password_policy == password_keeper::password_policy::global
                    && global_password.empty()))
             {
                 const auto& [newPassword, ok] =
@@ -243,59 +191,51 @@ void writer::updating()
             return global_password;
         }();
 
-    const auto write_job = std::make_shared<core::jobs::job>(
-        "Writing " + temp_file.string() + " file",
-        [&](core::jobs::job& _running_job)
-        {
-            _running_job.done_work(10);
+    auto write_progress = std::make_shared<core::progress::observer>("Writing " + temp_file.string() + " file");
 
-            // Create the session writer
-            auto writer = std::make_shared<sight::io::session::session_writer>();
-            {
-                // The object must be unlocked since it will be locked again when writing
-                auto data = m_data.lock();
-                writer->set_object(data.get_shared());
-                writer->set_file(temp_file);
-                writer->set_password(password);
-                writer->set_encryption_policy(m_pimpl->m_encryption_policy);
-                writer->set_archive_format(m_pimpl->m_archive_format);
-            }
-
-            // Set cursor to busy state. It will be reset to default even if exception occurs
-            const sight::ui::busy_cursor busy_cursor;
-
-            // Write the file
-            writer->write();
-
-            _running_job.done();
-        },
-        this->worker()
+    auto rename_progress = std::make_shared<core::progress::observer>(
+        "Rename file" + temp_file.string() + " to " + filepath.string() + "."
     );
 
-    const auto rename_job = std::make_shared<core::jobs::job>(
-        "Rename file" + temp_file.string() + " to " + filepath.string() + ".",
-        [&](core::jobs::job& _running_job)
-        {
-            _running_job.done_work(80);
-
-            // Robust rename
-            core::tools::system::robust_rename(temp_file, filepath, true);
-
-            _running_job.done();
-        },
-        this->worker()
+    core::progress::aggregator::sptr progress = std::make_shared<core::progress::aggregator>(
+        filepath.string()
+        + " writer"
     );
-
-    core::jobs::aggregator::sptr jobs = std::make_shared<core::jobs::aggregator>(filepath.string() + " writer");
-    jobs->add(write_job);
-    jobs->add(rename_job);
-    jobs->set_cancelable(false);
-
-    m_pimpl->m_job_created_signal->emit(jobs);
-
+    progress->add(write_progress);
+    progress->add(rename_progress);
+    progress->set_cancelable(false);
+    this->async_emit(has_monitors::signals::MONITOR_CREATED, progress->get_sptr());
     try
     {
-        jobs->run().get();
+        write_progress->done_work(10);
+
+        // Create the session writer
+        auto writer = std::make_shared<sight::io::session::session_writer>();
+        {
+            // The object must be unlocked since it will be locked again when writing
+            auto data = m_data.lock();
+            writer->set_object(data.get_shared());
+            writer->set_file(temp_file);
+            writer->set_password(password);
+            writer->set_encryption_policy(m_encryption_policy);
+            writer->set_archive_format(m_archive_format);
+        }
+
+        // Set cursor to busy state. It will be reset to default even if exception occurs
+        const sight::ui::busy_cursor busy_cursor;
+
+        // Write the file
+        writer->write(write_progress);
+
+        write_progress->done();
+
+        rename_progress->done_work(80);
+
+        // Robust rename
+        core::tools::system::robust_rename(temp_file, filepath, true);
+
+        rename_progress->done();
+
         m_write_failed = false;
     }
     catch(const std::exception& e)
@@ -330,7 +270,7 @@ void writer::open_location_dialog()
     location_dialog.set_default_location(default_location);
     location_dialog.set_option(ui::dialog::location::write);
     location_dialog.set_type(ui::dialog::location::single_file);
-    location_dialog.add_filter(m_pimpl->m_extension_description, "*" + m_pimpl->m_extension_name);
+    location_dialog.add_filter(m_extension_description, "*" + m_extension_name);
 
     // Show the dialog
     const auto result = std::dynamic_pointer_cast<core::location::single_file>(location_dialog.show());
@@ -339,7 +279,7 @@ void writer::open_location_dialog()
     {
         const auto& filepath = result->get_file();
         set_file(filepath);
-        m_pimpl->m_extension_name = location_dialog.get_selected_extensions().front();
+        m_extension_name = location_dialog.get_selected_extensions().front();
 
         // Save default location for later use
         default_location->set_folder(filepath.parent_path());

@@ -1,6 +1,8 @@
 sight_add_target(core TYPE LIBRARY OBJECT_LIBRARY ON)
 
-target_link_libraries(${TARGET_OBJECT_LIB} PUBLIC Boost::date_time Boost::log Boost::log_setup Boost::iostreams)
+target_link_libraries(
+    ${TARGET_OBJECT_LIB} PUBLIC Boost::system Boost::date_time Boost::log Boost::log_setup Boost::iostreams
+)
 
 target_compile_definitions(${TARGET_OBJECT_LIB} PUBLIC BOOST_BIND_GLOBAL_PLACEHOLDERS)
 
@@ -39,6 +41,6 @@ else()
 endif()
 
 if(SIGHT_BUILD_TESTS)
-    add_subdirectory(test/api)
     add_subdirectory(test/detail)
+    add_subdirectory(test/ut)
 endif(SIGHT_BUILD_TESTS)

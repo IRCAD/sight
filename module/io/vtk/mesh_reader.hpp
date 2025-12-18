@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,14 +27,6 @@
 #include <io/__/service/reader.hpp>
 
 #include <filesystem>
-#include <string>
-
-namespace sight::core::jobs
-{
-
-class base;
-
-} // namespace sight::core::jobs
 
 namespace sight::module::io::vtk
 {
@@ -62,12 +54,9 @@ class mesh_reader : public sight::io::service::reader
 {
 public:
 
-    ~mesh_reader() noexcept override =
-        default;
+    ~mesh_reader() noexcept override = default;
 
     SIGHT_DECLARE_SERVICE(mesh_reader, sight::io::service::reader);
-
-    using job_created_signal_t = core::com::signal<void (std::shared_ptr<core::jobs::base>)>;
 
     /// Constructor
     mesh_reader() noexcept;
@@ -142,9 +131,6 @@ private:
      * @brief Mesh path.
      */
     std::filesystem::path m_fs_mesh_path;
-
-    /// Signal triggered when job created
-    SPTR(job_created_signal_t) m_sig_job_created;
 };
 
 } // namespace sight::module::io::vtk

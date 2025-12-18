@@ -22,8 +22,7 @@
 
 #pragma once
 
-#include <core/jobs/has_jobs.hpp>
-#include <core/jobs/job.hpp>
+#include <core/progress/has_monitors.hpp>
 
 #include <data/boolean.hpp>
 #include <data/image_series.hpp>
@@ -109,7 +108,7 @@ namespace sight::module::filter::mesh
 
 class vtk_mesher : public service::filter,
                    public sight::service::notifier,
-                   public sight::core::jobs::has_jobs
+                   public sight::core::progress::has_monitors
 {
 public:
 
@@ -145,11 +144,6 @@ protected:
 private:
 
     vtkSmartPointer<vtkPolyData> reconstruct(vtkSmartPointer<vtkImageData> _image, int _value);
-    void post_reconstruction_jobs(
-        vtkSmartPointer<vtkImageData> _image,
-        sight::data::model_series::sptr _model_series,
-        sight::core::jobs::job& _running_job
-    );
 
     enum class mode_t : std::uint8_t
     {

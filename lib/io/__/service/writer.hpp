@@ -27,6 +27,7 @@
 #include "io/__/service/io_types.hpp"
 
 #include <core/com/signal.hpp>
+#include <core/progress/has_monitors.hpp>
 #include <core/tools/failed.hpp>
 
 #include <data/string.hpp>
@@ -75,11 +76,14 @@ namespace sight::io::service
  * - \b files : The file(s) to write. Depending of the path_type_t, it can be a single file or multiple files.
  * - \b folder : The folder to open. Used when the path_type_t is "folder".
  */
-class SIGHT_IO_CLASS_API writer : public sight::service::base
+class SIGHT_IO_CLASS_API writer : public sight::service::base,
+                                  public sight::core::progress::has_monitors
 {
 public:
 
     SIGHT_DECLARE_SERVICE(writer, sight::service::base);
+
+    SIGHT_IO_API ~writer() noexcept override = default;
 
     /// Enum to define a dialog policy
     enum class dialog_policy : uint8_t
@@ -91,29 +95,30 @@ public:
     };
 
     /**
-     * @name Slots API
-     * @{
-     */
-    struct slots
-    {
-        using key_t = sight::core::com::slots::key_t;
-        static inline const key_t OPEN_LOCATION_DIALOG     = "open_location_dialog";
-        static inline const key_t SET_PREFIX               = "set_prefix";
-        static inline const key_t SET_BASE_FOLDER          = "set_base_folder";
-        static inline const key_t UPDATE_DEFAULT_LOCATIONS = "update_default_locations";
-    };
-    //@}
-
-    /**
      * @name Signals API
      * @{
      */
     struct signals
     {
         using void_signal_t = core::com::signal<void ()>;
-        using key_t         = core::com::signals::key_t;
-        static inline const key_t PREFIX_SET      = "prefix_set";
-        static inline const key_t BASE_FOLDER_SET = "base_folder_set";
+
+        static inline const signal_key_t FAILED          = "failed";
+        static inline const signal_key_t SUCCEEDED       = "succeeded";
+        static inline const signal_key_t PREFIX_SET      = "prefix_set";
+        static inline const signal_key_t BASE_FOLDER_SET = "base_folder_set";
+    };
+    //@}
+
+    /**
+     * @name Slots API
+     * @{
+     */
+    struct slots
+    {
+        static inline const slot_key_t OPEN_LOCATION_DIALOG     = "open_location_dialog";
+        static inline const slot_key_t SET_PREFIX               = "set_prefix";
+        static inline const slot_key_t SET_BASE_FOLDER          = "set_base_folder";
+        static inline const slot_key_t UPDATE_DEFAULT_LOCATIONS = "update_default_locations";
     };
     //@}
 
@@ -244,9 +249,9 @@ public:
 
 protected:
 
-    SIGHT_IO_API writer(const std::string& _default_window_title = s_DEFAULT_WINDOW_TITLE) noexcept;
-
-    SIGHT_IO_API ~writer() noexcept override = default;
+    SIGHT_IO_API explicit writer(
+        const std::string& _default_window_title = s_DEFAULT_WINDOW_TITLE
+    ) noexcept;
 
     /**
      * @brief This method proposes to parse xml configuration to retrieve file/files/folder paths.

@@ -46,6 +46,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/epsilon.hpp>
 
+#include <algorithm>
 #include <iomanip>
 #include <regex>
 #include <sstream>
@@ -93,8 +94,8 @@ public:
 
         // Create a UID generator with the "programmer" root "2.25
         /// @see @link https://dicom.nema.org/medical/dicom/current/output/chtml/part05/sect_B.2.html
+        gdcm::UIDGenerator::SetRoot("2.25");
         m_uid_generator = std::make_unique<gdcm::UIDGenerator>();
-        m_uid_generator->SetRoot("2.25");
     }
 
     //------------------------------------------------------------------------------
@@ -173,9 +174,8 @@ inline std::filesystem::path parse_path(
     }
 
     // Filter forbidden characters for paths (Windows and Linux, even if linux allows almost anything)
-    std::replace_if(
-        path.begin(),
-        path.end(),
+    std::ranges::replace_if(
+        path,
         [](char _c)
             {
                 static constexpr std::string_view s_FORBIDDEN(":?\"<>|$;* \t\n\r");
@@ -1260,6 +1260,14 @@ std::optional<std::string> series::get_private_value(std::uint8_t _element, std:
 
 //------------------------------------------------------------------------------
 
+std::vector<double> series::get_private_values(std::uint8_t _element, std::size_t _instance) const
+{
+    const auto string_values = series::get_private_value(_element, _instance);
+    return detail::string_to_collection<std::vector<double> >(string_values);
+}
+
+//------------------------------------------------------------------------------
+
 void series::set_private_value(const std::optional<std::string>& _value, std::uint8_t _element, std::size_t _instance)
 {
     SIGHT_ASSERT("The private element must be between 0x10 and 0xFF.", _element >= 0x10 && _element <= 0xFF);
@@ -1276,6 +1284,14 @@ void series::set_private_value(const std::optional<std::string>& _value, std::ui
 
 //------------------------------------------------------------------------------
 
+void series::set_private_values(const std::vector<double>& _values, std::uint8_t _element, std::size_t _instance)
+{
+    const auto string_values = detail::collection_to_string(_values);
+    set_private_value(string_values, _element, _instance);
+}
+
+//------------------------------------------------------------------------------
+
 std::optional<std::string> series::get_multi_frame_private_value(
     std::uint8_t _element,
     const std::optional<std::size_t>& _frame_index
@@ -1285,9 +1301,19 @@ std::optional<std::string> series::get_multi_frame_private_value(
 
     return m_pimpl->get_multi_frame_private_value(
         _element,
-        _element + 0x01,
         _frame_index
     );
+}
+
+//------------------------------------------------------------------------------
+
+std::vector<double> series::get_multi_frame_private_values(
+    std::uint8_t _element,
+    const std::optional<std::size_t>& _frame_index
+) const
+{
+    const auto string_values = series::get_multi_frame_private_value(_element, _frame_index);
+    return detail::string_to_collection<std::vector<double> >(string_values);
 }
 
 //------------------------------------------------------------------------------
@@ -1303,9 +1329,21 @@ void series::set_multi_frame_private_value(
     m_pimpl->set_multi_frame_private_value(
         _value,
         _element,
-        _element + 0x01,
         _frame_index
     );
+}
+
+//------------------------------------------------------------------------------
+
+void series::set_multi_frame_private_values
+(
+    const std::vector<double>& _values,
+    std::uint8_t _element,
+    const std::optional<std::size_t>& _frame_index
+)
+{
+    const auto string_values = detail::collection_to_string(_values);
+    set_multi_frame_private_value(string_values, _element, _frame_index);
 }
 
 //------------------------------------------------------------------------------
@@ -1501,16 +1539,16 @@ std::string_view series::get_sop_class_name() const noexcept
 
 //------------------------------------------------------------------------------
 
-std::string series::get_sop_instance_uid() const noexcept
+std::string series::get_sop_instance_uid(std::size_t _instance) const noexcept
 {
-    return m_pimpl->get_string_value<gdcm::Keywords::SOPInstanceUID>();
+    return m_pimpl->get_string_value<gdcm::Keywords::SOPInstanceUID>(_instance);
 }
 
 //------------------------------------------------------------------------------
 
-void series::set_sop_instance_uid(const std::string& _sop_instance_uid)
+void series::set_sop_instance_uid(const std::string& _sop_instance_uid, std::size_t _instance)
 {
-    m_pimpl->set_value<gdcm::Keywords::SOPInstanceUID>(_sop_instance_uid);
+    m_pimpl->set_value<gdcm::Keywords::SOPInstanceUID>(_sop_instance_uid, _instance);
 }
 
 //------------------------------------------------------------------------------
@@ -2180,7 +2218,7 @@ std::optional<int> series::get_depth_of_scan_field_mm() const noexcept
 
 //------------------------------------------------------------------------------
 
-void series::set_depth_of_scan_field_mm(const int _depth_of_scan_field)
+void series::set_depth_of_scan_field_mm(int _depth_of_scan_field)
 {
     m_pimpl->set_value<gdcm::Keywords::DepthOfScanField>(_depth_of_scan_field);
 }
@@ -2228,7 +2266,7 @@ std::optional<dicom::position_measuring_device_used_t> series::get_position_meas
 //------------------------------------------------------------------------------
 
 void series::set_position_measuring_device_used(
-    const dicom::position_measuring_device_used_t _position_measuring_device_used
+    dicom::position_measuring_device_used_t _position_measuring_device_used
 )
 {
     if(auto position_measuring_device_used = dicom::to_string(_position_measuring_device_used);
@@ -2645,9 +2683,9 @@ series::dicom_types series::string_to_dicom_types(const std::string& _types) noe
 
 //------------------------------------------------------------------------------
 
-series::SopKeywords series::dicom_types_to_sops(dicom_types _types) noexcept
+series::sop_keywords_t series::dicom_types_to_sops(dicom_types _types) noexcept
 {
-    SopKeywords keywords;
+    sop_keywords_t keywords;
 
     if((_types & std::uint64_t(dicom_t::image)) == std::uint64_t(dicom_t::image))
     {
@@ -2742,7 +2780,7 @@ series::SopKeywords series::dicom_types_to_sops(dicom_types _types) noexcept
 
 //------------------------------------------------------------------------------
 
-series::dicom_types series::sops_to_dicom_types(const SopKeywords& _keywords) noexcept
+series::dicom_types series::sops_to_dicom_types(const sop_keywords_t& _keywords) noexcept
 {
     dicom_types types {static_cast<dicom_types>(dicom_t::unknown)};
 
@@ -2759,12 +2797,12 @@ series::dicom_types series::sops_to_dicom_types(const SopKeywords& _keywords) no
 
 //------------------------------------------------------------------------------
 
-series::SopKeywords series::string_to_sops(const std::string& _uids) noexcept
+series::sop_keywords_t series::string_to_sops(const std::string& _sops) noexcept
 {
-    SopKeywords sop_keywords;
+    sop_keywords_t sop_keywords;
 
     std::vector<std::string> split;
-    boost::split(split, _uids, boost::is_any_of(","));
+    boost::split(split, _sops, boost::is_any_of(","));
 
     for(const auto& uid : split)
     {
@@ -2784,11 +2822,11 @@ series::SopKeywords series::string_to_sops(const std::string& _uids) noexcept
 
 //------------------------------------------------------------------------------
 
-std::string series::sops_to_string(const SopKeywords& _keywords) noexcept
+std::string series::sops_to_string(const sop_keywords_t& _sops) noexcept
 {
     std::string sop_keywords;
 
-    for(const auto& keyword : _keywords)
+    for(const auto& keyword : _sops)
     {
         if(!sop_keywords.empty())
         {
@@ -2836,9 +2874,9 @@ series::image_type_t series::get_image_type() const
     }
 
     return {
-        pixel_data_characteristics,
-        patient_examination_characteristics,
-        other_values
+        .pixel_data_characteristics          = pixel_data_characteristics,
+        .patient_examination_characteristics = patient_examination_characteristics,
+        .other_values                        = other_values
     };
 }
 
@@ -3525,7 +3563,8 @@ std::optional<std::chrono::system_clock::time_point> series::get_frame_acquisiti
     {
         // Get the acquisition date time.
         // Need to ensure that the value is set, as it might not.
-        if(const auto& optional = get_frame_acquisition_date_time(_frame_index); optional.has_value())
+        if(const auto& optional = get_frame_acquisition_date_time(_frame_index);
+           optional.has_value() && !optional->empty())
         {
             // Convert from YYYYMMDDHHMMSS.FFFFFF
             /// @see @link https://dicom.nema.org/medical/dicom/current/output/chtml/part05/sect_6.2.html

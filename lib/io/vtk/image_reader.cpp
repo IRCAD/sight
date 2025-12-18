@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,8 +26,7 @@
 #include "io/vtk/vtk.hpp"
 
 #include <core/base.hpp>
-#include <core/jobs/base.hpp>
-#include <core/jobs/observer.hpp>
+#include <core/progress/observer.hpp>
 
 #include <vtkGenericDataObjectReader.h>
 #include <vtkImageData.h>
@@ -38,19 +37,7 @@ namespace sight::io::vtk
 
 //------------------------------------------------------------------------------
 
-image_reader::image_reader() :
-    m_job(std::make_shared<core::jobs::observer>("VTK image reader"))
-{
-}
-
-//------------------------------------------------------------------------------
-
-image_reader::~image_reader()
-= default;
-
-//------------------------------------------------------------------------------
-
-void image_reader::read()
+void image_reader::read(sight::core::progress::observer::sptr _progress)
 {
     using helper::vtk_lambda_command;
 
@@ -65,14 +52,14 @@ void image_reader::read()
     vtkSmartPointer<vtk_lambda_command> progress_callback;
     progress_callback = vtkSmartPointer<vtk_lambda_command>::New();
     progress_callback->set_callback(
-        [this](vtkObject* _caller, std::uint64_t, void*)
+        [&_progress](vtkObject* _caller, std::uint64_t, void*)
         {
             auto* filter = static_cast<vtkGenericDataObjectReader*>(_caller);
-            m_job->done_work(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
+            _progress->done_work(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
         });
     reader->AddObserver(vtkCommand::ProgressEvent, progress_callback);
 
-    m_job->add_simple_cancel_hook(
+    _progress->add_cancel_hook(
         [&]()
         {
             reader->AbortExecuteOn();
@@ -84,8 +71,6 @@ void image_reader::read()
 
     vtkDataObject* obj = reader->GetOutput();
     vtkImageData* img  = vtkImageData::SafeDownCast(obj);
-
-    m_job->finish();
 
     SIGHT_THROW_IF("ImageReader cannot read VTK image file :" << this->get_file().string(), !img);
     try
@@ -103,13 +88,6 @@ void image_reader::read()
 std::string image_reader::extension() const
 {
     return ".vtk";
-}
-
-//------------------------------------------------------------------------------
-
-core::jobs::base::sptr image_reader::get_job() const
-{
-    return m_job;
 }
 
 //------------------------------------------------------------------------------

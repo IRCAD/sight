@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,13 +26,14 @@
 
 #include <filesystem>
 #include <iostream>
+#include <utility>
 
 namespace sight::io::writer
 {
 
 //------------------------------------------------------------------------------
 
-void gz_array_writer::write()
+void gz_array_writer::write(sight::core::progress::observer::sptr _progress)
 {
     SIGHT_ASSERT("File path is empty.", get_file().empty() == false);
 
@@ -45,6 +46,7 @@ void gz_array_writer::write()
         std::string str = "gz_array_writer::write unable to open ";
         str += get_file().string();
         gzclose(raw_file);
+        _progress->done();
         throw std::ios_base::failure(str);
     }
 
@@ -56,12 +58,15 @@ void gz_array_writer::write()
     const int uncompressed_bytes_written =
         gzwrite(raw_file, array->buffer(), static_cast<unsigned int>(array_size_in_bytes));
     gzclose(raw_file);
-    if(uncompressed_bytes_written != static_cast<int>(array_size_in_bytes))
+    if(std::cmp_not_equal(uncompressed_bytes_written, array_size_in_bytes))
     {
         std::string str = "gz_array_writer::write unable to write ";
         str += get_file().string();
+        _progress->done();
         throw std::ios_base::failure(str);
     }
+
+    _progress->done();
 }
 
 //------------------------------------------------------------------------------

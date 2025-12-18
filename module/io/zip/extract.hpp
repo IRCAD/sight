@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,7 +22,7 @@
 #pragma once
 
 #include <core/com/signal.hpp>
-#include <core/jobs/base.hpp>
+#include <core/progress/monitor.hpp>
 
 #include <io/__/service/reader.hpp>
 
@@ -36,8 +36,8 @@ namespace sight::module::io::zip
  * so, a popup will ask the user for the password.
  *
  * @section Signals Signals
- * - \b job_created(SPTR(core::jobs::base)): emitted to display a progress bar while the image is written (it should be
- * connected to a job_bar).
+ * - \b monitor_created(SPTR(core::progress::monitor)): emitted to display a progress bar while the image is written,
+ * it should be connected to a progress bar
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -54,10 +54,7 @@ public:
 
     SIGHT_DECLARE_SERVICE(extract, sight::io::service::reader);
 
-    using job_created_signal_t = core::com::signal<void (core::jobs::base::sptr)>;
-
     extract() noexcept;
-
     ~extract() noexcept override;
 
     /// Propose to read an archive
@@ -85,8 +82,11 @@ protected:
 
 private:
 
-    class extract_impl;
-    std::unique_ptr<extract_impl> m_pimpl;
+    /// Used in case of bad password
+    int m_password_retry {0};
+
+    /// The path where to extract the files
+    std::filesystem::path m_output_path;
 };
 
 } // namespace sight::module::io::zip

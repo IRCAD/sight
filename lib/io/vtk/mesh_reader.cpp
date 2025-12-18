@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,8 +26,8 @@
 #include "io/vtk/helper/vtk_lambda_command.hpp"
 
 #include <core/base.hpp>
-#include <core/jobs/base.hpp>
-#include <core/jobs/observer.hpp>
+#include <core/progress/monitor.hpp>
+#include <core/progress/observer.hpp>
 
 #include <vtkGenericDataObjectReader.h>
 #include <vtkPolyData.h>
@@ -39,19 +39,7 @@ namespace sight::io::vtk
 
 //------------------------------------------------------------------------------
 
-mesh_reader::mesh_reader() :
-    m_job(std::make_shared<core::jobs::observer>("VTK Mesh reader"))
-{
-}
-
-//------------------------------------------------------------------------------
-
-mesh_reader::~mesh_reader()
-= default;
-
-//------------------------------------------------------------------------------
-
-void mesh_reader::read()
+void mesh_reader::read(sight::core::progress::observer::sptr _progress)
 {
     SIGHT_ASSERT("Object pointer expired", !m_object.expired());
 
@@ -73,11 +61,11 @@ void mesh_reader::read()
         [&](vtkObject* _caller, std::uint64_t, void*)
         {
             auto* const filter = static_cast<vtkGenericDataObjectReader*>(_caller);
-            m_job->done_work(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
+            _progress->done_work(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
         });
     reader->AddObserver(vtkCommand::ProgressEvent, progress_callback);
 
-    m_job->add_simple_cancel_hook([&]{reader->AbortExecuteOn();});
+    _progress->add_cancel_hook([&]{reader->AbortExecuteOn();});
 
     reader->Update();
 
@@ -85,8 +73,6 @@ void mesh_reader::read()
     vtkPolyData* mesh  = vtkPolyData::SafeDownCast(obj);
     SIGHT_THROW_IF("MeshReader cannot read VTK Mesh file : " << this->get_file().string(), !mesh);
     io::vtk::helper::mesh::from_vtk_mesh(mesh, p_mesh);
-
-    m_job->finish();
 }
 
 //------------------------------------------------------------------------------
@@ -94,13 +80,6 @@ void mesh_reader::read()
 std::string mesh_reader::extension() const
 {
     return ".vtk";
-}
-
-//------------------------------------------------------------------------------
-
-core::jobs::base::sptr mesh_reader::get_job() const
-{
-    return m_job;
 }
 
 //------------------------------------------------------------------------------

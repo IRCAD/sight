@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -63,8 +63,8 @@ public:
     ///set the stuff
     SIGHT_UI_API virtual void set_stuff(Stuff _stuff);
 
-    ///set the frequence
-    SIGHT_UI_API virtual void set_frequence(MilliSecond _frequence);
+    ///set the frequency
+    SIGHT_UI_API virtual void set_frequency(MilliSecond _frequency);
 
     ///allow to cancel the dialog
     SIGHT_UI_API virtual void set_cancellable(bool _cancellable);
@@ -75,7 +75,7 @@ public:
 protected:
 
     Stuff m_stuff;
-    MilliSecond m_frequence {1};
+    MilliSecond m_frequency {1};
     bool m_cancellable {true};
 };
 

@@ -83,7 +83,15 @@ void negato3d::set_transparency(double _transparency)
     SIGHT_ASSERT("Service not started", this->started());
 
     const float opacity = 1.F - static_cast<float>(_transparency);
-    std::ranges::for_each(m_planes, [opacity](auto& _p){_p.first->set_entity_opacity(opacity);});
+    std::ranges::for_each(
+        m_planes,
+        [opacity](auto& _p)
+        {
+            if(_p.first)
+            {
+                _p.first->set_entity_opacity(opacity);
+            }
+        });
 
     this->request_render();
 }
@@ -92,7 +100,15 @@ void negato3d::set_transparency(double _transparency)
 
 void negato3d::set_visible(bool _visible)
 {
-    std::ranges::for_each(m_planes, [_visible](auto& _p){_p.first->set_visible(_visible);});
+    std::ranges::for_each(
+        m_planes,
+        [_visible](auto& _p)
+        {
+            if(_p.first)
+            {
+                _p.first->set_visible(_visible);
+            }
+        });
     if(m_auto_reset_camera)
     {
         this->render_service()->reset_camera_coordinates(m_layer_id);
@@ -105,7 +121,15 @@ void negato3d::set_visible(bool _visible)
 
 void negato3d::set_planes_query_flags(std::uint32_t _flags)
 {
-    std::ranges::for_each(m_planes, [_flags](auto& _p){_p.first->set_query_flags(_flags);});
+    std::ranges::for_each(
+        m_planes,
+        [_flags](auto& _p)
+        {
+            if(_p.first)
+            {
+                _p.first->set_query_flags(_flags);
+            }
+        });
 }
 
 //------------------------------------------------------------------------------
@@ -174,7 +198,7 @@ void negato3d::button_release_event(mouse_button /*_button*/, modifier /*_mods*/
 {
     if(m_picked_plane)
     {
-        m_picked_plane->set_render_queuer_group_and_priority(sight::viz::scene3d::rq::SURFACE_ID, 0);
+        m_picked_plane->set_render_queuer_group_and_priority(sight::viz::scene3d::rq::SURFACE, 0);
         m_picked_plane.reset();
     }
 
@@ -202,7 +226,7 @@ void negato3d::move_slices(int _x, int _y)
             m_planes,
             [this](auto& _p)
             {
-                if(_p.first != m_picked_plane)
+                if(_p.first != m_picked_plane && _p.first)
                 {
                     _p.first->set_query_flags(0x0);
                 }
@@ -228,7 +252,7 @@ void negato3d::pick_intensity(int _x, int _y)
     {
         const auto picked_pos = this->get_picked_slices(_x, _y);
 
-        if(picked_pos.has_value())
+        if(picked_pos.has_value() && m_picked_plane != nullptr)
         {
             const auto image = m_image.lock();
 
@@ -247,7 +271,7 @@ void negato3d::pick_intensity(int _x, int _y)
             this->request_render();
 
             // Render the picked plane before the widget.
-            m_picked_plane->set_render_queuer_group_and_priority(sight::viz::scene3d::rq::NEGATO_WIDGET_ID, 0);
+            m_picked_plane->set_render_queuer_group_and_priority(sight::viz::scene3d::rq::NEGATO_WIDGET, 0);
         }
     }
 }

@@ -33,17 +33,19 @@
 
 #include <geometry/data/image.hpp>
 
+#include <ui/__/cursor.hpp>
+
+#include <viz/scene3d/helper/manual_object.hpp>
+#include <viz/scene3d/helper/scene.hpp>
+#include <viz/scene3d/ogre.hpp>
+#include <viz/scene3d/utils.hpp>
+
 #include <module/viz/scene3d_qt/window_interactor.hpp>
 
 #include <QHBoxLayout>
 #include <QPushButton>
 
-#include <ui/__/cursor.hpp>
-
-#include <viz/scene3d/helper/manual_object.hpp>
-#include <viz/scene3d/helper/scene.hpp>
-#include <viz/scene3d/utils.hpp>
-
+#include <cmath>
 #include <ranges>
 
 namespace sight::module::viz::scene3d_qt::adaptor::fiducials
@@ -904,6 +906,7 @@ std::shared_ptr<point::ogre_fiducial> point::create_ogre_fiducial(
     const auto id                = get_id();
 
     auto* const manual_object = get_scene_manager()->createManualObject(core::id::join(id, point_name, "object"));
+    manual_object->setRenderQueueGroup(sight::viz::scene3d::rq::SURFACE);
 
     const Ogre::ColourValue ogre_color(_color[0], _color[1], _color[2], _color[3]);
 
@@ -1462,13 +1465,16 @@ void point::create_and_pick_fiducial(const std::vector<double>& _point, bool _pi
 
     if(!frame_of_reference_uid)
     {
-        frame_of_reference_uid = locked_image->generate_uid();
+        frame_of_reference_uid = sight::data::image_series::generate_uid();
         locked_image->set_frame_of_reference_uid(frame_of_reference_uid);
     }
 
+    sight::data::image::spacing_t spacing = locked_image->spacing();
+    SIGHT_ASSERT("Spacing is null", spacing[0] != 0. && spacing[1] != 0.);
+
     // Defines the predicate to add a new fiducial.
     const auto& fiducial_add_predicate =
-        [this, &_point, &frame_of_reference_uid](data::fiducials_series::query_result& _result) -> bool
+        [this, &_point, &frame_of_reference_uid, spacing](data::fiducials_series::query_result& _result) -> bool
         {
             // Fiducial set part
             if(!_result.m_group_name)
@@ -1498,6 +1504,14 @@ void point::create_and_pick_fiducial(const std::vector<double>& _point, bool _pi
 
             // Fiducial part
             _result.m_contour_data = _point;
+
+            _result.m_graphic_data.emplace();
+
+            _result.m_graphic_data->emplace_back(static_cast<float>(_point[0]) / spacing[0]);
+            _result.m_graphic_data->emplace_back(static_cast<float>(_point[1]) / spacing[1]);
+
+            _result.m_referenced_frame_number.emplace();
+            _result.m_referenced_frame_number->emplace_back(std::round(_point[2]) + 1);
 
             const std::string& fiducial_name = core::id::join(*_result.m_group_name, _result.m_shape_index);
             _result.m_fiducial_description = fiducial_name;

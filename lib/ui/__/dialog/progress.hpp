@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -55,7 +55,7 @@ public:
     /// action called by core::tools::progress_adviser
     SIGHT_UI_API void operator()(float _percent, std::string _msg) override;
 
-    SIGHT_UI_API void set_cancel_callback(cancel_callback_t _callback) override;
+    SIGHT_UI_API void set_cancel_callback(core::progress::cancel_callback_t _callback) override;
 
     SIGHT_UI_API void hide_cancel_button() override;
 

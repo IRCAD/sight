@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -24,7 +24,6 @@
 #include <sight/io/itk/config.hpp>
 
 #include <core/location/single_file.hpp>
-#include <core/tools/progress_adviser.hpp>
 
 #include <data/image.hpp>
 
@@ -34,8 +33,7 @@ namespace sight::io::itk
 {
 
 class SIGHT_IO_ITK_CLASS_API nifti_image_writer : public writer::generic_object_writer<data::image>,
-                                                  public core::location::single_file,
-                                                  public core::tools::progress_adviser
+                                                  public core::location::single_file
 {
 public:
 
@@ -44,7 +42,7 @@ public:
 
     SIGHT_IO_ITK_API ~nifti_image_writer() override = default;
 
-    SIGHT_IO_ITK_API void write() override;
+    SIGHT_IO_ITK_API void write(SPTR(sight::core::progress::observer) _progress) override;
 
     SIGHT_IO_ITK_API std::string extension() const override;
 };

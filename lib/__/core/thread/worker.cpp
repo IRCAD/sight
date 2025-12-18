@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,6 +26,13 @@
 
 #include "core/lazy_instantiator.hpp"
 #include "core/mt/types.hpp"
+#include "core/spy_log.hpp"
+
+#include <boost/algorithm/string.hpp>
+#include <boost/locale/encoding_utf.hpp>
+
+#include <codecvt>
+#include <map>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -35,12 +42,6 @@
 #else
 #include <pthread.h>
 #endif
-
-#include <codecvt>
-#include <map>
-#include <boost/locale/encoding_utf.hpp>
-
-#include "core/spy_log.hpp"
 
 namespace sight::core::thread
 {
@@ -189,7 +190,7 @@ public:
     void add_worker(const worker_key_type& _key, core::thread::worker::sptr _worker)
     {
         core::mt::write_lock lock(m_registry_mutex);
-        m_workers.insert(worker_map_type::value_type(_key, _worker));
+        m_workers.insert(worker_map_type::value_type(boost::to_lower_copy(_key), _worker));
     }
 
     //------------------------------------------------------------------------------
@@ -198,7 +199,7 @@ public:
     {
         core::mt::write_lock lock(m_registry_mutex);
 
-        auto it = m_workers.find(_key);
+        auto it = m_workers.find(boost::to_lower_copy(_key));
 
         if(it != m_workers.end())
         {
@@ -232,7 +233,7 @@ public:
     {
         core::mt::read_lock lock(m_registry_mutex);
 
-        if(auto it = m_workers.find(_key); it != m_workers.end())
+        if(auto it = m_workers.find(boost::to_lower_copy(_key)); it != m_workers.end())
         {
             return it->second;
         }

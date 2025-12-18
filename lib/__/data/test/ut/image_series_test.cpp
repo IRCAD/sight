@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -214,14 +214,6 @@ void image_series_test::equality_test()
     utest_data::generator::image::generate_random_image(series1, core::type::FLOAT);
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
     series2->shallow_copy(series1);
-    CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
-
-    auto dicom_series = std::make_shared<data::dicom_series>();
-    dicom_series->set_series_instance_uid("25");
-    dicom_series->set_number_of_instances(1);
-    series1->set_dicom_reference(dicom_series);
-    CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
-    series2->set_dicom_reference(dicom_series);
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
     series1->set_contrast_bolus_agent("26");

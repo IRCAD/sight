@@ -42,7 +42,7 @@
 namespace sight::module::viz::scene3d_qt::adaptor::fiducials
 {
 
-static constexpr std::uint8_t SHAPE_RQ_GROUP_ID = sight::viz::scene3d::rq::SURFACE_ID;
+static constexpr std::uint8_t SHAPE_RQ_GROUP_ID = sight::viz::scene3d::rq::SURFACE;
 
 //------------------------------------------------------------------------------
 
@@ -233,11 +233,13 @@ void shape::updating()
         m_axis
     ).value_or(0);
 
-    auto predicate = [slice_index](const data::fiducials_series::query_result& _result)
+    bool show_all = (*m_filter == "all" ? true : false);
+    auto predicate = [slice_index, show_all](const data::fiducials_series::query_result& _result)
                      {
                          return _result.m_referenced_frame_number.has_value()
                                 && !_result.m_referenced_frame_number.value().empty()
-                                && (_result.m_referenced_frame_number.value().at(0) - 1) == slice_index;
+                                && ((_result.m_referenced_frame_number.value().at(0) - 1) == slice_index
+                                    || show_all);
                      };
 
     // Get the fiducials to be displayed

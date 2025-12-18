@@ -26,14 +26,6 @@
 #include <io/__/service/reader.hpp>
 
 #include <filesystem>
-#include <string>
-
-namespace sight::core::jobs
-{
-
-class base;
-
-} // namespace sight::core::jobs
 
 namespace sight::module::io::itk
 {
@@ -59,8 +51,6 @@ namespace sight::module::io::itk
 class image_series_reader : public sight::io::service::reader
 {
 public:
-
-    using job_created_signal_t = core::com::signal<void (std::shared_ptr<core::jobs::base>)>;
 
     /**
      * @brief Constructor. Do nothing.
@@ -120,8 +110,6 @@ private:
 
     /// image path.
     std::filesystem::path m_fs_img_path;
-
-    SPTR(job_created_signal_t) m_sig_job_created;
 };
 
 } // namespace sight::module::io::itk

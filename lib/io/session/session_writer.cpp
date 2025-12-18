@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -43,7 +43,7 @@ public:
     session_writer_impl& operator=(session_writer_impl&&)      = delete;
 
     /// Constructor
-    inline explicit session_writer_impl(session_writer* const _session_writer) :
+    explicit session_writer_impl(session_writer* const _session_writer) :
         m_session_writer(_session_writer),
         m_password(std::make_unique<password_keeper>()),
         m_encryption_policy(password_keeper::encryption_policy::password),
@@ -52,10 +52,10 @@ public:
     }
 
     /// Default destructor
-    inline ~session_writer_impl() = default;
+    ~session_writer_impl() = default;
 
     /// Read the session from archive.
-    inline void write()
+    void write(sight::core::progress::observer::sptr _progress)
     {
         // Retrieve the root object
         auto root_object = std::dynamic_pointer_cast<const data::object>(m_session_writer->get_object());
@@ -69,6 +69,7 @@ public:
             m_password->get_password(),
             m_encryption_policy
         );
+        _progress->done();
     }
 
     /// Session serializer which perform the serialization
@@ -97,9 +98,9 @@ session_writer::~session_writer() = default;
 
 //------------------------------------------------------------------------------
 
-void session_writer::write()
+void session_writer::write(sight::core::progress::observer::sptr _progress)
 {
-    m_pimpl->write();
+    m_pimpl->write(_progress);
 }
 
 //------------------------------------------------------------------------------

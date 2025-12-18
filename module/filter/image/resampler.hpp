@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2025 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,6 +24,7 @@
 
 #include <data/image.hpp>
 #include <data/matrix4.hpp>
+#include <data/string.hpp>
 
 #include <service/filter.hpp>
 
@@ -39,7 +40,7 @@ namespace sight::module::filter::image
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="opITK::propagator">
+   <service uid="..." type="sight::module::filter::image::resampler">
        <in key="imageIn" uid="..." auto_connect="true" />
        <in key="transform" uid="..." />
        <in key="target" uid="..." />
@@ -53,7 +54,7 @@ namespace sight::module::filter::image
  * @subsection In-Out In-Out
  * - \b imageOut [sight::data::image]: New resampled image.
  */
-class resampler : public service::filter
+class resampler final : public service::filter
 {
 public:
 
@@ -63,21 +64,21 @@ public:
     resampler();
 
     /// Destructor, does nothing.
-    ~resampler() override;
+    ~resampler() final = default;
 
 protected:
 
     /// Does nothing.
-    void configuring() override;
+    void configuring() final;
 
     /// Does nothing.
-    void starting() override;
+    void starting() final;
 
     /// Does nothing.
-    void stopping() override;
+    void stopping() final;
 
     /// Apply the transform and resample.
-    void updating() override;
+    void updating() final;
 
     /**
      * @brief Auto connections
@@ -86,7 +87,7 @@ protected:
      * - Update service when the transform matrix is modified.
      * - Update service when the target image is modified.
      */
-    connections_t auto_connections() const override;
+    connections_t auto_connections() const final;
 
 private:
 
@@ -99,6 +100,8 @@ private:
     sight::data::ptr<sight::data::image, sight::data::access::inout> m_image_out {this, IMAGE_INOUT};
     sight::data::ptr<sight::data::image, sight::data::access::in> m_target_in {this, TARGET_IN, true};
     sight::data::ptr<sight::data::matrix4, sight::data::access::in> m_transform_in {this, TRANSFORM_IN};
+
+    sight::data::property<sight::data::string> m_interpolation {this, "interpolation", std::string("LINEAR")};
 };
 
 } // namespace sight::module::filter::image

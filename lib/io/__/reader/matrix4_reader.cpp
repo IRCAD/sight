@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,14 @@
 
 #include "io/__/reader/matrix4_reader.hpp"
 
+#include "core/exceptionmacros.hpp"
+
+#include <core/progress/observer.hpp>
+
 #include <cmath>
 #include <filesystem>
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 
 namespace sight::io::reader
@@ -32,14 +37,14 @@ namespace sight::io::reader
 
 //------------------------------------------------------------------------------
 
-void matrix4_reader::read()
+void matrix4_reader::read(sight::core::progress::observer::sptr _progress)
 {
     std::filesystem::path file = this->get_file();
 
-    assert(std::filesystem::exists(file));
+    SIGHT_THROW_IF("File " << std::quoted(file.string()) << " does not exist", !std::filesystem::exists(file));
 
     std::ifstream in_file(file.string().c_str(), std::ifstream::in);
-    assert(in_file.good());
+    SIGHT_THROW_IF("Failed to open file " << std::quoted(file.string()), !in_file.good());
 
     char read_value = 0;
     double value    = NAN;
@@ -51,7 +56,8 @@ void matrix4_reader::read()
         read_value++;
     }
 
-    SIGHT_ASSERT("Wrong matrix size", this->get_concrete_object()->size() == 16);
+    SIGHT_THROW_IF("Wrong matrix size", this->get_concrete_object()->size() != 16);
+    _progress->done();
 }
 
 //------------------------------------------------------------------------------

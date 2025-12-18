@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -60,9 +60,10 @@ std::string reader::extension() const
 
 //------------------------------------------------------------------------------
 
-void reader::read()
+void reader::read(sight::core::progress::observer::sptr _progress)
 {
     read(backend::any);
+    _progress->done();
 }
 
 //------------------------------------------------------------------------------
@@ -87,12 +88,11 @@ void reader::read(backend _backend)
 
         SIGHT_THROW_IF(
             "Unsupported image extension: '" << file.extension().string() << "'",
-            std::none_of(
-                extensions_to_use.cbegin(),
-                extensions_to_use.cend(),
-                [&](const auto& extension)
+            std::ranges::none_of(
+                extensions_to_use,
+                [&](const auto& _extension)
             {
-                return current_extension.ends_with(extension);
+                return current_extension.ends_with(_extension);
             })
         );
     }
@@ -109,6 +109,18 @@ void reader::read(backend _backend)
 void reader::read(std::istream& _istream, backend _backend)
 {
     m_pimpl->read(_istream, _backend);
+}
+
+//------------------------------------------------------------------------------
+
+void reader::read(
+    const std::uint8_t* const _input,
+    std::size_t _input_size,
+    backend _backend,
+    std::uint8_t* const _output
+)
+{
+    m_pimpl->read(_input, _input_size, _output, _backend);
 }
 
 } // namespace sight::io::bitmap

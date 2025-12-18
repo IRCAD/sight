@@ -25,6 +25,7 @@
 #include <activity/sequencer.hpp>
 
 #include <data/activity_set.hpp>
+#include <data/boolean.hpp>
 
 #include <ui/__/editor.hpp>
 
@@ -64,7 +65,7 @@ namespace sight::module::ui::qt::activity
  * @section Slots Slots
  * - \b next() : Create the next activity
  * - \b previous() : Create the next activity
- * - \b go_to(int) : Create the activity at the given index
+ * - \b go_to(std::string) : If enabled, switch to the given activity
  * - \b send_info() : Send the 'hasNext' and 'hasPrevious' signals for the current activity
  * - \b reset_requirements() : Reset requirements that have been created by the activity
  *
@@ -185,8 +186,8 @@ public:
 
 public Q_SLOTS:
 
-    /// Slot: create the activity at the given index, emit 'dataRequired' signal if the activity require additional data
-    void go_to(int _index);
+    /// Create the activity at the given index, emit 'dataRequired' signal if the activity require additional data
+    void go_to_index(int _index);
 
 protected:
 
@@ -207,6 +208,9 @@ protected:
      * - the last activity is launched
      */
     void updating() override;
+
+    /// Slot: create the activity, emit 'dataRequired' signal if the activity require additional data
+    void go_to(std::string _activity_id);
 
     /// Connect the service to the ActivitySet signals
     connections_t auto_connections() const override;
@@ -270,6 +274,8 @@ private:
 
     static constexpr std::string_view ACTIVITY_SET_INOUT = "activitySet";
     data::ptr<data::activity_set, data::access::inout> m_activity_set {this, ACTIVITY_SET_INOUT};
+
+    data::property<data::boolean> m_linear {this, "linear", true};
 };
 
 } // namespace sight::module::ui::qt::activity

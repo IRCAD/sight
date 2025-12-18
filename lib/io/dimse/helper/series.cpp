@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,14 +21,13 @@
  ***********************************************************************/
 
 // cspell:ignore NOLINT
-
 #include "io/dimse/helper/series.hpp"
 
 #include "io/dimse/exceptions/tag_missing.hpp"
 
+#include <core/os/temp_path.hpp>
 #include <core/spy_log.hpp>
 
-#include <data/dicom_series.hpp>
 #include <data/image_series.hpp>
 #include <data/model_series.hpp>
 
@@ -48,9 +47,9 @@ void series::release_responses(OFList<QRResponse*> _responses)
 
 // ----------------------------------------------------------------------------
 
-series::DicomSeriesContainer series::to_fw_med_data(OFList<QRResponse*> _responses)
+series::dicom_series_container_t series::to_fw_med_data(OFList<QRResponse*> _responses)
 {
-    DicomSeriesContainer series_container;
+    dicom_series_container_t series_container;
 
     // Every while loop run will get all image for a specific study
     for(auto* response : _responses)
@@ -61,7 +60,7 @@ series::DicomSeriesContainer series::to_fw_med_data(OFList<QRResponse*> _respons
             OFString data;
 
             // Create series and get informations.
-            sight::data::dicom_series::sptr series = std::make_shared<sight::data::dicom_series>();
+            sight::data::series::sptr series = std::make_shared<sight::data::series>();
 
             // series
             if(response->m_dataset->findAndGetOFStringArray(DCM_Modality, data).good() && !data.empty())
@@ -261,7 +260,9 @@ series::DicomSeriesContainer series::to_fw_med_data(OFList<QRResponse*> _respons
             long nb_instances = 0;
             if(response->m_dataset->findAndGetLongInt(DCM_NumberOfSeriesRelatedInstances, nb_instances).good())
             {
-                series->set_number_of_instances(std::size_t(nb_instances));
+                // A bit abusive, but this is a temporary series until it is downloaded,
+                // so we use this field to store the number of instances.
+                series->set_instance_number(int(nb_instances));
             }
 
             // Add series to container
@@ -274,9 +275,9 @@ series::DicomSeriesContainer series::to_fw_med_data(OFList<QRResponse*> _respons
 
 // ----------------------------------------------------------------------------
 
-series::InstanceUIDContainer series::to_series_instance_uid_container(DicomSeriesContainer _series)
+series::instance_uid_container_t series::to_series_instance_uid_container(dicom_series_container_t _series)
 {
-    InstanceUIDContainer result;
+    instance_uid_container_t result;
 
     for(const auto& s : _series)
     {
@@ -288,9 +289,9 @@ series::InstanceUIDContainer series::to_series_instance_uid_container(DicomSerie
 
 // ----------------------------------------------------------------------------
 
-series::InstanceUIDContainer series::to_series_instance_uid_container(OFList<QRResponse*> _responses)
+series::instance_uid_container_t series::to_series_instance_uid_container(OFList<QRResponse*> _responses)
 {
-    InstanceUIDContainer instance_uid_container;
+    instance_uid_container_t instance_uid_container;
 
     OFListIterator(QRResponse*) it;
 
@@ -318,6 +319,38 @@ series::InstanceUIDContainer series::to_series_instance_uid_container(OFList<QRR
     }
 
     return instance_uid_container;
+}
+
+//------------------------------------------------------------------------------
+
+std::filesystem::path series::get_path(DcmDataset& _dataset)
+{
+    OFString series_instance_uid;
+    if(_dataset.findAndGetOFStringArray(DCM_SeriesInstanceUID, series_instance_uid).bad())
+    {
+        const std::string msg = "There is no \"SeriesInstanceUID\" tag in the selected series.";
+        throw io::dimse::exceptions::tag_missing(msg);
+    }
+
+    OFString sop_instance_uid;
+    if(_dataset.findAndGetOFStringArray(DCM_SOPInstanceUID, sop_instance_uid).bad())
+    {
+        const std::string msg = "There is no \"SOPInstanceUID\" tag in the selected series.";
+        throw io::dimse::exceptions::tag_missing(msg);
+    }
+
+    const auto root_path = core::os::temp_dir::shared_directory() / "dicom/";
+
+    auto series_path = std::filesystem::path(root_path / series_instance_uid.c_str());
+
+    if(!std::filesystem::exists(series_path))
+    {
+        std::filesystem::create_directories(series_path);
+    }
+
+    series_path /= sop_instance_uid.c_str();
+
+    return series_path;
 }
 
 } // namespace sight::io::dimse::helper

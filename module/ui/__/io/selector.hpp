@@ -24,8 +24,8 @@
 
 #include <core/com/signal.hpp>
 #include <core/com/slot.hpp>
-#include <core/jobs/base.hpp>
-#include <core/jobs/has_jobs.hpp>
+#include <core/progress/has_monitors.hpp>
+#include <core/progress/monitor.hpp>
 
 #include <io/__/service/io_types.hpp>
 
@@ -38,12 +38,13 @@ namespace sight::module::ui::io
  * @brief  This service displays a list of available readers or writers and lets you select one to load or save a data.
  *
  * @section Signals Signals
- * - \b job_created(core::jobs::base::sptr) : emitted when a job is created.
- * - \b failed() : emitted when the job has been cancelled by the user or has failed.
- * - \b succeeded() : emitted when a job finishes correctly.
+ * - \b monitor_created(core::progress::monitor::sptr) : emitted when a monitor is created.
+ * - \b failed() : emitted when the reader/writer has been cancelled by the user or has failed.
+ * - \b succeeded() : emitted when a reader/writer finishes correctly.
  *
  * @section Slots Slots
- * - \b forward_job(core::jobs::base::sptr ) : slot connected to the reader/writer to forward the signal 'jobCreated'
+ * - \b forward_monitor(core::progress::monitor::sptr ) : slot connected to the reader/writer to forward the signal
+ * 'monitorCreated'
  *
  * @section XML XML Configuration
  *
@@ -74,7 +75,7 @@ namespace sight::module::ui::io
  *      - \b service (mandatory) :  the name of the service.
  */
 class selector : public sight::ui::dialog_editor,
-                 public sight::core::jobs::has_jobs
+                 public sight::core::progress::has_monitors
 {
 public:
 
@@ -98,8 +99,8 @@ public:
 
     struct slots
     {
-        using forward_job_t = core::com::slot<void (core::jobs::base::sptr)>;
-        static const inline slot_key_t FORWARD_JOB = "forward_job";
+        using forward_monitor_t = core::com::slot<void (core::progress::monitor::sptr)>;
+        static const inline slot_key_t FORWARD_MONITOR = "forward_monitor";
     };
 
     /**
@@ -144,7 +145,7 @@ protected:
 
 private:
 
-    void forward_job(core::jobs::base::sptr _job);
+    void forward_monitor(core::progress::monitor::sptr _monitor);
 
     /// Configure the service as writer or reader.
     io_mode m_mode {reader_mode};
@@ -168,7 +169,7 @@ private:
     SPTR(signals::failed_t) m_sig_failed;
     SPTR(signals::succeeded_t) m_sig_succeeded;
 
-    SPTR(slots::forward_job_t) m_slot_forward_job;
+    SPTR(slots::forward_monitor_t) m_slot_forward_monitor;
 
     data::ptr<data::object, data::access::inout> m_data {this, sight::io::service::DATA_KEY};
 };

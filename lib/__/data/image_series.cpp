@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,7 +52,6 @@ void image_series::shallow_copy(const object::csptr& _source)
         !bool(other)
     );
 
-    m_dicom_reference  = other->m_dicom_reference;
     m_fiducials_series = other->m_fiducials_series;
 
     series::shallow_copy(other);
@@ -74,8 +73,6 @@ void image_series::deep_copy(const object::csptr& _source, const std::unique_ptr
         !bool(other)
     );
 
-    m_dicom_reference = data::object::copy(other->m_dicom_reference);
-
     m_fiducials_series = std::make_shared<fiducials_series>();
     m_fiducials_series->deep_copy(other->m_fiducials_series, _cache);
 
@@ -88,11 +85,6 @@ void image_series::deep_copy(const object::csptr& _source, const std::unique_ptr
 
 bool image_series::operator==(const image_series& _other) const noexcept
 {
-    if(!core::is_equal(m_dicom_reference, _other.m_dicom_reference))
-    {
-        return false;
-    }
-
     // Super class last
     return series::operator==(_other) && base_class_t::operator==(_other);
 }
@@ -260,22 +252,22 @@ void image_series::set_origin(const origin_t& _origin)
 //------------------------------------------------------------------------------
 
 void image_series::set_image_orientation_patient(
-    const std::vector<double>& _orientation,
+    const std::vector<double>& _image_orientation_patient,
     const std::optional<std::size_t>& _frame_index
 )
 {
     SIGHT_ASSERT(
         "The image orientation patient must have 6 direction cosines.",
-        _orientation.size() == 6
+        _image_orientation_patient.size() == 6
     );
 
     // If we set the orientation the shared group, we also set the image orientation
     if(!_frame_index)
     {
-        image::set_orientation(from_dicom_orientation(_orientation));
+        image::set_orientation(from_dicom_orientation(_image_orientation_patient));
     }
 
-    series::set_image_orientation_patient(_orientation, _frame_index);
+    series::set_image_orientation_patient(_image_orientation_patient, _frame_index);
 }
 
 //------------------------------------------------------------------------------

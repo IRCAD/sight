@@ -22,18 +22,13 @@
 
 #include "module/io/vtk/series_set_reader.hpp"
 
-#include <core/com/has_signals.hpp>
-#include <core/com/signal.hpp>
 #include <core/com/signal.hxx>
-#include <core/jobs/base.hpp>
-#include <core/jobs/job.hpp>
 #include <core/location/single_folder.hpp>
+#include <core/progress/observer.hpp>
 
 #include <data/series_set.hpp>
 
 #include <io/vtk/series_set_reader.hpp>
-
-#include <service/macros.hpp>
 
 #include <ui/__/cursor.hpp>
 #include <ui/__/dialog/location.hpp>
@@ -45,13 +40,10 @@
 namespace sight::module::io::vtk
 {
 
-static const core::com::signals::key_t JOB_CREATED_SIGNAL = "job_created";
-
 //------------------------------------------------------------------------------
 
 series_set_reader::series_set_reader() noexcept :
-    reader("Choose vtk files to load Series"),
-    m_sig_job_created(new_signal<job_created_signal_t>(JOB_CREATED_SIGNAL))
+    reader("Choose vtk files to load Series")
 {
 }
 
@@ -141,11 +133,12 @@ void series_set_reader::load_series_set(
     reader->set_object(_series_set);
     reader->set_files(_vtk_files);
 
-    m_sig_job_created->emit(reader->get_job());
+    auto observer = std::make_shared<core::progress::observer>("Reading series set from vtk files");
+    this->async_emit(has_monitors::signals::MONITOR_CREATED, observer->get_sptr());
 
     try
     {
-        reader->read();
+        reader->read(observer);
         m_read_failed = false;
     }
     catch(const std::exception& e)

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,8 @@
 #include <itkCommand.h>
 #include <itkProcessObject.h>
 
-#include <core/tools/progress_adviser.hpp>
+#include <core/progress/observer.hpp>
+#include <memory>
 
 namespace sight::io::itk
 {
@@ -46,16 +47,14 @@ class progress_itk_to_fw : public progressor_base
 {
 public:
 
-    progress_itk_to_fw(OBSERVEE observee, SPTR(core::tools::progress_adviser)observer, std::string msg);
-
+    progress_itk_to_fw(OBSERVEE _observee, SPTR(core::progress::observer)_observer);
     virtual ~progress_itk_to_fw();
 
-protected:
+private:
 
     OBSERVEE m_observee;
     // observertag used by itk
     std::uint64_t m_obs_tag;
-    bool m_initialized {false};
 };
 
 //------------------------------------------------------------------------------
@@ -67,8 +66,8 @@ public:
     using sptr = std::shared_ptr<progressor>;
 
     template<typename OBS>
-    progressor(OBS _filter, SPTR(core::tools::progress_adviser)_observer, std::string _message) :
-        m_progressor(progressor_base::sptr(new progress_itk_to_fw<OBS>(_filter, _observer, _message)))
+    progressor(OBS _filter, SPTR(core::progress::observer)_observer) :
+        m_progressor(std::make_shared<progress_itk_to_fw<OBS> >(_filter, _observer))
     {
     }
 

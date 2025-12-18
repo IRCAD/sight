@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,7 +38,7 @@ namespace sight::io::igtl::detail
 {
 
 /**
- * @brief MessageFactory contains static function to create and registrate igtl messages in the factory (s_creators).
+ * @brief MessageFactory contains static function to create and register igtl messages in the factory (s_creators).
  */
 class SIGHT_IO_IGTL_CLASS_API message_factory
 {
@@ -70,7 +70,7 @@ public:
      * @struct MessageMaker
      * struct contain create function to create igtl message.
      * Hack to compile in msvc, with others compiler, this struct may be useless
-     * (see assignement of  pointer function to a overload function to std::function).
+     * (see assignment of  pointer function to a overload function to std::function).
      * @tparam T class derivate from ::igtl::MessageBase
      * @tparam withParam    true use the specialized structure with parameters, false take the no parameters one.
      */

@@ -22,7 +22,6 @@
 
 #include "series.hpp"
 
-#include <data/dicom_series.hpp>
 #include <data/image_series.hpp>
 #include <data/model_series.hpp>
 
@@ -31,12 +30,12 @@ namespace sight::io::http::helper
 
 // ----------------------------------------------------------------------------
 
-series::DicomSeriesContainer series::to_fw_med_data(const QJsonObject& _series_json)
+series::dicom_series_container_t series::to_fw_med_data(const QJsonObject& _series_json)
 {
-    DicomSeriesContainer series_container;
+    dicom_series_container_t series_container;
 
     // Create series
-    data::dicom_series::sptr series = std::make_shared<data::dicom_series>();
+    data::series::sptr series = std::make_shared<data::series>();
 
     // ==================================
     // Series
@@ -44,6 +43,7 @@ series::DicomSeriesContainer series::to_fw_med_data(const QJsonObject& _series_j
 
     series->set_sop_class_uid(_series_json["SOPClassUID"].toString().toStdString());
     series->set_series_instance_uid(_series_json["SeriesInstanceUID"].toString().toStdString());
+    series->set_sop_instance_uid(_series_json["SOPInstanceUID"].toString().toStdString());
     series->set_modality(_series_json["Modality"].toString().toStdString());
     series->set_series_date(_series_json["SeriesDate"].toString().toStdString());
     series->set_series_time(_series_json["SeriesTime"].toString().toStdString());
@@ -74,12 +74,15 @@ series::DicomSeriesContainer series::to_fw_med_data(const QJsonObject& _series_j
     // ==================================
     // Number of instances
     // ==================================
+
     const auto& num_instances_json  = _series_json["NumberOfSeriesRelatedInstances"];
     const std::size_t num_instances = num_instances_json.isString()
                                       ? num_instances_json.toString("0").toULongLong()
                                       : std::size_t(num_instances_json.toInt());
 
-    series->set_number_of_instances(num_instances);
+    // A bit abusive, but this is a temporary series until it is downloaded,
+    // so we use this field to store the number of instances.
+    series->set_instance_number(int(num_instances));
 
     // Add series to container
     series_container.push_back(series);
@@ -89,9 +92,9 @@ series::DicomSeriesContainer series::to_fw_med_data(const QJsonObject& _series_j
 
 // ----------------------------------------------------------------------------
 
-series::InstanceUIDContainer series::to_series_instance_uid_container(DicomSeriesContainer _series)
+series::instance_uid_container_t series::to_series_instance_uid_container(dicom_series_container_t _series)
 {
-    InstanceUIDContainer result;
+    instance_uid_container_t result;
 
     for(const data::series::sptr& s : _series)
     {

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,6 +26,8 @@
 
 #include "ui/__/object.hpp"
 
+#include <core/progress/function.hpp>
+
 #include <boost/signals2.hpp>
 
 #include <functional>
@@ -40,21 +42,19 @@ namespace sight::ui::dialog
  * @note    inherits from boost::signals2::trackable to auto_disconnect if handler is destroyed before the notifier.
  * @todo    add methods for behavior like autoClose, flying window or in status bar
  */
-class SIGHT_UI_CLASS_API progress_base : public ui::object,
-                                         public boost::signals2::trackable
+class SIGHT_UI_CLASS_API progress_base : public ui::object
 {
 public:
 
     SIGHT_DECLARE_CLASS(progress_base, ui::object);
 
     using factory_registry_key_t = std::string;
-    using cancel_callback_t      = boost::function<void ()>;
 
     /// this *unique* key should  be used *for all* factory for specific location(qt,wx,...)
     SIGHT_UI_API static const factory_registry_key_t REGISTRY_KEY;
 
-    SIGHT_UI_API ~progress_base() override;
-    SIGHT_UI_API progress_base();
+    SIGHT_UI_API ~progress_base() override = default;
+    SIGHT_UI_API progress_base()           = default;
 
     ///set the title for the dialog
     SIGHT_UI_API virtual void set_title(const std::string& _title) = 0;
@@ -65,7 +65,7 @@ public:
     /// action called by core::tools::progress_adviser
     SIGHT_UI_API virtual void operator()(float _percent, std::string _msg) = 0;
 
-    SIGHT_UI_API virtual void set_cancel_callback(cancel_callback_t _callback);
+    SIGHT_UI_API virtual void set_cancel_callback(core::progress::cancel_callback_t _callback);
 
     //------------------------------------------------------------------------------
 
@@ -98,7 +98,7 @@ protected:
 
     SIGHT_UI_API virtual void cancel_pressed();
 
-    cancel_callback_t m_cancel_callback;
+    core::progress::cancel_callback_t m_cancel_callback;
     bool m_canceled {false};
     bool m_raise {true};
 

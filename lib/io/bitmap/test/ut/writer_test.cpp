@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,6 +22,7 @@
 #include "writer_test.hpp"
 #include "helper.hxx"
 
+#include <core/progress/observer.hpp>
 #include <core/profiling.hpp>
 #include <core/os/temp_path.hpp>
 #include <core/tools/uuid.hpp>
@@ -61,7 +62,10 @@ inline static std::vector<data::image::sptr> read_dicom_images(std::size_t _coun
 
             // Read a DICOM image "us/Ultrasound Image Storage/GE, lossy JPEG"
             reader->set_folder(utest_data::dir() / "us/Ultrasound Image Storage/GE, lossy JPEG");
-            CPPUNIT_ASSERT_NO_THROW(reader->read());
+            {
+                auto observer = std::make_shared<core::progress::observer>("Reading DICOM images");
+                CPPUNIT_ASSERT_NO_THROW(reader->read(observer));
+            }
 
             // Just to be sure we read the good data
             CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
@@ -79,7 +83,10 @@ inline static std::vector<data::image::sptr> read_dicom_images(std::size_t _coun
 
             // Read next image "us/Ultrasound Image Storage/Siemens Acuson 500"
             reader->set_folder(utest_data::dir() / "us/Ultrasound Image Storage/Siemens Acuson 500");
-            CPPUNIT_ASSERT_NO_THROW(reader->read());
+            {
+                auto observer = std::make_shared<core::progress::observer>("Reading DICOM images");
+                CPPUNIT_ASSERT_NO_THROW(reader->read(observer));
+            }
 
             // Just to be sure we read the good data
             CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
@@ -97,7 +104,10 @@ inline static std::vector<data::image::sptr> read_dicom_images(std::size_t _coun
 
             // Read next image "us/Ultrasound Multi-frame Image Storage/Siemens Acuson 500"
             reader->set_folder(utest_data::dir() / "us/Ultrasound Multi-frame Image Storage/Siemens Acuson 500");
-            CPPUNIT_ASSERT_NO_THROW(reader->read());
+            {
+                auto observer = std::make_shared<core::progress::observer>("Reading DICOM images");
+                CPPUNIT_ASSERT_NO_THROW(reader->read(observer));
+            }
 
             // Just to be sure we read the good data
             CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
@@ -163,12 +173,12 @@ inline static void profile_writer(
     // Now profile writing
     SIGHT_PROFILE_FUNC(
         [&]
-        (std::size_t i)
+        (std::size_t _i)
         {
             for(std::size_t j = 0 ; const auto& image : _images)
             {
                 writer->set_object(image);
-                const auto& tmp_path = _tmp_folder / (std::to_string(i) + "_" + std::to_string(j++) + file_suffix);
+                const auto& tmp_path = _tmp_folder / (std::to_string(_i) + "_" + std::to_string(j++) + file_suffix);
                 writer->set_file(tmp_path);
 
                 CPPUNIT_ASSERT_NO_THROW(writer->write(_backend, _mode));
@@ -250,11 +260,11 @@ inline static void profile_open_cv_writer(
     // Now profile writing
     SIGHT_PROFILE_FUNC(
         [&]
-        (std::size_t i)
+        (std::size_t _i)
         {
             for(std::size_t j = 0 ; const auto& image : _images)
             {
-                const auto& tmp_path = _tmp_folder / (std::to_string(i) + "_" + std::to_string(j++) + file_suffix);
+                const auto& tmp_path = _tmp_folder / (std::to_string(_i) + "_" + std::to_string(j++) + file_suffix);
 
                 // Convert Image to OpenCV Mat
                 const cv::Mat& mat = image_to_mat(image);
@@ -334,9 +344,9 @@ void writer_test::extensions_test()
     };
 
     std::vector<backend> backends {
-        io::bitmap::nv_jpeg() ? backend::nvjpeg : backend::libjpeg,
-        io::bitmap::nv_jpeg_2k() ? backend::nvjpeg2k : backend::openjpeg,
-        io::bitmap::nv_jpeg_2k() ? backend::nvjpeg2k_j2k : backend::openjpeg_j2k,
+        io::bitmap::nvjpeg() ? backend::nvjpeg : backend::libjpeg,
+        io::bitmap::nvjpeg2k() ? backend::nvjpeg2k : backend::openjpeg,
+        io::bitmap::nvjpeg2k() ? backend::nvjpeg2k_j2k : backend::openjpeg_j2k,
         backend::libtiff,
         backend::libpng
     };
@@ -361,9 +371,9 @@ void writer_test::extensions_test()
 void writer_test::wildcard_test()
 {
     std::vector<backend> backends {
-        io::bitmap::nv_jpeg() ? backend::nvjpeg : backend::libjpeg,
-        io::bitmap::nv_jpeg_2k() ? backend::nvjpeg2k : backend::openjpeg,
-        io::bitmap::nv_jpeg_2k() ? backend::nvjpeg2k_j2k : backend::openjpeg_j2k,
+        io::bitmap::nvjpeg() ? backend::nvjpeg : backend::libjpeg,
+        io::bitmap::nvjpeg2k() ? backend::nvjpeg2k : backend::openjpeg,
+        io::bitmap::nvjpeg2k() ? backend::nvjpeg2k_j2k : backend::openjpeg_j2k,
         backend::libtiff,
         backend::libpng
     };
@@ -530,7 +540,7 @@ void writer_test::conformance_test()
 {
     // UINT8 RGB
     {
-        if(io::bitmap::nv_jpeg_2k())
+        if(io::bitmap::nvjpeg2k())
         {
             conformance(
                 {
@@ -546,7 +556,7 @@ void writer_test::conformance_test()
                 data::image::pixel_format_t::rgb
             );
         }
-        else if(io::bitmap::nv_jpeg())
+        else if(io::bitmap::nvjpeg())
         {
             conformance(
                 {backend::libjpeg, backend::libpng, backend::libtiff, backend::openjpeg, backend::nvjpeg},
@@ -568,7 +578,7 @@ void writer_test::conformance_test()
 
     // UINT8 GRAYSCALE
     {
-        if(io::bitmap::nv_jpeg_2k())
+        if(io::bitmap::nvjpeg2k())
         {
             conformance(
                 {backend::libjpeg, backend::libpng, backend::libtiff, backend::openjpeg, backend::nvjpeg2k},
@@ -590,7 +600,7 @@ void writer_test::conformance_test()
 
     // UINT16 RGB
     {
-        if(io::bitmap::nv_jpeg_2k())
+        if(io::bitmap::nvjpeg2k())
         {
             conformance(
                 {backend::libtiff, backend::openjpeg, backend::nvjpeg2k},
@@ -612,7 +622,7 @@ void writer_test::conformance_test()
 
     // UINT16 GRAYSCALE
     {
-        if(io::bitmap::nv_jpeg_2k())
+        if(io::bitmap::nvjpeg2k())
         {
             conformance(
                 {backend::libpng, backend::libtiff, backend::openjpeg, backend::nvjpeg2k},
@@ -650,7 +660,8 @@ void writer_test::empty_image_test()
     {
         const auto& tmp_path = tmp_dir / ("empty" + ext);
         CPPUNIT_ASSERT_NO_THROW(writer->set_file(tmp_path));
-        CPPUNIT_ASSERT_THROW(writer->write(), core::exception);
+        auto observer = std::make_shared<core::progress::observer>("Writing empty image... ");
+        CPPUNIT_ASSERT_THROW(writer->write(observer), core::exception);
         CPPUNIT_ASSERT_MESSAGE(tmp_path.string() + " exists.", !std::filesystem::exists(tmp_path));
     }
 }
@@ -674,7 +685,8 @@ void writer_test::wrong_path_test()
     {
         const auto& tmp_path = tmp_folder / ("wrong_path" + ext);
         CPPUNIT_ASSERT_NO_THROW(writer->set_file(tmp_path));
-        CPPUNIT_ASSERT_NO_THROW(writer->write());
+        auto observer = std::make_shared<core::progress::observer>("Writing wrong path image... ");
+        CPPUNIT_ASSERT_NO_THROW(writer->write(observer));
         CPPUNIT_ASSERT_MESSAGE(tmp_path.string() + " doesn't exist.", std::filesystem::exists(tmp_path));
     }
 }
@@ -707,7 +719,8 @@ void writer_test::from_dicom_test()
         {
             const auto& tmp_path = tmp_dir / (std::to_string(_i) + "_from_dicom" + _ext);
             CPPUNIT_ASSERT_NO_THROW(writer->set_file(tmp_path));
-            CPPUNIT_ASSERT_NO_THROW(writer->write());
+            auto observer = std::make_shared<core::progress::observer>("Writing from DICOM image... ");
+            CPPUNIT_ASSERT_NO_THROW(writer->write(observer));
             CPPUNIT_ASSERT(std::filesystem::exists(tmp_path));
 
             return std::int64_t(std::filesystem::file_size(tmp_path));
@@ -718,7 +731,7 @@ void writer_test::from_dicom_test()
         writer->set_object(image);
 
         // Test .jpg with nvJPEG (if available)
-        if(io::bitmap::nv_jpeg())
+        if(io::bitmap::nvjpeg())
         {
             const auto file_size = write(i, ".jpg");
 
@@ -740,8 +753,8 @@ void writer_test::from_dicom_test()
             );
         }
 
-        // Test .jp2 with nv_jpeg_2k (if available)
-        if(io::bitmap::nv_jpeg_2k())
+        // Test .jp2 with nvjpeg2k (if available)
+        if(io::bitmap::nvjpeg2k())
         {
             const auto file_size = write(i, ".jp2");
 
@@ -763,8 +776,8 @@ void writer_test::from_dicom_test()
             );
         }
 
-        // Test .j2k with nv_jpeg_2k (if available)
-        if(io::bitmap::nv_jpeg_2k())
+        // Test .j2k with nvjpeg2k (if available)
+        if(io::bitmap::nvjpeg2k())
         {
             const auto file_size = write(i, ".j2k");
 
@@ -834,7 +847,7 @@ void writer_test::profiling_test()
     std::vector<std::future<void> > tasks;
 
     // nvJPEG
-    if(io::bitmap::nv_jpeg())
+    if(io::bitmap::nvjpeg())
     {
         profile_writer(
             images,
@@ -855,8 +868,8 @@ void writer_test::profiling_test()
         );
     }
 
-    // nv_jpeg_2k
-    if(io::bitmap::nv_jpeg_2k())
+    // nvjpeg2k
+    if(io::bitmap::nvjpeg2k())
     {
         profile_writer(
             images,

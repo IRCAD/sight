@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024 IRCAD France
+ * Copyright (C) 2024-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,7 +23,6 @@
 
 #include <core/runtime/runtime.hpp>
 
-#include <data/landmarks.hpp>
 #include <data/matrix4.hpp>
 
 #include <service/op.hpp>

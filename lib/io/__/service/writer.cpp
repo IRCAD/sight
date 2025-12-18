@@ -38,8 +38,11 @@ namespace sight::io::service
 //-----------------------------------------------------------------------------
 
 writer::writer(const std::string& _default_window_title) noexcept :
+    has_monitors(m_signals),
     m_window_title(this, WINDOW_TITLE_KEY, _default_window_title)
 {
+    new_signal<signals::void_signal_t>(signals::FAILED);
+    new_signal<signals::void_signal_t>(signals::SUCCEEDED);
     new_signal<signals::void_signal_t>(signals::PREFIX_SET);
     new_signal<signals::void_signal_t>(signals::BASE_FOLDER_SET);
 

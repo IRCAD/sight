@@ -48,7 +48,6 @@ namespace sight::module::ui::qt::series
         <service uid="..." type="sight::module::ui::qt::series::select_dialog" >
            <in key="series_set" uid="..."/>
            <out key="model_series" uid="..."/>
-           <out key="imageSeries" uid="..."/>
            <out key="image" uid="..."/>
         </service>
        @endcode
@@ -57,7 +56,6 @@ namespace sight::module::ui::qt::series
  *
  * @subsection Output Output
  * - \b modelSeries [sight::data::model_series]: output model series extracted from the database series.
- * - \b imageSeries [sight::data::image_series]: output image series extracted from the database series.
  * - \b image [sight::data::image]: output image extracted from the database series.
  */
 class select_dialog : public service::controller

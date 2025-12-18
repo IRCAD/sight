@@ -26,9 +26,8 @@
 #include <core/com/signal.hxx>
 #include <core/crypto/password_keeper.hpp>
 #include <core/crypto/secure_string.hpp>
-#include <core/jobs/aggregator.hpp>
-#include <core/jobs/job.hpp>
 #include <core/location/single_folder.hpp>
+#include <core/progress/observer.hpp>
 #include <core/tools/system.hpp>
 
 #include <io/session/session_reader.hpp>
@@ -48,43 +47,8 @@ using core::crypto::password_keeper;
 using core::crypto::secure_string;
 using sight::io::zip::archive;
 
-/// Private implementation
-class extract::extract_impl
-{
-public:
-
-    /// Delete default constructors and assignment operators
-    extract_impl(const extract_impl&)            = delete;
-    extract_impl(extract_impl&&)                 = delete;
-    extract_impl& operator=(const extract_impl&) = delete;
-    extract_impl& operator=(extract_impl&&)      = delete;
-
-    /// Constructor
-    explicit extract_impl(extract* const _reader) noexcept :
-        m_reader(_reader),
-        m_job_created_signal(_reader->new_signal<job_created_signal_t>("job_created"))
-    {
-    }
-
-    /// Default destructor
-    ~extract_impl() noexcept = default;
-
-    /// Pointer to the public interface
-    extract* const m_reader;
-
-    /// Signal emitted when job created.
-    job_created_signal_t::sptr m_job_created_signal;
-
-    /// Used in case of bad password
-    int m_password_retry {0};
-
-    /// The path where to extract the files
-    std::filesystem::path m_output_path;
-};
-
 extract::extract() noexcept :
-    reader("Select the archive file"),
-    m_pimpl(std::make_unique<extract_impl>(this))
+    reader("Select the archive file")
 {
 }
 
@@ -101,7 +65,7 @@ void extract::starting()
 
 void extract::stopping()
 {
-    m_pimpl->m_password_retry = 0;
+    m_password_retry = 0;
     clear_locations();
 }
 
@@ -131,7 +95,7 @@ void extract::updating()
         return;
     }
 
-    if(m_pimpl->m_output_path.empty())
+    if(m_output_path.empty())
     {
         static auto default_location = std::make_shared<core::location::single_folder>();
         default_location->set_folder("/");
@@ -176,7 +140,7 @@ void extract::updating()
                 }
             }
 
-            m_pimpl->m_output_path = result->get_folder();
+            m_output_path = result->get_folder();
             default_location->set_folder(result->get_folder().parent_path());
             location_dialog.save_default_location(default_location);
         }
@@ -195,7 +159,7 @@ void extract::updating()
         {
             const secure_string& global_password = password_keeper::get_global_password();
 
-            if(m_pimpl->m_password_retry > 0)
+            if(m_password_retry > 0)
             {
                 const auto& [newPassword, ok] =
                     sight::ui::dialog::input::show_input_dialog(
@@ -211,63 +175,13 @@ void extract::updating()
             return global_password;
         }();
 
-    const auto read_job = std::make_shared<core::jobs::job>(
-        "Reading " + filepath.string() + " file",
-        [&](core::jobs::job& _running_job)
-        {
-            const sight::ui::busy_cursor busy_cursor;
-            _running_job.done_work(10);
-
-            try
-            {
-                auto archive_reader = sight::io::zip::archive_reader::get(
-                    filepath,
-                    archive::archive_format::DEFAULT
-                );
-
-                archive_reader->extract_all_to(m_pimpl->m_output_path, password);
-            }
-            catch(const sight::io::zip::exception::read&)
-            {
-                // Try with log extractor
-                std::ifstream input(filepath, std::ios::in | std::ios::binary);
-
-                auto output_filepath = m_pimpl->m_output_path / filepath.filename();
-                output_filepath.replace_extension("");
-                std::ofstream output(output_filepath, std::ios::out | std::ios::binary);
-
-                try
-                {
-                    core::log::spy_logger::extract(input, output, password);
-                }
-                catch(const core::log::spy_logger::bad_password&)
-                {
-                    throw;
-                }
-                catch(...)
-                {
-                    throw core::log::spy_logger::bad_password();
-                }
-            }
-
-            _running_job.done();
-        },
-        this->worker()
-    );
-
-    core::jobs::aggregator::sptr jobs = std::make_shared<core::jobs::aggregator>(filepath.string() + " reader");
-    jobs->add(read_job);
-    jobs->set_cancelable(false);
-
-    m_pimpl->m_job_created_signal->emit(jobs);
-
     const auto bad_password =
         [&]
         {
-            if(m_pimpl->m_password_retry == 0)
+            if(m_password_retry == 0)
             {
                 // First attempt to extract the archive: The user just discovers that it is encrypted
-                m_pimpl->m_password_retry++;
+                m_password_retry++;
                 updating();
             }
             else
@@ -284,22 +198,61 @@ void extract::updating()
 
                 if(message_box.show() == sight::ui::dialog::message::retry)
                 {
-                    m_pimpl->m_password_retry++;
+                    m_password_retry++;
                     updating();
                 }
                 else
                 {
-                    m_pimpl->m_password_retry = 0;
+                    m_password_retry = 0;
                 }
             }
         };
 
+    const auto observer = std::make_shared<core::progress::observer>("Reading " + filepath.string() + " file");
+    this->async_emit(has_monitors::signals::MONITOR_CREATED, observer->get_sptr());
+
     try
     {
-        jobs->run().get();
-        m_pimpl->m_output_path.clear();
-        m_read_failed             = false;
-        m_pimpl->m_password_retry = 0;
+        const sight::ui::busy_cursor busy_cursor;
+        observer->done_work(10);
+
+        try
+        {
+            auto archive_reader = sight::io::zip::archive_reader::get(
+                filepath,
+                archive::archive_format::DEFAULT
+            );
+
+            archive_reader->extract_all_to(m_output_path, password);
+        }
+        catch(const sight::io::zip::exception::read&)
+        {
+            // Try with log extractor
+            std::ifstream input(filepath, std::ios::in | std::ios::binary);
+
+            auto output_filepath = m_output_path / filepath.filename();
+            output_filepath.replace_extension("");
+            std::ofstream output(output_filepath, std::ios::out | std::ios::binary);
+
+            try
+            {
+                core::log::spy_logger::extract(input, output, password);
+            }
+            catch(const core::log::spy_logger::bad_password&)
+            {
+                throw;
+            }
+            catch(...)
+            {
+                throw core::log::spy_logger::bad_password();
+            }
+        }
+
+        observer->done();
+
+        m_output_path.clear();
+        m_read_failed    = false;
+        m_password_retry = 0;
         clear_locations();
         sight::ui::dialog::message::show("Success", "The archive was successfully extracted.");
     }
@@ -313,7 +266,7 @@ void extract::updating()
     }
     catch(const std::exception& e)
     {
-        m_pimpl->m_output_path.clear();
+        m_output_path.clear();
         clear_locations();
         SIGHT_ERROR(e.what());
         sight::ui::dialog::message::show(
@@ -324,7 +277,7 @@ void extract::updating()
     }
     catch(...)
     {
-        m_pimpl->m_output_path.clear();
+        m_output_path.clear();
         clear_locations();
         sight::ui::dialog::message::show(
             "Session reader aborted",

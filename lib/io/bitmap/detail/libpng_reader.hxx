@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "reader_impl.hxx"
+#include "common.hxx"
 
 #include <png.h>
 
@@ -30,29 +30,29 @@
 namespace sight::io::bitmap::detail
 {
 
-class lib_png_reader final
+class libpng_reader final : public reader_backend
 {
 public:
 
     /// Delete copy constructors and assignment operators
-    lib_png_reader(const lib_png_reader&)            = delete;
-    lib_png_reader& operator=(const lib_png_reader&) = delete;
+    libpng_reader(const libpng_reader&)            = delete;
+    libpng_reader& operator=(const libpng_reader&) = delete;
 
     /// Constructor
-    inline lib_png_reader() noexcept = default;
+    libpng_reader() noexcept = default;
 
     /// Destructor
-    inline ~lib_png_reader() noexcept = default;
+    ~libpng_reader() noexcept final = default;
 
     /// Reading
-    inline void read(data::image& _image, std::istream& _istream, flag /*flag*/)
+    void read(data::image& _image, std::istream& _istream, flag /*flag*/) final
     {
         // Create an RAII to be sure everything is cleaned at exit
         struct keeper final
         {
-            keeper()
+            keeper() :
+                m_png(png_create_read_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr))
             {
-                m_png = png_create_read_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
                 SIGHT_THROW_IF("png_create_read_struct() failed.", m_png == nullptr);
 
                 // Set error/warning callback because C style setjmp/longjmp error management is dangerous in C++
@@ -99,7 +99,7 @@ public:
         }
 
         // Convert transparency to alpha channel
-        if(png_get_valid(keeper.m_png, keeper.m_png_info, PNG_INFO_tRNS))
+        if(png_get_valid(keeper.m_png, keeper.m_png_info, PNG_INFO_tRNS) != 0)
         {
             png_set_tRNS_to_alpha(keeper.m_png);
             channels += 1;
@@ -182,11 +182,18 @@ public:
         png_read_end(keeper.m_png, keeper.m_png_info);
     }
 
+    //------------------------------------------------------------------------------
+
+    [[nodiscard]] bool is_valid() const noexcept final
+    {
+        return m_valid;
+    }
+
 private:
 
     //------------------------------------------------------------------------------
 
-    inline static void read_callback(png_structp _png_ptr, png_bytep _data, png_size_t _length)
+    static void read_callback(png_structp _png_ptr, png_bytep _data, png_size_t _length)
     {
         auto* istream = reinterpret_cast<std::istream*>(png_get_io_ptr(_png_ptr));
         istream->read(reinterpret_cast<char*>(_data), std::streamsize(_length));
@@ -194,22 +201,19 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static void warning_callback(png_structp, png_const_charp _msg)
+    static void warning_callback(png_structp /*unused*/, png_const_charp _msg)
     {
         SIGHT_WARN(_msg);
     }
 
     //------------------------------------------------------------------------------
 
-    inline static void error_callback(png_structp, png_const_charp _msg)
+    static void error_callback(png_structp /*unused*/, png_const_charp _msg)
     {
         SIGHT_THROW(_msg);
     }
 
-public:
-
     bool m_valid {true};
-    static constexpr std::string_view m_name {"LibPNGReader"};
 };
 
 } // namespace sight::io::bitmap::detail

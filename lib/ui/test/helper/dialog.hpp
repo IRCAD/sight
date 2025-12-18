@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -78,7 +78,20 @@ inline void dialog::take(tester& _tester, const std::string& _desc, const std::s
     auto bt = _tester.add_in_backtrace("take " + _desc + " dialog");
     _tester.take<T>(
         _desc,
-        []{return qobject_cast<T>(qApp->activeModalWidget());},
+        [&_child_name]
+        {
+            auto widgets = qApp->topLevelWidgets();
+            for(auto* w : widgets)
+            {
+                if(w->isModal() && w->isVisible()
+                   && w->findChild<QObject*>(QString::fromStdString(_child_name)) != nullptr)
+                {
+                    return qobject_cast<T>(w);
+                }
+            }
+
+            return qobject_cast<T>(qApp->activeModalWidget());
+        },
         [&_child_name](T _o)
         {
             return _o->isVisible()

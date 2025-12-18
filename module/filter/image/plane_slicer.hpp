@@ -27,6 +27,7 @@
 #include <data/image.hpp>
 #include <data/matrix4.hpp>
 #include <data/point_list.hpp>
+#include <data/string.hpp>
 
 #include <service/filter.hpp>
 
@@ -123,6 +124,7 @@ private:
     sight::data::ptr<sight::data::image, sight::data::access::inout> m_slice {this, "slice"};
 
     sight::data::property<sight::data::boolean> m_center {this, "center", false};
+    sight::data::property<sight::data::string> m_interpolation {this, "interpolation", std::string("LINEAR")};
 };
 
 } //namespace sight::module::filter::image

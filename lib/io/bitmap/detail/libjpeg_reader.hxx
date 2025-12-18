@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "reader_impl.hxx"
+#include "common.hxx"
 
 #include <jpeglib.h>
 
@@ -30,16 +30,16 @@
 namespace sight::io::bitmap::detail
 {
 
-class lib_jpeg_reader final
+class libjpeg_reader final : public reader_backend
 {
 public:
 
     /// Delete copy constructors and assignment operators
-    lib_jpeg_reader(const lib_jpeg_reader&)            = delete;
-    lib_jpeg_reader& operator=(const lib_jpeg_reader&) = delete;
+    libjpeg_reader(const libjpeg_reader&)            = delete;
+    libjpeg_reader& operator=(const libjpeg_reader&) = delete;
 
     /// Constructor
-    inline lib_jpeg_reader() noexcept
+    libjpeg_reader() noexcept
     {
         try
         {
@@ -65,13 +65,13 @@ public:
     }
 
     /// Destructor
-    inline ~lib_jpeg_reader() noexcept
+    ~libjpeg_reader() noexcept final
     {
         free();
     }
 
     /// Reading
-    inline void read(data::image& _image, std::istream& _istream, flag /*flag*/)
+    void read(data::image& _image, std::istream& _istream, flag /*flag*/) final
     {
         // Get input size
         _istream.seekg(0, std::ios::end);
@@ -81,7 +81,7 @@ public:
         SIGHT_THROW_IF("The stream cannot be read.", stream_size <= 0);
 
         // Allocate input buffer
-        const std::size_t input_buffer_size = std::size_t(stream_size);
+        const auto input_buffer_size = std::size_t(stream_size);
         if(m_input_buffer.size() < input_buffer_size)
         {
             m_input_buffer.resize(input_buffer_size);
@@ -91,16 +91,17 @@ public:
         _istream.read(reinterpret_cast<char*>(m_input_buffer.data()), stream_size);
 
         // Set jpeg source
+        // NOLINTNEXTLINE(google-runtime-int)
         jpeg_mem_src(&m_cinfo, m_input_buffer.data(), static_cast<unsigned long>(input_buffer_size));
 
         // Read header
-        if(const auto result = jpeg_read_header(&m_cinfo, true); result != JPEG_HEADER_OK)
+        if(const auto result = jpeg_read_header(&m_cinfo, 1); result != JPEG_HEADER_OK)
         {
             SIGHT_THROW("Error while reading JPEG header: " << result);
         }
 
         // Start decompression
-        if(!jpeg_start_decompress(&m_cinfo))
+        if(jpeg_start_decompress(&m_cinfo) == 0)
         {
             SIGHT_THROW("Error while starting JPEG decompression.");
         }
@@ -199,33 +200,43 @@ public:
         );
 
         // Decompression loop
-        JSAMPROW row_pointer[1] {};
+        std::array<JSAMPROW, 1> row_pointer {};
 
         while(m_cinfo.output_scanline < m_cinfo.image_height)
         {
             // jpeg_read_scanlines expects an array of pointers to scanlines.
             row_pointer[0] = reinterpret_cast<unsigned char*>(
-                _image.get_pixel(m_cinfo.output_scanline * m_cinfo.image_width)
+                _image.get_pixel(
+                    sight::data::image::index_t(m_cinfo.output_scanline)
+                    * sight::data::image::index_t(m_cinfo.image_width)
+                )
             );
 
             SIGHT_THROW_IF(
                 "jpeg_read_scanlines failed.",
-                jpeg_read_scanlines(&m_cinfo, row_pointer, 1) != 1
+                jpeg_read_scanlines(&m_cinfo, row_pointer.data(), 1) != 1
             );
         }
 
         // Finish decompression
-        if(!jpeg_finish_decompress(&m_cinfo))
+        if(jpeg_finish_decompress(&m_cinfo) == 0)
         {
             SIGHT_THROW("Error while finishing JPEG decompression.");
         }
+    }
+
+    //------------------------------------------------------------------------------
+
+    [[nodiscard]] bool is_valid() const noexcept final
+    {
+        return m_valid;
     }
 
 private:
 
     //------------------------------------------------------------------------------
 
-    inline void free() noexcept
+    void free() noexcept
     {
         try
         {
@@ -241,28 +252,28 @@ private:
     }
 
     /// Error handler for libJPEG
-    inline static void jpeg_error_exit(j_common_ptr _cinfo)
+    static void jpeg_error_exit(j_common_ptr _cinfo)
     {
-        char jpeg_last_error_msg[JMSG_LENGTH_MAX];
+        std::array<char, JMSG_LENGTH_MAX> jpeg_last_error_msg {};
 
         // Create the message
-        (*(_cinfo->err->format_message))(_cinfo, jpeg_last_error_msg);
+        (*(_cinfo->err->format_message))(_cinfo, jpeg_last_error_msg.data());
 
         // Use exception instead of longjmp/setjmp
-        SIGHT_THROW(jpeg_last_error_msg);
+        SIGHT_THROW(jpeg_last_error_msg.data());
     }
 
     //------------------------------------------------------------------------------
 
-    inline static void jpeg_output_message(j_common_ptr _cinfo)
+    static void jpeg_output_message(j_common_ptr _cinfo)
     {
-        char jpeg_last_error_msg[JMSG_LENGTH_MAX];
+        std::array<char, JMSG_LENGTH_MAX> jpeg_last_error_msg {};
 
         // Create the message
-        (*(_cinfo->err->format_message))(_cinfo, jpeg_last_error_msg);
+        (*(_cinfo->err->format_message))(_cinfo, jpeg_last_error_msg.data());
 
         // Log recoverable error
-        SIGHT_WARN(jpeg_last_error_msg);
+        SIGHT_WARN(jpeg_last_error_msg.data());
     }
 
     struct jpeg_error_mgr m_jerr {};
@@ -270,10 +281,7 @@ private:
 
     std::vector<unsigned char> m_input_buffer;
 
-public:
-
     bool m_valid {false};
-    static constexpr std::string_view m_name {"LibJPEGReader"};
 };
 
 } // namespace sight::io::bitmap::detail

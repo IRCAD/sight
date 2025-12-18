@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2024 IRCAD France
+ * Copyright (C) 2020-2025 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,6 @@
 #include <core/thread/timer.hpp>
 #include <core/thread/worker.hpp>
 
-#include <data/dicom_series.hpp>
 #include <data/image.hpp>
 #include <data/series_set.hpp>
 
@@ -137,7 +136,7 @@ private:
      * @param _selected_slice_index index of the slice to read.
      */
     void read_slice(
-        const data::mt::locked_ptr<data::dicom_series>& _dicom_series,
+        const data::series& _dicom_series,
         std::size_t _selected_slice_index
     ) const;
 
@@ -156,15 +155,6 @@ private:
     /// Defines the delay to wait to trigger a slice retrieving.
     unsigned int m_delay {500};
 
-    /// Defines the DICOM reader implementation.
-    std::string m_dicom_reader_implementation;
-
-    /// Contains the optional configuration to set to reader implementation.
-    std::string m_reader_config;
-
-    /// Contains the DICOM reader.
-    sight::io::service::reader::sptr m_dicom_reader;
-
     /// Contains the series_set where the DICOM reader sets its output.
     data::series_set::sptr m_series_set;
 
@@ -172,7 +162,7 @@ private:
     data::ptr<sight::data::image, data::access::inout> m_image {this, "image"};
 
     static constexpr std::string_view DICOMSERIES_INOUT = "series";
-    data::ptr<sight::data::dicom_series, data::access::inout> m_series {this, DICOMSERIES_INOUT};
+    data::ptr<sight::data::series, data::access::inout> m_series {this, DICOMSERIES_INOUT};
 };
 
 } // namespace sight::module::io::dimse.

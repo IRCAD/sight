@@ -63,6 +63,7 @@ void translate::starting()
     const auto value = m_value.lock();
 
     const std::string key_str = key->to_string();
+    SIGHT_ERROR_IF("[" << this->get_id() << "] Translation key is empty", key_str.empty());
     if(m_map.contains(key_str))
     {
         value->from_string(m_map[key_str]);

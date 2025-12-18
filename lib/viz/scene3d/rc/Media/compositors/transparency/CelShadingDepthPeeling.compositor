@@ -7,14 +7,14 @@ compositor CelShadingDepthPeeling
         texture gbuffer target_width target_height PF_R8G8B8A8
         // Ping buffer
         // Color Depth Alpha Normal
-        texture ping_buffer target_width target_height PF_R8G8B8A8 PF_R8G8B8A8 PF_R8G8B8A8
+        texture ping_buffer target_width target_height PF_R8G8B8A8 PF_FLOAT32_R PF_R8G8B8A8
         // Pong buffer
         // Color Depth Alpha Normal
-        texture pong_buffer target_width target_height PF_R8G8B8A8 PF_R8G8B8A8 PF_R8G8B8A8
+        texture pong_buffer target_width target_height PF_R8G8B8A8 PF_FLOAT32_R PF_R8G8B8A8
         // Depth map
-        texture depth_map target_width target_height PF_R8G8B8A8
+        texture depth_map target_width target_height PF_FLOAT32_R
         // Fake texture for the first peel
-        texture init_buffer target_width target_height PF_R8G8B8A8 depth_pool 0
+        texture init_buffer target_width target_height PF_FLOAT32_R depth_pool 0
 
         // Depth map buffer
         // Used as a stencil for the surrounding background

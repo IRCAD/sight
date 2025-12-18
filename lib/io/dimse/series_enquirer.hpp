@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,6 +28,7 @@
 #include <core/com/slot.hpp>
 #include <core/com/slots.hpp>
 #include <core/memory/buffer_object.hpp>
+#include <core/progress/observer.hpp>
 
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmnet/scu.h>
@@ -75,17 +76,17 @@ public:
 
     using progress_callback_slot_t = core::com::slot<void (const std::string&, unsigned int, const std::string&)>;
 
-    using InstanceUIDContainer = std::vector<std::string>;
+    using instance_uid_container_t = std::vector<std::string>;
 
     using instance_path_container_t = std::vector<std::filesystem::path>;
 
     using dataset_container_t = std::vector<std::shared_ptr<const DcmDataset> >;
 
     /// Initializes members.
-    SIGHT_IO_DIMSE_API series_enquirer();
+    SIGHT_IO_DIMSE_API series_enquirer() = default;
 
     /// Destroyes the instance.
-    SIGHT_IO_DIMSE_API ~series_enquirer() override;
+    SIGHT_IO_DIMSE_API ~series_enquirer() override = default;
 
     /**
      * @brief Initializes the connection.
@@ -94,15 +95,15 @@ public:
      * @param _peer_port The pacs port.
      * @param _peer_application_title The pacs application title.
      * @param _move_application_title The move application title.
-     * @param _progress_callback The progress callback.
+     * @param _progress The progress monitor.
      */
     SIGHT_IO_DIMSE_API void initialize(
         const std::string& _application_title,
         const std::string& _peer_host_name,
         std::uint16_t _peer_port,
         const std::string& _peer_application_title,
-        const std::string& _move_application_title        = "",
-        progress_callback_slot_t::sptr _progress_callback = progress_callback_slot_t::sptr()
+        const std::string& _move_application_title = "",
+        core::progress::observer::sptr _progress   = nullptr
     );
 
     /// Initializes the network and negotiates association.
@@ -187,13 +188,13 @@ public:
      * @brief Pulls series using C-MOVE requests.
      * @param _instance_uid_container The series instance UID container.
      */
-    SIGHT_IO_DIMSE_API void pull_series_using_move_retrieve_method(InstanceUIDContainer _instance_uid_container);
+    SIGHT_IO_DIMSE_API void pull_series_using_move_retrieve_method(instance_uid_container_t _instance_uid_container);
 
     /**
      * @brief Pulls series using C-GET requests.
      * @param _instance_uid_container The series instance UID container.
      */
-    SIGHT_IO_DIMSE_API void pull_series_using_get_retrieve_method(InstanceUIDContainer _instance_uid_container);
+    SIGHT_IO_DIMSE_API void pull_series_using_get_retrieve_method(instance_uid_container_t _instance_uid_container);
 
     /**
      * @brief Pulls instance using C-MOVE requests.
@@ -301,11 +302,8 @@ private:
     /// Defines the MOVE destination AE Title.
     std::string m_move_application_title;
 
-    /// Defines the path where the files must be saved.
-    std::filesystem::path m_path;
-
     /// Contains the progress callback slot.
-    progress_callback_slot_t::sptr m_progress_callback;
+    core::progress::observer::sptr m_progress;
 
     /// Sets the dowloaded instance index.
     unsigned int m_instance_index {0};

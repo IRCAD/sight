@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 #include "io/dimse/exceptions/network_initialization_failure.hpp"
 #include "io/dimse/exceptions/presentation_context_missing.hpp"
 #include "io/dimse/exceptions/request_failure.hpp"
-#include "io/dimse/exceptions/tag_missing.hpp"
+#include "io/dimse/helper/series.hpp"
 
 #include <core/os/temp_path.hpp>
 
@@ -35,6 +35,7 @@
 #include <dcmtk/dcmnet/diutil.h>
 
 #include <filesystem>
+#include <utility>
 
 /**
  * Do not mark `JPEGLS`, `JPIP` as incorrect.
@@ -54,37 +55,20 @@ const core::com::slots::key_t series_enquirer::PROGRESS_CALLBACK_SLOT = "CGetPro
 
 //------------------------------------------------------------------------------
 
-series_enquirer::series_enquirer()
-= default;
-
-//------------------------------------------------------------------------------
-
-series_enquirer::~series_enquirer()
-= default;
-
-//------------------------------------------------------------------------------
-
 void series_enquirer::initialize(
     const std::string& _application_title,
     const std::string& _peer_host_name,
     std::uint16_t _peer_port,
     const std::string& _peer_application_title,
     const std::string& _move_application_title,
-    progress_callback_slot_t::sptr _progress_callback
+    core::progress::observer::sptr _progress
 )
 {
     // Save move application title for move requests.
     m_move_application_title = _move_application_title;
 
     // Store Callback.
-    m_progress_callback = _progress_callback;
-
-    // Creating folder.
-    m_path = core::os::temp_dir::shared_directory() / "dicom/";
-    if(!m_path.empty() && !std::filesystem::exists(m_path))
-    {
-        std::filesystem::create_directories(m_path);
-    }
+    m_progress = _progress;
 
     // Configure network connection.
     this->setAETitle(_application_title.c_str());
@@ -147,7 +131,7 @@ void series_enquirer::initialize(
     this->addPresentationContext(UID_GETStudyRootQueryRetrieveInformationModel, transfer_syntaxes);
 
     // Add presentation context for C-GET store requests.
-    for(Uint16 j = 0 ; j < numberOfDcmLongSCUStorageSOPClassUIDs ; j++)
+    for(Uint16 j = 0 ; std::cmp_less(j, numberOfDcmLongSCUStorageSOPClassUIDs) ; j++)
     {
         this->addPresentationContext(dcmLongSCUStorageSOPClassUIDs[j], transfer_syntaxes, ASC_SC_ROLE_SCP);
     }
@@ -239,7 +223,6 @@ OFList<QRResponse*> series_enquirer::send_find_request(DcmDataset _dataset)
 OFCondition series_enquirer::send_move_request(DcmDataset _dataset)
 {
     // Be sure that the needed informations are set.
-    SIGHT_ASSERT("The path where to store the series is not set.", !m_path.empty());
     SIGHT_ASSERT("The move application title is not set.", !m_move_application_title.empty());
 
     // Try to find a presentation context.
@@ -258,9 +241,6 @@ OFCondition series_enquirer::send_move_request(DcmDataset _dataset)
 
 OFCondition series_enquirer::send_get_request(DcmDataset _dataset)
 {
-    // Be sure that the needed informations are set.
-    SIGHT_ASSERT("The path where to store the series is not set.", !m_path.empty());
-
     // Try to find a presentation context.
     T_ASC_PresentationContextID pres_id = this->find_uncompressed_pc(UID_GETStudyRootQueryRetrieveInformationModel);
 
@@ -773,7 +753,7 @@ std::string series_enquirer::find_sop_instance_uid(
 
 //------------------------------------------------------------------------------
 
-void series_enquirer::pull_series_using_move_retrieve_method(InstanceUIDContainer _instance_uid_container)
+void series_enquirer::pull_series_using_move_retrieve_method(instance_uid_container_t _instance_uid_container)
 {
     // Reset instance count.
     m_instance_index = 0;
@@ -804,7 +784,7 @@ void series_enquirer::pull_series_using_move_retrieve_method(InstanceUIDContaine
 
 //------------------------------------------------------------------------------
 
-void series_enquirer::pull_series_using_get_retrieve_method(InstanceUIDContainer _instance_uid_container)
+void series_enquirer::pull_series_using_get_retrieve_method(instance_uid_container_t _instance_uid_container)
 {
     // Reset instance count.
     m_instance_index = 0;
@@ -923,9 +903,9 @@ void series_enquirer::push_series(const instance_path_container_t& _path_contain
         }
 
         // Notify callback.
-        if(m_progress_callback)
+        if(m_progress)
         {
-            m_progress_callback->async_run("", ++m_instance_index, path.string());
+            m_progress->done_work(++m_instance_index);
         }
     }
 }
@@ -953,9 +933,9 @@ void series_enquirer::push_series(const dataset_container_t& _dataset_container)
         }
 
         // Notify callback.
-        if(m_progress_callback)
+        if(m_progress)
         {
-            m_progress_callback->async_run("", ++m_instance_index, "");
+            m_progress->done_work(++m_instance_index);
         }
     }
 }
@@ -997,27 +977,8 @@ OFCondition series_enquirer::handleSTORERequest(
 
     if(_incoming_object != nullptr)
     {
-        // Find the series UID.
-        OFString series_id;
-        if(_incoming_object->findAndGetOFStringArray(DCM_SeriesInstanceUID, series_id).good())
-        {
-        }
-
-        // Find the instance UID.
-        OFString instance_id;
-        if(_incoming_object->findAndGetOFStringArray(DCM_SOPInstanceUID, instance_id).good())
-        {
-        }
-
-        // Create Folder.
-        std::filesystem::path series_path = std::filesystem::path(m_path.string() + series_id.c_str() + "/");
-        if(!std::filesystem::exists(series_path))
-        {
-            std::filesystem::create_directories(series_path);
-        }
-
-        // Save the file in the specified folder (Create new meta header for gdcm reader).
-        std::string file_path = series_path.string() + instance_id.c_str();
+        // Save the file in the specified folder (Create new meta header for DICOM reader).
+        std::string file_path = io::dimse::helper::series::get_path(*_incoming_object).string();
         DcmFileFormat file_format(_incoming_object);
         file_format.saveFile(
             file_path.c_str(),
@@ -1031,9 +992,9 @@ OFCondition series_enquirer::handleSTORERequest(
         );
 
         // Notify callback.
-        if(m_progress_callback)
+        if(m_progress)
         {
-            m_progress_callback->async_run(series_id.c_str(), ++m_instance_index, file_path);
+            m_progress->done_work(++m_instance_index);
         }
     }
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,7 +31,7 @@ namespace sight::io::writer
 
 //------------------------------------------------------------------------------
 
-void array_writer::write()
+void array_writer::write(sight::core::progress::observer::sptr _progress)
 {
     std::filesystem::path file = get_file();
 
@@ -46,6 +46,8 @@ void array_writer::write()
 
     fs.write(buff, static_cast<std::streamsize>(array_size_in_bytes));
     fs.close();
+
+    _progress->done();
 }
 
 //------------------------------------------------------------------------------

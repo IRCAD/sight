@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2025 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -66,7 +66,7 @@ struct flipping
         flip_filter->Update();
 
         typename image_t::Pointer output_image = flip_filter->GetOutput();
-        io::itk::move_from_itk(output_image, _params.o_image);
+        io::itk::move_from_itk<image_t>(output_image, *_params.o_image);
     }
 };
 

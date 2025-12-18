@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,12 +25,14 @@
 #include <sight/io/__/config.hpp>
 
 #include <core/base.hpp>
-#include <core/jobs/base.hpp>
 #include <core/object.hpp>
 
-#include <cstdint>
-#include <filesystem>
-#include <functional>
+namespace sight::core::progress
+{
+
+class observer;
+
+} // namespace sight::core::progress
 
 namespace sight::io::reader
 {
@@ -50,15 +52,15 @@ public:
 
     SIGHT_DECLARE_CLASS(object_reader, core::base_object);
 
-    using progress_callback = std::function<void (std::uint64_t)>;
-    using cancel_callback   = std::function<void ()>;
+    /// Destructor. Does nothing.
+    SIGHT_IO_API ~object_reader() override = default;
 
     /**
      * @brief Defines an reader interface.
      *
      * This method (re)inits the object given in parameter of set_object method.
      */
-    SIGHT_IO_API virtual void read() = 0;
+    SIGHT_IO_API virtual void read(SPTR(sight::core::progress::observer) _progress) = 0;
 
     /**
      * @brief m_object setter.
@@ -78,21 +80,7 @@ public:
 
     SIGHT_IO_API virtual std::string extension() const = 0;
 
-    /**
-     * @brief Requests reader abortion.
-     */
-    SIGHT_IO_API void cancel() const;
-
-    /// Returns the internal job
-    SIGHT_IO_API virtual SPTR(core::jobs::base) get_job() const
-    {
-        return nullptr;
-    }
-
 protected:
-
-    /// Destructor. Does nothing.
-    SIGHT_IO_API ~object_reader() override = default;
 
     /**
      * @brief Object result of reading process.

@@ -1,3 +1,5 @@
+#ifndef _WIN32
+
 /* mz_strm_posix.c -- Stream for filesystem access for posix/linux
    part of the minizip-ng project
 
@@ -12,7 +14,6 @@
    This program is distributed under the terms of the same license as zlib.
    See the accompanying LICENSE file for the full text of the license.
 */
-#ifndef WIN32
 
 #include "mz.h"
 #include "mz_strm.h"
@@ -42,27 +43,25 @@
 
 /***************************************************************************/
 
-static mz_stream_vtbl mz_stream_os_vtbl = {
-    mz_stream_os_open,
-    mz_stream_os_is_open,
-    mz_stream_os_read,
-    mz_stream_os_write,
-    mz_stream_os_tell,
-    mz_stream_os_seek,
-    mz_stream_os_close,
-    mz_stream_os_error,
-    mz_stream_os_create,
-    mz_stream_os_delete,
-    NULL,
-    NULL
-};
+static mz_stream_vtbl mz_stream_os_vtbl = {mz_stream_os_open,
+                                           mz_stream_os_is_open,
+                                           mz_stream_os_read,
+                                           mz_stream_os_write,
+                                           mz_stream_os_tell,
+                                           mz_stream_os_seek,
+                                           mz_stream_os_close,
+                                           mz_stream_os_error,
+                                           mz_stream_os_create,
+                                           mz_stream_os_delete,
+                                           NULL,
+                                           NULL};
 
 /***************************************************************************/
 
 typedef struct mz_stream_posix_s {
-    mz_stream   stream;
-    int32_t     error;
-    FILE        *handle;
+    mz_stream stream;
+    int32_t error;
+    FILE *handle;
 } mz_stream_posix;
 
 /***************************************************************************/
@@ -189,8 +188,7 @@ void mz_stream_os_delete(void **stream) {
     if (!stream)
         return;
     posix = (mz_stream_posix *)*stream;
-    if (posix)
-        free(posix);
+    free(posix);
     *stream = NULL;
 }
 

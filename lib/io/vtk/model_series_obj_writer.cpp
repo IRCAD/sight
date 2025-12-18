@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,8 +26,8 @@
 #include "io/vtk/vtk.hpp"
 
 #include <core/base.hpp>
-#include <core/jobs/base.hpp>
-#include <core/jobs/observer.hpp>
+#include <core/progress/monitor.hpp>
+#include <core/progress/observer.hpp>
 #include <core/tools/uuid.hpp>
 
 #include <data/material.hpp>
@@ -50,19 +50,7 @@ namespace sight::io::vtk
 
 //------------------------------------------------------------------------------
 
-model_series_obj_writer::model_series_obj_writer() :
-    m_job(std::make_shared<core::jobs::observer>("ModelSeries Writer"))
-{
-}
-
-//------------------------------------------------------------------------------
-
-model_series_obj_writer::~model_series_obj_writer()
-= default;
-
-//------------------------------------------------------------------------------
-
-vtkSmartPointer<vtkActor> create_actor(const data::reconstruction::sptr& _p_reconstruction)
+static vtkSmartPointer<vtkActor> create_actor(const data::reconstruction::sptr& _p_reconstruction)
 {
     vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
 
@@ -94,7 +82,7 @@ vtkSmartPointer<vtkActor> create_actor(const data::reconstruction::sptr& _p_reco
 
 //------------------------------------------------------------------------------
 
-void model_series_obj_writer::write()
+void model_series_obj_writer::write(sight::core::progress::observer::sptr _progress)
 {
     SIGHT_ASSERT("Object pointer expired", !m_object.expired());
 
@@ -106,7 +94,8 @@ void model_series_obj_writer::write()
 
     const data::model_series::csptr model_series = get_concrete_object();
 
-    m_job->set_total_work_units(model_series->get_reconstruction_db().size());
+    _progress->set_total_work_units(model_series->get_reconstruction_db().size());
+
     std::uint64_t units = 0;
     for(const data::reconstruction::sptr& rec : model_series->get_reconstruction_db())
     {
@@ -123,12 +112,10 @@ void model_series_obj_writer::write()
         exporter->SetRenderWindow(render_window);
         exporter->SetFilePrefix(filename.c_str());
         exporter->Write();
-        m_job->done_work(++units);
+        _progress->done_work(++units);
 
         // can not observe progression, not a vtkAlgorithm ...
     }
-
-    m_job->finish();
 }
 
 //------------------------------------------------------------------------------
@@ -136,13 +123,6 @@ void model_series_obj_writer::write()
 std::string model_series_obj_writer::extension() const
 {
     return ".obj";
-}
-
-//------------------------------------------------------------------------------
-
-core::jobs::base::sptr model_series_obj_writer::get_job() const
-{
-    return m_job;
 }
 
 } // namespace sight::io::vtk

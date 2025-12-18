@@ -22,6 +22,8 @@
 
 #include "selector.hpp"
 
+#include "core/thread/worker.hpp"
+
 #include <core/base.hpp>
 #include <core/com/signal.hxx>
 #include <core/com/slots.hpp>
@@ -42,6 +44,7 @@
 #include <boost/property_tree/xml_parser.hpp>
 #include <boost/range/iterator_range_core.hpp>
 
+#include <algorithm>
 #include <sstream>
 #include <string>
 
@@ -53,10 +56,10 @@ namespace io = sight::io;
 //------------------------------------------------------------------------------
 
 selector::selector() :
-    has_jobs(m_signals),
+    has_monitors(m_signals),
     m_sig_failed(new_signal<signals::failed_t>(signals::FAILED)),
     m_sig_succeeded(new_signal<signals::succeeded_t>(signals::SUCCEEDED)),
-    m_slot_forward_job(new_slot(slots::FORWARD_JOB, &selector::forward_job, this))
+    m_slot_forward_monitor(new_slot(slots::FORWARD_MONITOR, &selector::forward_monitor, this))
 {
 }
 
@@ -111,6 +114,8 @@ void selector::configuring()
 
 void selector::starting()
 {
+    // Move the forward slot on the default worker otherwise it can't be triggered until the reader/writer finishes
+    m_slot_forward_monitor->set_worker(sight::core::thread::get_default_worker());
 }
 
 //------------------------------------------------------------------------------
@@ -159,9 +164,8 @@ void selector::updating()
     for(const std::string& service_id : available_extensions_id)
     {
         bool service_is_selected_by_user =
-            std::find(
-                m_selected_services.begin(),
-                m_selected_services.end(),
+            std::ranges::find(
+                m_selected_services,
                 service_id
             ) != m_selected_services.end();
 
@@ -195,7 +199,7 @@ void selector::updating()
     }
 
     // Sort available services (lexical string sort)
-    std::sort(available_extensions_selector.begin(), available_extensions_selector.end());
+    std::ranges::sort(available_extensions_selector);
 
     // Test if we have an extension
     if(!available_extensions_map.empty())
@@ -252,7 +256,7 @@ void selector::updating()
             // Get config
             bool has_config_for_service = false;
             service::config_t srv_cfg;
-            if(m_service_to_config.find(extension_id) != m_service_to_config.end())
+            if(m_service_to_config.contains(extension_id))
             {
                 has_config_for_service = true;
                 srv_cfg                = service::extension::config::get_default()->get_service_config(
@@ -283,10 +287,10 @@ void selector::updating()
 
                 reader->configure();
 
-                auto job_created_signal_t = reader->signal(core::jobs::has_jobs::signals::JOB_CREATED);
-                if(job_created_signal_t)
+                auto monitor_created_signal = reader->signal(core::progress::has_monitors::signals::MONITOR_CREATED);
+                if(monitor_created_signal)
                 {
-                    job_created_signal_t->connect(m_slot_forward_job);
+                    monitor_created_signal->connect(m_slot_forward_monitor);
                 }
 
                 try
@@ -334,10 +338,10 @@ void selector::updating()
 
                 writer->configure();
 
-                auto job_created_signal_t = writer->signal("job_created");
-                if(job_created_signal_t)
+                auto monitor_created_signal = writer->signal(core::progress::has_monitors::signals::MONITOR_CREATED);
+                if(monitor_created_signal)
                 {
-                    job_created_signal_t->connect(m_slot_forward_job);
+                    monitor_created_signal->connect(m_slot_forward_monitor);
                 }
 
                 try
@@ -418,9 +422,9 @@ void selector::set_io_mode(io_mode _mode)
 
 //------------------------------------------------------------------------------
 
-void selector::forward_job(core::jobs::base::sptr _job)
+void selector::forward_monitor(core::progress::monitor::sptr _monitor)
 {
-    this->emit(core::jobs::has_jobs::signals::JOB_CREATED, _job);
+    this->async_emit(core::progress::has_monitors::signals::MONITOR_CREATED, _monitor);
 }
 
 //------------------------------------------------------------------------------

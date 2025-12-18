@@ -61,6 +61,8 @@ protected:
 private:
 
     CloseCallback m_fct_close_callback;
+
+    bool m_first_show {false};
 };
 
 } // namespace sight::ui::qt
