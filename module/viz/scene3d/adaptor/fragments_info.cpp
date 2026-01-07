@@ -336,6 +336,8 @@ void fragments_info::resize_viewport()
     if(rect.width() != 0 && rect.height() != 0)
     {
         this->destroy_compositor();
+        static int i = 0;
+        m_compositor_name = gen_id("Snapshot_C") + "_" + std::to_string(i++);
         this->create_compositor(static_cast<int>(rect.width()), static_cast<int>(rect.height()));
         layer->get_render_target()->addListener(this);
     }

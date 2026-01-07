@@ -575,6 +575,8 @@ void window::create_render_textures(int _w, int _h)
     auto& mgr = Ogre::TextureManager::getSingleton();
 
     unsigned i = 0;
+
+    static unsigned int j = 0;
     for(auto& render_target : m_render_targets)
     {
         const auto layer = render_target.layer.lock();
@@ -585,7 +587,7 @@ void window::create_render_textures(int _w, int _h)
         }
 
         render_target.texture = mgr.createManual(
-            "RttTex" + std::to_string(m_id) + "_" + std::to_string(i++),
+            "RttTex" + std::to_string(m_id) + "_" + std::to_string(i++) + "_" + std::to_string(j++),
             Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
             Ogre::TEX_TYPE_2D,
             static_cast<uint>(_w),
