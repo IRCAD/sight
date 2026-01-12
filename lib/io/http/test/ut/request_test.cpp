@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,62 +20,43 @@
  *
  ***********************************************************************/
 
-#include "request_test.hpp"
+#include <io/http/request.hpp>
 
 #include <utest/exception.hpp>
 
-#include <cppunit/Exception.h>
+#include <doctest/doctest.h>
 
 #include <QNetworkRequest>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::http::ut::request_test);
-
-namespace sight::io::http::ut
+TEST_SUITE("sight::io::http::request")
 {
+    TEST_CASE("request")
+    {
+        const std::string dummy_url("http://localhost:8080");
+        auto request = sight::io::http::request::New(dummy_url);
 
-//------------------------------------------------------------------------------
+        const std::string key("Content-Type");
+        const std::string value("application/json");
+        request->add_header(key, value);
 
-void request_test::setUp()
-{
-    const std::string dummy_url("http://localhost:8080");
-    m_request = sight::io::http::request::New(dummy_url);
-}
+        sight::io::http::request::headers_t headers = request->get_headers();
+        CHECK(headers.find(key) != headers.end());
+        CHECK_EQ(headers[key], value);
 
-//------------------------------------------------------------------------------
+        sight::io::http::request::headers_t new_headers;
+        const std::string new_value("application/dicom");
+        new_headers.insert(std::pair<std::string, std::string>(key, new_value));
 
-void request_test::tearDown()
-{
-}
+        request->set_headers(new_headers);
+        headers = request->get_headers();
 
-//------------------------------------------------------------------------------
+        CHECK_EQ(headers, new_headers);
+        CHECK(headers.find(key) != headers.end());
+        CHECK_EQ(headers[key], new_value);
 
-void request_test::test_request()
-{
-    const std::string key("Content-Type");
-    const std::string value("application/json");
-    m_request->add_header(key, value);
-
-    sight::io::http::request::headers_t headers = m_request->get_headers();
-    CPPUNIT_ASSERT(headers.find(key) != headers.end());
-    CPPUNIT_ASSERT_EQUAL(headers[key], value);
-
-    sight::io::http::request::headers_t new_headers;
-    const std::string new_value("application/dicom");
-    new_headers.insert(std::pair<std::string, std::string>(key, new_value));
-
-    m_request->set_headers(new_headers);
-    headers = m_request->get_headers();
-
-    CPPUNIT_ASSERT(headers == new_headers);
-    CPPUNIT_ASSERT(headers.find(key) != headers.end());
-    CPPUNIT_ASSERT_EQUAL(headers[key], new_value);
-
-    const std::string new_dummy_url("http://localhost:8080/dummy");
-    m_request->set_url(new_dummy_url);
-    const std::string& url = m_request->get_url();
-    CPPUNIT_ASSERT_EQUAL(new_dummy_url, url);
-}
-
-//------------------------------------------------------------------------------
-
-} // namespace sight::io::http::ut
+        const std::string new_dummy_url("http://localhost:8080/dummy");
+        request->set_url(new_dummy_url);
+        const std::string& url = request->get_url();
+        CHECK_EQ(new_dummy_url, url);
+    }
+} // TEST_SUITE

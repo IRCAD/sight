@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,9 @@
 
 // cspell:ignore NOLINT
 
-#include "client_qt_test.hpp"
+#include <core/thread/worker.hpp>
 
+#include <io/http/client_qt.hpp>
 #include <io/http/helper/series.hpp>
 
 #include <ui/qt/app.hpp>
@@ -31,21 +32,21 @@
 
 #include <utest/exception.hpp>
 
+#include <doctest/doctest.h>
+
+#include <QCoreApplication>
+#include <QTcpServer>
+
 #include <array>
-
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::http::ut::client_qt_test);
-
-namespace sight::io::http::ut
-{
 
 //------------------------------------------------------------------------------
 
-std::uint8_t operator""_hhu(unsigned long long _x) // NOLINT(google-runtime-int)
+static std::uint8_t operator""_hhu(unsigned long long _x) // NOLINT(google-runtime-int)
 {
     return static_cast<std::uint8_t>(_x);
 }
 
-std::array get_answer { /* Packet 3145 */
+static std::array get_answer { /* Packet 3145 */
     0x1f_hhu, 0x8b_hhu, 0x08_hhu, 0x00_hhu, 0x00_hhu, 0x00_hhu, 0x00_hhu, 0x00_hhu,
     0x00_hhu, 0x03_hhu, 0x2d_hhu, 0xcd_hhu, 0xcb_hhu, 0x0d_hhu, 0xc3_hhu, 0x30_hhu,
     0x08_hhu, 0x00_hhu, 0xd0_hhu, 0x7b_hhu, 0xa6_hhu, 0x88_hhu, 0x72_hhu, 0x2e_hhu,
@@ -68,7 +69,7 @@ std::array get_answer { /* Packet 3145 */
     0xcf_hhu, 0x00_hhu, 0x00_hhu, 0x00_hhu
 };
 
-std::array post_answer { /* Packet 196 */
+static std::array post_answer { /* Packet 196 */
     0x1f_hhu, 0x8b_hhu, 0x08_hhu, 0x00_hhu, 0x00_hhu, 0x00_hhu, 0x00_hhu, 0x00_hhu,
     0x00_hhu, 0x03_hhu, 0x8b_hhu, 0x56_hhu, 0x50_hhu, 0x4a_hhu, 0x4b_hhu, 0x4b_hhu,
     0x35_hhu, 0x4c_hhu, 0x4c_hhu, 0x35_hhu, 0x33_hhu, 0xd7_hhu, 0xb5_hhu, 0xb0_hhu,
@@ -80,60 +81,71 @@ std::array post_answer { /* Packet 196 */
     0x39_hhu, 0xc0_hhu, 0x49_hhu, 0x33_hhu, 0x00_hhu, 0x00_hhu, 0x00_hhu
 };
 
-//------------------------------------------------------------------------------
-
-void client_qt_test::setUp()
+TEST_SUITE("sight::io::http::client_qt")
 {
-    // Set up context before running a test.
-    static std::string arg1 = "ClientQtTest";
-#if defined(__linux)
-    static std::string arg2 = "-platform";
-    static std::string arg3 = "offscreen";
-    static std::array argv {arg1.data(), arg2.data(), arg3.data(), static_cast<char*>(nullptr)};
-#else
-    static std::array argv {arg1.data(), static_cast<char*>(nullptr)};
-#endif
-    static int argc = int(argv.size() - 1);
+    struct client_qt_test_fixture
+    {
+        // application thread
+        sight::core::thread::worker::sptr m_worker;
+        // HTTP client
+        sight::io::http::client_qt m_client;
+        // Local server that will communicate with the client
+        QTcpServer m_server;
+        // Server thread
+        QThread m_thread;
 
-    CPPUNIT_ASSERT(qApp == nullptr);
-    std::function<QSharedPointer<QCoreApplication>(int&, char**)> callback =
-        [](int& _argc, char** _argv)
+        client_qt_test_fixture()
         {
-            return QSharedPointer<QApplication>(new ui::qt::app(_argc, _argv, false));
-        };
-    m_worker = ui::qt::get_qt_worker(argc, argv.data(), callback, "", "");
+            // Set up context before running a test.
+            static std::string arg1 = "ClientQtTest";
+#if defined(__linux)
+            static std::string arg2 = "-platform";
+            static std::string arg3 = "offscreen";
+            static std::array argv {arg1.data(), arg2.data(), arg3.data(), static_cast<char*>(nullptr)};
+#else
+            static std::array argv {arg1.data(), static_cast<char*>(nullptr)};
+#endif
+            static int argc = int(argv.size() - 1);
 
-    m_server.moveToThread(&m_thread);
-    QThread::connect(&m_thread, &QThread::started, [this]{m_server.listen();});
-    QThread::connect(&m_thread, &QThread::finished, [this]{m_server.close();});
-}
+            if(qApp == nullptr)
+            {
+                std::function<QSharedPointer<QCoreApplication>(int&, char**)> callback =
+                    [](int& _argc, char** _argv)
+                    {
+                        return QSharedPointer<QApplication>(new sight::ui::qt::app(_argc, _argv, false));
+                    };
+                m_worker = sight::ui::qt::get_qt_worker(argc, argv.data(), callback, "", "");
+            }
 
-//------------------------------------------------------------------------------
+            m_server.moveToThread(&m_thread);
+            QThread::connect(&m_thread, &QThread::started, [this]{m_server.listen();});
+            QThread::connect(&m_thread, &QThread::finished, [this]{m_server.close();});
+        }
 
-void client_qt_test::tearDown()
-{
-    // Clean up after the test run.
-    m_thread.quit();
-    m_thread.wait();
+        ~client_qt_test_fixture()
+        {
+            // Clean up after the test run.
+            m_thread.quit();
+            m_thread.wait();
 
-    m_thread.disconnect();
-    m_server.disconnect();
+            m_thread.disconnect();
+            m_server.disconnect();
 
-    m_worker->post([]{QCoreApplication::quit();});
-    m_worker->get_future().wait();
-    m_worker.reset();
+            if(m_worker)
+            {
+                m_worker->post([]{QCoreApplication::quit();});
+                m_worker->get_future().wait();
+                m_worker.reset();
+            }
+        }
+    };
 
-    CPPUNIT_ASSERT(qApp == nullptr);
-}
-
-//------------------------------------------------------------------------------
-
-void client_qt_test::get()
-{
-    QTcpServer::connect(
-        &m_server,
-        &QTcpServer::newConnection,
-        [this]
+    TEST_CASE_FIXTURE(client_qt_test_fixture, "get")
+    {
+        QTcpServer::connect(
+            &m_server,
+            &QTcpServer::newConnection,
+            [this]
         {
             QTcpSocket* socket = m_server.nextPendingConnection();
             QByteArray data;
@@ -159,38 +171,36 @@ void client_qt_test::get()
             delete socket;
         });
 
-    m_thread.start();
+        m_thread.start();
 
-    for(int i = 0 ; !m_server.isListening() && i < 10 ; ++i)
-    {
-        QThread::sleep(1);
+        for(int i = 0 ; !m_server.isListening() && i < 10 ; ++i)
+        {
+            QThread::sleep(1);
+        }
+
+        CHECK(m_server.isListening());
+
+        const int port                         = m_server.serverPort();
+        sight::io::http::request::sptr request =
+            sight::io::http::request::New("http://localhost:" + std::to_string(port) + "/instances");
+
+        const QByteArray& answer = m_client.get(request);
+
+        QString expected("[\n"
+                         "   \"845ff5b6-26dc4deb-c703a430-2a164b55-d95941d6\",\n"
+                         "   \"61dcca18-afba3df6-269b0216-cb783c8f-2855677c\",\n"
+                         "   \"f5b1480d-78129b93-e66ee613-bcc2f1e6-8bcf51ca\",\n"
+                         "   \"e3b7fef4-975ba90d-0fb2a825-9ef507ee-d486d0d4\"\n"
+                         "]\n");
+        CHECK_MESSAGE(QString(answer) == expected, "Test get");
     }
 
-    CPPUNIT_ASSERT(m_server.isListening());
-
-    const int port                         = m_server.serverPort();
-    sight::io::http::request::sptr request =
-        sight::io::http::request::New("http://localhost:" + std::to_string(port) + "/instances");
-
-    const QByteArray& answer = m_client.get(request);
-
-    QString expected("[\n"
-                     "   \"845ff5b6-26dc4deb-c703a430-2a164b55-d95941d6\",\n"
-                     "   \"61dcca18-afba3df6-269b0216-cb783c8f-2855677c\",\n"
-                     "   \"f5b1480d-78129b93-e66ee613-bcc2f1e6-8bcf51ca\",\n"
-                     "   \"e3b7fef4-975ba90d-0fb2a825-9ef507ee-d486d0d4\"\n"
-                     "]\n");
-    CPPUNIT_ASSERT_MESSAGE("Test get", QString(answer) == expected);
-}
-
-//------------------------------------------------------------------------------
-
-void client_qt_test::post()
-{
-    QTcpServer::connect(
-        &m_server,
-        &QTcpServer::newConnection,
-        [this]
+    TEST_CASE_FIXTURE(client_qt_test_fixture, "post")
+    {
+        QTcpServer::connect(
+            &m_server,
+            &QTcpServer::newConnection,
+            [this]
         {
             QTcpSocket* socket = m_server.nextPendingConnection();
             QByteArray data;
@@ -216,32 +226,29 @@ void client_qt_test::post()
             delete socket;
         });
 
-    m_thread.start();
+        m_thread.start();
 
-    for(int i = 0 ; !m_server.isListening() && i < 10 ; ++i)
-    {
-        QThread::sleep(1);
+        for(int i = 0 ; !m_server.isListening() && i < 10 ; ++i)
+        {
+            QThread::sleep(1);
+        }
+
+        CHECK(m_server.isListening());
+
+        const int port = m_server.serverPort();
+
+        QJsonObject query;
+        query.insert("SeriesInstanceUID", "1.2.392.200036.9116.2.6.1.48.1211418863.1225184516.765855");
+
+        QJsonObject body;
+        body.insert("Level", "Series");
+        body.insert("Query", query);
+        body.insert("Limit", 0);
+
+        auto request = sight::io::http::request::New("http://localhost:" + std::to_string(port) + "/tools/find");
+
+        const QByteArray& answer = m_client.post(request, QJsonDocument(body).toJson());
+        QString expected("[ \"ffe1ae67-887d4fc5-47773ce0-1b194e0e-c8bf7642\" ]\n");
+        CHECK_MESSAGE(QString(answer) == expected, "Test post");
     }
-
-    CPPUNIT_ASSERT(m_server.isListening());
-
-    const int port = m_server.serverPort();
-
-    QJsonObject query;
-    query.insert("SeriesInstanceUID", "1.2.392.200036.9116.2.6.1.48.1211418863.1225184516.765855");
-
-    QJsonObject body;
-    body.insert("Level", "Series");
-    body.insert("Query", query);
-    body.insert("Limit", 0);
-
-    auto request = sight::io::http::request::New("http://localhost:" + std::to_string(port) + "/tools/find");
-
-    const QByteArray& answer = m_client.post(request, QJsonDocument(body).toJson());
-    QString expected("[ \"ffe1ae67-887d4fc5-47773ce0-1b194e0e-c8bf7642\" ]\n");
-    CPPUNIT_ASSERT_MESSAGE("Test post", QString(answer) == expected);
-}
-
-//------------------------------------------------------------------------------
-
-} // namespace sight::io::http::ut
+} // TEST_SUITE
