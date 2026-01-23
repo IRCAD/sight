@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2025 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -63,7 +63,7 @@ ruler::ruler() noexcept
 sight::service::connections_t ruler::auto_connections() const
 {
     return {
-        {s_IMAGE_INOUT, sight::data::object::MODIFIED_SIG, sight::service::slots::UPDATE},
+        {s_IMAGE_INOUT, sight::data::object::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE},
         {s_IMAGE_INOUT, sight::data::image_series::RULER_MODIFIED_SIG, private_slots::UPDATE_MODIFIED_RULER},
         {s_IMAGE_INOUT, sight::data::image_series::FIDUCIAL_REMOVED_SIG, private_slots::REMOVE_RULER_OGRE_SET},
         {s_IMAGE_INOUT, sight::data::image_series::SLICE_INDEX_MODIFIED_SIG,
@@ -358,6 +358,7 @@ void ruler::updating()
         }
     }
 
+    this->update_done();
     this->request_render();
 }
 
