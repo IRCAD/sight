@@ -214,7 +214,7 @@
             <!-- ******************************* Begin Generic scene ******************************* -->
 
             <service uid="genericSceneSrv" type="sight::viz::scene3d::render">
-                <scene renderMode="manual">
+                <scene render_mode="manual">
                     <background topColor="#36393E" bottomColor="#36393E" />
 
                     <layer id="video">
@@ -293,7 +293,7 @@
             </service>
 
             <!-- Matrix (trf format) reader -->
-            <!-- This matrix is used to staticaly register the model onto the video -->
+            <!-- This matrix is used to statically register the model onto the video -->
             <service uid="transformReaderSrv" type="sight::module::ui::io::selector">
                 <inout key="data" uid="matrix" />
                 <!-- mode is optional (by default it is "reader") -->
@@ -302,7 +302,7 @@
                 <addSelection service="sight::module::io::matrix::Matrix4ReaderService" />
             </service>
 
-            <!-- extract RGB instrinsic Depth intrinsic and Extrinsic matrices from a sight::data::camera_set -->
+            <!-- extract RGB intrinsic Depth intrinsic and Extrinsic matrices from a sight::data::camera_set -->
             <service uid="cameraExtractorSrv" type="sight::module::data::get_camera">
                 <inout key="camera_set" uid="camera_set" />
                 <!-- destination -->

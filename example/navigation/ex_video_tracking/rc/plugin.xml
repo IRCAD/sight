@@ -100,7 +100,7 @@
             <!-- ******************************* Begin Generic scene ******************************* -->
 
             <service uid="genericSceneSrv" type="sight::viz::scene3d::render">
-                <scene renderMode="manual">
+                <scene render_mode="manual">
                     <background topColor="#36393E" bottomColor="#36393E" />
 
                     <layer id="default">

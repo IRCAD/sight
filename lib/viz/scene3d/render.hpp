@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -136,7 +136,7 @@ public:
     /// Represents all possible render modes.
     enum class render_mode : std::uint8_t
     {
-        AUTO,
+        automatic,
         manual
     };
 
@@ -292,7 +292,7 @@ private:
     Ogre::Root* m_ogre_root {nullptr};
 
     /// Defines how the rendering is triggered.
-    render_mode m_render_mode {render_mode::AUTO};
+    render_mode m_render_mode {render_mode::automatic};
 
     /// Defines if the render window is in fullscreen.
     bool m_fullscreen {false};

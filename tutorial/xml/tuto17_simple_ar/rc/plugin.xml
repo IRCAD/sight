@@ -456,7 +456,7 @@
                 <inout key="output" uid="camera_to_marker" />
             </service>
 
-            <service uid="undistorter_srv" type="sight::module::geometry::vision::distortion">
+            <service uid="undistort_srv" type="sight::module::geometry::vision::distortion">
                 <in key="camera" uid="camera" auto_connect="true" />
                 <inout key="map" uid="undistort_map" />
                 <mode>undistort</mode>
