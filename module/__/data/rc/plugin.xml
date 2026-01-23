@@ -85,6 +85,14 @@
     </extension>
 
     <extension implements="sight::service::extension::factory">
+        <type>sight::service::controller</type>
+        <service>sight::module::data::insert_fiducials</service>
+        <object key="fiducials">sight::data::vector</object>
+        <object key="image">sight::data::image_series</object>
+        <desc>This service inserts fiducials into an image series</desc>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
         <type>sight::service::filter</type>
         <service>sight::module::data::translate</service>
         <object key="key">sight::data::string_serializable</object>
