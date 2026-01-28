@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,8 +19,6 @@
  *
  ***********************************************************************/
 
-#include "validated_test.hpp"
-
 #include <data/image.hpp>
 
 #include <service/op.hpp>
@@ -29,120 +27,106 @@
 
 #include <boost/property_tree/xml_parser.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::data::ut::validated);
+#include <doctest/doctest.h>
 
-namespace sight::module::data::ut
+TEST_SUITE("sight::module::data::validated")
 {
-
 //------------------------------------------------------------------------------
 
-void validated::setUp()
-{
-}
+    TEST_CASE("filled_test")
+    {
+        using namespace std::literals::string_literals;
 
-//------------------------------------------------------------------------------
+        auto srv   = sight::service::add("sight::module::data::validate");
+        auto image = std::make_shared<sight::data::image>();
 
-void validated::tearDown()
-{
-}
-
-//------------------------------------------------------------------------------
-
-void validated::filled_test()
-{
-    using namespace std::literals::string_literals;
-
-    auto srv   = service::add("sight::module::data::validate");
-    auto image = std::make_shared<sight::data::image>();
-
-    std::optional<bool> valid;
-    auto valid_slot = core::com::new_slot(
-        [&]()
+        std::optional<bool> valid;
+        auto valid_slot = sight::core::com::new_slot(
+            [&]()
         {
             valid = true;
         });
-    valid_slot->set_worker(sight::core::thread::get_default_worker());
-    srv->signal("valid")->connect(valid_slot);
+        valid_slot->set_worker(sight::core::thread::get_default_worker());
+        srv->signal("valid")->connect(valid_slot);
 
-    std::optional<bool> invalid;
-    auto invalid_slot = core::com::new_slot(
-        [&]()
+        std::optional<bool> invalid;
+        auto invalid_slot = sight::core::com::new_slot(
+            [&]()
         {
             invalid = true;
         });
-    invalid_slot->set_worker(sight::core::thread::get_default_worker());
-    srv->signal("invalid")->connect(invalid_slot);
+        invalid_slot->set_worker(sight::core::thread::get_default_worker());
+        srv->signal("invalid")->connect(invalid_slot);
 
-    std::optional<bool> is_valid;
-    auto is_valid_slot = core::com::new_slot(
-        [&](bool _is_valid)
+        std::optional<bool> is_valid;
+        auto is_valid_slot = sight::core::com::new_slot(
+            [&](bool _is_valid)
         {
             is_valid = _is_valid;
         });
-    is_valid_slot->set_worker(sight::core::thread::get_default_worker());
-    srv->signal("is_valid")->connect(is_valid_slot);
+        is_valid_slot->set_worker(sight::core::thread::get_default_worker());
+        srv->signal("is_valid")->connect(is_valid_slot);
 
-    std::optional<bool> is_invalid;
-    auto is_invalid_slot = core::com::new_slot(
-        [&](bool _is_invalid)
+        std::optional<bool> is_invalid;
+        auto is_invalid_slot = sight::core::com::new_slot(
+            [&](bool _is_invalid)
         {
             is_invalid = _is_invalid;
         });
-    is_invalid_slot->set_worker(sight::core::thread::get_default_worker());
-    srv->signal("is_invalid")->connect(is_invalid_slot);
+        is_invalid_slot->set_worker(sight::core::thread::get_default_worker());
+        srv->signal("is_invalid")->connect(is_invalid_slot);
 
-    service::config_t config;
-    std::stringstream config_string;
-    config_string << R"(<config id="sight::data::validator::filled" />)";
-    boost::property_tree::read_xml(config_string, config);
-    srv->set_config(config);
-    srv->set_input(image, "data");
-    srv->configure();
-    srv->start().get();
+        sight::service::config_t config;
+        std::stringstream config_string;
+        config_string << R"(<config id="sight::data::validator::filled" />)";
+        boost::property_tree::read_xml(config_string, config);
+        srv->set_config(config);
+        srv->set_input(image, "data");
+        srv->configure();
+        srv->start().get();
 
-    {
-        srv->update().get();
+        {
+            srv->update().get();
 
-        SIGHT_TEST_WAIT(invalid.has_value());
-        SIGHT_TEST_WAIT(is_valid.has_value());
-        SIGHT_TEST_WAIT(is_invalid.has_value());
+            SIGHT_TEST_WAIT(invalid.has_value());
+            SIGHT_TEST_WAIT(is_valid.has_value());
+            SIGHT_TEST_WAIT(is_invalid.has_value());
 
-        CPPUNIT_ASSERT_EQUAL(false, valid.has_value());
-        CPPUNIT_ASSERT_EQUAL(true, invalid.has_value());
-        CPPUNIT_ASSERT_EQUAL(true, is_valid.has_value());
-        CPPUNIT_ASSERT_EQUAL(true, is_invalid.has_value());
-        CPPUNIT_ASSERT_EQUAL(true, *invalid);
-        CPPUNIT_ASSERT_EQUAL(false, *is_valid);
-        CPPUNIT_ASSERT_EQUAL(true, *is_invalid);
+            CHECK_EQ(false, valid.has_value());
+            CHECK_EQ(true, invalid.has_value());
+            CHECK_EQ(true, is_valid.has_value());
+            CHECK_EQ(true, is_invalid.has_value());
+            CHECK_EQ(true, *invalid);
+            CHECK_EQ(false, *is_valid);
+            CHECK_EQ(true, *is_invalid);
+        }
+
+        valid      = std::nullopt;
+        invalid    = std::nullopt;
+        is_valid   = std::nullopt;
+        is_invalid = std::nullopt;
+
+        {
+            image->resize({4, 4, 1}, sight::core::type::UINT8, sight::data::image::gray_scale);
+
+            srv->update().get();
+
+            SIGHT_TEST_WAIT(valid.has_value());
+            SIGHT_TEST_WAIT(is_valid.has_value());
+            SIGHT_TEST_WAIT(is_invalid.has_value());
+
+            CHECK_EQ(true, valid.has_value());
+            CHECK_EQ(false, invalid.has_value());
+            CHECK_EQ(true, is_valid.has_value());
+            CHECK_EQ(true, is_invalid.has_value());
+            CHECK_EQ(true, *valid);
+            CHECK_EQ(true, *is_valid);
+            CHECK_EQ(false, *is_invalid);
+        }
+
+        CHECK_NOTHROW(srv->stop().get());
+        sight::service::remove(srv);
     }
-
-    valid      = std::nullopt;
-    invalid    = std::nullopt;
-    is_valid   = std::nullopt;
-    is_invalid = std::nullopt;
-
-    {
-        image->resize({4, 4, 1}, core::type::UINT8, sight::data::image::gray_scale);
-
-        srv->update().get();
-
-        SIGHT_TEST_WAIT(valid.has_value());
-        SIGHT_TEST_WAIT(is_valid.has_value());
-        SIGHT_TEST_WAIT(is_invalid.has_value());
-
-        CPPUNIT_ASSERT_EQUAL(true, valid.has_value());
-        CPPUNIT_ASSERT_EQUAL(false, invalid.has_value());
-        CPPUNIT_ASSERT_EQUAL(true, is_valid.has_value());
-        CPPUNIT_ASSERT_EQUAL(true, is_invalid.has_value());
-        CPPUNIT_ASSERT_EQUAL(true, *valid);
-        CPPUNIT_ASSERT_EQUAL(true, *is_valid);
-        CPPUNIT_ASSERT_EQUAL(false, *is_invalid);
-    }
-
-    CPPUNIT_ASSERT_NO_THROW(srv->stop().get());
-    service::remove(srv);
-}
 
 //------------------------------------------------------------------------------
-
-} // namespace sight::module::data::ut
+} // TEST_SUITE("sight::module::data::validated")

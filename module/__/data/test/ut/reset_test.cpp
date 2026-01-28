@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,83 +19,67 @@
  *
  ***********************************************************************/
 
-#include "reset_test.hpp"
-
 #include <data/image.hpp>
 #include <data/string.hpp>
 
 #include <service/op.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::data::ut::reset_test);
+#include <doctest/doctest.h>
 
-namespace sight::module::data::ut
+TEST_SUITE("sight::module::data::reset")
 {
+//------------------------------------------------------------------------------
+
+    TEST_CASE("string")
+    {
+        using namespace std::literals::string_literals;
+
+        auto reset_srv = sight::service::add("sight::module::data::reset");
+        auto string    = std::make_shared<sight::data::string>("Hello world");
+        reset_srv->set_inout(string, "target");
+        CHECK_NOTHROW(reset_srv->configure());
+
+        CHECK_NOTHROW(reset_srv->start().get());
+        CHECK_EQ("Hello world"s, string->get_value());
+
+        CHECK_NOTHROW(reset_srv->update().get());
+        CHECK_EQ(""s, string->get_value());
+
+        CHECK_NOTHROW(reset_srv->stop().get());
+        sight::service::remove(reset_srv);
+    }
 
 //------------------------------------------------------------------------------
 
-void reset_test::setUp()
-{
-}
+    TEST_CASE("image")
+    {
+        using namespace std::literals::string_literals;
+
+        auto reset_srv = sight::service::add("sight::module::data::reset");
+        auto image     = std::make_shared<sight::data::image>();
+
+        const sight::data::image::size_t size       = {10, 15, 56};
+        const sight::data::image::spacing_t spacing = {12, 100, 200};
+        const sight::data::image::origin_t origin   = {-96, 52, 123.4};
+        image->resize(size, sight::core::type::UINT8, sight::data::image::gray_scale);
+        image->set_spacing(spacing);
+        image->set_origin(origin);
+
+        reset_srv->set_inout(image, "target");
+        CHECK_NOTHROW(reset_srv->configure());
+        CHECK_NOTHROW(reset_srv->start().get());
+        CHECK(size == image->size());
+        CHECK(spacing == image->spacing());
+        CHECK(origin == image->origin());
+
+        CHECK_NOTHROW(reset_srv->update().get());
+        CHECK(sight::data::image::size_t({0, 0, 0}) == image->size());
+        CHECK(sight::data::image::spacing_t({0, 0, 0}) == image->spacing());
+        CHECK(sight::data::image::origin_t({0, 0, 0}) == image->origin());
+
+        CHECK_NOTHROW(reset_srv->stop().get());
+        sight::service::remove(reset_srv);
+    }
 
 //------------------------------------------------------------------------------
-
-void reset_test::tearDown()
-{
-}
-
-//------------------------------------------------------------------------------
-
-void reset_test::string_test()
-{
-    using namespace std::literals::string_literals;
-
-    auto reset_srv = service::add("sight::module::data::reset");
-    auto string    = std::make_shared<sight::data::string>("Hello world");
-    reset_srv->set_inout(string, "target");
-    CPPUNIT_ASSERT_NO_THROW(reset_srv->configure());
-
-    CPPUNIT_ASSERT_NO_THROW(reset_srv->start().get());
-    CPPUNIT_ASSERT_EQUAL("Hello world"s, string->get_value());
-
-    CPPUNIT_ASSERT_NO_THROW(reset_srv->update().get());
-    CPPUNIT_ASSERT_EQUAL(""s, string->get_value());
-
-    CPPUNIT_ASSERT_NO_THROW(reset_srv->stop().get());
-    service::remove(reset_srv);
-}
-
-//------------------------------------------------------------------------------
-
-void reset_test::image_test()
-{
-    using namespace std::literals::string_literals;
-
-    auto reset_srv = service::add("sight::module::data::reset");
-    auto image     = std::make_shared<sight::data::image>();
-
-    const sight::data::image::size_t size       = {10, 15, 56};
-    const sight::data::image::spacing_t spacing = {12, 100, 200};
-    const sight::data::image::origin_t origin   = {-96, 52, 123.4};
-    image->resize(size, core::type::UINT8, sight::data::image::gray_scale);
-    image->set_spacing(spacing);
-    image->set_origin(origin);
-
-    reset_srv->set_inout(image, "target");
-    CPPUNIT_ASSERT_NO_THROW(reset_srv->configure());
-    CPPUNIT_ASSERT_NO_THROW(reset_srv->start().get());
-    CPPUNIT_ASSERT(size == image->size());
-    CPPUNIT_ASSERT(spacing == image->spacing());
-    CPPUNIT_ASSERT(origin == image->origin());
-
-    CPPUNIT_ASSERT_NO_THROW(reset_srv->update().get());
-    CPPUNIT_ASSERT(sight::data::image::size_t({0, 0, 0}) == image->size());
-    CPPUNIT_ASSERT(sight::data::image::spacing_t({0, 0, 0}) == image->spacing());
-    CPPUNIT_ASSERT(sight::data::image::origin_t({0, 0, 0}) == image->origin());
-
-    CPPUNIT_ASSERT_NO_THROW(reset_srv->stop().get());
-    service::remove(reset_srv);
-}
-
-//------------------------------------------------------------------------------
-
-} // namespace sight::module::data::ut
+} // TEST_SUITE("sight::module::data::reset")

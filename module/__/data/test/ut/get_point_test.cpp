@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,8 +19,6 @@
  *
  ***********************************************************************/
 
-#include "get_point_test.hpp"
-
 #include <core/runtime/runtime.hpp>
 
 #include <data/image_series.hpp>
@@ -30,26 +28,25 @@
 
 #include <boost/property_tree/xml_parser.hpp>
 
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::data::ut::get_point_test);
+#include <doctest/doctest.h>
 
-namespace sight::module::data::ut
+namespace
 {
 
-class tester final
+class service_fixture
 {
 public:
 
-    tester()
+    service_fixture()
     {
         // Create service
         srv = sight::service::add("sight::module::data::get_point");
-        CPPUNIT_ASSERT(srv);
-        CPPUNIT_ASSERT(srv->is_a("sight::module::data::get_point"));
+        CHECK(srv);
+        CHECK(srv->is_a("sight::module::data::get_point"));
 
         // Create data
         image = std::make_shared<sight::data::image_series>();
-        CPPUNIT_ASSERT(image);
+        CHECK(image);
 
         auto fiducials = image->get_fiducials();
         fiducials->add_group("test_group_1", {1.0, 0.0, 1.0, 1.0}, 3.F);
@@ -61,16 +58,16 @@ public:
         fiducials->add_point("test_group_2", {8.0, 9.0, -20.0});
 
         point0 = std::make_shared<sight::data::point>();
-        CPPUNIT_ASSERT(point0);
+        CHECK(point0);
         point1 = std::make_shared<sight::data::point>();
-        CPPUNIT_ASSERT(point1);
+        CHECK(point1);
         point2 = std::make_shared<sight::data::point>();
-        CPPUNIT_ASSERT(point2);
+        CHECK(point2);
     }
 
     //------------------------------------------------------------------------------
 
-    ~tester()
+    ~service_fixture()
     {
         if(srv->started())
         {
@@ -89,108 +86,93 @@ public:
     sight::data::point::sptr point2;
 };
 
-//------------------------------------------------------------------------------
+} // namespace
 
-void get_point_test::setUp()
+TEST_SUITE("sight::module::data::get_point")
 {
-    // Set up context before running a test.
-    core::runtime::init();
-    auto module = core::runtime::load_module(std::string("sight::module::data"));
-}
+//------------------------------------------------------------------------------
+
+    TEST_CASE_FIXTURE(service_fixture, "extracts_point_by_index")
+    {
+        sight::service::config_t config;
+        std::stringstream config_string;
+        config_string
+        << R"(<inout group="points">)"
+           R"(<key group="test_group_2" index="1" uid="output_point0"/>)"
+           R"(<key group="test_group_1" index="0" uid="output_point1"/>)"
+           R"(<key group="test_group_1" index="1" uid="output_point2"/>)"
+           R"(</inout>)";
+        boost::property_tree::read_xml(config_string, config);
+
+        srv->set_config(config);
+        srv->set_input(image, "image");
+        srv->set_inout(point0, "points", false, false, 0);
+        srv->set_inout(point1, "points", false, false, 1);
+        srv->set_inout(point2, "points", false, false, 2);
+        srv->configure();
+        srv->start().get();
+        CHECK_NOTHROW(srv->update().get());
+
+        CHECK((sight::data::point({8.0, 9.0, -20.0}) == *point0));
+        CHECK((sight::data::point({1.0, 80.0, 2.0}) == *point1));
+        CHECK((sight::data::point({-1.0, 5.0, -2.0}) == *point2));
+    }
 
 //------------------------------------------------------------------------------
 
-void get_point_test::tearDown()
-{
-}
+    TEST_CASE_FIXTURE(service_fixture, "extracts_point_with_index_out_of_bound")
+    {
+        sight::service::config_t config;
+        std::stringstream config_string;
+        config_string
+        << R"(<inout group="points">)"
+           R"(<key group="test_group_1" index="1" uid="output_point0"/>)"
+           R"(<key group="test_group_1" index="122" uid="output_point1"/>)"
+           R"(<key group="test_group_1" index="0" uid="output_point2"/>)"
+           R"(</inout>)";
+        boost::property_tree::read_xml(config_string, config);
+
+        srv->set_config(config);
+        srv->set_input(image, "image");
+        srv->set_inout(point0, "points", false, false, 0);
+        srv->set_inout(point1, "points", false, false, 1);
+        srv->set_inout(point2, "points", false, false, 2);
+        srv->configure();
+        srv->start().get();
+        CHECK_THROWS_AS(srv->update().get(), sight::core::exception);
+
+        CHECK((sight::data::point({-1.0, 5.0, -2.0}) == *point0));
+        CHECK((sight::data::point({0.0, 0.0, 0.0}) == *point1)); // Failed starting from there
+        CHECK((sight::data::point({0.0, 0.0, 0.0}) == *point2));
+    }
 
 //------------------------------------------------------------------------------
 
-void get_point_test::extracts_point_by_index()
-{
-    tester srv_tester;
-    service::config_t config;
-    std::stringstream config_string;
-    config_string
-    << R"(<inout group="points">)"
-       R"(<key group="test_group_2" index="1" uid="output_point0"/>)"
-       R"(<key group="test_group_1" index="0" uid="output_point1"/>)"
-       R"(<key group="test_group_1" index="1" uid="output_point2"/>)"
-       R"(</inout>)";
-    boost::property_tree::read_xml(config_string, config);
+    TEST_CASE_FIXTURE(service_fixture, "extracts_point_with_unknown_group")
+    {
+        sight::service::config_t config;
+        std::stringstream config_string;
+        config_string
+        << R"(<inout group="points">)"
+           R"(<key group="test_group_1" index="1" uid="output_point0"/>)"
+           R"(<key group="unknown" index="2" uid="output_point1"/>)"
+           R"(<key group="test_group_1" index="0" uid="output_point2"/>)"
+           R"(</inout>)";
+        boost::property_tree::read_xml(config_string, config);
 
-    srv_tester.srv->set_config(config);
-    srv_tester.srv->set_input(srv_tester.image, "image");
-    srv_tester.srv->set_inout(srv_tester.point0, "points", false, false, 0);
-    srv_tester.srv->set_inout(srv_tester.point1, "points", false, false, 1);
-    srv_tester.srv->set_inout(srv_tester.point2, "points", false, false, 2);
-    srv_tester.srv->configure();
-    srv_tester.srv->start().get();
-    CPPUNIT_ASSERT_NO_THROW(srv_tester.srv->update().get());
+        srv->set_config(config);
+        srv->set_input(image, "image");
+        srv->set_inout(point0, "points", false, false, 0);
+        srv->set_inout(point1, "points", false, false, 1);
+        srv->set_inout(point2, "points", false, false, 2);
+        srv->configure();
+        srv->start().get();
+        CHECK_THROWS_AS(srv->update().get(), sight::core::exception);
 
-    CPPUNIT_ASSERT(sight::data::point({8.0, 9.0, -20.0}) == *srv_tester.point0);
-    CPPUNIT_ASSERT(sight::data::point({1.0, 80.0, 2.0}) == *srv_tester.point1);
-    CPPUNIT_ASSERT(sight::data::point({-1.0, 5.0, -2.0}) == *srv_tester.point2);
-}
-
-//------------------------------------------------------------------------------
-
-void get_point_test::extracts_point_with_index_out_of_bound()
-{
-    tester srv_tester;
-    service::config_t config;
-    std::stringstream config_string;
-    config_string
-    << R"(<inout group="points">)"
-       R"(<key group="test_group_1" index="1" uid="output_point0"/>)"
-       R"(<key group="test_group_1" index="122" uid="output_point1"/>)"
-       R"(<key group="test_group_1" index="0" uid="output_point2"/>)"
-       R"(</inout>)";
-    boost::property_tree::read_xml(config_string, config);
-
-    srv_tester.srv->set_config(config);
-    srv_tester.srv->set_input(srv_tester.image, "image");
-    srv_tester.srv->set_inout(srv_tester.point0, "points", false, false, 0);
-    srv_tester.srv->set_inout(srv_tester.point1, "points", false, false, 1);
-    srv_tester.srv->set_inout(srv_tester.point2, "points", false, false, 2);
-    srv_tester.srv->configure();
-    srv_tester.srv->start().get();
-    CPPUNIT_ASSERT_THROW(srv_tester.srv->update().get(), sight::core::exception);
-
-    CPPUNIT_ASSERT(sight::data::point({-1.0, 5.0, -2.0}) == *srv_tester.point0);
-    CPPUNIT_ASSERT(sight::data::point({0.0, 0.0, 0.0}) == *srv_tester.point1); // Failed starting from there
-    CPPUNIT_ASSERT(sight::data::point({0.0, 0.0, 0.0}) == *srv_tester.point2);
-}
+        CHECK((sight::data::point({-1.0, 5.0, -2.0}) == *point0));
+        CHECK((sight::data::point({0.0, 0.0, 0.0}) == *point1)); // Failed starting from there
+        CHECK((sight::data::point({0.0, 0.0, 0.0}) == *point2));
+    }
 
 //------------------------------------------------------------------------------
-
-void get_point_test::extracts_point_with_unknown_group()
-{
-    tester srv_tester;
-    service::config_t config;
-    std::stringstream config_string;
-    config_string
-    << R"(<inout group="points">)"
-       R"(<key group="test_group_1" index="1" uid="output_point0"/>)"
-       R"(<key group="unknown" index="2" uid="output_point1"/>)"
-       R"(<key group="test_group_1" index="0" uid="output_point2"/>)"
-       R"(</inout>)";
-    boost::property_tree::read_xml(config_string, config);
-
-    srv_tester.srv->set_config(config);
-    srv_tester.srv->set_input(srv_tester.image, "image");
-    srv_tester.srv->set_inout(srv_tester.point0, "points", false, false, 0);
-    srv_tester.srv->set_inout(srv_tester.point1, "points", false, false, 1);
-    srv_tester.srv->set_inout(srv_tester.point2, "points", false, false, 2);
-    srv_tester.srv->configure();
-    srv_tester.srv->start().get();
-    CPPUNIT_ASSERT_THROW(srv_tester.srv->update().get(), sight::core::exception);
-
-    CPPUNIT_ASSERT(sight::data::point({-1.0, 5.0, -2.0}) == *srv_tester.point0);
-    CPPUNIT_ASSERT(sight::data::point({0.0, 0.0, 0.0}) == *srv_tester.point1); // Failed starting from there
-    CPPUNIT_ASSERT(sight::data::point({0.0, 0.0, 0.0}) == *srv_tester.point2);
-}
-
-//------------------------------------------------------------------------------
-
-} // namespace sight::module::data::ut
+} // TEST_SUITE("sight::module::data::get_point")

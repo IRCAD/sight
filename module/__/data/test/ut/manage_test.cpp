@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2025 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,8 +19,6 @@
  *
  ***********************************************************************/
 
-#include "manage_test.hpp"
-
 #include <data/map.hpp>
 #include <data/series.hpp>
 #include <data/series_set.hpp>
@@ -29,502 +27,443 @@
 
 #include <service/op.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::data::ut::manage_test);
+#include <doctest/doctest.h>
 
-namespace sight::module::data::ut
+#include <grpcpp/server_context.h>
+
+namespace
 {
 
-//------------------------------------------------------------------------------
-
-void manage_test::setUp()
+class service_fixture
 {
-    m_manage = service::add("sight::module::data::manage");
-}
+public:
 
-//------------------------------------------------------------------------------
-
-void manage_test::tearDown()
-{
-    CPPUNIT_ASSERT_NO_THROW(m_manage->stop().get());
-    service::remove(m_manage);
-}
-
-//------------------------------------------------------------------------------
-
-void manage_test::generic_add_in_map_test(const std::string& _slot_name, bool _already_present)
-{
-    auto object    = std::make_shared<sight::data::string>("Hello world");
-    auto container = std::make_shared<sight::data::map>();
-    if(_already_present)
+    service_fixture()
     {
+        m_manage = sight::service::add("sight::module::data::manage");
+    }
+
+    ~service_fixture()
+    {
+        if(m_manage->started())
+        {
+            CHECK_NOTHROW(m_manage->stop().get());
+        }
+
+        sight::service::remove(m_manage);
+    }
+
+    sight::service::base::sptr m_manage;
+
+    //------------------------------------------------------------------------------
+
+    void generic_add_in_map_test(const std::string& _slot_name, bool _already_present = false)
+    {
+        auto object    = std::make_shared<sight::data::string>("Hello world");
+        auto container = std::make_shared<sight::data::map>();
+        if(_already_present)
+        {
+            (*container)["myKey"] = object;
+        }
+
+        m_manage->set_inout(object, "object");
+        m_manage->set_inout(container, "container");
+        boost::property_tree::ptree ptree;
+        ptree.put("mapKey", "myKey");
+        m_manage->set_config(ptree);
+        CHECK_NOTHROW(m_manage->configure());
+        CHECK_NOTHROW(m_manage->start().get());
+
+        m_manage->slot(_slot_name)->run();
+
+        if(_slot_name == "add_copy")
+        {
+            CHECK(object != container->get<sight::data::string>("myKey"));
+            CHECK_EQ(*object, *container->get<sight::data::string>("myKey"));
+        }
+        else
+        {
+            CHECK_EQ(object, container->get<sight::data::string>("myKey"));
+        }
+    }
+
+//------------------------------------------------------------------------------
+
+    void generic_add_in_vector_test(const std::string& _slot_name, bool _already_present = false)
+    {
+        auto object    = std::make_shared<sight::data::string>("Hello world");
+        auto container = std::make_shared<sight::data::vector>();
+        if(_already_present)
+        {
+            container->push_back(object);
+        }
+
+        m_manage->set_inout(object, "object");
+        m_manage->set_inout(container, "container");
+        CHECK_NOTHROW(m_manage->configure());
+        CHECK_NOTHROW(m_manage->start().get());
+
+        m_manage->slot(_slot_name)->run();
+
+        CHECK_EQ(std::size_t(1), container->size());
+        if(_slot_name == "add_copy")
+        {
+            CHECK(object != std::dynamic_pointer_cast<sight::data::string>((*container)[0]));
+            CHECK_EQ(*object, *std::dynamic_pointer_cast<sight::data::string>((*container)[0]));
+        }
+        else
+        {
+            CHECK_EQ(object, std::dynamic_pointer_cast<sight::data::string>((*container)[0]));
+        }
+
+        m_manage->slot(_slot_name)->run();
+
+        std::size_t expected_size = 2 - static_cast<std::size_t>(_slot_name == "add_or_swap");
+        CHECK_EQ(expected_size, container->size());
+        if(_slot_name == "add_copy")
+        {
+            CHECK(object != std::dynamic_pointer_cast<sight::data::string>((*container)[1]));
+            CHECK_EQ(*object, *std::dynamic_pointer_cast<sight::data::string>((*container)[1]));
+        }
+        else
+        {
+            CHECK_EQ(object, std::dynamic_pointer_cast<sight::data::string>((*container)[expected_size - 1]));
+        }
+    }
+
+//------------------------------------------------------------------------------
+
+    void generic_add_in_series_set_test(const std::string& _slot_name, bool _already_present = false)
+    {
+        auto object = std::make_shared<sight::data::series>();
+        object->set_patient_name("You");
+        auto container = std::make_shared<sight::data::series_set>();
+        if(_already_present)
+        {
+            container->push_back(object);
+        }
+
+        m_manage->set_inout(object, "object");
+        m_manage->set_inout(container, "container");
+        CHECK_NOTHROW(m_manage->configure());
+        CHECK_NOTHROW(m_manage->start().get());
+
+        m_manage->slot(_slot_name)->run();
+
+        CHECK_EQ(std::size_t(1), container->size());
+        if(_slot_name == "add_copy")
+        {
+            CHECK(object != (*container)[0]);
+            CHECK(*object == *(*container)[0]);
+        }
+        else
+        {
+            CHECK_EQ(object, (*container)[0]);
+        }
+
+        m_manage->slot(_slot_name)->run();
+
+        if(_slot_name == "add_copy")
+        {
+            CHECK_EQ(std::size_t(2), container->size());
+            CHECK(object != (*container)[0]);
+            CHECK(*object == *(*container)[0]);
+        }
+        else
+        {
+            CHECK_EQ(std::size_t(1), container->size());
+            CHECK_EQ(object, (*container)[0]);
+        }
+    }
+
+//------------------------------------------------------------------------------
+
+    void generic_add_in_field_test(const std::string& _slot_name, bool _already_present = false)
+    {
+        auto object    = std::make_shared<sight::data::string>("Hello world");
+        auto container = std::make_shared<sight::data::string>();
+        if(_already_present)
+        {
+            container->set_field("myField", object);
+        }
+
+        m_manage->set_inout(object, "object");
+        m_manage->set_inout(container, "container");
+        boost::property_tree::ptree ptree;
+        ptree.put("field", "myField");
+        m_manage->set_config(ptree);
+        CHECK_NOTHROW(m_manage->configure());
+        CHECK_NOTHROW(m_manage->start().get());
+
+        m_manage->slot(_slot_name)->run();
+
+        if(_slot_name == "add_copy")
+        {
+            CHECK(object != container->get_field<sight::data::string>("myField"));
+            CHECK_EQ(*object, *container->get_field<sight::data::string>("myField"));
+        }
+        else
+        {
+            CHECK_EQ(object, container->get_field<sight::data::string>("myField"));
+        }
+    }
+
+//------------------------------------------------------------------------------
+
+    void generic_remove_in_map_test(const std::string& _slot_name)
+    {
+        auto object    = std::make_shared<sight::data::string>("Hello world");
+        auto container = std::make_shared<sight::data::map>();
         (*container)["myKey"] = object;
-    }
 
-    m_manage->set_inout(object, "object");
-    m_manage->set_inout(container, "container");
-    boost::property_tree::ptree ptree;
-    ptree.put("mapKey", "myKey");
-    m_manage->set_config(ptree);
-    CPPUNIT_ASSERT_NO_THROW(m_manage->configure());
-    CPPUNIT_ASSERT_NO_THROW(m_manage->start().get());
+        m_manage->set_inout(object, "object");
+        m_manage->set_inout(container, "container");
+        boost::property_tree::ptree ptree;
+        ptree.put("mapKey", "myKey");
+        m_manage->set_config(ptree);
+        CHECK_NOTHROW(m_manage->configure());
+        CHECK_NOTHROW(m_manage->start().get());
 
-    m_manage->slot(_slot_name)->run();
-
-    if(_slot_name == "add_copy")
-    {
-        CPPUNIT_ASSERT(object != container->get<sight::data::string>("myKey"));
-        CPPUNIT_ASSERT_EQUAL(*object, *container->get<sight::data::string>("myKey"));
+        CHECK(container->get<sight::data::string>("myKey") != nullptr);
+        m_manage->slot(_slot_name)->run();
+        CHECK(container->get<sight::data::string>("myKey") == nullptr);
     }
-    else
-    {
-        CPPUNIT_ASSERT_EQUAL(object, container->get<sight::data::string>("myKey"));
-    }
-}
 
 //------------------------------------------------------------------------------
 
-void manage_test::generic_add_in_vector_test(const std::string& _slot_name, bool _already_present)
-{
-    auto object    = std::make_shared<sight::data::string>("Hello world");
-    auto container = std::make_shared<sight::data::vector>();
-    if(_already_present)
+    void generic_remove_in_vector_test(const std::string& _slot_name)
     {
+        auto object    = std::make_shared<sight::data::string>("Hello world");
+        auto container = std::make_shared<sight::data::vector>();
         container->push_back(object);
-    }
 
-    m_manage->set_inout(object, "object");
-    m_manage->set_inout(container, "container");
-    CPPUNIT_ASSERT_NO_THROW(m_manage->configure());
-    CPPUNIT_ASSERT_NO_THROW(m_manage->start().get());
+        m_manage->set_inout(object, "object");
+        m_manage->set_inout(container, "container");
+        CHECK_NOTHROW(m_manage->configure());
+        CHECK_NOTHROW(m_manage->start().get());
 
-    m_manage->slot(_slot_name)->run();
-
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), container->size());
-    if(_slot_name == "add_copy")
-    {
-        CPPUNIT_ASSERT(object != std::dynamic_pointer_cast<sight::data::string>((*container)[0]));
-        CPPUNIT_ASSERT_EQUAL(*object, *std::dynamic_pointer_cast<sight::data::string>((*container)[0]));
+        CHECK(!container->empty());
+        m_manage->slot(_slot_name)->run();
+        CHECK(container->empty());
     }
-    else
-    {
-        CPPUNIT_ASSERT_EQUAL(object, std::dynamic_pointer_cast<sight::data::string>((*container)[0]));
-    }
-
-    m_manage->slot(_slot_name)->run();
-
-    std::size_t expected_size = 2 - static_cast<std::size_t>(_slot_name == "add_or_swap");
-    CPPUNIT_ASSERT_EQUAL(expected_size, container->size());
-    if(_slot_name == "add_copy")
-    {
-        CPPUNIT_ASSERT(object != std::dynamic_pointer_cast<sight::data::string>((*container)[1]));
-        CPPUNIT_ASSERT_EQUAL(*object, *std::dynamic_pointer_cast<sight::data::string>((*container)[1]));
-    }
-    else
-    {
-        CPPUNIT_ASSERT_EQUAL(object, std::dynamic_pointer_cast<sight::data::string>((*container)[expected_size - 1]));
-    }
-}
 
 //------------------------------------------------------------------------------
 
-void manage_test::generic_add_in_series_set_test(const std::string& _slot_name, bool _already_present)
-{
-    auto object = std::make_shared<sight::data::series>();
-    object->set_patient_name("You");
-    auto container = std::make_shared<sight::data::series_set>();
-    if(_already_present)
+    void generic_remove_in_series_set_test(const std::string& _slot_name)
     {
+        auto object = std::make_shared<sight::data::series>();
+        object->set_patient_name("You");
+        auto container = std::make_shared<sight::data::series_set>();
         container->push_back(object);
-    }
 
-    m_manage->set_inout(object, "object");
-    m_manage->set_inout(container, "container");
-    CPPUNIT_ASSERT_NO_THROW(m_manage->configure());
-    CPPUNIT_ASSERT_NO_THROW(m_manage->start().get());
+        m_manage->set_inout(object, "object");
+        m_manage->set_inout(container, "container");
+        CHECK_NOTHROW(m_manage->configure());
+        CHECK_NOTHROW(m_manage->start().get());
 
-    m_manage->slot(_slot_name)->run();
-
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), container->size());
-    if(_slot_name == "add_copy")
-    {
-        CPPUNIT_ASSERT(object != (*container)[0]);
-        CPPUNIT_ASSERT(*object == *(*container)[0]);
+        CHECK(!container->empty());
+        m_manage->slot(_slot_name)->run();
+        CHECK(container->empty());
     }
-    else
-    {
-        CPPUNIT_ASSERT_EQUAL(object, (*container)[0]);
-    }
-
-    m_manage->slot(_slot_name)->run();
-
-    if(_slot_name == "add_copy")
-    {
-        CPPUNIT_ASSERT_EQUAL(std::size_t(2), container->size());
-        CPPUNIT_ASSERT(object != (*container)[0]);
-        CPPUNIT_ASSERT(*object == *(*container)[0]);
-    }
-    else
-    {
-        CPPUNIT_ASSERT_EQUAL(std::size_t(1), container->size());
-        CPPUNIT_ASSERT_EQUAL(object, (*container)[0]);
-    }
-}
 
 //------------------------------------------------------------------------------
 
-void manage_test::generic_add_in_field_test(const std::string& _slot_name, bool _already_present)
-{
-    auto object    = std::make_shared<sight::data::string>("Hello world");
-    auto container = std::make_shared<sight::data::string>();
-    if(_already_present)
+    void generic_remove_in_field_test(const std::string& _slot_name)
     {
+        auto object    = std::make_shared<sight::data::string>("Hello world");
+        auto container = std::make_shared<sight::data::string>();
         container->set_field("myField", object);
+
+        m_manage->set_inout(object, "object");
+        m_manage->set_inout(container, "container");
+        boost::property_tree::ptree ptree;
+        ptree.put("field", "myField");
+        m_manage->set_config(ptree);
+        CHECK_NOTHROW(m_manage->configure());
+        CHECK_NOTHROW(m_manage->start().get());
+
+        CHECK_EQ(object, container->get_field<sight::data::string>("myField"));
+        m_manage->slot(_slot_name)->run();
+        CHECK(container->get_field<sight::data::string>("myField") == nullptr);
     }
+};
 
-    m_manage->set_inout(object, "object");
-    m_manage->set_inout(container, "container");
-    boost::property_tree::ptree ptree;
-    ptree.put("field", "myField");
-    m_manage->set_config(ptree);
-    CPPUNIT_ASSERT_NO_THROW(m_manage->configure());
-    CPPUNIT_ASSERT_NO_THROW(m_manage->start().get());
-
-    m_manage->slot(_slot_name)->run();
-
-    if(_slot_name == "add_copy")
+} // namespace
+TEST_SUITE("sight::module::data::manage")
+{
+    TEST_CASE_FIXTURE(service_fixture, "add_in_map")
     {
-        CPPUNIT_ASSERT(object != container->get_field<sight::data::string>("myField"));
-        CPPUNIT_ASSERT_EQUAL(*object, *container->get_field<sight::data::string>("myField"));
+        generic_add_in_map_test("add");
     }
-    else
+
+    TEST_CASE_FIXTURE(service_fixture, "add_in_vector")
     {
-        CPPUNIT_ASSERT_EQUAL(object, container->get_field<sight::data::string>("myField"));
+        generic_add_in_vector_test("add");
     }
-}
 
-//------------------------------------------------------------------------------
-
-void manage_test::add_in_map_test()
-{
-    generic_add_in_map_test("add");
-}
-
-//------------------------------------------------------------------------------
-
-void manage_test::add_in_vector_test()
-{
-    generic_add_in_vector_test("add");
-}
-
-//------------------------------------------------------------------------------
-
-void manage_test::add_in_series_set_test()
-{
-    generic_add_in_series_set_test("add");
-}
-
-//------------------------------------------------------------------------------
-
-void manage_test::add_in_field_test()
-{
-    generic_add_in_field_test("add");
-}
-
-//------------------------------------------------------------------------------
-
-void manage_test::add_copy_in_map_test()
-{
-    generic_add_in_map_test("add_copy");
-}
-
-//------------------------------------------------------------------------------
-
-void manage_test::add_copy_in_vector_test()
-{
-    generic_add_in_vector_test("add_copy");
-}
-
-//------------------------------------------------------------------------------
-
-void manage_test::add_copy_in_series_set_test()
-{
-    generic_add_in_series_set_test("add_copy");
-}
-
-//------------------------------------------------------------------------------
-
-void manage_test::add_copy_in_field_test()
-{
-    generic_add_in_field_test("add_copy");
-}
-
-//------------------------------------------------------------------------------
-
-void manage_test::add_or_swap_and_not_present_in_map_test()
-{
-    generic_add_in_map_test("add_or_swap");
-}
-
-//------------------------------------------------------------------------------
-
-void manage_test::add_or_swap_and_not_present_in_vector_test()
-{
-    generic_add_in_vector_test("add_or_swap");
-}
-
-//------------------------------------------------------------------------------
-
-void manage_test::add_or_swap_and_not_present_in_series_set_test()
-{
-    generic_add_in_series_set_test("add_or_swap");
-}
-
-//------------------------------------------------------------------------------
-
-void manage_test::add_or_swap_and_not_present_in_field_test()
-{
-    generic_add_in_field_test("add_or_swap");
-}
-
-//------------------------------------------------------------------------------
-
-void manage_test::add_or_swap_and_present_in_map_test()
-{
-    generic_add_in_map_test("add_or_swap", true);
-}
-
-//------------------------------------------------------------------------------
-
-void manage_test::add_or_swap_and_present_in_vector_test()
-{
-    generic_add_in_vector_test("add_or_swap", true);
-}
-
-//------------------------------------------------------------------------------
-
-void manage_test::add_or_swap_and_present_in_series_set_test()
-{
-    generic_add_in_series_set_test("add_or_swap", true);
-}
-
-//------------------------------------------------------------------------------
-
-void manage_test::add_or_swap_and_present_in_field_test()
-{
-    generic_add_in_field_test("add_or_swap", true);
-}
-
-//------------------------------------------------------------------------------
-
-void manage_test::swap_obj_in_map_test()
-{
-    generic_add_in_map_test("swap_obj");
-}
-
-//------------------------------------------------------------------------------
-
-void manage_test::swap_obj_and_not_present_in_field_test()
-{
-    CPPUNIT_ASSERT_THROW(generic_add_in_field_test("swap_obj"), sight::data::exception);
-}
-
-//------------------------------------------------------------------------------
-
-void manage_test::swap_obj_and_present_in_field_test()
-{
-    generic_add_in_field_test("swap_obj", true);
-}
-
-//------------------------------------------------------------------------------
-
-void manage_test::generic_remove_in_map_test(const std::string& _slot_name)
-{
-    auto object    = std::make_shared<sight::data::string>("Hello world");
-    auto container = std::make_shared<sight::data::map>();
-    (*container)["myKey"] = object;
-
-    m_manage->set_inout(object, "object");
-    m_manage->set_inout(container, "container");
-    boost::property_tree::ptree ptree;
-    ptree.put("mapKey", "myKey");
-    m_manage->set_config(ptree);
-    CPPUNIT_ASSERT_NO_THROW(m_manage->configure());
-    CPPUNIT_ASSERT_NO_THROW(m_manage->start().get());
-
-    CPPUNIT_ASSERT(container->get<sight::data::string>("myKey") != nullptr);
-    m_manage->slot(_slot_name)->run();
-    CPPUNIT_ASSERT(container->get<sight::data::string>("myKey") == nullptr);
-}
-
-//------------------------------------------------------------------------------
-
-void manage_test::generic_remove_in_vector_test(const std::string& _slot_name)
-{
-    auto object    = std::make_shared<sight::data::string>("Hello world");
-    auto container = std::make_shared<sight::data::vector>();
-    container->push_back(object);
-
-    m_manage->set_inout(object, "object");
-    m_manage->set_inout(container, "container");
-    CPPUNIT_ASSERT_NO_THROW(m_manage->configure());
-    CPPUNIT_ASSERT_NO_THROW(m_manage->start().get());
-
-    CPPUNIT_ASSERT(!container->empty());
-    m_manage->slot(_slot_name)->run();
-    CPPUNIT_ASSERT(container->empty());
-}
-
-//------------------------------------------------------------------------------
-
-void manage_test::generic_remove_in_series_set_test(const std::string& _slot_name)
-{
-    auto object = std::make_shared<sight::data::series>();
-    object->set_patient_name("You");
-    auto container = std::make_shared<sight::data::series_set>();
-    container->push_back(object);
-
-    m_manage->set_inout(object, "object");
-    m_manage->set_inout(container, "container");
-    CPPUNIT_ASSERT_NO_THROW(m_manage->configure());
-    CPPUNIT_ASSERT_NO_THROW(m_manage->start().get());
-
-    CPPUNIT_ASSERT(!container->empty());
-    m_manage->slot(_slot_name)->run();
-    CPPUNIT_ASSERT(container->empty());
-}
-
-//------------------------------------------------------------------------------
-
-void manage_test::generic_remove_in_field_test(const std::string& _slot_name)
-{
-    auto object    = std::make_shared<sight::data::string>("Hello world");
-    auto container = std::make_shared<sight::data::string>();
-    container->set_field("myField", object);
-
-    m_manage->set_inout(object, "object");
-    m_manage->set_inout(container, "container");
-    boost::property_tree::ptree ptree;
-    ptree.put("field", "myField");
-    m_manage->set_config(ptree);
-    CPPUNIT_ASSERT_NO_THROW(m_manage->configure());
-    CPPUNIT_ASSERT_NO_THROW(m_manage->start().get());
-
-    CPPUNIT_ASSERT_EQUAL(object, container->get_field<sight::data::string>("myField"));
-    m_manage->slot(_slot_name)->run();
-    CPPUNIT_ASSERT(container->get_field<sight::data::string>("myField") == nullptr);
-}
-
-//------------------------------------------------------------------------------
-
-void manage_test::pop_front_in_map_test()
-{
-    generic_remove_in_map_test("pop_front");
-}
-
-//------------------------------------------------------------------------------
-
-void manage_test::pop_front_in_vector_test()
-{
-    generic_remove_in_vector_test("pop_front");
-}
-
-//------------------------------------------------------------------------------
-
-void manage_test::pop_front_in_series_set_test()
-{
-    generic_remove_in_series_set_test("pop_front");
-}
-
-//------------------------------------------------------------------------------
-
-void manage_test::pop_front_in_field_test()
-{
-    generic_remove_in_field_test("pop_front");
-}
-
-//------------------------------------------------------------------------------
-
-void manage_test::remove_in_map_test()
-{
-    generic_remove_in_map_test("remove");
-}
-
-//------------------------------------------------------------------------------
-
-void manage_test::remove_in_vector_test()
-{
-    generic_remove_in_vector_test("remove");
-}
-
-//------------------------------------------------------------------------------
-
-void manage_test::remove_in_series_set_test()
-{
-    generic_remove_in_series_set_test("remove");
-}
-
-//------------------------------------------------------------------------------
-
-void manage_test::remove_in_field_test()
-{
-    generic_remove_in_field_test("remove");
-}
-
-//------------------------------------------------------------------------------
-
-void manage_test::remove_if_present_in_map_test()
-{
-    generic_remove_in_map_test("remove_if_present");
-}
-
-//------------------------------------------------------------------------------
-
-void manage_test::remove_if_present_in_vector_test()
-{
-    m_manage->start().get();
-    //genericRemoveInVectorTest("remove_if_present"); // TODO: fix crash
-}
-
-//------------------------------------------------------------------------------
-
-void manage_test::remove_if_present_in_series_set_test()
-{
-    generic_remove_in_series_set_test("remove_if_present");
-}
-
-//------------------------------------------------------------------------------
-
-void manage_test::remove_if_present_in_field_test()
-{
-    generic_remove_in_field_test("remove_if_present");
-}
-
-//------------------------------------------------------------------------------
-
-void manage_test::clear_map_test()
-{
-    generic_remove_in_map_test("clear");
-}
-
-//------------------------------------------------------------------------------
-
-void manage_test::clear_vector_test()
-{
-    generic_remove_in_vector_test("clear");
-}
-
-//------------------------------------------------------------------------------
-
-void manage_test::clear_series_set_test()
-{
-    generic_remove_in_series_set_test("clear");
-}
-
-//------------------------------------------------------------------------------
-
-void manage_test::clear_field_test()
-{
-    generic_remove_in_field_test("clear");
-}
-
-} // namespace sight::module::data::ut
+    TEST_CASE_FIXTURE(service_fixture, "add_in_series_set")
+    {
+        generic_add_in_series_set_test("add");
+    }
+
+    TEST_CASE_FIXTURE(service_fixture, "add_in_field")
+    {
+        generic_add_in_field_test("add");
+    }
+
+    TEST_CASE_FIXTURE(service_fixture, "add_copy_in_map")
+    {
+        generic_add_in_map_test("add_copy");
+    }
+
+    TEST_CASE_FIXTURE(service_fixture, "add_copy_in_vector")
+    {
+        generic_add_in_vector_test("add_copy");
+    }
+
+    TEST_CASE_FIXTURE(service_fixture, "add_copy_in_series_set")
+    {
+        generic_add_in_series_set_test("add_copy");
+    }
+
+    TEST_CASE_FIXTURE(service_fixture, "add_copy_in_field")
+    {
+        generic_add_in_field_test("add_copy");
+    }
+
+    TEST_CASE_FIXTURE(service_fixture, "add_or_swap_and_not_present_in_map")
+    {
+        generic_add_in_map_test("add_or_swap");
+    }
+
+    TEST_CASE_FIXTURE(service_fixture, "add_or_swap_and_not_present_in_vector")
+    {
+        generic_add_in_vector_test("add_or_swap");
+    }
+
+    TEST_CASE_FIXTURE(service_fixture, "add_or_swap_and_not_present_in_series_set")
+    {
+        generic_add_in_series_set_test("add_or_swap");
+    }
+
+    TEST_CASE_FIXTURE(service_fixture, "add_or_swap_and_not_present_in_field")
+    {
+        generic_add_in_field_test("add_or_swap");
+    }
+
+    TEST_CASE_FIXTURE(service_fixture, "add_or_swap_and_present_in_map")
+    {
+        generic_add_in_map_test("add_or_swap", true);
+    }
+
+    TEST_CASE_FIXTURE(service_fixture, "add_or_swap_and_present_in_vector")
+    {
+        generic_add_in_vector_test("add_or_swap", true);
+    }
+
+    TEST_CASE_FIXTURE(service_fixture, "add_or_swap_and_present_in_series_set")
+    {
+        generic_add_in_series_set_test("add_or_swap", true);
+    }
+
+    TEST_CASE_FIXTURE(service_fixture, "add_or_swap_and_present_in_field")
+    {
+        generic_add_in_field_test("add_or_swap", true);
+    }
+
+    TEST_CASE_FIXTURE(service_fixture, "swap_obj_in_map")
+    {
+        generic_add_in_map_test("swap_obj");
+    }
+
+    TEST_CASE_FIXTURE(service_fixture, "swap_obj_and_not_present_in_field")
+    {
+        CHECK_THROWS_AS(generic_add_in_field_test("swap_obj"), sight::data::exception);
+    }
+
+    TEST_CASE_FIXTURE(service_fixture, "swap_obj_and_present_in_field")
+    {
+        generic_add_in_field_test("swap_obj", true);
+    }
+
+    TEST_CASE_FIXTURE(service_fixture, "pop_front_in_map")
+    {
+        generic_remove_in_map_test("pop_front");
+    }
+
+    TEST_CASE_FIXTURE(service_fixture, "pop_front_in_vector")
+    {
+        generic_remove_in_vector_test("pop_front");
+    }
+
+    TEST_CASE_FIXTURE(service_fixture, "pop_front_in_series_set")
+    {
+        generic_remove_in_series_set_test("pop_front");
+    }
+
+    TEST_CASE_FIXTURE(service_fixture, "pop_front_in_field")
+    {
+        generic_remove_in_field_test("pop_front");
+    }
+
+    TEST_CASE_FIXTURE(service_fixture, "remove_in_map")
+    {
+        generic_remove_in_map_test("remove");
+    }
+
+    TEST_CASE_FIXTURE(service_fixture, "remove_in_vector")
+    {
+        generic_remove_in_vector_test("remove");
+    }
+
+    TEST_CASE_FIXTURE(service_fixture, "remove_in_series_set")
+    {
+        generic_remove_in_series_set_test("remove");
+    }
+
+    TEST_CASE_FIXTURE(service_fixture, "remove_in_field")
+    {
+        generic_remove_in_field_test("remove");
+    }
+
+    TEST_CASE_FIXTURE(service_fixture, "remove_if_present_in_map")
+    {
+        generic_remove_in_map_test("remove_if_present");
+    }
+
+    TEST_CASE_FIXTURE(service_fixture, "remove_if_present_in_vector")
+    {
+        m_manage->start().get();
+        //genericRemoveInVectorTest("remove_if_present"); // TODO: fix crash
+    }
+
+    TEST_CASE_FIXTURE(service_fixture, "remove_if_present_in_series_set")
+    {
+        generic_remove_in_series_set_test("remove_if_present");
+    }
+
+    TEST_CASE_FIXTURE(service_fixture, "remove_if_present_in_field")
+    {
+        generic_remove_in_field_test("remove_if_present");
+    }
+
+    TEST_CASE_FIXTURE(service_fixture, "clear_map")
+    {
+        generic_remove_in_map_test("clear");
+    }
+
+    TEST_CASE_FIXTURE(service_fixture, "clear_vector")
+    {
+        generic_remove_in_vector_test("clear");
+    }
+
+    TEST_CASE_FIXTURE(service_fixture, "clear_series_set")
+    {
+        generic_remove_in_series_set_test("clear");
+    }
+
+    TEST_CASE_FIXTURE(service_fixture, "clear_field")
+    {
+        generic_remove_in_field_test("clear");
+    }
+} // TEST_SUITE("sight::module::data::manage")

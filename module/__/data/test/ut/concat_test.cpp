@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,151 +19,135 @@
  *
  ***********************************************************************/
 
-#include "concat_test.hpp"
-
-#include "data/object.hpp"
-
 #include <data/boolean.hpp>
 #include <data/integer.hpp>
+#include <data/object.hpp>
 #include <data/string.hpp>
 
 #include <service/op.hpp>
 
 #include <boost/property_tree/xml_parser.hpp>
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::data::ut::concat_test);
 
-namespace sight::module::data::ut
+#include <doctest/doctest.h>
+
+TEST_SUITE("sight::module::data::concat")
 {
+//------------------------------------------------------------------------------
+
+    TEST_CASE("string_to_string")
+    {
+        auto srv = sight::service::add("sight::module::data::concat");
+        using namespace std::literals::string_literals;
+
+        auto target = std::make_shared<sight::data::string>();
+        auto prefix = std::make_shared<sight::data::string>();
+        auto suffix = std::make_shared<sight::data::string>();
+
+        srv->set_input(prefix, "fragments", true, false, 0);
+        srv->set_input(target, "fragments", true, false, 1);
+        srv->set_input(suffix, "fragments", true, false, 2);
+        srv->set_inout(target, "target");
+
+        CHECK_NOTHROW(srv->configure());
+        CHECK_NOTHROW(srv->start().get());
+        // Test that it does NOT concat at start
+        CHECK_EQ(""s, target->get_value());
+
+        // Test that it concats at update if the key is set
+        prefix->set_value("a");
+        target->set_value("b");
+        suffix->set_value("c");
+
+        CHECK_NOTHROW(srv->update().get());
+        CHECK_EQ("abc"s, target->get_value());
+
+        // Test automatic update on fragment change
+        target->set_value("b");
+        prefix->set_value("x");
+        prefix->emit(sight::data::object::MODIFIED_SIG);
+
+        CHECK_EQ("xbc"s, target->get_value());
+
+        CHECK_NOTHROW(srv->stop().get());
+        sight::service::remove(srv);
+    }
 
 //------------------------------------------------------------------------------
 
-void concat_test::setUp()
-{
-}
+    TEST_CASE("integer_to_integer")
+    {
+        auto srv = sight::service::add("sight::module::data::concat");
+        using namespace std::literals::string_literals;
+
+        auto target = std::make_shared<sight::data::integer>();
+        auto prefix = std::make_shared<sight::data::integer>();
+        auto suffix = std::make_shared<sight::data::integer>();
+
+        srv->set_input(prefix, "fragments", true, false, 0);
+        srv->set_input(target, "fragments", true, false, 1);
+        srv->set_input(suffix, "fragments", true, false, 2);
+        srv->set_inout(target, "target");
+
+        CHECK_NOTHROW(srv->configure());
+        CHECK_NOTHROW(srv->start().get());
+        // Test that it does NOT concat at start
+        CHECK_EQ(std::int64_t(0), target->get_value());
+
+        // Test that it concats at update if the key is set
+        prefix->set_value(1);
+        target->set_value(2);
+        suffix->set_value(3);
+
+        CHECK_NOTHROW(srv->update().get());
+        CHECK_EQ(std::int64_t(123), target->get_value());
+
+        CHECK_NOTHROW(srv->stop().get());
+        sight::service::remove(srv);
+    }
 
 //------------------------------------------------------------------------------
 
-void concat_test::tearDown()
-{
-}
+    TEST_CASE("format")
+    {
+        auto srv = sight::service::add("sight::module::data::concat");
+        using namespace std::literals::string_literals;
 
-//------------------------------------------------------------------------------
+        constexpr auto scam_template_str =
+            "Dear %1%,\n\n"
+            "We have noticed your interest in the new XT 22000 light saber.\n"
+            "Click here %2% to save %3% galactic credits!";
 
-void concat_test::string_to_string()
-{
-    auto srv = service::add("sight::module::data::concat");
-    using namespace std::literals::string_literals;
+        auto scam_template = std::make_shared<sight::data::string>(scam_template_str);
 
-    auto target = std::make_shared<sight::data::string>();
-    auto prefix = std::make_shared<sight::data::string>();
-    auto suffix = std::make_shared<sight::data::string>();
+        auto scam      = std::make_shared<sight::data::string>();
+        auto pigeon    = std::make_shared<sight::data::string>();
+        auto honey_jar = std::make_shared<sight::data::string>();
+        auto money     = std::make_shared<sight::data::integer>();
 
-    srv->set_input(prefix, "fragments", true, false, 0);
-    srv->set_input(target, "fragments", true, false, 1);
-    srv->set_input(suffix, "fragments", true, false, 2);
-    srv->set_inout(target, "target");
+        srv->set_inout(scam_template, "format");
+        srv->set_input(pigeon, "fragments", true, false, 0);
+        srv->set_input(honey_jar, "fragments", true, false, 1);
+        srv->set_input(money, "fragments", true, false, 2);
+        srv->set_inout(scam, "target");
 
-    CPPUNIT_ASSERT_NO_THROW(srv->configure());
-    CPPUNIT_ASSERT_NO_THROW(srv->start().get());
-    // Test that it does NOT concat at start
-    CPPUNIT_ASSERT_EQUAL(""s, target->get_value());
+        CHECK_NOTHROW(srv->configure());
+        CHECK_NOTHROW(srv->start().get());
 
-    // Test that it concats at update if the key is set
-    prefix->set_value("a");
-    target->set_value("b");
-    suffix->set_value("c");
+        // Test that it concats at update if the key is set
+        pigeon->set_value("Obi Wan Kenobi");
+        honey_jar->set_value("<a href=\"https://www.sithsareus.com/pigeon\">The Old Jedi Hideout</a>");
+        money->set_value(10000);
 
-    CPPUNIT_ASSERT_NO_THROW(srv->update().get());
-    CPPUNIT_ASSERT_EQUAL("abc"s, target->get_value());
+        CHECK_NOTHROW(srv->update().get());
 
-    // Test automatic update on fragment change
-    target->set_value("b");
-    prefix->set_value("x");
-    prefix->emit(sight::data::object::MODIFIED_SIG);
+        const std::string expected =
+            "Dear Obi Wan Kenobi,\n\n"
+            "We have noticed your interest in the new XT 22000 light saber.\n"
+            "Click here <a href=\"https://www.sithsareus.com/pigeon\">The Old Jedi Hideout</a> to save 10000 galactic credits!";
 
-    CPPUNIT_ASSERT_EQUAL("xbc"s, target->get_value());
+        CHECK_EQ(expected, scam->get_value());
 
-    CPPUNIT_ASSERT_NO_THROW(srv->stop().get());
-    service::remove(srv);
-}
-
-//------------------------------------------------------------------------------
-
-void concat_test::integer_to_integer()
-{
-    auto srv = service::add("sight::module::data::concat");
-    using namespace std::literals::string_literals;
-
-    auto target = std::make_shared<sight::data::integer>();
-    auto prefix = std::make_shared<sight::data::integer>();
-    auto suffix = std::make_shared<sight::data::integer>();
-
-    srv->set_input(prefix, "fragments", true, false, 0);
-    srv->set_input(target, "fragments", true, false, 1);
-    srv->set_input(suffix, "fragments", true, false, 2);
-    srv->set_inout(target, "target");
-
-    CPPUNIT_ASSERT_NO_THROW(srv->configure());
-    CPPUNIT_ASSERT_NO_THROW(srv->start().get());
-    // Test that it does NOT concat at start
-    CPPUNIT_ASSERT_EQUAL(std::int64_t(0), target->get_value());
-
-    // Test that it concats at update if the key is set
-    prefix->set_value(1);
-    target->set_value(2);
-    suffix->set_value(3);
-
-    CPPUNIT_ASSERT_NO_THROW(srv->update().get());
-    CPPUNIT_ASSERT_EQUAL(std::int64_t(123), target->get_value());
-
-    CPPUNIT_ASSERT_NO_THROW(srv->stop().get());
-    service::remove(srv);
-}
-
-//------------------------------------------------------------------------------
-
-void concat_test::format()
-{
-    auto srv = service::add("sight::module::data::concat");
-    using namespace std::literals::string_literals;
-
-    constexpr auto scam_template_str =
-        "Dear %1%,\n\n"
-        "We have noticed your interest in the new XT 22000 light saber.\n"
-        "Click here %2% to save %3% galactic credits!";
-
-    auto scam_template = std::make_shared<sight::data::string>(scam_template_str);
-
-    auto scam      = std::make_shared<sight::data::string>();
-    auto pigeon    = std::make_shared<sight::data::string>();
-    auto honey_jar = std::make_shared<sight::data::string>();
-    auto money     = std::make_shared<sight::data::integer>();
-
-    srv->set_inout(scam_template, "format");
-    srv->set_input(pigeon, "fragments", true, false, 0);
-    srv->set_input(honey_jar, "fragments", true, false, 1);
-    srv->set_input(money, "fragments", true, false, 2);
-    srv->set_inout(scam, "target");
-
-    CPPUNIT_ASSERT_NO_THROW(srv->configure());
-    CPPUNIT_ASSERT_NO_THROW(srv->start().get());
-
-    // Test that it concats at update if the key is set
-    pigeon->set_value("Obi Wan Kenobi");
-    honey_jar->set_value("<a href=\"https://www.sithsareus.com/pigeon\">The Old Jedi Hideout</a>");
-    money->set_value(10000);
-
-    CPPUNIT_ASSERT_NO_THROW(srv->update().get());
-
-    const std::string expected =
-        "Dear Obi Wan Kenobi,\n\n"
-        "We have noticed your interest in the new XT 22000 light saber.\n"
-        "Click here <a href=\"https://www.sithsareus.com/pigeon\">The Old Jedi Hideout</a> to save 10000 galactic credits!";
-
-    CPPUNIT_ASSERT_EQUAL(expected, scam->get_value());
-
-    CPPUNIT_ASSERT_NO_THROW(srv->stop().get());
-    service::remove(srv);
-}
-
-} // namespace sight::module::data::ut
+        CHECK_NOTHROW(srv->stop().get());
+        sight::service::remove(srv);
+    }
+} // TEST_SUITE("sight::module::data::concat")

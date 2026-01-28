@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,73 +19,62 @@
  *
  ***********************************************************************/
 
-#include "copy_test.hpp"
-
 #include <data/string.hpp>
 
 #include <service/op.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::data::ut::copy_test);
+#include <doctest/doctest.h>
 
-namespace sight::module::data::ut
+TEST_SUITE("sight::module::data::copy")
 {
+//------------------------------------------------------------------------------
+
+    TEST_CASE("on_start")
+    {
+        auto srv = sight::service::add("sight::module::data::copy");
+        using namespace std::literals::string_literals;
+
+        auto source = std::make_shared<sight::data::string>("Hello world");
+        srv->set_input(source, "source");
+        boost::property_tree::ptree ptree;
+        ptree.put("in", "");
+        ptree.put("out", "");
+        ptree.put("mode", "copyOnStart");
+        srv->set_config(ptree);
+        CHECK_NOTHROW(srv->configure());
+
+        CHECK_NOTHROW(srv->start().get());
+        auto out_target = srv->output<sight::data::string>("outTarget");
+        CHECK_EQ("Hello world"s, out_target.lock()->get_value());
+
+        CHECK_NOTHROW(srv->stop().get());
+        sight::service::remove(srv);
+    }
 
 //------------------------------------------------------------------------------
 
-void copy_test::setUp()
-{
-    m_copy = service::add("sight::module::data::copy");
-}
+    TEST_CASE("on_update")
+    {
+        auto srv = sight::service::add("sight::module::data::copy");
+        using namespace std::literals::string_literals;
+
+        auto source = std::make_shared<sight::data::string>("Hello world");
+        srv->set_input(source, "source");
+        auto target = std::make_shared<sight::data::string>();
+        srv->set_inout(target, "target");
+        boost::property_tree::ptree ptree;
+        ptree.put("in", "");
+        ptree.put("inout", "");
+        srv->set_config(ptree);
+        CHECK_NOTHROW(srv->configure());
+        CHECK_NOTHROW(srv->start().get());
+
+        CHECK_NOTHROW(srv->update().get());
+        CHECK_EQ("Hello world"s, target->get_value());
+
+        CHECK_NOTHROW(srv->stop().get());
+        sight::service::remove(srv);
+    }
 
 //------------------------------------------------------------------------------
-
-void copy_test::tearDown()
-{
-    CPPUNIT_ASSERT_NO_THROW(m_copy->stop().get());
-    service::remove(m_copy);
-}
-
-//------------------------------------------------------------------------------
-
-void copy_test::on_start_test()
-{
-    using namespace std::literals::string_literals;
-
-    auto source = std::make_shared<sight::data::string>("Hello world");
-    m_copy->set_input(source, "source");
-    boost::property_tree::ptree ptree;
-    ptree.put("in", "");
-    ptree.put("out", "");
-    ptree.put("mode", "copyOnStart");
-    m_copy->set_config(ptree);
-    CPPUNIT_ASSERT_NO_THROW(m_copy->configure());
-
-    CPPUNIT_ASSERT_NO_THROW(m_copy->start().get());
-    auto out_target = m_copy->output<sight::data::string>("outTarget");
-    CPPUNIT_ASSERT_EQUAL("Hello world"s, out_target.lock()->get_value());
-}
-
-//------------------------------------------------------------------------------
-
-void copy_test::on_update_test()
-{
-    using namespace std::literals::string_literals;
-
-    auto source = std::make_shared<sight::data::string>("Hello world");
-    m_copy->set_input(source, "source");
-    auto target = std::make_shared<sight::data::string>();
-    m_copy->set_inout(target, "target");
-    boost::property_tree::ptree ptree;
-    ptree.put("in", "");
-    ptree.put("inout", "");
-    m_copy->set_config(ptree);
-    CPPUNIT_ASSERT_NO_THROW(m_copy->configure());
-    CPPUNIT_ASSERT_NO_THROW(m_copy->start().get());
-
-    CPPUNIT_ASSERT_NO_THROW(m_copy->update().get());
-    CPPUNIT_ASSERT_EQUAL("Hello world"s, target->get_value());
-}
-
-//------------------------------------------------------------------------------
-
-} // namespace sight::module::data::ut
+} // TEST_SUITE("sight::module::data::copy")

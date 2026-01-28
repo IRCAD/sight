@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,8 +19,6 @@
  *
  ***********************************************************************/
 
-#include "get_activity_object_test.hpp"
-
 #include <core/runtime/runtime.hpp>
 
 #include <data/activity_set.hpp>
@@ -31,136 +29,121 @@
 
 #include <boost/property_tree/xml_parser.hpp>
 
+#include <doctest/doctest.h>
+
 #include <sstream>
 
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::data::ut::get_activity_object_test);
-
-namespace sight::module::data::ut
+TEST_SUITE("sight::module::data::get_activity_object")
 {
+//------------------------------------------------------------------------------
+
+    TEST_CASE("extract_objects")
+    {
+        auto activity_set = std::make_shared<sight::data::activity_set>();
+
+        sight::service::base::sptr srv = sight::service::add("sight::module::data::get_activity_object");
+        CHECK(srv);
+        CHECK(srv->is_a("sight::module::data::get_activity_object"));
+
+        // create different series
+        sight::data::series::sptr series1 = std::make_shared<sight::data::model_series>();
+        sight::data::series::sptr series2 = std::make_shared<sight::data::image_series>();
+        sight::data::series::sptr series3 = std::make_shared<sight::data::model_series>();
+        sight::data::series::sptr series4 = std::make_shared<sight::data::image_series>();
+        sight::data::series::sptr series5 = std::make_shared<sight::data::model_series>();
+        sight::data::series::sptr series6 = std::make_shared<sight::data::model_series>();
+
+        sight::data::activity::sptr activity1 = std::make_shared<sight::data::activity>();
+        sight::data::activity::sptr activity2 = std::make_shared<sight::data::activity>();
+
+        activity1->set_activity_config_id("config1");
+        activity2->set_activity_config_id("config2");
+        CHECK(activity1->empty());
+        CHECK(activity2->empty());
+
+        (*activity1)["req1"] = series1;
+        (*activity1)["req2"] = series2;
+        (*activity1)["req3"] = series3;
+
+        (*activity2)["req1"] = series4;
+        (*activity2)["req2"] = series5;
+        (*activity2)["req3"] = series6;
+
+        CHECK(activity_set->empty());
+
+        activity_set->push_back(activity1);
+        activity_set->push_back(activity2);
+
+        sight::service::config_t config;
+        std::stringstream config_string;
+        config_string
+        << R"(<id>config1</id>)"
+           R"(<out group="objects">)"
+           R"(<key name="req1" uid="object1"/>)"
+           R"(<key name="req2" uid="object2"/>)"
+           R"(</out>)";
+        boost::property_tree::read_xml(config_string, config);
+        srv->set_config(config);
+        srv->set_input(activity_set, "activity_set");
+        srv->configure();
+        srv->start().wait();
+        srv->update().wait();
+
+        CHECK(*srv->output("objects", 0).lock() == *series1);
+        CHECK(*srv->output("objects", 1).lock() == *series2);
+
+        activity1->erase("req2");
+
+        CHECK_NOTHROW(srv->update().get());
+
+        CHECK(*srv->output("objects", 0).lock() == *series1);
+        CHECK(srv->output("objects", 1).lock() == nullptr);
+
+        activity_set->clear();
+        CHECK_THROWS_AS(srv->update().get(), sight::data::exception);
+
+        CHECK(srv->output("objects", 0).lock() == nullptr);
+        CHECK(srv->output("objects", 1).lock() == nullptr);
+
+        srv->stop().wait();
+        sight::service::remove(srv);
+    }
 
 //------------------------------------------------------------------------------
 
-void get_activity_object_test::setUp()
-{
-}
+    TEST_CASE("invalid_activity")
+    {
+        auto activity_set = std::make_shared<sight::data::activity_set>();
+
+        sight::service::base::sptr srv = sight::service::add("sight::module::data::get_activity_object");
+        CHECK(srv);
+        CHECK(srv->is_a("sight::module::data::get_activity_object"));
+
+        // create different series
+        sight::data::series::sptr series1     = std::make_shared<sight::data::model_series>();
+        sight::data::activity::sptr activity1 = std::make_shared<sight::data::activity>();
+        activity1->set_activity_config_id("config1");
+        (*activity1)["req1"] = series1;
+        activity_set->push_back(activity1);
+
+        sight::service::config_t config;
+        std::stringstream config_string;
+        config_string
+        << R"(<id>config_unknown</id>)"
+           R"(<out group="objects">)"
+           R"(<key name="req1" uid="object1"/>)"
+           R"(<key name="req2" uid="object2"/>)"
+           R"(</out>)";
+        boost::property_tree::read_xml(config_string, config);
+        srv->set_config(config);
+        srv->set_input(activity_set, "activity_set");
+        srv->configure();
+        srv->start().wait();
+        CHECK_THROWS_AS(srv->update().get(), sight::data::exception);
+
+        srv->stop().wait();
+        sight::service::remove(srv);
+    }
 
 //------------------------------------------------------------------------------
-
-void get_activity_object_test::tearDown()
-{
-}
-
-//------------------------------------------------------------------------------
-
-void get_activity_object_test::extract_objects()
-{
-    auto activity_set = std::make_shared<sight::data::activity_set>();
-
-    sight::service::base::sptr srv = sight::service::add("sight::module::data::get_activity_object");
-    CPPUNIT_ASSERT(srv);
-    CPPUNIT_ASSERT(srv->is_a("sight::module::data::get_activity_object"));
-
-    // create different series
-    sight::data::series::sptr series1 = std::make_shared<sight::data::model_series>();
-    sight::data::series::sptr series2 = std::make_shared<sight::data::image_series>();
-    sight::data::series::sptr series3 = std::make_shared<sight::data::model_series>();
-    sight::data::series::sptr series4 = std::make_shared<sight::data::image_series>();
-    sight::data::series::sptr series5 = std::make_shared<sight::data::model_series>();
-    sight::data::series::sptr series6 = std::make_shared<sight::data::model_series>();
-
-    sight::data::activity::sptr activity1 = std::make_shared<sight::data::activity>();
-    sight::data::activity::sptr activity2 = std::make_shared<sight::data::activity>();
-
-    activity1->set_activity_config_id("config1");
-    activity2->set_activity_config_id("config2");
-    CPPUNIT_ASSERT(activity1->empty());
-    CPPUNIT_ASSERT(activity2->empty());
-
-    (*activity1)["req1"] = series1;
-    (*activity1)["req2"] = series2;
-    (*activity1)["req3"] = series3;
-
-    (*activity2)["req1"] = series4;
-    (*activity2)["req2"] = series5;
-    (*activity2)["req3"] = series6;
-
-    CPPUNIT_ASSERT(activity_set->empty());
-
-    activity_set->push_back(activity1);
-    activity_set->push_back(activity2);
-
-    service::config_t config;
-    std::stringstream config_string;
-    config_string
-    << R"(<id>config1</id>)"
-       R"(<out group="objects">)"
-       R"(<key name="req1" uid="object1"/>)"
-       R"(<key name="req2" uid="object2"/>)"
-       R"(</out>)";
-    boost::property_tree::read_xml(config_string, config);
-    srv->set_config(config);
-    srv->set_input(activity_set, "activity_set");
-    srv->configure();
-    srv->start().wait();
-    srv->update().wait();
-
-    CPPUNIT_ASSERT(*srv->output("objects", 0).lock() == *series1);
-    CPPUNIT_ASSERT(*srv->output("objects", 1).lock() == *series2);
-
-    activity1->erase("req2");
-
-    CPPUNIT_ASSERT_NO_THROW(srv->update().get());
-
-    CPPUNIT_ASSERT(*srv->output("objects", 0).lock() == *series1);
-    CPPUNIT_ASSERT(srv->output("objects", 1).lock() == nullptr);
-
-    activity_set->clear();
-    CPPUNIT_ASSERT_THROW(srv->update().get(), sight::data::exception);
-
-    CPPUNIT_ASSERT(srv->output("objects", 0).lock() == nullptr);
-    CPPUNIT_ASSERT(srv->output("objects", 1).lock() == nullptr);
-
-    srv->stop().wait();
-    sight::service::remove(srv);
-}
-
-//------------------------------------------------------------------------------
-
-void get_activity_object_test::invalid_activity()
-{
-    auto activity_set = std::make_shared<sight::data::activity_set>();
-
-    sight::service::base::sptr srv = sight::service::add("sight::module::data::get_activity_object");
-    CPPUNIT_ASSERT(srv);
-    CPPUNIT_ASSERT(srv->is_a("sight::module::data::get_activity_object"));
-
-    // create different series
-    sight::data::series::sptr series1     = std::make_shared<sight::data::model_series>();
-    sight::data::activity::sptr activity1 = std::make_shared<sight::data::activity>();
-    activity1->set_activity_config_id("config1");
-    (*activity1)["req1"] = series1;
-    activity_set->push_back(activity1);
-
-    service::config_t config;
-    std::stringstream config_string;
-    config_string
-    << R"(<id>config_unknown</id>)"
-       R"(<out group="objects">)"
-       R"(<key name="req1" uid="object1"/>)"
-       R"(<key name="req2" uid="object2"/>)"
-       R"(</out>)";
-    boost::property_tree::read_xml(config_string, config);
-    srv->set_config(config);
-    srv->set_input(activity_set, "activity_set");
-    srv->configure();
-    srv->start().wait();
-    CPPUNIT_ASSERT_THROW(srv->update().get(), sight::data::exception);
-
-    srv->stop().wait();
-    sight::service::remove(srv);
-}
-
-//------------------------------------------------------------------------------
-
-} // namespace sight::module::data::ut
+} // TEST_SUITE("sight::module::data::get_activity_object")

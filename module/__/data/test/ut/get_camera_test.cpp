@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2025 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,14 +19,11 @@
  *
  ***********************************************************************/
 
-#include "get_camera_test.hpp"
-
-#include "data/exception.hpp"
-
 #include <core/runtime/runtime.hpp>
 
 #include <data/camera.hpp>
 #include <data/camera_set.hpp>
+#include <data/exception.hpp>
 
 #include <service/base.hpp>
 #include <service/op.hpp>
@@ -34,310 +31,296 @@
 #include <boost/config.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 
+#include <doctest/doctest.h>
+
 #include <sstream>
 
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::data::ut::get_camera_test);
-
-namespace sight::module::data::ut
+TEST_SUITE("sight::module::data::get_camera")
 {
+//------------------------------------------------------------------------------
+
+    TEST_CASE("extracts_camera_from_camera_set")
+    {
+        // Set up context before running a test.
+        sight::core::runtime::init();
+        auto module = sight::core::runtime::load_module(std::string("sight::module::data"));
+
+        // Create a camera series.
+        sight::data::camera_set::sptr camera_set = std::make_shared<sight::data::camera_set>();
+        // create service
+        sight::service::base::sptr get_camera_srv = sight::service::add("sight::module::data::get_camera");
+        CHECK(get_camera_srv->is_a("sight::module::data::get_camera"));
+
+        // ------------------ create a matrix ----------------------
+        sight::data::matrix4::sptr matrix = std::make_shared<sight::data::matrix4>();
+        // -- Camera 1 --
+        sight::data::camera::sptr camera1 = std::make_shared<sight::data::camera>();
+        // -- Camera 2 --
+        sight::data::camera::sptr camera2 = std::make_shared<sight::data::camera>();
+
+        camera_set->add_camera(camera1);
+        camera_set->add_camera(camera2);
+        CHECK_EQ(camera_set->size(), std::size_t(2));
+        // -------------Set extrinsic Matrix-----------------
+        camera_set->set_extrinsic_matrix(0, matrix);
+
+        sight::service::config_t config;
+        std::stringstream config_string;
+        config_string
+        << "<out group=\"camera\">"
+           "<key index=\"0\" uid=\"DCamera\"/>"
+           "<key index=\"1\" uid=\"RGBCamera\"/>"
+           "</out>"
+           "<out group=\"extrinsic\">"
+           "<key index=\"0\" uid=\"extrinsic\"/>"
+           "</out>";
+        boost::property_tree::read_xml(config_string, config);
+
+        get_camera_srv->set_config(config);
+        get_camera_srv->set_inout(camera_set, "camera_set");
+        get_camera_srv->configure();
+        get_camera_srv->start().wait();
+
+        CHECK_NOTHROW(get_camera_srv->update().get());
+        CHECK_EQ(get_camera_srv->output("camera", 0).lock()->get_id(), camera1->get_id());
+        CHECK_EQ(get_camera_srv->output("camera", 1).lock()->get_id(), camera2->get_id());
+        CHECK_EQ(get_camera_srv->output("extrinsic", 0).lock()->get_id(), matrix->get_id());
+
+        get_camera_srv->stop().wait();
+        sight::service::remove(get_camera_srv);
+    }
 
 //------------------------------------------------------------------------------
 
-void get_camera_test::setUp()
-{
-    // Set up context before running a test.
-    core::runtime::init();
-    auto module = core::runtime::load_module(std::string("sight::module::data"));
-}
+    TEST_CASE("extracts_invalid_camera_set")
+    {
+        // create service
+        sight::service::base::sptr get_camera_srv = sight::service::add("sight::module::data::get_camera");
+        CHECK(get_camera_srv->is_a("sight::module::data::get_camera"));
+        sight::service::config_t config;
+        std::stringstream config_string;
+        config_string
+        << "<out group=\"camera\">"
+           "<key index=\"0\" uid=\"DCamera\"/>"
+           "<key index=\"1\" uid=\"RGBCamera\"/>"
+           "</out>"
+           "<out group=\"extrinsic\">"
+           "<key index=\"0\" uid=\"extrinsic\"/>"
+           "</out>";
+        boost::property_tree::read_xml(config_string, config);
+
+        get_camera_srv->set_config(config);
+        get_camera_srv->set_inout(nullptr, "camera_set");
+        get_camera_srv->configure();
+        get_camera_srv->start().wait();
+
+        CHECK_THROWS_AS(get_camera_srv->update().get(), sight::data::exception);
+        get_camera_srv->stop().wait();
+        sight::service::remove(get_camera_srv);
+    }
 
 //------------------------------------------------------------------------------
 
-void get_camera_test::tearDown()
-{
-}
+    TEST_CASE("extracts_valid_extrinsic")
+    {
+        // // Create a camera series.
+        sight::data::camera_set::sptr camera_set = std::make_shared<sight::data::camera_set>();
+        // create service
+        sight::service::base::sptr get_camera_srv = sight::service::add("sight::module::data::get_camera");
+        CHECK(get_camera_srv->is_a("sight::module::data::get_camera"));
+        // -- Camera 1 --
+        sight::data::camera::sptr camera1 = std::make_shared<sight::data::camera>();
+        // -- Camera 2 --
+        sight::data::camera::sptr camera2 = std::make_shared<sight::data::camera>();
+        camera_set->add_camera(camera1);
+        camera_set->add_camera(camera2);
+        CHECK_EQ(camera_set->size(), std::size_t(2));
+
+        sight::service::config_t config;
+        std::stringstream config_string;
+        config_string
+        << "<out group=\"camera\">"
+           "<key index=\"0\" uid=\"DCamera\"/>"
+           "<key index=\"1\" uid=\"RGBCamera\"/>"
+           "</out>";
+        boost::property_tree::read_xml(config_string, config);
+
+        get_camera_srv->set_config(config);
+        get_camera_srv->set_inout(camera_set, "camera_set");
+        get_camera_srv->configure();
+        get_camera_srv->start().wait();
+
+        CHECK_NOTHROW(get_camera_srv->update().get());
+        CHECK_EQ(get_camera_srv->output("camera", 0).lock()->get_id(), camera1->get_id());
+        CHECK_EQ(get_camera_srv->output("camera", 1).lock()->get_id(), camera2->get_id());
+        get_camera_srv->stop().wait();
+        sight::service::remove(get_camera_srv);
+    }
 
 //------------------------------------------------------------------------------
 
-void get_camera_test::extracts_camera_from_camera_set()
-{
-    // Create a camera series.
-    sight::data::camera_set::sptr camera_set = std::make_shared<sight::data::camera_set>();
-    // create service
-    sight::service::base::sptr get_camera_srv = sight::service::add("sight::module::data::get_camera");
-    CPPUNIT_ASSERT(get_camera_srv->is_a("sight::module::data::get_camera"));
+    TEST_CASE("extracts_valid_extrinsic1")
+    {
+        // // Create a camera series.
+        sight::data::camera_set::sptr camera_set = std::make_shared<sight::data::camera_set>();
+        // create service
+        sight::service::base::sptr get_camera_srv = sight::service::add("sight::module::data::get_camera");
+        CHECK(get_camera_srv->is_a("sight::module::data::get_camera"));
+        // -- Camera 1 --
+        sight::data::camera::sptr camera1 = std::make_shared<sight::data::camera>();
+        // -- Camera 2 --
+        sight::data::camera::sptr camera2 = std::make_shared<sight::data::camera>();
+        // ------------------ create a matrix ----------------------
+        sight::data::matrix4::sptr matrix = std::make_shared<sight::data::matrix4>();
 
-    // ------------------ create a matrix ----------------------
-    sight::data::matrix4::sptr matrix = std::make_shared<sight::data::matrix4>();
-    // -- Camera 1 --
-    sight::data::camera::sptr camera1 = std::make_shared<sight::data::camera>();
-    // -- Camera 2 --
-    sight::data::camera::sptr camera2 = std::make_shared<sight::data::camera>();
+        camera_set->add_camera(camera1);
+        camera_set->add_camera(camera2);
+        CHECK_EQ(camera_set->size(), std::size_t(2));
+        camera_set->set_extrinsic_matrix(0, matrix);
+        sight::service::config_t config;
+        std::stringstream config_string;
+        config_string
+        << "<out group=\"camera\">"
+           "<key index=\"0\" uid=\"DCamera\"/>"
+           "<key index=\"1\" uid=\"RGBCamera\"/>"
+           "</out>";
+        boost::property_tree::read_xml(config_string, config);
 
-    camera_set->add_camera(camera1);
-    camera_set->add_camera(camera2);
-    CPPUNIT_ASSERT_EQUAL(camera_set->size(), std::size_t(2));
-    // -------------Set extrinsic Matrix-----------------
-    camera_set->set_extrinsic_matrix(0, matrix);
+        get_camera_srv->set_config(config);
+        get_camera_srv->set_inout(camera_set, "camera_set");
+        get_camera_srv->configure();
+        get_camera_srv->start().wait();
 
-    service::config_t config;
-    std::stringstream config_string;
-    config_string
-    << "<out group=\"camera\">"
-       "<key index=\"0\" uid=\"DCamera\"/>"
-       "<key index=\"1\" uid=\"RGBCamera\"/>"
-       "</out>"
-       "<out group=\"extrinsic\">"
-       "<key index=\"0\" uid=\"extrinsic\"/>"
-       "</out>";
-    boost::property_tree::read_xml(config_string, config);
-
-    get_camera_srv->set_config(config);
-    get_camera_srv->set_inout(camera_set, "camera_set");
-    get_camera_srv->configure();
-    get_camera_srv->start().wait();
-
-    CPPUNIT_ASSERT_NO_THROW(get_camera_srv->update().get());
-    CPPUNIT_ASSERT_EQUAL(get_camera_srv->output("camera", 0).lock()->get_id(), camera1->get_id());
-    CPPUNIT_ASSERT_EQUAL(get_camera_srv->output("camera", 1).lock()->get_id(), camera2->get_id());
-    CPPUNIT_ASSERT_EQUAL(get_camera_srv->output("extrinsic", 0).lock()->get_id(), matrix->get_id());
-
-    get_camera_srv->stop().wait();
-    sight::service::remove(get_camera_srv);
-}
+        CHECK_NOTHROW(get_camera_srv->update().get());
+        CHECK_EQ(get_camera_srv->output("camera", 0).lock()->get_id(), camera1->get_id());
+        CHECK_EQ(get_camera_srv->output("camera", 1).lock()->get_id(), camera2->get_id());
+        get_camera_srv->stop().wait();
+        sight::service::remove(get_camera_srv);
+    }
 
 //------------------------------------------------------------------------------
 
-void get_camera_test::extracts_invalid_camera_set()
-{
-    // create service
-    sight::service::base::sptr get_camera_srv = sight::service::add("sight::module::data::get_camera");
-    CPPUNIT_ASSERT(get_camera_srv->is_a("sight::module::data::get_camera"));
-    service::config_t config;
-    std::stringstream config_string;
-    config_string
-    << "<out group=\"camera\">"
-       "<key index=\"0\" uid=\"DCamera\"/>"
-       "<key index=\"1\" uid=\"RGBCamera\"/>"
-       "</out>"
-       "<out group=\"extrinsic\">"
-       "<key index=\"0\" uid=\"extrinsic\"/>"
-       "</out>";
-    boost::property_tree::read_xml(config_string, config);
+    TEST_CASE("extracts_camera_out_of_bound_index")
+    {
+        // Create a camera series.
+        auto camera_set = std::make_shared<sight::data::camera_set>();
+        // create service
+        auto get_camera_srv = sight::service::add("sight::module::data::get_camera");
+        CHECK(get_camera_srv->is_a("sight::module::data::get_camera"));
+        // -- Camera 1 --
+        auto camera1 = std::make_shared<sight::data::camera>();
+        // -- Camera 2 --
+        auto camera2 = std::make_shared<sight::data::camera>();
 
-    get_camera_srv->set_config(config);
-    get_camera_srv->set_inout(nullptr, "camera_set");
-    get_camera_srv->configure();
-    get_camera_srv->start().wait();
+        camera_set->add_camera(camera1);
+        camera_set->add_camera(camera2);
+        CHECK_EQ(camera_set->size(), std::size_t(2));
 
-    CPPUNIT_ASSERT_THROW(get_camera_srv->update().get(), sight::data::exception);
-    get_camera_srv->stop().wait();
-    sight::service::remove(get_camera_srv);
-}
+        sight::service::config_t config;
+        std::stringstream config_string;
+        config_string
+        << "<out group=\"camera\">"
+           "<key index=\"0\" uid=\"DCamera\"/>"
+           "<key index=\"5\" uid=\"RGBCamera\"/>"
+           "</out>"
+           "<out group=\"extrinsic\">"
+           "<key index=\"1\" uid=\"extrinsic\"/>"
+           "</out>";
+        boost::property_tree::read_xml(config_string, config);
 
-//------------------------------------------------------------------------------
+        get_camera_srv->set_config(config);
+        get_camera_srv->set_inout(camera_set, "camera_set");
+        get_camera_srv->configure();
+        get_camera_srv->start().wait();
 
-void get_camera_test::extracts_valid_extrinsic()
-{
-    // // Create a camera series.
-    sight::data::camera_set::sptr camera_set = std::make_shared<sight::data::camera_set>();
-    // create service
-    sight::service::base::sptr get_camera_srv = sight::service::add("sight::module::data::get_camera");
-    CPPUNIT_ASSERT(get_camera_srv->is_a("sight::module::data::get_camera"));
-    // -- Camera 1 --
-    sight::data::camera::sptr camera1 = std::make_shared<sight::data::camera>();
-    // -- Camera 2 --
-    sight::data::camera::sptr camera2 = std::make_shared<sight::data::camera>();
-    camera_set->add_camera(camera1);
-    camera_set->add_camera(camera2);
-    CPPUNIT_ASSERT_EQUAL(camera_set->size(), std::size_t(2));
-
-    service::config_t config;
-    std::stringstream config_string;
-    config_string
-    << "<out group=\"camera\">"
-       "<key index=\"0\" uid=\"DCamera\"/>"
-       "<key index=\"1\" uid=\"RGBCamera\"/>"
-       "</out>";
-    boost::property_tree::read_xml(config_string, config);
-
-    get_camera_srv->set_config(config);
-    get_camera_srv->set_inout(camera_set, "camera_set");
-    get_camera_srv->configure();
-    get_camera_srv->start().wait();
-
-    CPPUNIT_ASSERT_NO_THROW(get_camera_srv->update().get());
-    CPPUNIT_ASSERT_EQUAL(get_camera_srv->output("camera", 0).lock()->get_id(), camera1->get_id());
-    CPPUNIT_ASSERT_EQUAL(get_camera_srv->output("camera", 1).lock()->get_id(), camera2->get_id());
-    get_camera_srv->stop().wait();
-    sight::service::remove(get_camera_srv);
-}
+        CHECK_THROWS_AS(get_camera_srv->update().get(), std::out_of_range);
+        get_camera_srv->stop().wait();
+        sight::service::remove(get_camera_srv);
+    }
 
 //------------------------------------------------------------------------------
 
-void get_camera_test::extracts_valid_extrinsic1()
-{
-    // // Create a camera series.
-    sight::data::camera_set::sptr camera_set = std::make_shared<sight::data::camera_set>();
-    // create service
-    sight::service::base::sptr get_camera_srv = sight::service::add("sight::module::data::get_camera");
-    CPPUNIT_ASSERT(get_camera_srv->is_a("sight::module::data::get_camera"));
-    // -- Camera 1 --
-    sight::data::camera::sptr camera1 = std::make_shared<sight::data::camera>();
-    // -- Camera 2 --
-    sight::data::camera::sptr camera2 = std::make_shared<sight::data::camera>();
-    // ------------------ create a matrix ----------------------
-    sight::data::matrix4::sptr matrix = std::make_shared<sight::data::matrix4>();
+    TEST_CASE("extracts_extrinsic_out_of_bound_index")
+    {
+        // Create a camera series.
+        sight::data::camera_set::sptr camera_set = std::make_shared<sight::data::camera_set>();
+        // create service
+        sight::service::base::sptr get_camera_srv = sight::service::add("sight::module::data::get_camera");
+        CHECK(get_camera_srv->is_a("sight::module::data::get_camera"));
 
-    camera_set->add_camera(camera1);
-    camera_set->add_camera(camera2);
-    CPPUNIT_ASSERT_EQUAL(camera_set->size(), std::size_t(2));
-    camera_set->set_extrinsic_matrix(0, matrix);
-    service::config_t config;
-    std::stringstream config_string;
-    config_string
-    << "<out group=\"camera\">"
-       "<key index=\"0\" uid=\"DCamera\"/>"
-       "<key index=\"1\" uid=\"RGBCamera\"/>"
-       "</out>";
-    boost::property_tree::read_xml(config_string, config);
+        // -- Camera 1 --
+        sight::data::camera::sptr camera1 = std::make_shared<sight::data::camera>();
+        // -- Camera 2 --
+        sight::data::camera::sptr camera2 = std::make_shared<sight::data::camera>();
+        camera_set->add_camera(camera1);
+        camera_set->add_camera(camera2);
+        CHECK_EQ(camera_set->size(), std::size_t(2));
 
-    get_camera_srv->set_config(config);
-    get_camera_srv->set_inout(camera_set, "camera_set");
-    get_camera_srv->configure();
-    get_camera_srv->start().wait();
+        sight::service::config_t config;
+        std::stringstream config_string;
+        config_string
+        << "<out group=\"camera\">"
+           "<key index=\"0\" uid=\"DCamera\"/>"
+           "<key index=\"1\" uid=\"RGBCamera\"/>"
+           "</out>"
+           "<out group=\"extrinsic\">"
+           "<key index=\"5\" uid=\"extrinsic\"/>"
+           "</out>";
+        boost::property_tree::read_xml(config_string, config);
 
-    CPPUNIT_ASSERT_NO_THROW(get_camera_srv->update().get());
-    CPPUNIT_ASSERT_EQUAL(get_camera_srv->output("camera", 0).lock()->get_id(), camera1->get_id());
-    CPPUNIT_ASSERT_EQUAL(get_camera_srv->output("camera", 1).lock()->get_id(), camera2->get_id());
-    get_camera_srv->stop().wait();
-    sight::service::remove(get_camera_srv);
-}
+        get_camera_srv->set_config(config);
+        get_camera_srv->set_inout(camera_set, "camera_set");
+        get_camera_srv->configure();
+        get_camera_srv->start().wait();
 
-//------------------------------------------------------------------------------
-
-void get_camera_test::extracts_camera_out_of_bound_index()
-{
-    // Create a camera series.
-    auto camera_set = std::make_shared<sight::data::camera_set>();
-    // create service
-    auto get_camera_srv = sight::service::add("sight::module::data::get_camera");
-    CPPUNIT_ASSERT(get_camera_srv->is_a("sight::module::data::get_camera"));
-    // -- Camera 1 --
-    auto camera1 = std::make_shared<sight::data::camera>();
-    // -- Camera 2 --
-    auto camera2 = std::make_shared<sight::data::camera>();
-
-    camera_set->add_camera(camera1);
-    camera_set->add_camera(camera2);
-    CPPUNIT_ASSERT_EQUAL(camera_set->size(), std::size_t(2));
-
-    service::config_t config;
-    std::stringstream config_string;
-    config_string
-    << "<out group=\"camera\">"
-       "<key index=\"0\" uid=\"DCamera\"/>"
-       "<key index=\"5\" uid=\"RGBCamera\"/>"
-       "</out>"
-       "<out group=\"extrinsic\">"
-       "<key index=\"1\" uid=\"extrinsic\"/>"
-       "</out>";
-    boost::property_tree::read_xml(config_string, config);
-
-    get_camera_srv->set_config(config);
-    get_camera_srv->set_inout(camera_set, "camera_set");
-    get_camera_srv->configure();
-    get_camera_srv->start().wait();
-
-    CPPUNIT_ASSERT_THROW(get_camera_srv->update().get(), std::out_of_range);
-    get_camera_srv->stop().wait();
-    sight::service::remove(get_camera_srv);
-}
+        CHECK_THROWS_AS(get_camera_srv->update().get(), std::out_of_range);
+        get_camera_srv->stop().wait();
+        sight::service::remove(get_camera_srv);
+    }
 
 //------------------------------------------------------------------------------
 
-void get_camera_test::extracts_extrinsic_out_of_bound_index()
-{
-    // Create a camera series.
-    sight::data::camera_set::sptr camera_set = std::make_shared<sight::data::camera_set>();
-    // create service
-    sight::service::base::sptr get_camera_srv = sight::service::add("sight::module::data::get_camera");
-    CPPUNIT_ASSERT(get_camera_srv->is_a("sight::module::data::get_camera"));
+    TEST_CASE("extracts_invalid_extrinsic")
+    {
+        // Create a camera series.
+        sight::data::camera_set::sptr camera_set = std::make_shared<sight::data::camera_set>();
+        // create service
+        sight::service::base::sptr get_camera_srv = sight::service::add("sight::module::data::get_camera");
+        CHECK(get_camera_srv->is_a("sight::module::data::get_camera"));
+        // -- Camera 1 --
+        sight::data::camera::sptr camera1 = std::make_shared<sight::data::camera>();
+        // -- Camera 2 --
+        sight::data::camera::sptr camera2 = std::make_shared<sight::data::camera>();
 
-    // -- Camera 1 --
-    sight::data::camera::sptr camera1 = std::make_shared<sight::data::camera>();
-    // -- Camera 2 --
-    sight::data::camera::sptr camera2 = std::make_shared<sight::data::camera>();
-    camera_set->add_camera(camera1);
-    camera_set->add_camera(camera2);
-    CPPUNIT_ASSERT_EQUAL(camera_set->size(), std::size_t(2));
+        camera_set->add_camera(camera1);
+        camera_set->add_camera(camera2);
+        CHECK_EQ(camera_set->size(), std::size_t(2));
 
-    service::config_t config;
-    std::stringstream config_string;
-    config_string
-    << "<out group=\"camera\">"
-       "<key index=\"0\" uid=\"DCamera\"/>"
-       "<key index=\"1\" uid=\"RGBCamera\"/>"
-       "</out>"
-       "<out group=\"extrinsic\">"
-       "<key index=\"5\" uid=\"extrinsic\"/>"
-       "</out>";
-    boost::property_tree::read_xml(config_string, config);
+        sight::service::config_t config;
+        std::stringstream config_string;
+        config_string
+        << "<out group=\"camera\">"
+           "<key index=\"0\" uid=\"DCamera\"/>"
+           "<key index=\"1\" uid=\"RGBCamera\"/>"
+           "</out>"
+           "<out group=\"extrinsic\">"
+           "<key index=\"1\" uid=\"extrinsic\"/>"
+           "</out>"
+        ;
+        boost::property_tree::read_xml(config_string, config);
 
-    get_camera_srv->set_config(config);
-    get_camera_srv->set_inout(camera_set, "camera_set");
-    get_camera_srv->configure();
-    get_camera_srv->start().wait();
+        get_camera_srv->set_config(config);
+        get_camera_srv->set_inout(camera_set, "camera_set");
+        get_camera_srv->configure();
+        get_camera_srv->start().wait();
 
-    CPPUNIT_ASSERT_THROW(get_camera_srv->update().get(), std::out_of_range);
-    get_camera_srv->stop().wait();
-    sight::service::remove(get_camera_srv);
-}
+        CHECK_THROWS_AS(get_camera_srv->update().get(), sight::core::exception);
+        CHECK_EQ(get_camera_srv->output("camera", 0).lock()->get_id(), camera1->get_id());
+        CHECK_EQ(get_camera_srv->output("camera", 1).lock()->get_id(), camera2->get_id());
 
-//------------------------------------------------------------------------------
-
-void get_camera_test::extracts_invalid_extrinsic()
-{
-    // Create a camera series.
-    sight::data::camera_set::sptr camera_set = std::make_shared<sight::data::camera_set>();
-    // create service
-    sight::service::base::sptr get_camera_srv = sight::service::add("sight::module::data::get_camera");
-    CPPUNIT_ASSERT(get_camera_srv->is_a("sight::module::data::get_camera"));
-    // -- Camera 1 --
-    sight::data::camera::sptr camera1 = std::make_shared<sight::data::camera>();
-    // -- Camera 2 --
-    sight::data::camera::sptr camera2 = std::make_shared<sight::data::camera>();
-
-    camera_set->add_camera(camera1);
-    camera_set->add_camera(camera2);
-    CPPUNIT_ASSERT_EQUAL(camera_set->size(), std::size_t(2));
-
-    service::config_t config;
-    std::stringstream config_string;
-    config_string
-    << "<out group=\"camera\">"
-       "<key index=\"0\" uid=\"DCamera\"/>"
-       "<key index=\"1\" uid=\"RGBCamera\"/>"
-       "</out>"
-       "<out group=\"extrinsic\">"
-       "<key index=\"1\" uid=\"extrinsic\"/>"
-       "</out>"
-    ;
-    boost::property_tree::read_xml(config_string, config);
-
-    get_camera_srv->set_config(config);
-    get_camera_srv->set_inout(camera_set, "camera_set");
-    get_camera_srv->configure();
-    get_camera_srv->start().wait();
-
-    CPPUNIT_ASSERT_THROW(get_camera_srv->update().get(), core::exception);
-    CPPUNIT_ASSERT_EQUAL(get_camera_srv->output("camera", 0).lock()->get_id(), camera1->get_id());
-    CPPUNIT_ASSERT_EQUAL(get_camera_srv->output("camera", 1).lock()->get_id(), camera2->get_id());
-
-    get_camera_srv->stop().wait();
-    sight::service::remove(get_camera_srv);
-}
+        get_camera_srv->stop().wait();
+        sight::service::remove(get_camera_srv);
+    }
 
 //------------------------------------------------------------------------------
-
-} // namespace sight::module::data::ut
+} // TEST_SUITE("sight::module::data::get_camera")
