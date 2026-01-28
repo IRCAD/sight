@@ -93,6 +93,14 @@
     </extension>
 
     <extension implements="sight::service::extension::factory">
+        <type>sight::service::controller</type>
+        <service>sight::module::data::inverse</service>
+        <object key="source">sight::data::string_serializable</object>
+        <object key="target">sight::data::string_serializable</object>
+        <desc>Inverts a boolean value from a string_serializable source</desc>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
         <type>sight::service::filter</type>
         <service>sight::module::data::translate</service>
         <object key="key">sight::data::string_serializable</object>
