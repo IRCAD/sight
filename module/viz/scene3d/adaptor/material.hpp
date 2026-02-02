@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -162,6 +162,9 @@ public:
     /// Sets the representation mode.
     void set_representation_mode(data::material::representation_t _representation_mode);
 
+    /// Sets the options mode.
+    void set_options_mode(data::material::options_t _options_mode);
+
     /// Gets the internal material code.
     sight::viz::scene3d::material::generic* get_material_impl() const;
 
@@ -238,6 +241,9 @@ private:
     /// Defines the configured representation mode.
     sight::data::material::representation_t m_representation_mode {sight::data::material::representation_t::surface};
 
+    /// Defines the options mode.
+    sight::data::material::options_t m_options_mode {sight::data::material::options_t::standard};
+
     /// Implementation when we instantiate the standard material
     sight::viz::scene3d::material::standard::uptr m_standard_material_impl;
 
@@ -312,6 +318,13 @@ inline data::material::representation_t material::representation_mode() const
 inline void material::set_representation_mode(data::material::representation_t _representation_mode)
 {
     m_representation_mode = _representation_mode;
+}
+
+//------------------------------------------------------------------------------
+
+inline void material::set_options_mode(data::material::options_t _options_mode)
+{
+    m_options_mode = _options_mode;
 }
 
 //------------------------------------------------------------------------------

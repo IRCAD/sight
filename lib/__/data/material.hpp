@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -217,7 +217,10 @@ public:
     ) override;
 
     // Unified ways to convert representations from string for service definitions
-    SIGHT_DATA_API static representation_t string_to_representation_mode(std::string _str);
+    SIGHT_DATA_API static representation_t string_to_representation_mode(const std::string& _str);
+
+    // Unified ways to convert options from string for service definitions
+    SIGHT_DATA_API static options_t string_to_options_mode(const std::string& _str);
 
 protected:
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -108,6 +108,8 @@ namespace sight::module::viz::scene3d::adaptor
  *       material.
  *  - \b texture_name (optional, default=""): the name of the Ogre texture that the mesh will use.
  *  - \b shading (optional, none/flat/phong/ambient, default=phong): name of the used shading mode.
+ *  - \b representation (optional, surface/point/wireframe/edge, default=surface): representation mode of the material.
+ *  - \b options (optional, none/vertices_normals/cells_normals/selected, default=none): options mode of the material.
  *  - \b query_flags (optional, uint32, default=0x40000000): Used for picking. Picked only by pickers whose mask that
  *       match the flag.
  */
@@ -276,6 +278,12 @@ private:
 
     /// Defines the configured shading mode.
     std::string m_shading_mode;
+
+    /// Defines the configured representation mode.
+    boost::optional<sight::data::material::representation_t> m_representation_mode;
+
+    /// Defines the configured options mode.
+    boost::optional<sight::data::material::options_t> m_options_mode;
 
     /// Defines if the mesh changes dynamically, defined in m_configuration.
     bool m_is_dynamic {false};

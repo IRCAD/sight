@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,6 +39,7 @@
 
 #include <OGRE/OgreAxisAlignedBox.h>
 
+#include <algorithm>
 #include <cstdint>
 
 namespace sight::module::viz::scene3d::adaptor
@@ -129,6 +130,18 @@ void mesh::configuring()
             "26.0",
             m_shading_mode
         );
+
+        auto representation_mode = config.get_optional<std::string>(CONFIG + "representation");
+        if(representation_mode.has_value())
+        {
+            m_representation_mode = sight::data::material::string_to_representation_mode(representation_mode.value());
+        }
+
+        auto options_mode = config.get_optional<std::string>(CONFIG + "options");
+        if(options_mode.has_value())
+        {
+            m_options_mode = sight::data::material::string_to_options_mode(options_mode.value());
+        }
     }
 
     this->set_transform_id(
@@ -186,9 +199,8 @@ void mesh::starting()
         auto mtl_adaptors = this->render_service()->get_adaptors<module::viz::scene3d::adaptor::material>();
 
         auto result =
-            std::find_if(
-                mtl_adaptors.begin(),
-                mtl_adaptors.end(),
+            std::ranges::find_if(
+                mtl_adaptors,
                 [this](const module::viz::scene3d::adaptor::material::sptr& _srv)
             {
                 return _srv->get_material_name() == m_material_name;
@@ -465,7 +477,12 @@ void mesh::update_new_material_adaptor(data::mesh::csptr _mesh)
             m_material_adaptor->set_shading_mode(m_shading_mode);
             m_material_adaptor->set_material_template_name(m_material_template_name);
 
-            m_material_adaptor->set_representation_mode(m_material->get_representation_mode());
+            m_material_adaptor->set_representation_mode(
+                m_representation_mode.has_value() ? *m_representation_mode : m_material->get_representation_mode()
+            );
+            m_material_adaptor->set_options_mode(
+                m_options_mode.has_value() ? *m_options_mode : m_material->get_options_mode()
+            );
 
             // We know that we are in the case of a R2VB material, so no need to set the diffuse texture (no FP...)
             m_material_adaptor->set_texture_name(m_texture_name);

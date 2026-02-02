@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,8 +39,6 @@
 #include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/helper/shading.hpp>
 #include <viz/scene3d/utils.hpp>
-
-#include <string>
 
 namespace sight::module::viz::scene3d::adaptor
 {
@@ -92,6 +90,9 @@ void material::configuring(const config_t& _config)
 
     // Make sure the representation is properly defined
     m_representation_mode = sight::data::material::string_to_representation_mode(representation_mode);
+
+    const auto options_mode = _config.get<std::string>(CONFIG + "options", "standard");
+    m_options_mode = sight::data::material::string_to_options_mode(options_mode);
 }
 
 //------------------------------------------------------------------------------
@@ -145,6 +146,7 @@ void material::starting()
         }
 
         material->set_representation_mode(m_representation_mode);
+        material->set_options_mode(m_options_mode);
 
         if(const auto material_field = material->get_field("material", nullptr); material_field != nullptr)
         {
@@ -413,9 +415,8 @@ void material::set_texture_name(const std::string& _texture_name)
     {
         auto texture_adaptors = this->render_service()->get_adaptors<sight::module::viz::scene3d::adaptor::texture>();
         auto result           =
-            std::find_if(
-                texture_adaptors.begin(),
-                texture_adaptors.end(),
+            std::ranges::find_if(
+                texture_adaptors,
                 [_texture_name](const module::viz::scene3d::adaptor::texture::sptr& _srv)
             {
                 return _srv->get_texture_name() == _texture_name;
