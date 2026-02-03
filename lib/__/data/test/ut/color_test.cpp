@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,178 +20,162 @@
  *
  ***********************************************************************/
 
-#include "color_test.hpp"
-
 #include <data/color.hpp>
 
-#include <exception>
-#include <iostream>
-#include <map>
-#include <ostream>
-#include <vector>
+#include <doctest/doctest.h>
 
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::color_test);
-
-namespace sight::data::ut
+TEST_SUITE("sight::data::color")
 {
+//------------------------------------------------------------------------------
+
+    TEST_CASE("basic")
+    {
+        //-----------test values
+        const float r = 0.2F;
+        const float g = 0.8F;
+        const float b = 0.5F;
+        const float a = 0.6F;
+
+        auto color = std::make_shared<sight::data::color>(r, g, b, a);
+
+        CHECK_EQ(color->red(), r);
+        CHECK_EQ(color->green(), g);
+        CHECK_EQ(color->blue(), b);
+        CHECK_EQ(color->alpha(), a);
+
+        CHECK(color->is_type_of("sight::data::color"));
+        CHECK(color->is_type_of("sight::data::string_serializable"));
+
+        auto color2 = std::make_shared<sight::data::color>(r, g, b, a);
+        CHECK(*color == *color2);
+    }
 
 //------------------------------------------------------------------------------
 
-void color_test::setUp()
-{
-    // Set up context before running a test.
-}
+    TEST_CASE("accessors")
+    {
+        //-----------test values
+        const float r = 0.2F;
+        const float g = 0.8F;
+        const float b = 0.5F;
+        const float a = 0.6F;
+
+        auto color = std::make_shared<sight::data::color>();
+
+        sight::data::color::array_t array;
+        array[0] = r;
+        array[1] = g;
+        array[2] = b;
+        array[3] = a;
+
+        color->set_rgba(array);
+
+        CHECK_EQ(color->rgba()[0], r);
+        CHECK_EQ(color->rgba()[1], g);
+        CHECK_EQ(color->rgba()[2], b);
+        CHECK_EQ(color->rgba()[3], a);
+
+        auto color2 = std::make_shared<sight::data::color>();
+        CHECK(*color != *color2);
+
+        color2->set_rgba(array);
+        CHECK(*color == *color2);
+    }
 
 //------------------------------------------------------------------------------
 
-void color_test::tearDown()
-{
-    // Clean up after the test run.
-}
+    TEST_CASE("string")
+    {
+        // fuchsia string value
+        const std::string fuchsia = "#FF006E";
+        // fuchsia float values
+        const float r = 1.F;
+        const float g = 0.F;
+        const float b = 110.F / 255.F;
+        const float a = 1.F;
+
+        sight::data::color::sptr color = std::make_shared<sight::data::color>();
+
+        color->from_string(fuchsia);
+
+        CHECK_EQ(color->rgba()[0], r);
+        CHECK_EQ(color->rgba()[1], g);
+        CHECK_EQ(color->rgba()[2], b);
+        CHECK_EQ(color->rgba()[3], a);
+
+        auto color2 = std::make_shared<sight::data::color>();
+        CHECK(*color != *color2);
+
+        color2->from_string(fuchsia);
+        CHECK(*color == *color2);
+
+        const std::string fuchsia_converted_to_str = color->to_string();
+        CHECK_EQ(std::string("#FF006EFF"), fuchsia_converted_to_str);
+
+        sight::data::color color3;
+        color3.from_string("1.0;0.;0.4314;1.0");
+        CHECK_EQ(color->to_string(), color3.to_string());
+
+        sight::data::color color4("#339966CC");
+        CHECK_EQ(sight::data::color(0.2F, 0.6F, 0.4F, 0.8F), color4);
+    }
 
 //------------------------------------------------------------------------------
 
-void color_test::basic()
-{
-    //-----------test values
-    const float r = 0.2F;
-    const float g = 0.8F;
-    const float b = 0.5F;
-    const float a = 0.6F;
+    TEST_CASE("equality")
+    {
+        auto color1 = std::make_shared<sight::data::color>();
+        auto color2 = std::make_shared<sight::data::color>();
 
-    auto color = std::make_shared<data::color>(r, g, b, a);
+        CHECK(*color1 == *color2);
+        CHECK(!(*color1 != *color2));
 
-    CPPUNIT_ASSERT_EQUAL(color->red(), r);
-    CPPUNIT_ASSERT_EQUAL(color->green(), g);
-    CPPUNIT_ASSERT_EQUAL(color->blue(), b);
-    CPPUNIT_ASSERT_EQUAL(color->alpha(), a);
-
-    CPPUNIT_ASSERT(color->is_type_of("sight::data::color"));
-    CPPUNIT_ASSERT(color->is_type_of("sight::data::string_serializable"));
-
-    auto color2 = std::make_shared<data::color>(r, g, b, a);
-    CPPUNIT_ASSERT(*color == *color2);
-}
-
-//------------------------------------------------------------------------------
-
-void color_test::accessors()
-{
-    //-----------test values
-    const float r = 0.2F;
-    const float g = 0.8F;
-    const float b = 0.5F;
-    const float a = 0.6F;
-
-    auto color = std::make_shared<data::color>();
-
-    data::color::array_t array;
-    array[0] = r;
-    array[1] = g;
-    array[2] = b;
-    array[3] = a;
-
-    color->set_rgba(array);
-
-    CPPUNIT_ASSERT_EQUAL(color->rgba()[0], r);
-    CPPUNIT_ASSERT_EQUAL(color->rgba()[1], g);
-    CPPUNIT_ASSERT_EQUAL(color->rgba()[2], b);
-    CPPUNIT_ASSERT_EQUAL(color->rgba()[3], a);
-
-    auto color2 = std::make_shared<data::color>();
-    CPPUNIT_ASSERT(*color != *color2);
-
-    color2->set_rgba(array);
-    CPPUNIT_ASSERT(*color == *color2);
-}
-
-//------------------------------------------------------------------------------
-
-void color_test::string()
-{
-    // fuchsia string value
-    const std::string fuchsia = "#FF006E";
-    // fuchsia float values
-    const float r = 1.F;
-    const float g = 0.F;
-    const float b = 110.F / 255.F;
-    const float a = 1.F;
-
-    data::color::sptr color = std::make_shared<data::color>();
-
-    color->from_string(fuchsia);
-
-    CPPUNIT_ASSERT_EQUAL(color->rgba()[0], r);
-    CPPUNIT_ASSERT_EQUAL(color->rgba()[1], g);
-    CPPUNIT_ASSERT_EQUAL(color->rgba()[2], b);
-    CPPUNIT_ASSERT_EQUAL(color->rgba()[3], a);
-
-    auto color2 = std::make_shared<data::color>();
-    CPPUNIT_ASSERT(*color != *color2);
-
-    color2->from_string(fuchsia);
-    CPPUNIT_ASSERT(*color == *color2);
-
-    const std::string fuchsia_converted_to_str = color->to_string();
-    CPPUNIT_ASSERT_EQUAL(std::string("#FF006EFF"), fuchsia_converted_to_str);
-
-    data::color color3;
-    color3.from_string("1.0;0.;0.4314;1.0");
-    CPPUNIT_ASSERT_EQUAL(color->to_string(), color3.to_string());
-
-    data::color color4("#339966CC");
-    CPPUNIT_ASSERT_EQUAL(data::color(0.2F, 0.6F, 0.4F, 0.8F), color4);
-}
-
-//------------------------------------------------------------------------------
-
-void color_test::equality_test()
-{
-    auto color1 = std::make_shared<data::color>();
-    auto color2 = std::make_shared<data::color>();
-
-    CPPUNIT_ASSERT(*color1 == *color2 && !(*color1 != *color2));
-
-    // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
+        // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
     #define TEST(...) \
             color1->set_rgba(__VA_ARGS__); \
-            CPPUNIT_ASSERT_MESSAGE( \
-                "The colors should be different when the first is set with " #__VA_ARGS__, \
-                *color1 != *color2 && !(*color1 == *color2) \
+            CHECK_MESSAGE( \
+                *color1 != *color2, \
+                "The colors should be different when the first is set with " #__VA_ARGS__ \
+            ); \
+            CHECK_MESSAGE( \
+                !(*color1 == *color2), \
+                "The colors should be different when the first is set with " #__VA_ARGS__ \
             ); \
             color2->set_rgba(color1->rgba()); \
-            CPPUNIT_ASSERT_MESSAGE( \
-                "The colors should be equal when both are set with " #__VA_ARGS__, \
-                *color1 == *color2 && !(*color1 != *color2) \
+            CHECK_MESSAGE( \
+                *color1 == *color2, \
+                "The colors should be equal when both are set with " #__VA_ARGS__ \
+            ); \
+            CHECK_MESSAGE( \
+                !(*color1 != *color2), \
+                "The colors should be equal when both are set with " #__VA_ARGS__ \
             );
 
-    TEST(1.F, 0.F, 0.F, 0.F);
-    TEST(0.F, 1.F, 0.F, 0.F);
-    TEST(0.F, 0.F, 1.F, 0.F);
-    TEST(0.F, 0.F, 0.F, 1.F);
+        TEST(1.F, 0.F, 0.F, 0.F);
+        TEST(0.F, 1.F, 0.F, 0.F);
+        TEST(0.F, 0.F, 1.F, 0.F);
+        TEST(0.F, 0.F, 0.F, 1.F);
 
     #undef TEST
-}
+    }
 
 //------------------------------------------------------------------------------
 
-void color_test::rgba_u8_test()
-{
-    const uint8_t r = 0xFF;
-    const uint8_t g = 0x45;
-    const uint8_t b = 0x98;
-    const uint8_t a = 0x12;
+    TEST_CASE("rgba_u8")
+    {
+        const uint8_t r = 0xFF;
+        const uint8_t g = 0x45;
+        const uint8_t b = 0x98;
+        const uint8_t a = 0x12;
 
-    auto color = std::make_shared<data::color>();
-    color->set_rgba(r, g, b, a);
+        auto color = std::make_shared<sight::data::color>();
+        color->set_rgba(r, g, b, a);
 
-    const auto rgba = color->rgba_u8();
+        const auto rgba = color->rgba_u8();
 
-    CPPUNIT_ASSERT_EQUAL(rgba[0], r);
-    CPPUNIT_ASSERT_EQUAL(rgba[1], g);
-    CPPUNIT_ASSERT_EQUAL(rgba[2], b);
-    CPPUNIT_ASSERT_EQUAL(rgba[3], a);
-}
-
-} // namespace sight::data::ut
+        CHECK_EQ(rgba[0], r);
+        CHECK_EQ(rgba[1], g);
+        CHECK_EQ(rgba[2], b);
+        CHECK_EQ(rgba[3], a);
+    }
+} // TEST_SUITE("sight::data::color")

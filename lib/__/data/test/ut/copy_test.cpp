@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -19,8 +19,6 @@
  * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************/
-
-#include "copy_test.hpp"
 
 #include <data/array.hpp>
 #include <data/boolean.hpp>
@@ -46,154 +44,137 @@
 #include <data/transfer_function.hpp>
 #include <data/vector.hpp>
 
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::copy_test);
+#include <doctest/doctest.h>
 
-namespace sight::data::ut
+TEST_SUITE("sight::data::copy")
 {
-
 //-----------------------------------------------------------------------------
 
-void copy_test::setUp()
-{
-    // Set up context before running a test.
-}
+    template<typename T>
+    static void field_deep_copy()
+    {
+        SIGHT_WARN("Testing : " << sight::core::demangler(typeid(T)).get_classname());
+        typename T::sptr object = std::make_shared<T>();
+        typename T::sptr deep_copy_object;
 
-//-----------------------------------------------------------------------------
+        typename T::sptr field1 = std::make_shared<T>();
+        typename T::sptr field2 = std::make_shared<T>();
+        typename T::sptr field3 = std::make_shared<T>();
 
-void copy_test::tearDown()
-{
-    // Clean up after the test run.
-}
+        object->set_field("F1", field1);
+        object->set_field("F2", field2);
+        object->set_field("F3", field3);
 
-//-----------------------------------------------------------------------------
+        deep_copy_object = sight::data::object::copy(object);
+        CHECK_EQ(object->get_classname(), deep_copy_object->get_classname());
+        CHECK_EQ(object->get_fields().size(), deep_copy_object->get_fields().size());
+        CHECK(object->get_field("F1") != deep_copy_object->get_field("F1"));
+        CHECK(object->get_field("F2") != deep_copy_object->get_field("F2"));
+        CHECK(object->get_field("F3") != deep_copy_object->get_field("F3"));
 
-template<typename T>
-void field_deep_copy()
-{
-    SIGHT_WARN("Testing : " << core::demangler(typeid(T)).get_classname());
-    typename T::sptr object = std::make_shared<T>();
-    typename T::sptr deep_copy_object;
-
-    typename T::sptr field1 = std::make_shared<T>();
-    typename T::sptr field2 = std::make_shared<T>();
-    typename T::sptr field3 = std::make_shared<T>();
-
-    object->set_field("F1", field1);
-    object->set_field("F2", field2);
-    object->set_field("F3", field3);
-
-    deep_copy_object = data::object::copy(object);
-    CPPUNIT_ASSERT_EQUAL(object->get_classname(), deep_copy_object->get_classname());
-    CPPUNIT_ASSERT_EQUAL(object->get_fields().size(), deep_copy_object->get_fields().size());
-    CPPUNIT_ASSERT(object->get_field("F1") != deep_copy_object->get_field("F1"));
-    CPPUNIT_ASSERT(object->get_field("F2") != deep_copy_object->get_field("F2"));
-    CPPUNIT_ASSERT(object->get_field("F3") != deep_copy_object->get_field("F3"));
-
-    CPPUNIT_ASSERT_EQUAL(object->get_field("F1")->get_classname(), deep_copy_object->get_field("F1")->get_classname());
-    CPPUNIT_ASSERT_EQUAL(object->get_field("F2")->get_classname(), deep_copy_object->get_field("F2")->get_classname());
-    CPPUNIT_ASSERT_EQUAL(object->get_field("F3")->get_classname(), deep_copy_object->get_field("F3")->get_classname());
-}
+        CHECK_EQ(object->get_field("F1")->get_classname(), deep_copy_object->get_field("F1")->get_classname());
+        CHECK_EQ(object->get_field("F2")->get_classname(), deep_copy_object->get_field("F2")->get_classname());
+        CHECK_EQ(object->get_field("F3")->get_classname(), deep_copy_object->get_field("F3")->get_classname());
+    }
 
 //------------------------------------------------------------------------------
 
-template<typename T>
-void field_copy()
-{
-    SIGHT_WARN("Testing : " << core::demangler(typeid(T)).get_classname());
-    typename T::sptr object              = std::make_shared<T>();
-    typename T::sptr deep_copy_object    = std::make_shared<T>();
-    typename T::sptr shallow_copy_object = std::make_shared<T>();
+    template<typename T>
+    static void field_copy()
+    {
+        SIGHT_WARN("Testing : " << sight::core::demangler(typeid(T)).get_classname());
+        typename T::sptr object              = std::make_shared<T>();
+        typename T::sptr deep_copy_object    = std::make_shared<T>();
+        typename T::sptr shallow_copy_object = std::make_shared<T>();
 
-    typename T::sptr field1 = std::make_shared<T>();
-    typename T::sptr field2 = std::make_shared<T>();
-    typename T::sptr field3 = std::make_shared<T>();
+        typename T::sptr field1 = std::make_shared<T>();
+        typename T::sptr field2 = std::make_shared<T>();
+        typename T::sptr field3 = std::make_shared<T>();
 
-    object->set_field("F1", field1);
-    object->set_field("F2", field2);
-    object->set_field("F3", field3);
+        object->set_field("F1", field1);
+        object->set_field("F2", field2);
+        object->set_field("F3", field3);
 
-    deep_copy_object = data::object::copy(object);
-    CPPUNIT_ASSERT_EQUAL(object->get_classname(), deep_copy_object->get_classname());
-    CPPUNIT_ASSERT_EQUAL(object->get_fields().size(), deep_copy_object->get_fields().size());
-    CPPUNIT_ASSERT(object->get_field("F1") != deep_copy_object->get_field("F1"));
-    CPPUNIT_ASSERT(object->get_field("F2") != deep_copy_object->get_field("F2"));
-    CPPUNIT_ASSERT(object->get_field("F3") != deep_copy_object->get_field("F3"));
+        deep_copy_object = sight::data::object::copy(object);
+        CHECK_EQ(object->get_classname(), deep_copy_object->get_classname());
+        CHECK_EQ(object->get_fields().size(), deep_copy_object->get_fields().size());
+        CHECK(object->get_field("F1") != deep_copy_object->get_field("F1"));
+        CHECK(object->get_field("F2") != deep_copy_object->get_field("F2"));
+        CHECK(object->get_field("F3") != deep_copy_object->get_field("F3"));
 
-    CPPUNIT_ASSERT_EQUAL(object->get_field("F1")->get_classname(), deep_copy_object->get_field("F1")->get_classname());
-    CPPUNIT_ASSERT_EQUAL(object->get_field("F2")->get_classname(), deep_copy_object->get_field("F2")->get_classname());
-    CPPUNIT_ASSERT_EQUAL(object->get_field("F3")->get_classname(), deep_copy_object->get_field("F3")->get_classname());
+        CHECK_EQ(object->get_field("F1")->get_classname(), deep_copy_object->get_field("F1")->get_classname());
+        CHECK_EQ(object->get_field("F2")->get_classname(), deep_copy_object->get_field("F2")->get_classname());
+        CHECK_EQ(object->get_field("F3")->get_classname(), deep_copy_object->get_field("F3")->get_classname());
 
-    shallow_copy_object->shallow_copy(object);
-    CPPUNIT_ASSERT_EQUAL(object->get_classname(), shallow_copy_object->get_classname());
-    CPPUNIT_ASSERT_EQUAL(object->get_fields().size(), shallow_copy_object->get_fields().size());
-    CPPUNIT_ASSERT_EQUAL(object->get_field("F1"), shallow_copy_object->get_field("F1"));
-    CPPUNIT_ASSERT_EQUAL(object->get_field("F2"), shallow_copy_object->get_field("F2"));
-    CPPUNIT_ASSERT_EQUAL(object->get_field("F3"), shallow_copy_object->get_field("F3"));
-}
+        shallow_copy_object->shallow_copy(object);
+        CHECK_EQ(object->get_classname(), shallow_copy_object->get_classname());
+        CHECK_EQ(object->get_fields().size(), shallow_copy_object->get_fields().size());
+        CHECK_EQ(object->get_field("F1"), shallow_copy_object->get_field("F1"));
+        CHECK_EQ(object->get_field("F2"), shallow_copy_object->get_field("F2"));
+        CHECK_EQ(object->get_field("F3"), shallow_copy_object->get_field("F3"));
+    }
 
 //------------------------------------------------------------------------------
 
-void copy_test::field_copy_test()
-{
-    field_deep_copy<data::array>();
-    field_copy<data::boolean>();
-    field_copy<data::color>();
-    field_copy<data::map>();
-    field_copy<data::real>();
-    field_copy<data::image>();
-    field_copy<data::integer>();
-    field_copy<data::line>();
-    field_copy<data::material>();
-    field_copy<data::mesh>();
-    field_copy<data::plane>();
-    field_copy<data::plane_list>();
-    field_copy<data::point>();
-    field_copy<data::point_list>();
-    field_copy<data::reconstruction>();
-    field_copy<data::resection>();
-    field_copy<data::resection_db>();
-    field_copy<data::string>();
-    field_copy<data::transfer_function>();
-    field_copy<data::matrix4>();
-    field_copy<data::vector>();
-    field_copy<data::structure_traits>();
-    field_copy<data::structure_traits_dictionary>();
-}
+    TEST_CASE("field_copy")
+    {
+        field_deep_copy<sight::data::array>();
+        field_copy<sight::data::boolean>();
+        field_copy<sight::data::color>();
+        field_copy<sight::data::map>();
+        field_copy<sight::data::real>();
+        field_copy<sight::data::image>();
+        field_copy<sight::data::integer>();
+        field_copy<sight::data::line>();
+        field_copy<sight::data::material>();
+        field_copy<sight::data::mesh>();
+        field_copy<sight::data::plane>();
+        field_copy<sight::data::plane_list>();
+        field_copy<sight::data::point>();
+        field_copy<sight::data::point_list>();
+        field_copy<sight::data::reconstruction>();
+        field_copy<sight::data::resection>();
+        field_copy<sight::data::resection_db>();
+        field_copy<sight::data::string>();
+        field_copy<sight::data::transfer_function>();
+        field_copy<sight::data::matrix4>();
+        field_copy<sight::data::vector>();
+        field_copy<sight::data::structure_traits>();
+        field_copy<sight::data::structure_traits_dictionary>();
+    }
 
 //-----------------------------------------------------------------------------
 
-void copy_test::several_references_copy_test()
-{
-    const std::int64_t value    = 42;
-    data::integer::sptr integer = std::make_shared<data::integer>(value);
-    data::map::sptr map         = std::make_shared<data::map>();
+    TEST_CASE("several_references_copy")
+    {
+        const std::int64_t value           = 42;
+        sight::data::integer::sptr integer = std::make_shared<sight::data::integer>(value);
+        sight::data::map::sptr map         = std::make_shared<sight::data::map>();
 
-    (*map)["A"] = integer;
-    (*map)["B"] = integer;
-    map->set_field("F1", integer);
-    map->set_field("F2", integer);
+        (*map)["A"] = integer;
+        (*map)["B"] = integer;
+        map->set_field("F1", integer);
+        map->set_field("F2", integer);
 
-    data::map::sptr map_copy = data::object::copy(map);
+        sight::data::map::sptr map_copy = sight::data::object::copy(map);
 
-    CPPUNIT_ASSERT(integer != std::dynamic_pointer_cast<data::integer>((*map_copy)["A"]));
-    CPPUNIT_ASSERT_EQUAL(value, std::dynamic_pointer_cast<data::integer>((*map_copy)["A"])->get_value());
-    CPPUNIT_ASSERT_EQUAL((*map_copy)["A"], map_copy->get_field("F1"));
-    CPPUNIT_ASSERT_EQUAL((*map_copy)["A"], map_copy->get_field("F2"));
-    CPPUNIT_ASSERT_EQUAL((*map_copy)["A"], (*map_copy)["B"]);
+        CHECK(integer != std::dynamic_pointer_cast<sight::data::integer>((*map_copy)["A"]));
+        CHECK_EQ(value, std::dynamic_pointer_cast<sight::data::integer>((*map_copy)["A"])->get_value());
+        CHECK_EQ((*map_copy)["A"], map_copy->get_field("F1"));
+        CHECK_EQ((*map_copy)["A"], map_copy->get_field("F2"));
+        CHECK_EQ((*map_copy)["A"], (*map_copy)["B"]);
 
-    data::vector::sptr vector = std::make_shared<data::vector>();
+        sight::data::vector::sptr vector = std::make_shared<sight::data::vector>();
 
-    vector->push_back(map);
-    vector->push_back(map);
-    vector->set_field("F1", map);
-    vector->set_field("F2", map);
+        vector->push_back(map);
+        vector->push_back(map);
+        vector->set_field("F1", map);
+        vector->set_field("F2", map);
 
-    data::vector::sptr vector_copy = data::object::copy(vector);
-    CPPUNIT_ASSERT(map != (*vector_copy)[0]);
-    CPPUNIT_ASSERT_EQUAL((*vector_copy)[0], vector_copy->get_field("F1"));
-    CPPUNIT_ASSERT_EQUAL((*vector_copy)[0], vector_copy->get_field("F2"));
-    CPPUNIT_ASSERT_EQUAL((*vector_copy)[0], (*vector_copy)[1]);
-}
-
-} // namespace sight::data::ut
+        sight::data::vector::sptr vector_copy = sight::data::object::copy(vector);
+        CHECK(map != (*vector_copy)[0]);
+        CHECK_EQ((*vector_copy)[0], vector_copy->get_field("F1"));
+        CHECK_EQ((*vector_copy)[0], vector_copy->get_field("F2"));
+        CHECK_EQ((*vector_copy)[0], (*vector_copy)[1]);
+    }
+} // TEST_SUITE("sight::data::copy")

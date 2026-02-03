@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -860,9 +860,9 @@ std::tuple<fiducials_series::point3,
         .z = std::numeric_limits<double>::max()
     };
     fiducials_series::point3 max {
-        .x = std::numeric_limits<double>::min(),
-        .y = std::numeric_limits<double>::min(),
-        .z = std::numeric_limits<double>::min()
+        .x = std::numeric_limits<double>::lowest(),
+        .y = std::numeric_limits<double>::lowest(),
+        .z = std::numeric_limits<double>::lowest()
     };
 
     for(const auto& data : this->contour_data)
@@ -897,8 +897,8 @@ std::optional<std::tuple<fiducials_series::point2,
         .y = std::numeric_limits<double>::max(),
     };
     fiducials_series::point2 max {
-        .x = std::numeric_limits<double>::min(),
-        .y = std::numeric_limits<double>::min(),
+        .x = std::numeric_limits<double>::lowest(),
+        .y = std::numeric_limits<double>::lowest(),
     };
 
     for(const auto& data : this->graphic_coordinates_data_sequence.value().at(_index).graphic_data)

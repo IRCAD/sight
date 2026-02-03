@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,8 +20,6 @@
  *
  ***********************************************************************/
 
-#include "calibration_info_test.hpp"
-
 #include <core/spy_log.hpp>
 #include <core/type.hpp>
 
@@ -31,196 +29,181 @@
 
 #include <utest_data/generator/image.hpp>
 
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::calibration_info_test);
+#include <doctest/doctest.h>
 
-namespace sight::data::ut
+TEST_SUITE("sight::data::calibration_info")
 {
-
 //------------------------------------------------------------------------------
 
-void calibration_info_test::setUp()
-{
-}
-
-//------------------------------------------------------------------------------
-
-void calibration_info_test::tearDown()
-{
-}
-
-//------------------------------------------------------------------------------
-
-void calibration_info_test::calibration_test()
-{
-    data::calibration_info::sptr cal_info = std::make_shared<data::calibration_info>();
-
-    data::image::sptr img = std::make_shared<data::image>();
-    utest_data::generator::image::generate_random_image(img, core::type::INT16);
-
-    auto pl  = std::make_shared<data::point_list>();
-    auto pt1 = std::make_shared<data::point>(1.0, 2.0, 3.0);
-    auto pt2 = std::make_shared<data::point>(4.0, 5.0, 6.0);
-    auto pt3 = std::make_shared<data::point>(7.0, 8.0, 9.0);
-
-    pl->get_points().push_back(pt1);
-    pl->get_points().push_back(pt2);
-    pl->get_points().push_back(pt3);
-
-    cal_info->add_record(img, pl);
-
-    //Testing values
-
-    const auto img_list = cal_info->get_image_container();
-
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), img_list.size());
-    CPPUNIT_ASSERT_EQUAL(img, img_list.front());
-
-    const auto pl_list = cal_info->get_point_list_container();
-
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), pl_list.size());
-    CPPUNIT_ASSERT_EQUAL(pl, pl_list.front());
-
-    data::point_list::csptr pl1 = cal_info->get_point_list(img_list.front());
-    CPPUNIT_ASSERT_EQUAL(data::point_list::csptr(pl), pl1);
-
-    data::image::csptr img1 = cal_info->get_image(pl_list.front());
-    CPPUNIT_ASSERT_EQUAL(data::image::csptr(img), img1);
-
-    cal_info->remove_record(0);
-
-    data::point_list::csptr pl2 = cal_info->get_point_list(img);
-    CPPUNIT_ASSERT_EQUAL(data::point_list::csptr(), pl2);
-
-    data::image::csptr img2 = cal_info->get_image(pl);
-    CPPUNIT_ASSERT_EQUAL(data::image::csptr(), img2);
-
-    CPPUNIT_ASSERT(cal_info->get_image_container().empty());
-    CPPUNIT_ASSERT(cal_info->get_point_list_container().empty());
-}
-
-//------------------------------------------------------------------------------
-
-void calibration_info_test::shallow_copy_test()
-{
-    data::calibration_info::sptr cal_info = std::make_shared<data::calibration_info>();
-
-    data::image::sptr img = std::make_shared<data::image>();
-    utest_data::generator::image::generate_random_image(img, core::type::INT16);
-
-    auto pl  = std::make_shared<data::point_list>();
-    auto pt1 = std::make_shared<data::point>(1.0, 2.0, 3.0);
-    auto pt2 = std::make_shared<data::point>(4.0, 5.0, 6.0);
-    auto pt3 = std::make_shared<data::point>(7.0, 8.0, 9.0);
-
-    pl->get_points().push_back(pt1);
-    pl->get_points().push_back(pt2);
-    pl->get_points().push_back(pt3);
-
-    cal_info->add_record(img, pl);
-
-    data::calibration_info::sptr cal_info2 = std::make_shared<data::calibration_info>();
-    cal_info2->shallow_copy(cal_info);
-
-    CPPUNIT_ASSERT(cal_info->get_image_container() == cal_info2->get_image_container());
-    CPPUNIT_ASSERT(cal_info->get_point_list_container() == cal_info2->get_point_list_container());
-}
-
-//------------------------------------------------------------------------------
-
-void calibration_info_test::deep_copy_test()
-{
-    data::calibration_info::sptr cal_info1 = std::make_shared<data::calibration_info>();
-
-    data::image::sptr img = std::make_shared<data::image>();
-    utest_data::generator::image::generate_random_image(img, core::type::INT16);
-
-    auto pl  = std::make_shared<data::point_list>();
-    auto pt1 = std::make_shared<data::point>(1.0, 2.0, 3.0);
-    auto pt2 = std::make_shared<data::point>(4.0, 5.0, 6.0);
-    auto pt3 = std::make_shared<data::point>(7.0, 8.0, 9.0);
-
-    pl->get_points().push_back(pt1);
-    pl->get_points().push_back(pt2);
-    pl->get_points().push_back(pt3);
-
-    cal_info1->add_record(img, pl);
-
-    data::calibration_info::sptr cal_info2 = std::make_shared<data::calibration_info>();
-
-    // == operator test
-    CPPUNIT_ASSERT(*cal_info1 != *cal_info2);
-
-    cal_info2->deep_copy(cal_info1);
-
-    CPPUNIT_ASSERT_EQUAL(cal_info2->get_image_container().size(), cal_info2->get_point_list_container().size());
-
-    CPPUNIT_ASSERT_EQUAL(cal_info1->get_image_container().size(), cal_info2->get_image_container().size());
-    CPPUNIT_ASSERT_EQUAL(cal_info1->get_point_list_container().size(), cal_info2->get_point_list_container().size());
-
-    const auto cal_info1_img_list = cal_info1->get_image_container();
-    const auto cal_info2_img_list = cal_info2->get_image_container();
-
-    auto iter_img1 = cal_info1_img_list.begin();
-    auto iter_img2 = cal_info2_img_list.begin();
-
-    const auto cal_info1_point_list = cal_info1->get_point_list_container();
-    const auto cal_info2_point_list = cal_info2->get_point_list_container();
-
-    auto iter_pl1 = cal_info1_point_list.begin();
-    auto iter_pl2 = cal_info2_point_list.begin();
-
-    while(iter_img1 != cal_info1_img_list.end())
+    TEST_CASE("calibration")
     {
-        CPPUNIT_ASSERT(*iter_img1 != *iter_img2);
-        CPPUNIT_ASSERT(*iter_pl1 != *iter_pl2);
+        sight::data::calibration_info::sptr cal_info = std::make_shared<sight::data::calibration_info>();
 
-        CPPUNIT_ASSERT(**iter_img1 == **iter_img2);
-        CPPUNIT_ASSERT(**iter_pl1 == **iter_pl2);
+        sight::data::image::sptr img = std::make_shared<sight::data::image>();
+        sight::utest_data::generator::image::generate_random_image(img, sight::core::type::INT16);
 
-        ++iter_pl1;
-        ++iter_pl2;
+        auto pl  = std::make_shared<sight::data::point_list>();
+        auto pt1 = std::make_shared<sight::data::point>(1.0, 2.0, 3.0);
+        auto pt2 = std::make_shared<sight::data::point>(4.0, 5.0, 6.0);
+        auto pt3 = std::make_shared<sight::data::point>(7.0, 8.0, 9.0);
 
-        ++iter_img1;
-        ++iter_img2;
+        pl->get_points().push_back(pt1);
+        pl->get_points().push_back(pt2);
+        pl->get_points().push_back(pt3);
+
+        cal_info->add_record(img, pl);
+
+        //Testing values
+
+        const auto img_list = cal_info->get_image_container();
+
+        CHECK_EQ(std::size_t(1), img_list.size());
+        CHECK_EQ(img, img_list.front());
+
+        const auto pl_list = cal_info->get_point_list_container();
+
+        CHECK_EQ(std::size_t(1), pl_list.size());
+        CHECK_EQ(pl, pl_list.front());
+
+        sight::data::point_list::csptr pl1 = cal_info->get_point_list(img_list.front());
+        CHECK_EQ(sight::data::point_list::csptr(pl), pl1);
+
+        sight::data::image::csptr img1 = cal_info->get_image(pl_list.front());
+        CHECK_EQ(sight::data::image::csptr(img), img1);
+
+        cal_info->remove_record(0);
+
+        sight::data::point_list::csptr pl2 = cal_info->get_point_list(img);
+        CHECK_EQ(sight::data::point_list::csptr(), pl2);
+
+        sight::data::image::csptr img2 = cal_info->get_image(pl);
+        CHECK_EQ(sight::data::image::csptr(), img2);
+
+        CHECK(cal_info->get_image_container().empty());
+        CHECK(cal_info->get_point_list_container().empty());
     }
 
-    // == operator test
-    CPPUNIT_ASSERT(*cal_info1 == *cal_info2);
-}
+//------------------------------------------------------------------------------
+
+    TEST_CASE("shallow_copy")
+    {
+        sight::data::calibration_info::sptr cal_info = std::make_shared<sight::data::calibration_info>();
+
+        sight::data::image::sptr img = std::make_shared<sight::data::image>();
+        sight::utest_data::generator::image::generate_random_image(img, sight::core::type::INT16);
+
+        auto pl  = std::make_shared<sight::data::point_list>();
+        auto pt1 = std::make_shared<sight::data::point>(1.0, 2.0, 3.0);
+        auto pt2 = std::make_shared<sight::data::point>(4.0, 5.0, 6.0);
+        auto pt3 = std::make_shared<sight::data::point>(7.0, 8.0, 9.0);
+
+        pl->get_points().push_back(pt1);
+        pl->get_points().push_back(pt2);
+        pl->get_points().push_back(pt3);
+
+        cal_info->add_record(img, pl);
+
+        sight::data::calibration_info::sptr cal_info2 = std::make_shared<sight::data::calibration_info>();
+        cal_info2->shallow_copy(cal_info);
+
+        CHECK(cal_info->get_image_container() == cal_info2->get_image_container());
+        CHECK(cal_info->get_point_list_container() == cal_info2->get_point_list_container());
+    }
 
 //------------------------------------------------------------------------------
 
-void calibration_info_test::get_image_test()
-{
-    auto cal_info = std::make_shared<data::calibration_info>();
+    TEST_CASE("deep_copy")
+    {
+        sight::data::calibration_info::sptr cal_info1 = std::make_shared<sight::data::calibration_info>();
 
-    auto img1 = std::make_shared<data::image>();
-    utest_data::generator::image::generate_random_image(img1, core::type::INT16);
-    auto pl1 = std::make_shared<data::point_list>();
-    pl1->set_points(
-        {std::make_shared<data::point>(1., 2., 3.), std::make_shared<data::point>(4., 5., 6.),
-         std::make_shared<data::point>(.7, 8., 9.)
-        });
-    cal_info->add_record(img1, pl1);
+        sight::data::image::sptr img = std::make_shared<sight::data::image>();
+        sight::utest_data::generator::image::generate_random_image(img, sight::core::type::INT16);
 
-    auto img2 = std::make_shared<data::image>();
-    utest_data::generator::image::generate_random_image(img2, core::type::INT16);
-    auto pl2 = std::make_shared<data::point_list>();
-    pl2->set_points(
-        {std::make_shared<data::point>(10., 11., 12.), std::make_shared<data::point>(
-             13.,
-             14.,
-             15.
-         ),
-         std::make_shared<data::point>(16., 17., 18.)
-        });
-    cal_info->add_record(img2, pl2);
+        auto pl  = std::make_shared<sight::data::point_list>();
+        auto pt1 = std::make_shared<sight::data::point>(1.0, 2.0, 3.0);
+        auto pt2 = std::make_shared<sight::data::point>(4.0, 5.0, 6.0);
+        auto pt3 = std::make_shared<sight::data::point>(7.0, 8.0, 9.0);
 
-    CPPUNIT_ASSERT_EQUAL(std::const_pointer_cast<const data::image>(img1), cal_info->get_image(pl1));
-    CPPUNIT_ASSERT_EQUAL(std::const_pointer_cast<const data::image>(img2), cal_info->get_image(pl2));
-    CPPUNIT_ASSERT_EQUAL(img1, cal_info->get_image(0));
-    CPPUNIT_ASSERT_EQUAL(img2, cal_info->get_image(1));
-}
+        pl->get_points().push_back(pt1);
+        pl->get_points().push_back(pt2);
+        pl->get_points().push_back(pt3);
 
-} // namespace sight::data::ut
+        cal_info1->add_record(img, pl);
+
+        sight::data::calibration_info::sptr cal_info2 = std::make_shared<sight::data::calibration_info>();
+
+        // == operator test
+        CHECK(*cal_info1 != *cal_info2);
+
+        cal_info2->deep_copy(cal_info1);
+
+        CHECK_EQ(cal_info2->get_image_container().size(), cal_info2->get_point_list_container().size());
+
+        CHECK_EQ(cal_info1->get_image_container().size(), cal_info2->get_image_container().size());
+        CHECK_EQ(cal_info1->get_point_list_container().size(), cal_info2->get_point_list_container().size());
+
+        const auto cal_info1_img_list = cal_info1->get_image_container();
+        const auto cal_info2_img_list = cal_info2->get_image_container();
+
+        auto iter_img1 = cal_info1_img_list.begin();
+        auto iter_img2 = cal_info2_img_list.begin();
+
+        const auto cal_info1_point_list = cal_info1->get_point_list_container();
+        const auto cal_info2_point_list = cal_info2->get_point_list_container();
+
+        auto iter_pl1 = cal_info1_point_list.begin();
+        auto iter_pl2 = cal_info2_point_list.begin();
+
+        while(iter_img1 != cal_info1_img_list.end())
+        {
+            CHECK(*iter_img1 != *iter_img2);
+            CHECK(*iter_pl1 != *iter_pl2);
+
+            CHECK(**iter_img1 == **iter_img2);
+            CHECK(**iter_pl1 == **iter_pl2);
+
+            ++iter_pl1;
+            ++iter_pl2;
+
+            ++iter_img1;
+            ++iter_img2;
+        }
+
+        // == operator test
+        CHECK(*cal_info1 == *cal_info2);
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("get_image")
+    {
+        auto cal_info = std::make_shared<sight::data::calibration_info>();
+
+        auto img1 = std::make_shared<sight::data::image>();
+        sight::utest_data::generator::image::generate_random_image(img1, sight::core::type::INT16);
+        auto pl1 = std::make_shared<sight::data::point_list>();
+        pl1->set_points(
+            {std::make_shared<sight::data::point>(1., 2., 3.), std::make_shared<sight::data::point>(4., 5., 6.),
+             std::make_shared<sight::data::point>(.7, 8., 9.)
+            });
+        cal_info->add_record(img1, pl1);
+
+        auto img2 = std::make_shared<sight::data::image>();
+        sight::utest_data::generator::image::generate_random_image(img2, sight::core::type::INT16);
+        auto pl2 = std::make_shared<sight::data::point_list>();
+        pl2->set_points(
+            {std::make_shared<sight::data::point>(10., 11., 12.), std::make_shared<sight::data::point>(
+                 13.,
+                 14.,
+                 15.
+             ),
+             std::make_shared<sight::data::point>(16., 17., 18.)
+            });
+        cal_info->add_record(img2, pl2);
+
+        CHECK_EQ(std::const_pointer_cast<const sight::data::image>(img1), cal_info->get_image(pl1));
+        CHECK_EQ(std::const_pointer_cast<const sight::data::image>(img2), cal_info->get_image(pl2));
+        CHECK_EQ(img1, cal_info->get_image(0));
+        CHECK_EQ(img2, cal_info->get_image(1));
+    }
+} // TEST_SUITE("sight::data::calibration_info")

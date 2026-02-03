@@ -7,14 +7,7 @@ import xml.etree.ElementTree
 from dataclasses import dataclass
 from urllib.request import urlretrieve
 
-
-# cspell: ignore Wundefined afterloader angio autorefraction autosequence boli bscan cadsr ciexy ctdi ctdivol decf
-# cspell: ignore deidentification dermoscopic diconde dicos dvhroi exif fiducials fluence fnumber frameof gpsdop hicpp
-# cspell: ignore hpgl imager inms inua inus iods isop ivol ivus keratoconus keratometer keratometric kerma lensometry
-# cspell: ignore lookat meterset metersets mrfov multiway nmpet nmtomo nolintbegin nolintend octb octz oecf olink
-# cspell: ignore postamble powerline prcs presaturation radiofluoroscopic relaxivity reprojection rgblut rtdvh rtroi
-# cspell: ignore sddn sdhn sdvn softcopy soundpath stereometric stowrs tlhc tomo tomosynthesis tomotherapeutic toric
-# cspell: ignore tractography xaxrf
+# cspell: ignore iods olink targetptr
 
 @dataclass(eq=True, order=True, frozen=True)
 class Tag:
@@ -624,7 +617,7 @@ def fetch_module(module_section_id: str) -> Module:
         attribute_elements.extend(fetch_attributes(attributes_table_id))
 
     if len(attribute_elements) == 0:
-        raise exception(f"Unable to find any attributes in {name}")
+        raise Exception(f"Unable to find any attributes in {name}")
 
     module = Module(
         name=name,
@@ -940,7 +933,7 @@ def main():
     g_parser.add_argument(
         "source_url",
         nargs="?",
-        default="http://dicom.nema.org/medical/dicom/current/source/docbook",
+        default="http://dicom.nema.org/medical/dicom/2023e/source/docbook",
         help="Source URL of the DICOM docbook files"
     )
 

@@ -9,13 +9,13 @@ import dicom_parser
 # cspell: ignore lookat meterset metersets mrfov multiway nmpet nmtomo nolintbegin nolintend octb octz oecf olink
 # cspell: ignore postamble powerline prcs presaturation radiofluoroscopic relaxivity reprojection rgblut rtdvh rtroi
 # cspell: ignore sddn sdhn sdvn softcopy soundpath stereometric stowrs tlhc tomo tomosynthesis tomotherapeutic toric
-# cspell: ignore tractography xaxrf
+# cspell: ignore tractography xaxrf macid wado ascan framek
 
 g_root_dir = os.path.dirname(__file__)
-g_test_dir = os.path.join(os.path.dirname(g_root_dir), "test", "tu", "dicom")
+g_test_dir = os.path.join(os.path.dirname(g_root_dir), "test", "ut", "dicom")
 g_header_extension = ".hpp"
 g_source_extension = ".cpp"
-g_test = "Test"
+g_test = "_test"
 
 g_attribute_class_name = "Attribute"
 g_sop_class_name = "Sop"
@@ -30,7 +30,8 @@ def generate_cspell_ignore(max_line_length: int = 120) -> str:
         "lookat", "meterset", "metersets", "mrfov", "multiway", "nolintbegin", "nolintend", "octb", "octz", "oecf",
         "postamble", "powerline", "prcs", "presaturation", "radiofluoroscopic", "relaxivity", "reprojection", "rgblut",
         "rtroi", "sddn", "sdhn", "sdvn", "softcopy", "soundpath", "stereometric", "stowrs", "tlhc", "tomo",
-        "tomosynthesis", "tomotherapeutic", "toric", "tractography", "Wundefined", "xaxrf", "olink", "iods"
+        "tomosynthesis", "tomotherapeutic", "toric", "tractography", "Wundefined", "xaxrf", "olink", "iods",
+        "macid", "WADO", "ascan", "framek"
     }
 
     cspell_preamble = "// cspell: ignore"
@@ -79,9 +80,7 @@ def generate_preamble(includes: str, header: bool = True, namespace: str = None)
 
     preamble += "// NOLINTBEGIN\n\n"
 
-    if namespace is None:
-        preamble += "namespace sight::data::dicom::ut\n{\n\n"
-    else:
+    if namespace is not None:
         preamble += f"namespace sight::data::dicom::{namespace}\n{{\n\n"
 
     return preamble
@@ -89,9 +88,8 @@ def generate_preamble(includes: str, header: bool = True, namespace: str = None)
 
 def generate_footer(namespace: str = None) -> str:
     """Generate the footer for the generated files"""
-    if namespace is None:
-        string = "} // namespace sight::data::dicom::ut\n\n"
-    else:
+    string = ""
+    if namespace is not None:
         string = f"}} // namespace sight::data::dicom::{namespace}\n\n"
 
     string += "// NOLINTEND\n"
@@ -566,71 +564,29 @@ def write_sop_cpp() -> None:
         sop_cpp.write(generate_footer(namespace=g_sop_class_name.lower()))
 
 
-def write_attribute_test_hpp() -> None:
-    """Write the AttributeTest.hpp file."""
-    with open(
-            os.path.join(g_test_dir, g_attribute_class_name + g_test + g_header_extension),
-            mode='w',
-            encoding='utf-8'
-    ) as attribute_test_hpp:
-        attribute_test_hpp.write(
-            generate_preamble(
-                includes=(
-                    "#include <cppunit/extensions/HelperMacros.h>"
-                ),
-                header=True
-            )
-        )
-
-        # Test suite / methods
-        attribute_test_hpp.write(
-            f"class {g_attribute_class_name}{g_test} : public CPPUNIT_NS::TestFixture\n"
-            "{\n"
-            f"    CPPUNIT_TEST_SUITE({g_attribute_class_name}{g_test});\n"
-            f"    CPPUNIT_TEST({g_attribute_class_name.lower()}{g_test});\n"
-            "    CPPUNIT_TEST_SUITE_END();\n\n"
-            "public:\n"
-            "    void setUp() override;\n"
-            "    void tearDown() override;\n\n"
-            f"    static void {g_attribute_class_name.lower()}{g_test}();\n"
-            "};\n\n"
-        )
-
-        attribute_test_hpp.write(generate_footer())
-
-
 def write_attribute_test_cpp() -> None:
-    """Write the AttributeTest.cpp file."""
+    """Write the attribute_test.cpp file."""
     with open(
-            os.path.join(g_test_dir, g_attribute_class_name + g_test + g_source_extension),
+            os.path.join(g_test_dir, g_attribute_class_name.lower() + g_test + g_source_extension),
             mode='w',
             encoding='utf-8'
     ) as attribute_test_cpp:
         attribute_test_cpp.write(
             generate_preamble(
                 includes=(
-                    f"#include \"{g_attribute_class_name}{g_test}{g_header_extension}\"\n\n"
-                    f"#include <data/dicom/{g_attribute_class_name}{g_header_extension}>\n\n"
-                    f"CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::dicom::ut::{g_attribute_class_name}{g_test});"
+                    f"#include <data/dicom/{g_attribute_class_name.lower()}{g_header_extension}>\n\n"
+                    f"#include <doctest/doctest.h>\n\n"
+                    f"TEST_SUITE(\"sight::data::dicom::{g_attribute_class_name.lower()}\")"
+                    "{"
                 ),
                 header=False
             )
         )
 
         attribute_test_cpp.write(
-            f"void {g_attribute_class_name}{g_test}::setUp()\n"
+            f"TEST_CASE(\"enum\")\n"
             "{\n"
-            "}\n\n"
-            "//------------------------------------------------------------------------------\n\n"
-            f"void {g_attribute_class_name}{g_test}::tearDown()\n"
-            "{\n"
-            "}\n\n"
-            "//------------------------------------------------------------------------------\n\n"
-        )
-
-        attribute_test_cpp.write(
-            f"void {g_attribute_class_name}{g_test}::{g_attribute_class_name.lower()}{g_test}()\n"
-            "{\n"
+            "    namespace attribute = sight::data::dicom::attribute;\n\n"
         )
 
         for tag in sorted(dicom_parser.g_filtered_attributes):
@@ -638,94 +594,54 @@ def write_attribute_test_cpp() -> None:
             uint16_tag = tag_to_uint16(tag)
 
             attribute_test_cpp.write(
-                f"    CPPUNIT_ASSERT_EQUAL({g_attribute_class_name.lower()}::{g_attribute_class_name}<{g_attribute_class_name.lower()}::Keyword::{attribute.keyword}>::s_keyword, {g_attribute_class_name.lower()}::get({uint16_tag.group}, {uint16_tag.element}).m_keyword);\n"
-                f"    CPPUNIT_ASSERT_EQUAL({g_attribute_class_name.lower()}::{g_attribute_class_name}<{g_attribute_class_name.lower()}::Keyword::{attribute.keyword}>::s_keyword, {g_attribute_class_name.lower()}::get({g_attribute_class_name.lower()}::Keyword::{attribute.keyword}).m_keyword);\n"
+                f"    FAST_CHECK_EQ({g_attribute_class_name.lower()}::{g_attribute_class_name}<{g_attribute_class_name.lower()}::Keyword::{attribute.keyword}>::s_keyword, {g_attribute_class_name.lower()}::get({uint16_tag.group}, {uint16_tag.element}).m_keyword);\n"
+                f"    FAST_CHECK_EQ({g_attribute_class_name.lower()}::{g_attribute_class_name}<{g_attribute_class_name.lower()}::Keyword::{attribute.keyword}>::s_keyword, {g_attribute_class_name.lower()}::get({g_attribute_class_name.lower()}::Keyword::{attribute.keyword}).m_keyword);\n"
             )
 
         attribute_test_cpp.write(
             "}\n\n"
             "//------------------------------------------------------------------------------\n\n"
+            "} // TEST_SUITE\n\n"
         )
 
         attribute_test_cpp.write(generate_footer())
 
 
-def write_sop_test_hpp() -> None:
-    """Write the SopTest.hpp file."""
-    with open(
-            os.path.join(g_test_dir, g_sop_class_name + g_test + g_header_extension),
-            mode='w',
-            encoding='utf-8'
-    ) as sop_test_hpp:
-        sop_test_hpp.write(
-            generate_preamble(
-                includes=(
-                    "#include <cppunit/extensions/HelperMacros.h>"
-                ),
-                header=True
-            )
-        )
-
-        # Test suite / methods
-        sop_test_hpp.write(
-            f"class {g_sop_class_name}{g_test} : public CPPUNIT_NS::TestFixture\n"
-            "{\n"
-            f"    CPPUNIT_TEST_SUITE({g_sop_class_name}{g_test});\n"
-            f"    CPPUNIT_TEST({g_sop_class_name.lower()}{g_test});\n"
-            "    CPPUNIT_TEST_SUITE_END();\n\n"
-            "public:\n"
-            "    void setUp() override;\n"
-            "    void tearDown() override;\n\n"
-            f"    static void {g_sop_class_name.lower()}{g_test}();\n"
-            "};\n\n"
-        )
-
-        sop_test_hpp.write(generate_footer())
-
-
 def write_sop_test_cpp() -> None:
-    """Write the AttributeTest.cpp file."""
+    """Write the attribute_test.cpp file."""
     with open(
-            os.path.join(g_test_dir, g_sop_class_name + g_test + g_source_extension),
+            os.path.join(g_test_dir, g_sop_class_name.lower() + g_test + g_source_extension),
             mode='w',
             encoding='utf-8'
     ) as sop_test_cpp:
         sop_test_cpp.write(
             generate_preamble(
                 includes=(
-                    f"#include \"{g_sop_class_name}{g_test}{g_header_extension}\"\n\n"
-                    f"#include <data/dicom/{g_sop_class_name}{g_header_extension}>\n\n"
-                    f"CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::dicom::ut::{g_sop_class_name}{g_test});"
+                    f"#include <data/dicom/{g_sop_class_name.lower()}{g_header_extension}>\n\n"
+                    f"#include <doctest/doctest.h>\n\n"
+                    f"TEST_SUITE(\"sight::data::dicom::{g_sop_class_name.lower()}\")\n"
+                    "{"
                 ),
                 header=False
             )
         )
 
         sop_test_cpp.write(
-            f"void {g_sop_class_name}{g_test}::setUp()\n"
+            f"TEST_CASE(\"enum\")\n"
             "{\n"
-            "}\n\n"
-            "//------------------------------------------------------------------------------\n\n"
-            f"void {g_sop_class_name}{g_test}::tearDown()\n"
-            "{\n"
-            "}\n\n"
-            "//------------------------------------------------------------------------------\n\n"
-        )
-
-        sop_test_cpp.write(
-            f"void {g_sop_class_name}{g_test}::{g_sop_class_name.lower()}{g_test}()\n"
-            "{\n"
+            "    namespace sop = sight::data::dicom::sop;\n\n"
         )
 
         for uid in sorted(dicom_parser.g_filtered_sops):
             sop_test_cpp.write(
-                f"    CPPUNIT_ASSERT_EQUAL({g_sop_class_name.lower()}::{g_sop_class_name}<{g_sop_class_name.lower()}::Keyword::{uid.keyword}>::s_keyword, {g_sop_class_name.lower()}::get({g_sop_class_name.lower()}::Keyword::{uid.keyword}).m_keyword);\n"
-                f"    CPPUNIT_ASSERT_EQUAL({g_sop_class_name.lower()}::{g_sop_class_name}<{g_sop_class_name.lower()}::Keyword::{uid.keyword}>::s_keyword, {g_sop_class_name.lower()}::get(\"{uid.value}\").m_keyword);\n"
+                f"    FAST_CHECK_EQ({g_sop_class_name.lower()}::{g_sop_class_name}<{g_sop_class_name.lower()}::Keyword::{uid.keyword}>::s_keyword, {g_sop_class_name.lower()}::get({g_sop_class_name.lower()}::Keyword::{uid.keyword}).m_keyword);\n"
+                f"    FAST_CHECK_EQ({g_sop_class_name.lower()}::{g_sop_class_name}<{g_sop_class_name.lower()}::Keyword::{uid.keyword}>::s_keyword, {g_sop_class_name.lower()}::get(\"{uid.value}\").m_keyword);\n"
             )
 
         sop_test_cpp.write(
             "}\n\n"
             "//------------------------------------------------------------------------------\n\n"
+            "} // TEST_SUITE\n\n"
         )
 
         sop_test_cpp.write(generate_footer())
@@ -741,7 +657,6 @@ def main():
     write_attribute_cpp()
 
     # Attribute tests
-    write_attribute_test_hpp()
     write_attribute_test_cpp()
 
     # Sop
@@ -749,7 +664,6 @@ def main():
     write_sop_cpp()
 
     # Sop tests
-    write_sop_test_hpp()
     write_sop_test_cpp()
 
     return result

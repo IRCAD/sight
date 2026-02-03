@@ -137,17 +137,17 @@ SIGHT_DATA_API const VR Attribute<Keyword::InstanceCoercionDateTime>::s_vr = VR:
 template<>
 SIGHT_DATA_API const VM Attribute<Keyword::InstanceCoercionDateTime>::s_vm = VM::MIN_1_MAX_1;
 template<>
-SIGHT_DATA_API const Keyword Attribute<Keyword::sop_classUID>::s_keyword = Keyword::sop_classUID;
+SIGHT_DATA_API const Keyword Attribute<Keyword::SOPClassUID>::s_keyword = Keyword::SOPClassUID;
 template<>
-SIGHT_DATA_API const std::uint16_t Attribute<Keyword::sop_classUID>::s_group = 0x0008;
+SIGHT_DATA_API const std::uint16_t Attribute<Keyword::SOPClassUID>::s_group = 0x0008;
 template<>
-SIGHT_DATA_API const std::uint16_t Attribute<Keyword::sop_classUID>::s_element = 0x0016;
+SIGHT_DATA_API const std::uint16_t Attribute<Keyword::SOPClassUID>::s_element = 0x0016;
 template<>
-SIGHT_DATA_API const std::string_view Attribute<Keyword::sop_classUID>::s_name = "SOP Class UID";
+SIGHT_DATA_API const std::string_view Attribute<Keyword::SOPClassUID>::s_name = "SOP Class UID";
 template<>
-SIGHT_DATA_API const VR Attribute<Keyword::sop_classUID>::s_vr = VR::UI;
+SIGHT_DATA_API const VR Attribute<Keyword::SOPClassUID>::s_vr = VR::UI;
 template<>
-SIGHT_DATA_API const VM Attribute<Keyword::sop_classUID>::s_vm = VM::MIN_1_MAX_1;
+SIGHT_DATA_API const VM Attribute<Keyword::SOPClassUID>::s_vm = VM::MIN_1_MAX_1;
 template<>
 SIGHT_DATA_API const Keyword Attribute<Keyword::AcquisitionUID>::s_keyword = Keyword::AcquisitionUID;
 template<>
@@ -185,32 +185,32 @@ SIGHT_DATA_API const VR Attribute<Keyword::PyramidUID>::s_vr = VR::UI;
 template<>
 SIGHT_DATA_API const VM Attribute<Keyword::PyramidUID>::s_vm = VM::MIN_1_MAX_1;
 template<>
-SIGHT_DATA_API const Keyword Attribute<Keyword::RelatedGeneralsop_classUID>::s_keyword = Keyword::RelatedGeneralsop_classUID;
+SIGHT_DATA_API const Keyword Attribute<Keyword::RelatedGeneralSOPClassUID>::s_keyword = Keyword::RelatedGeneralSOPClassUID;
 template<>
-SIGHT_DATA_API const std::uint16_t Attribute<Keyword::RelatedGeneralsop_classUID>::s_group = 0x0008;
+SIGHT_DATA_API const std::uint16_t Attribute<Keyword::RelatedGeneralSOPClassUID>::s_group = 0x0008;
 template<>
-SIGHT_DATA_API const std::uint16_t Attribute<Keyword::RelatedGeneralsop_classUID>::s_element = 0x001A;
+SIGHT_DATA_API const std::uint16_t Attribute<Keyword::RelatedGeneralSOPClassUID>::s_element = 0x001A;
 template<>
-SIGHT_DATA_API const std::string_view Attribute<Keyword::RelatedGeneralsop_classUID>::s_name =
+SIGHT_DATA_API const std::string_view Attribute<Keyword::RelatedGeneralSOPClassUID>::s_name =
     "Related General SOP Class UID";
 template<>
-SIGHT_DATA_API const VR Attribute<Keyword::RelatedGeneralsop_classUID>::s_vr = VR::UI;
+SIGHT_DATA_API const VR Attribute<Keyword::RelatedGeneralSOPClassUID>::s_vr = VR::UI;
 template<>
-SIGHT_DATA_API const VM Attribute<Keyword::RelatedGeneralsop_classUID>::s_vm = VM::MIN_1_MAX_N;
+SIGHT_DATA_API const VM Attribute<Keyword::RelatedGeneralSOPClassUID>::s_vm = VM::MIN_1_MAX_N;
 template<>
-SIGHT_DATA_API const Keyword Attribute<Keyword::OriginalSpecializedsop_classUID>::s_keyword =
-    Keyword::OriginalSpecializedsop_classUID;
+SIGHT_DATA_API const Keyword Attribute<Keyword::OriginalSpecializedSOPClassUID>::s_keyword =
+    Keyword::OriginalSpecializedSOPClassUID;
 template<>
-SIGHT_DATA_API const std::uint16_t Attribute<Keyword::OriginalSpecializedsop_classUID>::s_group = 0x0008;
+SIGHT_DATA_API const std::uint16_t Attribute<Keyword::OriginalSpecializedSOPClassUID>::s_group = 0x0008;
 template<>
-SIGHT_DATA_API const std::uint16_t Attribute<Keyword::OriginalSpecializedsop_classUID>::s_element = 0x001B;
+SIGHT_DATA_API const std::uint16_t Attribute<Keyword::OriginalSpecializedSOPClassUID>::s_element = 0x001B;
 template<>
-SIGHT_DATA_API const std::string_view Attribute<Keyword::OriginalSpecializedsop_classUID>::s_name =
+SIGHT_DATA_API const std::string_view Attribute<Keyword::OriginalSpecializedSOPClassUID>::s_name =
     "Original Specialized SOP Class UID";
 template<>
-SIGHT_DATA_API const VR Attribute<Keyword::OriginalSpecializedsop_classUID>::s_vr = VR::UI;
+SIGHT_DATA_API const VR Attribute<Keyword::OriginalSpecializedSOPClassUID>::s_vr = VR::UI;
 template<>
-SIGHT_DATA_API const VM Attribute<Keyword::OriginalSpecializedsop_classUID>::s_vm = VM::MIN_1_MAX_1;
+SIGHT_DATA_API const VM Attribute<Keyword::OriginalSpecializedSOPClassUID>::s_vm = VM::MIN_1_MAX_1;
 template<>
 SIGHT_DATA_API const Keyword Attribute<Keyword::StudyDate>::s_keyword = Keyword::StudyDate;
 template<>
@@ -27275,8 +27275,8 @@ const IAttribute& get(Keyword keyword)
         case Keyword::InstanceCoercionDateTime:
             return get<Keyword::InstanceCoercionDateTime>();
 
-        case Keyword::sop_classUID:
-            return get<Keyword::sop_classUID>();
+        case Keyword::SOPClassUID:
+            return get<Keyword::SOPClassUID>();
 
         case Keyword::AcquisitionUID:
             return get<Keyword::AcquisitionUID>();
@@ -27287,11 +27287,11 @@ const IAttribute& get(Keyword keyword)
         case Keyword::PyramidUID:
             return get<Keyword::PyramidUID>();
 
-        case Keyword::RelatedGeneralsop_classUID:
-            return get<Keyword::RelatedGeneralsop_classUID>();
+        case Keyword::RelatedGeneralSOPClassUID:
+            return get<Keyword::RelatedGeneralSOPClassUID>();
 
-        case Keyword::OriginalSpecializedsop_classUID:
-            return get<Keyword::OriginalSpecializedsop_classUID>();
+        case Keyword::OriginalSpecializedSOPClassUID:
+            return get<Keyword::OriginalSpecializedSOPClassUID>();
 
         case Keyword::StudyDate:
             return get<Keyword::StudyDate>();
@@ -33759,7 +33759,7 @@ const IAttribute& get(std::uint16_t group, std::uint16_t element)
                     return get<Keyword::InstanceCoercionDateTime>();
 
                 case 0x0016:
-                    return get<Keyword::sop_classUID>();
+                    return get<Keyword::SOPClassUID>();
 
                 case 0x0017:
                     return get<Keyword::AcquisitionUID>();
@@ -33771,10 +33771,10 @@ const IAttribute& get(std::uint16_t group, std::uint16_t element)
                     return get<Keyword::PyramidUID>();
 
                 case 0x001A:
-                    return get<Keyword::RelatedGeneralsop_classUID>();
+                    return get<Keyword::RelatedGeneralSOPClassUID>();
 
                 case 0x001B:
-                    return get<Keyword::OriginalSpecializedsop_classUID>();
+                    return get<Keyword::OriginalSpecializedSOPClassUID>();
 
                 case 0x0020:
                     return get<Keyword::StudyDate>();

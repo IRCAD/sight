@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024 IRCAD France
+ * Copyright (C) 2024-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,68 +19,50 @@
  *
  ***********************************************************************/
 
-#include "dicom_mt_test.hpp"
-
 #include <data/image_series.hpp>
+
+#include <doctest/doctest.h>
 
 #include <chrono>
 #include <future>
-#include <mutex>
 #include <shared_mutex>
 #include <vector>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::dicom_mt_test);
-
-namespace sight::data::ut
+TEST_SUITE("sight::data::dicom_mt")
 {
-
 //------------------------------------------------------------------------------
 
-void dicom_mt_test::setUp()
-{
-    // Set up context before running a test.
-}
-
-//-----------------------------------------------------------------------------
-
-void dicom_mt_test::tearDown()
-{
-    // Clean up after the test run.
-}
-
-//------------------------------------------------------------------------------
-
-void dicom_mt_test::concurrent_read_test()
-{
-    static constexpr int s_NUM_THREADS = 32;
-
-    // Setup the test data
-    data::image_series::sptr series = std::make_shared<data::image_series>();
-    series->set_sop_keyword(dicom::sop::Keyword::EnhancedUSVolumeStorage);
-
+    TEST_CASE("concurrent_read")
     {
-        auto dump_lock = series->dump_lock();
-        series->resize({8, 8, 8}, core::type::UINT8, data::image::pixel_format_t::gray_scale);
-        std::fill(series->begin<std::uint8_t>(), series->end<std::uint8_t>(), std::uint8_t(0));
-    }
+        static constexpr int s_NUM_THREADS = 32;
 
-    // Set the frame acquisition time point
-    series->set_frame_acquisition_time_point(std::chrono::system_clock::now(), 0);
-    const auto now = *series->get_frame_acquisition_time_point(0);
+        // Setup the test data
+        sight::data::image_series::sptr series = std::make_shared<sight::data::image_series>();
+        series->set_sop_keyword(sight::data::dicom::sop::Keyword::EnhancedUSVolumeStorage);
 
-    // Launch a bunch of threads to read the series
-    std::vector<std::future<void> > futures;
+        {
+            auto dump_lock = series->dump_lock();
+            series->resize({8, 8, 8}, sight::core::type::UINT8, sight::data::image::pixel_format_t::gray_scale);
+            std::fill(series->begin<std::uint8_t>(), series->end<std::uint8_t>(), std::uint8_t(0));
+        }
 
-    // shared mutex to simulate the lock_ptr from the service
-    std::shared_mutex mutex;
+        // Set the frame acquisition time point
+        series->set_frame_acquisition_time_point(std::chrono::system_clock::now(), 0);
+        const auto now = *series->get_frame_acquisition_time_point(0);
 
-    futures.reserve(s_NUM_THREADS);
-    for(int i = 0 ; i < s_NUM_THREADS ; ++i)
-    {
-        futures.emplace_back(
-            std::async(
-                std::launch::async,
-                [series, now, &mutex]
+        // Launch a bunch of threads to read the series
+        std::vector<std::future<void> > futures;
+
+        // shared mutex to simulate the lock_ptr from the service
+        std::shared_mutex mutex;
+
+        futures.reserve(s_NUM_THREADS);
+        for(int i = 0 ; i < s_NUM_THREADS ; ++i)
+        {
+            futures.emplace_back(
+                std::async(
+                    std::launch::async,
+                    [series, now, &mutex]
             {
                 for(int j = 0 ; j < 1000 ; ++j)
                 {
@@ -90,29 +72,29 @@ void dicom_mt_test::concurrent_read_test()
                     const auto& time_point = std::as_const(*series).get_frame_acquisition_time_point(0);
 
                     // Check the time point
-                    CPPUNIT_ASSERT(time_point);
-                    CPPUNIT_ASSERT(now == *time_point);
+                    CHECK(time_point);
+                    CHECK(now == *time_point);
                 }
             })
-        );
-    }
+            );
+        }
 
-    // Wait for all the futures to complete
-    for(auto& future : futures)
-    {
-        future.get();
-    }
+        // Wait for all the futures to complete
+        for(auto& future : futures)
+        {
+            future.get();
+        }
 
-    // Retry with non const access
-    futures.clear();
-    futures.reserve(s_NUM_THREADS);
+        // Retry with non const access
+        futures.clear();
+        futures.reserve(s_NUM_THREADS);
 
-    for(int i = 0 ; i < s_NUM_THREADS ; ++i)
-    {
-        futures.emplace_back(
-            std::async(
-                std::launch::async,
-                [series, now, &mutex]
+        for(int i = 0 ; i < s_NUM_THREADS ; ++i)
+        {
+            futures.emplace_back(
+                std::async(
+                    std::launch::async,
+                    [series, now, &mutex]
             {
                 for(int j = 0 ; j < 1000 ; ++j)
                 {
@@ -122,18 +104,17 @@ void dicom_mt_test::concurrent_read_test()
                     const auto& time_point = series->get_frame_acquisition_time_point(0);
 
                     // Check the time point
-                    CPPUNIT_ASSERT(time_point);
-                    CPPUNIT_ASSERT(now == *time_point);
+                    CHECK(time_point);
+                    CHECK(now == *time_point);
                 }
             })
-        );
-    }
+            );
+        }
 
-    // Wait for all the futures to complete
-    for(auto& future : futures)
-    {
-        future.get();
+        // Wait for all the futures to complete
+        for(auto& future : futures)
+        {
+            future.get();
+        }
     }
-}
-
-} // namespace sight::data::ut
+} // TEST_SUITE("sight::data::dicom_mt")

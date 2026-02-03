@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2024 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,46 +19,51 @@
  *
  ***********************************************************************/
 
-#include "plane_test.hpp"
-
 #include <data/plane.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::plane_test);
+#include <doctest/doctest.h>
 
-namespace sight::data::ut
+TEST_SUITE("sight::data::plane")
 {
-
 //------------------------------------------------------------------------------
 
-void plane_test::equality_test()
-{
-    auto plane1 = std::make_shared<data::plane>();
-    auto plane2 = std::make_shared<data::plane>();
+    TEST_CASE("equality")
+    {
+        auto plane1 = std::make_shared<sight::data::plane>();
+        auto plane2 = std::make_shared<sight::data::plane>();
 
-    CPPUNIT_ASSERT(*plane1 == *plane2 && !(*plane1 != *plane2));
+        CHECK(*plane1 == *plane2);
+        CHECK(!(*plane1 != *plane2));
 
-    // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
+        // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
     #define TEST(op) \
             plane1->op; \
-            CPPUNIT_ASSERT_MESSAGE( \
-                "Planes should be different when " #op " of the first plane is different", \
-                *plane1 != *plane2 && !(*plane1 == *plane2) \
+            CHECK_MESSAGE( \
+                *plane1 != *plane2, \
+                "Planes should be different when " #op " of the first plane is different" \
+            ); \
+            CHECK_MESSAGE( \
+                !(*plane1 == *plane2), \
+                "Planes should be different when " #op " of the first plane is different" \
             ); \
             plane2->op; \
-            CPPUNIT_ASSERT_MESSAGE( \
-                "Planes should be equal when " #op " of both plane are equal", \
-                *plane1 == *plane2 && !(*plane1 != *plane2) \
+            CHECK_MESSAGE( \
+                *plane1 == *plane2, \
+                "Planes should be equal when " #op " of both plane are equal" \
+            ); \
+            CHECK_MESSAGE( \
+                !(*plane1 != *plane2), \
+                "Planes should be equal when " #op " of both plane are equal" \
             );
 
-    TEST(
-        set_points(
-            {std::make_shared<data::point>(1., 2., 3.), std::make_shared<data::point>(4., 5., 6.),
-             std::make_shared<data::point>(7., 8., 9.)
-            })
-    );
-    TEST(set_is_intersection(false));
+        TEST(
+            set_points(
+                {std::make_shared<sight::data::point>(1., 2., 3.), std::make_shared<sight::data::point>(4., 5., 6.),
+                 std::make_shared<sight::data::point>(7., 8., 9.)
+                })
+        );
+        TEST(set_is_intersection(false));
 
     #undef TEST
-}
-
-} // namespace sight::data::ut
+    }
+} // TEST_SUITE("sight::data::plane")

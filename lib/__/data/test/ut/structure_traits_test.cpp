@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2024 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,49 +19,55 @@
  *
  ***********************************************************************/
 
-#include "structure_traits_test.hpp"
-
 #include <data/structure_traits.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::structure_traits_test);
+#include <doctest/doctest.h>
 
-namespace sight::data::ut
+TEST_SUITE("sight::data::structure_traits")
 {
-
 //------------------------------------------------------------------------------
 
-void structure_traits_test::equality_test()
-{
-    auto struct1 = std::make_shared<data::structure_traits>();
-    auto struct2 = std::make_shared<data::structure_traits>();
+    TEST_CASE("equality")
+    {
+        auto struct1 = std::make_shared<sight::data::structure_traits>();
+        auto struct2 = std::make_shared<sight::data::structure_traits>();
 
-    CPPUNIT_ASSERT(*struct1 == *struct2 && !(*struct1 != *struct2));
+        CHECK(*struct1 == *struct2);
+        CHECK(!(*struct1 != *struct2));
 
-    // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
+        // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
     #define TEST(op) \
             struct1->op; \
-            CPPUNIT_ASSERT_MESSAGE( \
-                "Structures should be different when using " #op " on the first one", \
-                *struct1 != *struct2 && !(*struct1 == *struct2) \
+            CHECK_MESSAGE( \
+                *struct1 != *struct2, \
+                "Structures should be different when using " #op " on the first one" \
+            ); \
+            CHECK_MESSAGE( \
+                !(*struct1 == *struct2), \
+                "Structures should be different when using " #op " on the first one" \
             ); \
             struct2->op; \
-            CPPUNIT_ASSERT_MESSAGE( \
-                "Structures should be equal when using " #op " on both", \
-                *struct1 == *struct2 && !(*struct1 != *struct2) \
+            CHECK_MESSAGE( \
+                *struct1 == *struct2, \
+                "Structures should be equal when using " #op " on both" \
+            ); \
+            struct2->op; \
+            CHECK_MESSAGE( \
+                !(*struct1 != *struct2), \
+                "Structures should be equal when using " #op " on both" \
             );
 
-    TEST(set_type("1"));
-    TEST(set_categories({data::structure_traits::body}));
-    TEST(set_class(data::structure_traits::tool));
-    TEST(set_native_exp("2"));
-    TEST(set_native_geometric_exp("3"));
-    TEST(set_attachment_type("4"));
-    TEST(set_color(std::make_shared<data::color>(5.F, 6.F, 7.F)));
-    TEST(set_anatomic_region("8"));
-    TEST(set_property_category("9"));
-    TEST(set_property_type("10"));
+        TEST(set_type("1"));
+        TEST(set_categories({sight::data::structure_traits::body}));
+        TEST(set_class(sight::data::structure_traits::tool));
+        TEST(set_native_exp("2"));
+        TEST(set_native_geometric_exp("3"));
+        TEST(set_attachment_type("4"));
+        TEST(set_color(std::make_shared<sight::data::color>(5.F, 6.F, 7.F)));
+        TEST(set_anatomic_region("8"));
+        TEST(set_property_category("9"));
+        TEST(set_property_type("10"));
 
     #undef TEST
-}
-
-} // namespace sight::data::ut
+    }
+} // TEST_SUITE("sight::data::structure_traits")

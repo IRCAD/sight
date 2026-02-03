@@ -37,7 +37,7 @@
 // cspell: ignore lookat meterset metersets mrfov multiway nmpet nmtomo nolintbegin nolintend octb octz oecf olink
 // cspell: ignore postamble powerline prcs presaturation radiofluoroscopic relaxivity reprojection rgblut rtdvh rtroi
 // cspell: ignore sddn sdhn sdvn softcopy soundpath stereometric stowrs tlhc tomo tomosynthesis tomotherapeutic toric
-// cspell: ignore tractography xaxrf Ascan Framek
+// cspell: ignore tractography xaxrf Ascan Framek wado
 
 // NOLINTBEGIN
 
@@ -54,12 +54,12 @@ enum class Keyword : std::uint16_t
     InstanceCreationTime,
     InstanceCreatorUID,
     InstanceCoercionDateTime,
-    sop_classUID,
+    SOPClassUID,
     AcquisitionUID,
     SOPInstanceUID,
     PyramidUID,
-    RelatedGeneralsop_classUID,
-    OriginalSpecializedsop_classUID,
+    RelatedGeneralSOPClassUID,
+    OriginalSpecializedSOPClassUID,
     StudyDate,
     SeriesDate,
     AcquisitionDate,

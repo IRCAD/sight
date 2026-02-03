@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,63 +20,44 @@
  *
  ***********************************************************************/
 
-#include "color_test.hpp"
-
 #include <core/exception.hpp>
 
 #include <data/tools/color.hpp>
 
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::tools::ut::color_test);
+#include <doctest/doctest.h>
 
-namespace sight::data::tools::ut
+TEST_SUITE("sight::data::tools::ut")
 {
-
 //------------------------------------------------------------------------------
 
-void color_test::setUp()
-{
-    // Set up context before running a test.
-}
+    TEST_CASE("hexa_string_to_rgba")
+    {
+        const std::string str_color1 = "#ff0527";
+        std::array<std::uint8_t, 4> color1 {};
+        CHECK_NOTHROW(sight::data::tools::color::hexa_string_to_rgba(str_color1, color1));
 
-//------------------------------------------------------------------------------
+        CHECK_EQ(static_cast<std::uint8_t>(255), color1[0]);
+        CHECK_EQ(static_cast<std::uint8_t>(5), color1[1]);
+        CHECK_EQ(static_cast<std::uint8_t>(39), color1[2]);
+        CHECK_EQ(static_cast<std::uint8_t>(255), color1[3]);
 
-void color_test::tearDown()
-{
-    // Clean up after the test run.
-}
+        const std::string str_color2 = "#45a5bc28";
+        std::array<std::uint8_t, 4> color2 {};
+        CHECK_NOTHROW(sight::data::tools::color::hexa_string_to_rgba(str_color2, color2));
 
-//------------------------------------------------------------------------------
+        CHECK_EQ(static_cast<std::uint8_t>(69), color2[0]);
+        CHECK_EQ(static_cast<std::uint8_t>(165), color2[1]);
+        CHECK_EQ(static_cast<std::uint8_t>(188), color2[2]);
+        CHECK_EQ(static_cast<std::uint8_t>(40), color2[3]);
 
-void color_test::hexa_string_to_rgba()
-{
-    const std::string str_color1 = "#ff0527";
-    std::array<std::uint8_t, 4> color1 {};
-    CPPUNIT_ASSERT_NO_THROW(data::tools::color::hexa_string_to_rgba(str_color1, color1));
+        const std::string str_color3 = "45a5bc28";
+        std::array<std::uint8_t, 4> color3 {};
+        CHECK_THROWS_AS(sight::data::tools::color::hexa_string_to_rgba(str_color3, color3), sight::core::exception);
 
-    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint8_t>(255), color1[0]);
-    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint8_t>(5), color1[1]);
-    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint8_t>(39), color1[2]);
-    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint8_t>(255), color1[3]);
+        const std::string str_color4 = "45a58";
+        CHECK_THROWS_AS(sight::data::tools::color::hexa_string_to_rgba(str_color4, color3), sight::core::exception);
 
-    const std::string str_color2 = "#45a5bc28";
-    std::array<std::uint8_t, 4> color2 {};
-    CPPUNIT_ASSERT_NO_THROW(data::tools::color::hexa_string_to_rgba(str_color2, color2));
-
-    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint8_t>(69), color2[0]);
-    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint8_t>(165), color2[1]);
-    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint8_t>(188), color2[2]);
-    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint8_t>(40), color2[3]);
-
-    const std::string str_color3 = "45a5bc28";
-    std::array<std::uint8_t, 4> color3 {};
-    CPPUNIT_ASSERT_THROW(data::tools::color::hexa_string_to_rgba(str_color3, color3), core::exception);
-
-    const std::string str_color4 = "45a58";
-    CPPUNIT_ASSERT_THROW(data::tools::color::hexa_string_to_rgba(str_color4, color3), core::exception);
-
-    const std::string str_color5 = "#45a564928";
-    CPPUNIT_ASSERT_THROW(data::tools::color::hexa_string_to_rgba(str_color5, color3), core::exception);
-}
-
-} // namespace sight::data::tools::ut
+        const std::string str_color5 = "#45a564928";
+        CHECK_THROWS_AS(sight::data::tools::color::hexa_string_to_rgba(str_color5, color3), sight::core::exception);
+    }
+} // TEST_SUITE("sight::data::tools::ut")

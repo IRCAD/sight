@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,100 +20,87 @@
  *
  ***********************************************************************/
 
-#include "activity_test.hpp"
-
+#include <data/activity.hpp>
 #include <data/integer.hpp>
 #include <data/string.hpp>
 
-#include <ranges>
+#include <doctest/doctest.h>
 
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::activity_test);
-
-namespace sight::data::ut
+TEST_SUITE("sight::data::activity")
 {
+//------------------------------------------------------------------------------
+
+    TEST_CASE("activity_config_id")
+    {
+        const auto activity                                         = std::make_shared<sight::data::activity>();
+        const sight::data::activity::config_id_t activity_config_id = "Visu2D";
+        CHECK(activity);
+        activity->set_activity_config_id(activity_config_id);
+        CHECK_EQ(activity_config_id, activity->get_activity_config_id());
+
+        auto activity2 = std::make_shared<sight::data::activity>();
+        CHECK(*activity2 != *activity);
+
+        std::ranges::copy(*activity, std::inserter(*activity2, activity2->begin()));
+        activity2->set_activity_config_id(activity->get_activity_config_id());
+        CHECK(*activity2 == *activity);
+    }
 
 //------------------------------------------------------------------------------
 
-void activity_test::setUp()
-{
-    // Set up context before running a test.
-    m_activity = std::make_shared<data::activity>();
-}
+    TEST_CASE("data")
+    {
+        const auto activity = std::make_shared<sight::data::activity>();
+        auto activity2      = std::make_shared<sight::data::activity>();
+        CHECK(activity);
+        CHECK(activity2);
+
+        // Both data are "empty"
+        CHECK(*activity2 == *activity);
+
+        std::ranges::copy(*activity, std::inserter(*activity2, activity2->begin()));
+        activity2->set_activity_config_id(activity->get_activity_config_id());
+        CHECK(*activity2 == *activity);
+    }
 
 //------------------------------------------------------------------------------
 
-void activity_test::tearDown()
-{
-    // Clean up after the test run.
-    m_activity.reset();
-}
+    TEST_CASE("equality")
+    {
+        const auto activity = std::make_shared<sight::data::activity>();
+        auto activity1      = std::make_shared<sight::data::activity>();
+        auto activity2      = std::make_shared<sight::data::activity>();
+
+        CHECK(*activity1 == *activity2);
+        CHECK(!(*activity1 != *activity2));
+
+        activity1->set_activity_config_id("1");
+        CHECK(*activity1 != *activity2);
+        CHECK(!(*activity1 == *activity2));
+        activity2->set_activity_config_id(activity1->get_activity_config_id());
+        CHECK(*activity1 == *activity2);
+        CHECK(!(*activity1 != *activity2));
+
+        (*activity1)["data"] = std::make_shared<sight::data::integer>(2);
+        CHECK(*activity1 != *activity2);
+        CHECK(!(*activity1 == *activity2));
+        std::ranges::copy(*activity1, std::inserter(*activity2, activity2->begin()));
+        CHECK(*activity1 == *activity2);
+        CHECK(!(*activity1 != *activity2));
+    }
 
 //------------------------------------------------------------------------------
 
-void activity_test::activity_config_id_test()
-{
-    const data::activity::config_id_t activity_config_id = "Visu2D";
-    CPPUNIT_ASSERT(m_activity);
-    m_activity->set_activity_config_id(activity_config_id);
-    CPPUNIT_ASSERT_EQUAL(activity_config_id, m_activity->get_activity_config_id());
+    TEST_CASE("shallow_copy")
+    {
+        const auto activity = std::make_shared<sight::data::activity>();
+        CHECK(activity);
+        activity->set_activity_config_id("MyActivity");
+        (*activity)["data"] = std::make_shared<sight::data::string>("Hello world");
 
-    auto activity2 = std::make_shared<data::activity>();
-    CPPUNIT_ASSERT(*activity2 != *m_activity);
-
-    std::ranges::copy(*m_activity, std::inserter(*activity2, activity2->begin()));
-    activity2->set_activity_config_id(m_activity->get_activity_config_id());
-    CPPUNIT_ASSERT(*activity2 == *m_activity);
-}
-
-//------------------------------------------------------------------------------
-
-void activity_test::data_test()
-{
-    auto activity2 = std::make_shared<data::activity>();
-    CPPUNIT_ASSERT(m_activity);
-    CPPUNIT_ASSERT(activity2);
-
-    // Both data are "empty"
-    CPPUNIT_ASSERT(*activity2 == *m_activity);
-
-    std::ranges::copy(*m_activity, std::inserter(*activity2, activity2->begin()));
-    activity2->set_activity_config_id(m_activity->get_activity_config_id());
-    CPPUNIT_ASSERT(*activity2 == *m_activity);
-}
-
-//------------------------------------------------------------------------------
-
-void activity_test::equality_test()
-{
-    auto activity1 = std::make_shared<data::activity>();
-    auto activity2 = std::make_shared<data::activity>();
-
-    CPPUNIT_ASSERT(*activity1 == *activity2 && !(*activity1 != *activity2));
-
-    activity1->set_activity_config_id("1");
-    CPPUNIT_ASSERT(*activity1 != *activity2 && !(*activity1 == *activity2));
-    activity2->set_activity_config_id(activity1->get_activity_config_id());
-    CPPUNIT_ASSERT(*activity1 == *activity2 && !(*activity1 != *activity2));
-
-    (*activity1)["data"] = std::make_shared<data::integer>(2);
-    CPPUNIT_ASSERT(*activity1 != *activity2 && !(*activity1 == *activity2));
-    std::ranges::copy(*activity1, std::inserter(*activity2, activity2->begin()));
-    CPPUNIT_ASSERT(*activity1 == *activity2 && !(*activity1 != *activity2));
-}
-
-//------------------------------------------------------------------------------
-
-void activity_test::shallow_copy_test()
-{
-    CPPUNIT_ASSERT(m_activity);
-    m_activity->set_activity_config_id("MyActivity");
-    (*m_activity)["data"] = std::make_shared<data::string>("Hello world");
-
-    auto activity2 = std::make_shared<data::activity>();
-    CPPUNIT_ASSERT(*m_activity != *activity2);
-    activity2->shallow_copy(m_activity);
-    CPPUNIT_ASSERT(*m_activity == *activity2);
-}
-
-} //namespace sight::data::ut
+        auto activity2 = std::make_shared<sight::data::activity>();
+        CHECK(*activity != *activity2);
+        activity2->shallow_copy(activity);
+        CHECK(*activity == *activity2);
+    }
+} // TEST_SUITE("sight::data::activity")

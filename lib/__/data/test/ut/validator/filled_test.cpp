@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,135 +19,116 @@
  *
  ***********************************************************************/
 
-#include "filled_test.hpp"
-
 #include <data/image_series.hpp>
 #include <data/model_series.hpp>
 #include <data/point_list.hpp>
 #include <data/string.hpp>
 #include <data/validator/base.hpp>
 
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::validator::ut::filled_test);
+#include <doctest/doctest.h>
 
-namespace sight::data::validator::ut
+TEST_SUITE("sight::data::validator::ut")
 {
-
-namespace factory = sight::data::validator::factory;
+    namespace factory = sight::data::validator::factory;
 
 //------------------------------------------------------------------------------
 
-void filled_test::setUp()
-{
-    // Set up context before running a test.
-}
+    TEST_CASE("image")
+    {
+        auto validator = factory::make("sight::data::validator::filled");
+        CHECK(validator);
+
+        auto obj_validator = std::dynamic_pointer_cast<sight::data::validator::base>(validator);
+        CHECK(obj_validator);
+
+        sight::data::validator::return_t validation;
+        sight::data::image::sptr image = std::make_shared<sight::data::image>();
+
+        {
+            validation = obj_validator->validate(image);
+            CHECK_EQ(false, validation.first);
+        }
+        {
+            image->resize({4, 4, 1}, sight::core::type::UINT8, sight::data::image::gray_scale);
+            validation = obj_validator->validate(image);
+            CHECK_EQ(true, validation.first);
+        }
+    }
 
 //------------------------------------------------------------------------------
 
-void filled_test::tearDown()
-{
-    // Clean up after the test run.
-}
+    TEST_CASE("model_series")
+    {
+        auto validator = factory::make("sight::data::validator::filled");
+        CHECK(validator);
+
+        auto obj_validator = std::dynamic_pointer_cast<sight::data::validator::base>(validator);
+        CHECK(obj_validator);
+
+        sight::data::validator::return_t validation;
+        sight::data::model_series::sptr model_series = std::make_shared<sight::data::model_series>();
+
+        {
+            validation = obj_validator->validate(model_series);
+            CHECK_EQ(false, validation.first);
+        }
+        {
+            sight::data::model_series::reconstruction_vector_t recs = model_series->get_reconstruction_db();
+            recs.push_back(std::make_shared<sight::data::reconstruction>());
+            model_series->set_reconstruction_db(recs);
+
+            validation = obj_validator->validate(model_series);
+            CHECK_EQ(true, validation.first);
+        }
+    }
 
 //------------------------------------------------------------------------------
 
-void filled_test::image()
-{
-    auto validator = factory::make("sight::data::validator::filled");
-    CPPUNIT_ASSERT(validator);
-
-    auto obj_validator = std::dynamic_pointer_cast<sight::data::validator::base>(validator);
-    CPPUNIT_ASSERT(obj_validator);
-
-    sight::data::validator::return_t validation;
-    data::image::sptr image = std::make_shared<data::image>();
-
+    TEST_CASE("point_list")
     {
-        validation = obj_validator->validate(image);
-        CPPUNIT_ASSERT_EQUAL(false, validation.first);
+        auto validator = factory::make("sight::data::validator::filled");
+        CHECK(validator);
+
+        auto obj_validator = std::dynamic_pointer_cast<sight::data::validator::base>(validator);
+        CHECK(obj_validator);
+
+        sight::data::validator::return_t validation;
+        sight::data::point_list::sptr point_list = std::make_shared<sight::data::point_list>();
+
+        {
+            validation = obj_validator->validate(point_list);
+            CHECK_EQ(false, validation.first);
+        }
+        {
+            point_list->push_back(std::make_shared<sight::data::point>());
+            validation = obj_validator->validate(point_list);
+            CHECK_EQ(true, validation.first);
+        }
     }
-    {
-        image->resize({4, 4, 1}, core::type::UINT8, data::image::gray_scale);
-        validation = obj_validator->validate(image);
-        CPPUNIT_ASSERT_EQUAL(true, validation.first);
-    }
-}
 
 //------------------------------------------------------------------------------
 
-void filled_test::model_series()
-{
-    auto validator = factory::make("sight::data::validator::filled");
-    CPPUNIT_ASSERT(validator);
-
-    auto obj_validator = std::dynamic_pointer_cast<sight::data::validator::base>(validator);
-    CPPUNIT_ASSERT(obj_validator);
-
-    sight::data::validator::return_t validation;
-    data::model_series::sptr model_series = std::make_shared<data::model_series>();
-
+    TEST_CASE("string_serializable")
     {
-        validation = obj_validator->validate(model_series);
-        CPPUNIT_ASSERT_EQUAL(false, validation.first);
-    }
-    {
-        data::model_series::reconstruction_vector_t recs = model_series->get_reconstruction_db();
-        recs.push_back(std::make_shared<sight::data::reconstruction>());
-        model_series->set_reconstruction_db(recs);
+        auto validator = factory::make("sight::data::validator::filled");
+        CHECK(validator);
 
-        validation = obj_validator->validate(model_series);
-        CPPUNIT_ASSERT_EQUAL(true, validation.first);
+        auto obj_validator = std::dynamic_pointer_cast<sight::data::validator::base>(validator);
+        CHECK(obj_validator);
+
+        sight::data::validator::return_t validation;
+        sight::data::string_serializable::sptr string_serializable = std::make_shared<sight::data::string>();
+
+        {
+            validation = obj_validator->validate(string_serializable);
+            CHECK_EQ(false, validation.first);
+        }
+        {
+            string_serializable->from_string("Non-empty string");
+            validation = obj_validator->validate(string_serializable);
+            CHECK_EQ(true, validation.first);
+        }
     }
-}
 
 //------------------------------------------------------------------------------
-
-void filled_test::point_list()
-{
-    auto validator = factory::make("sight::data::validator::filled");
-    CPPUNIT_ASSERT(validator);
-
-    auto obj_validator = std::dynamic_pointer_cast<sight::data::validator::base>(validator);
-    CPPUNIT_ASSERT(obj_validator);
-
-    sight::data::validator::return_t validation;
-    data::point_list::sptr point_list = std::make_shared<data::point_list>();
-
-    {
-        validation = obj_validator->validate(point_list);
-        CPPUNIT_ASSERT_EQUAL(false, validation.first);
-    }
-    {
-        point_list->push_back(std::make_shared<sight::data::point>());
-        validation = obj_validator->validate(point_list);
-        CPPUNIT_ASSERT_EQUAL(true, validation.first);
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void filled_test::string_serializable()
-{
-    auto validator = factory::make("sight::data::validator::filled");
-    CPPUNIT_ASSERT(validator);
-
-    auto obj_validator = std::dynamic_pointer_cast<sight::data::validator::base>(validator);
-    CPPUNIT_ASSERT(obj_validator);
-
-    sight::data::validator::return_t validation;
-    data::string_serializable::sptr string_serializable = std::make_shared<data::string>();
-
-    {
-        validation = obj_validator->validate(string_serializable);
-        CPPUNIT_ASSERT_EQUAL(false, validation.first);
-    }
-    {
-        string_serializable->from_string("Non-empty string");
-        validation = obj_validator->validate(string_serializable);
-        CPPUNIT_ASSERT_EQUAL(true, validation.first);
-    }
-}
-
-//------------------------------------------------------------------------------
-
-} // namespace sight::data::validator::ut
+} // TEST_SUITE("sight::data::validator::ut")

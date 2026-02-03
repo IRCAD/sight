@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2024 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,45 +19,50 @@
  *
  ***********************************************************************/
 
-#include "line_test.hpp"
-
 #include <data/line.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::line_test);
+#include <doctest/doctest.h>
 
-namespace sight::data::ut
+TEST_SUITE("sight::data::line")
 {
-
 //------------------------------------------------------------------------------
 
-void line_test::equality_test()
-{
-    auto line1 = std::make_shared<data::line>();
-    auto line2 = std::make_shared<data::line>();
+    TEST_CASE("equality")
+    {
+        auto line1 = std::make_shared<sight::data::line>();
+        auto line2 = std::make_shared<sight::data::line>();
 
-    CPPUNIT_ASSERT(*line1 == *line2 && !(*line1 != *line2));
+        CHECK(*line1 == *line2);
+        CHECK(!(*line1 != *line2));
 
-    // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
+        // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
     #define TEST(fieldName, ...) \
             line1->set_ ## fieldName(__VA_ARGS__); \
-            CPPUNIT_ASSERT_MESSAGE( \
-                "Lines should be different when " #fieldName " is modified", \
-                *line1 != *line2 && !(*line1 == *line2) \
+            CHECK_MESSAGE( \
+                *line1 != *line2, \
+                "Lines should be different when " #fieldName " is modified" \
+            ); \
+            CHECK_MESSAGE( \
+                !(*line1 == *line2), \
+                "Lines should be different when " #fieldName " is modified" \
             ); \
             line1->set_ ## fieldName(line2->get_ ## fieldName()); \
-            CPPUNIT_ASSERT_MESSAGE( \
-                "Lines should be equal when " #fieldName " is copied", \
-                *line1 == *line2 && !(*line1 != *line2) \
+            CHECK_MESSAGE( \
+                *line1 == *line2, \
+                "Lines should be equal when " #fieldName " is copied" \
+            ); \
+            CHECK_MESSAGE( \
+                !(*line1 != *line2), \
+                "Lines should be equal when " #fieldName " is copied" \
             );
 
-    TEST(position, std::make_shared<data::point>(1., 0., 0.));
-    TEST(position, std::make_shared<data::point>(0., 1., 0.));
-    TEST(position, std::make_shared<data::point>(0., 0., 1.));
-    TEST(direction, std::make_shared<data::point>(1., 0., 0.));
-    TEST(direction, std::make_shared<data::point>(0., 1., 0.));
-    TEST(direction, std::make_shared<data::point>(0., 0., 1.));
+        TEST(position, std::make_shared<sight::data::point>(1., 0., 0.));
+        TEST(position, std::make_shared<sight::data::point>(0., 1., 0.));
+        TEST(position, std::make_shared<sight::data::point>(0., 0., 1.));
+        TEST(direction, std::make_shared<sight::data::point>(1., 0., 0.));
+        TEST(direction, std::make_shared<sight::data::point>(0., 1., 0.));
+        TEST(direction, std::make_shared<sight::data::point>(0., 0., 1.));
 
     #undef TEST
-}
-
-} // namespace sight::data::ut
+    }
+} // TEST_SUITE("sight::data::line")

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -2492,7 +2492,7 @@ series::dicom_t series::get_dicom_type() const noexcept
         return dicom_t::fiducials;
     }
 
-    // Then try with the sop_classUID
+    // Then try with the SOPClassUID
     if(const auto& sop_class_uid = get_sop_class_uid(); !sop_class_uid.empty())
     {
         if(const dicom_t result = get_dicom_type(sop_class_uid); result != dicom_t::unknown)

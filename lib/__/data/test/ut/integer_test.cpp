@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,116 +20,97 @@
  *
  ***********************************************************************/
 
-#include "integer_test.hpp"
-
 #include <data/integer.hpp>
+
+#include <doctest/doctest.h>
 
 #include <limits>
 
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::integer_test);
-
-namespace sight::data::ut
+TEST_SUITE("sight::data::integer")
 {
-
 //------------------------------------------------------------------------------
 
-void integer_test::setUp()
-{
-    // Set up context before running a test.
-}
-
-//------------------------------------------------------------------------------
-
-void integer_test::tearDown()
-{
-    // Clean up after the test run.
-}
-
-//------------------------------------------------------------------------------
-
-void integer_test::basic()
-{
+    TEST_CASE("basic")
     {
-        sight::data::integer i;
-        CPPUNIT_ASSERT(i.is_type_of("sight::data::integer"));
-        CPPUNIT_ASSERT(i.is_type_of("sight::data::string_serializable"));
+        {
+            sight::data::integer i;
+            CHECK(i.is_type_of("sight::data::integer"));
+            CHECK(i.is_type_of("sight::data::string_serializable"));
+        }
+
+        const std::array values {
+            std::numeric_limits<std::int64_t>::min(),
+            std::int64_t(-1654), std::int64_t(0), std::int64_t(123456),
+            std::numeric_limits<std::int64_t>::max()
+        };
+
+        for(std::int64_t value : values)
+        {
+            sight::data::integer::sptr i0 = std::make_shared<sight::data::integer>();
+            i0->value() = value;
+            sight::data::integer::sptr i1 = std::make_shared<sight::data::integer>(value);
+
+            CHECK_EQ(value, i0->value());
+            CHECK_EQ(value, i1->value());
+            CHECK_EQ(value, std::make_shared<sight::data::integer>(value)->value());
+
+            CHECK(*i0 == *i1);
+        }
+
+        for(std::int64_t value : values)
+        {
+            sight::data::integer i0;
+            i0.set_value(value);
+            sight::data::integer i1 = value;
+
+            CHECK_EQ(value, i0.value());
+            CHECK_EQ(value, i1.value());
+            CHECK(i0 == i1);
+        }
     }
 
-    const std::array values {
-        std::numeric_limits<std::int64_t>::min(),
-        std::int64_t(-1654), std::int64_t(0), std::int64_t(123456),
-        std::numeric_limits<std::int64_t>::max()
-    };
+//------------------------------------------------------------------------------
 
-    for(std::int64_t value : values)
+    TEST_CASE("string_conversion")
     {
-        data::integer::sptr i0 = std::make_shared<data::integer>();
-        i0->value() = value;
-        data::integer::sptr i1 = std::make_shared<data::integer>(value);
+        sight::data::integer i1 = 42;
+        CHECK_EQ(std::string("42"), i1.to_string());
 
-        CPPUNIT_ASSERT_EQUAL(value, i0->value());
-        CPPUNIT_ASSERT_EQUAL(value, i1->value());
-        CPPUNIT_ASSERT_EQUAL(value, std::make_shared<data::integer>(value)->value());
+        i1 = -26972;
+        CHECK_EQ(std::string("-26972"), i1.to_string());
 
-        CPPUNIT_ASSERT(*i0 == *i1);
+        i1.from_string("45693");
+        CHECK(45693 == i1.value());
+
+        CHECK_THROWS_AS(i1.from_string("-7894;-1557.2;48"), boost::bad_lexical_cast);
+        CHECK_THROWS_AS(i1.from_string("-7894.489"), boost::bad_lexical_cast);
+        CHECK_THROWS_AS(i1.from_string("74vcx7aaa"), boost::bad_lexical_cast);
     }
-
-    for(std::int64_t value : values)
-    {
-        data::integer i0;
-        i0.set_value(value);
-        data::integer i1 = value;
-
-        CPPUNIT_ASSERT_EQUAL(value, i0.value());
-        CPPUNIT_ASSERT_EQUAL(value, i1.value());
-        CPPUNIT_ASSERT(i0 == i1);
-    }
-}
 
 //------------------------------------------------------------------------------
 
-void integer_test::string_conversion()
-{
-    sight::data::integer i1 = 42;
-    CPPUNIT_ASSERT_EQUAL(std::string("42"), i1.to_string());
+    TEST_CASE("reset")
+    {
+        sight::data::integer i1 = 42;
+        i1.set_default_value();
 
-    i1 = -26972;
-    CPPUNIT_ASSERT_EQUAL(std::string("-26972"), i1.to_string());
+        CHECK_EQ(std::int64_t(42), i1.value());
+        CHECK_EQ(std::int64_t(42), i1.default_value());
 
-    i1.from_string("45693");
-    CPPUNIT_ASSERT(45693 == i1.value());
+        i1 = 788;
+        CHECK_EQ(std::int64_t(788), i1.value());
+        CHECK_EQ(std::int64_t(42), i1.default_value());
 
-    CPPUNIT_ASSERT_THROW(i1.from_string("-7894;-1557.2;48"), boost::bad_lexical_cast);
-    CPPUNIT_ASSERT_THROW(i1.from_string("-7894.489"), boost::bad_lexical_cast);
-    CPPUNIT_ASSERT_THROW(i1.from_string("74vcx7aaa"), boost::bad_lexical_cast);
-}
+        i1.reset();
+        CHECK_EQ(std::int64_t(42), i1.value());
+        CHECK_EQ(std::int64_t(42), i1.default_value());
 
-//------------------------------------------------------------------------------
+        i1 = -4788;
+        CHECK_EQ(std::int64_t(-4788), i1.value());
+        CHECK_EQ(std::int64_t(42), i1.default_value());
 
-void integer_test::reset()
-{
-    sight::data::integer i1 = 42;
-    i1.set_default_value();
-
-    CPPUNIT_ASSERT_EQUAL(std::int64_t(42), i1.value());
-    CPPUNIT_ASSERT_EQUAL(std::int64_t(42), i1.default_value());
-
-    i1 = 788;
-    CPPUNIT_ASSERT_EQUAL(std::int64_t(788), i1.value());
-    CPPUNIT_ASSERT_EQUAL(std::int64_t(42), i1.default_value());
-
-    i1.reset();
-    CPPUNIT_ASSERT_EQUAL(std::int64_t(42), i1.value());
-    CPPUNIT_ASSERT_EQUAL(std::int64_t(42), i1.default_value());
-
-    i1 = -4788;
-    CPPUNIT_ASSERT_EQUAL(std::int64_t(-4788), i1.value());
-    CPPUNIT_ASSERT_EQUAL(std::int64_t(42), i1.default_value());
-
-    i1.set_value(i1.default_value());
-    CPPUNIT_ASSERT_EQUAL(std::int64_t(42), i1.value());
-    CPPUNIT_ASSERT_EQUAL(std::int64_t(42), i1.default_value());
-}
-
-} // namespace sight::data::ut
+        i1.set_value(i1.default_value());
+        CHECK_EQ(std::int64_t(42), i1.value());
+        CHECK_EQ(std::int64_t(42), i1.default_value());
+    }
+} // TEST_SUITE("sight::data::integer")

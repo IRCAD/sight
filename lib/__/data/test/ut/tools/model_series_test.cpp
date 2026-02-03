@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,190 +20,180 @@
  *
  ***********************************************************************/
 
-#include "model_series_test.hpp"
-
 #include <data/color.hpp>
 #include <data/material.hpp>
 #include <data/model_series.hpp>
 #include <data/tools/model_series.hpp>
 
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::tools::ut::model_series_test);
+#include <doctest/doctest.h>
 
-namespace sight::data::tools::ut
+TEST_SUITE("sight::data::tools::ut")
 {
-
 //------------------------------------------------------------------------------
 
-void model_series_test::setUp()
-{
-}
-
-//------------------------------------------------------------------------------
-
-void model_series_test::tearDown()
-{
-}
-
-//------------------------------------------------------------------------------
-
-void model_series_test::add_reconstruction()
-{
-    data::model_series::sptr model_series = std::make_shared<data::model_series>();
-    data::reconstruction::sptr rec1       = std::make_shared<data::reconstruction>();
-
-    data::tools::model_series::add_reconstruction(model_series, rec1);
-
-    const data::model_series::reconstruction_vector_t& rec_db = model_series->get_reconstruction_db();
-    CPPUNIT_ASSERT_EQUAL(rec1, rec_db[0]);
-
-    data::reconstruction::sptr rec2 = std::make_shared<data::reconstruction>();
-
-    data::tools::model_series::add_reconstruction(model_series, rec2);
-
-    CPPUNIT_ASSERT_EQUAL(rec1, rec_db[0]);
-    CPPUNIT_ASSERT_EQUAL(rec2, rec_db[1]);
-
-    data::reconstruction::sptr rec3 = std::make_shared<data::reconstruction>();
-    data::tools::model_series::add_reconstruction(model_series, rec3);
-
-    CPPUNIT_ASSERT_EQUAL(rec1, rec_db[0]);
-    CPPUNIT_ASSERT_EQUAL(rec2, rec_db[1]);
-    CPPUNIT_ASSERT_EQUAL(rec3, rec_db[2]);
-
-    CPPUNIT_ASSERT_THROW(data::tools::model_series::add_reconstruction(model_series, rec1), core::exception);
-
-    data::reconstruction::sptr null_rec;
-    CPPUNIT_ASSERT_THROW(data::tools::model_series::add_reconstruction(model_series, null_rec), core::exception);
-}
-
-//------------------------------------------------------------------------------
-
-void model_series_test::create_reconstruction_from_mesh()
-{
-    data::mesh::sptr mesh   = std::make_shared<data::mesh>();
-    data::color::sptr color = std::make_shared<data::color>(1.0F, 0.3F, 0.7F, 0.5F);
-
+    TEST_CASE("add_reconstruction")
     {
-        const std::string organ_name     = "Liver1";
-        const std::string structure_type = "Liver";
+        sight::data::model_series::sptr model_series = std::make_shared<sight::data::model_series>();
+        sight::data::reconstruction::sptr rec1       = std::make_shared<sight::data::reconstruction>();
 
-        auto rec = data::tools::model_series::create_reconstruction_from_mesh(
-            mesh,
-            organ_name,
-            structure_type,
-            color,
-            data::material::surface
+        sight::data::tools::model_series::add_reconstruction(model_series, rec1);
+
+        const sight::data::model_series::reconstruction_vector_t& rec_db = model_series->get_reconstruction_db();
+        CHECK_EQ(rec1, rec_db[0]);
+
+        sight::data::reconstruction::sptr rec2 = std::make_shared<sight::data::reconstruction>();
+
+        sight::data::tools::model_series::add_reconstruction(model_series, rec2);
+
+        CHECK_EQ(rec1, rec_db[0]);
+        CHECK_EQ(rec2, rec_db[1]);
+
+        sight::data::reconstruction::sptr rec3 = std::make_shared<sight::data::reconstruction>();
+        sight::data::tools::model_series::add_reconstruction(model_series, rec3);
+
+        CHECK_EQ(rec1, rec_db[0]);
+        CHECK_EQ(rec2, rec_db[1]);
+        CHECK_EQ(rec3, rec_db[2]);
+
+        CHECK_THROWS_AS(
+            sight::data::tools::model_series::add_reconstruction(model_series, rec1),
+            sight::core::exception
         );
 
-        CPPUNIT_ASSERT_EQUAL(rec->get_mesh(), mesh);
-        CPPUNIT_ASSERT_EQUAL(rec->get_organ_name(), organ_name);
-        CPPUNIT_ASSERT_EQUAL(rec->get_structure_type(), structure_type);
-        CPPUNIT_ASSERT_EQUAL(rec->get_is_visible(), true);
-        CPPUNIT_ASSERT_EQUAL(rec->get_material()->get_representation_mode(), data::material::surface);
-
-        auto ambient = rec->get_material()->diffuse();
-        CPPUNIT_ASSERT_EQUAL(ambient->red(), 1.0F);
-        CPPUNIT_ASSERT_EQUAL(ambient->green(), 0.3F);
-        CPPUNIT_ASSERT_EQUAL(ambient->blue(), 0.7F);
-        CPPUNIT_ASSERT_EQUAL(ambient->alpha(), 0.5F);
-    }
-
-    {
-        const std::string organ_name     = "Foo";
-        const std::string structure_type = "Foofoo";
-
-        auto rec = data::tools::model_series::create_reconstruction_from_mesh(
-            mesh,
-            organ_name,
-            structure_type,
-            color,
-            data::material::wireframe,
-            false
+        sight::data::reconstruction::sptr null_rec;
+        CHECK_THROWS_AS(
+            sight::data::tools::model_series::add_reconstruction(model_series, null_rec),
+            sight::core::exception
         );
-
-        CPPUNIT_ASSERT_EQUAL(rec->get_mesh(), mesh);
-        CPPUNIT_ASSERT_EQUAL(rec->get_organ_name(), organ_name);
-        CPPUNIT_ASSERT_EQUAL(rec->get_structure_type(), structure_type);
-        CPPUNIT_ASSERT_EQUAL(rec->get_is_visible(), false);
-        CPPUNIT_ASSERT_EQUAL(rec->get_material()->get_representation_mode(), data::material::wireframe);
-
-        auto ambient = rec->get_material()->diffuse();
-        CPPUNIT_ASSERT_EQUAL(ambient->red(), 1.0F);
-        CPPUNIT_ASSERT_EQUAL(ambient->green(), 0.3F);
-        CPPUNIT_ASSERT_EQUAL(ambient->blue(), 0.7F);
-        CPPUNIT_ASSERT_EQUAL(ambient->alpha(), 0.5F);
     }
-}
 
 //------------------------------------------------------------------------------
 
-void model_series_test::add_mesh()
-{
-    data::model_series::sptr model_series                     = std::make_shared<data::model_series>();
-    const data::model_series::reconstruction_vector_t& rec_db = model_series->get_reconstruction_db();
-
+    TEST_CASE("create_reconstruction_from_mesh")
     {
-        data::mesh::sptr mesh            = std::make_shared<data::mesh>();
-        data::color::sptr color          = std::make_shared<data::color>(1.0F, 0.3F, 0.7F, 0.5F);
-        const std::string organ_name     = "Liver1";
-        const std::string structure_type = "Liver";
+        sight::data::mesh::sptr mesh   = std::make_shared<sight::data::mesh>();
+        sight::data::color::sptr color = std::make_shared<sight::data::color>(1.0F, 0.3F, 0.7F, 0.5F);
 
-        data::tools::model_series::add_mesh(
-            model_series,
-            mesh,
-            organ_name,
-            structure_type,
-            color,
-            data::material::surface
-        );
+        {
+            const std::string organ_name     = "Liver1";
+            const std::string structure_type = "Liver";
 
-        auto rec = rec_db[0];
+            auto rec = sight::data::tools::model_series::create_reconstruction_from_mesh(
+                mesh,
+                organ_name,
+                structure_type,
+                color,
+                sight::data::material::surface
+            );
 
-        CPPUNIT_ASSERT_EQUAL(rec->get_mesh(), mesh);
-        CPPUNIT_ASSERT_EQUAL(rec->get_organ_name(), organ_name);
-        CPPUNIT_ASSERT_EQUAL(rec->get_structure_type(), structure_type);
-        CPPUNIT_ASSERT_EQUAL(rec->get_is_visible(), true);
-        CPPUNIT_ASSERT_EQUAL(rec->get_material()->get_representation_mode(), data::material::surface);
+            CHECK_EQ(rec->get_mesh(), mesh);
+            CHECK_EQ(rec->get_organ_name(), organ_name);
+            CHECK_EQ(rec->get_structure_type(), structure_type);
+            CHECK_EQ(rec->get_is_visible(), true);
+            CHECK_EQ(rec->get_material()->get_representation_mode(), sight::data::material::surface);
 
-        auto ambient = rec->get_material()->diffuse();
-        CPPUNIT_ASSERT_EQUAL(ambient->red(), 1.0F);
-        CPPUNIT_ASSERT_EQUAL(ambient->green(), 0.3F);
-        CPPUNIT_ASSERT_EQUAL(ambient->blue(), 0.7F);
-        CPPUNIT_ASSERT_EQUAL(ambient->alpha(), 0.5F);
+            auto ambient = rec->get_material()->diffuse();
+            CHECK_EQ(ambient->red(), 1.0F);
+            CHECK_EQ(ambient->green(), 0.3F);
+            CHECK_EQ(ambient->blue(), 0.7F);
+            CHECK_EQ(ambient->alpha(), 0.5F);
+        }
+
+        {
+            const std::string organ_name     = "Foo";
+            const std::string structure_type = "Foofoo";
+
+            auto rec = sight::data::tools::model_series::create_reconstruction_from_mesh(
+                mesh,
+                organ_name,
+                structure_type,
+                color,
+                sight::data::material::wireframe,
+                false
+            );
+
+            CHECK_EQ(rec->get_mesh(), mesh);
+            CHECK_EQ(rec->get_organ_name(), organ_name);
+            CHECK_EQ(rec->get_structure_type(), structure_type);
+            CHECK_EQ(rec->get_is_visible(), false);
+            CHECK_EQ(rec->get_material()->get_representation_mode(), sight::data::material::wireframe);
+
+            auto ambient = rec->get_material()->diffuse();
+            CHECK_EQ(ambient->red(), 1.0F);
+            CHECK_EQ(ambient->green(), 0.3F);
+            CHECK_EQ(ambient->blue(), 0.7F);
+            CHECK_EQ(ambient->alpha(), 0.5F);
+        }
     }
-
-    {
-        data::mesh::sptr mesh            = std::make_shared<data::mesh>();
-        data::color::sptr color          = std::make_shared<data::color>(0.1F, 0.3F, 0.7F, 1.5F);
-        const std::string organ_name     = "Foo";
-        const std::string structure_type = "Foofoo";
-
-        data::tools::model_series::add_mesh(
-            model_series,
-            mesh,
-            organ_name,
-            structure_type,
-            color,
-            data::material::wireframe,
-            false
-        );
-        auto rec = rec_db[1];
-
-        CPPUNIT_ASSERT_EQUAL(rec->get_mesh(), mesh);
-        CPPUNIT_ASSERT_EQUAL(rec->get_organ_name(), organ_name);
-        CPPUNIT_ASSERT_EQUAL(rec->get_structure_type(), structure_type);
-        CPPUNIT_ASSERT_EQUAL(rec->get_is_visible(), false);
-        CPPUNIT_ASSERT_EQUAL(rec->get_material()->get_representation_mode(), data::material::wireframe);
-
-        auto ambient = rec->get_material()->diffuse();
-        CPPUNIT_ASSERT_EQUAL(ambient->red(), 0.1F);
-        CPPUNIT_ASSERT_EQUAL(ambient->green(), 0.3F);
-        CPPUNIT_ASSERT_EQUAL(ambient->blue(), 0.7F);
-        CPPUNIT_ASSERT_EQUAL(ambient->alpha(), 1.5F);
-    }
-}
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::data::tools::ut
+    TEST_CASE("add_mesh")
+    {
+        sight::data::model_series::sptr model_series =
+            std::make_shared<sight::data::model_series>();
+        const sight::data::model_series::reconstruction_vector_t& rec_db = model_series->get_reconstruction_db();
+
+        {
+            sight::data::mesh::sptr mesh     = std::make_shared<sight::data::mesh>();
+            sight::data::color::sptr color   = std::make_shared<sight::data::color>(1.0F, 0.3F, 0.7F, 0.5F);
+            const std::string organ_name     = "Liver1";
+            const std::string structure_type = "Liver";
+
+            sight::data::tools::model_series::add_mesh(
+                model_series,
+                mesh,
+                organ_name,
+                structure_type,
+                color,
+                sight::data::material::surface
+            );
+
+            auto rec = rec_db[0];
+
+            CHECK_EQ(rec->get_mesh(), mesh);
+            CHECK_EQ(rec->get_organ_name(), organ_name);
+            CHECK_EQ(rec->get_structure_type(), structure_type);
+            CHECK_EQ(rec->get_is_visible(), true);
+            CHECK_EQ(rec->get_material()->get_representation_mode(), sight::data::material::surface);
+
+            auto ambient = rec->get_material()->diffuse();
+            CHECK_EQ(ambient->red(), 1.0F);
+            CHECK_EQ(ambient->green(), 0.3F);
+            CHECK_EQ(ambient->blue(), 0.7F);
+            CHECK_EQ(ambient->alpha(), 0.5F);
+        }
+
+        {
+            sight::data::mesh::sptr mesh     = std::make_shared<sight::data::mesh>();
+            sight::data::color::sptr color   = std::make_shared<sight::data::color>(0.1F, 0.3F, 0.7F, 1.5F);
+            const std::string organ_name     = "Foo";
+            const std::string structure_type = "Foofoo";
+
+            sight::data::tools::model_series::add_mesh(
+                model_series,
+                mesh,
+                organ_name,
+                structure_type,
+                color,
+                sight::data::material::wireframe,
+                false
+            );
+            auto rec = rec_db[1];
+
+            CHECK_EQ(rec->get_mesh(), mesh);
+            CHECK_EQ(rec->get_organ_name(), organ_name);
+            CHECK_EQ(rec->get_structure_type(), structure_type);
+            CHECK_EQ(rec->get_is_visible(), false);
+            CHECK_EQ(rec->get_material()->get_representation_mode(), sight::data::material::wireframe);
+
+            auto ambient = rec->get_material()->diffuse();
+            CHECK_EQ(ambient->red(), 0.1F);
+            CHECK_EQ(ambient->green(), 0.3F);
+            CHECK_EQ(ambient->blue(), 0.7F);
+            CHECK_EQ(ambient->alpha(), 1.5F);
+        }
+    }
+
+//------------------------------------------------------------------------------
+} // TEST_SUITE("sight::data::tools::ut")
