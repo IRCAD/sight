@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -304,8 +304,6 @@ data::point_list::sptr detect_chessboard(
     float _scale
 )
 {
-    data::point_list::sptr pointlist;
-
     SIGHT_ASSERT("Expected 8bit pixel components, this image has: " << 8 * _img.elemSize1(), _img.elemSize1() == 1);
 
     // Ensure that we have a true depth-less 2D image.
@@ -342,6 +340,7 @@ data::point_list::sptr detect_chessboard(
 
     const bool pattern_was_found = cv::findChessboardCorners(detection_image, board_size, corners, flags);
 
+    data::point_list::sptr point_list;
     if(pattern_was_found)
     {
         // Rescale points to get their coordinates in the full scale image.
@@ -352,15 +351,14 @@ data::point_list::sptr detect_chessboard(
         cv::TermCriteria term(cv::TermCriteria::MAX_ITER + cv::TermCriteria::EPS, 30, 0.1);
         cv::cornerSubPix(gray_img, corners, cv::Size(5, 5), cv::Size(-1, -1), term);
 
-        pointlist = std::make_shared<data::point_list>();
-        data::point_list::container_t& points = pointlist->get_points();
-        points.reserve(corners.size());
+        point_list = std::make_shared<data::point_list>();
+        point_list->reserve(corners.size());
 
         const auto cv2_sight_pt = [](const cv::Point2f& _p){return std::make_shared<data::point>(_p.x, _p.y);};
-        std::ranges::transform(corners, std::back_inserter(points), cv2_sight_pt);
+        std::ranges::transform(corners, std::back_inserter(*point_list), cv2_sight_pt);
     }
 
-    return pointlist;
+    return point_list;
 }
 
 // ----------------------------------------------------------------------------

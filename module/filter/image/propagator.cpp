@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024-2025 IRCAD France
+ * Copyright (C) 2024-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -101,7 +101,7 @@ void propagator::propagate()
         const auto point_list = m_seeds_in.lock();
 
         // Early return that can help to avoid deadlocks when starting the service
-        if(point_list->get_points().empty())
+        if(point_list->empty())
         {
             progress->done_work(10);
             return;
@@ -115,7 +115,7 @@ void propagator::propagate()
         const auto& sizes = image_in->size();
 
         std::ranges::for_each(
-            point_list->get_points(),
+            *point_list,
             [&](const auto& _x)
             {
                 const auto indices = geometry::data::world_to_image(*image_in, *_x, true);

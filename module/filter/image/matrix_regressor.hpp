@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -92,8 +92,8 @@ protected:
      * Connect data::vector::ADDED_OBJECTS_SIG of s_MATRIX_LIST_IN to service::slots::UPDATE
      * Connect data::vector::REMOVED_OBJECTS_SIG of s_MATRIX_LIST_IN to service::slots::UPDATE
      * Connect data::vector::MODIFIED_SIG of s_MATRIX_LIST_IN to service::slots::UPDATE
-     * Connect data::point_list::POINT_ADDED_SIG of s_POINT_LIST_IN to service::slots::UPDATE
-     * Connect data::point_list::POINT_REMOVED_SIG of s_POINT_LIST_IN to service::slots::UPDATE
+     * Connect data::point_list::signals::POINT_ADDED of s_POINT_LIST_IN to service::slots::UPDATE
+     * Connect data::point_list::signals::POINT_REMOVED of s_POINT_LIST_IN to service::slots::UPDATE
      * Connect data::point_list::MODIFIED_SIG of s_POINT_LIST_IN to service::slots::UPDATE
      */
     connections_t auto_connections() const override;

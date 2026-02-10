@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2025 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,12 +45,10 @@ sight::data::array::sptr point_list::compute_distance(
 {
     SIGHT_ASSERT(
         "the 2 pointLists must have the same number of points",
-        _point_list1->get_points().size() == _point_list2->get_points().size()
+        _point_list1->size() == _point_list2->size()
     );
 
-    const auto points1     = _point_list1->get_points();
-    const auto points2     = _point_list2->get_points();
-    const std::size_t size = points1.size();
+    const std::size_t size = _point_list1->size();
 
     sight::data::array::sptr output_array = std::make_shared<sight::data::array>();
     output_array->resize({size}, sight::core::type::DOUBLE);
@@ -59,8 +57,8 @@ sight::data::array::sptr point_list::compute_distance(
 
     for(std::size_t i = 0 ; i < size ; ++i)
     {
-        const auto& tmp1     = *points1[i];
-        const auto& tmp2     = *points2[i];
+        const auto& tmp1     = *(*_point_list1)[i];
+        const auto& tmp2     = *(*_point_list2)[i];
         const glm::dvec3 pt1 = glm::dvec3(tmp1[0], tmp1[1], tmp1[2]);
         const glm::dvec3 pt2 = glm::dvec3(tmp2[0], tmp2[1], tmp2[2]);
         *distance_array_itr = glm::distance(pt1, pt2);
@@ -77,12 +75,11 @@ void point_list::transform(
     const sight::data::matrix4::csptr& _matrix
 )
 {
-    const sight::data::point_list::container_t points = _point_list->get_points();
-    const std::size_t size                            = points.size();
+    const std::size_t size = _point_list->size();
 
     for(std::size_t i = 0 ; i < size ; ++i)
     {
-        sight::data::point& pt = *points[i];
+        sight::data::point& pt = *(*_point_list)[i];
 
         // Transform the current point with the input matrix
         sight::geometry::data::multiply(*_matrix, pt, pt);
@@ -98,13 +95,10 @@ void point_list::associate(
 {
     SIGHT_ASSERT(
         "the 2 pointLists must have the same number of points",
-        _point_list1->get_points().size() == _point_list2->get_points().size()
+        _point_list1->size() == _point_list2->size()
     );
 
-    const sight::data::point_list::container_t points1 = _point_list1->get_points();
-    const sight::data::point_list::container_t points2 = _point_list2->get_points();
-
-    const std::size_t size = points1.size();
+    const std::size_t size = _point_list1->size();
 
     // Transform first point list into vector< glm::dvec3 > (no erase is performed)
     std::vector<glm::dvec3> vec1;
@@ -114,8 +108,8 @@ void point_list::associate(
 
     for(std::size_t i = 0 ; i < size ; ++i)
     {
-        const auto& tmp1 = *points1[i];
-        const auto& tmp2 = *points2[i];
+        const auto& tmp1 = *(*_point_list1)[i];
+        const auto& tmp2 = *(*_point_list2)[i];
 
         // Add the point to vector/list
         vec1.emplace_back(tmp1[0], tmp1[1], tmp1[2]);
@@ -140,7 +134,7 @@ void point_list::associate(
             }
         }
 
-        const sight::data::point::sptr& pt = points2[index];
+        const sight::data::point::sptr& pt = (*_point_list2)[index];
         *pt = {it_closest_point->x, it_closest_point->y, it_closest_point->z};
         ++index;
 
@@ -158,8 +152,7 @@ sight::data::point::sptr point_list::remove_closest_point(
 )
 {
     // Initial data
-    const auto& list = _point_list->get_points();
-    if(!list.empty())
+    if(!_point_list->empty())
     {
         const glm::vec3 p1 {(*_point)[0], (*_point)[1], (*_point)[2]};
 
@@ -170,16 +163,16 @@ sight::data::point::sptr point_list::remove_closest_point(
         bool point_is_found            = false;
 
         // Find the closest one
-        for(std::size_t i = 0 ; i < list.size() ; ++i)
+        for(std::size_t i = 0 ; i < _point_list->size() ; ++i)
         {
-            const auto& coord2 = (*list[i]);
+            const auto& coord2 = *(*_point_list)[i];
             const glm::vec3 p2 {coord2[0], coord2[1], coord2[2]};
 
             float temp_closest = NAN;
             if((temp_closest = glm::distance(p1, p2)) < _delta && temp_closest < closest)
             {
                 closest        = temp_closest;
-                point          = list[i];
+                point          = (*_point_list)[i];
                 index          = i;
                 point_is_found = true;
             }

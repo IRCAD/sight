@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -112,7 +112,7 @@ void manage_point_list_test::update_test()
 
     service_tester.srv->update().get();
 
-    const auto& point_list = service_tester.point_list->get_points();
+    const auto& point_list = *service_tester.point_list;
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), point_list.size());
     CPPUNIT_ASSERT_EQUAL((*input_point)[3], (*point_list[0])[0]);
     CPPUNIT_ASSERT_EQUAL((*input_point)[7], (*point_list[0])[1]);
@@ -151,7 +151,7 @@ void manage_point_list_test::pick_test()
     context service_tester;
     service_tester.set_config(R"(<config max="0" />)");
 
-    const auto& point_list = service_tester.point_list->get_points();
+    const auto& point_list = *service_tester.point_list;
 
     sight::data::tools::picking_info info;
     service_tester.srv->slot("pick")->run(info);
@@ -181,7 +181,7 @@ void manage_point_list_test::max_test()
     context service_tester;
     service_tester.set_config(R"(<config max="2" />)");
 
-    const auto& point_list = service_tester.point_list->get_points();
+    const auto& point_list = *service_tester.point_list;
 
     sight::data::tools::picking_info info;
     service_tester.srv->slot("pick")->run(info);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -76,9 +76,9 @@ void open_cv_extrinsic::updating()
         std::vector<std::vector<cv::Point3f> > object_points;
 
         std::vector<cv::Point3f> points;
-        for(unsigned int y = 0 ; y < static_cast<unsigned int>(*m_height - 1) ; ++y)
+        for(std::uint32_t y = 0 ; std::cmp_less(y, *m_height - 1) ; ++y)
         {
-            for(unsigned int x = 0 ; x < static_cast<unsigned int>(*m_width - 1) ; ++x)
+            for(std::uint32_t x = 0 ; std::cmp_less(x, *m_width - 1) ; ++x)
             {
                 points.emplace_back(
                     static_cast<float>(x * m_square_size.value()),
@@ -109,7 +109,7 @@ void open_cv_extrinsic::updating()
                 std::vector<cv::Point2f> img_point1;
                 std::vector<cv::Point2f> img_point2;
 
-                for(data::point::csptr point : pt_list1->get_points())
+                for(data::point::csptr point : *pt_list1)
                 {
                     SIGHT_ASSERT("point is null", point);
                     img_point1.emplace_back(
@@ -119,7 +119,7 @@ void open_cv_extrinsic::updating()
                     );
                 }
 
-                for(data::point::csptr point : pt_list2->get_points())
+                for(data::point::csptr point : *pt_list2)
                 {
                     SIGHT_ASSERT("point is null", point);
                     img_point2.emplace_back(

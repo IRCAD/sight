@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2025 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -60,6 +60,7 @@ void point_list_test::copy_from_cv()
 {
     std::vector<cv::Point2d> cv_point_list;
 
+    cv_point_list.reserve(512);
     for(std::uint16_t i = 0 ; i < 512 ; ++i)
     {
         cv_point_list.emplace_back(double(i), double(i * 2 + 3));
@@ -70,7 +71,7 @@ void point_list_test::copy_from_cv()
 
     for(std::uint16_t i = 0 ; i < 512 ; ++i)
     {
-        data::point::csptr pt = pl->get_points()[i];
+        data::point::csptr pt = (*pl)[i];
         assert2d_point_equality(pt, cv_point_list[i]);
         CPPUNIT_ASSERT_EQUAL(i, std::uint16_t((*pt)[0]));
         CPPUNIT_ASSERT_EQUAL(std::uint16_t(i * 2 + 3), std::uint16_t((*pt)[1]));
@@ -87,7 +88,7 @@ void point_list_test::copy_to_cv()
     for(std::uint16_t i = 0 ; i < 512 ; ++i)
     {
         data::point::sptr point = std::make_shared<data::point>(double(i), double(i * 3 + 5), 0.);
-        pl->get_points().push_back(point);
+        pl->push_back(point);
     }
 
     std::vector<cv::Point2d> cv_point_list;
@@ -95,7 +96,7 @@ void point_list_test::copy_to_cv()
 
     for(std::uint16_t i = 0 ; i < 512 ; ++i)
     {
-        assert2d_point_equality(pl->get_points()[i], cv_point_list[i]);
+        assert2d_point_equality((*pl)[i], cv_point_list[i]);
         CPPUNIT_ASSERT_EQUAL(i, std::uint16_t(cv_point_list[i].x));
         CPPUNIT_ASSERT_EQUAL(std::uint16_t(i * 3 + 5), std::uint16_t(cv_point_list[i].y));
     }

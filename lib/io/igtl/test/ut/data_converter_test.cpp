@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -266,7 +266,7 @@ void data_converter_test::point_list_converter_test()
     {
         point = std::make_shared<data::point>();
         std::copy(points[i].begin(), points[i].end(), point->begin());
-        point_list->get_points().push_back(point);
+        point_list->push_back(point);
     }
 
     msg =
@@ -288,8 +288,8 @@ void data_converter_test::point_list_converter_test()
     {
         CPPUNIT_ASSERT(
             std::equal(
-                (*point_list2->get_points()[i]).begin(),
-                (*point_list2->get_points()[i]).end(),
+                ((*point_list2)[i])->begin(),
+                ((*point_list2)[i])->end(),
                 points[i].begin()
             )
         );
@@ -327,7 +327,7 @@ void data_converter_test::line_converter_test()
     std::array position {0.0F, 1.0F, 2.0F};
     // While we only use the first three elements of direction, igtl::PositionMessage::GetQuaternion requires a
     // four-element array.
-    std::array<float, 4> direction {0.0F, 1.0F, 2.0F};
+    std::array<float, 4> direction {0.0F, 1.0F, 2.0F, 0.0F};
 
     data::point::sptr point;
     data::line::sptr line;
@@ -338,7 +338,7 @@ void data_converter_test::line_converter_test()
     line->set_position(std::make_shared<data::point>());
     line->set_direction(std::make_shared<data::point>());
     std::copy(direction.begin(), direction.begin() + 3, (*line->get_direction()).begin());
-    std::copy(position.begin(), position.end(), (*line->get_position()).begin());
+    std::ranges::copy(position, (*line->get_position()).begin());
     line_msg =
         ::igtl::PositionMessage::Pointer(
             dynamic_cast< ::igtl::PositionMessage*>(converter->from_fw_object(

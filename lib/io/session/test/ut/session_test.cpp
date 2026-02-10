@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -752,15 +752,14 @@ inline sight::data::point::sptr generate<sight::data::point>(const std::size_t /
 template<>
 inline sight::data::point_list::sptr generate<sight::data::point_list>(const std::size_t _variant)
 {
-    auto object = std::make_shared<sight::data::point_list>();
+    auto points = std::make_shared<sight::data::point_list>();
 
-    auto& points = object->get_points();
     for(std::size_t i = 0, end = _variant + 3 ; i < end ; ++i)
     {
-        points.push_back(create<sight::data::point>(i));
+        points->push_back(create<sight::data::point>(i));
     }
 
-    return object;
+    return points;
 }
 
 //------------------------------------------------------------------------------

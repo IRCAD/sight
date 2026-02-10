@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2025 IRCAD France
+ * Copyright (C) 2019-2026 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -147,18 +147,18 @@ void manage_point_list::add_point(const data::point::sptr _point) const
 
     if(m_label)
     {
-        const auto counter = point_list->get_points().size();
+        const auto counter = point_list->size();
         _point->set_label(std::to_string(counter));
     }
 
     point_list->push_back(_point);
-    point_list->async_emit(data::point_list::POINT_ADDED_SIG, _point);
+    point_list->async_emit(data::point_list::signals::POINT_ADDED, _point);
 
-    if(m_max != 0 && point_list->get_points().size() > m_max)
+    if(m_max != 0 && point_list->size() > m_max)
     {
-        const data::point::sptr removed_point = point_list->get_points().front();
+        const data::point::sptr removed_point = point_list->front();
         point_list->remove(0);
-        point_list->async_emit(data::point_list::POINT_REMOVED_SIG, removed_point);
+        point_list->async_emit(data::point_list::signals::POINT_REMOVED, removed_point);
     }
 }
 
@@ -174,7 +174,7 @@ void manage_point_list::remove_point(const data::point::csptr _point) const
 
         if(point_res != nullptr)
         {
-            point_list->async_emit(data::point_list::POINT_REMOVED_SIG, point_res);
+            point_list->async_emit(data::point_list::signals::POINT_REMOVED, point_res);
         }
     }
 }
@@ -184,14 +184,11 @@ void manage_point_list::remove_point(const data::point::csptr _point) const
 void manage_point_list::clear() const
 {
     const auto point_list = m_point_list.lock();
-
-    using pl_container_t = data::point_list::container_t;
-    const pl_container_t container = point_list->get_points();
     point_list->clear();
 
-    for(const auto& point : container)
+    for(const auto& point : *point_list)
     {
-        point_list->async_emit(data::point_list::POINT_REMOVED_SIG, point);
+        point_list->async_emit(data::point_list::signals::POINT_REMOVED, point);
     }
 }
 

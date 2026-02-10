@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2025 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -173,7 +173,7 @@ void compute_centroids(
                             label_name << n;
                             data::string::sptr label = std::make_shared<data::string>(label_name.str());
 
-                            plane_point_list->get_points().push_back(new_point);
+                            plane_point_list->push_back(new_point);
                         }
                     }
                 }
@@ -185,7 +185,7 @@ void compute_centroids(
                 data::point_list::sptr landmarks = data::helper::medical_image::get_landmarks(*_image);
 
                 SIGHT_ASSERT("landmarks not instanced", landmarks);
-                landmarks->get_points().clear();
+                landmarks->clear();
 
                 label_map_t* label_map = i2l->GetOutput();
                 data::point::sptr new_point;
@@ -197,7 +197,7 @@ void compute_centroids(
                     const typename shape_label_object_t::CentroidType centroid = label_object->GetCentroid();
 
                     new_point = std::make_shared<data::point>(centroid[0], centroid[1], centroid[2]);
-                    landmarks->get_points().push_back(new_point);
+                    landmarks->push_back(new_point);
 
                     // append to point the label
                     std::stringstream label_name;

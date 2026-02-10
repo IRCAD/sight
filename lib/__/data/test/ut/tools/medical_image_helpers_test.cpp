@@ -422,11 +422,9 @@ TEST_SUITE("sight::data::tools::ut")
         const auto landmarks = med_im_helper::get_landmarks(*image);
         CHECK(landmarks);
 
-        const auto points = landmarks->get_points();
+        CHECK_EQ(std::size_t(1), landmarks->size());
 
-        CHECK_EQ(std::size_t(1), points.size());
-
-        const auto& point = points[0];
+        const auto& point = (*landmarks)[0];
 
         for(std::size_t i = 0 ; i < 3 ; ++i)
         {
@@ -607,8 +605,8 @@ TEST_SUITE("sight::data::tools::ut")
 
         sight::data::vector::sptr distances      = std::make_shared<sight::data::vector>();
         sight::data::point_list::sptr point_list = std::make_shared<sight::data::point_list>();
-        point_list->get_points().push_back(std::make_shared<sight::data::point>(0., 1., 2.));
-        point_list->get_points().push_back(std::make_shared<sight::data::point>(10., 11., 12.));
+        point_list->push_back(std::make_shared<sight::data::point>(0., 1., 2.));
+        point_list->push_back(std::make_shared<sight::data::point>(10., 11., 12.));
 
         distances->push_back(point_list);
 

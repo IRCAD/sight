@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -201,7 +201,7 @@ void chess_board_detector::do_detection(std::size_t _image_index)
             }
             else
             {
-                out_pl->get_points().clear();
+                out_pl->clear();
             }
 
             auto sig = out_pl->signal<data::point_list::modified_signal_t>(data::point_list::MODIFIED_SIG);

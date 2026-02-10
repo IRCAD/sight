@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2025 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -67,7 +67,7 @@ void matrix_regressor::updating()
     std::vector<sight::filter::image::matrix_regressor::point_t> pt_list;
 
     // Convert the point list.
-    for(const auto& pt : point_list->get_points())
+    for(const auto& pt : *point_list)
     {
         pt_list.emplace_back((*pt)[0], (*pt)[1], (*pt)[2], 1.);
     }
@@ -100,9 +100,9 @@ service::connections_t matrix_regressor::auto_connections() const
         {MATRIX_LIST_IN, data::vector::ADDED_OBJECTS_SIG, service::slots::UPDATE},
         {MATRIX_LIST_IN, data::vector::REMOVED_OBJECTS_SIG, service::slots::UPDATE},
         {MATRIX_LIST_IN, data::vector::MODIFIED_SIG, service::slots::UPDATE},
-        {POINT_LIST_IN, data::point_list::POINT_ADDED_SIG, service::slots::UPDATE},
-        {POINT_LIST_IN, data::point_list::POINT_REMOVED_SIG, service::slots::UPDATE},
-        {POINT_LIST_IN, data::point_list::MODIFIED_SIG, service::slots::UPDATE}
+        {POINT_LIST_IN, data::point_list::signals::POINT_ADDED, service::slots::UPDATE},
+        {POINT_LIST_IN, data::point_list::signals::POINT_REMOVED, service::slots::UPDATE},
+        {POINT_LIST_IN, data::signals::MODIFIED, service::slots::UPDATE}
     };
 }
 

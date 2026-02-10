@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -68,9 +68,9 @@ void open_cv_intrinsic::updating()
         std::vector<std::vector<cv::Point3f> > object_points;
 
         std::vector<cv::Point3f> points;
-        for(unsigned int y = 0 ; y < static_cast<unsigned int>(*m_height - 1) ; ++y)
+        for(std::uint32_t y = 0 ; std::cmp_less(y, *m_height - 1) ; ++y)
         {
-            for(unsigned int x = 0 ; x < static_cast<unsigned int>(*m_width - 1) ; ++x)
+            for(std::uint32_t x = 0 ; std::cmp_less(x, *m_width - 1) ; ++x)
             {
                 points.emplace_back(
                     static_cast<float>(x * m_square_size.value()),
@@ -86,7 +86,7 @@ void open_cv_intrinsic::updating()
         {
             std::vector<cv::Point2f> dst;
 
-            for(data::point::csptr point : capture->get_points())
+            for(data::point::csptr point : *capture)
             {
                 SIGHT_ASSERT("point is null", point);
                 dst.emplace_back(

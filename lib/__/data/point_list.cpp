@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,15 +34,12 @@ SIGHT_REGISTER_DATA(sight::data::point_list);
 namespace sight::data
 {
 
-const core::com::signals::key_t point_list::POINT_ADDED_SIG   = "point_added";
-const core::com::signals::key_t point_list::POINT_REMOVED_SIG = "point_removed";
-
 //------------------------------------------------------------------------------
 
 point_list::point_list()
 {
-    new_signal<point_added_signal_t>(POINT_ADDED_SIG);
-    new_signal<point_removed_signal_t>(POINT_REMOVED_SIG);
+    new_signal<signals::point_added_t>(signals::POINT_ADDED);
+    new_signal<signals::point_removed_t>(signals::POINT_REMOVED);
 }
 
 //------------------------------------------------------------------------------
@@ -58,8 +55,6 @@ void point_list::shallow_copy(const object::csptr& _source)
         ),
         !bool(other)
     );
-
-    m_v_points = other->m_v_points;
 
     base_class_t::shallow_copy(other);
 }
@@ -78,12 +73,6 @@ void point_list::deep_copy(const object::csptr& _source, const std::unique_ptr<d
         !bool(other)
     );
 
-    m_v_points.clear();
-    for(const auto& point : other->m_v_points)
-    {
-        m_v_points.push_back(data::object::copy(point, _cache));
-    }
-
     base_class_t::deep_copy(other, _cache);
 }
 
@@ -91,7 +80,7 @@ void point_list::deep_copy(const object::csptr& _source, const std::unique_ptr<d
 
 bool point_list::operator==(const point_list& _other) const noexcept
 {
-    if(!core::is_equal(m_v_points, _other.m_v_points))
+    if(!core::is_equal(*this, _other))
     {
         return false;
     }
@@ -113,7 +102,7 @@ std::ostream& operator<<(std::ostream& _out, const sight::data::point_list& _pl)
 {
     _out << "{";
     bool first = true;
-    for(const auto& e : _pl.get_points())
+    for(const auto& e : _pl)
     {
         if(!first)
         {

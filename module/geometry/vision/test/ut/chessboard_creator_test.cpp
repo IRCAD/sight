@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -77,16 +77,16 @@ void chessboard_creator_test::creation_test()
     srv->start().wait();
     srv->update().wait();
 
-    CPPUNIT_ASSERT_EQUAL(std::size_t(45), chessboard->get_points().size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(45), chessboard->size());
 
     // Check the first point
-    auto pt = chessboard->get_points()[0];
+    auto pt = (*chessboard)[0];
     CPPUNIT_ASSERT_EQUAL(0., (*pt)[0]);
     CPPUNIT_ASSERT_EQUAL(0., (*pt)[1]);
     CPPUNIT_ASSERT_EQUAL(0., (*pt)[2]);
 
     // Check the last point
-    pt = chessboard->get_points()[chessboard->get_points().size() - 1];
+    pt = (*chessboard)[chessboard->size() - 1];
     CPPUNIT_ASSERT_EQUAL(4., (*pt)[0]);
     CPPUNIT_ASSERT_EQUAL(8., (*pt)[1]);
     CPPUNIT_ASSERT_EQUAL(0., (*pt)[2]);
@@ -96,14 +96,14 @@ void chessboard_creator_test::creation_test()
     board_height_prop->set_value(3);
     board_square_size_prop->set_value(2.0);
     srv->update().wait();
-    CPPUNIT_ASSERT_EQUAL(std::size_t(8), chessboard->get_points().size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(8), chessboard->size());
     // Check the first point
-    pt = chessboard->get_points()[0];
+    pt = (*chessboard)[0];
     CPPUNIT_ASSERT_EQUAL(0., (*pt)[0]);
     CPPUNIT_ASSERT_EQUAL(0., (*pt)[1]);
     CPPUNIT_ASSERT_EQUAL(0., (*pt)[2]);
     // Check the last point
-    pt = chessboard->get_points()[chessboard->get_points().size() - 1];
+    pt = (*chessboard)[chessboard->size() - 1];
     CPPUNIT_ASSERT_EQUAL(2., (*pt)[0]);
     CPPUNIT_ASSERT_EQUAL(6., (*pt)[1]);
     CPPUNIT_ASSERT_EQUAL(0., (*pt)[2]);
@@ -113,7 +113,7 @@ void chessboard_creator_test::creation_test()
     board_height_prop->set_value(-3);
     board_square_size_prop->set_value(-2.0);
     srv->update().wait();
-    CPPUNIT_ASSERT_EQUAL(std::size_t(0), chessboard->get_points().size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(0), chessboard->size());
 
     srv->stop().wait();
     sight::service::remove(srv);

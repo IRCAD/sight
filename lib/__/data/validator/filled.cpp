@@ -64,7 +64,7 @@ sight::data::validator::return_t filled::validate(const data::object::csptr& _ob
     }
     else if(const auto point_list = std::dynamic_pointer_cast<const data::point_list>(_object); point_list)
     {
-        if(point_list->get_points().empty())
+        if(point_list->empty())
         {
             validation = {false, "Point list is empty."};
         }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -155,8 +155,8 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::point_list::POINT_ADDED_SIG of s_POINTLIST_INPUT to service::slots::UPDATE
-     * Connect data::point_list::POINT_REMOVED_SIG of s_POINTLIST_INPUT to service::slots::UPDATE
+     * Connect data::point_list::signals::POINT_ADDED of s_POINTLIST_INPUT to service::slots::UPDATE
+     * Connect data::point_list::signals::POINT_REMOVED of s_POINTLIST_INPUT to service::slots::UPDATE
      * Connect data::point_list::MODIFIED_SIG of s_POINTLIST_INPUT to service::slots::UPDATE
      * Connect data::mesh::VERTEX_MODIFIED_SIG of s_MESH_INPUT to service::slots::UPDATE
      * Connect data::mesh::MODIFIED_SIG of s_MESH_INPUT to service::slots::UPDATE

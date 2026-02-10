@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -110,11 +110,7 @@ void marker_to_point::add_point()
 
     const auto pl = m_point_list.lock();
     pl->push_back(p);
-    auto sig = pl->signal<data::point_list::point_added_signal_t>(data::point_list::POINT_ADDED_SIG);
-    {
-        core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
-        sig->async_emit(p);
-    }
+    pl->async_emit(this, data::point_list::signals::POINT_ADDED, p);
 }
 
 // ----------------------------------------------------------------------------
@@ -123,15 +119,10 @@ void marker_to_point::clear()
 {
     const auto pl = m_point_list.lock();
 
-    if(pl && !pl->get_points().empty())
+    if(pl && !pl->empty())
     {
         pl->clear();
-
-        auto sig = pl->signal<data::point_list::modified_signal_t>(data::point_list::MODIFIED_SIG);
-        {
-            core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
-            sig->async_emit();
-        }
+        pl->async_emit(this, data::signals::MODIFIED);
     }
 }
 

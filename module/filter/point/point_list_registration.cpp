@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -115,26 +115,26 @@ void point_list_registration::compute_registration(core::clock::type /*timestamp
     const auto reference_pl = m_reference_pl.lock();
     SIGHT_ASSERT("No 'referencePL' found", reference_pl);
 
-    if(registered_pl->get_points().size() >= 3
-       && registered_pl->get_points().size() == reference_pl->get_points().size())
+    if(registered_pl->size() >= 3
+       && registered_pl->size() == reference_pl->size())
     {
         vtkSmartPointer<vtkLandmarkTransform> landmark_transform = vtkSmartPointer<vtkLandmarkTransform>::New();
 
         vtkSmartPointer<vtkPoints> source_pts = vtkSmartPointer<vtkPoints>::New();
         vtkSmartPointer<vtkPoints> target_pts = vtkSmartPointer<vtkPoints>::New();
 
-        const auto& first_point     = reference_pl->get_points()[0];
-        const auto& first_point_reg = registered_pl->get_points()[0];
+        const auto& first_point     = (*reference_pl)[0];
+        const auto& first_point_reg = (*registered_pl)[0];
 
         // If the points have labels ...
         if(!first_point->get_label().empty() && !first_point_reg->get_label().empty())
         {
             // ... Then match them according to that label.
-            for(const data::point::sptr& point_ref : reference_pl->get_points())
+            for(const data::point::sptr& point_ref : (*reference_pl))
             {
                 const std::string label_ref = point_ref->get_label();
 
-                for(const data::point::sptr& point_reg : registered_pl->get_points())
+                for(const data::point::sptr& point_reg : (*registered_pl))
                 {
                     const std::string label_reg = point_ref->get_label();
 
@@ -149,12 +149,12 @@ void point_list_registration::compute_registration(core::clock::type /*timestamp
         else
         {
             // ... Else match them according to their order.
-            for(const auto& ref_point : reference_pl->get_points())
+            for(const auto& ref_point : *reference_pl)
             {
                 source_pts->InsertNextPoint((*ref_point)[0], (*ref_point)[1], (*ref_point)[2]);
             }
 
-            for(const auto& reg_point : registered_pl->get_points())
+            for(const auto& reg_point : *registered_pl)
             {
                 target_pts->InsertNextPoint((*reg_point)[0], (*reg_point)[1], (*reg_point)[2]);
             }
@@ -205,7 +205,7 @@ void point_list_registration::compute_registration(core::clock::type /*timestamp
 
             // to have homogeneous coordinates (x,y,z,w)
             std::array p2_h {1., 1., 1., 1.};
-            std::copy(std::begin(p2), std::end(p2), std::begin(p2_h));
+            std::ranges::copy(p2, std::begin(p2_h));
 
             //p' = M*p
             std::array<double, 4> new_p {};
@@ -231,7 +231,7 @@ void point_list_registration::compute_registration(core::clock::type /*timestamp
     }
     else
     {
-        if(registered_pl->get_points().size() < 3)
+        if(registered_pl->size() < 3)
         {
             sight::ui::dialog::message::show(
                 "Error",
@@ -242,8 +242,8 @@ void point_list_registration::compute_registration(core::clock::type /*timestamp
         else
         {
             std::string msg = "The pointlists doesn't have the same number of points : ";
-            msg += std::to_string(registered_pl->get_points().size()) + " != " + std::to_string(
-                reference_pl->get_points().size()
+            msg += std::to_string(registered_pl->size()) + " != " + std::to_string(
+                reference_pl->size()
             );
             sight::ui::dialog::message::show(
                 "Error",

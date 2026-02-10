@@ -187,8 +187,8 @@ service::connections_t video::auto_connections() const
     connections.push(m_tf, data::transfer_function::WINDOWING_MODIFIED_SIG, slots::UPDATE_TF);
 
     connections.push(m_pl, data::point_list::MODIFIED_SIG, slots::UPDATE_PL);
-    connections.push(m_pl, data::point_list::POINT_ADDED_SIG, slots::UPDATE_PL);
-    connections.push(m_pl, data::point_list::POINT_REMOVED_SIG, slots::UPDATE_PL);
+    connections.push(m_pl, data::point_list::signals::POINT_ADDED, slots::UPDATE_PL);
+    connections.push(m_pl, data::point_list::signals::POINT_REMOVED, slots::UPDATE_PL);
 
     return connections;
 }
@@ -400,15 +400,12 @@ void video::update_pl()
     const auto image = m_image.lock();
     const auto pl    = m_pl.lock();
 
-    const data::point_list::container_t& in_points = pl->get_points();
+    m_point_list->clear();
 
-    data::point_list::container_t& out_points = m_point_list->get_points();
-    out_points.clear();
-
-    for(const auto& in_point : in_points)
+    for(const auto& in_point : *pl)
     {
         const auto& point = *in_point;
-        out_points.push_back(
+        m_point_list->push_back(
             std::make_shared<data::point>(
                 point[0] - static_cast<double>(image->size()[0]) * 0.5,
                 -(point[1] - static_cast<double>(image->size()[1]) * 0.5),

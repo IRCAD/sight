@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -75,8 +75,8 @@ void calibration_info_editor::updating()
         for( ; it1 != pl_list1.end() && it2 != pl_list2.end() ; ++it1, ++it2)
         {
             QString count_string;
-            std::size_t count1 = (*it1)->get_points().size();
-            std::size_t count2 = (*it2)->get_points().size();
+            std::size_t count1 = (*it1)->size();
+            std::size_t count2 = (*it2)->size();
 
             count_string = QString("%1. %2 and %3 elements").arg(capture_idx).arg(count1).arg(count2);
 
@@ -104,7 +104,7 @@ void calibration_info_editor::updating()
         for(const auto& it1 : pl_list1)
         {
             QString count_string;
-            std::size_t count = it1->get_points().size();
+            std::size_t count = it1->size();
             count_string = QString("%1. %2 element%3").arg(capture_idx).arg(count).arg(count > 1 ? "s" : "");
 
             m_captures_list_widget->addItem(count_string);

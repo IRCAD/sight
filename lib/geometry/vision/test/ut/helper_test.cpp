@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2025 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -64,19 +64,19 @@ static inline cv::Mat read_rgb_image(const std::string _fname)
 
 static inline void compare_chessboards(
     const expected_chessboard_t& _expected,
-    const sight::data::point_list::csptr& _detected
+    const sight::data::point_list& _detected
 )
 {
-    CPPUNIT_ASSERT_EQUAL(_expected.size(), _detected->get_points().size());
+    CPPUNIT_ASSERT_EQUAL(_expected.size(), _detected.size());
 
     for(std::uint32_t i = 0 ; i < _expected.size() ; ++i)
     {
         const auto& expected_coords = _expected[i];
-        const auto& detected_coords = (*_detected->get_points()[i]);
+        const auto& detected_coords = _detected[i];
 
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_coords[0], detected_coords[0], 0.1);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_coords[1], detected_coords[1], 0.1);
-        CPPUNIT_ASSERT_EQUAL(0.0, detected_coords[2]);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_coords[0], (*detected_coords)[0], 0.1);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_coords[1], (*detected_coords)[1], 0.1);
+        CPPUNIT_ASSERT_EQUAL(0.0, (*detected_coords)[2]);
     }
 }
 
@@ -532,7 +532,7 @@ void helper_test::chessboard_detection_test()
             {1411.5, 581.015, 0.0}
         };
 
-        compare_chessboards(expected_chessboard, detected_chess);
+        compare_chessboards(expected_chessboard, *detected_chess);
     }
 
     {
@@ -592,7 +592,7 @@ void helper_test::chessboard_detection_test()
             {1361.35, 691.41, 0.0}
         };
 
-        compare_chessboards(expected_chessboard, detected_chess);
+        compare_chessboards(expected_chessboard, *detected_chess);
     }
 
     {
@@ -685,7 +685,7 @@ void helper_test::chessboard_detection_test()
             {1426.73, 442.136, 0.0}
         };
 
-        compare_chessboards(expected_chessboard, detected_chess);
+        compare_chessboards(expected_chessboard, *detected_chess);
 
         const sight::data::point_list::csptr detected_chess2 = geometry::vision::helper::detect_chessboard(
             chess_gray,
@@ -711,15 +711,12 @@ void helper_test::chessboard_detection_scale_test()
     const sight::data::point_list::csptr detected_chess_quarter_scale =
         geometry::vision::helper::detect_chessboard(chess_rgb0, 9, 6, 0.25F);
 
-    CPPUNIT_ASSERT_EQUAL(
-        detected_chess_full_scale->get_points().size(),
-        detected_chess_quarter_scale->get_points().size()
-    );
+    CPPUNIT_ASSERT_EQUAL(detected_chess_full_scale->size(), detected_chess_quarter_scale->size());
 
-    for(std::uint32_t i = 0 ; i < detected_chess_full_scale->get_points().size() ; ++i)
+    for(std::uint32_t i = 0 ; i < detected_chess_full_scale->size() ; ++i)
     {
-        const auto& full_scale_coords    = (*detected_chess_full_scale->get_points()[i]);
-        const auto& quarter_scale_coords = (*detected_chess_quarter_scale->get_points()[i]);
+        const auto& full_scale_coords    = *((*detected_chess_full_scale)[i]);
+        const auto& quarter_scale_coords = *((*detected_chess_quarter_scale)[i]);
 
         for(std::uint8_t j = 0 ; j < 3 ; ++j)
         {

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2025 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -107,12 +107,12 @@ TEST_SUITE("sight::filter::image::labeling")
         CHECK(landmarks);
 
         // Ensure that we have as many landmarks as we defined features
-        CHECK_EQ(landmarks->get_points().size(), feature_origin.size());
+        CHECK_EQ(landmarks->size(), feature_origin.size());
 
         // Check that the landmarks are placed at the centroids of the defined features
         for(unsigned int f = 0 ; f < feature_origin.size() ; ++f)
         {
-            sight::data::point::sptr p = landmarks->get_points().at(f);
+            sight::data::point::sptr p = landmarks->at(f);
 
             CHECK_EQ(feature_origin[f][0] + (feature_size[f][0] - 1.0) / 2.0, (*p)[0]);
             CHECK_EQ(feature_origin[f][1] + (feature_size[f][1] - 1.0) / 2.0, (*p)[1]);
