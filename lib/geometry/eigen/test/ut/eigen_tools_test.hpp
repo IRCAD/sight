@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,8 +40,8 @@ private:
     CPPUNIT_TEST(f4s_to_eigen);
     CPPUNIT_TEST(from_eigen);
     CPPUNIT_TEST(float16_to_eigen);
-    CPPUNIT_TEST(eigen_mat_to_rvec_tvec);
-    CPPUNIT_TEST(f4s_mat_to_rvec_tvec);
+    CPPUNIT_TEST(to_rvec_tvec);
+    CPPUNIT_TEST(to_eigen_rvec_tvec);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -55,8 +55,8 @@ public:
 
     static void float16_to_eigen();
 
-    static void eigen_mat_to_rvec_tvec();
-    static void f4s_mat_to_rvec_tvec();
+    static void to_rvec_tvec();
+    static void to_eigen_rvec_tvec();
 
     //------------------------------------------------------------------------------
 

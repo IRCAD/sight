@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -136,7 +136,7 @@ void eigen_tools_test::f4s_to_eigen()
 
 //------------------------------------------------------------------------------
 
-void eigen_tools_test::eigen_mat_to_rvec_tvec()
+void eigen_tools_test::to_rvec_tvec()
 {
     Eigen::Matrix4d m         = Eigen::Matrix4d::Identity();
     Eigen::AngleAxisd rot_vec = Eigen::AngleAxisd(0.2, Eigen::Vector3d(0.F, 0.F, 1.0).normalized());
@@ -148,7 +148,7 @@ void eigen_tools_test::eigen_mat_to_rvec_tvec()
     m.block<3, 1>(0, 3) = expected_tvec;
 
     geometry::eigen::helper::rvec_tvec_t actual_rvec_tvec =
-        geometry::eigen::helper::eigen_mat_to_rvec_tvec(m);
+        geometry::eigen::helper::to_rvec_tvec(m);
 
     for(unsigned int i = 0 ; i < 3 ; ++i)
     {
@@ -175,7 +175,7 @@ void eigen_tools_test::eigen_mat_to_rvec_tvec()
 
 //------------------------------------------------------------------------------
 
-void eigen_tools_test::f4s_mat_to_rvec_tvec()
+void eigen_tools_test::to_eigen_rvec_tvec()
 {
     Eigen::Matrix4d m         = Eigen::Matrix4d::Identity();
     Eigen::AngleAxisd rot_vec = Eigen::AngleAxisd(0.2, Eigen::Vector3d(0.F, 0.F, 1.0).normalized());
@@ -189,7 +189,7 @@ void eigen_tools_test::f4s_mat_to_rvec_tvec()
     data::matrix4::sptr trf = geometry::eigen::helper::from_eigen(m);
 
     geometry::eigen::helper::rvec_tvec_t actual_rvec_tvec =
-        geometry::eigen::helper::f4s_mat_to_rvec_tvec(const_pointer_cast<data::matrix4>(trf));
+        geometry::eigen::helper::to_eigen_rvec_tvec(const_pointer_cast<data::matrix4>(trf));
 
     for(unsigned int i = 0 ; i < 3 ; ++i)
     {

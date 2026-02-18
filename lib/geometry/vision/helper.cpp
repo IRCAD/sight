@@ -232,7 +232,7 @@ void calibrate_pointing_tool(
         return;
     }
 
-    geometry::eigen::helper::EigenMatrix matrix_sum;
+    geometry::eigen::helper::eigen_matrix_t matrix_sum;
     matrix_sum.fill(0.);
     Eigen::Vector4d vector_sum;
     vector_sum.fill(0);
@@ -241,7 +241,7 @@ void calibrate_pointing_tool(
     {
         data::matrix4::csptr m1 = std::dynamic_pointer_cast<data::matrix4>(i);
         SIGHT_ASSERT("This element of the vector is not a data::matrix4", m1);
-        geometry::eigen::helper::EigenMatrix xyz1;
+        geometry::eigen::helper::eigen_matrix_t xyz1;
         xyz1.fill(0.);
         xyz1(0, 0) = (*m1)(0, 3);
         xyz1(0, 1) = (*m1)(1, 3);
@@ -252,7 +252,7 @@ void calibrate_pointing_tool(
         vector_sum = vector_sum + xyz1.squaredNorm() * Eigen::Vector4d(xyz1(0, 0), xyz1(0, 1), xyz1(0, 2), xyz1(0, 3));
     }
 
-    geometry::eigen::helper::EigenMatrix temp_matrix;
+    geometry::eigen::helper::eigen_matrix_t temp_matrix;
     temp_matrix.fill(0.);
     temp_matrix(0, 0) = vector_sum[0];
     temp_matrix(0, 1) = vector_sum[1];
@@ -270,15 +270,15 @@ void calibrate_pointing_tool(
     {
         data::matrix4::csptr m1 = std::dynamic_pointer_cast<data::matrix4>(i);
         SIGHT_ASSERT("This element of the vector is not a data::matrix4", m1);
-        const geometry::eigen::helper::EigenMatrix point_matrix = geometry::eigen::helper::to_eigen(m1);
-        geometry::eigen::helper::EigenMatrix center_matrix(point_matrix);
-        const geometry::eigen::helper::EigenMatrix point_matrix_inverse = point_matrix.inverse();
+        const geometry::eigen::helper::eigen_matrix_t point_matrix = geometry::eigen::helper::to_eigen(m1);
+        geometry::eigen::helper::eigen_matrix_t center_matrix(point_matrix);
+        const geometry::eigen::helper::eigen_matrix_t point_matrix_inverse = point_matrix.inverse();
 
         center_matrix(0, 3) = a;
         center_matrix(1, 3) = b;
         center_matrix(2, 3) = c;
 
-        const geometry::eigen::helper::EigenMatrix calibration_matrix = point_matrix_inverse * center_matrix;
+        const geometry::eigen::helper::eigen_matrix_t calibration_matrix = point_matrix_inverse * center_matrix;
         translation(0) += calibration_matrix(0, 3);
         translation(1) += calibration_matrix(1, 3);
         translation(2) += calibration_matrix(2, 3);
