@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024-2025 IRCAD France
+ * Copyright (C) 2024-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -404,48 +404,123 @@ void synchronization::test()
             {
                 auto bt = _tester.add_in_backtrace("Check synchronization between 'tickmarks slider' sliders");
 
+                // Set slider 1 tick to 2, so the displayed value should be 100
+                helper::tickmarks_slider_test::set_current_tick(
+                    _tester,
+                    selector::from_parent("properties1_srv", "text_ticks"),
+                    2
+                );
+
+                helper::tickmarks_slider_test::set_current_tick(
+                    _tester,
+                    selector::from_parent("properties1_srv", "int_ticks"),
+                    2
+                );
+
+                helper::tickmarks_slider_test::check_value(
+                    _tester,
+                    selector::from_parent("properties1_srv", "text_ticks"),
+                    "100"
+                );
+
+                // The choosen displayed value on slider 2 should be 100 because the slider 1 tick is set to 2
+                helper::tickmarks_slider_test::check_value(
+                    _tester,
+                    selector::from_parent("properties2_srv", "text_ticks_obj"),
+                    "100"
+                );
+
+                helper::tickmarks_slider_test::check_value(
+                    _tester,
+                    selector::from_parent("properties1_srv", "int_ticks"),
+                    "100"
+                );
+
+                // The choosen displayed value on slider 2 should be 100 because the slider 1 tick is set to 2
+                helper::tickmarks_slider_test::check_value(
+                    _tester,
+                    selector::from_parent("properties2_srv", "int_ticks_obj"),
+                    "100"
+                );
+
+                // Move one step right
+                helper::tickmarks_slider_test::move(
+                    _tester,
+                    selector::from_parent("properties1_srv", "text_ticks"),
+                    helper::tickmarks_slider_test::position::right,
+                    1
+                );
+
+                helper::tickmarks_slider_test::check_value(
+                    _tester,
+                    selector::from_parent("properties1_srv", "text_ticks"),
+                    "150"
+                );
+
+                // Move one step left
+                helper::tickmarks_slider_test::move(
+                    _tester,
+                    selector::from_parent("properties1_srv", "text_ticks"),
+                    helper::tickmarks_slider_test::position::left,
+                    1
+                );
+
+                helper::tickmarks_slider_test::check_value(
+                    _tester,
+                    selector::from_parent("properties1_srv", "text_ticks"),
+                    "100"
+                );
+
+                // Test mouse drag on slider 1
                 helper::tickmarks_slider_test::mouse_drag_test(
                     _tester,
                     selector::from_parent("properties1_srv", "text_ticks"),
-                    QPoint {150, 150},
-                    QPoint {250, 200
+                    QPoint {10, 20},
+                    QPoint {60, 20
                     });
 
-                helper::tickmarks_slider_test::move(
+                helper::tickmarks_slider_test::mouse_drag_test(
                     _tester,
-                    selector::from_parent("properties1_srv", "text_ticks"),
-                    helper::tickmarks_slider_test::position::right,
-                    1
-                );
+                    selector::from_parent("properties1_srv", "int_ticks"),
+                    QPoint {10, 20},
+                    QPoint {60, 20
+                    });
 
-                helper::label::exactly_match(
-                    _tester,
-                    selector::from_parent("properties1_srv", "text_ticks/valueLabel"),
-                    ""
-                );
-
-                helper::tickmarks_slider_test::move(
-                    _tester,
-                    selector::from_parent("properties1_srv", "text_ticks"),
-                    helper::tickmarks_slider_test::position::right,
-                    1
-                );
-
-                helper::label::exactly_match(
-                    _tester,
-                    selector::from_parent("properties1_srv", "text_ticks/valueLabel"),
-                    ""
-                );
-                helper::tickmarks_slider_test::move(
-                    _tester,
-                    selector::from_parent("properties2_srv", "ticks_obj"),
-                    helper::tickmarks_slider_test::position::right,
-                    1
-                );
                 helper::tickmarks_slider_test::check_value(
                     _tester,
-                    selector::from_parent("properties2_srv", "ticks_obj"),
-                    1
+                    selector::from_parent("properties1_srv", "text_ticks"),
+                    "45"
+                );
+
+                helper::tickmarks_slider_test::check_value(
+                    _tester,
+                    selector::from_parent("properties2_srv", "text_ticks_obj"),
+                    "45"
+                );
+
+                helper::tickmarks_slider_test::check_value(
+                    _tester,
+                    selector::from_parent("properties1_srv", "int_ticks"),
+                    "45"
+                );
+
+                helper::tickmarks_slider_test::check_value(
+                    _tester,
+                    selector::from_parent("properties2_srv", "int_ticks_obj"),
+                    "45"
+                );
+
+                // Test low level API on slider 1 + 2
+                helper::tickmarks_slider_test::set_current_text(
+                    _tester,
+                    selector::from_parent("properties1_srv", "text_ticks"),
+                    "200"
+                );
+
+                helper::tickmarks_slider_test::set_current_text(
+                    _tester,
+                    selector::from_parent("properties1_srv", "int_ticks"),
+                    "200"
                 );
             }
         },

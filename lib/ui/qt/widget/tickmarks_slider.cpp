@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -26,17 +26,17 @@
 #include <QGraphicsOpacityEffect>
 #include <QPropertyAnimation>
 #include <QSlider>
-#include <QString>
+
 namespace sight::ui::qt::widget
 {
 
 tickmarks_slider::tickmarks_slider(QWidget* _parent) :
     QWidget(_parent),
-    m_slider(std::make_unique<QSlider>(Qt::Horizontal, this))
+    m_slider(std::make_unique<QSlider>(Qt::Horizontal, this)),
+    m_drag_anim(new QPropertyAnimation(this, "animated_tick", this))
 {
     m_slider->setSingleStep(1);
     m_slider->setPageStep(1);
-    m_slider->setRange(0, static_cast<int>(m_values.size()) - 1);
     m_slider->setValue(0);
 
     m_slider->setAttribute(Qt::WA_TransparentForMouseEvents);
@@ -44,6 +44,7 @@ tickmarks_slider::tickmarks_slider(QWidget* _parent) :
         m_slider->sizePolicy().horizontalPolicy(),
         m_slider->sizePolicy().verticalPolicy()
     );
+
     QObject::connect(
         m_slider.get(),
         &QSlider::valueChanged,
@@ -53,58 +54,109 @@ tickmarks_slider::tickmarks_slider(QWidget* _parent) :
             set_current_tick(_value);
             Q_EMIT value_changed(_value);
         });
+
     m_slider->setObjectName("tickmarks_slider");
     m_slider->setProperty("class", "tickmarks_slider");
-
-    m_drag_anim = new QPropertyAnimation(this, "animated_tick", this);
 }
 
 //---------------------------------------------------------------------------
 
 void tickmarks_slider::set_range(int _min, int _max)
 {
-    m_min = _min;
-    m_max = _max;
+    QSignalBlocker block(m_slider.get());
+    m_slider->setRange(_min, _max);
     update();
 }
 
-//---------------------------------------------------------------------------
-void tickmarks_slider::set_tick_interval(int _interval)
+//------------------------------------------------------------------------------
+
+double tickmarks_slider::animated_tick() const
 {
-    m_interval = _interval;
+    return m_animated_tick;
+}
+
+//------------------------------------------------------------------------------
+
+void tickmarks_slider::set_animated_tick(double _value)
+{
+    m_animated_tick = _value;
+
+    if(const auto tick = static_cast<int>(std::round(_value)); tick != m_current_tick)
+    {
+        m_current_tick = tick;
+        m_slider->setValue(tick);
+        Q_EMIT value_changed(tick);
+    }
+
     update();
 }
 
-//---------------------------------------------------------------------------
-void tickmarks_slider::set_tick_labels(const std::vector<std::string>& _labels)
+//------------------------------------------------------------------------------
+
+const std::vector<std::string>& tickmarks_slider::tick_values() const
 {
-    m_tick_labels = _labels;
-    m_min         = 0;
-    m_max         = static_cast<int>(_labels.size()) - 1;
+    return m_tick_values;
+}
+
+//---------------------------------------------------------------------------
+
+void tickmarks_slider::set_tick_values(const std::vector<std::string>& _values)
+{
+    m_tick_values = _values;
+    const int min = 0;
+    const int max = std::clamp(static_cast<int>(_values.size()) - 1, 0, std::numeric_limits<int>::max());
 
     QSignalBlocker block(m_slider.get());
-    m_slider->setRange(m_min, m_max);
+    m_slider->setRange(min, max);
     update();
 }
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+
+int tickmarks_slider::current_tick() const
+{
+    return m_current_tick;
+}
+
+//------------------------------------------------------------------------------
+
 void tickmarks_slider::set_current_tick(int _tick)
 {
-    _tick = std::clamp(_tick, m_min, m_max);
-    if(_tick == m_current_tick)
+    const auto min = m_slider->minimum();
+    const auto max = m_slider->maximum();
+
+    const auto clamped_tick = std::clamp(_tick, min, max);
+    if(clamped_tick == m_current_tick)
     {
         return;
     }
 
-    m_current_tick = _tick;
-    set_animated_tick(m_current_tick);
+    set_animated_tick(clamped_tick);
+}
+
+//------------------------------------------------------------------------------
+
+void tickmarks_slider::set_current_value(const std::string& _value)
+{
+    const auto it = std::ranges::find(m_tick_values, _value);
+    if(it != m_tick_values.end())
+    {
+        set_current_tick(static_cast<int>(std::distance(m_tick_values.begin(), it)));
+    }
+}
+
+//------------------------------------------------------------------------------
+
+[[nodiscard]] std::string tickmarks_slider::current_value() const
+{
+    return m_tick_values[std::size_t(m_current_tick)];
 }
 
 //-----------------------------------------------------------------------------
 
 void tickmarks_slider::paintEvent(QPaintEvent* /*event*/)
 {
-    if(m_tick_labels.empty())
+    if(m_tick_values.empty())
     {
         return;
     }
@@ -114,15 +166,17 @@ void tickmarks_slider::paintEvent(QPaintEvent* /*event*/)
     const QFontMetrics  fm = painter.fontMetrics();
     const int padding      = fm.horizontalAdvance(
         QString::fromStdString(
-            *std::max_element(
-                m_tick_labels.begin(),
-                m_tick_labels.end(),
-                [](const auto& _a, const auto& _b){return _a.size() < _b.size();})
+            *std::ranges::max_element(
+                m_tick_values,
+                [](const auto& _a, const auto& _b)
+        {
+            return _a.size() < _b.size();
+        })
         )
                              ) / 2 + 4;
 
     const int width_available = width() + 2 * padding;
-    const int tick_count      = static_cast<int>(m_tick_labels.size());
+    const int tick_count      = static_cast<int>(m_tick_values.size());
     const int span            = 8;
     const int y_bottom        = height();
     const int y_top           = height();
@@ -130,10 +184,10 @@ void tickmarks_slider::paintEvent(QPaintEvent* /*event*/)
     const  double offset_x    = padding
                                 + (width_available * m_animated_tick) / span
                                 - center_x;
+
     for(int i = 0 ; i < tick_count ; ++i)
     {
-        int x = padding + (width_available * i) / span
-                - static_cast<int>(offset_x);
+        const int x = padding + (width_available * i) / span - static_cast<int>(offset_x);
 
         if(x < 0 || x > width())
         {
@@ -164,10 +218,12 @@ void tickmarks_slider::paintEvent(QPaintEvent* /*event*/)
     }
 
     QPainter painter_label(this);
-    const int display_tick = int(std::round(m_animated_tick));
-    QString current_label  = QString::fromStdString(
-        m_tick_labels[static_cast<size_t>(display_tick)]
+    const auto display_tick = std::clamp(
+        static_cast<std::size_t>(std::round(m_animated_tick)),
+        std::size_t(0),
+        m_tick_values.size() - 1
     );
+    const auto current_label = QString::fromStdString(m_tick_values[display_tick]);
     painter_label.drawText(QRect(0, y_top - 50, width(), 20), Qt::AlignHCenter, current_label);
 }
 
@@ -209,7 +265,7 @@ void tickmarks_slider::mouseMoveEvent(QMouseEvent* _event)
         return;
     }
 
-    auto max_idx = double(m_tick_labels.size() - 1);
+    auto max_idx = double(m_tick_values.size() - 1);
     double dx    = _event->pos().x() - m_press_pos.x();
 
     const double sensitivity = 0.6;
@@ -222,6 +278,7 @@ void tickmarks_slider::mouseMoveEvent(QMouseEvent* _event)
 }
 
 //-------------------------------------------------------------------------------
+
 void tickmarks_slider::mouseReleaseEvent(QMouseEvent* _event)
 {
     if(_event->button() != Qt::LeftButton)
@@ -262,5 +319,17 @@ void tickmarks_slider::mouseReleaseEvent(QMouseEvent* _event)
 }
 
 //------------------------------------------------------------------------------
+
+void tickmarks_slider::set_current_value_property(QString _value)
+{
+    set_current_value(_value.toStdString());
+}
+
+//------------------------------------------------------------------------------
+
+[[nodiscard]] QString tickmarks_slider::current_value_property() const
+{
+    return QString::fromStdString(current_value());
+}
 
 } //namespace sight::ui::qt::widget
