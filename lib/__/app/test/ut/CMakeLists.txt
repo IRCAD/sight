@@ -1,4 +1,4 @@
-sight_add_target(app_ut TYPE TEST)
+sight_add_target(app_ut TYPE DOCTEST)
 
 add_dependencies(app_ut module_app module_data)
 

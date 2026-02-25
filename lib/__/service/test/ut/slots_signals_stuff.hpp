@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -76,22 +76,20 @@ public:
 
     static constexpr std::string_view BUFFER_INOUT = "buffer";
 
-protected:
-
     data::ptr<buffer, data::access::inout> m_buffer {this, BUFFER_INOUT};
 };
 
-class s_basic_test : public basic_srv,
-                     public service_retarder
+class basic_test : public basic_srv,
+                   public service_retarder
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(s_basic_test, basic_srv);
+    SIGHT_DECLARE_SERVICE(basic_test, basic_srv);
 
     bool m_update_finished {false};
     bool m_swap_finished {false};
 
-    s_basic_test();
+    basic_test();
 
 protected:
 
@@ -157,6 +155,8 @@ public:
 
     static const core::com::signals::key_t CHANGED_SIG;
 
+    changed_signal_t::sptr m_sig_changed;
+
 protected:
 
     //------------------------------------------------------------------------------
@@ -180,20 +180,18 @@ protected:
     //------------------------------------------------------------------------------
 
     void updating() override;
-
-    changed_signal_t::sptr m_sig_changed;
 };
 
 //------------------------------------------------------------------------------
 
-class s_show_test : public basic_srv,
-                    public service_retarder
+class show_test : public basic_srv,
+                  public service_retarder
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(s_show_test, basic_srv);
+    SIGHT_DECLARE_SERVICE(show_test, basic_srv);
 
-    s_show_test();
+    show_test();
 
     int m_receive_count {0};
     int m_change_count {0};
@@ -202,6 +200,9 @@ public:
 
     static const core::com::slots::key_t CHANGE_SLOT;
     using change_slot_t = core::com::slot<void ()>;
+
+    change_slot_t::sptr m_slot_change;
+    core::mt::mutex m_mutex;
 
 protected:
 
@@ -228,24 +229,20 @@ protected:
     void updating() override;
 
     connections_t auto_connections() const override;
-
-    change_slot_t::sptr m_slot_change;
-
-    core::mt::mutex m_mutex;
 };
 
 //------------------------------------------------------------------------------
 
-class s_show2_test : public basic_srv,
-                     public service_retarder
+class show2_test : public basic_srv,
+                   public service_retarder
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(s_show2_test, basic_srv);
+    SIGHT_DECLARE_SERVICE(show2_test, basic_srv);
 
     static const core::com::slots::key_t UPDATE_BUFFER_SLOT;
 
-    s_show2_test();
+    show2_test();
 
     int m_receive_count {0};
 

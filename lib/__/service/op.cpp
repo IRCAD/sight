@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,9 +23,6 @@
 
 #include "service/base.hpp"
 #include "service/extension/factory.hpp"
-#include "service/macros.hpp"
-
-#include <vector>
 
 namespace sight::service
 {

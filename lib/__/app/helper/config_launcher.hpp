@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -57,11 +57,11 @@ public:
 
     /**
      * @brief Launches Appconfig.
-     * @param _srv  service to connect with config root object.
+     * @param _service  service to connect with config root object.
      * @param _opt_replace_map optional replace map used to replace patterns (concatenated with parsed parameter).
      */
     SIGHT_APP_API void start_config(
-        service::base::sptr _srv,
+        service::base::sptr _service,
         const field_adaptor_t& _opt_replace_map = field_adaptor_t()
     );
 

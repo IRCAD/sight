@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,83 +20,86 @@
  *
  ***********************************************************************/
 
-#include "parameters_test.hpp"
-
-#include <app/extension/parameters.hpp>
-
 #include <core/runtime/path.hpp>
 #include <core/runtime/runtime.hpp>
 
 #include <service/extension/config.hpp>
 
+#include <app/extension/parameters.hpp>
+
+#include <doctest/doctest.h>
+
 #include <filesystem>
 
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::app::ut::parameters_test);
-
-namespace sight::app::ut
+namespace
 {
 
-//------------------------------------------------------------------------------
-
-void parameters_test::setUp()
+struct fixture
 {
-    // Set up context before running a test
-    core::runtime::init();
-
-    std::filesystem::path location = core::runtime::get_resource_file_path("app_ut");
-    CPPUNIT_ASSERT(std::filesystem::exists(location));
-
-    core::runtime::add_modules(location);
-    core::runtime::load_module("sight::module::app");
-    core::runtime::load_module("parameters_test");
-
-    app::extension::parameters::sptr app_config_param;
-    app_config_param = app::extension::parameters::get_default();
-    app_config_param->clear_registry();
-    app_config_param->parse_plugin_infos();
-}
-
-//------------------------------------------------------------------------------
-
-void parameters_test::tearDown()
-{
-}
-
-//------------------------------------------------------------------------------
-
-void parameters_test::app_config_parameters_test()
-{
-    app::extension::parameters::sptr app_config_param;
-    app_config_param = app::extension::parameters::get_default();
-
-    app::field_adaptor_t parameters = app_config_param->get_parameters("id1");
-    CPPUNIT_ASSERT(!parameters.empty());
-    CPPUNIT_ASSERT_EQUAL(std::string("value1"), parameters["param1"]);
-
-    app::field_adaptor_t parameters2 = app_config_param->get_parameters("id2");
-    CPPUNIT_ASSERT(!parameters2.empty());
-    CPPUNIT_ASSERT_EQUAL(std::string("value3"), parameters2["param3"]);
-}
-
-//------------------------------------------------------------------------------
-
-void parameters_test::concurent_access_toparameters_test()
-{
-    std::vector<std::future<void> > futures;
-    for(unsigned int i = 0 ; i < 20 ; ++i)
+    fixture()
     {
-        futures.push_back(std::async(std::launch::async, app_config_parameters_test));
+        // Set up context before running a test
+        sight::core::runtime::init();
+
+        std::filesystem::path location = sight::core::runtime::get_resource_file_path("app_ut");
+        CHECK(std::filesystem::exists(location));
+
+        sight::core::runtime::add_modules(location);
+        sight::core::runtime::load_module("sight::module::app");
+        sight::core::runtime::load_module("parameters_test");
+
+        sight::app::extension::parameters::sptr app_config_param;
+        app_config_param = sight::app::extension::parameters::get_default();
+        app_config_param->clear_registry();
+        app_config_param->parse_plugin_infos();
+    }
+};
+
+} // namespace
+
+TEST_SUITE("sight::app::parameters")
+{
+//------------------------------------------------------------------------------
+
+    static void app_config_parameters_test()
+    {
+        sight::app::extension::parameters::sptr app_config_param;
+        app_config_param = sight::app::extension::parameters::get_default();
+
+        sight::app::field_adaptor_t parameters = app_config_param->get_parameters("id1");
+        CHECK(!parameters.empty());
+        CHECK_EQ(std::string("value1"), parameters["param1"]);
+
+        sight::app::field_adaptor_t parameters2 = app_config_param->get_parameters("id2");
+        CHECK(!parameters2.empty());
+        CHECK_EQ(std::string("value3"), parameters2["param3"]);
     }
 
-    for(auto& future : futures)
+//------------------------------------------------------------------------------
+
+    TEST_CASE_FIXTURE(fixture, "app_config_parameters")
     {
-        const auto status = future.wait_for(std::chrono::seconds(1));
-        CPPUNIT_ASSERT(status == std::future_status::ready);
-        future.get(); // Trigger exceptions
+        app_config_parameters_test();
     }
-}
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::app::ut
+    TEST_CASE_FIXTURE(fixture, "concurrent_access_to_parameters")
+    {
+        std::vector<std::future<void> > futures;
+        futures.reserve(20);
+        for(unsigned int i = 0 ; i < 20 ; ++i)
+        {
+            futures.push_back(std::async(std::launch::async, app_config_parameters_test));
+        }
+
+        for(auto& future : futures)
+        {
+            const auto status = future.wait_for(std::chrono::seconds(1));
+            CHECK(status == std::future_status::ready);
+            future.get(); // Trigger exceptions
+        }
+    }
+
+//------------------------------------------------------------------------------
+} // TEST_SUITE
