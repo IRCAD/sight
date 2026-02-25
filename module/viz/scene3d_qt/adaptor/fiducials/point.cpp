@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024-2025 IRCAD France
+ * Copyright (C) 2024-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -317,6 +317,27 @@ void point::configuring()
         "'imageSeries' must be present as parameter",
         m_image_series.const_lock()
     );
+
+    // Handle maximum number of fiducials in general
+    const auto& max_fiducials = *m_max_fiducials;
+    if(max_fiducials > 0)
+    {
+        m_total_max = static_cast<size_t>(max_fiducials);
+    }
+
+    // Handle maximum number of fiducials for the current group only
+    const auto& max_group_fiducials = *m_max_group_fiducials;
+    if(max_group_fiducials > 0)
+    {
+        m_group_max[m_current_group] = static_cast<size_t>(max_group_fiducials);
+    }
+
+    // Handle maximum number of fiducials per slice
+    const auto& max_fiducials_per_slice = *m_max_fiducials_per_slice;
+    if(max_fiducials_per_slice > 0)
+    {
+        m_slice_max = static_cast<size_t>(max_fiducials_per_slice);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -1635,7 +1656,7 @@ bool point::is_max_fiducials_reached()
                    fiducial_position,
                    query_result.m_size.value_or(m_current_size),
                    *m_image_series.const_lock()
-               ) && ++slice >= *m_slice_max)
+               ) && *query_result.m_group_name == m_current_group && ++slice >= *m_slice_max)
             {
                 SIGHT_INFO("Maximum number of fiducials in a slice reached: " << *m_slice_max);
                 return true;

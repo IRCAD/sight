@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024-2025 IRCAD France
+ * Copyright (C) 2024-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -29,13 +29,13 @@
 #include <data/image_series.hpp>
 #include <data/material.hpp>
 
-#include <QWidget>
-
 #include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/fiducials_configuration.hpp>
 #include <viz/scene3d/material/standard.hpp>
 #include <viz/scene3d/text.hpp>
 #include <viz/scene3d/transformable.hpp>
+
+#include <QWidget>
 namespace sight::module::viz::scene3d_qt::adaptor::fiducials
 {
 
@@ -93,6 +93,11 @@ namespace sight::module::viz::scene3d_qt::adaptor::fiducials
  * - \b allow_renaming (optional, bool, default=true): true if the user can rename fiducials
  * - \b modify (optional, all/group, default="all"): if "all", all the fiducials can be modified, ignoring the current
         group; if "group", only the fiducials belonging to the current group can be modified.
+ * @subsection Properties Properties
+ * - \b max_fiducials (sight::data::integer, default=0): overall max number of fiducials allowed for this group.
+ * - \b max_fiducials_per_slice (sight::data::integer, default=0): max number of fiducials allowed in a single slice for
+   the current group.
+ *
  */
 class point final :
     public sight::viz::scene3d::adaptor,
@@ -665,6 +670,10 @@ private:
     std::unique_ptr<QObject> m_event_filter {nullptr};
 
     sight::data::ptr<sight::data::image_series, sight::data::access::inout> m_image_series {this, "imageSeries"};
+
+    sight::data::property<sight::data::integer> m_max_fiducials {this, "max_fiducials", {0}};
+    sight::data::property<sight::data::integer> m_max_group_fiducials {this, "max_group_fiducials", {0}};
+    sight::data::property<sight::data::integer> m_max_fiducials_per_slice {this, "max_fiducials_per_slice", {0}};
 };
 
 } // namespace sight::module::viz::scene3d_qt::adaptor.

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2025 IRCAD France
+ * Copyright (C) 2019-2026 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,12 +28,12 @@
 #include <data/helper/medical_image.hpp>
 #include <data/image_series.hpp>
 
-#include <QPushButton>
-
 #include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/interactor/base.hpp>
 #include <viz/scene3d/material/standard.hpp>
 #include <viz/scene3d/text.hpp>
+
+#include <QPushButton>
 
 namespace sight::module::viz::scene3d_qt::adaptor::fiducials
 {
@@ -53,7 +53,7 @@ namespace sight::module::viz::scene3d_qt::adaptor::fiducials
  * - \b image [sight::data::image]: image containing the ruler fiducials.
  *
  * @subsection Configuration Configuration:
- * - \b font_size (optional, int, default=16): font size in labels.
+ * - \b font_size (optional, int, default=16): font size in labels, if equals 0 we hide the label instead.
  * - \b radius (optional, float, default=3): size of the rulers spheres.
  * - \b priority (optional, int, default=2): priority of the interactor.
  * - \b query_mask (optional, uint32, default=0xFFFFFFFF): mask used to filter out entities when the ruler is auto
@@ -62,6 +62,9 @@ namespace sight::module::viz::scene3d_qt::adaptor::fiducials
  * - \b color (optional, string, default=""): color applied to the rulers, generated if empty.
  * - \b always_display_all (optional, bool, default=false): boolean that impacts how rulers will be displayed.
  * If it's true, all rulers will always be displayed, regardless of the current slice.
+
+ * @subsection Properties Properties:
+ * - \b max_rulers [sight::data::integer]: Maximal number of rulers to be displayed at once..
  *
  * @section Slots Slots
  * - \b activate_tool(bool): enables or not the ruler tool.
@@ -341,6 +344,9 @@ private:
 
     /// Defines the width of the lines.
     sight::data::property<sight::data::real> m_line_width {this, "line_width", 4.};
+
+    /// Defines the maximal number of rulers to be displayed at once.
+    sight::data::property<sight::data::integer> m_max_rulers {this, "max_ruler", 0};
 };
 
 } // sight::module::viz::scene3d_qt::adaptor::fiducials

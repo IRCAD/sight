@@ -478,6 +478,8 @@ void ruler::create_ruler_fiducial(
             fiducial_set.color      = _color;
             fiducial_set.visibility = true;
 
+            fiducial_set.group_name = _id.value_or("");
+
             image_series->get_fiducials()->append_fiducial_set(fiducial_set);
         }
     }
@@ -602,7 +604,8 @@ void ruler::create_ruler_ogre_set(
     const std::string length = sight::viz::scene3d::helper::scene::get_length(line1_pos, line2_pos);
     label->set_text(length);
     label->set_text_color(color);
-    label->set_font_size(m_font_size);
+    // When we do not wish to display the label we still need to pass a size so QFont doesn't crash.
+    label->set_font_size(m_font_size == 0 ? 1 : m_font_size);
     Ogre::SceneNode* const label_node = root_node->createChildSceneNode(id("label_node"), line2_pos);
     SIGHT_ASSERT("Can't create the label node", label_node);
     label->attach_to_node(label_node, this->layer()->get_default_camera());
@@ -612,7 +615,7 @@ void ruler::create_ruler_ogre_set(
     sphere2->setVisible(_visible);
     line->setVisible(_visible);
     dashed_line->setVisible(_visible);
-    label->set_visible(_visible);
+    label->set_visible(m_font_size > 0 && _visible);
     ruler::ruler_ogre_set created_ruler {.id = _id, .slice_index = _slice_index, .node1 = node1, .sphere1 = sphere1,
                                          .node2       = node2, .sphere2 = sphere2, .line = line,
                                          .dashed_line = dashed_line,
@@ -826,7 +829,7 @@ void ruler::display_on_current_slice()
             ruler.sphere1->setVisible(m_visible && visible_on_current_slice);
             ruler.sphere2->setVisible(m_visible && visible_on_current_slice);
             ruler.line->setVisible(m_visible && visible_on_current_slice);
-            ruler.label->set_visible(m_visible && visible_on_current_slice);
+            ruler.label->set_visible(m_font_size > 0 && m_visible && visible_on_current_slice);
             ruler.dashed_line->setVisible(m_visible && visible_on_current_slice);
         }
     }
@@ -898,8 +901,9 @@ void ruler::button_press_event(mouse_button _button, modifier /*_mods*/, int _x,
                 }
             }
 
-            // Otherwise, we might have to create a new ruler.
-            if(!found)
+            // Otherwise, we might have to create a new ruler, unless we've exceeded the maximal number of allowed
+            // rulers.
+            if(!found && ((*m_max_rulers) == 0 || m_ruler_ogre_sets.size() < static_cast<size_t>(*m_max_rulers)))
             {
                 for(std::size_t qr_idx = 0 ; qr_idx < query_result_vect.size() && !found ; qr_idx++)
                 {
