@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2024 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -138,7 +138,7 @@ void image_extruder::add_reconstructions(data::model_series::reconstruction_vect
     const auto sig = image_out->signal<data::image::buffer_modified_signal_t>(data::image::MODIFIED_SIG);
     sig->async_emit();
 
-    this->signal<signals::computed_t>(signals::COMPUTED)->async_emit();
+    this->signal<signals::computed_t>(signals::SUCCEEDED)->async_emit();
 }
 
 //------------------------------------------------------------------------------

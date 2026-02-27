@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2024 IRCAD France
+ * Copyright (C) 2019-2026 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -160,7 +160,7 @@ void point_cloud_from_depth_map::updating()
         sig->async_emit();
     }
 
-    this->signal<signals::computed_t>(signals::COMPUTED)->async_emit();
+    this->signal<signals::computed_t>(signals::SUCCEEDED)->async_emit();
 }
 
 //------------------------------------------------------------------------------
@@ -321,7 +321,7 @@ void point_cloud_from_depth_map::depth_map_to_point_cloud_rgb(
 
     auto points_itr = _point_cloud->zip_range<data::iterator::point::xyz, data::iterator::point::rgba>().begin();
 
-    const data::iterator::rgba default_color = {255, 255, 255, 255};
+    const data::iterator::rgba default_color = {.r = 255, .g = 255, .b = 255, .a = 255};
 
     unsigned int nb_real_points = 0;
     auto glm_extrinsic_matrix   = geometry::data::to_glm_mat(*_extrinsic);

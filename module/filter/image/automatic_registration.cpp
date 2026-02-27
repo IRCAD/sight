@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2025 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -122,7 +122,7 @@ void automatic_registration::updating()
     };
     sight::filter::image::perform_automatic_registration(*target, *reference, *transform, params);
 
-    this->signal<signals::computed_t>(signals::COMPUTED)->async_emit();
+    this->signal<signals::computed_t>(signals::SUCCEEDED)->async_emit();
     transform->async_emit(sight::data::signals::MODIFIED);
 }
 

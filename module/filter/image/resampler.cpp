@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2025 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -72,7 +72,7 @@ void resampler::updating()
         std::make_tuple(target->size(), target->origin(), target->orientation(), target->spacing(), interp)
     );
 
-    this->async_emit(signals::COMPUTED);
+    this->async_emit(signals::SUCCEEDED);
     out_img->async_emit(data::image::BUFFER_MODIFIED_SIG);
 }
 

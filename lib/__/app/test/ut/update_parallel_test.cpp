@@ -30,8 +30,6 @@
 
 #include <doctest/doctest.h>
 
-#include <sys/ucontext.h>
-
 #include <ranges>
 
 namespace sight::app::ut

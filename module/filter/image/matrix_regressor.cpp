@@ -82,7 +82,7 @@ void matrix_regressor::updating()
         data::matrix4::sptr res = regressor.minimize(*init_val, 1., 1e-4, 1e-4);
         optimal_matrix->deep_copy(res);
 
-        this->signal<signals::computed_t>(signals::COMPUTED)->async_emit();
+        this->signal<signals::computed_t>(signals::SUCCEEDED)->async_emit();
     }
 }
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2025 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -63,7 +63,7 @@ void bitwise_and::updating()
     sight::filter::image::bitwise_and(*image, *mask, *output_image);
 
     this->set_output(output_image, OUTPUTIMAGE_OUT);
-    this->async_emit(signals::COMPUTED);
+    this->async_emit(signals::SUCCEEDED);
 }
 
 //-----------------------------------------------------------------------------

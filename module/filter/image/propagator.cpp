@@ -182,7 +182,7 @@ void propagator::propagate()
         if(propag_diff.num_elements() > 0)
         {
             image_out->async_emit(data::image::BUFFER_MODIFIED_SIG);
-            this->async_emit(filter::signals::COMPUTED);
+            this->async_emit(filter::signals::SUCCEEDED);
 
             const auto samples_out = m_samples_out.lock();
             if(samples_out)

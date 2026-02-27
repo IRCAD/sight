@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2025 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -77,7 +77,7 @@ void label_image_to_binary_image::updating()
     sight::filter::image::convert_label_image_to_binary_mask(*label_image, *mask_image, m_label_set_field_name);
 
     mask_image->async_emit(data::image::MODIFIED_SIG);
-    this->async_emit(signals::COMPUTED);
+    this->async_emit(signals::SUCCEEDED);
 }
 
 //------------------------------------------------------------------------------

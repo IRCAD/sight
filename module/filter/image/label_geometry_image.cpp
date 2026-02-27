@@ -105,7 +105,7 @@ void label_geometry_image::updating()
         this->update_selected_point_list("1", "");
     }
 
-    this->signal<signals::computed_t>(signals::COMPUTED)->async_emit();
+    this->signal<signals::computed_t>(signals::SUCCEEDED)->async_emit();
 }
 
 //-----------------------------------------------------------------------------

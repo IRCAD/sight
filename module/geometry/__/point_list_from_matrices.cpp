@@ -22,6 +22,8 @@
 
 #include "point_list_from_matrices.hpp"
 
+#include "data/object.hpp"
+
 #include <core/com/signal.hxx>
 
 #include <data/string.hpp>
@@ -101,8 +103,8 @@ void point_list_from_matrices::updating()
         point_list->push_back(p);
     }
 
-    point_list->signal<data::point_list::modified_signal_t>(data::point_list::MODIFIED_SIG)->async_emit();
-    this->signal<signals::computed_t>(signals::COMPUTED)->async_emit();
+    point_list->async_emit(data::signals::MODIFIED);
+    this->async_emit(filter::signals::SUCCEEDED);
 }
 
 //-----------------------------------------------------------------------------

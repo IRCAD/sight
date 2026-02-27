@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -68,7 +68,7 @@ void center::updating()
         });
 
     matrix->async_emit(data::signals::MODIFIED);
-    this->async_emit(signals::COMPUTED);
+    this->async_emit(signals::SUCCEEDED);
 }
 
 //------------------------------------------------------------------------------

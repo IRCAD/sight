@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -102,7 +102,7 @@ void image_center::updating()
     matrix->set_position(world_center);
 
     matrix->signal<data::matrix4::modified_signal_t>(data::matrix4::MODIFIED_SIG)->async_emit();
-    this->async_emit(signals::COMPUTED);
+    this->async_emit(signals::SUCCEEDED);
 }
 
 //------------------------------------------------------------------------------

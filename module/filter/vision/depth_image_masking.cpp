@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2024 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -109,7 +109,7 @@ void depth_image_masking::updating()
         );
         sig->async_emit();
 
-        this->signal<signals::computed_t>(signals::COMPUTED)->async_emit();
+        this->signal<signals::computed_t>(signals::SUCCEEDED)->async_emit();
     }
 }
 

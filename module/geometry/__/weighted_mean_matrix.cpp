@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024 IRCAD France
+ * Copyright (C) 2024-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -71,8 +71,8 @@ void weighted_mean_matrix::updating()
     {
         auto output = m_matrix_out.lock();
         output->deep_copy(current_mat.get_shared());
-        output->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG)->async_emit();
-        this->signal<signals::computed_t>(signals::COMPUTED)->async_emit();
+        output->async_emit(data::object::MODIFIED_SIG);
+        this->async_emit(filter::signals::SUCCEEDED);
         m_initialized = false;
         return;
     }
@@ -106,10 +106,10 @@ void weighted_mean_matrix::updating()
         auto output = m_matrix_out.lock();
 
         sight::geometry::data::from_glm_mat(*output, glm_output);
-        output->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG)->async_emit();
+        output->async_emit(data::object::MODIFIED_SIG);
     }
 
-    this->signal<signals::computed_t>(signals::COMPUTED)->async_emit();
+    this->async_emit(filter::signals::SUCCEEDED);
 }
 
 //-----------------------------------------------------------------------------
