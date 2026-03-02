@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2025 IRCAD France
+ * Copyright (C) 2015-2026 IRCAD France
  * Copyright (C) 2015-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,6 +24,7 @@
 
 #include "camera.hpp"
 
+#include <algorithm>
 #include <stack>
 
 namespace sight::viz::scene3d::helper
@@ -59,7 +60,7 @@ Ogre::SceneNode* scene::get_node_by_id(
         const Ogre::Node::ChildNodeMap& node_children = top_node->getChildren();
         stack.pop_back();
 
-        std::copy(node_children.cbegin(), node_children.cend(), std::back_inserter(stack));
+        std::ranges::copy(node_children, std::back_inserter(stack));
     }
 
     return found_node;
@@ -85,6 +86,13 @@ Ogre::AxisAlignedBox scene::compute_bounding_box(const Ogre::SceneNode* _root_sc
         const Ogre::SceneNode::ObjectMap& entities = temp_scene_node->getAttachedObjects();
         for(auto* const movable : entities)
         {
+            auto& user          = movable->getUserObjectBindings();
+            const auto& exclude = user.getUserAny(sight::viz::scene3d::helper::scene::EXCLUDE_FROM_CAMERA_RESET_FLAG);
+            if(exclude.has_value() && any_cast<bool>(exclude))
+            {
+                continue;
+            }
+
             if(const Ogre::Entity* entity = dynamic_cast<Ogre::Entity*>(movable))
             {
                 if(entity->isVisible())

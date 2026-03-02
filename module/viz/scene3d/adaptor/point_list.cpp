@@ -372,6 +372,14 @@ void point_list::update_mesh(const data::point_list::csptr& _point_list)
         m_entity = m_mesh_geometry->create_entity(*scene_mgr);
         m_entity->setVisible(visible());
         m_entity->setQueryFlags(m_query_flags);
+
+        if(m_exclude_from_camera_reset.value())
+        {
+            m_entity->getUserObjectBindings().setUserAny(
+                sight::viz::scene3d::helper::scene::EXCLUDE_FROM_CAMERA_RESET_FLAG,
+                true
+            );
+        }
     }
 
     //------------------------------------------

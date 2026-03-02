@@ -340,6 +340,7 @@ void mesh::update_mesh(data::mesh::csptr _mesh)
         }
 
         m_mesh_geometry->clear_mesh(*scene_mgr);
+        this->request_render();
         return;
     }
 

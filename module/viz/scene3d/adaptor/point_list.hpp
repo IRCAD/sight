@@ -276,6 +276,9 @@ private:
     data::ptr_vector<data::point, data::access::in> m_points {this, "points", true};
     data::ptr<data::mesh, data::access::in> m_mesh {this, "mesh", true};
     data::ptr_vector<data::object, data::access::inout> m_uniforms {this, "uniforms", true};
+
+    /// Enables the adaptor visibility.
+    sight::data::property<sight::data::boolean> m_exclude_from_camera_reset {this, "exclude_from_camera_reset", false};
 };
 
 //------------------------------------------------------------------------------

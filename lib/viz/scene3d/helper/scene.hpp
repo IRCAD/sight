@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,6 +34,8 @@ namespace sight::viz::scene3d::helper
 class scene
 {
 public:
+
+    static const inline std::string EXCLUDE_FROM_CAMERA_RESET_FLAG = "exclude_from_camera_reset";
 
     /**
      * @brief Looks for a given scene node in a scene manager.

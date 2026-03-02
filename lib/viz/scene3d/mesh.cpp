@@ -883,7 +883,12 @@ void mesh::update_colors(const data::mesh::csptr& _mesh)
             }
         }
 
-        if(!m_per_primitive_color_texture)
+        const std::size_t width = std::min(MAX_TEXTURE_SIZE, num_indices_total);
+        const auto height       = static_cast<std::size_t>(std::floor(num_indices_total / MAX_TEXTURE_SIZE) + 1);
+
+        if(!m_per_primitive_color_texture
+           || m_per_primitive_color_texture->getWidth() != width
+           || m_per_primitive_color_texture->getHeight() != height)
         {
             static std::uint64_t i = 0;
             m_per_primitive_color_texture_name = "PerCellColorTexture_" + std::to_string(i++);
@@ -893,9 +898,6 @@ void mesh::update_colors(const data::mesh::csptr& _mesh)
                 true
             );
         }
-
-        const std::size_t width = std::min(MAX_TEXTURE_SIZE, num_indices_total);
-        const auto height       = static_cast<std::size_t>(std::floor(num_indices_total / MAX_TEXTURE_SIZE) + 1);
 
         if(m_per_primitive_color_texture->getWidth() != width || m_per_primitive_color_texture->getHeight() != height)
         {
