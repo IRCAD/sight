@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,13 +20,12 @@
  *
  ***********************************************************************/
 
-#include "series_enquirer_test.hpp"
-
-#include "io/dicom/helper/dicom_search.hpp"
-
 #include <core/thread/worker.hpp>
 
+#include <io/dicom/helper/dicom_search.hpp>
 #include <io/dimse/helper/series.hpp>
+#include <io/dimse/series_enquirer.hpp>
+#include <io/dimse/series_retriever.hpp>
 
 #include <utest/exception.hpp>
 
@@ -37,273 +36,360 @@
 
 #include <dcmtk/config/osconfig.h>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dimse::ut::series_enquirer_test);
+#include <doctest/doctest.h>
 
 namespace sight::io::dimse::ut
 {
 
 //------------------------------------------------------------------------------
 
-void series_enquirer_test::setUp()
+inline static void setup_variables(
+    std::string& _local_application_title,
+    std::string& _pacs_host_name,
+    std::string& _pacs_application_title,
+    std::uint16_t& _pacs_application_port,
+    std::string& _move_application_title,
+    std::uint16_t& _move_application_port
+)
 {
     // Local application title
-    m_local_application_title = "SeriesEnquirerTest";
+    _local_application_title = "SeriesEnquirerTest";
 
     // Pacs host name
     char* pacs_host_name = std::getenv("FWTEST_PACS_HOST_NAME");
-    CPPUNIT_ASSERT_MESSAGE("The FWTEST_PACS_HOST_NAME environment variable is not set.", pacs_host_name);
-    m_pacs_host_name = std::string(pacs_host_name);
+    CHECK_MESSAGE(pacs_host_name, "The FWTEST_PACS_HOST_NAME environment variable is not set.");
+    _pacs_host_name = std::string(pacs_host_name);
 
     // Pacs application title
     char* pacs_application_title = std::getenv("FWTEST_PACS_APPLICATION_TITLE");
-    CPPUNIT_ASSERT_MESSAGE(
-        "The FWTEST_PACS_APPLICATION_TITLE environment variable is not set.",
-        pacs_application_title
+    CHECK_MESSAGE(
+        pacs_application_title,
+        "The FWTEST_PACS_APPLICATION_TITLE environment variable is not set."
     );
-    m_pacs_application_title = std::string(pacs_application_title);
+    _pacs_application_title = std::string(pacs_application_title);
 
     // Pacs application port (default 11112)
     char* pacs_application_port = std::getenv("FWTEST_PACS_APPLICATION_PORT");
-    m_pacs_application_port =
+    _pacs_application_port =
         (pacs_application_port) != nullptr ? (boost::lexical_cast<std::uint16_t>(pacs_application_port)) : 11112;
 
     // Move application title
     char* move_application_title = std::getenv("FWTEST_MOVE_APPLICATION_TITLE");
-    CPPUNIT_ASSERT_MESSAGE(
-        "The FWTEST_MOVE_APPLICATION_TITLE environment variable is not set.",
-        move_application_title
+    CHECK_MESSAGE(
+        move_application_title,
+        "The FWTEST_MOVE_APPLICATION_TITLE environment variable is not set."
     );
-    m_move_application_title = std::string(move_application_title);
+    _move_application_title = std::string(move_application_title);
 
     // Move application port (default 11110)
     char* move_application_port = std::getenv("FWTEST_MOVE_APPLICATION_PORT");
-    m_move_application_port =
+    _move_application_port =
         (move_application_port) != nullptr ? (boost::lexical_cast<std::uint16_t>(move_application_port)) : 11110;
 }
 
 //------------------------------------------------------------------------------
 
-void series_enquirer_test::tearDown()
+TEST_SUITE("sight::io::dimse::series_enquirer" * doctest::skip())
 {
-    // Clean up after the test run.
-}
-
-//------------------------------------------------------------------------------
-
-void series_enquirer_test::initialize_connection()
-{
-    // Create the series enquirer
-    m_series_enquirer = std::make_shared<io::dimse::series_enquirer>();
-
-    // Initialize the enquirer
-    m_series_enquirer->initialize(
-        m_local_application_title,
-        m_pacs_host_name,
-        m_pacs_application_port,
-        m_pacs_application_title,
-        m_move_application_title
-    );
-
-    // Connect to the pacs
-    m_series_enquirer->connect();
-    CPPUNIT_ASSERT_MESSAGE(
-        "The retriever should be connected to the pacs.",
-        m_series_enquirer->is_connected_to_pacs()
-    );
-
-    // Try to send a C-ECHO request to the server
-    bool ping = m_series_enquirer->ping_pacs();
-    CPPUNIT_ASSERT_MESSAGE("Unable to ping the pacs.", ping);
-
-    // Disconnect from the pacs
-    m_series_enquirer->disconnect();
-    CPPUNIT_ASSERT_MESSAGE(
-        "The retriever shouldn't be connected to the pacs.",
-        !m_series_enquirer->is_connected_to_pacs()
-    );
-}
-
-//------------------------------------------------------------------------------
-
-void series_enquirer_test::push_series()
-{
-    // Create the series enquirer
-    m_series_enquirer = std::make_shared<io::dimse::series_enquirer>();
-    m_series_enquirer->initialize(
-        m_local_application_title,
-        m_pacs_host_name,
-        m_pacs_application_port,
-        m_pacs_application_title,
-        m_move_application_title
-    );
-    m_series_enquirer->connect();
-
-    // Retrieve DICOM instances
-    const std::filesystem::path path =
-        utest_data::dir() / "sight/Patient/Dicom/DicomDB/01-CT-DICOM_LIVER_FOR_PACS";
-    const std::string path_str = boost::algorithm::replace_all_copy(path.string(), "\\", "/");
-
-    CPPUNIT_ASSERT_MESSAGE(
-        "The file '" + path.string() + "' does not exist",
-        std::filesystem::exists(path)
-    );
-
-    std::vector<std::filesystem::path> filenames;
-    io::dicom::helper::dicom_search::search_recursively(path, filenames, false);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(129), filenames.size());
-
-    std::vector<std::filesystem::path> paths;
-    paths.reserve(filenames.size());
-    for(const auto& file : filenames)
+    TEST_CASE("initialize_connection")
     {
-        paths.emplace_back(file.string());
+        std::string local_application_title;
+        std::string pacs_host_name;
+        std::string pacs_application_title;
+        std::uint16_t pacs_application_port = 0;
+        std::string move_application_title;
+        std::uint16_t move_application_port = 0;
+
+        setup_variables(
+            local_application_title,
+            pacs_host_name,
+            pacs_application_title,
+            pacs_application_port,
+            move_application_title,
+            move_application_port
+        );
+
+        // Create the series enquirer
+        auto series_enquirer = std::make_shared<io::dimse::series_enquirer>();
+
+        // Initialize the enquirer
+        series_enquirer->initialize(
+            local_application_title,
+            pacs_host_name,
+            pacs_application_port,
+            pacs_application_title,
+            move_application_title
+        );
+
+        // Connect to the pacs
+        series_enquirer->connect();
+        CHECK_MESSAGE(
+            series_enquirer->is_connected_to_pacs(),
+            "The retriever should be connected to the pacs."
+        );
+
+        // Try to send a C-ECHO request to the server
+        bool ping = series_enquirer->ping_pacs();
+        CHECK_MESSAGE(ping, "Unable to ping the pacs.");
+
+        // Disconnect from the pacs
+        series_enquirer->disconnect();
+        CHECK_MESSAGE(
+            !series_enquirer->is_connected_to_pacs(),
+            "The retriever shouldn't be connected to the pacs."
+        );
     }
 
-    // Try to push instances to the pacs
-    m_series_enquirer->push_series(paths);
+    TEST_CASE("push_series")
+    {
+        std::string local_application_title;
+        std::string pacs_host_name;
+        std::string pacs_application_title;
+        std::uint16_t pacs_application_port = 0;
+        std::string move_application_title;
+        std::uint16_t move_application_port = 0;
 
-    // Disconnect from the pacs
-    m_series_enquirer->disconnect();
-}
+        setup_variables(
+            local_application_title,
+            pacs_host_name,
+            pacs_application_title,
+            pacs_application_port,
+            move_application_title,
+            move_application_port
+        );
 
-//------------------------------------------------------------------------------
+        // Create the series enquirer
+        auto series_enquirer = std::make_shared<io::dimse::series_enquirer>();
+        series_enquirer->initialize(
+            local_application_title,
+            pacs_host_name,
+            pacs_application_port,
+            pacs_application_title,
+            move_application_title
+        );
+        series_enquirer->connect();
 
-void series_enquirer_test::pull_series_using_move_retrieve_method()
-{
-    // Create the retriever
-    m_series_retriever = std::make_shared<io::dimse::series_retriever>();
-    m_series_retriever->initialize(m_move_application_title, m_move_application_port);
-    core::thread::worker::sptr worker = core::thread::worker::make();
-    worker->post([this](auto&& ...){m_series_retriever->start();});
+        // Retrieve DICOM instances
+        const std::filesystem::path path =
+            utest_data::dir() / "sight/Patient/Dicom/DicomDB/01-CT-DICOM_LIVER_FOR_PACS";
 
-    // Create the series enquirer
-    m_series_enquirer = std::make_shared<io::dimse::series_enquirer>();
-    m_series_enquirer->initialize(
-        m_local_application_title,
-        m_pacs_host_name,
-        m_pacs_application_port,
-        m_pacs_application_title,
-        m_move_application_title
-    );
-    m_series_enquirer->connect();
+        CHECK(
+            std::filesystem::exists(path)
+        );
 
-    // Try to find series on the pacs
-    OFList<QRResponse*> responses;
-    responses = m_series_enquirer->find_series_by_date("17890101", "17900101");
-    io::dimse::helper::series::release_responses(responses);
+        std::vector<std::filesystem::path> filenames;
+        io::dicom::helper::dicom_search::search_recursively(path, filenames, false);
+        CHECK_EQ(std::size_t(129), filenames.size());
 
-    // Try to pull series from the pacs
-    responses = m_series_enquirer->find_series_by_patient_name("Doe");
-    m_series_enquirer->pull_series_using_move_retrieve_method(
-        io::dimse::helper::series::to_series_instance_uid_container(responses)
-    );
-    io::dimse::helper::series::release_responses(responses);
+        std::vector<std::filesystem::path> paths;
+        paths.reserve(filenames.size());
+        for(const auto& file : filenames)
+        {
+            paths.emplace_back(file.string());
+        }
 
-    // Disconnect from the pacs
-    m_series_enquirer->disconnect();
+        // Try to push instances to the pacs
+        series_enquirer->push_series(paths);
 
-    worker.reset();
-}
+        // Disconnect from the pacs
+        series_enquirer->disconnect();
+    }
 
-//------------------------------------------------------------------------------
+    TEST_CASE("pull_series_using_move_retrieve_method")
+    {
+        std::string local_application_title;
+        std::string pacs_host_name;
+        std::string pacs_application_title;
+        std::uint16_t pacs_application_port = 0;
+        std::string move_application_title;
+        std::uint16_t move_application_port = 0;
 
-void series_enquirer_test::pull_series_using_get_retrieve_method()
-{
-    // Create the series enquirer
-    m_series_enquirer = std::make_shared<io::dimse::series_enquirer>();
-    m_series_enquirer->initialize(
-        m_local_application_title,
-        m_pacs_host_name,
-        m_pacs_application_port,
-        m_pacs_application_title,
-        m_move_application_title
-    );
-    m_series_enquirer->connect();
+        setup_variables(
+            local_application_title,
+            pacs_host_name,
+            pacs_application_title,
+            pacs_application_port,
+            move_application_title,
+            move_application_port
+        );
 
-    // Try to pull series from the pacs
-    OFList<QRResponse*> responses;
-    responses = m_series_enquirer->find_series_by_patient_name("Doe");
-    m_series_enquirer->pull_series_using_get_retrieve_method(
-        io::dimse::helper::series::to_series_instance_uid_container(responses)
-    );
-    io::dimse::helper::series::release_responses(responses);
+        // Create the retriever
+        auto series_retriever = std::make_shared<io::dimse::series_retriever>();
+        series_retriever->initialize(move_application_title, move_application_port);
+        core::thread::worker::sptr worker = core::thread::worker::make();
+        worker->post([&series_retriever](auto&& ...){series_retriever->start();});
 
-    // Disconnect from the pacs
-    m_series_enquirer->disconnect();
-}
+        // Create the series enquirer
+        auto series_enquirer = std::make_shared<io::dimse::series_enquirer>();
+        series_enquirer->initialize(
+            local_application_title,
+            pacs_host_name,
+            pacs_application_port,
+            pacs_application_title,
+            move_application_title
+        );
+        series_enquirer->connect();
 
-//------------------------------------------------------------------------------
+        // Try to find series on the pacs
+        OFList<QRResponse*> responses;
+        responses = series_enquirer->find_series_by_date("17890101", "17900101");
+        io::dimse::helper::series::release_responses(responses);
 
-void series_enquirer_test::pull_instance_using_move_retrieve_method()
-{
-    // Create the receiver
-    m_series_retriever = std::make_shared<io::dimse::series_retriever>();
-    m_series_retriever->initialize(m_move_application_title, m_move_application_port);
-    core::thread::worker::sptr worker = core::thread::worker::make();
-    worker->post([this](auto&& ...){m_series_retriever->start();});
+        // Try to pull series from the pacs
+        responses = series_enquirer->find_series_by_patient_name("Doe");
+        series_enquirer->pull_series_using_move_retrieve_method(
+            io::dimse::helper::series::to_series_instance_uid_container(responses)
+        );
+        io::dimse::helper::series::release_responses(responses);
 
-    // Create the series enquirer
-    m_series_enquirer = std::make_shared<io::dimse::series_enquirer>();
-    m_series_enquirer->initialize(
-        m_local_application_title,
-        m_pacs_host_name,
-        m_pacs_application_port,
-        m_pacs_application_title,
-        m_move_application_title
-    );
-    m_series_enquirer->connect();
+        // Disconnect from the pacs
+        series_enquirer->disconnect();
 
-    // Try to pull instance from the pacs
-    std::string sop_instance_uid = m_series_enquirer->find_sop_instance_uid(
-        "1.2.826.0.1.3680043.2.1143.6877747397629659013303967301941157856",
-        5
-    );
-    CPPUNIT_ASSERT_MESSAGE(
-        "Wrong SOP Instance UID.",
-        sop_instance_uid == "1.2.826.0.1.3680043.2.1143.9672927753340405594477112277850697930"
-    );
-    m_series_enquirer->pull_instance_using_move_retrieve_method(
-        "1.2.826.0.1.3680043.2.1143.6877747397629659013303967301941157856",
-        sop_instance_uid
-    );
+        worker.reset();
+    }
 
-    // Disconnect from the pacs
-    m_series_enquirer->disconnect();
+    TEST_CASE("pull_series_using_get_retrieve_method")
+    {
+        std::string local_application_title;
+        std::string pacs_host_name;
+        std::string pacs_application_title;
+        std::uint16_t pacs_application_port = 0;
+        std::string move_application_title;
+        std::uint16_t move_application_port = 0;
 
-    worker.reset();
-}
+        setup_variables(
+            local_application_title,
+            pacs_host_name,
+            pacs_application_title,
+            pacs_application_port,
+            move_application_title,
+            move_application_port
+        );
 
-//------------------------------------------------------------------------------
+        // Create the series enquirer
+        auto series_enquirer = std::make_shared<io::dimse::series_enquirer>();
+        series_enquirer->initialize(
+            local_application_title,
+            pacs_host_name,
+            pacs_application_port,
+            pacs_application_title,
+            move_application_title
+        );
+        series_enquirer->connect();
 
-void series_enquirer_test::pull_instance_using_get_retrieve_method()
-{
-    // Create the series enquirer
-    m_series_enquirer = std::make_shared<io::dimse::series_enquirer>();
-    m_series_enquirer->initialize(
-        m_local_application_title,
-        m_pacs_host_name,
-        m_pacs_application_port,
-        m_pacs_application_title,
-        m_move_application_title
-    );
-    m_series_enquirer->connect();
+        // Try to pull series from the pacs
+        OFList<QRResponse*> responses;
+        responses = series_enquirer->find_series_by_patient_name("Doe");
+        series_enquirer->pull_series_using_get_retrieve_method(
+            io::dimse::helper::series::to_series_instance_uid_container(responses)
+        );
+        io::dimse::helper::series::release_responses(responses);
 
-    // Try to pull instance from the pacs
-    std::string sop_instance_uid = m_series_enquirer->find_sop_instance_uid(
-        "1.2.826.0.1.3680043.2.1143.6877747397629659013303967301941157856",
-        5
-    );
-    CPPUNIT_ASSERT_MESSAGE(
-        "Wrong SOP Instance UID.",
-        sop_instance_uid == "1.2.826.0.1.3680043.2.1143.9672927753340405594477112277850697930"
-    );
-    m_series_enquirer->pull_instance_using_get_retrieve_method(
-        "1.2.826.0.1.3680043.2.1143.6877747397629659013303967301941157856",
-        sop_instance_uid
-    );
+        // Disconnect from the pacs
+        series_enquirer->disconnect();
+    }
 
-    // Disconnect from the pacs
-    m_series_enquirer->disconnect();
+    TEST_CASE("pull_instance_using_move_retrieve_method")
+    {
+        std::string local_application_title;
+        std::string pacs_host_name;
+        std::string pacs_application_title;
+        std::uint16_t pacs_application_port = 0;
+        std::string move_application_title;
+        std::uint16_t move_application_port = 0;
+
+        setup_variables(
+            local_application_title,
+            pacs_host_name,
+            pacs_application_title,
+            pacs_application_port,
+            move_application_title,
+            move_application_port
+        );
+
+        // Create the receiver
+        auto series_retriever = std::make_shared<io::dimse::series_retriever>();
+        series_retriever->initialize(move_application_title, move_application_port);
+        core::thread::worker::sptr worker = core::thread::worker::make();
+        worker->post([&series_retriever](auto&& ...){series_retriever->start();});
+
+        // Create the series enquirer
+        auto series_enquirer = std::make_shared<io::dimse::series_enquirer>();
+        series_enquirer->initialize(
+            local_application_title,
+            pacs_host_name,
+            pacs_application_port,
+            pacs_application_title,
+            move_application_title
+        );
+        series_enquirer->connect();
+
+        // Try to pull instance from the pacs
+        std::string sop_instance_uid = series_enquirer->find_sop_instance_uid(
+            "1.2.826.0.1.3680043.2.1143.6877747397629659013303967301941157856",
+            5
+        );
+        CHECK_MESSAGE(
+            sop_instance_uid == "1.2.826.0.1.3680043.2.1143.9672927753340405594477112277850697930",
+            "Wrong SOP Instance UID."
+        );
+        series_enquirer->pull_instance_using_move_retrieve_method(
+            "1.2.826.0.1.3680043.2.1143.6877747397629659013303967301941157856",
+            sop_instance_uid
+        );
+
+        // Disconnect from the pacs
+        series_enquirer->disconnect();
+
+        worker.reset();
+    }
+
+    TEST_CASE("pull_instance_using_get_retrieve_method")
+    {
+        std::string local_application_title;
+        std::string pacs_host_name;
+        std::string pacs_application_title;
+        std::uint16_t pacs_application_port = 0;
+        std::string move_application_title;
+        std::uint16_t move_application_port = 0;
+
+        setup_variables(
+            local_application_title,
+            pacs_host_name,
+            pacs_application_title,
+            pacs_application_port,
+            move_application_title,
+            move_application_port
+        );
+
+        // Create the series enquirer
+        auto series_enquirer = std::make_shared<io::dimse::series_enquirer>();
+        series_enquirer->initialize(
+            local_application_title,
+            pacs_host_name,
+            pacs_application_port,
+            pacs_application_title,
+            move_application_title
+        );
+        series_enquirer->connect();
+
+        // Try to pull instance from the pacs
+        std::string sop_instance_uid = series_enquirer->find_sop_instance_uid(
+            "1.2.826.0.1.3680043.2.1143.6877747397629659013303967301941157856",
+            5
+        );
+        CHECK_MESSAGE(
+            sop_instance_uid == "1.2.826.0.1.3680043.2.1143.9672927753340405594477112277850697930",
+            "Wrong SOP Instance UID."
+        );
+        series_enquirer->pull_instance_using_get_retrieve_method(
+            "1.2.826.0.1.3680043.2.1143.6877747397629659013303967301941157856",
+            sop_instance_uid
+        );
+
+        // Disconnect from the pacs
+        series_enquirer->disconnect();
+    }
 }
 
 //------------------------------------------------------------------------------

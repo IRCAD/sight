@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -91,6 +91,8 @@ protected:
      * @return OFTrue on success
      */
     virtual OFCondition handleSTORERequest(T_DIMSE_Message* _incoming_msg, T_ASC_PresentationContextID _pres_id);
+
+private:
 
     /// Path where the files must be saved
     std::filesystem::path m_path;

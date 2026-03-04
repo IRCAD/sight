@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -39,10 +39,10 @@
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
-using sight::core::tools::uuid;
-
 namespace sight::io::bitmap::ut
 {
+
+using sight::core::tools::uuid;
 
 //------------------------------------------------------------------------------
 
@@ -57,7 +57,8 @@ inline static data::image::sptr get_synthetic_image(
 
     const key_t key = std::make_tuple(_seed, _type, _format);
 
-    if(const auto& it = s_generated.find(key); it == s_generated.end())
+    const auto& it = s_generated.find(key);
+    if(it == s_generated.end())
     {
         auto image           = std::make_shared<data::image>();
         const auto dump_lock = image->dump_lock();
@@ -94,10 +95,8 @@ inline static data::image::sptr get_synthetic_image(
 
         return image;
     }
-    else
-    {
-        return it->second;
-    }
+
+    return it->second;
 }
 
 //------------------------------------------------------------------------------
@@ -174,7 +173,10 @@ inline static data::image::sptr mat_to_image(cv::Mat& _mat, bool _clone = true)
 
 inline static data::image::sptr read_image(const std::filesystem::path& _path)
 {
-    CPPUNIT_ASSERT(std::filesystem::exists(_path) && std::filesystem::is_regular_file(_path));
+    if(!std::filesystem::exists(_path) || !std::filesystem::is_regular_file(_path))
+    {
+        throw std::runtime_error(_path.string() + " does not exist or is not a file");
+    }
 
     auto mat = cv::imread(_path.string(), cv::IMREAD_ANYDEPTH | cv::IMREAD_ANYCOLOR);
     return mat_to_image(mat, false);
@@ -189,10 +191,25 @@ inline static double compute_psnr(const data::image::sptr& _expected, const data
     const cv::Mat& expected_mat = image_to_mat(_expected);
     const cv::Mat& actual_mat   = image_to_mat(_actual);
 
-    CPPUNIT_ASSERT(!expected_mat.empty() && !actual_mat.empty());
-    CPPUNIT_ASSERT(expected_mat.rows == actual_mat.rows);
-    CPPUNIT_ASSERT(expected_mat.cols == actual_mat.cols);
-    CPPUNIT_ASSERT(expected_mat.type() == actual_mat.type());
+    if(expected_mat.empty() || actual_mat.empty())
+    {
+        throw std::runtime_error("Empty cv::Mat");
+    }
+
+    if(expected_mat.rows != actual_mat.rows)
+    {
+        throw std::runtime_error("Rows mismatch");
+    }
+
+    if(expected_mat.cols != actual_mat.cols)
+    {
+        throw std::runtime_error("Cols mismatch");
+    }
+
+    if(expected_mat.type() != actual_mat.type())
+    {
+        throw std::runtime_error("Type mismatch");
+    }
 
     cv::Mat compute_mat(expected_mat.rows, expected_mat.cols, CV_64F);
     cv::subtract(expected_mat, actual_mat, compute_mat);
@@ -285,4 +302,4 @@ inline static std::string file_suffix(const backend& _backend, const writer::mod
     return "_" + backend_string + "_" + mode_string + ext_string;
 }
 
-} // namespace sight::io
+} // namespace sight::io::bitmap::ut

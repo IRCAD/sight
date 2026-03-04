@@ -33,7 +33,7 @@ lint:ubuntu-24.04:
         SIGHT_BUILD_SDK: "OFF"
         SIGHT_ENABLE_REALSENSE: "OFF"
         SIGHT_ENABLE_GDB: "OFF"
-        TEST_DATA_REF: "ace14232f"
+        TEST_DATA_REF: "7e68743ecc30b3642aa753a84af94b4130168e93"
     script:
         # Reset the modified time of all files to improve ccache performance
         - /usr/lib/git-core/git-restore-mtime --force --skip-missing --commit-time
@@ -79,9 +79,8 @@ lint:ubuntu-24.04:
             else
               TIMEOUT="600"
             fi
-        - ctest -E "(uit)|(dicom)" --timeout $TIMEOUT --output-on-failure -O ctest1.log -j ${LINUX_PARALLEL_TESTS} --output-junit junit1.xml --repeat until-pass:2
-        - ctest -R "(dicom)" --timeout $TIMEOUT --output-on-failure -O ctest2.log -j ${LINUX_PARALLEL_TESTS} --output-junit junit2.xml --repeat until-pass:2
-        - ctest -R "(uit)" --timeout $TIMEOUT --output-on-failure -O ctest3.log -j ${LINUX_PARALLEL_GUI_TESTS} --output-junit junit3.xml --repeat until-pass:2
+        - ctest -E "(uit)" --timeout $TIMEOUT --output-on-failure -O ctest1.log -j ${LINUX_PARALLEL_TESTS} --output-junit junit1.xml --repeat until-pass:2
+        - ctest -R "(uit)" --timeout $TIMEOUT --output-on-failure -O ctest2.log -j ${LINUX_PARALLEL_GUI_TESTS} --output-junit junit2.xml --repeat until-pass:2
         # Build documentation if needed
         - >
             if [ "${SIGHT_BUILD_DOC}" == "ON" ]; then
@@ -273,7 +272,7 @@ deploy:apps-linux-release:
         SIGHT_BUILD_SDK: "OFF"
         MSVC_VERSION: "17"
         CUDA_VERSION: "12_5"
-        TEST_DATA_REF: "ace14232f"
+        TEST_DATA_REF: "7e68743ecc30b3642aa753a84af94b4130168e93"
     stage: build
     script:
         # Print CCache statistics
@@ -300,9 +299,8 @@ deploy:apps-linux-release:
               $TIMEOUT="600"
             }
         # Launch tests
-        - ctest -E "(uit)|(dicom)" --timeout $TIMEOUT --output-on-failure -O ctest1.log -j ${WINDOWS_PARALLEL_TESTS} --output-junit junit1.xml --repeat until-pass:2
-        - ctest -R "(dicom)" --timeout $TIMEOUT --output-on-failure -O ctest2.log -j ${WINDOWS_PARALLEL_TESTS} --output-junit junit2.xml --repeat until-pass:2
-        - ctest -R "(uit)" --timeout $TIMEOUT --output-on-failure -O ctest3.log -j ${WINDOWS_PARALLEL_GUI_TESTS} --output-junit junit3.xml --repeat until-pass:2
+        - ctest -E "(uit)" --timeout $TIMEOUT --output-on-failure -O ctest1.log -j ${WINDOWS_PARALLEL_TESTS} --output-junit junit1.xml --repeat until-pass:2
+        - ctest -R "(uit)" --timeout $TIMEOUT --output-on-failure -O ctest2.log -j ${WINDOWS_PARALLEL_GUI_TESTS} --output-junit junit2.xml --repeat until-pass:2
         - |
             if ("${SIGHT_BUILD_PACKAGES}" -eq "ON") {
               ninja -j ${WINDOWS_PARALLEL_BUILDS} sight_viewer_package
