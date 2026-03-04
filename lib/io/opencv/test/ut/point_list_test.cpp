@@ -20,88 +20,66 @@
  *
  ***********************************************************************/
 
-#include "point_list_test.hpp"
-
 #include <data/point_list.hpp>
 
 #include <io/opencv/point_list.hpp>
 
+#include <doctest/doctest.h>
+
 #include <opencv2/core.hpp>
-
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::opencv::ut::point_list_test);
-
-namespace sight::io::opencv::ut
-{
 
 //------------------------------------------------------------------------------
 
-static void assert2d_point_equality(const data::point::csptr& _pt, const cv::Point2d& _cv_pt)
+static void assert2d_point_equality(const sight::data::point::csptr& _pt, const cv::Point2d& _cv_pt)
 {
-    CPPUNIT_ASSERT_EQUAL((*_pt)[0], _cv_pt.x);
-    CPPUNIT_ASSERT_EQUAL((*_pt)[1], _cv_pt.y);
-    CPPUNIT_ASSERT_EQUAL((*_pt)[2], 0.);
+    CHECK_EQ((*_pt)[0], _cv_pt.x);
+    CHECK_EQ((*_pt)[1], _cv_pt.y);
+    CHECK_EQ((*_pt)[2], 0.);
 }
 
-//-----------------------------------------------------------------------------
-
-void point_list_test::setUp()
+TEST_SUITE("sight::io::opencv::point_list")
 {
-}
-
-//-----------------------------------------------------------------------------
-
-void point_list_test::tearDown()
-{
-}
-
-//-----------------------------------------------------------------------------
-
-void point_list_test::copy_from_cv()
-{
-    std::vector<cv::Point2d> cv_point_list;
-
-    cv_point_list.reserve(512);
-    for(std::uint16_t i = 0 ; i < 512 ; ++i)
+    TEST_CASE("copy_from_cv")
     {
-        cv_point_list.emplace_back(double(i), double(i * 2 + 3));
+        std::vector<cv::Point2d> cv_point_list;
+
+        cv_point_list.reserve(512);
+        for(std::uint16_t i = 0 ; i < 512 ; ++i)
+        {
+            cv_point_list.emplace_back(double(i), double(i * 2 + 3));
+        }
+
+        sight::data::point_list::sptr pl = std::make_shared<sight::data::point_list>();
+        sight::io::opencv::point_list::copy_from_cv(cv_point_list, pl);
+
+        for(std::uint16_t i = 0 ; i < 512 ; ++i)
+        {
+            sight::data::point::csptr pt = (*pl)[i];
+            assert2d_point_equality(pt, cv_point_list[i]);
+            CHECK_EQ(i, std::uint16_t((*pt)[0]));
+            CHECK_EQ(std::uint16_t(i * 2 + 3), std::uint16_t((*pt)[1]));
+            CHECK_EQ(0., (*pt)[2]);
+        }
     }
 
-    data::point_list::sptr pl = std::make_shared<data::point_list>();
-    io::opencv::point_list::copy_from_cv(cv_point_list, pl);
-
-    for(std::uint16_t i = 0 ; i < 512 ; ++i)
+    TEST_CASE("copy_to_cv")
     {
-        data::point::csptr pt = (*pl)[i];
-        assert2d_point_equality(pt, cv_point_list[i]);
-        CPPUNIT_ASSERT_EQUAL(i, std::uint16_t((*pt)[0]));
-        CPPUNIT_ASSERT_EQUAL(std::uint16_t(i * 2 + 3), std::uint16_t((*pt)[1]));
-        CPPUNIT_ASSERT_EQUAL(0., (*pt)[2]);
+        sight::data::point_list::sptr pl = std::make_shared<sight::data::point_list>();
+
+        for(std::uint16_t i = 0 ; i < 512 ; ++i)
+        {
+            sight::data::point::sptr point = std::make_shared<sight::data::point>(double(i), double(i * 3 + 5), 0.);
+            pl->push_back(point);
+        }
+
+        std::vector<cv::Point2d> cv_point_list;
+        sight::io::opencv::point_list::copy_to_cv(pl, cv_point_list);
+
+        for(std::uint16_t i = 0 ; i < 512 ; ++i)
+        {
+            assert2d_point_equality((*pl)[i], cv_point_list[i]);
+            CHECK_EQ(i, std::uint16_t(cv_point_list[i].x));
+            CHECK_EQ(std::uint16_t(i * 3 + 5), std::uint16_t(cv_point_list[i].y));
+        }
     }
 }
-
-//-----------------------------------------------------------------------------
-
-void point_list_test::copy_to_cv()
-{
-    data::point_list::sptr pl = std::make_shared<data::point_list>();
-
-    for(std::uint16_t i = 0 ; i < 512 ; ++i)
-    {
-        data::point::sptr point = std::make_shared<data::point>(double(i), double(i * 3 + 5), 0.);
-        pl->push_back(point);
-    }
-
-    std::vector<cv::Point2d> cv_point_list;
-    io::opencv::point_list::copy_to_cv(pl, cv_point_list);
-
-    for(std::uint16_t i = 0 ; i < 512 ; ++i)
-    {
-        assert2d_point_equality((*pl)[i], cv_point_list[i]);
-        CPPUNIT_ASSERT_EQUAL(i, std::uint16_t(cv_point_list[i].x));
-        CPPUNIT_ASSERT_EQUAL(std::uint16_t(i * 3 + 5), std::uint16_t(cv_point_list[i].y));
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-} // namespace sight::io::opencv::ut

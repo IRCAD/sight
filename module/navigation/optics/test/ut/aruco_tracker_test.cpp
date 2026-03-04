@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,8 +19,6 @@
  *
  ***********************************************************************/
 
-#include "aruco_tracker_test.hpp"
-
 #include <data/camera.hpp>
 #include <data/image.hpp>
 #include <data/marker_map.hpp>
@@ -29,53 +27,35 @@
 
 #include <boost/property_tree/xml_parser.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::navigation::optics::ut::aruco_tracker_test);
+#include <doctest/doctest.h>
 
-namespace sight::module::navigation::optics::ut
+TEST_SUITE("sight::module::navigation::optics")
 {
+    TEST_CASE("aruco_tracker")
+    {
+        auto srv = sight::service::add("sight::module::navigation::optics::aruco_tracker");
 
-//------------------------------------------------------------------------------
+        sight::data::camera::sptr camera         = std::make_shared<sight::data::camera>();
+        sight::data::image::sptr frame           = std::make_shared<sight::data::image>();
+        sight::data::marker_map::sptr marker_map = std::make_shared<sight::data::marker_map>();
 
-void aruco_tracker_test::setUp()
-{
+        srv->set_input(camera, "camera");
+        srv->set_inout(frame, "frame");
+        srv->set_inout(marker_map, "marker_map", true, true, 0);
+
+        std::stringstream config_string;
+        config_string << "<track>"
+        << "<marker id=\"0,1,2,3,4,5,6,7,8,42,100,101,102,103,104,105\" />"
+        << "</track>";
+        sight::service::base::config_t config;
+        boost::property_tree::read_xml(config_string, config);
+        srv->set_config(config);
+
+        CHECK_NOTHROW(srv->configure());
+        CHECK_NOTHROW(srv->start().get());
+        CHECK_NOTHROW(srv->update().get());
+        CHECK_NOTHROW(srv->stop().get());
+
+        sight::service::remove(srv);
+    }
 }
-
-//------------------------------------------------------------------------------
-
-void aruco_tracker_test::tearDown()
-{
-}
-
-//------------------------------------------------------------------------------
-
-void aruco_tracker_test::service_test()
-{
-    auto srv = sight::service::add("sight::module::navigation::optics::aruco_tracker");
-
-    sight::data::camera::sptr camera         = std::make_shared<sight::data::camera>();
-    sight::data::image::sptr frame           = std::make_shared<sight::data::image>();
-    sight::data::marker_map::sptr marker_map = std::make_shared<sight::data::marker_map>();
-
-    srv->set_input(camera, "camera");
-    srv->set_inout(frame, "frame");
-    srv->set_inout(marker_map, "marker_map", true, true, 0);
-
-    std::stringstream config_string;
-    config_string << "<track>"
-    << "<marker id=\"0,1,2,3,4,5,6,7,8,42,100,101,102,103,104,105\" />"
-    << "</track>";
-    sight::service::base::config_t config;
-    boost::property_tree::read_xml(config_string, config);
-    srv->set_config(config);
-
-    CPPUNIT_ASSERT_NO_THROW(srv->configure());
-    CPPUNIT_ASSERT_NO_THROW(srv->start().get());
-    CPPUNIT_ASSERT_NO_THROW(srv->update().get());
-    CPPUNIT_ASSERT_NO_THROW(srv->stop().get());
-
-    sight::service::remove(srv);
-}
-
-//------------------------------------------------------------------------------
-
-} // namespace sight::module::navigation::optics::ut

@@ -1,4 +1,4 @@
-sight_add_target(geometry_vision_ut TYPE TEST)
+sight_add_target(geometry_vision_ut TYPE DOCTEST)
 
 find_package(OpenCV QUIET REQUIRED COMPONENTS opencv_imgcodecs opencv_highgui)
 target_link_libraries(geometry_vision_ut PUBLIC opencv_highgui PRIVATE opencv_imgcodecs)

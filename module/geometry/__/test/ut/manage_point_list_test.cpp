@@ -19,8 +19,6 @@
  *
  ***********************************************************************/
 
-#include "manage_point_list_test.hpp"
-
 #include <core/runtime/runtime.hpp>
 
 #include <data/matrix4.hpp>
@@ -31,38 +29,20 @@
 
 #include <boost/property_tree/xml_parser.hpp>
 
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::geometry::ut::manage_point_list_test);
-
-namespace sight::module::geometry::ut
-{
-
-//------------------------------------------------------------------------------
-
-void manage_point_list_test::setUp()
-{
-}
-
-//------------------------------------------------------------------------------
-
-void manage_point_list_test::tearDown()
-{
-}
-
-//------------------------------------------------------------------------------
+#include <doctest/doctest.h>
 
 namespace
 {
 
-class context final
+class context
 {
 public:
 
     context()
     {
-        CPPUNIT_ASSERT_NO_THROW(srv = sight::service::add("sight::module::geometry::manage_point_list"));
-        CPPUNIT_ASSERT(srv != nullptr);
-        CPPUNIT_ASSERT(srv->is_a("sight::module::geometry::manage_point_list"));
+        CHECK_NOTHROW(srv = sight::service::add("sight::module::geometry::manage_point_list"));
+        CHECK(srv != nullptr);
+        CHECK(srv->is_a("sight::module::geometry::manage_point_list"));
 
         point_list = std::make_shared<sight::data::point_list>();
         srv->set_inout(point_list, "point_list");
@@ -74,7 +54,7 @@ public:
     {
         if(srv->started())
         {
-            CPPUNIT_ASSERT_NO_THROW(srv->stop().wait());
+            CHECK_NOTHROW(srv->stop().wait());
         }
 
         sight::service::remove(srv);
@@ -100,122 +80,115 @@ public:
 
 } // namespace
 
+TEST_SUITE("sight::module::geometry::manage_point_list")
+{
+    TEST_CASE_FIXTURE(context, "update_test")
+    {
+        auto input_point = std::make_shared<sight::data::matrix4>();
+        srv->set_input(input_point, "position");
+
+        set_config("");
+
+        srv->update().get();
+
+        CHECK_EQ(std::size_t(1), point_list->size());
+        CHECK_EQ((*input_point)[3], (*(*point_list)[0])[0]);
+        CHECK_EQ((*input_point)[7], (*(*point_list)[0])[1]);
+        CHECK_EQ((*input_point)[11], (*(*point_list)[0])[2]);
+
+        sight::data::matrix4::container_t expected;
+        expected[3]  = 14.0;
+        expected[7]  = 15.0;
+        expected[11] = -112.5;
+        *input_point = expected;
+
+        srv->update().get();
+
+        CHECK_EQ(std::size_t(2), point_list->size());
+        CHECK_EQ(0., (*(*point_list)[0])[0]);
+        CHECK_EQ(0., (*(*point_list)[0])[1]);
+        CHECK_EQ(0., (*(*point_list)[0])[2]);
+
+        CHECK_EQ(expected[3], (*(*point_list)[1])[0]);
+        CHECK_EQ(expected[7], (*(*point_list)[1])[1]);
+        CHECK_EQ(expected[11], (*(*point_list)[1])[2]);
+
+        srv->slot("clear")->run();
+        CHECK_EQ(std::size_t(0), point_list->size());
+
+        srv->update().get();
+        CHECK_EQ(std::size_t(1), point_list->size());
+        CHECK_EQ(expected[3], (*(*point_list)[0])[0]);
+        CHECK_EQ(expected[7], (*(*point_list)[0])[1]);
+        CHECK_EQ(expected[11], (*(*point_list)[0])[2]);
+    }
+
 //------------------------------------------------------------------------------
 
-void manage_point_list_test::update_test()
-{
-    context service_tester;
-    auto input_point = std::make_shared<sight::data::matrix4>();
-    service_tester.srv->set_input(input_point, "position");
+    TEST_CASE_FIXTURE(context, "pick_test")
+    {
+        set_config(R"(<config max="0" />)");
 
-    service_tester.set_config("");
+        sight::data::tools::picking_info info;
+        srv->slot("pick")->run(info);
 
-    service_tester.srv->update().get();
+        CHECK_EQ(std::size_t(1), point_list->size());
+        CHECK_EQ(0., (*(*point_list)[0])[0]);
+        CHECK_EQ(0., (*(*point_list)[0])[1]);
+        CHECK_EQ(0., (*(*point_list)[0])[2]);
 
-    const auto& point_list = *service_tester.point_list;
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), point_list.size());
-    CPPUNIT_ASSERT_EQUAL((*input_point)[3], (*point_list[0])[0]);
-    CPPUNIT_ASSERT_EQUAL((*input_point)[7], (*point_list[0])[1]);
-    CPPUNIT_ASSERT_EQUAL((*input_point)[11], (*point_list[0])[2]);
+        info.m_world_pos[0] = 14.;
+        info.m_world_pos[1] = -18.;
+        info.m_world_pos[2] = 19.;
+        srv->slot("pick")->run(info);
 
-    data::matrix4::container_t expected;
-    expected[3]  = 14.0;
-    expected[7]  = 15.0;
-    expected[11] = -112.5;
-    *input_point = expected;
-
-    service_tester.srv->update().get();
-
-    CPPUNIT_ASSERT_EQUAL(std::size_t(2), point_list.size());
-    CPPUNIT_ASSERT_EQUAL(0., (*point_list[0])[0]);
-    CPPUNIT_ASSERT_EQUAL(0., (*point_list[0])[1]);
-    CPPUNIT_ASSERT_EQUAL(0., (*point_list[0])[2]);
-
-    CPPUNIT_ASSERT_EQUAL(expected[3], (*point_list[1])[0]);
-    CPPUNIT_ASSERT_EQUAL(expected[7], (*point_list[1])[1]);
-    CPPUNIT_ASSERT_EQUAL(expected[11], (*point_list[1])[2]);
-
-    service_tester.srv->slot("clear")->run();
-    CPPUNIT_ASSERT_EQUAL(std::size_t(0), point_list.size());
-
-    service_tester.srv->update().get();
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), point_list.size());
-    CPPUNIT_ASSERT_EQUAL(expected[3], (*point_list[0])[0]);
-    CPPUNIT_ASSERT_EQUAL(expected[7], (*point_list[0])[1]);
-    CPPUNIT_ASSERT_EQUAL(expected[11], (*point_list[0])[2]);
-}
+        CHECK_EQ(std::size_t(2), point_list->size());
+        CHECK_EQ(0., (*(*point_list)[0])[0]);
+        CHECK_EQ(0., (*(*point_list)[0])[1]);
+        CHECK_EQ(0., (*(*point_list)[0])[2]);
+        CHECK_EQ(info.m_world_pos[0], (*(*point_list)[1])[0]);
+        CHECK_EQ(info.m_world_pos[1], (*(*point_list)[1])[1]);
+        CHECK_EQ(info.m_world_pos[2], (*(*point_list)[1])[2]);
+    }
 
 //------------------------------------------------------------------------------
-void manage_point_list_test::pick_test()
-{
-    context service_tester;
-    service_tester.set_config(R"(<config max="0" />)");
 
-    const auto& point_list = *service_tester.point_list;
+    TEST_CASE_FIXTURE(context, "max_test")
+    {
+        set_config(R"(<config max="2" />)");
 
-    sight::data::tools::picking_info info;
-    service_tester.srv->slot("pick")->run(info);
+        sight::data::tools::picking_info info;
+        srv->slot("pick")->run(info);
 
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), point_list.size());
-    CPPUNIT_ASSERT_EQUAL(0., (*point_list[0])[0]);
-    CPPUNIT_ASSERT_EQUAL(0., (*point_list[0])[1]);
-    CPPUNIT_ASSERT_EQUAL(0., (*point_list[0])[2]);
+        CHECK_EQ(std::size_t(1), point_list->size());
+        CHECK_EQ(0., (*(*point_list)[0])[0]);
+        CHECK_EQ(0., (*(*point_list)[0])[1]);
+        CHECK_EQ(0., (*(*point_list)[0])[2]);
 
-    info.m_world_pos[0] = 14.;
-    info.m_world_pos[1] = -18.;
-    info.m_world_pos[2] = 19.;
-    service_tester.srv->slot("pick")->run(info);
+        info.m_world_pos[0] = 14.;
+        info.m_world_pos[1] = -18.;
+        info.m_world_pos[2] = 19.;
+        srv->slot("pick")->run(info);
 
-    CPPUNIT_ASSERT_EQUAL(std::size_t(2), point_list.size());
-    CPPUNIT_ASSERT_EQUAL(0., (*point_list[0])[0]);
-    CPPUNIT_ASSERT_EQUAL(0., (*point_list[0])[1]);
-    CPPUNIT_ASSERT_EQUAL(0., (*point_list[0])[2]);
-    CPPUNIT_ASSERT_EQUAL(info.m_world_pos[0], (*point_list[1])[0]);
-    CPPUNIT_ASSERT_EQUAL(info.m_world_pos[1], (*point_list[1])[1]);
-    CPPUNIT_ASSERT_EQUAL(info.m_world_pos[2], (*point_list[1])[2]);
-}
+        CHECK_EQ(std::size_t(2), point_list->size());
+        CHECK_EQ(0., (*(*point_list)[0])[0]);
+        CHECK_EQ(0., (*(*point_list)[0])[1]);
+        CHECK_EQ(0., (*(*point_list)[0])[2]);
+        CHECK_EQ(14., (*(*point_list)[1])[0]);
+        CHECK_EQ(-18., (*(*point_list)[1])[1]);
+        CHECK_EQ(19., (*(*point_list)[1])[2]);
 
-//------------------------------------------------------------------------------
-void manage_point_list_test::max_test()
-{
-    context service_tester;
-    service_tester.set_config(R"(<config max="2" />)");
+        info.m_world_pos[0] = 89.;
+        info.m_world_pos[1] = 84.;
+        info.m_world_pos[2] = -19.;
+        srv->slot("pick")->run(info);
 
-    const auto& point_list = *service_tester.point_list;
-
-    sight::data::tools::picking_info info;
-    service_tester.srv->slot("pick")->run(info);
-
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), point_list.size());
-    CPPUNIT_ASSERT_EQUAL(0., (*point_list[0])[0]);
-    CPPUNIT_ASSERT_EQUAL(0., (*point_list[0])[1]);
-    CPPUNIT_ASSERT_EQUAL(0., (*point_list[0])[2]);
-
-    info.m_world_pos[0] = 14.;
-    info.m_world_pos[1] = -18.;
-    info.m_world_pos[2] = 19.;
-    service_tester.srv->slot("pick")->run(info);
-
-    CPPUNIT_ASSERT_EQUAL(std::size_t(2), point_list.size());
-    CPPUNIT_ASSERT_EQUAL(0., (*point_list[0])[0]);
-    CPPUNIT_ASSERT_EQUAL(0., (*point_list[0])[1]);
-    CPPUNIT_ASSERT_EQUAL(0., (*point_list[0])[2]);
-    CPPUNIT_ASSERT_EQUAL(14., (*point_list[1])[0]);
-    CPPUNIT_ASSERT_EQUAL(-18., (*point_list[1])[1]);
-    CPPUNIT_ASSERT_EQUAL(19., (*point_list[1])[2]);
-
-    info.m_world_pos[0] = 89.;
-    info.m_world_pos[1] = 84.;
-    info.m_world_pos[2] = -19.;
-    service_tester.srv->slot("pick")->run(info);
-
-    CPPUNIT_ASSERT_EQUAL(std::size_t(2), point_list.size());
-    CPPUNIT_ASSERT_EQUAL(14., (*point_list[0])[0]);
-    CPPUNIT_ASSERT_EQUAL(-18., (*point_list[0])[1]);
-    CPPUNIT_ASSERT_EQUAL(19., (*point_list[0])[2]);
-    CPPUNIT_ASSERT_EQUAL(info.m_world_pos[0], (*point_list[1])[0]);
-    CPPUNIT_ASSERT_EQUAL(info.m_world_pos[1], (*point_list[1])[1]);
-    CPPUNIT_ASSERT_EQUAL(info.m_world_pos[2], (*point_list[1])[2]);
-}
-
-} // namespace sight::module::geometry::ut
+        CHECK_EQ(std::size_t(2), point_list->size());
+        CHECK_EQ(14., (*(*point_list)[0])[0]);
+        CHECK_EQ(-18., (*(*point_list)[0])[1]);
+        CHECK_EQ(19., (*(*point_list)[0])[2]);
+        CHECK_EQ(info.m_world_pos[0], (*(*point_list)[1])[0]);
+        CHECK_EQ(info.m_world_pos[1], (*(*point_list)[1])[1]);
+        CHECK_EQ(info.m_world_pos[2], (*(*point_list)[1])[2]);
+    }
+} // TEST_SUITE

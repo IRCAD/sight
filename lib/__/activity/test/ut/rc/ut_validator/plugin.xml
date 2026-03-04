@@ -1,4 +1,6 @@
 <plugin id="ut_validator">
+    <extension-point id="sight::activity::extension" schema="activity/activity.xsd" />
+
     <extension implements="sight::activity::extension">
         <id>TestValidator0</id>
         <title>Title Test0</title>

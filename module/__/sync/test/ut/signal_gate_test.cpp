@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,8 +19,7 @@
  *
  ***********************************************************************/
 
-#include "signal_gate_test.hpp"
-
+#include <core/com/signal.hpp>
 #include <core/com/signal.hxx>
 #include <core/com/slot.hxx>
 
@@ -28,76 +27,65 @@
 
 #include <utest/wait.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::sync::ut::signal_gate_test);
+#include <doctest/doctest.h>
 
-namespace sight::module::sync::ut
-{
-
-class object : public data::object
+class object : public sight::data::object
 {
 public:
 
     object()
     {
-        new_signal<core::com::signal<void()> >("signal");
+        new_signal<sight::core::com::signal<void()> >("signal");
     }
 
     //------------------------------------------------------------------------------
 
     void emit_signal()
     {
-        signal<core::com::signal<void()> >("signal")->emit();
+        signal<sight::core::com::signal<void()> >("signal")->emit();
     }
 };
 
 //------------------------------------------------------------------------------
 
-void signal_gate_test::setUp()
+TEST_SUITE("sight::module::sync::signal_gate")
 {
-    m_signal_gate = service::add("sight::module::sync::signal_gate");
-}
-
-//------------------------------------------------------------------------------
-
-void signal_gate_test::tearDown()
-{
-    m_worker->stop();
-    if(!m_signal_gate->stopped())
+    TEST_CASE("basic")
     {
-        CPPUNIT_ASSERT_NO_THROW(m_signal_gate->stop().get());
+        auto m_signal_gate = sight::service::add("sight::module::sync::signal_gate");
+
+        auto object1 = std::make_shared<object>();
+        object1->set_id("object1");
+        auto object2 = std::make_shared<object>();
+        object2->set_id("object2");
+        auto object3 = std::make_shared<object>();
+        object3->set_id("object3");
+        bool all_received      = false;
+        auto all_received_slot = sight::core::com::new_slot([&all_received]{all_received = true;});
+        auto m_worker          = sight::core::thread::worker::make();
+        all_received_slot->set_worker(m_worker);
+        m_signal_gate->signal("all_received")->connect(all_received_slot);
+        boost::property_tree::ptree ptree;
+        ptree.add("signal", "object1/signal");
+        ptree.add("signal", "object2/signal");
+        ptree.add("signal", "object3/signal");
+        m_signal_gate->set_config(ptree);
+        CHECK_NOTHROW(m_signal_gate->configure());
+        CHECK_NOTHROW(m_signal_gate->start().get());
+
+        object1->emit_signal();
+        object2->emit_signal();
+        object3->emit_signal();
+        SIGHT_TEST_WAIT(all_received);
+        CHECK(all_received);
+
+        // Cleanup
+        m_worker->stop();
+        if(!m_signal_gate->stopped())
+        {
+            CHECK_NOTHROW(m_signal_gate->stop().get());
+        }
+
+        sight::service::remove(m_signal_gate);
     }
-
-    service::remove(m_signal_gate);
 }
-
-//------------------------------------------------------------------------------
-
-void signal_gate_test::basic_test()
-{
-    auto object1 = std::make_shared<object>();
-    object1->set_id("object1");
-    auto object2 = std::make_shared<object>();
-    object2->set_id("object2");
-    auto object3 = std::make_shared<object>();
-    object3->set_id("object3");
-    bool all_received      = false;
-    auto all_received_slot = core::com::new_slot([&all_received]{all_received = true;});
-    m_worker = core::thread::worker::make();
-    all_received_slot->set_worker(m_worker);
-    m_signal_gate->signal("all_received")->connect(all_received_slot);
-    boost::property_tree::ptree ptree;
-    ptree.add("signal", "object1/signal");
-    ptree.add("signal", "object2/signal");
-    ptree.add("signal", "object3/signal");
-    m_signal_gate->set_config(ptree);
-    CPPUNIT_ASSERT_NO_THROW(m_signal_gate->configure());
-    CPPUNIT_ASSERT_NO_THROW(m_signal_gate->start().get());
-
-    object1->emit_signal();
-    object2->emit_signal();
-    object3->emit_signal();
-    SIGHT_TEST_WAIT(all_received);
-    CPPUNIT_ASSERT(all_received);
-}
-
-} // namespace sight::module::sync::ut
