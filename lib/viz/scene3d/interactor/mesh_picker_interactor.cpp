@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -69,7 +69,7 @@ void mesh_picker_interactor::pick(mouse_button _button, modifier _mod, int _x, i
         if(auto result = viz::scene3d::utils::pick_object(_x, _y, m_query_mask, *layer->get_scene_manager());
            result != std::nullopt)
         {
-            Ogre::Vector3 click = result->second;
+            Ogre::Vector3 click = result->position;
             data::tools::picking_info info;
 
             const Ogre::Camera* const cam = layer->get_default_camera();
@@ -84,6 +84,8 @@ void mesh_picker_interactor::pick(mouse_button _button, modifier _mod, int _x, i
 
             info.m_viewport_size[0] = static_cast<double>(vp->getActualWidth());
             info.m_viewport_size[1] = static_cast<double>(vp->getActualHeight());
+
+            info.m_closest_index_id = static_cast<std::int64_t>(result->index);
 
             using picking_event_t = data::tools::picking_info::event;
             switch(_button)
@@ -101,7 +103,7 @@ void mesh_picker_interactor::pick(mouse_button _button, modifier _mod, int _x, i
                     break;
 
                 default:
-                    SIGHT_ERROR("Unknow button");
+                    SIGHT_ERROR("Unknown button");
                     break;
             }
 

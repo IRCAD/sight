@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -57,7 +57,6 @@
 #include "viz/scene3d/r2vb_renderable.hpp"
 
 #include <cmath>
-#include <functional>
 
 namespace sight::viz::scene3d::detail
 {
@@ -95,13 +94,12 @@ bool collision_tools::collides_with_entity(
     Ogre::Vector3 normal = to_point_adj - from_point_adj;
     float dist_to_dest   = normal.normalise();
 
-    std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*,
-               float> res = raycast_from_point(from_point_adj, normal, _query_mask);
+    auto res = raycast_from_point(from_point_adj, normal, _query_mask);
 
-    if(std::get<0>(res))
+    if(res.has_value())
     {
         float dist_to_coll = 0.0F;
-        dist_to_coll  = std::get<3>(res);
+        dist_to_coll  = res->distance;
         dist_to_coll -= _collision_radius;
         return dist_to_coll <= dist_to_dest;
     }
@@ -111,7 +109,7 @@ bool collision_tools::collides_with_entity(
 
 //------------------------------------------------------------------------------
 
-std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> collision_tools::raycast_from_camera(
+std::optional<pick_result_t> collision_tools::raycast_from_camera(
     Ogre::RenderWindow* _rw,
     Ogre::Camera* _camera,
     const Ogre::Vector2& _mousecoords,
@@ -128,7 +126,7 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> collision_tools::ra
 
 //------------------------------------------------------------------------------
 
-std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> collision_tools::raycast_from_point(
+std::optional<pick_result_t> collision_tools::raycast_from_point(
     const Ogre::Vector3& _point,
     const Ogre::Vector3& _normal,
     const Ogre::uint32 _query_mask
@@ -144,7 +142,7 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> collision_tools::ra
 
 //------------------------------------------------------------------------------
 
-std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> collision_tools::raycast(
+std::optional<pick_result_t> collision_tools::raycast(
     const Ogre::Ray& _ray,
     const Ogre::uint32 _query_mask
 ) const
@@ -164,12 +162,12 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> collision_tools::ra
         if(m_ray_scene_query->execute().empty())
         {
             // Raycast did not hit an objects bounding box.
-            return std::make_tuple(false, result, target, closest_distance);
+            return std::nullopt;
         }
     }
     else
     {
-        return std::make_tuple(false, result, target, closest_distance);
+        return std::nullopt;
     }
 
     // At this point we have raycast to a series of different objects bounding boxes.
@@ -178,6 +176,7 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> collision_tools::ra
     // check all of the objects most of the time, but the worst case scenario is that
     // we need to test every triangle of every object.
     closest_distance = -1.0F;
+    std::size_t closest_index = 0;
     Ogre::Vector3 closest_result;
     for(auto& qr_idx : m_ray_scene_query->getLastResults())
     {
@@ -368,6 +367,7 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> collision_tools::ra
                                 {
                                     new_closest_found = true;
                                     closest_distance  = vertices[indice].distance(_ray.getOrigin());
+                                    closest_index     = indice;
                                 }
                             }
                         }
@@ -383,6 +383,7 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> collision_tools::ra
                                 {
                                     new_closest_found = true;
                                     closest_distance  = vertice.distance(_ray.getOrigin());
+                                    closest_index     = static_cast<std::size_t>(&vertice - vertices.data());
                                 }
                             }
                         }
@@ -409,6 +410,7 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> collision_tools::ra
                                 {
                                     new_closest_found = true;
                                     closest_distance  = first_hit.second;
+                                    closest_index     = i;
                                 }
 
                                 const auto second_hit = intersect(
@@ -424,6 +426,7 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> collision_tools::ra
                                 {
                                     new_closest_found = true;
                                     closest_distance  = second_hit.second;
+                                    closest_index     = i;
                                 }
                             }
                         }
@@ -444,6 +447,7 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> collision_tools::ra
                                 {
                                     new_closest_found = true;
                                     closest_distance  = first_hit.second;
+                                    closest_index     = i;
                                 }
 
                                 const auto second_hit = intersect(
@@ -459,6 +463,7 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> collision_tools::ra
                                 {
                                     new_closest_found = true;
                                     closest_distance  = second_hit.second;
+                                    closest_index     = i;
                                 }
                             }
                         }
@@ -484,6 +489,7 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> collision_tools::ra
                                 {
                                     new_closest_found = true;
                                     closest_distance  = first_hit.second;
+                                    closest_index     = i;
                                 }
                             }
                         }
@@ -504,6 +510,7 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> collision_tools::ra
                                 {
                                     new_closest_found = true;
                                     closest_distance  = first_hit.second;
+                                    closest_index     = i;
                                 }
                             }
                         }
@@ -525,7 +532,11 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> collision_tools::ra
     }
 
     const bool collision_success = (closest_distance >= 0.0F);
-    return std::make_tuple(collision_success, closest_result, target, closest_distance);
+    return collision_success
+           ? std::make_optional(
+        pick_result_t {.position = closest_result, .object = target,
+                       .distance = closest_distance, .index = closest_index
+        }) : std::nullopt;
 }
 
 //------------------------------------------------------------------------------

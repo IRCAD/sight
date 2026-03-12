@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -194,7 +194,7 @@ void negato2d::pick_intensity(int _x, int _y)
 
     if(result.has_value())
     {
-        if(m_planes[0].first->get_movable_object() == result->first && m_planes[0].first != nullptr)
+        if(m_planes[0].first->get_movable_object() == result->object && m_planes[0].first != nullptr)
         {
             m_picked = true;
             const auto image = m_image.lock();
@@ -204,11 +204,11 @@ void negato2d::pick_intensity(int _x, int _y)
                 return;
             }
 
-            const auto cross_lines = m_planes[0].first->compute_cross(result->second, *image);
+            const auto cross_lines = m_planes[0].first->compute_cross(result->position, *image);
 
             m_picking_cross->update(cross_lines[0], cross_lines[1], cross_lines[2], cross_lines[3]);
 
-            const auto picking_text = sight::viz::scene3d::utils::pick_image(*image, result->second);
+            const auto picking_text = sight::viz::scene3d::utils::pick_image(*image, result->position);
             this->signal<signals::picked_voxel_t>(signals::PICKED_VOXEL)->async_emit(picking_text);
 
             this->request_render();

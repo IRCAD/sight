@@ -1811,11 +1811,11 @@ void point::button_press_event(mouse_button _button, modifier /*_mods*/, int _x,
         m_must_show_contextual_menu = false;
 
         // Find the place to put the new fiducial.
-        if(const auto pos = sight::viz::scene3d::utils::pick_object(_x, _y, m_query_mask, *get_scene_manager());
-           pos)
+        if(const auto result = sight::viz::scene3d::utils::pick_object(_x, _y, m_query_mask, *get_scene_manager());
+           result)
         {
             set_cursor(Qt::ClosedHandCursor);
-            create_and_pick_fiducial({pos->second.x, pos->second.y, pos->second.z});
+            create_and_pick_fiducial({result->position.x, result->position.y, result->position.z});
         }
     }
 }
@@ -1849,7 +1849,7 @@ void point::mouse_move_event(mouse_button /*_button*/, modifier /*_mods*/, int _
             auto picked_pos = sight::viz::scene3d::utils::pick_object(_x, _y, m_query_mask, *scene_mgr);
             if(picked_pos.has_value())
             {
-                new_pos              = picked_pos->second;
+                new_pos              = picked_pos->position;
                 move_in_camera_plane = false;
             }
         }

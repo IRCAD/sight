@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,7 +29,6 @@
 #include "viz/scene3d/factory/r2vb_renderable.hpp"
 #include "viz/scene3d/helper/camera.hpp"
 #include "viz/scene3d/layer.hpp"
-#include "viz/scene3d/ogre.hpp"
 #include "viz/scene3d/vr/grid_proxy_geometry.hpp"
 
 #include <core/os/temp_path.hpp>
@@ -52,6 +51,7 @@
 #include <algorithm>
 #include <cctype> // Needed for isspace()
 #include <filesystem>
+#include <utility>
 
 namespace sight::viz::scene3d
 {
@@ -85,9 +85,8 @@ void utils::load_resources()
 
     // Ensure we always load the resources of this library first, since other may reuse our programs or shaders
     std::list<std::string> module_with_resources_names;
-    std::copy(
-        s_module_with_resources_names.begin(),
-        s_module_with_resources_names.end(),
+    std::ranges::copy(
+        s_module_with_resources_names,
         std::back_inserter(module_with_resources_names)
     );
     module_with_resources_names.emplace_front("sight::viz::scene3d");
@@ -300,7 +299,7 @@ void utils::destroy_ogre_root()
 
 //------------------------------------------------------------------------------
 
-void utils::convert_from_ogre_texture(Ogre::TexturePtr _texture, const data::image::sptr _image, bool _flip)
+void utils::convert_from_ogre_texture(Ogre::TexturePtr _texture, const data::image::sptr& _image, bool _flip)
 {
     SIGHT_ASSERT("texture is null", _texture);
     SIGHT_ASSERT("image is null", _image);
@@ -761,7 +760,7 @@ Ogre::Vector3i utils::world_to_slices(const data::image& _image, const Ogre::Vec
 
     for(std::size_t i = 0 ; i < sizes.size() ; ++i)
     {
-        if(voxel[int(i)] < 0 || voxel[int(i)] >= int(sizes[i]))
+        if(voxel[int(i)] < 0 || std::cmp_greater_equal(voxel[int(i)], sizes[i]))
         {
             SIGHT_THROW_EXCEPTION(core::exception("Point is outside image boundaries"));
         }
@@ -776,7 +775,7 @@ Ogre::Vector3i utils::world_to_slices(const data::image& _image, const Ogre::Vec
 
 //------------------------------------------------------------------------------
 
-std::optional<std::pair<Ogre::MovableObject*, Ogre::Vector3> > utils::pick_object(
+std::optional<pick_result_t> utils::pick_object(
     int _x,
     int _y,
     std::uint32_t _query_mask,
@@ -790,15 +789,15 @@ std::optional<std::pair<Ogre::MovableObject*, Ogre::Vector3> > utils::pick_objec
 
     viz::scene3d::detail::collision_tools tool(_layer, _query_mask);
 
-    auto&& [entityFound, rayIntersect, selectedObject, _] = tool.raycast(vp_ray, _query_mask);
+    auto result = tool.raycast(vp_ray, _query_mask);
 
-    if(entityFound)
+    if(result.has_value())
     {
-        SIGHT_DEBUG("Entity find and intersect at " << rayIntersect << "(WS)");
+        SIGHT_DEBUG("Entity find and intersect at " << result->position << "(WS)");
 
         if(_shift_toward_camera)
         {
-            rayIntersect -= vp_ray.getDirection() * 0.01F;
+            result->position -= vp_ray.getDirection() * 0.01F;
         }
     }
     else
@@ -806,7 +805,7 @@ std::optional<std::pair<Ogre::MovableObject*, Ogre::Vector3> > utils::pick_objec
         return std::nullopt;
     }
 
-    return std::make_optional(std::make_pair(selectedObject, rayIntersect));
+    return result;
 }
 
 //------------------------------------------------------------------------------
@@ -845,6 +844,7 @@ bool utils::make_paths_absolute(
     for(std::string line ; std::getline(_input, line) ; )
     {
         // Remove all whitespace from the line.
+        // NOLINTNEXTLINE(modernize-use-ranges)
         line.erase(std::remove_if(line.begin(), line.end(), isspace), line.end());
 
         // Skip comments, go to the next line.

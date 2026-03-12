@@ -922,7 +922,7 @@ void ruler::button_press_event(mouse_button _button, modifier /*_mods*/, int _x,
 
                         if(pick_result.has_value())
                         {
-                            const auto clicked_position = pick_result->second;
+                            const auto clicked_position = pick_result->position;
                             const std::array<double,
                                              3> position = {clicked_position.x, clicked_position.y, clicked_position.z
                             };
@@ -1012,7 +1012,7 @@ void ruler::mouse_move_event(
                 auto picked_pos = sight::viz::scene3d::utils::pick_object(_x, _y, m_query_mask, *scene_mgr);
                 if(picked_pos.has_value())
                 {
-                    new_pos              = picked_pos->second;
+                    new_pos              = picked_pos->position;
                     move_in_camera_plane = false;
                 }
             }

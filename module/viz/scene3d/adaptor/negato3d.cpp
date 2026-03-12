@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -285,13 +285,13 @@ std::optional<Ogre::Vector3> negato3d::get_picked_slices(int _x, int _y)
 
     if(result.has_value())
     {
-        const auto is_picked = [&result](const auto& _p){return _p.first->get_movable_object() == result->first;};
+        const auto is_picked = [&result](const auto& _p){return _p.first->get_movable_object() == result->object;};
         const auto it = std::ranges::find_if(m_planes, is_picked); // NOLINT(readability-qualified-auto,llvm-qualified-auto)
 
         if(it != m_planes.cend())
         {
             m_picked_plane = it->first;
-            return result->second;
+            return result->position;
         }
     }
 
