@@ -631,7 +631,7 @@ std::pair<std::vector<fiducials_series::query_result>, std::set<std::string> > q
 
             auto fiducial_set_index             = i - 1 + removed_fiducial_sets;
             auto fiducial_index                 = j - 1 + removed_fiducials;
-            auto graphic_coordinates_data_index = 0;
+            auto graphic_coordinates_data_index = current_shape_index;
 
             std::vector<std::int32_t> referenced_frame_numbers = _pimpl.get_values<kw::ReferencedFrameNumber>(
                 0,
