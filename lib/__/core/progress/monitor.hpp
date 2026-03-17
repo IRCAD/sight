@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -250,6 +250,9 @@ protected:
 
     /// Setter on done work units
     SIGHT_CORE_API void done_work(std::uint64_t _units);
+
+    /// Add done work units
+    SIGHT_CORE_API void add_done_work(std::uint64_t _units);
 
     /**
      * @brief Setter on done work units

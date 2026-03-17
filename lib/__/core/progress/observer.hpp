@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -61,6 +61,7 @@ public:
      */
     using monitor::done;
     using monitor::done_work;
+    using monitor::add_done_work;
     using monitor::set_total_work_units;
     /**  @} */
 

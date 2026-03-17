@@ -169,7 +169,8 @@ inline bool progress_bar::is_finished() const
         m_progress_monitors,
         [](const auto& _monitor)
         {
-            return _monitor.expired() || _monitor.lock()->get_state() >= core::progress::monitor::state::canceled;
+            const auto monitor = _monitor.lock();
+            return !monitor || monitor->get_state() >= core::progress::monitor::state::canceled;
         });
 }
 
