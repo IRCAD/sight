@@ -38,8 +38,6 @@
 #include <doctest/doctest.h>
 #include <utest/wait.hpp>
 
-#include <boost/property_tree/xml_parser.hpp>
-
 namespace
 {
 
@@ -65,17 +63,6 @@ public:
         }
 
         sight::service::remove(srv);
-    }
-
-    //------------------------------------------------------------------------------
-
-    void set_config(std::stringstream& _config_string)
-    {
-        sight::service::config_t config;
-        boost::property_tree::read_xml(_config_string, config);
-        srv->set_config(config);
-
-        srv->configure();
     }
 
     //------------------------------------------------------------------------------
@@ -272,26 +259,23 @@ public:
     {
         init_standard_in_out();
 
-        std::stringstream config_string;
-        config_string
-        << "<in group=\"frame_tl\">"
-           "    <key uid=\"frameTL1\" />"
-           "    <key uid=\"frameTL2\" />"
-           "</in>"
-           "<inout group=\"frames\">"
-           "    <key uid=\"frame1\" tl=\"0\"/>"
-           "    <key uid=\"frame2\" tl=\"1\" />"
-           "</inout>"
-           "<in group=\"matrix_tl\">"
-           "    <key uid=\"matrixTL1\" />"
-           "</in>"
-           "<inout group=\"matrix\">"
-           "    <key uid=\"matrix1\" tl=\"0\"/>"
-           "</inout>"
-           "<tolerance>5</tolerance>";
-        sight::service::config_t config;
-        boost::property_tree::read_xml(config_string, config);
-        srv->set_config(config);
+        const std::string config_string =
+            "<in group='frame_tl'>"
+            "    <key uid='frameTL1' />"
+            "    <key uid='frameTL2' />"
+            "</in>"
+            "<inout group='frames'>"
+            "    <key uid='frame1' tl='0'/>"
+            "    <key uid='frame2' tl='1' />"
+            "</inout>"
+            "<in group='matrix_tl'>"
+            "    <key uid='matrixTL1' />"
+            "</in>"
+            "<inout group='matrix'>"
+            "    <key uid='matrix1' tl='0'/>"
+            "</inout>"
+            "<tolerance>5</tolerance>";
+        srv->set_config(config_string);
 
         srv->configure();
         srv->start().wait();
@@ -799,18 +783,18 @@ TEST_SUITE("sight::module::sync::synchronizer")
 
     TEST_CASE_FIXTURE(fixture, "single_matrix_tl_config")
     {
-        std::stringstream config_string;
-        config_string
-        << "<in group=\"matrix_tl\">"
-           "   <key uid=\"matrixTL1\" />"
-           "</in>"
-           "<inout group=\"matrix\">"
-           "   <key uid=\"matrix0\" tl=\"0\" index=\"1\" sendStatus=\"true\" />"
-           "   <key uid=\"matrix1\" tl=\"0\" index=\"0\" />"
-           "</inout>"
-           "<legacyAutoSync>true</legacyAutoSync>";
+        const std::string config_string =
+            "<in group='matrix_tl'>"
+            "   <key uid='matrixTL1' />"
+            "</in>"
+            "<inout group='matrix'>"
+            "   <key uid='matrix0' tl='0' index='1' sendStatus='true' />"
+            "   <key uid='matrix1' tl='0' index='0' />"
+            "</inout>"
+            "<legacyAutoSync>true</legacyAutoSync>";
 
-        set_config(config_string);
+        srv->set_config(config_string);
+        srv->configure();
 
         // create input TLs
         sight::data::matrix_tl::sptr matrix_tl_1 = std::make_shared<sight::data::matrix_tl>();
@@ -858,22 +842,22 @@ TEST_SUITE("sight::module::sync::synchronizer")
 
     TEST_CASE_FIXTURE(fixture, "mixt_matrix_tl_config")
     {
-        std::stringstream config_string;
-        config_string
-        << "<in group=\"matrix_tl\">"
-           "   <key uid=\"matrixTL1\" />"
-           "   <key uid=\"matrixTL2\" />"
-           "</in>"
-           "<inout group=\"matrix\">"
-           "    <key uid=\"matrix0\" index=\"1\"/>"
-           "    <key uid=\"matrix1\" tl=\"0\" index=\"0\"/>"
-           "    <key uid=\"matrix2\" tl=\"1\" index=\"0\"/>"
-           "    <key uid=\"matrix3\" tl=\"1\" index=\"1\"/>"
-           "    <key uid=\"matrix4\" tl=\"0\" index=\"2\"/>"
-           "</inout>"
-           "<legacyAutoSync>true</legacyAutoSync>";
+        const std::string config_string =
+            "<in group='matrix_tl'>"
+            "   <key uid='matrixTL1' />"
+            "   <key uid='matrixTL2' />"
+            "</in>"
+            "<inout group='matrix'>"
+            "    <key uid='matrix0' index='1'/>"
+            "    <key uid='matrix1' tl='0' index='0'/>"
+            "    <key uid='matrix2' tl='1' index='0'/>"
+            "    <key uid='matrix3' tl='1' index='1'/>"
+            "    <key uid='matrix4' tl='0' index='2'/>"
+            "</inout>"
+            "<legacyAutoSync>true</legacyAutoSync>";
 
-        set_config(config_string);
+        srv->set_config(config_string);
+        srv->configure();
 
         // create input TLs
         sight::data::matrix_tl::sptr matrix_tl_1 = std::make_shared<sight::data::matrix_tl>();
@@ -933,17 +917,17 @@ TEST_SUITE("sight::module::sync::synchronizer")
 
     TEST_CASE_FIXTURE(fixture, "single_frame_tl_config")
     {
-        std::stringstream config_string;
-        config_string
-        << "<in group=\"frame_tl\">"
-           "    <key uid=\"frameTL\" />"
-           "</in>"
-           "<inout group=\"frames\">"
-           "    <key uid=\"frame\" sendStatus=\"true\" />"
-           "</inout>"
-           "<legacyAutoSync>true</legacyAutoSync>";
+        const std::string config_string =
+            "<in group='frame_tl'>"
+            "    <key uid='frameTL' />"
+            "</in>"
+            "<inout group='frames'>"
+            "    <key uid='frame' sendStatus='true' />"
+            "</inout>"
+            "<legacyAutoSync>true</legacyAutoSync>";
 
-        set_config(config_string);
+        srv->set_config(config_string);
+        srv->configure();
 
         // create input TL
         auto frame_tl = std::make_shared<sight::data::frame_tl>();
@@ -1002,22 +986,22 @@ TEST_SUITE("sight::module::sync::synchronizer")
 
     TEST_CASE_FIXTURE(fixture, "mixt_frame_tl_config")
     {
-        std::stringstream config_string;
-        config_string
-        << "<in group=\"frame_tl\">"
-           "    <key uid=\"frameTL1\" />"
-           "    <key uid=\"frameTL4\" />"
-           "    <key uid=\"frameTL6\" />"
-           "</in>"
-           "<inout group=\"frames\">"
-           "    <key uid=\"frame1\" sendStatus=\"true\" />"
-           "    <key uid=\"frame6\" tl=\"2\" />"
-           "    <key uid=\"frame4\" tl=\"1\" sendStatus=\"false\"/>"
-           "    <key uid=\"frame11\" tl=\"0\"  sendStatus=\"true\" />"
-           "</inout>"
-           "<legacyAutoSync>true</legacyAutoSync>";
+        const std::string config_string =
+            "<in group='frame_tl'>"
+            "    <key uid='frameTL1' />"
+            "    <key uid='frameTL4' />"
+            "    <key uid='frameTL6' />"
+            "</in>"
+            "<inout group='frames'>"
+            "    <key uid='frame1' sendStatus='true' />"
+            "    <key uid='frame6' tl='2' />"
+            "    <key uid='frame4' tl='1' sendStatus='false'/>"
+            "    <key uid='frame11' tl='0'  sendStatus='true' />"
+            "</inout>"
+            "<legacyAutoSync>true</legacyAutoSync>";
 
-        set_config(config_string);
+        srv->set_config(config_string);
+        srv->configure();
 
         // create input TL
         auto frame_tl_1 = std::make_shared<sight::data::frame_tl>();
@@ -1129,34 +1113,35 @@ TEST_SUITE("sight::module::sync::synchronizer")
 
     TEST_CASE_FIXTURE(fixture, "full_config")
     {
-        std::stringstream config_string;
-        config_string
-        << "<in group=\"frame_tl\">"
-           "    <key uid=\"frameTL1\" />"
-           "    <key uid=\"frameTL4\" />"
-           "    <key uid=\"frameTL6\" />"
-           "</in>"
-           "<inout group=\"frames\">"
-           "    <key uid=\"frame1\" sendStatus=\"true\" />"
-           "    <key uid=\"frame6\" tl=\"2\" />"
-           "    <key uid=\"frame4\" tl=\"1\" sendStatus=\"false\"/>"
-           "    <key uid=\"frame11\" tl=\"0\"  sendStatus=\"true\" />"
-           "</inout>"
-           "<in group=\"matrix_tl\">"
-           "    <key uid=\"matrixTL1\" />"
-           "    <key uid=\"matrixTL2\" />"
-           "</in>"
-           "<inout group=\"matrix\">"
-           "    <key uid=\"matrix0\" index=\"1\" />"
-           "    <key uid=\"matrix1\" tl=\"0\" index=\"0\" />"
-           "    <key uid=\"matrix2\" tl=\"1\" index=\"0\" sendStatus=\"false\"/>"
-           "    <key uid=\"matrix3\" tl=\"1\" index=\"1\"/>"
-           "    <key uid=\"matrix4\" tl=\"0\" index=\"2\"/>"
-           "</inout>"
-           "<tolerance>500</tolerance>"
-           "<legacyAutoSync>true</legacyAutoSync>";
+        const std::string config_string =
+            "<in group='frame_tl'>"
+            "    <key uid='frameTL1' />"
+            "    <key uid='frameTL4' />"
+            "    <key uid='frameTL6' />"
+            "</in>"
+            "<inout group='frames'>"
+            "    <key uid='frame1' sendStatus='true' />"
+            "    <key uid='frame6' tl='2' />"
+            "    <key uid='frame4' tl='1' sendStatus='false'/>"
+            "    <key uid='frame11' tl='0'  sendStatus='true' />"
+            "</inout>"
+            "<in group='matrix_tl'>"
+            "    <key uid='matrixTL1' />"
+            "    <key uid='matrixTL2' />"
+            "</in>"
+            "<inout group='matrix'>"
+            "    <key uid='matrix0' index='1' />"
+            "    <key uid='matrix1' tl='0' index='0' />"
+            "    <key uid='matrix2' tl='1' index='0' sendStatus='false'/>"
+            "    <key uid='matrix3' tl='1' index='1'/>"
+            "    <key uid='matrix4' tl='0' index='2'/>"
+            "</inout>"
+            "<tolerance>500</tolerance>"
+            "<legacyAutoSync>true</legacyAutoSync>";
 
-        set_config(config_string);
+        srv->set_config(config_string);
+        srv->configure();
+
         auto frame_tl_1 = std::make_shared<sight::data::frame_tl>();
         frame_tl_1->init_pool_size(
             m_frame_size[0],
@@ -1404,25 +1389,26 @@ TEST_SUITE("sight::module::sync::synchronizer")
 
     TEST_CASE_FIXTURE(fixture, "send_status")
     {
-        std::stringstream config_string;
-        config_string
-        << "<in group=\"frame_tl\">"
-           "    <key uid=\"frameTL1\"  />"
-           "    <key uid=\"frameTL2\" />"
-           "</in>"
-           "<inout group=\"frames\">"
-           "    <key uid=\"frame1\" sendStatus=\"true\" />"
-           "    <key uid=\"frame2\" tl=\"1\" />"
-           "</inout>"
-           "<in group=\"matrix_tl\">"
-           "    <key uid=\"matrixTL\" />"
-           "</in>"
-           "<inout group=\"matrix\">"
-           "    <key uid=\"matrix0\" sendStatus=\"true\" />"
-           "</inout>"
-           "<tolerance>5</tolerance>";
+        const std::string config_string =
+            "<in group='frame_tl'>"
+            "    <key uid='frameTL1'  />"
+            "    <key uid='frameTL2' />"
+            "</in>"
+            "<inout group='frames'>"
+            "    <key uid='frame1' sendStatus='true' />"
+            "    <key uid='frame2' tl='1' />"
+            "</inout>"
+            "<in group='matrix_tl'>"
+            "    <key uid='matrixTL' />"
+            "</in>"
+            "<inout group='matrix'>"
+            "    <key uid='matrix0' sendStatus='true' />"
+            "</inout>"
+            "<tolerance>5</tolerance>";
 
-        set_config(config_string);
+        srv->set_config(config_string);
+        srv->configure();
+
         init_standard_in_out();
         srv->start().wait();
         srv->update().wait();
@@ -1581,26 +1567,26 @@ TEST_SUITE("sight::module::sync::synchronizer")
 
     TEST_CASE_FIXTURE(fixture, "delay")
     {
-        std::stringstream config_string;
-        config_string
-        << "<in group=\"frame_tl\">"
-           "    <key uid=\"frameTL1\" delay=\"2\" />"
-           "    <key uid=\"frameTL2\" />"
-           "</in>"
-           "<inout group=\"frames\">"
-           "    <key uid=\"frame1\" />"
-           "    <key uid=\"frame2\" tl=\"1\" />"
-           "</inout>"
-           "<in group=\"matrix_tl\">"
-           "    <key uid=\"matrixTL\" delay=\"3\"/>"
-           "</in>"
-           "<inout group=\"matrix\">"
-           "    <key uid=\"matrix0\" />"
-           "</inout>"
-           "<tolerance>5</tolerance>"
-           "<legacyAutoSync>true</legacyAutoSync>";
+        const std::string config_string =
+            "<in group='frame_tl'>"
+            "    <key uid='frameTL1' delay='2' />"
+            "    <key uid='frameTL2' />"
+            "</in>"
+            "<inout group='frames'>"
+            "    <key uid='frame1' />"
+            "    <key uid='frame2' tl='1' />"
+            "</inout>"
+            "<in group='matrix_tl'>"
+            "    <key uid='matrixTL' delay='3'/>"
+            "</in>"
+            "<inout group='matrix'>"
+            "    <key uid='matrix0' />"
+            "</inout>"
+            "<tolerance>5</tolerance>"
+            "<legacyAutoSync>true</legacyAutoSync>";
 
-        set_config(config_string);
+        srv->set_config(config_string);
+        srv->configure();
         init_standard_in_out();
         srv->start().wait();
         srv->update().wait();
@@ -1758,18 +1744,16 @@ TEST_SUITE("sight::module::sync::synchronizer")
     {
         const sight::data::image::size_t frame_size {2, 2, 1};
 
-        std::stringstream config_string;
-        config_string
-        << "<in group=\"frame_tl\">"
-           "    <key uid=\"frameTL1\" />"
-           "</in>"
-           "<inout group=\"frames\">"
-           "    <key uid=\"frame1\" />"
-           "</inout>";
-        // sight::service::config_t config;
-        // boost::property_tree::read_xml(config_string, config);
+        const std::string config_string =
+            "<in group='frame_tl'>"
+            "    <key uid='frameTL1' />"
+            "</in>"
+            "<inout group='frames'>"
+            "    <key uid='frame1' />"
+            "</inout>";
 
-        set_config(config_string);
+        srv->set_config(config_string);
+        srv->configure();
 
         srv->start().wait();
         srv->update().wait();
@@ -1842,25 +1826,25 @@ TEST_SUITE("sight::module::sync::synchronizer")
         const sight::data::image::size_t frame_size {2, 2, 1};
 
         /// Service setup
-        std::stringstream config_string;
-        config_string
-        << "<in group=\"frame_tl\">"
-           "    <key uid=\"frameTL1\" />"
-           "    <key uid=\"frameTL2\" />"
-           "</in>"
-           "<inout group=\"frames\">"
-           "    <key uid=\"frame1\" tl=\"0\"/>"
-           "    <key uid=\"frame2\" tl=\"1\" />"
-           "</inout>"
-           "<in group=\"matrix_tl\">"
-           "    <key uid=\"matrixTL1\" />"
-           "</in>"
-           "<inout group=\"matrix\">"
-           "    <key uid=\"matrix1\" tl=\"0\"/>"
-           "</inout>"
-           "<tolerance>5</tolerance>";
+        const std::string config_string =
+            "<in group='frame_tl'>"
+            "    <key uid='frameTL1' />"
+            "    <key uid='frameTL2' />"
+            "</in>"
+            "<inout group='frames'>"
+            "    <key uid='frame1' tl='0'/>"
+            "    <key uid='frame2' tl='1' />"
+            "</inout>"
+            "<in group='matrix_tl'>"
+            "    <key uid='matrixTL1' />"
+            "</in>"
+            "<inout group='matrix'>"
+            "    <key uid='matrix1' tl='0'/>"
+            "</inout>"
+            "<tolerance>5</tolerance>";
 
-        set_config(config_string);
+        srv->set_config(config_string);
+        srv->configure();
 
         srv->start().wait();
         srv->update().wait();

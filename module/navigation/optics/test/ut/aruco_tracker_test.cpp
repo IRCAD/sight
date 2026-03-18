@@ -25,8 +25,6 @@
 
 #include <service/op.hpp>
 
-#include <boost/property_tree/xml_parser.hpp>
-
 #include <doctest/doctest.h>
 
 TEST_SUITE("sight::module::navigation::optics")
@@ -43,12 +41,11 @@ TEST_SUITE("sight::module::navigation::optics")
         srv->set_inout(frame, "frame");
         srv->set_inout(marker_map, "marker_map", true, true, 0);
 
-        std::stringstream config_string;
-        config_string << "<track>"
-        << "<marker id=\"0,1,2,3,4,5,6,7,8,42,100,101,102,103,104,105\" />"
-        << "</track>";
-        sight::service::base::config_t config;
-        boost::property_tree::read_xml(config_string, config);
+        const std::string config =
+            "<track>"
+            "<marker id=\"0,1,2,3,4,5,6,7,8,42,100,101,102,103,104,105\" />"
+            "</track>";
+
         srv->set_config(config);
 
         CHECK_NOTHROW(srv->configure());

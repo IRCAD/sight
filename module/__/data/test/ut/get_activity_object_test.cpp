@@ -27,11 +27,7 @@
 
 #include <service/op.hpp>
 
-#include <boost/property_tree/xml_parser.hpp>
-
 #include <doctest/doctest.h>
-
-#include <sstream>
 
 TEST_SUITE("sight::module::data::get_activity_object")
 {
@@ -74,15 +70,12 @@ TEST_SUITE("sight::module::data::get_activity_object")
         activity_set->push_back(activity1);
         activity_set->push_back(activity2);
 
-        sight::service::config_t config;
-        std::stringstream config_string;
-        config_string
-        << R"(<id>config1</id>)"
-           R"(<out group="objects">)"
-           R"(<key name="req1" uid="object1"/>)"
-           R"(<key name="req2" uid="object2"/>)"
-           R"(</out>)";
-        boost::property_tree::read_xml(config_string, config);
+        const std::string config =
+            "<id>config1</id>"
+            "<out group='objects'>"
+            "<key name='req1' uid='object1'/>"
+            "<key name='req2' uid='object2'/>"
+            "</out>";
         srv->set_config(config);
         srv->set_input(activity_set, "activity_set");
         srv->configure();
@@ -126,15 +119,12 @@ TEST_SUITE("sight::module::data::get_activity_object")
         (*activity1)["req1"] = series1;
         activity_set->push_back(activity1);
 
-        sight::service::config_t config;
-        std::stringstream config_string;
-        config_string
-        << R"(<id>config_unknown</id>)"
-           R"(<out group="objects">)"
-           R"(<key name="req1" uid="object1"/>)"
-           R"(<key name="req2" uid="object2"/>)"
-           R"(</out>)";
-        boost::property_tree::read_xml(config_string, config);
+        const std::string config =
+            "<id>config_unknown</id>"
+            "<out group='objects'>"
+            "<key name='req1' uid='object1'/>"
+            "<key name='req2' uid='object2'/>"
+            "</out>";
         srv->set_config(config);
         srv->set_input(activity_set, "activity_set");
         srv->configure();

@@ -26,8 +26,6 @@
 
 #include <utest/wait.hpp>
 
-#include <boost/property_tree/xml_parser.hpp>
-
 #include <doctest/doctest.h>
 
 #include <ranges>
@@ -120,21 +118,23 @@ TEST_SUITE("sight::app::update_parallel")
         auto srv2 = create_srv();
         auto srv3 = create_srv();
 
-        std::stringstream srv_config;
-        srv_config
-        << "<config>"
-        << "<service uid=" << std::quoted(srv0->get_id()) << "/>"
-        << "<service uid=" << std::quoted(srv1->get_id()) << "/>"
-        << "<service uid=" << std::quoted(srv2->get_id()) << "/>"
-        << "<service uid=" << std::quoted(srv3->get_id()) << "/>"
-        << "</config>";
-        sight::service::config_t config;
-        boost::property_tree::read_xml(srv_config, config);
+        const std::string srv_config = std::format(
+            "<config>"
+            "<service uid='{}'/>"
+            "<service uid='{}'/>"
+            "<service uid='{}'/>"
+            "<service uid='{}'/>"
+            "</config>",
+            srv0->get_id(),
+            srv1->get_id(),
+            srv2->get_id(),
+            srv3->get_id()
+        );
 
         auto update_srv = sight::service::add("sight::app::update_parallel");
         CHECK(update_srv->is_a("sight::app::update_parallel"));
         CHECK(update_srv->is_a("sight::app::updater"));
-        update_srv->set_config(config);
+        update_srv->set_config(srv_config);
         CHECK_NOTHROW(update_srv->configure());
         CHECK_NOTHROW(update_srv->start().get());
 
@@ -167,13 +167,10 @@ TEST_SUITE("sight::app::update_parallel")
             srv[i] = create_srv();
         }
 
-        const auto create_updater = [](std::stringstream& _config)
+        const auto create_updater = [](const std::string& _config)
                                     {
-                                        sight::service::config_t srv_config;
-                                        boost::property_tree::read_xml(_config, srv_config);
-
                                         auto updater = sight::service::add("sight::app::update_parallel");
-                                        updater->set_config(srv_config);
+                                        updater->set_config(_config);
                                         CHECK_NOTHROW(updater->configure());
                                         CHECK_NOTHROW(updater->start().get());
                                         return updater;
@@ -188,41 +185,54 @@ TEST_SUITE("sight::app::update_parallel")
         const std::string updater_2   = "updater_2";
         const std::string updater_1_1 = "updater_1_1";
         {
-            std::stringstream srv_config;
-            srv_config
-            << "<config>"
-            << "<service uid=" << std::quoted(srv[0]->get_id()) << "/>"
-            << "<updater uid=" << std::quoted(updater_1) << "/>"
-            << "<service uid=" << std::quoted(srv[3]->get_id()) << "/>"
-            << "<updater uid=" << std::quoted(updater_2) << "/>"
-            << "<service uid=" << std::quoted(srv[6]->get_id()) << "/>"
-            << "</config>";
+            const std::string srv_config = std::format(
+                "<config>"
+                "<service uid='{}'/>"
+                "<updater uid='{}'/>"
+                "<service uid='{}'/>"
+                "<updater uid='{}'/>"
+                "<service uid='{}'/>"
+                "</config>",
+                srv[0]->get_id(),
+                updater_1,
+                srv[3]->get_id(),
+                updater_2,
+                srv[6]->get_id()
+            );
             main_updater = create_updater(srv_config);
         }
         {
-            std::stringstream srv_config;
-            srv_config
-            << "<config parent=" << std::quoted(updater_1) << ">"
-            << "<updater uid=" << std::quoted(updater_1_1) << "/>"
-            << "<service uid=" << std::quoted(srv[2]->get_id()) << "/>"
-            << "</config>";
+            const std::string srv_config = std::format(
+                "<config parent='{}'>"
+                "<updater uid='{}'/>"
+                "<service uid='{}'/>"
+                "</config>",
+                updater_1,
+                updater_1_1,
+                srv[2]->get_id()
+            );
             child_updater_1 = create_updater(srv_config);
         }
         {
-            std::stringstream srv_config;
-            srv_config
-            << "<config parent=" << std::quoted(updater_2) << ">"
-            << "<service uid=" << std::quoted(srv[4]->get_id()) << "/>"
-            << "<service uid=" << std::quoted(srv[5]->get_id()) << "/>"
-            << "</config>";
+            const std::string srv_config = std::format(
+                "<config parent='{}'>"
+                "<service uid='{}'/>"
+                "<service uid='{}'/>"
+                "</config>",
+                updater_2,
+                srv[4]->get_id(),
+                srv[5]->get_id()
+            );
             child_updater_2 = create_updater(srv_config);
         }
         {
-            std::stringstream srv_config;
-            srv_config
-            << "<config parent=" << std::quoted(updater_1_1) << ">"
-            << "<service uid=" << std::quoted(srv[1]->get_id()) << "/>"
-            << "</config>";
+            const std::string srv_config = std::format(
+                "<config parent='{}'>"
+                "<service uid='{}'/>"
+                "</config>",
+                updater_1_1,
+                srv[1]->get_id()
+            );
             child_updater_1_1 = create_updater(srv_config);
         }
 

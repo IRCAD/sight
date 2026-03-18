@@ -168,13 +168,8 @@ TEST_SUITE("sight::module::my_service")
 
     TEST_CASE_FIXTURE(service_fixture, "test_1")
     {
-        sight::service::config_t config;
-        std::stringstream config_string;
-        config_string
-        << "<properties prop1=\"90\" prop2=\"30\"/>";
-
-        boost::property_tree::read_xml(config_string, config);
-        service->set_config(config);
+        std::string config_string ="<properties prop1='90' prop2='30'/>";
+        service->set_config(config_string);
         service->configure();
         service->start().get();
         service->update().get();
@@ -184,13 +179,8 @@ TEST_SUITE("sight::module::my_service")
 
     TEST_CASE_FIXTURE(service_fixture, "test_2")
     {
-        sight::service::config_t config;
-        std::stringstream config_string;
-        config_string
-        << "<properties prop1=\"90\" prop2=\"30\"/>";
-
-        boost::property_tree::read_xml(config_string, config);
-        service->set_config(config);
+        std::string config_string ="<properties prop1='90' prop2='30'/>";
+        service->set_config(config_string);
         service->configure();
         service->start().get();
         service->update().get();

@@ -32,8 +32,6 @@
 
 #include <utest_data/generator/image.hpp>
 
-#include <boost/property_tree/xml_parser.hpp>
-
 #include <doctest/doctest.h>
 
 TEST_SUITE("sight::module::filter::image::propagator")
@@ -88,17 +86,14 @@ TEST_SUITE("sight::module::filter::image::propagator")
         CHECK(srv->is_a("sight::module::filter::image::propagator"));
         CHECK(srv);
 
-        sight::service::config_t config;
-        std::stringstream config_string;
-        config_string << R"(<properties value="50"/>)";
-
         auto point_list = std::make_shared<sight::data::point_list>();
         auto mask       = std::make_shared<sight::data::image>();
         auto mode       = std::make_shared<sight::data::string>();
         mode->set_value("minmax");
-        boost::property_tree::read_xml(config_string, config);
 
         srv->set_worker(sight::core::thread::get_default_worker());
+
+        const std::string config = "<properties value='50'/>";
         srv->set_config(config);
         srv->set_input(image, "image_in");
         srv->set_input(point_list, "seeds");

@@ -26,8 +26,6 @@
 
 #include <service/op.hpp>
 
-#include <boost/property_tree/xml_parser.hpp>
-
 #include <doctest/doctest.h>
 
 #include <sstream>
@@ -76,14 +74,11 @@ TEST_SUITE("sight::module::data::get_series")
         CHECK_EQ(series2, (*series_set)[1]);
         CHECK_EQ(series3, (*series_set)[2]);
         CHECK_EQ(index_0_id, series1->get_id());
-        sight::service::config_t config;
-        std::stringstream config_string;
-        config_string
-        << "<out group=\"series\">"
-           "<key index=\"0\" uid=\"modelSeries\"/>"
-           "<key index=\"3\" uid=\"modelSeries1\"/>"
-           "</out>";
-        boost::property_tree::read_xml(config_string, config);
+        const std::string config =
+            "<out group='series'>"
+            "<key index='0' uid='modelSeries'/>"
+            "<key index='3' uid='modelSeries1'/>"
+            "</out>";
         get_series->set_config(config);
         get_series->set_input(series_set, "seriesSet");
         get_series->configure();
@@ -106,14 +101,11 @@ TEST_SUITE("sight::module::data::get_series")
         sight::service::base::sptr get_series = sight::service::add("sight::module::data::get_series");
         CHECK(get_series->is_a("sight::module::data::get_series"));
 
-        sight::service::config_t config;
-        std::stringstream config_string;
-        config_string
-        << "<out group=\"series\">"
-           "<key index=\"0\" uid=\"modelSeries\"/>"
-           "<key index=\"3\" uid=\"modelSeries1\"/>"
-           "</out>";
-        boost::property_tree::read_xml(config_string, config);
+        const std::string config =
+            "<out group='series'>"
+            "<key index='0' uid='modelSeries'/>"
+            "<key index='3' uid='modelSeries1'/>"
+            "</out>";
         get_series->set_config(config);
         get_series->set_input(nullptr, "seriesSet");
         get_series->start().wait();

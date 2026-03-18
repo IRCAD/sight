@@ -33,10 +33,6 @@ TEST_SUITE("sight::module::data::translate")
 {
 //------------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
-
-//------------------------------------------------------------------------------
-
     TEST_CASE("string_to_string")
     {
         auto srv = sight::service::add("sight::module::data::translate");
@@ -48,18 +44,13 @@ TEST_SUITE("sight::module::data::translate")
         srv->set_input(key, "key");
         srv->set_inout(value, "value");
 
-        {
-            std::stringstream config_string;
-            config_string
-            << "<map>"
-               "    <entry key=\"1\" value=\"value1\" />"
-               "    <entry key=\"#2\" value=\"value2\" />"
-               "    <entry key=\"Num 3\" value=\"value3\" />"
-               "</map>";
-            sight::service::base::config_t config;
-            boost::property_tree::read_xml(config_string, config);
-            srv->set_config(config);
-        }
+        const std::string config =
+            "<map>"
+            "    <entry key='1' value='value1' />"
+            "    <entry key='#2' value='value2' />"
+            "    <entry key='Num 3' value='value3' />"
+            "</map>";
+        srv->set_config(config);
 
         CHECK_NOTHROW(srv->configure());
         CHECK_NOTHROW(srv->start().get());
@@ -99,18 +90,13 @@ TEST_SUITE("sight::module::data::translate")
         srv->set_input(key, "key");
         srv->set_inout(value, "value");
 
-        {
-            std::stringstream config_string;
-            config_string
-            << "<map>"
-               "    <entry key=\"1\" value=\"false\" />"
-               "    <entry key=\"2\" value=\"false\" />"
-               "    <entry key=\"-14\" value=\"true\" />"
-               "</map>";
-            sight::service::base::config_t config;
-            boost::property_tree::read_xml(config_string, config);
-            srv->set_config(config);
-        }
+        const std::string config =
+            "<map>"
+            "    <entry key='1' value='false' />"
+            "    <entry key='2' value='false' />"
+            "    <entry key='-14' value='true' />"
+            "</map>";
+        srv->set_config(config);
 
         CHECK_NOTHROW(srv->configure());
         CHECK_NOTHROW(srv->start().get());

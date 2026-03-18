@@ -29,11 +29,8 @@
 #include <service/op.hpp>
 
 #include <boost/config.hpp>
-#include <boost/property_tree/xml_parser.hpp>
 
 #include <doctest/doctest.h>
-
-#include <sstream>
 
 TEST_SUITE("sight::module::data::get_camera")
 {
@@ -64,17 +61,14 @@ TEST_SUITE("sight::module::data::get_camera")
         // -------------Set extrinsic Matrix-----------------
         camera_set->set_extrinsic_matrix(0, matrix);
 
-        sight::service::config_t config;
-        std::stringstream config_string;
-        config_string
-        << "<out group=\"camera\">"
-           "<key index=\"0\" uid=\"DCamera\"/>"
-           "<key index=\"1\" uid=\"RGBCamera\"/>"
-           "</out>"
-           "<out group=\"extrinsic\">"
-           "<key index=\"0\" uid=\"extrinsic\"/>"
-           "</out>";
-        boost::property_tree::read_xml(config_string, config);
+        const std::string config =
+            "<out group='camera'>"
+            "<key index='0' uid='DCamera'/>"
+            "<key index='1' uid='RGBCamera'/>"
+            "</out>"
+            "<out group='extrinsic'>"
+            "<key index='0' uid='extrinsic'/>"
+            "</out>";
 
         get_camera_srv->set_config(config);
         get_camera_srv->set_inout(camera_set, "camera_set");
@@ -97,17 +91,14 @@ TEST_SUITE("sight::module::data::get_camera")
         // create service
         sight::service::base::sptr get_camera_srv = sight::service::add("sight::module::data::get_camera");
         CHECK(get_camera_srv->is_a("sight::module::data::get_camera"));
-        sight::service::config_t config;
-        std::stringstream config_string;
-        config_string
-        << "<out group=\"camera\">"
-           "<key index=\"0\" uid=\"DCamera\"/>"
-           "<key index=\"1\" uid=\"RGBCamera\"/>"
-           "</out>"
-           "<out group=\"extrinsic\">"
-           "<key index=\"0\" uid=\"extrinsic\"/>"
-           "</out>";
-        boost::property_tree::read_xml(config_string, config);
+        const std::string config =
+            "<out group='camera'>"
+            "<key index='0' uid='DCamera'/>"
+            "<key index='1' uid='RGBCamera'/>"
+            "</out>"
+            "<out group='extrinsic'>"
+            "<key index='0' uid='extrinsic'/>"
+            "</out>";
 
         get_camera_srv->set_config(config);
         get_camera_srv->set_inout(nullptr, "camera_set");
@@ -136,14 +127,11 @@ TEST_SUITE("sight::module::data::get_camera")
         camera_set->add_camera(camera2);
         CHECK_EQ(camera_set->size(), std::size_t(2));
 
-        sight::service::config_t config;
-        std::stringstream config_string;
-        config_string
-        << "<out group=\"camera\">"
-           "<key index=\"0\" uid=\"DCamera\"/>"
-           "<key index=\"1\" uid=\"RGBCamera\"/>"
-           "</out>";
-        boost::property_tree::read_xml(config_string, config);
+        const std::string config =
+            "<out group='camera'>"
+            "<key index='0' uid='DCamera'/>"
+            "<key index='1' uid='RGBCamera'/>"
+            "</out>";
 
         get_camera_srv->set_config(config);
         get_camera_srv->set_inout(camera_set, "camera_set");
@@ -177,14 +165,11 @@ TEST_SUITE("sight::module::data::get_camera")
         camera_set->add_camera(camera2);
         CHECK_EQ(camera_set->size(), std::size_t(2));
         camera_set->set_extrinsic_matrix(0, matrix);
-        sight::service::config_t config;
-        std::stringstream config_string;
-        config_string
-        << "<out group=\"camera\">"
-           "<key index=\"0\" uid=\"DCamera\"/>"
-           "<key index=\"1\" uid=\"RGBCamera\"/>"
-           "</out>";
-        boost::property_tree::read_xml(config_string, config);
+        const std::string config =
+            "<out group='camera'>"
+            "<key index='0' uid='DCamera'/>"
+            "<key index='1' uid='RGBCamera'/>"
+            "</out>";
 
         get_camera_srv->set_config(config);
         get_camera_srv->set_inout(camera_set, "camera_set");
@@ -216,17 +201,14 @@ TEST_SUITE("sight::module::data::get_camera")
         camera_set->add_camera(camera2);
         CHECK_EQ(camera_set->size(), std::size_t(2));
 
-        sight::service::config_t config;
-        std::stringstream config_string;
-        config_string
-        << "<out group=\"camera\">"
-           "<key index=\"0\" uid=\"DCamera\"/>"
-           "<key index=\"5\" uid=\"RGBCamera\"/>"
-           "</out>"
-           "<out group=\"extrinsic\">"
-           "<key index=\"1\" uid=\"extrinsic\"/>"
-           "</out>";
-        boost::property_tree::read_xml(config_string, config);
+        const std::string config =
+            "<out group='camera'>"
+            "<key index='0' uid='DCamera'/>"
+            "<key index='5' uid='RGBCamera'/>"
+            "</out>"
+            "<out group='extrinsic'>"
+            "<key index='1' uid='extrinsic'/>"
+            "</out>";
 
         get_camera_srv->set_config(config);
         get_camera_srv->set_inout(camera_set, "camera_set");
@@ -256,17 +238,14 @@ TEST_SUITE("sight::module::data::get_camera")
         camera_set->add_camera(camera2);
         CHECK_EQ(camera_set->size(), std::size_t(2));
 
-        sight::service::config_t config;
-        std::stringstream config_string;
-        config_string
-        << "<out group=\"camera\">"
-           "<key index=\"0\" uid=\"DCamera\"/>"
-           "<key index=\"1\" uid=\"RGBCamera\"/>"
-           "</out>"
-           "<out group=\"extrinsic\">"
-           "<key index=\"5\" uid=\"extrinsic\"/>"
-           "</out>";
-        boost::property_tree::read_xml(config_string, config);
+        const std::string config =
+            "<out group='camera'>"
+            "<key index='0' uid='DCamera'/>"
+            "<key index='1' uid='RGBCamera'/>"
+            "</out>"
+            "<out group='extrinsic'>"
+            "<key index='5' uid='extrinsic'/>"
+            "</out>";
 
         get_camera_srv->set_config(config);
         get_camera_srv->set_inout(camera_set, "camera_set");
@@ -296,18 +275,15 @@ TEST_SUITE("sight::module::data::get_camera")
         camera_set->add_camera(camera2);
         CHECK_EQ(camera_set->size(), std::size_t(2));
 
-        sight::service::config_t config;
-        std::stringstream config_string;
-        config_string
-        << "<out group=\"camera\">"
-           "<key index=\"0\" uid=\"DCamera\"/>"
-           "<key index=\"1\" uid=\"RGBCamera\"/>"
-           "</out>"
-           "<out group=\"extrinsic\">"
-           "<key index=\"1\" uid=\"extrinsic\"/>"
-           "</out>"
+        const std::string config =
+            "<out group='camera'>"
+            "<key index='0' uid='DCamera'/>"
+            "<key index='1' uid='RGBCamera'/>"
+            "</out>"
+            "<out group='extrinsic'>"
+            "<key index='1' uid='extrinsic'/>"
+            "</out>"
         ;
-        boost::property_tree::read_xml(config_string, config);
 
         get_camera_srv->set_config(config);
         get_camera_srv->set_inout(camera_set, "camera_set");

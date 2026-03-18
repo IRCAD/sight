@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,6 @@
 
 #include "service/detail/service.hpp"
 #include "service/manager.hpp"
-#include "service/registry.hpp"
 
 #include <core/com/signal.hxx>
 #include <core/com/slot.hxx>
@@ -32,8 +31,7 @@
 #include <core/runtime/helper.hpp>
 #include <core/thread/worker.hpp>
 
-#include <functional>
-#include <regex>
+#include <boost/property_tree/xml_parser.hpp>
 
 namespace sight::service
 {
@@ -161,6 +159,17 @@ void base::set_worker(core::thread::worker::sptr _worker)
 core::thread::worker::sptr base::worker() const
 {
     return m_pimpl->m_worker;
+}
+
+//------------------------------------------------------------------------------
+
+void base::set_config(const std::string& _config_str)
+{
+    std::stringstream xml_config;
+    xml_config << _config_str;
+    config_t config;
+    boost::property_tree::read_xml(xml_config, config);
+    set_config(config);
 }
 
 //-----------------------------------------------------------------------------

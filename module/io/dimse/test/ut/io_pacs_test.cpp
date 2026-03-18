@@ -24,8 +24,6 @@
 
 #include <service/op.hpp>
 
-#include <boost/property_tree/xml_parser.hpp>
-
 #include <doctest/doctest.h>
 
 namespace sight::module::io::dimse::ut
@@ -43,20 +41,18 @@ TEST_SUITE("sight::module::io::dimse::pacs_configuration_initializer")
         CHECK(srv);
 
         // Create service configuration
-        service::config_t config_srv;
-        std::stringstream config_string;
-        config_string << "<config localApplicationTitle=\"VRRender\""
-                         "pacsHostName=\"mypacs.mycompany.com\""
-                         "pacsApplicationTitle=\"PACSNAME\""
-                         "pacsApplicationPort=\"11112\""
-                         "moveApplicationTitle=\"MoveApplicationTitle\""
-                         "moveApplicationPort=\"11110\""
-                         "retrieveMethod=\"GET\""
-                         "/>";
-        boost::property_tree::read_xml(config_string, config_srv);
+        const std::string config =
+            "<config localApplicationTitle='VRRender'"
+            "pacsHostName='mypacs.mycompany.com'"
+            "pacsApplicationTitle='PACSNAME'"
+            "pacsApplicationPort='11112'"
+            "moveApplicationTitle='MoveApplicationTitle'"
+            "moveApplicationPort='11110'"
+            "retrieveMethod='GET'"
+            "/>";
         // Use the service
         srv->set_inout(pacs_configuration, "config");
-        srv->set_config(config_srv);
+        srv->set_config(config);
         srv->configure();
         srv->start();
         srv->update();

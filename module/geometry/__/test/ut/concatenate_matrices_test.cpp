@@ -25,8 +25,6 @@
 
 #include <service/op.hpp>
 
-#include <boost/property_tree/xml_parser.hpp>
-
 #include <doctest/doctest.h>
 
 static const double DELTA = 1e-3;
@@ -52,13 +50,10 @@ TEST_SUITE("sight::module::geometry::concatenate_matrices")
 
         // One identity matrix as input
         {
-            std::stringstream config_string;
-            config_string
-            << "<in group=\"matrix\">"
-               "     <key uid=\"m1\" />"
-               "</in>";
-            sight::service::base::config_t config;
-            boost::property_tree::read_xml(config_string, config);
+            const std::string config =
+                "<in group='matrix'>"
+                "     <key uid='m1' />"
+                "</in>";
             srv->set_config(config);
         }
 
@@ -82,14 +77,11 @@ TEST_SUITE("sight::module::geometry::concatenate_matrices")
 
         // Add a second identity matrix as input
         {
-            std::stringstream config_string;
-            config_string
-            << "<in group=\"matrix\">"
-               "     <key uid=\"m1\" />"
-               "     <key uid=\"m2\" />"
-               "</in>";
-            sight::service::base::config_t config;
-            boost::property_tree::read_xml(config_string, config);
+            const std::string config =
+                "<in group='matrix'>"
+                "     <key uid='m1' />"
+                "     <key uid='m2' />"
+                "</in>";
             srv->set_config(config);
         }
         auto input2 = std::make_shared<sight::data::matrix4>();
@@ -117,13 +109,10 @@ TEST_SUITE("sight::module::geometry::concatenate_matrices")
         CHECK(srv->is_a("sight::module::geometry::concatenate_matrices"));
 
         {
-            std::stringstream config_string;
-            config_string
-            << "<in group=\"matrix\">"
-               "     <key uid=\"m1\" />"
-               "</in>";
-            sight::service::base::config_t config;
-            boost::property_tree::read_xml(config_string, config);
+            const std::string config =
+                "<in group='matrix'>"
+                "     <key uid='m1' />"
+                "</in>";
             srv->set_config(config);
         }
 
@@ -163,14 +152,11 @@ TEST_SUITE("sight::module::geometry::concatenate_matrices")
         CHECK(srv != nullptr);
         CHECK(srv->is_a("sight::module::geometry::concatenate_matrices"));
 
-        std::stringstream config_string;
-        config_string
-        << "<in group=\"matrix\">"
-           "     <key uid=\"m1\" />"
-           "     <key uid=\"m2\" />"
-           "</in>";
-        sight::service::base::config_t config;
-        boost::property_tree::read_xml(config_string, config);
+        const std::string config =
+            "<in group='matrix'>"
+            "     <key uid='m1' />"
+            "     <key uid='m2' />"
+            "</in>";
         srv->set_config(config);
 
         auto in1    = std::make_shared<sight::data::matrix4>();
@@ -224,16 +210,13 @@ TEST_SUITE("sight::module::geometry::concatenate_matrices")
         CHECK(srv != nullptr);
         CHECK(srv->is_a("sight::module::geometry::concatenate_matrices"));
 
-        std::stringstream config_string;
-        config_string
-        << "<in group=\"matrix\">"
-           "     <key uid=\"m1\" />"
-           "     <key uid=\"m2\" />"
-           "     <key uid=\"m3\" />"
-           "     <key uid=\"m4\" />"
-           "</in>";
-        sight::service::base::config_t config;
-        boost::property_tree::read_xml(config_string, config);
+        const std::string config =
+            "<in group='matrix'>"
+            "     <key uid='m1' />"
+            "     <key uid='m2' />"
+            "     <key uid='m3' />"
+            "     <key uid='m4' />"
+            "</in>";
         srv->set_config(config);
 
         auto in1    = std::make_shared<sight::data::matrix4>();
@@ -298,16 +281,13 @@ TEST_SUITE("sight::module::geometry::concatenate_matrices")
         CHECK(srv != nullptr);
         CHECK(srv->is_a("sight::module::geometry::concatenate_matrices"));
 
-        std::stringstream config_string;
-        config_string
-        << "<in group=\"matrix\">"
-           "     <key uid=\"m1\" inverse=\"true\"/>"
-           "     <key uid=\"m2\" />"
-           "     <key uid=\"m3\" inverse=\"true\"/>"
-           "     <key uid=\"m4\" inverse=\"true\"/>"
-           "</in>";
-        sight::service::base::config_t config;
-        boost::property_tree::read_xml(config_string, config);
+        const std::string config =
+            "<in group='matrix'>"
+            "     <key uid='m1' inverse='true'/>"
+            "     <key uid='m2' />"
+            "     <key uid='m3' inverse='true'/>"
+            "     <key uid='m4' inverse='true'/>"
+            "</in>";
         srv->set_config(config);
 
         auto in1    = std::make_shared<sight::data::matrix4>();
@@ -378,14 +358,12 @@ TEST_SUITE("sight::module::geometry::concatenate_matrices")
         CHECK(srv != nullptr);
         CHECK(srv->is_a("sight::module::geometry::concatenate_matrices"));
 
-        std::stringstream config_string;
-        config_string
-        << "<in group=\"matrix\">"
-           "     <key uid=\"m1\" auto_connect=\"false\"/>"
-           "     <key uid=\"m2\" />"
-           "</in>";
-        sight::service::base::config_t config;
-        boost::property_tree::read_xml(config_string, config);
+        const std::string config =
+            "<in group='matrix'>"
+            "     <key uid='m1' auto_connect='false'/>"
+            "     <key uid='m2' />"
+            "</in>";
+
         srv->set_config(config);
 
         auto in1    = std::make_shared<sight::data::matrix4>();

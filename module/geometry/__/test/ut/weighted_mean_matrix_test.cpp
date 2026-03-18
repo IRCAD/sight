@@ -25,8 +25,6 @@
 
 #include <service/op.hpp>
 
-#include <boost/property_tree/xml_parser.hpp>
-
 #include <doctest/doctest.h>
 
 static const double DELTA = 10e-2;
@@ -55,16 +53,13 @@ struct weighted_mean_matrix_tester
 
     void set_config(float _weight = 0.5F)
     {
-        std::stringstream config_string;
-        config_string
-        << "<in key=\"raw\" uid=\"raw\" />"
-           "<inout key=\"damped\" uid=\"damped\" />"
-           "<properties weight=\"" << _weight << R"(" enabled="true" />)";
-
-        sight::service::base::config_t config;
-        boost::property_tree::read_xml(config_string, config);
+        const std::string config = std::format(
+            "<in key='raw' uid='raw' />"
+            "<inout key='damped' uid='damped' />"
+            "<properties weight='{}' enabled='true' />",
+            _weight
+        );
         srv->set_config(config);
-
         srv->configure();
         srv->start().wait();
     }

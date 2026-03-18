@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -56,7 +56,7 @@ namespace detail
 
 class service;
 
-}
+} // namespace detail
 
 using config_t = boost::property_tree::ptree;
 
@@ -158,7 +158,7 @@ public:
     //@{
 
     /// Defines all possible global status for a service, including transitions
-    enum class global_status
+    enum class global_status : std::uint8_t
     {
         started,
         /**< state after start */
@@ -172,7 +172,7 @@ public:
     };
 
     /// Defines all possible status for an update process
-    enum class updating_status
+    enum class updating_status : std::uint8_t
     {
         updating,
         /**< state during update */
@@ -180,7 +180,7 @@ public:
     };
 
     /// Defines all possible status for a configuration process
-    enum class configuration_status
+    enum class configuration_status : std::uint8_t
     {
         configuring,
         /**< state during configuration */
@@ -198,6 +198,8 @@ public:
     //@{
     using shared_future_t = std::shared_future<void>;
 
+    SIGHT_SERVICE_API ~base() override;
+
     /// Sets a worker to all service slots
     SIGHT_SERVICE_API void set_worker(SPTR(core::thread::worker) _worker);
     SIGHT_SERVICE_API SPTR(core::thread::worker) worker() const;
@@ -210,11 +212,18 @@ public:
     //@{
 
     /**
+     * @brief Affect the configuration, using an XML string
+     * @param[in] _config_str XML string containing the configuration
+     * @post m_configurationState == UNCONFIGURED
+     */
+    SIGHT_SERVICE_API void set_config(const std::string& _config_str);
+
+    /**
      * @brief Affect the configuration, using a boost property tree
      * @param[in] _ptree property tree
      * @post m_configurationState == UNCONFIGURED
      */
-    SIGHT_SERVICE_API void set_config(const config_t& _ptree);
+    SIGHT_SERVICE_API void set_config(const config_t& _configuration);
 
     /// Return the service configuration
     SIGHT_SERVICE_API const base::config_t& get_config() const;
@@ -230,9 +239,9 @@ public:
     /**
      * @brief Set configuration and then invoke configuring() if m_globalState == STOPPED
      * @post m_configurationState == CONFIGURED
-     * @param[in] _ptree property tree
+     * @param[in] _service_config service configuration
      */
-    SIGHT_SERVICE_API void configure(const config_t& _ptree);
+    SIGHT_SERVICE_API void configure(const config_t& _service_config);
 
     /**
      * @brief Invoke configuring() if m_globalState == STOPPED. Does nothing otherwise.
@@ -307,13 +316,12 @@ public:
      * @see base::operator<<(std::ostream & _ostream, base& _service)
      * @note Invoke base::info( std::ostream )
      */
-    SIGHT_SERVICE_API friend std::ostream& operator<<(std::ostream& _sstream, base& _service);
+    SIGHT_SERVICE_API friend std::ostream& operator<<(std::ostream& _ostream, base& _service);
     //@}
 
 protected:
 
     SIGHT_SERVICE_API base();
-    SIGHT_SERVICE_API ~base() override;
 
     /**
      * @name Interface to override
@@ -331,7 +339,7 @@ protected:
     SIGHT_SERVICE_API virtual void configuring();
 
     /// Configures the service before starting. Apply the configuration to service.
-    SIGHT_SERVICE_API virtual void configuring(const config_t&);
+    SIGHT_SERVICE_API virtual void configuring(const config_t& /*unused*/);
 
     /// Performs some processing.
     SIGHT_SERVICE_API virtual void updating() = 0;
@@ -370,10 +378,10 @@ protected:
 private:
 
     /// Notify about a newly deferred object
-    SIGHT_SERVICE_API void notify_register_out(data::object::sptr, const std::string&) override;
+    SIGHT_SERVICE_API void notify_register_out(data::object::sptr _obj, const std::string& _id) override;
 
     /// Notify about a destroyed deferred object
-    SIGHT_SERVICE_API void notify_unregister_out(data::object::sptr, const std::string&) override;
+    SIGHT_SERVICE_API void notify_unregister_out(data::object::sptr _obj, const std::string& _id) override;
 
     friend class manager;
     friend class detail::service;
@@ -394,7 +402,7 @@ inline void base::configuring()
 
 //------------------------------------------------------------------------------
 
-inline void base::configuring(const config_t&)
+inline void base::configuring(const config_t& /*unused*/)
 {
 }
 

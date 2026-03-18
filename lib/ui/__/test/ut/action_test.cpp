@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2023 IRCAD France
+ * Copyright (C) 2016-2026 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,8 +23,6 @@
 #include "action_test.hpp"
 
 #include <ui/__/action.hpp>
-
-#include <boost/property_tree/xml_parser.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::ui::ut::action_test);
@@ -88,13 +86,8 @@ void action_test::configuring_test()
         CPPUNIT_ASSERT_EQUAL(false, action->inverted());
     }
     {
-        auto action = std::make_shared<test_action>();
-        std::stringstream xml_config;
-        xml_config << ""
-                      "<state visible=\"false\" checked=\"true\" enabled=\"true\" />"
-                      "";
-        boost::property_tree::ptree config;
-        boost::property_tree::read_xml(xml_config, config);
+        auto action              = std::make_shared<test_action>();
+        const std::string config = "<state visible='false' checked='true' enabled='true' />";
 
         action->set_config(config);
         action->configure();
@@ -110,14 +103,9 @@ void action_test::configuring_test()
         action->stop();
     }
     {
-        auto action = std::make_shared<test_action>();
-        std::stringstream xml_config;
-        xml_config << ""
-                      "<state visible=\"false\" checked=\"true\" enabled=\"true\" />"
-                      "<confirmation message=\"Are you sure?\" defaultButton=\"true\"/>"
-                      "";
-        boost::property_tree::ptree config;
-        boost::property_tree::read_xml(xml_config, config);
+        auto action              = std::make_shared<test_action>();
+        const std::string config = "<state visible='false' checked='true' enabled='true' />"
+                                   "<confirmation message='Are you sure?' defaultButton='true'/>";
 
         action->set_config(config);
         action->configure();
@@ -134,13 +122,8 @@ void action_test::configuring_test()
     }
     {
         // Test deprecated attributes
-        auto action = std::make_shared<test_action>();
-        std::stringstream xml_config;
-        xml_config << ""
-                      "<state inverse=\"true\" checked=\"true\" enabled=\"false\" />"
-                      "";
-        boost::property_tree::ptree config;
-        boost::property_tree::read_xml(xml_config, config);
+        auto action              = std::make_shared<test_action>();
+        const std::string config = "<state inverse='true' checked='true' enabled='false' />";
 
         action->set_config(config);
         action->configure();

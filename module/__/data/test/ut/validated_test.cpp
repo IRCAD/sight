@@ -25,8 +25,6 @@
 
 #include <utest/wait.hpp>
 
-#include <boost/property_tree/xml_parser.hpp>
-
 #include <doctest/doctest.h>
 
 TEST_SUITE("sight::module::data::validated")
@@ -76,11 +74,7 @@ TEST_SUITE("sight::module::data::validated")
         is_invalid_slot->set_worker(sight::core::thread::get_default_worker());
         srv->signal("is_invalid")->connect(is_invalid_slot);
 
-        sight::service::config_t config;
-        std::stringstream config_string;
-        config_string << R"(<config id="sight::data::validator::filled" />)";
-        boost::property_tree::read_xml(config_string, config);
-        srv->set_config(config);
+        srv->set_config("<config id='sight::data::validator::filled' />");
         srv->set_input(image, "data");
         srv->configure();
         srv->start().get();

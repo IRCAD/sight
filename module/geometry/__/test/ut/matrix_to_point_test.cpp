@@ -64,11 +64,7 @@ public:
 
     void set_config(const std::string& _config)
     {
-        sight::service::base::config_t config;
-        std::stringstream stream(_config);
-        boost::property_tree::read_xml(stream, config);
-
-        srv->set_config(config);
+        srv->set_config(_config);
 
         srv->configure();
         srv->start().wait();

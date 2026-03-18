@@ -27,16 +27,10 @@
 
 #include <service/op.hpp>
 
-#include <boost/property_tree/xml_parser.hpp>
-
 #include <doctest/doctest.h>
 
 TEST_SUITE("sight::module::data::get_mesh")
 {
-//------------------------------------------------------------------------------
-
-//------------------------------------------------------------------------------
-
 //------------------------------------------------------------------------------
 
     TEST_CASE("extracts_mesh_by_index")
@@ -79,17 +73,14 @@ TEST_SUITE("sight::module::data::get_mesh")
         CHECK_EQ(rec2, m_series->get_reconstruction_db()[1]);
         CHECK_EQ(rec3, m_series->get_reconstruction_db()[2]);
 
-        sight::service::config_t config;
-        std::stringstream config_string;
-        config_string
-        << "<out group=\"mesh\">"
-           "<key index=\"2\" uid=\"outputMesh1\"/>"
-           "<key index=\"0\" uid=\"outputMesh2\"/>"
-           "<key index=\"2\" uid=\"outputMesh3\"/>"
-           "</out>";
-        boost::property_tree::read_xml(config_string, config);
+        const std::string config_string =
+            "<out group='mesh'>"
+            "<key index='2' uid='outputMesh1'/>"
+            "<key index='0' uid='outputMesh2'/>"
+            "<key index='2' uid='outputMesh3'/>"
+            "</out>";
 
-        get_mesh_serv->set_config(config);
+        get_mesh_serv->set_config(config_string);
         get_mesh_serv->set_input(m_series, "modelSeries");
         get_mesh_serv->configure();
         get_mesh_serv->start().wait();
@@ -145,17 +136,14 @@ TEST_SUITE("sight::module::data::get_mesh")
         CHECK_EQ(rec2, m_series->get_reconstruction_db()[1]);
         CHECK_EQ(rec3, m_series->get_reconstruction_db()[2]);
 
-        sight::service::config_t config;
-        std::stringstream config_string;
-        config_string
-        << "<out group=\"mesh\">"
-           "<key index=\"0\" uid=\"outputMesh1\"/>"
-           "<key index=\"1\" uid=\"outputMesh2\"/>"
-           "<key index=\"6\" uid=\"outputMesh3\"/>"
-           "</out>";
-        boost::property_tree::read_xml(config_string, config);
+        const std::string config_string =
+            "<out group='mesh'>"
+            "<key index='0' uid='outputMesh1'/>"
+            "<key index='1' uid='outputMesh2'/>"
+            "<key index='6' uid='outputMesh3'/>"
+            "</out>";
 
-        get_mesh_serv->set_config(config);
+        get_mesh_serv->set_config(config_string);
         get_mesh_serv->set_input(m_series, "modelSeries");
         get_mesh_serv->configure();
         get_mesh_serv->start().wait();
@@ -227,21 +215,17 @@ TEST_SUITE("sight::module::data::get_mesh")
         CHECK_EQ(rec1, m_series->get_reconstruction_db()[0]);
         CHECK_EQ(rec2, m_series->get_reconstruction_db()[1]);
 
-        sight::service::config_t config;
-        std::stringstream config_string;
-        config_string
+        const std::string config_string =
+            "<out group='mesh'>"
+            "<key type='liver' uid='outputMesh1'/>"
+            "<key type='skin' matching='skin-surface' uid='outputMesh2'/>"
+            "<key type='kidney' uid='outputMesh3'/>"
+            "<key type='kidney' matching='kidney-volume-right' uid='outputMesh4'/>"
+            "<key type='kidney' matching='(.*)volume(.*)' uid='outputMesh4'/>"
+            "<key type='kidney' matching='(.*)surface(.*)' uid='outputMesh5'/>"
+            "</out>";
 
-        << "<out group=\"mesh\">"
-           "<key type=\"liver\" uid=\"outputMesh1\"/>"
-           "<key type=\"skin\" matching=\"skin-surface\" uid=\"outputMesh2\"/>"
-           "<key type=\"kidney\" uid=\"outputMesh3\"/>"
-           "<key type=\"kidney\" matching=\"kidney-volume-right\" uid=\"outputMesh4\"/>"
-           "<key type=\"kidney\" matching=\"(.*)volume(.*)\" uid=\"outputMesh4\"/>"
-           "<key type=\"kidney\" matching=\"(.*)surface(.*)\" uid=\"outputMesh5\"/>"
-           "</out>";
-        boost::property_tree::read_xml(config_string, config);
-
-        get_mesh_serv->set_config(config);
+        get_mesh_serv->set_config(config_string);
         get_mesh_serv->set_input(m_series, "modelSeries");
         get_mesh_serv->configure();
         get_mesh_serv->start().wait();
@@ -319,18 +303,14 @@ TEST_SUITE("sight::module::data::get_mesh")
         CHECK_EQ(rec1, m_series->get_reconstruction_db()[0]);
         CHECK_EQ(rec2, m_series->get_reconstruction_db()[1]);
 
-        sight::service::config_t config;
-        std::stringstream config_string;
-        config_string
+        const std::string config_string =
+            "<out group='mesh'>"
+            "<key type='liver' uid='outputMesh1'/>"
+            "<key type='skin' matching='skin-surface' uid='outputMesh2'/>"
+            "<key type='gallbladder'  uid='outputMesh3'/>"
+            "</out>";
 
-        << "<out group=\"mesh\">"
-           "<key type=\"liver\" uid=\"outputMesh1\"/>"
-           "<key type=\"skin\" matching=\"skin-surface\" uid=\"outputMesh2\"/>"
-           "<key type=\"gallbladder\"  uid=\"outputMesh3\"/>"
-           "</out>";
-        boost::property_tree::read_xml(config_string, config);
-
-        get_mesh_serv->set_config(config);
+        get_mesh_serv->set_config(config_string);
         get_mesh_serv->set_input(m_series, "modelSeries");
         get_mesh_serv->configure();
         get_mesh_serv->start().wait();
@@ -402,17 +382,13 @@ TEST_SUITE("sight::module::data::get_mesh")
         CHECK_EQ(rec1, m_series->get_reconstruction_db()[0]);
         CHECK_EQ(rec2, m_series->get_reconstruction_db()[1]);
 
-        sight::service::config_t config;
-        std::stringstream config_string;
-        config_string
+        const std::string config_string =
+            "<out group='mesh'>"
+            "<key type='liver' uid='outputMesh1'/>"
+            "<key type='kidney' matching='azerty' uid='outputMesh2'/>"
+            "</out>";
 
-        << "<out group=\"mesh\">"
-           "<key type=\"liver\" uid=\"outputMesh1\"/>"
-           "<key type=\"kidney\" matching=\"azerty\" uid=\"outputMesh2\"/>"
-           "</out>";
-        boost::property_tree::read_xml(config_string, config);
-
-        get_mesh_serv->set_config(config);
+        get_mesh_serv->set_config(config_string);
         get_mesh_serv->set_input(m_series, "modelSeries");
         get_mesh_serv->configure();
         get_mesh_serv->start().wait();
@@ -484,19 +460,15 @@ TEST_SUITE("sight::module::data::get_mesh")
         CHECK_EQ(rec1, m_series->get_reconstruction_db()[0]);
         CHECK_EQ(rec2, m_series->get_reconstruction_db()[1]);
 
-        sight::service::config_t config;
-        std::stringstream config_string;
-        config_string
+        const std::string config_string =
+            "<out group='mesh'>"
+            "<key index='4' uid='outputMesh1'/>"
+            "<key type='liver' uid='outputMesh2'/>"
+            "<key index='0' uid='outputMesh3'/>"
+            "<key type='kidney' matching='(.*)volume(.*)' uid='outputMesh4'/>"
+            "</out>";
 
-        << "<out group=\"mesh\">"
-           "<key index=\"4\" uid=\"outputMesh1\"/>"
-           "<key type=\"liver\" uid=\"outputMesh2\"/>"
-           "<key index=\"0\" uid=\"outputMesh3\"/>"
-           "<key type=\"kidney\" matching=\"(.*)volume(.*)\" uid=\"outputMesh4\"/>"
-           "</out>";
-        boost::property_tree::read_xml(config_string, config);
-
-        get_mesh_serv->set_config(config);
+        get_mesh_serv->set_config(config_string);
         get_mesh_serv->set_input(m_series, "modelSeries");
         get_mesh_serv->configure();
         get_mesh_serv->start().wait();
@@ -518,16 +490,13 @@ TEST_SUITE("sight::module::data::get_mesh")
         CHECK(get_mesh_serv);
         CHECK(get_mesh_serv->is_a("sight::module::data::get_mesh"));
 
-        sight::service::config_t config;
-        std::stringstream config_string;
-        config_string
-        << "<out group=\"mesh\">"
-           "<key index=\"0\" uid=\"outputMesh1\"/>"
-           "<key index=\"1\" uid=\"outputMesh2\"/>"
-           "</out>";
-        boost::property_tree::read_xml(config_string, config);
+        const std::string config_string =
+            "<out group='mesh'>"
+            "<key index='0' uid='outputMesh1'/>"
+            "<key index='1' uid='outputMesh2'/>"
+            "</out>";
 
-        get_mesh_serv->set_config(config);
+        get_mesh_serv->set_config(config_string);
         get_mesh_serv->set_input(nullptr, "modelSeries");
         get_mesh_serv->configure();
         get_mesh_serv->start().wait();

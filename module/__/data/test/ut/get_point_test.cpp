@@ -26,8 +26,6 @@
 
 #include <service/op.hpp>
 
-#include <boost/property_tree/xml_parser.hpp>
-
 #include <doctest/doctest.h>
 
 namespace
@@ -94,15 +92,12 @@ TEST_SUITE("sight::module::data::get_point")
 
     TEST_CASE_FIXTURE(service_fixture, "extracts_point_by_index")
     {
-        sight::service::config_t config;
-        std::stringstream config_string;
-        config_string
-        << R"(<inout group="points">)"
-           R"(<key group="test_group_2" index="1" uid="output_point0"/>)"
-           R"(<key group="test_group_1" index="0" uid="output_point1"/>)"
-           R"(<key group="test_group_1" index="1" uid="output_point2"/>)"
-           R"(</inout>)";
-        boost::property_tree::read_xml(config_string, config);
+        const std::string config =
+            "<inout group='points'>"
+            "<key group='test_group_2' index='1' uid='output_point0'/>"
+            "<key group='test_group_1' index='0' uid='output_point1'/>"
+            "<key group='test_group_1' index='1' uid='output_point2'/>"
+            "</inout>";
 
         srv->set_config(config);
         srv->set_input(image, "image");
@@ -122,15 +117,12 @@ TEST_SUITE("sight::module::data::get_point")
 
     TEST_CASE_FIXTURE(service_fixture, "extracts_point_with_index_out_of_bound")
     {
-        sight::service::config_t config;
-        std::stringstream config_string;
-        config_string
-        << R"(<inout group="points">)"
-           R"(<key group="test_group_1" index="1" uid="output_point0"/>)"
-           R"(<key group="test_group_1" index="122" uid="output_point1"/>)"
-           R"(<key group="test_group_1" index="0" uid="output_point2"/>)"
-           R"(</inout>)";
-        boost::property_tree::read_xml(config_string, config);
+        const std::string config =
+            "<inout group='points'>"
+            "<key group='test_group_1' index='1' uid='output_point0'/>"
+            "<key group='test_group_1' index='122' uid='output_point1'/>"
+            "<key group='test_group_1' index='0' uid='output_point2'/>"
+            "</inout>";
 
         srv->set_config(config);
         srv->set_input(image, "image");
@@ -150,15 +142,12 @@ TEST_SUITE("sight::module::data::get_point")
 
     TEST_CASE_FIXTURE(service_fixture, "extracts_point_with_unknown_group")
     {
-        sight::service::config_t config;
-        std::stringstream config_string;
-        config_string
-        << R"(<inout group="points">)"
-           R"(<key group="test_group_1" index="1" uid="output_point0"/>)"
-           R"(<key group="unknown" index="2" uid="output_point1"/>)"
-           R"(<key group="test_group_1" index="0" uid="output_point2"/>)"
-           R"(</inout>)";
-        boost::property_tree::read_xml(config_string, config);
+        const std::string config =
+            "<inout group='points'>"
+            "<key group='test_group_1' index='1' uid='output_point0'/>"
+            "<key group='unknown' index='2' uid='output_point1'/>"
+            "<key group='test_group_1' index='0' uid='output_point2'/>"
+            "</inout>";
 
         srv->set_config(config);
         srv->set_input(image, "image");
