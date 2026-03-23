@@ -10,6 +10,13 @@
 
     <extension implements="sight::service::extension::factory">
         <type>sight::service::controller</type>
+        <service>sight::module::data::copy_field</service>
+        <object>sight::data::object</object>
+        <desc>This service copies the fields of an object and updates its own object or the defined target.</desc>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::service::controller</type>
         <service>sight::module::data::reset</service>
         <object>sight::data::object</object>
         <desc>This service resets an object using the default constructor.</desc>

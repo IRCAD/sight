@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -360,6 +360,14 @@ void slice_index_position_editor::slice_index_notification(int _index)
     };
 
     image->async_emit(this, data::image::SLICE_INDEX_MODIFIED_SIG, idx[2], idx[1], idx[0]);
+
+    // No need to fill in the arguments of the signal since the connected adaptors will get the slice index directly
+    // from the image. This is temporary until we decide to remove the slice indices as fields and use a real data.
+    image->async_emit(
+        sight::data::signals::CHANGED_FIELDS,
+        sight::data::fields_container_t(),
+        sight::data::fields_container_t()
+    );
 }
 
 //------------------------------------------------------------------------

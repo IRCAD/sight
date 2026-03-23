@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2025 IRCAD France
+ * Copyright (C) 2019-2026 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,6 +21,8 @@
  ***********************************************************************/
 
 #include "module/viz/scene3d/adaptor/negato2d_camera.hpp"
+
+#include "data/object.hpp"
 
 #include <core/com/slots.hxx>
 
@@ -263,10 +265,12 @@ void negato2d_camera::wheel_event(modifier _modifier, double _delta, int _x, int
             m_has_moved = true;
 
             // Send signal.
-            auto sig = image->signal<data::image::slice_index_modified_signal_t>(
-                data::image::SLICE_INDEX_MODIFIED_SIG
+            image->async_emit(sight::data::image::SLICE_INDEX_MODIFIED_SIG, idx[2], idx[1], idx[0]);
+            image->async_emit(
+                sight::data::signals::CHANGED_FIELDS,
+                sight::data::fields_container_t(),
+                sight::data::fields_container_t()
             );
-            sig->async_emit(idx[2], idx[1], idx[0]);
         }
     }
 }

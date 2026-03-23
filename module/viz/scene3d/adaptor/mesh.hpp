@@ -22,9 +22,11 @@
 
 #pragma once
 
-#include "module/viz/scene3d/adaptor/material.hpp"
-#include "module/viz/scene3d/adaptor/transform.hpp"
+#include "data/ptr.hpp"
 
+#include "module/viz/scene3d/adaptor/material.hpp"
+
+#include <data/color.hpp>
 #include <data/material.hpp>
 #include <data/mesh.hpp>
 
@@ -72,9 +74,12 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b show(): shows the mesh.
  * - \b hide(): hides the mesh.
  * - \b update(): called when the mesh is modified.
- * - \b modifyColors(): called when the point colors are modified.
- * - \b modifyTexCoords(): called when the texture coordinates are modified.
- * - \b modifyVertices(): called when the vertices are modified.
+ * - \b modify_mesh(): called when the mesh topology is modified (cells or vertices added/removed).
+ * - \b modify_colors(): called when the point colors are modified.
+ * - \b modify_tex_coords(): called when the texture coordinates are modified.
+ * - \b modify_vertices(): called when the vertices are modified.
+ * - \b change_material(Ogre::MaterialPtr): change the material of the mesh.
+ * - \b change_color(): update the material diffuse color with the current mesh color.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -112,6 +117,9 @@ namespace sight::module::viz::scene3d::adaptor
  *  - \b options (optional, none/vertices_normals/cells_normals/selected, default=none): options mode of the material.
  *  - \b query_flags (optional, uint32, default=0x40000000): Used for picking. Picked only by pickers whose mask that
  *       match the flag.
+ *
+ * @subsection Properties Properties:
+ *  - \b color: the mesh color, used to set the material diffuse color if material_name is not set.
  */
 class mesh final :
     public sight::viz::scene3d::adaptor,
@@ -122,11 +130,21 @@ public:
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(mesh, sight::viz::scene3d::adaptor);
 
+    struct slots
+    {
+        static inline const slot_key_t MODIFY_MESH             = "modify_mesh";
+        static inline const slot_key_t MODIFY_COLORS           = "modify_colors";
+        static inline const slot_key_t MODIFY_POINT_TEX_COORDS = "modify_point_tex_coords";
+        static inline const slot_key_t MODIFY_VERTICES         = "modify_vertices";
+        static inline const slot_key_t CHANGE_MATERIAL         = "change_material";
+        static inline const slot_key_t CHANGE_COLOR            = "change_color";
+    };
+
     /// Sets default parameters and initializes necessary members.
     mesh() noexcept;
 
     /// Destroys Ogre resources.
-    ~mesh() noexcept override;
+    ~mesh() noexcept final;
 
     /**
      * @brief Gets the associated material.
@@ -184,21 +202,21 @@ public:
     void set_query_flags(std::uint32_t _query_flags);
 
     /// Flags the r2vb objects as dirty and asks the render service to update.
-    void request_render() override;
+    void request_render() final;
 
     /**
      * @brief Sets the mesh visibility.
      * @param _visible the visibility status of the mesh.
      */
-    void set_visible(bool _visible) override;
+    void set_visible(bool _visible) final;
 
 protected:
 
     /// Configures the adaptor.
-    void configuring() override;
+    void configuring(const config_t& _config) final;
 
     /// Creates a Mesh in the Default Ogre resource group.
-    void starting() override;
+    void starting() final;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -210,13 +228,13 @@ protected:
      * Connect data::mesh::POINT_TEX_COORDS_MODIFIED_SIG to MODIFY_POINT_TEX_COORDS_SLOT
      * Connect data::mesh::MODIFIED_SIG to service::slots::UPDATE
      */
-    service::connections_t auto_connections() const override;
+    service::connections_t auto_connections() const final;
 
     /// Deletes the mesh after unregistering the service, and shutting connections.
-    void stopping() override;
+    void stopping() final;
 
     /// Updates the mesh.
-    void updating() override;
+    void updating() final;
 
 private:
 
@@ -305,15 +323,18 @@ private:
 
     enum class update_flags : std::uint8_t
     {
-        MESH,
-        VERTICES,
-        COLORS,
-        TEX_COORDS
+        mesh,
+        vertices,
+        colors,
+        tex_coords
     };
 
     static constexpr std::string_view MESH_IN = "mesh";
     data::ptr<data::mesh, data::access::in> m_mesh {this, MESH_IN};
     data::ptr_vector<data::object, data::access::inout> m_uniforms {this, "uniforms", true};
+
+    /// Diffuse color of the mesh, used if no material is provided.
+    sight::data::property<sight::data::color> m_color {this, "color", {1.0F, 1.0F, 1.0F, 1.0F}};
 };
 
 //------------------------------------------------------------------------------

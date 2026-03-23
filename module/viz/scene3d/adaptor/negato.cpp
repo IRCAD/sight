@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -125,7 +125,6 @@ void negato::configuring(const config_t& _config)
     m_enable_alpha = _config.get<bool>(s_TF_ALPHA_CONFIG, m_enable_alpha);
     m_border       = _config.get<bool>(s_BORDER_CONFIG, m_border);
     m_interactive  = _config.get<bool>(s_INTERACTIVE_CONFIG, m_interactive);
-    m_priority     = _config.get<int>(s_PRIORITY_CONFIG, m_priority);
 
     const std::string transform_id =
         _config.get<std::string>(sight::viz::scene3d::transformable::TRANSFORM_CONFIG, gen_id("transform"));
@@ -169,7 +168,7 @@ void negato::starting()
     if(m_interactive)
     {
         auto interactor = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::base>(this->get_sptr());
-        this->layer()->add_interactor(interactor, m_priority);
+        this->layer()->add_interactor(interactor, static_cast<int>(*m_priority));
 
         m_picking_cross = std::make_unique<sight::viz::scene3d::picking_cross>(
             this->get_id(),
@@ -322,9 +321,9 @@ void negato::update_image(bool _new)
             // Fits the planes to the new texture
             for(const auto& plane : m_planes)
             {
-                plane.first->update(plane.second, spacing);
+                plane.first->update(plane.second, spacing, this->priority());
                 plane.first->set_query_flags(m_query_flags);
-                plane.first->set_render_queuer_group_and_priority(sight::viz::scene3d::rq::NEGATO_WIDGET, 0);
+                SIGHT_ERROR_IF("Priority is too high, should be less than 65535", *m_priority >= 0xFFFF);
             }
 
             // Update Slice
@@ -349,39 +348,43 @@ void negato::update_image(bool _new)
 
 void negato::change_slice_index(int _axial_index, int _frontal_index, int _sagittal_index)
 {
-    const auto image = m_image.lock();
-
-    if(!data::helper::medical_image::check_image_validity(image.get_shared()))
     {
-        return;
-    }
+        const auto image = m_image.lock();
 
-    this->render_service()->make_current();
-
-    auto img_size = image->size();
-
-    // Sometimes, the image can contain only one slice,
-    // it results into a division by 0 when the range is transformed between [0-1].
-    // So we increase the image size to 2 to divide by 1.
-    img_size[0] = img_size[0] == 1 ? 2 : img_size[0];
-    img_size[1] = img_size[1] == 1 ? 2 : img_size[1];
-    img_size[2] = img_size[2] == 1 ? 2 : img_size[2];
-
-    m_current_slice_index = {
-        static_cast<float>(_sagittal_index) / (static_cast<float>(img_size[0] - 1)),
-        static_cast<float>(_frontal_index) / (static_cast<float>(img_size[1] - 1)),
-        static_cast<float>(_axial_index) / (static_cast<float>(img_size[2] - 1))
-    };
-
-    for(auto& plane : m_planes)
-    {
-        if(plane.first)
+        if(!data::helper::medical_image::check_image_validity(image.get_shared()))
         {
-            plane.first->change_slice(m_current_slice_index);
+            return;
+        }
+
+        this->render_service()->make_current();
+
+        auto img_size = image->size();
+
+        // Sometimes, the image can contain only one slice,
+        // it results into a division by 0 when the range is transformed between [0-1].
+        // So we increase the image size to 2 to divide by 1.
+        img_size[0] = img_size[0] == 1 ? 2 : img_size[0];
+        img_size[1] = img_size[1] == 1 ? 2 : img_size[1];
+        img_size[2] = img_size[2] == 1 ? 2 : img_size[2];
+
+        m_current_slice_index = {
+            static_cast<float>(_sagittal_index) / (static_cast<float>(img_size[0] - 1)),
+            static_cast<float>(_frontal_index) / (static_cast<float>(img_size[1] - 1)),
+            static_cast<float>(_axial_index) / (static_cast<float>(img_size[2] - 1))
+        };
+
+        for(auto& plane : m_planes)
+        {
+            if(plane.first)
+            {
+                plane.first->change_slice(m_current_slice_index, this->priority());
+            }
         }
     }
 
-    this->signal<signals::slice_index_changed_t>(signals::SLICE_INDEX_CHANGED)->emit();
+    // Here we cheat a bit by sending synchronously to ensure that the new slice index is taken into account by
+    // potential other negatos, before rendering the new slice. Otherwise we would suffer from a flickering effect.
+    this->emit(this, signals::SLICE_INDEX_CHANGED, _axial_index, _frontal_index, _sagittal_index);
 
     this->request_render();
 }

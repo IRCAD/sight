@@ -22,8 +22,6 @@
 
 #include "module/viz/scene3d/adaptor/mesh.hpp"
 
-#include "module/viz/scene3d/adaptor/material.hpp"
-
 #include <core/com/signal.hxx>
 #include <core/com/slots.hxx>
 #include <core/ptree.hpp>
@@ -45,24 +43,18 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const core::com::slots::key_t MODIFY_MESH_SLOT             = "modifyMesh";
-static const core::com::slots::key_t MODIFY_COLORS_SLOT           = "modifyColors";
-static const core::com::slots::key_t MODIFY_POINT_TEX_COORDS_SLOT = "modifyTexCoords";
-static const core::com::slots::key_t MODIFY_VERTICES_SLOT         = "modifyVertices";
-static const core::com::slots::key_t CHANGE_MATERIAL_SLOT         = "change_material";
-
 //-----------------------------------------------------------------------------
 
 mesh::mesh() noexcept
 {
     m_material = std::make_shared<data::material>();
 
-    new_slot(MODIFY_MESH_SLOT, [this](){lazy_update(update_flags::MESH);});
-    new_slot(MODIFY_COLORS_SLOT, [this](){lazy_update(update_flags::COLORS);});
-    new_slot(MODIFY_POINT_TEX_COORDS_SLOT, [this](){lazy_update(update_flags::TEX_COORDS);});
-    new_slot(MODIFY_VERTICES_SLOT, [this](){lazy_update(update_flags::VERTICES);});
+    new_slot(slots::MODIFY_MESH, [this](){lazy_update(update_flags::mesh);});
+    new_slot(slots::MODIFY_COLORS, [this](){lazy_update(update_flags::colors);});
+    new_slot(slots::MODIFY_POINT_TEX_COORDS, [this](){lazy_update(update_flags::tex_coords);});
+    new_slot(slots::MODIFY_VERTICES, [this](){lazy_update(update_flags::vertices);});
     new_slot(
-        CHANGE_MATERIAL_SLOT,
+        slots::CHANGE_MATERIAL,
         [this](Ogre::MaterialPtr _material)
         {
             SIGHT_ASSERT("Entity null", m_entity);
@@ -72,6 +64,14 @@ mesh::mesh() noexcept
 
             SIGHT_ASSERT("Adaptor is null", m_material_adaptor);
             m_material_adaptor->get_material_impl()->set_layout(*m_mesh_geometry);
+        });
+    new_slot(
+        slots::CHANGE_COLOR,
+        [this]()
+        {
+            SIGHT_ASSERT("Material not found", m_material);
+            *m_material->diffuse() = m_color.value();
+            m_material_adaptor->slot(service::slots::UPDATE)->run();
         });
 }
 
@@ -88,23 +88,16 @@ mesh::~mesh() noexcept
 
 //-----------------------------------------------------------------------------
 
-void mesh::configuring()
+void mesh::configuring(const config_t& _config)
 {
     this->configure_params();
 
-    const config_t config = this->get_config();
-
-    const std::string color = config.get<std::string>(CONFIG + "color", "");
-
-    SIGHT_ASSERT("Material not found", m_material);
-    m_material->diffuse()->from_string(color.empty() ? "#FFFFFFFF" : color);
-
-    m_auto_reset_camera = config.get<bool>(CONFIG + "autoresetcamera", true);
+    m_auto_reset_camera = _config.get<bool>(CONFIG + "autoresetcamera", true);
 
     // If a material is configured in the XML scene, we keep its name to retrieve the adaptor later
     // Else we keep the name of the configured Ogre material (if it exists),
     //      it will be passed to the created material
-    if(const auto material_name = config.get_optional<std::string>(CONFIG + "material_name");
+    if(const auto material_name = _config.get_optional<std::string>(CONFIG + "material_name");
        material_name.has_value())
     {
         m_material_name = material_name.value();
@@ -112,11 +105,11 @@ void mesh::configuring()
     else
     {
         // An existing Ogre material will be used for this mesh
-        m_material_template_name = config.get<std::string>(CONFIG + "material_template", m_material_template_name);
+        m_material_template_name = _config.get<std::string>(CONFIG + "material_template", m_material_template_name);
 
         // The mesh adaptor will pass the texture name to the created material adaptor
         m_texture_name = core::ptree::get_and_deprecate(
-            config,
+            _config,
             CONFIG + "texture_name",
             CONFIG + "textureName",
             "26.0",
@@ -124,20 +117,20 @@ void mesh::configuring()
         );
 
         m_shading_mode = core::ptree::get_and_deprecate(
-            config,
+            _config,
             CONFIG + "shading",
             CONFIG + "shadingMode",
             "26.0",
             m_shading_mode
         );
 
-        auto representation_mode = config.get_optional<std::string>(CONFIG + "representation");
+        auto representation_mode = _config.get_optional<std::string>(CONFIG + "representation");
         if(representation_mode.has_value())
         {
             m_representation_mode = sight::data::material::string_to_representation_mode(representation_mode.value());
         }
 
-        auto options_mode = config.get_optional<std::string>(CONFIG + "options");
+        auto options_mode = _config.get_optional<std::string>(CONFIG + "options");
         if(options_mode.has_value())
         {
             m_options_mode = sight::data::material::string_to_options_mode(options_mode.value());
@@ -145,17 +138,17 @@ void mesh::configuring()
     }
 
     this->set_transform_id(
-        config.get<std::string>(
+        _config.get<std::string>(
             sight::viz::scene3d::transformable::TRANSFORM_CONFIG,
             gen_id("transform")
         )
     );
 
-    m_is_dynamic          = config.get<bool>(CONFIG + "dynamic", m_is_dynamic);
-    m_is_dynamic_vertices = config.get<bool>(CONFIG + "dynamic_vertices", m_is_dynamic_vertices);
+    m_is_dynamic          = _config.get<bool>(CONFIG + "dynamic", m_is_dynamic);
+    m_is_dynamic_vertices = _config.get<bool>(CONFIG + "dynamic_vertices", m_is_dynamic_vertices);
 
     const auto hexa_mask = core::ptree::get_and_deprecate<std::string>(
-        config,
+        _config,
         CONFIG + "query_flags",
         CONFIG + "queryFlags",
         "26.0"
@@ -170,6 +163,9 @@ void mesh::configuring()
         );
         m_query_flags = static_cast<std::uint32_t>(std::stoul(hexa_mask, nullptr, 16));
     }
+
+    SIGHT_ASSERT("Material not found", m_material);
+    *m_material->diffuse() = m_color.value();
 }
 
 //-----------------------------------------------------------------------------
@@ -212,7 +208,7 @@ void mesh::starting()
             m_material_adaptor,
             module::viz::scene3d::adaptor::material::signals::CHANGED,
             this->get_sptr(),
-            CHANGE_MATERIAL_SLOT
+            slots::CHANGE_MATERIAL
         );
 
         SIGHT_ASSERT(
@@ -230,13 +226,15 @@ void mesh::starting()
 
 service::connections_t mesh::auto_connections() const
 {
-    service::connections_t connections = adaptor::auto_connections();
-    connections.push(MESH_IN, data::mesh::VERTEX_MODIFIED_SIG, MODIFY_VERTICES_SLOT);
-    connections.push(MESH_IN, data::mesh::POINT_COLORS_MODIFIED_SIG, MODIFY_COLORS_SLOT);
-    connections.push(MESH_IN, data::mesh::CELL_COLORS_MODIFIED_SIG, MODIFY_COLORS_SLOT);
-    connections.push(MESH_IN, data::mesh::POINT_TEX_COORDS_MODIFIED_SIG, MODIFY_POINT_TEX_COORDS_SLOT);
-    connections.push(MESH_IN, data::mesh::MODIFIED_SIG, MODIFY_MESH_SLOT);
-    return connections;
+    const service::connections_t connections = {
+        {m_mesh, data::mesh::VERTEX_MODIFIED_SIG, slots::MODIFY_VERTICES},
+        {m_mesh, data::mesh::POINT_COLORS_MODIFIED_SIG, slots::MODIFY_COLORS},
+        {m_mesh, data::mesh::CELL_COLORS_MODIFIED_SIG, slots::MODIFY_COLORS},
+        {m_mesh, data::mesh::POINT_TEX_COORDS_MODIFIED_SIG, slots::MODIFY_POINT_TEX_COORDS},
+        {m_mesh, data::signals::MODIFIED, slots::MODIFY_MESH},
+        {m_color, data::signals::MODIFIED, slots::CHANGE_COLOR}
+    };
+    return connections + adaptor::auto_connections();
 }
 
 //-----------------------------------------------------------------------------
@@ -248,7 +246,7 @@ void mesh::updating()
         return;
     }
 
-    if(update_needed(update_flags::MESH))
+    if(update_needed(update_flags::mesh))
     {
         const auto mesh = m_mesh.lock();
 
@@ -261,15 +259,15 @@ void mesh::updating()
 
         this->update_mesh(mesh.get_shared());
     }
-    else if(update_needed(update_flags::VERTICES))
+    else if(update_needed(update_flags::vertices))
     {
         this->modify_vertices();
     }
-    else if(update_needed(update_flags::COLORS))
+    else if(update_needed(update_flags::colors))
     {
         this->modify_point_colors();
     }
-    else if(update_needed(update_flags::TEX_COORDS))
+    else if(update_needed(update_flags::tex_coords))
     {
         this->modify_tex_coords();
     }
@@ -499,7 +497,7 @@ void mesh::update_new_material_adaptor(data::mesh::csptr _mesh)
                 m_material_adaptor,
                 module::viz::scene3d::adaptor::material::signals::CHANGED,
                 this->get_sptr(),
-                CHANGE_MATERIAL_SLOT
+                slots::CHANGE_MATERIAL
             );
         }
     }

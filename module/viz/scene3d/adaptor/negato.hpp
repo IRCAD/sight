@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,6 +22,7 @@
 #pragma once
 
 #include <data/helper/medical_image.hpp>
+#include <data/integer.hpp>
 #include <data/real.hpp>
 #include <data/string.hpp>
 
@@ -50,21 +51,21 @@ public:
 
     struct signals
     {
-        using slice_index_changed_t = core::com::signal<void ()>;
+        using slice_index_changed_t = core::com::signal<void (int, int, int)>;
         using picked_voxel_t        = core::com::signal<void (std::string)>;
-        static inline const core::com::signals::key_t SLICE_INDEX_CHANGED = "slice_index_changed";
-        static inline const core::com::signals::key_t PICKED_VOXEL        = "picked_voxel";
+        static inline const signal_key_t SLICE_INDEX_CHANGED = "slice_index_changed";
+        static inline const signal_key_t PICKED_VOXEL        = "picked_voxel";
     };
 
     struct slots
     {
-        static inline const core::com::slots::key_t UPDATE_IMAGE             = "update_image";
-        static inline const core::com::slots::key_t UPDATE_MASK              = "update_mask";
-        static inline const core::com::slots::key_t UPDATE_IMAGE_BUFFER      = "update_image_buffer";
-        static inline const core::com::slots::key_t UPDATE_TF                = "update_tf";
-        static inline const core::com::slots::key_t SLICE_TYPE               = "slice_type";
-        static inline const core::com::slots::key_t SLICE_INDEX              = "slice_index";
-        static inline const core::com::slots::key_t UPDATE_SLICES_FROM_WORLD = "update_slices_from_world";
+        static inline const slot_key_t UPDATE_IMAGE             = "update_image";
+        static inline const slot_key_t UPDATE_MASK              = "update_mask";
+        static inline const slot_key_t UPDATE_IMAGE_BUFFER      = "update_image_buffer";
+        static inline const slot_key_t UPDATE_TF                = "update_tf";
+        static inline const slot_key_t SLICE_TYPE               = "slice_type";
+        static inline const slot_key_t SLICE_INDEX              = "slice_index";
+        static inline const slot_key_t UPDATE_SLICES_FROM_WORLD = "update_slices_from_world";
     };
 
     /**
@@ -115,6 +116,9 @@ protected:
 
     /// Updates the displayed transfer function.
     void update_tf();
+
+    /// Returns the render priority for this negato.
+    std::uint16_t priority() const;
 
 private:
 
@@ -218,9 +222,6 @@ private:
     /// Defines if the plane border is used or not.
     bool m_border {true};
 
-    /// Sets the order in which interactions take place in the scene.
-    int m_priority {1};
-
     enum class update_flags : std::uint8_t
     {
         IMAGE,
@@ -233,6 +234,9 @@ private:
     sight::data::property<sight::data::string> m_classification {this, "classification", std::string("post")};
     sight::data::property<sight::data::real> m_depth_bias {this, "depth_bias", 0.};
     sight::data::property<sight::data::boolean> m_rgb_negato {this, "rgb_negato", false};
+
+    /// Sets the order for interactions and display.
+    sight::data::property<sight::data::integer> m_priority {this, "priority", 1};
 };
 
 //------------------------------------------------------------------------------
@@ -240,6 +244,13 @@ private:
 inline void negato::set_filtering(sight::viz::scene3d::plane::filter_t _filtering)
 {
     m_filtering = _filtering;
+}
+
+//------------------------------------------------------------------------------
+
+inline std::uint16_t negato::priority() const
+{
+    return static_cast<std::uint16_t>(*m_priority);
 }
 
 } // namespace sight::module::viz::scene3d::adaptor.

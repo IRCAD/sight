@@ -240,6 +240,12 @@ void negato3d::move_slices(int _x, int _y)
             int(picked_voxel[1]),
             int(picked_voxel[0])
         );
+
+        image->async_emit(
+            sight::data::signals::CHANGED_FIELDS,
+            sight::data::fields_container_t(),
+            sight::data::fields_container_t()
+        );
     }
 }
 

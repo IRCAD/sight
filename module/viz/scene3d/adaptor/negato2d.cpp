@@ -99,12 +99,12 @@ void negato2d::change_slice_type(int _from, int _to)
         this->render_service()->make_current();
 
         const auto spacing = sight::viz::scene3d::utils::get_ogre_spacing(*image);
-        m_planes[0].first->update(m_planes[0].second, spacing);
+        m_planes[0].first->update(m_planes[0].second, spacing, this->priority());
 
         // Update threshold if necessary
         this->update_tf();
 
-        m_planes[0].first->change_slice(m_current_slice_index);
+        m_planes[0].first->change_slice(m_current_slice_index, this->priority());
 
         this->request_render();
     }
