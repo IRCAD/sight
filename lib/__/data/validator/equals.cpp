@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,36 +19,48 @@
  *
  ***********************************************************************/
 
-#include "is_true.hpp"
+#include "equals.hpp"
 
 #include <data/string_serializable.hpp>
 #include <data/validator/registry/macros.hpp>
 
+#include <algorithm>
 #include <string>
 
 namespace sight::data::validator
 {
 
-SIGHT_REGISTER_DATA_VALIDATOR(sight::data::validator::is_true);
+SIGHT_REGISTER_DATA_VALIDATOR(sight::data::validator::equals);
+
+//------------------------------------------------------------------------------
+
+void equals::configure(const config_t& _config)
+{
+    m_value = _config.get<std::string>("value", "");
+    SIGHT_ERROR_IF("Configuration value is empty", m_value.empty());
+}
 
 //-----------------------------------------------------------------------------
 
-sight::data::validator::return_t is_true::validate(const data::object::csptr& _object) const
+sight::data::validator::return_t equals::validate(const data::object::csptr& _object) const
 {
-    sight::data::validator::return_t validation {true, {}};
+    if(m_value.empty())
+    {
+        return {false, "Configured value is empty"};
+    }
 
+    sight::data::validator::return_t validation {true, {}};
     try
     {
         if(const auto obj = std::dynamic_pointer_cast<const data::string_serializable>(_object); obj)
         {
             auto string_value = obj->to_string();
-            std::transform(
-                string_value.begin(),
-                string_value.end(),
+            std::ranges::transform(
+                string_value,
                 string_value.begin(),
                 [](unsigned char _c){return std::tolower(_c);});
 
-            if(string_value == "true")
+            if(string_value == m_value)
             {
                 validation = {true, "Object contains 'true'"};
             }
@@ -76,11 +88,9 @@ sight::data::validator::return_t is_true::validate(const data::object::csptr& _o
 
 //------------------------------------------------------------------------------
 
-is_true::auto_connect_signals_t is_true::auto_connect_signals() const
+equals::auto_connect_signals_t equals::auto_connect_signals() const
 {
-    return {
-        sight::data::object::MODIFIED_SIG
-    };
+    return {sight::data::signals::MODIFIED};
 }
 
 //-----------------------------------------------------------------------------

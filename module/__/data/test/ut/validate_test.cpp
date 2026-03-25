@@ -20,6 +20,7 @@
  ***********************************************************************/
 
 #include <data/image.hpp>
+#include <data/string.hpp>
 
 #include <service/op.hpp>
 
@@ -29,9 +30,119 @@
 
 TEST_SUITE("sight::module::data::validated")
 {
+    TEST_CASE("equals")
+    {
+        using namespace std::literals::string_literals;
+
+        auto srv    = sight::service::add("sight::module::data::validate");
+        auto string = std::make_shared<sight::data::string>();
+
+        std::optional<bool> valid;
+        auto valid_slot = sight::core::com::new_slot(
+            [&]()
+        {
+            valid = true;
+        });
+        valid_slot->set_worker(sight::core::thread::get_default_worker());
+        srv->signal("valid")->connect(valid_slot);
+
+        std::optional<bool> invalid;
+        auto invalid_slot = sight::core::com::new_slot(
+            [&]()
+        {
+            invalid = true;
+        });
+        invalid_slot->set_worker(sight::core::thread::get_default_worker());
+        srv->signal("invalid")->connect(invalid_slot);
+
+        std::optional<bool> is_valid;
+        auto is_valid_slot = sight::core::com::new_slot(
+            [&](bool _is_valid)
+        {
+            is_valid = _is_valid;
+        });
+        is_valid_slot->set_worker(sight::core::thread::get_default_worker());
+        srv->signal("is_valid")->connect(is_valid_slot);
+
+        std::optional<bool> is_invalid;
+        auto is_invalid_slot = sight::core::com::new_slot(
+            [&](bool _is_invalid)
+        {
+            is_invalid = _is_invalid;
+        });
+        is_invalid_slot->set_worker(sight::core::thread::get_default_worker());
+        srv->signal("is_invalid")->connect(is_invalid_slot);
+
+        srv->set_config("<config id='sight::data::validator::equals'><value>expected</value></config>");
+        srv->set_input(string, "data");
+        srv->configure();
+        srv->start().get();
+
+        {
+            srv->update().get();
+
+            SIGHT_TEST_WAIT(invalid.has_value());
+            SIGHT_TEST_WAIT(is_valid.has_value());
+            SIGHT_TEST_WAIT(is_invalid.has_value());
+
+            CHECK_EQ(false, valid.has_value());
+            CHECK_EQ(true, invalid.has_value());
+            CHECK_EQ(true, is_valid.has_value());
+            CHECK_EQ(true, is_invalid.has_value());
+            CHECK_EQ(true, *invalid);
+            CHECK_EQ(false, *is_valid);
+            CHECK_EQ(true, *is_invalid);
+        }
+
+        valid      = std::nullopt;
+        invalid    = std::nullopt;
+        is_valid   = std::nullopt;
+        is_invalid = std::nullopt;
+
+        {
+            string->set_value("test_value");
+            srv->update().get();
+
+            SIGHT_TEST_WAIT(invalid.has_value());
+            SIGHT_TEST_WAIT(is_valid.has_value());
+            SIGHT_TEST_WAIT(is_invalid.has_value());
+
+            CHECK_EQ(false, valid.has_value());
+            CHECK_EQ(true, invalid.has_value());
+            CHECK_EQ(true, is_valid.has_value());
+            CHECK_EQ(true, is_invalid.has_value());
+            CHECK_EQ(true, *invalid);
+            CHECK_EQ(false, *is_valid);
+            CHECK_EQ(true, *is_invalid);
+        }
+
+        valid      = std::nullopt;
+        invalid    = std::nullopt;
+        is_valid   = std::nullopt;
+        is_invalid = std::nullopt;
+
+        {
+            string->set_value("expected");
+            srv->update().get();
+
+            SIGHT_TEST_WAIT(invalid.has_value());
+            SIGHT_TEST_WAIT(is_valid.has_value());
+            SIGHT_TEST_WAIT(is_invalid.has_value());
+
+            CHECK_EQ(true, valid.has_value());
+            CHECK_EQ(false, invalid.has_value());
+            CHECK_EQ(true, is_valid.has_value());
+            CHECK_EQ(true, is_invalid.has_value());
+            CHECK_EQ(true, *valid);
+            CHECK_EQ(true, *is_valid);
+            CHECK_EQ(false, *is_invalid);
+        }
+        CHECK_NOTHROW(srv->stop().get());
+        sight::service::remove(srv);
+    }
 //------------------------------------------------------------------------------
 
-    TEST_CASE("filled_test")
+    TEST_CASE("filled")
     {
         using namespace std::literals::string_literals;
 

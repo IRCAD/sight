@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -132,6 +132,9 @@ struct SIGHT_ACTIVITY_CLASS_API activity_requirement
 
     /// Child configuration, used for instance when invoking object parsers
     config_t object_config;
+
+    /// Child configuration for validators, used when checking the validity of the data associated to the requirement
+    config_t validator_config;
 };
 
 /**
@@ -190,7 +193,7 @@ struct SIGHT_ACTIVITY_CLASS_API activity_requirement
             <requirement name="imageSeries" type="data::image_series" minOccurs="0" maxOccurs="2" />
             <requirement name="modelSeries" type="data::model_series" minOccurs="1" maxOccurs="1">
                  <desc>Description of the required data....</desc>
-                 <validator>activity::validator::image_properties</validator>
+                 <validator id="activity::validator::image_properties" />
             </requirement>
             <requirement name="transformationMatrix" type="data::matrix4" minOccurs="0" maxOccurs="1"
  * create="true" />

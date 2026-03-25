@@ -113,6 +113,15 @@ activity_requirement::activity_requirement(const config_t& _config) :
         "minOccurs value shall be equal or greater than 0 and lower or equal to maxOccurs (" << max_occurs << ")",
         min_occurs <= max_occurs
     );
+
+    if(validator.empty())
+    {
+        if(const auto& validator_cfg = _config.get_child_optional("validator"); validator_cfg.has_value())
+        {
+            validator        = validator_cfg->get<std::string>("<xmlattr>.id", validator);
+            validator_config = *validator_cfg;
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------

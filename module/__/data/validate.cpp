@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -59,6 +59,8 @@ void validate::configuring(const service::config_t& _config)
 
     m_validator = sight::data::validator::factory::make(id);
     SIGHT_THROW_IF("Validator " << std::quoted(id) << " can not be instantiated.", m_validator == nullptr);
+
+    m_validator->configure(_config.get_child("config"));
 }
 
 //------------------------------------------------------------------------------

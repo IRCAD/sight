@@ -26,7 +26,7 @@
 
 #include <doctest/doctest.h>
 
-TEST_SUITE("sight::data::validator::ut")
+TEST_SUITE("sight::data::validator")
 {
     namespace factory = sight::data::validator::factory;
 
@@ -34,11 +34,15 @@ TEST_SUITE("sight::data::validator::ut")
 
     TEST_CASE("boolean")
     {
-        auto validator = factory::make("sight::data::validator::is_true");
+        auto validator = factory::make("sight::data::validator::equals");
         CHECK(validator);
 
         auto obj_validator = std::dynamic_pointer_cast<sight::data::validator::base>(validator);
         CHECK(obj_validator);
+
+        sight::data::validator::config_t config;
+        config.put("value", "true");
+        validator->configure(config);
 
         sight::data::validator::return_t validation;
         sight::data::boolean::sptr b = std::make_shared<sight::data::boolean>();
@@ -55,8 +59,12 @@ TEST_SUITE("sight::data::validator::ut")
 
     TEST_CASE("integer")
     {
-        auto validator = factory::make("sight::data::validator::is_true");
+        auto validator = factory::make("sight::data::validator::equals");
         CHECK(validator);
+
+        sight::data::validator::config_t config;
+        config.put("value", "true");
+        validator->configure(config);
 
         auto obj_validator = std::dynamic_pointer_cast<sight::data::validator::base>(validator);
         CHECK(obj_validator);
@@ -101,8 +109,41 @@ TEST_SUITE("sight::data::validator::ut")
 
     TEST_CASE("string")
     {
-        auto validator = factory::make("sight::data::validator::is_true");
+        auto validator = factory::make("sight::data::validator::equals");
         CHECK(validator);
+
+        sight::data::validator::config_t config;
+        config.put("value", "test_value");
+        validator->configure(config);
+
+        auto obj_validator = std::dynamic_pointer_cast<sight::data::validator::base>(validator);
+        CHECK(obj_validator);
+
+        sight::data::validator::return_t validation;
+        sight::data::string::sptr s = std::make_shared<sight::data::string>();
+
+        s->set_value("test");
+        validation = obj_validator->validate(s);
+        CHECK_EQ(false, validation.first);
+
+        s->set_value("test_value");
+        validation = obj_validator->validate(s);
+        CHECK_EQ(true, validation.first);
+
+        s->set_value("1");
+        validation = obj_validator->validate(s);
+        CHECK_EQ(true, validation.first);
+    }
+//------------------------------------------------------------------------------
+
+    TEST_CASE("string_boolean")
+    {
+        auto validator = factory::make("sight::data::validator::equals");
+        CHECK(validator);
+
+        sight::data::validator::config_t config;
+        config.put("value", "true");
+        validator->configure(config);
 
         auto obj_validator = std::dynamic_pointer_cast<sight::data::validator::base>(validator);
         CHECK(obj_validator);
@@ -158,4 +199,4 @@ TEST_SUITE("sight::data::validator::ut")
     }
 
 //------------------------------------------------------------------------------
-} // TEST_SUITE("sight::data::validator::ut")
+} // TEST_SUITE("sight::data::validator")

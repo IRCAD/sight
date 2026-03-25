@@ -28,7 +28,7 @@
 
 #include <doctest/doctest.h>
 
-TEST_SUITE("sight::data::validator::ut")
+TEST_SUITE("sight::data::validator")
 {
     namespace factory = sight::data::validator::factory;
     using sight::data::validator::base;
@@ -331,4 +331,4 @@ TEST_SUITE("sight::data::validator::ut")
     }
 
 //------------------------------------------------------------------------------
-} // TEST_SUITE("sight::data::validator::ut")
+} // TEST_SUITE("sight::data::validator")

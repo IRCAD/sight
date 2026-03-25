@@ -16,7 +16,14 @@
                 <xs:complexType>
                   <xs:sequence>
                     <xs:element name="desc" type="xs:string" maxOccurs="1" minOccurs="0" />
-                    <xs:element name="validator" type="xs:string" maxOccurs="1" minOccurs="0" />
+                    <xs:element name="validator" minOccurs="0" maxOccurs="1" >
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:any processContents="skip" maxOccurs="unbounded" minOccurs="0"/>
+                            </xs:sequence>
+                            <xs:attribute name="id" type="xs:string" use="required" />
+                        </xs:complexType>
+                    </xs:element>
                     <xs:element name="key" maxOccurs="unbounded" minOccurs="0">
                       <xs:complexType>
                         <xs:simpleContent>

@@ -178,7 +178,7 @@ TEST_SUITE("sight::activity::default_activity")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE_FIXTURE(fixture, "object")
+    TEST_CASE_FIXTURE(fixture, "check_object")
     {
         auto validator = sight::activity::validator::factory::make("sight::activity::validator::default_activity");
         CHECK(validator);
@@ -188,63 +188,127 @@ TEST_SUITE("sight::activity::default_activity")
 
         sight::activity::validator::return_t validation;
 
-        sight::data::image::sptr img1 = std::make_shared<sight::data::image>();
-        sight::data::image::sptr img2 = std::make_shared<sight::data::image>();
-        sight::data::image::sptr img3 = std::make_shared<sight::data::image>();
-        sight::utest_data::generator::image::generate_random_image(img1, sight::core::type::UINT8);
-        sight::utest_data::generator::image::generate_image(
-            img2,
-            img1->size(),
-            img1->spacing(),
-            img1->origin(),
-            img1->orientation(),
-            img1->type(),
-            sight::data::image::pixel_format_t::gray_scale
-        );
-        sight::utest_data::generator::image::generate_random_image(img3, sight::core::type::UINT8);
+        SUBCASE("image")
+        {
+            auto img1 = std::make_shared<sight::data::image>();
+            auto img2 = std::make_shared<sight::data::image>();
+            auto img3 = std::make_shared<sight::data::image>();
+            sight::utest_data::generator::image::generate_random_image(img1, sight::core::type::UINT8);
+            sight::utest_data::generator::image::generate_image(
+                img2,
+                img1->size(),
+                img1->spacing(),
+                img1->origin(),
+                img1->orientation(),
+                img1->type(),
+                sight::data::image::pixel_format_t::gray_scale
+            );
+            sight::utest_data::generator::image::generate_random_image(img3, sight::core::type::UINT8);
 
-        sight::data::vector::sptr vector = std::make_shared<sight::data::vector>();
-        vector->push_back(img1);
-        vector->push_back(img2);
+            auto vector = std::make_shared<sight::data::vector>();
+            vector->push_back(img1);
+            vector->push_back(img2);
 
-        sight::data::vector::sptr vector2 = std::make_shared<sight::data::vector>();
-        vector2->push_back(img1);
-        vector2->push_back(img3);
+            auto vector2 = std::make_shared<sight::data::vector>();
+            vector2->push_back(img1);
+            vector2->push_back(img3);
 
-        {
-            // An empty validator implementation should be valid
-            validation = sight::activity::validator::activity::check_object(img1, "");
-            CHECK_MESSAGE(validation.first == true, "An empty validator implementation should be valid");
+            sight::activity::extension::config_t config;
+
+            {
+                // An empty validator implementation should be valid
+                validation = sight::activity::validator::activity::check_object(img1, "", config);
+                CHECK_MESSAGE(validation.first == true, "An empty validator implementation should be valid");
+            }
+            {
+                // A non-existent validator implementation should NOT be valid
+                validation = sight::activity::validator::activity::check_object(
+                    img1,
+                    "::non-existent::validator",
+                    config
+                );
+                CHECK_MESSAGE(
+                    validation.first == false,
+                    "A non-existent validator implementation should NOT be valid"
+                );
+            }
+            {
+                // An existing validator implementation with valid data should be valid
+                validation = sight::activity::validator::activity::check_object(
+                    vector,
+                    "sight::activity::validator::image_properties",
+                    config
+                );
+                CHECK_MESSAGE(
+                    validation.first == true,
+                    "An existing validator implementation with valid data should be valid"
+                );
+            }
+            {
+                // An existing validator implementation with invalid data should NOT be valid
+                validation = sight::activity::validator::activity::check_object(
+                    vector2,
+                    "sight::activity::validator::image_properties",
+                    config
+
+                );
+                CHECK_MESSAGE(
+                    validation.first == false,
+                    "An existing validator implementation with invalid data should NOT be valid"
+                );
+            }
         }
+
+        SUBCASE("validator_with_parameters")
         {
-            // A non-existent validator implementation should NOT be valid
-            validation = sight::activity::validator::activity::check_object(img1, "::non-existent::validator");
-            CHECK_MESSAGE(
-                validation.first == false,
-                "A non-existent validator implementation should NOT be valid"
-            );
-        }
-        {
-            // An existing validator implementation with valid data should be valid
-            validation = sight::activity::validator::activity::check_object(
-                vector,
-                "sight::activity::validator::image_properties"
-            );
-            CHECK_MESSAGE(
-                validation.first == true,
-                "An existing validator implementation with valid data should be valid"
-            );
-        }
-        {
-            // An existing validator implementation with invalid data should NOT be valid
-            validation = sight::activity::validator::activity::check_object(
-                vector2,
-                "sight::activity::validator::image_properties"
-            );
-            CHECK_MESSAGE(
-                validation.first == false,
-                "An existing validator implementation with invalid data should NOT be valid"
-            );
+            auto string = std::make_shared<sight::data::string>("expected");
+
+            sight::activity::extension::config_t config;
+            config.put("value", "expected");
+
+            {
+                // An empty validator implementation should be valid
+                validation = sight::activity::validator::activity::check_object(string, "", config);
+                CHECK_MESSAGE(validation.first == true, "An empty validator implementation should be valid");
+            }
+            {
+                // A non-existent validator implementation should NOT be valid
+                validation = sight::activity::validator::activity::check_object(
+                    string,
+                    "::non-existent::validator",
+                    config
+                );
+                CHECK_MESSAGE(
+                    validation.first == false,
+                    "A non-existent validator implementation should NOT be valid"
+                );
+            }
+            {
+                // An existing validator implementation with valid data should be valid
+                validation = sight::activity::validator::activity::check_object(
+                    string,
+                    "sight::data::validator::equals",
+                    config
+                );
+                CHECK_MESSAGE(
+                    validation.first == true,
+                    "An existing validator implementation with valid data should be valid"
+                );
+            }
+            {
+                // An existing validator implementation with invalid data should NOT be valid
+                string->set_value("invalid");
+                validation = sight::activity::validator::activity::check_object(
+                    string,
+                    "sight::data::validator::equals",
+                    config
+
+                );
+                CHECK_MESSAGE(
+                    validation.first == false,
+                    "An existing validator implementation with invalid data should NOT be valid"
+                );
+            }
         }
     }
 

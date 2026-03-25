@@ -28,7 +28,7 @@ namespace sight::module::data
 
 /**
  * @brief This service copies only the fields of an object and updates its own object or the defined target.
- * The fields are copied when updating (which means this service doesn't have the copyOnStart mode like copy).
+ * The fields are copied when updating.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -42,7 +42,7 @@ namespace sight::module::data
  * - \b source [sight::data::object]: define the source object whose fields to copy.
  *
  * @subsection In-Out In-Out
- * - \b target [sight::data::object]: define the target object to update, can't be used with Output.
+ * - \b target [sight::data::object]: define the target object to update.
  */
 class copy_field final : public service::controller
 {

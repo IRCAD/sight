@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,34 +23,49 @@
 
 #include <data/validator/base.hpp>
 
+#include <string>
+#include <utility>
+#include <vector>
+
 namespace sight::data::validator
 {
 
 /**
- * @brief Defines a validator which checks if a string_serializable data is true.
-   - true : "true"/"TRUE"/"True"/"trUe"/... or any non-zero integers
-   - false: all others values
+ * @brief Defines a validator which checks if a model_series contains specific organs.
+ * The organs to check for are set by the configuration with "organ" elements:
+ *  @code{.xml}
+ *   <organ name="Masses" type="Liver"  />
+ *   <organ name="Vessels" type="Liver"  />
+ *  @endcode
  */
-class is_true : public sight::data::validator::base
+class has_model final : public sight::data::validator::base
 {
 public:
 
     SIGHT_DECLARE_CLASS(
-        is_true,
+        has_model,
         sight::data::validator::base,
-        sight::data::validator::factory::make<is_true>
+        sight::data::validator::factory::make<has_model>
     );
-    ~is_true() override = default;
+    ~has_model() final = default;
+
+    /** Configures the validator with the given configuration. */
+    void configure(const config_t& _config) final;
 
     /**
-     * @brief Checks that the object has a true value
-     * @note Given object should be a string_serializable data
+     * @brief Checks that the model_series contains the configured organs
+     * @note Given object should be a model_series data
      * @see data::validator::base::validate
      */
-    sight::data::validator::return_t validate(const CSPTR(data::object)& _object) const override;
+    sight::data::validator::return_t validate(const CSPTR(data::object)& _object) const final;
 
     /** Connects with data::MODIFIED signal **/
-    SIGHT_DATA_API auto_connect_signals_t auto_connect_signals() const override;
+    SIGHT_DATA_API auto_connect_signals_t auto_connect_signals() const final;
+
+private:
+
+    /// Organ constraint (name, type) pairs
+    std::vector<std::pair<std::string, std::string> > m_organs;
 };
 
 } // namespace sight::data::validator

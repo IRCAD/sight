@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2024 IRCAD France
+ * Copyright (C) 2016-2026 IRCAD France
  * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,6 +25,8 @@
 #include <sight/activity/config.hpp>
 
 #include "activity/validator/base.hpp"
+
+#include "core/runtime/extension.hpp"
 
 #include <core/base.hpp>
 
@@ -81,12 +83,14 @@ public:
      * @brief Calls the object validator if it is defined.
      * @param _object object to validate
      * @param _validator_impl implementation of the validator to apply (if it is empty, check is assumed as valid).
+     * @param _config configuration to pass to the validator (if needed)
      * @return pair <isValid, errorMsg> : errorMsg is empty if the object is valid else it contains the detailed error.
      * @see activity::validator::object
      */
     static SIGHT_ACTIVITY_API return_t check_object(
         const CSPTR(data::object)& _object,
-        const std::string& _validator_impl
+        const std::string& _validator_impl,
+        const extension::config_t& _config
     );
 };
 
