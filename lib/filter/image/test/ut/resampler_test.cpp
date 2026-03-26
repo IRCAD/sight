@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2025 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -68,6 +68,7 @@ TEST_SUITE("sight::filter::image::resampler")
             sight::data::image::csptr(image_in),
             image_out,
             sight::data::matrix4::csptr(id_mat),
+            false,
             std::make_tuple(
                 image_in->size(),
                 image_in->origin(),
@@ -256,6 +257,117 @@ TEST_SUITE("sight::filter::image::resampler")
                 }
             }
         }
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("pre_transform")
+    {
+        // Test the pre_transform parameter to apply transformation before resampling
+        // This is the classic image registration use case: transform image B to align with image A,
+        // then resample it to have the same parameters as A.
+
+        const sight::data::image::size_t size               = {16, 16, 16};
+        const sight::data::image::spacing_t spacing         = {1.0, 1.0, 1.0};
+        const sight::data::image::origin_t origin           = {0.0, 0.0, 0.0};
+        const sight::data::image::orientation_t orientation = {1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0};
+        const sight::core::type type                        = sight::core::type::UINT8;
+
+        // Create input image with a small feature
+        auto image_in = std::make_shared<sight::data::image>();
+
+        sight::utest_data::generator::image::generate_image(
+            image_in,
+            size,
+            spacing,
+            origin,
+            orientation,
+            type,
+            sight::data::image::gray_scale
+        );
+
+        // Place a small bright square in the image
+        const auto in_dump_lock = image_in->dump_lock();
+        for(std::size_t i = 4 ; i < 6 ; ++i)
+        {
+            for(std::size_t j = 4 ; j < 6 ; ++j)
+            {
+                for(std::size_t k = 4 ; k < 6 ; ++k)
+                {
+                    image_in->at<std::uint8_t>(i, j, k) = 255;
+                }
+            }
+        }
+
+        // Create a translation transformation (2mm along X axis)
+        sight::data::matrix4::sptr trans_mat = std::make_shared<sight::data::matrix4>();
+        (*trans_mat)(0, 3) = 2.0;
+
+        // Test WITHOUT pre_transform: standard resampling
+        auto image_out_without_pre = std::make_shared<sight::data::image>();
+        sight::filter::image::resampler::resample(
+            sight::data::image::csptr(image_in),
+            image_out_without_pre,
+            sight::data::matrix4::csptr(trans_mat),
+            false, // _pre_transform = false
+            std::make_tuple(
+                image_in->size(),
+                image_in->origin(),
+                image_in->orientation(),
+                image_in->spacing(),
+                sight::filter::image::interpolation_t::LINEAR
+            )
+        );
+
+        // Test WITH pre_transform: apply transformation to image geometry first
+        auto image_out_with_pre = std::make_shared<sight::data::image>();
+        sight::filter::image::resampler::resample(
+            sight::data::image::csptr(image_in),
+            image_out_with_pre,
+            sight::data::matrix4::csptr(trans_mat),
+            true, // _pre_transform = true
+            std::make_tuple(
+                image_in->size(),
+                image_in->origin(),
+                image_in->orientation(),
+                image_in->spacing(),
+                sight::filter::image::interpolation_t::LINEAR
+            )
+        );
+
+        const auto out_without_pre_lock = image_out_without_pre->dump_lock();
+        const auto out_with_pre_lock    = image_out_with_pre->dump_lock();
+
+        // Both outputs should have the same size and properties as input
+        CHECK(image_out_without_pre->size() == size);
+        CHECK(image_out_with_pre->size() == size);
+        CHECK(image_out_without_pre->spacing() == spacing);
+        CHECK(image_out_with_pre->spacing() == spacing);
+
+        // The two results should be different:
+        // - Without pre_transform: the image is resampled with the transform applied during resampling
+        // - With pre_transform: the image geometry is transformed first, then standard resampling
+        bool found_difference = false;
+        for(std::size_t i = 0 ; i < size[0] && !found_difference ; ++i)
+        {
+            for(std::size_t j = 0 ; j < size[1] && !found_difference ; ++j)
+            {
+                for(std::size_t k = 0 ; k < size[2] && !found_difference ; ++k)
+                {
+                    const uint8_t val_without = image_out_without_pre->at<std::uint8_t>(i, j, k);
+                    const uint8_t val_with    = image_out_with_pre->at<std::uint8_t>(i, j, k);
+
+                    if(val_without != val_with)
+                    {
+                        found_difference = true;
+                    }
+                }
+            }
+        }
+
+        // We expect some difference between the two approaches
+        // (pre-transform changes how the remap is computed)
+        CHECK(found_difference);
     }
 
 //------------------------------------------------------------------------------

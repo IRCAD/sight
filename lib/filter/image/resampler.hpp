@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2025 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,13 +52,15 @@ public:
      * @param[in] _in_image     the input data::image.
      * @param[out] _out_image   the resulting transformed image.
      * @param[in] _trf          transform applied to the input.
-     * @param[in] _parameters   set the desired origin, spacing, size and interpolation.
+     * @param[in] _pre_transform if true, the transform is applied before resampling, otherwise after.
+     * @param[in] _params       set the desired origin, spacing, size and interpolation.
      */
     static SIGHT_FILTER_IMAGE_API void resample(
         const data::image::csptr& _in_image,
         const data::image::sptr& _out_image,
         const data::matrix4::csptr& _trf,
-        std::optional<parameters_t> _parameters = std::nullopt
+        bool _pre_transform                 = false,
+        std::optional<parameters_t> _params = std::nullopt
     );
 
     /**
@@ -66,13 +68,16 @@ public:
      * @param _img image to resample.
      * @param _trf transform applied to the image.
      * @param _output_spacing desired sampling rate.
+     * @param _interpolation interpolation method to use for resampling.
+     * @param _pre_transform if true, the transform is applied before resampling, otherwise after.
      * @return resampled image.
      */
     static SIGHT_FILTER_IMAGE_API data::image::sptr resample(
         const data::image::csptr& _img,
         const data::matrix4::csptr& _trf,
         const data::image::spacing_t& _output_spacing,
-        filter::image::interpolation_t _interpolation = filter::image::interpolation_t::LINEAR
+        filter::image::interpolation_t _interpolation = filter::image::interpolation_t::LINEAR,
+        bool _pre_transform                           = false
     );
 };
 

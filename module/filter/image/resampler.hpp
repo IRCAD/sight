@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2025 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <data/boolean.hpp>
 #include <data/image.hpp>
 #include <data/matrix4.hpp>
 #include <data/string.hpp>
@@ -102,6 +103,7 @@ private:
     sight::data::ptr<sight::data::matrix4, sight::data::access::in> m_transform_in {this, TRANSFORM_IN};
 
     sight::data::property<sight::data::string> m_interpolation {this, "interpolation", std::string("LINEAR")};
+    sight::data::property<sight::data::boolean> m_pre_transform {this, "pre_transform", false};
 };
 
 } // namespace sight::module::filter::image

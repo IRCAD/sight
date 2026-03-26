@@ -27,7 +27,12 @@
 
 #include <filter/image/resampler.hpp>
 
+#include <geometry/data/image.hpp>
+#include <geometry/data/matrix4.hpp>
+
 #include <service/macros.hpp>
+
+#include <memory>
 
 namespace sight::module::filter::image
 {
@@ -69,11 +74,12 @@ void resampler::updating()
         in_img.get_shared(),
         out_img.get_shared(),
         transform.get_shared(),
+        *m_pre_transform,
         std::make_tuple(target->size(), target->origin(), target->orientation(), target->spacing(), interp)
     );
 
     this->async_emit(signals::SUCCEEDED);
-    out_img->async_emit(data::image::BUFFER_MODIFIED_SIG);
+    out_img->async_emit(data::image::MODIFIED_SIG);
 }
 
 //------------------------------------------------------------------------------

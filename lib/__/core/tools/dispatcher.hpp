@@ -212,11 +212,7 @@ using integer_types = boost::mpl::vector<std::int8_t, std::uint8_t,
                                          std::int16_t, std::uint16_t,
                                          std::int32_t, std::uint32_t>::type;
 
-#ifdef DEBUG
-using intrinsic_types = boost::mpl::push_back<integer_types, float>::type;
-#else
-typedef boost::mpl::push_back<boost::mpl::push_back<integer_types, float>::type, double>::type intrinsic_types;
-#endif
+using intrinsic_types = boost::mpl::push_back<boost::mpl::push_back<integer_types, float>::type, double>::type;
 
 } //end namespace sight::core::tools
 

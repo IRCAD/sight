@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -76,6 +76,7 @@ void reconstruction::shallow_copy(const object::csptr& _source)
     m_material = other->m_material;
     m_image    = other->m_image;
     m_mesh     = other->m_mesh;
+    m_label    = other->m_label;
 
     m_computed_mask_volume = other->m_computed_mask_volume;
 
@@ -99,6 +100,7 @@ void reconstruction::deep_copy(const object::csptr& _source, const std::unique_p
     m_b_is_visible     = other->m_b_is_visible;
     m_s_organ_name     = other->m_s_organ_name;
     m_s_structure_type = other->m_s_structure_type;
+    m_label            = other->m_label;
 
     m_material = data::object::copy(other->m_material, _cache);
     m_image    = data::object::copy(other->m_image, _cache);
@@ -117,6 +119,7 @@ bool reconstruction::operator==(const reconstruction& _other) const noexcept
        || m_s_organ_name != _other.m_s_organ_name
        || m_s_structure_type != _other.m_s_structure_type
        || m_computed_mask_volume != _other.m_computed_mask_volume
+       || m_label != _other.m_label
        || !core::is_equal(m_material, _other.m_material)
        || !core::is_equal(m_image, _other.m_image)
        || !core::is_equal(m_mesh, _other.m_mesh))
