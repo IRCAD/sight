@@ -83,6 +83,14 @@
 
     <extension implements="sight::service::extension::factory">
         <type>sight::service::filter</type>
+        <service>sight::module::filter::image::relabel</service>
+        <object key="mask">sight::data::image</object>
+        <object key="dictionary">sight::data::map</object>
+        <desc>This service relabels a labelled image using a value dictionary.</desc>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::service::filter</type>
         <service>sight::module::filter::image::resampler</service>
         <object>sight::data::image</object>
         <desc>Service applying a transform to an image and outputing the resampled image.</desc>
