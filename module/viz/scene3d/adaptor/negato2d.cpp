@@ -194,7 +194,7 @@ void negato2d::pick_intensity(int _x, int _y)
 
     if(result.has_value())
     {
-        if(m_planes[0].first->get_movable_object() == result->object && m_planes[0].first != nullptr)
+        if(m_planes[0].first != nullptr && m_planes[0].first->get_movable_object() == result->object)
         {
             m_picked = true;
             const auto image = m_image.lock();
