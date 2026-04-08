@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -28,16 +28,25 @@ namespace sight::module::data
 
 /**
  * @brief This service resets an object using the default constructor.
+ * It can reset a single object or a collection of objects in batch using the "targets" group.
  *
  * @section XML XML Configuration
  * @code{.xml}
    <service uid="..." type="sight::module::data::reset" >
-    <inout key="target" uid="..." />
+       <inout key="target" uid="..." />
+   </service>
+
+   <service uid="..." type="sight::module::data::reset" >
+    <inout group="targets">
+       <key uid="..." />
+       <key uid="..." />
+    </inout>
    </service>
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b target [sight::data::object]: define the target object to reset.
+ * - \b target [sight::data::object]: define the target object to reset (singular).
+ * - \b targets [sight::data::object]: define the target objects to reset (batch mode).
  */
 class reset final : public service::controller
 {
@@ -59,7 +68,7 @@ protected:
     /// Does nothing.
     void starting() final;
 
-    /// Resets the object
+    /// Resets the object(s)
     void updating() final;
 
     /// Sets the output to null.
@@ -67,7 +76,17 @@ protected:
 
 private:
 
+    /// Resets a single object in singular mode.
+    void reset_single();
+
+    /// Resets objects in batch mode.
+    void reset_batch();
+
+    // Singular mode
     sight::data::ptr<sight::data::object, sight::data::access::inout> m_target {this, "target", true};
+
+    // Batch mode (group)
+    sight::data::ptr_vector<sight::data::object, sight::data::access::inout> m_targets {this, "targets"};
 };
 
 } // namespace sight::module::data.

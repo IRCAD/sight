@@ -36,6 +36,7 @@ TEST_SUITE("sight::module::data::reset")
 
         auto reset_srv = sight::service::add("sight::module::data::reset");
         auto string    = std::make_shared<sight::data::string>("Hello world");
+        reset_srv->set_config("<inout key='target'/>");
         reset_srv->set_inout(string, "target");
         CHECK_NOTHROW(reset_srv->configure());
 
@@ -65,6 +66,7 @@ TEST_SUITE("sight::module::data::reset")
         image->set_spacing(spacing);
         image->set_origin(origin);
 
+        reset_srv->set_config("<inout key='target'/>");
         reset_srv->set_inout(image, "target");
         CHECK_NOTHROW(reset_srv->configure());
         CHECK_NOTHROW(reset_srv->start().get());
@@ -76,6 +78,92 @@ TEST_SUITE("sight::module::data::reset")
         CHECK(sight::data::image::size_t({0, 0, 0}) == image->size());
         CHECK(sight::data::image::spacing_t({0, 0, 0}) == image->spacing());
         CHECK(sight::data::image::origin_t({0, 0, 0}) == image->origin());
+
+        CHECK_NOTHROW(reset_srv->stop().get());
+        sight::service::remove(reset_srv);
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("batch_strings")
+    {
+        using namespace std::literals::string_literals;
+
+        auto reset_srv = sight::service::add("sight::module::data::reset");
+
+        auto string1 = std::make_shared<sight::data::string>("Hello");
+        auto string2 = std::make_shared<sight::data::string>("World");
+        auto string3 = std::make_shared<sight::data::string>("Test");
+
+        reset_srv->set_inout(string1, "targets", {}, {}, 0);
+        reset_srv->set_inout(string2, "targets", {}, {}, 1);
+        reset_srv->set_inout(string3, "targets", {}, {}, 2);
+
+        boost::property_tree::ptree ptree;
+        boost::property_tree::ptree inout_group;
+        inout_group.put("<xmlattr>.group", "targets");
+        ptree.add_child("inout", inout_group);
+
+        reset_srv->set_config(ptree);
+        CHECK_NOTHROW(reset_srv->configure());
+        CHECK_NOTHROW(reset_srv->start().get());
+
+        CHECK_EQ("Hello"s, string1->get_value());
+        CHECK_EQ("World"s, string2->get_value());
+        CHECK_EQ("Test"s, string3->get_value());
+
+        CHECK_NOTHROW(reset_srv->update().get());
+        CHECK_EQ(""s, string1->get_value());
+        CHECK_EQ(""s, string2->get_value());
+        CHECK_EQ(""s, string3->get_value());
+
+        CHECK_NOTHROW(reset_srv->stop().get());
+        sight::service::remove(reset_srv);
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("batch_images")
+    {
+        auto reset_srv = sight::service::add("sight::module::data::reset");
+
+        auto image1 = std::make_shared<sight::data::image>();
+        auto image2 = std::make_shared<sight::data::image>();
+
+        const sight::data::image::size_t size       = {10, 15, 56};
+        const sight::data::image::spacing_t spacing = {12, 100, 200};
+        const sight::data::image::origin_t origin   = {-96, 52, 123.4};
+        image1->resize(size, sight::core::type::UINT8, sight::data::image::gray_scale);
+        image1->set_spacing(spacing);
+        image1->set_origin(origin);
+
+        image2->resize(size, sight::core::type::UINT8, sight::data::image::gray_scale);
+        image2->set_spacing(spacing);
+        image2->set_origin(origin);
+
+        reset_srv->set_inout(image1, "targets", {}, {}, 0);
+        reset_srv->set_inout(image2, "targets", {}, {}, 1);
+
+        boost::property_tree::ptree ptree;
+        boost::property_tree::ptree inout_group;
+        inout_group.put("<xmlattr>.group", "targets");
+        ptree.add_child("inout", inout_group);
+
+        reset_srv->set_config(ptree);
+        CHECK_NOTHROW(reset_srv->configure());
+        CHECK_NOTHROW(reset_srv->start().get());
+
+        CHECK(size == image1->size());
+        CHECK(size == image2->size());
+        CHECK(spacing == image1->spacing());
+        CHECK(spacing == image2->spacing());
+
+        CHECK_NOTHROW(reset_srv->update().get());
+
+        CHECK(sight::data::image::size_t({0, 0, 0}) == image1->size());
+        CHECK(sight::data::image::size_t({0, 0, 0}) == image2->size());
+        CHECK(sight::data::image::spacing_t({0, 0, 0}) == image1->spacing());
+        CHECK(sight::data::image::spacing_t({0, 0, 0}) == image2->spacing());
 
         CHECK_NOTHROW(reset_srv->stop().get());
         sight::service::remove(reset_srv);
