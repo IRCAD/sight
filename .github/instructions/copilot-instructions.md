@@ -11,7 +11,16 @@ It is mainly written in C++20. Components and applications are described with XM
 
 The documentation is available at https://sight.pages.ircad.fr/sight-doc/.
 
-All code and comments are in english.
+## Code Conventions
+
+- All code and comments are in english.
+- Tab are set to 4 spaces and indentation is done with spaces, not tabs.
+- Use snake_case for variables, functions and class names.
+- Try to respect as much as possible the isocpp guidelines at https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines
+- Maximum line length is 120 characters
+- Class members variables are prefixed with "m_"
+- We use clang-tidy to enforce the coding style, rules are defined in the .clang-tidy file at the root of the project.
+
 
 ## File hierarchy
 
