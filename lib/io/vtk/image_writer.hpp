@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,10 +29,6 @@
 #include <data/image.hpp>
 
 #include <io/__/writer/generic_object_writer.hpp>
-
-#include <vtkActor.h>
-
-#include <filesystem>
 
 namespace sight::core::progress
 {

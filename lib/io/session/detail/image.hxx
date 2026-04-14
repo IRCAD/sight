@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2025 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -33,15 +33,8 @@
 
 #include <data/image.hpp>
 
-#include <io/vtk/vtk.hpp>
-
 #include <nifti1.h>
 #include <nifti1_io.h>
-
-#include <vtkImageData.h>
-#include <vtkSmartPointer.h>
-#include <vtkXMLImageDataReader.h>
-#include <vtkXMLImageDataWriter.h>
 
 // cspell:ignore qoffset XFORM qform XYZT nvox srow sform
 
@@ -91,7 +84,7 @@ inline static std::filesystem::path get_file_path(const std::string& _uuid)
 {
     constexpr auto ext = ".nii";
 
-    return std::filesystem::path(_uuid + "/" + data::image::leaf_classname() + ext);
+    return _uuid + "/" + data::image::leaf_classname() + ext;
 }
 
 //------------------------------------------------------------------------------
@@ -185,7 +178,7 @@ inline static void write(
         );
 
         // Dimensions. We always have 3D images, with one or more components.
-        const int  dim[] = {
+        const std::array<int, 8> dim = {
             // Number of "dimensions": 5 because of 3 for 3D images + 1 for time + 1 for components,
             5,
             // Width
@@ -244,7 +237,7 @@ inline static void write(
                 }
             }();
 
-        auto* const nifti_header = nifti_make_new_header(dim, data_type);
+        auto* const nifti_header = nifti_make_new_header(dim.data(), data_type);
 
         // We are in mm and second
         nifti_header->xyzt_units = SPACE_TIME_TO_XYZT(NIFTI_UNITS_MM, NIFTI_UNITS_SEC);
@@ -425,7 +418,6 @@ inline static data::image::sptr read(
 
     const auto format = static_cast<enum data::image::pixel_format_t>(_tree.get<int>(PIXEL_FORMAT));
 
-    ///@note This is not saved in VTK files.
     std::vector<double> window_centers;
     for(const auto& value : _tree.get_child(WINDOW_CENTERS))
     {
@@ -481,8 +473,6 @@ inline static data::image::sptr read(
     const auto& serialized_uuid = _tree.get<std::string>(UUID);
 
     // Read the image data
-    std::string content;
-
     {
         FW_PROFILE("read NIFTI");
 

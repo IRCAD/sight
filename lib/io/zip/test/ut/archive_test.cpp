@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -174,6 +174,31 @@ void archive_test::open_test()
         istream->read(buffer.data(), static_cast<std::streamsize>(encrypted_zstd_best.size()));
 
         CPPUNIT_ASSERT_EQUAL(encrypted_zstd_best, core::crypto::secure_string(buffer));
+    }
+
+    const core::crypto::secure_string encrypted_zstd_fast("encrypted_zstd_fast");
+    {
+        // Create the archive writer
+        auto archive_writer = archive_writer::get(archive_path);
+
+        // Write a new file in the archive with default parameters
+        auto ostream = archive_writer->open_file(
+            encrypted_zstd_fast,
+            encrypted_zstd_fast,
+            method::zstd,
+            level::fast
+        );
+
+        ostream->write(encrypted_zstd_fast.data(), static_cast<std::streamsize>(encrypted_zstd_fast.size()));
+    }
+
+    {
+        // Create the archive reader
+        auto archive_reader = archive_reader::get(archive_path);
+
+        // Read the stream as string
+        std::string buffer = archive_reader->read_file(encrypted_zstd_fast, encrypted_zstd_fast);
+        CPPUNIT_ASSERT_EQUAL(encrypted_zstd_fast, core::crypto::secure_string(buffer));
     }
 
     // Test fast unencrypted deflate parameters

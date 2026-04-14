@@ -115,6 +115,7 @@ hexa
 hfdl
 hfdr
 hhmmss
+hicpp
 hidpi
 hocevar
 id
