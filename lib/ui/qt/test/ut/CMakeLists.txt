@@ -1,4 +1,4 @@
-sight_add_target(ui_qt_test TYPE TEST)
+sight_add_target(ui_qt_test TYPE DOCTEST)
 
 find_package(Qt6 QUIET COMPONENTS Widgets REQUIRED)
 target_link_libraries(${SIGHT_TARGET} PRIVATE Qt6::Widgets)

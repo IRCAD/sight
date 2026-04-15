@@ -66,7 +66,7 @@ string(REPLACE "\n" ";" output "${output}")
 # Parse output
 foreach(line ${output})
     if(NOT "${line}" MATCHES
-       "<TestCase name=\"([A-Za-z0-9:_]*)\" (testsuite=\"([A-Za-z0-9:_]*)\" )?filename=\"([/\\_A-Za-z0-9\\.:\\-]*)\" line=\"([0-9]*)\""
+       "<TestCase name=\"([ A-Za-z0-9:_]*)\" (testsuite=\"([ A-Za-z0-9:_]*)\" )?filename=\"([ /\\_A-Za-z0-9\\.:\\-]*)\" line=\"([0-9]*)\""
     )
         continue()
     endif()
@@ -76,6 +76,10 @@ foreach(line ${output})
     endif()
     set(FILENAME ${CMAKE_MATCH_4})
     set(LINE_NUMBER ${CMAKE_MATCH_5})
+
+    if("${prefix}${test}" MATCHES ".* .*" )
+        message(FATAL_ERROR "Test case '${prefix}${test}' contains spaces, please stick to snake_case.")
+    endif()
 
     # use escape commas to handle properly test cases with commas inside the name
     string(REPLACE "," "\\," test_name ${test})

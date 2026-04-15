@@ -36,7 +36,7 @@
 
 #include <doctest/doctest.h>
 
-TEST_SUITE("sight::data::tools::ut")
+TEST_SUITE("sight::data::tools::container_notifier")
 {
 //------------------------------------------------------------------------------
 
@@ -384,4 +384,4 @@ TEST_SUITE("sight::data::tools::ut")
     {
         container_notifier_test_fn<sight::data::camera_set>();
     }
-} // TEST_SUITE("sight::data::tools::ut")
+} // TEST_SUITE("sight::data::tools")

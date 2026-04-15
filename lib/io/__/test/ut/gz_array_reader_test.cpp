@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2025 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,8 +19,6 @@
  *
  ***********************************************************************/
 
-#include "gz_array_reader_test.hpp"
-
 #include <core/os/temp_path.hpp>
 #include <core/progress/observer.hpp>
 
@@ -28,42 +26,40 @@
 
 #include <io/__/reader/gz_array_reader.hpp>
 
+#include <doctest/doctest.h>
+
 #include <zlib.h>
 
 #include <filesystem>
 #include <numeric>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::ut::gz_array_reader_test);
-
-namespace sight::io::ut
+TEST_SUITE("sight::io::gz_array")
 {
-
-//------------------------------------------------------------------------------
-
-void gz_array_reader_test::basic_test()
-{
-    auto gz_array_reader = std::make_shared<reader::gz_array_reader>();
-    core::os::temp_dir temp_dir;
-    std::filesystem::path filepath = temp_dir / ("test" + gz_array_reader->extension());
-    std::array<std::uint8_t, 16> array_in {};
-    std::iota(array_in.begin(), array_in.end(), std::uint8_t(0));
-    gzFile out = gzopen(filepath.string().c_str(), "wb");
-    gzwrite(out, reinterpret_cast<char*>(array_in.data()), 16);
-    gzclose(out);
-    auto array_out = std::make_shared<data::array>();
-    array_out->resize({16}, core::type::UINT8);
-    gz_array_reader->set_object(array_out);
-    gz_array_reader->set_file(filepath);
-    const auto observer = std::make_shared<core::progress::observer>("ARRAY Reader Test");
-    CPPUNIT_ASSERT_NO_THROW(gz_array_reader->read(observer));
+    TEST_CASE("reader")
     {
-        auto array_lock = array_out->dump_lock();
-        std::uint8_t i  = 0;
-        for(auto it = array_out->begin<std::uint8_t>(), end = array_out->end<std::uint8_t>() ; it != end ; ++it, ++i)
+        auto gz_array_reader = std::make_shared<sight::io::reader::gz_array_reader>();
+        sight::core::os::temp_dir temp_dir;
+        std::filesystem::path filepath = temp_dir / ("test" + gz_array_reader->extension());
+        std::array<std::uint8_t, 16> array_in {};
+        std::iota(array_in.begin(), array_in.end(), std::uint8_t(0));
+        gzFile out = gzopen(filepath.string().c_str(), "wb");
+        gzwrite(out, reinterpret_cast<char*>(array_in.data()), 16);
+        gzclose(out);
+        auto array_out = std::make_shared<sight::data::array>();
+        array_out->resize({16}, sight::core::type::UINT8);
+        gz_array_reader->set_object(array_out);
+        gz_array_reader->set_file(filepath);
+        const auto observer = std::make_shared<sight::core::progress::observer>("ARRAY Reader Test");
+        CHECK_NOTHROW(gz_array_reader->read(observer));
         {
-            CPPUNIT_ASSERT_EQUAL(i, *it);
+            auto array_lock = array_out->dump_lock();
+            std::uint8_t i  = 0;
+            for(auto it = array_out->begin<std::uint8_t>(), end = array_out->end<std::uint8_t>() ;
+                it != end ;
+                ++it, ++i)
+            {
+                CHECK_EQ(i, *it);
+            }
         }
     }
 }
-
-} // namespace sight::io::ut

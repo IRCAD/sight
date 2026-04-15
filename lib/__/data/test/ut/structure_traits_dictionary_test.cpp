@@ -29,7 +29,7 @@ TEST_SUITE("sight::data::structure_traits_dictionary")
 {
 //------------------------------------------------------------------------------
 
-    TEST_CASE("test_adding_structure")
+    TEST_CASE("adding_structure")
     {
         sight::data::structure_traits_dictionary::sptr struct_dico = std::make_shared<sight::data::structure_traits_dictionary>();
         sight::data::structure_traits::sptr skin                   = std::make_shared<sight::data::structure_traits>();

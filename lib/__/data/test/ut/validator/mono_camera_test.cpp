@@ -26,14 +26,14 @@
 
 #include <doctest/doctest.h>
 
-TEST_SUITE("sight::data::validator")
+TEST_SUITE("sight::data::validator::camera_set")
 {
     namespace factory = sight::data::validator::factory;
     using sight::data::validator::base;
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("test_validator")
+    TEST_CASE("mono_camera")
     {
         auto validator = factory::make("sight::data::validator::camera_set::mono_camera");
         CHECK(validator);

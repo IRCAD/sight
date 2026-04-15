@@ -21,43 +21,41 @@
 
 #include <core/os/temp_path.hpp>
 #include <core/progress/observer.hpp>
-#include <core/type.hpp>
 
-#include <data/array.hpp>
+#include <data/matrix4.hpp>
 
-#include <io/__/writer/array_writer.hpp>
+#include <io/__/writer/matrix4_writer.hpp>
+
+#include <boost/algorithm/string.hpp>
 
 #include <doctest/doctest.h>
 
-#include <filesystem>
 #include <numeric>
 
-TEST_SUITE("sight::io::array")
+TEST_SUITE("sight::io::matrix4")
 {
     TEST_CASE("writer")
     {
-        auto array_writer = std::make_shared<sight::io::writer::array_writer>();
+        auto matrix_writer = std::make_shared<sight::io::writer::matrix4_writer>();
         sight::core::os::temp_dir temp_dir;
-        std::filesystem::path filepath = temp_dir / ("test" + array_writer->extension());
-        auto array_in                  = std::make_shared<sight::data::array>();
-        array_in->resize({16}, sight::core::type::UINT8);
-        {
-            auto array_lock = array_in->dump_lock();
-            std::iota(array_in->begin<std::uint8_t>(), array_in->end<std::uint8_t>(), std::uint8_t(0));
-        }
-        array_writer->set_object(array_in);
+        std::filesystem::path filepath = temp_dir / ("test" + matrix_writer->extension());
+        auto matrix_in                 = std::make_shared<sight::data::matrix4>();
+        std::iota(matrix_in->begin(), matrix_in->end(), 0);
+        matrix_writer->set_object(matrix_in);
         std::filesystem::remove(filepath);
-        array_writer->set_file(filepath);
-        const auto observer = std::make_shared<sight::core::progress::observer>("ARRAY Writer Test");
-        CHECK_NOTHROW(array_writer->write(observer));
-        std::array<std::uint8_t, 16> array {};
+        matrix_writer->set_file(filepath);
+        auto observer = std::make_shared<sight::core::progress::observer>("Test write");
+        CHECK_NOTHROW(matrix_writer->write(observer));
+        constexpr std::string_view expected_content = R"(0 1 2 3
+4 5 6 7
+8 9 10 11
+12 13 14 15)";
+        std::string actual_content;
         {
             std::ifstream in(filepath);
-            in.read(reinterpret_cast<char*>(array.data()), 16);
+            std::getline(in, actual_content, '\0');
+            boost::trim(actual_content);
         }
-        for(std::uint8_t i = 0 ; i < 16 ; i++)
-        {
-            CHECK_EQ(i, array[i]);
-        }
+        CHECK_EQ(std::string(expected_content), actual_content);
     }
 }

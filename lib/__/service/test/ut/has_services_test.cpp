@@ -42,7 +42,7 @@ struct fixture : public sight::service::has_services
 
 } // namespace
 
-TEST_SUITE("sight::service::ut::has_services_test")
+TEST_SUITE("sight::service::has_services")
 {
     TEST_CASE_FIXTURE(fixture, "test_registration")
     {

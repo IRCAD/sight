@@ -51,7 +51,7 @@ TEST_SUITE("sight::app::parser::Generic")
 {
 //------------------------------------------------------------------------------
 
-    TEST_CASE("boolean_test")
+    TEST_CASE("boolean")
     {
         auto object = std::make_shared<sight::data::boolean>();
         CHECK_EQ(false, object->value());
@@ -73,7 +73,7 @@ TEST_SUITE("sight::app::parser::Generic")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("color_test")
+    TEST_CASE("color")
     {
         boost::property_tree::ptree ptree;
         ptree.put("<xmlattr>.value", "#0077FFA3");
@@ -93,7 +93,7 @@ TEST_SUITE("sight::app::parser::Generic")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("integer_test")
+    TEST_CASE("integer")
     {
         boost::property_tree::ptree ptree;
         ptree.put("<xmlattr>.value", "10");
@@ -111,7 +111,7 @@ TEST_SUITE("sight::app::parser::Generic")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("real_test")
+    TEST_CASE("real")
     {
         boost::property_tree::ptree ptree;
         ptree.put("value", "12.1234");
@@ -127,7 +127,7 @@ TEST_SUITE("sight::app::parser::Generic")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("string_test")
+    TEST_CASE("string")
     {
         boost::property_tree::ptree ptree;
         ptree.put("<xmlattr>.value", "this is a string");
@@ -143,7 +143,7 @@ TEST_SUITE("sight::app::parser::Generic")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("vec_test")
+    TEST_CASE("vec")
     {
         {
             boost::property_tree::ptree ptree;

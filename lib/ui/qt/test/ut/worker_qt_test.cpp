@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,8 +20,6 @@
  *
  ***********************************************************************/
 
-#include "worker_qt_test.hpp"
-
 #include <core/thread/timer.hpp>
 #include <core/thread/worker.hpp>
 #include <core/thread/worker.hxx>
@@ -29,7 +27,7 @@
 #include <ui/qt/app.hpp>
 #include <ui/qt/worker_qt.hpp>
 
-#include <cppunit/Exception.h>
+#include <doctest/doctest.h>
 
 #include <QApplication>
 #include <QSharedPointer>
@@ -39,17 +37,11 @@
 #include <functional>
 #include <thread>
 
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::ui::qt::ut::worker_qt_test);
-
 namespace sight::ui::qt
 {
 
 // Defined in worker_qt.cpp
 class worker_qt;
-
-namespace ut
-{
 
 struct test_handler
 {
@@ -84,244 +76,225 @@ struct test_handler
     core::thread::thread_id_t m_worker_thread_id;
 };
 
-//-----------------------------------------------------------------------------
-
-void worker_qt_test::setUp()
+namespace
 {
-    // Set up context before running a test.
-    static std::string arg1 = "worker_qt_test";
+
+struct fixture
+{
+    fixture()
+    {
+        // Set up context before running a test.
+        static std::string arg1 = "worker_qt_test";
 #if defined(__linux)
-    static std::string arg2 = "-platform";
-    static std::string arg3 = "offscreen";
-    std::array argv         = {arg1.data(), arg2.data(), arg3.data(), static_cast<char*>(nullptr)};
+        static std::string arg2 = "-platform";
+        static std::string arg3 = "offscreen";
+        std::array argv         = {arg1.data(), arg2.data(), arg3.data(), static_cast<char*>(nullptr)};
 #else
-    std::array argv = {arg1.data(), static_cast<char*>(nullptr)};
+        std::array argv = {arg1.data(), static_cast<char*>(nullptr)};
 #endif
-    int argc = int(argv.size() - 1);
+        int argc = int(argv.size() - 1);
 
-    CPPUNIT_ASSERT(qApp == nullptr);
-    std::function<QSharedPointer<QCoreApplication>(int&, char**)> callback =
-        [](int& _argc, char** _argv)
-        {
+        CHECK(qApp == nullptr);
+        std::function<QSharedPointer<QCoreApplication>(int&, char**)> callback =
+            [](int& _argc, char** _argv)
+            {
 #if QT_VERSION < 0x050000
-            bool guiEnabled = false;
+                bool guiEnabled = false;
 #else
-            bool gui_enabled = true;
+                bool gui_enabled = true;
 #endif
-            return QSharedPointer<QApplication>(new ui::qt::app(_argc, _argv, gui_enabled));
-        };
-    m_worker = ui::qt::get_qt_worker(argc, argv.data(), callback, "", "");
-}
+                return QSharedPointer<sight::ui::qt::app>(new sight::ui::qt::app(_argc, _argv, gui_enabled));
+            };
+        m_worker = sight::ui::qt::get_qt_worker(argc, argv.data(), callback, "", "");
 
-//-----------------------------------------------------------------------------
-
-void worker_qt_test::tearDown()
-{
-    // Clean up after the test run.
-    m_worker.reset();
-    CPPUNIT_ASSERT(qApp == nullptr);
-}
-
-//-----------------------------------------------------------------------------
-
-void worker_qt_test::init_test()
-{
-    CPPUNIT_ASSERT(qApp != nullptr);
-}
-
-//-----------------------------------------------------------------------------
-
-void worker_qt_test::twice_init_test()
-{
-    CPPUNIT_ASSERT(qApp != nullptr);
-}
-
-//-----------------------------------------------------------------------------
-
-void run_basic_test(test_handler& _handler, core::thread::worker::sptr _worker)
-{
-    _handler.set_worker_id(_worker->get_thread_id());
-    _worker->post([&_handler]{_handler.next_step();});
-    _worker->post([&_handler]{_handler.next_step();});
-    _worker->post([&_handler]{_handler.next_step();});
-
-    _worker->post([]{return QApplication::quit();});
-}
-
-//-----------------------------------------------------------------------------
-
-void run_basic_test_checks(const test_handler& _handler)
-{
-    CPPUNIT_ASSERT_EQUAL(3, _handler.m_step);
-    CPPUNIT_ASSERT_EQUAL(true, _handler.m_thread_check_ok);
-}
-
-//-----------------------------------------------------------------------------
-
-void worker_qt_test::basic_test()
-{
-    test_handler handler;
-
-    run_basic_test(handler, m_worker);
-
-    m_worker->get_future().wait();
-
-    run_basic_test_checks(handler);
-}
-
-//-----------------------------------------------------------------------------
-
-void worker_qt_test::post_from_inside_test()
-{
-    test_handler handler;
-
-    m_worker->post([&handler, this]{return run_basic_test(handler, m_worker);});
-
-    m_worker->get_future().wait();
-
-    run_basic_test_checks(handler);
-}
-
-//-----------------------------------------------------------------------------
-
-void do_nothing()
-{
-}
-
-//-----------------------------------------------------------------------------
-
-void run_from_outside_test(test_handler& _handler, core::thread::worker::sptr _worker)
-{
-    //waiting for worker_qt to start
-    _worker->post_task<void>([]{return do_nothing();}).wait();
-
-    run_basic_test(_handler, _worker);
-}
-
-//-----------------------------------------------------------------------------
-
-void worker_qt_test::post_from_outside_test()
-{
-    test_handler handler;
-
-    std::thread test_thread([&handler, this]{return run_from_outside_test(handler, m_worker);});
-
-    m_worker->get_future().wait();
-
-    run_basic_test_checks(handler);
-
-    test_thread.join();
-}
-
-//-----------------------------------------------------------------------------
-
-static CppUnit::Exception exception;
-
-//------------------------------------------------------------------------------
-
-static inline void qt_test(const std::function<void()>& _f)
-{
-    try
-    {
-        _f();
+        CHECK(qApp != nullptr);
     }
-    catch(CppUnit::Exception& e)
+
+    ~fixture()
     {
-        std::cerr << e.what() << std::endl;
-        exception = e;
-        QApplication::exit(1);
-        return;
+        m_worker.reset();
+        CHECK(qApp == nullptr);
     }
-}
+
+    sight::core::thread::worker::sptr m_worker;
+};
+
+} // namespace
 
 //-----------------------------------------------------------------------------
 
-void run_basic_timer_test(
-    const test_handler& _handler,
-    const core::thread::timer::sptr& _timer,
-    core::thread::timer::time_duration_t
-    /*unused*/
-)
+TEST_SUITE("sight::ui::qt::worker")
 {
-    _timer->start();
-
-    qt_test(
-        [&]
-            {
-                CPPUNIT_ASSERT(_timer->is_running());
-                CPPUNIT_ASSERT(_handler.m_thread_check_ok);
-                CPPUNIT_ASSERT_EQUAL(0, _handler.m_step);
-            });
-}
-
 //-----------------------------------------------------------------------------
 
-void one_shot_basic_timer_test(
-    int& _i,
-    test_handler& _handler,
-    const core::thread::timer::sptr& _timer,
-    core::thread::timer::time_duration_t /*unused*/,
-    const core::thread::worker::sptr& _worker
-)
-{
-    _handler.next_step_no_sleep();
-
-    qt_test(
-        [&]
-            {
-                CPPUNIT_ASSERT(_timer->is_running());
-                CPPUNIT_ASSERT(_handler.m_thread_check_ok);
-                CPPUNIT_ASSERT_EQUAL(_i, _handler.m_step);
-            });
-
-    if(++_i == 50)
+    static void run_basic_test(test_handler& _handler, sight::core::thread::worker::sptr _worker)
     {
-        _timer->stop();
+        _handler.set_worker_id(_worker->get_thread_id());
+        _worker->post([&_handler]{_handler.next_step();});
+        _worker->post([&_handler]{_handler.next_step();});
+        _worker->post([&_handler]{_handler.next_step();});
+
+        _worker->post([]{QApplication::quit();});
+    }
+
+    //------------------------------------------------------------------------------
+
+    static void run_basic_test_checks(const test_handler& _handler)
+    {
+        CHECK_EQ(3, _handler.m_step);
+        CHECK_EQ(true, _handler.m_thread_check_ok);
+    }
+
+    TEST_CASE_FIXTURE(fixture, "basic")
+    {
+        test_handler handler;
+
+        run_basic_test(handler, m_worker);
+
+        m_worker->get_future().wait();
+
+        run_basic_test_checks(handler);
+    }
+
+    TEST_CASE_FIXTURE(fixture, "post_from_inside")
+    {
+        test_handler handler;
+
+        m_worker->post([&handler, this]{run_basic_test(handler, m_worker);});
+
+        m_worker->get_future().wait();
+
+        run_basic_test_checks(handler);
+    }
+
+    //------------------------------------------------------------------------------
+
+    static void do_nothing()
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    static void run_from_outside_test(test_handler& _handler, sight::core::thread::worker::sptr _worker)
+    {
+        //waiting for worker_qt to start
+        _worker->post_task<void>([]{do_nothing();}).wait();
+
+        run_basic_test(_handler, _worker);
+    }
+
+    TEST_CASE_FIXTURE(fixture, "post_from_outside")
+    {
+        test_handler handler;
+
+        std::thread test_thread([&handler, this]{run_from_outside_test(handler, m_worker);});
+
+        m_worker->get_future().wait();
+
+        run_basic_test_checks(handler);
+
+        test_thread.join();
+    }
+
+//-----------------------------------------------------------------------------
+
+    static inline void qt_test(const std::function<void()>& _f)
+    {
+        try
+        {
+            _f();
+        }
+        catch(const std::exception& e)
+        {
+            std::cerr << e.what() << std::endl;
+            QApplication::exit(1);
+            return;
+        }
+    }
+
+    //------------------------------------------------------------------------------
+
+    static void run_basic_timer_test(
+        const test_handler& _handler,
+        const sight::core::thread::timer::sptr& _timer,
+        sight::core::thread::timer::time_duration_t
+        /*unused*/
+)
+    {
+        _timer->start();
 
         qt_test(
             [&]
-                {
-                    CPPUNIT_ASSERT(!_timer->is_running());
-                    CPPUNIT_ASSERT(_handler.m_thread_check_ok);
-                    CPPUNIT_ASSERT_EQUAL(49, _handler.m_step);
-                });
-        _worker->post([]{return QApplication::quit();});
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void worker_qt_test::basic_timer_test()
-{
-    test_handler handler;
-    handler.set_worker_id(m_worker->get_thread_id());
-
-    core::thread::timer::sptr timer = m_worker->create_timer();
-
-    core::thread::timer::time_duration_t duration = std::chrono::milliseconds(10);
-
-    int i = 1;
-    timer->set_function(
-        [&i, &handler, &timer, duration, this]
             {
-                return one_shot_basic_timer_test(i, handler, timer, duration, m_worker);
+                CHECK(_timer->is_running());
+                CHECK(_handler.m_thread_check_ok);
+                CHECK_EQ(0, _handler.m_step);
             });
-    timer->set_duration(duration);
+    }
 
-    CPPUNIT_ASSERT(!timer->is_running());
-    CPPUNIT_ASSERT(handler.m_thread_check_ok);
-    CPPUNIT_ASSERT_EQUAL(0, handler.m_step);
+    //------------------------------------------------------------------------------
 
-    m_worker->post([&handler, &timer, duration]{return run_basic_timer_test(handler, timer, duration);});
+    static void one_shot_basic_timer_test(
+        int& _i,
+        test_handler& _handler,
+        const sight::core::thread::timer::sptr& _timer,
+        sight::core::thread::timer::time_duration_t /*unused*/,
+        const sight::core::thread::worker::sptr& _worker
+)
+    {
+        _handler.next_step_no_sleep();
 
-    core::thread::worker::future_t future = m_worker->get_future();
-    future.wait();
+        qt_test(
+            [&]
+            {
+                CHECK(_timer->is_running());
+                CHECK(_handler.m_thread_check_ok);
+                CHECK_EQ(_i, _handler.m_step);
+            });
 
-    CPPUNIT_ASSERT_EQUAL(0, std::any_cast<int>(future.get()));
-}
+        if(++_i == 50)
+        {
+            _timer->stop();
 
-//-----------------------------------------------------------------------------
+            qt_test(
+                [&]
+                {
+                    CHECK(!_timer->is_running());
+                    CHECK(_handler.m_thread_check_ok);
+                    CHECK_EQ(49, _handler.m_step);
+                });
+            _worker->post([]{QApplication::quit();});
+        }
+    }
 
-} //namespace ut
+    TEST_CASE_FIXTURE(fixture, "basic_timer")
+    {
+        test_handler handler;
+        handler.set_worker_id(m_worker->get_thread_id());
 
-} //namespace sight::ui::qt
+        sight::core::thread::timer::sptr timer = m_worker->create_timer();
+
+        sight::core::thread::timer::time_duration_t duration = std::chrono::milliseconds(10);
+
+        int i = 1;
+        timer->set_function(
+            [&i, &handler, &timer, duration, this]
+            {
+                one_shot_basic_timer_test(i, handler, timer, duration, m_worker);
+            });
+        timer->set_duration(duration);
+
+        CHECK(!timer->is_running());
+        CHECK(handler.m_thread_check_ok);
+        CHECK_EQ(0, handler.m_step);
+
+        m_worker->post([&handler, &timer, duration]{run_basic_timer_test(handler, timer, duration);});
+
+        sight::core::thread::worker::future_t future = m_worker->get_future();
+        future.wait();
+
+        CHECK_EQ(0, std::any_cast<int>(future.get()));
+    }
+} // TEST_SUITE
+
+} // namespace sight::ui::qt

@@ -30,11 +30,11 @@
 
 #include <doctest/doctest.h>
 
-TEST_SUITE("sight::data::tools::ut")
+TEST_SUITE("sight::data::tools::field_helper")
 {
 //------------------------------------------------------------------------------
 
-    TEST_CASE("test_helper")
+    TEST_CASE("helper")
     {
         const std::string field_i_d1 = "FIELD_ID1";
         const std::string field_i_d2 = "FIELD_ID2";
@@ -261,4 +261,4 @@ TEST_SUITE("sight::data::tools::ut")
     }
 
 //------------------------------------------------------------------------------
-} // TEST_SUITE("sight::data::tools::ut")
+} // TEST_SUITE("sight::data::tools")

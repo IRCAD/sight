@@ -31,9 +31,9 @@
 
 #include <doctest/doctest.h>
 
-TEST_SUITE("sight::service::ut::sig_slot_connection_test")
+TEST_SUITE("sight::service::sig_slot_connection")
 {
-    TEST_CASE("basic_test")
+    TEST_CASE("basic")
     {
         auto buffer_data = std::make_shared<sight::service::ut::buffer>();
 

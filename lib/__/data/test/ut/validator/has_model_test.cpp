@@ -26,13 +26,13 @@
 
 #include <doctest/doctest.h>
 
-TEST_SUITE("sight::data::validator")
+TEST_SUITE("sight::data::validator::has_model")
 {
     namespace factory = sight::data::validator::factory;
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("has_model_single_organ")
+    TEST_CASE("single_organ")
     {
         auto validator = factory::make("sight::data::validator::has_model");
         CHECK(validator);
@@ -70,7 +70,7 @@ TEST_SUITE("sight::data::validator")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("has_model_multiple_organs")
+    TEST_CASE("multiple_organs")
     {
         auto validator = factory::make("sight::data::validator::has_model");
         CHECK(validator);
@@ -124,7 +124,7 @@ TEST_SUITE("sight::data::validator")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("has_model_wrong_type")
+    TEST_CASE("wrong_type")
     {
         auto validator = factory::make("sight::data::validator::has_model");
         CHECK(validator);
@@ -157,7 +157,7 @@ TEST_SUITE("sight::data::validator")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("has_model_wrong_name")
+    TEST_CASE("wrong_name")
     {
         auto validator = factory::make("sight::data::validator::has_model");
         CHECK(validator);
@@ -190,7 +190,7 @@ TEST_SUITE("sight::data::validator")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("has_model_multiple_reconstructions")
+    TEST_CASE("multiple_reconstructions")
     {
         auto validator = factory::make("sight::data::validator::has_model");
         CHECK(validator);
@@ -235,7 +235,7 @@ TEST_SUITE("sight::data::validator")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("has_model_invalid_object_type")
+    TEST_CASE("invalid_object_type")
     {
         auto validator = factory::make("sight::data::validator::has_model");
         CHECK(validator);
@@ -260,4 +260,4 @@ TEST_SUITE("sight::data::validator")
     }
 
 //------------------------------------------------------------------------------
-} // TEST_SUITE("sight::data::validator")
+} // TEST_SUITE("sight::data::validator::has_model")

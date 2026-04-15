@@ -19,40 +19,45 @@
  *
  ***********************************************************************/
 
+#include <core/os/temp_path.hpp>
+#include <core/progress/observer.hpp>
+
 #include <data/matrix4.hpp>
 
-#include <app/parser/matrix4.hpp>
-
-#include <boost/property_tree/ptree.hpp>
+#include <io/__/reader/matrix4_reader.hpp>
 
 #include <doctest/doctest.h>
 
-TEST_SUITE("sight::app::parser::Matrix4")
-{
-//------------------------------------------------------------------------------
+#include <filesystem>
 
-    TEST_CASE("basic")
+TEST_SUITE("sight::io::matrix4")
+{
+    TEST_CASE("reader")
     {
-        boost::property_tree::ptree ptree;
-        ptree.put("matrix", R"(
-        0 1 2 3
-        10 11 12 13
-        20 21 22 23
-        30 31 32 33
-    )");
-        auto matrix = std::make_shared<sight::data::matrix4>();
-        sight::app::parser::matrix4 matrix_parser;
-        CHECK(matrix_parser.is_a("sight::app::parser::matrix4"));
-        sight::service::object_parser::objects_t sub_objects;
-        matrix_parser.parse(ptree, matrix, sub_objects);
+        constexpr std::string_view file_content = R"(
+0 1 2 3
+10 11 12 13
+20 21 22 23
+30 31 32 33
+)";
+        auto matrix_reader                      = std::make_shared<sight::io::reader::matrix4_reader>();
+        sight::core::os::temp_dir temp_dir;
+        std::filesystem::path filepath = temp_dir / ("test" + matrix_reader->extension());
+        {
+            std::ofstream out(filepath);
+            out << file_content;
+        }
+        auto matrix_out = std::make_shared<sight::data::matrix4>();
+        matrix_reader->set_object(matrix_out);
+        matrix_reader->set_file(filepath);
+        const auto observer = std::make_shared<sight::core::progress::observer>("Matrix4 Reader Test");
+        CHECK_NOTHROW(matrix_reader->read(observer));
         for(std::uint8_t i = 0 ; i < 4 ; i++)
         {
             for(std::uint8_t j = 0 ; j < 4 ; j++)
             {
-                CHECK_EQ(j + 10. * i, (*matrix)(i, j));
+                CHECK_EQ(j + 10. * i, (*matrix_out)(i, j));
             }
         }
     }
-
-//------------------------------------------------------------------------------
-} // TEST_SUITE
+}

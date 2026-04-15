@@ -33,7 +33,7 @@ TEST_SUITE("sight::app::parser::Camera")
 {
 //------------------------------------------------------------------------------
 
-    TEST_CASE("resource_test")
+    TEST_CASE("resource")
     {
         boost::property_tree::ptree ptree;
         ptree.put("resource", "sight::io/aruco_tag.m4v");
@@ -53,7 +53,7 @@ TEST_SUITE("sight::app::parser::Camera")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("file_test")
+    TEST_CASE("file")
     {
         boost::property_tree::ptree ptree;
         ptree.put("file", "/this/file/path/is/totally/real/and/wont/fail.avi");

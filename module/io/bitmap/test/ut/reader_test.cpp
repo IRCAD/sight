@@ -97,7 +97,7 @@ inline static void test_enable(data::image::sptr _actual_image, bool _gpu_requir
 
 TEST_SUITE("sight::module::io::bitmap::reader")
 {
-    TEST_CASE("basic_test")
+    TEST_CASE("basic")
     {
         const auto& filename = "wild" + sight::io::bitmap::extensions(sight::io::bitmap::backend::libtiff).front();
         const auto& filepath = utest_data::dir() / "sight" / "image" / "bitmap" / filename;
@@ -117,7 +117,7 @@ TEST_SUITE("sight::module::io::bitmap::reader")
         CHECK(sizes[2] == 0);
     }
 
-    TEST_CASE("config_test")
+    TEST_CASE("config")
     {
         {
             auto actual_image = std::make_shared<sight::data::image>();

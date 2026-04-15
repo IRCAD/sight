@@ -24,7 +24,7 @@
 
 #include <doctest/doctest.h>
 
-TEST_SUITE("sight::data::validator")
+TEST_SUITE("sight::data::validator::has_fiducials")
 {
     namespace factory = sight::data::validator::factory;
 

@@ -129,7 +129,7 @@ TEST_SUITE("sight::geometry::vision::helper")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("reprojection_real_dataset_test1")
+    TEST_CASE("reprojection_real_dataset1")
     {
         std::vector<cv::Point3f> object_points;
         object_points.emplace_back(-30.F, 30.F, 0.F);
@@ -212,7 +212,7 @@ TEST_SUITE("sight::geometry::vision::helper")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("reprojection_real_dataset_test2")
+    TEST_CASE("reprojection_real_dataset2")
     {
         std::vector<cv::Point3f> object_points;
         object_points.emplace_back(-30.F, 30.F, 0.F);

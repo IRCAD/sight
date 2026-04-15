@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2025 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,7 +33,6 @@
 #include <doctest/doctest.h>
 
 #include <algorithm>
-#include <array>
 #include <cstdint>
 #include <utility>
 #include <vector>
@@ -235,4 +234,4 @@ TEST_SUITE("sight::filter::image::image_diff")
     }
 
 //------------------------------------------------------------------------------
-} // TEST_SUITE("sight::filter::image::sight::filter::image::image_diff")
+} // TEST_SUITE("sight::filter::image::image_diff")

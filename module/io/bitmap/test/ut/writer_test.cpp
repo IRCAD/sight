@@ -162,7 +162,7 @@ inline static void test_enable(
 
 TEST_SUITE("sight::module::io::bitmap::writer")
 {
-    TEST_CASE("basic_test")
+    TEST_CASE("basic")
     {
         core::os::temp_dir tmp_dir;
         const auto& file_path = tmp_dir / "basic.tiff";
@@ -179,7 +179,7 @@ TEST_SUITE("sight::module::io::bitmap::writer")
         CHECK(std::filesystem::file_size(file_path) > 0);
     }
 
-    TEST_CASE("config_test")
+    TEST_CASE("config")
     {
         core::os::temp_dir tmp_dir;
 

@@ -35,11 +35,11 @@ namespace sight::service::ut
 
 static sight::utest::exception fw_test_exception(""); // force link with fwTest
 
-TEST_SUITE("sight::service::ut::slots_signals_test")
+TEST_SUITE("sight::service::slots_signals")
 {
 //------------------------------------------------------------------------------
 
-    TEST_CASE("basic_test")
+    TEST_CASE("basic")
     {
         auto buffer1 = std::make_shared<sight::service::ut::buffer>();
         auto buffer2 = std::make_shared<sight::service::ut::buffer>();
@@ -80,7 +80,7 @@ TEST_SUITE("sight::service::ut::slots_signals_test")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("com_object_service_test")
+    TEST_CASE("com_object_service")
     {
         sight::core::thread::worker::sptr worker1 = sight::core::thread::worker::make();
         sight::core::thread::add_worker("worker1", worker1);
@@ -170,7 +170,7 @@ TEST_SUITE("sight::service::ut::slots_signals_test")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("com_service_to_service_test")
+    TEST_CASE("com_service_to_service")
     {
         auto buffer1 = std::make_shared<sight::service::ut::buffer>();
 
@@ -218,7 +218,7 @@ TEST_SUITE("sight::service::ut::slots_signals_test")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("block_connection_test")
+    TEST_CASE("block_connection")
     {
         auto buffer1 = std::make_shared<sight::service::ut::buffer>();
 

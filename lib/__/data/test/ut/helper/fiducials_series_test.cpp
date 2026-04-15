@@ -25,7 +25,7 @@
 
 #include <doctest/doctest.h>
 
-TEST_SUITE("sight::data::helper::ut")
+TEST_SUITE("sight::data::helper")
 {
 //------------------------------------------------------------------------------
 
@@ -103,4 +103,4 @@ TEST_SUITE("sight::data::helper::ut")
         fiducial.contour_data.push_back({0.0, 1.0, 0.0});
         CHECK(sight::data::helper::fiducials_series::to_point_list(fiducial));
     }
-} // TEST_SUITE("sight::data::helper::ut")
+} // TEST_SUITE("sight::data::helper")

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,8 +20,6 @@
  *
  ***********************************************************************/
 
-#include "model_series_writer_test.hpp"
-
 #include <core/os/temp_path.hpp>
 
 #include <data/activity_set.hpp>
@@ -35,47 +33,29 @@
 
 #include <utest_data/generator/series_set.hpp>
 
+#include <doctest/doctest.h>
+
+#include <algorithm>
 #include <filesystem>
 #include <string>
 #include <vector>
 
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::io::vtk::ut::model_series_writer_test);
-
-namespace sight::module::io::vtk::ut
+namespace
 {
 
-namespace fs           = std::filesystem;
 using file_container_t = std::vector<std::string>;
-
-namespace point = sight::data::iterator::point;
-namespace cell  = sight::data::iterator::cell;
+namespace fs           = std::filesystem;
 
 //------------------------------------------------------------------------------
-
-void model_series_writer_test::setUp()
-{
-    // Set up context before running a test.
-}
-
-//------------------------------------------------------------------------------
-
-void model_series_writer_test::tearDown()
-{
-    // Clean up after the test run.
-}
-
-//------------------------------------------------------------------------------
-
 void run_model_series_srv(
     const std::string& _impl,
     const boost::property_tree::ptree& _cfg,
-    const SPTR(data::object)& _obj
+    const sight::data::object::sptr& _obj
 )
 {
-    service::base::sptr srv = service::add(_impl);
+    sight::service::base::sptr srv = sight::service::add(_impl);
 
-    CPPUNIT_ASSERT_MESSAGE(std::string("Failed to create service ") + _impl, srv);
+    CHECK_MESSAGE(srv, "Failed to create service ", _impl);
 
     if(srv->is_a("sight::io::service::reader"))
     {
@@ -86,19 +66,19 @@ void run_model_series_srv(
         srv->set_input(_obj, "data");
     }
 
-    CPPUNIT_ASSERT_NO_THROW(srv->set_config(_cfg));
-    CPPUNIT_ASSERT_NO_THROW(srv->configure());
-    CPPUNIT_ASSERT_NO_THROW(srv->start().wait());
-    CPPUNIT_ASSERT_NO_THROW(srv->update().wait());
-    CPPUNIT_ASSERT_NO_THROW(srv->stop().wait());
-    service::remove(srv);
+    CHECK_NOTHROW(srv->set_config(_cfg));
+    CHECK_NOTHROW(srv->configure());
+    CHECK_NOTHROW(srv->start().wait());
+    CHECK_NOTHROW(srv->update().wait());
+    CHECK_NOTHROW(srv->stop().wait());
+    sight::service::remove(srv);
 }
 
 //------------------------------------------------------------------------------
 
 boost::property_tree::ptree get_io_cfg_from_folder(const fs::path& _file)
 {
-    service::config_t srv_cfg;
+    sight::service::config_t srv_cfg;
     srv_cfg.add("folder", _file.string());
 
     return srv_cfg;
@@ -108,7 +88,7 @@ boost::property_tree::ptree get_io_cfg_from_folder(const fs::path& _file)
 
 boost::property_tree::ptree get_io_cfg_from_files(const file_container_t& _files)
 {
-    service::config_t srv_cfg;
+    sight::service::config_t srv_cfg;
     for(const auto& file : _files)
     {
         srv_cfg.add("file", file);
@@ -117,164 +97,161 @@ boost::property_tree::ptree get_io_cfg_from_files(const file_container_t& _files
     return srv_cfg;
 }
 
+} // namespace
+
+TEST_SUITE("sight::module::io::vtk::model_series_writer")
+{
 //------------------------------------------------------------------------------
 
-void model_series_writer_test::test_write_meshes()
-{
-    data::model_series::sptr model_series = utest_data::generator::series_set::create_model_series(5);
+    namespace point = sight::data::iterator::point;
+    namespace cell  = sight::data::iterator::cell;
 
-    const std::vector<std::string> all_extensions = {"vtk", "vtp", "obj", "ply", "stl"};
+//------------------------------------------------------------------------------
 
-    core::os::temp_dir tmp_dir;
-
-    for(const auto& ext : all_extensions)
+    TEST_CASE("write_meshes")
     {
-        const auto& ext_dir = tmp_dir / ext;
-        fs::create_directories(ext_dir);
+        sight::data::model_series::sptr model_series = sight::utest_data::generator::series_set::create_model_series(5);
 
-        auto cfg = get_io_cfg_from_folder(ext_dir);
-        cfg.add("extension", ext);
+        const std::vector<std::string> all_extensions = {"vtk", "vtp", "obj", "ply", "stl"};
+
+        sight::core::os::temp_dir tmp_dir;
+
+        for(const auto& ext : all_extensions)
+        {
+            const auto& ext_dir = tmp_dir / ext;
+            fs::create_directories(ext_dir);
+
+            auto cfg = get_io_cfg_from_folder(ext_dir);
+            cfg.add("extension", ext);
+
+            run_model_series_srv(
+                "sight::module::io::vtk::model_series_writer",
+                cfg,
+                model_series
+            );
+
+            file_container_t files;
+            for(fs::directory_iterator it(ext_dir) ; it != fs::directory_iterator() ; ++it)
+            {
+                if(it->path().extension() == "." + ext)
+                {
+                    files.push_back(it->path().string());
+                }
+            }
+
+            // Ensure reading order (modelSeries generator will prefix each file with a number).
+            std::ranges::sort(files);
+
+            CHECK_EQ(model_series->get_reconstruction_db().size(), files.size());
+
+            auto series_set = std::make_shared<sight::data::series_set>();
+
+            run_model_series_srv(
+                "sight::module::io::vtk::series_set_reader",
+                get_io_cfg_from_files(files),
+                series_set
+            );
+
+            CHECK_EQ(static_cast<std::size_t>(1), series_set->size());
+
+            sight::data::model_series::sptr read_series =
+                std::dynamic_pointer_cast<sight::data::model_series>(series_set->at(0));
+            CHECK(read_series);
+
+            using rec_vec_t = sight::data::model_series::reconstruction_vector_t;
+            const rec_vec_t& read_recs = read_series->get_reconstruction_db();
+            CHECK_EQ(files.size(), read_recs.size());
+
+            const rec_vec_t& ref_recs = model_series->get_reconstruction_db();
+            auto it_ref               = ref_recs.begin();
+            auto it_read              = read_recs.begin();
+
+            for( ; it_ref != ref_recs.end() ; ++it_ref, ++it_read)
+            {
+                sight::data::mesh::csptr ref_mesh  = (*it_ref)->get_mesh();
+                sight::data::mesh::csptr read_mesh = (*it_read)->get_mesh();
+
+                const auto reflock        = ref_mesh->dump_lock();
+                const auto read_mesh_lock = read_mesh->dump_lock();
+
+                CHECK_EQ(ref_mesh->num_points(), read_mesh->num_points());
+                CHECK_EQ(ref_mesh->num_cells(), read_mesh->num_cells());
+
+                // Don't test internal structures for obj, ply and stl, since some of them are missing.
+                if(ext != "obj" && ext != "ply" && ext != "stl")
+                {
+                    const auto ref_points  = ref_mesh->czip_range<point::xyz, point::nxyz, point::rgba>();
+                    const auto read_points = read_mesh->czip_range<point::xyz, point::nxyz, point::rgba>();
+
+                    for(const auto& [ref, read] : boost::combine(ref_points, read_points))
+                    {
+                        const auto& [pt1, n1, c1] = ref;
+                        const auto& [pt2, n2, c2] = read;
+
+                        CHECK((std::abs(pt1.x - pt2.x) < 0.00001));
+                        CHECK((std::abs(pt1.y - pt2.y) < 0.00001));
+                        CHECK((std::abs(pt1.z - pt2.z) < 0.00001));
+
+                        CHECK_EQ(c1.r, c2.r);
+                        CHECK_EQ(c1.g, c2.g);
+                        CHECK_EQ(c1.b, c2.b);
+                        CHECK_EQ(c1.a, c2.a);
+
+                        CHECK((std::abs(n1.nx - n2.nx) < 0.00001));
+                        CHECK((std::abs(n1.ny - n2.ny) < 0.00001));
+                        CHECK((std::abs(n1.nz - n2.nz) < 0.00001));
+                    }
+
+                    const auto ref_cells  = ref_mesh->czip_range<cell::triangle, cell::nxyz, cell::rgba>();
+                    const auto read_cells = read_mesh->czip_range<cell::triangle, cell::nxyz, cell::rgba>();
+
+                    for(const auto& [ref, read] : boost::combine(ref_cells, read_cells))
+                    {
+                        const auto& [tri1, n1, c1] = ref;
+                        const auto& [tri2, n2, c2] = read;
+
+                        for(std::size_t i = 0 ; i < 3 ; ++i)
+                        {
+                            CHECK_EQ(tri1.pt[i], tri2.pt[i]);
+                        }
+
+                        CHECK((std::abs(n1.nx - n2.nx) < 0.00001));
+                        CHECK((std::abs(n1.ny - n2.ny) < 0.00001));
+                        CHECK((std::abs(n1.nz - n2.nz) < 0.00001));
+
+                        CHECK_EQ(c1.r, c2.r);
+                        CHECK_EQ(c1.g, c2.g);
+                        CHECK_EQ(c1.b, c2.b);
+                        CHECK_EQ(c1.a, c2.a);
+                    }
+                }
+            }
+        }
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("write_reconstructions")
+    {
+        sight::data::model_series::sptr model_series = sight::utest_data::generator::series_set::create_model_series(5);
+
+        sight::core::os::temp_dir tmp_dir;
 
         run_model_series_srv(
-            "sight::module::io::vtk::model_series_writer",
-            cfg,
+            "sight::module::io::vtk::model_series_obj_writer",
+            get_io_cfg_from_folder(tmp_dir),
             model_series
         );
 
         file_container_t files;
-        for(fs::directory_iterator it(ext_dir) ; it != fs::directory_iterator() ; ++it)
+        for(fs::directory_iterator it(tmp_dir) ; it != fs::directory_iterator() ; ++it)
         {
-            if(it->path().extension() == "." + ext)
-            {
-                files.push_back(it->path().string());
-            }
+            files.push_back(it->path().string());
         }
 
-        // Ensure reading order (modelSeries generator will prefix each file with a number).
-        std::sort(files.begin(), files.end());
-
-        CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "Number of saved files",
-            model_series->get_reconstruction_db().size(),
-            files.size()
-        );
-
-        auto series_set = std::make_shared<data::series_set>();
-
-        run_model_series_srv(
-            "sight::module::io::vtk::series_set_reader",
-            get_io_cfg_from_files(files),
-            series_set
-        );
-
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("series_set Size", (std::size_t) 1, series_set->size());
-
-        data::model_series::sptr read_series = std::dynamic_pointer_cast<data::model_series>(series_set->at(0));
-        CPPUNIT_ASSERT_MESSAGE("A ModelSeries was expected", read_series);
-
-        using rec_vec_t = data::model_series::reconstruction_vector_t;
-        const rec_vec_t& read_recs = read_series->get_reconstruction_db();
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Number of reconstructions", files.size(), read_recs.size());
-
-        const rec_vec_t& ref_recs = model_series->get_reconstruction_db();
-        auto it_ref               = ref_recs.begin();
-        auto it_read              = read_recs.begin();
-
-        for( ; it_ref != ref_recs.end() ; ++it_ref, ++it_read)
-        {
-            data::mesh::csptr ref_mesh  = (*it_ref)->get_mesh();
-            data::mesh::csptr read_mesh = (*it_read)->get_mesh();
-
-            const auto reflock        = ref_mesh->dump_lock();
-            const auto read_mesh_lock = read_mesh->dump_lock();
-
-            CPPUNIT_ASSERT_EQUAL_MESSAGE(
-                "Number of Points.",
-                ref_mesh->num_points(),
-                read_mesh->num_points()
-            );
-            CPPUNIT_ASSERT_EQUAL_MESSAGE(
-                "Number of Cells.",
-                ref_mesh->num_cells(),
-                read_mesh->num_cells()
-            );
-
-            // Don't test internal structures for obj, ply and stl, since some of them are missing.
-            if(ext != "obj" && ext != "ply" && ext != "stl")
-            {
-                const auto ref_points  = ref_mesh->czip_range<point::xyz, point::nxyz, point::rgba>();
-                const auto read_points = read_mesh->czip_range<point::xyz, point::nxyz, point::rgba>();
-
-                for(const auto& [ref, read] : boost::combine(ref_points, read_points))
-                {
-                    const auto& [pt1, n1, c1] = ref;
-                    const auto& [pt2, n2, c2] = read;
-
-                    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Point.x ", pt1.x, pt2.x, 0.00001);
-                    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Point.y", pt1.y, pt2.y, 0.00001);
-                    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Point.z", pt1.z, pt2.z, 0.00001);
-
-                    CPPUNIT_ASSERT_EQUAL_MESSAGE("Point color R", c1.r, c2.r);
-                    CPPUNIT_ASSERT_EQUAL_MESSAGE("Point color G", c1.g, c2.g);
-                    CPPUNIT_ASSERT_EQUAL_MESSAGE("Point color B", c1.b, c2.b);
-                    CPPUNIT_ASSERT_EQUAL_MESSAGE("Point color A", c1.a, c2.a);
-
-                    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Point normal x", n1.nx, n2.nx, 0.00001);
-                    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Point normal y", n1.ny, n2.ny, 0.00001);
-                    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Point normal z", n1.nz, n2.nz, 0.00001);
-                }
-
-                const auto ref_cells  = ref_mesh->czip_range<cell::triangle, cell::nxyz, cell::rgba>();
-                const auto read_cells = read_mesh->czip_range<cell::triangle, cell::nxyz, cell::rgba>();
-
-                for(const auto& [ref, read] : boost::combine(ref_cells, read_cells))
-                {
-                    const auto& [tri1, n1, c1] = ref;
-                    const auto& [tri2, n2, c2] = read;
-
-                    for(std::size_t i = 0 ; i < 3 ; ++i)
-                    {
-                        CPPUNIT_ASSERT_EQUAL_MESSAGE("Cell point index", tri1.pt[i], tri2.pt[i]);
-                    }
-
-                    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Cell normal x", n1.nx, n2.nx, 0.00001);
-                    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Cell normal y", n1.ny, n2.ny, 0.00001);
-                    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Cell normal z", n1.nz, n2.nz, 0.00001);
-
-                    CPPUNIT_ASSERT_EQUAL_MESSAGE("Cell color R", c1.r, c2.r);
-                    CPPUNIT_ASSERT_EQUAL_MESSAGE("Cell color G", c1.g, c2.g);
-                    CPPUNIT_ASSERT_EQUAL_MESSAGE("Cell color B", c1.b, c2.b);
-                    CPPUNIT_ASSERT_EQUAL_MESSAGE("Cell color A", c1.a, c2.a);
-                }
-            }
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void model_series_writer_test::test_write_reconstructions()
-{
-    data::model_series::sptr model_series = utest_data::generator::series_set::create_model_series(5);
-
-    core::os::temp_dir tmp_dir;
-
-    run_model_series_srv(
-        "sight::module::io::vtk::model_series_obj_writer",
-        get_io_cfg_from_folder(tmp_dir),
-        model_series
-    );
-
-    file_container_t files;
-    for(fs::directory_iterator it(tmp_dir) ; it != fs::directory_iterator() ; ++it)
-    {
-        files.push_back(it->path().string());
+        // Writer generates a .mtl file for each .obj file
+        CHECK_EQ(model_series->get_reconstruction_db().size() * 2, files.size());
     }
 
-    // Writer generates a .mtl file for each .obj file
-    CPPUNIT_ASSERT_EQUAL(model_series->get_reconstruction_db().size() * 2, files.size());
-}
-
 //------------------------------------------------------------------------------
-
-} // namespace sight::module::io::vtk::ut
+} // TEST_SUITE

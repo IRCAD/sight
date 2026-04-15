@@ -34,7 +34,7 @@ TEST_SUITE("sight::data::validator")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("test_validator")
+    TEST_CASE("stereo_camera")
     {
         auto validator = factory::make("sight::data::validator::camera_set::stereo_camera");
         CHECK(validator);

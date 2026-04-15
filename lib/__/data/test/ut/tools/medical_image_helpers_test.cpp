@@ -111,7 +111,7 @@ static sight::data::image::sptr generate_image()
     return image;
 }
 
-TEST_SUITE("sight::data::tools::ut")
+TEST_SUITE("sight::data::tools::medical_image_helper")
 {
 // ------------------------------------------------------------------------------
 
@@ -403,7 +403,7 @@ TEST_SUITE("sight::data::tools::ut")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("test_landmarks")
+    TEST_CASE("landmarks")
     {
         sight::data::image::sptr image = generate_image();
 
@@ -434,7 +434,7 @@ TEST_SUITE("sight::data::tools::ut")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("test_image_validity")
+    TEST_CASE("image_validity")
     {
         // Valid image
         const auto valid_image = generate_image();
@@ -452,7 +452,7 @@ TEST_SUITE("sight::data::tools::ut")
     }
 
 //------------------------------------------------------------------------------
-    TEST_CASE("test_slice_position")
+    TEST_CASE("slice_position")
     {
         const auto image = generate_image();
         // AXIAL
@@ -522,7 +522,7 @@ TEST_SUITE("sight::data::tools::ut")
     }
 
 //------------------------------------------------------------------------------
-    TEST_CASE("test_slice_index")
+    TEST_CASE("slice_index")
     {
         const auto image = generate_image();
 
@@ -595,7 +595,7 @@ TEST_SUITE("sight::data::tools::ut")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("test_distances")
+    TEST_CASE("distances")
     {
         const auto image = generate_image();
 
@@ -621,7 +621,7 @@ TEST_SUITE("sight::data::tools::ut")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("test_distance_visibility")
+    TEST_CASE("distance_visibility")
     {
         const auto image = generate_image();
 
@@ -638,7 +638,7 @@ TEST_SUITE("sight::data::tools::ut")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("test_landmarks_visibility")
+    TEST_CASE("landmarks_visibility")
     {
         const auto image = generate_image();
 
@@ -748,4 +748,4 @@ TEST_SUITE("sight::data::tools::ut")
     }
 
 //------------------------------------------------------------------------------
-} // TEST_SUITE("sight::data::tools::ut")
+} // TEST_SUITE("sight::data::tools")

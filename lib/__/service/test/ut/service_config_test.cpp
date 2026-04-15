@@ -77,18 +77,18 @@ void config_test()
 
 } // namespace
 
-TEST_SUITE("sight::service::ut::service_config_test")
+TEST_SUITE("sight::service::service_config")
 {
 //------------------------------------------------------------------------------
 
-    TEST_CASE("config_test")
+    TEST_CASE("config")
     {
         config_test();
     }
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("concurrent_access_to_service_config_test")
+    TEST_CASE("concurrent_access_to_service_config")
     {
         std::vector<std::future<void> > futures;
         futures.reserve(20);
@@ -110,7 +110,7 @@ TEST_SUITE("sight::service::ut::service_config_test")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("get_all_configs_test")
+    TEST_CASE("get_all_configs")
     {
         sight::service::extension::config::sptr current_service_config;
         current_service_config = sight::service::extension::config::get_default();

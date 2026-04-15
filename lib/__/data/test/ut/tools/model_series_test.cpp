@@ -27,7 +27,7 @@
 
 #include <doctest/doctest.h>
 
-TEST_SUITE("sight::data::tools::ut")
+TEST_SUITE("sight::data::tools::model_series")
 {
 //------------------------------------------------------------------------------
 
@@ -196,4 +196,4 @@ TEST_SUITE("sight::data::tools::ut")
     }
 
 //------------------------------------------------------------------------------
-} // TEST_SUITE("sight::data::tools::ut")
+} // TEST_SUITE("sight::data::tools")

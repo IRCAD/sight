@@ -91,9 +91,9 @@ SIGHT_REGISTER_SERVICE_OBJECT(sight::service::ut::test_srv_three_data, sight::da
 
 } // namespace sight::service::ut
 
-TEST_SUITE("sight::service::ut::service_factory_test")
+TEST_SUITE("sight::service::service_factory")
 {
-    TEST_CASE("factory_test")
+    TEST_CASE("factory")
     {
         const auto service_factory = sight::service::extension::factory::get();
         {

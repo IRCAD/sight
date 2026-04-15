@@ -134,11 +134,11 @@ test_service_signals::~test_service_signals()
 
 //------------------------------------------------------------------------------
 
-TEST_SUITE("sight::service::ut::service_test")
+TEST_SUITE("sight::service::service")
 {
 //------------------------------------------------------------------------------
 
-    TEST_CASE("test_service_configuration")
+    TEST_CASE("service_configuration")
     {
         // Test adding service
         auto srv  = sight::service::add<sight::service::ut::test_srv>("sight::service::ut::test_no_data");
@@ -182,7 +182,7 @@ TEST_SUITE("sight::service::ut::service_test")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("test_service_creation_with_multiple_data")
+    TEST_CASE("service_creation_with_multiple_data")
     {
         const std::string data_key1     = "data1";
         const std::string data_key2     = "data2";
@@ -243,7 +243,7 @@ TEST_SUITE("sight::service::ut::service_test")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("test_service_creation_with_template_methods")
+    TEST_CASE("service_creation_with_template_methods")
     {
         const std::string data_key     = "data1";
         sight::data::integer::sptr obj = std::make_shared<sight::data::integer>();
@@ -274,7 +274,7 @@ TEST_SUITE("sight::service::ut::service_test")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("test_service_creation_with_uuid")
+    TEST_CASE("service_creation_with_uuid")
     {
         const std::string my_uuid   = "myUUID";
         const std::string my_uui_d2 = "myUUID2";
@@ -324,7 +324,7 @@ TEST_SUITE("sight::service::ut::service_test")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("test_start_stop_update")
+    TEST_CASE("start_stop_update")
     {
         const std::string my_uuid = "myUUID";
 
@@ -365,7 +365,7 @@ TEST_SUITE("sight::service::ut::service_test")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("test_start_stop_update_exceptions")
+    TEST_CASE("start_stop_update_exceptions")
     {
         // Test on the same worker
         {
@@ -616,7 +616,7 @@ TEST_SUITE("sight::service::ut::service_test")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("test_communication")
+    TEST_CASE("communication")
     {
         const std::string event         = "EVENT";
         const std::string data_key      = "data1";
@@ -719,7 +719,7 @@ TEST_SUITE("sight::service::ut::service_test")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("test_with_in_and_out")
+    TEST_CASE("with_in_and_out")
     {
         std::vector<sight::data::integer::sptr> obj;
         obj.push_back(std::make_shared<sight::data::integer>(18));
@@ -810,7 +810,7 @@ TEST_SUITE("sight::service::ut::service_test")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("test_properties")
+    TEST_CASE("properties")
     {
         {
             // Default value, property object automatically created

@@ -133,7 +133,7 @@ struct fixture
 
 } // namespace
 
-TEST_SUITE("sight::service::ut::lock_test")
+TEST_SUITE("sight::service::lock")
 {
 //------------------------------------------------------------------------------
 

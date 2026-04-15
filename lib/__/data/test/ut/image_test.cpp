@@ -43,7 +43,7 @@ TEST_SUITE("sight::data::image")
 {
 //------------------------------------------------------------------------------
 
-    TEST_CASE("test_getter_setter")
+    TEST_CASE("getter_setter")
     {
         const sight::data::image::spacing_t spacing         = {2.5, 2.6};
         const sight::data::image::origin_t origin           = {2.7, 2.8};
@@ -70,7 +70,7 @@ TEST_SUITE("sight::data::image")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("test_allocation")
+    TEST_CASE("allocation")
     {
         const sight::core::type type              = sight::core::type::INT16;
         const sight::data::image::size_t img_size = {14, 15, 26};
@@ -96,7 +96,7 @@ TEST_SUITE("sight::data::image")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("test_reallocation")
+    TEST_CASE("reallocation")
     {
         const sight::core::type typ_e1              = sight::core::type::INT16;
         const sight::core::type typ_e2              = sight::core::type::INT64;
@@ -148,7 +148,7 @@ TEST_SUITE("sight::data::image")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("test_set_get_pixel")
+    TEST_CASE("set_get_pixel")
     {
         sight::data::image::sptr img = std::make_shared<sight::data::image>();
 
@@ -269,7 +269,7 @@ TEST_SUITE("sight::data::image")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("test_set_get_pixel_rgba")
+    TEST_CASE("set_get_pixel_rgba")
     {
         sight::data::image::sptr img = std::make_shared<sight::data::image>();
 
@@ -417,7 +417,7 @@ TEST_SUITE("sight::data::image")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("test_iterator")
+    TEST_CASE("iterator")
     {
         sight::data::image::sptr img = std::make_shared<sight::data::image>();
 
@@ -486,7 +486,7 @@ TEST_SUITE("sight::data::image")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("test_rgb_iterator")
+    TEST_CASE("rgb_iterator")
     {
         sight::data::image::sptr img = std::make_shared<sight::data::image>();
 
@@ -582,7 +582,7 @@ TEST_SUITE("sight::data::image")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("test_bgr_iterator")
+    TEST_CASE("bgr_iterator")
     {
         sight::data::image::sptr img = std::make_shared<sight::data::image>();
 
@@ -636,7 +636,7 @@ TEST_SUITE("sight::data::image")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("test_bgra_iterator")
+    TEST_CASE("bgra_iterator")
     {
         sight::data::image::sptr img = std::make_shared<sight::data::image>();
 
@@ -696,7 +696,7 @@ TEST_SUITE("sight::data::image")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("test_rgba_iterator")
+    TEST_CASE("rgba_iterator")
     {
         sight::data::image::sptr img = std::make_shared<sight::data::image>();
 

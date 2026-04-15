@@ -32,9 +32,9 @@
 
 #include <doctest/doctest.h>
 
-TEST_SUITE("sight::service::ut::registry_test")
+TEST_SUITE("sight::service::registry")
 {
-    TEST_CASE("register_key_test")
+    TEST_CASE("register_key")
     {
         const std::string srv_type("sight::service::ut::test_srv");
         const std::string srv_implementation1("sight::service::ut::test_no_data");

@@ -1,4 +1,4 @@
-sight_add_target(module_io_vtk_ut TYPE TEST)
+sight_add_target(module_io_vtk_ut TYPE DOCTEST)
 
 add_dependencies(module_io_vtk_ut module_io_vtk)
 

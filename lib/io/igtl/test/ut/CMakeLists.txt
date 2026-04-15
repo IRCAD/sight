@@ -1,4 +1,4 @@
-sight_add_target(io_igtl_ut TYPE TEST)
+sight_add_target(io_igtl_ut TYPE DOCTEST)
 
 if(VCPKG_TARGET_TRIPLET)
     find_package(OpenIGTLink CONFIG REQUIRED)
