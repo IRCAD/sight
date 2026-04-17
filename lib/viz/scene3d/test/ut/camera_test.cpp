@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2025 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,6 +24,8 @@
 
 #include "viz/scene3d/utils.hpp"
 
+#include <core/runtime/runtime.hpp>
+
 #include <utest/filter.hpp>
 
 #include <viz/scene3d/helper/camera.hpp>
@@ -36,13 +38,21 @@
 #include <OgreRenderWindow.h>
 #include <OgreViewport.h>
 
-#include <limits>
-#include <tuple>
-#include <vector>
+namespace
+{
+
+struct initializer
+{
+    initializer()
+    {
+        sight::core::runtime::init();
+        sight::core::runtime::load_module("sight::module::viz::scene3d::test");
+    }
+};
 
 //------------------------------------------------------------------------------
 
-static void compare_matrix(const Ogre::Matrix4& _m1, const Ogre::Matrix4& _m2)
+void compare_matrix(const Ogre::Matrix4& _m1, const Ogre::Matrix4& _m2)
 {
     for(unsigned int i = 0 ; i < 4 ; ++i)
     {
@@ -55,12 +65,14 @@ static void compare_matrix(const Ogre::Matrix4& _m1, const Ogre::Matrix4& _m2)
 
 //------------------------------------------------------------------------------
 
-static void compare_point(const Ogre::Vector4& _p1, const Ogre::Vector3& _p2)
+void compare_point(const Ogre::Vector4& _p1, const Ogre::Vector3& _p2)
 {
     CHECK(doctest::Approx(_p1[0]).epsilon(0.0001) == _p2[0]);
     CHECK(doctest::Approx(_p1[1]).epsilon(0.0001) == _p2[1]);
     CHECK(doctest::Approx(_p1[2]).epsilon(0.0001) == _p2[2]);
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------
 
@@ -104,7 +116,7 @@ TEST_SUITE("sight::viz::scene3d::camera")
         compare_matrix(expected, actual);
     }
 
-    TEST_CASE("convert_pixel_to_world_space")
+    TEST_CASE_FIXTURE(initializer, "convert_pixel_to_world_space")
     {
         auto* const root          = sight::viz::scene3d::utils::get_ogre_root();
         auto* const scene_manager = root->createSceneManager("DefaultSceneManager", "TestSceneManager");
@@ -174,7 +186,7 @@ TEST_SUITE("sight::viz::scene3d::camera")
         root->destroySceneManager(scene_manager);
     }
 
-    TEST_CASE("convert_world_space_to_screen_space")
+    TEST_CASE_FIXTURE(initializer, "convert_world_space_to_screen_space")
     {
         auto* const root          = sight::viz::scene3d::utils::get_ogre_root();
         auto* const scene_manager = root->createSceneManager("DefaultSceneManager", "TestSceneManager");

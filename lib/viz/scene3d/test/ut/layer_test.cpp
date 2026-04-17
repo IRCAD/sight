@@ -33,6 +33,18 @@
 
 #include <OGRE/OgreRenderTarget.h>
 
+namespace
+{
+
+struct initializer
+{
+    initializer()
+    {
+        sight::core::runtime::init();
+        sight::core::runtime::load_module("sight::module::viz::scene3d::test");
+    }
+};
+
 class dummy_render_target : public Ogre::RenderTarget
 {
 public:
@@ -61,6 +73,7 @@ public:
     }
 };
 
+} // namespace
 TEST_SUITE("sight::viz::scene3d::helper::layer")
 {
     TEST_CASE("set_orthographic")
@@ -72,7 +85,7 @@ TEST_SUITE("sight::viz::scene3d::helper::layer")
         CHECK(layer->is_orthographic_camera_force());
     }
 
-    TEST_CASE("reset_camera_clipping_range")
+    TEST_CASE_FIXTURE(initializer, "reset_camera_clipping_range")
     {
         auto offscreen  = std::make_shared<sight::data::image>();
         auto render_srv = sight::service::add<sight::viz::scene3d::render>("sight::viz::scene3d::render");
