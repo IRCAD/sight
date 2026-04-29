@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -386,7 +386,7 @@ mesh::point_t mesh::push_point(const std::array<position_t, 3>& _p)
 
 //-------------------------------------------------------------------------------
 
-const mesh::axis_aligned_box_t& mesh::get_bounding_box()
+const mesh::axis_aligned_box_t& mesh::get_bounding_box() const
 {
     const auto lock = dump_lock();
 

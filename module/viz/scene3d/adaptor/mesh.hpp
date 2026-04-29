@@ -26,6 +26,7 @@
 
 #include "module/viz/scene3d/adaptor/material.hpp"
 
+#include <data/boolean.hpp>
 #include <data/color.hpp>
 #include <data/material.hpp>
 #include <data/mesh.hpp>
@@ -80,6 +81,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b modify_vertices(): called when the vertices are modified.
  * - \b change_material(Ogre::MaterialPtr): change the material of the mesh.
  * - \b change_color(): update the material diffuse color with the current mesh color.
+ * - \b change_bounding_box_visibility(): applies the current bounding box visibility from the property.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -120,6 +122,7 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * @subsection Properties Properties:
  *  - \b color: the mesh color, used to set the material diffuse color if material_name is not set.
+ *  - \b bounding_box_visible (optional, bool, default=false): whether the bounding box is shown.
  */
 class mesh final :
     public sight::viz::scene3d::adaptor,
@@ -132,12 +135,13 @@ public:
 
     struct slots
     {
-        static inline const slot_key_t MODIFY_MESH             = "modify_mesh";
-        static inline const slot_key_t MODIFY_COLORS           = "modify_colors";
-        static inline const slot_key_t MODIFY_POINT_TEX_COORDS = "modify_point_tex_coords";
-        static inline const slot_key_t MODIFY_VERTICES         = "modify_vertices";
-        static inline const slot_key_t CHANGE_MATERIAL         = "change_material";
-        static inline const slot_key_t CHANGE_COLOR            = "change_color";
+        static inline const slot_key_t MODIFY_MESH                    = "modify_mesh";
+        static inline const slot_key_t MODIFY_COLORS                  = "modify_colors";
+        static inline const slot_key_t MODIFY_POINT_TEX_COORDS        = "modify_point_tex_coords";
+        static inline const slot_key_t MODIFY_VERTICES                = "modify_vertices";
+        static inline const slot_key_t CHANGE_MATERIAL                = "change_material";
+        static inline const slot_key_t CHANGE_COLOR                   = "change_color";
+        static inline const slot_key_t CHANGE_BOUNDING_BOX_VISIBILITY = "change_bounding_box_visibility";
     };
 
     /// Sets default parameters and initializes necessary members.
@@ -247,6 +251,9 @@ private:
     /// Updates mesh texture coordinates.
     void modify_tex_coords();
 
+    /// Updates the bounding box visualization.
+    void update_bounding_box();
+
     /**
      * @brief Updates the mesh, checks if color, number of vertices have changed, and updates them.
      * @param _mesh used for the update.
@@ -275,6 +282,9 @@ private:
 
     /// Contains the node in the scene graph where the mesh is attached.
     Ogre::Entity* m_entity {nullptr};
+
+    /// Contains the bounding box visualization.
+    Ogre::ManualObject* m_bounding_box {nullptr};
 
     /// Contains the Ogre material adaptor.
     module::viz::scene3d::adaptor::material::sptr m_material_adaptor {nullptr};
@@ -335,6 +345,9 @@ private:
 
     /// Diffuse color of the mesh, used if no material is provided.
     sight::data::property<sight::data::color> m_color {this, "color", {1.0F, 1.0F, 1.0F, 1.0F}};
+
+    /// Whether the bounding box visualization is shown.
+    sight::data::property<sight::data::boolean> m_bounding_box_visible {this, "bounding_box_visible", false};
 };
 
 //------------------------------------------------------------------------------

@@ -36,6 +36,7 @@
 #include <viz/scene3d/render.hpp>
 
 #include <OGRE/OgreAxisAlignedBox.h>
+#include <OGRE/OgreMaterialManager.h>
 
 #include <algorithm>
 #include <cstdint>
@@ -72,6 +73,16 @@ mesh::mesh() noexcept
             SIGHT_ASSERT("Material not found", m_material);
             *m_material->diffuse() = m_color.value();
             m_material_adaptor->slot(service::slots::UPDATE)->run();
+        });
+    new_slot(
+        slots::CHANGE_BOUNDING_BOX_VISIBILITY,
+        [this]()
+        {
+            if(m_bounding_box != nullptr)
+            {
+                m_bounding_box->setVisible(m_bounding_box_visible.value());
+                this->request_render();
+            }
         });
 }
 
@@ -218,6 +229,22 @@ void mesh::starting()
         m_material = m_material_adaptor->inout<data::material>(material::MATERIAL_INOUT).lock().get_shared();
     }
 
+    // Creating bounding box
+    const std::string bb_obj_name = gen_id("bounding_box");
+    m_bounding_box = this->get_scene_manager()->createManualObject(bb_obj_name);
+    m_bounding_box->setRenderQueueGroup(sight::viz::scene3d::rq::SURFACE);
+    m_bounding_box->setVisible(m_bounding_box_visible.value());
+
+    const auto basic_ambient_mat = Ogre::MaterialManager::getSingleton().getByName(
+        "BasicAmbient",
+        sight::viz::scene3d::RESOURCE_GROUP
+    );
+    auto bb_mat = basic_ambient_mat->clone(bb_obj_name + "_Material");
+    bb_mat->setAmbient(Ogre::ColourValue(1.0F, 1.0F, 0.0F));
+    bb_mat->setDiffuse(Ogre::ColourValue(1.0F, 1.0F, 0.0F));
+
+    this->attach_node(m_bounding_box);
+
     const auto mesh = m_mesh.lock();
     this->update_mesh(mesh.get_shared());
 }
@@ -232,7 +259,8 @@ service::connections_t mesh::auto_connections() const
         {m_mesh, data::mesh::CELL_COLORS_MODIFIED_SIG, slots::MODIFY_COLORS},
         {m_mesh, data::mesh::POINT_TEX_COORDS_MODIFIED_SIG, slots::MODIFY_POINT_TEX_COORDS},
         {m_mesh, data::signals::MODIFIED, slots::MODIFY_MESH},
-        {m_color, data::signals::MODIFIED, slots::CHANGE_COLOR}
+        {m_color, data::signals::MODIFIED, slots::CHANGE_COLOR},
+        {m_bounding_box_visible, data::signals::MODIFIED, slots::CHANGE_BOUNDING_BOX_VISIBILITY}
     };
     return connections + adaptor::auto_connections();
 }
@@ -295,6 +323,16 @@ void mesh::stopping()
         m_entity = nullptr;
     }
 
+    if(m_bounding_box != nullptr)
+    {
+        scene_mgr->destroyManualObject(m_bounding_box);
+        m_bounding_box = nullptr;
+        Ogre::MaterialManager::getSingleton().remove(
+            gen_id("bounding_box") + "_Material",
+            sight::viz::scene3d::RESOURCE_GROUP
+        );
+    }
+
     m_mesh_geometry.reset();
 
     adaptor::deinit();
@@ -335,6 +373,11 @@ void mesh::update_mesh(data::mesh::csptr _mesh)
         {
             scene_mgr->destroyEntity(m_entity);
             m_entity = nullptr;
+        }
+
+        if(m_bounding_box != nullptr)
+        {
+            m_bounding_box->clear();
         }
 
         m_mesh_geometry->clear_mesh(*scene_mgr);
@@ -426,6 +469,8 @@ void mesh::update_mesh(data::mesh::csptr _mesh)
     {
         this->layer()->reset_camera_coordinates();
     }
+
+    this->update_bounding_box();
 
     this->request_render();
 }
@@ -625,6 +670,68 @@ void mesh::modify_tex_coords()
     m_mesh_geometry->update_tex_coords(mesh.get_shared());
 
     this->request_render();
+}
+
+//-----------------------------------------------------------------------------
+
+void mesh::update_bounding_box()
+{
+    const auto mesh = m_mesh.lock();
+    if(!mesh)
+    {
+        return;
+    }
+
+    const auto bb     = mesh->get_bounding_box();
+    const auto bb_min = bb.min;
+    const auto bb_max = bb.max;
+
+    const std::string bb_mat_name = gen_id("bounding_box") + "_Material";
+
+    m_bounding_box->clear();
+
+    // Draw wireframe bounding box with lines
+    m_bounding_box->begin(bb_mat_name, Ogre::RenderOperation::OT_LINE_LIST, sight::viz::scene3d::RESOURCE_GROUP);
+    m_bounding_box->colour(Ogre::ColourValue(1.0F, 1.0F, 0.0F)); // Yellow
+
+    const Ogre::Vector3 min(static_cast<float>(bb_min[0]), static_cast<float>(bb_min[1]),
+                            static_cast<float>(bb_min[2]));
+    const Ogre::Vector3 max(static_cast<float>(bb_max[0]), static_cast<float>(bb_max[1]),
+                            static_cast<float>(bb_max[2]));
+
+    // Bottom face
+    m_bounding_box->position(min.x, min.y, min.z);
+    m_bounding_box->position(max.x, min.y, min.z);
+    m_bounding_box->position(max.x, min.y, min.z);
+    m_bounding_box->position(max.x, max.y, min.z);
+    m_bounding_box->position(max.x, max.y, min.z);
+    m_bounding_box->position(min.x, max.y, min.z);
+    m_bounding_box->position(min.x, max.y, min.z);
+    m_bounding_box->position(min.x, min.y, min.z);
+
+    // Top face
+    m_bounding_box->position(min.x, min.y, max.z);
+    m_bounding_box->position(max.x, min.y, max.z);
+    m_bounding_box->position(max.x, min.y, max.z);
+    m_bounding_box->position(max.x, max.y, max.z);
+    m_bounding_box->position(max.x, max.y, max.z);
+    m_bounding_box->position(min.x, max.y, max.z);
+    m_bounding_box->position(min.x, max.y, max.z);
+    m_bounding_box->position(min.x, min.y, max.z);
+
+    // Vertical edges
+    m_bounding_box->position(min.x, min.y, min.z);
+    m_bounding_box->position(min.x, min.y, max.z);
+    m_bounding_box->position(max.x, min.y, min.z);
+    m_bounding_box->position(max.x, min.y, max.z);
+    m_bounding_box->position(max.x, max.y, min.z);
+    m_bounding_box->position(max.x, max.y, max.z);
+    m_bounding_box->position(min.x, max.y, min.z);
+    m_bounding_box->position(min.x, max.y, max.z);
+
+    m_bounding_box->end();
+
+    m_bounding_box->setBoundingBox(Ogre::AxisAlignedBox(min, max));
 }
 
 //-----------------------------------------------------------------------------

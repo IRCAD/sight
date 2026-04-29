@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -68,7 +68,7 @@ public:
     SIGHT_CORE_API static bool exist(type _id);
 
     /**
-     * @brief Retrieve the object attached to the given id. Return a null sptr if no correspondence exist.
+     * @brief Retrieve the object attached to the given id. Return a null sptr if no correspondence exists.
      * @note This method is thread-safe.
      */
     SIGHT_CORE_API static SPTR(object) get_object(type _request_id);

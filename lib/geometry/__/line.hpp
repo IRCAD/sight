@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,7 +23,8 @@
 
 #include <sight/geometry/__/config.hpp>
 
-#include <glm/mat3x3.hpp>
+#include "geometry/__/box.hpp"
+
 #include <glm/vec3.hpp>
 
 #include <utility>
@@ -40,16 +41,6 @@ using line_t = std::pair<glm::dvec3, glm::dvec3>;
  * @brief Definition of a type for a ray defined by a position and a direction
  */
 using ray_t = std::pair<glm::dvec3, glm::dvec3>;
-
-/**
- * @brief Definition of a type for a ray defined by a position and a direction
- */
-struct oriented_box_t
-{
-    glm::dvec3 center;
-    glm::dvec3 extent; ///< distance from the center to the edge in each direction, always positive
-    glm::dmat3 orientation;
-};
 
 //------------------------------------------------------------------------------
 

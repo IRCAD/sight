@@ -2,6 +2,7 @@
 !titi
 !toto
 !tutu
+aabb
 abgr
 ackley
 activaters
@@ -201,6 +202,7 @@ nvjpeg
 nvjpeg2000
 nvjpeg2k
 nxyz
+obb
 observee
 odil
 ogre3d
