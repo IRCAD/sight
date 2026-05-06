@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2025 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -83,6 +83,12 @@ class axis final :
 {
 public:
 
+    struct slots
+    {
+        static inline const slot_key_t UPDATE_IMAGE        = "update_image";
+        static inline const slot_key_t UPDATE_ORIGIN_COLOR = "update_origin_color";
+    };
+
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(axis, sight::viz::scene3d::adaptor);
 
@@ -125,6 +131,11 @@ private:
     /// Contains the material for the origin (to change its color dynamically).
     sight::viz::scene3d::material::standard::uptr m_origin_material;
 
+    enum class update_flags : std::uint8_t
+    {
+        image,
+        origin_color
+    };
     /// Defines the axis length in scene units.
     float m_length {50.F};
 

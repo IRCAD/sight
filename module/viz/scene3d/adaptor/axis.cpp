@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2025 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,20 +44,8 @@ namespace sight::module::viz::scene3d::adaptor
 
 axis::axis() noexcept
 {
-    new_slot("update_origin_color", &axis::update_origin_color, this);
-}
-
-//-----------------------------------------------------------------------------
-
-void axis::update_origin_color(sight::data::color::sptr _new_color)
-{
-    if(m_origin == nullptr)
-    {
-        return;
-    }
-
-    Ogre::ColourValue color((*_new_color)[0], (*_new_color)[1], (*_new_color)[2], (*_new_color)[3]);
-    m_origin_material->material()->setAmbient(color);
+    new_slot(slots::UPDATE_IMAGE, [this](){lazy_update(update_flags::image);});
+    new_slot(slots::UPDATE_ORIGIN_COLOR, [this](){lazy_update(update_flags::origin_color);});
 }
 
 //-----------------------------------------------------------------------------
@@ -151,10 +139,18 @@ void axis::starting()
     if(m_origin_visibility)
     {
         const auto origin_color = *m_origin_color;
+        m_origin_material->material()->setDiffuse(
+            Ogre::ColourValue(
+                origin_color[0],
+                origin_color[1],
+                origin_color[2],
+                origin_color[3]
+            )
+        );
         sight::viz::scene3d::helper::manual_object::create_sphere(
             m_origin,
             m_origin_material->name(),
-            Ogre::ColourValue(origin_color[0], origin_color[1], origin_color[2], origin_color[3]),
+            Ogre::ColourValue::White,
             origin_radius,
             sample
         );
@@ -295,33 +291,47 @@ void axis::updating()
 {
     this->render_service()->make_current();
 
-    Ogre::SceneNode* const transform_node = this->get_transform_node();
-    if(transform_node != nullptr)
+    if(update_needed(update_flags::origin_color))
     {
-        const auto image = m_image.lock();
-        if(image)
+        if(m_origin == nullptr)
         {
-            auto position    = image->origin();
-            auto orientation = image->orientation();
+            return;
+        }
 
-            // Decompose the matrix
-            transform_node->setOrientation(
-                Ogre::Matrix3 {
-                    static_cast<Ogre::Real>(orientation[0]),
-                    static_cast<Ogre::Real>(orientation[1]),
-                    static_cast<Ogre::Real>(orientation[2]),
-                    static_cast<Ogre::Real>(orientation[3]),
-                    static_cast<Ogre::Real>(orientation[4]),
-                    static_cast<Ogre::Real>(orientation[5]),
-                    static_cast<Ogre::Real>(orientation[6]),
-                    static_cast<Ogre::Real>(orientation[7]),
-                    static_cast<Ogre::Real>(orientation[8])
-                });
-            transform_node->setPosition(
-                Ogre::Vector3 {static_cast<Ogre::Real>(position[0]), static_cast<Ogre::Real>(position[1]),
-                               static_cast<Ogre::Real>(position[2])
-                });
-            transform_node->setScale(Ogre::Vector3 {1.0, 1.0, 1.0});
+        Ogre::ColourValue color((*m_origin_color)[0], (*m_origin_color)[1], (*m_origin_color)[2], (*m_origin_color)[3]);
+        m_origin_material->material()->setDiffuse(color);
+    }
+
+    if(update_needed(update_flags::image))
+    {
+        Ogre::SceneNode* const transform_node = this->get_transform_node();
+        if(transform_node != nullptr)
+        {
+            const auto image = m_image.lock();
+            if(image)
+            {
+                auto position    = image->origin();
+                auto orientation = image->orientation();
+
+                // Decompose the matrix
+                transform_node->setOrientation(
+                    Ogre::Matrix3 {
+                        static_cast<Ogre::Real>(orientation[0]),
+                        static_cast<Ogre::Real>(orientation[1]),
+                        static_cast<Ogre::Real>(orientation[2]),
+                        static_cast<Ogre::Real>(orientation[3]),
+                        static_cast<Ogre::Real>(orientation[4]),
+                        static_cast<Ogre::Real>(orientation[5]),
+                        static_cast<Ogre::Real>(orientation[6]),
+                        static_cast<Ogre::Real>(orientation[7]),
+                        static_cast<Ogre::Real>(orientation[8])
+                    });
+                transform_node->setPosition(
+                    Ogre::Vector3 {static_cast<Ogre::Real>(position[0]), static_cast<Ogre::Real>(position[1]),
+                                   static_cast<Ogre::Real>(position[2])
+                    });
+                transform_node->setScale(Ogre::Vector3 {1.0, 1.0, 1.0});
+            }
         }
     }
 
@@ -413,9 +423,12 @@ void axis::set_visible(bool _visible)
 
 service::connections_t axis::auto_connections() const
 {
-    service::connections_t connections = adaptor::auto_connections();
-    connections.push(m_image, data::object::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
-    return connections;
+    sight::service::connections_t connections = {
+        {m_image, sight::data::signals::MODIFIED, slots::UPDATE_IMAGE},
+        {m_origin_color, sight::data::signals::MODIFIED, slots::UPDATE_ORIGIN_COLOR}
+    };
+
+    return connections + adaptor::auto_connections();
 }
 
 //-----------------------------------------------------------------------------
