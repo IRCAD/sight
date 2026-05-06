@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,10 +21,13 @@
 
 #pragma once
 
+#include <data/boolean.hpp>
 #include <data/object.hpp>
 #include <data/validator/base.hpp>
 
 #include <service/controller.hpp>
+
+#include <optional>
 
 namespace sight::module::data
 {
@@ -51,8 +54,13 @@ namespace sight::module::data
        @endcode
  * @subsection Input Input
  * - \b data [sight::data::object]: data object to validate.
+ *
  * @subsection Configuration Configuration
  * - \b id (string): class identifier of the validator
+ *
+ * @subsection Properties Properties
+ * - \b on_change (sight::data::boolean): if true, signals are only emitted when the validation state changes
+ * (default: false).
  */
 class validate final : public service::controller
 {
@@ -98,6 +106,10 @@ private:
 
     sight::data::validator::base::sptr m_validator;
     sight::data::ptr<sight::data::object, sight::data::access::in> m_data {this, "data"};
+    sight::data::property<sight::data::boolean> m_on_change {this, "on_change", false};
+
+    /// Tracks the previous validation result to detect state changes
+    std::optional<bool> m_previous_result;
 };
 
 } // namespace sight::module::data

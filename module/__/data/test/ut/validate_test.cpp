@@ -24,62 +24,53 @@
 
 #include <service/op.hpp>
 
-#include <utest/wait.hpp>
-
+// Include before wait.hpp
 #include <doctest/doctest.h>
 
-TEST_SUITE("sight::module::data::validated")
+#include <utest/service_fixture.hpp>
+#include <utest/wait.hpp>
+
+TEST_SUITE("sight::module::data::validate")
 {
-    TEST_CASE("equals")
+    class validate_fixture : public sight::utest::service_fixture
+    {
+    public:
+
+        validate_fixture() :
+            sight::utest::service_fixture("sight::module::data::validate")
+        {
+        }
+    };
+
+    TEST_CASE_FIXTURE(validate_fixture, "equals")
     {
         using namespace std::literals::string_literals;
 
-        auto srv    = sight::service::add("sight::module::data::validate");
         auto string = std::make_shared<sight::data::string>();
 
         std::optional<bool> valid;
-        auto valid_slot = sight::core::com::new_slot(
-            [&]()
-        {
-            valid = true;
-        });
-        valid_slot->set_worker(sight::core::thread::get_default_worker());
-        srv->signal("valid")->connect(valid_slot);
+        auto valid_slot = new_slot([&](){valid = true;});
+        m_service->signal("valid")->connect(valid_slot);
 
         std::optional<bool> invalid;
-        auto invalid_slot = sight::core::com::new_slot(
-            [&]()
-        {
-            invalid = true;
-        });
-        invalid_slot->set_worker(sight::core::thread::get_default_worker());
-        srv->signal("invalid")->connect(invalid_slot);
+        auto invalid_slot = new_slot([&](){invalid = true;});
+        m_service->signal("invalid")->connect(invalid_slot);
 
         std::optional<bool> is_valid;
-        auto is_valid_slot = sight::core::com::new_slot(
-            [&](bool _is_valid)
-        {
-            is_valid = _is_valid;
-        });
-        is_valid_slot->set_worker(sight::core::thread::get_default_worker());
-        srv->signal("is_valid")->connect(is_valid_slot);
+        auto is_valid_slot = new_slot([&](bool _is_valid){is_valid = _is_valid;});
+        m_service->signal("is_valid")->connect(is_valid_slot);
 
         std::optional<bool> is_invalid;
-        auto is_invalid_slot = sight::core::com::new_slot(
-            [&](bool _is_invalid)
-        {
-            is_invalid = _is_invalid;
-        });
-        is_invalid_slot->set_worker(sight::core::thread::get_default_worker());
-        srv->signal("is_invalid")->connect(is_invalid_slot);
+        auto is_invalid_slot = new_slot([&](bool _is_invalid){is_invalid = _is_invalid;});
+        m_service->signal("is_invalid")->connect(is_invalid_slot);
 
-        srv->set_config("<config id='sight::data::validator::equals'><value>expected</value></config>");
-        srv->set_input(string, "data");
-        srv->configure();
-        srv->start().get();
+        m_service->set_config("<config id='sight::data::validator::equals'><value>expected</value></config>");
+        m_service->set_input(string, "data");
+        REQUIRE_NOTHROW(m_service->configure());
+        REQUIRE_NOTHROW(m_service->start().get());
 
         {
-            srv->update().get();
+            REQUIRE_NOTHROW(m_service->update().get());
 
             SIGHT_TEST_WAIT(invalid.has_value());
             SIGHT_TEST_WAIT(is_valid.has_value());
@@ -101,7 +92,7 @@ TEST_SUITE("sight::module::data::validated")
 
         {
             string->set_value("test_value");
-            srv->update().get();
+            REQUIRE_NOTHROW(m_service->update().get());
 
             SIGHT_TEST_WAIT(invalid.has_value());
             SIGHT_TEST_WAIT(is_valid.has_value());
@@ -123,7 +114,7 @@ TEST_SUITE("sight::module::data::validated")
 
         {
             string->set_value("expected");
-            srv->update().get();
+            REQUIRE_NOTHROW(m_service->update().get());
 
             SIGHT_TEST_WAIT(invalid.has_value());
             SIGHT_TEST_WAIT(is_valid.has_value());
@@ -137,61 +128,38 @@ TEST_SUITE("sight::module::data::validated")
             CHECK_EQ(true, *is_valid);
             CHECK_EQ(false, *is_invalid);
         }
-        CHECK_NOTHROW(srv->stop().get());
-        sight::service::remove(srv);
     }
 //------------------------------------------------------------------------------
 
-    TEST_CASE("filled")
+    TEST_CASE_FIXTURE(validate_fixture, "filled")
     {
         using namespace std::literals::string_literals;
 
-        auto srv   = sight::service::add("sight::module::data::validate");
         auto image = std::make_shared<sight::data::image>();
 
         std::optional<bool> valid;
-        auto valid_slot = sight::core::com::new_slot(
-            [&]()
-        {
-            valid = true;
-        });
-        valid_slot->set_worker(sight::core::thread::get_default_worker());
-        srv->signal("valid")->connect(valid_slot);
+        auto valid_slot = new_slot([&](){valid = true;});
+        m_service->signal("valid")->connect(valid_slot);
 
         std::optional<bool> invalid;
-        auto invalid_slot = sight::core::com::new_slot(
-            [&]()
-        {
-            invalid = true;
-        });
-        invalid_slot->set_worker(sight::core::thread::get_default_worker());
-        srv->signal("invalid")->connect(invalid_slot);
+        auto invalid_slot = new_slot([&](){invalid = true;});
+        m_service->signal("invalid")->connect(invalid_slot);
 
         std::optional<bool> is_valid;
-        auto is_valid_slot = sight::core::com::new_slot(
-            [&](bool _is_valid)
-        {
-            is_valid = _is_valid;
-        });
-        is_valid_slot->set_worker(sight::core::thread::get_default_worker());
-        srv->signal("is_valid")->connect(is_valid_slot);
+        auto is_valid_slot = new_slot([&](bool _is_valid){is_valid = _is_valid;});
+        m_service->signal("is_valid")->connect(is_valid_slot);
 
         std::optional<bool> is_invalid;
-        auto is_invalid_slot = sight::core::com::new_slot(
-            [&](bool _is_invalid)
-        {
-            is_invalid = _is_invalid;
-        });
-        is_invalid_slot->set_worker(sight::core::thread::get_default_worker());
-        srv->signal("is_invalid")->connect(is_invalid_slot);
+        auto is_invalid_slot = new_slot([&](bool _is_invalid){is_invalid = _is_invalid;});
+        m_service->signal("is_invalid")->connect(is_invalid_slot);
 
-        srv->set_config("<config id='sight::data::validator::filled' />");
-        srv->set_input(image, "data");
-        srv->configure();
-        srv->start().get();
+        m_service->set_config("<config id='sight::data::validator::filled' />");
+        m_service->set_input(image, "data");
+        REQUIRE_NOTHROW(m_service->configure());
+        REQUIRE_NOTHROW(m_service->start().get());
 
         {
-            srv->update().get();
+            REQUIRE_NOTHROW(m_service->update().get());
 
             SIGHT_TEST_WAIT(invalid.has_value());
             SIGHT_TEST_WAIT(is_valid.has_value());
@@ -214,7 +182,7 @@ TEST_SUITE("sight::module::data::validated")
         {
             image->resize({4, 4, 1}, sight::core::type::UINT8, sight::data::image::gray_scale);
 
-            srv->update().get();
+            REQUIRE_NOTHROW(m_service->update().get());
 
             SIGHT_TEST_WAIT(valid.has_value());
             SIGHT_TEST_WAIT(is_valid.has_value());
@@ -228,10 +196,148 @@ TEST_SUITE("sight::module::data::validated")
             CHECK_EQ(true, *is_valid);
             CHECK_EQ(false, *is_invalid);
         }
-
-        CHECK_NOTHROW(srv->stop().get());
-        sight::service::remove(srv);
     }
 
 //------------------------------------------------------------------------------
-} // TEST_SUITE("sight::module::data::validated")
+
+    TEST_CASE_FIXTURE(validate_fixture, "on_change_true")
+    {
+        using namespace std::literals::string_literals;
+
+        auto string    = std::make_shared<sight::data::string>();
+        auto on_change = std::make_shared<sight::data::boolean>(true);
+
+        std::atomic<int> valid_count      = 0;
+        std::atomic<int> invalid_count    = 0;
+        std::atomic<int> is_valid_count   = 0;
+        std::atomic<int> is_invalid_count = 0;
+
+        auto valid_slot = new_slot([&](){valid_count++;});
+        m_service->signal("valid")->connect(valid_slot);
+
+        auto invalid_slot = new_slot([&](){invalid_count++;});
+        m_service->signal("invalid")->connect(invalid_slot);
+
+        auto is_valid_slot = new_slot([&](bool){is_valid_count++;});
+        m_service->signal("is_valid")->connect(is_valid_slot);
+
+        auto is_invalid_slot = new_slot([&](bool){is_invalid_count++;});
+        m_service->signal("is_invalid")->connect(is_invalid_slot);
+
+        m_service->set_config("<config id='sight::data::validator::equals'><value>expected</value></config>");
+        m_service->set_input(string, "data");
+        m_service->set_inout(on_change, "on_change");
+        REQUIRE_NOTHROW(m_service->configure());
+        REQUIRE_NOTHROW(m_service->start().get());
+
+        {
+            // First update: should emit signals (state change from none to invalid)
+            REQUIRE_NOTHROW(m_service->update().get());
+
+            SIGHT_TEST_FAIL_WAIT(valid_count == 0);
+            SIGHT_TEST_FAIL_WAIT(invalid_count == 1);
+            SIGHT_TEST_FAIL_WAIT(is_valid_count == 1);
+            SIGHT_TEST_FAIL_WAIT(is_invalid_count == 1);
+        }
+
+        {
+            // Second update with same data: should NOT emit signals (state unchanged)
+            REQUIRE_NOTHROW(m_service->update().get());
+
+            SIGHT_TEST_FAIL_WAIT(valid_count == 0);
+            SIGHT_TEST_FAIL_WAIT(invalid_count == 1);
+            SIGHT_TEST_FAIL_WAIT(is_valid_count == 1);
+            SIGHT_TEST_FAIL_WAIT(is_invalid_count == 1);
+        }
+
+        {
+            // Change value to valid: should emit signals (state change from invalid to valid)
+            string->set_value("expected");
+            REQUIRE_NOTHROW(m_service->update().get());
+
+            SIGHT_TEST_FAIL_WAIT(valid_count == 1);
+            SIGHT_TEST_FAIL_WAIT(invalid_count == 1);
+            SIGHT_TEST_FAIL_WAIT(is_valid_count == 2);
+            SIGHT_TEST_FAIL_WAIT(is_invalid_count == 2);
+        }
+
+        {
+            // Third update with same valid data: should NOT emit signals (state unchanged)
+            REQUIRE_NOTHROW(m_service->update().get());
+
+            // Give some time to ensure no signal is emitted
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+            SIGHT_TEST_FAIL_WAIT(valid_count == 1);
+            SIGHT_TEST_FAIL_WAIT(invalid_count == 1);
+            SIGHT_TEST_FAIL_WAIT(is_valid_count == 2);
+            SIGHT_TEST_FAIL_WAIT(is_invalid_count == 2);
+        }
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE_FIXTURE(validate_fixture, "on_change_false")
+    {
+        using namespace std::literals::string_literals;
+
+        auto string    = std::make_shared<sight::data::string>();
+        auto on_change = std::make_shared<sight::data::boolean>(false);
+
+        std::atomic<int> valid_count      = 0;
+        std::atomic<int> invalid_count    = 0;
+        std::atomic<int> is_valid_count   = 0;
+        std::atomic<int> is_invalid_count = 0;
+
+        auto valid_slot = new_slot([&](){valid_count++;});
+        m_service->signal("valid")->connect(valid_slot);
+
+        auto invalid_slot = new_slot([&](){invalid_count++;});
+        m_service->signal("invalid")->connect(invalid_slot);
+
+        auto is_valid_slot = new_slot([&](bool){is_valid_count++;});
+        m_service->signal("is_valid")->connect(is_valid_slot);
+
+        auto is_invalid_slot = new_slot([&](bool){is_invalid_count++;});
+        m_service->signal("is_invalid")->connect(is_invalid_slot);
+
+        m_service->set_config("<config id='sight::data::validator::equals'><value>expected</value></config>");
+        m_service->set_input(string, "data");
+        m_service->set_inout(on_change, "on_change");
+        REQUIRE_NOTHROW(m_service->configure());
+        REQUIRE_NOTHROW(m_service->start().get());
+
+        {
+            // First update: invalid
+            REQUIRE_NOTHROW(m_service->update().get());
+
+            SIGHT_TEST_FAIL_WAIT(valid_count == 0);
+            SIGHT_TEST_FAIL_WAIT(invalid_count == 1);
+            SIGHT_TEST_FAIL_WAIT(is_valid_count == 1);
+            SIGHT_TEST_FAIL_WAIT(is_invalid_count == 1);
+        }
+
+        {
+            // Second update with same data: should emit signals again (on_change is false)
+            REQUIRE_NOTHROW(m_service->update().get());
+
+            SIGHT_TEST_FAIL_WAIT(valid_count == 0);
+            SIGHT_TEST_FAIL_WAIT(invalid_count == 2);
+            SIGHT_TEST_FAIL_WAIT(is_valid_count == 2);
+            SIGHT_TEST_FAIL_WAIT(is_invalid_count == 2);
+        }
+
+        {
+            // Change value to valid: should emit signals (state change from invalid to valid)
+            string->set_value("expected");
+            REQUIRE_NOTHROW(m_service->update().get());
+
+            SIGHT_TEST_FAIL_WAIT(valid_count == 1);
+            SIGHT_TEST_FAIL_WAIT(invalid_count == 2);
+            SIGHT_TEST_FAIL_WAIT(is_valid_count == 3);
+            SIGHT_TEST_FAIL_WAIT(is_invalid_count == 3);
+        }
+    }
+
+//------------------------------------------------------------------------------
+} // TEST_SUITE("sight::module::data::validate")

@@ -77,17 +77,25 @@ void validate::updating()
 
     const auto [result, _] = m_validator->validate(data.get_shared());
 
-    if(result)
+    const auto on_change   = m_on_change.lock();
+    const bool should_emit = !(*on_change) || !m_previous_result.has_value() || (m_previous_result.value() != result);
+
+    if(should_emit)
     {
-        this->async_emit(signals::VALID);
-    }
-    else
-    {
-        this->async_emit(signals::INVALID);
+        if(result)
+        {
+            this->async_emit(signals::VALID);
+        }
+        else
+        {
+            this->async_emit(signals::INVALID);
+        }
+
+        this->async_emit(signals::IS_VALID, result);
+        this->async_emit(signals::IS_INVALID, not result);
     }
 
-    this->async_emit(signals::IS_VALID, result);
-    this->async_emit(signals::IS_INVALID, not result);
+    m_previous_result = result;
 }
 
 //-----------------------------------------------------------------------------
