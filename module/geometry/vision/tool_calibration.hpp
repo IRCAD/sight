@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,7 @@
 
 #include <service/registerer.hpp>
 
-namespace sight::module::navigation::calibration
+namespace sight::module::geometry::vision
 {
 
 /**
@@ -36,7 +36,7 @@ namespace sight::module::navigation::calibration
  * @section XML XML Configuration
  *
  * @code{.xml}
-    <service uid="..." type="sight::module::navigation::calibration::tool_calibration" >
+    <service uid="..." type="sight::module::geometry::vision::tool_calibration" >
         <in key="matricesVector" uid="..." />
         <out key="matrixCalibration" uid="..." />
         <out key="matrixCenter" uid="..." />
@@ -103,4 +103,4 @@ private:
     sight::data::ptr<sight::data::vector, sight::data::access::in> m_matrices_vector {this, MATRICES_VECTOR_INPUT};
 };
 
-} // namespace sight::module::navigation::calibration
+} // namespace sight::module::geometry::vision

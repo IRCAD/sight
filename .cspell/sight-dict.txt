@@ -1,3 +1,7 @@
+!fuck
+!titi
+!toto
+!tutu
 abgr
 ackley
 activaters
@@ -57,7 +61,6 @@ cumul
 cuptr
 curryfication
 cvtype
-cwptr
 cwptr
 czip
 dbid
@@ -235,6 +238,7 @@ ptree
 ptrees
 pvec
 qabstractitemmodeldatalist
+qcolor
 qhcp
 qmldir
 qobject
@@ -301,6 +305,7 @@ tab
 tableofcontents
 tagtl
 tcoords
+tdata
 texcoord
 texunit
 thresholded
@@ -372,7 +377,3 @@ yyyymmddthhmmss
 zdim
 zraw
 zstd
-!fuck
-!titi
-!toto
-!tutu

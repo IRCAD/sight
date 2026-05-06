@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,19 +29,19 @@
 #include <data/marker_map.hpp>
 #include <data/real.hpp>
 
-#include <service/tracker.hpp>
+#include <io/tracking/base.hpp>
 
 #include <ui/__/parameter.hpp>
 
 #include <opencv2/aruco.hpp>
 
-namespace sight::module::navigation::optics
+namespace sight::module::geometry::vision
 {
 
 /**
  * @brief   Class used to track multiple tags with ArUco.
  *
- * @see service::tracker
+ * @see sight::io::tracking::base
  *
  * @section Signals Signals
  * - \b detectionDone(core::clock::type) : This signal is emitted when the tracker find tags.
@@ -56,7 +56,7 @@ namespace sight::module::navigation::optics
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service uid="..." type="sight::module::navigation::optics::aruco_tracker" >
+        <service uid="..." type="sight::module::geometry::vision::aruco_tracker" >
             <in key="camera" uid="..." />
             <inout key="frame" uid="..." auto_connect="true" />
             <inout group="marker_map">
@@ -91,11 +91,11 @@ namespace sight::module::navigation::optics
  *  - \b cornerRefinement: if true, corner refinement by subpixel will be activated
  *  not.
  */
-class aruco_tracker : public service::tracker<service::sensor_t>
+class aruco_tracker final : public sight::io::tracking::base<sight::io::tracking::sensor_t>
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(aruco_tracker, service::tracker<service::sensor_t>);
+    SIGHT_DECLARE_SERVICE(aruco_tracker, sight::io::tracking::base<sight::io::tracking::sensor_t>);
 
     using detection_done_signal_t  = core::com::signal<void (core::clock::type)>;
     using marker_detected_signal_t = core::com::signal<void (bool)>;
@@ -129,37 +129,37 @@ public:
     /**
      * @brief Destructor.
      */
-    ~aruco_tracker() noexcept override;
+    ~aruco_tracker() noexcept final;
 
 protected:
 
     /// Depending on the configuration this connects:
     /// - the input timeline to the tracking() slot
     /// - the input frame modifications to the update() slot
-    service::connections_t auto_connections() const override;
+    [[nodiscard]] service::connections_t auto_connections() const final;
 
     /**
      * @brief Configuring method : This method is used to configure the service.
      */
-    void configuring(const config_t& _config) override;
+    void configuring(const service::config_t& _config) final;
 
     /**
      * @brief Starting method : This method is used to initialize the service.
      */
-    void starting() override;
+    void starting() final;
 
     /**
      * @brief Updating method : This method does nothing
      */
-    void updating() override;
+    void updating() final;
 
     /**
      * @brief Stopping method : This method is used to stop the service.
      */
-    void stopping() override;
+    void stopping() final;
 
     /// Detect marker
-    void tracking(core::clock::type& _timestamp) override;
+    void tracking(core::clock::type& _timestamp) final;
 
 private:
 
@@ -172,7 +172,7 @@ private:
     };
 
     /// Slot called when a boolean value is changed
-    void on_property_set(std::string_view _key) override;
+    void on_property_set(std::string_view _key) final;
 
     /// Camera parameters
     camera m_camera_params;
@@ -196,7 +196,7 @@ private:
     static constexpr std::string_view MARKER_MAP_INOUT_GROUP = "marker_map";
 
     data::ptr<data::camera, data::access::in> m_camera {this, CAMERA_INPUT};
-    data::ptr<data::image, data::access::inout> m_frame {this, service::tracker<service::sensor_t>::FRAME_INOUT};
+    data::ptr<data::image, data::access::inout> m_frame {this, io::tracking::base<io::tracking::sensor_t>::FRAME_INOUT};
     data::ptr_vector<data::marker_map, data::access::inout> m_marker_map {this, MARKER_MAP_INOUT_GROUP};
 
     /// show marker or not -->
@@ -249,4 +249,4 @@ private:
     data::property<data::real> m_error_correction_rate {this, "error_correction_rate", 0.6};
 };
 
-} // namespace sight::module::navigation::optics
+} // namespace sight::module::geometry::vision

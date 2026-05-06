@@ -19,9 +19,8 @@ add_dependencies(
     activity_navigation_calibration
     module_data
     module_memory
-    module_geometry_vision
     module_geometry
-    module_navigation_calibration
+    module_geometry_vision
 )
 
 if(SIGHT_ENABLE_REALSENSE)

@@ -409,7 +409,7 @@
             </service>
 
             <!-- Aruco tracker service -->
-            <service uid="tracker_srv" type="sight::module::navigation::optics::aruco_tracker" worker="tracking" auto_connect="false">
+            <service uid="tracker_srv" type="sight::module::geometry::vision::aruco_tracker" worker="tracking" auto_connect="false">
                 <in key="camera" uid="camera" />
                 <inout key="frame" uid="source_frame" />
                 <inout group="marker_map">

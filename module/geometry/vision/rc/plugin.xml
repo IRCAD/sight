@@ -72,4 +72,19 @@
         <object key="matrix">sight::data::matrix4</object>
         <desc>This service estimates the object pose given a set of object points, their corresponding image projections,</desc>
     </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::service::registerer</type>
+        <service>sight::module::geometry::vision::tool_calibration</service>
+        <object key="matricesVector">sight::data::vector</object>
+        <object key="matrixCalibration">sight::data::matrix4</object>
+        <object key="matrixCenter">sight::data::matrix4</object>
+        <desc>Service that computes a pivot calibration</desc>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::io::tracking::base</type>
+        <service>sight::module::geometry::vision::aruco_tracker</service>
+        <desc>Class used to track multiple tags with ArUco.</desc>
+    </extension>
 </plugin>

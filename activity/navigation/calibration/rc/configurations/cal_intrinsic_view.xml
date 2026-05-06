@@ -1,5 +1,5 @@
 <extension implements="sight::app::extension::config">
-    <id>sight::navigation::calibration::cal_intrinsic_view</id>
+    <id>sight::geometry::vision::cal_intrinsic_view</id>
     <parameters>
         <object uid="calibrationInfo" type="sight::data::calibration_info" />
         <object uid="camera" type="sight::data::camera" />

@@ -1,5 +1,5 @@
 <extension implements="sight::app::extension::config">
-    <id>sight::navigation::calibration::chessboard_settings</id>
+    <id>sight::geometry::vision::chessboard_settings</id>
     <parameters>
         <object uid="board_properties" type="sight::data::map" />
         <channel name="CLOSE_CONFIG" optional="true" />

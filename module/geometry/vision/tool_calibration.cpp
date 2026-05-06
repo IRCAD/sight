@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 
 #include <service/macros.hpp>
 
-namespace sight::module::navigation::calibration
+namespace sight::module::geometry::vision
 {
 
 static const service::base::key_t MATRIX_CALIBRATION_OUTPUT = "matrixCalibration";
@@ -90,7 +90,7 @@ void tool_calibration::compute_registration(core::clock::type /*timestamp*/)
 
     data::matrix4::sptr center_matrix_no_rot = std::make_shared<data::matrix4>();
 
-    geometry::vision::helper::calibrate_pointing_tool(
+    sight::geometry::vision::helper::calibrate_pointing_tool(
         matrices_vector.get_shared(),
         calibration_matrix,
         center_matrix_no_rot
@@ -104,4 +104,4 @@ void tool_calibration::compute_registration(core::clock::type /*timestamp*/)
     }
 }
 
-} // namespace sight::module::navigation::calibration
+} // namespace sight::module::geometry::vision

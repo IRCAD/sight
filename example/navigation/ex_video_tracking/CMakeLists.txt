@@ -14,7 +14,7 @@ add_dependencies(
     module_ui_icons
     module_io_video
     module_sync
-    module_navigation_optics
+    module_geometry_vision
     config_io_video
 )
 

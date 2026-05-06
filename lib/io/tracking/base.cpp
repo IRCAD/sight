@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
- * Copyright (C) 2014-2020 IHU Strasbourg
+ * Copyright (C) 2014-2026 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,36 +20,30 @@
  *
  ***********************************************************************/
 
-#pragma once
+#include "base.hpp"
 
-#include "sight/module/navigation/optics/config.hpp"
-
-#include <core/runtime/plugin.hpp>
-
-namespace sight::module::navigation::optics
+namespace sight::io::tracking
 {
 
-struct plugin : public core::runtime::plugin
+//------------------------------------------------------------------------------
+
+std::string sensor_t::to_string() const
 {
-    /**
-     * @brief   Destructor
-     */
-    ~plugin() noexcept override;
+    std::stringstream ss;
 
-    /**
-     * @brief Start method.
-     *
-     * @exception core::runtime::RuntimeException.
-     * This method is used by runtime in order to initialize the module.
-     */
-    SIGHT_MODULE_NAVIGATION_OPTICS_API void start() override;
+    ss << "- name: '" << this->name << "'" << std::endl;
+    ss << "- optional: '" << this->optional << "'" << std::endl;
+    ss << "- tl_index: '" << this->tl_index << "'" << std::endl;
 
-    /**
-     * @brief Stop method.
-     *
-     * This method is used by runtime in order to close the module.
-     */
-    SIGHT_MODULE_NAVIGATION_OPTICS_API void stop() noexcept override;
-};
+    return ss.str();
+}
 
-} // namespace sight::module::navigation::optics
+//------------------------------------------------------------------------------
+
+std::ostream& operator<<(std::ostream& _os, const sensor_t& _s)
+{
+    _os << _s.to_string();
+    return _os;
+}
+
+} // namespace sight::io::tracking

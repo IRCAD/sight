@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,8 +30,7 @@
 #include <io/opencv/camera.hpp>
 #include <io/opencv/frame_tl.hpp>
 #include <io/opencv/image.hpp>
-
-#include <service/tracker.hxx>
+#include <io/tracking/base.hxx>
 
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
@@ -43,7 +42,7 @@
 
 //-----------------------------------------------------------------------------
 
-namespace sight::module::navigation::optics
+namespace sight::module::geometry::vision
 {
 
 //-----------------------------------------------------------------------------
@@ -98,7 +97,7 @@ service::connections_t aruco_tracker::auto_connections() const
 
 void aruco_tracker::configuring(const config_t& _config)
 {
-    this->service::tracker<service::sensor_t>::configuring(_config);
+    this->sight::io::tracking::base<io::tracking::sensor_t>::configuring(_config);
 
     const auto& track_cfg = _config.get_child("track");
 
@@ -128,7 +127,7 @@ void aruco_tracker::configuring(const config_t& _config)
 
 void aruco_tracker::starting()
 {
-    m_is_tracking = true;
+    set_tracking(true);
 }
 
 //-----------------------------------------------------------------------------
@@ -136,7 +135,7 @@ void aruco_tracker::starting()
 void aruco_tracker::stopping()
 {
     m_is_initialized = false;
-    m_is_tracking    = false;
+    set_tracking(false);
 }
 
 //-----------------------------------------------------------------------------
@@ -428,4 +427,4 @@ void aruco_tracker::on_property_set(std::string_view _key)
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::module::navigation::optics
+} // namespace sight::module::geometry::vision

@@ -70,13 +70,13 @@
             <inout key="activity" uid="${AS_UID}" />
             <config>
                 <intrinsic>
-                    <appConfig id="sight::navigation::calibration::cal_intrinsic_view" />
+                    <appConfig id="sight::geometry::vision::cal_intrinsic_view" />
                     <inout key="board_properties" uid="${board_properties}" />
                     <parameter replace="WID_PARENT" by="calibrationView" />
                     <parameter replace="preferencesModifiedProxy" by="preferencesModifiedProxy" />
                 </intrinsic>
                 <extrinsic>
-                    <appConfig id="sight::navigation::calibration::cal_extrinsic_view" />
+                    <appConfig id="sight::geometry::vision::cal_extrinsic_view" />
                     <inout key="camera_set" uid="${camera_set}" />
                     <inout key="board_properties" uid="${board_properties}" />
                     <parameter replace="WID_PARENT" by="calibrationView" />
@@ -88,7 +88,7 @@
         <service uid="chessboard_size_act" type="sight::module::ui::action" />
 
         <service uid="chessboard_size_cfg" type="sight::app::config_launcher">
-            <appConfig id="sight::navigation::calibration::chessboard_settings" />
+            <appConfig id="sight::geometry::vision::chessboard_settings" />
             <inout group="object">
                 <key name="board_properties" uid="${board_properties}" />
             </inout>

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2025 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,38 +22,42 @@
 
 #pragma once
 
+#include "base.hpp"
+
+#include <core/com/signal.hpp>
 #include <core/com/signal.hxx>
+#include <core/com/slots.hpp>
 #include <core/com/slots.hxx>
 
 #include <data/buffer_tl.hpp>
 
 //-----------------------------------------------------------------------------
 
-namespace sight::service
+namespace sight::io::tracking
 {
 
 //-----------------------------------------------------------------------------
 
 template<typename T>
-const sight::core::com::slots::key_t tracker<T>::TRACK_SLOT = "track";
+const sight::core::com::slots::key_t base<T>::TRACK_SLOT = "track";
 
 //-----------------------------------------------------------------------------
 
 template<typename T>
-tracker<T>::tracker()
+base<T>::base()
 {
     new_signal<typename signals::void_t>(signals::TRACKING_STARTED);
     new_signal<typename signals::void_t>(signals::TRACKING_STOPPED);
 
-    new_slot(TRACK_SLOT, &tracker::track, this);
-    new_slot(tracker<T>::slots::START_TRACKING, &tracker::start_tracking, this);
-    new_slot(tracker<T>::slots::STOP_TRACKING, &tracker::stop_tracking, this);
+    new_slot(TRACK_SLOT, &base::track, this);
+    new_slot(base<T>::slots::START_TRACKING, &base::start_tracking, this);
+    new_slot(base<T>::slots::STOP_TRACKING, &base::stop_tracking, this);
 }
 
 //-----------------------------------------------------------------------------
 
 template<typename T>
-void tracker<T>::setup_tool(
+void base<T>::setup_tool(
     const boost::property_tree::ptree& _config,
     T& _tool,
     std::size_t _index
@@ -96,31 +100,12 @@ void tracker<T>::setup_tool(
     );
 
     _tool.tl_index = tl_index;
-
-    // Color (used for visualization)
-    const auto tracked_color = toolattr.get<std::string>("tracked_color", color_codes::GREEN);
-    _tool.tracked_color = tracked_color;
-
-    // Named signal for when tracking color changed.
-    _tool.change_color_sig_name = _tool.name + "_color_changed";
-    new_signal<typename signals::color_t>(_tool.change_color_sig_name);
-
-    // Named signal such as: "name_detected" and "name_undetected"
-    _tool.detected_sig_name             = _tool.name + "_detected";
-    _tool.undetected_sig_name           = _tool.name + "_undetected";
-    _tool.error_in_detection_sig_name   = _tool.name + "_error";
-    _tool.error_status_changed_sig_name = _tool.name + "_error_status_changed";
-
-    new_signal<typename signals::void_t>(_tool.detected_sig_name);
-    new_signal<typename signals::void_t>(_tool.undetected_sig_name);
-    new_signal<typename signals::void_t>(_tool.error_in_detection_sig_name);
-    new_signal<typename signals::bool_t>(_tool.error_status_changed_sig_name);
 }
 
 //------------------------------------------------------------------------------
 
 template<typename T>
-void tracker<T>::configuring()
+void base<T>::configuring()
 {
     const service::config_t config = this->get_config();
 
@@ -156,14 +141,14 @@ void tracker<T>::configuring()
 //-----------------------------------------------------------------------------
 
 template<typename T>
-void tracker<T>::configuring(const config_t& /*unused*/)
+void base<T>::configuring(const config_t& /*unused*/)
 {
 }
 
 //-----------------------------------------------------------------------------
 
 template<typename T>
-void tracker<T>::track(core::clock::type _timestamp)
+void base<T>::track(core::clock::type _timestamp)
 {
     SIGHT_DEBUG_IF("[" + this->get_classname() + "] Tracking is not started: does nothing", !m_is_tracking);
     SIGHT_DEBUG_IF(
@@ -203,7 +188,7 @@ void tracker<T>::track(core::clock::type _timestamp)
 //-----------------------------------------------------------------------------
 
 template<typename T>
-service::connections_t tracker<T>::auto_connections() const
+service::connections_t base<T>::auto_connections() const
 {
     return {{m_timeline, data::timeline::signals::PUSHED, TRACK_SLOT}};
 }
@@ -211,7 +196,7 @@ service::connections_t tracker<T>::auto_connections() const
 //-----------------------------------------------------------------------------
 
 template<typename T>
-void tracker<T>::start_tracking()
+void base<T>::start_tracking()
 {
     m_is_tracking = true;
 }
@@ -219,11 +204,11 @@ void tracker<T>::start_tracking()
 //-----------------------------------------------------------------------------
 
 template<typename T>
-void tracker<T>::stop_tracking()
+void base<T>::stop_tracking()
 {
     m_is_tracking = false;
 }
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::service
+} // namespace sight::io::tracking

@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,7 +21,7 @@
 
 #pragma once
 
-#include <sight/service/config.hpp>
+#include <sight/io/tracking/config.hpp>
 
 #include <core/clock.hpp>
 
@@ -31,11 +30,13 @@
 
 #include <service/base.hpp>
 
-namespace sight::service
+#include <vector>
+
+namespace sight::io::tracking
 {
 
 /// Tracking quality, the lowest values are, better tracking is.
-enum class tracking_quality_t : std::uint8_t
+enum class status_t : std::uint8_t
 {
     tracked = 0,             ///< fully tracked.
     partially_out_of_volume, ///< partially out of volume.
@@ -44,50 +45,29 @@ enum class tracking_quality_t : std::uint8_t
 };
 
 // Structure to deal with sensors.
-struct SIGHT_SERVICE_CLASS_API sensor_t
+struct SIGHT_IO_TRACKING_CLASS_API sensor_t
 {
-    std::string name;                      // name of the tool
-    std::string tracked_color {"#FFFFFF"}; // tracked color
-    bool optional {false};                 // Requires the sensor to be plugged
-    std::size_t tl_index {0};              // index on the timeline
+    std::string name;         // name of the tool
+    bool optional {false};    // Requires the sensor to be plugged
+    std::size_t tl_index {0}; // index on the timeline
 
-    tracking_quality_t current_tracking_quality {tracking_quality_t::untracked}; // tracking quality
-    std::string current_status;                                                  // current status
-                                                                                 // (tracked/missing/...)
-
-    // signal names
-    std::string detected_sig_name;
-    std::string undetected_sig_name;
-    std::string error_in_detection_sig_name;
-    std::string error_status_changed_sig_name;
-    std::string change_color_sig_name;
+    status_t current_tracking_quality {status_t::untracked}; // tracking quality
+    std::string current_status;                              // current status
+                                                             // (tracked/missing/...)
 
     //------------------------------------------------------------------------------
 
-    virtual ~sensor_t() = default;
+    SIGHT_IO_TRACKING_API virtual ~sensor_t() = default;
 
     //------------------------------------------------------------------------------
 
-    [[nodiscard]] virtual std::string to_string() const
-    {
-        std::stringstream ss;
+    [[nodiscard]] SIGHT_IO_TRACKING_API virtual std::string to_string() const;
 
-        ss << "- name: '" << this->name << "'" << std::endl;
-        ss << "- tracked_color: '" << this->tracked_color << "'" << std::endl;
-        ss << "- optional: '" << this->optional << "'" << std::endl;
-        ss << "- tl_index: '" << this->tl_index << "'" << std::endl;
+    //------------------------------------------------------------------------------
 
-        return ss.str();
-    }
-
-    // for debug purposes.
-    friend std::ostream& operator<<(std::ostream& _os, const sensor_t& _s)
-    {
-        _os << _s.to_string();
-        return _os;
-    }
+    /// for debug purposes.
+    SIGHT_IO_TRACKING_API friend std::ostream& operator<<(std::ostream& _os, const sensor_t& _s);
 };
-
 /**
  * @brief  This interface defines Tracker service API.
  *
@@ -109,22 +89,17 @@ struct SIGHT_SERVICE_CLASS_API sensor_t
  *   get the last one) or not.
  */
 template<typename T>
-class SIGHT_SERVICE_CLASS_API tracker : public service::base
+class SIGHT_IO_TRACKING_CLASS_API base : public sight::service::base
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(tracker, service::base);
+    SIGHT_DECLARE_SERVICE(base, sight::service::base);
 
     using void_t = sight::core::com::signal<void ()>;
 
     struct signals
     {
         using void_t = sight::core::com::signal<void ()>;
-        using bool_t = sight::core::com::signal<void (bool)>;
-
-        using data_color_t = sight::data::color::sptr;
-        using color_t      = sight::core::com::signal<void (data_color_t)>;
-        using tracking_t   = sight::core::com::signal<void ()>;
 
         static inline const sight::core::com::signals::key_t TRACKING_STARTED = "tracking_started";
         static inline const sight::core::com::signals::key_t TRACKING_STOPPED = "tracking_stopped";
@@ -151,35 +126,27 @@ public:
     static constexpr std::string_view FRAME_INOUT    = "frame";
 
     /// Defines the auto-connection between the timeline and the 'track' slot
-    service::connections_t auto_connections() const override;
+    sight::service::connections_t auto_connections() const override;
 
     /// Return true if the tracking is started.
-    bool is_tracking() const
-    {
-        return m_is_tracking;
-    }
+    [[nodiscard]] bool is_tracking() const;
+
+    /// Set the tracking state, return the previous state.
+    bool set_tracking(bool _tracking);
 
     /// Enable/Disable drop
-    void enable_drop(bool _enable)
-    {
-        m_drop_obj = _enable;
-    }
+    void enable_drop(bool _enable);
 
     /// Return true if tracker drop frames
-    bool is_dropping() const
-    {
-        return m_drop_obj;
-    }
+    [[nodiscard]] bool is_dropping() const;
 
 protected:
 
-    std::vector<T> m_sensors;
-
     ///@brief tracker constructor. Do nothing.
-    tracker();
+    base();
 
     ///@brief tracker destructor. Do nothing.
-    ~tracker() override = default;
+    ~base() override = default;
 
     virtual void setup_tool(
         const boost::property_tree::ptree& _config,
@@ -189,6 +156,12 @@ protected:
 
     void configuring() override;
     void configuring(const config_t& _config) override;
+
+    /**
+     * @brief process the tracking
+     * @param[in,out] _timestamp the timestamp of the processes object of the timeline
+     */
+    SIGHT_IO_TRACKING_API virtual void tracking(core::clock::type& _timestamp) = 0;
 
     /**
      * @brief This method calls tracking.
@@ -204,11 +177,15 @@ protected:
     /// stop the tracking
     virtual void stop_tracking();
 
-    /**
-     * @brief process the tracking
-     * @param[in,out] _timestamp the timestamp of the processes object of the timeline
-     */
-    SIGHT_SERVICE_API virtual void tracking(core::clock::type& _timestamp) = 0;
+    /// Access to the sensors vector
+    std::vector<T>& sensors();
+
+    /// Access to the sensors vector (const version)
+    const std::vector<T>& sensors() const;
+
+private:
+
+    std::vector<T> m_sensors;
 
     /// timestamp of the last tracking
     core::clock::type m_last_timestamp {0};
@@ -222,4 +199,51 @@ protected:
     sight::data::ptr<sight::data::frame_tl, sight::data::access::in> m_timeline {this, TIMELINE_INPUT};
 };
 
-} // namespace sight::service
+/// Return true if the tracking is started.
+template<typename T>
+inline bool base<T>::is_tracking() const
+{
+    return m_is_tracking;
+}
+
+//------------------------------------------------------------------------------
+
+template<typename T>
+inline bool base<T>::set_tracking(bool _tracking)
+{
+    return m_is_tracking.exchange(_tracking);
+}
+
+//------------------------------------------------------------------------------
+
+template<typename T>
+inline void base<T>::enable_drop(bool _enable)
+{
+    m_drop_obj = _enable;
+}
+
+//------------------------------------------------------------------------------
+
+template<typename T>
+inline bool base<T>::is_dropping() const
+{
+    return m_drop_obj;
+}
+
+//------------------------------------------------------------------------------
+
+template<typename T>
+inline std::vector<T>& base<T>::sensors()
+{
+    return m_sensors;
+}
+
+//------------------------------------------------------------------------------
+
+template<typename T>
+inline const std::vector<T>& base<T>::sensors() const
+{
+    return m_sensors;
+}
+
+} // namespace sight::io::tracking

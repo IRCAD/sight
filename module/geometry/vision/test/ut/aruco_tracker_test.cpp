@@ -27,11 +27,11 @@
 
 #include <doctest/doctest.h>
 
-TEST_SUITE("sight::module::navigation::optics")
+TEST_SUITE("sight::module::geometry::vision")
 {
     TEST_CASE("aruco_tracker")
     {
-        auto srv = sight::service::add("sight::module::navigation::optics::aruco_tracker");
+        auto srv = sight::service::add("sight::module::geometry::vision::aruco_tracker");
 
         sight::data::camera::sptr camera         = std::make_shared<sight::data::camera>();
         sight::data::image::sptr frame           = std::make_shared<sight::data::image>();
