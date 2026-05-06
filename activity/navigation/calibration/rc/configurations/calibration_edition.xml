@@ -145,7 +145,7 @@
         <service uid="videoSliderSrv" type="sight::module::ui::qt::video::slider" />
 
         <service uid="copyCameraSetSrv" type="sight::module::data::copy">
-            <in key="source" uid="${cameraSet}" />
+            <in key="source" uid="${camera_set}" />
             <out key="outTarget" uid="newCameraSet" />
         </service>
 
@@ -158,7 +158,7 @@
         </service>
 
         <service uid="cameraSetInfoSrv" type="sight::module::ui::qt::calibration::camera_set_editor">
-            <in key="camera_set" uid="${cameraSet}" auto_connect="true" />
+            <in key="camera_set" uid="${camera_set}" auto_connect="true" />
             <in key="notUsed" uid="camera1" />
             <!-- Not used, it allows to start this service only if we have a stereo calibration -->
         </service>

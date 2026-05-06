@@ -46,7 +46,7 @@ Example with `sight::geometry::vision::cal_intrinsic_view` & `sight::geometry::v
 
 ```xml
     <service uid="camera_launcher_act" type="sight::module::ui::qt::calibration::camera_config_launcher">
-        <inout key="camera_set" uid="${cameraSet}" />
+        <inout key="camera_set" uid="${camera_set}" />
         <inout key="activity" uid="${AS_UID}" />
         <config>
             <intrinsic>
@@ -56,7 +56,7 @@ Example with `sight::geometry::vision::cal_intrinsic_view` & `sight::geometry::v
             </intrinsic>
             <extrinsic>
                 <properties config="sight::geometry::vision::cal_extrinsic_view" />
-                <inout key="camera_set" uid="${cameraSet}" />
+                <inout key="camera_set" uid="${camera_set}" />
                 <parameter replace="WID_PARENT" by="calibrationView" />
                 <parameter replace="preferencesModifiedProxy" by="preferencesModifiedProxy" />
             </extrinsic>

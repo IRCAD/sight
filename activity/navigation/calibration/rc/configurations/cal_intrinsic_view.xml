@@ -196,14 +196,7 @@
 
         <service uid="videoSliderSrv" type="sight::module::ui::qt::video::slider" />
 
-        <service uid="detectionStatusSrv" type="sight::module::ui::qt::status">
-            <green>Point are visible</green>
-            <orange>Calibration in progress</orange>
-            <red>Points are NOT visible</red>
-            <labels>
-                <name />
-            </labels>
-        </service>
+        <service uid="detectionStatusSrv" type="sight::module::ui::qt::status" />
 
         <service uid="displayCalibrationInfoSrv" type="sight::module::ui::qt::calibration::display_calibration_info">
             <in key="calInfo1" uid="${calibrationInfo}" />
