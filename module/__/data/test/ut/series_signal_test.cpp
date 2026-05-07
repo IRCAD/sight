@@ -26,35 +26,18 @@
 
 #include <service/op.hpp>
 
+#include <utest/service_fixture.hpp>
 #include <utest/wait.hpp>
-
-#include <doctest/doctest.h>
 
 namespace
 {
 
-class service_fixture
+struct service_fixture : public sight::utest::service_fixture
 {
-public:
-
-    service_fixture()
+    service_fixture() :
+        sight::utest::service_fixture("sight::module::data::series_signal")
     {
-        m_series_signal = sight::service::add("sight::module::data::series_signal");
     }
-
-    ~service_fixture()
-    {
-        if(m_series_signal->started())
-        {
-            CHECK_NOTHROW(m_series_signal->stop().get());
-        }
-
-        sight::service::remove(m_series_signal);
-        m_worker->stop();
-    }
-
-    sight::service::base::sptr m_series_signal;
-    sight::core::thread::worker::sptr m_worker;
 };
 
 } // namespace
@@ -66,19 +49,18 @@ TEST_SUITE("sight::module::data::series_signal")
     TEST_CASE_FIXTURE(service_fixture, "basic")
     {
         auto series_set = std::make_shared<sight::data::series_set>();
-        m_series_signal->set_input(series_set, "seriesSet");
+        m_service->set_input(series_set, "seriesSet");
         std::vector<sight::data::series::sptr> series_list;
-        auto series_added_slot = sight::core::com::new_slot(
+        auto series_added_slot = new_slot(
             [&](sight::data::series::sptr _series)
         {
             series_list.push_back(_series);
         });
-        m_worker = sight::core::thread::worker::make();
-        series_added_slot->set_worker(m_worker);
-        m_series_signal->signal("seriesAdded")->connect(series_added_slot);
-        series_set->signal("added_objects")->connect(m_series_signal->slot("reportSeries"));
-        CHECK_NOTHROW(m_series_signal->configure());
-        CHECK_NOTHROW(m_series_signal->start().get());
+
+        m_service->signal("seriesAdded")->connect(series_added_slot);
+        series_set->signal("added_objects")->connect(m_service->slot("reportSeries"));
+        CHECK_NOTHROW(m_service->configure());
+        CHECK_NOTHROW(m_service->start().get());
 
         auto series = std::make_shared<sight::data::series>();
         {
@@ -96,23 +78,22 @@ TEST_SUITE("sight::module::data::series_signal")
     TEST_CASE_FIXTURE(service_fixture, "include")
     {
         auto series_set = std::make_shared<sight::data::series_set>();
-        m_series_signal->set_input(series_set, "seriesSet");
+        m_service->set_input(series_set, "seriesSet");
         std::vector<sight::data::series::sptr> series_list;
-        auto series_added_slot = sight::core::com::new_slot(
+        auto series_added_slot = new_slot(
             [&](sight::data::series::sptr _series)
         {
             series_list.push_back(_series);
         });
-        m_worker = sight::core::thread::worker::make();
-        series_added_slot->set_worker(m_worker);
-        m_series_signal->signal("seriesAdded")->connect(series_added_slot);
-        series_set->signal("added_objects")->connect(m_series_signal->slot("reportSeries"));
+
+        m_service->signal("seriesAdded")->connect(series_added_slot);
+        series_set->signal("added_objects")->connect(m_service->slot("reportSeries"));
         boost::property_tree::ptree ptree;
         ptree.put("filter.mode", "include");
         ptree.put("filter.type", "sight::data::image_series");
-        m_series_signal->set_config(ptree);
-        CHECK_NOTHROW(m_series_signal->configure());
-        CHECK_NOTHROW(m_series_signal->start().get());
+        m_service->set_config(ptree);
+        CHECK_NOTHROW(m_service->configure());
+        CHECK_NOTHROW(m_service->start().get());
 
         auto image_series = std::make_shared<sight::data::image_series>();
         auto model_series = std::make_shared<sight::data::model_series>();
@@ -131,23 +112,22 @@ TEST_SUITE("sight::module::data::series_signal")
     TEST_CASE_FIXTURE(service_fixture, "exclude")
     {
         auto series_set = std::make_shared<sight::data::series_set>();
-        m_series_signal->set_input(series_set, "seriesSet");
+        m_service->set_input(series_set, "seriesSet");
         std::vector<sight::data::series::sptr> series_list;
-        auto series_added_slot = sight::core::com::new_slot(
+        auto series_added_slot = new_slot(
             [&](sight::data::series::sptr _series)
         {
             series_list.push_back(_series);
         });
-        m_worker = sight::core::thread::worker::make();
-        series_added_slot->set_worker(m_worker);
-        m_series_signal->signal("seriesAdded")->connect(series_added_slot);
-        series_set->signal("added_objects")->connect(m_series_signal->slot("reportSeries"));
+
+        m_service->signal("seriesAdded")->connect(series_added_slot);
+        series_set->signal("added_objects")->connect(m_service->slot("reportSeries"));
         boost::property_tree::ptree ptree;
         ptree.put("filter.mode", "exclude");
         ptree.put("filter.type", "sight::data::image_series");
-        m_series_signal->set_config(ptree);
-        CHECK_NOTHROW(m_series_signal->configure());
-        CHECK_NOTHROW(m_series_signal->start().get());
+        m_service->set_config(ptree);
+        CHECK_NOTHROW(m_service->configure());
+        CHECK_NOTHROW(m_service->start().get());
 
         auto image_series = std::make_shared<sight::data::image_series>();
         auto model_series = std::make_shared<sight::data::model_series>();

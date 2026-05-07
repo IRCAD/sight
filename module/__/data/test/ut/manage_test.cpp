@@ -27,33 +27,21 @@
 
 #include <service/op.hpp>
 
-#include <doctest/doctest.h>
+#include <utest/service_fixture.hpp>
 
 #include <grpcpp/server_context.h>
 
 namespace
 {
 
-class service_fixture
+class service_fixture : public sight::utest::service_fixture
 {
 public:
 
-    service_fixture()
+    service_fixture() :
+        sight::utest::service_fixture("sight::module::data::manage")
     {
-        m_manage = sight::service::add("sight::module::data::manage");
     }
-
-    ~service_fixture()
-    {
-        if(m_manage->started())
-        {
-            CHECK_NOTHROW(m_manage->stop().get());
-        }
-
-        sight::service::remove(m_manage);
-    }
-
-    sight::service::base::sptr m_manage;
 
     //------------------------------------------------------------------------------
 
@@ -66,15 +54,15 @@ public:
             (*container)["myKey"] = object;
         }
 
-        m_manage->set_inout(object, "object");
-        m_manage->set_inout(container, "container");
+        m_service->set_inout(object, "object");
+        m_service->set_inout(container, "container");
         boost::property_tree::ptree ptree;
         ptree.put("mapKey", "myKey");
-        m_manage->set_config(ptree);
-        CHECK_NOTHROW(m_manage->configure());
-        CHECK_NOTHROW(m_manage->start().get());
+        m_service->set_config(ptree);
+        CHECK_NOTHROW(m_service->configure());
+        CHECK_NOTHROW(m_service->start().get());
 
-        m_manage->slot(_slot_name)->run();
+        m_service->slot(_slot_name)->run();
 
         if(_slot_name == "add_copy")
         {
@@ -98,12 +86,12 @@ public:
             container->push_back(object);
         }
 
-        m_manage->set_inout(object, "object");
-        m_manage->set_inout(container, "container");
-        CHECK_NOTHROW(m_manage->configure());
-        CHECK_NOTHROW(m_manage->start().get());
+        m_service->set_inout(object, "object");
+        m_service->set_inout(container, "container");
+        CHECK_NOTHROW(m_service->configure());
+        CHECK_NOTHROW(m_service->start().get());
 
-        m_manage->slot(_slot_name)->run();
+        m_service->slot(_slot_name)->run();
 
         CHECK_EQ(std::size_t(1), container->size());
         if(_slot_name == "add_copy")
@@ -116,7 +104,7 @@ public:
             CHECK_EQ(object, std::dynamic_pointer_cast<sight::data::string>((*container)[0]));
         }
 
-        m_manage->slot(_slot_name)->run();
+        m_service->slot(_slot_name)->run();
 
         std::size_t expected_size = 2 - static_cast<std::size_t>(_slot_name == "add_or_swap");
         CHECK_EQ(expected_size, container->size());
@@ -143,12 +131,12 @@ public:
             container->push_back(object);
         }
 
-        m_manage->set_inout(object, "object");
-        m_manage->set_inout(container, "container");
-        CHECK_NOTHROW(m_manage->configure());
-        CHECK_NOTHROW(m_manage->start().get());
+        m_service->set_inout(object, "object");
+        m_service->set_inout(container, "container");
+        CHECK_NOTHROW(m_service->configure());
+        CHECK_NOTHROW(m_service->start().get());
 
-        m_manage->slot(_slot_name)->run();
+        m_service->slot(_slot_name)->run();
 
         CHECK_EQ(std::size_t(1), container->size());
         if(_slot_name == "add_copy")
@@ -161,7 +149,7 @@ public:
             CHECK_EQ(object, (*container)[0]);
         }
 
-        m_manage->slot(_slot_name)->run();
+        m_service->slot(_slot_name)->run();
 
         if(_slot_name == "add_copy")
         {
@@ -187,15 +175,15 @@ public:
             container->set_field("myField", object);
         }
 
-        m_manage->set_inout(object, "object");
-        m_manage->set_inout(container, "container");
+        m_service->set_inout(object, "object");
+        m_service->set_inout(container, "container");
         boost::property_tree::ptree ptree;
         ptree.put("field", "myField");
-        m_manage->set_config(ptree);
-        CHECK_NOTHROW(m_manage->configure());
-        CHECK_NOTHROW(m_manage->start().get());
+        m_service->set_config(ptree);
+        CHECK_NOTHROW(m_service->configure());
+        CHECK_NOTHROW(m_service->start().get());
 
-        m_manage->slot(_slot_name)->run();
+        m_service->slot(_slot_name)->run();
 
         if(_slot_name == "add_copy")
         {
@@ -216,16 +204,16 @@ public:
         auto container = std::make_shared<sight::data::map>();
         (*container)["myKey"] = object;
 
-        m_manage->set_inout(object, "object");
-        m_manage->set_inout(container, "container");
+        m_service->set_inout(object, "object");
+        m_service->set_inout(container, "container");
         boost::property_tree::ptree ptree;
         ptree.put("mapKey", "myKey");
-        m_manage->set_config(ptree);
-        CHECK_NOTHROW(m_manage->configure());
-        CHECK_NOTHROW(m_manage->start().get());
+        m_service->set_config(ptree);
+        CHECK_NOTHROW(m_service->configure());
+        CHECK_NOTHROW(m_service->start().get());
 
         CHECK(container->get<sight::data::string>("myKey") != nullptr);
-        m_manage->slot(_slot_name)->run();
+        m_service->slot(_slot_name)->run();
         CHECK(container->get<sight::data::string>("myKey") == nullptr);
     }
 
@@ -237,13 +225,13 @@ public:
         auto container = std::make_shared<sight::data::vector>();
         container->push_back(object);
 
-        m_manage->set_inout(object, "object");
-        m_manage->set_inout(container, "container");
-        CHECK_NOTHROW(m_manage->configure());
-        CHECK_NOTHROW(m_manage->start().get());
+        m_service->set_inout(object, "object");
+        m_service->set_inout(container, "container");
+        CHECK_NOTHROW(m_service->configure());
+        CHECK_NOTHROW(m_service->start().get());
 
         CHECK(!container->empty());
-        m_manage->slot(_slot_name)->run();
+        m_service->slot(_slot_name)->run();
         CHECK(container->empty());
     }
 
@@ -256,13 +244,13 @@ public:
         auto container = std::make_shared<sight::data::series_set>();
         container->push_back(object);
 
-        m_manage->set_inout(object, "object");
-        m_manage->set_inout(container, "container");
-        CHECK_NOTHROW(m_manage->configure());
-        CHECK_NOTHROW(m_manage->start().get());
+        m_service->set_inout(object, "object");
+        m_service->set_inout(container, "container");
+        CHECK_NOTHROW(m_service->configure());
+        CHECK_NOTHROW(m_service->start().get());
 
         CHECK(!container->empty());
-        m_manage->slot(_slot_name)->run();
+        m_service->slot(_slot_name)->run();
         CHECK(container->empty());
     }
 
@@ -274,16 +262,16 @@ public:
         auto container = std::make_shared<sight::data::string>();
         container->set_field("myField", object);
 
-        m_manage->set_inout(object, "object");
-        m_manage->set_inout(container, "container");
+        m_service->set_inout(object, "object");
+        m_service->set_inout(container, "container");
         boost::property_tree::ptree ptree;
         ptree.put("field", "myField");
-        m_manage->set_config(ptree);
-        CHECK_NOTHROW(m_manage->configure());
-        CHECK_NOTHROW(m_manage->start().get());
+        m_service->set_config(ptree);
+        CHECK_NOTHROW(m_service->configure());
+        CHECK_NOTHROW(m_service->start().get());
 
         CHECK_EQ(object, container->get_field<sight::data::string>("myField"));
-        m_manage->slot(_slot_name)->run();
+        m_service->slot(_slot_name)->run();
         CHECK(container->get_field<sight::data::string>("myField") == nullptr);
     }
 };
@@ -433,7 +421,7 @@ TEST_SUITE("sight::module::data::manage")
 
     TEST_CASE_FIXTURE(service_fixture, "remove_if_present_in_vector")
     {
-        m_manage->start().get();
+        m_service->start().get();
         //genericRemoveInVectorTest("remove_if_present"); // TODO: fix crash
     }
 
