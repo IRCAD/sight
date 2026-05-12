@@ -28,6 +28,8 @@
 
 #include <doctest/doctest.h>
 
+#include <filesystem>
+
 namespace sight::io::dicom::ut
 {
 
@@ -139,6 +141,44 @@ TEST_SUITE("sight::io::dicom::fiducials_reader_writer")
             actual_fiducials_series->get_content_creator_name()
         );
         CHECK(fiducial_set == actual_fiducial_sets[0]);
+    }
+
+    TEST_CASE("remove_fiducials_file_when_no_fiducials")
+    {
+        auto image_series = get_us_volume_image_copy(0xBEEF, 2);
+        REQUIRE(image_series);
+
+        data::fiducials_series::fiducial_set fiducial_set;
+        fiducial_set.group_name = "group_to_remove";
+        image_series->get_fiducials()->append_fiducial_set(fiducial_set);
+
+        auto series_set = std::make_shared<data::series_set>();
+        series_set->push_back(image_series);
+
+        const core::os::temp_dir folder;
+        const auto image_filename = std::string("image_with_optional_fiducials.dcm");
+        const auto fiducials_path = std::filesystem::path(folder) / "image_with_optional_fiducials_fiducials.dcm";
+
+        auto writer = std::make_shared<io::dicom::writer::file>();
+        writer->set_object(series_set);
+        writer->set_folder(folder);
+        writer->set_file(image_filename);
+
+        {
+            const auto observer = std::make_shared<core::progress::observer>("FIDUCIALS Writer Test");
+            CHECK_NOTHROW(writer->write(observer));
+        }
+
+        REQUIRE(std::filesystem::exists(fiducials_path));
+
+        image_series->get_fiducials()->set_fiducial_sets({});
+
+        {
+            const auto observer = std::make_shared<core::progress::observer>("FIDUCIALS Writer Test");
+            CHECK_NOTHROW(writer->write(observer));
+        }
+
+        CHECK_FALSE(std::filesystem::exists(fiducials_path));
     }
 }
 

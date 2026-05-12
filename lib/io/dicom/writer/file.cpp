@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -45,6 +45,8 @@
 
 namespace sight::io::dicom::writer
 {
+
+static const std::string S_FIDUCIALS_FILE_EXT = "fiducials.dcm";
 
 /// Decode image orientation / position
 /// GDCM doesn't handle Enhanced US Volume (which is rather a complicated case)
@@ -560,13 +562,41 @@ static void write_spatial_fiducials(
 {
     gdcm::Writer writer;
     std::filesystem::path folder = _image_path.parent_path();
-    std::string filename         = _image_path.stem().string() + "_fiducials.dcm";
+    std::string filename         = _image_path.stem().string() + "_" + S_FIDUCIALS_FILE_EXT;
 
     writer.SetFileName((folder / filename).string().c_str());
     writer.GetFile().SetDataSet(_fiducials_series.get_data_set());
     // Dummy value else GDCM complains. TransferSyntax shouldn't be required since Fiducials aren't an image.
     writer.GetFile().GetHeader().SetDataSetTransferSyntax(gdcm::TransferSyntax::JPEG2000Lossless);
     writer.Write();
+}
+
+//------------------------------------------------------------------------------
+
+static void remove_spatial_fiducials(
+    const std::filesystem::path& _image_path
+)
+{
+    const auto fiducials_path = _image_path.parent_path() / (_image_path.stem().string() + "_" + S_FIDUCIALS_FILE_EXT);
+
+    if(std::filesystem::exists(fiducials_path))
+    {
+        std::error_code ec;
+        std::filesystem::remove(fiducials_path, ec);
+
+        if(ec)
+        {
+            SIGHT_WARN(
+                "Failed to remove fiducials file '" + fiducials_path.string() + "': " + ec.message()
+            );
+        }
+        else
+        {
+            SIGHT_DEBUG(
+                "Successfully removed fiducials file '" + fiducials_path.string() + "'"
+            );
+        }
+    }
 }
 
 /// Private Writer implementation
@@ -750,6 +780,11 @@ void file::write(sight::core::progress::observer::sptr _progress)
 
                 write_spatial_fiducials(*fiducials, filepath);
             }
+            else
+            {
+                // Remove the fiducials file if it exists, to avoid reloading of deleted fiducials.
+                remove_spatial_fiducials(filepath);
+            }
         }
         else if(const auto& model_series = std::dynamic_pointer_cast<data::model_series>(series))
         {
@@ -762,6 +797,11 @@ void file::write(sight::core::progress::observer::sptr _progress)
                 }
 
                 write_spatial_fiducials(*fiducials, filepath);
+            }
+            else
+            {
+                // Remove the fiducials file if it exists, to avoid reloading of deleted fiducials.
+                remove_spatial_fiducials(filepath);
             }
         }
 
