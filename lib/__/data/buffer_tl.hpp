@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -116,6 +116,7 @@ protected:
     /// Allocate the pool buffer.
     SIGHT_DATA_API void alloc_pool_size(std::size_t _size);
 
+    // NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
     ///Timeline
     timeline_t m_timeline;
 
@@ -124,6 +125,7 @@ protected:
 
     /// maximum size
     std::size_t m_maximum_size;
+    // NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 }; // class buffer_tl
 
 } // namespace sight::data

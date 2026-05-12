@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,13 +27,6 @@
 #include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/material/standard.hpp>
 #include <viz/scene3d/transformable.hpp>
-
-namespace sight::data
-{
-
-class Material;
-
-} // namespace sight::data
 
 namespace sight::module::viz::scene3d::adaptor
 {
@@ -99,6 +92,12 @@ public:
     /// Destroys the adaptor.
     ~model_series() noexcept final = default;
 
+    /**
+     * @brief Sets the model series visibility.
+     * @param _visible the visibility status of the model series.
+     */
+    void set_visible(bool _visible) final;
+
 protected:
 
     /// Configures the adaptor.
@@ -125,12 +124,6 @@ protected:
 
     /// Closes connections and unregisters service.
     void stopping() final;
-
-    /**
-     * @brief Sets the model series visibility.
-     * @param _visible the visibility status of the model series.
-     */
-    void set_visible(bool _visible) final;
 
 private:
 

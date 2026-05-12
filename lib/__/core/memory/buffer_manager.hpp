@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -50,7 +50,7 @@ namespace policy
 
 class base;
 
-}
+} // namespace policy
 
 namespace stream::in
 {
@@ -99,7 +99,7 @@ public:
     buffer_manager();
     ~buffer_manager() override;
 
-    enum loading_mode_type
+    enum loading_mode_type : uint8_t
     {
         direct,
         lazy
@@ -310,7 +310,7 @@ public:
         return m_mutex;
     }
 
-protected:
+private:
 
     /**
      * @brief BufferManager'a Implementation

@@ -101,8 +101,7 @@ const core::com::slots::key_t show_test::CHANGE_SLOT = "change";
 
 show_test::show_test()
 {
-    m_slot_change = core::com::new_slot(&show_test::change, this);
-    core::com::has_slots::m_slots(CHANGE_SLOT, m_slot_change);
+    new_slot(CHANGE_SLOT, &show_test::change, this);
 }
 
 //------------------------------------------------------------------------------
@@ -140,7 +139,7 @@ reader2_test::reader2_test() :
     m_sig_changed(std::make_shared<changed_signal_t>())
 {
     // Register
-    core::com::has_signals::m_signals(CHANGED_SIG, m_sig_changed);
+    new_signal<changed_signal_t>(CHANGED_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -148,9 +147,7 @@ reader2_test::reader2_test() :
 void reader2_test::updating()
 {
     // Emit object Modified
-    reader2_test::changed_signal_t::sptr sig;
-    sig = this->signal<reader2_test::changed_signal_t>(reader2_test::CHANGED_SIG);
-    sig->async_emit();
+    this->async_emit(reader2_test::CHANGED_SIG);
 }
 
 //------------------------------------------------------------------------------

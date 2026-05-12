@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2024 IRCAD France
+ * Copyright (C) 2016-2026 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,6 +28,7 @@
 
 #include <boost/algorithm/clamp.hpp>
 
+#include <algorithm>
 #include <utility>
 
 namespace sight::viz::scene3d::vr
@@ -63,12 +64,12 @@ volume_renderer::volume_renderer(
     m_3d_ogre_texture(std::make_shared<sight::viz::scene3d::texture>(_image)),
     m_mask_texture(std::make_shared<sight::viz::scene3d::texture>(_mask)),
     m_gpu_volume_tf(std::make_shared<sight::viz::scene3d::transfer_function>(_tf)),
-    m_with_buffer(_with_buffer),
     m_preintegration(_preintegration),
     m_volume_scene_node(_volume_node),
     m_camera(m_scene_manager->getCamera(viz::scene3d::layer::DEFAULT_CAMERA_NAME)),
     m_nb_slices(_samples),
-    m_clipped_image_positions(IMAGE_POSITIONS)
+    m_clipped_image_positions(IMAGE_POSITIONS),
+    m_with_buffer(_with_buffer)
 {
     //Transfer function and preintegration table
     {
@@ -109,7 +110,7 @@ void volume_renderer::load_image()
 
         // Swap texture pointers.
         {
-            std::lock_guard<std::mutex> swap_lock(m_buffer_swap_mutex);
+            std::scoped_lock swap_lock(m_buffer_swap_mutex);
             std::swap(m_3d_ogre_texture, m_buffering_texture);
         }
     }
@@ -188,9 +189,9 @@ void volume_renderer::update_sample_distance()
 
     //Closest vertex
     {
-        const auto iterator = std::min_element( // NOLINT(readability-qualified-auto,llvm-qualified-auto)
-            m_clipped_image_positions.begin(),
-            m_clipped_image_positions.end(),
+        const auto iterator = std::ranges::min_element( // NOLINT(readability-qualified-auto,llvm-qualified-auto)
+            m_clipped_image_positions,
+
             comp
         );
         const auto index = static_cast<std::size_t>(std::distance(m_clipped_image_positions.begin(), iterator));
@@ -200,9 +201,9 @@ void volume_renderer::update_sample_distance()
 
     //Furthest vertex
     {
-        const auto iterator = std::max_element( // NOLINT(readability-qualified-auto,llvm-qualified-auto)
-            m_clipped_image_positions.begin(),
-            m_clipped_image_positions.end(),
+        const auto iterator = std::ranges::max_element( // NOLINT(readability-qualified-auto,llvm-qualified-auto)
+            m_clipped_image_positions,
+
             comp
         );
         const auto index = static_cast<std::size_t>(std::distance(m_clipped_image_positions.begin(), iterator));

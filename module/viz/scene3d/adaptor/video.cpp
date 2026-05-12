@@ -24,23 +24,16 @@
 
 #include <core/com/slots.hxx>
 
-#include <service/macros.hpp>
-
 #include <viz/scene3d/ogre.hpp>
-#include <viz/scene3d/utils.hpp>
 
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreCommon.h>
 #include <OGRE/OgreEntity.h>
-#include <OGRE/OgreHardwarePixelBuffer.h>
-#include <OGRE/OgreMaterial.h>
-#include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgreMesh.h>
 #include <OGRE/OgreMeshManager.h>
 #include <OGRE/OgreMovablePlane.h>
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreSceneNode.h>
-#include <OGRE/OgreTechnique.h>
 
 namespace sight::module::viz::scene3d::adaptor
 {
@@ -53,9 +46,9 @@ static const std::string VIDEO_WITH_TF_INT_MATERIAL_NAME = "VideoWithTF_Int";
 
 video::video() noexcept
 {
-    new_slot(slots::UPDATE_IMAGE, [this](){lazy_update(update_flags::IMAGE);});
-    new_slot(slots::UPDATE_TF, [this](){lazy_update(update_flags::TF);});
-    new_slot(slots::UPDATE_PL, [this](){lazy_update(update_flags::POINT_LIST);});
+    new_slot(slots::UPDATE_IMAGE, [this](){lazy_update(update_flags::image);});
+    new_slot(slots::UPDATE_TF, [this](){lazy_update(update_flags::tf);});
+    new_slot(slots::UPDATE_PL, [this](){lazy_update(update_flags::point_list);});
     new_slot(slots::SET_FILTERING, &video::set_filtering, this);
     new_slot(slots::UPDATE_COLOR, &video::update_color, this);
     new_slot(slots::SCALE, &video::scale, this);
@@ -199,16 +192,16 @@ void video::updating()
 {
     this->render_service()->make_current();
 
-    if(update_needed(update_flags::POINT_LIST))
+    if(update_needed(update_flags::point_list))
     {
         this->update_pl();
     }
 
-    if(update_needed(update_flags::TF))
+    if(update_needed(update_flags::tf))
     {
         this->update_tf();
     }
-    else if(update_needed(update_flags::IMAGE))
+    else if(update_needed(update_flags::image))
     {
         const auto&& type_and_size = [this]
                                      {
@@ -230,7 +223,7 @@ void video::updating()
             Ogre::MaterialPtr default_mat;
             if(tf)
             {
-                if(type == core::type::FLOAT || type == core::type::DOUBLE)
+                if(type == core::type::FLOAT32 || type == core::type::FLOAT64)
                 {
                     tpl_mat = VIDEO_WITH_TF_MATERIAL_NAME;
                 }

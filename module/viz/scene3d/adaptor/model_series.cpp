@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,12 +30,6 @@
 #include <core/ptree.hpp>
 
 #include <data/boolean.hpp>
-#include <data/material.hpp>
-#include <data/matrix4.hpp>
-#include <data/reconstruction.hpp>
-
-#include <service/macros.hpp>
-#include <service/op.hpp>
 
 namespace sight::module::viz::scene3d::adaptor
 {
@@ -176,7 +170,7 @@ void model_series::updating()
         adaptor->set_id(this->get_id(), adaptor->get_id());
 
         adaptor->set_render_service(this->render_service());
-        adaptor->set_layer_id(m_layer_id);
+        adaptor->set_layer_id(layer_id());
         adaptor->set_transform_id(this->get_transform_id());
         adaptor->set_auto_reset_camera(m_auto_reset_camera);
         adaptor->set_query_flags(m_query_flags);

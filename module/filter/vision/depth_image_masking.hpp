@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2024 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -78,10 +78,10 @@ public:
     /// Does nothing
     ~depth_image_masking() noexcept override = default;
 
+protected:
+
     /// Defines auto connection for this service (update slot) to the depth image (objectModified)
     service::connections_t auto_connections() const override;
-
-protected:
 
     /// Does nothing
     void configuring() override;

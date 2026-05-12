@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -50,10 +50,10 @@ public:
     [[nodiscard]] SIGHT_DATA_API bool is_present(unsigned int _index) const;
 
     /// Return the raw presence mask
-    [[nodiscard]] SIGHT_DATA_API uint64_t get_mask() const;
+    [[nodiscard]] SIGHT_DATA_API uint64_t mask() const;
 
     /// Return the maximum number of elements in the buffer
-    [[nodiscard]] SIGHT_DATA_API unsigned int get_max_element_num() const;
+    [[nodiscard]] SIGHT_DATA_API unsigned int max_element_num() const;
 
     /// Return the size of element in the buffer
     [[nodiscard]] SIGHT_DATA_API std::size_t get_element_size() const;
@@ -64,7 +64,7 @@ public:
 protected:
 
     /// Constructor
-    SIGHT_DATA_API generic_object_base(
+    SIGHT_DATA_API explicit generic_object_base(
         unsigned int _max_element_num,
         core::clock::type _timestamp = 0,
         buffer_data_t _buffer        = nullptr,
@@ -72,12 +72,18 @@ protected:
         deleter_t _d                 = nullptr
     );
 
-    /// Number of elements that are actually set
-    unsigned int m_num_present {0};
+    /// Set the element at the given index as present. This method doesn't set the element value,
+    /// it only updates the presence mask and the number of present elements.
+    SIGHT_DATA_API void set_present(unsigned int _index);
+
+private:
+
     /// Binary mask that indicates which element are set
     uint64_t m_presence_mask {0};
     /// Maximum number of elements in an object
     unsigned int m_max_element_num;
+    /// Number of elements that are actually set
+    unsigned int m_num_present {0};
 };
 
 /**
@@ -112,7 +118,7 @@ public:
     private:
 
         /// Constructor
-        iterator(const generic_object_base& _object);
+        explicit iterator(const generic_object_base& _object);
 
         /// Pointer on the buffer object
         const generic_object_base* m_object;
@@ -129,7 +135,7 @@ public:
     friend class iterator;
 
     /// Constructor
-    generic_object(
+    explicit generic_object(
         unsigned int _m_max_element_num,
         core::clock::type _timestamp = 0,
         buffer_data_t _buffer        = nullptr,

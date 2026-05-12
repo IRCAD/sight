@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2025 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -57,7 +57,7 @@ public:
      * @return The differences in the image before and after drawing.
      */
     SIGHT_FILTER_IMAGE_API image_diff draw(
-        bresenham_line::Orientation _orientation,
+        bresenham_line::orientation _orientation,
         const coordinates_t& _start_coord,
         const coordinates_t& _end_coord,
         const data::image::buffer_t* _value,

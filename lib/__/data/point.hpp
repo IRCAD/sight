@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -51,10 +51,10 @@ public:
     /// point factory
     point();
     point(std::initializer_list<value_type> _init_list);
-    point(float _x, float _y   = 0.F, float _z = 0.F);
-    point(double _x, double _y = 0., double _z = 0.);
-    SIGHT_DATA_API point(const point_coord_array_t& _coord);
-    SIGHT_DATA_API point(const point::sptr& _p);
+    explicit point(float _x, float _y   = 0.F, float _z = 0.F);
+    explicit point(double _x, double _y = 0., double _z = 0.);
+    SIGHT_DATA_API explicit point(const point_coord_array_t& _coord);
+    SIGHT_DATA_API explicit point(const point::sptr& _p);
 
     /// Destructor
     SIGHT_DATA_API ~point() noexcept final = default;
@@ -62,7 +62,7 @@ public:
     /// @brief get/set point coordinates
     /// @{
     [[deprecated("Use operator[] instead")]] point_coord_array_t get_coord();
-    [[deprecated("Use operator[] instead")]] const point_coord_array_t get_coord() const;
+    [[deprecated("Use operator[] instead")]] point_coord_array_t get_coord() const;
     [[deprecated("Use operator[] instead")]] void set_coord(const point_coord_array_t& _v_coord);
     /// @}
 
@@ -158,7 +158,7 @@ inline point::point_coord_array_t point::get_coord()
 
 //-----------------------------------------------------------------------------
 
-inline const point::point_coord_array_t point::get_coord() const
+inline point::point_coord_array_t point::get_coord() const
 {
     return this->get_content();
 }

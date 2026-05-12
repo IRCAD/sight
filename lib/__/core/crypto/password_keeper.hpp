@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -35,8 +35,6 @@ namespace sight::core::crypto
 class SIGHT_CORE_CLASS_API password_keeper final
 {
 public:
-
-    SIGHT_DECLARE_CLASS(password_keeper);
 
     /// Enum to define a password policy
     enum class password_policy : uint8_t

@@ -22,17 +22,9 @@
 
 #include "resampler.hpp"
 
-#include <core/com/signal.hpp>
 #include <core/com/signal.hxx>
 
 #include <filter/image/resampler.hpp>
-
-#include <geometry/data/image.hpp>
-#include <geometry/data/matrix4.hpp>
-
-#include <service/macros.hpp>
-
-#include <memory>
 
 namespace sight::module::filter::image
 {
@@ -40,7 +32,7 @@ namespace sight::module::filter::image
 //------------------------------------------------------------------------------
 
 resampler::resampler() :
-    filter(m_signals)
+    filter(has_signals::signals())
 {
 }
 

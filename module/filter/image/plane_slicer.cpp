@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2025 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,21 +26,18 @@
 #include <core/com/slots.hxx>
 
 #include <data/helper/medical_image.hpp>
-#include <data/point.hpp>
 
-#include <geometry/__/line.hpp>
-#include <geometry/data/matrix4.hpp>
-#include <geometry/data/image.hpp>
 #include <filter/image/types.hpp>
+#include <geometry/__/line.hpp>
+#include <geometry/data/image.hpp>
+#include <geometry/data/matrix4.hpp>
 
 #include <io/vtk/vtk.hpp>
 
 #include <vtkImageData.h>
 #include <vtkImageReslice.h>
 
-#include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <glm/gtc/matrix_inverse.hpp>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/intersect.hpp>
 #undef GLM_ENABLE_EXPERIMENTAL
@@ -51,7 +48,7 @@ namespace sight::module::filter::image
 //------------------------------------------------------------------------------
 
 plane_slicer::plane_slicer() noexcept :
-    filter(m_signals),
+    filter(has_signals::signals()),
     m_reslicer(vtkSmartPointer<vtkImageReslice>::New())
 {
     new_signal<signals::slice_range_changed_t>(signals::SLICE_RANGE_CHANGED);
@@ -130,15 +127,15 @@ void plane_slicer::updating()
     }
 
     const auto interpolation = sight::filter::image::string_to_interpolation(*m_interpolation);
-    if(interpolation == sight::filter::image::interpolation_t::NEAREST)
+    if(interpolation == sight::filter::image::interpolation_t::nearest)
     {
         m_reslicer->SetInterpolationModeToNearestNeighbor();
     }
-    else if(interpolation == sight::filter::image::interpolation_t::LINEAR)
+    else if(interpolation == sight::filter::image::interpolation_t::linear)
     {
         m_reslicer->SetInterpolationModeToLinear();
     }
-    else if(interpolation == sight::filter::image::interpolation_t::BSPLINE)
+    else if(interpolation == sight::filter::image::interpolation_t::bspline)
     {
         m_reslicer->SetInterpolationModeToCubic();
     }

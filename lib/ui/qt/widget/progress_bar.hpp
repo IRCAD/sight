@@ -76,14 +76,14 @@ public:
      *
      * Everything is cleared and all widgets destroyed. The _monitors themselves are not cancelled or stopped.
      */
-    SIGHT_UI_QT_API_QT virtual ~progress_bar();
+    SIGHT_UI_QT_API_QT ~progress_bar();
 
     /**
      * @brief Add a _monitor to the progress bar.
      *
-     * @param __monitor : the _monitor to add.
+     * @param _monitor : the _monitor to add.
      */
-    SIGHT_UI_QT_API_QT void add_monitor(core::progress::monitor::sptr __monitor);
+    SIGHT_UI_QT_API_QT void add_monitor(core::progress::monitor::sptr _monitor);
 
     /**
      * @brief Get the underlying QWidget that contains the progress bar.

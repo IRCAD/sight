@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -61,7 +61,7 @@ public:
     SIGHT_CORE_API virtual void set_run_callback(run_callback_type _callback) = 0;
 
     /// Get profile path
-    const std::filesystem::path& file_path() const
+    [[nodiscard]] const std::filesystem::path& file_path() const
     {
         return m_file_path;
     }
@@ -73,7 +73,7 @@ public:
     }
 
     /// Return profile name.
-    const std::string& name() const
+    [[nodiscard]] const std::string& name() const
     {
         return m_name;
     }
@@ -91,7 +91,7 @@ public:
     /**
      * @brief   Return profile version.
      */
-    const std::string& version() const
+    [[nodiscard]] const std::string& version() const
     {
         return m_version;
     }
@@ -108,7 +108,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    params_container get_params() const
+    [[nodiscard]] params_container get_params() const
     {
         return m_params;
     }
@@ -130,7 +130,7 @@ public:
      * The returned data shall not be modified. This is provided for external
      * library needs (QApplication constructor for example)
      */
-    char** get_raw_params() const
+    [[nodiscard]] char** get_raw_params() const
     {
         return m_argv;
     }

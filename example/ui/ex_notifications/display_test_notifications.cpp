@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2025 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,8 +25,6 @@
 #include <core/com/signal.hxx>
 #include <core/com/slots.hxx>
 
-#include <service/macros.hpp>
-
 namespace ex_notifications
 {
 
@@ -37,7 +35,7 @@ static const sight::core::com::slots::key_t CLOSE_CHANNEL1_SLOT     = "close_cha
 //------------------------------------------------------------------------------
 
 display_test_notifications::display_test_notifications() noexcept :
-    notifier(m_signals)
+    notifier(has_signals::signals())
 {
     new_slot(SET_ENUM_PARAMETER_SLOT, &display_test_notifications::set_enum_parameter, this);
     new_slot(SET_BOOL_PARAMETER_SLOT, &display_test_notifications::set_bool_parameter, this);
@@ -245,6 +243,7 @@ void display_test_notifications::updating()
 
         if(m_reach_max_characters)
         {
+            // cspell: disable
             message = "This notification "
                       + std::to_string(count)
                       + " will exceeds the maximum allowed characters ! "
@@ -256,6 +255,7 @@ void display_test_notifications::updating()
                         "velit esse cillum dolore eu fugiat nulla pariatur. "
                         "Excepteur sint occaecat cupidatat non proident, "
                         "sunt in culpa qui officia deserunt mollit anim id est laborum.";
+            // cspell: enable
         }
 
         this->notify(

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -54,7 +54,7 @@ class SIGHT_VIZ_SCENE3D_CLASS_API volume_renderer
 public:
 
     /// Image cube faces.
-    enum cube_face
+    enum cube_face : std::uint8_t
     {
         x_negative = 0,
         x_positive = 1,
@@ -101,13 +101,13 @@ public:
     struct camera_info_t
     {
         /// Camera plane
-        Ogre::Plane plane {};
+        Ogre::Plane plane;
 
         /// Closest vertex
-        Ogre::Vector3 closest {};
+        Ogre::Vector3 closest;
 
         /// Furthest vertex
-        Ogre::Vector3 furthest {};
+        Ogre::Vector3 furthest;
 
         /// Closest vertex index
         std::size_t closest_index {};
@@ -183,6 +183,8 @@ public:
 
 protected:
 
+    // NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
+
     /// Scale the volume based on the image's spacing and move it to the image origin.
     SIGHT_VIZ_SCENE3D_API void scale_translate_cube(const data::image& _image);
 
@@ -208,12 +210,6 @@ protected:
     /// Contains the buffering texture for the 3D image.
     texture::sptr m_buffering_texture;
 
-    /// Prevents from accessing the textures while they are swapped.
-    std::mutex m_buffer_swap_mutex;
-
-    ///@brief Indicates if a intermediate buffer is used when converting to negato.
-    const bool m_with_buffer;
-
     /// Pre-integration table.
     pre_integration_table m_pre_integration_table;
 
@@ -226,9 +222,6 @@ protected:
     /// Camera used for rendering.
     Ogre::Camera* m_camera;
 
-    ///@brief Camera information
-    camera_info_t m_camera_info;
-
     /// Sampling rate.
     std::uint16_t m_nb_slices = 512;
 
@@ -237,6 +230,19 @@ protected:
 
     /// Intersection between the image and the clipping box.
     std::array<Ogre::Vector3, 8> m_clipped_image_positions;
+
+// NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
+
+private:
+
+    ///@brief Indicates if a intermediate buffer is used when converting to negato.
+    const bool m_with_buffer;
+
+    /// Prevents from accessing the textures while they are swapped.
+    std::mutex m_buffer_swap_mutex;
+
+    ///@brief Camera information
+    camera_info_t m_camera_info;
 };
 
 //-----------------------------------------------------------------------------

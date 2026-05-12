@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,6 +44,9 @@ public:
 
     using service_vector_t = std::vector<std::weak_ptr<service::base> >;
 
+    /// Destructor
+    SIGHT_SERVICE_API virtual ~has_services() noexcept;
+
     /**
      * @brief Get all subservices linked to this service
      * @return The vector of linked services
@@ -60,9 +63,6 @@ protected:
 
     /// Constructor
     SIGHT_SERVICE_API has_services() noexcept;
-
-    /// Destructor
-    SIGHT_SERVICE_API virtual ~has_services() noexcept;
 
     /**
      * @brief Register a new service linked to this service

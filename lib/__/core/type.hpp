@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -37,8 +37,32 @@ class SIGHT_CORE_CLASS_API type
 {
 public:
 
+    // This enum is internal and only useful to initialize static members
+    enum class type_t : std::uint8_t
+    {
+        int_8 = 0,
+        int_16,
+        int_32,
+        int_64,
+        uint_8,
+        uint_16,
+        uint_32,
+        uint_64,
+        float_32,
+        float_64,
+        none
+    };
+
     constexpr type() = default;
+    // NOLINTBEGIN(google-explicit-constructor,hicpp-explicit-conversions)
     SIGHT_CORE_API type(const std::string& _str);
+
+    // This constructor is only used to initialize static members
+    constexpr type(type_t _t);
+
+    // This allows to use a Type in switch case
+    constexpr operator type_t() const;
+    // NOLINTEND(google-explicit-constructor,hicpp-explicit-conversions)
 
     constexpr bool operator==(const type& _t) const;
     constexpr bool operator!=(const type& _t) const;
@@ -70,36 +94,15 @@ public:
     static const type UINT32;
     static const type UINT64;
 
-    static const type FLOAT;
-    static const type DOUBLE;
+    static const type FLOAT32;
+    static const type FLOAT64;
     static const type NONE;
-
-    // This enum is internal and only useful to initialize static members
-    enum class type_t : std::uint8_t
-    {
-        int_8 = 0,
-        int_16,
-        int_32,
-        int_64,
-        uint_8,
-        uint_16,
-        uint_32,
-        uint_64,
-        FLOAT,
-        DOUBLE,
-        none
-    };
-
-    // This constructor is only used to initialize static members
-    constexpr type(type_t _t);
-
-    // This allows to use a Type in switch case
-    constexpr operator type_t() const;
 
 private:
 
     // Internal map that stores type properties
-    static const std::array<std::tuple<size_t, bool, std::string, type::type_t>, size_t(type::type_t::none) + 1>
+    static const std::array<std::tuple<size_t, bool, std::string, type::type_t>,
+                            static_cast<size_t>(type::type_t::none) + 1>
     TYPE_PROPERTIES;
 
     // Type storage
@@ -218,7 +221,7 @@ constexpr type type::get<std::uint64_t>()
 template<>
 constexpr type type::get<float>()
 {
-    return {type::type_t::FLOAT};
+    return {type::type_t::float_32};
 }
 
 //------------------------------------------------------------------------------
@@ -226,7 +229,7 @@ constexpr type type::get<float>()
 template<>
 constexpr type type::get<double>()
 {
-    return {type::type_t::DOUBLE};
+    return {type::type_t::float_64};
 }
 
 //------------------------------------------------------------------------------
@@ -243,8 +246,8 @@ inline constexpr type type::UINT16 = type::type_t::uint_16;
 inline constexpr type type::UINT32 = type::type_t::uint_32;
 inline constexpr type type::UINT64 = type::type_t::uint_64;
 
-inline constexpr type type::FLOAT  = type::type_t::FLOAT;
-inline constexpr type type::DOUBLE = type::type_t::DOUBLE;
-inline constexpr type type::NONE   = type::type_t::none;
+inline constexpr type type::FLOAT32 = type::type_t::float_32;
+inline constexpr type type::FLOAT64 = type::type_t::float_64;
+inline constexpr type type::NONE    = type::type_t::none;
 
 } // namespace sight::core

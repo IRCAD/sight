@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -64,7 +64,7 @@ const std::string grabber::REMOVE_ROI_CENTER_SLOT = "remove_roi_center";
 // ----------------------------------------------------------------------------
 
 grabber::grabber() noexcept :
-    notifier(m_signals)
+    notifier(has_signals::signals())
 {
     //Declare all signals
     new_signal<position_modified_signal_t>(POSITION_MODIFIED_SIG);

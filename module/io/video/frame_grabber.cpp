@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,6 @@
 
 #include "frame_grabber.hpp"
 
-#include <core/base.hpp>
 #include <core/com/signal.hxx>
 #include <core/com/slot.hxx>
 #include <core/com/slots.hxx>
@@ -40,6 +39,7 @@
 #include <cmath>
 #include <filesystem>
 #include <regex>
+#include <utility>
 
 // cspell:ignore imread
 
@@ -414,7 +414,7 @@ void frame_grabber::read_images(const std::filesystem::path& _folder, const std:
     }
 
     // Sort in alphabetical order (ex: img_001, img_002...)
-    std::sort(m_image_to_read.begin(), m_image_to_read.end());
+    std::ranges::sort(m_image_to_read);
 
     if(!m_image_to_read.empty())
     {
@@ -663,7 +663,7 @@ void frame_grabber::grab_video()
             std::uint8_t* frame_buff_out = buffer_out->add_element(0);
 
             // Create an OpenCV mat that aliases the buffer created from the output timeline.
-            cv::Mat img_out(image.size(), image.type(), (void*) frame_buff_out, cv::Mat::AUTO_STEP);
+            cv::Mat img_out(image.size(), image.type(), reinterpret_cast<void*>(frame_buff_out), cv::Mat::AUTO_STEP);
 
             if(image.type() == CV_8UC3)
             {
@@ -747,7 +747,7 @@ void frame_grabber::grab_image()
             std::uint8_t* frame_buff_out = buffer_out->add_element(0);
 
             // Create an openCV mat that aliases the buffer created from the output timeline
-            cv::Mat img_out(image.size(), image.type(), (void*) frame_buff_out, cv::Mat::AUTO_STEP);
+            cv::Mat img_out(image.size(), image.type(), reinterpret_cast<void*>(frame_buff_out), cv::Mat::AUTO_STEP);
 
             if(image.type() == CV_8UC3)
             {
@@ -898,7 +898,7 @@ void frame_grabber::next_image()
                                    - static_cast<std::int64_t>(m_step);
         const std::int64_t shifted_image_count = static_cast<std::int64_t>(m_image_count) + shift;
 
-        if(shifted_image_count < static_cast<std::int64_t>(m_image_to_read.size()))
+        if(std::cmp_less(shifted_image_count, m_image_to_read.size()))
         {
             // Update image position index
             m_image_count = static_cast<std::size_t>(shifted_image_count);

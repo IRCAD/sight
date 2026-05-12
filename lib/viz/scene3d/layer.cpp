@@ -36,20 +36,14 @@
 
 #include <data/tools/color.hpp>
 
-#include <service/registry.hpp>
-
 #include <boost/tokenizer.hpp>
 
-#include <OGRE/Ogre.h>
 #include <OGRE/OgreAxisAlignedBox.h>
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreColourValue.h>
 #include <OGRE/OgreCompositorManager.h>
-#include <OGRE/OgreEntity.h>
-#include <OGRE/OgreException.h>
 #include <OGRE/OgreGpuProgramManager.h>
 #include <OGRE/OgreLight.h>
-#include <OGRE/OgreManualObject.h>
 #include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgreRectangle2D.h>
 #include <OGRE/OgreSceneManager.h>
@@ -58,7 +52,6 @@
 
 #include <cmath>
 #include <memory>
-#include <stack>
 
 namespace sight::viz::scene3d
 {
@@ -80,14 +73,14 @@ const std::string layer::DEFAULT_CAMERA_NODE_NAME = "CameraNode";
 
 //-----------------------------------------------------------------------------
 
-struct layer::LayerCameraListener : public Ogre::Camera::Listener
+struct layer::layer_camera_listener : public Ogre::Camera::Listener
 {
     layer* m_layer {nullptr};
     int m_frame_id {0};
 
     //------------------------------------------------------------------------------
 
-    explicit LayerCameraListener(layer* _renderer) :
+    explicit layer_camera_listener(layer* _renderer) :
         m_layer(_renderer)
     {
     }
@@ -292,7 +285,10 @@ void layer::create_scene()
         "Width and height should be strictly positive",
         viewport->getActualWidth() > 0 && viewport->getActualHeight() > 0
     );
-    m_camera->setAspectRatio(Ogre::Real(viewport->getActualWidth()) / Ogre::Real(viewport->getActualHeight()));
+    m_camera->setAspectRatio(
+        static_cast<Ogre::Real>(viewport->getActualWidth())
+        / static_cast<Ogre::Real>(viewport->getActualHeight())
+    );
 
     // Creating Camera scene Node
     auto* const root_scene_node = m_scene_manager->getRootSceneNode();
@@ -334,7 +330,7 @@ void layer::create_scene()
         m_light_adaptor->start();
     }
 
-    m_camera_listener = new LayerCameraListener(this);
+    m_camera_listener = new layer_camera_listener(this);
     m_camera->addListener(m_camera_listener);
 
     // Setup transparency compositors
@@ -595,7 +591,7 @@ void layer::set_order(int _order)
 
 void layer::set_worker(const core::thread::worker::sptr& _worker)
 {
-    core::com::has_slots::m_slots.set_worker(_worker);
+    core::com::has_slots::slots().set_worker(_worker);
 }
 
 // ----------------------------------------------------------------------------
@@ -618,7 +614,7 @@ void layer::set_render_service(const viz::scene3d::render::sptr& _service)
 
 void layer::add_interactor(const viz::scene3d::interactor::base::sptr& _interactor, int _priority)
 {
-    using pair_t = typename decltype(m_interactors)::value_type;
+    using pair_t = decltype(m_interactors)::value_type;
     const pair_t pair = std::make_pair(_priority, _interactor);
 
     const auto is_pair = [&pair](const pair_t& _p)
@@ -637,7 +633,7 @@ void layer::add_interactor(const viz::scene3d::interactor::base::sptr& _interact
 
 void layer::remove_interactor(const viz::scene3d::interactor::base::sptr& _interactor)
 {
-    const auto interactor_equal = [&_interactor](typename decltype(m_interactors)::value_type _i)
+    const auto interactor_equal = [&_interactor](decltype(m_interactors)::value_type _i)
                                   {
                                       return _i.second.lock() == _interactor;
                                   };
@@ -1178,14 +1174,14 @@ Ogre::Matrix4 layer::get_camera_proj_mat(const uint8_t _camera_idx) const
     if(m_stereo_mode == viz::scene3d::compositor::core::stereo_mode_t::autostereo_5)
     {
         const float eye_angle = 0.02321F;
-        const float angle     = eye_angle * (-2.F + float(_camera_idx));
+        const float angle     = eye_angle * (-2.F + static_cast<float>(_camera_idx));
 
         extrinsic_transform = viz::scene3d::helper::camera::compute_frustum_shear_transform(*m_camera, angle);
     }
     else if(m_stereo_mode == viz::scene3d::compositor::core::stereo_mode_t::autostereo_8)
     {
         const float eye_angle = 0.01625F;
-        const float angle     = eye_angle * (-3.5F + float(_camera_idx));
+        const float angle     = eye_angle * (-3.5F + static_cast<float>(_camera_idx));
 
         extrinsic_transform = viz::scene3d::helper::camera::compute_frustum_shear_transform(*m_camera, angle);
     }

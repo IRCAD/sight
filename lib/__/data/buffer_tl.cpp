@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -69,7 +69,7 @@ void buffer_tl::push_object(const SPTR(data::timeline::object)& _obj)
     }
 
     SPTR(data::timeline::buffer) src_obj = std::dynamic_pointer_cast<data::timeline::buffer>(_obj);
-    m_timeline.insert(timeline_t::value_type(_obj->get_timestamp(), src_obj));
+    m_timeline.insert(timeline_t::value_type(_obj->timestamp(), src_obj));
 }
 
 //------------------------------------------------------------------------------
@@ -98,7 +98,7 @@ void buffer_tl::modify_time(timestamp_t _timestamp, timestamp_t _new_timestamp)
     SIGHT_ASSERT("Trying to swap at non-existing timestamp", it_find != m_timeline.end());
 
     // Check if newTimestamp is not already used
-    SIGHT_ASSERT("New timestamp already used by an other object", m_timeline.find(_new_timestamp) == m_timeline.end());
+    SIGHT_ASSERT("New timestamp already used by an other object", !m_timeline.contains(_new_timestamp));
 
     m_timeline.insert(timeline_t::value_type(_new_timestamp, it_find->second));
     m_timeline.erase(it_find);
@@ -109,7 +109,7 @@ void buffer_tl::modify_time(timestamp_t _timestamp, timestamp_t _new_timestamp)
 void buffer_tl::set_object(timestamp_t _timestamp, const SPTR(data::timeline::object)& _obj)
 {
     // Check if timestamp exists
-    SIGHT_ASSERT("Trying to set an object at non-existing timestamp", m_timeline.find(_timestamp) != m_timeline.end());
+    SIGHT_ASSERT("Trying to set an object at non-existing timestamp", m_timeline.contains(_timestamp));
 
     SPTR(data::timeline::buffer) src_obj = std::dynamic_pointer_cast<data::timeline::buffer>(_obj);
     m_timeline[_timestamp]               = src_obj;

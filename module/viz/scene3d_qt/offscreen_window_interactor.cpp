@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,17 +23,15 @@
 #include "module/viz/scene3d_qt/offscreen_window_interactor.hpp"
 
 #include <module/viz/scene3d_qt/init.hpp>
-#include <module/viz/scene3d_qt/open_gl_worker.hpp>
 
 #include <viz/scene3d/ogre.hpp>
 #include <viz/scene3d/registry/macros.hpp>
 #include <viz/scene3d/render.hpp>
 
-#define FW_PROFILING_DISABLED
+#define SIGHT_PROFILING_DISABLED
 #include <core/profiling.hpp>
 
 #include <OGRE/OgreHardwarePixelBuffer.h>
-#include <OGRE/OgreRenderTexture.h>
 #include <OGRE/OgreTextureManager.h>
 
 //-----------------------------------------------------------------------------
@@ -207,8 +205,8 @@ void offscreen_window_interactor::render()
        to keep things separate and keep the render function as simple as possible.
      */
 
-    FW_PROFILE_FRAME_AVG("Ogre", 3);
-    FW_PROFILE_AVG("Ogre", 3);
+    SIGHT_PROFILE_FRAME_AVG("Ogre", 3);
+    SIGHT_PROFILE_AVG("Ogre", 3);
     this->make_current();
 
     m_ogre_render_target->update(false);

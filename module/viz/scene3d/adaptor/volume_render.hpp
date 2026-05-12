@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2024 IRCAD France
+ * Copyright (C) 2016-2026 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -80,7 +80,6 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b dynamic (optional, bool, default=false): enables background buffering for dynamic images.
  * - \b widgets (optional, true/false, default=true): display VR widgets.
  * - \b priority (optional, int, default=2): interaction priority of the widget.
- * - \b layerOrderDependant (optional, bool, default=true): define if interaction must take into account above layers.
  * - \b ao (optional, bool, default=false): ambient occlusion usage.
  * - \b colorBleeding (optional, bool, default=false): color bleeding usage.
  * - \b shadows (optional, bool, default=false): soft shadows usage.
@@ -112,6 +111,12 @@ public:
     /// Destroys the adaptor.
     ~volume_render() noexcept override = default;
 
+    /**
+     * @brief Sets the volume visibility.
+     * @param _visible the visibility status of the volume.
+     */
+    void set_visible(bool _visible) override;
+
 protected:
 
     // Slot keys
@@ -134,7 +139,6 @@ protected:
         static inline const std::string DYNAMIC               = CONFIG + "dynamic";
         static inline const std::string WIDGETS               = CONFIG + "widgets";
         static inline const std::string PRIORITY              = CONFIG + "priority";
-        static inline const std::string LAYER_ORDER_DEPENDANT = CONFIG + "layerOrderDependant";
         static inline const std::string SAMPLES               = CONFIG + "samples";
         static inline const std::string SAT_SIZE_RATIO        = CONFIG + "satSizeRatio";
         static inline const std::string SAT_SHELLS            = CONFIG + "satShells";
@@ -169,9 +173,6 @@ protected:
         /// Interactor priority.
         int priority {2};
 
-        /// Indicates the the clipping box interactor layer is order-dependant.
-        bool order_dependent {false};
-
         /// Sampling rate.
         std::uint16_t samples {512};
 
@@ -179,7 +180,7 @@ protected:
         sat_parameters_t sat {};
 
         ///Shadows parameters
-        shadows_parameters_t shadows {};
+        shadows_parameters_t shadows;
     };
 
     /// Internal wrapper holding object keys
@@ -200,10 +201,6 @@ protected:
     /**
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
-     *
-     * Connect data::image::MODIFIED_SIG of s_IMAGE_INOUT to NEW_IMAGE_SLOT
-     * Connect data::image::BUFFER_MODIFIED_SIG of s_IMAGE_INOUT to BUFFER_IMAGE_SLOT
-     * Connect data::image::MODIFIED_SIG of s_CLIPPING_MATRIX_INOUT to UPDATE_CLIPPING_BOX_SLOT
      */
     service::connections_t auto_connections() const override;
 
@@ -213,19 +210,13 @@ protected:
     /// Cleans up scene objects.
     void stopping() override;
 
-    /**
-     * @brief Sets the volume visibility.
-     * @param _visible the visibility status of the volume.
-     */
-    void set_visible(bool _visible) override;
-
     ///@brief Configuration loaded.
-    config_data_t m_config {};
+    config_data_t m_config {}; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
 
 private:
 
     /// Defines volume rendering effects.
-    enum class vr_effect_type
+    enum class vr_effect_type : std::uint8_t
     {
         vr_ambient_occlusion,
         vr_color_bleeding,
@@ -413,12 +404,11 @@ private:
 
     enum class update_flags : std::uint8_t
     {
-        IMAGE,
-        IMAGE_BUFFER,
-        MASK_BUFFER,
-        CLIPPING_BOX,
-        TF,
-        _NUM
+        image,
+        image_buffer,
+        mask_buffer,
+        clipping_box,
+        tf
     };
 
     ///Prevents concurrent access on certain operations (texture update, etc.)

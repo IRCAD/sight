@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2024 IRCAD France
+ * Copyright (C) 2016-2026 IRCAD France
  * Copyright (C) 2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,7 +52,7 @@ struct proxy_connections
     {
     }
 
-    proxy_connections(std::string _channel) :
+    explicit proxy_connections(std::string _channel) :
         m_channel(std::move(_channel))
     {
     }
@@ -64,7 +64,7 @@ struct proxy_connections
 
     void add_signal_connection(const uid_t& _uid, const key_t& _key)
     {
-        m_signals.push_back(std::make_pair(_uid, _key));
+        m_signals.emplace_back(_uid, _key);
     }
 
     //------------------------------------------------------------------------------
@@ -78,7 +78,7 @@ struct proxy_connections
 
     void add_slot_connection(const uid_t& _uid, const key_t& _key)
     {
-        m_slots.push_back(std::make_pair(_uid, _key));
+        m_slots.emplace_back(_uid, _key);
     }
 
     //------------------------------------------------------------------------------

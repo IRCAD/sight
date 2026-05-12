@@ -28,8 +28,6 @@
 #include "data/mesh.hpp"
 #include "data/registry/macros.hpp"
 
-#include <core/base.hpp>
-#include <core/com/signal.hpp>
 #include <core/com/signal.hxx>
 #include <core/com/signals.hpp>
 
@@ -47,12 +45,10 @@ const core::com::signals::key_t reconstruction::VISIBILITY_MODIFIED_SIG = "visib
 reconstruction::reconstruction() :
 
     m_material(data::factory::make<data::material>()),
-    m_computed_mask_volume(reconstruction::NO_COMPUTED_MASK_VOLUME),
-    m_sig_mesh_changed(std::make_shared<mesh_changed_signal_t>()),
-    m_sig_visibility_modified(std::make_shared<visibility_modified_signal_t>())
+    m_computed_mask_volume(reconstruction::NO_COMPUTED_MASK_VOLUME)
 {
-    m_signals(MESH_CHANGED_SIG, m_sig_mesh_changed)
-        (VISIBILITY_MODIFIED_SIG, m_sig_visibility_modified);
+    new_signal<mesh_changed_signal_t>(MESH_CHANGED_SIG);
+    new_signal<visibility_modified_signal_t>(VISIBILITY_MODIFIED_SIG);
 }
 
 //------------------------------------------------------------------------------

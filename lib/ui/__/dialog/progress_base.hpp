@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -94,19 +94,16 @@ public:
         m_process_user_events = _process;
     }
 
+    //------------------------------------------------------------------------------
+
+    bool process_user_events() const
+    {
+        return m_process_user_events;
+    }
+
 protected:
 
     SIGHT_UI_API virtual void cancel_pressed();
-
-    core::progress::cancel_callback_t m_cancel_callback;
-    bool m_canceled {false};
-    bool m_raise {true};
-
-    ///progress bar's current value: [0-100]
-    int m_value {0};
-    bool m_process_user_events {true};
-
-protected:
 
     //------------------------------------------------------------------------------
 
@@ -119,6 +116,13 @@ protected:
             std::dynamic_pointer_cast<ui::dialog::progress_base>(gui_obj);
         return progress_dlg;
     }
+
+private:
+
+    core::progress::cancel_callback_t m_cancel_callback;
+    bool m_canceled {false};
+    bool m_raise {true};
+    bool m_process_user_events {true};
 };
 
 } // namespace sight::ui::dialog

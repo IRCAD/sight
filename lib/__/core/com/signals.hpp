@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -59,7 +59,7 @@ public:
     /// Returns all key_t registered in m_signals
     [[nodiscard]] SIGHT_CORE_API signal_key_container_t get_signal_keys() const;
 
-protected:
+private:
 
     /// Copy constructor forbidden
     signals(const signals& /*unused*/);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,8 +38,8 @@ TEST_SUITE("sight::core::tools::type")
         CHECK_EQ(std::string("uint16"), sight::core::type::UINT16.name());
         CHECK_EQ(std::string("uint32"), sight::core::type::UINT32.name());
         CHECK_EQ(std::string("uint64"), sight::core::type::UINT64.name());
-        CHECK_EQ(std::string("float"), sight::core::type::FLOAT.name());
-        CHECK_EQ(std::string("double"), sight::core::type::DOUBLE.name());
+        CHECK_EQ(std::string("float"), sight::core::type::FLOAT32.name());
+        CHECK_EQ(std::string("double"), sight::core::type::FLOAT64.name());
 
         CHECK_EQ(std::string("int8"), sight::core::type::get<signed char>().name());
         CHECK_EQ(std::string("int8"), sight::core::type::get<char>().name());
@@ -72,8 +72,8 @@ TEST_SUITE("sight::core::tools::type")
         CHECK_EQ(sight::core::type::UINT32, sight::core::type::get<unsigned int>());
         CHECK_EQ(sight::core::type::UINT64, sight::core::type::get<std::uint64_t>());
 
-        CHECK_EQ(sight::core::type::FLOAT, sight::core::type::get<float>());
-        CHECK_EQ(sight::core::type::DOUBLE, sight::core::type::get<double>());
+        CHECK_EQ(sight::core::type::FLOAT32, sight::core::type::get<float>());
+        CHECK_EQ(sight::core::type::FLOAT64, sight::core::type::get<double>());
     }
 
 //------------------------------------------------------------------------------
@@ -94,8 +94,8 @@ TEST_SUITE("sight::core::tools::type")
         CHECK_EQ("1"s, sight::core::type::UINT16.to_string(&integer));
         CHECK_EQ("1"s, sight::core::type::UINT32.to_string(&integer));
         CHECK_EQ("1"s, sight::core::type::UINT64.to_string(&integer));
-        CHECK_EQ("2.000000"s, sight::core::type::FLOAT.to_string(&floating));
-        CHECK_EQ("3.000000"s, sight::core::type::DOUBLE.to_string(&double_floating));
+        CHECK_EQ("2.000000"s, sight::core::type::FLOAT32.to_string(&floating));
+        CHECK_EQ("3.000000"s, sight::core::type::FLOAT64.to_string(&double_floating));
         CHECK_EQ(""s, sight::core::type::NONE.to_string(&integer));
     }
 
@@ -112,8 +112,8 @@ TEST_SUITE("sight::core::tools::type")
             sight::core::type::UINT16,
             sight::core::type::UINT32,
             sight::core::type::UINT64,
-            sight::core::type::FLOAT,
-            sight::core::type::DOUBLE
+            sight::core::type::FLOAT32,
+            sight::core::type::FLOAT64
         };
 
         std::map<sight::core::type, bool> found {
@@ -125,8 +125,8 @@ TEST_SUITE("sight::core::tools::type")
             {sight::core::type::UINT16, false},
             {sight::core::type::UINT32, false},
             {sight::core::type::UINT64, false},
-            {sight::core::type::FLOAT, false},
-            {sight::core::type::DOUBLE, false},
+            {sight::core::type::FLOAT32, false},
+            {sight::core::type::FLOAT64, false},
         };
 
         for(const auto& type : s_TYPES)
@@ -165,12 +165,12 @@ TEST_SUITE("sight::core::tools::type")
                     found[sight::core::type::UINT64] = true;
                     break;
 
-                case sight::core::type::FLOAT:
-                    found[sight::core::type::FLOAT] = true;
+                case sight::core::type::FLOAT32:
+                    found[sight::core::type::FLOAT32] = true;
                     break;
 
-                case sight::core::type::DOUBLE:
-                    found[sight::core::type::DOUBLE] = true;
+                case sight::core::type::FLOAT64:
+                    found[sight::core::type::FLOAT64] = true;
                     break;
 
                 default:

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -230,29 +230,36 @@ struct SIGHT_CORE_CLASS_API slot_base : virtual core::base_object
             return std::format("function_type({})", typeid(F).name());
         }
 
-        slot_base(unsigned int _arity) :
+        explicit slot_base(unsigned int _arity) :
             m_arity(_arity)
         {
         }
 
+        //NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
+
         /// Slot's signature based on typeid.
         std::string m_signature;
-
-        /// Slot's arity.
-        const unsigned int m_arity;
-
-        /// Slot's Worker.
-        SPTR(core::thread::worker) m_worker;
 
         /// When the slot is wrapped to reduce the number of arguments in a connection, this stores a pointer
         /// to the original slot. This is important in the mechanism used to keep the slot alive during an async call.
         WPTR(slot_base) m_source_slot;
 
+        /// Slot's Worker.
+        SPTR(core::thread::worker) m_worker;
+
+        mutable core::mt::read_write_mutex m_worker_mutex;
+
+    //NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
+
+    private:
+
+        /// Slot's arity.
+        const unsigned int m_arity;
+
         /// Container of current connections.
         connection_set_type m_connections;
 
         mutable core::mt::read_write_mutex m_connections_mutex;
-        mutable core::mt::read_write_mutex m_worker_mutex;
 };
 
 } // namespace sight::core::com

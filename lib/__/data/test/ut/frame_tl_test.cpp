@@ -21,13 +21,8 @@
  ***********************************************************************/
 
 #include <data/frame_tl.hpp>
-#include <data/timeline/buffer.hpp>
-
-#include <utest/exception.hpp>
 
 #include <doctest/doctest.h>
-
-#include <algorithm>
 
 TEST_SUITE("sight::data::frame_tl")
 {
@@ -40,14 +35,14 @@ TEST_SUITE("sight::data::frame_tl")
             timeline->init_pool_size(
                 100,
                 200,
-                sight::core::type::FLOAT,
+                sight::core::type::FLOAT32,
                 sight::data::frame_tl::pixel_format::gray_scale
             );
 
             CHECK_EQ(std::size_t(200), timeline->get_height());
             CHECK_EQ(std::size_t(100), timeline->get_width());
             CHECK_EQ(std::size_t(1), timeline->num_components());
-            CHECK_EQ(sight::core::type::FLOAT, timeline->type());
+            CHECK_EQ(sight::core::type::FLOAT32, timeline->type());
             CHECK_EQ(sight::data::frame_tl::pixel_format::gray_scale, timeline->pixel_format());
 
             sight::data::frame_tl::sptr timeline2 = sight::data::frame_tl::copy(timeline);
@@ -225,7 +220,7 @@ TEST_SUITE("sight::data::frame_tl")
         sight::data::frame_tl::sptr copied_timeline = sight::data::frame_tl::copy(timeline);
 
         CSPTR(sight::data::timeline::object) copied_data1 = copied_timeline->get_closest_object(time1);
-        CHECK_EQ(time1, copied_data1->get_timestamp());
+        CHECK_EQ(time1, copied_data1->timestamp());
         CSPTR(sight::data::frame_tl::buffer_t) copied_buff =
             std::dynamic_pointer_cast<const sight::data::frame_tl::buffer_t>(copied_data1);
         CHECK(copied_buff);
@@ -248,7 +243,7 @@ TEST_SUITE("sight::data::frame_tl")
 
         CSPTR(sight::data::timeline::object) copied_data2 = copied_timeline->get_closest_buffer(time2);
         CHECK(copied_data2);
-        CHECK_EQ(time2, copied_data2->get_timestamp());
+        CHECK_EQ(time2, copied_data2->timestamp());
 
         copied_timeline->clear_timeline();
         CSPTR(sight::data::timeline::object) null_obj2 = timeline->get_newer_object();

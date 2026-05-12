@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -99,7 +99,7 @@ struct weak_call
         return this->m_func();
     }
 
-    protected:
+    private:
 
         // Maintain a pointer to the callee. Allows to not proceed if the callee has been destroyed in between.
         mutable std::weak_ptr<T const> m_weak_ptr;

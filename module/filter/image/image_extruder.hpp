@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2024 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -77,13 +77,7 @@ public:
     /// Destroys the service.
     ~image_extruder() override;
 
-private:
-
-    /// Does nothing.
-    void configuring() override;
-
-    /// Starts the service.
-    void starting() override;
+protected:
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -98,11 +92,19 @@ private:
      */
     connections_t auto_connections() const override;
 
+    /// Does nothing.
+    void configuring() override;
+
+    /// Starts the service.
+    void starting() override;
+
     /// Extrudes all mesh of the model series from the image.
     void updating() override;
 
     /// Stops the services.
     void stopping() override;
+
+private:
 
     /// SLOT: called when reconstructions are added to the model series.
     void add_reconstructions(data::model_series::reconstruction_vector_t _reconstructions) const;

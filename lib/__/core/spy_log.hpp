@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -49,6 +49,7 @@
 
 #pragma once
 
+//NOLINTBEGIN(cppcoreguidelines-macro-usage)
 #ifdef _DEBUG
     #ifdef WIN32
         #define DEBUG_BREAK() __debugbreak()
@@ -61,6 +62,7 @@
 #else
     #define SPYLOG_ABORT() std::abort()
 #endif
+//NOLINTEND(cppcoreguidelines-macro-usage)
 
 #include <cassert>
 #include <cstring>
@@ -132,6 +134,8 @@ constexpr static const char* strip_source_path(const char* const _path)
  * @cond
  */
 
+//NOLINTBEGIN(cppcoreguidelines-macro-usage)
+
 // -----------------------------------------------------------------------------
 
 # ifndef FWCORE_EXPR_BLOCK
@@ -140,11 +144,13 @@ constexpr static const char* strip_source_path(const char* const _path)
 
 # define FWCORE_IF(cond, code) if(cond){code}
 
+//NOLINTBEGIN(bugprone-macro-parentheses)
 # define SL_LOG(log, loglevel, message) FWCORE_EXPR_BLOCK( \
             std::stringstream osl_str; \
             osl_str << message; \
-            log.loglevel(osl_str.str(), SIGHT_SOURCE_FILE, __LINE__); \
+            (log).loglevel(osl_str.str(), SIGHT_SOURCE_FILE, __LINE__); \
 )
+//NOLINTEND(bugprone-macro-parentheses)
 
 // -----------------------------------------------------------------------------
 
@@ -168,6 +174,7 @@ constexpr static const char* strip_source_path(const char* const _path)
 
 // -----------------------------------------------------------------------------
 
+//NOLINTBEGIN(bugprone-macro-parentheses)
 # ifdef _DEBUG
 #  ifdef WIN32
 #  define SL_ASSERT_IMPL(log, message, cond) FWCORE_EXPR_BLOCK( \
@@ -188,7 +195,7 @@ constexpr static const char* strip_source_path(const char* const _path)
                 std::stringstream osl_str1; \
                 osl_str1 << "Assertion '" \
                 <<#cond << "' failed: " << message; \
-                log.fatal(osl_str1.str(), SIGHT_SOURCE_FILE, __LINE__); \
+                (log).fatal(osl_str1.str(), SIGHT_SOURCE_FILE, __LINE__); \
                 SPYLOG_ABORT(); \
             ) \
 )
@@ -205,6 +212,7 @@ constexpr static const char* strip_source_path(const char* const _path)
 # else
 #  define SL_ASSERT(log, message, cond) // empty
 # endif
+//NOLINTEND(bugprone-macro-parentheses)
 
 // -----------------------------------------------------------------------------
 
@@ -299,8 +307,8 @@ constexpr static const char* strip_source_path(const char* const _path)
  */
 #define FW_DEPRECATED(old_fn_name, new_fn_name, version) \
         SIGHT_ERROR( \
-            "[DEPRECATED] '" << old_fn_name << "' is deprecated and will be removed in '" << version << "', use '" \
-            << new_fn_name << "' instead. It is still used by '" + this->get_classname() + "'." \
+            "[DEPRECATED] '" << (old_fn_name) << "' is deprecated and will be removed in '" << (version) << "', use '" \
+            << (new_fn_name) << "' instead. It is still used by '" + this->get_classname() + "'." \
         );
 
 /**
@@ -308,22 +316,24 @@ constexpr static const char* strip_source_path(const char* const _path)
  */
 #define FW_DEPRECATED_IF(old_fn_name, new_fn_name, version, condition) \
         SIGHT_ERROR_IF( \
-            "[DEPRECATED] '" << old_fn_name << "' is deprecated and will be removed in '" << version << "', use '" \
-            << new_fn_name << "' instead. It is still used by '" + this->get_classname() + "'.", \
+            "[DEPRECATED] '" << (old_fn_name) << "' is deprecated and will be removed in '" << (version) << "', use '" \
+            << (new_fn_name) << "' instead. It is still used by '" + this->get_classname() + "'.", \
             condition \
         );
 
+//NOLINTBEGIN(bugprone-macro-parentheses)
 /**
  * @brief Use this macro when deprecating something to warn the developer.
  */
 #define FW_DEPRECATED_MSG(message, version) \
-        SIGHT_ERROR("[DEPRECATED] " << message << " It will be removed in '" << version << "'");
+        SIGHT_ERROR("[DEPRECATED] " << message << " It will be removed in '" << (version) << "'");
 
 /**
  * @brief Use this macro when deprecating something to warn the developer.
  */
 #define FW_DEPRECATED_MSG_IF(message, version, condition) \
-        SIGHT_ERROR_IF("[DEPRECATED] " << message << " It will be removed in '" << version << "'", condition);
+        SIGHT_ERROR_IF("[DEPRECATED] " << message << " It will be removed in '" << (version) << "'", condition);
+//NOLINTEND(bugprone-macro-parentheses)
 
 /**
  * @brief Use this macro when deprecating a service key to warn the developer.
@@ -331,10 +341,12 @@ constexpr static const char* strip_source_path(const char* const _path)
 #define FW_DEPRECATED_KEY(new_key, access, version) \
         SIGHT_ERROR( \
             "[DEPRECATED] The key '" \
-            << new_key << "' is not correctly set. Please correct the configuration to set an '" \
-            << access << "' key named '" << new_key << "'. The support of the old key will be removed in '" \
-            << version << "'." \
+            << (new_key) << "' is not correctly set. Please correct the configuration to set an '" \
+            << (access) << "' key named '" << (new_key) << "'. The support of the old key will be removed in '" \
+            << (version) << "'." \
         );
+
+//NOLINTEND(cppcoreguidelines-macro-usage)
 
 //------------------------------------------------------------------------------
 

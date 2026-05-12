@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,8 +25,6 @@
 #include "data/exception.hpp"
 #include "data/registry/macros.hpp"
 
-#include <core/base.hpp>
-#include <core/com/signal.hpp>
 #include <core/com/signal.hxx>
 
 SIGHT_REGISTER_DATA(sight::data::resection_db);
@@ -39,15 +37,13 @@ const core::com::signals::key_t resection_db::SAFE_PART_ADDED_SIG = "safePartAdd
 
 //------------------------------------------------------------------------------
 
-resection_db::resection_db() :
-    m_sig_safe_part_added(std::make_shared<safe_part_added_signal_t>()),
-    m_sig_resection_added(std::make_shared<resection_added_signal_t>())
+resection_db::resection_db()
 {
-    m_signals(RESECTION_ADDED_SIG, m_sig_resection_added)
-        (SAFE_PART_ADDED_SIG, m_sig_safe_part_added);
+    new_signal<resection_added_signal_t>(RESECTION_ADDED_SIG);
+    new_signal<safe_part_added_signal_t>(SAFE_PART_ADDED_SIG);
 }
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 void resection_db::shallow_copy(const object::csptr& _source)
 {

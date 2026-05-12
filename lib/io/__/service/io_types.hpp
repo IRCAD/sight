@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,7 +32,7 @@ namespace sight::io::service
 {
 
 //! path_type_t defines different types of paths used by service readers/writers
-enum path_type_t
+enum path_type_t : std::uint8_t
 {
     file             = (1 << 0), /*!< io service can manage file and cannot manage a list of file*/
     files            = (1 << 1), /*!< io service can manage a list of file ()*/

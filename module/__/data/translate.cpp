@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -29,7 +29,7 @@ namespace sight::module::data
 //-----------------------------------------------------------------------------
 
 translate::translate() :
-    service::filter(m_signals)
+    service::filter(has_signals::signals())
 {
 }
 

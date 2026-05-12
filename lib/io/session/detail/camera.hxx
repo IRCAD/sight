@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -27,6 +27,8 @@
 #include "io/session/macros.hpp"
 
 #include <data/camera.hpp>
+
+#include <type_traits>
 
 namespace sight::io::session::detail::camera
 {
@@ -65,7 +67,7 @@ inline static void write(
     const auto camera = helper::safe_cast<data::camera>(_object);
 
     // Add a version number. Not mandatory, but could help for future release
-    helper::write_version<data::camera>(_tree, 1);
+    helper::write_version<data::camera>(_tree, 2);
 
     _tree.put(WIDTH, camera->get_width());
     _tree.put(HEIGHT, camera->get_height());
@@ -87,10 +89,16 @@ inline static void write(
     _tree.put(IS_CALIBRATED, camera->get_is_calibrated());
     helper::write_string(_tree, CAMERA_ID, camera->get_camera_id());
     _tree.put(MAXIMUM_FRAME_RATE, camera->get_maximum_frame_rate());
-    _tree.put(PIXEL_FORMAT, camera->pixel_format());
+    _tree.put<std::underlying_type_t<data::camera::pixel_format_t> >(
+        PIXEL_FORMAT,
+        static_cast<std::underlying_type_t<data::camera::pixel_format_t> >(camera->pixel_format())
+    );
     helper::write_string(_tree, VIDEO_FILE, camera->get_video_file().string());
     helper::write_string(_tree, STREAM_URL, camera->get_stream_url());
-    _tree.put(CAMERA_SOURCE, camera->get_camera_source());
+    _tree.put<std::underlying_type_t<data::camera::source_t> >(
+        CAMERA_SOURCE,
+        static_cast<std::underlying_type_t<data::camera::source_t> >(camera->get_camera_source())
+    );
     _tree.put(SCALE, camera->get_scale());
 }
 
@@ -108,7 +116,7 @@ inline static data::camera::sptr read(
     auto camera = helper::cast_or_create<data::camera>(_object);
 
     // Check version number. Not mandatory, but could help for future release
-    helper::read_version<data::camera>(_tree, 0, 1);
+    const auto version = helper::read_version<data::camera>(_tree, 0, 2);
 
     camera->set_width(_tree.get<std::size_t>(WIDTH));
     camera->set_height(_tree.get<std::size_t>(HEIGHT));
@@ -131,10 +139,37 @@ inline static data::camera::sptr read(
     camera->set_is_calibrated(_tree.get<bool>(IS_CALIBRATED));
     camera->set_camera_id(helper::read_string(_tree, CAMERA_ID));
     camera->set_maximum_frame_rate(_tree.get<float>(MAXIMUM_FRAME_RATE));
-    camera->set_pixel_format(static_cast<enum data::camera::pixel_format_t>(_tree.get<int>(PIXEL_FORMAT)));
+
+    // Version-specific reading for pixel_format
+    if(version < 2)
+    {
+        camera->set_pixel_format(static_cast<enum data::camera::pixel_format_t>(_tree.get<int>(PIXEL_FORMAT)));
+    }
+    else
+    {
+        camera->set_pixel_format(
+            static_cast<enum data::camera::pixel_format_t>(_tree.get<std::underlying_type_t<data::camera::pixel_format_t> >
+                                                               (PIXEL_FORMAT))
+        );
+    }
+
     camera->set_video_file(helper::read_string(_tree, VIDEO_FILE));
     camera->set_stream_url(helper::read_string(_tree, STREAM_URL));
-    camera->set_camera_source(static_cast<data::camera::source_t>(_tree.get<int>(CAMERA_SOURCE)));
+
+    // Version-specific reading for camera_source
+    if(version < 2)
+    {
+        camera->set_camera_source(static_cast<data::camera::source_t>(_tree.get<int>(CAMERA_SOURCE)));
+    }
+    else
+    {
+        camera->set_camera_source(
+            static_cast<data::camera::source_t>(_tree.get<std::underlying_type_t<data::camera::source_t> >(
+                                                    CAMERA_SOURCE
+            ))
+        );
+    }
+
     camera->set_scale(_tree.get<double>(SCALE));
 
     return camera;

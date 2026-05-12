@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,6 +24,8 @@
 
 #include <core/com/signal.hxx>
 #include <core/thread/timer.hpp>
+
+#include <algorithm>
 
 namespace ex_timeline
 {
@@ -57,7 +59,7 @@ void producer::starting()
 
         // This wouldn't hurt to initialize the timeline several times since it will be erased each time
         // but this would be a mess to know who is the last to initialize
-        SIGHT_ASSERT("Timeline initialized twice", timeline->get_max_element_num() == ~0U);
+        SIGHT_ASSERT("Timeline initialized twice", timeline->max_element_num() == ~0U);
 
         timeline->set_maximum_size(m_timeline_size);
 
@@ -87,7 +89,7 @@ void producer::updating()
     const std::string message = m_message + " #" + std::to_string(m_msg_count++);
 
     data->uid_sender = m_sender_id;
-    std::copy(message.begin(), message.end(), data->sz_msg.begin());
+    std::ranges::copy(message, data->sz_msg.begin());
 
     timeline->push_object(buffer);
 

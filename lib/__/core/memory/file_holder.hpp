@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,15 +37,15 @@ class SIGHT_CORE_CLASS_API file_holder
 {
 public:
 
-    file_holder()
-    = default;
-
+    file_holder() = default;
+    // NOLINTBEGIN(google-explicit-constructor,hicpp-explicit-conversions)
     SIGHT_CORE_API file_holder(const std::filesystem::path& _file, bool _autodelete = false);
 
     operator std::filesystem::path() const
     {
         return m_path;
     }
+    //NOLINTEND(google-explicit-constructor,hicpp-explicit-conversions)
 
     //------------------------------------------------------------------------------
 
@@ -69,7 +69,7 @@ public:
         return m_path.string();
     }
 
-protected:
+private:
 
     std::filesystem::path m_path;
     SPTR(file_auto_delete) m_auto_delete;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2025 IRCAD France
+ * Copyright (C) 2016-2026 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,23 +22,11 @@
 
 #include "module/viz/scene3d/adaptor/volume_render.hpp"
 
-#include "module/viz/scene3d/adaptor/transform.hpp"
-
 #include <core/com/signal.hxx>
 #include <core/com/slots.hxx>
 
 #include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
-
-#include <geometry/data/matrix4.hpp>
-
-#include <service/macros.hpp>
-
-#include <ui/__/dialog/message.hpp>
-
-#include <viz/scene3d/helper/scene.hpp>
-#include <viz/scene3d/helper/shading.hpp>
-#include <viz/scene3d/ogre.hpp>
 
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreSceneNode.h>
@@ -53,11 +41,11 @@ namespace sight::module::viz::scene3d::adaptor
 volume_render::volume_render() noexcept
 {
     // Auto-connected slots
-    new_slot(NEW_IMAGE_SLOT, [this](){lazy_update(update_flags::IMAGE);});
-    new_slot(BUFFER_IMAGE_SLOT, [this](){lazy_update(update_flags::IMAGE_BUFFER);});
-    new_slot(UPDATE_MASK_SLOT, [this](){lazy_update(update_flags::MASK_BUFFER);});
-    new_slot(UPDATE_TF_SLOT, [this](){lazy_update(update_flags::TF);});
-    new_slot(UPDATE_CLIPPING_BOX_SLOT, [this](){lazy_update(update_flags::CLIPPING_BOX);});
+    new_slot(NEW_IMAGE_SLOT, [this](){lazy_update(update_flags::image);});
+    new_slot(BUFFER_IMAGE_SLOT, [this](){lazy_update(update_flags::image_buffer);});
+    new_slot(UPDATE_MASK_SLOT, [this](){lazy_update(update_flags::mask_buffer);});
+    new_slot(UPDATE_TF_SLOT, [this](){lazy_update(update_flags::tf);});
+    new_slot(UPDATE_CLIPPING_BOX_SLOT, [this](){lazy_update(update_flags::clipping_box);});
 
     // Interaction slots
     new_slot(TOGGLE_WIDGETS_SLOT, &volume_render::toggle_widgets, this);
@@ -102,7 +90,6 @@ void volume_render::configuring(const config_t& _config)
             m_config.dynamic          = _config.get<bool>(config::DYNAMIC, false);
             m_config.visible          = _config.get<bool>(config::WIDGETS, true);
             m_config.priority         = _config.get<int>(config::PRIORITY, 2);
-            m_config.order_dependent  = _config.get<bool>(config::LAYER_ORDER_DEPENDANT, true);
             m_config.samples          = _config.get<std::uint16_t>(config::SAMPLES, 512);
         }
 
@@ -165,7 +152,7 @@ void volume_render::starting()
 
     //Renderer
     {
-        sight::viz::scene3d::layer::sptr layer = render_service->layer(m_layer_id);
+        sight::viz::scene3d::layer::sptr layer = render_service->layer(layer_id());
 
         const auto image = m_image.lock();
         const auto mask  = m_mask.lock();
@@ -210,28 +197,28 @@ void volume_render::starting()
 
 void volume_render::updating()
 {
-    if(update_needed(update_flags::IMAGE))
+    if(update_needed(update_flags::image))
     {
         new_image();
     }
     else // new_image() already calls all the functions below
     {
-        if(update_needed(update_flags::IMAGE_BUFFER))
+        if(update_needed(update_flags::image_buffer))
         {
             buffer_image();
         }
 
-        if(update_needed(update_flags::MASK_BUFFER))
+        if(update_needed(update_flags::mask_buffer))
         {
             update_mask();
         }
 
-        if(update_needed(update_flags::TF))
+        if(update_needed(update_flags::tf))
         {
             update_volume_tf();
         }
 
-        if(update_needed(update_flags::CLIPPING_BOX))
+        if(update_needed(update_flags::clipping_box))
         {
             update_clipping_box();
         }
@@ -271,7 +258,7 @@ void volume_render::stopping()
 void volume_render::update_volume_tf()
 {
     this->render_service()->make_current();
-    std::lock_guard swap_lock(m_mutex);
+    std::scoped_lock swap_lock(m_mutex);
 
     {
         const auto tf = m_tf.lock();
@@ -369,7 +356,7 @@ void volume_render::update_image()
 
     if(m_config.camera_autoreset)
     {
-        this->render_service()->reset_camera_coordinates(m_layer_id);
+        this->render_service()->reset_camera_coordinates(layer_id());
     }
     else
     {
@@ -421,7 +408,7 @@ void volume_render::update_sampling(unsigned _nb_samples)
 
 void volume_render::update_opacity_correction(unsigned _opacity_correction)
 {
-    m_volume_renderer->set_opacity_correction(int(_opacity_correction));
+    m_volume_renderer->set_opacity_correction(static_cast<int>(_opacity_correction));
     this->request_render();
 }
 
@@ -573,7 +560,7 @@ void volume_render::toggle_widgets(bool _visible)
 
 void volume_render::set_focal_distance(int _focal_distance)
 {
-    if(this->render_service()->layer(m_layer_id)->get_stereo_mode()
+    if(this->render_service()->layer(layer_id())->get_stereo_mode()
        != sight::viz::scene3d::compositor::core::stereo_mode_t::none)
     {
         m_volume_renderer->set_focal_length(static_cast<float>(_focal_distance) / 100);
@@ -594,7 +581,7 @@ void volume_render::set_bool_parameter(bool _val, std::string _key)
     );
 
     this->render_service()->make_current();
-    std::lock_guard swap_lock(m_mutex);
+    std::scoped_lock swap_lock(m_mutex);
 
     if(_key == "preIntegration")
     {
@@ -636,7 +623,7 @@ void volume_render::set_int_parameter(int _val, std::string _key)
     SIGHT_ASSERT("Int parameter cannot be negative in this context.", _val >= 0);
 
     this->render_service()->make_current();
-    std::lock_guard<std::mutex> swap_lock(m_mutex);
+    std::scoped_lock swap_lock(m_mutex);
 
     const auto param = static_cast<unsigned>(_val);
 
@@ -677,7 +664,7 @@ void volume_render::set_double_parameter(double _val, std::string _key)
     );
 
     this->render_service()->make_current();
-    std::lock_guard swap_lock(m_mutex);
+    std::scoped_lock swap_lock(m_mutex);
 
     const auto param = static_cast<float>(_val);
 
@@ -720,7 +707,6 @@ void volume_render::create_widget()
     this->destroy_widget(); // Destroys the old widgets if they were created.
     m_widget = std::make_shared<sight::viz::scene3d::interactor::clipping_box_interactor>(
         layer,
-        m_config.order_dependent,
         this->get_id(),
         m_volume_scene_node,
         ogre_clipping_mx,
@@ -824,7 +810,7 @@ void volume_render::update_clipping_box()
             // updateFromTransform is called outside of the lock of the InOut data to prevent a deadlock
             m_widget->update_from_transform(clipping_mx);
 
-            std::lock_guard<std::mutex> swap_lock(m_mutex);
+            std::scoped_lock swap_lock(m_mutex);
             m_volume_renderer->clip_image(m_widget->get_clipping_box());
             this->request_render();
         }
@@ -842,7 +828,7 @@ void volume_render::update_clipping_matrix()
         clipping_matrix->async_emit(this, data::object::MODIFIED_SIG);
     }
 
-    std::lock_guard<std::mutex> swap_lock(m_mutex);
+    std::scoped_lock swap_lock(m_mutex);
     m_volume_renderer->clip_image(m_widget->get_clipping_box());
 
     this->request_render();
@@ -863,7 +849,7 @@ void volume_render::set_visible(bool _visible)
 
         if(m_config.camera_autoreset)
         {
-            this->render_service()->reset_camera_coordinates(m_layer_id);
+            this->render_service()->reset_camera_coordinates(layer_id());
         }
 
         this->request_render();

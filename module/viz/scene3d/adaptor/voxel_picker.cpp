@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2024 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -55,14 +55,12 @@ void voxel_picker::configuring()
 
     const config_t config = this->get_config();
 
-    static const std::string s_PRIORITY_CONFIG              = CONFIG + "priority";
-    static const std::string s_ORIENTATION_CONFIG           = CONFIG + "orientation";
-    static const std::string s_MODE_CONFIG                  = CONFIG + "mode";
-    static const std::string s_LAYER_ORDER_DEPENDANT_CONFIG = CONFIG + "layerOrderDependant";
-    static const std::string s_MOVE_ON_PICK_CONFIG          = CONFIG + "moveOnPick";
+    static const std::string s_PRIORITY_CONFIG     = CONFIG + "priority";
+    static const std::string s_ORIENTATION_CONFIG  = CONFIG + "orientation";
+    static const std::string s_MODE_CONFIG         = CONFIG + "mode";
+    static const std::string s_MOVE_ON_PICK_CONFIG = CONFIG + "moveOnPick";
 
-    m_priority              = config.get<int>(s_PRIORITY_CONFIG, m_priority);
-    m_layer_order_dependant = config.get<bool>(s_LAYER_ORDER_DEPENDANT_CONFIG, m_layer_order_dependant);
+    m_priority = static_cast<int>(config.get<bool>(s_PRIORITY_CONFIG, m_priority != 0));
 
     const std::string orientation = config.get<std::string>(s_ORIENTATION_CONFIG, "sagittal");
     SIGHT_ASSERT(
@@ -145,9 +143,9 @@ void voxel_picker::pick(mouse_button _button, modifier _mod, int _x, int _y, boo
 {
     if(_button == mouse_button::left)
     {
-        if(auto layer = m_layer.lock())
+        if(auto layer = this->layer())
         {
-            if(!sight::module::viz::scene3d::adaptor::voxel_picker::is_in_layer(_x, _y, layer, m_layer_order_dependant))
+            if(!sight::module::viz::scene3d::adaptor::voxel_picker::is_in_layer(_x, _y, layer))
             {
                 return;
             }
@@ -253,10 +251,10 @@ std::pair<bool, Ogre::Vector3> voxel_picker::compute_ray_image_intersection(
     const Ogre::Vector3& _spacing
 )
 {
-    namespace imHelper = data::helper::medical_image;
-    const auto axial_idx    = imHelper::get_slice_index(*_image, imHelper::axis_t::axial).value_or(0);
-    const auto frontal_idx  = imHelper::get_slice_index(*_image, imHelper::axis_t::frontal).value_or(0);
-    const auto sagittal_idx = imHelper::get_slice_index(*_image, imHelper::axis_t::sagittal).value_or(0);
+    namespace im_helper = data::helper::medical_image;
+    const auto axial_idx    = im_helper::get_slice_index(*_image, im_helper::axis_t::axial).value_or(0);
+    const auto frontal_idx  = im_helper::get_slice_index(*_image, im_helper::axis_t::frontal).value_or(0);
+    const auto sagittal_idx = im_helper::get_slice_index(*_image, im_helper::axis_t::sagittal).value_or(0);
 
     const auto axial_index    = static_cast<Ogre::Real>(axial_idx);
     const auto frontal_index  = static_cast<Ogre::Real>(frontal_idx);

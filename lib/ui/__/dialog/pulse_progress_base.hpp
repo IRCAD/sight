@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -74,7 +74,10 @@ public:
 
 protected:
 
-    Stuff m_stuff;
+    Stuff m_stuff; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
+
+private:
+
     MilliSecond m_frequency {1};
     bool m_cancellable {true};
 };

@@ -24,11 +24,9 @@
 
 #include <core/com/helper/sig_slot_connection.hpp>
 #include <core/com/slots.hxx>
-#include <core/runtime/helper.hpp>
 #include <core/thread/worker.hpp>
 #include <core/time_stamp.hpp>
 
-#include <data/image.hpp>
 #include <data/map.hpp>
 #include <data/object.hpp>
 
@@ -80,6 +78,9 @@ namespace sight::service::ut
 
 //------------------------------------------------------------------------------
 
+namespace
+{
+
 struct test_service_signals : public sight::core::com::has_slots
 {
     using sptr = std::shared_ptr<test_service_signals>;
@@ -91,7 +92,7 @@ struct test_service_signals : public sight::core::com::has_slots
         new_slot("stop", &test_service_signals::stop, this);
 
         m_worker = sight::core::thread::worker::make();
-        m_slots.set_worker(m_worker);
+        slots().set_worker(m_worker);
     }
 
     ~test_service_signals() override;
@@ -122,6 +123,8 @@ struct test_service_signals : public sight::core::com::has_slots
     bool m_updated {false};
     bool m_stopped {false};
 };
+
+} // namespace
 
 //------------------------------------------------------------------------------
 
@@ -564,6 +567,9 @@ TEST_SUITE("sight::service::service")
 
 //------------------------------------------------------------------------------
 
+    namespace
+    {
+
     struct test_service_signals : public sight::core::com::has_slots
     {
         using sptr = std::shared_ptr<test_service_signals>;
@@ -575,7 +581,7 @@ TEST_SUITE("sight::service::service")
             new_slot("stop", &test_service_signals::stop, this);
 
             m_worker = sight::core::thread::worker::make();
-            m_slots.set_worker(m_worker);
+            slots().set_worker(m_worker);
         }
 
         ~test_service_signals() override;
@@ -606,6 +612,8 @@ TEST_SUITE("sight::service::service")
         bool m_updated {false};
         bool m_stopped {false};
     };
+
+    } // namespace
 
 //------------------------------------------------------------------------------
 

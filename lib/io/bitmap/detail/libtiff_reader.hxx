@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -135,10 +135,10 @@ public:
                         switch(bits_per_sample)
                         {
                             case 32:
-                                return core::type::FLOAT;
+                                return core::type::FLOAT32;
 
                             case 64:
-                                return core::type::DOUBLE;
+                                return core::type::FLOAT64;
 
                             default:
                                 SIGHT_THROW("Unsupported bit depth for float format: '" << bits_per_sample << "'");

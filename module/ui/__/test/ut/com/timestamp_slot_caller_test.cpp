@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -32,6 +32,9 @@ CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::ui::com::ut::timestamp_slot_calle
 namespace sight::module::ui::com::ut
 {
 
+namespace
+{
+
 class test_object : public sight::data::object,
                     public sight::core::com::has_slots
 {
@@ -43,7 +46,7 @@ public:
 
     void slot(double _timestamp);
 
-    const std::vector<double>& get_timestamps() const;
+    const std::vector<double>& timestamps() const;
 
 private:
 
@@ -51,6 +54,8 @@ private:
 
     core::thread::worker::sptr m_worker = core::thread::worker::make();
 };
+
+} // namespace
 
 test_object::test_object()
 {
@@ -72,7 +77,7 @@ void test_object::slot(double _timestamp)
 
 //------------------------------------------------------------------------------
 
-const std::vector<double>& test_object::get_timestamps() const
+const std::vector<double>& test_object::timestamps() const
 {
     return m_timestamps;
 }
@@ -116,16 +121,16 @@ void timestamp_slot_caller_test::basic_test()
     CPPUNIT_ASSERT_NO_THROW(m_timestamp_slot_caller->start().get());
 
     CPPUNIT_ASSERT_NO_THROW(m_timestamp_slot_caller->update().get());
-    SIGHT_TEST_WAIT(1 == obj->get_timestamps().size());
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), obj->get_timestamps().size());
+    SIGHT_TEST_WAIT(1 == obj->timestamps().size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), obj->timestamps().size());
 
     std::this_thread::sleep_for(1000ms);
 
     CPPUNIT_ASSERT_NO_THROW(m_timestamp_slot_caller->update().get());
-    SIGHT_TEST_WAIT(2 == obj->get_timestamps().size());
-    CPPUNIT_ASSERT_EQUAL(std::size_t(2), obj->get_timestamps().size());
+    SIGHT_TEST_WAIT(2 == obj->timestamps().size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), obj->timestamps().size());
 
-    CPPUNIT_ASSERT(obj->get_timestamps()[1] - obj->get_timestamps()[0] >= 1);
+    CPPUNIT_ASSERT(obj->timestamps()[1] - obj->timestamps()[0] >= 1);
 }
 
 //------------------------------------------------------------------------------

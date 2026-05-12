@@ -37,8 +37,8 @@ namespace sight::module::filter::image
 //-----------------------------------------------------------------------------
 
 propagator::propagator() :
-    filter(m_signals),
-    has_monitors(m_signals)
+    filter(has_signals::signals()),
+    has_monitors(has_signals::signals())
 {
     new_slot(slots::CLEAR, &propagator::clear, this);
     new_slot(slots::PROPAGATE, &propagator::propagate, this);
@@ -76,7 +76,7 @@ void propagator::updating()
             image_out->set_origin(image_in->origin());
             image_out->set_orientation(image_in->orientation());
             const auto lock = image_out->dump_lock();
-            std::fill(image_out->begin(), image_out->end(), std::uint8_t(0));
+            std::fill(image_out->begin(), image_out->end(), static_cast<std::uint8_t>(0));
         }
 
         propagate();
@@ -120,9 +120,9 @@ void propagator::propagate()
             {
                 const auto indices = geometry::data::world_to_image(*image_in, *_x, true);
 
-                if(indices[0] >= 0 && indices[0] < std::int64_t(sizes[0])
-                   && indices[1] >= 0 && indices[1] < std::int64_t(sizes[1])
-                   && indices[2] >= 0 && indices[2] < std::int64_t(sizes[2]))
+                if(indices[0] >= 0 && indices[0] < static_cast<std::int64_t>(sizes[0])
+                   && indices[1] >= 0 && indices[1] < static_cast<std::int64_t>(sizes[1])
+                   && indices[2] >= 0 && indices[2] < static_cast<std::int64_t>(sizes[2]))
                 {
                     seeds.insert(
                     {
@@ -222,7 +222,7 @@ void propagator::clear()
         const auto image_out = m_image_out.lock();
         const auto lock      = image_out->dump_lock();
 
-        std::fill(image_out->begin(), image_out->end(), std::uint8_t(0));
+        std::fill(image_out->begin(), image_out->end(), static_cast<std::uint8_t>(0));
         image_out->async_emit(data::image::BUFFER_MODIFIED_SIG);
     }
     {

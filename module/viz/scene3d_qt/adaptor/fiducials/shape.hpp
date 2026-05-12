@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024-2025 IRCAD France
+ * Copyright (C) 2024-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -93,6 +93,12 @@ public:
     /// SLOT: Activates the shape tool by changing the cursor and updating a boolean
     void activate_shape_tool(bool _activate);
 
+    /**
+     * @brief Sets the entity visibility.
+     * @param _visible the visibility status.
+     */
+    void set_visible(bool _visible) final;
+
 protected:
 
     /// Configures the adaptor.
@@ -108,12 +114,6 @@ protected:
 
     /// Removes the actor from the renderer.
     void stopping() final;
-
-    /**
-     * @brief Sets the entity visibility.
-     * @param _visible the visibility status.
-     */
-    void set_visible(bool _visible) final;
 
 private:
 
@@ -160,8 +160,7 @@ private:
 
     Ogre::ManualObject* m_sphere_object {nullptr};
 
-    static constexpr std::string_view s_IMAGE_INOUT = "image";
-    sight::data::ptr<sight::data::image_series, sight::data::access::inout> m_image {this, s_IMAGE_INOUT};
+    sight::data::ptr<sight::data::image_series, sight::data::access::inout> m_image {this, "image"};
 
     /// Defines the radius of spheres.
     sight::data::property<sight::data::real> m_sphere_radius {this, "radius", 10.};

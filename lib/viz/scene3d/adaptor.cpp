@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,16 +24,14 @@
 
 #include <core/com/slots.hxx>
 
-#include <service/macros.hpp>
 #include <service/registry.hpp>
 
 #include <viz/scene3d/registry/adaptor.hpp>
-#include <viz/scene3d/utils.hpp>
+
+#include <algorithm>
 
 namespace sight::viz::scene3d
 {
-
-const std::string adaptor::CONFIG = "config.<xmlattr>.";
 
 //------------------------------------------------------------------------------
 
@@ -87,9 +85,9 @@ void adaptor::init()
         auto layer_cfg = registry[this->get_id()];
 
         auto result =
-            std::find_if(
-                services_vector.begin(),
-                services_vector.end(),
+            std::ranges::find_if(
+                services_vector,
+
                 [layer_cfg](const service::base::sptr& _srv)
             {
                 return _srv->get_id() == layer_cfg.render;
@@ -202,7 +200,7 @@ bool adaptor::visible() const
 
 void adaptor::toggle_visibility()
 {
-    this->update_visibility(not * m_visible);
+    this->update_visibility(not *m_visible);
 }
 
 //------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -72,7 +72,7 @@ struct object_serviceconfig
     data::access m_access {data::access::inout};
 
     /// True if the service is autoConnected this object according to the auto-connection map
-    boost::optional<bool> m_auto_connect {};
+    boost::optional<bool> m_auto_connect;
 
     /// True if the object is optional (i.e. the service can start even if the object is not present)
     bool m_optional {false};
@@ -105,7 +105,7 @@ struct service_config
     service::config_t m_config;
 };
 
-}
+} // namespace sight::app::detail
 
 namespace sight::app::helper
 {

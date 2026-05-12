@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -219,6 +219,7 @@ protected:
     void set_start_state(bool _state);
     bool started() const;
 
+    // NOLINTNEXTLINE(cppcoreguidelines-non-private-member-variables-in-classes)
     data::ptr<data::frame_tl, data::access::inout> m_frame {this, FRAMETL_INOUT};
 
 private:

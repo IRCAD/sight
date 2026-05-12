@@ -101,8 +101,8 @@ namespace sight::module::viz::scene3d_qt::adaptor::fiducials
  */
 class point final :
     public sight::viz::scene3d::adaptor,
-    public sight::viz::scene3d::transformable,
-    public sight::viz::scene3d::interactor::base
+    public sight::viz::scene3d::interactor::base,
+    public sight::viz::scene3d::transformable
 {
 public:
 
@@ -182,6 +182,13 @@ public:
      */
     void disable_move_mode();
 
+    /**
+     * @brief Sets the adaptor visibility.
+     *
+     * @param _visible If false, it will hide all fiducials. If true, it will show them if possible.
+     */
+    void set_visible(bool _visible) final;
+
     struct signals final
     {
         using key_t = sight::core::com::signals::key_t;
@@ -234,13 +241,6 @@ protected:
      *
      */
     void stopping() final;
-
-    /**
-     * @brief Sets the adaptor visibility.
-     *
-     * @param _visible If false, it will hide all fiducials. If true, it will show them if possible.
-     */
-    void set_visible(bool _visible) final;
 
     /**
      * @brief Retrieves a fiducial or create a new one. Stores the result in m_picked_data.

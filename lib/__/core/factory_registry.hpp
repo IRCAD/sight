@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -97,7 +97,7 @@ public:
         return vect_keys;
     }
 
-protected:
+private:
 
     registry_t m_registry;
     mutable core::mt::read_write_mutex m_mutex;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,7 +32,7 @@ namespace sight::core::progress::exception
 /// No worker exception.
 struct waiting : core::exception
 {
-    SIGHT_CORE_API waiting(const std::string& _err);
+    SIGHT_CORE_API explicit waiting(const std::string& _err);
 };
 
 } // namespace sight::core::progress::exception

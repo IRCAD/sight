@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -104,7 +104,7 @@ private:
      * @param _title title of the dialog.
      * @param _message message of the dialog.
      */
-    static void show_dialog(const std::string _title, const std::string _message);
+    static void show_dialog(std::string _title, std::string _message);
 
     /// Contains the AET of the SCU (client name) editor.
     QPointer<QLineEdit> m_scu_app_entity_title_edit;

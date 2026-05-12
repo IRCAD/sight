@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#if !defined(FWCOM_SLOTBASE_HPP)
+#ifndef FWCOM_SLOTBASE_HPP
 #error core/com/slot_base.hpp not included
 #endif
 
@@ -45,7 +45,7 @@ namespace sight::core::com
 template<typename A1, typename A2, typename A3>
 void slot_base::run(A1 _a1, A2 _a2, A3 _a3) const
 {
-    typedef slot_run<void (A1, A2, A3)> slot_func_type;
+    using slot_func_type = slot_run<void (A1, A2, A3)>;
     const auto* fun = dynamic_cast<const slot_func_type*>(this);
     if(fun)
     {
@@ -67,7 +67,7 @@ void slot_base::run(A1 _a1, A2 _a2, A3 _a3) const
 template<typename A1, typename A2>
 void slot_base::run(A1 _a1, A2 _a2) const
 {
-    typedef slot_run<void (A1, A2)> slot_func_type;
+    using slot_func_type = slot_run<void (A1, A2)>;
     const auto* fun = dynamic_cast<const slot_func_type*>(this);
     if(fun)
     {
@@ -89,7 +89,7 @@ void slot_base::run(A1 _a1, A2 _a2) const
 template<typename A1>
 void slot_base::run(A1 _a1) const
 {
-    typedef slot_run<void (A1)> slot_func_type;
+    using slot_func_type = slot_run<void (A1)>;
     const auto* fun = dynamic_cast<const slot_func_type*>(this);
     if(fun)
     {
@@ -101,7 +101,7 @@ void slot_base::run(A1 _a1) const
         << m_signature << " != " << slot_base::get_type_name<void(A1)>()
         << ". Trying to run the slot without parameter."
     );
-    return this->run();
+    this->run();
 }
 
 //------------------------------------------------------------------------------
@@ -109,7 +109,7 @@ void slot_base::run(A1 _a1) const
 template<typename R, typename A1, typename A2, typename A3>
 R slot_base::call(A1 _a1, A2 _a2, A3 _a3) const
 {
-    typedef slot<R(A1, A2, A3)> slot_func_type;
+    using slot_func_type = slot<R(A1, A2, A3)>;
     const auto* fun = dynamic_cast<const slot_func_type*>(this);
     if(fun)
     {
@@ -129,7 +129,7 @@ R slot_base::call(A1 _a1, A2 _a2, A3 _a3) const
 template<typename R, typename A1, typename A2>
 R slot_base::call(A1 _a1, A2 _a2) const
 {
-    typedef slot<R(A1, A2)> slot_func_type;
+    using slot_func_type = slot<R(A1, A2)>;
     const auto* fun = dynamic_cast<const slot_func_type*>(this);
     if(fun)
     {
@@ -149,7 +149,7 @@ R slot_base::call(A1 _a1, A2 _a2) const
 template<typename R, typename A1>
 R slot_base::call(A1 _a1) const
 {
-    typedef slot<R(A1)> slot_func_type;
+    using slot_func_type = slot<R(A1)>;
     const auto* fun = dynamic_cast<const slot_func_type*>(this);
     if(fun)
     {
@@ -169,7 +169,7 @@ R slot_base::call(A1 _a1) const
 template<typename R>
 R slot_base::call() const
 {
-    typedef slot<R()> slot_func_type;
+    using slot_func_type = slot<R()>;
     const auto* fun = dynamic_cast<const slot_func_type*>(this);
     if(fun)
     {
@@ -185,7 +185,7 @@ R slot_base::call() const
 template<typename A1, typename A2, typename A3>
 slot_base::void_shared_future_type slot_base::async_run(A1 _a1, A2 _a2, A3 _a3) const
 {
-    typedef slot_run<void (A1, A2, A3)> slot_func_type;
+    using slot_func_type = slot_run<void (A1, A2, A3)>;
     const auto* fun = dynamic_cast<const slot_func_type*>(this);
     if(fun)
     {
@@ -205,7 +205,7 @@ slot_base::void_shared_future_type slot_base::async_run(A1 _a1, A2 _a2, A3 _a3) 
 template<typename A1, typename A2>
 slot_base::void_shared_future_type slot_base::async_run(A1 _a1, A2 _a2) const
 {
-    typedef slot_run<void (A1, A2)> slot_func_type;
+    using slot_func_type = slot_run<void (A1, A2)>;
     const auto* fun = dynamic_cast<const slot_func_type*>(this);
     if(fun)
     {
@@ -225,7 +225,7 @@ slot_base::void_shared_future_type slot_base::async_run(A1 _a1, A2 _a2) const
 template<typename A1>
 slot_base::void_shared_future_type slot_base::async_run(A1 _a1) const
 {
-    typedef slot_run<void (A1)> slot_func_type;
+    using slot_func_type = slot_run<void (A1)>;
     const auto* fun = dynamic_cast<const slot_func_type*>(this);
     if(fun)
     {
@@ -245,7 +245,7 @@ slot_base::void_shared_future_type slot_base::async_run(A1 _a1) const
 template<typename R, typename A1, typename A2, typename A3>
 std::shared_future<R> slot_base::async_call(A1 _a1, A2 _a2, A3 _a3) const
 {
-    typedef slot<R(A1, A2, A3)> slot_func_type;
+    using slot_func_type = slot<R(A1, A2, A3)>;
     const auto* fun = dynamic_cast<const slot_func_type*>(this);
     if(fun)
     {
@@ -265,7 +265,7 @@ std::shared_future<R> slot_base::async_call(A1 _a1, A2 _a2, A3 _a3) const
 template<typename R, typename A1, typename A2>
 std::shared_future<R> slot_base::async_call(A1 _a1, A2 _a2) const
 {
-    typedef slot<R(A1, A2)> slot_func_type;
+    using slot_func_type = slot<R(A1, A2)>;
     const auto* fun = dynamic_cast<const slot_func_type*>(this);
     if(fun)
     {
@@ -285,7 +285,7 @@ std::shared_future<R> slot_base::async_call(A1 _a1, A2 _a2) const
 template<typename R, typename A1>
 std::shared_future<R> slot_base::async_call(A1 _a1) const
 {
-    typedef slot<R(A1)> slot_func_type;
+    using slot_func_type = slot<R(A1)>;
     const auto* fun = dynamic_cast<const slot_func_type*>(this);
     if(fun)
     {
@@ -305,7 +305,7 @@ std::shared_future<R> slot_base::async_call(A1 _a1) const
 template<typename R>
 std::shared_future<R> slot_base::async_call() const
 {
-    typedef slot<R()> slot_func_type;
+    using slot_func_type = slot<R()>;
     const auto* fun = dynamic_cast<const slot_func_type*>(this);
     if(fun)
     {

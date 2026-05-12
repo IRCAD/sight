@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -49,7 +49,7 @@ public:
     {
     public:
 
-        enum interaction_enum
+        enum interaction_enum : std::uint8_t
         {
             mousemove,
             wheelmove,
@@ -93,7 +93,7 @@ public:
     {
     public:
 
-        registry(std::string _functor_key)
+        explicit registry(std::string _functor_key)
         {
             viz::scene3d::registry::get()->add_factory(_functor_key, &viz::scene3d::factory::make<T>);
         }
@@ -109,7 +109,7 @@ public:
     {
     public:
 
-        offscreen_mgr_registry(std::string _functor_key)
+        explicit offscreen_mgr_registry(std::string _functor_key)
         {
             auto fact = [](std::pair<unsigned int, unsigned int> _dims) -> std::shared_ptr<T>
                         {
@@ -201,7 +201,7 @@ public:
 
 protected:
 
-    service::base::wptr m_render_service;
+    service::base::wptr m_render_service; //NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
 };
 
 } // namespace sight::viz::scene3d

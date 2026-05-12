@@ -28,9 +28,6 @@
 #include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
 
-#include <service/macros.hpp>
-
-#include <viz/scene3d/ogre.hpp>
 #include <viz/scene3d/utils.hpp>
 
 #include <OgreSceneNode.h>
@@ -63,10 +60,10 @@ service::connections_t negato::auto_connections() const
 negato::negato() noexcept
 {
     // Auto-connected slots
-    new_slot(slots::UPDATE_IMAGE, [this](){lazy_update(update_flags::IMAGE);});
-    new_slot(slots::UPDATE_IMAGE_BUFFER, [this](){lazy_update(update_flags::IMAGE_BUFFER);});
-    new_slot(slots::UPDATE_TF, [this](){lazy_update(update_flags::TF);});
-    new_slot(slots::UPDATE_MASK, [this](){lazy_update(update_flags::MASK);});
+    new_slot(slots::UPDATE_IMAGE, [this](){lazy_update(update_flags::image);});
+    new_slot(slots::UPDATE_IMAGE_BUFFER, [this](){lazy_update(update_flags::image_buffer);});
+    new_slot(slots::UPDATE_TF, [this](){lazy_update(update_flags::tf);});
+    new_slot(slots::UPDATE_MASK, [this](){lazy_update(update_flags::mask);});
 
     // Interaction slots
     new_slot(slots::SLICE_TYPE, &negato::change_slice_type, this);
@@ -162,7 +159,7 @@ void negato::starting()
 
     if(m_auto_reset_camera)
     {
-        this->render_service()->reset_camera_coordinates(m_layer_id);
+        this->render_service()->reset_camera_coordinates(layer_id());
     }
 
     if(m_interactive)
@@ -214,19 +211,19 @@ void negato::stopping()
 
 void negato::updating()
 {
-    if(update_needed(update_flags::IMAGE))
+    if(update_needed(update_flags::image))
     {
         this->update_image(true);
     }
-    else if(update_needed(update_flags::IMAGE_BUFFER))
+    else if(update_needed(update_flags::image_buffer))
     {
         this->update_image(false);
     }
-    else if(update_needed(update_flags::TF))
+    else if(update_needed(update_flags::tf))
     {
         this->update_tf();
     }
-    else if(update_needed(update_flags::MASK))
+    else if(update_needed(update_flags::mask))
     {
         this->update_mask();
     }
@@ -324,15 +321,27 @@ void negato::update_image(bool _new)
             {
                 plane.first->update(plane.second, spacing, this->priority());
                 plane.first->set_query_flags(m_query_flags);
-                SIGHT_ERROR_IF("Priority is too high, should be less than 65535", *m_priority >= 0xFFFF);
+                SIGHT_ERROR_IF(
+                    "Priority is too high, should be less than 65535",
+                    *m_priority >= 0xFFFF
+                );
             }
 
             // Update Slice
             namespace medical_image = data::helper::medical_image;
 
-            axial_idx    = std::max(0, int(medical_image::get_slice_index(*image, axis_t::axial).value_or(0)));
-            frontal_idx  = std::max(0, int(medical_image::get_slice_index(*image, axis_t::frontal).value_or(0)));
-            sagittal_idx = std::max(0, int(medical_image::get_slice_index(*image, axis_t::sagittal).value_or(0)));
+            axial_idx = std::max(
+                0,
+                static_cast<int>(medical_image::get_slice_index(*image, axis_t::axial).value_or(0))
+            );
+            frontal_idx = std::max(
+                0,
+                static_cast<int>(medical_image::get_slice_index(*image, axis_t::frontal).value_or(0))
+            );
+            sagittal_idx = std::max(
+                0,
+                static_cast<int>(medical_image::get_slice_index(*image, axis_t::sagittal).value_or(0))
+            );
         }
     }
 

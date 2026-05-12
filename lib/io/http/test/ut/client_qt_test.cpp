@@ -25,12 +25,9 @@
 #include <core/thread/worker.hpp>
 
 #include <io/http/client_qt.hpp>
-#include <io/http/helper/series.hpp>
 
 #include <ui/qt/app.hpp>
 #include <ui/qt/worker_qt.hpp>
-
-#include <utest/exception.hpp>
 
 #include <doctest/doctest.h>
 
@@ -81,65 +78,70 @@ static std::array post_answer { /* Packet 196 */
     0x39_hhu, 0xc0_hhu, 0x49_hhu, 0x33_hhu, 0x00_hhu, 0x00_hhu, 0x00_hhu
 };
 
+namespace
+{
+
+struct client_qt_test_fixture
+{
+    // application thread
+    sight::core::thread::worker::sptr m_worker;
+    // HTTP client
+    sight::io::http::client_qt m_client;
+    // Local server that will communicate with the client
+    QTcpServer m_server;
+    // Server thread
+    QThread m_thread;
+
+    client_qt_test_fixture()
+    {
+        // Set up context before running a test.
+        static std::string arg1 = "ClientQtTest";
+#ifdef __linux
+        static std::string arg2 = "-platform";
+        static std::string arg3 = "offscreen";
+        static std::array argv {arg1.data(), arg2.data(), arg3.data(), static_cast<char*>(nullptr)};
+#else
+        static std::array argv {arg1.data(), static_cast<char*>(nullptr)};
+#endif
+        static int argc = static_cast<int>(argv.size() - 1);
+
+        if(qApp == nullptr)
+        {
+            std::function<QSharedPointer<QCoreApplication>(int&, char**)> callback =
+                [](int& _argc, char** _argv)
+                {
+                    return QSharedPointer<QApplication>(new sight::ui::qt::app(_argc, _argv, false));
+                };
+            m_worker = sight::ui::qt::get_qt_worker(argc, argv.data(), callback, "", "");
+        }
+
+        m_server.moveToThread(&m_thread);
+        QThread::connect(&m_thread, &QThread::started, [this]{m_server.listen();});
+        QThread::connect(&m_thread, &QThread::finished, [this]{m_server.close();});
+    }
+
+    ~client_qt_test_fixture()
+    {
+        // Clean up after the test run.
+        m_thread.quit();
+        m_thread.wait();
+
+        m_thread.disconnect();
+        m_server.disconnect();
+
+        if(m_worker)
+        {
+            m_worker->post([]{QCoreApplication::quit();});
+            m_worker->get_future().wait();
+            m_worker.reset();
+        }
+    }
+};
+
+} // namespace
+
 TEST_SUITE("sight::io::http::client_qt")
 {
-    struct client_qt_test_fixture
-    {
-        // application thread
-        sight::core::thread::worker::sptr m_worker;
-        // HTTP client
-        sight::io::http::client_qt m_client;
-        // Local server that will communicate with the client
-        QTcpServer m_server;
-        // Server thread
-        QThread m_thread;
-
-        client_qt_test_fixture()
-        {
-            // Set up context before running a test.
-            static std::string arg1 = "ClientQtTest";
-#if defined(__linux)
-            static std::string arg2 = "-platform";
-            static std::string arg3 = "offscreen";
-            static std::array argv {arg1.data(), arg2.data(), arg3.data(), static_cast<char*>(nullptr)};
-#else
-            static std::array argv {arg1.data(), static_cast<char*>(nullptr)};
-#endif
-            static int argc = int(argv.size() - 1);
-
-            if(qApp == nullptr)
-            {
-                std::function<QSharedPointer<QCoreApplication>(int&, char**)> callback =
-                    [](int& _argc, char** _argv)
-                    {
-                        return QSharedPointer<QApplication>(new sight::ui::qt::app(_argc, _argv, false));
-                    };
-                m_worker = sight::ui::qt::get_qt_worker(argc, argv.data(), callback, "", "");
-            }
-
-            m_server.moveToThread(&m_thread);
-            QThread::connect(&m_thread, &QThread::started, [this]{m_server.listen();});
-            QThread::connect(&m_thread, &QThread::finished, [this]{m_server.close();});
-        }
-
-        ~client_qt_test_fixture()
-        {
-            // Clean up after the test run.
-            m_thread.quit();
-            m_thread.wait();
-
-            m_thread.disconnect();
-            m_server.disconnect();
-
-            if(m_worker)
-            {
-                m_worker->post([]{QCoreApplication::quit();});
-                m_worker->get_future().wait();
-                m_worker.reset();
-            }
-        }
-    };
-
     TEST_CASE_FIXTURE(client_qt_test_fixture, "get")
     {
         QTcpServer::connect(
@@ -182,7 +184,7 @@ TEST_SUITE("sight::io::http::client_qt")
 
         const int port                         = m_server.serverPort();
         sight::io::http::request::sptr request =
-            sight::io::http::request::New("http://localhost:" + std::to_string(port) + "/instances");
+            sight::io::http::request::make("http://localhost:" + std::to_string(port) + "/instances");
 
         const QByteArray& answer = m_client.get(request);
 
@@ -245,7 +247,7 @@ TEST_SUITE("sight::io::http::client_qt")
         body.insert("Query", query);
         body.insert("Limit", 0);
 
-        auto request = sight::io::http::request::New("http://localhost:" + std::to_string(port) + "/tools/find");
+        auto request = sight::io::http::request::make("http://localhost:" + std::to_string(port) + "/tools/find");
 
         const QByteArray& answer = m_client.post(request, QJsonDocument(body).toJson());
         QString expected("[ \"ffe1ae67-887d4fc5-47773ce0-1b194e0e-c8bf7642\" ]\n");

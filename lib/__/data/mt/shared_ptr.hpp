@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -54,32 +54,32 @@ class shared_ptr
 public:
 
     /// Constructor
-    inline explicit shared_ptr(const std::weak_ptr<DATATYPE>& _data) noexcept :
+    explicit shared_ptr(const std::weak_ptr<DATATYPE>& _data) noexcept :
         m_data(_data.lock())
     {
     }
 
     /// Constructor
-    inline explicit shared_ptr(const std::shared_ptr<DATATYPE>& _data) noexcept :
+    explicit shared_ptr(const std::shared_ptr<DATATYPE>& _data) noexcept :
         m_data(_data)
     {
     }
 
     /// Constructor
-    inline explicit shared_ptr(const locked_ptr<DATATYPE>& _data) noexcept :
+    explicit shared_ptr(const locked_ptr<DATATYPE>& _data) noexcept :
         m_data(_data.get_shared())
     {
     }
 
     /// Assignment operator
-    inline shared_ptr& operator=(const std::weak_ptr<DATATYPE>& _data) noexcept
+    shared_ptr& operator=(const std::weak_ptr<DATATYPE>& _data) noexcept
     {
         m_data = _data.lock();
         return *this;
     }
 
     /// Assignment operator
-    inline shared_ptr& operator=(const locked_ptr<DATATYPE>& _data) noexcept
+    shared_ptr& operator=(const locked_ptr<DATATYPE>& _data) noexcept
     {
         m_data = _data.get_shared();
         return *this;
@@ -98,14 +98,14 @@ public:
     [[nodiscard]] locked_ptr<std::add_const_t<DATATYPE> > const_lock() const noexcept;
 
     /// Resets the pointer to null
-    inline void reset() noexcept
+    void reset() noexcept
     {
         m_data.reset();
     }
 
     /// Convenience function that mimics std::dynamic_pointer_cast()
     template<class CASTED_DATATYPE>
-    inline shared_ptr<CASTED_DATATYPE> dynamic_pointer_cast() const noexcept
+    shared_ptr<CASTED_DATATYPE> dynamic_pointer_cast() const noexcept
     {
         return shared_ptr<CASTED_DATATYPE>(std::dynamic_pointer_cast<CASTED_DATATYPE>(m_data));
     }
@@ -117,7 +117,7 @@ protected:
 
     /// Convenience getter shared_ptr
     /// @todo remove me when base will be ready to use lock()
-    [[nodiscard]] inline std::shared_ptr<DATATYPE> get_shared() const noexcept
+    [[nodiscard]] std::shared_ptr<DATATYPE> get_shared() const noexcept
     {
         return m_data;
     }

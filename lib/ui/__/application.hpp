@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -59,7 +59,7 @@ public:
 protected:
 
     /// Asks confirmation before exiting application.
-    bool m_confirm {false};
+    bool m_confirm {false}; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
 };
 
 } // namespace sight::ui

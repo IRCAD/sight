@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,10 +30,8 @@
 #include <core/com/signal.hpp>
 #include <core/com/signals.hpp>
 
-#include <data/factory/new.hpp>
-#include <data/object.hpp>
-
 #include <array>
+#include <cstdint>
 #include <filesystem>
 #include <string>
 #include <utility>
@@ -53,51 +51,51 @@ public:
     using dist_array_t = std::array<double, 5>;
     using intrinsic_t  = std::array<double, 4>;
 
-    enum source_t
+    enum source_t : std::uint8_t
     {
-        file,
-        stream,
-        device,
+        file    = 0,
+        stream  = 1,
+        device  = 2,
         unknown = 0xFF
     };
 
-    enum pixel_format_t
+    enum pixel_format_t : std::uint16_t
     {
-        invalid,
-        argb32,
-        argb32_premultiplied,
-        rgb32,
-        rgb24,
-        rgb565,
-        rgb555,
-        argb8565_premultiplied,
-        bgra32,
-        bgra32_premultiplied,
-        bgr32,
-        bgr24,
-        bgr565,
-        bgr555,
-        bgra5658_premultiplied,
-        ayuv444,
-        ayuv444_premultiplied,
-        yuv444,
-        yuv420_p,
-        yv12,
-        uyvy,
-        yuyv,
-        nv12,
-        nv21,
-        imc1,
-        imc2,
-        imc3,
-        imc4,
-        y8,
-        y16,
-        jpeg,
-        cameraraw,
-        adobedng,
-        rgba32,
-        user = 1000
+        invalid                = 0,
+        argb32                 = 1,
+        argb32_premultiplied   = 2,
+        rgb32                  = 3,
+        rgb24                  = 4,
+        rgb565                 = 5,
+        rgb555                 = 6,
+        argb8565_premultiplied = 7,
+        bgra32                 = 8,
+        bgra32_premultiplied   = 9,
+        bgr32                  = 10,
+        bgr24                  = 11,
+        bgr565                 = 12,
+        bgr555                 = 13,
+        bgra5658_premultiplied = 14,
+        ayuv444                = 15,
+        ayuv444_premultiplied  = 16,
+        yuv444                 = 17,
+        yuv420_p               = 18,
+        yv12                   = 19,
+        uyvy                   = 20,
+        yuyv                   = 21,
+        nv12                   = 22,
+        nv21                   = 23,
+        imc1                   = 24,
+        imc2                   = 25,
+        imc3                   = 26,
+        imc4                   = 27,
+        y8                     = 28,
+        y16                    = 29,
+        jpeg                   = 30,
+        cameraraw              = 31,
+        adobedng               = 32,
+        rgba32                 = 33,
+        user                   = 1000
     };
 
     /// Default constructor.
@@ -374,7 +372,7 @@ public:
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;
 
-protected:
+private:
 
     //! Width video resolution
     std::size_t m_width {0};
@@ -457,11 +455,11 @@ inline int camera::get_index() const
         try
         {
             // Limited to [0-9] range
-            index = std::stoi(&m_description.at(0));
+            index = std::stoi(&get_description().at(0));
         }
         catch(std::exception& e)
         {
-            SIGHT_ERROR("Cannot get index of: " + m_description + " " + e.what());
+            SIGHT_ERROR("Cannot get index of: " + get_description() + " " + e.what());
         }
     }
 

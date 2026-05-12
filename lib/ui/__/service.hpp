@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -143,6 +143,8 @@ public:
 
     SIGHT_DECLARE_SERVICE(service, service::base);
 
+    SIGHT_UI_API ~service() override = default;
+
     SIGHT_UI_API SPTR(ui::container::widget) get_container();
 
     SIGHT_UI_API void set_parent(std::string _wid);
@@ -201,7 +203,6 @@ public:
 protected:
 
     SIGHT_UI_API service();
-    SIGHT_UI_API ~service() override = default;
 
     /**
      * @brief Initialize managers.

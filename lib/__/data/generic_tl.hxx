@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,15 +31,14 @@ namespace sight::data
 
 template<class BUFFER_TYPE>
 generic_tl<BUFFER_TYPE>::generic_tl() :
-    buffer_tl(),
-    m_max_element_num(~0U)
+    buffer_tl()
 {
 }
 
 //------------------------------------------------------------------------------
 
 template<class BUFFER_TYPE>
-void generic_tl<BUFFER_TYPE>::shallow_copy(const object::csptr&)
+void generic_tl<BUFFER_TYPE>::shallow_copy(const object::csptr& /*_source*/)
 {
     SIGHT_FATAL("shallow_copy not implemented for : " + this->get_classname());
 }
@@ -60,7 +59,7 @@ void generic_tl<BUFFER_TYPE>::deep_copy(const object::csptr& _source, const std:
     );
 
     this->clear_timeline();
-    this->init_pool_size(other->get_max_element_num());
+    this->init_pool_size(other->max_element_num());
 
     for(const auto& elt : other->m_timeline)
     {
@@ -122,7 +121,7 @@ generic_tl<BUFFER_TYPE>::create_buffer(core::clock::type _timestamp)
     SPTR(buffer_t) obj = std::make_shared<buffer_t>(
         m_max_element_num,
         _timestamp,
-        (data::timeline::buffer::buffer_data_t) m_pool->malloc(),
+        static_cast<data::timeline::buffer::buffer_data_t>(m_pool->malloc()),
         m_pool->get_requested_size(),
         [object_ptr = m_pool](auto&& _p_h1, auto&& ...){object_ptr->free(std::forward<decltype(_p_h1)>(_p_h1));});
     return obj;
@@ -140,9 +139,17 @@ bool generic_tl<BUFFER_TYPE>::is_object_valid(const CSPTR(data::timeline::object
 //------------------------------------------------------------------------------
 
 template<class BUFFER_TYPE>
-unsigned int generic_tl<BUFFER_TYPE>::get_max_element_num() const
+unsigned int generic_tl<BUFFER_TYPE>::max_element_num() const
 {
     return m_max_element_num;
+}
+
+//------------------------------------------------------------------------------
+
+template<class BUFFER_TYPE>
+inline void generic_tl<BUFFER_TYPE>::set_max_element_num(unsigned int _max_element_num)
+{
+    m_max_element_num = _max_element_num;
 }
 
 //------------------------------------------------------------------------------

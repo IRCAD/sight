@@ -29,7 +29,7 @@ namespace sight::module::filter::mesh
 //------------------------------------------------------------------------------
 
 center::center() :
-    filter(m_signals)
+    filter(has_signals::signals())
 {
 }
 

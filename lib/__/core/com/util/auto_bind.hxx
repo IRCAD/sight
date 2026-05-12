@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,8 +35,7 @@ template<typename F>
 template<typename W, typename ... A>
 std::function<typename auto_bind<F, 0>::function_type> auto_bind<F, 0>::wrap(W _f, A ... _a)
 {
-    // NOLINTNEXTLINE(modernize-avoid-bind)
-    return std::bind(_f, _a ...);
+    return [... a = _a, _f](auto&& ...){return std::invoke(_f, a ...);};
 }
 
 //-----------------------------------------------------------------------------
@@ -45,8 +44,7 @@ template<typename F>
 template<typename W, typename ... A>
 std::function<typename auto_bind<F, 1>::function_type> auto_bind<F, 1>::wrap(W _f, A ... _a)
 {
-    // NOLINTNEXTLINE(modernize-avoid-bind)
-    return std::bind(_f, _a ..., std::placeholders::_1);
+    return [... a = _a, _f](auto _p1, auto&& ...){return std::invoke(_f, a ..., _p1);};
 }
 
 //-----------------------------------------------------------------------------
@@ -55,8 +53,7 @@ template<typename F>
 template<typename W, typename ... A>
 std::function<typename auto_bind<F, 2>::function_type> auto_bind<F, 2>::wrap(W _f, A ... _a)
 {
-    // NOLINTNEXTLINE(modernize-avoid-bind)
-    return std::bind(_f, _a ..., std::placeholders::_1, std::placeholders::_2);
+    return [... a = _a, _f](auto _p1, auto _p2, auto&& ...){return std::invoke(_f, a ..., _p1, _p2);};
 }
 
 //-----------------------------------------------------------------------------
@@ -65,8 +62,7 @@ template<typename F>
 template<typename W, typename ... A>
 std::function<typename auto_bind<F, 3>::function_type> auto_bind<F, 3>::wrap(W _f, A ... _a)
 {
-    // NOLINTNEXTLINE(modernize-avoid-bind)
-    return std::bind(_f, _a ..., std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
+    return [... a = _a, _f](auto _p1, auto _p2, auto _p3, auto&& ...){return std::invoke(_f, a ..., _p1, _p2, _p3);};
 }
 
 //-----------------------------------------------------------------------------
@@ -75,15 +71,8 @@ template<typename F>
 template<typename W, typename ... A>
 std::function<typename auto_bind<F, 4>::function_type> auto_bind<F, 4>::wrap(W _f, A ... _a)
 {
-    // NOLINTNEXTLINE(modernize-avoid-bind)
-    return std::bind(
-        _f,
-        _a ...,
-        std::placeholders::_1,
-        std::placeholders::_2,
-        std::placeholders::_3,
-        std::placeholders::_4
-    );
+    return [... a = _a, _f](auto _p1, auto _p2, auto _p3, auto _p4, auto&& ...)
+           {return std::invoke(_f, a ..., _p1, _p2, _p3, _p4);};
 }
 
 //-----------------------------------------------------------------------------
@@ -92,16 +81,8 @@ template<typename F>
 template<typename W, typename ... A>
 std::function<typename auto_bind<F, 5>::function_type> auto_bind<F, 5>::wrap(W _f, A ... _a)
 {
-    // NOLINTNEXTLINE(modernize-avoid-bind)
-    return std::bind(
-        _f,
-        _a ...,
-        std::placeholders::_1,
-        std::placeholders::_2,
-        std::placeholders::_3,
-        std::placeholders::_4,
-        std::placeholders::_5
-    );
+    return [... a = _a, _f](auto _p1, auto _p2, auto _p3, auto _p4, auto _p5, auto&& ...)
+           {return std::invoke(_f, a ..., _p1, _p2, _p3, _p4, _p5);};
 }
 
 //-----------------------------------------------------------------------------
@@ -110,17 +91,8 @@ template<typename F>
 template<typename W, typename ... A>
 std::function<typename auto_bind<F, 6>::function_type> auto_bind<F, 6>::wrap(W _f, A ... _a)
 {
-    // NOLINTNEXTLINE(modernize-avoid-bind)
-    return std::bind(
-        _f,
-        _a ...,
-        std::placeholders::_1,
-        std::placeholders::_2,
-        std::placeholders::_3,
-        std::placeholders::_4,
-        std::placeholders::_5,
-        std::placeholders::_6
-    );
+    return [... a = _a, _f](auto _p1, auto _p2, auto _p3, auto _p4, auto _p5, auto _p6, auto&& ...)
+           {return std::invoke(_f, a ..., _p1, _p2, _p3, _p4, _p5, _p6);};
 }
 
 //-----------------------------------------------------------------------------
@@ -129,18 +101,8 @@ template<typename F>
 template<typename W, typename ... A>
 std::function<typename auto_bind<F, 7>::function_type> auto_bind<F, 7>::wrap(W _f, A ... _a)
 {
-    // NOLINTNEXTLINE(modernize-avoid-bind)
-    return std::bind(
-        _f,
-        _a ...,
-        std::placeholders::_1,
-        std::placeholders::_2,
-        std::placeholders::_3,
-        std::placeholders::_4,
-        std::placeholders::_5,
-        std::placeholders::_6,
-        std::placeholders::_7
-    );
+    return [... a = _a, _f](auto _p1, auto _p2, auto _p3, auto _p4, auto _p5, auto _p6, auto _p7, auto&& ...)
+           {return std::invoke(_f, a ..., _p1, _p2, _p3, _p4, _p5, _p6, _p7);};
 }
 
 //-----------------------------------------------------------------------------
@@ -149,19 +111,8 @@ template<typename F>
 template<typename W, typename ... A>
 std::function<typename auto_bind<F, 8>::function_type> auto_bind<F, 8>::wrap(W _f, A ... _a)
 {
-    // NOLINTNEXTLINE(modernize-avoid-bind)
-    return std::bind(
-        _f,
-        _a ...,
-        std::placeholders::_1,
-        std::placeholders::_2,
-        std::placeholders::_3,
-        std::placeholders::_4,
-        std::placeholders::_5,
-        std::placeholders::_6,
-        std::placeholders::_7,
-        std::placeholders::_8
-    );
+    return [... a = _a, _f](auto _p1, auto _p2, auto _p3, auto _p4, auto _p5, auto _p6, auto _p7, auto _p8, auto&& ...)
+           {return std::invoke(_f, a ..., _p1, _p2, _p3, _p4, _p5, _p6, _p7, _p8);};
 }
 
 //-----------------------------------------------------------------------------
@@ -170,20 +121,9 @@ template<typename F>
 template<typename W, typename ... A>
 std::function<typename auto_bind<F, 9>::function_type> auto_bind<F, 9>::wrap(W _f, A ... _a)
 {
-    // NOLINTNEXTLINE(modernize-avoid-bind)
-    return std::bind(
-        _f,
-        _a ...,
-        std::placeholders::_1,
-        std::placeholders::_2,
-        std::placeholders::_3,
-        std::placeholders::_4,
-        std::placeholders::_5,
-        std::placeholders::_6,
-        std::placeholders::_7,
-        std::placeholders::_8,
-        std::placeholders::_9
-    );
+    return [... a = _a, _f](auto _p1, auto _p2, auto _p3, auto _p4, auto _p5, auto _p6, auto _p7, auto _p8, auto _p9,
+                            auto&& ...)
+           {return std::invoke(_f, a ..., _p1, _p2, _p3, _p4, _p5, _p6, _p7, _p8, _p9);};
 }
 
 //-----------------------------------------------------------------------------
@@ -191,7 +131,7 @@ std::function<typename auto_bind<F, 9>::function_type> auto_bind<F, 9>::wrap(W _
 template<typename F, typename ... A>
 std::function<typename convert_function_type<F>::type> autobind(F _f, A ... _a)
 {
-    typedef typename convert_function_type<F>::type function_type;
+    using function_type = convert_function_type<F>::type;
     const int arity = boost::function_types::function_arity<function_type>::value;
     return auto_bind<F, arity>::wrap(_f, _a ...);
 }

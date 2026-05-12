@@ -55,6 +55,9 @@
 namespace sight::module::filter::mesh
 {
 
+namespace
+{
+
 //-----------------------------------------------------------------------------
 
 class error_observer final : public vtkCommand
@@ -98,12 +101,14 @@ private:
     std::optional<std::string> m_error_message;
 };
 
+} // namespace
+
 //-----------------------------------------------------------------------------
 
 vtk_mesher::vtk_mesher() noexcept :
-    filter(m_signals),
-    notifier(m_signals),
-    has_monitors(m_signals)
+    filter(has_signals::signals()),
+    notifier(has_signals::signals()),
+    has_monitors(has_signals::signals())
 {
 }
 
@@ -114,11 +119,11 @@ void vtk_mesher::configuring(const config_t& _config)
     auto mode = _config.get<std::string>("config.<xmlattr>.mode", "add");
     if(mode == "add")
     {
-        m_mode = mode_t::ADD;
+        m_mode = mode_t::add;
     }
     else if(mode == "replace")
     {
-        m_mode = mode_t::REPLACE;
+        m_mode = mode_t::replace;
     }
     else
     {
@@ -147,7 +152,7 @@ void vtk_mesher::updating()
     this->async_emit(has_monitors::signals::MONITOR_CREATED, progress->get_sptr());
 
     {
-        FW_PROFILE("mesh");
+        SIGHT_PROFILE("mesh");
 
         auto image_series = m_image.lock();
         auto model_series = m_model.lock();
@@ -294,7 +299,7 @@ void vtk_mesher::updating()
         }
 
         sight::data::model_series::reconstruction_vector_t out_recs = model_series->get_reconstruction_db();
-        if(m_mode == mode_t::REPLACE)
+        if(m_mode == mode_t::replace)
         {
             out_recs.clear();
         }

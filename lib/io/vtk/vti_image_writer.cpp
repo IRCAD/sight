@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,6 @@
 #include "io/vtk/helper/vtk_lambda_command.hpp"
 #include "io/vtk/vtk.hpp"
 
-#include <core/base.hpp>
 #include <core/progress/monitor.hpp>
 #include <core/progress/observer.hpp>
 
@@ -43,8 +42,7 @@ void vti_image_writer::write(sight::core::progress::observer::sptr _progress)
 {
     using helper::vtk_lambda_command;
 
-    assert(!m_object.expired());
-    assert(m_object.lock());
+    auto object_lock = get_object();
 
     data::image::csptr p_image = get_concrete_object();
 

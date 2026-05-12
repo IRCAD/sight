@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,6 +33,8 @@
 #include <itkLightProcessObject.h>
 #include <itkSmartPointer.h>
 
+#include <utility>
+
 namespace sight::io::itk
 {
 
@@ -41,7 +43,7 @@ class local_command : public ::itk::Command
 public:
 
     using self_t  = local_command;
-    using Pointer = ::itk::SmartPointer<self_t>;
+    using Pointer = ::itk::SmartPointer<self_t>; // NOLINT(readability-identifier-naming)
     itkNewMacro(self_t);
 
     //------------------------------------------------------------------------------
@@ -74,10 +76,10 @@ progress_itk_to_fw<OBSERVEE>::progress_itk_to_fw(
     OBSERVEE _observee,
     SPTR(core::progress::observer)_observer
 ) :
-    m_observee(_observee),
+    m_observee(std::move(_observee)),
     m_obs_tag(std::numeric_limits<std::uint64_t>::max())
 {
-    typename local_command::Pointer itk_call_back;
+    local_command::Pointer itk_call_back;
     itk_call_back             = local_command::New();
     itk_call_back->m_observer = _observer;
     m_obs_tag                 = m_observee->AddObserver(::itk::ProgressEvent(), itk_call_back);

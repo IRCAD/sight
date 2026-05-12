@@ -50,9 +50,11 @@ struct fixture
     }
 };
 
+} // namespace
+
 //------------------------------------------------------------------------------
 
-auto create_order_srv(bool _start = true)
+static auto create_order_srv(bool _start = true)
 {
     auto srv = sight::service::add<sight::app::ut::test_order_srv>("sight::app::ut::test_order_srv");
     CHECK_NOTHROW(srv->configure());
@@ -63,8 +65,6 @@ auto create_order_srv(bool _start = true)
 
     return srv;
 }
-
-} // namespace
 
 TEST_SUITE("sight::app::update_sequence")
 {
@@ -99,7 +99,7 @@ TEST_SUITE("sight::app::update_sequence")
         CHECK_NOTHROW(update_srv->configure());
         CHECK_NOTHROW(update_srv->start().get());
 
-        sight::app::ut::test_order_srv::s_ORDER = 0;
+        sight::app::ut::test_order_srv::s_order = 0;
         update_srv->update().get();
         CHECK_EQ((unsigned int) (0), srv0->update_order());
         CHECK_EQ((unsigned int) (1), srv1->update_order());
@@ -198,7 +198,7 @@ TEST_SUITE("sight::app::update_sequence")
             child_updater_1_1 = create_updater(srv_config);
         }
 
-        sight::app::ut::test_order_srv::s_ORDER = 0;
+        sight::app::ut::test_order_srv::s_order = 0;
         main_updater->update().get();
 
         for(const auto i : std::views::iota(0U, 7U))
@@ -323,7 +323,7 @@ TEST_SUITE("sight::app::update_sequence")
         auto update_srv = sight::service::add("sight::app::update_sequence");
         CHECK(update_srv->is_a("sight::app::update_sequence"));
         CHECK(update_srv->is_a("sight::app::updater"));
-        sight::app::ut::test_order_srv::s_ORDER = 1001;
+        sight::app::ut::test_order_srv::s_order = 1001;
         update_srv->set_config(config);
         CHECK_EQ((unsigned int) (0), srv_to_update_but_stopped->update_order());
         CHECK_NOTHROW(update_srv->configure());
@@ -403,7 +403,7 @@ TEST_SUITE("sight::app::update_sequence")
         CHECK_NOTHROW(update_srv->start().get());
 
         CHECK_EQ(false, srv->started());
-        sight::app::ut::test_order_srv::s_ORDER = 100;
+        sight::app::ut::test_order_srv::s_order = 100;
         update_srv->update().get();
         CHECK_EQ((unsigned int) (100), srv->update_order());
 
@@ -441,7 +441,7 @@ TEST_SUITE("sight::app::update_sequence")
         CHECK_NOTHROW(update_srv->start().get());
 
         CHECK_EQ(false, srv->started());
-        sight::app::ut::test_order_srv::s_ORDER = 99;
+        sight::app::ut::test_order_srv::s_order = 99;
         update_srv->update().get();
         CHECK_EQ((unsigned int) (0), srv->update_order());
 
@@ -543,7 +543,7 @@ TEST_SUITE("sight::app::update_sequence")
         CHECK_NOTHROW(update_srv->configure());
         CHECK_NOTHROW(update_srv->start().get());
 
-        sight::app::ut::test_order_srv::s_ORDER = 0;
+        sight::app::ut::test_order_srv::s_order = 0;
         update_srv->update().get();
         CHECK_EQ((unsigned int) (0), srv0->update_order());
         CHECK_EQ((unsigned int) (0), srv1->update_order());

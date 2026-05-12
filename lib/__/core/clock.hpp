@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,15 +24,12 @@
 
 #include <sight/core/config.hpp>
 
-namespace sight::core
-{
-
 /**
  * @brief This namespace provides several function that returns a system EPOCH time.
  *
  * @deprecated This class is deprecated, use std::chrono instead.
  */
-namespace clock
+namespace sight::core::clock
 {
 
 /**
@@ -55,6 +52,4 @@ SIGHT_CORE_API type get_time_in_milli_sec();
  */
 SIGHT_CORE_API type get_time_in_sec();
 
-} //namespace clock
-
-} //namespace sight::core
+} // namespace sight::core::clock

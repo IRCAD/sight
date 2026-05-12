@@ -1,6 +1,16 @@
 /************************************************************************
+ * Copyright (C) 2026 IRCAD France - All rights reserved.
  *
- * Copyright (C) 2016-2024 IRCAD France
+ * This file is part of Disrumpere.
+ *
+ * Disrumpere can not be copied, modified and/or distributed without
+ * the express permission of IRCAD France.
+ *
+ ***********************************************************************/
+
+/************************************************************************
+ *
+ * Copyright (C) 2016-2026 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -69,7 +79,7 @@ public:
         };
 
         /// Constructor. Need for shadows_data_t.
-        inline shadows_parameters_t() // NOLINT(hicpp-use-equals-default,modernize-use-equals-default)
+        shadows_parameters_t() // NOLINT(hicpp-use-equals-default,modernize-use-equals-default)
         {
         }
 
@@ -93,7 +103,7 @@ public:
     struct shadows_data_t
     {
         /// Constructor.
-        shadows_data_t(const shadows_parameters_t& _parameters = {}) :
+        explicit shadows_data_t(const shadows_parameters_t& _parameters = {}) :
             parameters(_parameters),
             factors(
             {
@@ -249,7 +259,7 @@ protected:
     {
         /// Proxy geometry render queue. We put proxy geometry in render queue 101. Rq 101 is not used by default
         /// and must be explicitly called.
-        static inline constexpr std::uint8_t PROXY_GEOMETRY_RQ_GROUP = 101;
+        static constexpr std::uint8_t PROXY_GEOMETRY_RQ_GROUP = 101;
 
         /// Enabled autostereo define. Equivalent to "AUTOSTEREO=1".
         static inline const std::string AUTOSTEREO = "AUTOSTEREO=1";
@@ -274,7 +284,7 @@ protected:
     struct options_t
     {
         ///Constructor
-        options_t(const std::string& _vertex = "", const std::string& _fragment = "") :
+        explicit options_t(const std::string& _vertex = "", const std::string& _fragment = "") :
             vertex(_vertex),
             fragment(_fragment),
             hash(std::hash<std::string> {}(_vertex + _fragment))
@@ -294,7 +304,7 @@ protected:
     /// Material lighting parameters.
     struct material_light_t
     {
-        material_light_t(
+        explicit material_light_t(
             const Ogre::ColourValue& _diffuse  = Ogre::ColourValue(1.2F, 1.2F, 1.2F, 1.F),
             const Ogre::ColourValue& _specular = Ogre::ColourValue(2.5F, 2.5F, 2.5F, 1.F),
             float _shininess                   = 20.F
@@ -334,10 +344,31 @@ protected:
         Ogre::MaterialPtr _mtl,
         const std::optional<material_light_t>& _light = {});
 
-    //-----------------------------------------------------------------------------
+    /// Returns the shared parameters used for ray tracing.
+    [[nodiscard]] Ogre::GpuSharedParametersPtr get_shared_parameters() const;
 
-    /// Raycasting fragment shader
-    std::string m_shader;
+//-----------------------------------------------------------------------------
+
+private:
+
+    /// Creates the proxy geometry defining the entry points for rays.
+    void init_entry_points();
+
+    /// Compute the focal length in camera space.
+    void compute_real_focal_length();
+
+    /// Updates the ray traced and volume illumination materials according to pre-integration and volume illumination
+    /// flags.
+    void update_volume_illumination_material();
+
+protected:
+
+    /// NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
+
+    /// Name of the material
+    std::string m_current_mtl_name;
+
+    viz::scene3d::layer::wptr m_layer;
 
     /// Current options enabled for the raycasting pass.
     options_t m_options;
@@ -345,8 +376,12 @@ protected:
     /// Shadows data
     shadows_data_t m_shadows;
 
-    /// Name of the material
-    std::string m_current_mtl_name;
+    /// NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
+
+private:
+
+    /// Raycasting fragment shader
+    std::string m_shader;
 
     /// image dimensions.
     data::image::size_t m_image_size = data::image::size_t({1, 1, 1});
@@ -360,13 +395,8 @@ protected:
     //------------------------------------------------------------
 
     /// Shared parameters used for Ray tracing. This should help avoiding using the listener.
-    /// We resort to those parameters because setting them using:
-    /// Ogre::MaterialManager::getSingletonPtr()->getByName("RTV_Mat")->getTechnique(0)->getPass(0)->getFragmentProgramParameters()->setNamedConstant(paramName,
-    /// m_idvrAlphaCorrection);
     /// Only seems to update them when instancing the corresponding material
     Ogre::GpuSharedParametersPtr m_rtv_shared_parameters;
-
-    viz::scene3d::layer::wptr m_layer;
 
     /// Compositor used to compute volume ray entry/exit points.
     ray_entry_compositor::uptr m_ray_entry_compositor {nullptr};
@@ -384,22 +414,10 @@ protected:
     Ogre::AxisAlignedBox m_freehand_crop_box;
 
     /// Camera listener class used to compute the entry points textures before rendering.
-    class CameraListener;
+    class camera_listener;
 
     /// Event listener dedicated to camera events.
-    std::unique_ptr<CameraListener> m_camera_listener {nullptr};
-
-private:
-
-    /// Creates the proxy geometry defining the entry points for rays.
-    void init_entry_points();
-
-    /// Compute the focal length in camera space.
-    void compute_real_focal_length();
-
-    /// Updates the ray traced and volume illumination materials according to pre-integration and volume illumination
-    /// flags.
-    void update_volume_illumination_material();
+    std::unique_ptr<camera_listener> m_camera_listener {nullptr};
 };
 
 //-----------------------------------------------------------------------------
@@ -422,6 +440,13 @@ inline void ray_tracing_volume_renderer::set_material_light_params(
     _mtl->setDiffuse(components.diffuse);
     _mtl->setSpecular(components.specular);
     _mtl->setShininess(components.shininess);
+}
+
+//------------------------------------------------------------------------------
+
+inline Ogre::GpuSharedParametersPtr ray_tracing_volume_renderer::get_shared_parameters() const
+{
+    return m_rtv_shared_parameters;
 }
 
 } // namespace sight::viz::scene3d::vr

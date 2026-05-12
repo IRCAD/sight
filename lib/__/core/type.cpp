@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2024 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,7 +22,6 @@
 #include "core/type.hpp"
 
 #include <array>
-#include <sstream>
 
 namespace sight::core
 {
@@ -30,7 +29,7 @@ namespace sight::core
 //------------------------------------------------------------------------------
 
 const std::array<std::tuple<size_t, bool, std::string, type::type_t>,
-                 size_t(type::type_t::none) + 1> type::TYPE_PROPERTIES =
+                 static_cast<size_t>(type::type_t::none) + 1> type::TYPE_PROPERTIES =
 {{
     {sizeof(std::int8_t), true, "int8", type_t::int_8},
     {sizeof(std::int16_t), true, "int16", type_t::int_16},
@@ -40,8 +39,8 @@ const std::array<std::tuple<size_t, bool, std::string, type::type_t>,
     {sizeof(std::uint16_t), false, "uint16", type_t::uint_16},
     {sizeof(std::uint32_t), false, "uint32", type_t::uint_32},
     {sizeof(std::uint64_t), false, "uint64", type_t::uint_64},
-    {sizeof(float), true, "float", type_t::FLOAT},
-    {sizeof(double), true, "double", type_t::DOUBLE},
+    {sizeof(float), true, "float", type_t::float_32},
+    {sizeof(double), true, "double", type_t::float_64},
     {0, false, "unspecified", type_t::none}
 }
 };
@@ -64,21 +63,21 @@ type::type(const std::string& _str)
 
 size_t type::size() const
 {
-    return std::get<0>(TYPE_PROPERTIES[size_t(m_type)]);
+    return std::get<0>(TYPE_PROPERTIES[static_cast<size_t>(m_type)]);
 }
 
 //------------------------------------------------------------------------------
 
 bool type::is_signed() const
 {
-    return std::get<1>(TYPE_PROPERTIES[size_t(m_type)]);
+    return std::get<1>(TYPE_PROPERTIES[static_cast<size_t>(m_type)]);
 }
 
 //------------------------------------------------------------------------------
 
 const std::string& type::name() const
 {
-    return std::get<2>(TYPE_PROPERTIES[size_t(m_type)]);
+    return std::get<2>(TYPE_PROPERTIES[static_cast<size_t>(m_type)]);
 }
 
 //------------------------------------------------------------------------------
@@ -135,13 +134,13 @@ std::string type::to_string(const void* _value) const
             return std::to_string(v);
         }
 
-        case type_t::FLOAT:
+        case type_t::float_32:
         {
             const auto& v = *(static_cast<const float*>(_value));
             return std::to_string(v);
         }
 
-        case type_t::DOUBLE:
+        case type_t::float_64:
         {
             const auto& v = *(static_cast<const double*>(_value));
             return std::to_string(v);

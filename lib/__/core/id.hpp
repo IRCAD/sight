@@ -50,7 +50,7 @@ public:
 
     using type = std::string;
 
-    enum class policy
+    enum class policy : std::uint8_t
     {
         empty = 1, ///< return an empty id if no one set
         generate,  ///< generate a new id if necessary
@@ -86,7 +86,7 @@ public:
 
 protected:
 
-    inline static constexpr auto s_separator = '-';
+    static constexpr auto S_SEPARATOR = '-';
 
     /**
      * @brief   Constructor : does nothing.
@@ -196,7 +196,7 @@ SPTR(object) id::get_object(const T& _first, const Args & ... _args)
 template<typename T, typename ... Args>
 std::string id::join(const T& _first, const Args& ... _args)
 {
-    return string::join(s_separator, _first, _args ...);
+    return string::join(S_SEPARATOR, _first, _args ...);
 }
 
 //------------------------------------------------------------------------------

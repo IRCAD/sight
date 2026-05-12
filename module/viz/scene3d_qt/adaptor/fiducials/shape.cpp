@@ -22,22 +22,16 @@
 #include "shape.hpp"
 
 #include <core/com/slots.hxx>
-#include <core/compare.hpp>
 
-#define FW_PROFILING_DISABLED
+#define SIGHT_PROFILING_DISABLED
 #include <core/profiling.hpp>
 
 #include <data/material.hpp>
 #include <data/tools/color.hpp>
 
-#include <geometry/data/image.hpp>
-
 #include <viz/scene3d/helper/fiducials.hpp>
-#include <viz/scene3d/helper/manual_object.hpp>
 #include <viz/scene3d/helper/scene.hpp>
 #include <viz/scene3d/ogre.hpp>
-
-#include <algorithm>
 
 namespace sight::module::viz::scene3d_qt::adaptor::fiducials
 {
@@ -56,11 +50,11 @@ shape::shape() noexcept
 sight::service::connections_t shape::auto_connections() const
 {
     return {
-        {s_IMAGE_INOUT, sight::data::object::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE},
-        {s_IMAGE_INOUT, sight::data::image_series::SLICE_INDEX_MODIFIED_SIG, sight::service::slots::UPDATE},
-        {s_IMAGE_INOUT, sight::data::image_series::SLICE_TYPE_MODIFIED_SIG, sight::service::slots::UPDATE},
-        {s_IMAGE_INOUT, sight::data::image_series::SLICE_INDEX_MODIFIED_SIG, adaptor::slots::LAZY_UPDATE},
-        {s_IMAGE_INOUT, sight::data::image_series::SLICE_TYPE_MODIFIED_SIG, adaptor::slots::LAZY_UPDATE}
+        {m_image, sight::data::object::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE},
+        {m_image, sight::data::image_series::SLICE_INDEX_MODIFIED_SIG, sight::service::slots::UPDATE},
+        {m_image, sight::data::image_series::SLICE_TYPE_MODIFIED_SIG, sight::service::slots::UPDATE},
+        {m_image, sight::data::image_series::SLICE_INDEX_MODIFIED_SIG, adaptor::slots::LAZY_UPDATE},
+        {m_image, sight::data::image_series::SLICE_TYPE_MODIFIED_SIG, adaptor::slots::LAZY_UPDATE}
     };
 }
 
@@ -204,7 +198,7 @@ void shape::starting()
 
 void shape::updating()
 {
-    FW_PROFILE_AVG("shape::updating", 1);
+    SIGHT_PROFILE_AVG("shape::updating", 1);
 
     this->render_service()->make_current();
 

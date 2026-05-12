@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -46,8 +46,7 @@ public:
      * @name Constructor/Destructor
      * @{ */
 
-    logic_stamp()
-    = default;
+    logic_stamp() = default;
 
     /**  @} */
 
@@ -87,7 +86,7 @@ public:
     /**
      * @brief Cast operator for LogicStamp.
      */
-    operator logic_stamp_type() const
+    operator logic_stamp_type() const //NOLINT(google-explicit-constructor,hicpp-explicit-conversions)
     {
         return this->m_modified_logical_time;
     }

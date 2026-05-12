@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -114,7 +114,7 @@ inline static void write_string(
 /// Mainly to factorize error management
 /// @param[in] _object the object to cast to type T
 template<typename T>
-inline static typename T::sptr safe_cast(sight::data::object::sptr _object)
+inline static T::sptr safe_cast(sight::data::object::sptr _object)
 {
     const auto& casted = std::dynamic_pointer_cast<T>(_object);
 
@@ -134,7 +134,7 @@ inline static typename T::sptr safe_cast(sight::data::object::sptr _object)
 /// Mainly to factorize error management
 /// @param[in] _object the object to cast to type T
 template<typename T>
-inline static typename T::sptr cast_or_create(sight::data::object::sptr _object)
+inline static T::sptr cast_or_create(sight::data::object::sptr _object)
 {
     if(_object)
     {
@@ -148,7 +148,7 @@ inline static typename T::sptr cast_or_create(sight::data::object::sptr _object)
 /// Mainly to factorize error management
 /// @param[in] _object the object to cast to type T
 template<typename T>
-inline static typename T::csptr safe_cast(sight::data::object::csptr _object)
+inline static T::csptr safe_cast(sight::data::object::csptr _object)
 {
     const auto& casted = std::dynamic_pointer_cast<const T>(_object);
 
@@ -194,7 +194,7 @@ inline static void serialize(
 /// @param[in,out] _object the object to deserialize using the archive, the tree and the children map
 /// @param[in] _password (optional) the password used for encryption
 template<typename T>
-inline static typename T::sptr deserialize(
+inline static T::sptr deserialize(
     zip::archive_reader& /*unused*/,
     const boost::property_tree::ptree& _tree,
     const std::map<std::string, data::object::sptr>& /*unused*/,

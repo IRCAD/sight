@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,8 +27,6 @@
 
 #include <core/memory/buffered.hpp>
 #include <core/type.hpp>
-
-#include <data/iterator.hpp>
 
 #include <boost/range/iterator_range_core.hpp>
 
@@ -182,7 +180,7 @@ public:
     using buffer_t = std::uint8_t;
 
     /// image format
-    enum pixel_format_t
+    enum pixel_format_t : std::uint8_t
     {
         undefined = 0, ///< Undefined pixel format
         rgb,           ///< image with 3 component RGB.
@@ -712,7 +710,7 @@ inline const image::size_t& image::size() const
 template<typename T>
 inline image::iterator<T> image::begin()
 {
-    return iterator<T>(static_cast<typename iterator<T>::pointer_t>(buffer()));
+    return iterator<T>(static_cast<iterator<T>::pointer_t>(buffer()));
 }
 
 //------------------------------------------------------------------------------
@@ -721,7 +719,7 @@ template<typename T>
 inline image::iterator<T> image::end()
 {
     auto itr = begin<T>();
-    itr += static_cast<typename iterator<T>::difference_type>(this->size_in_bytes() / sizeof(T));
+    itr += static_cast<iterator<T>::difference_type>(this->size_in_bytes() / sizeof(T));
     return itr;
 }
 
@@ -730,7 +728,7 @@ inline image::iterator<T> image::end()
 template<typename T>
 inline image::const_iterator<T> image::begin() const
 {
-    return const_iterator<T>(static_cast<typename const_iterator<T>::pointer_t>(buffer()));
+    return const_iterator<T>(static_cast<const_iterator<T>::pointer_t>(buffer()));
 }
 
 //------------------------------------------------------------------------------
@@ -739,7 +737,7 @@ template<typename T>
 inline image::const_iterator<T> image::end() const
 {
     auto itr = begin<T>();
-    itr += static_cast<typename const_iterator<T>::difference_type>(this->size_in_bytes() / sizeof(T));
+    itr += static_cast<const_iterator<T>::difference_type>(this->size_in_bytes() / sizeof(T));
     return itr;
 }
 
@@ -748,7 +746,7 @@ inline image::const_iterator<T> image::end() const
 template<typename T>
 inline image::const_iterator<T> image::cbegin() const
 {
-    return const_iterator<T>(static_cast<typename const_iterator<T>::pointer_t>(buffer()));
+    return const_iterator<T>(static_cast<const_iterator<T>::pointer_t>(buffer()));
 }
 
 //------------------------------------------------------------------------------
@@ -757,7 +755,7 @@ template<typename T>
 inline image::const_iterator<T> image::cend() const
 {
     auto itr = begin<T>();
-    itr += static_cast<typename const_iterator<T>::difference_type>(this->size_in_bytes() / sizeof(T));
+    itr += static_cast<const_iterator<T>::difference_type>(this->size_in_bytes() / sizeof(T));
     return itr;
 }
 

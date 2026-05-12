@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2024 IRCAD France
+ * Copyright (C) 2016-2026 IRCAD France
  * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -69,14 +69,14 @@ public:
     SIGHT_UI_API static const core::com::slots::key_t SET_INT3_PARAMETER_SLOT;
     SIGHT_UI_API static const core::com::slots::key_t SET_ENUM_PARAMETER_SLOT;
 
+    /// Destructor. Do nothing.
+    SIGHT_UI_API virtual ~has_parameters();
+
 protected:
 
     /// Constructor. Create all default slots.
     /// @param _slots map of slots of the child class. For services, just pass the protected variable base::m_slots.
-    SIGHT_UI_API has_parameters(sight::core::com::slots& _slots);
-
-    /// Destructor. Do nothing.
-    SIGHT_UI_API virtual ~has_parameters();
+    SIGHT_UI_API explicit has_parameters(sight::core::com::slots& _slots);
 
     /// Slot: This method is used to set an boolean parameter.
     SIGHT_UI_API virtual void set_parameter(sight::ui::parameter_t _val, std::string _key);

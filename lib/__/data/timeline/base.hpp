@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,7 +30,7 @@
 namespace sight::data::timeline
 {
 
-enum direction_t
+enum direction_t : std::int8_t
 {
     past   = -1,
     both   = 0,
@@ -39,13 +39,13 @@ enum direction_t
 
 struct signals
 {
-    using pushed_t  = core::com::signal<void (core::clock::type _timestamp)>;
-    using removed_t = core::com::signal<void (core::clock::type _timestamp)>;
+    using pushed_t  = core::com::signal<void (core::clock::type)>;
+    using removed_t = core::com::signal<void (core::clock::type)>;
     using cleared_t = core::com::signal<void ()>;
 
     inline static const core::com::signals::key_t PUSHED  = "object_pushed";
-    inline static const core::com::signals::key_t REMOVED = "objectRemoved";
-    inline static const core::com::signals::key_t CLEARED = "objectCleared";
+    inline static const core::com::signals::key_t REMOVED = "object_removed";
+    inline static const core::com::signals::key_t CLEARED = "object_cleared";
 };
 
 /**
@@ -69,16 +69,10 @@ public:
     SIGHT_DATA_API virtual SPTR(timeline::object) pop_object(core::clock::type _timestamp) = 0;
 
     /// modify an object timestamp
-    SIGHT_DATA_API virtual void modify_time(
-        core::clock::type _timestamp,
-        core::clock::type _new_timestamp
-    ) = 0;
+    SIGHT_DATA_API virtual void modify_time(core::clock::type _timestamp, core::clock::type _new_timestamp) = 0;
 
     /// Change an object to the specified timestamp
-    SIGHT_DATA_API virtual void set_object(
-        core::clock::type _timestamp,
-        const SPTR(timeline::object)& _obj
-    ) = 0;
+    SIGHT_DATA_API virtual void set_object(core::clock::type _timestamp, const SPTR(timeline::object)& _obj) = 0;
 
     /**
      * @brief Return a new timeline::object with the given timestamp.
@@ -105,13 +99,6 @@ public:
     SIGHT_DATA_API bool operator==(const base& _other) const noexcept;
     SIGHT_DATA_API bool operator!=(const base& _other) const noexcept;
     /// @}
-
-protected:
-
-    /// Signal to emit when an object is pushed in the base.
-    signals::pushed_t::sptr m_sig_object_pushed;
-    /// Signal to emit when an object is removed in the base.
-    signals::pushed_t::sptr m_sig_object_removed;
 }; // class base
 
 } // namespace sight::data::timeline

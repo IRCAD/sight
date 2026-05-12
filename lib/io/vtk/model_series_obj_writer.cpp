@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,10 +25,7 @@
 #include "io/vtk/helper/mesh.hpp"
 #include "io/vtk/vtk.hpp"
 
-#include <core/base.hpp>
-#include <core/progress/monitor.hpp>
 #include <core/progress/observer.hpp>
-#include <core/tools/uuid.hpp>
 
 #include <data/material.hpp>
 #include <data/model_series.hpp>
@@ -39,8 +36,8 @@
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkProperty.h>
-#include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
+#include <vtkRenderer.h>
 #include <vtkSmartPointer.h>
 
 #include <filesystem>
@@ -84,11 +81,7 @@ static vtkSmartPointer<vtkActor> create_actor(const data::reconstruction::sptr& 
 
 void model_series_obj_writer::write(sight::core::progress::observer::sptr _progress)
 {
-    SIGHT_ASSERT("Object pointer expired", !m_object.expired());
-
-    [[maybe_unused]] const auto object_lock = m_object.lock();
-
-    SIGHT_ASSERT("Object Lock null.", object_lock);
+    auto object_lock = get_object();
 
     const std::filesystem::path prefix = this->get_folder();
 

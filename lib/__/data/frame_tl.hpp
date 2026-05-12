@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,8 +30,6 @@
 
 #include <core/type.hpp>
 
-#include <data/factory/new.hpp>
-
 namespace sight::data
 {
 
@@ -45,7 +43,7 @@ public:
     SIGHT_DECLARE_CLASS(frame_tl, generic_tl<uint8_t>);
 
     /// Frame format
-    enum class pixel_format
+    enum class pixel_format : std::uint8_t
     {
         undefined = 0, ///< Undefined pixel format
         rgb,           ///< Frame with 3 component RGB.
@@ -62,6 +60,9 @@ public:
 
     /// Destructor
     SIGHT_DATA_API ~frame_tl() noexcept override = default;
+
+    /// Forbid the use of this inherited method.
+    SIGHT_DATA_API void init_pool_size(unsigned int _max_element_num) override;
 
     /// Initializes the size of the pool buffer.
     SIGHT_DATA_API void init_pool_size(
@@ -123,9 +124,6 @@ public:
     ) override;
 
 private:
-
-    /// Forbid the use of this inherited method.
-    SIGHT_DATA_API void init_pool_size(unsigned int _max_element_num) override;
 
     /// frame width
     std::size_t m_width {0};

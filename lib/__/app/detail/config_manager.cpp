@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,12 +25,11 @@
 #include "app/detail/config_manager.hpp"
 
 #include "app/extension/config.hpp"
+#include "app/helper/config.hpp"
 #include <core/progress/has_monitors.hpp>
 #include <core/thread/worker.hpp>
 #include <service/extension/factory.hpp>
-#include "app/helper/config.hpp"
 #include <service/op.hpp>
-#include <service/manager.hpp>
 #include <service/registry.hpp>
 
 #include <boost/algorithm/string/case_conv.hpp>
@@ -40,7 +39,7 @@
 #include <core/runtime/runtime.hpp>
 #include <memory>
 
-#define FW_PROFILING_DISABLED
+#define SIGHT_PROFILING_DISABLED
 #include <core/profiling.hpp>
 
 #include <data/object.hpp>
@@ -106,7 +105,14 @@ config_manager::config_manager()
 
 config_manager::~config_manager()
 {
-    SIGHT_ASSERT("Manager must be stopped before destruction.", m_state == state_destroyed);
+    SIGHT_ASSERT("Manager must be stopped before destruction.", is_destroyed());
+}
+
+//------------------------------------------------------------------------------
+
+void config_manager::set_config(const config_t& _cfg)
+{
+    m_cfg_elem = _cfg;
 }
 
 // ------------------------------------------------------------------------
@@ -128,7 +134,7 @@ void config_manager::set_config(
 
 void config_manager::launch()
 {
-    FW_PROFILE("launch");
+    SIGHT_PROFILE("launch");
 
     try
     {
@@ -146,7 +152,7 @@ void config_manager::launch()
         SIGHT_DEBUG("Exit exception caught. Exit code:" << e.what());
 
         // To ensure proper destruction of the manager
-        m_state = state_started;
+        set_state(state_started);
     }
 }
 
@@ -174,7 +180,7 @@ void config_manager::start_module()
 
 void config_manager::create()
 {
-    SIGHT_ASSERT("Manager already running.", m_state == state_destroyed);
+    SIGHT_ASSERT("Manager already running.", is_destroyed());
 
     m_add_object_connection    = connect_register_out(this->slot(ADD_OBJECTS_SLOT));
     m_remove_object_connection = connect_unregister_out(this->slot(REMOVE_OBJECTS_SLOT));
@@ -187,17 +193,17 @@ void config_manager::create()
     this->create_services(m_cfg_elem);
     this->create_updater_services();
 
-    m_state = state_created;
+    set_state(state_created);
 }
 
 // ------------------------------------------------------------------------
 
 void config_manager::start()
 {
-    SIGHT_ASSERT("Manager must be created first.", m_state == state_created || m_state == state_stopped);
+    SIGHT_ASSERT("Manager must be created first.", is_created() || stopped());
     SIGHT_INFO(std::quoted(this->m_config_id) << " started");
 
-    core::com::has_slots::m_slots.set_worker(core::thread::get_default_worker());
+    core::com::has_slots::slots().set_worker(core::thread::get_default_worker());
 
     service::config_t start_config;
     const auto add_start_elements =
@@ -217,7 +223,7 @@ void config_manager::start()
 
     this->process_start_items(start_config);
 
-    m_state = state_started;
+    set_state(state_started);
 }
 
 // ------------------------------------------------------------------------
@@ -231,7 +237,7 @@ void config_manager::update()
 
 void config_manager::stop()
 {
-    SIGHT_ASSERT("Manager is not started, cannot stop.", m_state == state_started);
+    SIGHT_ASSERT("Manager is not started, cannot stop.", started());
     SIGHT_INFO(std::quoted(this->m_config_id) << " stopped");
 
     m_add_object_connection.disconnect();
@@ -269,7 +275,7 @@ void config_manager::stop()
         }
 
         m_started_srv.clear();
-        m_state = state_stopped;
+        set_state(state_stopped);
     }
     std::ranges::for_each(futures, std::mem_fn(&std::shared_future<void>::wait));
 
@@ -280,7 +286,7 @@ void config_manager::stop()
 
 void config_manager::destroy()
 {
-    SIGHT_ASSERT("Manager is not stopped, cannot destroy.", m_state == state_stopped || m_state == state_created);
+    SIGHT_ASSERT("Manager is not stopped, cannot destroy.", stopped() || is_created());
     this->destroy_created_services();
 
     SIGHT_DEBUG(
@@ -299,7 +305,7 @@ void config_manager::destroy()
     m_deferred_update_srv.clear();
     m_services_proxies.clear();
 
-    m_state = state_destroyed;
+    set_state(state_destroyed);
 }
 
 // ------------------------------------------------------------------------
@@ -309,7 +315,7 @@ void config_manager::add_existing_deferred_object(const data::object::sptr& _obj
     SIGHT_ASSERT(
         this->msg_head()
         + "Existing deferred objects must be added before starting the configuration, it's useless to do it later",
-        m_state == state_destroyed
+        is_destroyed()
     );
     deferred_object_t deferred_object;
     deferred_object.m_object = _obj;
@@ -1094,13 +1100,13 @@ void config_manager::add_objects(data::object::sptr _obj, const std::string& _id
     SIGHT_ASSERT("Object id can not be empty", !_id.empty());
 
     core::mt::scoped_lock lock(m_mutex);
-    if(m_state != state_started)
+    if(not started())
     {
         SIGHT_INFO("Skip processing of a new object since the config is not running.");
         return;
     }
 
-    FW_PROFILE("addObjects");
+    SIGHT_PROFILE("addObjects");
 
     // Local map used to process services only once
     std::map<std::string, const detail::service_config*> services_map_cfg;
@@ -1315,13 +1321,13 @@ void config_manager::remove_objects(data::object::sptr _obj, const std::string& 
     SIGHT_ASSERT("Object id can not be empty", !_id.empty());
 
     core::mt::scoped_lock lock(m_mutex);
-    if(m_state != state_started)
+    if(not started())
     {
         SIGHT_INFO("Skip processing of a new object since the config is not running.");
         return;
     }
 
-    FW_PROFILE("removeObjects");
+    SIGHT_PROFILE("removeObjects");
 
     // Are there services that were connected with this object ?
     const auto it_deferred_obj = m_deferred_objects.find(_id);

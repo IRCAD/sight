@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,6 +28,8 @@
 
 #include <service/base.hpp>
 
+#include <utility>
+
 namespace sight::ui
 {
 
@@ -36,7 +38,7 @@ namespace detail::registry
 
 class action;
 
-}
+} // namespace detail::registry
 
 /**
  * @brief   Defines the service interface managing menu or toolbar items. It can be used with properties or only with
@@ -135,6 +137,8 @@ public:
         static inline const core::com::slots::key_t APPLY_ENABLED     = "apply_enabled";
     };
 
+    SIGHT_UI_API ~action() override = default;
+
     /// Method called when the action service is stopping
     SIGHT_UI_API void action_service_stopping();
 
@@ -181,7 +185,6 @@ public:
 protected:
 
     SIGHT_UI_API action();
-    SIGHT_UI_API ~action() override = default;
 
     /// Initializes the action. This should be called in the configuring() method in derived classes.
     SIGHT_UI_API void initialize();
@@ -213,8 +216,8 @@ class lock_action
 {
 public:
 
-    lock_action(action::wptr _action) :
-        m_action(_action)
+    explicit lock_action(action::wptr _action) :
+        m_action(std::move(_action))
     {
         m_action.lock()->set_enabled(false);
     }

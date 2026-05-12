@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -83,4 +83,4 @@ template<class T>
 
 SIGHT_CORE_API std::string to_string(const boost::property_tree::ptree& _pt);
 
-} // namespace sight::core
+} // namespace sight::core::ptree

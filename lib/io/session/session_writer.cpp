@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2025 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -47,7 +47,7 @@ public:
         m_session_writer(_session_writer),
         m_password(std::make_unique<password_keeper>()),
         m_encryption_policy(password_keeper::encryption_policy::password),
-        m_archive_format(archive::archive_format::DEFAULT)
+        m_archive_format(archive::archive_format::standard)
     {
     }
 

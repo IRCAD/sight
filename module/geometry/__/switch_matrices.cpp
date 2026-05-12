@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,6 @@
 
 #include <core/com/signal.hxx>
 #include <core/com/slots.hxx>
-
-#include <geometry/data/matrix4.hpp>
 
 namespace sight::module::geometry
 {
@@ -86,8 +84,8 @@ void switch_matrices::switch_matrix()
 {
     {
         auto current_index = m_current_index.lock();
-        *current_index = *current_index + 1;
-        if(static_cast<std::size_t>(*current_index) >= m_matrix.size())
+        *current_index = current_index->value() + 1;
+        if(static_cast<std::size_t>(current_index->value()) >= m_matrix.size())
         {
             *current_index = 0;
         }

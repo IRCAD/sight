@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2024 IRCAD France
+ * Copyright (C) 2019-2026 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,15 @@
 
 #pragma once
 
+#include <core/com/signal.hpp>
+
+#include <data/tools/picking_info.hpp>
+
 #include <viz/scene3d/adaptor.hpp>
-#include <viz/scene3d/interactor/mesh_picker_interactor.hpp>
+#include <viz/scene3d/interactor/base.hpp>
+
+#include <array>
+#include <cstdint>
 
 namespace sight::module::viz::scene3d::adaptor
 {
@@ -31,8 +38,8 @@ namespace sight::module::viz::scene3d::adaptor
 /**
  * @brief This adaptor performs picking queries on mouse clicks and forwards the picked data through a signal.
  *
- * See @see sight::viz::scene3d::interactor::mesh_picker_interactor to learn more about the interactions
- * provided by this service.
+ * Lets the user click on the scene to perform picking queries. Emits a signal with the relevant intersection data
+ * when picking succeeds.
  *
  * @section Signals Signals
  * - \b picked(data::tools::picking_info): emitted when a picking query is successful.
@@ -40,18 +47,21 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  * @code{.xml}
         <service type="sight::module::viz::scene3d::adaptor::picker">
-            <config priority="0" queryMask="0xFFFFFFFF" layerOrderDependant="true" />
+            <config priority="0" queryMask="0xFFFFFFFF" />
        </service>
    @endcode
  *
  * @subsection Configuration Configuration:
  * - \b priority (optional, int, default=0): picking priority, higher priority interactions are performed first.
  * - \b queryMask (optional, uint32, default=0xFFFFFFFF): filters out entities with mismatching flags when picking.
- * - \b layerOrderDependant (optional, bool, default=true): define if interaction must take into account above layers.
  */
-class picker final : public sight::viz::scene3d::adaptor
+class picker final : public sight::viz::scene3d::adaptor,
+                     public sight::viz::scene3d::interactor::base
 {
 public:
+
+    /// Defines the type of signal sent when a picking query succeeded.
+    using point_clicked_sig_t = core::com::signal<void (data::tools::picking_info)>;
 
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(picker, sight::viz::scene3d::adaptor);
@@ -61,6 +71,32 @@ public:
 
     /// Destroys the adaptor.
     ~picker() noexcept final = default;
+
+    /// Runs a picking query when a mouse button is released.
+    void button_release_event(
+        sight::viz::scene3d::interactor::base::mouse_button _button,
+        modifier _mods,
+        int _x,
+        int _y
+    ) final;
+
+    /// Runs a picking query when a mouse button is pressed.
+    void button_press_event(
+        sight::viz::scene3d::interactor::base::mouse_button _button,
+        modifier _mods,
+        int _x,
+        int _y
+    ) final;
+
+    /// Runs a picking query if a mouse button was pressed beforehand.
+    void mouse_move_event(
+        mouse_button _button,
+        modifier _mods,
+        int _x,
+        int _y,
+        int _dx,
+        int _dy
+    ) final;
 
 protected:
 
@@ -78,20 +114,27 @@ protected:
 
 private:
 
+    /**
+     * @brief Triggers a picking query and sends a signal with the corresponding data::tools::picking_info.
+     *
+     * @param _button mouse button pressed.
+     * @param _mods keyboard modifiers.
+     * @param _x width coordinate of the mouse.
+     * @param _y height coordinate of the mouse.
+     * @param _pressed whether the button is pressed (true) or released (false).
+     */
+    void pick(mouse_button _button, modifier _mods, int _x, int _y, bool _pressed);
+
     /// Determines the execution order of the picking interactor.
     int m_priority {2};
 
     /// Defines the mask used to filter out entities when picking.
     std::uint32_t m_query_mask {0xFFFFFFFF};
 
-    /// Defines if the interaction must take into account above layers.
-    bool m_layer_order_dependant {true};
-
-    /// Contains the interactor managed by the adaptor.
-    std::shared_ptr<sight::viz::scene3d::interactor::mesh_picker_interactor> m_interactor;
-
-    /// Defines the signal sent on picking events.
-    sight::viz::scene3d::interactor::mesh_picker_interactor::point_clicked_sig_t::sptr m_picked_sig;
+    /// Mouse button press states
+    std::array<bool, sight::viz::scene3d::interactor::base::mouse_button::num_values> m_pressed {false, false, false,
+                                                                                                 false, false
+    };
 };
 
-} // namespace sight::module::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor

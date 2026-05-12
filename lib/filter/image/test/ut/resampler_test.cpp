@@ -20,7 +20,6 @@
  *
  ***********************************************************************/
 
-#include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
 #include <data/matrix4.hpp>
 
@@ -74,7 +73,7 @@ TEST_SUITE("sight::filter::image::resampler")
                 image_in->origin(),
                 image_in->orientation(),
                 image_in->spacing(),
-                sight::filter::image::interpolation_t::LINEAR
+                sight::filter::image::interpolation_t::linear
             )
         );
 
@@ -187,7 +186,7 @@ TEST_SUITE("sight::filter::image::resampler")
         const sight::data::image::spacing_t spacing         = {0.25, 0.25, 0.25};
         const sight::data::image::origin_t origin           = {0., 0., 0.};
         const sight::data::image::orientation_t orientation = {1., 0., 0., 0., 1., 0., 0., 0., 1.};
-        const sight::core::type type                        = sight::core::type::FLOAT;
+        const sight::core::type type                        = sight::core::type::FLOAT32;
 
         auto image_in  = std::make_shared<sight::data::image>();
         auto image_out = std::make_shared<sight::data::image>();
@@ -230,7 +229,7 @@ TEST_SUITE("sight::filter::image::resampler")
 
         const auto out_dump_lock = image_out->dump_lock();
 
-        sight::utest_data::image::SIGHT_UTEST_DATA_IMAGE_DEBUG = true;
+        sight::utest_data::image::sight_utest_data_image_debug = true;
         sight::utest_data::image::cout_debug(*image_in, std::map<float, std::string> {{0.F, "O"}, {1.F, "X"}});
         sight::utest_data::image::cout_debug(*image_out, std::map<float, std::string> {{0.F, "O"}, {1.F, "X"}});
 
@@ -315,7 +314,7 @@ TEST_SUITE("sight::filter::image::resampler")
                 image_in->origin(),
                 image_in->orientation(),
                 image_in->spacing(),
-                sight::filter::image::interpolation_t::LINEAR
+                sight::filter::image::interpolation_t::linear
             )
         );
 
@@ -331,7 +330,7 @@ TEST_SUITE("sight::filter::image::resampler")
                 image_in->origin(),
                 image_in->orientation(),
                 image_in->spacing(),
-                sight::filter::image::interpolation_t::LINEAR
+                sight::filter::image::interpolation_t::linear
             )
         );
 

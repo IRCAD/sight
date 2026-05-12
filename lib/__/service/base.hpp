@@ -364,7 +364,7 @@ protected:
     /**
      * @brief Called when a property is modified, only if no auto connection is provided
      */
-    SIGHT_SERVICE_API virtual void on_property_set(std::string_view);
+    SIGHT_SERVICE_API virtual void on_property_set(std::string_view /*unused*/);
 
     /**
      * @brief Write information in a stream.

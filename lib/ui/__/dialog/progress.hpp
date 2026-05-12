@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,7 +43,7 @@ public:
     SIGHT_DECLARE_CLASS(progress, ui::dialog::progress_base);
 
     /// will instantiate the concrete implementation
-    SIGHT_UI_API progress(const std::string& _title = std::string(), const std::string& _msg = std::string());
+    SIGHT_UI_API explicit progress(const std::string& _title = std::string(), const std::string& _msg = std::string());
     SIGHT_UI_API ~progress() override;
 
     ///set the title for the dialog
@@ -62,6 +62,8 @@ public:
 protected:
 
     SIGHT_UI_API void cancel_pressed() override;
+
+private:
 
     ui::dialog::progress_base::sptr m_implementation;
 };

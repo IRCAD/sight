@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -56,8 +56,8 @@ SIGHT_FILTER_IMAGE_API bool is_roi_applied(
 template<typename IMG_DEST_TYPE, typename MASK_TYPE>
 void merge_mask(const data::image::sptr& _img_dest, const data::image::csptr& _mask, IMG_DEST_TYPE _val)
 {
-    typedef IMG_DEST_TYPE img_dest_t;
-    typedef MASK_TYPE mask_t;
+    using img_dest_t = IMG_DEST_TYPE;
+    using mask_t     = MASK_TYPE;
     SIGHT_ASSERT("image dest has not correct type", _img_dest->type() == core::type::get<img_dest_t>());
     SIGHT_ASSERT("image mask has not correct type", _mask->type() == core::type::get<mask_t>());
 

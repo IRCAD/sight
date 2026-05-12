@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,7 +48,8 @@ public:
     SIGHT_DECLARE_CLASS(generic_object_reader<DATATYPE>, io::reader::object_reader);
 
     /// Constructor. Does nothing.
-    generic_object_reader() = default;
+    generic_object_reader()           = default;
+    ~generic_object_reader() override = default;
 
     //------------------------------------------------------------------------------
 
@@ -56,10 +57,6 @@ public:
     {
         return "";
     }
-
-    /// Destructor. Does nothing.
-    ~generic_object_reader() override
-    = default;
 
     /**
      * @brief m_object setter.
@@ -70,7 +67,7 @@ public:
     void set_object(core::object::sptr _obj) override
     {
         assert(std::dynamic_pointer_cast<data_t>(_obj));
-        m_object = _obj;
+        io::reader::object_reader::set_object(_obj);
     }
 
     /**

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -60,7 +60,7 @@ public:
         const std::string& _title,
         const std::string& _message,
         const std::string& _text = "",
-        echo_mode _echo_mode     = echo_mode::DEFAULT
+        echo_mode _echo_mode     = echo_mode::normal
     );
 
     /** @brief Constructor. Create the implementation of the specific input dialog box.
@@ -87,7 +87,7 @@ public:
         const std::string& _title,
         const std::string& _message,
         const std::string& _text = "",
-        echo_mode _echo_mode     = echo_mode::DEFAULT
+        echo_mode _echo_mode     = echo_mode::normal
     );
 
     /// Destructor. Do nothing
@@ -108,7 +108,7 @@ public:
     /// Get the input text in the input field
     SIGHT_UI_API std::pair<std::string, bool> get_input() override;
 
-protected:
+private:
 
     /// Implementation of an input dialog in a specific UI (wx/Qt)
     ui::dialog::input_base::sptr m_implementation;

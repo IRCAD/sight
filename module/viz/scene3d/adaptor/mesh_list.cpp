@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2025 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -83,7 +83,7 @@ void mesh_list::starting()
         // Create adaptors configurations
         const std::string transform_id = gen_id(transform->get_id());
         service::config_t config;
-        config.add("config.<xmlattr>.layer", m_layer_id);
+        config.add("config.<xmlattr>.layer", layer_id());
         config.add("config.<xmlattr>." + std::string(TRANSFORM_INPUT), transform_id);
         config.add("config.<xmlattr>.autoresetcamera", "false");
 
@@ -93,7 +93,7 @@ void mesh_list::starting()
                 "sight::module::viz::scene3d::adaptor::transform"
             );
 
-        transform_adaptor->set_layer_id(m_layer_id);
+        transform_adaptor->set_layer_id(layer_id());
         transform_adaptor->set_render_service(this->render_service());
 
         transform_adaptor->set_inout(transform, "transform", true);
@@ -111,7 +111,7 @@ void mesh_list::starting()
         texture_config.add("config.<xmlattr>.texture_name", image->get_id());
         texture_config.add("config.<xmlattr>.useAlpha", "true");
 
-        texture_adaptor->set_layer_id(m_layer_id);
+        texture_adaptor->set_layer_id(layer_id());
         texture_adaptor->set_render_service(this->render_service());
 
         texture_adaptor->set_input(image, "image", false);
@@ -127,7 +127,7 @@ void mesh_list::starting()
         service::config_t mesh_config = config;
         mesh_config.add("config.<xmlattr>.texture_name", image->get_id());
 
-        mesh_adaptor->set_layer_id(m_layer_id);
+        mesh_adaptor->set_layer_id(layer_id());
         mesh_adaptor->set_render_service(this->render_service());
 
         {
@@ -141,7 +141,9 @@ void mesh_list::starting()
         SIGHT_ASSERT("mesh is not started", mesh_adaptor->started());
 
         // Store data.
-        mesh_instance instance {transform, image, transform_adaptor, mesh_adaptor, texture_adaptor};
+        mesh_instance instance {.m_matrix = transform, .m_image = image, .m_transform = transform_adaptor,
+                                .m_mesh = mesh_adaptor, .m_texture = texture_adaptor
+        };
         m_meshes.push_back(instance);
     }
 }

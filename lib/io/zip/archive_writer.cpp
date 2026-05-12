@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2025 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -25,8 +25,6 @@
 
 #include "minizip/mz.h"
 #include "minizip/mz_os.h"
-#include "minizip/mz_strm.h"
-#include "minizip/mz_strm_os.h"
 #include "minizip/mz_zip.h"
 #include "minizip/mz_zip_rw.h"
 
@@ -55,9 +53,6 @@
 namespace sight::io::zip
 {
 
-namespace
-{
-
 // Force deflate if env variable is set
 const bool LEGACY_COMPRESSION =
     []
@@ -68,7 +63,7 @@ const bool LEGACY_COMPRESSION =
     }();
 
 /// Convert argument to minizip dialect
-inline std::tuple<std::uint16_t, std::int16_t> to_minizip_parameter(method _method, level _level)
+static std::tuple<std::uint16_t, std::int16_t> to_minizip_parameter(method _method, level _level)
 {
     std::uint16_t minizip_method = MZ_COMPRESS_METHOD_ZSTD;
     std::int16_t minizip_level   = MZ_COMPRESS_LEVEL_DEFAULT;
@@ -138,6 +133,9 @@ inline std::tuple<std::uint16_t, std::int16_t> to_minizip_parameter(method _meth
     return {minizip_method, minizip_level};
 }
 
+namespace
+{
+
 class raw_archive_writer final : public archive_writer
 {
 public:
@@ -166,8 +164,8 @@ public:
     std::unique_ptr<std::ostream> open_file(
         const std::filesystem::path& _file_path,
         [[maybe_unused]] const core::crypto::secure_string& _password = "",
-        [[maybe_unused]] method _method                               = method::DEFAULT,
-        [[maybe_unused]] level _level                                 = level::DEFAULT
+        [[maybe_unused]] method _method                               = method::standard,
+        [[maybe_unused]] level _level                                 = level::standard
     ) final
     {
         // Create the sub directories if needed
@@ -187,8 +185,8 @@ public:
         const std::filesystem::path& _file_path,
         const std::string& _content,
         [[maybe_unused]] const core::crypto::secure_string& _password = "",
-        [[maybe_unused]] method _method                               = method::DEFAULT,
-        [[maybe_unused]] level _level                                 = level::DEFAULT
+        [[maybe_unused]] method _method                               = method::standard,
+        [[maybe_unused]] level _level                                 = level::standard
     ) final
     {
         // Create the sub directories if needed
@@ -200,7 +198,7 @@ public:
         }
 
         std::ofstream file(full_path, std::ios::out | std::ios::binary | std::ios::trunc);
-        file.write(_content.data(), std::streamsize(_content.size()));
+        file.write(_content.data(), static_cast<std::streamsize>(_content.size()));
     }
 
     //------------------------------------------------------------------------------
@@ -250,10 +248,10 @@ public:
                                       ? method::deflate
                                       : m_format == archive::archive_format::optimized
                                       ? method::zstd
-                                      : method::DEFAULT;
+                                      : method::standard;
 
         // Set default options
-        auto [minizipMethod, minizipLevel] = to_minizip_parameter(default_method, level::DEFAULT);
+        auto [minizipMethod, minizipLevel] = to_minizip_parameter(default_method, level::standard);
 
         mz_zip_writer_set_compress_method(m_zip_writer, minizipMethod);
         mz_zip_writer_set_compress_level(m_zip_writer, minizipLevel);
@@ -298,7 +296,7 @@ public:
     const std::string m_archive_path;
 
     // Default compression method
-    const archive::archive_format m_format {archive::archive_format::DEFAULT};
+    const archive::archive_format m_format {archive::archive_format::standard};
 
     // Zip writer handle
     void* m_zip_writer {nullptr};
@@ -319,8 +317,8 @@ public:
         std::shared_ptr<zip_handle> _zip_handle,
         const std::filesystem::path& _file_path,
         core::crypto::secure_string _password = "",
-        const method _method                  = method::DEFAULT,
-        const level _level                    = level::DEFAULT
+        const method _method                  = method::standard,
+        const level _level                    = level::standard
     ) :
         m_file_name(_file_path.string()),
         m_password(std::move(_password)),
@@ -328,13 +326,13 @@ public:
     {
         // Translate to minizip dialect
         auto [minizipMethod, minizipLevel] = to_minizip_parameter(
-            _method != method::DEFAULT
+            _method != method::standard
             ? _method
             : m_zip_handle->m_format == archive::archive_format::compatible
             ? method::deflate
             : m_zip_handle->m_format == archive::archive_format::optimized
             ? method::zstd
-            : method::DEFAULT,
+            : method::standard,
             _level
         );
 
@@ -441,8 +439,8 @@ public:
         std::streamsize remaining_size = _size;
         const char* remaining_buffer   = _buffer;
 
-        std::int32_t block_size = std::int32_t(
-            std::min(_size, std::streamsize(std::numeric_limits<std::int32_t>::max()))
+        std::int32_t block_size = static_cast<std::int32_t>(
+            std::min(_size, static_cast<std::streamsize>(std::numeric_limits<std::int32_t>::max()))
         );
 
         while(remaining_size > 0)
@@ -517,8 +515,8 @@ public:
     std::unique_ptr<std::ostream> open_file(
         const std::filesystem::path& _file_path,
         const core::crypto::secure_string& _password = "",
-        method _method                               = method::DEFAULT,
-        level _level                                 = level::DEFAULT
+        method _method                               = method::standard,
+        level _level                                 = level::standard
     ) final
     {
         const auto zip_file_handle = std::make_shared<io::zip::zip_file_handle>(
@@ -538,8 +536,8 @@ public:
         const std::filesystem::path& _file_path,
         const std::string& _content,
         const core::crypto::secure_string& _password = "",
-        method _method                               = method::DEFAULT,
-        level _level                                 = level::DEFAULT
+        method _method                               = method::standard,
+        level _level                                 = level::standard
     ) final
     {
         const auto zip_file_handle = std::make_shared<io::zip::zip_file_handle>(
@@ -553,8 +551,8 @@ public:
         std::size_t remaining_size   = _content.size();
         const char* remaining_buffer = _content.data();
 
-        std::int32_t block_size = std::int32_t(
-            std::min(_content.size(), std::size_t(std::numeric_limits<std::int32_t>::max()))
+        std::int32_t block_size = static_cast<std::int32_t>(
+            std::min(_content.size(), static_cast<std::size_t>(std::numeric_limits<std::int32_t>::max()))
         );
 
         while(remaining_size > 0)
@@ -578,7 +576,7 @@ public:
                 written < 0
             );
 
-            remaining_size   -= std::size_t(written);
+            remaining_size   -= static_cast<std::size_t>(written);
             remaining_buffer += written;
         }
 

@@ -103,19 +103,6 @@ public:
     /// Destroys the adaptor.
     ~negato2d() noexcept final = default;
 
-protected:
-
-    /// Configures the service.
-    void configuring(const config_t& _config) final;
-
-    /**
-     * @brief Sets the negato visibility.
-     * @param _visible the visibility status of the negato.
-     */
-    void set_visible(bool _visible) final;
-
-private:
-
     /**
      * @brief Interacts with the negato if it was picked by pressing any mouse button.
      *
@@ -139,6 +126,19 @@ private:
 
     /// Ends all interactions, regardless of the input.
     void button_release_event(mouse_button /*_button*/, modifier /*_mods*/, int /*_x*/, int /*_y*/) final;
+
+    /**
+     * @brief Sets the negato visibility.
+     * @param _visible the visibility status of the negato.
+     */
+    void set_visible(bool _visible) final;
+
+protected:
+
+    /// Configures the service.
+    void configuring(const config_t& _config) final;
+
+private:
 
     /// Sets the filtering type.
     void set_filtering(sight::viz::scene3d::plane::filter_t _filtering);

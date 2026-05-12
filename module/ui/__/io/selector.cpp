@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,28 +24,22 @@
 
 #include "core/thread/worker.hpp"
 
-#include <core/base.hpp>
 #include <core/com/signal.hxx>
-#include <core/com/slots.hpp>
 #include <core/com/slots.hxx>
 
 #include <io/__/service/reader.hpp>
 #include <io/__/service/writer.hpp>
 
-#include <service/extension/factory.hpp>
+#include <service/extension/config.hpp>
 #include <service/op.hpp>
 
 #include <ui/__/cursor.hpp>
 #include <ui/__/dialog/message.hpp>
 #include <ui/__/dialog/selector.hpp>
 
-#include <app/extension/config.hpp>
-
-#include <boost/property_tree/xml_parser.hpp>
 #include <boost/range/iterator_range_core.hpp>
 
 #include <algorithm>
-#include <sstream>
 #include <string>
 
 namespace sight::module::ui::io
@@ -56,7 +50,7 @@ namespace io = sight::io;
 //------------------------------------------------------------------------------
 
 selector::selector() :
-    has_monitors(m_signals),
+    has_monitors(has_signals::signals()),
     m_sig_failed(new_signal<signals::failed_t>(signals::FAILED)),
     m_sig_succeeded(new_signal<signals::succeeded_t>(signals::SUCCEEDED)),
     m_slot_forward_monitor(new_slot(slots::FORWARD_MONITOR, &selector::forward_monitor, this))

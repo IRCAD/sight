@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -156,7 +156,7 @@ public:
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;
 
-protected:
+private:
 
     //! resection name
     std::string m_name;
@@ -178,21 +178,6 @@ protected:
 
     //! flag if the resection is visible
     bool m_visible {true};
-
-private:
-
-    /**
-     * @name Signals attributes
-     * @{
-     */
-    /// Signal emitted when a reconstruction is added
-    reconstruction_added_signal_t::sptr m_sig_reconstruction_added;
-
-    /// Signal emitted when the resection visibility is modified
-    visibility_modified_signal_t::sptr m_sig_visibility_modified;
-    /**
-     * @}
-     */
 }; // end class resection
 
 //-----------------------------------------------------------------------------

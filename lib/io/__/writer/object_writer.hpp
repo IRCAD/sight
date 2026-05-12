@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -89,7 +89,7 @@ public:
      */
     SIGHT_IO_API virtual std::string extension() const = 0;
 
-protected:
+private:
 
     /**
      * @brief Object to write on filesystem by the process.

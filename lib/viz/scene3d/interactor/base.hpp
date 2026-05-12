@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,36 +37,40 @@
 #include <OGRE/Ogre.h>
 #include <OGRE/OgreSceneManager.h>
 
+#include <memory>
+
 namespace sight::viz::scene3d
 {
 
 class layer;
 
-namespace interactor
+} // namespace sight::viz::scene3d
+
+namespace sight::viz::scene3d::interactor
 {
 
 static const inline Ogre::Vector3 DEFAULT_VIEW_UP(0., -1., 0.);
 
 /**
- * @brief Interface implementation for all the interaction with the mouse
+ * @brief Interface implementation for all the interaction with the mouse.
+ * An interactor provides event handling without imposing service lifecycle constraints.
  */
 class SIGHT_VIZ_SCENE3D_CLASS_API base
 {
 public:
 
     using wptr = std::weak_ptr<base>;
-
     using sptr = std::shared_ptr<base>;
 
     /// Defines the list of recognized mouse buttons.
-    enum mouse_button
+    enum mouse_button : std::uint8_t
     {
         none,
         left,
         middle,
         right,
         unknown,
-        _num_values
+        num_values
     };
 
     /// Defines the list of recognized mouse modifier.
@@ -78,13 +82,6 @@ public:
         meta    = shift << 2,
         alt     = shift << 3
     };
-
-    /**
-     * @brief Sets the scene manager from the layer if it exists.
-     * @param _layer the layer on which the interator work.
-     * @param _layer_order_dependant define if the interaction must take into account above layers.
-     */
-    SIGHT_VIZ_SCENE3D_API base(SPTR(layer)_layer = nullptr, bool _layer_order_dependant = true);
 
     /// Destroys the interactor.
     SIGHT_VIZ_SCENE3D_API virtual ~base();
@@ -180,10 +177,8 @@ public:
      * @param _mouse_x width coordinate of the mouse in pixels.
      * @param _mouse_y height coordinate of the mouse in pixels.
      * @param _layer layer on which to check the cursor's belonging.
-     * @param _layer_order_dependant define if interaction must take into account above layers.
      */
-    SIGHT_VIZ_SCENE3D_API static bool is_in_layer(int _mouse_x, int _mouse_y, SPTR(layer) _layer,
-                                                  bool _layer_order_dependant);
+    SIGHT_VIZ_SCENE3D_API static bool is_in_layer(int _mouse_x, int _mouse_y, SPTR(layer) _layer);
 
     /**
      * @brief Listen to render window resize events.
@@ -228,12 +223,6 @@ public:
 
 protected:
 
-    /// Weak reference to the layer on which the interactor interacts.
-    WPTR(layer) m_layer;
-
-    /// Defines if the interaction must take into account above layers.
-    bool m_layer_order_dependant {true};
-
 private:
 
     /// Checks if the cursor is on top of the given viewport.
@@ -245,7 +234,7 @@ private:
 template<typename INT_TYPE>
 static inline bool operator==(INT_TYPE _i, base::modifier _m)
 {
-    static_assert(std::is_integral<INT_TYPE>::value, "Integral type required.");
+    static_assert(std::is_integral_v<INT_TYPE>, "Integral type required.");
     return static_cast<INT_TYPE>(_m) == _i;
 }
 
@@ -254,7 +243,7 @@ static inline bool operator==(INT_TYPE _i, base::modifier _m)
 template<typename INT_TYPE>
 static inline bool operator==(base::modifier _m, INT_TYPE _i)
 {
-    static_assert(std::is_integral<INT_TYPE>::value, "Integral type required.");
+    static_assert(std::is_integral_v<INT_TYPE>, "Integral type required.");
     return _i == static_cast<INT_TYPE>(_m);
 }
 
@@ -263,8 +252,8 @@ static inline bool operator==(base::modifier _m, INT_TYPE _i)
 static inline base::modifier operator&(base::modifier _m1, base::modifier _m2)
 {
     return static_cast<base::modifier>(
-        static_cast<std::underlying_type<base::modifier>::type>(_m1)
-        & static_cast<std::underlying_type<base::modifier>::type>(_m2)
+        static_cast<std::underlying_type_t<base::modifier> >(_m1)
+        & static_cast<std::underlying_type_t<base::modifier> >(_m2)
     );
 }
 
@@ -273,8 +262,8 @@ static inline base::modifier operator&(base::modifier _m1, base::modifier _m2)
 static inline base::modifier operator|(base::modifier _m1, base::modifier _m2)
 {
     return static_cast<base::modifier>(
-        static_cast<std::underlying_type<base::modifier>::type>(_m1)
-        | static_cast<std::underlying_type<base::modifier>::type>(_m2)
+        static_cast<std::underlying_type_t<base::modifier> >(_m1)
+        | static_cast<std::underlying_type_t<base::modifier> >(_m2)
     );
 }
 
@@ -285,6 +274,4 @@ static inline base::modifier operator|=(base::modifier& _m1, base::modifier _m2)
     return _m1 = _m1 | _m2;
 }
 
-} // namespace interactor.
-
-} // namespace sight::viz::scene3d.
+} // namespace sight::viz::scene3d::interactor

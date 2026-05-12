@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2025 IRCAD France
+ * Copyright (C) 2019-2026 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,8 +26,6 @@
 
 #include <viz/scene3d/adaptor.hpp>
 
-#include <memory>
-
 namespace sight::module::viz::scene3d::adaptor
 {
 
@@ -51,7 +49,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @code{.xml}
     <service type="sight::module::viz::scene3d::adaptor::negato2d_camera" >
         <inout key="image" uid="..." auto_connect="true" />
-        <config priority="0" layerOrderDependant="true" orientation="sagittal" margin="0.1" block_width_scaling="true"/>
+        <config priority="0" orientation="sagittal" margin="0.1" block_width_scaling="true"/>
    </service>
    @endcode
  *
@@ -62,7 +60,6 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * @subsection Configuration Configuration:
  * - \b priority (optional, int, default=0): interaction priority, higher priority interactions are performed first.
- * - \b layerOrderDependant (optional, bool, default=true): define if interaction must take into account above layers.
  * - \b orientation (optional, sagittal/frontal/axial, default=sagittal): the camera's orientation at start.
  * - \b margin (optional, default=0.1): margin to the border of the viewport, in percentage of the highest of width
  *  or height.

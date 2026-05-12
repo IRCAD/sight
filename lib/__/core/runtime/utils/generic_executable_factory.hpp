@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,7 +45,7 @@ public:
      *
      * @param[in]   _type    a string containing the type supported by the factory
      */
-    generic_executable_factory(const std::string& _type) :
+    explicit generic_executable_factory(const std::string& _type) :
         executable_factory(_type)
     {
     }

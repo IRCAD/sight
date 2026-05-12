@@ -21,23 +21,15 @@
  ***********************************************************************/
 
 #include "helper.hpp"
-#include "test_service.hpp"
 #include "test_services.hpp"
 
-#include <core/com/signal.hpp>
 #include <core/com/signal.hxx>
 #include <core/com/slot.hxx>
-#include <core/runtime/helper.hpp>
 #include <core/runtime/path.hpp>
 #include <core/runtime/runtime.hpp>
 #include <core/time_stamp.hpp>
 
-#include <data/boolean.hpp>
-#include <data/image.hpp>
-#include <data/string.hpp>
-
 #include <service/extension/config.hpp>
-#include <service/registry.hpp>
 
 #include <utest/wait.hpp>
 
@@ -108,7 +100,7 @@ TEST_SUITE("sight::app::config_update")
 
     TEST_CASE_FIXTURE(fixture, "simple_sequence")
     {
-        sight::app::ut::test_order_srv::s_ORDER = 1;
+        sight::app::ut::test_order_srv::s_order = 1;
         m_app_config_mgr                        = sight::app::ut::launch_app_config_mgr("sequence_cfg_test");
 
         for(const auto i : std::views::iota(1U, 4U))
@@ -121,7 +113,7 @@ TEST_SUITE("sight::app::config_update")
 
     TEST_CASE_FIXTURE(fixture, "imbricated_sequence")
     {
-        sight::app::ut::test_order_srv::s_ORDER = 1;
+        sight::app::ut::test_order_srv::s_order = 1;
         m_app_config_mgr                        = sight::app::ut::launch_app_config_mgr("imbricated_sequence_cfg_test");
 
         for(const auto i : std::views::iota(1U, 7U))
@@ -134,7 +126,7 @@ TEST_SUITE("sight::app::config_update")
 
     TEST_CASE_FIXTURE(fixture, "mutiple_config_sequence")
     {
-        sight::app::ut::test_order_srv::s_ORDER = 1;
+        sight::app::ut::test_order_srv::s_order = 1;
         m_app_config_mgr                        =
             sight::app::ut::launch_app_config_mgr("mutiple_config_sequence_cfg_test");
 

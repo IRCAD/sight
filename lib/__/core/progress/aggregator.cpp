@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,8 +23,6 @@
 #include "core/progress/aggregator.hpp"
 
 #include <core/spy_log.hpp>
-#include <core/thread/worker.hpp>
-#include <core/thread/worker.hxx>
 
 #include <algorithm>
 
@@ -62,22 +60,24 @@ void aggregator::add(const core::progress::monitor::sptr& _progress, double _wei
     core::mt::read_to_write_lock lock(m_mutex);
     SIGHT_ERROR_IF("A progress weight < 0.01 can lead to undetermined behavior", _weight < 0.01);
 
-    const auto norm_value = std::uint64_t(_weight * 100);
+    const auto norm_value = static_cast<std::uint64_t>(_weight * 100);
 
-    if(m_state == waiting || m_state == running)
+    const auto state = get_state_no_lock();
+    if(state == waiting || state == running)
     {
         m_progress_info[_progress.get()] = progress_info(*_progress);
         auto& progress_info = m_progress_info[_progress.get()];
 
         this->set_total_work_units_upgrade_lock(
-            m_total_work_units + (progress_info.total_work != 0U ? norm_value : 0),
+            get_total_work_units_no_lock() + (progress_info.total_work != 0U ? norm_value : 0),
             lock
         );
         lock.lock();
         // done_work call after set_total_work_unitsUpgradeLock, because
         // done_work value can be thresholded by set_total_work_unitsUpgradeLock
         // call
-        progress_info.last_value = std::uint64_t(progress_info.progress() * double(norm_value));
+        progress_info.last_value = static_cast<std::uint64_t>(progress_info.progress()
+                                                              * static_cast<double>(norm_value));
         {
             core::mt::upgrade_to_write_lock write_lock(lock);
             m_progress_seq.push_back(_progress);
@@ -97,9 +97,10 @@ void aggregator::add(const core::progress::monitor::sptr& _progress, double _wei
                     auto old_info = progress_info;
                     progress_info = aggregator::progress_info(_sub_progress);
 
-                    progress_info.last_value = std::uint64_t(progress_info.progress() * double(norm_value));
+                    progress_info.last_value = static_cast<std::uint64_t>(progress_info.progress()
+                                                                          * static_cast<double>(norm_value));
 
-                    auto done_work = shared->m_done_work_units + progress_info.last_value;
+                    auto done_work = shared->get_done_work_units_no_lock() + progress_info.last_value;
                     // minimize numerical uncertainty by substracting in a second time :
                     done_work -= old_info.last_value;
 
@@ -116,7 +117,7 @@ void aggregator::add(const core::progress::monitor::sptr& _progress, double _wei
                     auto shared = dynamic_pointer_cast<aggregator>(shared_this);
                     core::mt::read_to_write_lock sublock(shared->m_mutex);
 
-                    auto work_units           = shared->m_total_work_units;
+                    auto work_units           = shared->get_total_work_units_no_lock();
                     auto new_total_work_units = _sub_progress.get_total_work_units();
 
                     if(_old_total_work_units != new_total_work_units)

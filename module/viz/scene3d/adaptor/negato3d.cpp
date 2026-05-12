@@ -27,18 +27,14 @@
 #include <core/com/signal.hxx>
 #include <core/com/slots.hxx>
 
-#include <data/boolean.hpp>
 #include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
-#include <data/tools/color.hpp>
 
 #include <geometry/data/image.hpp>
 
 #include <viz/scene3d/ogre.hpp>
 #include <viz/scene3d/utils.hpp>
 
-#include <OGRE/OgreCamera.h>
-#include <OGRE/OgreSceneNode.h>
 #include <OGRE/OgreVector.h>
 
 #include <algorithm>
@@ -111,7 +107,7 @@ void negato3d::set_visible(bool _visible)
         });
     if(m_auto_reset_camera)
     {
-        this->render_service()->reset_camera_coordinates(m_layer_id);
+        this->render_service()->reset_camera_coordinates(layer_id());
     }
 
     this->request_render();
@@ -236,9 +232,9 @@ void negato3d::move_slices(int _x, int _y)
 
         image->async_emit(
             data::image::SLICE_INDEX_MODIFIED_SIG,
-            int(picked_voxel[2]),
-            int(picked_voxel[1]),
-            int(picked_voxel[0])
+            static_cast<int>(picked_voxel[2]),
+            static_cast<int>(picked_voxel[1]),
+            static_cast<int>(picked_voxel[0])
         );
 
         image->async_emit(

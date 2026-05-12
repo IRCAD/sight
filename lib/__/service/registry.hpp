@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -65,7 +65,7 @@ SIGHT_SERVICE_API void unregister_service(SPTR(service::base) _service);
 template<class SERVICE>
 std::set<SPTR(SERVICE)> get_services()
 {
-    const auto all_services = get_services();
+    const auto& all_services = get_services();
     std::set<SPTR(SERVICE)> services;
 
     for(const auto& srv : all_services)

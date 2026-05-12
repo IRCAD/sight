@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,6 +28,7 @@
 
 #include <core/location/base.hpp>
 
+#include <cstdint>
 #include <filesystem>
 #include <string>
 
@@ -43,7 +44,7 @@ public:
 
     SIGHT_DECLARE_CLASS(location_base, ui::object);
 
-    enum options
+    enum options : std::uint8_t
     {
         none            = 0,
         read            = 1 << 1,
@@ -51,7 +52,7 @@ public:
         file_must_exist = 1 << 3
     };
 
-    enum types
+    enum types : std::uint8_t
     {
         single_file,
         folder,

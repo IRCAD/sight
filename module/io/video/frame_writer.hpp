@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2024 IRCAD France
+ * Copyright (C) 2016-2026 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -72,9 +72,6 @@ public:
     /// Destructor. Does nothing
     ~frame_writer() noexcept override;
 
-    /// Defines auto connection for this service (saveFrame()) to the frame timeline (objectPushed)
-    service::connections_t auto_connections() const override;
-
     /// Display a location dialog allowing to select the video file to save
     void open_location_dialog() override;
 
@@ -82,6 +79,9 @@ public:
     sight::io::service::path_type_t get_path_type() const override;
 
 protected:
+
+    /// Defines auto connection for this service (saveFrame()) to the frame timeline (objectPushed)
+    service::connections_t auto_connections() const override;
 
     /// Does nothing
     void configuring() override;

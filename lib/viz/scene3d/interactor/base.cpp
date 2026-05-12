@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,24 +23,13 @@
 #include "viz/scene3d/interactor/base.hpp"
 
 #include "viz/scene3d/layer.hpp"
-#include "viz/scene3d/utils.hpp"
 
 #include <core/com/signal.hxx>
 #include <core/com/slot.hxx>
 #include <core/com/slots.hxx>
 
-#include <service/macros.hpp>
-
 namespace sight::viz::scene3d::interactor
 {
-
-// ----------------------------------------------------------------------------
-
-base::base(layer::sptr _layer, bool _layer_order_dependant) :
-    m_layer(_layer),
-    m_layer_order_dependant(_layer_order_dependant)
-{
-}
 
 // ----------------------------------------------------------------------------
 
@@ -146,27 +135,10 @@ void base::enter_event()
 
 // ----------------------------------------------------------------------------
 
-bool base::is_in_layer(int _mouse_x, int _mouse_y, layer::sptr _layer, bool _layer_order_dependant)
+bool base::is_in_layer(int _mouse_x, int _mouse_y, layer::sptr _layer)
 {
     const auto* const layer_vp = _layer->get_viewport();
-    bool is_in_layer           = is_in_viewport(_mouse_x, _mouse_y, layer_vp);
-
-    // Check if there's no layer above.
-    if(_layer_order_dependant)
-    {
-        auto* const render_window      = layer_vp->getTarget();
-        const std::uint16_t num_layers = render_window->getNumViewports();
-        for(std::uint16_t i = 0 ; i < num_layers && is_in_layer ; ++i)
-        {
-            const auto* const vp = render_window->getViewport(i);
-            if(vp->getZOrder() > layer_vp->getZOrder())
-            {
-                is_in_layer = !is_in_viewport(_mouse_x, _mouse_y, vp);
-            }
-        }
-    }
-
-    return is_in_layer;
+    return is_in_viewport(_mouse_x, _mouse_y, layer_vp);
 }
 
 // ----------------------------------------------------------------------------

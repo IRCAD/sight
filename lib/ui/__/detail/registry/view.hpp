@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -62,7 +62,7 @@ public:
     }
 
     /// Constructor.
-    SIGHT_UI_API view(std::string _sid);
+    SIGHT_UI_API explicit view(std::string _sid);
 
     /// Destructor. Do nothing
     SIGHT_UI_API ~view() override;
@@ -164,6 +164,8 @@ protected:
     using sid_menu_bar_pair_type = std::pair<std::string, bool>;
     using sid_tool_bar_pair_type = std::pair<std::string, bool>;
 
+    // NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
+
     /**
      * @brief All services ID managed and associated with pair containing:
      * subviews index vector and boolean describing if is started by the manager.
@@ -184,6 +186,8 @@ protected:
 
     /// Main service ID associate with this view
     std::string m_sid;
+
+    // NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 };
 
 } // namespace detail::registry

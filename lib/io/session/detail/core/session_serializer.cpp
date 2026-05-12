@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2025 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -29,7 +29,6 @@
 
 #include <format>
 
-#include <atomic>
 #include <shared_mutex>
 
 namespace sight::io::session::detail
@@ -39,12 +38,17 @@ using core::crypto::password_keeper;
 using core::crypto::secure_string;
 using sight::io::zip::archive;
 
+namespace
+{
+
 //------------------------------------------------------------------------------
 struct serializer_struct
 {
     std::unordered_map<std::string, serializer_t> serializer;
     std::shared_mutex serializers_mutex;
 };
+
+} // namespace
 
 //------------------------------------------------------------------------------
 
@@ -53,8 +57,6 @@ static serializer_struct& get_serializer()
     static serializer_struct serializer;
     return serializer;
 }
-
-//------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
 
@@ -285,7 +287,7 @@ void session_serializer::serialize(
     else
     {
         // Open the ostream from the json stored into the archive
-        auto ostream = archive->open_file(get_index_file_path(), _password, zip::method::DEFAULT, zip::level::best);
+        auto ostream = archive->open_file(get_index_file_path(), _password, zip::method::standard, zip::level::best);
 
         // Write the final property tree back to the archive
         boost::property_tree::write_json(*ostream, tree, false);

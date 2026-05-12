@@ -22,13 +22,9 @@
 
 #include "core/progress/monitor.hpp"
 
-#include "core/progress/exception/waiting.hpp"
-#include "core/progress/observer.hpp"
 #include "core/spy_log.hpp"
 
 #include <core/com/signal.hxx>
-#include <core/com/signals.hpp>
-#include <core/thread/worker.hxx>
 
 namespace sight::core::progress
 {
@@ -113,7 +109,7 @@ void monitor::cancel()
         // RUNNING, no need to lock m_mutex
         for(const auto& cancel : m_cancel_hooks)
         {
-            (cancel) ();
+            cancel();
         }
 
         lock.lock();
@@ -121,7 +117,7 @@ void monitor::cancel()
         core::mt::upgrade_to_write_lock write_lock(lock);
 
         SIGHT_ASSERT(
-            "State shall be only CANCELING or CANCELED, not " << m_state,
+            "State shall be only CANCELING or CANCELED, not " << static_cast<unsigned int>(m_state),
             m_state == canceled || m_state == canceling
         );
 
@@ -475,6 +471,20 @@ bool monitor::is_cancelable() const
 void monitor::done()
 {
     this->done_work(m_total_work_units);
+}
+
+//------------------------------------------------------------------------------
+
+std::uint64_t monitor::get_done_work_units_no_lock() const
+{
+    return m_done_work_units;
+}
+
+//------------------------------------------------------------------------------
+
+std::uint64_t monitor::get_total_work_units_no_lock() const
+{
+    return m_total_work_units;
 }
 
 //------------------------------------------------------------------------------

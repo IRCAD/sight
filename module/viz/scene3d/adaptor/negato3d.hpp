@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -113,18 +113,11 @@ public:
     /// Destroys the adaptor.
     ~negato3d() noexcept final = default;
 
-protected:
-
-    /// Configures the service.
-    void configuring(const config_t& _config) final;
-
     /**
      * @brief Sets the negato visibility.
      * @param _visible the visibility status of the negato.
      */
     void set_visible(bool _visible) final;
-
-private:
 
     /**
      * @brief Interacts with the negato if it was picked by pressing any mouse button.
@@ -153,6 +146,13 @@ private:
 
     /// Ends all interactions, regardless of the input.
     void button_release_event(mouse_button /*_button*/, modifier /*_mods*/, int /*_x*/, int /*_y*/) final;
+
+protected:
+
+    /// Configures the service.
+    void configuring(const config_t& _config) final;
+
+private:
 
     /**
      * @brief Sets the slice intersection at the (_x, _y) screen position if possible.

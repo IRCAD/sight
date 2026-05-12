@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2025 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,8 +36,6 @@
 #include <io/dimse/helper/series.hpp>
 #include <io/dimse/series_enquirer.hpp>
 
-#include <service/extension/config.hpp>
-
 #include <ui/qt/container/widget.hpp>
 
 #include <QHBoxLayout>
@@ -53,7 +51,7 @@ static const std::string DELAY_CONFIG = "delay";
 //------------------------------------------------------------------------------
 
 slice_index_dicom_editor::slice_index_dicom_editor() noexcept :
-    sight::service::notifier(m_signals)
+    sight::service::notifier(has_signals::signals())
 {
 }
 
@@ -188,7 +186,7 @@ void slice_index_dicom_editor::retrieve_slice()
 {
     // Check if the slice already exists.
     const auto dicom_series                = m_series.lock();
-    const std::size_t selected_slice_index = std::size_t(m_slider->value()) + 1;
+    const std::size_t selected_slice_index = static_cast<std::size_t>(m_slider->value()) + 1;
 
     if(!sight::io::dicom::helper::series::is_instance_available(*dicom_series, selected_slice_index))
     {

@@ -70,7 +70,7 @@ public:
      */
     SIGHT_CORE_API void finish() final;
 
-protected:
+private:
 
     /// Task type
     using packaged_task = std::packaged_task<void ()>;

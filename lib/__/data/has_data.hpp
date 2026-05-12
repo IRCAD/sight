@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2025 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -82,7 +82,7 @@ public:
      * @param _index optional index of the data to retrieve.
      * @return data object, nullptr if not found.
      */
-    SIGHT_DATA_API data::object::csptr object(
+    [[nodiscard]] SIGHT_DATA_API data::object::csptr object(
         std::string_view _key,
         data::access _access,
         std::optional<std::size_t> _index = {}) const;
@@ -181,7 +181,7 @@ protected:
     SIGHT_DATA_API void reset_all_out();
 
     using container_t = std::map<std::pair<std::string_view, std::optional<std::size_t> >, base_ptr*>;
-    SIGHT_DATA_API const container_t& container() const;
+    [[nodiscard]] SIGHT_DATA_API const container_t& container() const;
 
 private:
 
@@ -192,7 +192,7 @@ private:
     friend class ptr_vector;
 
     /// Finds a registered pointer, asserts if not found
-    auto find_object(std::string_view, data::object::csptr _obj) const;
+    [[nodiscard]] auto find_object(std::string_view /*_key*/, data::object::csptr _obj) const;
     /// Registers a pointer
     void register_ptr(std::string_view _key, base_ptr* _data, std::optional<std::size_t> _index = 0);
     /// Unregisters a pointer

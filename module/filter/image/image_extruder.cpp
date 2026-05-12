@@ -37,7 +37,7 @@ static const core::com::slots::key_t ADD_RECONSTRUCTIONS_SLOT = "addReconstructi
 //------------------------------------------------------------------------------
 
 image_extruder::image_extruder() :
-    filter(m_signals)
+    filter(has_signals::signals())
 {
     new_slot(ADD_RECONSTRUCTIONS_SLOT, &image_extruder::add_reconstructions, this);
 }
@@ -91,7 +91,7 @@ void image_extruder::updating()
             image_out->set_spacing(image->spacing());
             image_out->set_origin(image->origin());
             image_out->set_orientation(image->orientation());
-            std::fill(image_out->begin(), image_out->end(), std::uint8_t(255));
+            std::fill(image_out->begin(), image_out->end(), static_cast<std::uint8_t>(255));
         }
 
         const auto meshes = m_meshes.lock();

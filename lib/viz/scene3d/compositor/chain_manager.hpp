@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,13 +31,6 @@
 #include <map>
 #include <vector>
 
-namespace Ogre
-{
-
-class Viewport;
-
-} // namespace Ogre
-
 namespace sight::viz::scene3d
 {
 
@@ -60,7 +53,7 @@ public:
     using compositor_t       = std::pair<compositor_id_t, bool>;
     using compositor_chain_t = std::vector<compositor_t>;
 
-    SIGHT_VIZ_SCENE3D_API chain_manager(const SPTR(viz::scene3d::layer)& _layer);
+    SIGHT_VIZ_SCENE3D_API explicit chain_manager(const SPTR(viz::scene3d::layer)& _layer);
     SIGHT_VIZ_SCENE3D_API ~chain_manager() override;
 
     /// Inserts the new compositor in the compositor chain vector

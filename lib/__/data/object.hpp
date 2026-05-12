@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -235,7 +235,7 @@ public:
     /** @} */
 
     /// Returns the object's mutex.
-    inline core::mt::read_write_mutex& get_mutex() const
+    core::mt::read_write_mutex& get_mutex() const
     {
         return m_mutex;
     }
@@ -257,9 +257,14 @@ public:
     /// Returns a timestamp to know when the object was last modified
     inline std::uint64_t last_modified() const noexcept;
 
+    /// Swaps the content of this object with the one of the source object. This method shall not throw any exception.
+    SIGHT_DATA_API void swap(object::sptr _source) noexcept;
+
 protected:
 
     SIGHT_DATA_API object();
+
+private:
 
     /// Description allows to distinguish between different instances of the same class
     std::string m_description;

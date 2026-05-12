@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,12 +22,9 @@
 
 #include "io/itk/inr_image_reader.hpp"
 
-#include "factory/inr_image_io_factory.hpp"
-
 #include "io/itk/helper/progress_itk_to_fw.hpp"
 #include "io/itk/itk.hpp"
 
-#include <core/base.hpp>
 #include <core/tools/dispatcher.hpp>
 
 #include <data/image.hpp>
@@ -78,7 +75,7 @@ void inr_image_reader::read(sight::core::progress::observer::sptr _progress)
             );
 
             // Reader IO (*1*)
-            typename ::itk::ImageIOBase::Pointer image_io_read = ::itk::ImageIOFactory::CreateImageIO(
+            ::itk::ImageIOBase::Pointer image_io_read = ::itk::ImageIOFactory::CreateImageIO(
                 _filename.c_str(),
                 ::itk::ImageIOFactory::ReadMode
             );
@@ -100,8 +97,7 @@ void inr_image_reader::read(sight::core::progress::observer::sptr _progress)
 
     const std::filesystem::path file = get_file();
     SIGHT_ASSERT("File: " << file << " doesn't exist", std::filesystem::exists(file));
-    SIGHT_ASSERT("Object expired", !m_object.expired());
-    SIGHT_ASSERT("Object null", m_object.lock());
+    auto object_lock = get_object();
 
     const core::type type = get_image_type(file.string());
 
@@ -109,8 +105,6 @@ void inr_image_reader::read(sight::core::progress::observer::sptr _progress)
     using sight::core::tools::intrinsic_types;
     dispatcher<intrinsic_types, decltype(do_read)>::invoke(type, this->get_concrete_object(), file.string(), _progress);
 
-    SIGHT_ASSERT("sight::data::image is not well produced", m_object.lock()); // verify that data::image is well
-    // produced
     // Post Condition image with a pixel type
     SIGHT_ASSERT(
         "Image has an unspecified type",

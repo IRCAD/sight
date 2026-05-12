@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,33 +22,23 @@
 
 #include "viz/scene3d/vr/ray_tracing_volume_renderer.hpp"
 
-#include "viz/scene3d/compositor/core.hpp"
 #include "viz/scene3d/compositor/manager/ray_exit_depth.hpp"
-#include "viz/scene3d/helper/camera.hpp"
 #include "viz/scene3d/helper/image.hpp"
-#include "viz/scene3d/helper/shading.hpp"
 #include "viz/scene3d/ogre.hpp"
 #include "viz/scene3d/render.hpp"
-#include "viz/scene3d/utils.hpp"
-
-#include <core/profiling.hpp>
 
 #include <data/helper/medical_image.hpp>
 
 #include <OGRE/OgreCompositorInstance.h>
 #include <OGRE/OgreCompositorManager.h>
 #include <OGRE/OgreGpuProgramManager.h>
-#include <OGRE/OgreHardwarePixelBuffer.h>
 #include <OGRE/OgreHighLevelGpuProgram.h>
 #include <OGRE/OgreHighLevelGpuProgramManager.h>
 #include <OGRE/OgreLight.h>
 #include <OGRE/OgreMaterial.h>
 #include <OGRE/OgreTexture.h>
-#include <OGRE/OgreTextureManager.h>
-#include <OGRE/OgreViewport.h>
 
 #include <algorithm>
-#include <map>
 #include <memory>
 #include <string>
 #include <utility>
@@ -58,7 +48,7 @@ namespace sight::viz::scene3d::vr
 
 //-----------------------------------------------------------------------------
 
-class ray_tracing_volume_renderer::CameraListener : public Ogre::Camera::Listener
+class ray_tracing_volume_renderer::camera_listener : public Ogre::Camera::Listener
 {
 /// Renderer to which this object listens
 const ray_tracing_volume_renderer& m_renderer;
@@ -75,7 +65,7 @@ int m_frame_id {0};
 public:
 
     /// Constructor
-    CameraListener(const ray_tracing_volume_renderer& _renderer, layer::wptr _layer) :
+    camera_listener(const ray_tracing_volume_renderer& _renderer, layer::wptr _layer) :
         m_renderer(_renderer),
         m_layer(std::move(_layer)),
         m_current_mtl_name("VolIllum")
@@ -154,9 +144,9 @@ ray_tracing_volume_renderer::ray_tracing_volume_renderer(
                     _samples,
                     _buffer,
                     _preintegration),
-    m_shader(_shader.value_or("RayTracedVolume_FP.glsl")),
-    m_shadows({_shadows.value_or(shadows_parameters_t {})}),
     m_layer(_layer),
+    m_shadows({_shadows.value_or(shadows_parameters_t {})}),
+    m_shader(_shader.value_or("RayTracedVolume_FP.glsl")),
     m_sat(m_parent_id,
           m_scene_manager,
           (m_shadows.parameters.ao.enabled || m_shadows.parameters.colour_bleeding.enabled),
@@ -1117,7 +1107,7 @@ void ray_tracing_volume_renderer::init_entry_points()
     //Camera listener
     if(m_camera_listener == nullptr)
     {
-        m_camera_listener = std::make_unique<CameraListener>(*this, m_layer);
+        m_camera_listener = std::make_unique<camera_listener>(*this, m_layer);
         m_camera->addListener(m_camera_listener.get());
     }
 }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024 IRCAD France
+ * Copyright (C) 2024-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -68,7 +68,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    std::string to_string() const override
+    [[nodiscard]] std::string to_string() const override
     {
         std::vector<std::string> s;
         std::ranges::transform(this->value(), std::back_inserter(s), [](auto& _s){return std::to_string(_s);});
@@ -95,6 +95,7 @@ public:
     }
 };
 
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define DECLARE_VEC(_class, _T, _N) \
         class SIGHT_DATA_CLASS_API _class final : public sight::data::vec<_T, \
                                                                           _N> \

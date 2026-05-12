@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -93,13 +93,13 @@ public:
     /// Destructor. Does nothing
     ~distortion() noexcept override = default;
 
+protected:
+
     /**
      * @brief Connect data::image::MODIFIED_SIG to service::slots::UPDATE
      * and data::image::BUFFER_MODIFIED_SIG to service::slots::UPDATE
      */
     service::connections_t auto_connections() const override;
-
-protected:
 
     /// Does nothing
     void configuring() override;

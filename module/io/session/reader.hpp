@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2025 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -120,6 +120,12 @@ public:
     /// Propose to read a session data file
     void open_location_dialog() final;
 
+    /// Returns managed path type, here service manages only single file
+    sight::io::service::path_type_t get_path_type() const final
+    {
+        return sight::io::service::file;
+    }
+
 protected:
 
     /// Does nothing
@@ -133,12 +139,6 @@ protected:
 
     /// Read session data from filesystem
     void updating() final;
-
-    /// Returns managed path type, here service manages only single file
-    sight::io::service::path_type_t get_path_type() const final
-    {
-        return sight::io::service::file;
-    }
 
 private:
 
@@ -162,7 +162,7 @@ private:
     };
 
     /// Archive format to use
-    sight::io::zip::archive::archive_format m_archive_format {sight::io::zip::archive::archive_format::DEFAULT};
+    sight::io::zip::archive::archive_format m_archive_format {sight::io::zip::archive::archive_format::standard};
 
     /// Used in case of bad password
     int m_password_retry {0};

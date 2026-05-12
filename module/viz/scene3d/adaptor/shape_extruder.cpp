@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2025 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2020-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,8 +48,7 @@ shape_extruder::triangle2_d::triangle2_d(
 ) :
     a(_a),
     b(_b),
-    c(_c),
-    id(s_id++)
+    c(_c)
 {
     // Matrix to rotate of 90 degree over the Z axis.
     const Ogre::Matrix3 quarter_rotation {0, -1, 0, 1, 0, 0, 0, 0, 1};
@@ -138,7 +137,7 @@ Ogre::Vector3 shape_extruder::get_cam_direction(const Ogre::Camera* const _cam)
 //-----------------------------------------------------------------------------
 
 shape_extruder::shape_extruder() noexcept :
-    service::notifier(m_signals)
+    service::notifier(has_signals::signals())
 {
     new_slot(slots::ENABLE_TOOL, &shape_extruder::enable_tool, this);
     new_slot(slots::DELETE_LAST_MESH, &shape_extruder::delete_last_mesh, this);

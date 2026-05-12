@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2025 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,6 @@
 #include "io/vtk/helper/mesh.hpp"
 #include "io/vtk/helper/vtk_lambda_command.hpp"
 
-#include <core/base.hpp>
 #include <core/progress/monitor.hpp>
 #include <core/progress/observer.hpp>
 
@@ -40,9 +39,7 @@ namespace sight::io::vtk
 
 void vtp_mesh_reader::read(sight::core::progress::observer::sptr _progress)
 {
-    SIGHT_ASSERT("Object pointer expired", !m_object.expired());
-
-    [[maybe_unused]] const auto object_lock = m_object.lock();
+    auto object_lock = get_object();
 
     SIGHT_ASSERT("Object Lock null.", object_lock);
 

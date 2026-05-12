@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2024 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -51,7 +51,7 @@ public:
     /// @}
 
     template<typename C = object>
-    inline typename C::sptr get(const std::string& _key) const noexcept;
+    inline C::sptr get(const std::string& _key) const noexcept;
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
@@ -71,7 +71,7 @@ public:
 //------------------------------------------------------------------------------
 
 template<class C>
-inline typename C::sptr map::get(const std::string& _key) const noexcept
+inline C::sptr map::get(const std::string& _key) const noexcept
 {
     try
     {

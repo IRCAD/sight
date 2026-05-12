@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,7 +40,7 @@ namespace detail::registry
 
 class view;
 
-}
+} // namespace detail::registry
 
 /**
  * @brief   Defines the service interface managing a frame.
@@ -97,6 +97,8 @@ public:
 
     SIGHT_DECLARE_SERVICE(frame, service::base);
 
+    SIGHT_UI_API ~frame() override = default;
+
     /// Get widget defined for progress bar
     SIGHT_UI_API static ui::container::widget::sptr get_progress_widget();
 
@@ -132,7 +134,6 @@ public:
 protected:
 
     SIGHT_UI_API frame();
-    SIGHT_UI_API ~frame() override = default;
 
     /**
      * @brief Initialize frame managers.

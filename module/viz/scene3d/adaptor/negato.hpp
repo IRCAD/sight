@@ -42,8 +42,8 @@ namespace sight::module::viz::scene3d::adaptor
  */
 class negato :
     public sight::viz::scene3d::adaptor,
-    public sight::viz::scene3d::transformable,
-    public sight::viz::scene3d::interactor::base
+    public sight::viz::scene3d::interactor::base,
+    public sight::viz::scene3d::transformable
 {
 public:
 
@@ -68,17 +68,6 @@ public:
         static inline const slot_key_t UPDATE_SLICES_FROM_WORLD = "update_slices_from_world";
     };
 
-    /**
-     * @brief Proposals to connect service slots to associated object signals.
-     * @return A map of each proposed connection.
-     *
-     * Connect data::image::MODIFIED of s_IMAGE_INOUT to service::slots::UPDATE
-     * Connect data::image::BUFFER_MODIFIED of s_IMAGE_INOUT to service::slots::UPDATE
-     * Connect data::image::SLICE_TYPE_MODIFIED of s_IMAGE_INOUT to SLICE_TYPE
-     * Connect data::image::SLICE_INDEX_MODIFIED of s_IMAGE_INOUT to SLICE_INDEX
-     */
-    service::connections_t auto_connections() const override;
-
     /// Creates the service and initializes slots.
     negato() noexcept;
 
@@ -86,6 +75,12 @@ public:
     ~negato() noexcept override = default;
 
 protected:
+
+    /**
+     * @brief Proposals to connect service slots to associated object signals.
+     * @return A map of each proposed connection.
+     */
+    service::connections_t auto_connections() const override;
 
     /// Configures the service.
     void configuring(const config_t& _config) override;
@@ -160,6 +155,7 @@ private:
 
 protected:
 
+    //NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
     /// Contains the widget displayed to pick intensities.
     std::unique_ptr<sight::viz::scene3d::picking_cross> m_picking_cross;
 
@@ -198,6 +194,7 @@ protected:
 
     sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, "image"};
     sight::data::ptr<sight::data::transfer_function, sight::data::access::inout> m_tf {this, "tf", true};
+//NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 
 private:
 
@@ -224,10 +221,10 @@ private:
 
     enum class update_flags : std::uint8_t
     {
-        IMAGE,
-        IMAGE_BUFFER,
-        MASK,
-        TF
+        image,
+        image_buffer,
+        mask,
+        tf
     };
 
     sight::data::ptr<sight::data::image, sight::data::access::in> m_mask {this, "mask", true};

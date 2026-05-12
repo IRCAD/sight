@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -110,7 +110,7 @@ protected:
     /// Override
     void info(std::ostream& _sstream) override;
 
-protected:
+private:
 
     /**
      * @brief Check whether some series are already on the PACS

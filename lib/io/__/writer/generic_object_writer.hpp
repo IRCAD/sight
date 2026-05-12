@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,12 +47,10 @@ public:
     SIGHT_DECLARE_CLASS(generic_object_writer<DATATYPE>, io::writer::object_writer);
 
     /// Constructor. Do nothing.
-    generic_object_writer()
-    = default;
+    generic_object_writer() = default;
 
     /// Destructor. Do nothing.
-    ~generic_object_writer() override
-    = default;
+    ~generic_object_writer() override = default;
 
     /**
      * @brief m_object setter.

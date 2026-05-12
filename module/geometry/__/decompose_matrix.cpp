@@ -22,7 +22,6 @@
 
 #include "module/geometry/__/decompose_matrix.hpp"
 
-#include <core/com/signal.hpp>
 #include <core/com/signal.hxx>
 
 #define GLM_ENABLE_EXPERIMENTAL
@@ -35,7 +34,7 @@ namespace sight::module::geometry
 // ----------------------------------------------------------------------------
 
 decompose_matrix::decompose_matrix() noexcept :
-    filter(m_signals)
+    filter(has_signals::signals())
 {
 }
 
@@ -100,7 +99,7 @@ void decompose_matrix::updating()
             sight::geometry::data::identity(*translation);
             for(std::size_t i = 0 ; i < 3 ; ++i)
             {
-                (*translation)(i, 3) = glm_translation[int(i)];
+                (*translation)(i, 3) = glm_translation[static_cast<int>(i)];
             }
 
             auto trans_sig =
@@ -120,7 +119,7 @@ void decompose_matrix::updating()
                 {
                     if(i == j)
                     {
-                        (*scale)(i, j) = glm_scale[int(i)];
+                        (*scale)(i, j) = glm_scale[static_cast<int>(i)];
                     }
                 }
             }

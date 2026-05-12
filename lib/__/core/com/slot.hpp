@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -62,7 +62,7 @@ public:
     using function_t     = std::function<signature_type>;
 
     template<typename FUNCTOR>
-    slot(FUNCTOR _f) :
+    explicit slot(FUNCTOR _f) :
         slot<R(A ...)>(),
         m_func(std::move(_f))
     {
@@ -85,7 +85,7 @@ public:
         return m_func(_a ...);
     }
 
-protected:
+private:
 
     function_t m_func;
 };
@@ -100,9 +100,11 @@ public:
     using signature_type = R(A ...);
     using function_t     = std::function<signature_type>;
 
-    template<typename F> slot(SPTR(slot_run<F>)_slot);
+    template<typename F>
+    explicit slot(SPTR(slot_run<F>)_slot);
 
-    template<typename F> slot(SPTR(slot<F>)_slot);
+    template<typename F>
+    explicit slot(SPTR(slot<F>)_slot);
 };
 
 //-----------------------------------------------------------------------------

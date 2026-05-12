@@ -30,19 +30,13 @@
 #include <core/com/slots.hxx>
 
 #include <core/ptree.hpp>
-#include <data/map.hpp>
 
-#define FW_PROFILING_DISABLED
+#define SIGHT_PROFILING_DISABLED
 #include <core/profiling.hpp>
-
-#include <core/runtime/utils/generic_executable_factory_registry.hpp>
 
 #include <service/macros.hpp>
 
-#include <OGRE/OgreEntity.h>
-#include <OGRE/OgreNode.h>
 #include <OGRE/OgreSceneManager.h>
-#include <OGRE/OgreSceneNode.h>
 
 SIGHT_REGISTER_SERVICE(sight::viz::render, sight::viz::scene3d::render, sight::data::map);
 
@@ -528,7 +522,7 @@ void render::request_render()
 
     if(m_off_screen)
     {
-        FW_PROFILE("Offscreen rendering");
+        SIGHT_PROFILE("Offscreen rendering");
 
         const auto image = m_off_screen_image.lock();
         {

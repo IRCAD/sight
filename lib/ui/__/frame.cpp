@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,11 +28,7 @@
 #include <core/com/signal.hxx>
 #include <core/com/slot.hxx>
 #include <core/com/slots.hxx>
-#include <core/id.hpp>
 #include <core/thread/worker.hpp>
-#include <core/thread/worker.hxx>
-
-#include <service/macros.hpp>
 
 namespace sight::ui
 {
@@ -137,7 +133,7 @@ void frame::create()
     sub_views.push_back(container);
     m_view_registry->manage(sub_views);
 
-    ui::layout::frame_manager::CloseCallback fct;
+    ui::layout::frame_manager::close_callback fct;
 
     if(m_close_policy == CLOSE_POLICY_EXIT)
     {

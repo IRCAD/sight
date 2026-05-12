@@ -22,22 +22,14 @@
 
 #include "automatic_registration.hpp"
 
-#include <service/macros.hpp>
-
-#include <ui/__/dialog/progress.hpp>
-
-#include <chrono>
-#include <fstream>
-#include <iomanip>
-
 namespace sight::module::filter::image
 {
 
 //------------------------------------------------------------------------------
 
 automatic_registration::automatic_registration() :
-    filter(m_signals),
-    has_parameters(m_slots)
+    filter(has_signals::signals()),
+    has_parameters(has_slots::slots())
 {
 }
 

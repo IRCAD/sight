@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,7 +36,9 @@
 #include <string>
 #include <type_traits>
 
-#define SIGHT_NOT_USED(x) ((void) x)
+//NOLINTBEGIN(cppcoreguidelines-macro-usage)
+
+#define SIGHT_NOT_USED(x) ((void) (x))
 
 /**
  * @name Smart pointers macro
@@ -115,6 +117,7 @@
  * - LeafClassname is Object
  */
 #define FWCORE_INTERFACE_MACRO() \
+        /* NOLINTBEGIN(misc-override-with-different-visibility) */ \
         /** @name Demangling methods */ \
         /** @{ */ \
         /** @brief return object's classname without its namespace, i.e. base_object */ \
@@ -135,6 +138,7 @@
         { \
             FWCORE_STATIC_CACHE(sight::core::get_classname<self_t>()); \
         } \
+        /* NOLINTEND(misc-override-with-different-visibility) */ \
         /** @} */
 
 /**
@@ -145,6 +149,7 @@
  * - LeafClassname is Object
  */
 #define FWCORE_CLASSNAME_MACRO() \
+        /* NOLINTBEGIN(misc-override-with-different-visibility) */ \
         /** @name Demangling methods */ \
         /** @{ */ \
         /** @brief return object's classname without its namespace, i.e. base_object */ \
@@ -165,6 +170,7 @@
         { \
             FWCORE_STATIC_CACHE(sight::core::get_classname<self_t>()); \
         } \
+        /* NOLINTEND(misc-override-with-different-visibility) */ \
         /** @} */
 
 /**
@@ -181,6 +187,7 @@
         { \
             return self_t::classname() == type; \
         } \
+        /* NOLINTNEXTLINE(misc-override-with-different-visibility) */ \
         virtual bool is_a(const std::string& type) const \
         { \
             return self_t::is_type_of(type); \
@@ -195,7 +202,8 @@
             } \
             return base_class_t::is_type_of(type); \
         } \
-        bool is_a(const std::string& type) const override \
+        /* NOLINTNEXTLINE(misc-override-with-different-visibility) */ \
+        virtual bool is_a(const std::string& type) const override \
         { \
             return self_t::is_type_of(type); \
         }
@@ -206,12 +214,14 @@
  * These methods use 'shared_from_this' to get a shared pointer and cast it to required type
  */
 #define SIGHT_ALLOW_SHARED_FROM_THIS() \
-        /** @brief return a casted const shared ptr from this object */ \
+        /** @brief return a casted const shared ptr from this object \
+         * NOLINTNEXTLINE(bugprone-derived-method-shadowing-base-method) */ \
         csptr get_const_sptr() const \
         { \
             return dynamic_pointer_cast<const self_t>(this->core::base_object::shared_from_this()); \
         } \
-        /** @brief return a casted shared ptr from this object */ \
+        /** @brief return a casted shared ptr from this object \
+         * NOLINTNEXTLINE(bugprone-derived-method-shadowing-base-method) */ \
         sptr get_sptr() \
         { \
             return dynamic_pointer_cast<self_t>(this->core::base_object::shared_from_this()); \
@@ -247,6 +257,8 @@
  */
 #define SIGHT_DECLARE_SERVICE(_class, _parent_class) \
         FWCORE_CLASS_MACRO_2(_class, _parent_class)
+
+//NOLINTEND(cppcoreguidelines-macro-usage)
 
 /// Force inline
 #ifdef _MSC_VER

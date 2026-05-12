@@ -201,7 +201,7 @@
             </service>
 
             <service uid="ARPickerAdp" type="sight::module::viz::scene3d::adaptor::picker">
-                <config layerOrderDependant="false" />
+                <config />
             </service>
 
             <service uid="ARVideoAdp" type="sight::module::viz::scene3d::adaptor::video" auto_connect="true">

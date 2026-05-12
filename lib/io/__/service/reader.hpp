@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -234,6 +234,8 @@ protected:
     /// Defines the auto-connection between the file/folder properties and the 'set_file/set_folder'
     SIGHT_IO_API connections_t auto_connections() const override;
 
+    /// NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
+
     /// Defines whether reading was performed correctly, or if it has failed or if user has cancelled the process.
     bool m_read_failed {false};
 
@@ -242,6 +244,8 @@ protected:
 
     /// Window title for the file dialog
     sight::data::property<sight::data::string> m_window_title {this, WINDOW_TITLE_KEY, S_DEFAULT_WINDOW_TITLE};
+
+    /// NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 
 private:
 

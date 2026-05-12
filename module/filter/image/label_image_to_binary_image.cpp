@@ -24,15 +24,7 @@
 
 #include <core/com/signal.hxx>
 
-#include <data/integer.hpp>
-#include <data/vector.hpp>
-
 #include <filter/image/labeling.hpp>
-
-#include <algorithm>
-#include <bitset>
-#include <functional>
-#include <utility>
 
 namespace sight::module::filter::image
 {
@@ -40,7 +32,7 @@ namespace sight::module::filter::image
 //------------------------------------------------------------------------------
 
 label_image_to_binary_image::label_image_to_binary_image() :
-    filter(m_signals)
+    filter(has_signals::signals())
 {
 }
 

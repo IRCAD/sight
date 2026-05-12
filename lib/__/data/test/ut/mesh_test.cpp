@@ -24,8 +24,6 @@
 
 #include <data/mesh.hpp>
 
-#include <utest_data/generator/mesh.hpp>
-
 #include <boost/range/algorithm.hpp>
 
 #include <doctest/doctest.h>
@@ -421,17 +419,17 @@ TEST_SUITE("sight::data::mesh")
         for(sight::data::mesh::size_t i = 0 ; i < mesh->num_points() ; ++i)
         {
             mesh->set_point_color(
-                sight::data::mesh::point_t(i),
-                sight::data::mesh::color_t(i + 1),
-                sight::data::mesh::color_t(i + 2),
-                sight::data::mesh::color_t(i + 3),
-                sight::data::mesh::color_t(i + 4)
+                static_cast<sight::data::mesh::point_t>(i),
+                static_cast<sight::data::mesh::color_t>(i + 1),
+                static_cast<sight::data::mesh::color_t>(i + 2),
+                static_cast<sight::data::mesh::color_t>(i + 3),
+                static_cast<sight::data::mesh::color_t>(i + 4)
             );
 
             mesh->set_point_tex_coord(
-                sight::data::mesh::point_t(i),
-                1.0F / (sight::data::mesh::texcoord_t(i) + 1.0F),
-                1.0F / (sight::data::mesh::texcoord_t(i) + 2.0F)
+                static_cast<sight::data::mesh::point_t>(i),
+                1.0F / (static_cast<sight::data::mesh::texcoord_t>(i) + 1.0F),
+                1.0F / (static_cast<sight::data::mesh::texcoord_t>(i) + 2.0F)
             );
         }
 
@@ -659,7 +657,7 @@ TEST_SUITE("sight::data::mesh")
             const auto float_val                                          = static_cast<float>(i);
             const std::array<sight::data::mesh::normal_t, 3> normal       = {float_val, float_val, float_val};
             const std::array<sight::data::mesh::texcoord_t, 2> tex_coords = {float_val, float_val};
-            const std::size_t value                                       = std::size_t(3) * i;
+            const std::size_t value                                       = static_cast<std::size_t>(3) * i;
             mesh->set_point(i, static_cast<float>(value), static_cast<float>(value + 1), static_cast<float>(value + 2));
             mesh->set_point_color(i, color);
             mesh->set_point_normal(i, normal);
@@ -1342,7 +1340,7 @@ TEST_SUITE("sight::data::mesh")
                    };
 
         {
-            FW_PROFILE("std::for_each - array_iterator (nouveau en MR)");
+            SIGHT_PROFILE("std::for_each - array_iterator (nouveau en MR)");
             for(std::size_t i = 0 ; i < s_N ; ++i)
             {
                 std::for_each(pos, pos2, fn3);
@@ -1352,7 +1350,7 @@ TEST_SUITE("sight::data::mesh")
 
         auto range = mesh->zip_range<sight::data::iterator::point::xyz, sight::data::iterator::point::nxyz>();
         {
-            FW_PROFILE("std::for_each - zip array_iterator");
+            SIGHT_PROFILE("std::for_each - zip array_iterator");
             for(std::size_t i = 0 ; i < s_N ; ++i)
             {
                 std::ranges::for_each(range, fn2);
@@ -1364,7 +1362,7 @@ TEST_SUITE("sight::data::mesh")
         {
             auto z = boost::combine(pos_v, norm_v);
             {
-                FW_PROFILE("std::for - std boost combine");
+                SIGHT_PROFILE("std::for - std boost combine");
                 for(std::size_t i = 0 ; i < s_N ; ++i)
                 {
                     for(auto&& [p, n] : z)

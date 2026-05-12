@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024 IRCAD France
+ * Copyright (C) 2024-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -48,7 +48,7 @@ public:
 private:
 
     template<typename S, typename T>
-    static void join_impl(std::ostringstream& _stream, const S& _separator, const T& _t);
+    static void join_impl(std::ostringstream& _stream, const S& _separator, const T& _current);
 
     template<typename S, typename T, typename ... Args>
     static void join_impl(
@@ -78,8 +78,8 @@ void string::join_impl(std::ostringstream& _stream, const S& _separator, const T
         skip = _current.empty();
     }
     // Empty char* like is skipped.
-    else if constexpr(std::is_same_v<typename std::decay<T>::type, char*>
-                      || std::is_same_v<typename std::decay<T>::type, const char*>)
+    else if constexpr(std::is_same_v<std::decay_t<T>, char*>
+                      || std::is_same_v<std::decay_t<T>, const char*>)
     {
         if constexpr(std::is_pointer_v<T>)
         {
@@ -105,8 +105,8 @@ void string::join_impl(std::ostringstream& _stream, const S& _separator, const T
         {
             skip_separator = _separator.empty();
         }
-        else if constexpr(std::is_same_v<typename std::decay<S>::type, char*>
-                          || std::is_same_v<typename std::decay<S>::type, const char*>)
+        else if constexpr(std::is_same_v<std::decay_t<S>, char*>
+                          || std::is_same_v<std::decay_t<S>, const char*>)
         {
             if constexpr(std::is_pointer_v<S>)
             {

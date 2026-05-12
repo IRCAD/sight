@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -79,15 +79,21 @@ public:
     mesh_list() noexcept;
 
     /// Destroys the service.
-    ~mesh_list() noexcept override;
+    ~mesh_list() noexcept final;
+
+    /**
+     * @brief Sets the list visibility.
+     * @param _visible the visibility status of the list.
+     */
+    void set_visible(bool _visible) final;
 
 protected:
 
     /// Configures the adaptor.
-    void configuring() override;
+    void configuring() final;
 
     /// Initializes the adaptor.
-    void starting() override;
+    void starting() final;
 
     /**
      * @brief Proposal to connect service slots to associated object signals.
@@ -95,20 +101,14 @@ protected:
      *
      * Connect data::matrix4::MODIFIED_SIG of s_TRANSFORM_INOUT to ADD_MESH_SLOT
      */
-    service::connections_t auto_connections() const override;
+    service::connections_t auto_connections() const final;
 
     /// Does nothing.
-    void updating() override;
+    void updating() final;
 
     /// Unregisters all services.
     /// @see clear()
-    void stopping() override;
-
-    /**
-     * @brief Sets the list visibility.
-     * @param _visible the visibility status of the list.
-     */
-    void set_visible(bool _visible) override;
+    void stopping() final;
 
 private:
 

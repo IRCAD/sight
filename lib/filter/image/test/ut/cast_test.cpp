@@ -19,7 +19,6 @@
  *
  ***********************************************************************/
 
-#include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
 
 #include <filter/image/cast.hpp>
@@ -132,7 +131,7 @@ TEST_SUITE("sight::filter::image::cast")
             {-5.0, 10.0, 0.0},
             {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6},
             sight::core::type::UINT16,
-            sight::core::type::FLOAT,
+            sight::core::type::FLOAT32,
             sight::data::image::gray_scale,
             512
         );
@@ -147,7 +146,7 @@ TEST_SUITE("sight::filter::image::cast")
             {2.0, 2.0, 2.0},
             {0.0, 0.0, 0.0},
             {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6},
-            sight::core::type::DOUBLE,
+            sight::core::type::FLOAT64,
             sight::core::type::UINT8,
             sight::data::image::gray_scale,
             128
@@ -164,7 +163,7 @@ TEST_SUITE("sight::filter::image::cast")
             {0.0, 0.0, 0.0},
             {1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0},
             sight::core::type::INT32,
-            sight::core::type::FLOAT,
+            sight::core::type::FLOAT32,
             sight::data::image::gray_scale,
             200
         );
@@ -196,7 +195,7 @@ TEST_SUITE("sight::filter::image::cast")
 
         const auto in_dump_lock = image_in->dump_lock();
 
-        auto image_out = sight::filter::image::cast_to(*image_in, sight::core::type::FLOAT);
+        auto image_out = sight::filter::image::cast_to(*image_in, sight::core::type::FLOAT32);
 
         // Check type conversion
         CHECK_EQ(image_out->type(), image_in->type());

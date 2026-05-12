@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -93,7 +93,7 @@ array::~array()
 
 void array::swap(array::sptr _source) noexcept
 {
-    m_fields.swap(_source->m_fields);
+    object::swap(_source);
     m_strides.swap(_source->m_strides);
     m_size.swap(_source->m_size);
     m_buffer_object->swap(_source->m_buffer_object);
@@ -285,6 +285,7 @@ std::size_t array::get_buffer_offset(const data::array::index_t& _id) const
 
     offset_t offsets(_id.size());
 
+    // NOLINTNEXTLINE(modernize-use-ranges)
     std::transform(
         _id.begin(),
         _id.end(),

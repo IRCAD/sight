@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2025 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -28,7 +28,6 @@
 #include <core/crypto/secure_string.hpp>
 #include <core/location/single_folder.hpp>
 #include <core/progress/observer.hpp>
-#include <core/tools/system.hpp>
 
 #include <io/session/session_reader.hpp>
 #include <io/zip/exception/read.hpp>
@@ -47,7 +46,7 @@ using sight::io::zip::archive;
 
 reader::reader() noexcept :
     sight::io::service::reader("Choose a session file"),
-    notifier(m_signals)
+    notifier(has_signals::signals())
 {
     new_signal<signals::session_path_t>(signals::SESSION_LOADED);
     new_signal<signals::session_path_t>(signals::SESSION_LOADING_FAILED);
@@ -130,7 +129,7 @@ void reader::configuring()
         }
         else if(format == "archive")
         {
-            m_archive_format = archive::archive_format::DEFAULT;
+            m_archive_format = archive::archive_format::standard;
         }
         else
         {

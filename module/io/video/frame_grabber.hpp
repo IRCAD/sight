@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -119,20 +119,6 @@ public:
 
     void set_parameter(ui::parameter_t _value, std::string _key) override;
 
-protected:
-
-    /// Initialize the layout and the camera.
-    void starting() override;
-
-    /// Destroy the layout.
-    void stopping() override;
-
-    /// Do nothing.
-    void updating() override;
-
-    /// Do nothing.
-    void configuring() override;
-
     /// SLOT : Initialize and start camera (restart camera if is already started).
     void start_camera() override;
 
@@ -164,6 +150,20 @@ protected:
     /// SLOT: Removes a region of interest center. Currently this function relates to image zoom.
     ///       The removed point can be forwarded from a picker in singlePointMode for example.
     void remove_roi_center(sight::data::point::sptr _p) final;
+
+protected:
+
+    /// Initialize the layout and the camera.
+    void starting() override;
+
+    /// Destroy the layout.
+    void stopping() override;
+
+    /// Do nothing.
+    void updating() override;
+
+    /// Do nothing.
+    void configuring() override;
 
 private:
 

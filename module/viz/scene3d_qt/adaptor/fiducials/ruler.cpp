@@ -32,7 +32,6 @@
 #include <geometry/data/image.hpp>
 
 #include <viz/scene3d/helper/camera.hpp>
-#include <viz/scene3d/helper/fiducials.hpp>
 #include <viz/scene3d/helper/manual_object.hpp>
 #include <viz/scene3d/helper/scene.hpp>
 #include <viz/scene3d/ogre.hpp>
@@ -63,13 +62,13 @@ ruler::ruler() noexcept
 sight::service::connections_t ruler::auto_connections() const
 {
     return {
-        {s_IMAGE_INOUT, sight::data::object::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE},
-        {s_IMAGE_INOUT, sight::data::image_series::RULER_MODIFIED_SIG, private_slots::UPDATE_MODIFIED_RULER},
-        {s_IMAGE_INOUT, sight::data::image_series::FIDUCIAL_REMOVED_SIG, private_slots::REMOVE_RULER_OGRE_SET},
-        {s_IMAGE_INOUT, sight::data::image_series::SLICE_INDEX_MODIFIED_SIG,
+        {m_image, sight::data::object::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE},
+        {m_image, sight::data::image_series::RULER_MODIFIED_SIG, private_slots::UPDATE_MODIFIED_RULER},
+        {m_image, sight::data::image_series::FIDUCIAL_REMOVED_SIG, private_slots::REMOVE_RULER_OGRE_SET},
+        {m_image, sight::data::image_series::SLICE_INDEX_MODIFIED_SIG,
          private_slots::DISPLAY_ON_CURRENT_SLICE
         },
-        {s_IMAGE_INOUT, sight::data::image_series::SLICE_TYPE_MODIFIED_SIG,
+        {m_image, sight::data::image_series::SLICE_TYPE_MODIFIED_SIG,
          private_slots::DISPLAY_ON_CURRENT_SLICE
         },
     };
@@ -285,23 +284,23 @@ void ruler::updating()
         if(projection_type == Ogre::ProjectionType::PT_ORTHOGRAPHIC)
         {
             const Ogre::Vector3 begin = is_tiled_sparse ? Ogre::Vector3 {
-                float(fiducial_graphic_data[0] * spacing[0]),
-                float(fiducial_graphic_data[1] * spacing[1]),
-                float(fiducial_slice_index)
+                static_cast<float>(fiducial_graphic_data[0] * spacing[0]),
+                static_cast<float>(fiducial_graphic_data[1] * spacing[1]),
+                static_cast<float>(fiducial_slice_index)
             } : Ogre::Vector3 {
-                float(fiducial_contour_data[0]),
-                float(fiducial_contour_data[1]),
-                float(fiducial_contour_data[2])
+                static_cast<float>(fiducial_contour_data[0]),
+                static_cast<float>(fiducial_contour_data[1]),
+                static_cast<float>(fiducial_contour_data[2])
             };
 
             const Ogre::Vector3 end = is_tiled_sparse ? Ogre::Vector3 {
-                float(fiducial_graphic_data[2] * spacing[0]),
-                float(fiducial_graphic_data[3] * spacing[1]),
-                float(fiducial_slice_index)
+                static_cast<float>(fiducial_graphic_data[2] * spacing[0]),
+                static_cast<float>(fiducial_graphic_data[3] * spacing[1]),
+                static_cast<float>(fiducial_slice_index)
             } : Ogre::Vector3 {
-                float(fiducial_contour_data[3]),
-                float(fiducial_contour_data[4]),
-                float(fiducial_contour_data[5])
+                static_cast<float>(fiducial_contour_data[3]),
+                static_cast<float>(fiducial_contour_data[4]),
+                static_cast<float>(fiducial_contour_data[5])
             };
 
             const float axis_offset = -0.1F;
@@ -1218,15 +1217,15 @@ void ruler::button_release_event(mouse_button _button, modifier /*_mods*/, int /
                               );
                     double ratio = m_bin_button->devicePixelRatioF();
                     const int x  = std::clamp(
-                        int(((screen_pos.first.x + screen_pos.second.x) / 2) / ratio),
+                        static_cast<int>(((screen_pos.first.x + screen_pos.second.x) / 2) / ratio),
                         0,
                         parent_widget->width() - m_bin_button->width()
                     );
-                    int y = int((screen_pos.first.y / ratio) - m_bin_button->height());
+                    int y = static_cast<int>((screen_pos.first.y / ratio) - m_bin_button->height());
                     if(y < 0)
                     {
                         // If there isn't enough place upward the landmark, place the menu downward.
-                        y = int(screen_pos.second.y / ratio);
+                        y = static_cast<int>(screen_pos.second.y / ratio);
                     }
 
                     m_bin_button->move(x, y);

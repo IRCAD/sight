@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -24,7 +24,6 @@
 #include "io/itk/helper/progress_itk_to_fw.hpp"
 #include "io/itk/itk.hpp"
 
-#include <core/base.hpp>
 #include <core/tools/dispatcher.hpp>
 #include <core/tools/type_key_type_mapping.hpp>
 
@@ -40,8 +39,7 @@ namespace sight::io::itk
 
 void nifti_image_writer::write(sight::core::progress::observer::sptr _progress)
 {
-    SIGHT_ASSERT("Object expired", !m_object.expired());
-    SIGHT_ASSERT("Object null", m_object.lock());
+    auto object_lock = get_object();
 
     auto do_write =
         []<class PIXELTYPE>(const data::image::csptr _image,
@@ -55,7 +53,7 @@ void nifti_image_writer::write(sight::core::progress::observer::sptr _progress)
 
             // create writer
             using itk_image_type = ::itk::Image<PIXELTYPE, 3>;
-            using writer_t       = typename ::itk::ImageFileWriter<itk_image_type>;
+            using writer_t       = ::itk::ImageFileWriter<itk_image_type>;
             auto writer = writer_t::New();
             progressor progress(writer, _progress);
 

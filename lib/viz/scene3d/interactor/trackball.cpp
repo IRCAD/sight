@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,12 +19,12 @@
  *
  ***********************************************************************/
 
-#include "viz/scene3d/interactor/detail/trackball.hpp"
+#include "viz/scene3d/interactor/trackball.hpp"
 
 #include <OGRE/OgreSceneNode.h>
 #include <OGRE/OgreViewport.h>
 
-namespace sight::viz::scene3d::interactor::detail
+namespace sight::viz::scene3d::interactor
 {
 
 //------------------------------------------------------------------------------
@@ -77,4 +77,4 @@ void camera_rotate(Ogre::Camera* _camera, int _dx, int _dy, float _look_at_z, co
     }
 }
 
-} // namespace sight::viz::scene3d::interactor::detail
+} // namespace sight::viz::scene3d::interactor

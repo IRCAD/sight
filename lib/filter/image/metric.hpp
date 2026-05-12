@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,7 +39,7 @@ namespace sight::filter::image
  * are available and when intensity values are close
  * - Mutual Information : The most generic metric, can be used to match images with different modalities.
  */
-enum metric_t
+enum metric_t : std::uint8_t
 {
     mean_squares,
     normalized_correlation,

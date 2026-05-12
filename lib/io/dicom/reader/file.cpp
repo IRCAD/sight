@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -44,11 +44,6 @@
 #include <gdcmScanner.h>
 #include <gdcmTagKeywords.h>
 #include <gdcmTagToVR.h>
-#include <gdcmUIDs.h>
-
-#include <glm/ext/matrix_relational.hpp>
-#include <glm/ext/matrix_transform.hpp>
-#include <glm/glm.hpp>
 
 #include <algorithm>
 
@@ -60,6 +55,9 @@ namespace sight::io::dicom::reader
 // All frames that have a z position closer than 1e-3 will be considered as the same.
 static constexpr double Z_EPSILON = 1e-3;
 
+namespace
+{
+
 struct fiducial_set_with_metadata
 {
     data::fiducials_series::fiducial_set fiducial_set;
@@ -70,6 +68,8 @@ struct fiducial_set_with_metadata
     std::string content_description;
     std::string content_creator_name;
 };
+
+} // namespace
 
 //------------------------------------------------------------------------------
 
@@ -390,10 +390,10 @@ inline static core::type compute_type(
             return core::type::INT64;
 
         case gdcm::PixelFormat::FLOAT32:
-            return core::type::FLOAT;
+            return core::type::FLOAT32;
 
         case gdcm::PixelFormat::FLOAT64:
-            return core::type::DOUBLE;
+            return core::type::FLOAT64;
 
         default:
             return core::type::NONE;
@@ -526,7 +526,7 @@ inline static std::optional<double> compute_z_spacing(const data::series& _serie
         const double position = *value;
 
         // Simplify the z position, using the EPSILON precision
-        const auto index = std::int64_t(position / Z_EPSILON);
+        const auto index = static_cast<std::int64_t>(position / Z_EPSILON);
 
         // Let the map sort the frames
         sorted_positions.insert_or_assign(index, position);
@@ -548,7 +548,8 @@ inline static std::optional<double> compute_z_spacing(const data::series& _serie
 
     const double first_spacing = std::abs(first_position - second_position);
     const double all_spacing   = std::abs(last_position - first_position);
-    const double error         = std::abs(first_spacing * double(sorted_positions.size() - 1)) - all_spacing;
+    const double error         = std::abs(first_spacing * static_cast<double>(sorted_positions.size() - 1))
+                                 - all_spacing;
 
     if(error > Z_EPSILON)
     {
@@ -770,9 +771,9 @@ inline static bool read_buffer(
             _instance_buffer + _instance_buffer_size - 1
         );
 
-        for(auto i = std::streamsize(gdcm_buffer_size) ; --i >= 0 ; )
+        for(auto i = static_cast<std::streamsize>(gdcm_buffer_size) ; --i >= 0 ; )
         {
-            const auto byte = std::uint8_t(_instance_buffer[i]);
+            const auto byte = static_cast<std::uint8_t>(_instance_buffer[i]);
 
             end_instance_buffer[0] = (byte & 0x01) != 0 ? 0xff : 0x00;
             end_instance_buffer[1] = (byte & 0x02) != 0 ? 0xff : 0x00;
@@ -1197,7 +1198,7 @@ inline static data::series_set::sptr read_image_instance(
     // Compute the size
     const std::size_t instance_buffer_size =
         split ? image_series->size_in_bytes()
-              : image_series->size_in_bytes() / std::max(std::size_t(1), _source.num_instances());
+              : image_series->size_in_bytes() / std::max(static_cast<std::size_t>(1), _source.num_instances());
 
     // Read the image data and fill the image series
     if(!read_buffer(
@@ -1415,7 +1416,7 @@ public:
             }
 
             // Simplify the z position, using the EPSILON precision
-            const auto index = std::int64_t(*value / Z_EPSILON);
+            const auto index = static_cast<std::int64_t>(*value / Z_EPSILON);
 
             // Let the map sort the frames
             sorter.insert_or_assign(index, instance);
@@ -1614,17 +1615,8 @@ public:
             !m_sorted || m_sorted->empty()
         );
 
-        // Instantiate or reuse the output series set
-        if(const auto& object = std::dynamic_pointer_cast<data::series_set>(m_reader->m_object.lock()); object)
-        {
-            m_read = object;
-            m_read->clear();
-        }
-        else
-        {
-            m_read = std::make_shared<data::series_set>();
-            m_reader->set_object(m_read);
-        }
+        m_read = std::dynamic_pointer_cast<data::series_set>(m_reader->get_object());
+        m_read->clear();
 
         std::vector<fiducial_set_with_metadata> fiducial_sets;
 

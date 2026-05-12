@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,9 +25,22 @@
 #include <core/com/slots.hxx>
 #include <core/thread/worker.hpp>
 
-#include <utest/exception.hpp>
-
 #include <doctest/doctest.h>
+
+namespace
+{
+
+struct slots_test_basic
+{
+    //------------------------------------------------------------------------------
+
+    static int sum(int _a, int _b)
+    {
+        return _a + _b;
+    }
+};
+
+} // namespace
 
 TEST_SUITE("sight::core::com::slots")
 {
@@ -44,19 +57,6 @@ TEST_SUITE("sight::core::com::slots")
     {
         SIGHT_DEBUG(_str);
     }
-
-    struct slots_test_basic
-    {
-        slots_test_basic()
-        = default;
-
-        //------------------------------------------------------------------------------
-
-        static int sum(int _a, int _b)
-        {
-            return _a + _b;
-        }
-    };
 
 //-----------------------------------------------------------------------------
 
@@ -96,6 +96,9 @@ TEST_SUITE("sight::core::com::slots")
         worker->stop();
     }
 
+    namespace
+    {
+
 //-----------------------------------------------------------------------------
 
     struct slots_test_has_slot : public sight::core::com::has_slots
@@ -104,11 +107,8 @@ TEST_SUITE("sight::core::com::slots")
 
         slots_test_has_slot()
         {
-            auto slot_get_value = sight::core::com::new_slot(&slots_test_has_slot::get_value);
-            auto slot_sum       = sight::core::com::new_slot(&slots_test_has_slot::sum);
-
-            sight::core::com::has_slots::m_slots("sum", slot_sum)
-                ("getValue", slot_get_value);
+            new_slot("getValue", &slots_test_has_slot::get_value);
+            new_slot("sum", &slots_test_has_slot::sum);
         }
 
         //------------------------------------------------------------------------------
@@ -154,6 +154,8 @@ TEST_SUITE("sight::core::com::slots")
             return 4;
         }
     };
+
+    } // namespace
 
 //-----------------------------------------------------------------------------
 

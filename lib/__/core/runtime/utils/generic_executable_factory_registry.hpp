@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,7 +41,7 @@ struct generic_executable_factory_registry : public executable_factory_registry
     /**
      * @brief   Constructor
      */
-    generic_executable_factory_registry(const std::string& _type) :
+    explicit generic_executable_factory_registry(const std::string& _type) :
         executable_factory_registry(std::shared_ptr<factory_type>(new factory_type(_type)))
     {
     }

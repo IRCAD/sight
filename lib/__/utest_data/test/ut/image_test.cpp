@@ -131,10 +131,10 @@ TEST_SUITE("sight::utest_data::image")
         type = sight::core::type::UINT64;
         stress_test_with_type(type, 10);
 
-        type = sight::core::type::FLOAT;
+        type = sight::core::type::FLOAT32;
         stress_test_with_type(type, 10);
 
-        type = sight::core::type::DOUBLE;
+        type = sight::core::type::FLOAT64;
         stress_test_with_type(type, 10);
     }
 }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2025 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -139,6 +139,8 @@ public:
 
 protected:
 
+    // NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
+
     /// Notification attributes (message, position, type, ...).
     sight::service::notification m_notification {};
 
@@ -150,6 +152,8 @@ protected:
     ui::container::widget::csptr m_parent_container {nullptr};
 
     std::function<void()> m_closed_call_back;
+
+    //NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 };
 
 } // namespace sight::ui::dialog

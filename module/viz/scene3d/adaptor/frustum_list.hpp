@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2025 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -82,6 +82,12 @@ public:
     /// Destroys the adaptor.
     ~frustum_list() noexcept override = default;
 
+    /**
+     * @brief Sets the frustum list visibility.
+     * @param _visible the visibility status of the frustum list.
+     */
+    void set_visible(bool _visible) override;
+
 protected:
 
     /// Configures.
@@ -103,12 +109,6 @@ protected:
 
     /// Clears data.
     void stopping() override;
-
-    /**
-     * @brief Sets the frustum list visibility.
-     * @param _visible the visibility status of the frustum list.
-     */
-    void set_visible(bool _visible) override;
 
 private:
 

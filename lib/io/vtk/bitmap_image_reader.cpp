@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2025 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -62,8 +62,7 @@ bitmap_image_reader::bitmap_image_reader()
 
 void bitmap_image_reader::read(sight::core::progress::observer::sptr _progress)
 {
-    SIGHT_ASSERT("The current object has expired.", !m_object.expired());
-    SIGHT_ASSERT("Unable to lock object", m_object.lock());
+    auto object_lock = get_object();
 
     data::image::sptr p_image = get_concrete_object();
 

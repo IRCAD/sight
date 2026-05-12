@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -56,7 +56,7 @@ public:
         std::optional<std::size_t> _index,
         data::access _access,
         std::optional<bool> _auto_connect,
-        const bool _optional
+        bool _optional
     );
 
     /**

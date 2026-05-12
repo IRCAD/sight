@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -59,7 +59,7 @@ public:
     {
     public:
 
-        registry(std::string _functor_key)
+        explicit registry(std::string _functor_key)
         {
             auto fact = [](const sight::viz::scene3d::layer::sptr& _layer) -> std::shared_ptr<T>
                         {

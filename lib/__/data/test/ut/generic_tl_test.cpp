@@ -21,64 +21,64 @@
  ***********************************************************************/
 
 #include <data/generic_tl.hpp>
-#include <data/generic_tl.hxx>
+#include <data/generic_tl.hxx> // NOLINT(misc-include-cleaner)
 #include <data/registry/macros.hpp>
 #include <data/timeline/generic_object.hpp>
-#include <data/timeline/generic_object.hxx>
-
-#include <utest/exception.hpp>
+#include <data/timeline/generic_object.hxx> // NOLINT(misc-include-cleaner)
 
 #include <doctest/doctest.h>
 
 #include <algorithm>
 #include <array>
 
+namespace
+{
+
+//------------------------------------------------------------------------------
+
+class float3_tl : public sight::data::generic_tl<std::array<float,
+                                                            3> >
+{
+public:
+
+    SIGHT_DECLARE_CLASS(float3_tl, sight::data::timeline::base);
+};
+SIGHT_REGISTER_DATA(float3_tl)
+
+using float4 = std::array<float, 4>;
+
+//------------------------------------------------------------------------------
+
+class float4_tl : public sight::data::generic_tl<float4>
+{
+public:
+
+    SIGHT_DECLARE_CLASS(float4_tl, sight::data::timeline::base);
+};
+SIGHT_REGISTER_DATA(float4_tl)
+
+//------------------------------------------------------------------------------
+
+class test_contained
+{
+public:
+
+    int m_int {};
+    std::array<double, 2> m_floats {};
+};
+
+class test_class_tl : public sight::data::generic_tl<test_contained>
+{
+public:
+
+    SIGHT_DECLARE_CLASS(test_class_tl, sight::data::timeline::base);
+};
+SIGHT_REGISTER_DATA(test_class_tl)
+
+} // namespace
+
 TEST_SUITE("sight::data::generic_tl")
 {
-//------------------------------------------------------------------------------
-
-    class float3_tl : public sight::data::generic_tl<std::array<float,
-                                                                3> >
-    {
-    public:
-
-        SIGHT_DECLARE_CLASS(float3_tl, sight::data::timeline::base);
-    };
-    SIGHT_REGISTER_DATA(float3_tl)
-
-    using float4 = std::array<float, 4>;
-
-//------------------------------------------------------------------------------
-
-    class float4_tl : public sight::data::generic_tl<float4>
-    {
-    public:
-
-        SIGHT_DECLARE_CLASS(float4_tl, sight::data::timeline::base);
-    };
-    SIGHT_REGISTER_DATA(float4_tl)
-
-//------------------------------------------------------------------------------
-
-    class test_contained
-    {
-    public:
-
-        int m_int {};
-        std::array<double, 2> m_floats {};
-    };
-
-    class test_class_tl : public sight::data::generic_tl<test_contained>
-    {
-    public:
-
-        SIGHT_DECLARE_CLASS(test_class_tl, sight::data::timeline::base);
-    };
-    SIGHT_REGISTER_DATA(test_class_tl)
-
-    namespace ut
-    {
-
 //------------------------------------------------------------------------------
 
     TEST_CASE("push_pop")
@@ -126,24 +126,24 @@ TEST_SUITE("sight::data::generic_tl")
         timeline->push_object(data2);
         timeline->push_object(data3);
 
-        CHECK(data1->get_timestamp() == time1);
-        CHECK(data2->get_timestamp() == time2);
-        CHECK(data3->get_timestamp() == time3);
+        CHECK(data1->timestamp() == time1);
+        CHECK(data2->timestamp() == time2);
+        CHECK(data3->timestamp() == time3);
 
         ////////////////////////////////////////////////////////////////////////////
         /// Check first data with all elements set
         {
             CSPTR(sight::data::timeline::object) data_pushed1 = timeline->get_object(time1);
             CHECK(data1 == data_pushed1);
-            CHECK(data_pushed1->get_timestamp() == time1);
+            CHECK(data_pushed1->timestamp() == time1);
 
             CSPTR(sight::data::timeline::object) data_pushed2 = timeline->get_object(time2);
             CHECK(data2 == data_pushed2);
-            CHECK(data_pushed2->get_timestamp() == time2);
+            CHECK(data_pushed2->timestamp() == time2);
 
             CSPTR(sight::data::timeline::object) data_pushed3 = timeline->get_object(time3);
             CHECK(data3 == data_pushed3);
-            CHECK(data_pushed3->get_timestamp() == time3);
+            CHECK(data_pushed3->timestamp() == time3);
 
             CSPTR(sight::data::timeline::object) data_pushed1_bis = timeline->get_closest_object(time1 + 1.5);
 
@@ -153,11 +153,11 @@ TEST_SUITE("sight::data::generic_tl")
 
             CHECK_EQ(3U, obj->get_present_element_num());
             CHECK_EQ(std::size_t(16), obj->get_element_size());
-            CHECK_EQ(3U, obj->get_max_element_num());
+            CHECK_EQ(3U, obj->max_element_num());
             CHECK_EQ(true, obj->is_present(0));
             CHECK_EQ(true, obj->is_present(1));
             CHECK_EQ(true, obj->is_present(2));
-            CHECK_EQ(uint64_t(7), obj->get_mask());
+            CHECK_EQ(uint64_t(7), obj->mask());
 
             float4 buff_data = obj->get_element(0);
             CHECK_EQ(1.0F, buff_data[0]);
@@ -192,11 +192,11 @@ TEST_SUITE("sight::data::generic_tl")
 
             CHECK_EQ(2U, obj->get_present_element_num());
             CHECK_EQ(std::size_t(16), obj->get_element_size());
-            CHECK_EQ(3U, obj->get_max_element_num());
+            CHECK_EQ(3U, obj->max_element_num());
             CHECK_EQ(true, obj->is_present(0));
             CHECK_EQ(false, obj->is_present(1));
             CHECK_EQ(true, obj->is_present(2));
-            CHECK_EQ(uint64_t(5), obj->get_mask());
+            CHECK_EQ(uint64_t(5), obj->mask());
 
             float4 buff_data = obj->get_element(0);
             CHECK_EQ(-1.F, buff_data[0]);
@@ -300,11 +300,11 @@ TEST_SUITE("sight::data::generic_tl")
 
         CHECK_EQ(2U, data_pushed1->get_present_element_num());
         CHECK_EQ(sizeof(test_contained), data_pushed1->get_element_size());
-        CHECK_EQ(3U, data_pushed1->get_max_element_num());
+        CHECK_EQ(3U, data_pushed1->max_element_num());
         CHECK_EQ(false, data_pushed1->is_present(0));
         CHECK_EQ(true, data_pushed1->is_present(1));
         CHECK_EQ(true, data_pushed1->is_present(2));
-        CHECK_EQ(uint64_t(6), data_pushed1->get_mask());
+        CHECK_EQ(uint64_t(6), data_pushed1->mask());
 
         {
             const test_contained& test_data = data_pushed1->get_element(1);
@@ -327,11 +327,11 @@ TEST_SUITE("sight::data::generic_tl")
 
         CHECK_EQ(1U, data_pushed2->get_present_element_num());
         CHECK_EQ(sizeof(test_contained), data_pushed2->get_element_size());
-        CHECK_EQ(3U, data_pushed2->get_max_element_num());
+        CHECK_EQ(3U, data_pushed2->max_element_num());
         CHECK_EQ(false, data_pushed2->is_present(0));
         CHECK_EQ(false, data_pushed2->is_present(1));
         CHECK_EQ(true, data_pushed2->is_present(2));
-        CHECK_EQ(uint64_t(4), data_pushed2->get_mask());
+        CHECK_EQ(uint64_t(4), data_pushed2->mask());
 
         {
             const test_contained& test_data = data_pushed2->get_element(2);
@@ -364,31 +364,31 @@ TEST_SUITE("sight::data::generic_tl")
 
         auto data1 = timeline->create_buffer(time1);
         data1->set_element(values1, 0);
-        CHECK(data1->get_timestamp() == time1);
+        CHECK(data1->timestamp() == time1);
 
         auto data2 = timeline->create_buffer(time2);
         data2->set_element(values2, 0);
         data2->set_element(values3, 1);
         data2->set_element(values4, 2);
-        CHECK(data2->get_timestamp() == time2);
+        CHECK(data2->timestamp() == time2);
 
         auto data2b = timeline->create_buffer(time2b);
         data2b->set_element(values1, 0);
         data2b->set_element(values4, 1);
-        CHECK(data2b->get_timestamp() == time2b);
+        CHECK(data2b->timestamp() == time2b);
 
         auto data3 = timeline->create_buffer(time3);
         data3->set_element(values5, 1);
         data3->set_element(values6, 2);
-        CHECK(data3->get_timestamp() == time3);
+        CHECK(data3->timestamp() == time3);
 
         auto data4 = timeline->create_buffer(time4);
-        CHECK(data4->get_timestamp() == time4);
+        CHECK(data4->timestamp() == time4);
 
         auto data4b = timeline->create_buffer(time4b);
         data4b->set_element(values5, 0);
         data4b->set_element(values3, 2);
-        CHECK(data4b->get_timestamp() == time4b);
+        CHECK(data4b->timestamp() == time4b);
 
         timeline->push_object(data1);
         timeline->push_object(data2);
@@ -417,12 +417,12 @@ TEST_SUITE("sight::data::generic_tl")
         /// First element
         CHECK_EQ(1U, obj1->get_present_element_num());
         CHECK_EQ(std::size_t(12), obj1->get_element_size());
-        CHECK_EQ(3U, obj1->get_max_element_num());
+        CHECK_EQ(3U, obj1->max_element_num());
         CHECK_EQ(true, obj1->is_present(0));
         CHECK_EQ(false, obj1->is_present(1));
         CHECK_EQ(false, obj1->is_present(2));
-        CHECK_EQ(uint64_t(1), obj1->get_mask());
-        CHECK(obj1->get_timestamp() == time1);
+        CHECK_EQ(uint64_t(1), obj1->mask());
+        CHECK(obj1->timestamp() == time1);
 
         std::array<float, 3> buff_data = obj1->get_element(0);
         CHECK_EQ(1.0F, buff_data[0]);
@@ -444,12 +444,12 @@ TEST_SUITE("sight::data::generic_tl")
 
         CHECK_EQ(3U, obj2->get_present_element_num());
         CHECK_EQ(std::size_t(12), obj2->get_element_size());
-        CHECK_EQ(3U, obj2->get_max_element_num());
+        CHECK_EQ(3U, obj2->max_element_num());
         CHECK_EQ(true, obj2->is_present(0));
         CHECK_EQ(true, obj2->is_present(1));
         CHECK_EQ(true, obj2->is_present(2));
-        CHECK_EQ(uint64_t(7), obj2->get_mask());
-        CHECK(obj2->get_timestamp() == time2);
+        CHECK_EQ(uint64_t(7), obj2->mask());
+        CHECK(obj2->timestamp() == time2);
 
         buff_data = obj2->get_element(0);
         CHECK_EQ(4.0F, buff_data[0]);
@@ -471,12 +471,12 @@ TEST_SUITE("sight::data::generic_tl")
 
         CHECK_EQ(2U, obj3->get_present_element_num());
         CHECK_EQ(std::size_t(12), obj3->get_element_size());
-        CHECK_EQ(3U, obj3->get_max_element_num());
+        CHECK_EQ(3U, obj3->max_element_num());
         CHECK_EQ(false, obj3->is_present(0));
         CHECK_EQ(true, obj3->is_present(1));
         CHECK_EQ(true, obj3->is_present(2));
-        CHECK_EQ(uint64_t(6), obj3->get_mask());
-        CHECK(obj3->get_timestamp() == time3);
+        CHECK_EQ(uint64_t(6), obj3->mask());
+        CHECK(obj3->timestamp() == time3);
 
         buff_data = obj3->get_element(0);
         CHECK_EQ(0.0F, buff_data[0]);
@@ -498,12 +498,12 @@ TEST_SUITE("sight::data::generic_tl")
 
         CHECK_EQ(0U, obj4->get_present_element_num());
         CHECK_EQ(std::size_t(12), obj4->get_element_size());
-        CHECK_EQ(3U, obj4->get_max_element_num());
+        CHECK_EQ(3U, obj4->max_element_num());
         CHECK_EQ(false, obj4->is_present(0));
         CHECK_EQ(false, obj4->is_present(1));
         CHECK_EQ(false, obj4->is_present(2));
-        CHECK_EQ(uint64_t(0), obj4->get_mask());
-        CHECK(obj4->get_timestamp() == time4);
+        CHECK_EQ(uint64_t(0), obj4->mask());
+        CHECK(obj4->timestamp() == time4);
 
         buff_data = obj4->get_element(0);
         CHECK_EQ(0.0F, buff_data[0]);
@@ -684,6 +684,4 @@ TEST_SUITE("sight::data::generic_tl")
 
     #undef TEST
     }
-
-    } //namespace ut
 } // TEST_SUITE("sight::data::generic_tl")

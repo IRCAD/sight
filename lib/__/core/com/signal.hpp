@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -132,6 +132,8 @@ struct SIGHT_CORE_CLASS_API signal<R(A ...)>: signal_base
         template<typename FROM_F>
         connection connect(SPTR(slot_base) _slot);
 
+    private:
+
         /// Connected slots.
         slot_container_t m_slots;
 
@@ -140,9 +142,7 @@ struct SIGHT_CORE_CLASS_API signal<R(A ...)>: signal_base
 
         mutable core::mt::read_write_mutex m_connections_mutex;
 
-    private:
-
-        static_assert((std::is_same<void, R>::value));
+        static_assert(std::is_same_v<void, R>);
 };
 
 } // namespace sight::core::com

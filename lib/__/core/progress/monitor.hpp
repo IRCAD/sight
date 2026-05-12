@@ -63,7 +63,7 @@ public:
      * - CANCELED : The monitor is canceled
      * - FINISHED : The monitor have finished to run his task
      */
-    enum state
+    enum state : std::uint8_t
     {
         waiting = 0,
         running,
@@ -228,13 +228,13 @@ public:
      */
     SIGHT_CORE_API void log(const std::string& _message);
 
+    /// Finish the monitor: set state to finished.
+    SIGHT_CORE_API virtual void finish();
+
 protected:
 
     /// Run the monitor: set state to running.
     SIGHT_CORE_API void run();
-
-    /// Finish the monitor: set state to finished or canceled.
-    SIGHT_CORE_API virtual void finish();
 
     /// Finish the monitor without mutex lock: set the state to finished or canceled.
     SIGHT_CORE_API void finish_no_lock();
@@ -324,6 +324,17 @@ protected:
      */
     SIGHT_CORE_API void log_no_lock(const std::string& _message);
 
+    /// Getter on the number of done work units.
+    SIGHT_CORE_API std::uint64_t get_done_work_units_no_lock() const;
+
+    /// Getter on the total number of work units.
+    SIGHT_CORE_API std::uint64_t get_total_work_units_no_lock() const;
+
+    /// Mutex to protect object access.
+    mutable core::mt::read_write_mutex m_mutex; //NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
+
+private:
+
     /// Signal emitted when cancel has been requested
     SPTR(cancel_requested_signal) m_sig_cancel_requested;
 
@@ -341,9 +352,6 @@ protected:
 
     /// Signal emitted when a message has been added to logs. Takes a std::string as parameter.
     SPTR(log_signal) m_sig_logged;
-
-    /// Mutex to protect object access.
-    mutable core::mt::read_write_mutex m_mutex;
 
     /// monitor's name
     std::string m_name;

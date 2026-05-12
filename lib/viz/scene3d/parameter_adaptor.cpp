@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,15 +36,10 @@
 #include <data/ivec3.hpp>
 #include <data/ivec4.hpp>
 #include <data/matrix4.hpp>
-#include <data/point.hpp>
-#include <data/point_list.hpp>
 #include <data/real.hpp>
-
-#include <viz/scene3d/ogre.hpp>
 
 #include <OGRE/OgreGpuProgramParams.h>
 #include <OGRE/OgreMaterial.h>
-#include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgreTechnique.h>
 
 namespace sight::viz::scene3d
@@ -275,7 +270,7 @@ bool parameter_adaptor::set_parameter(Ogre::Technique& _technique)
             const auto vec = std::dynamic_pointer_cast<const data::ivec2>(obj.get_shared());
             SIGHT_ASSERT("The object is nullptr", vec);
 
-            const std::array array = {(int) vec->value()[0], (int) vec->value()[1]};
+            const std::array array = {static_cast<int>(vec->value()[0]), static_cast<int>(vec->value()[1])};
             params->setNamedConstant(m_param_name, array.data(), 1, 2);
         }
         else if(obj_class == "sight::data::ivec3")
@@ -283,7 +278,9 @@ bool parameter_adaptor::set_parameter(Ogre::Technique& _technique)
             const auto vec = std::dynamic_pointer_cast<const data::ivec3>(obj.get_shared());
             SIGHT_ASSERT("The object is nullptr", vec);
 
-            const std::array array = {(int) vec->value()[0], (int) vec->value()[1], (int) vec->value()[2]};
+            const std::array array = {static_cast<int>(vec->value()[0]), static_cast<int>(vec->value()[1]),
+                                      static_cast<int>(vec->value()[2])
+            };
             params->setNamedConstant(m_param_name, array.data(), 1, 3);
         }
         else if(obj_class == "sight::data::ivec4")
@@ -291,8 +288,9 @@ bool parameter_adaptor::set_parameter(Ogre::Technique& _technique)
             const auto vec = std::dynamic_pointer_cast<const data::ivec4>(obj.get_shared());
             SIGHT_ASSERT("The object is nullptr", vec);
 
-            const std::array array = {(int) vec->value()[0], (int) vec->value()[1], (int) vec->value()[2],
-                                      (int) vec->value()[3]
+            const std::array array = {static_cast<int>(vec->value()[0]), static_cast<int>(vec->value()[1]),
+                                      static_cast<int>(vec->value()[2]),
+                                      static_cast<int>(vec->value()[3])
             };
             params->setNamedConstant(m_param_name, array.data(), 1, 4);
         }
@@ -301,7 +299,10 @@ bool parameter_adaptor::set_parameter(Ogre::Technique& _technique)
             const auto vec = std::dynamic_pointer_cast<const data::dvec2>(obj.get_shared());
             SIGHT_ASSERT("The object is nullptr", vec);
 
-            params->setNamedConstant(m_param_name, Ogre::Vector2((float) (*vec)[0], (float) (*vec)[1]));
+            params->setNamedConstant(
+                m_param_name,
+                Ogre::Vector2(static_cast<float>((*vec)[0]), static_cast<float>((*vec)[1]))
+            );
         }
         else if(obj_class == "sight::data::dvec3")
         {
@@ -310,7 +311,11 @@ bool parameter_adaptor::set_parameter(Ogre::Technique& _technique)
 
             params->setNamedConstant(
                 m_param_name,
-                Ogre::Vector3((float) (*vec)[0], (float) (*vec)[1], (float) (*vec)[2])
+                Ogre::Vector3(
+                    static_cast<float>((*vec)[0]),
+                    static_cast<float>((*vec)[1]),
+                    static_cast<float>((*vec)[2])
+                )
             );
         }
         else if(obj_class == "sight::data::dvec4")
@@ -320,7 +325,12 @@ bool parameter_adaptor::set_parameter(Ogre::Technique& _technique)
 
             params->setNamedConstant(
                 m_param_name,
-                Ogre::Vector4((float) (*vec)[0], (float) (*vec)[1], (float) (*vec)[2], (float) (*vec)[3])
+                Ogre::Vector4(
+                    static_cast<float>((*vec)[0]),
+                    static_cast<float>((*vec)[1]),
+                    static_cast<float>((*vec)[2]),
+                    static_cast<float>((*vec)[3])
+                )
             );
         }
         else if(obj_class == "sight::data::array")
@@ -333,12 +343,12 @@ bool parameter_adaptor::set_parameter(Ogre::Technique& _technique)
             {
                 const auto dump_lock = array_object->dump_lock();
 
-                if(array_object->type() == core::type::FLOAT)
+                if(array_object->type() == core::type::FLOAT32)
                 {
                     const auto* float_value = static_cast<const float*>(array_object->buffer());
                     params->setNamedConstant(m_param_name, float_value, 1, num_components);
                 }
-                else if(array_object->type() == core::type::DOUBLE)
+                else if(array_object->type() == core::type::FLOAT64)
                 {
                     const auto* double_value = static_cast<const double*>(array_object->buffer());
                     params->setNamedConstant(m_param_name, double_value, 1, num_components);

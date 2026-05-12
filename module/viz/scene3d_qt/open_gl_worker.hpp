@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2024 IRCAD France
+ * Copyright (C) 2019-2026 IRCAD France
  * Copyright (C) 2019-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -46,7 +46,7 @@ class open_gl_worker final : public sight::viz::scene3d::graphics_worker
 public:
 
     /// Builds a graphic worker able to handle resources for the given surface.
-    open_gl_worker(QOpenGLWidget* _gl_widget);
+    explicit open_gl_worker(QOpenGLWidget* _gl_widget);
 
     /// Clears all waiting tasks and waits for the one being executed.
     ~open_gl_worker() final;

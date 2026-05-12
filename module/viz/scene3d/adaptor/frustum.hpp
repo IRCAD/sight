@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2025 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -76,6 +76,12 @@ public:
     /// Destroys the adaptor.
     ~frustum() noexcept override = default;
 
+    /**
+     * @brief Sets the frustum visibility.
+     * @param _visible the visibility status of the frustum.
+     */
+    void set_visible(bool _visible) override;
+
 protected:
 
     /// Configures.
@@ -98,12 +104,6 @@ protected:
 
     /// Checks if the camera has changed, and updates it if it has.
     void updating() override;
-
-    /**
-     * @brief Sets the frustum visibility.
-     * @param _visible the visibility status of the frustum.
-     */
-    void set_visible(bool _visible) override;
 
 private:
 

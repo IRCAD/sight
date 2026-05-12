@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -83,14 +83,16 @@ public:
     using iterator_category = std::random_access_iterator_tag;
     /// @}
 
+    // NOLINTBEGIN(google-explicit-constructor,hicpp-explicit-conversions)
     array_iterator() = default;
     constexpr array_iterator(pointer_t _begin);
     array_iterator(const array_iterator<T>& _other)     = default;
     array_iterator(array_iterator<T>&& _other) noexcept = default;
-    ~array_iterator()                                   = default;
-
-    template<bool isConst = std::is_const_v<T>, typename = typename std::enable_if_t<isConst> >
+    template<bool isConst = std::is_const_v<T>, typename = std::enable_if_t<isConst> >
     constexpr array_iterator(const array_iterator<std::remove_const_t<T> >& _other);
+    // NOLINTEND(google-explicit-constructor,hicpp-explicit-conversions)
+
+    ~array_iterator() = default;
 
     array_iterator& operator=(const array_iterator& _other)     = default;
     array_iterator& operator=(array_iterator&& _other) noexcept = default;
@@ -112,7 +114,7 @@ public:
     constexpr difference_type operator-(const array_iterator& _other) const noexcept;
 
     /// Subscript operator
-    constexpr auto& operator[](const std::size_t _index) const noexcept;
+    constexpr auto& operator[](std::size_t _index) const noexcept;
 
     /// Value access operators
     reference operator*() const;
@@ -120,7 +122,7 @@ public:
     /// Value access operators
     constexpr pointer_t operator->() const noexcept;
 
-protected:
+private:
 
     /// allow to create a ConstIterator from an Iterator
     friend class array_iterator<const T>;

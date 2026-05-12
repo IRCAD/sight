@@ -104,7 +104,7 @@
             </service>
 
             <service uid="pickerAdp" type="sight::module::viz::scene3d::adaptor::picker">
-                <config layerOrderDependant="false" />
+                <config />
             </service>
 
             <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::video" auto_connect="true">

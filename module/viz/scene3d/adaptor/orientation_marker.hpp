@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2025 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2020-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -64,6 +64,9 @@ public:
     /// Destructor
     ~orientation_marker() noexcept final = default;
 
+    /// Sets the visibility of the adaptor
+    void set_visible(bool _visible) final;
+
 protected:
 
     /// Configures the service's parameters
@@ -77,9 +80,6 @@ protected:
 
     /// Unregisters child services
     void stopping() final;
-
-    /// Sets the visibility of the adaptor
-    void set_visible(bool _visible) final;
 
     /// Connects input matrix MODIFIED to UPDATE slot.
     service::connections_t auto_connections() const final;

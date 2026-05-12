@@ -143,6 +143,12 @@ public:
     /// Destroys Ogre resource.
     ~point_list() noexcept final;
 
+    /**
+     * @brief Sets the point list visibility.
+     * @param _visible the visibility status of the point list.
+     */
+    void set_visible(bool _visible) final;
+
 protected:
 
     /// Configures the adaptor.
@@ -168,12 +174,6 @@ protected:
 
     /// Deletes the mesh after unregistering the service, and shutting connections.
     void stopping() final;
-
-    /**
-     * @brief Sets the point list visibility.
-     * @param _visible the visibility status of the point list.
-     */
-    void set_visible(bool _visible) final;
 
 private:
 

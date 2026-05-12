@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,8 @@
 
 #include "type.hpp"
 
-#include <core/base.hpp>
-
-#include <opencv2/core.hpp>
+#include "core/spy_log.hpp"
+#include <opencv2/core/hal/interface.h>
 
 namespace sight::io::opencv
 {
@@ -35,15 +34,15 @@ std::int32_t type::to_cv(const core::type _type, const std::size_t _num_componen
 {
     SIGHT_ASSERT("Number of dimensions should be between 1 and 4", _num_components > 0 && _num_components <= 4);
 
-    static const std::map<core::type, std::array<std::int32_t, 4> > s_IMAGE_FORMAT_TO_CV =
+    static const std::map<sight::core::type, std::array<std::int32_t, 4> > s_IMAGE_FORMAT_TO_CV =
     {{
-        {core::type::UINT8, {{CV_8UC1, CV_8UC2, CV_8UC3, CV_8UC4}}},
-        {core::type::INT8, {{CV_8SC1, CV_8SC2, CV_8SC3, CV_8SC4}}},
-        {core::type::UINT16, {{CV_16UC1, CV_16UC2, CV_16UC3, CV_16UC4}}},
-        {core::type::INT16, {{CV_16SC1, CV_16SC2, CV_16SC3, CV_16SC4}}},
-        {core::type::INT32, {{CV_32SC1, CV_32SC2, CV_32SC3, CV_32SC4}}},
-        {core::type::FLOAT, {{CV_32FC1, CV_32FC2, CV_32FC3, CV_32FC4}}},
-        {core::type::DOUBLE, {{CV_64FC1, CV_64FC2, CV_64FC3, CV_64FC4}}},
+        {sight::core::type::UINT8, {{CV_8UC1, CV_8UC2, CV_8UC3, CV_8UC4}}},
+        {sight::core::type::INT8, {{CV_8SC1, CV_8SC2, CV_8SC3, CV_8SC4}}},
+        {sight::core::type::UINT16, {{CV_16UC1, CV_16UC2, CV_16UC3, CV_16UC4}}},
+        {sight::core::type::INT16, {{CV_16SC1, CV_16SC2, CV_16SC3, CV_16SC4}}},
+        {sight::core::type::INT32, {{CV_32SC1, CV_32SC2, CV_32SC3, CV_32SC4}}},
+        {sight::core::type::FLOAT32, {{CV_32FC1, CV_32FC2, CV_32FC3, CV_32FC4}}},
+        {sight::core::type::FLOAT64, {{CV_64FC1, CV_64FC2, CV_64FC3, CV_64FC4}}},
     }
     };
 
@@ -55,45 +54,45 @@ std::int32_t type::to_cv(const core::type _type, const std::size_t _num_componen
 
 //------------------------------------------------------------------------------
 
-std::pair<core::type, uint8_t> type::from_cv(int32_t _cv_type)
+std::pair<sight::core::type, uint8_t> type::from_cv(int32_t _cv_type)
 {
-    static const std::map<std::int32_t, std::pair<core::type, std::size_t> > s_IMAGE_FORMAT_FROM_CV =
+    static const std::map<std::int32_t, std::pair<sight::core::type, std::size_t> > s_IMAGE_FORMAT_FROM_CV =
     {{
-        {CV_8UC1, {core::type::UINT8, 1}},
-        {CV_8UC2, {core::type::UINT8, 2}},
-        {CV_8UC3, {core::type::UINT8, 3}},
-        {CV_8UC4, {core::type::UINT8, 4}},
-        {CV_8SC1, {core::type::INT8, 1}},
-        {CV_8SC2, {core::type::INT8, 2}},
-        {CV_8SC3, {core::type::INT8, 3}},
-        {CV_8SC4, {core::type::INT8, 4}},
-        {CV_16UC1, {core::type::UINT16, 1}},
-        {CV_16UC2, {core::type::UINT16, 2}},
-        {CV_16UC3, {core::type::UINT16, 3}},
-        {CV_16UC4, {core::type::UINT16, 4}},
-        {CV_16SC1, {core::type::INT16, 1}},
-        {CV_16SC2, {core::type::INT16, 2}},
-        {CV_16SC3, {core::type::INT16, 3}},
-        {CV_16SC4, {core::type::INT16, 4}},
-        {CV_32SC1, {core::type::INT32, 1}},
-        {CV_32SC2, {core::type::INT32, 2}},
-        {CV_32SC3, {core::type::INT32, 3}},
-        {CV_32SC4, {core::type::INT32, 4}},
-        {CV_32FC1, {core::type::FLOAT, 1}},
-        {CV_32FC2, {core::type::FLOAT, 2}},
-        {CV_32FC3, {core::type::FLOAT, 3}},
-        {CV_32FC4, {core::type::FLOAT, 4}},
-        {CV_64FC1, {core::type::DOUBLE, 1}},
-        {CV_64FC2, {core::type::DOUBLE, 2}},
-        {CV_64FC3, {core::type::DOUBLE, 3}},
-        {CV_64FC4, {core::type::DOUBLE, 4}}
+        {CV_8UC1, {sight::core::type::UINT8, 1}},
+        {CV_8UC2, {sight::core::type::UINT8, 2}},
+        {CV_8UC3, {sight::core::type::UINT8, 3}},
+        {CV_8UC4, {sight::core::type::UINT8, 4}},
+        {CV_8SC1, {sight::core::type::INT8, 1}},
+        {CV_8SC2, {sight::core::type::INT8, 2}},
+        {CV_8SC3, {sight::core::type::INT8, 3}},
+        {CV_8SC4, {sight::core::type::INT8, 4}},
+        {CV_16UC1, {sight::core::type::UINT16, 1}},
+        {CV_16UC2, {sight::core::type::UINT16, 2}},
+        {CV_16UC3, {sight::core::type::UINT16, 3}},
+        {CV_16UC4, {sight::core::type::UINT16, 4}},
+        {CV_16SC1, {sight::core::type::INT16, 1}},
+        {CV_16SC2, {sight::core::type::INT16, 2}},
+        {CV_16SC3, {sight::core::type::INT16, 3}},
+        {CV_16SC4, {sight::core::type::INT16, 4}},
+        {CV_32SC1, {sight::core::type::INT32, 1}},
+        {CV_32SC2, {sight::core::type::INT32, 2}},
+        {CV_32SC3, {sight::core::type::INT32, 3}},
+        {CV_32SC4, {sight::core::type::INT32, 4}},
+        {CV_32FC1, {sight::core::type::FLOAT32, 1}},
+        {CV_32FC2, {sight::core::type::FLOAT32, 2}},
+        {CV_32FC3, {sight::core::type::FLOAT32, 3}},
+        {CV_32FC4, {sight::core::type::FLOAT32, 4}},
+        {CV_64FC1, {sight::core::type::FLOAT64, 1}},
+        {CV_64FC2, {sight::core::type::FLOAT64, 2}},
+        {CV_64FC3, {sight::core::type::FLOAT64, 3}},
+        {CV_64FC4, {sight::core::type::FLOAT64, 4}}
     }
     };
 
     const auto it = s_IMAGE_FORMAT_FROM_CV.find(_cv_type);
     SIGHT_ASSERT("Format not handled by OpenCV: " + std::to_string(_cv_type), it != s_IMAGE_FORMAT_FROM_CV.end());
 
-    return {it->second.first, uint8_t(it->second.second)};
+    return {it->second.first, static_cast<uint8_t>(it->second.second)};
 }
 
 //------------------------------------------------------------------------------

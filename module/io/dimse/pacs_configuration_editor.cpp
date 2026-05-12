@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,14 +22,10 @@
 
 #include "pacs_configuration_editor.hpp"
 
-#include <core/com/signal.hpp>
 #include <core/com/signal.hxx>
-#include <core/com/signals.hpp>
 #include <core/com/slots.hxx>
 
 #include <io/dimse/exceptions/base.hpp>
-
-#include <service/macros.hpp>
 
 #include <ui/__/dialog/message.hpp>
 #include <ui/qt/container/widget.hpp>
@@ -49,7 +45,7 @@ static const service::base::key_t SHOW_DIALOG_CONFIG = "showDialog";
 //------------------------------------------------------------------------------
 
 pacs_configuration_editor::pacs_configuration_editor() noexcept :
-    sight::service::notifier(m_signals)
+    sight::service::notifier(has_signals::signals())
 {
     m_slot_show_dialog = this->new_slot(SHOW_DIALOG_SLOT, &pacs_configuration_editor::show_dialog);
 }
@@ -167,7 +163,7 @@ void pacs_configuration_editor::starting()
     );
     QObject::connect(
         m_scp_port_edit,
-        static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+        (&QSpinBox::valueChanged),
         this,
         &self_t::on_scp_port_changed
     );
@@ -179,13 +175,13 @@ void pacs_configuration_editor::starting()
     );
     QObject::connect(
         m_move_port,
-        static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+        (&QSpinBox::valueChanged),
         this,
         &self_t::on_move_port_changed
     );
     QObject::connect(
         m_retrieve_method_widget,
-        static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+        (&QComboBox::currentIndexChanged),
         this,
         &self_t::on_retrieve_method_changed
     );
@@ -223,7 +219,7 @@ void pacs_configuration_editor::stopping()
     );
     QObject::disconnect(
         m_scp_port_edit,
-        static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+        (&QSpinBox::valueChanged),
         this,
         &self_t::on_scp_port_changed
     );
@@ -235,13 +231,13 @@ void pacs_configuration_editor::stopping()
     );
     QObject::disconnect(
         m_move_port,
-        static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+        (&QSpinBox::valueChanged),
         this,
         &self_t::on_move_port_changed
     );
     QObject::disconnect(
         m_retrieve_method_widget,
-        static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+        (&QComboBox::currentIndexChanged),
         this,
         &self_t::on_retrieve_method_changed
     );
@@ -397,8 +393,8 @@ void pacs_configuration_editor::on_retrieve_method_changed(int _index)
 
     pacs_configuration->set_retrieve_method(
         (_index == 0)
-        ? (sight::io::dimse::data::pacs_configuration::retrieve_method::move)
-        : (sight::io::dimse::data::pacs_configuration::retrieve_method::get)
+        ? sight::io::dimse::data::pacs_configuration::retrieve_method::move
+        : sight::io::dimse::data::pacs_configuration::retrieve_method::get
     );
 
     this->modified_notify(pacs_configuration.get_shared());

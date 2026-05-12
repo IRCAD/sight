@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2025 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -50,7 +50,7 @@ public:
     using config_t        = sight::service::config_t;
     using packaged_task_t = std::packaged_task<void ()>;
 
-    service(sight::service::base& _service);
+    explicit service(sight::service::base& _service);
     ~service();
 
     /**
@@ -61,7 +61,7 @@ public:
     void set_config(const config_t& _config);
 
     /// Returns the service configuration
-    const sight::service::config_t& get_config() const;
+    [[nodiscard]] const sight::service::config_t& get_config() const;
 
     // Configures the service
     void configure();
@@ -85,10 +85,10 @@ public:
     void auto_disconnect();
 
     /// Returns a boolean to indicate if the service is autoconnected
-    bool is_auto_connected() const;
+    [[nodiscard]] bool is_auto_connected() const;
 
     /// Returns a boolean to indicate if the object at the given key is optional
-    bool is_key_optional(const std::string& _key) const;
+    [[nodiscard]] bool is_key_optional(const std::string& _key) const;
 
     /// Connections with data and other services, connected at start, and disconnected at stop
     service_connection m_connections;

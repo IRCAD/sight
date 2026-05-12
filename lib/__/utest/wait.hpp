@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2025 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,6 +32,8 @@
 #include <chrono>
 #include <thread>
 
+// NOLINTBEGIN(cppcoreguidelines-macro-usage)
+
 // Wait at worst 1s for a given condition
 #define SIGHT_TEST_WAIT(cond, ...) \
         sight::core::time_stamp BOOST_PP_CAT(timeStamp, __LINE__); \
@@ -52,9 +54,9 @@
         }
 
 #ifdef DOCTEST_LIBRARY_INCLUDED
-    #define __SIGHT_TEST_CHECK CHECK
+    #define SIGHT_TEST_CHECK CHECK
 #else
-    #define __SIGHT_TEST_CHECK CPPUNIT_ASSERT
+    #define SIGHT_TEST_CHECK CPPUNIT_ASSERT
 #endif
 
 #define SIGHT_TEST_FAIL_WAIT(cond, ...) \
@@ -74,4 +76,6 @@
         { \
             std::this_thread::sleep_for(std::chrono::milliseconds(10)); \
         } \
-        __SIGHT_TEST_CHECK(cond);
+        SIGHT_TEST_CHECK(cond);
+
+// NOLINTEND(cppcoreguidelines-macro-usage)

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -31,7 +31,7 @@
 namespace sight::utest_data::image
 {
 
-static bool SIGHT_UTEST_DATA_IMAGE_DEBUG = false;
+static bool sight_utest_data_image_debug = false;
 
 //------------------------------------------------------------------------------
 
@@ -56,7 +56,7 @@ static bool SIGHT_UTEST_DATA_IMAGE_DEBUG = false;
 template<class T1, class T2>
 void cout_debug(sight::data::image& _image, const std::map<T1, T2>& _translator)
 {
-    if(not SIGHT_UTEST_DATA_IMAGE_DEBUG)
+    if(not sight_utest_data_image_debug)
     {
         return;
     }

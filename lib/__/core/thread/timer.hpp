@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -104,10 +104,10 @@ protected:
 
     friend struct timer_callback;
 
-    /// Function object to execute each time the timer expires.
-    function_type m_function;
+    mutable core::mt::mutex m_mutex; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
 
-    mutable core::mt::mutex m_mutex;
+    /// Function object to execute each time the timer expires.
+    function_type m_function; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
 };
 
 } //namespace sight::core::thread

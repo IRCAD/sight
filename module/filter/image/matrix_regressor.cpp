@@ -26,15 +26,13 @@
 
 #include <filter/image/matrix_regressor.hpp>
 
-#include <service/macros.hpp>
-
 namespace sight::module::filter::image
 {
 
 //-----------------------------------------------------------------------------
 
 matrix_regressor::matrix_regressor() :
-    filter(m_signals)
+    filter(has_signals::signals())
 {
 }
 

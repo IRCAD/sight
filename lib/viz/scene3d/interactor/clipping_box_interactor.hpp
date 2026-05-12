@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2024 IRCAD France
+ * Copyright (C) 2019-2026 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,11 +22,9 @@
 
 #pragma once
 
-#include "viz/scene3d/interactor/base.hpp"
-#include "viz/scene3d/widget/clipping_box.hpp"
-
-#include <core/com/signal.hpp>
-#include <core/com/signals.hpp>
+#include <viz/scene3d/interactor/base.hpp>
+#include <viz/scene3d/layer.hpp>
+#include <viz/scene3d/widget/clipping_box.hpp>
 
 #include <OGRE/OgreMovableObject.h>
 
@@ -40,8 +38,7 @@ public:
 
     /// Creates the widget.
     SIGHT_VIZ_SCENE3D_API clipping_box_interactor(
-        SPTR(layer)_layer,
-        bool _layer_order_dependant,
+        SPTR(sight::viz::scene3d::layer) _layer,
         const std::string& _id,
         Ogre::SceneNode* _parent_scene_node,
         const Ogre::Matrix4& _clipping_matrix,
@@ -118,7 +115,10 @@ private:
     /// Cancels further interaction on the layer.
     void cancel_further_layer_interactions();
 
-    /// Containst the currently selected widget.
+    /// The layer on which the interactor operates.
+    sight::viz::scene3d::layer::wptr m_layer;
+
+    /// Contains the currently selected widget.
     Ogre::MovableObject* m_picked_object {nullptr};
 
     /// Defines the widget with whom we interact.

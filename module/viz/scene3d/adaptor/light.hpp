@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -235,6 +235,9 @@ private:
 
     /// Contains objects used for the directional light visual feedback.
     std::pair<Ogre::ManualObject*, Ogre::ManualObject*> m_directional_feedback {nullptr, nullptr};
+
+    data::ptr<data::color, data::access::inout> m_diffuse {this, "diffuseColor"};
+    data::ptr<data::color, data::access::inout> m_specular {this, "specularColor"};
 };
 
 //------------------------------------------------------------------------------

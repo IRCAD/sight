@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,9 +21,11 @@
 
 #pragma once
 
+#include <sight/viz/scene3d/config.hpp>
+
 #include <OGRE/OgreCamera.h>
 
-namespace sight::viz::scene3d::interactor::detail
+namespace sight::viz::scene3d::interactor
 {
 
 //------------------------------------------------------------------------------
@@ -34,7 +36,7 @@ namespace sight::viz::scene3d::interactor::detail
 /// @param _dy Relative movement in pixels, in the y axis
 /// @param _look_at_z Distance to the center of trackball
 /// @param _view_up Up vector of the camera
-void camera_rotate(
+SIGHT_VIZ_SCENE3D_API void camera_rotate(
     Ogre::Camera* _camera,
     int _dx,
     int _dy,
@@ -42,4 +44,4 @@ void camera_rotate(
     const Ogre::Vector3& _view_up
 );
 
-} // namespace sight::viz::scene3d::interactor::detail
+} // namespace sight::viz::scene3d::interactor

@@ -31,7 +31,6 @@ namespace sight::viz::scene3d::interactor
 
 clipping_box_interactor::clipping_box_interactor(
     layer::sptr _layer,
-    bool _layer_order_dependant,
     const std::string& _id,
     Ogre::SceneNode* _parent_scene_node,
     const Ogre::Matrix4& _clipping_matrix,
@@ -39,7 +38,7 @@ clipping_box_interactor::clipping_box_interactor(
     const std::string& _box_mtl_name,
     const std::string& _handle_mtl_name
 ) noexcept :
-    base(_layer, _layer_order_dependant),
+    m_layer(_layer),
     m_widget(_id, _parent_scene_node, _layer->get_default_camera(), _layer->get_scene_manager(),
              _clipping_matrix, _clipping_update_cb, _box_mtl_name, _handle_mtl_name)
 {
@@ -158,7 +157,7 @@ void clipping_box_interactor::pinch_gesture_event(double _scale_factor, int _cen
             _scale_factor = -1.0 / _scale_factor;
         }
 
-        const auto dy = int(((_center_y * _scale_factor) - _center_y) * 0.5);
+        const auto dy = static_cast<int>(((_center_y * _scale_factor) - _center_y) * 0.5);
 
         if(m_widget.scale_clipping_box(_center_x, _center_y, dy) || m_picked_object != nullptr)
         {

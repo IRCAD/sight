@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -79,7 +79,7 @@ public:
             && pixel_type != core::type::UINT8
             && pixel_type != core::type::INT16
             && pixel_type != core::type::UINT16
-            && pixel_type != core::type::FLOAT
+            && pixel_type != core::type::FLOAT32
         );
 
         struct keeper final
@@ -127,7 +127,7 @@ public:
         {
             CHECK_TIFF(TIFFSetField(keeper.m_tiff, TIFFTAG_SAMPLEFORMAT, SAMPLEFORMAT_UINT));
         }
-        else if(pixel_type == core::type::FLOAT || pixel_type == core::type::DOUBLE)
+        else if(pixel_type == core::type::FLOAT32 || pixel_type == core::type::FLOAT64)
         {
             CHECK_TIFF(TIFFSetField(keeper.m_tiff, TIFFTAG_SAMPLEFORMAT, SAMPLEFORMAT_IEEEFP));
         }

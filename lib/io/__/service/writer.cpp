@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,16 +21,10 @@
  ***********************************************************************/
 #include "io/__/service/writer.hpp"
 
-#include <core/base.hpp>
 #include <core/com/signal.hxx>
-#include <core/com/slots.hpp>
 #include <core/com/slots.hxx>
 
-#include <service/macros.hpp>
-
 #include <ui/__/preferences.hpp>
-
-#include <boost/algorithm/string.hpp>
 
 namespace sight::io::service
 {
@@ -38,7 +32,7 @@ namespace sight::io::service
 //-----------------------------------------------------------------------------
 
 writer::writer(const std::string& _default_window_title) noexcept :
-    has_monitors(m_signals),
+    has_monitors(has_signals::signals()),
     m_window_title(this, WINDOW_TITLE_KEY, _default_window_title)
 {
     new_signal<signals::void_signal_t>(signals::FAILED);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -73,7 +73,7 @@ public:
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;
 
-protected:
+private:
 
     /// Defines the activity configuration ID.
     config_id_t m_activity_config_id;
@@ -95,4 +95,4 @@ inline void activity::set_activity_config_id(const activity::config_id_t& _val)
 
 //-----------------------------------------------------------------------------
 
-} // Namespace fwMedData.
+} // namespace sight::data

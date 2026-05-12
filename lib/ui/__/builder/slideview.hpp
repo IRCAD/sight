@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2024 IRCAD France
+ * Copyright (C) 2016-2026 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -104,6 +104,8 @@ public:
 
 protected:
 
+    // NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
+
     /// Contains the generic container of the slide view.
     ui::container::widget::sptr m_container;
 
@@ -148,6 +150,8 @@ protected:
 
     /// Defines the additional style sheet of the widget.
     std::string m_style_sheet;
+
+    // NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 };
 
 } // namespace sight::ui::builder

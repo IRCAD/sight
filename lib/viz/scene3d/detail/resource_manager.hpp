@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2024 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -53,7 +53,7 @@ struct resource_manager_traits<Ogre::Mesh>
 };
 
 template<class T>
-using resource_manager_traits_t = typename resource_manager_traits<T>::type;
+using resource_manager_traits_t = resource_manager_traits<T>::type;
 
 /**
  * @brief  Interface for GPU resource management sharing.
@@ -109,7 +109,7 @@ private:
         CWPTR(OBJECT) object;
         std::size_t use_count {0};
         std::uint64_t last_modified {~0UL};
-        typename LOADER::return_t loading_result {0}; // Extra attribute to store resource-specific loading data
+        LOADER::return_t loading_result {0}; // Extra attribute to store resource-specific loading data
     };
 
     std::map<std::string, resource> m_registry;

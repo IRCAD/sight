@@ -26,12 +26,6 @@
 #include <core/com/slots.hxx>
 #include <core/ptree.hpp>
 
-#include <geometry/data/mesh.hpp>
-
-#include <service/macros.hpp>
-#include <service/op.hpp>
-
-#include <viz/scene3d/helper/scene.hpp>
 #include <viz/scene3d/r2vb_renderable.hpp>
 #include <viz/scene3d/render.hpp>
 
@@ -350,7 +344,7 @@ void module::viz::scene3d::adaptor::mesh::set_visible(bool _visible)
 
         if(m_auto_reset_camera && _visible)
         {
-            this->render_service()->reset_camera_coordinates(m_layer_id);
+            this->render_service()->reset_camera_coordinates(layer_id());
         }
 
         this->request_render();
@@ -517,7 +511,7 @@ void mesh::update_new_material_adaptor(data::mesh::csptr _mesh)
             m_material_adaptor->set_id(gen_id(m_material_adaptor->get_id()));
             m_material_adaptor->set_material_name(mtl_name);
             m_material_adaptor->set_render_service(this->render_service());
-            m_material_adaptor->set_layer_id(m_layer_id);
+            m_material_adaptor->set_layer_id(layer_id());
             m_material_adaptor->set_shading_mode(m_shading_mode);
             m_material_adaptor->set_material_template_name(m_material_template_name);
 
@@ -618,7 +612,7 @@ void mesh::modify_vertices()
 
     if(m_auto_reset_camera)
     {
-        this->render_service()->reset_camera_coordinates(m_layer_id);
+        this->render_service()->reset_camera_coordinates(layer_id());
     }
 
     this->request_render();

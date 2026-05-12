@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -51,7 +51,7 @@ public:
     using min_max_t = std::pair<value_t, value_t>;
 
     /// Defines the available modes {LINEAR, NEAREST} to interpolate color between two TF color points.
-    enum class interpolation_mode
+    enum class interpolation_mode : std::uint8_t
     {
         linear,
         nearest
@@ -117,8 +117,7 @@ class SIGHT_DATA_CLASS_API transfer_function_piece final : public container_wrap
 {
 public:
 
-    SIGHT_DECLARE_CLASS(transfer_function_piece);
-
+    using sptr = SPTR(transfer_function_piece);
     using container_wrapper<data_t>::container_wrapper;
 
     SIGHT_DATA_API ~transfer_function_piece() final = default;
@@ -258,7 +257,7 @@ public:
     [[nodiscard]] bool resample_to_max_texture_size() const;
 
     /// Sets whether the transfer function will be resampled or nor.
-    void set_resample_to_max_texture_size(const bool _value);
+    void set_resample_to_max_texture_size(bool _value);
 
     /// Gets the TF background color when tf 'isClamped' is true.
     [[nodiscard]] const color_t& background_color() const;

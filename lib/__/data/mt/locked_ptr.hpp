@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -64,7 +64,7 @@ public:
                 m_dump_locks = buffered->dump_lock();
             }
 
-            if constexpr(!std::is_const<DATATYPE>::value)
+            if constexpr(!std::is_const_v<DATATYPE>)
             {
                 m_data->set_modified();
             }
@@ -137,7 +137,7 @@ public:
     constexpr locked_ptr(locked_ptr&&)                 = default;
     constexpr locked_ptr& operator=(const locked_ptr&) = default;
     constexpr locked_ptr& operator=(locked_ptr&&)      = default;
-    inline ~locked_ptr()                               = default;
+    ~locked_ptr()                                      = default;
 
     /// Returns the internal shared pointer
     [[nodiscard]] constexpr std::shared_ptr<DATATYPE> get_shared() const noexcept

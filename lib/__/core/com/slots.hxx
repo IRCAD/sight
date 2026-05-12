@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#if !defined(FWCOM_SLOTS_HPP)
+#ifndef FWCOM_SLOTS_HPP
 #error core/com/slots.hpp not included
 #endif
 
@@ -34,7 +34,7 @@ namespace sight::core::com
 
 // Only define it when core/com/has_slots.hpp has been included
 // This saves us a file like core/com/has_slots.hxx
-#if defined(FWCOM_HASSLOTS_HPP)
+#ifdef FWCOM_HASSLOTS_HPP
 template<typename F, typename A>
 SPTR(slot<typename core::com::util::convert_function_type<F>::type>)
 has_slots::new_slot(const core::com::slots::key_t& _key, F _f, A _a)

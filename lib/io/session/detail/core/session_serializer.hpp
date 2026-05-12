@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -63,7 +63,7 @@ public:
     void serialize(
         const std::filesystem::path& _archive_path,
         sight::data::object::csptr _object,
-        io::zip::archive::archive_format _archive_format                    = io::zip::archive::archive_format::DEFAULT,
+        io::zip::archive::archive_format _archive_format                    = io::zip::archive::archive_format::standard,
         const core::crypto::secure_string& _password                        = "",
         core::crypto::password_keeper::encryption_policy _encryption_policy = core::crypto::password_keeper::
         encryption_policy::password

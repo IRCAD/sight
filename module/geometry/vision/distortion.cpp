@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,10 +28,8 @@
 #include <core/com/signal.hxx>
 #include <core/com/slots.hxx>
 
-#define FW_PROFILING_DISABLED
+#define SIGHT_PROFILING_DISABLED
 #include <core/profiling.hpp>
-
-#include <data/array.hpp>
 
 #include <ui/__/dialog/message.hpp>
 
@@ -49,7 +47,7 @@ static const core::com::slots::key_t CALIBRATE_SLOT = "calibrate";
 
 //------------------------------------------------------------------------------
 distortion::distortion() noexcept :
-    filter(m_signals)
+    filter(has_signals::signals())
 {
     new_slot(CHANGE_STATE_SLOT, &distortion::change_state, this);
     new_slot(CALIBRATE_SLOT, &distortion::calibrate, this);
@@ -185,7 +183,7 @@ void distortion::remap()
         return;
     }
 
-    FW_PROFILE_AVG("distort", 5);
+    SIGHT_PROFILE_AVG("distort", 5);
 
     auto sig = input_image->signal<data::object::modified_signal_t>(data::image::BUFFER_MODIFIED_SIG);
 
@@ -264,7 +262,7 @@ void distortion::remap()
 
     {
 #ifdef OPENCV_CUDA_SUPPORT
-        FW_PROFILE_AVG("cv::cuda::remap", 5);
+        SIGHT_PROFILE_AVG("cv::cuda::remap", 5);
 
         cv::cuda::GpuMat image_gpu(img);
         cv::cuda::GpuMat image_gpu_rect(undistortedImage);
@@ -273,7 +271,7 @@ void distortion::remap()
 
         io::opencv::image::copy_from_cv(outputImage.get_shared(), undistortedImage);
 #else
-        FW_PROFILE_AVG("cv::remap", 5);
+        SIGHT_PROFILE_AVG("cv::remap", 5);
 
         cv::remap(img, undistorted_image, m_map_x, m_map_y, cv::INTER_LINEAR, cv::BORDER_CONSTANT);
 
@@ -347,7 +345,7 @@ void distortion::calibrate()
         {
             for(int j = 0 ; j < size.width ; j++)
             {
-                pixel_locations_src.at<cv::Point2f>(i, j) = cv::Point2f(float(j), float(i));
+                pixel_locations_src.at<cv::Point2f>(i, j) = cv::Point2f(static_cast<float>(j), static_cast<float>(i));
             }
 
             cv::undistortPoints(

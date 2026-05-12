@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2025 IRCAD France
+ * Copyright (C) 2019-2026 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -81,6 +81,12 @@ public:
     /// Destroys the adaptor.
     ~vector() noexcept final = default;
 
+    /**
+     * @brief Sets the vector visibility.
+     * @param _visible the visibility status of the vector.
+     */
+    void set_visible(bool _visible) final;
+
 protected:
 
     /// Connects the input matrix modified to the update slot.
@@ -97,12 +103,6 @@ protected:
 
     /// Create with the specified length the vector.
     void updating() final;
-
-    /**
-     * @brief Sets the vector visibility.
-     * @param _visible the visibility status of the vector.
-     */
-    void set_visible(bool _visible) final;
 
 private:
 

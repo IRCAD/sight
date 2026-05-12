@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,8 +43,10 @@ public:
     SIGHT_DECLARE_CLASS(color, data::string_serializable);
 
     SIGHT_DATA_API color();
+    //NOLINTBEGIN(google-explicit-constructor,hicpp-explicit-conversions)
     SIGHT_DATA_API color(color_t _red, color_t _green = 1.F, color_t _blue = 1.F, color_t _alpha = 1.F);
     SIGHT_DATA_API color(const std::string& _string_color);
+    //NOLINTEND(google-explicit-constructor,hicpp-explicit-conversions)
 
     /// Destructor
     SIGHT_DATA_API ~color() noexcept override = default;

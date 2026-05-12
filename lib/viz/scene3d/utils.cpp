@@ -36,8 +36,6 @@
 #include <core/spy_log.hpp>
 #include <core/tools/os.hpp>
 
-#include <data/helper/medical_image.hpp>
-
 #include <geometry/data/image.hpp>
 
 #include <OGRE/OgreMaterialManager.h>
@@ -46,7 +44,6 @@
 #include <OgreException.h>
 #include <OgreHardwarePixelBuffer.h>
 #include <OgreResourceGroupManager.h>
-#include <OgreTextureManager.h>
 
 #include <algorithm>
 #include <cctype> // Needed for isspace()
@@ -195,7 +192,7 @@ Ogre::Root* utils::get_ogre_root()
 
             // Find the ogre plugins path
 
-#if defined(_WIN32)
+#ifdef _WIN32
             const auto ogre_plugins_path = ogre_lib_path.parent_path() / "plugins" / "ogre";
 #else
             const auto ogre_plugins_path = ogre_lib_path / "OGRE";
@@ -398,7 +395,7 @@ Ogre::PixelFormat utils::get_pixel_format_ogre(const data::image& _image)
             return Ogre::PF_L16;
         }
 
-        if(pixel_type == core::type::FLOAT)
+        if(pixel_type == core::type::FLOAT32)
         {
             // float
             return Ogre::PF_FLOAT32_R;
@@ -433,7 +430,7 @@ Ogre::PixelFormat utils::get_pixel_format_ogre(const data::image& _image)
             return Ogre::PF_R8G8_SNORM;
         }
 
-        if(pixel_type == core::type::FLOAT)
+        if(pixel_type == core::type::FLOAT32)
         {
             // float
             return Ogre::PF_FLOAT32_GR;
@@ -479,12 +476,12 @@ Ogre::PixelFormat utils::get_pixel_format_ogre(const data::image& _image)
         return number_of_component == 3 ? Ogre::PF_R32G32B32_SINT : Ogre::PF_R32G32B32A32_SINT;
     }
 
-    if(pixel_type == core::type::FLOAT)
+    if(pixel_type == core::type::FLOAT32)
     {
         return number_of_component == 3 ? Ogre::PF_FLOAT32_RGB : Ogre::PF_FLOAT32_RGBA;
     }
 
-    if(pixel_type == core::type::DOUBLE)
+    if(pixel_type == core::type::FLOAT64)
     {
         SIGHT_FATAL("Pixel format not handled.");
     }
@@ -624,7 +621,7 @@ std::pair<core::type, enum data::image::pixel_format_t> utils::get_pixel_format_
         case Ogre::PF_FLOAT32_R:
         case Ogre::PF_FLOAT32_RGB:
         case Ogre::PF_FLOAT32_RGBA:
-            pixel_type = core::type::FLOAT;
+            pixel_type = core::type::FLOAT32;
             break;
 
         default:
@@ -760,7 +757,7 @@ Ogre::Vector3i utils::world_to_slices(const data::image& _image, const Ogre::Vec
 
     for(std::size_t i = 0 ; i < sizes.size() ; ++i)
     {
-        if(voxel[int(i)] < 0 || std::cmp_greater_equal(voxel[int(i)], sizes[i]))
+        if(voxel[static_cast<int>(i)] < 0 || std::cmp_greater_equal(voxel[static_cast < int > (i)], sizes[i]))
         {
             SIGHT_THROW_EXCEPTION(core::exception("Point is outside image boundaries"));
         }
@@ -817,9 +814,9 @@ std::string utils::pick_image(
 {
     const auto picked_voxel = geometry::data::world_to_image(_image, _position, true, true);
     const auto intensity    = _image.get_pixel_as_string(
-        data::image::index_t(picked_voxel[0]),
-        data::image::index_t(picked_voxel[1]),
-        data::image::index_t(picked_voxel[2])
+        static_cast<data::image::index_t>(picked_voxel[0]),
+        static_cast<data::image::index_t>(picked_voxel[1]),
+        static_cast<data::image::index_t>(picked_voxel[2])
     );
 
     return "(" + std::to_string(picked_voxel[0]) + ", "

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -70,7 +70,7 @@ public:
     ///show the pulse progress dialog
     SIGHT_UI_API void show() override;
 
-protected:
+private:
 
     ui::dialog::pulse_progress_base::sptr m_implementation;
 };

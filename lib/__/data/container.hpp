@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2025 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,8 +21,8 @@
 
 #pragma once
 
-#include <sight/data/config.hpp>
 #include "data/object.hpp"
+#include <sight/data/config.hpp>
 
 #include <core/com/signal.hpp>
 #include <core/compare.hpp>
@@ -49,6 +49,7 @@ using sequenced_set = boost::multi_index::multi_index_container<
     >
 >;
 
+//NOLINTBEGIN(cppcoreguidelines-macro-usage)
 #define USING_CONTAINER(C) \
         using typename C::value_type; \
         using typename C::reference; \
@@ -135,6 +136,7 @@ using sequenced_set = boost::multi_index::multi_index_container<
         using C::try_emplace; \
         using C::insert_or_assign; \
         using typename C::insert_return_type
+//NOLINTEND(cppcoreguidelines-macro-usage)
 
 /// Dummy class.
 template<class C, typename = void>
@@ -211,13 +213,13 @@ public:
     constexpr virtual ~container_wrapper() noexcept = default;
 
     /// Utility function to remove all matching elements from the container.
-    constexpr auto remove(const typename C::value_type& _value)
+    constexpr auto remove(const C::value_type& _value)
     {
         return C::erase(std::remove(C::begin(), C::end(), _value), C::end());
     }
 
     /// Utility function to remove first matching elements from the container.
-    constexpr auto remove_one(const typename C::value_type& _value)
+    constexpr auto remove_one(const C::value_type& _value)
     {
         if(const auto& it = std::find(C::cbegin(), C::cend(), _value); it != C::cend())
         {
@@ -359,16 +361,14 @@ public:
     constexpr virtual ~container_wrapper() noexcept = default;
 
     /// Utility function to remove first matching elements from the container.
-    constexpr auto remove(const typename C::value_type& _value)
+    constexpr auto remove(const C::value_type& _value)
     {
         if(const auto& it = std::find(C::cbegin(), C::cend(), _value); it != C::cend())
         {
             return C::erase(it);
         }
-        else
-        {
-            return C::end();
-        }
+
+        return C::end();
     }
 };
 
@@ -643,7 +643,7 @@ public:
     constexpr container();
     inline explicit container(const C& _container);
     inline explicit container(C&& _container);
-    inline ~container() noexcept override = default;
+    ~container() noexcept override = default;
 
     /// To allow assignment from STL containers
     using container_wrapper<C>::container_wrapper;
@@ -676,7 +676,7 @@ public:
 
     struct SIGHT_DATA_CLASS_API scoped_emitter
     {
-        constexpr scoped_emitter(const container& _container) noexcept;
+        constexpr explicit scoped_emitter(const container& _container) noexcept;
         inline ~scoped_emitter() noexcept;
 
         /// Emits the needed signals

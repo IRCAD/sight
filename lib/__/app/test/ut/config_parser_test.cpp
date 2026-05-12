@@ -26,20 +26,17 @@
 #include <core/runtime/runtime.hpp>
 
 #include <data/image.hpp>
-#include <data/mesh.hpp>
 #include <data/transfer_function.hpp>
 
 #include <service/op.hpp>
 
 #include <app/config_manager.hpp>
-#include <app/parser/image.hpp>
 #include <app/parser/transfer_function.hpp>
 
 #include <boost/property_tree/xml_parser.hpp>
 
 #include <doctest/doctest.h>
 
-#include <glm/common.hpp>
 #include <glm/gtc/epsilon.hpp>
 
 static const double EPSILON = 1e-5;
@@ -52,6 +49,9 @@ static const double EPSILON = 1e-5;
 
 TEST_SUITE("sight::app::data_parser")
 {
+    namespace
+    {
+
     struct data_parser_fixture
     {
         data_parser_fixture()
@@ -104,6 +104,8 @@ TEST_SUITE("sight::app::data_parser")
         }
     };
 
+    } // namespace
+
 //------------------------------------------------------------------------------
 
     TEST_CASE_FIXTURE(data_parser_fixture, "object_creation_with_config")
@@ -117,7 +119,7 @@ TEST_SUITE("sight::app::data_parser")
 
         // Create the object and its services from the configuration
         auto config_manager = sight::app::config_manager::make();
-        config_manager->sight::app::config_manager::set_config(config);
+        config_manager->set_config(config);
         config_manager->create();
         auto image = std::dynamic_pointer_cast<sight::data::image>(config_manager->get_config_root());
 
@@ -163,7 +165,7 @@ TEST_SUITE("sight::app::data_parser")
 
         // Create the object and its services from the configuration
         auto config_manager = sight::app::config_manager::make();
-        config_manager->sight::app::config_manager::set_config(config);
+        config_manager->set_config(config);
         config_manager->create();
         auto image = std::dynamic_pointer_cast<sight::data::image>(sight::core::id::get_object(object_uuid));
 

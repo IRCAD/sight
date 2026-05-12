@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -40,7 +40,7 @@ namespace sight::io::bitmap::detail
 
 class writer_impl;
 
-}
+} // namespace sight::io::bitmap::detail
 
 namespace sight::io::bitmap
 {

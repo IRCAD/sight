@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,10 +34,7 @@
 #include <io/dimse/helper/series.hpp>
 #include <io/dimse/series_enquirer.hpp>
 
-#include <service/extension/config.hpp>
-
 #include <cstddef>
-#include <sstream>
 
 namespace sight::module::io::dimse
 {
@@ -48,8 +45,8 @@ static const core::com::signals::key_t STOPPED_PROGRESS_SIG = "progress_stopped"
 static const core::com::slots::key_t REMOVE_SERIES_SLOT = "removeSeries";
 
 series_puller::series_puller() noexcept :
-    service::notifier(m_signals),
-    has_monitors(m_signals)
+    service::notifier(has_signals::signals()),
+    has_monitors(has_signals::signals())
 {
     m_sig_progress_started = this->new_signal<progress_started_signal_t>(STARTED_PROGRESS_SIG);
     m_sig_progress_stopped = this->new_signal<progress_stopped_signal_t>(STOPPED_PROGRESS_SIG);

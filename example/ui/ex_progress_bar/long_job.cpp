@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024-2025 IRCAD France
+ * Copyright (C) 2024-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,9 +21,7 @@
 
 #include "long_job.hpp"
 
-#include <core/com/signal.hpp>
 #include <core/com/signal.hxx>
-#include <core/progress/aggregator.hpp>
 #include <core/progress/observer.hpp>
 
 #include <atomic>
@@ -34,7 +32,7 @@ namespace ex_progress_bar
 static std::atomic_uint64_t job_id {0};
 
 long_job::long_job() noexcept :
-    has_monitors(m_signals)
+    has_monitors(has_signals::signals())
 {
 }
 

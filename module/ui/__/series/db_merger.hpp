@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,13 +27,6 @@
 #include <data/series_set.hpp>
 
 #include <ui/__/action.hpp>
-
-namespace sight::core::progress
-{
-
-class base;
-
-} // namespace sight::core::progress
 
 namespace sight::module::ui::series
 {

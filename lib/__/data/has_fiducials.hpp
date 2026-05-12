@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -58,25 +58,23 @@ public:
         using group_modified = core::com::signal<void (std::string)>;
         static inline const core::com::signals::key_t GROUP_MODIFIED = "groupModified";
 
-        using group_renamed = core::com::signal<void (std::string _old, std::string _new)>;
+        using group_renamed = core::com::signal<void (std::string, std::string)>;
         static inline const core::com::signals::key_t GROUP_RENAMED = "groupRenamed";
 
-        using point_selected = core::com::signal<void (std::string _name, std::size_t _index)>;
+        using point_selected = core::com::signal<void (std::string, std::size_t)>;
         static inline const core::com::signals::key_t POINT_SELECTED = "pointSelected";
 
-        using point_deselected = core::com::signal<void (std::string _name, std::size_t _index)>;
+        using point_deselected = core::com::signal<void (std::string, std::size_t)>;
         static inline const core::com::signals::key_t POINT_DESELECTED = "pointDeselected";
     };
 
-    inline fiducials_series::csptr get_fiducials() const;
+    [[nodiscard]] inline fiducials_series::csptr get_fiducials() const;
     inline fiducials_series::sptr get_fiducials();
 
-protected:
+private:
 
     /// Contains the associated Spatial Fiducials file
     fiducials_series::sptr m_fiducials_series {std::make_shared<fiducials_series>()};
-
-private:
 
     const signals::group_added::sptr m_group_added {std::make_shared<signals::group_added>()};
     const signals::group_removed::sptr m_group_removed {std::make_shared<signals::group_removed>()};

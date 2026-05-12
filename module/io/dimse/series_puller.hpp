@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -79,6 +79,14 @@ public:
 
 protected:
 
+    /**
+     * @brief Proposals to connect service slots to associated object signals.
+     * @return A map of each proposed connection.
+     *
+     * Connects data::series_set::REMOVED_OBJECTS_SIG of s_SERIES_SET_INOUT to REMOVE_SERIES_SLOT (removeSeries)
+     */
+    connections_t auto_connections() const override;
+
     /// Configures the service.
     void configuring() override;
 
@@ -92,14 +100,6 @@ protected:
     void updating() override;
 
 private:
-
-    /**
-     * @brief Proposals to connect service slots to associated object signals.
-     * @return A map of each proposed connection.
-     *
-     * Connects data::series_set::REMOVED_OBJECTS_SIG of s_SERIES_SET_INOUT to REMOVE_SERIES_SLOT (removeSeries)
-     */
-    connections_t auto_connections() const override;
 
     using dicom_series_container_t  = data::series_set::container_t;
     using read_dicom_slot_t         = core::com::slot<void (dicom_series_container_t)>;

@@ -33,7 +33,7 @@ namespace sight::module::filter::vision
 //------------------------------------------------------------------------------
 
 transform_depth_map2mm::transform_depth_map2mm() :
-    filter(m_signals)
+    filter(has_signals::signals())
 {
 }
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,20 +23,18 @@
 #include "module/viz/scene3d_qt/window.hpp"
 #include "module/viz/scene3d_qt/init.hpp"
 
-#define FW_PROFILING_DISABLED
+#define SIGHT_PROFILING_DISABLED
 #include <core/profiling.hpp>
 
 #include <core/compare.hpp>
 
-#include <viz/scene3d/utils.hpp>
-#include <viz/scene3d/window_manager.hpp>
 #include <viz/scene3d/ogre.hpp>
+#include <viz/scene3d/utils.hpp>
 
-#include <OgreTextureManager.h>
-#include <OgreRenderTarget.h>
-#include <OgreRenderTexture.h>
 #include <OgreHardwarePixelBuffer.h>
 #include <OgreMeshManager.h>
+#include <OgreRenderTexture.h>
+#include <OgreTextureManager.h>
 
 #include <QOpenGLFunctions>
 
@@ -90,7 +88,7 @@ window::window() :
 
 void window::register_layer(sight::viz::scene3d::layer::wptr _layer)
 {
-    m_render_targets.push_back({_layer, nullptr, nullptr});
+    m_render_targets.push_back({.layer = _layer, .material = nullptr, .texture = nullptr});
 }
 
 // ----------------------------------------------------------------------------
@@ -484,11 +482,11 @@ void window::gesture_event(QGestureEvent* _e)
 
             const auto& mapped = mapFromGlobal(position.toPoint());
 
-            info.x = int(mapped.x() * ratio);
-            info.y = int(mapped.y() * ratio);
+            info.x = static_cast<int>(mapped.x() * ratio);
+            info.y = static_cast<int>(mapped.y() * ratio);
 
-            info.dx = int(-delta.x() * ratio);
-            info.dy = int(-delta.y() * ratio);
+            info.dx = static_cast<int>(-delta.x() * ratio);
+            info.dy = static_cast<int>(-delta.y() * ratio);
 
             Q_EMIT interacted(info);
         }
@@ -530,8 +528,8 @@ void window::gesture_event(QGestureEvent* _e)
             }
 
             const auto& center = mapFromGlobal(pinch_gesture->centerPoint().toPoint());
-            info.x = int(center.x() * ratio);
-            info.y = int(center.y() * ratio);
+            info.x = static_cast<int>(center.x() * ratio);
+            info.y = static_cast<int>(center.y() * ratio);
 
             Q_EMIT interacted(info);
         }
@@ -573,7 +571,7 @@ void window::create_render_textures(int _w, int _h)
 {
     bind_context();
 
-    FW_PROFILE("createRenderTextures");
+    SIGHT_PROFILE("createRenderTextures");
     auto& mgr = Ogre::TextureManager::getSingleton();
 
     unsigned i = 0;
@@ -767,7 +765,7 @@ void window::paintGL()
     m_update_pending = false;
     ++m_frame_id;
 
-    FW_PROFILE("paintGL");
+    SIGHT_PROFILE("paintGL");
 
     bind_context();
 
@@ -798,8 +796,8 @@ void window::paintGL()
             this->context()->functions()->glViewport(
                 0,
                 0,
-                int(ratio * this->width()),
-                int(ratio * this->height())
+                static_cast<int>(ratio * this->width()),
+                static_cast<int>(ratio * this->height())
             );
 
             auto* scene = layer->get_scene_manager();

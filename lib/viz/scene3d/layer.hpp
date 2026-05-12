@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -365,7 +365,7 @@ private:
     float m_bottom_scale {1.F};
 
     /// Defines the bottom background scale : specific to background layer.
-    std::string m_background_material {};
+    std::string m_background_material;
 
     /// Contains the Ogre camera.
     Ogre::Camera* m_camera {nullptr};
@@ -404,8 +404,8 @@ private:
     SPTR(data::color) m_default_light_specular_color {nullptr};
 
     /// Defines the camera listener class used to pass the projection matrix for autostereo shaders.
-    struct LayerCameraListener;
-    LayerCameraListener* m_camera_listener {nullptr};
+    struct layer_camera_listener;
+    layer_camera_listener* m_camera_listener {nullptr};
 
     /// Contains the autostereo listener.
     compositor::manager::auto_stereo* m_autostereo_listener {nullptr};

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -41,6 +41,8 @@ class SIGHT_CORE_CLASS_API temp_path
 {
 public:
 
+    SIGHT_CORE_API virtual ~temp_path() noexcept;
+
     /// Disable copy
     temp_path(const temp_path&)            = delete;
     temp_path(temp_path&&)                 = delete;
@@ -49,8 +51,8 @@ public:
 
     /// Conversion operators
     /// @{
-    inline operator std::filesystem::path() const noexcept;
-    inline operator std::string() const noexcept;
+    inline operator std::filesystem::path() const noexcept; //NOLINT(hicpp-explicit-conversions)
+    inline operator std::string() const noexcept;           //NOLINT(hicpp-explicit-conversions)
     /// @}
 
     /// Convenience operators
@@ -58,12 +60,12 @@ public:
     inline std::filesystem::path operator/(const std::filesystem::path& _other) const noexcept;
     inline std::string operator+(const std::string& _other) const noexcept;
     inline bool operator==(const temp_path& _other) const noexcept;
-    inline std::string string() const noexcept;
+    [[nodiscard]] inline std::string string() const noexcept;
     /// @}
 
     /// Returns the temporary path
     /// The path is automatically deleted when the instance is destroyed.
-    inline const std::filesystem::path& path() const noexcept;
+    [[nodiscard]] inline const std::filesystem::path& path() const noexcept;
 
     /// Returns the root path of all temporary directories.
     /// This directory will only be deleted at application exit.
@@ -72,18 +74,23 @@ public:
         const std::string& _subdirectory_prefix = std::string()
     );
 
+    /// Returns the ofstream if any. Will be closed when instance is destructed.
+    inline std::ofstream& stream();
+
 protected:
 
-    /// Constructor / Destructor
+    /// Constructor
     /// @{
-    SIGHT_CORE_API temp_path(const std::pair<std::filesystem::path, std::shared_ptr<std::ofstream> >& _path_and_stream);
-    SIGHT_CORE_API virtual ~temp_path() noexcept;
+    SIGHT_CORE_API explicit temp_path(
+        const std::pair<std::filesystem::path,
+                        std::shared_ptr<std::ofstream> >& _path_and_stream
+    );
     /// @}
+
+private:
 
     /// Holds the ofstream if any. Will be closed at destruction.
     std::shared_ptr<std::ofstream> m_ofstream;
-
-private:
 
     /// Holds the path to remove at destruction
     const std::filesystem::path m_path;
@@ -134,6 +141,13 @@ inline const std::filesystem::path& temp_path::path() const noexcept
     return m_path;
 }
 
+//------------------------------------------------------------------------------
+
+inline std::ofstream& temp_path::stream()
+{
+    return *m_ofstream;
+}
+
 /**
  * @brief This class represents a temporary directory.
  *
@@ -147,7 +161,7 @@ public:
     /// Constructor
     /// @param[in] _path Allows to specify a path, that will be deleted when the instance is destroyed.
     ///                 It is up to the user to ensure that the path is unique and not used elsewhere.
-    SIGHT_CORE_API temp_dir(const std::optional<std::filesystem::path>& _path = std::nullopt);
+    SIGHT_CORE_API explicit temp_dir(const std::optional<std::filesystem::path>& _path = std::nullopt);
 
     /// Destructor
     SIGHT_CORE_API ~temp_dir() noexcept override = default;
@@ -178,7 +192,7 @@ public:
     ///                     This is the safest way to avoid race conditions and possible security problems.
     /// @param[in] _path Allows to specify a path, that will be deleted when the instance is destroyed.
     ///                 It is up to the user to ensure that the path is unique and not used elsewhere.
-    SIGHT_CORE_API temp_file(
+    SIGHT_CORE_API explicit temp_file(
         const std::optional<std::ios_base::openmode>& _openmode = std::nullopt,
         const std::optional<std::filesystem::path>& _path       = std::nullopt
     );
@@ -187,7 +201,7 @@ public:
     SIGHT_CORE_API ~temp_file() noexcept override = default;
 
     /// Conversion operator
-    inline operator std::ostream & ();
+    inline explicit operator std::ostream & ();
 
     /// Convenience operators
     /// @{
@@ -208,14 +222,11 @@ public:
     SIGHT_CORE_API static std::pair<std::filesystem::path, std::shared_ptr<std::ofstream> > unique_stream(
         const std::optional<std::ios_base::openmode>& _openmode = std::ios_base::out | std::ios_base::trunc
     );
-
-    /// Returns the ofstream if any. Will be closed when instance is destructed.
-    inline std::ofstream& stream();
 };
 
 inline temp_file::operator std::ostream & ()
 {
-    return *m_ofstream;
+    return stream();
 }
 
 //------------------------------------------------------------------------------
@@ -230,14 +241,7 @@ inline bool temp_file::operator==(const temp_file& _other) const noexcept
 template<typename T>
 inline std::ostream& operator<<(temp_file& _os, const T& _t)
 {
-    return *_os.m_ofstream << _t;
-}
-
-//------------------------------------------------------------------------------
-
-inline std::ofstream& temp_file::stream()
-{
-    return *m_ofstream;
+    return _os.stream() << _t;
 }
 
 } // namespace sight::core::os

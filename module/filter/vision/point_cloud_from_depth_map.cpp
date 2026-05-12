@@ -24,15 +24,10 @@
 
 #include <core/com/signal.hxx>
 #include <core/com/slots.hxx>
-#include <core/profiling.hpp>
 
 #include <filter/vision/projection.hpp>
 
 #include <geometry/data/matrix4.hpp>
-
-#include <service/macros.hpp>
-
-#include <glm/glm.hpp>
 
 #include <cmath>
 
@@ -44,7 +39,7 @@ const core::com::slots::key_t point_cloud_from_depth_map::SET_DEPTH_RANGE = "set
 //------------------------------------------------------------------------------
 
 point_cloud_from_depth_map::point_cloud_from_depth_map() noexcept :
-    filter(m_signals)
+    filter(has_signals::signals())
 {
     new_slot(SET_DEPTH_RANGE, &point_cloud_from_depth_map::set_depth_range, this);
 }
@@ -114,8 +109,8 @@ void point_cloud_from_depth_map::updating()
         }
 
         point_cloud->resize(
-            data::mesh::size_t(nb_points),
-            data::mesh::size_t(nb_points),
+            static_cast<data::mesh::size_t>(nb_points),
+            static_cast<data::mesh::size_t>(nb_points),
             data::mesh::cell_type_t::point,
             attribute
         );
@@ -127,7 +122,7 @@ void point_cloud_from_depth_map::updating()
         // to display the mesh, we need to create cells with one point.
         for(std::size_t i = 0 ; i < nb_points ; ++i, ++itr)
         {
-            itr->pt = data::mesh::cell_t(i);
+            itr->pt = static_cast<data::mesh::cell_t>(i);
         }
 
         auto sig = point_cloud->signal<data::mesh::modified_signal_t>(data::mesh::MODIFIED_SIG);
@@ -371,7 +366,7 @@ void point_cloud_from_depth_map::depth_map_to_point_cloud_rgb(
                     const std::size_t rgb_idx = rgb_py * rgb_width + rgb_px;
                     if(rgb_idx < image_size)
                     {
-                        const auto color = rgb_begin + std::int64_t(rgb_idx);
+                        const auto color = rgb_begin + static_cast<std::int64_t>(rgb_idx);
                         c = *color;
                     }
                     else

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -155,20 +155,12 @@ public:
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;
 
-protected:
+private:
 
     ///List of Image
     std::list<image::sptr> m_image_container;
     ///List of pointList
     std::list<point_list::sptr> m_point_list_container_t;
-    ///added record signal
-    added_record_signal_t::sptr m_sig_added_record;
-    /// removed record signal
-    removed_record_signal_t::sptr m_sig_removed_record;
-    ///reset records signal
-    reset_record_signal_t::sptr m_sig_reset_record;
-    ///get record signal
-    get_record_signal_t::sptr m_sig_get_record;
 };
 
 } // namespace sight::data

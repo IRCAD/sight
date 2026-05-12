@@ -29,8 +29,6 @@
 
 #include <array>
 #include <cstdlib>
-#include <functional>
-#include <numeric>
 
 namespace sight::data
 {
@@ -166,7 +164,7 @@ std::size_t mesh::reserve(mesh::size_t _nb_pts, mesh::size_t _nb_cells, cell_typ
     {
         m_points[static_cast<std::size_t>(point_attribute::normals)]->resize(
             {3, _nb_pts},
-            core::type(core::type::FLOAT)
+            core::type(core::type::FLOAT32)
         );
     }
 
@@ -174,7 +172,7 @@ std::size_t mesh::reserve(mesh::size_t _nb_pts, mesh::size_t _nb_cells, cell_typ
     {
         m_points[static_cast<std::size_t>(point_attribute::tex_coords)]->resize(
             {2, _nb_pts},
-            core::type(core::type::FLOAT)
+            core::type(core::type::FLOAT32)
         );
     }
 
@@ -195,7 +193,7 @@ std::size_t mesh::reserve(mesh::size_t _nb_pts, mesh::size_t _nb_cells, cell_typ
     {
         m_cells[static_cast<std::size_t>(cell_attribute::normals)]->resize(
             {3, _nb_cells},
-            core::type(core::type::FLOAT)
+            core::type(core::type::FLOAT32)
         );
     }
 
@@ -203,7 +201,7 @@ std::size_t mesh::reserve(mesh::size_t _nb_pts, mesh::size_t _nb_cells, cell_typ
     {
         m_cells[static_cast<std::size_t>(cell_attribute::tex_coords)]->resize(
             {2, _nb_cells},
-            core::type(core::type::FLOAT)
+            core::type(core::type::FLOAT32)
         );
     }
 
@@ -232,32 +230,43 @@ bool mesh::shrink_to_fit()
 
     if(static_cast<std::uint8_t>(m_attributes & attribute::point_colors) != 0U)
     {
-        m_points[static_cast<std::size_t>(point_attribute::colors)]->resize({4, std::size_t(m_num_points)});
+        m_points[static_cast<std::size_t>(point_attribute::colors)]->resize(
+            {4,
+             static_cast<std::size_t>(m_num_points)
+            });
     }
 
     if(static_cast<std::uint8_t>(m_attributes & attribute::point_normals) != 0U)
     {
-        m_points[static_cast<std::size_t>(point_attribute::normals)]->resize({3, std::size_t(m_num_points)});
+        m_points[static_cast<std::size_t>(point_attribute::normals)]->resize(
+            {3,
+             static_cast<std::size_t>(m_num_points)
+            });
     }
 
     if(static_cast<std::uint8_t>(m_attributes & attribute::point_tex_coords) != 0U)
     {
-        m_points[static_cast<std::size_t>(point_attribute::tex_coords)]->resize({2, std::size_t(m_num_points)});
+        m_points[static_cast<std::size_t>(point_attribute::tex_coords)]->resize(
+            {2, static_cast<std::size_t>(m_num_points)
+            });
     }
 
     if(static_cast<std::uint8_t>(m_attributes & attribute::cell_colors) != 0U)
     {
-        m_cells[static_cast<std::size_t>(cell_attribute::colors)]->resize({4, std::size_t(m_num_cells)});
+        m_cells[static_cast<std::size_t>(cell_attribute::colors)]->resize({4, static_cast<std::size_t>(m_num_cells)});
     }
 
     if(static_cast<std::uint8_t>(m_attributes & attribute::cell_normals) != 0U)
     {
-        m_cells[static_cast<std::size_t>(cell_attribute::normals)]->resize({3, std::size_t(m_num_cells)});
+        m_cells[static_cast<std::size_t>(cell_attribute::normals)]->resize({3, static_cast<std::size_t>(m_num_cells)});
     }
 
     if(static_cast<std::uint8_t>(m_attributes & attribute::cell_tex_coords) != 0U)
     {
-        m_cells[static_cast<std::size_t>(cell_attribute::tex_coords)]->resize({2, std::size_t(m_num_cells)});
+        m_cells[static_cast<std::size_t>(cell_attribute::tex_coords)]->resize(
+            {2,
+             static_cast<std::size_t>(m_num_cells)
+            });
     }
 
     const auto new_allocated_size = this->allocated_size_in_bytes();

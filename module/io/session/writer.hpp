@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2025 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -151,7 +151,7 @@ private:
     };
 
     /// Archive format to use
-    sight::io::zip::archive::archive_format m_archive_format {sight::io::zip::archive::archive_format::DEFAULT};
+    sight::io::zip::archive::archive_format m_archive_format {sight::io::zip::archive::archive_format::standard};
 };
 
 } // namespace sight::module::io::session

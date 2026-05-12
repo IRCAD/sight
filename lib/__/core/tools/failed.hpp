@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,7 +42,7 @@ struct SIGHT_CORE_CLASS_API failed : public core::exception
      *
      * @param[in]   _message a string containing the failure message
      */
-    SIGHT_CORE_API failed(const std::string& _message) noexcept;
+    SIGHT_CORE_API explicit failed(const std::string& _message) noexcept;
 
     /**
      * @brief   Destructor : do nothing.

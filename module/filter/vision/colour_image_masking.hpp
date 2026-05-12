@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -94,10 +94,10 @@ public:
     /// Destroys the service.
     ~colour_image_masking() noexcept override;
 
+protected:
+
     /// Defines auto connection for this service (update slot) to the frame timeline (objectPushed)
     service::connections_t auto_connections() const override;
-
-protected:
 
     /// Initializes segmentation method parameters.
     void configuring() override;

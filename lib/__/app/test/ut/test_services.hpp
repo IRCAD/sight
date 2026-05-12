@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -84,7 +84,7 @@ protected:
         _sstream << "TestConfigService";
     }
 
-    bool m_is_updated {false};
+    bool m_is_updated {false}; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
 };
 
 /**
@@ -98,6 +98,8 @@ public:
 
     ~test1_image() noexcept override =
         default;
+
+protected:
 
     //------------------------------------------------------------------------------
 
@@ -124,6 +126,8 @@ public:
         m_is_updated = true;
     }
 
+public:
+
     data::ptr<data::image, data::access::in> m_input {this, "data", true};
 };
 
@@ -136,7 +140,7 @@ public:
 
     SIGHT_DECLARE_SERVICE(test_order_srv, service::base);
 
-    static unsigned int s_ORDER;
+    static unsigned int s_order;
 
     //------------------------------------------------------------------------------
 
@@ -144,7 +148,16 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void configuring(const config_t&) final
+    unsigned int update_order() const
+    {
+        return m_update_order;
+    }
+
+protected:
+
+    //------------------------------------------------------------------------------
+
+    void configuring(const config_t& /*unused*/) final
     {
     }
 
@@ -164,19 +177,10 @@ public:
 
     void updating() final
     {
-        m_update_order = s_ORDER++;
+        m_update_order = s_order++;
     }
 
-    //------------------------------------------------------------------------------
-
-    unsigned int update_order() const
-    {
-        return m_update_order;
-    }
-
-protected:
-
-    unsigned int m_update_order {0};
+    unsigned int m_update_order {0}; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
 };
 
 class test_reset_order_srv final : public service::base
@@ -189,9 +193,13 @@ public:
 
     ~test_reset_order_srv() noexcept final = default;
 
+//------------------------------------------------------------------------------
+
+protected:
+
     //------------------------------------------------------------------------------
 
-    void configuring(const config_t&) final
+    void configuring(const config_t& /*unused*/) final
     {
     }
 
@@ -211,7 +219,7 @@ public:
 
     void updating() final
     {
-        test_order_srv::s_ORDER = 1;
+        test_order_srv::s_order = 1;
     }
 };
 

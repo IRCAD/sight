@@ -37,7 +37,7 @@ const core::com::slots::key_t flip::FLIP_AXIS_Z_SLOT = "flip_axis_z";
 //------------------------------------------------------------------------------
 
 flip::flip() :
-    filter(m_signals)
+    filter(has_signals::signals())
 {
     // Initialize the slots
     new_slot(FLIP_AXIS_X_SLOT, &flip::flip_axis_x, this);

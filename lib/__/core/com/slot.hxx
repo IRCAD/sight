@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#if !defined(FWCOM_SLOT_HPP)
+#ifndef FWCOM_SLOT_HPP
 #error core/com/slot.hpp not included
 #endif
 
@@ -45,6 +45,7 @@ slot<R(A ...)>::slot() :
     slot_call<R(A ...)>()
 {
     // 'this->' is needed by gcc 4.2
+    //NOLINTNEXTLINE(cppcoreguidelines-prefer-member-initializer)
     this->slot_base::m_signature = slot_base::get_type_name<R(A ...)>();
 }
 
@@ -60,7 +61,7 @@ slot<slot<R(A ...)> >::slot(SPTR(slot_run<F>)_slot) :
             boost::function_types::function_arity<F>::value
         >::wrap(&slot_run<F>::run, _slot.get()))
 {
-    static_assert(std::is_same<void, R>::value);
+    static_assert(std::is_same_v<void, R>);
     this->set_worker(_slot->get_worker());
     this->m_source_slot = _slot;
 }
@@ -98,9 +99,9 @@ SPTR(slot<typename core::com::util::convert_function_type<F>::type>) new_slot(F 
 
 //-----------------------------------------------------------------------------
 
-template<typename F, std::enable_if_t<!std::is_function_v<typename core::com::util::convert_function_type<F>::type>,
-                                      bool> = true>
+template<typename F>
 SPTR(slot<core::lambda_to_function_t<F> >) new_slot(F _f)
+requires(!std::is_function_v<typename core::com::util::convert_function_type<F>::type>)
 {
     auto fn = lambda_to_function(_f);
     return std::make_shared<sight::core::com::slot<core::lambda_to_function_t<F> > >(fn);

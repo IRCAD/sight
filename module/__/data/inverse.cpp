@@ -29,7 +29,7 @@ namespace sight::module::data
 //-----------------------------------------------------------------------------
 
 inverse::inverse() :
-    service::filter(m_signals)
+    service::filter(has_signals::signals())
 {
 }
 

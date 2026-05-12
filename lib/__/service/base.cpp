@@ -28,7 +28,6 @@
 #include <core/com/signal.hxx>
 #include <core/com/slot.hxx>
 #include <core/com/slots.hxx>
-#include <core/runtime/helper.hpp>
 #include <core/thread/worker.hpp>
 
 #include <boost/property_tree/xml_parser.hpp>
@@ -151,7 +150,7 @@ base::~base() = default;
 void base::set_worker(core::thread::worker::sptr _worker)
 {
     m_pimpl->m_worker = _worker;
-    core::com::has_slots::m_slots.set_worker(m_pimpl->m_worker);
+    core::com::has_slots::slots().set_worker(m_pimpl->m_worker);
 }
 
 //-----------------------------------------------------------------------------

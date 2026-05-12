@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -43,7 +43,7 @@ struct deduce_type<RETURN_TYPE (CLASS_TYPE::*)(ARGS ...) const>
 } // namespace detail
 
 template<typename CLOSURE>
-using lambda_to_function_t = typename detail::deduce_type<decltype(&CLOSURE::operator())>::type;
+using lambda_to_function_t = detail::deduce_type<decltype(&CLOSURE::operator())>::type;
 
 //------------------------------------------------------------------------------
 

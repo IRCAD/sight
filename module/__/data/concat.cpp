@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,13 +21,13 @@
 
 #include "concat.hpp"
 
-#include <boost/format.hpp>
+#include <boost/format.hpp> // NOLINT(misc-include-cleaner)
 
 namespace sight::module::data
 {
 
 concat::concat() :
-    service::filter(m_signals)
+    service::filter(has_signals::signals())
 {
 }
 

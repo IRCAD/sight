@@ -23,16 +23,14 @@
 
 #include "data/model_series.hpp"
 
-#include "io/dicom/codec/nvjpeg2k.hpp"
+#include <io/bitmap/backend.hpp> // NOLINT(misc-include-cleaner)
+#include <io/dicom/codec/nvjpeg2k.hpp>
 
-#include <core/macros.hpp>
 #include <core/progress/observer.hpp>
 
 #include <data/fiducials_series.hpp>
 #include <data/helper/medical_image.hpp>
 #include <data/image_series.hpp>
-
-#include <io/bitmap/writer.hpp>
 
 #include <gdcmImageChangeTransferSyntax.h>
 #include <gdcmImageWriter.h>
@@ -262,7 +260,7 @@ inline static void write_enhanced_us_volume(
             const auto z_spacing = _image_series.spacing()[2];
 
             // We need to compute the frame position from image origin and z spacing
-            for(std::size_t frame = 0, end_index = std::max(std::size_t(1), _image_series.size()[2]) ;
+            for(std::size_t frame = 0, end_index = std::max(static_cast<std::size_t>(1), _image_series.size()[2]) ;
                 frame < end_index ; ++frame)
             {
                 SIGHT_WARN_IF(
@@ -290,9 +288,9 @@ inline static void write_enhanced_us_volume(
     // Set the image dimensions
     const auto& image_sizes = _image_series.size();
     const std::array<std::uint32_t, 3> dimensions {
-        std::uint32_t(image_sizes[0]),
-        std::uint32_t(image_sizes[1]),
-        std::uint32_t(image_sizes[2])
+        static_cast<std::uint32_t>(image_sizes[0]),
+        static_cast<std::uint32_t>(image_sizes[1]),
+        static_cast<std::uint32_t>(image_sizes[2])
     };
 
     gdcm_image.SetDimensions(dimensions.data());
@@ -339,11 +337,11 @@ inline static void write_enhanced_us_volume(
             gdcm_image.SetPixelFormat(gdcm::PixelFormat::UINT64);
             break;
 
-        case core::type::FLOAT:
+        case core::type::FLOAT32:
             gdcm_image.SetPixelFormat(gdcm::PixelFormat::FLOAT32);
             break;
 
-        case core::type::DOUBLE:
+        case core::type::FLOAT64:
             gdcm_image.SetPixelFormat(gdcm::PixelFormat::FLOAT64);
             break;
 
@@ -370,7 +368,10 @@ inline static void write_enhanced_us_volume(
             break;
 
         default:
-            SIGHT_THROW("Unsupported pixel format: '" << _image_series.pixel_format() << "'");
+            SIGHT_THROW(
+                "Unsupported pixel format: '" << static_cast<unsigned int>(_image_series.pixel_format())
+                << "'"
+            );
     }
 
     // Planar Configuration is always 0 (R1G1B1 R2G2B2 ...)
@@ -392,7 +393,7 @@ inline static void write_enhanced_us_volume(
 
     pixeldata.SetByteValue(
         reinterpret_cast<const char*>(_image_series.buffer()),
-        std::uint32_t(size_in_bytes)
+        static_cast<std::uint32_t>(size_in_bytes)
     );
 
     gdcm_image.SetDataElement(pixeldata);
@@ -443,7 +444,7 @@ inline static void write_enhanced_us_volume(
                     SIGHT_THROW_IF(
                         "nvJPEG2000 is not available, but the support has been compiled in. "
                         "Check your nvJPEG2000 library installation",
-                        !io::bitmap::nvjpeg2k()
+                        !sight::io::bitmap::nvjpeg2k()
                     );
 
                     nvjpeg2k_codec = std::make_unique<codec::nvjpeg2k>();

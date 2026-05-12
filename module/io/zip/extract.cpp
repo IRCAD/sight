@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,15 +22,16 @@
 // cspell:ignore NOLINT
 
 #include "extract.hpp"
+#include "io/zip/archive.hpp"
+#include "io/zip/archive_reader.hpp"
 
 #include <core/com/signal.hxx>
 #include <core/crypto/password_keeper.hpp>
 #include <core/crypto/secure_string.hpp>
+#include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
 #include <core/progress/observer.hpp>
-#include <core/tools/system.hpp>
 
-#include <io/session/session_reader.hpp>
 #include <io/zip/exception/read.hpp>
 
 #include <ui/__/cursor.hpp>
@@ -220,7 +221,7 @@ void extract::updating()
         {
             auto archive_reader = sight::io::zip::archive_reader::get(
                 filepath,
-                archive::archive_format::DEFAULT
+                archive::archive_format::standard
             );
 
             archive_reader->extract_all_to(m_output_path, password);

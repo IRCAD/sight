@@ -20,8 +20,6 @@
  *
  ***********************************************************************/
 
-#include <core/crypto/aes256.hpp>
-#include <core/crypto/base64.hpp>
 #include <core/os/temp_path.hpp>
 #include <core/tools/uuid.hpp>
 
@@ -48,7 +46,6 @@
 #include <data/material.hpp>
 #include <data/matrix4.hpp>
 #include <data/model_series.hpp>
-#include <data/mt/locked_ptr.hpp>
 #include <data/plane.hpp>
 #include <data/plane_list.hpp>
 #include <data/point.hpp>
@@ -68,17 +65,12 @@
 
 #include <geometry/data/mesh.hpp>
 
-#include <io/session/detail/core/session_deserializer.hpp>
-#include <io/session/detail/core/session_serializer.hpp>
 #include <io/session/helper.hpp>
 #include <io/session/session_reader.hpp>
 #include <io/session/session_writer.hpp>
-#include <io/zip/exception/read.hpp>
-#include <io/zip/exception/write.hpp>
 
 #include <utest/filter.hpp>
 
-#include <utest_data/data.hpp>
 #include <utest_data/generator/image.hpp>
 #include <utest_data/generator/mesh.hpp>
 
@@ -151,15 +143,15 @@ inline static std::string generate_dt(std::size_t _variant)
 //------------------------------------------------------------------------------
 
 template<typename T>
-static inline typename T::sptr generate(const std::size_t /*unused*/)
+static inline T::sptr generate(const std::size_t /*unused*/)
 {
-    return std::make_shared<T>(static_cast<typename T::value_t>(random<typename T::value_t>()));
+    return std::make_shared<T>(static_cast<T::value_t>(random<typename T::value_t>()));
 }
 
 //------------------------------------------------------------------------------
 
 template<typename T>
-static inline const typename T::csptr& get_expected(const std::size_t _variant)
+static inline const T::csptr& get_expected(const std::size_t _variant)
 {
     static std::map<std::size_t, typename T::csptr> map;
     const auto& it = map.find(_variant);
@@ -178,7 +170,7 @@ static inline const typename T::csptr& get_expected(const std::size_t _variant)
 //------------------------------------------------------------------------------
 
 template<typename T>
-static inline typename T::sptr create(const std::size_t _variant)
+static inline T::sptr create(const std::size_t _variant)
 {
     const auto& object = std::make_shared<T>();
     object->deep_copy(get_expected<T>(_variant));
@@ -520,7 +512,7 @@ inline sight::data::series::sptr generate<sight::data::series>(const std::size_t
     object->set_modality(sight::data::dicom::modality_t::us);
     object->set_series_description(uuid::generate());
     object->set_series_instance_uid(uuid::generate());
-    object->set_series_number(std::int32_t(_variant));
+    object->set_series_number(static_cast<std::int32_t>(_variant));
     object->set_laterality(uuid::generate());
     object->set_series_date(generate_da(_variant));
     object->set_series_time(generate_tm(_variant));
@@ -556,11 +548,11 @@ inline sight::data::series::sptr generate<sight::data::series>(const std::size_t
 
     // Patient Study Module
     object->set_patient_age(uuid::generate());
-    object->set_patient_size(double(_variant));
-    object->set_patient_weight(double(_variant));
+    object->set_patient_size(static_cast<double>(_variant));
+    object->set_patient_weight(static_cast<double>(_variant));
 
     // Other Modules
-    object->set_slice_thickness(double(_variant));
+    object->set_slice_thickness(static_cast<double>(_variant));
     object->set_frame_acquisition_date_time("57", 0);
     object->set_frame_comments("58", 0);
     object->set_frame_label("59", 0);
@@ -573,17 +565,19 @@ inline sight::data::series::sptr generate<sight::data::series>(const std::size_t
     {
         object->set_image_position_patient(
         {
-            double(_variant + i),
-            double(_variant + i + 1),
-            double(_variant + i + 2)
+            static_cast<double>(_variant + i),
+            static_cast<double>(_variant + i + 1),
+            static_cast<double>(_variant + i + 2)
         },
             i
         );
 
         object->set_image_orientation_patient(
         {
-            double(_variant + i), double(_variant + i + 1), double(_variant + i + 2),
-            double(_variant + i + 3), double(_variant + i + 4), double(_variant + i + 5)
+            static_cast<double>(_variant + i), static_cast<double>(_variant + i + 1),
+            static_cast<double>(_variant + i + 2),
+            static_cast<double>(_variant + i + 3), static_cast<double>(_variant + i + 4),
+            static_cast<double>(_variant + i + 5)
         },
             i
         );
@@ -632,9 +626,9 @@ inline sight::data::array::sptr generate<sight::data::array>(const std::size_t _
             object->resize(
                 {_variant + 2, _variant + 2},
                 std::is_same_v<type, double>
-                ? sight::core::type::DOUBLE
+                ? sight::core::type::FLOAT64
                 : std::is_same_v<type, float>
-                ? sight::core::type::FLOAT
+                ? sight::core::type::FLOAT32
                 : std::is_same_v<type, std::uint8_t>
                 ? sight::core::type::UINT8
                 : std::is_same_v<type, std::uint16_t>
@@ -732,9 +726,9 @@ inline sight::data::image::sptr generate<sight::data::image>(const std::size_t _
             0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6
         },
                 std::is_same_v<type, double>
-                ? sight::core::type::DOUBLE
+                ? sight::core::type::FLOAT64
                 : std::is_same_v<type, float>
-                ? sight::core::type::FLOAT
+                ? sight::core::type::FLOAT32
                 : std::is_same_v<type, std::uint8_t>
                 ? sight::core::type::UINT8
                 : std::is_same_v<type, std::uint16_t>
@@ -774,7 +768,7 @@ inline sight::data::image::sptr generate<sight::data::image>(const std::size_t _
                 : std::is_same_v<type, std::int64_t>
                 ? sight::data::image::pixel_format_t::rgb
                 : sight::data::image::pixel_format_t::undefined,
-                std::uint32_t(_variant)
+                static_cast<std::uint32_t>(_variant)
             );
         };
 
@@ -1295,10 +1289,10 @@ inline sight::data::image_series::sptr generate<sight::data::image_series>(const
 
     object->set_contrast_bolus_agent(uuid::generate());
     object->set_contrast_bolus_route(uuid::generate());
-    object->set_contrast_bolus_volume(double(_variant));
+    object->set_contrast_bolus_volume(static_cast<double>(_variant));
     object->set_contrast_bolus_start_time(generate_tm(_variant));
     object->set_contrast_bolus_stop_time(generate_tm(_variant));
-    object->set_contrast_bolus_total_dose(double(_variant));
+    object->set_contrast_bolus_total_dose(static_cast<double>(_variant));
 
     object->set_contrast_flow_rate(
         std::to_string(_variant)
@@ -1317,7 +1311,7 @@ inline sight::data::image_series::sptr generate<sight::data::image_series>(const
     );
 
     object->set_contrast_bolus_ingredient(uuid::generate());
-    object->set_contrast_bolus_ingredient_concentration(double(_variant));
+    object->set_contrast_bolus_ingredient_concentration(static_cast<double>(_variant));
     object->set_acquisition_date(generate_da(_variant));
     object->set_acquisition_time(generate_tm(_variant));
 

@@ -30,6 +30,7 @@
 #include <optional>
 #include <string_view>
 #include <system_error>
+#include <utility>
 
 namespace sight::data
 {
@@ -65,7 +66,7 @@ public:
     [[nodiscard]] enum access access () const;
 
     // Returns key()
-    [[nodiscard]] operator std::string_view() const;
+    [[nodiscard]] operator std::string_view() const; //NOLINT(google-explicit-constructor,hicpp-explicit-conversions)
 
     // Generic getter
     SIGHT_DATA_API virtual sight::data::object::csptr get() = 0;
@@ -89,6 +90,7 @@ protected:
         std::optional<std::size_t> _index = std::nullopt
     )                                     = 0;
 
+    //NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
     has_data* m_holder {nullptr};
     std::string_view m_key;
     std::optional<bool> m_auto_connect;
@@ -97,6 +99,7 @@ protected:
     {
         access::in
     };
+    //NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 };
 
 //------------------------------------------------------------------------------
@@ -153,7 +156,7 @@ public:
     ptr(
         has_data* _holder,
         std::string_view _key,
-        bool _optional                    = access_type_traits<DATATYPE, ACCESS>::OPTIONAL_DEFAULT,
+        bool _optional                    = access_type_traits<DATATYPE, ACCESS>::OPTIONAL_DEFAULT, //NOLINT(modernize-avoid-c-style-cast)
         std::optional<std::size_t> _index = {}) noexcept :
         base_ptr(_holder, _key, _optional, ACCESS, _index)
     {
@@ -170,7 +173,7 @@ public:
 
     /// This method is only available if it is an output
     template<data::access A = ACCESS>
-    ptr& operator=(const typename access_type_traits<DATATYPE, ACCESS>::value& _obj)
+    ptr& operator=(const access_type_traits<DATATYPE, ACCESS>::value& _obj)
     requires assignable_traits<A>::VALUE
     {
         this->set(_obj, {}, {}, {}, true);
@@ -183,6 +186,13 @@ public:
     void reset()
     {
         this->set(nullptr, {}, {}, {}, true);
+    }
+
+    //------------------------------------------------------------------------------
+
+    sight::data::object::csptr get() final
+    {
+        return std::dynamic_pointer_cast<const data::object>(base_ptr_t::get_shared());
     }
 
 protected:
@@ -221,7 +231,7 @@ protected:
         }
         else
         {
-            using target_t = typename access_type_traits<DATATYPE, ACCESS>::object;
+            using target_t = access_type_traits<DATATYPE, ACCESS>::object;
             auto typed_obj = std::dynamic_pointer_cast<target_t>(_obj);
             SIGHT_ASSERT(
                 "Can not convert pointer type from '" + _obj->get_classname()
@@ -232,7 +242,7 @@ protected:
 
             if(_auto_connect.has_value())
             {
-                m_auto_connect = _auto_connect.value();
+                m_auto_connect = _auto_connect;
             }
 
             if(_optional.has_value())
@@ -257,6 +267,14 @@ protected:
         }
     }
 
+    //------------------------------------------------------------------------------
+
+    void set_deferred_id(const std::string& _id, std::optional<std::size_t>/*_index*/ = std::nullopt) final
+    {
+        SIGHT_ASSERT("Object id can not be empty", !_id.empty());
+        m_deferred_id = _id;
+    }
+
 private:
 
     /// Constructor used by ptr_vector, allowing to duplicate the auto_connect status between elements.
@@ -269,6 +287,7 @@ private:
     ) noexcept :
         base_ptr(_holder, _key, _optional, ACCESS, _index)
     {
+        //NOLINTNEXTLINE(cppcoreguidelines-prefer-member-initializer)
         m_auto_connect = _auto_connect;
     }
 
@@ -276,21 +295,6 @@ private:
     friend class has_data;
     template<class, data::access>
     friend class ptr_vector;
-
-    //------------------------------------------------------------------------------
-
-    sight::data::object::csptr get() final
-    {
-        return std::dynamic_pointer_cast<const data::object>(base_ptr_t::get_shared());
-    }
-
-    //------------------------------------------------------------------------------
-
-    void set_deferred_id(const std::string& _id, std::optional<std::size_t>/*_index*/ = std::nullopt) final
-    {
-        SIGHT_ASSERT("Object id can not be empty", !_id.empty());
-        m_deferred_id = _id;
-    }
 
     /// Only the owner of the pointer can update the content of the pointer
     friend class has_data;
@@ -319,7 +323,7 @@ public:
     ptr_vector(
         has_data* _holder,
         std::string_view _key,
-        bool _optional = access_type_traits<DATATYPE, ACCESS>::OPTIONAL_DEFAULT
+        bool _optional = access_type_traits<DATATYPE, ACCESS>::OPTIONAL_DEFAULT //NOLINT(modernize-avoid-c-style-cast)
     ) noexcept :
         base_ptr(_holder, _key, _optional, ACCESS, {})
     {
@@ -371,36 +375,31 @@ public:
 
     //------------------------------------------------------------------------------
 
-    typename container_ptr_t::iterator begin()
+    container_ptr_t::iterator begin()
     {
         return m_ptrs.begin();
     }
 
     //------------------------------------------------------------------------------
 
-    typename container_ptr_t::iterator end()
+    container_ptr_t::iterator end()
     {
         return m_ptrs.end();
     }
 
     //------------------------------------------------------------------------------
 
-    typename container_ptr_t::const_iterator cbegin()
+    container_ptr_t::const_iterator cbegin()
     {
         return m_ptrs.cbegin();
     }
 
     //------------------------------------------------------------------------------
 
-    typename container_ptr_t::const_iterator cend()
+    container_ptr_t::const_iterator cend()
     {
         return m_ptrs.cend();
     }
-
-private:
-
-    /// Only the owner of the pointer can update the content of the pointer
-    friend class has_data;
 
     //------------------------------------------------------------------------------
 
@@ -408,6 +407,8 @@ private:
     {
         return nullptr;
     }
+
+protected:
 
     /// Pointer assignment
     void set(
@@ -432,7 +433,7 @@ private:
         }
         else
         {
-            using target_t = typename access_type_traits<DATATYPE, ACCESS>::object;
+            using target_t = access_type_traits<DATATYPE, ACCESS>::object;
             auto typed_obj = std::dynamic_pointer_cast<target_t>(_obj);
             SIGHT_ASSERT(
                 "Can not convert pointer type from '" + _obj->get_classname()
@@ -469,6 +470,11 @@ private:
         m_ptrs[*_index]->m_deferred_id = _id;
     }
 
+private:
+
+    /// Only the owner of the pointer can update the content of the pointer
+    friend class has_data;
+
     /// Collection of data, indexed by key
     container_ptr_t m_ptrs;
 };
@@ -501,10 +507,10 @@ public:
     property(
         has_data* _holder,
         std::string_view _key,
-        const DATATYPE& _default_value
+        DATATYPE  _default_value
     ) noexcept :
         ptr<DATATYPE, data::access::inout>(_holder, _key, true),
-        m_default_value(_default_value)
+        m_default_value(std::move(_default_value))
     {
     }
 
@@ -525,8 +531,6 @@ public:
         return this->value();
     }
 
-private:
-
     //------------------------------------------------------------------------------
 
     sight::data::string_serializable::sptr make_default() final
@@ -535,6 +539,8 @@ private:
         this->set(default_object, {}, {}, {}, false);
         return default_object;
     }
+
+private:
 
     const DATATYPE m_default_value;
 };

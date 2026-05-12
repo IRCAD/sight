@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,16 +27,12 @@
 #include <core/com/slots.hxx>
 #include <core/progress/monitor.hpp>
 
-#include <data/series.hpp>
 #include <data/series_set.hpp>
 
 #include <io/__/service/io_types.hpp>
 
+#include <service/extension/config.hpp>
 #include <service/op.hpp>
-
-#include <ui/__/cursor.hpp>
-
-#include <app/extension/config.hpp>
 
 namespace sight::module::ui::series
 {
@@ -46,7 +42,7 @@ static const core::com::slots::key_t FORWARD_MONITOR_SLOT = "forwardmonitor";
 //------------------------------------------------------------------------------
 
 db_merger::db_merger() noexcept :
-    has_monitors(m_signals),
+    has_monitors(has_signals::signals()),
     m_io_selector_srv_config("IOSelectorServiceConfigVRRenderReader"),
     m_slot_forward_monitor(new_slot(FORWARD_MONITOR_SLOT, &db_merger::forward_monitor, this))
 {

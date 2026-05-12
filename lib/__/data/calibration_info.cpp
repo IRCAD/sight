@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,13 +22,11 @@
 
 #include "data/calibration_info.hpp"
 
-#include <core/com/signal.hpp>
 #include <core/com/signal.hxx>
 #include <core/com/signals.hpp>
 
 #include <data/registry/macros.hpp>
 
-#include <algorithm>
 #include <iterator>
 
 namespace sight::data
@@ -48,16 +46,12 @@ using const_point_list_container_t = std::list<point_list::csptr>;
 
 //------------------------------------------------------------------------------
 
-calibration_info::calibration_info() :
-    m_sig_added_record(std::make_shared<added_record_signal_t>()),
-    m_sig_removed_record(std::make_shared<removed_record_signal_t>()),
-    m_sig_reset_record(std::make_shared<reset_record_signal_t>()),
-    m_sig_get_record(std::make_shared<get_record_signal_t>())
+calibration_info::calibration_info()
 {
-    core::com::has_signals::m_signals(ADDED_RECORD_SIG, m_sig_added_record);
-    core::com::has_signals::m_signals(REMOVED_RECORD_SIG, m_sig_removed_record);
-    core::com::has_signals::m_signals(RESET_RECORD_SIG, m_sig_reset_record);
-    core::com::has_signals::m_signals(GET_RECORD_SIG, m_sig_get_record);
+    new_signal<added_record_signal_t>(ADDED_RECORD_SIG);
+    new_signal<removed_record_signal_t>(REMOVED_RECORD_SIG);
+    new_signal<reset_record_signal_t>(RESET_RECORD_SIG);
+    new_signal<get_record_signal_t>(GET_RECORD_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -196,7 +190,7 @@ data::point_list::csptr calibration_info::get_point_list(const data::image::cspt
     SIGHT_ASSERT("Lists have not the same size", m_image_container.size() == m_point_list_container_t.size());
     std::size_t dist = 0;
     image_container_t::const_iterator it;
-    for(it = m_image_container.begin() ; it != m_image_container.end() && *(it) != _img ; ++it, ++dist)
+    for(it = m_image_container.begin() ; it != m_image_container.end() && *it != _img ; ++it, ++dist)
     {
     }
 
@@ -205,7 +199,7 @@ data::point_list::csptr calibration_info::get_point_list(const data::image::cspt
 
     if(it != m_image_container.end())
     {
-        pl = *(pl_it);
+        pl = *pl_it;
     }
 
     return pl;
@@ -221,7 +215,7 @@ data::image::csptr calibration_info::get_image(const data::point_list::csptr& _p
 
     std::size_t dist = 0;
     point_list_container_t::const_iterator it;
-    for(it = m_point_list_container_t.begin() ; it != m_point_list_container_t.end() && *(it) != _pl ; ++it, ++dist)
+    for(it = m_point_list_container_t.begin() ; it != m_point_list_container_t.end() && *it != _pl ; ++it, ++dist)
     {
     }
 
@@ -230,7 +224,7 @@ data::image::csptr calibration_info::get_image(const data::point_list::csptr& _p
 
     if(it != m_point_list_container_t.end())
     {
-        img = *(img_it);
+        img = *img_it;
     }
 
     return img;
@@ -246,7 +240,7 @@ data::image::sptr calibration_info::get_image(std::size_t _idx)
 
     std::advance(img_it, static_cast<image_container_t::const_iterator::difference_type>(_idx));
 
-    return *(img_it);
+    return *img_it;
 }
 
 //------------------------------------------------------------------------------
@@ -259,7 +253,7 @@ data::image::csptr calibration_info::get_image(std::size_t _idx) const
 
     std::advance(img_it, static_cast<image_container_t::const_iterator::difference_type>(_idx));
 
-    return *(img_it);
+    return *img_it;
 }
 
 //------------------------------------------------------------------------------

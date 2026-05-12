@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2025 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,8 +20,6 @@
  *
  ***********************************************************************/
 
-#include <data/helper/medical_image.hpp>
-
 #include <filter/image/bresenham_line.hpp>
 
 #include <doctest/doctest.h>
@@ -37,7 +35,7 @@ TEST_SUITE("sight::filter::image::bresenham_line")
             const sight::filter::image::bresenham_line::coordinates_t end_point   = {{0, 0, 1024}};
 
             const auto result = sight::filter::image::bresenham_line::draw(
-                sight::filter::image::bresenham_line::Orientation::x_axis,
+                sight::filter::image::bresenham_line::orientation::x_axis,
                 start_point,
                 end_point
             );
@@ -62,7 +60,7 @@ TEST_SUITE("sight::filter::image::bresenham_line")
             const sight::filter::image::bresenham_line::coordinates_t end_point   = {{25, 1313, 3}};
 
             const auto result = sight::filter::image::bresenham_line::draw(
-                sight::filter::image::bresenham_line::Orientation::z_axis,
+                sight::filter::image::bresenham_line::orientation::z_axis,
                 start_point,
                 end_point
             );
@@ -87,7 +85,7 @@ TEST_SUITE("sight::filter::image::bresenham_line")
             const sight::filter::image::bresenham_line::coordinates_t end_point   = {{90, 67, 54}};
 
             const auto result = sight::filter::image::bresenham_line::draw(
-                sight::filter::image::bresenham_line::Orientation::y_axis,
+                sight::filter::image::bresenham_line::orientation::y_axis,
                 start_point,
                 end_point
             );
@@ -111,7 +109,7 @@ TEST_SUITE("sight::filter::image::bresenham_line")
             const sight::filter::image::bresenham_line::coordinates_t start_point = {{90, 67, 68}};
 
             const auto result = sight::filter::image::bresenham_line::draw(
-                sight::filter::image::bresenham_line::Orientation::y_axis,
+                sight::filter::image::bresenham_line::orientation::y_axis,
                 start_point,
                 start_point
             );
@@ -131,7 +129,7 @@ TEST_SUITE("sight::filter::image::bresenham_line")
             const sight::filter::image::bresenham_line::coordinates_t end_point   = {{11, 5, 42}};
 
             const auto result = sight::filter::image::bresenham_line::draw(
-                sight::filter::image::bresenham_line::Orientation::z_axis,
+                sight::filter::image::bresenham_line::orientation::z_axis,
                 start_point,
                 end_point
             );
@@ -169,7 +167,7 @@ TEST_SUITE("sight::filter::image::bresenham_line")
             const sight::filter::image::bresenham_line::coordinates_t end_point   = {{1, 2, 5}};
 
             const auto result = sight::filter::image::bresenham_line::draw(
-                sight::filter::image::bresenham_line::Orientation::x_axis,
+                sight::filter::image::bresenham_line::orientation::x_axis,
                 start_point,
                 end_point
             );

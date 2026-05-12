@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,12 +39,12 @@ class SIGHT_CORE_CLASS_API raw : public factory
 {
 public:
 
-    raw(const std::filesystem::path& _path) :
+    explicit raw(const std::filesystem::path& _path) :
         m_path(_path)
     {
     }
 
-    raw(core::memory::file_holder _path) :
+    explicit raw(core::memory::file_holder _path) :
         m_path(std::move(_path))
     {
     }
@@ -52,6 +52,8 @@ public:
 protected:
 
     SIGHT_CORE_API SPTR(std::istream) get() override;
+
+private:
 
     core::memory::file_holder m_path;
 };

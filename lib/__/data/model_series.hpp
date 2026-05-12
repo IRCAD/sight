@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -101,18 +101,10 @@ public:
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;
 
-protected:
+private:
 
     /// Stores models.
     reconstruction_vector_t m_reconstruction_db;
-
-private:
-
-    /// Stores the signal emitted when reconstructions are added.
-    reconstructions_added_signal_t::sptr m_sig_reconstructions_added;
-
-    /// Stores the signal emitted when reconstructions are removed.
-    reconstructions_removed_signal_t ::sptr m_sig_reconstructions_removed;
 };
 
 //-----------------------------------------------------------------------------

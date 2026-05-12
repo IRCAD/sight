@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -72,7 +72,7 @@ SPTR(CLASSNAME) make(std::pair<unsigned int, unsigned int> _dims)
     return std::make_shared<CLASSNAME>(_dims.first, _dims.second);
 }
 
-} // namespace offscreenInteractorMgrFactory
+} // namespace offscreen_interactor_mgr_factory
 
 namespace light_factory
 {
@@ -91,7 +91,7 @@ SPTR(CLASSNAME) make()
     return obj;
 }
 
-} // namespace lightFactory
+} // namespace light_factory
 
 namespace text_factory
 {
@@ -111,6 +111,6 @@ SPTR(CLASSNAME) make(const SPTR(sight::viz::scene3d::layer) & _layer)
     return obj;
 }
 
-} // namespace textFactory
+} // namespace text_factory
 
 } // namespace sight::viz::scene3d

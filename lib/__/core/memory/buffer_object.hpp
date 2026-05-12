@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -99,10 +99,11 @@ public:
     {
     public:
 
-        using buffer_t = typename std::conditional_t<std::is_const_v<T>, const void*, void*>;
+        using buffer_t = std::conditional_t<std::is_const_v<T>, const void*, void*>;
 
+        //NOLINTBEGIN(google-explicit-constructor,hicpp-explicit-conversions)
         lock_base() = default;
-        inline ~lock_base()
+        ~lock_base()
         {
             // Resetting the counter in the destructor **BEFORE** resetting buffer_object shared pointer is required !
             // Otherwise, the lock count assert in the destruction of the buffer, in
@@ -132,10 +133,12 @@ public:
             }
         }
 
+        //NOLINTEND(google-explicit-constructor,hicpp-explicit-conversions)
+
         /**
          * @brief Returns buffer_object's buffer pointer
          */
-        [[nodiscard]] typename lock_base<T>::buffer_t buffer() const
+        [[nodiscard]] lock_base<T>::buffer_t buffer() const
         {
             return m_buffer_object->m_buffer;
         }
@@ -149,7 +152,7 @@ public:
             m_buffer_object.reset();
         }
 
-    protected:
+    private:
 
         buffer_object::counter_type m_count;
         // Using a shared_ptr allows to keep the buffer alive until the lock is destroyed,
@@ -172,7 +175,7 @@ public:
      *
      * Register the buffer to an existing buffer manager.
      */
-    SIGHT_CORE_API buffer_object(bool _auto_delete = false);
+    SIGHT_CORE_API buffer_object(bool _auto_delete = false); //NOLINT(google-explicit-constructor,hicpp-explicit-conversions)
 
     /**
      * @brief buffer_object destructor
@@ -328,7 +331,7 @@ public:
 
     /// @}
 
-protected:
+private:
 
     core::memory::buffer_manager::buffer_t m_buffer {nullptr};
 

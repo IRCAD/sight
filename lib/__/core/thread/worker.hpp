@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #pragma once
 
-#include <future>
 #include <any>
+#include <future>
 #include <optional>
 
 #include <core/base.hpp>
@@ -190,7 +190,7 @@ protected:
     worker& operator=(const worker&);
 
     /// Worker's loop future
-    future_t m_future;
+    future_t m_future; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
 };
 
 using worker_key_type = std::string;

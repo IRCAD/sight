@@ -128,6 +128,6 @@ SIGHT_GEOMETRY_API bool intersect(
     bool& _front
 );
 
-SIGHT_GEOMETRY_API bool intersect_box(line_t segment, oriented_box_t _box);
+SIGHT_GEOMETRY_API bool intersect_box(line_t _segment, oriented_box_t _box);
 
 } // namespace sight::geometry

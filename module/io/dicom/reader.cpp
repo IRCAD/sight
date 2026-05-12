@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2025 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -26,7 +26,6 @@
 #include <core/progress/observer.hpp>
 
 #include <ui/__/cursor.hpp>
-#include <ui/__/dialog/input.hpp>
 #include <ui/__/dialog/location.hpp>
 #include <ui/__/dialog/message.hpp>
 #include <ui/qt/series/selector_dialog.hpp>
@@ -178,6 +177,10 @@ void reader::updating()
 
         // Sort the series
         m_reader->sort();
+
+        // Use a temporary series set to read the data, so we don't modify the output series set until successful
+        auto tmp_read = std::make_shared<data::series_set>();
+        m_reader->set_object(tmp_read);
 
         // Really read the series
         m_reader->read(read_progress);

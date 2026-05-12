@@ -28,15 +28,13 @@
 
 #include <geometry/data/matrix4.hpp>
 
-#include <glm/common.hpp>
-
 namespace sight::module::geometry
 {
 
 //-----------------------------------------------------------------------------
 
 weighted_mean_matrix::weighted_mean_matrix() :
-    filter(m_signals)
+    filter(has_signals::signals())
 {
 }
 

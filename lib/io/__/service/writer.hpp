@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -250,7 +250,7 @@ public:
 protected:
 
     SIGHT_IO_API explicit writer(
-        const std::string& _default_window_title = s_DEFAULT_WINDOW_TITLE
+        const std::string& _default_window_title = S_DEFAULT_WINDOW_TITLE
     ) noexcept;
 
     /**
@@ -262,6 +262,8 @@ protected:
     /// Defines the auto-connection between the file/folder properties and the 'set_file/set_folder'
     SIGHT_IO_API connections_t auto_connections() const override;
 
+    /// NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
+
     /// Defines whether writing was performed correctly, or if user has cancelled the process.
     bool m_write_failed {false};
 
@@ -269,7 +271,9 @@ protected:
     data::ptr<data::object, data::access::in> m_data {this, sight::io::service::DATA_KEY};
 
     /// Window title for the file dialog
-    sight::data::property<sight::data::string> m_window_title {this, WINDOW_TITLE_KEY, s_DEFAULT_WINDOW_TITLE};
+    sight::data::property<sight::data::string> m_window_title {this, WINDOW_TITLE_KEY, S_DEFAULT_WINDOW_TITLE};
+
+    /// NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 
 private:
 
@@ -295,7 +299,7 @@ private:
     void update_base_folder(std::string& _out_base_folder) const;
 
     /// Default window title
-    inline static const std::string s_DEFAULT_WINDOW_TITLE = "Choose a file";
+    inline static const std::string S_DEFAULT_WINDOW_TITLE = "Choose a file";
 
     /// Value to store file or folder paths
     io::service::locations_t m_locations;

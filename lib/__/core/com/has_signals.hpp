@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -65,6 +65,20 @@ public:
         auto sig = std::make_shared<signal_type>();
         m_signals(_key, sig);
         return sig;
+    }
+
+    //------------------------------------------------------------------------------
+
+    [[nodiscard]] const sight::core::com::signals& signals() const
+    {
+        return m_signals;
+    }
+
+    //------------------------------------------------------------------------------
+
+    [[nodiscard]] class sight::core::com::signals& signals()
+    {
+        return m_signals;
     }
 
     /**
@@ -143,8 +157,6 @@ protected:
     /// Copy operator forbidden
     has_signals& operator=(const has_signals&);
 
-    signals m_signals;
-
 private:
 
     using blockers_t = std::vector<core::com::connection::blocker>;
@@ -159,7 +171,7 @@ private:
      * @return signal with the function signature, ready to be emitted.
      */
     template<typename ... A>
-    core::com::signal<void(A ...)>::sptr typed_signal(const signals::key_t& _key) const
+    [[nodiscard]] core::com::signal<void(A ...)>::sptr typed_signal(const signals::key_t& _key) const
     {
         auto signal = this->signal(_key);
         SIGHT_ASSERT("Can't find signal " << std::quoted(_key), signal);
@@ -174,20 +186,22 @@ private:
      * @param _caller Caller of the signal
      * @param _signal Signal about to be emitted
      */
-    blockers_t block_connections(com::has_slots* _caller, const core::com::signal_base::sptr& _signal) const
+    static blockers_t block_connections(com::has_slots* _caller, const core::com::signal_base::sptr& _signal)
     {
         blockers_t blockers;
-        for(auto& slot : _caller->slots())
+        for(const auto& slot : _caller->slots())
         {
             auto connection = _signal->get_connection(slot.second);
             if(!connection.expired())
             {
-                blockers.emplace_back(core::com::connection::blocker(connection));
+                blockers.emplace_back(connection);
             }
         }
 
         return blockers;
     }
+
+    class signals m_signals;
 };
 
 } // namespace sight::core::com

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,7 +37,7 @@ namespace sight::core::log::detail
 
 class spy_logger_impl;
 
-}
+} // namespace sight::core::log::detail
 namespace sight::core::log
 {
 
@@ -80,8 +80,8 @@ public:
     {
     public:
 
-        SIGHT_CORE_API bad_password(const char* const what = "Invalid password.") :
-            std::runtime_error(what)
+        SIGHT_CORE_API explicit bad_password(const char* const _what = "Invalid password.") :
+            std::runtime_error(_what)
         {
         }
     };
@@ -91,8 +91,8 @@ public:
     {
     public:
 
-        SIGHT_CORE_API premature_end(const char* const what = "Premature end.") :
-            std::runtime_error(what)
+        SIGHT_CORE_API explicit premature_end(const char* const _what = "Premature end.") :
+            std::runtime_error(_what)
         {
         }
     };
@@ -160,10 +160,10 @@ public:
     );
 
     /// Returns true if the current log file is encrypted.
-    SIGHT_CORE_API bool is_log_encrypted() const;
+    [[nodiscard]] SIGHT_CORE_API bool is_log_encrypted() const;
 
     /// Returns the current log file path.
-    SIGHT_CORE_API std::filesystem::path get_current_log_path() const;
+    [[nodiscard]] SIGHT_CORE_API std::filesystem::path get_current_log_path() const;
 
     /// Logs a message with the given severity level.
     /// @param _mes The message to log.
@@ -203,10 +203,11 @@ public:
         const optional_password_t& _password = std::nullopt
     );
 
+    SIGHT_CORE_API virtual ~spy_logger();
+
 private:
 
     SIGHT_CORE_API spy_logger();
-    SIGHT_CORE_API virtual ~spy_logger();
 
     std::unique_ptr<detail::spy_logger_impl> m_pimpl;
 }; // spy_logger

@@ -37,19 +37,6 @@
 
 #include <OGRE/OgreEntity.h>
 
-namespace sight::data
-{
-
-class Material;
-
-} // namespace sight::data
-namespace sight::data
-{
-
-class mesh;
-
-} // namespace sight::data
-
 namespace sight::module::viz::scene3d::adaptor
 {
 
@@ -205,9 +192,6 @@ public:
      */
     void set_query_flags(std::uint32_t _query_flags);
 
-    /// Flags the r2vb objects as dirty and asks the render service to update.
-    void request_render() final;
-
     /**
      * @brief Sets the mesh visibility.
      * @param _visible the visibility status of the mesh.
@@ -239,6 +223,9 @@ protected:
 
     /// Updates the mesh.
     void updating() final;
+
+    /// Flags the r2vb objects as dirty and asks the render service to update.
+    void request_render() final;
 
 private:
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#if !defined(FWCOM_SIGNAL_HPP)
+#ifndef FWCOM_SIGNAL_HPP
 #error core/com/signal.hpp not included
 #endif
 
@@ -145,7 +145,7 @@ connection signal<R(A ...)>::connect(slot_base::sptr _slot)
     {
         core::mt::read_lock lock(m_connections_mutex);
 
-        if(m_connections.find(_slot) != m_connections.end())
+        if(m_connections.contains(_slot))
         {
             SIGHT_THROW_EXCEPTION(core::com::exception::already_connected("Slot already connected"));
         }
@@ -164,7 +164,7 @@ connection signal<R(A ...)>::connect(slot_base::sptr _slot)
             auto sig             = std::dynamic_pointer_cast<signal<R(A ...)> >(this->shared_from_this());
             auto slot_connection = std::make_shared<connection_type>(sig, slot_to_connect);
             _slot->m_connections.insert(slot_connection);
-            m_connections.insert(typename connection_map_type::value_type(_slot, slot_connection));
+            m_connections.insert(connection_map_type::value_type(_slot, slot_connection));
             slot_connection->connect_no_lock();
             connection = core::com::connection(slot_connection);
         }
@@ -186,7 +186,7 @@ connection signal<R(A ...)>::connect(slot_base::sptr _slot)
             auto sig             = std::dynamic_pointer_cast<signal<R(A ...)> >(this->shared_from_this());
             auto slot_connection = std::make_shared<connection_type>(sig, _slot, slot_to_connect);
             _slot->m_connections.insert(slot_connection);
-            m_connections.insert(typename connection_map_type::value_type(_slot, slot_connection));
+            m_connections.insert(connection_map_type::value_type(_slot, slot_connection));
             slot_connection->connect_no_lock();
             connection = core::com::connection(slot_connection);
         }

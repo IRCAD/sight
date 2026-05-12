@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,19 +34,19 @@ namespace sight::io::zip
 /// Compression method: STORE (no compression), DEFLATE (standard zip), ZSTD (new fast compression algorithm)
 enum class method : std::uint8_t
 {
-    DEFAULT = 0,
-    store   = 1,
-    deflate = 2,
-    zstd    = 3
+    standard = 0,
+    store    = 1,
+    deflate  = 2,
+    zstd     = 3
 };
 
 /// Compression level. Default is usually a good compromise between speed and compression ratio
 enum class level : std::uint8_t
 {
-    DEFAULT = 0,
-    fast    = 1,
-    best    = 2,
-    ultra   = 3
+    standard = 0,
+    fast     = 1,
+    best     = 2,
+    ultra    = 3
 };
 
 /**
@@ -74,7 +74,7 @@ public:
     /// @param _format the format of the archive. @see sight::io::zip::archive::archiveFormat
     SIGHT_IO_ZIP_API static archive_writer::uptr get(
         const std::filesystem::path& _archive_path,
-        archive_format _format = archive_format::DEFAULT
+        archive_format _format = archive_format::standard
     );
 
     /// Returns an std::ostream to write in a new archive file
@@ -85,8 +85,8 @@ public:
     SIGHT_IO_ZIP_API virtual std::unique_ptr<std::ostream> open_file(
         const std::filesystem::path& _file_path,
         const core::crypto::secure_string& _password = "",
-        method _method                               = method::DEFAULT,
-        level _level                                 = level::DEFAULT
+        method _method                               = method::standard,
+        level _level                                 = level::standard
     )                                                = 0;
 
     /// Write a std::string, used as a binary buffer, in a new archive file.
@@ -99,8 +99,8 @@ public:
         const std::filesystem::path& _file_path,
         const std::string& _content,
         const core::crypto::secure_string& _password = "",
-        method _method                               = method::DEFAULT,
-        level _level                                 = level::DEFAULT
+        method _method                               = method::standard,
+        level _level                                 = level::standard
     )                                                = 0;
 
     /// Returns true for raw archive
@@ -109,7 +109,7 @@ public:
 protected:
 
     /// Constructor
-    SIGHT_IO_ZIP_API archive_writer(const std::filesystem::path& _archive_path);
+    SIGHT_IO_ZIP_API explicit archive_writer(const std::filesystem::path& _archive_path);
 };
 
 } // namespace sight::io::zip

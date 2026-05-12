@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,10 +42,15 @@ public:
     /// Destructor
     SIGHT_IO_DIMSE_API ~pacs_configuration() noexcept override = default;
 
+    /// Defines shallow copy
+    /// @throws data::exception if an errors occurs during copy
+    /// @param[in] _source the source object to copy
+    SIGHT_IO_DIMSE_API void shallow_copy(const sight::data::object::csptr& _source) override;
+
     /**
      * @brief Retrieve Method
      */
-    enum class retrieve_method
+    enum class retrieve_method : std::uint8_t
     {
         move = 1,
         get  = 2
@@ -176,12 +181,7 @@ public:
 
 /**  @} */
 
-protected:
-
-    /// Defines shallow copy
-    /// @throws data::exception if an errors occurs during copy
-    /// @param[in] _source the source object to copy
-    SIGHT_IO_DIMSE_API void shallow_copy(const sight::data::object::csptr& _source) override;
+private:
 
     /// Local application title
     std::string m_local_application_title;

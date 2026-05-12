@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -79,6 +79,12 @@ public:
     /// Destroys the adaptor.
     ~compositor_parameter() noexcept override = default;
 
+    /**
+     * @brief Sets the compositor status.
+     * @param _enable the status of the compositor.
+     */
+    void set_visible(bool _enable) override;
+
 protected:
 
     /// Configures the adaptor.
@@ -89,12 +95,6 @@ protected:
 
     /// Removes the compositor listener.
     void stopping() override;
-
-    /**
-     * @brief Sets the compositor status.
-     * @param _enable the status of the compositor.
-     */
-    void set_visible(bool _enable) override;
 
 private:
 

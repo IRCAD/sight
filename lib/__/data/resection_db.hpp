@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -122,19 +122,11 @@ public:
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;
 
-protected:
+private:
 
     resection::sptr m_safe_resection;
 
     resection_container_t m_resections;
-
-private:
-
-    /// Signal emitted when the safe part is added
-    safe_part_added_signal_t::sptr m_sig_safe_part_added;
-
-    /// Signal emitted when a resection is added
-    resection_added_signal_t::sptr m_sig_resection_added;
 };
 
 //-----------------------------------------------------------------------------

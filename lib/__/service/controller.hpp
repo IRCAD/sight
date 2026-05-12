@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,9 +38,6 @@ class SIGHT_SERVICE_CLASS_API controller : public service::base
 public:
 
     SIGHT_DECLARE_SERVICE(controller, service::base);
-
-protected:
-
     SIGHT_SERVICE_API ~controller() override = default;
 };
 

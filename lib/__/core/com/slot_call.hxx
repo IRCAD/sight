@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#if !defined(FWCOM_SLOTCALL_HPP)
+#ifndef FWCOM_SLOTCALL_HPP
 #error core/com/slot_call.hpp not included
 #endif
 
@@ -44,13 +44,13 @@ namespace sight::core::com
 template<typename R, typename ... A>
 std::function<R()> slot_call<R(A ...)>::bind_call(A ... _args) const
 {
-    return [ =, this]{return call(_args ...);};
+    return [this, ... args = _args](){return call(args ...);};
 }
 
 //-----------------------------------------------------------------------------
 
 template<typename R, typename ... A>
-typename slot_call<R(A ...)>::shared_future_type slot_call<R(A ...)>::async_call(
+slot_call<R(A ...)>::shared_future_type slot_call<R(A ...)>::async_call(
     const core::thread::worker::sptr& _worker,
     A ... _args
 ) const
@@ -72,7 +72,7 @@ typename slot_call<R(A ...)>::shared_future_type slot_call<R(A ...)>::async_call
 //-----------------------------------------------------------------------------
 
 template<typename R, typename ... A>
-typename slot_call<R(A ...)>::shared_future_type slot_call<R(A ...)>::async_call(A ... _args) const
+slot_call<R(A ...)>::shared_future_type slot_call<R(A ...)>::async_call(A ... _args) const
 {
     core::mt::read_lock lock(this->m_worker_mutex);
 
@@ -93,17 +93,15 @@ typename slot_call<R(A ...)>::shared_future_type slot_call<R(A ...)>::async_call
             )
         );
     }
-    else
-    {
-        return post_weak_call(
-            this->m_worker,
-            core::com::util::weakcall(
-                std::dynamic_pointer_cast<const slot_base>(this->shared_from_this()),
-                this->bind_call(_args ...),
-                this->m_worker
-            )
-        );
-    }
+
+    return post_weak_call(
+        this->m_worker,
+        core::com::util::weakcall(
+            std::dynamic_pointer_cast<const slot_base>(this->shared_from_this()),
+            this->bind_call(_args ...),
+            this->m_worker
+        )
+    );
 }
 
 //-----------------------------------------------------------------------------

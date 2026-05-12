@@ -38,15 +38,6 @@
 #include <OGRE/OgreGpuProgramParams.h>
 #include <OGRE/OgreMaterial.h>
 
-#include <regex>
-
-namespace sight::data
-{
-
-class Material;
-
-} // namespace sight::data
-
 namespace sight::module::viz::scene3d::adaptor
 {
 
@@ -171,7 +162,7 @@ public:
 protected:
 
     /// Configures the adaptor.
-    void configuring(const config_t& config) final;
+    void configuring(const config_t& _config) final;
 
     /// Creates the material.
     void starting() final;
@@ -335,10 +326,8 @@ inline sight::viz::scene3d::material::generic* material::get_material_impl() con
     {
         return m_material_impl.get();
     }
-    else
-    {
-        return m_standard_material_impl.get();
-    }
+
+    return m_standard_material_impl.get();
 }
 
 //------------------------------------------------------------------------------

@@ -27,8 +27,6 @@
 
 #include <io/opencv/image.hpp>
 
-#include <service/macros.hpp>
-
 namespace sight::module::filter::vision
 {
 
@@ -38,7 +36,7 @@ static const core::com::slots::key_t SET_THRESHOLD_SLOT  = "set_threshold";
 // ------------------------------------------------------------------------------
 
 depth_image_masking::depth_image_masking() noexcept :
-    filter(m_signals)
+    filter(has_signals::signals())
 {
     new_slot(SET_BACKGROUND_SLOT, &depth_image_masking::set_background, this);
     new_slot(SET_THRESHOLD_SLOT, &depth_image_masking::set_threshold, this);

@@ -32,7 +32,7 @@ namespace sight::module::filter::image
 //-----------------------------------------------------------------------------
 
 bitwise_and::bitwise_and() :
-    filter(m_signals)
+    filter(has_signals::signals())
 {
 }
 

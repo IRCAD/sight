@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -74,6 +74,8 @@ protected:
 
     /// Performs bitwise operation between mask and image.
     void updating() override;
+
+private:
 
     static constexpr std::string_view OUTPUTIMAGE_OUT = "outputImage";
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -89,9 +89,9 @@ public:
     /// Show a file selection dialog
     void open_location_dialog() final;
 
-protected:
-
     sight::io::service::path_type_t get_path_type() const final;
+
+protected:
 
     /// Does nothing
     void starting() final;

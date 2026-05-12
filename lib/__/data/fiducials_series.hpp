@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -31,9 +31,11 @@
 namespace gdcm
 {
 
+// NOLINTBEGIN(readability-identifier-naming)
 class SequenceOfItems;
 template<typename T>
 class SmartPointer;
+// NOLINTEND(readability-identifier-naming)
 
 } // namespace gdcm
 
@@ -88,7 +90,7 @@ public:
     };
 
     /// Enum which represents the value contained in shape_t (0070,0306).
-    enum class shape
+    enum class shape : std::uint8_t
     {
         invalid /*Not defined by DICOM*/,
         point,
@@ -101,7 +103,7 @@ public:
         shape
     };
 
-    enum class private_shape
+    enum class private_shape : std::uint8_t
     {
         sphere,
         cube

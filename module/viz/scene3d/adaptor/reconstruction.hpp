@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -112,6 +112,12 @@ public:
      */
     module::viz::scene3d::adaptor::mesh::sptr get_mesh_adaptor();
 
+    /**
+     * @brief Sets the reconstruction visibility.
+     * @param _visible the visibility status of the reconstruction.
+     */
+    void set_visible(bool _visible) final;
+
 protected:
 
     /// Configures the adaptor.
@@ -133,12 +139,6 @@ protected:
 
     /// Updates the mesh adaptor according to the reconstruction or creates it if it hasn't been yet.
     void updating() final;
-
-    /**
-     * @brief Sets the reconstruction visibility.
-     * @param _visible the visibility status of the reconstruction.
-     */
-    void set_visible(bool _visible) final;
 
 private:
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,7 +38,7 @@ observer::observer(const std::string& _name, std::uint64_t _work_units) :
             core::mt::write_lock lock(m_mutex);
             this->finish_no_lock();
         });
-    m_total_work_units = _work_units;
+    set_total_work_units(_work_units);
 
     this->add_cancel_hook(
         [this]()
@@ -60,7 +60,8 @@ observer::~observer()
 void observer::finish()
 {
     core::mt::read_lock lock(m_mutex);
-    if(m_state == running || m_state == canceling)
+    const auto state = get_state_no_lock();
+    if(state == running || state == canceling)
     {
         lock.unlock();
         m_finish_task();

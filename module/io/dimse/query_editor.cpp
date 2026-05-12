@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2025 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,8 +29,6 @@
 #include <io/dimse/exceptions/base.hpp>
 #include <io/dimse/helper/series.hpp>
 
-#include <service/macros.hpp>
-
 #include <ui/qt/container/widget.hpp>
 
 #include <dcmtk/dcmnet/scu.h>
@@ -55,7 +53,7 @@ static const std::string ICON_HEIGHT_CONFIG = "height";
 //------------------------------------------------------------------------------
 
 query_editor::query_editor() noexcept :
-    sight::service::notifier(m_signals)
+    sight::service::notifier(has_signals::signals())
 {
 }
 
@@ -104,7 +102,7 @@ void query_editor::starting()
         m_search_button->setIcon(QIcon(QString::fromStdString(m_icon_path.string())));
         if(m_icon_width > 0 && m_icon_height > 0)
         {
-            m_search_button->setIconSize(QSize(int(m_icon_width), int(m_icon_height)));
+            m_search_button->setIconSize(QSize(static_cast<int>(m_icon_width), static_cast<int>(m_icon_height)));
         }
     }
 

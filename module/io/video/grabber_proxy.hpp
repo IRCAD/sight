@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2025 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -135,20 +135,6 @@ public:
         static inline const key_t FWD_CREATE_MONITOR = "forward_create_monitor";
     };
 
-protected:
-
-    /// Does nothing.
-    void starting() final;
-
-    /// Stop the underlying grabber, destroy it, and empty the input FrameTl.
-    void stopping() final;
-
-    /// Does nothing.
-    void updating() final;
-
-    /// Parses the XML configuration of the service.
-    void configuring() final;
-
     /**
      * @name Slots methods
      *
@@ -195,7 +181,24 @@ protected:
 
     /// SLOT: Removes a region of interest center.
     void remove_roi_center(sight::data::point::sptr _p) final;
+
+    /// Forward FPS data
+    void forward_fps_changed(double _fps) final;
 /** @} */
+
+protected:
+
+    /// Does nothing.
+    void starting() final;
+
+    /// Stop the underlying grabber, destroy it, and empty the input FrameTl.
+    void stopping() final;
+
+    /// Does nothing.
+    void updating() final;
+
+    /// Parses the XML configuration of the service.
+    void configuring() final;
 
 private:
 
@@ -239,9 +242,6 @@ private:
     // Forwards notifications
     void fwd_notify(service::notification _notification);
     /** @} */
-
-    /// Forward FPS data
-    void forward_fps_changed(double _fps) final;
 
     /// Camera type (RGB, RGBD,...)
     camera_t m_type {camera_t::rgb};

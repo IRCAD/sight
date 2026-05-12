@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -54,7 +54,7 @@ public:
     {
     public:
 
-        registry(std::string _functor_key)
+        explicit registry(std::string _functor_key)
         {
             ui::registry::get()->add_factory(_functor_key, &ui::factory::make<T>);
         }
@@ -62,10 +62,11 @@ public:
 
     SIGHT_DECLARE_CLASS(object, core::base_object);
 
+    ~object() override = default;
+
 protected:
 
-    object()           = default;
-    ~object() override = default;
+    object() = default;
 };
 
 } // namespace sight::ui

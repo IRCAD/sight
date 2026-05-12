@@ -139,10 +139,10 @@ private:
 
     enum class mode_t : std::uint8_t
     {
-        ADD,
-        REPLACE
+        add,
+        replace
     };
-    mode_t m_mode {mode_t::ADD};
+    mode_t m_mode {mode_t::add};
 
     /// Input image mask
     sight::data::ptr<sight::data::image_series, sight::data::access::in> m_image {this, "image_series"};

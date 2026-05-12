@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,6 +52,9 @@ TEST_SUITE("sight::core::com::signals")
         CHECK_EQ(signals.get_signal_keys().size(), 2);
     }
 
+    namespace
+    {
+
 //-----------------------------------------------------------------------------
 
     struct signals_test_has_signals : public sight::core::com::has_signals
@@ -60,8 +63,7 @@ TEST_SUITE("sight::core::com::signals")
 
         signals_test_has_signals()
         {
-            auto signal = std::make_shared<signal_type>();
-            sight::core::com::has_signals::m_signals("sig", signal);
+            new_signal<signal_type>("sig");
         }
     };
 
@@ -99,6 +101,8 @@ TEST_SUITE("sight::core::com::signals")
         int m_int {0};
         double m_double {0.};
     };
+
+    } // namespace
 
 //-----------------------------------------------------------------------------
 

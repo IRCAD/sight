@@ -31,14 +31,10 @@
 
 #include <data/helper/field.hpp>
 #include <data/map.hpp>
-#include <data/matrix4.hpp>
 #include <data/string.hpp>
-
-#include <service/op.hpp>
 
 #include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/helper/shading.hpp>
-#include <viz/scene3d/utils.hpp>
 
 namespace sight::module::viz::scene3d::adaptor
 {
@@ -190,7 +186,7 @@ void material::starting()
         if(m_tex_adaptor->get_texture_name().empty())
         {
             m_tex_adaptor->set_render_service(this->render_service());
-            m_tex_adaptor->set_layer_id(m_layer_id);
+            m_tex_adaptor->set_layer_id(layer_id());
         }
 
         m_texture_connection.connect(
@@ -396,7 +392,7 @@ void material::create_shader_parameter_adaptors()
         srv_config.add("config.<xmlattr>.shader_type", shader_type_str);
         srv_config.add("config.<xmlattr>.material_name", m_material_name);
 
-        srv->set_layer_id(m_layer_id);
+        srv->set_layer_id(layer_id());
         srv->set_config(srv_config);
         srv->configure();
         srv->start();
@@ -551,7 +547,7 @@ void material::create_texture_adaptor()
 
         m_tex_adaptor->set_id(gen_id(m_tex_adaptor->get_id()));
         m_tex_adaptor->set_render_service(this->render_service());
-        m_tex_adaptor->set_layer_id(m_layer_id);
+        m_tex_adaptor->set_layer_id(layer_id());
 
         const std::string material_name = material->get_id();
         m_tex_adaptor->set_texture_name(material_name + "_Texture");

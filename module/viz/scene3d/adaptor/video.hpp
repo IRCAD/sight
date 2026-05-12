@@ -106,6 +106,12 @@ public:
     /// Destroys the adaptor.
     ~video() noexcept final = default;
 
+    /**
+     * @brief Sets the video visibility.
+     * @param _visible the visibility status of the video.
+     */
+    void set_visible(bool _visible) final;
+
 protected:
 
     /// Configures the adaptor.
@@ -131,12 +137,6 @@ protected:
 
     /// Removes the actor from the renderer
     void stopping() final;
-
-    /**
-     * @brief Sets the video visibility.
-     * @param _visible the visibility status of the video.
-     */
-    void set_visible(bool _visible) final;
 
 private:
 
@@ -262,9 +262,9 @@ private:
 
     enum class update_flags : std::uint8_t
     {
-        IMAGE,
-        TF,
-        POINT_LIST
+        image,
+        tf,
+        point_list
     };
 
     sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, "image"};

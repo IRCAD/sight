@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,8 +34,6 @@
 #include <service/extension/config.hpp>
 #include <service/op.hpp>
 
-#include <ui/__/cursor.hpp>
-
 namespace sight::module::ui::series
 {
 
@@ -44,7 +42,7 @@ static const core::com::slots::key_t FORWARD_MONITOR_SLOT = "forwardmonitor";
 //------------------------------------------------------------------------------
 
 export_with_series_set::export_with_series_set() noexcept :
-    has_monitors(m_signals),
+    has_monitors(has_signals::signals()),
     m_io_selector_srv_config("IOSelectorServiceConfigVRRenderReader")
 {
     m_slot_forward_monitor = new_slot(FORWARD_MONITOR_SLOT, &export_with_series_set::forward_monitor, this);

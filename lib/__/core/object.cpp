@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,7 +41,7 @@ static std::mutex s_maps_mutex;
 object::sptr object::from_uuid(const std::string& _uuid)
 {
     // Find the weak pointer associated to this uuid
-    std::lock_guard guard(s_maps_mutex);
+    std::scoped_lock guard(s_maps_mutex);
     const auto found = s_uuid_to_wptr.find(_uuid);
 
     if(found != s_uuid_to_wptr.cend())
@@ -58,7 +58,7 @@ object::sptr object::from_uuid(const std::string& _uuid)
 std::string object::get_uuid() const
 {
     // First, try to find the uuid
-    std::lock_guard guard(s_maps_mutex);
+    std::scoped_lock guard(s_maps_mutex);
     const auto found = s_ptr_to_uuid.find(this);
 
     if(found != s_ptr_to_uuid.cend())
@@ -76,7 +76,7 @@ std::string object::get_uuid() const
     {
         uuid = tools::uuid::generate();
     }
-    while(s_uuid_to_wptr.find(uuid) != s_uuid_to_wptr.end());
+    while(s_uuid_to_wptr.contains(uuid));
 
     // Store the uuid
     s_ptr_to_uuid[this] = uuid;
@@ -94,7 +94,7 @@ std::string object::get_uuid() const
 
 void object::set_uuid(const std::string& _uuid, const bool _force)
 {
-    std::lock_guard guard(s_maps_mutex);
+    std::scoped_lock guard(s_maps_mutex);
 
     if(!_force)
     {
@@ -132,7 +132,7 @@ void object::set_uuid(const std::string& _uuid, const bool _force)
 
 object::~object()
 {
-    std::lock_guard guard(s_maps_mutex);
+    std::scoped_lock guard(s_maps_mutex);
     const auto found = s_ptr_to_uuid.find(this);
 
     // If we found it, erase us.

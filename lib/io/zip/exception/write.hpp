@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,7 +32,7 @@ namespace sight::io::zip::exception
 /// write exception.
 struct write : core::exception
 {
-    inline write(const std::string& _err, const std::int32_t _error_code = -1) :
+    explicit write(const std::string& _err, const std::int32_t _error_code = -1) :
         core::exception(_err),
         m_error_code(_error_code)
     {

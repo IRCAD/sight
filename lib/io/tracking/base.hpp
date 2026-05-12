@@ -125,8 +125,8 @@ public:
     static constexpr std::string_view TIMELINE_INPUT = "timeline";
     static constexpr std::string_view FRAME_INOUT    = "frame";
 
-    /// Defines the auto-connection between the timeline and the 'track' slot
-    sight::service::connections_t auto_connections() const override;
+    ///@brief tracker destructor. Do nothing.
+    ~base() override = default;
 
     /// Return true if the tracking is started.
     [[nodiscard]] bool is_tracking() const;
@@ -145,14 +145,14 @@ protected:
     ///@brief tracker constructor. Do nothing.
     base();
 
-    ///@brief tracker destructor. Do nothing.
-    ~base() override = default;
-
     virtual void setup_tool(
         const boost::property_tree::ptree& _config,
         T& _tool,
         std::size_t _index = 0
     );
+
+    /// Defines the auto-connection between the timeline and the 'track' slot
+    sight::service::connections_t auto_connections() const override;
 
     void configuring() override;
     void configuring(const config_t& _config) override;

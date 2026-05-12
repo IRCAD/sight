@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -127,7 +127,7 @@ public:
      */
     SIGHT_SERVICE_API void clear_registry();
 
-protected:
+private:
 
     using registry = std::map<std::string, service_config_info>;
 

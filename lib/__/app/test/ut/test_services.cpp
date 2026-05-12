@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #include "test_services.hpp"
 
-#include <data/image.hpp>
-
 SIGHT_REGISTER_SERVICE(
     sight::app::ut::TestConfigService,
     sight::app::ut::test1_image,
@@ -36,6 +34,6 @@ SIGHT_REGISTER_SERVICE(sight::service::base, sight::app::ut::test_reset_order_sr
 namespace sight::app::ut
 {
 
-unsigned int test_order_srv::s_ORDER;
+unsigned int test_order_srv::s_order;
 
 } // namespace sight::app::ut

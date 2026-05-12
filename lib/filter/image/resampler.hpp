@@ -76,7 +76,7 @@ public:
         const data::image::csptr& _img,
         const data::matrix4::csptr& _trf,
         const data::image::spacing_t& _output_spacing,
-        filter::image::interpolation_t _interpolation = filter::image::interpolation_t::LINEAR,
+        filter::image::interpolation_t _interpolation = filter::image::interpolation_t::linear,
         bool _pre_transform                           = false
     );
 };

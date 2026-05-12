@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -80,7 +80,7 @@ class selector : public sight::ui::dialog_editor,
 public:
 
     /// IOMode enum definition
-    enum io_mode
+    enum io_mode : std::uint8_t
     {
         reader_mode, /**< this mode allows to configure the service as a reader */
         writer_mode  /**< this mode allows to configure the service as a writer */

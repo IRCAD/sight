@@ -23,8 +23,6 @@
 
 #include <core/os/temp_path.hpp>
 
-#include <data/helper/medical_image.hpp>
-
 #include <io/itk/inr_image_reader.hpp>
 #include <io/itk/inr_image_writer.hpp>
 #include <io/itk/jpg_image_writer.hpp>
@@ -156,7 +154,7 @@ TEST_SUITE("sight::io::itk::image_reader_writer")
         type = sight::core::type::UINT32;
         inr_stress_test_with_type(type, 5);
 
-        type = sight::core::type::FLOAT;
+        type = sight::core::type::FLOAT32;
         inr_stress_test_with_type(type, 5);
     }
 

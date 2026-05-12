@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -61,7 +61,7 @@ public:
     using sptr = std::shared_ptr<core>;
 
     /// Default Compositor, one per "default" layer
-    SIGHT_VIZ_SCENE3D_API core(Ogre::Viewport* _viewport);
+    SIGHT_VIZ_SCENE3D_API explicit core(Ogre::Viewport* _viewport);
 
     /// Destructor of default compositor
     SIGHT_VIZ_SCENE3D_API ~core() = default;

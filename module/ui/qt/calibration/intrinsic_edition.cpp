@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,15 +22,10 @@
 
 #include "module/ui/qt/calibration/intrinsic_edition.hpp"
 
-#include <core/base.hpp>
 #include <core/com/slots.hpp>
 #include <core/com/slots.hxx>
-#include <core/object.hpp>
-#include <core/thread/worker.hpp>
 
 #include <data/camera.hpp>
-
-#include <service/macros.hpp>
 
 namespace sight::module::ui::qt::calibration
 {
@@ -40,7 +35,7 @@ namespace sight::module::ui::qt::calibration
 intrinsic_edition::intrinsic_edition() :
     m_dialog(new update_intrinsic_dialog())
 {
-    core::com::has_slots::m_slots.set_worker(this->worker());
+    core::com::has_slots::slots().set_worker(this->worker());
     QObject::connect(m_dialog, &update_intrinsic_dialog::new_calibration, this, &intrinsic_edition::on_new_calibration);
 }
 
@@ -72,8 +67,8 @@ void intrinsic_edition::update_calibration()
     const auto camera = m_camera.lock();
     SIGHT_ASSERT("The inout key '" << CAMERA << "' is not correctly set.", camera);
 
-    camera->set_width(std::size_t(m_calibration[0]));
-    camera->set_height(std::size_t(m_calibration[1]));
+    camera->set_width(static_cast<std::size_t>(m_calibration[0]));
+    camera->set_height(static_cast<std::size_t>(m_calibration[1]));
 
     camera->set_fx(m_calibration[2]);
     camera->set_fy(m_calibration[3]);
@@ -114,8 +109,8 @@ void intrinsic_edition::read_calibration()
     const auto camera = m_camera.lock();
     SIGHT_ASSERT("The inout key '" << CAMERA << "' is not correctly set.", camera);
 
-    m_calibration[0] = double(camera->get_width());
-    m_calibration[1] = double(camera->get_height());
+    m_calibration[0] = static_cast<double>(camera->get_width());
+    m_calibration[1] = static_cast<double>(camera->get_height());
 
     m_calibration[2] = camera->get_fx();
     m_calibration[3] = camera->get_fy();

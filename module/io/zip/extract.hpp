@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -60,6 +60,12 @@ public:
     /// Propose to read an archive
     void open_location_dialog() override;
 
+    /// Returns managed path type, here service manages only single file
+    sight::io::service::path_type_t get_path_type() const override
+    {
+        return sight::io::service::file;
+    }
+
 protected:
 
     /// Does nothing
@@ -73,12 +79,6 @@ protected:
 
     /// Extract an archive to the specified directory
     void updating() override;
-
-    /// Returns managed path type, here service manages only single file
-    sight::io::service::path_type_t get_path_type() const override
-    {
-        return sight::io::service::file;
-    }
 
 private:
 

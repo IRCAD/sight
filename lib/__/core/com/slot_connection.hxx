@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#if !defined(FWCOM_SLOTCONNECTION_HPP)
+#ifndef FWCOM_SLOTCONNECTION_HPP
 #error core/com/slot_connection.hpp not included
 #endif
 
@@ -175,7 +175,7 @@ inline slot_connection_base::blocker_sptr_type slot_connection<void(A ...)>::get
         if(!blocker)
         {
             blocker = slot_connection_base::blocker_sptr_type(
-                (void*) nullptr,
+                static_cast<void*>(nullptr),
                 [this](auto&& ...){unblock();});
             m_weak_blocker = blocker;
 

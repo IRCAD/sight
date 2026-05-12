@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2025 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -84,6 +84,12 @@ public:
     /// Destroys the adaptor.
     ~line() noexcept override = default;
 
+    /**
+     * @brief Sets the line visibility.
+     * @param _visible the visibility status of the line.
+     */
+    void set_visible(bool _visible) override;
+
 protected:
 
     /// Connects the input matrix modified to the update slot.
@@ -100,12 +106,6 @@ protected:
 
     /// Deletes the mesh after unregistering the service, and shutting connections.
     void stopping() override;
-
-    /**
-     * @brief Sets the line visibility.
-     * @param _visible the visibility status of the line.
-     */
-    void set_visible(bool _visible) override;
 
 private:
 

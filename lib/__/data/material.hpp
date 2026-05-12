@@ -94,7 +94,7 @@ public:
     /**
      * @brief Options
      */
-    enum options_t
+    enum options_t : std::uint8_t
     {
         standard      = 1,
         normals       = 2,
@@ -105,7 +105,7 @@ public:
     /**
      * @brief shading models
      */
-    enum class shading_t : int
+    enum class shading_t : std::uint8_t
     {
         ambient = 0,
         flat    = 1,
@@ -115,7 +115,7 @@ public:
     /**
      * @brief Representation models
      */
-    enum representation_t
+    enum representation_t : std::uint8_t
     {
         surface   = 1, //1
         point     = 2, //SURFACE<<1 -> 10
@@ -126,7 +126,7 @@ public:
     /**
      * @brief texture filtering types
      */
-    enum filtering_t
+    enum filtering_t : std::uint8_t
     {
         nearest,
         linear
@@ -135,7 +135,7 @@ public:
     /**
      * @brief texture wrapping types
      */
-    enum wrapping_t
+    enum wrapping_t : std::uint8_t
     {
         clamp,
         repeat
@@ -222,7 +222,7 @@ public:
     // Unified ways to convert options from string for service definitions
     SIGHT_DATA_API static options_t string_to_options_mode(const std::string& _str);
 
-protected:
+private:
 
     /// shading mode (flat, Phong)
     shading_t m_shading_mode {shading_t::phong};

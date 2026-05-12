@@ -85,7 +85,7 @@ public:
      * @brief Return the image spacing as a vector.
      * @return The output vector.
      */
-    SIGHT_VIZ_SCENE3D_API static Ogre::Vector3 spacing_as_vector3(const sight::data::image::spacing_t& spacing);
+    SIGHT_VIZ_SCENE3D_API static Ogre::Vector3 spacing_as_vector3(const sight::data::image::spacing_t& _spacing);
 };
 
 } // namespace sight::viz::scene3d::helper

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -80,7 +80,7 @@ public:
     bool is_object_valid(const CSPTR(timeline::object)& _obj) const override;
 
     /// Get/set the maximum number of objects inside a single buffer
-    unsigned int get_max_element_num() const;
+    unsigned int max_element_num() const;
 
     /// Equality comparison operators
     /// @{
@@ -104,8 +104,13 @@ public:
 
 protected:
 
+    /// Set the maximum number of objects inside a single buffer
+    void set_max_element_num(unsigned int _max_element_num);
+
+private:
+
     /// maximum number of elements inside a single buffer
-    unsigned int m_max_element_num;
+    unsigned int m_max_element_num {~0U};
 }; // class generic_tl
 
 } // namespace sight::data

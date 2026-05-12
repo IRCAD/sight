@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,17 +22,13 @@
 
 #pragma once
 
-#include "viz/scene3d/light_adaptor.hpp"
-#include "viz/scene3d/registry/detail.hpp"
-#include "viz/scene3d/text.hpp"
-#include "viz/scene3d/window_interactor.hpp"
-
 #include <boost/preprocessor/cat.hpp>
 #include <boost/preprocessor/stringize.hpp>
 
 namespace sight::viz::scene3d::registry
 {
 
+// NOLINTBEGIN(cppcoreguidelines-macro-usage)
 #define SIGHT_REGISTER_SCENE3D(OgreRenderInteractorMngClassname, FunctorKey) \
         static sight::viz::scene3d::window_interactor::registry<OgreRenderInteractorMngClassname> \
         BOOST_PP_CAT(s__factory__record__, __LINE__)(FunctorKey);
@@ -52,5 +48,6 @@ namespace sight::viz::scene3d::registry
 #define SIGHT_REGISTER_SCENE3D_TEXT(OgreTextClassname, FunctorKey) \
         static sight::viz::scene3d::text::registry<OgreTextClassname> \
         BOOST_PP_CAT(s__factory__record__, __LINE__)(FunctorKey);
+// NOLINTEND(cppcoreguidelines-macro-usage)
 
 } // namespace sight::viz::scene3d::registry

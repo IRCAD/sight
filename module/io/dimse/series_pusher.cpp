@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,8 +35,6 @@
 
 #include <ui/__/dialog/message.hpp>
 
-#include <dcmtk/dcmdata/dcistrmb.h>
-
 namespace sight::module::io::dimse
 {
 
@@ -50,7 +48,7 @@ const core::com::signals::key_t series_pusher::STOPPED_PROGRESS_SIG = "stopped_p
 //------------------------------------------------------------------------------
 
 series_pusher::series_pusher() noexcept :
-    has_monitors(m_signals)
+    has_monitors(has_signals::signals())
 {
     // Internal slots
     m_slot_display_message = new_slot(DISPLAY_SLOT, &series_pusher::display_message);
@@ -326,7 +324,7 @@ void series_pusher::display_message(const std::string& _message, bool _error)
     sight::ui::dialog::message message_box;
     message_box.set_title((_error ? "Error" : "Information"));
     message_box.set_message(_message);
-    message_box.set_icon(_error ? (ui::dialog::message::critical) : (ui::dialog::message::info));
+    message_box.set_icon(_error ? ui::dialog::message::critical : ui::dialog::message::info);
     message_box.add_button(ui::dialog::message::ok);
     message_box.show();
 }

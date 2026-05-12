@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#if !defined(FWCOM_SLOTRUN_HPP)
+#ifndef FWCOM_SLOTRUN_HPP
 #error core/com/slot_run.hpp not included
 #endif
 
@@ -44,7 +44,7 @@ namespace sight::core::com
 template<typename ... A>
 inline std::function<void()> slot_run<void(A ...)>::bind_run(A ... _args) const
 {
-    return [ =, this]{run(_args ...);};
+    return [this, ... args = _args](){run(args ...);};
 }
 
 //-----------------------------------------------------------------------------
@@ -93,17 +93,15 @@ inline slot_base::void_shared_future_type slot_run<void(A ...)>::async_run(A ...
             )
         );
     }
-    else
-    {
-        return post_weak_call<void>(
-            m_worker,
-            core::com::util::weakcall(
-                std::dynamic_pointer_cast<const slot_base>(this->shared_from_this()),
-                this->bind_run(_args ...),
-                this->m_worker
-            )
-        );
-    }
+
+    return post_weak_call<void>(
+        m_worker,
+        core::com::util::weakcall(
+            std::dynamic_pointer_cast<const slot_base>(this->shared_from_this()),
+            this->bind_run(_args ...),
+            this->m_worker
+        )
+    );
 }
 
 //-----------------------------------------------------------------------------

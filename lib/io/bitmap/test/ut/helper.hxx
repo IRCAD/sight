@@ -107,7 +107,7 @@ inline static cv::Mat image_to_mat(const data::image::sptr& _image, bool _clone 
     const auto dump_lock = _image->dump_lock();
     const auto& sizes    = _image->size();
     auto mat             = cv::Mat(
-        std::vector<int> {int(sizes[1]), int(sizes[0])},
+        std::vector<int> {static_cast<int>(sizes[1]), static_cast<int>(sizes[0])},
         io::opencv::type::to_cv(_image->type(), _image->num_components()),
         _image->buffer()
     );

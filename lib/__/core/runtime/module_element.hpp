@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -93,7 +93,7 @@ protected:
      * @post        The module isn't null.
      * @param[in]   _module  a shared pointer to the managing module
      */
-    SIGHT_CORE_API module_element(std::shared_ptr<module> _module);
+    SIGHT_CORE_API explicit module_element(std::shared_ptr<module> _module);
 
 private:
 

@@ -31,8 +31,6 @@
 #include <utest_data/data.hpp>
 #include <utest_data/generator/image.hpp>
 
-#include <boost/property_tree/xml_parser.hpp>
-
 #include <doctest/doctest.h>
 
 #include <filesystem>
@@ -347,7 +345,7 @@ TEST_SUITE("sight::module::io::vtk::image_reader_writer")
 
     TEST_CASE("vtk_image_series_writer")
     {
-        sight::core::type type = sight::core::type::FLOAT;
+        sight::core::type type = sight::core::type::FLOAT32;
         auto image_series      = std::make_shared<sight::data::image_series>();
         sight::utest_data::generator::image::generate_random_image(image_series, type);
 

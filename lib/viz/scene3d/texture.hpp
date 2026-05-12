@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2025 IRCAD France
+ * Copyright (C) 2015-2026 IRCAD France
  * Copyright (C) 2015-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -49,7 +49,7 @@ public:
     /// it wraps the existing one.
     /// @param _image input image
     /// @param _suffix_id optional suffix to the object identifier, this allows to create different copies of the object
-    SIGHT_VIZ_SCENE3D_API texture(const data::image::csptr& _image, const std::string& _suffix_id = "");
+    SIGHT_VIZ_SCENE3D_API explicit texture(const data::image::csptr& _image, const std::string& _suffix_id = "");
     SIGHT_VIZ_SCENE3D_API ~texture() override;
 
     /// Updates the TF texture according to the source image content, if any modification occurred since the last

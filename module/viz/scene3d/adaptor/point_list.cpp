@@ -30,17 +30,9 @@
 #include <core/com/slots.hxx>
 #include <core/ptree.hpp>
 
-#include <data/string.hpp>
-
-#include <service/macros.hpp>
-#include <service/op.hpp>
-
 #include <viz/scene3d/helper/scene.hpp>
-#include <viz/scene3d/r2vb_renderable.hpp>
 #include <viz/scene3d/render.hpp>
 
-#include <OGRE/OgreAxisAlignedBox.h>
-#include <OGRE/OgreTechnique.h>
 #include <OGRE/OgreTextureManager.h>
 
 #include <cstdint>
@@ -399,7 +391,7 @@ void point_list::update_mesh(const data::point_list::csptr& _point_list)
 
     if(m_auto_reset_camera)
     {
-        this->render_service()->reset_camera_coordinates(m_layer_id);
+        this->render_service()->reset_camera_coordinates(layer_id());
     }
 }
 
@@ -454,7 +446,7 @@ void point_list::update_mesh(const data::mesh::csptr& _mesh)
 
     if(m_auto_reset_camera)
     {
-        this->render_service()->reset_camera_coordinates(m_layer_id);
+        this->render_service()->reset_camera_coordinates(layer_id());
     }
 }
 
@@ -502,7 +494,7 @@ void point_list::update_material_adaptor(const std::string& _mesh_id)
             m_material_adaptor->set_id(gen_id(m_material_adaptor->get_id()));
             m_material_adaptor->set_material_name(mtl_name);
             m_material_adaptor->set_render_service(this->render_service());
-            m_material_adaptor->set_layer_id(m_layer_id);
+            m_material_adaptor->set_layer_id(layer_id());
             m_material_adaptor->set_material_template_name(m_material_template_name);
 
             m_material_adaptor->start();

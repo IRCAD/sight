@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2024 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -50,7 +50,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @code{.xml}
         <service type="sight::module::viz::scene3d::adaptor::voxel_picker">
             <in key="image" uid="..." />
-            <config priority="2" orientation="sagittal" mode="2D" layerOrderDependant="true"
+            <config priority="2" orientation="sagittal" mode="2D"
                 moveOnPick="false" />
        </service>
    @endcode
@@ -60,7 +60,6 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * @subsection Configuration Configuration:
  * - \b priority (optional, int, default=0): picking priority, higher priority interactions are performed first.
- * - \b layerOrderDependant (optional, bool, default=true): define if interaction must take into account above layers.
  * - \b orientation (optional, sagittal/frontal/axial, default=sagittal): orientation of the image.
  * - \b mode (optional, 2D/3D, default=2D): in 2D, the ray is intersected with the current image slice.
  *                                          In 3D, the ray intersects each slices and returns the nearest one.
@@ -137,7 +136,7 @@ private:
      */
     std::pair<bool, Ogre::Vector3> compute_ray_image_intersection(
         const Ogre::Ray& _ray,
-        const data::image::csptr _image,
+        data::image::csptr _image,
         const Ogre::Vector3& _origin,
         const Ogre::Vector3& _spacing
     );
@@ -150,9 +149,6 @@ private:
 
     /// Determines the execution order of the picking interactor.
     int m_priority {2};
-
-    /// Defines if the interaction must take into account above layers.
-    bool m_layer_order_dependant {true};
 
     /// Defines if the image slices indexes will be updated with the picked position.
     bool m_move_on_pick {false};

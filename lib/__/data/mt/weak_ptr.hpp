@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -61,32 +61,32 @@ class weak_ptr
 public:
 
     /// Constructor
-    inline explicit weak_ptr(const std::weak_ptr<DATATYPE>& _data) noexcept :
+    explicit weak_ptr(const std::weak_ptr<DATATYPE>& _data) noexcept :
         m_data(_data)
     {
     }
 
     /// Constructor
-    inline explicit weak_ptr(const std::shared_ptr<DATATYPE>& _data) noexcept :
+    explicit weak_ptr(const std::shared_ptr<DATATYPE>& _data) noexcept :
         m_data(_data)
     {
     }
 
     /// Constructor
-    inline explicit weak_ptr(const locked_ptr<DATATYPE>& _data) noexcept :
+    explicit weak_ptr(const locked_ptr<DATATYPE>& _data) noexcept :
         m_data(_data.get_shared())
     {
     }
 
     /// Assignment operator
-    inline weak_ptr& operator=(const std::weak_ptr<DATATYPE>& _data) noexcept
+    weak_ptr& operator=(const std::weak_ptr<DATATYPE>& _data) noexcept
     {
         m_data = _data;
         return *this;
     }
 
     /// Assignment operator
-    inline weak_ptr& operator=(const locked_ptr<DATATYPE>& _data) noexcept
+    weak_ptr& operator=(const locked_ptr<DATATYPE>& _data) noexcept
     {
         m_data = _data.get_shared();
         return *this;
@@ -104,20 +104,20 @@ public:
     [[nodiscard]] locked_ptr<std::add_const_t<DATATYPE> > const_lock() const noexcept;
 
     /// Returns true if the weak pointer has expired
-    [[nodiscard]] inline bool expired() const noexcept
+    [[nodiscard]] bool expired() const noexcept
     {
         return m_data.expired();
     }
 
     /// Resets the pointer to null
-    inline void reset() noexcept
+    void reset() noexcept
     {
         m_data.reset();
     }
 
     /// Convenience function that mimic std::dynamic_pointer_cast()
     template<class CASTED_DATATYPE>
-    inline weak_ptr<CASTED_DATATYPE> dynamic_pointer_cast() const noexcept
+    weak_ptr<CASTED_DATATYPE> dynamic_pointer_cast() const noexcept
     {
         return weak_ptr<CASTED_DATATYPE>(std::dynamic_pointer_cast<CASTED_DATATYPE>(m_data.lock()));
     }
@@ -129,14 +129,14 @@ protected:
 
     /// Convenience getter for weak_ptr
     /// @todo remove me when base will be ready to use lock()
-    [[nodiscard]] inline std::weak_ptr<DATATYPE> get_weak() const noexcept
+    [[nodiscard]] std::weak_ptr<DATATYPE> get_weak() const noexcept
     {
         return m_data;
     }
 
     /// Convenience getter shared_ptr
     /// @todo remove me when base and ObjectService will be ready to use lock()
-    [[nodiscard]] inline std::shared_ptr<DATATYPE> get_shared() const noexcept
+    [[nodiscard]] std::shared_ptr<DATATYPE> get_shared() const noexcept
     {
         return m_data.lock();
     }

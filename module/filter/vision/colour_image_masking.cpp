@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,7 +45,7 @@ const core::com::slots::key_t CLEAR_MASKTL_SLOT              = "clearMaskTL";
 // ------------------------------------------------------------------------------
 
 colour_image_masking::colour_image_masking() noexcept :
-    filter(m_signals),
+    filter(has_signals::signals()),
     m_mask_downsize(cv::Size(0, 0)),
     m_lower_color(cv::Scalar(0, 0, 0)),
     m_upper_color(cv::Scalar(255, 255, 255))
@@ -195,7 +195,7 @@ void colour_image_masking::updating()
 
         const std::uint8_t* frame_buff_out_video = &video_buffer->get_element(0);
 
-        core::clock::type video_timestamp = video_buffer->get_timestamp();
+        core::clock::type video_timestamp = video_buffer->timestamp();
         if(video_timestamp <= m_last_video_timestamp)
         {
             SIGHT_WARN(
@@ -286,7 +286,7 @@ void colour_image_masking::set_background()
     cv::erode(mask_cv, mask_cv, element_erode);
 
     // Learn background color model
-    m_masker->train_background_model(video_cv, mask_cv, unsigned(m_background_components));
+    m_masker->train_background_model(video_cv, mask_cv, static_cast<unsigned>(m_background_components));
 
     // Initialize the mask timeline
     const auto video_mask_tl = m_video_mask_tl.lock();
@@ -343,7 +343,12 @@ void colour_image_masking::set_foreground()
     cv::erode(foreground_mask, open_foreground_mask, element_erode);
 
     // Learn foreground color model
-    m_masker->train_foreground_model(video_cv, open_foreground_mask, unsigned(m_foreground_components), m_noise);
+    m_masker->train_foreground_model(
+        video_cv,
+        open_foreground_mask,
+        static_cast<unsigned>(m_foreground_components),
+        m_noise
+    );
 }
 
 // ------------------------------------------------------------------------------

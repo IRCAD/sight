@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,11 +47,11 @@ template<typename T>
 T get_value(T _min, T _max, std::uint32_t _seed_val = static_cast<std::uint32_t>(std::time(nullptr)))
 {
     SIGHT_ASSERT("Wrong min/max value", _min <= _max);
-    typedef typename std::conditional<
-            std::is_floating_point<T>::value,
-            std::uniform_real_distribution<T>,
-            std::uniform_int_distribution<T>
-    >::type distro_type;
+    using distro_type = std::conditional_t<
+        std::is_floating_point_v<T>,
+        std::uniform_real_distribution<T>,
+        std::uniform_int_distribution<T>
+    >;
 
     std::mt19937 gen(_seed_val);
     distro_type dist(_min, _max);
@@ -77,12 +77,12 @@ void fill_container(
 )
 {
     SIGHT_ASSERT("Wrong min/max value", _min <= _max);
-    SIGHT_ASSERT("Container type not same as T", (std::is_same<T, typename CONTAINER::value_type>::value));
-    typedef typename std::conditional<
-            std::is_floating_point<T>::value,
-            std::uniform_real_distribution<T>,
-            std::uniform_int_distribution<T>
-    >::type distro_type;
+    SIGHT_ASSERT("Container type not same as T", (std::is_same_v<T, typename CONTAINER::value_type>));
+    using distro_type = std::conditional_t<
+        std::is_floating_point_v<T>,
+        std::uniform_real_distribution<T>,
+        std::uniform_int_distribution<T>
+    >;
 
     std::mt19937 gen(_seed_val);
     distro_type dist(_min, _max);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -27,6 +27,8 @@
 
 #include "core/crypto/secure_string.hpp"
 
+// NOLINTBEGIN(cppcoreguidelines-macro-usage)
+
 // Convenience macro to generate a pseudo random hash in a pseudo predictable way.
 #define SIGHT_PSEUDO_RANDOM_HASH(salt) \
         sight::core::crypto::hash( \
@@ -36,6 +38,8 @@
                 + std::string(salt) \
             ) \
         )
+
+// NOLINTEND(cppcoreguidelines-macro-usage)
 
 namespace sight::core::crypto
 {

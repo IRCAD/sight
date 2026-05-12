@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,31 +52,9 @@ public:
     static const std::string NOT_DEFINED;
 
     SIGHT_DECLARE_SERVICE(test_service, service::base);
-    test_service() noexcept =
-        default;
+    test_service() noexcept = default;
 
-    ~test_service() noexcept override =
-        default;
-
-    //------------------------------------------------------------------------------
-
-    void configuring() override
-    {
-        const config_t cfg = this->get_config();
-        m_option = cfg.get(OPTION_KEY, NOT_DEFINED);
-    }
-
-    void starting() override;
-    //------------------------------------------------------------------------------
-
-    void stopping() final;
-    void updating() override;
-    //------------------------------------------------------------------------------
-
-    void info(std::ostream& _sstream) override
-    {
-        _sstream << "test_service";
-    }
+    ~test_service() noexcept override = default;
 
     /// return true if the service is updated with update() method
     bool is_updated() const
@@ -138,6 +116,27 @@ public:
 
 protected:
 
+    //------------------------------------------------------------------------------
+
+    void configuring() override
+    {
+        const config_t cfg = this->get_config();
+        m_option = cfg.get(OPTION_KEY, NOT_DEFINED);
+    }
+
+    void starting() override;
+    //------------------------------------------------------------------------------
+
+    void stopping() final;
+    void updating() override;
+    //------------------------------------------------------------------------------
+
+    void info(std::ostream& _sstream) override
+    {
+        _sstream << "test_service";
+    }
+
+    // NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
     bool m_is_updated {false};
     bool m_is_updated2 {false};
     bool m_is_updated_message {false};
@@ -145,6 +144,7 @@ protected:
     unsigned int m_start_order {0};
     unsigned int m_update_order {0};
     std::string m_option {UNCONFIGURED};
+    // NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 };
 
 /**
@@ -188,20 +188,6 @@ public:
         default;
 
     //-------------------------------------------------------------------------
-    void starting() final
-    {
-        test_service::starting();
-    }
-
-    //-------------------------------------------------------------------------
-
-    void updating() final
-    {
-        test_service::updating();
-        m_is_updated = true;
-    }
-
-    //-------------------------------------------------------------------------
     void receive_slot()
     {
         m_received = true;
@@ -228,13 +214,6 @@ public:
     }
 
     //-------------------------------------------------------------------------
-    void swapping(std::string_view _key) final
-    {
-        m_swapped_object_key = _key;
-        m_swapped_object     = this->input(_key).lock().get_shared();
-    }
-
-    //-------------------------------------------------------------------------
 
     const std::string& get_swapped_object_key() const
     {
@@ -247,6 +226,8 @@ public:
     {
         return m_swapped_object;
     }
+
+protected:
 
     //-------------------------------------------------------------------------
 
@@ -263,6 +244,27 @@ public:
             {"dataGroup0", data::object::MODIFIED_SIG, service::slots::UPDATE},
             {"dataGroup1", data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE}
         };
+    }
+
+    //-------------------------------------------------------------------------
+    void starting() final
+    {
+        test_service::starting();
+    }
+
+    //-------------------------------------------------------------------------
+
+    void updating() final
+    {
+        test_service::updating();
+        m_is_updated = true;
+    }
+
+    //-------------------------------------------------------------------------
+    void swapping(std::string_view _key) final
+    {
+        m_swapped_object_key = _key;
+        m_swapped_object     = this->input(_key).lock().get_shared();
     }
 
 //-------------------------------------------------------------------------
@@ -346,6 +348,8 @@ public:
 
     SIGHT_DECLARE_SERVICE(test2_inputs_v2, app::ut::test_srv);
 
+protected:
+
     //-------------------------------------------------------------------------
 
     connections_t auto_connections() const override
@@ -406,6 +410,8 @@ public:
 
     SIGHT_DECLARE_SERVICE(test3_inouts_v2, app::ut::test_srv);
 
+protected:
+
     //-------------------------------------------------------------------------
 
     connections_t auto_connections() const override
@@ -442,6 +448,8 @@ class test1_input1_opt_input1_opt_in_out : public test_srv
 public:
 
     SIGHT_DECLARE_SERVICE(test1_input1_opt_input1_opt_in_out, app::ut::test_srv);
+
+protected:
 
     //-------------------------------------------------------------------------
 
@@ -529,6 +537,8 @@ public:
     test_service_with_data() noexcept = default;
     ~test_service_with_data() noexcept override = default;
 
+protected:
+
     //------------------------------------------------------------------------------
 
     void configuring() override
@@ -546,6 +556,8 @@ public:
     void stopping() override;
     void updating() override;
 
+public:
+
     data::ptr<data::object, data::access::in> m_input {this, "input"};
     data::ptr_vector<data::integer, data::access::inout> m_inout_group {this, "inoutGroup"};
     data::ptr<data::object, data::access::out> m_output {this, "output", true};
@@ -558,6 +570,18 @@ public:
     SIGHT_DECLARE_SERVICE(test_service_with_properties, service::base);
     test_service_with_properties() noexcept = default;
     ~test_service_with_properties() noexcept override = default;
+
+    //------------------------------------------------------------------------------
+
+    void set_integer(std::int64_t _value)
+    {
+        auto int_prop = m_int_prop.lock();
+        *int_prop     = _value;
+
+        int_prop->async_emit(this, data::object::MODIFIED_SIG);
+    }
+
+protected:
 
     //------------------------------------------------------------------------------
 
@@ -608,16 +632,9 @@ public:
         };
     }
 
-    //------------------------------------------------------------------------------
+public:
 
-    void set_integer(std::int64_t _value)
-    {
-        auto int_prop = m_int_prop.lock();
-        *int_prop     = _value;
-
-        int_prop->async_emit(this, data::object::MODIFIED_SIG);
-    }
-
+    // NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
     data::property<data::integer> m_int_prop {this, "integer", 42};
     data::property<data::string> m_string_prop {this, "string", {"default_value"}};
     data::property<data::dvec3> m_vec_prop {this, "vec", {12.123, 56.0, 78.56}};
@@ -625,6 +642,7 @@ public:
     bool m_emit_signal {false};
     std::size_t m_signal_count {0U};
     std::string_view m_callback_called_parameter {};
+    // NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 };
 
 } // namespace sight::app::ut

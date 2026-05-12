@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -33,8 +33,8 @@
 #include <gdcmSequenceOfItems.h>
 #include <gdcmSmartPointer.h>
 
-#include <utility>
 #include <mutex>
+#include <utility>
 
 #ifdef WIN32
 #pragma warning( push )
@@ -204,11 +204,11 @@ static inline std::string arithmetic_to_string(const V& _value, gdcm::VR::VRType
 
     if(fixed)
     {
-        oss << std::setprecision(int(size) - 1) << std::showpoint << std::fixed << _value;
+        oss << std::setprecision(static_cast<int>(size) - 1) << std::showpoint << std::fixed << _value;
     }
     else
     {
-        oss << std::setprecision(int(size) - 1) << std::noshowpoint << std::defaultfloat << _value;
+        oss << std::setprecision(static_cast<int>(size) - 1) << std::noshowpoint << std::defaultfloat << _value;
     }
 
     return oss.str();
@@ -283,7 +283,7 @@ static inline C string_to_collection(std::optional<std::string> _value)
         }
 
         // Convert the part to the right type
-        using value_t = typename C::value_type;
+        using value_t = C::value_type;
 
         if constexpr(std::is_same_v<value_t, std::string>)
         {
@@ -332,7 +332,7 @@ inline static void set_private_value(
             gdcm::DataElement creator_data_element(creator_tag, 0, gdcm::VR::LO);
             creator_data_element.SetByteValue(
                 detail::PRIVATE_CREATOR.c_str(),
-                std::uint32_t(detail::PRIVATE_CREATOR.size())
+                static_cast<std::uint32_t>(detail::PRIVATE_CREATOR.size())
             );
             _dataset.Replace(creator_data_element);
         }
@@ -359,7 +359,7 @@ inline static void set_private_value(
                 }(padding);
 
             // Create a new data element and assign the buffer from the string
-            data_element.SetByteValue(padded.c_str(), std::uint32_t(padded.size()));
+            data_element.SetByteValue(padded.c_str(), static_cast<std::uint32_t>(padded.size()));
         }
 
         // Store back the data element to the data set
@@ -787,7 +787,7 @@ public:
         }
         else
         {
-            A attribute;
+            A attribute; // NOLINT(cppcoreguidelines-pro-type-member-init,hicpp-member-init)
 
             if constexpr(has_fixed_multiplicity<A>::value)
             {
@@ -876,7 +876,7 @@ public:
 
         gdcm::DataElement data_element(_tag);
         data_element.SetVR(_vr);
-        data_element.SetByteValue(reinterpret_cast<const char*>(&_value), std::uint32_t(sizeof(_value)));
+        data_element.SetByteValue(reinterpret_cast<const char*>(&_value), static_cast<std::uint32_t>(sizeof(_value)));
         get_data_set(_instance).Replace(data_element);
     }
 
@@ -930,7 +930,7 @@ public:
         // Prevent proceeding when we have no dataset
         // This notably prevent assertions in dataset storage
         // And allows the error to be handled in the calling code
-        if(m_frame_datasets.size() == 0)
+        if(m_frame_datasets.empty())
         {
             return {};
         }
@@ -1067,7 +1067,7 @@ public:
         }
 
         // Adjust the number of frames
-        set_value<gdcm::Keywords::NumberOfFrames>(int(group_sequence->GetNumberOfItems()));
+        set_value<gdcm::Keywords::NumberOfFrames>(static_cast<int>(group_sequence->GetNumberOfItems()));
 
         return group_sequence;
     }
@@ -1255,7 +1255,10 @@ public:
         {
             // Add the private creator tag
             gdcm::DataElement creator_data_element(creator_tag, 0, gdcm::VR::LO);
-            creator_data_element.SetByteValue(PRIVATE_CREATOR.c_str(), std::uint32_t(PRIVATE_CREATOR.size()));
+            creator_data_element.SetByteValue(
+                PRIVATE_CREATOR.c_str(),
+                static_cast<std::uint32_t>(PRIVATE_CREATOR.size())
+            );
             frame_dataset.Replace(creator_data_element);
         }
 
@@ -1837,7 +1840,7 @@ public:
                 group_sequence->SetNumberOfItems(_size);
 
                 // Set the number of frames
-                set_value<gdcm::Keywords::NumberOfFrames>(std::int32_t(_size));
+                set_value<gdcm::Keywords::NumberOfFrames>(static_cast<std::int32_t>(_size));
             }
         }
     }

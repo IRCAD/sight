@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,8 +26,6 @@
 #include <core/ptree.hpp>
 
 #include <data/mesh.hpp>
-
-#include <service/op.hpp>
 
 namespace sight::module::viz::scene3d::adaptor
 {
@@ -174,7 +172,7 @@ void reconstruction::create_mesh_service()
 
         mesh_adaptor->configure(mesh_adaptor_config);
         mesh_adaptor->set_id(gen_id(mesh_adaptor->get_id()));
-        mesh_adaptor->set_layer_id(m_layer_id);
+        mesh_adaptor->set_layer_id(layer_id());
         mesh_adaptor->set_render_service(this->render_service());
 
         // Here Material cannot be const since material created by mesh can modify it.

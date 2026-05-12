@@ -98,6 +98,12 @@ public:
     /// Destroys the adaptor.
     ~axis() noexcept final = default;
 
+    /**
+     * @brief Sets the axis visibility.
+     * @param _visible the visibility status of the axis.
+     */
+    void set_visible(bool _visible) final;
+
 protected:
 
     /// Configures the adaptor.
@@ -111,12 +117,6 @@ protected:
 
     /// Deletes ogre's resources.
     void stopping() final;
-
-    /**
-     * @brief Sets the axis visibility.
-     * @param _visible the visibility status of the axis.
-     */
-    void set_visible(bool _visible) final;
 
     sight::service::connections_t auto_connections() const final;
 

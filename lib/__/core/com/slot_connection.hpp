@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -80,6 +80,12 @@ struct SIGHT_CORE_CLASS_API slot_connection<void(A ...)>: slot_connection_base
         const slot_wrapper_sptr_type& _slot_wrapper
     );
 
+    /**
+     * @brief Returns a blocker on the connection.
+     * The connection is blocked until the returned shared pointer dies.
+     */
+    slot_connection_base::blocker_sptr_type get_blocker() override;
+
     protected:
 
         template<typename F>
@@ -97,14 +103,10 @@ struct SIGHT_CORE_CLASS_API slot_connection<void(A ...)>: slot_connection_base
         /// *NOT THREAD SAFE* Disconnect the related slot and signal.
         void disconnect_weak_lock() override;
 
-        /**
-         * @brief Returns a blocker on the connection.
-         * The connection is blocked until the returned shared pointer dies.
-         */
-        slot_connection_base::blocker_sptr_type get_blocker() override;
-
         /// Unblock this connection.
         void unblock();
+
+    private:
 
         /// Related Signal.
         signal_wptr_type m_signal;

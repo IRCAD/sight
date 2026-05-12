@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -40,12 +40,12 @@ struct allocator
 {
     using value_type                             = T;
     using propagate_on_container_move_assignment =
-        typename std::allocator_traits<std::allocator<T> >::propagate_on_container_move_assignment;
+        std::allocator_traits<std::allocator<T> >::propagate_on_container_move_assignment;
 
     constexpr allocator() = default;
 
     template<class U>
-    constexpr allocator(const allocator<U>& /*unused*/) noexcept
+    constexpr explicit allocator(const allocator<U>& /*unused*/) noexcept
     {
     }
 
@@ -60,7 +60,11 @@ struct allocator
 
     constexpr static void deallocate(T* _p, std::size_t _n) noexcept
     {
+    #ifdef WIN32
         std::fill_n(((volatile char*) _p), sizeof(T) * _n, static_cast<char>(0));
+    #else
+        std::fill_n(static_cast<volatile char*>(_p), sizeof(T) * _n, static_cast<char>(0));
+    #endif
         std::allocator<T> {}.deallocate(_p, _n);
     }
 };
@@ -87,7 +91,7 @@ using secure_string = std::basic_string<char, std::char_traits<char>, allocator<
 
 // Zeroes the strings own memory on destruction
 template<>
-#if defined(WIN32)
+#ifdef WIN32
 constexpr sight::core::crypto::secure_string::~basic_string() noexcept
 #elif (_GLIBCXX_RELEASE >= 12)
 constexpr sight::core::crypto::secure_string::~basic_string()

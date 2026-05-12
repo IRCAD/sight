@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024-2025 IRCAD France
+ * Copyright (C) 2024-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,14 +21,9 @@
 
 #include "module/io/matrix/validator.hpp"
 
-#include <core/base.hpp>
 #include <core/com/signal.hxx>
 
-#include <data/matrix4.hpp>
-
 #include <geometry/data/matrix4.hpp>
-
-#include <service/macros.hpp>
 
 namespace sight::module::io::matrix
 {
@@ -36,7 +31,7 @@ namespace sight::module::io::matrix
 //-----------------------------------------------------------------------------
 
 validator::validator() :
-    notifier(m_signals)
+    notifier(has_signals::signals())
 {
     new_signal<signals::void_signal_t>(signals::VALID);
     new_signal<signals::void_signal_t>(signals::INVALID);

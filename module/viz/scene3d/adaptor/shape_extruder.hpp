@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2025 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2020-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -109,6 +109,45 @@ public:
     /// Destroys the adaptor.
     ~shape_extruder() noexcept final = default;
 
+    /**
+     * @brief Cancels further interactions.
+     * @pre @ref m_interactionEnableState must be true.
+     */
+    void wheel_event(modifier /*_mods*/, double /*_angleDelta*/, int /*_x*/, int /*_y*/) final;
+
+    /**
+     * @brief Adds a new point to the lasso.
+     * @pre @ref m_toolEnableState must be true.
+     * @param _button mouse modifier.
+     * @param _x X screen coordinate.
+     * @param _y Y screen coordinate.
+     */
+    void button_press_event(mouse_button _button, modifier /*_mods*/, int _x, int _y) final;
+
+    /**
+     * @brief Closes the lasso shape.
+     * @pre @ref m_interactionEnableState must be true.
+     * @param _button mouse modifier.
+     * @param _x X screen coordinate.
+     * @param _y Y screen coordinate.
+     */
+    void button_double_press_event(mouse_button _button, modifier /*_mods*/, int _x, int _y) final;
+
+    /**
+     * @brief Draws the last lasso line or add a point to the lasso in the mouse is dragged.
+     * @pre @ref m_interactionEnableState must be true.
+     * @param _button mouse modifier.
+     * @param _x X screen coordinate.
+     * @param _y Y screen coordinate.
+     */
+    void mouse_move_event(mouse_button _button, modifier /*_mods*/, int _x, int _y, int /*_dx*/, int /*_dy*/) final;
+
+    /**
+     * @brief Ends the drag interaction.
+     * @pre @ref m_interactionEnableState and @ref m_leftButtonMoveState must be true.
+     */
+    void button_release_event(mouse_button /*_button*/, modifier /*_mods*/, int /*_x*/, int /*_y*/) final;
+
 protected:
 
     /// Configures the service.
@@ -160,7 +199,7 @@ private:
         Ogre::Vector2 barycentre;
 
         /// Defines the unique ID of the triangle.
-        std::size_t id;
+        std::size_t id {s_id++};
 
     private:
 
@@ -212,7 +251,7 @@ private:
         Ogre::Vector2 b;
     };
 
-    enum class action
+    enum class action : std::uint8_t
     {
         add,
         remove
@@ -256,45 +295,6 @@ private:
      * @param _y Y screen coordinate.
      */
     void modify_lasso(action _action, int _x = -1, int _y = -1);
-
-    /**
-     * @brief Cancels further interactions.
-     * @pre @ref m_interactionEnableState must be true.
-     */
-    void wheel_event(modifier /*_mods*/, double /*_angleDelta*/, int /*_x*/, int /*_y*/) final;
-
-    /**
-     * @brief Adds a new point to the lasso.
-     * @pre @ref m_toolEnableState must be true.
-     * @param _button mouse modifier.
-     * @param _x X screen coordinate.
-     * @param _y Y screen coordinate.
-     */
-    void button_press_event(mouse_button _button, modifier /*_mods*/, int _x, int _y) final;
-
-    /**
-     * @brief Closes the lasso shape.
-     * @pre @ref m_interactionEnableState must be true.
-     * @param _button mouse modifier.
-     * @param _x X screen coordinate.
-     * @param _y Y screen coordinate.
-     */
-    void button_double_press_event(mouse_button _button, modifier /*_mods*/, int _x, int _y) final;
-
-    /**
-     * @brief Draws the last lasso line or add a point to the lasso in the mouse is dragged.
-     * @pre @ref m_interactionEnableState must be true.
-     * @param _button mouse modifier.
-     * @param _x X screen coordinate.
-     * @param _y Y screen coordinate.
-     */
-    void mouse_move_event(mouse_button _button, modifier /*_mods*/, int _x, int _y, int /*_dx*/, int /*_dy*/) final;
-
-    /**
-     * @brief Ends the drag interaction.
-     * @pre @ref m_interactionEnableState and @ref m_leftButtonMoveState must be true.
-     */
-    void button_release_event(mouse_button /*_button*/, modifier /*_mods*/, int /*_x*/, int /*_y*/) final;
 
     /// Draws the lasso from @ref m_lassoNearPositions.
     void draw_lasso();

@@ -25,8 +25,6 @@
 #include <core/com/signal.hxx>
 #include <core/com/slots.hxx>
 
-#include <service/macros.hpp>
-
 namespace sight::module::filter::vision
 {
 
@@ -35,7 +33,7 @@ static const core::com::slots::key_t COMPUTE_SLOT = "compute";
 //------------------------------------------------------------------------------
 
 transform_depth_tl2mm::transform_depth_tl2mm() :
-    filter(m_signals)
+    filter(has_signals::signals())
 {
     new_slot(COMPUTE_SLOT, &transform_depth_tl2mm::compute, this);
 }

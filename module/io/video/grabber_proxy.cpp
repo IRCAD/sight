@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2025 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,8 +30,6 @@
 #include <data/frame_tl.hpp>
 
 #include <service/extension/config.hpp>
-#include <service/macros.hpp>
-#include <service/registry.hpp>
 
 #include <ui/__/dialog/message.hpp>
 #include <ui/__/dialog/selector.hpp>
@@ -244,7 +242,7 @@ void grabber_proxy::start_camera()
                     auto objects_type = srv_factory->get_service_objects(srv_impl);
                     const auto config = this->get_config();
 
-                    // NOLINTBEGIN(modernize-use-ranges)
+                    // NOLINTBEGIN(modernize-use-ranges,llvm-use-ranges)
                     // 1. Verify that we have the same number of timelines
                     objects_type.erase(
                         std::remove_if(
@@ -256,7 +254,7 @@ void grabber_proxy::start_camera()
                         }),
                         objects_type.end()
                     );
-                    // NOLINTEND(modernize-use-ranges)
+                    // NOLINTEND(modernize-use-ranges,llvm-use-ranges)
 
                     std::size_t num_tl = 0;
                     auto inouts_cfg    = config.equal_range("inout");
@@ -376,7 +374,7 @@ void grabber_proxy::start_camera()
                                                             };
 
                             // Remove the ones excluded by the grabber proxy.
-                            // NOLINTBEGIN(modernize-use-ranges)
+                            // NOLINTBEGIN(modernize-use-ranges,llvm-use-ranges)
                             selectable_configs.erase(
                                 std::remove_if(
                                     selectable_configs.begin(),
@@ -385,7 +383,7 @@ void grabber_proxy::start_camera()
                                 ),
                                 selectable_configs.end()
                             );
-                            // NOLINTEND(modernize-use-ranges)
+                            // NOLINTEND(modernize-use-ranges,llvm-use-ranges)
                         }
                     }
 
@@ -774,15 +772,14 @@ void grabber_proxy::fwd_present_frame()
 
 void grabber_proxy::fwd_notify(service::notification _notification)
 {
-    notifier::m_notified_sig->async_emit(std::move(_notification));
+    this->async_emit(notifier::signals::NOTIFIED, std::move(_notification));
 }
 
 //------------------------------------------------------------------------------
 
 void grabber_proxy::fwd_set_parameter(ui::parameter_t _value, std::string _key)
 {
-    auto sig = this->signal<grabber::parameter_changed_t>(grabber::PARAMETER_CHANGED_SIG);
-    sig->async_emit(_value, _key);
+    this->async_emit(grabber::PARAMETER_CHANGED_SIG, _value, _key);
 }
 
 //------------------------------------------------------------------------------

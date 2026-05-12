@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,7 +37,7 @@ class SIGHT_DATA_CLASS_API field
 public:
 
     /// Constructor. Initialize parameters.
-    SIGHT_DATA_API field(data::object::sptr _object);
+    SIGHT_DATA_API explicit field(data::object::sptr _object);
 
     /// Destructor. Call notify if changes has been made.
     SIGHT_DATA_API ~field();
@@ -125,6 +125,8 @@ protected:
         const data::object::field_map_t& _old_fields,
         const data::object::field_map_t& _new_fields
     );
+
+private:
 
     /// Map of added objects, send on notify
     data::fields_container_t m_addedfields;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -73,6 +73,12 @@ public:
     grid() noexcept;
     ~grid() noexcept override = default;
 
+    /**
+     * @brief Sets the line visibility.
+     * @param _visible the visibility status of the line.
+     */
+    void set_visible(bool _visible) override;
+
 protected:
 
     /// Configures the adaptor
@@ -86,12 +92,6 @@ protected:
 
     /// Deletes the mesh after unregistering the service, and shutting down connections
     void stopping() override;
-
-    /**
-     * @brief Sets the line visibility.
-     * @param _visible the visibility status of the line.
-     */
-    void set_visible(bool _visible) override;
 
 private:
 

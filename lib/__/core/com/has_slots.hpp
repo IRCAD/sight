@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -72,6 +72,15 @@ public:
         return m_slots;
     }
 
+    //------------------------------------------------------------------------------
+
+    [[nodiscard]] core::com::slots& slots()
+    {
+        return m_slots;
+    }
+
+    //------------------------------------------------------------------------------
+
     template<typename F, typename A>
     SPTR(core::com::slot<typename core::com::util::convert_function_type<F>::type>) new_slot(
         const slots::key_t& _key,
@@ -97,6 +106,9 @@ protected:
     /// Copy operator forbidden
     has_slots& operator=(const has_slots&);
 
+private:
+
+    /// Mapping between a key_t and a slot.
     core::com::slots m_slots;
 };
 

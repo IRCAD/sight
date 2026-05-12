@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -124,7 +124,7 @@ public:
      */
     SIGHT_APP_API core::runtime::config_t get_adapted_template_config(
         const std::string& _config_id,
-        const field_adaptor_t _replace_fields,
+        field_adaptor_t _replace_fields,
         const std::string& _auto_prefix_id
     );
 
@@ -161,13 +161,6 @@ public:
     /// Return an instance of config.
     SIGHT_APP_API static config::sptr get();
 
-protected:
-
-    using registry = std::map<std::string, app_info::sptr>;
-
-    /// Container of <configId, config information>
-    registry m_reg;
-
 private:
 
     using uid_parameter_replace_t = std::unordered_set<std::string>;
@@ -192,6 +185,11 @@ private:
 
     /// Adapts field thanks to field adaptors
     static std::string subst_var(std::string _str, const field_adaptor_t& _variables_map);
+
+    using registry = std::map<std::string, app_info::sptr>;
+
+    /// Container of <configId, config information>
+    registry m_reg;
 
     /// Used to protect the registry access.
     mutable core::mt::read_write_mutex m_registry_mutex;

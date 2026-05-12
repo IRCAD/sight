@@ -29,7 +29,7 @@ namespace sight::module::geometry
 //-----------------------------------------------------------------------------
 
 matrix_to_point::matrix_to_point() :
-    filter(m_signals)
+    filter(has_signals::signals())
 {
 }
 

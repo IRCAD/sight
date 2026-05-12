@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,13 +42,13 @@ public:
     /// String serialization function
     [[nodiscard]] inline virtual std::string to_string() const = 0;
 
+    /// Destructor
+    virtual ~base() = default;
+
 protected:
 
     /// Constructor
     base() = default;
-
-    /// Destructor
-    virtual ~base() = default;
 };
 
 /// Default noop implementation

@@ -39,7 +39,7 @@ const core::com::slots::key_t UPDATE_SELECTED_POINT_LIST = "updateSelectedPointL
 //-----------------------------------------------------------------------------
 
 label_geometry_image::label_geometry_image() :
-    filter(m_signals)
+    filter(has_signals::signals())
 {
     new_slot(UPDATE_SELECTED_POINT_LIST, &label_geometry_image::update_selected_point_list, this);
 }

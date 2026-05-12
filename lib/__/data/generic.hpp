@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,16 +35,18 @@
 namespace sight::data
 {
 
-/* *INDENT-OFF* */
-namespace
+namespace detail
 {
 
-template <typename T>
-concept supports_subscript = requires(T a, size_t i) {
-    { a[i] };
+/* *INDENT-OFF* */
+template<typename T>
+concept supports_subscript = requires(T _a, size_t _i)
+{
+    {_a[_i]};
 };
-}
 /* *INDENT-ON* */
+
+} // namespace detail
 
 /**
  * @brief   Generic "field" object template.
@@ -69,24 +71,25 @@ public:
     {
     }
 
-    generic(const T& _value) noexcept :
-        m_value(_value)
+    // NOLINTNEXTLINE(google-explicit-constructor,hicpp-explicit-conversions)
+    generic(T  _value) noexcept :
+        m_value(std::move(_value))
     {
     }
 
-    explicit generic(const generic<T>& _other) :
+    generic(const generic<T>& _other) :
         m_value(_other.value())
     {
     }
 
-    explicit generic(generic<T>&& _other) :
+    generic(generic<T>&& _other) noexcept :
         m_value(_other.value())
     {
     }
 
     //------------------------------------------------------------------------------
 
-    virtual ~generic() noexcept = default;
+    ~generic() noexcept override = default;
 
     //------------------------------------------------------------------------------
 
@@ -115,7 +118,8 @@ public:
     }
 
     /// @brief Conversion to a scalar type.
-    operator T() noexcept {
+    operator T() noexcept // NOLINT(hicpp-explicit-conversions)
+    {
         return m_value;
     }
 
@@ -157,15 +161,15 @@ public:
 
     //------------------------------------------------------------------------------
 
-    generic<T>& operator=(const generic<T>& _other);
-    generic<T>& operator=(generic<T>&& _other);
-    generic<T>& operator=(const T& _other);
-    generic<T>& operator=(T&& _other);
+    generic<T>& operator=(const generic<T>& _other) noexcept;
+    generic<T>& operator=(generic<T>&& _other) noexcept;
+    generic<T>& operator=(const T& _other) noexcept;
+    generic<T>& operator=(T&& _other) noexcept;
 
     //------------------------------------------------------------------------------
 
-    constexpr auto& operator[](const std::size_t _index) const noexcept requires supports_subscript<T>;
-    constexpr auto& operator[](const std::size_t _index) noexcept requires supports_subscript<T>;
+    constexpr auto& operator[](std::size_t _index) const noexcept requires detail::supports_subscript<T>;
+    constexpr auto& operator[](std::size_t _index) noexcept requires detail::supports_subscript<T>;
 
     //------------------------------------------------------------------------------
 
@@ -175,19 +179,19 @@ public:
 
     //------------------------------------------------------------------------------
 
-    inline bool operator<=(const generic& _other) const noexcept
+    bool operator<=(const generic& _other) const noexcept
     {
         return !(*this > _other);
     }
 
     //------------------------------------------------------------------------------
 
-    inline bool operator>=(const generic& _other) const noexcept
+    bool operator>=(const generic& _other) const noexcept
     {
         return !(*this < _other);
     }
 
-protected:
+private:
 
     //------------------------------------------------------------------------------
 
@@ -206,7 +210,7 @@ protected:
 //------------------------------------------------------------------------------
 
 template<class T>
-constexpr auto& generic<T>::operator[](const std::size_t _index) const noexcept requires supports_subscript<T>
+constexpr auto& generic<T>::operator[](const std::size_t _index) const noexcept requires detail::supports_subscript<T>
 {
     return this->value()[_index];
 }
@@ -214,7 +218,7 @@ constexpr auto& generic<T>::operator[](const std::size_t _index) const noexcept 
 //------------------------------------------------------------------------------
 
 template<class T>
-constexpr auto& generic<T>::operator[](const std::size_t _index) noexcept requires supports_subscript<T>
+constexpr auto& generic<T>::operator[](const std::size_t _index) noexcept requires detail::supports_subscript<T>
 {
     return this->value()[_index];
 }
@@ -256,8 +260,13 @@ void generic<T>::deep_copy(const object::csptr& _source, const std::unique_ptr<d
 //------------------------------------------------------------------------------
 
 template<class T>
-generic<T>& generic<T>::operator=(const generic<T>& _other)
+generic<T>& generic<T>::operator=(const generic<T>& _other) noexcept
 {
+    if(this == &_other)
+    {
+        return *this;
+    }
+
     this->value() = _other.value();
     return *this;
 }
@@ -265,16 +274,16 @@ generic<T>& generic<T>::operator=(const generic<T>& _other)
 //------------------------------------------------------------------------------
 
 template<class T>
-generic<T>& generic<T>::operator=(generic<T>&& _other)
+generic<T>& generic<T>::operator=(generic<T>&& _other) noexcept
 {
-    this->value() = _other.value();
+    this->value() = std::move(_other.value());
     return *this;
 }
 
 //------------------------------------------------------------------------------
 
 template<class T>
-generic<T>& generic<T>::operator=(const T& _other)
+generic<T>& generic<T>::operator=(const T& _other) noexcept
 {
     this->value() = _other;
     return *this;
@@ -283,9 +292,9 @@ generic<T>& generic<T>::operator=(const T& _other)
 //------------------------------------------------------------------------------
 
 template<class T>
-generic<T>& generic<T>::operator=(T&& _other)
+generic<T>& generic<T>::operator=(T&& _other) noexcept
 {
-    this->value() = _other;
+    this->value() = std::move(_other);
     return *this;
 }
 
@@ -315,7 +324,7 @@ bool generic<T>::operator==(const generic& _other) const noexcept
 
         // Do not forget to call superclass == operator
         // base_class_t have a pure virtual == operator, so we call the base class from base_class_t
-        using base = typename base_class_t::base_class_t;
+        using base = base_class_t::base_class_t;
         return base::operator==(_other);
     }
     catch([[maybe_unused]] const std::bad_cast& exp)

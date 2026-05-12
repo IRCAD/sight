@@ -26,17 +26,13 @@
 
 #include <core/com/signal.hxx>
 
-#include <data/string.hpp>
-
-#include <service/macros.hpp>
-
 namespace sight::module::geometry
 {
 
 //-----------------------------------------------------------------------------
 
 point_list_from_matrices::point_list_from_matrices() :
-    filter(m_signals)
+    filter(has_signals::signals())
 {
 }
 

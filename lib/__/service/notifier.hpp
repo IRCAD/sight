@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -97,7 +97,7 @@ class SIGHT_SERVICE_CLASS_API notifier
 {
 public:
 
-    SIGHT_SERVICE_API notifier(core::com::signals& _signals) noexcept;
+    SIGHT_SERVICE_API explicit notifier(core::com::signals& _signals) noexcept;
     virtual ~notifier() noexcept = default;
 
     /// Defines signals for notifier
@@ -120,11 +120,11 @@ protected:
         notification::type _type,
         std::string _message,
         std::string _channel = "",
-        bool sound           = false
+        bool _sound          = false
     ) const;
-    inline void info(std::string _message, std::string _channel    = "", bool sound = false) const;
-    inline void success(std::string _message, std::string _channel = "", bool sound = false) const;
-    inline void failure(std::string _message, std::string _channel = "", bool sound = false) const;
+    inline void info(std::string _message, std::string _channel    = "", bool _sound = false) const;
+    inline void success(std::string _message, std::string _channel = "", bool _sound = false) const;
+    inline void failure(std::string _message, std::string _channel = "", bool _sound = false) const;
     /// @}
 
     /// Emits close channel signal
@@ -133,13 +133,13 @@ protected:
     /// Method to call to configure notification "channels"
     SIGHT_SERVICE_API void initialize(const service::config_t& _config);
 
+private:
+
     /// Signal emitted when notify() is called
     const signals::notification_t::sptr m_notified_sig {std::make_shared<signals::notification_t>()};
 
     /// Signal emitted when closeChannel() is called
     const signals::channel_t::sptr m_notification_closed_sig {std::make_shared<signals::channel_t>()};
-
-private:
 
     std::map<std::string, std::string> m_channels {{std::string(""), std::string("")}};
 };
@@ -155,10 +155,10 @@ inline void notifier::notify(
 {
     this->notify(
         {
-            .m_type    = std::move(_type),
+            .m_type    = _type,
             .m_message = std::move(_message),
             .m_channel = std::move(_channel),
-            .m_sound   = std::move(_sound)
+            .m_sound   = _sound
         });
 }
 
@@ -166,21 +166,21 @@ inline void notifier::notify(
 
 inline void notifier::info(std::string _message, std::string _channel, bool _sound) const
 {
-    this->notify(notification::type::info, std::move(_message), std::move(_channel), std::move(_sound));
+    this->notify(notification::type::info, std::move(_message), std::move(_channel), _sound);
 }
 
 //------------------------------------------------------------------------------
 
 inline void notifier::success(std::string _message, std::string _channel, bool _sound) const
 {
-    this->notify(notification::type::success, std::move(_message), std::move(_channel), std::move(_sound));
+    this->notify(notification::type::success, std::move(_message), std::move(_channel), _sound);
 }
 
 //------------------------------------------------------------------------------
 
 inline void notifier::failure(std::string _message, std::string _channel, bool _sound) const
 {
-    this->notify(notification::type::failure, std::move(_message), std::move(_channel), std::move(_sound));
+    this->notify(notification::type::failure, std::move(_message), std::move(_channel), _sound);
 }
 
 } // namespace sight::service

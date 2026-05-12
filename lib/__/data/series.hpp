@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,7 +39,7 @@
 namespace gdcm
 {
 
-class DataSet;
+class DataSet; // NOLINT(readability-identifier-naming)
 
 } // namespace gdcm
 
@@ -278,7 +278,7 @@ public:
         };
 
         // NOLINTNEXTLINE(readability-reduce-member-init)
-        std::vector<std::string> other_values {};
+        std::vector<std::string> other_values;
     };
 
     SIGHT_DATA_API image_type_t get_image_type() const;

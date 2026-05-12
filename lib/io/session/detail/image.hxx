@@ -28,10 +28,12 @@
 #include "io/session/helper.hpp"
 #include "io/session/macros.hpp"
 
-#define FW_PROFILING_DISABLED
+#define SIGHT_PROFILING_DISABLED
 #include <core/profiling.hpp>
 
 #include <data/image.hpp>
+
+#include <type_traits>
 
 #include <nifti1.h>
 #include <nifti1_io.h>
@@ -101,7 +103,7 @@ inline static void write(
 
     // Add a version number. Not mandatory, but could help for future release
 
-    helper::write_version<data::image>(_tree, 2);
+    helper::write_version<data::image>(_tree, 3);
 
     // Serialize image
     const auto& size = image->size();
@@ -115,7 +117,10 @@ inline static void write(
     _tree.put(TYPE, type.name());
 
     const auto& format = image->pixel_format();
-    _tree.put(PIXEL_FORMAT, format);
+    _tree.put<std::underlying_type_t<data::image::pixel_format_t> >(
+        PIXEL_FORMAT,
+        static_cast<std::underlying_type_t<data::image::pixel_format_t> >(format)
+    );
 
     // Write image metadata
     const auto& spacing = image->spacing();
@@ -162,7 +167,7 @@ inline static void write(
     _tree.add_child(WINDOW_WIDTHS, window_widths_tree);
 
     {
-        FW_PROFILE("write NIFTI");
+        SIGHT_PROFILE("write NIFTI");
 
         if(image->size_in_bytes() == 0)
         {
@@ -226,10 +231,10 @@ inline static void write(
                     case sight::core::type::INT64:
                         return DT_INT64;
 
-                    case sight::core::type::FLOAT:
+                    case sight::core::type::FLOAT32:
                         return DT_FLOAT;
 
-                    case sight::core::type::DOUBLE:
+                    case sight::core::type::FLOAT64:
                         return DT_DOUBLE;
 
                     default:
@@ -335,15 +340,16 @@ inline static void write(
         }
 
         // Yes nifti creator thinks that using a float for an offset is a good idea
-        nifti_header->vox_offset = float(offset);
+        nifti_header->vox_offset = static_cast<float>(offset);
 
         ostream->write(reinterpret_cast<const char*>(nifti_header), sizeof(nifti_1_header));
 
         // Write padding
-        if(const auto padding_size = std::streamsize(offset) - std::streamsize(sizeof(nifti_1_header));
+        if(const auto padding_size = static_cast<std::streamsize>(offset)
+                                     - static_cast<std::streamsize>(sizeof(nifti_1_header));
            padding_size > 0)
         {
-            std::string padding(std::size_t(padding_size), 0);
+            std::string padding(static_cast<std::size_t>(padding_size), 0);
             ostream->write(padding.data(), padding_size);
         }
 
@@ -404,7 +410,7 @@ inline static data::image::sptr read(
     const auto dump_lock = image->dump_lock();
 
     // Check version number. Not mandatory, but could help for future release
-    helper::read_version<data::image>(_tree, 2, 2);
+    const auto version = helper::read_version<data::image>(_tree, 2, 3);
 
     // Deserialize image
     const auto& size_tree          = _tree.get_child(SIZE);
@@ -416,7 +422,10 @@ inline static data::image::sptr read(
 
     core::type type(_tree.get<std::string>(TYPE));
 
-    const auto format = static_cast<enum data::image::pixel_format_t>(_tree.get<int>(PIXEL_FORMAT));
+    // Version-specific reading for pixel_format
+    const auto format = version < 3
+                        ? static_cast<enum data::image::pixel_format_t>(_tree.get<int>(PIXEL_FORMAT))
+                        : static_cast<enum data::image::pixel_format_t>(_tree.get<std::uint8_t>(PIXEL_FORMAT));
 
     std::vector<double> window_centers;
     for(const auto& value : _tree.get_child(WINDOW_CENTERS))
@@ -474,10 +483,14 @@ inline static data::image::sptr read(
 
     // Read the image data
     {
-        FW_PROFILE("read NIFTI");
+        SIGHT_PROFILE("read NIFTI");
 
         // Make room for the image
-        image->resize(size, type, format);
+        image->resize(
+            size,
+            type,
+            format
+        );
 
         // No need to read an empty image
         if(image->size_in_bytes() != 0)
@@ -490,15 +503,19 @@ inline static data::image::sptr read(
             istream->read(reinterpret_cast<char*>(&header), sizeof(nifti_1_header));
 
             // Read the padding (we use a regular read, since seekg is not supported)
-            if(const auto padding_size = std::streamsize(header.vox_offset) - std::streamsize(sizeof(nifti_1_header));
+            if(const auto padding_size = static_cast<std::streamsize>(header.vox_offset)
+                                         - static_cast<std::streamsize>(sizeof(nifti_1_header));
                padding_size > 0)
             {
-                std::string padding(std::size_t(padding_size), 0);
+                std::string padding(static_cast<std::size_t>(padding_size), 0);
                 istream->read(padding.data(), padding_size);
             }
 
             // Read the image data as raw bytes
-            istream->read(reinterpret_cast<char*>(image->buffer()), std::streamsize(image->size_in_bytes()));
+            istream->read(
+                reinterpret_cast<char*>(image->buffer()),
+                static_cast<std::streamsize>(image->size_in_bytes())
+            );
         }
     }
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -45,7 +45,7 @@ class SIGHT_UI_CLASS_API preferences_disabled : public core::exception
 {
 public:
 
-    inline preferences_disabled(const std::string& _err) noexcept :
+    explicit preferences_disabled(const std::string& _err) noexcept :
         core::exception(_err)
     {
     }
@@ -58,7 +58,7 @@ class SIGHT_UI_CLASS_API bad_password : public preferences_disabled
 {
 public:
 
-    inline bad_password(const std::string& _err) noexcept :
+    explicit bad_password(const std::string& _err) noexcept :
         preferences_disabled(_err)
     {
     }
@@ -195,7 +195,7 @@ public:
     /// Returns the preference associated with the given key/path
     /// @param _key the key/path of the preference.
     template<typename T>
-    [[nodiscard]] inline T get(const std::string& _key) const
+    [[nodiscard]] T get(const std::string& _key) const
     {
         // Protect preferences for reading
         std::shared_lock guard(s_preferences_mutex);
@@ -209,7 +209,7 @@ public:
     /// Returns an optional preference associated with the given key/path.
     /// @param _key the key/path of the preference.
     template<typename T>
-    [[nodiscard]] inline boost::optional<T> get_optional(const std::string& _key) const
+    [[nodiscard]] boost::optional<T> get_optional(const std::string& _key) const
     {
         // Protect preferences for reading
         std::shared_lock guard(s_preferences_mutex);
@@ -225,7 +225,7 @@ public:
     /// @param _key the key/path of the preference.
     /// @param _default_value the default value used when the key/path is not found.
     template<typename T>
-    [[nodiscard]] inline T get(const std::string& _key, const T& _default_value) const noexcept
+    [[nodiscard]] T get(const std::string& _key, const T& _default_value) const noexcept
     {
         try
         {
@@ -249,7 +249,7 @@ public:
     /// @param _key the key/path of the preference, that could be the preference if no delimiter are used.
     /// @param _delimiter the magical delimiter.
     template<typename T>
-    [[nodiscard]] inline std::pair<std::string, T> parsed_get(
+    [[nodiscard]] std::pair<std::string, T> parsed_get(
         const std::string& _key,
         const std::string& _delimiter = DEFAULT_DELIMITER
     ) const
@@ -271,7 +271,7 @@ public:
     /// @param _key the key/path of the preference, that could be the preference if no delimiter are used.
     /// @param _delimiter the magical delimiter.
     template<typename T>
-    [[nodiscard]] inline T delimited_get(
+    [[nodiscard]] T delimited_get(
         const std::string& _key,
         const std::string& _delimiter = DEFAULT_DELIMITER
     ) const
@@ -286,7 +286,7 @@ public:
     /// @param _default_value the default value used when the key/path is not found.
     /// @param _delimiter the magical delimiter.
     template<typename T>
-    [[nodiscard]] inline T delimited_get(
+    [[nodiscard]] T delimited_get(
         const std::string& _key,
         const T& _default_value,
         const std::string& _delimiter = DEFAULT_DELIMITER
@@ -311,7 +311,7 @@ public:
     /// @param _key the key/path of the preference.
     /// @param _value the value to set.
     template<typename T>
-    inline void put(const std::string& _key, const T& _value)
+    void put(const std::string& _key, const T& _value)
     {
         // Protect preferences for writing
         std::unique_lock guard(s_preferences_mutex);

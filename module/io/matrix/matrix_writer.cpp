@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2025 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,21 +22,16 @@
 
 #include "matrix_writer.hpp"
 
-#include <core/com/slot.hpp>
 #include <core/com/slot.hxx>
 #include <core/com/slots.hpp>
 #include <core/com/slots.hxx>
 #include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
 
-#include <service/macros.hpp>
-
 #include <ui/__/dialog/location.hpp>
-#include <ui/__/dialog/message.hpp>
 
 #include <filesystem>
 #include <fstream>
-#include <iomanip>
 
 namespace sight::module::io::matrix
 {
@@ -172,14 +167,14 @@ void matrix_writer::write(core::clock::type _timestamp)
         matrix_tl
     );
 
-    const unsigned int number_of_mat = matrix_tl->get_max_element_num();
+    const unsigned int number_of_mat = matrix_tl->max_element_num();
 
     // Get the buffer of the copied timeline
     if(const auto& object = matrix_tl->get_closest_object(_timestamp); object)
     {
         if(const auto& buffer = std::dynamic_pointer_cast<const data::matrix_tl::buffer_t>(object); buffer)
         {
-            _timestamp = object->get_timestamp();
+            _timestamp = object->timestamp();
             const auto time = static_cast<std::size_t>(_timestamp);
             m_filestream << time << ";";
 
