@@ -274,6 +274,7 @@ void negato::update_image(bool _new)
 
         if(!data::helper::medical_image::check_image_validity(image.get_shared()))
         {
+            std::ranges::for_each(m_planes, [](auto& _p){_p.first.reset();});
             return;
         }
 
