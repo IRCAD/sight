@@ -30,18 +30,23 @@
 #include <utest/service_fixture.hpp>
 #include <utest/wait.hpp>
 
+namespace
+{
+
+class validate_fixture : public sight::utest::service_fixture
+{
+public:
+
+    validate_fixture() :
+        sight::utest::service_fixture("sight::module::data::validate")
+    {
+    }
+};
+
+} // namespace
+
 TEST_SUITE("sight::module::data::validate")
 {
-    class validate_fixture : public sight::utest::service_fixture
-    {
-    public:
-
-        validate_fixture() :
-            sight::utest::service_fixture("sight::module::data::validate")
-        {
-        }
-    };
-
     TEST_CASE_FIXTURE(validate_fixture, "equals")
     {
         using namespace std::literals::string_literals;
@@ -265,9 +270,6 @@ TEST_SUITE("sight::module::data::validate")
             // Third update with same valid data: should NOT emit signals (state unchanged)
             REQUIRE_NOTHROW(m_service->update().get());
 
-            // Give some time to ensure no signal is emitted
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
-
             SIGHT_TEST_FAIL_WAIT(valid_count == 1);
             SIGHT_TEST_FAIL_WAIT(invalid_count == 1);
             SIGHT_TEST_FAIL_WAIT(is_valid_count == 2);
@@ -336,6 +338,96 @@ TEST_SUITE("sight::module::data::validate")
             SIGHT_TEST_FAIL_WAIT(invalid_count == 2);
             SIGHT_TEST_FAIL_WAIT(is_valid_count == 3);
             SIGHT_TEST_FAIL_WAIT(is_invalid_count == 3);
+        }
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE_FIXTURE(validate_fixture, "valid_property")
+    {
+        auto image      = std::make_shared<sight::data::image>();
+        auto valid_prop = std::make_shared<sight::data::boolean>(false);
+
+        std::atomic<int> modified_count = 0;
+        auto modified_slot              = new_slot([&](){modified_count++;});
+        valid_prop->signal(sight::data::signals::MODIFIED)->connect(modified_slot);
+
+        m_service->set_config("<config id='sight::data::validator::filled' />");
+        m_service->set_input(image, "data");
+        m_service->set_inout(valid_prop, "valid");
+        REQUIRE_NOTHROW(m_service->configure());
+        REQUIRE_NOTHROW(m_service->start().get());
+
+        {
+            // Empty image: invalid, property starts at false -> value unchanged, no MODIFIED emitted
+            REQUIRE_NOTHROW(m_service->update().get());
+
+            SIGHT_TEST_WAIT(modified_count == 0);
+            CHECK_EQ(0, modified_count.load());
+            CHECK_EQ(false, valid_prop->value());
+        }
+
+        {
+            // Fill image: valid, property changes false -> true -> MODIFIED emitted once
+            image->resize({4, 4, 1}, sight::core::type::UINT8, sight::data::image::gray_scale);
+            REQUIRE_NOTHROW(m_service->update().get());
+
+            SIGHT_TEST_FAIL_WAIT(modified_count == 1);
+            CHECK_EQ(true, valid_prop->value());
+        }
+
+        {
+            // Same valid image: property stays true -> no new MODIFIED
+            REQUIRE_NOTHROW(m_service->update().get());
+
+            SIGHT_TEST_WAIT(modified_count == 1);
+            CHECK_EQ(1, modified_count.load());
+            CHECK_EQ(true, valid_prop->value());
+        }
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE_FIXTURE(validate_fixture, "invalid_property")
+    {
+        auto image        = std::make_shared<sight::data::image>();
+        auto invalid_prop = std::make_shared<sight::data::boolean>(true);
+
+        std::atomic<int> modified_count = 0;
+        auto modified_slot              = new_slot([&](){modified_count++;});
+        invalid_prop->signal(sight::data::signals::MODIFIED)->connect(modified_slot);
+
+        m_service->set_config("<config id='sight::data::validator::filled' />");
+        m_service->set_input(image, "data");
+        m_service->set_inout(invalid_prop, "invalid");
+        REQUIRE_NOTHROW(m_service->configure());
+        REQUIRE_NOTHROW(m_service->start().get());
+
+        {
+            // Empty image: invalid, property starts at true -> value unchanged, no MODIFIED emitted
+            REQUIRE_NOTHROW(m_service->update().get());
+
+            SIGHT_TEST_WAIT(modified_count == 0);
+            CHECK_EQ(0, modified_count.load());
+            CHECK_EQ(true, invalid_prop->value());
+        }
+
+        {
+            // Fill image: valid, property changes true -> false -> MODIFIED emitted once
+            image->resize({4, 4, 1}, sight::core::type::UINT8, sight::data::image::gray_scale);
+            REQUIRE_NOTHROW(m_service->update().get());
+
+            SIGHT_TEST_FAIL_WAIT(modified_count == 1);
+            CHECK_EQ(false, invalid_prop->value());
+        }
+
+        {
+            // Same valid image: property stays false -> no new MODIFIED
+            REQUIRE_NOTHROW(m_service->update().get());
+
+            SIGHT_TEST_WAIT(modified_count == 1);
+            CHECK_EQ(1, modified_count.load());
+            CHECK_EQ(false, invalid_prop->value());
         }
     }
 

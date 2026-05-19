@@ -80,6 +80,18 @@ void validate::updating()
     const auto on_change   = m_on_change.lock();
     const bool should_emit = !(*on_change) || !m_previous_result.has_value() || (m_previous_result.value() != result);
 
+    if(auto valid = m_valid.lock(); valid && valid->value() != result)
+    {
+        valid->set_value(result);
+        valid->async_emit(sight::data::signals::MODIFIED);
+    }
+
+    if(auto invalid = m_invalid.lock(); invalid && invalid->value() != !result)
+    {
+        invalid->set_value(!result);
+        invalid->async_emit(sight::data::signals::MODIFIED);
+    }
+
     if(should_emit)
     {
         if(result)
