@@ -1,3 +1,263 @@
+# sight 26.0.0
+
+## Bug fixes:
+
+### build
+
+*Allow sanitized builds to pass doctest discovery.*
+
+These changes include small fixes required to build Sight with sanitizers enabled. Without them, test discovery fails, which in turn causes the entire build to fail.
+
+Fixed:
+
+- The `sight`::io::vtk::bitmap_image_reader``class was not exported. Using the `sight`::io::vtk``module triggered an “undefined symbol” error under the Undefined Behavior Sanitizer.
+- `sight`::io::vtk::init_vtk_log_file``used a `vtkSmartPointer` to hold the pointer returned by `vtkFileOutputWindow::New()`. Calling `vtkFileOutputWindow::SetInstance()` conflicted with this smart pointer, resulting in a double reference.
+- Always use a test fixture for initialization code instead of a static struct. This is not strictly a fix, but it avoids executing code during the test discovery phase, which was causing crashes.
+
+*Specify suite when lauching tests to overcome ambiguities.*
+
+When having test cases with the same name, like "basic" for instance we used to launch all tests named "basic".
+
+### core
+
+*Rename copilot instructions file.*
+
+- add additional rules about our code convention
+
+### io
+
+*Fiducials stale file when series is empty.*
+
+*Graphic data of fiducials series was not properly read.*
+
+*Failing test in io_http.*
+
+The function `sight`::io::http::download_file``now follows redirections.
+
+### ui
+
+*Tickmarks widget fixes.*
+
+string properties were not very well managed and changing them on the fly with strings that are not int convertible would fail.
+
+Tests were also updated
+
+### viz
+
+*Clear negato when image becomes invalid.*
+
+*Axis adaptor dynamic origin color change.*
+
+The dynamic color update of the axis origin in `sight::module::viz::scene3d`::adaptor::axis``was incorrectly implemented: it used the ambient color channel instead of diffuse, and unnecessarily relied on vertex colors. The lazy update mechanism is also now properly implemented, so color changes are only applied when the adaptor is actually rendered.
+
+*Crash when picking empty images.*
+
+*Minor rendering fixes.*
+
+- the ortho camera window computation is no longer done on each rendering, only when the camera is reset
+- in auto rendering, the deleted mesh was still visible, a render request was added
+- point list objects can be excluded from the camera reset. This feature will be extended later to all transformable objects.
+- create a new texture for the cell color layer each time the size changes
+
+*Proper implementation of lazy update in ruler and shape adaptors.*
+
+*Render mode parsing.*
+
+The render mode parsing was incorrect, thus all scenes were in automatic mode.
+
+## New features:
+
+### core
+
+*Matrix identity validator and validate can change a "valid" inout.*
+
+- Add a new identity validator for sight::data::matrix4
+- Validate service can use optional "valid" or "invalid" inout to track changes
+
+*Data::ptr_vector is now inout by default, like data::ptr.*
+
+`sight`::data::ptr_vector``now defaults to `inout` access mode, consistent with `sight::data::ptr`. This simplifies service declarations when a vector of data objects needs to be both read and written.
+
+*Add less and greater validators for integer and real.*
+
+Two new data validators are added to `sight::module::data::validate`, allowing `sight`::data::integer``and `sight`::data::real``values to be compared against a threshold directly in XML configurations:
+
+```xml
+<service uid="..." type="sight::module::data::validate">
+    <in key="data" uid="${int}" />
+    <config id="sight::data::validator::less">
+        <value>255</value>
+    </config>
+</service>
+
+<service uid="..." type="sight::module::data::validate">
+    <in key="data" uid="${real}" />
+    <config id="sight::data::validator::greater">
+        <value>42</value>
+    </config>
+</service>
+```
+
+*Introduce a generic service fixture.*
+
+`sight`::utest::service_fixture``provides a service instance and a worker for the tests.
+It ensures proper cleanup of the service and worker after each test, whether the test passes or fails.
+It also provides a helper method to create slots with the worker set.
+
+Usage:
+ - Inherit from service_fixture in your test fixture class.
+ - Call the base constructor with the service implementation name.
+ - Use m_service to access the service instance.
+
+*Add new service to inverse a boolean data.*
+
+*Add new service to insert fiducials in an image.*
+
+### geometry
+
+*Add oriented box intersection test.*
+
+* moves oriented_box_t from line.hpp into its own box.hpp/box.cpp and adds is_valid()
+* adds intersect(obb_a, obb_b) using the separating axis theorem
+* adds support to the mesh adaptor for creating, displaying, hiding, and updating a yellow wireframe bounding box
+
+### io
+
+*Calibration data adaptation for complex calibration.*
+
+* add an option to remove labels on ruler adapter when size in 0.
+* add max number config to ruler adapter.
+* add the maxFiducials and maxFiducialsPerSlice to the point fiducial adaptor configuration.
+
+### ui
+
+*Expanding progress bar and text placement.*
+
+* progress bar text is now displayed in the middle of the progress
+* Expanding policy was reworked to be configurable (on the widget exclusively for now)
+
+## Refactor:
+
+### core
+
+*Use doctest for remaining tests (except GUI).*
+
+*Enhance filter service signals.*
+
+*Use doctest in sight::service and sight::app tests.*
+
+*Modernize point list API, based on STL container.*
+
+*Use doctest in sight::data tests.*
+
+### io
+
+*Move tracker interface from navigation to io.*
+
+The tracker interface (`sight::module::navigation::tracker`) is moved to `sight::module::io::tracker`. Trackers are hardware input devices, so the `io` namespace is semantically more accurate. The `navigation` namespace previously only contained optical and EM trackers.
+
+*Convert to doctest.*
+
+### test
+
+*Ported many tests to doctest.*
+
+- activity
+- filter_vision
+- geometry
+- geometry_eigen
+- geometry_vision
+- geometry_vtk
+- io_opencv
+- module_sync
+- module_optics
+- module_filter_image
+- module_geometry
+- module_ui_viz
+
+### ui
+
+*Status widget now supports any color.*
+
+`sight`::module::ui::qt::status``is refactored to display any arbitrary color via a `sight`::data::color``property, instead of being limited to a fixed set of named states (red/green/orange). It also no longer supports multiple statuses in a single widget instance. The previous multi-status design created a strong coupling between the widget and the signal emitter, which had to provide an index. Each tool now gets its own dedicated status widget, fed by a `sight`::data::color``data object:
+
+```xml
+<service uid="probe_status_srv" type="sight::module::ui::qt::status">
+    <label>Probe</label>
+    <properties color="${probe_tracking_status_color}" />
+</service>
+```
+
+### viz
+
+*Return cell index when picking a mesh.*
+
+Also updates vcpkg bundle
+
+## Enhancement:
+
+### ci
+
+*Update to CUDA 13.1 on Linux.*
+
+### core
+
+*Add a new rounding utility named round_half_to_even().*
+
+Add a new rounding helper that performs round-half-to-even (“banker’s rounding”), matching Python’s round() behavior instead of standard C++ rounding away from zero.
+
+*Copy and reset several objects at once.*
+
+*Make data validator configurable.*
+
+Makes data validators configurable by allowing them to receive configuration parameters through XML, enabling more flexible validation rules without code changes.
+
+*Configure a service with a string.*
+
+We use to require a `boost`::property_tree``to configure a service, but this is often boring in unit-tests to convert again and again a from a string. Thus we added another signature of `set`::config``that takes an `std::string`.
+
+*Function to add done work units.*
+
+In some cases, it is convenient to increment the done work units especially in tight loops to avoid concurrency and performance issues.
+Also fixed a random crash in progress bar.
+
+### filter
+
+*Implement transform before resampling.*
+
+### geometry
+
+*Clean eigen API.*
+
+### io
+
+*Faster mesh (de)serialization.*
+
+*Add simple functions to read/write NIFTI images.*
+
+### test
+
+*Do not launch runtime when listing tests.*
+
+### ui
+
+*Add word wrap support in text status.*
+
+### viz
+
+*Add priority attribute to order negato rendering.*
+
+Other enhancements:
+- add a signal and a service to help synchronising several negatos in the same scene
+- add a color property to the material mesh adaptor
+
+*Add color multiplier for video material.*
+
+*Allow to set material representation and options per mesh.*
+
+*Avoid unecessary updates in text rendering.*
+
+
 # sight 25.2.0
 
 ## Enhancement:
