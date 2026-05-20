@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2025 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,51 +19,45 @@
  *
  ***********************************************************************/
 
-#include "gz_buffer_image_writer_test.hpp"
-
 #include <core/os/temp_path.hpp>
 
 #include <data/image.hpp>
 
 #include <io/__/writer/gz_buffer_image_writer.hpp>
 
+#include <doctest/doctest.h>
+
 #include <zlib.h>
 
 #include <numeric>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::ut::gz_buffer_image_writer_test);
-
-namespace sight::io::ut
+TEST_SUITE("sight::io::gz_buffer_image_writer")
 {
-
-//------------------------------------------------------------------------------
-
-void gz_buffer_image_writer_test::basic_test()
-{
-    auto gz_buffer_image_writer = std::make_shared<writer::gz_buffer_image_writer>();
-    core::os::temp_dir temp_dir;
-    std::filesystem::path filepath = temp_dir / ("test" + gz_buffer_image_writer->extension());
-    auto image_in                  = std::make_shared<data::image>();
-    image_in->resize({16}, core::type::UINT8, data::image::pixel_format_t::gray_scale);
+    TEST_CASE("writer")
     {
-        auto image_lock = image_in->dump_lock();
-        std::iota(image_in->begin<std::uint8_t>(), image_in->end<std::uint8_t>(), std::uint8_t(0));
+        auto gz_buffer_image_writer = std::make_shared<sight::io::writer::gz_buffer_image_writer>();
+        sight::core::os::temp_dir temp_dir;
+        std::filesystem::path filepath = temp_dir / ("test" + gz_buffer_image_writer->extension());
+        auto image_in                  = std::make_shared<sight::data::image>();
+        image_in->resize({16}, sight::core::type::UINT8, sight::data::image::pixel_format_t::gray_scale);
+        {
+            auto image_lock = image_in->dump_lock();
+            std::iota(image_in->begin<std::uint8_t>(), image_in->end<std::uint8_t>(), std::uint8_t(0));
+        }
+        gz_buffer_image_writer->set_object(image_in);
+        std::filesystem::remove(filepath);
+        gz_buffer_image_writer->set_file(filepath);
+        /* TODO: fix
+           CHECK_NOTHROW(gz_buffer_image_writer->write());
+           std::array<std::uint8_t, 16> array;
+           {
+            gzFile out = gzopen(filepath.c_str(), "rb");
+            gzread(out, array.data(), 16);
+            gzclose(out);
+           }
+           for(std::uint8_t i = 0; i < 16; i++){
+            CHECK_EQ(i, array[i]);
+           }
+         */
     }
-    gz_buffer_image_writer->set_object(image_in);
-    std::filesystem::remove(filepath);
-    gz_buffer_image_writer->set_file(filepath);
-    /* TODO: fix
-       CPPUNIT_ASSERT_NO_THROW(gzBufferImageWriter->write());
-       std::array<std::uint8_t, 16> array;
-       {
-        gzFile out = gzopen(filepath.c_str(), "rb");
-        gzread(out, array.data(), 16);
-        gzclose(out);
-       }
-       for(std::uint8_t i = 0; i < 16; i++){
-        CPPUNIT_ASSERT_EQUAL(i, array[i]);
-       }
-     */
 }
-
-} // namespace sight::io::ut

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,8 +19,6 @@
  *
  ***********************************************************************/
 
-#include "writer_test.hpp"
-
 #include <core/os/temp_path.hpp>
 
 #include <data/image.hpp>
@@ -33,10 +31,9 @@
 #include <utest_data/data.hpp>
 #include <utest_data/generator/image.hpp>
 
-// cspell:ignore nvjpeg
+#include <doctest/doctest.h>
 
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::io::bitmap::ut::writer_test);
+// cspell:ignore nvjpeg
 
 namespace sight::module::io::bitmap::ut
 {
@@ -50,18 +47,18 @@ inline static void runwriter(
 )
 {
     service::base::sptr swriter = service::add("sight::module::io::bitmap::writer");
-    CPPUNIT_ASSERT_MESSAGE(std::string("Failed to create service 'sight::module::io::bitmap::writer'"), swriter);
+    CHECK_MESSAGE(swriter, std::string("Failed to create service 'sight::module::io::bitmap::writer'"));
     swriter->set_input(_image, "data");
 
-    CPPUNIT_ASSERT_NO_THROW(swriter->set_config(_config));
-    CPPUNIT_ASSERT_NO_THROW(swriter->configure());
-    CPPUNIT_ASSERT_NO_THROW(swriter->start().wait());
-    CPPUNIT_ASSERT_NO_THROW(swriter->update().wait());
-    CPPUNIT_ASSERT_NO_THROW(swriter->stop().wait());
+    CHECK_NOTHROW(swriter->set_config(_config));
+    CHECK_NOTHROW(swriter->configure());
+    CHECK_NOTHROW(swriter->start().wait());
+    CHECK_NOTHROW(swriter->update().wait());
+    CHECK_NOTHROW(swriter->stop().wait());
     service::remove(swriter);
 
     // Check the result...
-    CPPUNIT_ASSERT_EQUAL(
+    CHECK_EQ(
         _should_fail,
         std::dynamic_pointer_cast<sight::io::service::writer>(swriter)->has_failed()
     );
@@ -150,86 +147,57 @@ inline static void test_enable(
             runwriter(config, _expected_image);
 
             // Only test if the file exists. Conformance tests are already done in the writer
-            CPPUNIT_ASSERT_MESSAGE(
-                "File '" + file_path.string() + "' doesn't exist.",
-                std::filesystem::exists(file_path) && std::filesystem::is_regular_file(file_path)
-            );
+            const std::string file_error_msg = "File '" + file_path.string() + "' doesn't exist.";
+            CHECK_MESSAGE(std::filesystem::is_regular_file(file_path), file_error_msg);
 
             sizes.insert_or_assign(mode, std::filesystem::file_size(file_path));
         }
 
         // Sizes should be bigger than 0..
-        CPPUNIT_ASSERT_GREATER(
-            std::size_t(0),
-            sizes[sight::io::bitmap::writer::mode::best]
-        );
-
-        CPPUNIT_ASSERT_GREATER(
-            std::size_t(0),
-            sizes[sight::io::bitmap::writer::mode::fast]
-        );
-
-        CPPUNIT_ASSERT_LESSEQUAL(
-            sizes[sight::io::bitmap::writer::mode::fast],
-            sizes[sight::io::bitmap::writer::mode::best]
-        );
+        CHECK(sizes[sight::io::bitmap::writer::mode::best] > std::size_t(0));
+        CHECK(sizes[sight::io::bitmap::writer::mode::fast] > std::size_t(0));
+        CHECK(sizes[sight::io::bitmap::writer::mode::fast] <= sizes[sight::io::bitmap::writer::mode::best]);
     }
 }
 
-//------------------------------------------------------------------------------
-
-void writer_test::setUp()
+TEST_SUITE("sight::module::io::bitmap::writer")
 {
-}
-
-//------------------------------------------------------------------------------
-
-void writer_test::tearDown()
-{
-}
-
-//------------------------------------------------------------------------------
-
-void writer_test::basic_test()
-{
-    core::os::temp_dir tmp_dir;
-    const auto& file_path = tmp_dir / "basic.tiff";
-
-    service::config_t config;
-    config.add("file", file_path.string());
-
-    const auto& expected_image = get_synthetic_image();
-    runwriter(config, expected_image);
-
-    // Only test if the file exists. Conformance tests are already done in the writer
-    CPPUNIT_ASSERT_MESSAGE(
-        "File '" + file_path.string() + "' doesn't exist.",
-        std::filesystem::exists(file_path)
-        && std::filesystem::is_regular_file(file_path)
-        && std::filesystem::file_size(file_path) > 0
-    );
-}
-
-//------------------------------------------------------------------------------
-
-void writer_test::config_test()
-{
-    core::os::temp_dir tmp_dir;
-
-    // Build mode list
-    const std::vector modes {
-        sight::io::bitmap::writer::mode::best,
-        sight::io::bitmap::writer::mode::fast
-    };
-
-    const auto& expected_image = get_synthetic_image();
+    TEST_CASE("basic")
     {
-        test_enable(tmp_dir, expected_image, modes, false);
+        core::os::temp_dir tmp_dir;
+        const auto& file_path = tmp_dir / "basic.tiff";
+
+        service::config_t config;
+        config.add("file", file_path.string());
+
+        const auto& expected_image = get_synthetic_image();
+        runwriter(config, expected_image);
+
+        // Only test if the file exists. Conformance tests are already done in the writer
+        const std::string file_error_msg = "File '" + file_path.string() + "' doesn't exist.";
+        CHECK_MESSAGE(std::filesystem::is_regular_file(file_path), file_error_msg);
+        CHECK(std::filesystem::file_size(file_path) > 0);
     }
 
-    if(sight::io::bitmap::nvjpeg())
+    TEST_CASE("config")
     {
-        test_enable(tmp_dir, expected_image, modes, true);
+        core::os::temp_dir tmp_dir;
+
+        // Build mode list
+        const std::vector modes {
+            sight::io::bitmap::writer::mode::best,
+            sight::io::bitmap::writer::mode::fast
+        };
+
+        const auto& expected_image = get_synthetic_image();
+        {
+            test_enable(tmp_dir, expected_image, modes, false);
+        }
+
+        if(sight::io::bitmap::nvjpeg())
+        {
+            test_enable(tmp_dir, expected_image, modes, true);
+        }
     }
 }
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -59,6 +59,8 @@ void validate::configuring(const service::config_t& _config)
 
     m_validator = sight::data::validator::factory::make(id);
     SIGHT_THROW_IF("Validator " << std::quoted(id) << " can not be instantiated.", m_validator == nullptr);
+
+    m_validator->configure(_config.get_child("config"));
 }
 
 //------------------------------------------------------------------------------
@@ -75,17 +77,37 @@ void validate::updating()
 
     const auto [result, _] = m_validator->validate(data.get_shared());
 
-    if(result)
+    const auto on_change   = m_on_change.lock();
+    const bool should_emit = !(*on_change) || !m_previous_result.has_value() || (m_previous_result.value() != result);
+
+    if(auto valid = m_valid.lock(); valid && valid->value() != result)
     {
-        this->async_emit(signals::VALID);
-    }
-    else
-    {
-        this->async_emit(signals::INVALID);
+        valid->set_value(result);
+        valid->async_emit(sight::data::signals::MODIFIED);
     }
 
-    this->async_emit(signals::IS_VALID, result);
-    this->async_emit(signals::IS_INVALID, not result);
+    if(auto invalid = m_invalid.lock(); invalid && invalid->value() != !result)
+    {
+        invalid->set_value(!result);
+        invalid->async_emit(sight::data::signals::MODIFIED);
+    }
+
+    if(should_emit)
+    {
+        if(result)
+        {
+            this->async_emit(signals::VALID);
+        }
+        else
+        {
+            this->async_emit(signals::INVALID);
+        }
+
+        this->async_emit(signals::IS_VALID, result);
+        this->async_emit(signals::IS_INVALID, not result);
+    }
+
+    m_previous_result = result;
 }
 
 //-----------------------------------------------------------------------------

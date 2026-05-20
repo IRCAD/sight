@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,11 @@
 
 #pragma once
 
+#include <data/color.hpp>
 #include <data/point_list.hpp>
 
 #include <viz/scene3d/adaptor.hpp>
+#include <viz/scene3d/material/generic.hpp>
 #include <viz/scene3d/texture.hpp>
 #include <viz/scene3d/transfer_function.hpp>
 
@@ -71,12 +73,15 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b radius (optional, float, default=1.f): billboard radius.
  * - \b displayLabel (optional, bool, default=false): display the label points (default = false).
  * - \b labelColor (optional, hexadecimal, default=0xFFFFFF): color of the label in hexadecimal.
- * - \b color (optional, hexadecimal, default=#FFFFFFFF): color of the texture in hexadecimal.
+ * - \b point_color (optional, hexadecimal, default=#FFFFFFFF): color of the points in hexadecimal.
  * - \b fixedSize (optional, bool, default=false): if true, the billboard will have a fixed size in screen space.
  * - \b query_flags (optional, uint32, default=0x40000000): Picking flags. Points can be picked by pickers with a
  *      matching mask.
  * - \b fontSource (optional, string, default=DejaVuSans.ttf): true_t font (*.ttf) source file.
  * - \b fontSize (optional, unsigned int, default=16): font size in points.
+ *
+ * @subsection Properties Properties:
+ * - \b color (optional, hexadecimal, default=#FFFFFFFF): color of the texture in hexadecimal.
  */
 class video final : public sight::viz::scene3d::adaptor
 {
@@ -90,6 +95,7 @@ public:
         inline static const core::com::slots::key_t UPDATE_IMAGE  = "update_image";
         inline static const core::com::slots::key_t UPDATE_TF     = "update_tf";
         inline static const core::com::slots::key_t UPDATE_PL     = "update_pl";
+        inline static const core::com::slots::key_t UPDATE_COLOR  = "update_color";
         inline static const core::com::slots::key_t SET_FILTERING = "set_filtering";
         inline static const core::com::slots::key_t SCALE         = "scale";
     };
@@ -145,7 +151,7 @@ private:
         static inline const std::string RADIUS            = CONFIG + "radius";
         static inline const std::string DISPLAY_LABEL     = CONFIG + "displayLabel";
         static inline const std::string LABEL_COLOR       = CONFIG + "labelColor";
-        static inline const std::string COLOR             = CONFIG + "color";
+        static inline const std::string POINT_COLOR       = CONFIG + "point_color";
         static inline const std::string FIXED_SIZE        = CONFIG + "fixedSize";
         static inline const std::string QUERY             = CONFIG + "query_flags";
         static inline const std::string FONT_SOURCE       = CONFIG + "fontSource";
@@ -164,6 +170,9 @@ private:
     /// SLOTS: whether to scale or not the video to occupy the whole viewport
     void scale(bool /*value*/);
 
+    /// SLOTS: updates the color of the video.
+    void update_color();
+
     /// Updates the current texture filtering option
     void update_texture_filtering();
 
@@ -174,7 +183,7 @@ private:
     sight::viz::scene3d::texture::sptr m_texture;
 
     /// Contains the Ogre material used to display the video plane.
-    Ogre::MaterialPtr m_material;
+    sight::viz::scene3d::material::generic::uptr m_material;
 
     /// Contains the Ogre mesh used to display the video plane.
     Ogre::MeshPtr m_mesh;
@@ -237,7 +246,7 @@ private:
     std::string m_label_color;
 
     /// Defines the color of points.
-    std::string m_color;
+    std::string m_point_color;
 
     /// Defines if billboard will have a fixed size in screen space.
     std::string m_fixed_size;
@@ -261,6 +270,8 @@ private:
     sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, "image"};
     sight::data::ptr<sight::data::transfer_function, sight::data::access::in> m_tf {this, "tf", true};
     sight::data::ptr<sight::data::point_list, sight::data::access::in> m_pl {this, "pointList", true};
+
+    sight::data::property<sight::data::color> m_color {this, "color", {1.0, 1.0, 1.0, 1.0}};
 };
 
-} // namespace sight::module::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor

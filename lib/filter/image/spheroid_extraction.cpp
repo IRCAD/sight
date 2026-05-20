@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2025 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -131,7 +131,7 @@ struct spheroid_extractor
                 }
 
                 data::point::sptr point = std::make_shared<data::point>(real_point_coords);
-                _params.output_point_list->get_points().push_back(point);
+                _params.output_point_list->push_back(point);
             }
         }
     }

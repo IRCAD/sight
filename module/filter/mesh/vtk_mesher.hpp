@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -113,14 +113,6 @@ class vtk_mesher : public service::filter,
 public:
 
     SIGHT_DECLARE_SERVICE(vtk_mesher, sight::service::filter);
-
-    struct signals
-    {
-        static inline const signal_key_t COMPLETED = "completed";
-        static inline const signal_key_t FAILED    = "failed";
-
-        using empty_t = sight::core::com::signal<void ()>;
-    };
 
     vtk_mesher() noexcept;
     ~vtk_mesher() noexcept override = default;

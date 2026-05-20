@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,90 +20,71 @@
  *
  ***********************************************************************/
 
-#include "boolean_test.hpp"
-
 #include <data/boolean.hpp>
 
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::boolean_test);
+#include <doctest/doctest.h>
 
-namespace sight::data::ut
+TEST_SUITE("sight::data::boolean")
 {
+//------------------------------------------------------------------------------
+
+    TEST_CASE("basic")
+    {
+        sight::data::boolean b1(true);
+        CHECK_EQ(true, b1.value());
+        CHECK(b1.is_type_of("sight::data::boolean"));
+        CHECK(b1.is_type_of("sight::data::string_serializable"));
+
+        sight::data::boolean b2;
+        CHECK_EQ(false, b2.value());
+        b2 = true;
+        CHECK_EQ(true, b2.value());
+
+        CHECK(b1 == b2);
+
+        const bool true_value  = true;
+        const bool false_value = !true_value;
+
+        auto p1 = std::make_shared<sight::data::boolean>(true_value);
+        auto p2 = std::make_shared<sight::data::boolean>(false_value);
+
+        // check
+        CHECK_EQ(true_value, std::make_shared<sight::data::boolean>(true_value)->value());
+        CHECK_EQ(false_value, std::make_shared<sight::data::boolean>(false_value)->value());
+
+        CHECK_EQ(true_value, p1->value());
+        CHECK_EQ(false_value, p2->value());
+
+        CHECK(*p1 != *p2);
+
+        p2->set_value(true_value);
+
+        CHECK(*p1 == *p2);
+    }
 
 //------------------------------------------------------------------------------
 
-void boolean_test::setUp()
-{
-    // Set up context before running a test.
-}
+    TEST_CASE("string_conversion")
+    {
+        sight::data::boolean b1;
+        CHECK_EQ(false, b1.value());
+        CHECK_EQ(std::string("false"), b1.to_string());
 
-//------------------------------------------------------------------------------
+        b1 = true;
+        CHECK_EQ(std::string("true"), b1.to_string());
 
-void boolean_test::tearDown()
-{
-    // Clean up after the test run.
-}
+        sight::data::boolean b2;
+        CHECK_EQ(false, b2.value());
+        b2.from_string("true");
+        CHECK_EQ(true, b2.value());
 
-//------------------------------------------------------------------------------
+        b2.from_string("false");
+        CHECK_EQ(false, b2.value());
 
-void boolean_test::basic()
-{
-    sight::data::boolean b1(true);
-    CPPUNIT_ASSERT_EQUAL(true, b1.value());
-    CPPUNIT_ASSERT(b1.is_type_of("sight::data::boolean"));
-    CPPUNIT_ASSERT(b1.is_type_of("sight::data::string_serializable"));
+        CHECK_THROWS_AS(b2.from_string("test"), sight::data::exception);
 
-    sight::data::boolean b2;
-    CPPUNIT_ASSERT_EQUAL(false, b2.value());
-    b2 = true;
-    CPPUNIT_ASSERT_EQUAL(true, b2.value());
-
-    CPPUNIT_ASSERT(b1 == b2);
-
-    const bool true_value  = true;
-    const bool false_value = !true_value;
-
-    auto p1 = std::make_shared<data::boolean>(true_value);
-    auto p2 = std::make_shared<data::boolean>(false_value);
-
-    // check
-    CPPUNIT_ASSERT_EQUAL(true_value, std::make_shared<data::boolean>(true_value)->value());
-    CPPUNIT_ASSERT_EQUAL(false_value, std::make_shared<data::boolean>(false_value)->value());
-
-    CPPUNIT_ASSERT_EQUAL(true_value, p1->value());
-    CPPUNIT_ASSERT_EQUAL(false_value, p2->value());
-
-    CPPUNIT_ASSERT(*p1 != *p2);
-
-    p2->set_value(true_value);
-
-    CPPUNIT_ASSERT(*p1 == *p2);
-}
-
-//------------------------------------------------------------------------------
-
-void boolean_test::string_conversion()
-{
-    sight::data::boolean b1;
-    CPPUNIT_ASSERT_EQUAL(false, b1.value());
-    CPPUNIT_ASSERT_EQUAL(std::string("false"), b1.to_string());
-
-    b1 = true;
-    CPPUNIT_ASSERT_EQUAL(std::string("true"), b1.to_string());
-
-    sight::data::boolean b2;
-    CPPUNIT_ASSERT_EQUAL(false, b2.value());
-    b2.from_string("true");
-    CPPUNIT_ASSERT_EQUAL(true, b2.value());
-
-    b2.from_string("false");
-    CPPUNIT_ASSERT_EQUAL(false, b2.value());
-
-    CPPUNIT_ASSERT_THROW(b2.from_string("test"), data::exception);
-
-    std::stringstream stream;
-    stream << b2;
-    CPPUNIT_ASSERT_EQUAL(std::string("false"), stream.str());
-}
-
-} // namespace sight::data::ut
+        std::stringstream stream;
+        stream << b2;
+        CHECK_EQ(std::string("false"), stream.str());
+    }
+} // TEST_SUITE("sight::data::boolean")

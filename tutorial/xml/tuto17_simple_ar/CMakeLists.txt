@@ -28,9 +28,8 @@ add_dependencies(
     module_io_vision
     module_data
     module_sync
-    module_navigation_optics
-    module_geometry_vision
     module_geometry
+    module_geometry_vision
 )
 
 # Main application's configuration to launch

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -98,7 +98,7 @@ void intrinsic_calibration::test()
             });
 
             // We didn't load the chessboard yet: trying to add captures gives no result
-            helper::tool_button::tool_tip_matches(_tester, "detectionStatusSrv/0", "Points are NOT visible");
+            helper::tool_button::tool_tip_matches(_tester, "detectionStatusSrv/status_button", "Red");
             helper::label::contain(_tester, "cameraInfoSrv/isCalibrated", "The camera is not calibrated.");
             for(int i = 0 ; i < 3 ; i++)
             {
@@ -112,7 +112,7 @@ void intrinsic_calibration::test()
             helper::video_controls::load(_tester, "videoToolbarView", video_path);
 
             // The chessboard is loaded, trying to add captures effectively add them to the list
-            helper::tool_button::tool_tip_matches(_tester, "detectionStatusSrv/0", "Point are visible");
+            helper::tool_button::tool_tip_matches(_tester, "detectionStatusSrv/status_button", "Green");
             helper::button::push(_tester, "intrinsicCameraView/Add");
             for(int i = 0 ; i < 3 ; i++)
             {

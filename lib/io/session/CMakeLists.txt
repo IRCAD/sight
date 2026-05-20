@@ -11,7 +11,7 @@ else()
     target_include_directories(${SIGHT_TARGET}_obj PRIVATE SYSTEM /usr/include/nifti)
 endif()
 
-target_link_libraries(${SIGHT_TARGET}_obj PUBLIC io io_zip io_vtk io_dicom)
+target_link_libraries(${SIGHT_TARGET}_obj PUBLIC io io_zip io_dicom)
 
 if(SIGHT_BUILD_TESTS)
     add_subdirectory(test/ut)

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024-2025 IRCAD France
+ * Copyright (C) 2024-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,54 +19,33 @@
  *
  ***********************************************************************/
 
-#include "weighted_mean_matrix_test.hpp"
-
 #include <core/runtime/runtime.hpp>
 
 #include <data/matrix4.hpp>
 
 #include <service/op.hpp>
 
-#include <boost/property_tree/xml_parser.hpp>
-
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::geometry::ut::weighted_mean_matrix_test);
-
-namespace sight::module::geometry::ut
-{
+#include <doctest/doctest.h>
 
 static const double DELTA = 10e-2;
 
-//------------------------------------------------------------------------------
-
-void weighted_mean_matrix_test::setUp()
+namespace
 {
-}
 
-//------------------------------------------------------------------------------
-
-void weighted_mean_matrix_test::tearDown()
+struct weighted_mean_matrix_tester
 {
-}
-
-//------------------------------------------------------------------------------
-
-class weighted_mean_matrix_tester final
-{
-public:
-
     weighted_mean_matrix_tester()
     {
-        CPPUNIT_ASSERT_NO_THROW(srv = sight::service::add("sight::module::geometry::weighted_mean_matrix"));
-        CPPUNIT_ASSERT(srv != nullptr);
-        CPPUNIT_ASSERT(srv->is_a("sight::module::geometry::weighted_mean_matrix"));
+        CHECK_NOTHROW(srv = sight::service::add("sight::module::geometry::weighted_mean_matrix"));
+        CHECK(srv != nullptr);
+        CHECK(srv->is_a("sight::module::geometry::weighted_mean_matrix"));
     }
 
     //------------------------------------------------------------------------------
 
     ~weighted_mean_matrix_tester()
     {
-        CPPUNIT_ASSERT_NO_THROW(srv->stop().wait());
+        CHECK_NOTHROW(srv->stop().wait());
         sight::service::remove(srv);
     }
 
@@ -74,16 +53,13 @@ public:
 
     void set_config(float _weight = 0.5F)
     {
-        std::stringstream config_string;
-        config_string
-        << "<in key=\"raw\" uid=\"raw\" />"
-           "<inout key=\"damped\" uid=\"damped\" />"
-           "<properties weight=\"" << _weight << R"(" enabled="true" />)";
-
-        sight::service::base::config_t config;
-        boost::property_tree::read_xml(config_string, config);
+        const std::string config = std::format(
+            "<in key='raw' uid='raw' />"
+            "<inout key='damped' uid='damped' />"
+            "<properties weight='{}' enabled='true' />",
+            _weight
+        );
         srv->set_config(config);
-
         srv->configure();
         srv->start().wait();
     }
@@ -105,25 +81,25 @@ public:
     {
         const auto coefs = output->get_content();
 
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(1., coefs[0], DELTA);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(0., coefs[1], DELTA);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(0., coefs[2], DELTA);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(0., coefs[3], DELTA);
+        CHECK(1. == doctest::Approx(coefs[0]).epsilon(DELTA));
+        CHECK(0. == doctest::Approx(coefs[1]).epsilon(DELTA));
+        CHECK(0. == doctest::Approx(coefs[2]).epsilon(DELTA));
+        CHECK(0. == doctest::Approx(coefs[3]).epsilon(DELTA));
 
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(0., coefs[4], DELTA);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(1., coefs[5], DELTA);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(0., coefs[6], DELTA);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(0., coefs[7], DELTA);
+        CHECK(0. == doctest::Approx(coefs[4]).epsilon(DELTA));
+        CHECK(1. == doctest::Approx(coefs[5]).epsilon(DELTA));
+        CHECK(0. == doctest::Approx(coefs[6]).epsilon(DELTA));
+        CHECK(0. == doctest::Approx(coefs[7]).epsilon(DELTA));
 
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(0., coefs[8], DELTA);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(0., coefs[9], DELTA);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(1., coefs[10], DELTA);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(0., coefs[11], DELTA);
+        CHECK(0. == doctest::Approx(coefs[8]).epsilon(DELTA));
+        CHECK(0. == doctest::Approx(coefs[9]).epsilon(DELTA));
+        CHECK(1. == doctest::Approx(coefs[10]).epsilon(DELTA));
+        CHECK(0. == doctest::Approx(coefs[11]).epsilon(DELTA));
 
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(0., coefs[12], DELTA);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(0., coefs[13], DELTA);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(0., coefs[14], DELTA);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(1., coefs[15], DELTA);
+        CHECK(0. == doctest::Approx(coefs[12]).epsilon(DELTA));
+        CHECK(0. == doctest::Approx(coefs[13]).epsilon(DELTA));
+        CHECK(0. == doctest::Approx(coefs[14]).epsilon(DELTA));
+        CHECK(1. == doctest::Approx(coefs[15]).epsilon(DELTA));
     }
 
     sight::service::base::sptr srv;
@@ -131,334 +107,329 @@ public:
     sight::data::matrix4::sptr output;
 };
 
-//------------------------------------------------------------------------------
+} // namespace
 
-void weighted_mean_matrix_test::pass_through_test()
+TEST_SUITE("sight::module::geometry::weighted_mean_matrix")
 {
-    weighted_mean_matrix_tester service_tester;
-    service_tester.init();
-    service_tester.set_config();
-
-    service_tester.srv->update().wait();
-
-    service_tester.check_identity();
-}
-
-//------------------------------------------------------------------------------
-void weighted_mean_matrix_test::translation_test()
-{
-    weighted_mean_matrix_tester service_tester;
-    service_tester.init();
-    service_tester.set_config();
-
-    // identity
-    service_tester.input->at(3)  = 0;
-    service_tester.input->at(7)  = 0;
-    service_tester.input->at(11) = 0;
-
-    service_tester.srv->update().wait();
-
-    // translate
-    service_tester.input->at(3)  = 10;
-    service_tester.input->at(7)  = 20;
-    service_tester.input->at(11) = 30;
-
-    service_tester.srv->update().wait();
-
-    const auto res = service_tester.output->get_content();
-
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(1., res[0], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., res[1], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., res[2], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(5., res[3], DELTA);
-
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., res[4], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(1., res[5], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., res[6], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(10., res[7], DELTA);
-
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., res[8], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., res[9], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(1., res[10], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(15., res[11], DELTA);
-
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., res[12], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., res[13], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., res[14], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(1., res[15], DELTA);
-}
-
-//------------------------------------------------------------------------------
-
-void weighted_mean_matrix_test::full_test_weight50()
-{
-    // First matrice identity
-    // Second Matrice 100° on Ry
-
-    weighted_mean_matrix_tester service_tester;
-    service_tester.init();
-    service_tester.set_config(0.5F);
-
-    service_tester.srv->update().wait();
-
-    // Rotation part
-    service_tester.input->at(0) = -0.1736482;
-    service_tester.input->at(1) = 0.0000000;
-    service_tester.input->at(2) = 0.9848077;
-
-    service_tester.input->at(4) = 0.;
-    service_tester.input->at(5) = 1.;
-    service_tester.input->at(6) = 0.;
-
-    service_tester.input->at(8)  = -0.9848077;
-    service_tester.input->at(9)  = 0.;
-    service_tester.input->at(10) = -0.1736482;
-
-    // Translation part
-    service_tester.input->at(3)  = 1;
-    service_tester.input->at(7)  = 2;
-    service_tester.input->at(11) = 30;
-
-    service_tester.srv->update().wait();
-
-    // weight 0.5 should give a result around 50°
-    const auto res = service_tester.output->get_content();
-
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.6427876, res[0], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., res[1], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.7660444, res[2], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5, res[3], DELTA);
-
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., res[4], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(1., res[5], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., res[6], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(1., res[7], DELTA);
-
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(-0.7660444, res[8], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., res[9], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.6427876, res[10], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(15., res[11], DELTA);
-
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., res[12], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., res[13], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., res[14], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(1., res[15], DELTA);
-}
-
-//------------------------------------------------------------------------------
-
-void weighted_mean_matrix_test::full_test_weight30()
-{
-    // First matrice identity
-    // Second Matrice 100° on Ry
-
-    weighted_mean_matrix_tester service_tester;
-    service_tester.init();
-    service_tester.set_config(0.3F);
-
-    service_tester.srv->update().wait();
-
-    // Rotation part
-    service_tester.input->at(0) = -0.1736482;
-    service_tester.input->at(1) = 0.0000000;
-    service_tester.input->at(2) = 0.9848077;
-
-    service_tester.input->at(4) = 0.;
-    service_tester.input->at(5) = 1.;
-    service_tester.input->at(6) = 0.;
-
-    service_tester.input->at(8)  = -0.9848077;
-    service_tester.input->at(9)  = 0.;
-    service_tester.input->at(10) = -0.1736482;
-
-    // Translation part
-    service_tester.input->at(3)  = 10;
-    service_tester.input->at(7)  = 100;
-    service_tester.input->at(11) = 1000;
-
-    service_tester.srv->update().wait();
-
-    // weight 0.7 should give a result around 30°
-
-    const auto res = service_tester.output->get_content();
-
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.8660254, res[0], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., res[1], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5000000, res[2], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(3.0, res[3], DELTA);
-
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., res[4], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(1., res[5], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., res[6], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(30.0, res[7], DELTA);
-
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(-0.5000000, res[8], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., res[9], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.8660254, res[10], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(300.0, res[11], DELTA);
-
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., res[12], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., res[13], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., res[14], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(1., res[15], DELTA);
-}
-
-//------------------------------------------------------------------------------
-
-void weighted_mean_matrix_test::full_test_weight70()
-{
-    // First matrice identity
-    // Second Matrice 100° on Ry
-
-    weighted_mean_matrix_tester service_tester;
-    service_tester.init();
-    service_tester.set_config(0.7F);
-
-    service_tester.srv->update().wait();
-
-    // Rotation part
-    service_tester.input->at(0) = -0.1736482;
-    service_tester.input->at(1) = 0.0000000;
-    service_tester.input->at(2) = 0.9848077;
-
-    service_tester.input->at(4) = 0.;
-    service_tester.input->at(5) = 1.;
-    service_tester.input->at(6) = 0.;
-
-    service_tester.input->at(8)  = -0.9848077;
-    service_tester.input->at(9)  = 0.;
-    service_tester.input->at(10) = -0.1736482;
-
-    // Translation part
-    service_tester.input->at(3)  = 10;
-    service_tester.input->at(7)  = 100;
-    service_tester.input->at(11) = 1000;
-
-    service_tester.srv->update().wait();
-
-    // weight 0.3 should give a result around 70°
-
-    const auto res = service_tester.output->get_content();
-
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.3420202, res[0], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., res[1], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.9396926, res[2], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(7., res[3], DELTA);
-
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., res[4], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(1., res[5], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., res[6], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(70., res[7], DELTA);
-
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(-0.9396926, res[8], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., res[9], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.3420202, res[10], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(700., res[11], DELTA);
-
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., res[12], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., res[13], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., res[14], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(1., res[15], DELTA);
-}
-
-//------------------------------------------------------------------------------
-
-void weighted_mean_matrix_test::full_test_weight10()
-{
-    // First matrice identity
-    // Second Matrice 100° on Ry
-
-    weighted_mean_matrix_tester service_tester;
-    service_tester.init();
-    service_tester.set_config(0.1F);
-
-    service_tester.srv->update().wait();
-
-    // Rotation part
-    service_tester.input->at(0) = -0.1736482;
-    service_tester.input->at(1) = 0.0000000;
-    service_tester.input->at(2) = 0.9848077;
-
-    service_tester.input->at(4) = 0.;
-    service_tester.input->at(5) = 1.;
-    service_tester.input->at(6) = 0.;
-
-    service_tester.input->at(8)  = -0.9848077;
-    service_tester.input->at(9)  = 0.;
-    service_tester.input->at(10) = -0.1736482;
-
-    // Translation part
-    service_tester.input->at(3)  = 10;
-    service_tester.input->at(7)  = 100;
-    service_tester.input->at(11) = 1000;
-
-    service_tester.srv->update().wait();
-
-    const auto res = service_tester.output->get_content();
-
-    // weight 0.1 give a rotation about 10°
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.9848077, res[0], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., res[1], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.1736482, res[2], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(1., res[3], DELTA);
-
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., res[4], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(1., res[5], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., res[6], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(10., res[7], DELTA);
-
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(-0.1736482, res[8], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., res[9], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.9848077, res[10], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(100., res[11], DELTA);
-
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., res[12], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., res[13], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., res[14], DELTA);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(1., res[15], DELTA);
-}
-
-//------------------------------------------------------------------------------
-
-void weighted_mean_matrix_test::full_test_weight100()
-{
-    // First matrice identity
-    // Second Matrice 100° on Ry
-
-    weighted_mean_matrix_tester service_tester;
-    service_tester.init();
-    service_tester.set_config(1.F);
-
-    service_tester.srv->update().wait();
-
-    // Rotation part
-    service_tester.input->at(0) = -0.1736482;
-    service_tester.input->at(1) = 0.0000000;
-    service_tester.input->at(2) = 0.9848077;
-
-    service_tester.input->at(4) = 0.;
-    service_tester.input->at(5) = 1.;
-    service_tester.input->at(6) = 0.;
-
-    service_tester.input->at(8)  = -0.9848077;
-    service_tester.input->at(9)  = 0.;
-    service_tester.input->at(10) = -0.1736482;
-
-    // Translation part
-    service_tester.input->at(3)  = 1;
-    service_tester.input->at(7)  = 2;
-    service_tester.input->at(11) = 30;
-
-    service_tester.srv->update().wait();
-
-    // weight 1.0 should give the latest matrix, no averaging.
-    const auto res = service_tester.output->get_content();
-    const auto in  = service_tester.input->get_content();
-
-    for(std::size_t i = 0 ; i < in.size() ; ++i)
+    TEST_CASE_FIXTURE(weighted_mean_matrix_tester, "pass_through_test")
     {
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(in[i], res[i], DELTA);
-    }
-}
+        init();
+        set_config();
 
-} // namespace sight::module::geometry::ut
+        srv->update().wait();
+
+        check_identity();
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE_FIXTURE(weighted_mean_matrix_tester, "translation_test")
+    {
+        init();
+        set_config();
+
+        // identity
+        input->at(3)  = 0;
+        input->at(7)  = 0;
+        input->at(11) = 0;
+
+        srv->update().wait();
+
+        // translate
+        input->at(3)  = 10;
+        input->at(7)  = 20;
+        input->at(11) = 30;
+
+        srv->update().wait();
+
+        const auto res = output->get_content();
+
+        CHECK(1. == doctest::Approx(res[0]).epsilon(DELTA));
+        CHECK(0. == doctest::Approx(res[1]).epsilon(DELTA));
+        CHECK(0. == doctest::Approx(res[2]).epsilon(DELTA));
+        CHECK(5. == doctest::Approx(res[3]).epsilon(DELTA));
+
+        CHECK(0. == doctest::Approx(res[4]).epsilon(DELTA));
+        CHECK(1. == doctest::Approx(res[5]).epsilon(DELTA));
+        CHECK(0. == doctest::Approx(res[6]).epsilon(DELTA));
+        CHECK(10. == doctest::Approx(res[7]).epsilon(DELTA));
+
+        CHECK(0. == doctest::Approx(res[8]).epsilon(DELTA));
+        CHECK(0. == doctest::Approx(res[9]).epsilon(DELTA));
+        CHECK(1. == doctest::Approx(res[10]).epsilon(DELTA));
+        CHECK(15. == doctest::Approx(res[11]).epsilon(DELTA));
+
+        CHECK(0. == doctest::Approx(res[12]).epsilon(DELTA));
+        CHECK(0. == doctest::Approx(res[13]).epsilon(DELTA));
+        CHECK(0. == doctest::Approx(res[14]).epsilon(DELTA));
+        CHECK(1. == doctest::Approx(res[15]).epsilon(DELTA));
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE_FIXTURE(weighted_mean_matrix_tester, "full_test_weight50")
+    {
+        // First matrice identity
+        // Second Matrice 100° on Ry
+
+        init();
+        set_config(0.5F);
+
+        srv->update().wait();
+
+        // Rotation part
+        input->at(0) = -0.1736482;
+        input->at(1) = 0.0000000;
+        input->at(2) = 0.9848077;
+
+        input->at(4) = 0.;
+        input->at(5) = 1.;
+        input->at(6) = 0.;
+
+        input->at(8)  = -0.9848077;
+        input->at(9)  = 0.;
+        input->at(10) = -0.1736482;
+
+        // Translation part
+        input->at(3)  = 1;
+        input->at(7)  = 2;
+        input->at(11) = 30;
+
+        srv->update().wait();
+
+        // weight 0.5 should give a result around 50°
+        const auto res = output->get_content();
+
+        CHECK(0.6427876 == doctest::Approx(res[0]).epsilon(DELTA));
+        CHECK(0. == doctest::Approx(res[1]).epsilon(DELTA));
+        CHECK(0.7660444 == doctest::Approx(res[2]).epsilon(DELTA));
+        CHECK(0.5 == doctest::Approx(res[3]).epsilon(DELTA));
+
+        CHECK(0. == doctest::Approx(res[4]).epsilon(DELTA));
+        CHECK(1. == doctest::Approx(res[5]).epsilon(DELTA));
+        CHECK(0. == doctest::Approx(res[6]).epsilon(DELTA));
+        CHECK(1. == doctest::Approx(res[7]).epsilon(DELTA));
+
+        CHECK(-0.7660444 == doctest::Approx(res[8]).epsilon(DELTA));
+        CHECK(0. == doctest::Approx(res[9]).epsilon(DELTA));
+        CHECK(0.6427876 == doctest::Approx(res[10]).epsilon(DELTA));
+        CHECK(15. == doctest::Approx(res[11]).epsilon(DELTA));
+
+        CHECK(0. == doctest::Approx(res[12]).epsilon(DELTA));
+        CHECK(0. == doctest::Approx(res[13]).epsilon(DELTA));
+        CHECK(0. == doctest::Approx(res[14]).epsilon(DELTA));
+        CHECK(1. == doctest::Approx(res[15]).epsilon(DELTA));
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE_FIXTURE(weighted_mean_matrix_tester, "full_test_weight30")
+    {
+        // First matrice identity
+        // Second Matrice 100° on Ry
+
+        init();
+        set_config(0.3F);
+
+        srv->update().wait();
+
+        // Rotation part
+        input->at(0) = -0.1736482;
+        input->at(1) = 0.0000000;
+        input->at(2) = 0.9848077;
+
+        input->at(4) = 0.;
+        input->at(5) = 1.;
+        input->at(6) = 0.;
+
+        input->at(8)  = -0.9848077;
+        input->at(9)  = 0.;
+        input->at(10) = -0.1736482;
+
+        // Translation part
+        input->at(3)  = 10;
+        input->at(7)  = 100;
+        input->at(11) = 1000;
+
+        srv->update().wait();
+
+        // weight 0.7 should give a result around 30°
+
+        const auto res = output->get_content();
+
+        CHECK(0.8660254 == doctest::Approx(res[0]).epsilon(DELTA));
+        CHECK(0. == doctest::Approx(res[1]).epsilon(DELTA));
+        CHECK(0.5000000 == doctest::Approx(res[2]).epsilon(DELTA));
+        CHECK(3.0 == doctest::Approx(res[3]).epsilon(DELTA));
+
+        CHECK(0. == doctest::Approx(res[4]).epsilon(DELTA));
+        CHECK(1. == doctest::Approx(res[5]).epsilon(DELTA));
+        CHECK(0. == doctest::Approx(res[6]).epsilon(DELTA));
+        CHECK(30.0 == doctest::Approx(res[7]).epsilon(DELTA));
+
+        CHECK(-0.5000000 == doctest::Approx(res[8]).epsilon(DELTA));
+        CHECK(0. == doctest::Approx(res[9]).epsilon(DELTA));
+        CHECK(0.8660254 == doctest::Approx(res[10]).epsilon(DELTA));
+        CHECK(300.0 == doctest::Approx(res[11]).epsilon(DELTA));
+
+        CHECK(0. == doctest::Approx(res[12]).epsilon(DELTA));
+        CHECK(0. == doctest::Approx(res[13]).epsilon(DELTA));
+        CHECK(0. == doctest::Approx(res[14]).epsilon(DELTA));
+        CHECK(1. == doctest::Approx(res[15]).epsilon(DELTA));
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE_FIXTURE(weighted_mean_matrix_tester, "full_test_weight70")
+    {
+        // First matrice identity
+        // Second Matrice 100° on Ry
+
+        init();
+        set_config(0.7F);
+
+        srv->update().wait();
+
+        // Rotation part
+        input->at(0) = -0.1736482;
+        input->at(1) = 0.0000000;
+        input->at(2) = 0.9848077;
+
+        input->at(4) = 0.;
+        input->at(5) = 1.;
+        input->at(6) = 0.;
+
+        input->at(8)  = -0.9848077;
+        input->at(9)  = 0.;
+        input->at(10) = -0.1736482;
+
+        // Translation part
+        input->at(3)  = 10;
+        input->at(7)  = 100;
+        input->at(11) = 1000;
+
+        srv->update().wait();
+
+        // weight 0.3 should give a result around 70°
+
+        const auto res = output->get_content();
+
+        CHECK(0.3420202 == doctest::Approx(res[0]).epsilon(DELTA));
+        CHECK(0. == doctest::Approx(res[1]).epsilon(DELTA));
+        CHECK(0.9396926 == doctest::Approx(res[2]).epsilon(DELTA));
+        CHECK(7. == doctest::Approx(res[3]).epsilon(DELTA));
+
+        CHECK(0. == doctest::Approx(res[4]).epsilon(DELTA));
+        CHECK(1. == doctest::Approx(res[5]).epsilon(DELTA));
+        CHECK(0. == doctest::Approx(res[6]).epsilon(DELTA));
+        CHECK(70. == doctest::Approx(res[7]).epsilon(DELTA));
+
+        CHECK(-0.9396926 == doctest::Approx(res[8]).epsilon(DELTA));
+        CHECK(0. == doctest::Approx(res[9]).epsilon(DELTA));
+        CHECK(0.3420202 == doctest::Approx(res[10]).epsilon(DELTA));
+        CHECK(700. == doctest::Approx(res[11]).epsilon(DELTA));
+
+        CHECK(0. == doctest::Approx(res[12]).epsilon(DELTA));
+        CHECK(0. == doctest::Approx(res[13]).epsilon(DELTA));
+        CHECK(0. == doctest::Approx(res[14]).epsilon(DELTA));
+        CHECK(1. == doctest::Approx(res[15]).epsilon(DELTA));
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE_FIXTURE(weighted_mean_matrix_tester, "full_test_weight10")
+    {
+        // First matrice identity
+        // Second Matrice 100° on Ry
+
+        init();
+        set_config(0.1F);
+
+        srv->update().wait();
+
+        // Rotation part
+        input->at(0) = -0.1736482;
+        input->at(1) = 0.0000000;
+        input->at(2) = 0.9848077;
+
+        input->at(4) = 0.;
+        input->at(5) = 1.;
+        input->at(6) = 0.;
+
+        input->at(8)  = -0.9848077;
+        input->at(9)  = 0.;
+        input->at(10) = -0.1736482;
+
+        // Translation part
+        input->at(3)  = 10;
+        input->at(7)  = 100;
+        input->at(11) = 1000;
+
+        srv->update().wait();
+
+        const auto res = output->get_content();
+
+        // weight 0.1 give a rotation about 10°
+        CHECK(0.9848077 == doctest::Approx(res[0]).epsilon(DELTA));
+        CHECK(0. == doctest::Approx(res[1]).epsilon(DELTA));
+        CHECK(0.1736482 == doctest::Approx(res[2]).epsilon(DELTA));
+        CHECK(1. == doctest::Approx(res[3]).epsilon(DELTA));
+
+        CHECK(0. == doctest::Approx(res[4]).epsilon(DELTA));
+        CHECK(1. == doctest::Approx(res[5]).epsilon(DELTA));
+        CHECK(0. == doctest::Approx(res[6]).epsilon(DELTA));
+        CHECK(10. == doctest::Approx(res[7]).epsilon(DELTA));
+
+        CHECK(-0.1736482 == doctest::Approx(res[8]).epsilon(DELTA));
+        CHECK(0. == doctest::Approx(res[9]).epsilon(DELTA));
+        CHECK(0.9848077 == doctest::Approx(res[10]).epsilon(DELTA));
+        CHECK(100. == doctest::Approx(res[11]).epsilon(DELTA));
+
+        CHECK(0. == doctest::Approx(res[12]).epsilon(DELTA));
+        CHECK(0. == doctest::Approx(res[13]).epsilon(DELTA));
+        CHECK(0. == doctest::Approx(res[14]).epsilon(DELTA));
+        CHECK(1. == doctest::Approx(res[15]).epsilon(DELTA));
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE_FIXTURE(weighted_mean_matrix_tester, "full_test_weight100")
+    {
+        // First matrice identity
+        // Second Matrice 100° on Ry
+
+        init();
+        set_config(1.F);
+
+        srv->update().wait();
+
+        // Rotation part
+        input->at(0) = -0.1736482;
+        input->at(1) = 0.0000000;
+        input->at(2) = 0.9848077;
+
+        input->at(4) = 0.;
+        input->at(5) = 1.;
+        input->at(6) = 0.;
+
+        input->at(8)  = -0.9848077;
+        input->at(9)  = 0.;
+        input->at(10) = -0.1736482;
+
+        // Translation part
+        input->at(3)  = 1;
+        input->at(7)  = 2;
+        input->at(11) = 30;
+
+        srv->update().wait();
+
+        // weight 1.0 should give the latest matrix, no averaging.
+        const auto res = output->get_content();
+        const auto in  = input->get_content();
+
+        for(std::size_t i = 0 ; i < in.size() ; ++i)
+        {
+            CHECK(in[i] == doctest::Approx(res[i]).epsilon(DELTA));
+        }
+    }
+} // TEST_SUITE

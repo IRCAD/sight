@@ -170,7 +170,7 @@
             </connect>
 
             <connect>
-                <signal>mesher_srv/completed</signal>
+                <signal>mesher_srv/succeeded</signal>
                 <slot>extract_mesh_srv/update</slot>
             </connect>
 

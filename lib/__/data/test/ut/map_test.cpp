@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,85 +19,66 @@
  *
  ***********************************************************************/
 
-#include "map_test.hpp"
-
 #include <data/boolean.hpp>
 #include <data/integer.hpp>
 #include <data/map.hpp>
 #include <data/real.hpp>
 #include <data/string.hpp>
 
+#include <doctest/doctest.h>
+
 #include <utility>
 
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::map_test);
-
-namespace sight::data::ut
+TEST_SUITE("sight::data::map")
 {
-
 //------------------------------------------------------------------------------
 
-void map_test::setUp()
-{
-    // Set up context before running a test.
-}
-
-//------------------------------------------------------------------------------
-
-void map_test::tearDown()
-{
-    // Clean up after the test run.
-}
-
-//------------------------------------------------------------------------------
-
-void map_test::methode1()
-{
-    const std::int64_t value = 404;
-    using pair_type = data::map::value_type;
-    const std::array<pair_type, 5> pairs = {
-        std::make_pair("map", std::make_shared<data::map>()),
-        std::make_pair("boolean true", std::make_shared<data::boolean>(true)),
-        std::make_pair("boolean false", std::make_shared<data::boolean>(false)),
-        std::make_pair("float", std::make_shared<data::real>(3.14)),
-        std::make_pair("integer", std::make_shared<data::integer>(value))
-    };
-
-    data::map::container_t stdmap;
-
-    data::map::sptr map = std::make_shared<data::map>();
-
-    CPPUNIT_ASSERT(map->empty());
-
-    for(const pair_type& p : pairs)
+    TEST_CASE("methode1")
     {
-        (*map)[p.first] = p.second;
+        const std::int64_t value = 404;
+        using pair_type = sight::data::map::value_type;
+        const std::array<pair_type, 5> pairs = {
+            std::make_pair("map", std::make_shared<sight::data::map>()),
+            std::make_pair("boolean true", std::make_shared<sight::data::boolean>(true)),
+            std::make_pair("boolean false", std::make_shared<sight::data::boolean>(false)),
+            std::make_pair("float", std::make_shared<sight::data::real>(3.14)),
+            std::make_pair("integer", std::make_shared<sight::data::integer>(value))
+        };
+
+        sight::data::map::container_t stdmap;
+
+        sight::data::map::sptr map = std::make_shared<sight::data::map>();
+
+        CHECK(map->empty());
+
+        for(const pair_type& p : pairs)
+        {
+            (*map)[p.first] = p.second;
+        }
+
+        stdmap.insert(map->begin(), map->end());
+
+        CHECK(map->size() == stdmap.size());
+
+        for(const pair_type& p : *map)
+        {
+            CHECK(stdmap[p.first] == (*map)[p.first]);
+        }
+
+        CHECK_EQ(true, std::dynamic_pointer_cast<sight::data::boolean>((*map)["boolean true"])->value());
+        CHECK_EQ(false, std::dynamic_pointer_cast<sight::data::boolean>((*map)["boolean false"])->value());
+        CHECK_EQ(3.14, std::dynamic_pointer_cast<sight::data::real>((*map)["float"])->value());
+        CHECK_EQ(value, std::dynamic_pointer_cast<sight::data::integer>((*map)["integer"])->value());
+
+        // test values
+        const std::string str         = "string value";
+        sight::data::object::sptr obj = std::make_shared<sight::data::real>();
+
+        (*map)[str] = obj;
+
+        CHECK(map->begin() != map->end());
+
+        CHECK(map->find(str) != map->end());
+        CHECK_EQ((*map)[str], obj);
     }
-
-    stdmap.insert(map->begin(), map->end());
-
-    CPPUNIT_ASSERT(map->size() == stdmap.size());
-
-    for(const pair_type& p : *map)
-    {
-        CPPUNIT_ASSERT(stdmap[p.first] == (*map)[p.first]);
-    }
-
-    CPPUNIT_ASSERT_EQUAL(true, std::dynamic_pointer_cast<data::boolean>((*map)["boolean true"])->value());
-    CPPUNIT_ASSERT_EQUAL(false, std::dynamic_pointer_cast<data::boolean>((*map)["boolean false"])->value());
-    CPPUNIT_ASSERT_EQUAL(3.14, std::dynamic_pointer_cast<data::real>((*map)["float"])->value());
-    CPPUNIT_ASSERT_EQUAL(value, std::dynamic_pointer_cast<data::integer>((*map)["integer"])->value());
-
-    // test values
-    const std::string str  = "string value";
-    data::object::sptr obj = std::make_shared<data::real>();
-
-    (*map)[str] = obj;
-
-    CPPUNIT_ASSERT(map->begin() != map->end());
-
-    CPPUNIT_ASSERT(map->find(str) != map->end());
-    CPPUNIT_ASSERT_EQUAL((*map)[str], obj);
-}
-
-} // namespace sight::data::ut
+} // TEST_SUITE("sight::data::map")

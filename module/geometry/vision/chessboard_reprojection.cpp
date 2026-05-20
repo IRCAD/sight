@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2025 IRCAD France
+ * Copyright (C) 2019-2026 IRCAD France
  * Copyright (C) 2019-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -94,7 +94,7 @@ void chessboard_reprojection::updating()
     const auto detected_chessboard = m_detected_chessboard.lock();
     SIGHT_ASSERT("Missing 'detectedChessboard'.", detected_chessboard);
 
-    if(detected_chessboard->get_points().empty())
+    if(detected_chessboard->empty())
     {
         return;
     }
@@ -115,7 +115,7 @@ void chessboard_reprojection::updating()
 
     // Cast Point2d to Point2f ...
     std::vector<cv::Point2f> detected_points_f;
-    std::copy(detected_pts.begin(), detected_pts.end(), std::back_inserter(detected_points_f));
+    std::ranges::copy(detected_pts, std::back_inserter(detected_points_f));
 
     double rmse = -1.;
     std::vector<cv::Point2f> reprojected_pts;
@@ -269,11 +269,11 @@ void chessboard_reprojection::update_chessboard_model()
 {
     const auto chessboard_model = m_chessboard_model.lock();
     SIGHT_ASSERT("Missing 'chessboard_model'.", chessboard_model);
-    SIGHT_ASSERT("chessboard_model doesn't contain any points", !chessboard_model->get_points().empty());
+    SIGHT_ASSERT("chessboard_model doesn't contain any points", !chessboard_model->empty());
     m_chessboard_model_3d.clear();
-    m_chessboard_model_3d.resize(chessboard_model->get_points().size());
+    m_chessboard_model_3d.resize(chessboard_model->size());
     std::size_t i = 0;
-    for(const auto& pt : chessboard_model->get_points())
+    for(const auto& pt : *chessboard_model)
     {
         cv::Point3f pt3d;
         pt3d.x                   = static_cast<float>((*pt)[0]);

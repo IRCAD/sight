@@ -16,9 +16,18 @@ if(DEFINED OpenCV_COMPUTE_CAPABILITIES)
     endif()
 endif()
 
-add_dependencies(module_geometry_vision data module_service)
+add_dependencies(module_geometry_vision module_service)
 
-target_link_libraries(module_geometry_vision PUBLIC geometry_vision core data ui service io_opencv)
+target_link_libraries(
+    module_geometry_vision
+    PUBLIC geometry_vision
+           core
+           data
+           ui
+           service
+           io_opencv
+           io_tracking
+)
 
 if(SIGHT_BUILD_TESTS)
     add_subdirectory(test/ut)

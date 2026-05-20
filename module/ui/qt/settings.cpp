@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024-2025 IRCAD France
+ * Copyright (C) 2024-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -66,6 +66,7 @@
 #include <QStyle>
 #include <QToolButton>
 
+#include <string>
 #include <string_view>
 #include <utility>
 
@@ -1914,78 +1915,40 @@ void settings::create_tickmarks_widget(
     );
 
     tick_widget->setObjectName(QString::fromStdString(_setup.key));
-    tick_widget->set_range(0, static_cast<int>(_values.size()) - 1);
-
-    tick_widget->set_tick_labels(_values);
-    QStringList q_labels;
-    for(const auto& s : _values)
-    {
-        q_labels << QString::fromStdString(s);
-    }
-
-    tick_widget->setProperty("tickLabels", q_labels);
-    tick_widget->set_tick_interval(1);
+    tick_widget->set_tick_values(_values);
     tick_widget->set_current_tick(0);
     tick_widget->setMinimumSize(100, 50);
 
-    auto* value_label = new QLabel();
-
-    value_label->setObjectName(QString::fromStdString(_setup.key + "/valueLabel"));
-    value_label->setVisible(false);
-    const bool is_string = data<sight::data::string>(tick_widget) != nullptr;
-
-    if(is_string)
+    if(const auto string_obj = data<sight::data::string>(tick_widget); string_obj)
     {
-        const auto obj        = data<sight::data::string>(tick_widget);
-        const auto init_value = obj->value();
-        tick_widget->set_tick_labels({init_value});
-        connect_data(obj, _setup.key);
+        tick_widget->set_current_value(string_obj->value());
+        connect_data(string_obj, _setup.key);
     }
-    else
+    else if(const auto integer_obj = data<sight::data::integer>(tick_widget); integer_obj)
     {
-        auto obj        = data<sight::data::integer>(tick_widget);
-        int  init_index = static_cast<int>(obj->value());
-        init_index = std::clamp(init_index, 0, int(_values.size()) - 1);
-        tick_widget->set_current_tick(init_index);
-        value_label->setText(
-            QString::fromStdString(
-                _values[static_cast<std::size_t>(init_index)]
-            )
-        );
-
-        connect_data(obj, _setup.key);
+        tick_widget->set_current_tick(int(integer_obj->value()));
+        connect_data(integer_obj, _setup.key);
     }
 
     connect(
         tick_widget,
         &sight::ui::qt::widget::tickmarks_slider::value_changed,
         this,
-        [this, tick_widget](int _index)
+        [this, tick_widget](int /*_index*/)
         {
-            const auto& labels = tick_widget->tick_labels();
-            if(_index < 0 || std::cmp_greater_equal(_index, labels.size()))
-            {
-                return;
-            }
-
-            const std::string& tick_value = labels[static_cast<size_t>(_index)];
             if(auto str = data<sight::data::string>(tick_widget))
             {
-                update_data<sight::data::string>(tick_widget, tick_value);
+                update_data<sight::data::string>(tick_widget, tick_widget->current_value());
             }
             else
             {
-                update_data<sight::data::integer>(
-                    tick_widget,
-                    static_cast<std::int64_t>(_index)
-                );
+                update_data<sight::data::integer>(tick_widget, std::int64_t(tick_widget->current_tick()));
             }
         });
 
     _layout->addWidget(tick_widget);
     std::string options = boost::algorithm::join(_values, ",");
 
-    _layout->addWidget(value_label);
     this->update_tickmarks(tick_widget, options);
 }
 
@@ -2469,33 +2432,22 @@ void settings::update_tickmarks(sight::ui::qt::widget::tickmarks_slider* const _
 {
     QSignalBlocker guard(_tickmarks);
 
-    std::vector<std::string> tick_labels;
+    std::vector<std::string> tick_values;
     std::vector<std::string> tick_data;
-    sight::module::ui::qt::settings::parse_enum_string(_options, tick_labels, tick_data);
+    sight::module::ui::qt::settings::parse_enum_string(_options, tick_values, tick_data);
 
-    if(!tick_labels.empty())
+    _tickmarks->set_tick_values(tick_values);
+
+    if(!tick_values.empty())
     {
-        const int max_index = static_cast<int>(tick_labels.size()) - 1;
-        _tickmarks->set_range(0, max_index);
-        _tickmarks->set_tick_interval(1);
-        _tickmarks->set_tick_labels(tick_labels);
-
-        int current_index = 0;
         if(auto string_data = settings::data<sight::data::string>(_tickmarks); string_data)
         {
-            const std::string& current_value = string_data->value();
-            auto it                          = std::ranges::find(tick_data, current_value);
-            if(it != tick_data.end())
-            {
-                current_index = static_cast<int>(std::distance(tick_data.begin(), it));
-            }
+            _tickmarks->set_current_value(string_data->value());
         }
         else if(auto integer_data = settings::data<sight::data::integer>(_tickmarks); integer_data)
         {
-            current_index = static_cast<int>(std::clamp<std::int64_t>(integer_data->value(), 0, max_index));
+            _tickmarks->set_current_value(std::to_string(integer_data->value()));
         }
-
-        _tickmarks->set_current_tick(current_index);
     }
 }
 
@@ -2917,10 +2869,7 @@ void settings::set_parameter<sight::data::string>(const std::string& _val, std::
     else if(auto* tickmarks_widget = qobject_cast<sight::ui::qt::widget::tickmarks_slider*>(widget);
             tickmarks_widget != nullptr)
     {
-        auto  q_labels  = tickmarks_widget->property("tickLabels").toStringList();
-        qsizetype idx_q = q_labels.indexOf(QString::fromStdString(_val));
-        int idx         = static_cast<int>(idx_q >= 0 ? idx_q : 0);
-        tickmarks_widget->set_current_tick(idx >= 0 ? idx : 0);
+        tickmarks_widget->set_current_value(_val);
     }
     else
     {
@@ -2939,16 +2888,12 @@ void settings::set_parameter<sight::data::integer>(const std::int64_t& _val, std
     QObject* widget                = this->get_param_widget(_key);
     const auto widget_use_joystick = m_widget_joysticks.contains(_key);
 
-    auto* spinbox  = qobject_cast<QSpinBox*>(widget);
-    auto* slider   = qobject_cast<QSlider*>(widget);
-    auto* combobox = qobject_cast<QComboBox*>(widget);
-
     const auto val = static_cast<int>(_val);
-    if(spinbox != nullptr)
+    if(auto* spinbox = qobject_cast<QSpinBox*>(widget); spinbox != nullptr)
     {
         spinbox->setValue(val);
     }
-    else if(slider != nullptr)
+    else if(auto* slider = qobject_cast<QSlider*>(widget); slider != nullptr)
     {
         slider->setValue(val);
     }
@@ -2970,7 +2915,7 @@ void settings::set_parameter<sight::data::integer>(const std::int64_t& _val, std
     {
         tickmarks_widget->set_current_tick(val);
     }
-    else if(combobox != nullptr)
+    else if(auto* combobox = qobject_cast<QComboBox*>(widget); combobox != nullptr)
     {
         if(combobox->property(qt_property::use_index).toBool())
         {

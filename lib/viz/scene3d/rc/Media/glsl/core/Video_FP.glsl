@@ -26,6 +26,7 @@ uniform sampler2D u_videoTexture;
 
 #endif // TF
 
+uniform vec4 u_color;
 in vec2 oTexCoord;
 
 vec4 getFragmentColor()
@@ -45,7 +46,7 @@ vec4 getFragmentColor()
     color = texture(u_videoTexture, oTexCoord);
 #endif // TF
 
-    return color;
+    return u_color * color;
 }
 
 float getFragmentAlpha()
@@ -65,7 +66,7 @@ float getFragmentAlpha()
     color = texture(u_videoTexture, oTexCoord);
 #endif // TF
 
-    return color.a;
+    return u_color.a * color.a;
 }
 
 #include "Transparency.inc.glsl"

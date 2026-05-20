@@ -1,4 +1,4 @@
-sight_add_target(module_ui_viz_ut TYPE TEST)
+sight_add_target(module_ui_viz_ut TYPE DOCTEST)
 
 find_package(Qt6 QUIET COMPONENTS Gui REQUIRED)
 target_link_libraries(${SIGHT_TARGET} PRIVATE Qt6::Gui)

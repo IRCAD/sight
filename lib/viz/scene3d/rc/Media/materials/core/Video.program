@@ -15,6 +15,7 @@ fragment_program Default/Video_FP glsl
     default_params
     {
         param_named u_videoTexture int 0
+        param_named u_color float4 1.0 1.0 1.0 1.0
     }
 }
 
@@ -28,6 +29,7 @@ fragment_program Default/VideoWithTF_FP glsl
     {
         param_named u_videoTexture int 0
         param_named u_s2TFTexture int 1
+        param_named u_color float4 1.0 1.0 1.0 1.0
     }
 }
 
@@ -41,5 +43,6 @@ fragment_program Default/VideoWithTF_Int_FP glsl
     {
         param_named u_videoTexture int 0
         param_named u_s2TFTexture int 1
+        param_named u_color float4 1.0 1.0 1.0 1.0
     }
 }

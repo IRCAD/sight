@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,44 +21,21 @@
 
 #include "status.hpp"
 
+#include "service/base.hpp"
+
 #include <core/com/slots.hxx>
 #include <core/runtime/path.hpp>
 
 #include <ui/qt/container/widget.hpp>
 
-#include <boost/range/iterator_range.hpp>
-
 #include <QColor>
 #include <QHBoxLayout>
+#include <QIcon>
+#include <QPainter>
 #include <QVariant>
-#include <QVBoxLayout>
 
 namespace sight::module::ui::qt
 {
-
-enum class status_color : std::uint8_t
-{
-    green,
-    orange,
-    red
-};
-
-//------------------------------------------------------------------------------
-
-QIcon& icon(status_color _color)
-{
-    std::array icons = {"status_green.svg", "status_orange.svg", "status_red.svg"};
-    const auto path  =
-        core::runtime::get_module_resource_file_path(
-            "sight::module::ui::icons",
-            icons[static_cast<std::size_t>(_color)]
-        );
-
-    static QIcon icon;
-    icon.addFile(QString::fromStdString(path.string()), QSize(), QIcon::Disabled);
-
-    return icon;
-}
 
 //-----------------------------------------------------------------------------
 
@@ -68,10 +45,15 @@ status::status() noexcept
     new_slot(slots::CHANGE_TO_RED_SLOT, &status::change_to_red, this);
     new_slot(slots::CHANGE_TO_ORANGE_SLOT, &status::change_to_orange, this);
     new_slot(slots::TOGGLE_GREEN_RED_SLOT, &status::toggle_green_red, this);
-    new_slot(slots::CHANGE_NTH_TO_GREEN_SLOT, &status::change_nth_to_green, this);
-    new_slot(slots::CHANGE_NTH_TO_RED_SLOT, &status::change_nth_to_red, this);
-    new_slot(slots::CHANGE_NTH_TO_ORANGE_SLOT, &status::change_nth_to_orange, this);
-    new_slot(slots::TOGGLE_NTH_GREEN_RED_SLOT, &status::toggle_nth_green_red, this);
+}
+
+//------------------------------------------------------------------------------
+
+service::connections_t status::auto_connections() const
+{
+    return {
+        {m_color, sight::data::signals::MODIFIED, base::slots::UPDATE}
+    };
 }
 
 //------------------------------------------------------------------------------
@@ -80,43 +62,12 @@ void status::configuring(const config_t& _config)
 {
     this->initialize();
 
-    m_green_tooltip  = _config.get<std::string>("green", "");
-    m_red_tooltip    = _config.get<std::string>("red", "");
-    m_orange_tooltip = _config.get<std::string>("orange", "");
-    m_orientation    = _config.get<std::string>("layout", "horizontal");
+    m_label       = _config.get<std::string>("label", "");
+    m_orientation = _config.get<std::string>("layout", "horizontal");
     SIGHT_ASSERT(
         "Value for element 'layout' should be 'horizontal' or 'vertical'.",
         m_orientation == "horizontal" || m_orientation == "vertical"
     );
-
-    const auto label_display = _config.get<std::string>("labels.<xmlattr>.display", "under");
-
-    SIGHT_ASSERT(
-        "Value for element 'display' should be 'beside' or 'under'.",
-        label_display == "beside" || label_display == "under"
-    );
-    m_label_display = label_display == "beside" ? label_display::BESIDE : label_display::UNDER;
-
-    const auto config_labels = _config.get_child_optional("labels");
-
-    // Check if the labels tag exists
-    if(config_labels)
-    {
-        const auto label_status_config = config_labels.get().equal_range("name");
-
-        // Fill the label_status vector
-        for(int i = 0 ; const service::config_t::value_type & v : boost::make_iterator_range(label_status_config))
-        {
-            const auto label = v.second.get<std::string>("");
-            auto* status     = new QToolButton();
-            status->setText(QString::fromStdString(label));
-
-            const QString service_id = QString::fromStdString(base_id());
-            status->setObjectName(service_id + "/" + QString::number(i++));
-
-            m_label_status.push_back(status);
-        }
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -136,33 +87,38 @@ void status::starting()
         layout = new QVBoxLayout();
     }
 
-    for(auto& status : m_label_status)
+    m_status_button = new QToolButton();
+    m_status_button->setProperty("class", "status");
+    // Keep the button visually enabled (no gray icon), but ignore user mouse interaction.
+    m_status_button->setAttribute(Qt::WA_TransparentForMouseEvents, true);
+    m_status_button->setFocusPolicy(Qt::NoFocus);
+    const QString service_id = QString::fromStdString(base_id());
+    m_status_button->setObjectName(service_id + "/status_button");
+
+    if(!m_label.empty())
     {
-        if(!status->text().isEmpty())
+        m_status_button->setText(QString::fromStdString(m_label));
+
+        if(m_label_display == label_display::beside)
         {
-            if(m_label_display == label_display::BESIDE)
-            {
-                status->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-            }
-            else
-            {
-                status->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-            }
+            m_status_button->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
         }
         else
         {
-            status->setToolButtonStyle(Qt::ToolButtonIconOnly);
+            m_status_button->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
         }
-
-        layout->addWidget(status);
-        status->setDisabled(true);
-        status->setProperty("class", "status");
+    }
+    else
+    {
+        m_status_button->setToolButtonStyle(Qt::ToolButtonIconOnly);
     }
 
+    layout->addWidget(m_status_button);
     layout->setContentsMargins(0, 0, 0, 0);
 
     qt_container->set_layout(layout);
 
+    // Initialize with red color
     this->change_to_red();
 }
 
@@ -177,117 +133,83 @@ void status::stopping()
 
 void status::updating()
 {
+    update_circle_color();
+}
+
+//------------------------------------------------------------------------------
+
+void status::update_circle_color()
+{
+    if(m_status_button.isNull())
+    {
+        return;
+    }
+
+    const auto& color = *m_color;
+
+    // This function is not that slow (0,04ms measured in debug), but it is called at each update,
+    // so we want to avoid doing unnecessary updates when the color has not changed.
+    if(color == m_prev_color_value)
+    {
+        return;
+    }
+
+    m_prev_color_value = color;
+
+    // Create a pixmap with a colored circle
+    QPixmap pixmap(32, 32);
+    pixmap.fill(Qt::transparent);
+
+    QPainter painter(&pixmap);
+    painter.setRenderHint(QPainter::Antialiasing);
+
+    const auto qcolor = QColor::fromRgbF(color[0], color[1], color[2], color[3]);
+
+    painter.setBrush(QBrush(qcolor));
+    painter.setPen(Qt::NoPen);
+    painter.drawEllipse(2, 2, 28, 28);
+
+    m_status_button->setIcon(QIcon(pixmap));
 }
 
 //------------------------------------------------------------------------------
 
 void status::change_to_green()
 {
-    for(auto& status : m_label_status)
-    {
-        status->setIcon(icon(status_color::green));
-        status->setToolTip(QString::fromStdString(m_green_tooltip));
-    }
+    *m_color.lock() = sight::data::color(0.0F, 1.0F, 0.0F, 1.0F);
+    m_status_button->setToolTip("Green"); // Backward compatible, used in unit-tests
+    update_circle_color();
 }
 
 //------------------------------------------------------------------------------
 
 void status::change_to_red()
 {
-    for(auto& status : m_label_status)
-    {
-        status->setIcon(icon(status_color::red));
-        status->setToolTip(QString::fromStdString(m_red_tooltip));
-    }
+    *m_color.lock() = sight::data::color(1.0F, 0.0F, 0.0F, 1.0F);
+    m_status_button->setToolTip("Red"); // Backward compatible, used in unit-tests
+    update_circle_color();
 }
 
 //------------------------------------------------------------------------------
 
 void status::change_to_orange()
 {
-    for(auto& status : m_label_status)
-    {
-        status->setIcon(icon(status_color::orange));
-        status->setToolTip(QString::fromStdString(m_orange_tooltip));
-    }
+    *m_color.lock() = sight::data::color(1.0F, 0.647F, 0.0F, 1.0F);
+    m_status_button->setToolTip("Orange"); // Backward compatible, used in unit-tests
+    update_circle_color();
 }
 
 //------------------------------------------------------------------------------
 
 void status::toggle_green_red(const bool _green)
 {
-    for(auto& status : m_label_status)
+    if(_green)
     {
-        status->setIcon(_green ? icon(status_color::green) : icon(status_color::red));
-        status->setToolTip(_green ? QString::fromStdString(m_green_tooltip) : QString::fromStdString(m_red_tooltip));
+        this->change_to_green();
     }
-}
-
-//------------------------------------------------------------------------------
-
-void status::change_nth_to_green(const int _index)
-{
-    SIGHT_DEBUG_IF(
-        "Index(" << _index << ") must be in vector range [0:" << m_label_status.size() - 1 << "]",
-        _index < 0 || _index >= int(m_label_status.size())
-    );
-
-    if(_index >= 0 && _index < m_label_status.size())
+    else
     {
-        const auto status = m_label_status.at(_index);
-        status->setIcon(icon(status_color::green));
-        status->setToolTip(QString::fromStdString(m_green_tooltip));
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void status::change_nth_to_red(const int _index)
-{
-    SIGHT_DEBUG_IF(
-        "Index(" << _index << ") must be in vector range [0:" << m_label_status.size() - 1 << "]",
-        _index < 0 || _index >= int(m_label_status.size())
-    );
-
-    if(_index >= 0 && _index < m_label_status.size())
-    {
-        const auto status = m_label_status.at(_index);
-        status->setIcon(icon(status_color::red));
-        status->setToolTip(QString::fromStdString(m_red_tooltip));
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void status::change_nth_to_orange(const int _index)
-{
-    SIGHT_DEBUG_IF(
-        "Index(" << _index << ") must be in vector range [0:" << m_label_status.size() - 1 << "]",
-        _index < 0 || _index >= int(m_label_status.size())
-    );
-
-    if(_index >= 0 && _index < m_label_status.size())
-    {
-        const auto status = m_label_status.at(_index);
-        status->setIcon(icon(status_color::orange));
-        status->setToolTip(QString::fromStdString(m_orange_tooltip));
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void status::toggle_nth_green_red(const int _index, const bool _green)
-{
-    SIGHT_DEBUG_IF(
-        "Index(" << _index << ") must be in vector range [0:" << m_label_status.size() - 1 << "]",
-        _index < 0 || _index >= int(m_label_status.size())
-    );
-
-    if(_index >= 0 && _index < m_label_status.size())
-    {
-        const auto status = m_label_status.at(_index);
-        status->setIcon(_green ? icon(status_color::green) : icon(status_color::red));
-        status->setToolTip(_green ? QString::fromStdString(m_green_tooltip) : QString::fromStdString(m_red_tooltip));
+        this->change_to_red();
     }
 }
 

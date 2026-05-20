@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,8 +20,6 @@
  *
  ***********************************************************************/
 
-#include "is_type_of_test.hpp"
-
 #include <data/boolean.hpp>
 #include <data/image.hpp>
 #include <data/integer.hpp>
@@ -29,87 +27,70 @@
 #include <data/real.hpp>
 #include <data/transfer_function.hpp>
 
+#include <doctest/doctest.h>
+
 #include <utility>
 
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::is_type_of_test);
-
-namespace sight::data::ut
+TEST_SUITE("sight::data::is_type_of")
 {
-
 //------------------------------------------------------------------------------
 
-void is_type_of_test::setUp()
-{
-    // Set up context before running a test.
-}
+    TEST_CASE("check_type")
+    {
+        sight::data::map::sptr data_map              = std::make_shared<sight::data::map>();
+        sight::data::boolean::sptr data_boolean      = std::make_shared<sight::data::boolean>();
+        sight::data::real::sptr data_float           = std::make_shared<sight::data::real>();
+        sight::data::integer::sptr data_integer      = std::make_shared<sight::data::integer>();
+        sight::data::image::sptr data_image          = std::make_shared<sight::data::image>();
+        sight::data::transfer_function::sptr data_tf = std::make_shared<sight::data::transfer_function>();
 
-//------------------------------------------------------------------------------
+        sight::data::map::is_type_of("sight::data::object");
+        sight::data::boolean::is_type_of("sight::data::object");
+        sight::data::real::is_type_of("sight::data::object");
+        sight::data::integer::is_type_of("sight::data::object");
+        sight::data::image::is_type_of("sight::data::object");
+        sight::data::transfer_function::is_type_of("sight::data::object");
 
-void is_type_of_test::tearDown()
-{
-    // Clean up after the test run.
-}
+        sight::data::map::is_type_of("sight::data::map");
+        sight::data::boolean::is_type_of("sight::data::boolean");
+        sight::data::real::is_type_of("sight::data::real");
+        sight::data::integer::is_type_of("sight::data::integer");
+        sight::data::image::is_type_of("sight::data::image");
+        sight::data::transfer_function::is_type_of("sight::data::transfer_function");
 
-//------------------------------------------------------------------------------
+        CHECK(data_map->is_a("sight::data::object"));
+        CHECK(data_boolean->is_a("sight::data::object"));
+        CHECK(data_float->is_a("sight::data::object"));
+        CHECK(data_integer->is_a("sight::data::object"));
+        CHECK(data_image->is_a("sight::data::object"));
+        CHECK(data_tf->is_a("sight::data::object"));
 
-void is_type_of_test::check_type()
-{
-    data::map::sptr data_map              = std::make_shared<data::map>();
-    data::boolean::sptr data_boolean      = std::make_shared<data::boolean>();
-    data::real::sptr data_float           = std::make_shared<data::real>();
-    data::integer::sptr data_integer      = std::make_shared<data::integer>();
-    data::image::sptr data_image          = std::make_shared<data::image>();
-    data::transfer_function::sptr data_tf = std::make_shared<data::transfer_function>();
+        CHECK(data_map->is_a("sight::data::map"));
+        CHECK(data_boolean->is_a("sight::data::boolean"));
+        CHECK(data_float->is_a("sight::data::real"));
+        CHECK(data_integer->is_a("sight::data::integer"));
+        CHECK(data_image->is_a("sight::data::image"));
+        CHECK(data_tf->is_a("sight::data::transfer_function"));
 
-    data::map::is_type_of("sight::data::object");
-    data::boolean::is_type_of("sight::data::object");
-    data::real::is_type_of("sight::data::object");
-    data::integer::is_type_of("sight::data::object");
-    data::image::is_type_of("sight::data::object");
-    data::transfer_function::is_type_of("sight::data::object");
+        CHECK(std::dynamic_pointer_cast<sight::data::object>(data_map)->is_a("sight::data::object"));
+        CHECK(std::dynamic_pointer_cast<sight::data::object>(data_boolean)->is_a("sight::data::object"));
+        CHECK(std::dynamic_pointer_cast<sight::data::object>(data_float)->is_a("sight::data::object"));
+        CHECK(std::dynamic_pointer_cast<sight::data::object>(data_integer)->is_a("sight::data::object"));
+        CHECK(std::dynamic_pointer_cast<sight::data::object>(data_image)->is_a("sight::data::object"));
+        CHECK(std::dynamic_pointer_cast<sight::data::object>(data_tf)->is_a("sight::data::object"));
 
-    data::map::is_type_of("sight::data::map");
-    data::boolean::is_type_of("sight::data::boolean");
-    data::real::is_type_of("sight::data::real");
-    data::integer::is_type_of("sight::data::integer");
-    data::image::is_type_of("sight::data::image");
-    data::transfer_function::is_type_of("sight::data::transfer_function");
+        CHECK(std::dynamic_pointer_cast<sight::data::object>(data_map)->is_a("sight::data::map"));
+        CHECK(std::dynamic_pointer_cast<sight::data::object>(data_boolean)->is_a("sight::data::boolean"));
+        CHECK(std::dynamic_pointer_cast<sight::data::object>(data_float)->is_a("sight::data::real"));
+        CHECK(std::dynamic_pointer_cast<sight::data::object>(data_integer)->is_a("sight::data::integer"));
+        CHECK(std::dynamic_pointer_cast<sight::data::object>(data_image)->is_a("sight::data::image"));
+        CHECK(std::dynamic_pointer_cast<sight::data::object>(data_tf)->is_a("sight::data::transfer_function"));
 
-    CPPUNIT_ASSERT(data_map->is_a("sight::data::object"));
-    CPPUNIT_ASSERT(data_boolean->is_a("sight::data::object"));
-    CPPUNIT_ASSERT(data_float->is_a("sight::data::object"));
-    CPPUNIT_ASSERT(data_integer->is_a("sight::data::object"));
-    CPPUNIT_ASSERT(data_image->is_a("sight::data::object"));
-    CPPUNIT_ASSERT(data_tf->is_a("sight::data::object"));
-
-    CPPUNIT_ASSERT(data_map->is_a("sight::data::map"));
-    CPPUNIT_ASSERT(data_boolean->is_a("sight::data::boolean"));
-    CPPUNIT_ASSERT(data_float->is_a("sight::data::real"));
-    CPPUNIT_ASSERT(data_integer->is_a("sight::data::integer"));
-    CPPUNIT_ASSERT(data_image->is_a("sight::data::image"));
-    CPPUNIT_ASSERT(data_tf->is_a("sight::data::transfer_function"));
-
-    CPPUNIT_ASSERT(std::dynamic_pointer_cast<data::object>(data_map)->is_a("sight::data::object"));
-    CPPUNIT_ASSERT(std::dynamic_pointer_cast<data::object>(data_boolean)->is_a("sight::data::object"));
-    CPPUNIT_ASSERT(std::dynamic_pointer_cast<data::object>(data_float)->is_a("sight::data::object"));
-    CPPUNIT_ASSERT(std::dynamic_pointer_cast<data::object>(data_integer)->is_a("sight::data::object"));
-    CPPUNIT_ASSERT(std::dynamic_pointer_cast<data::object>(data_image)->is_a("sight::data::object"));
-    CPPUNIT_ASSERT(std::dynamic_pointer_cast<data::object>(data_tf)->is_a("sight::data::object"));
-
-    CPPUNIT_ASSERT(std::dynamic_pointer_cast<data::object>(data_map)->is_a("sight::data::map"));
-    CPPUNIT_ASSERT(std::dynamic_pointer_cast<data::object>(data_boolean)->is_a("sight::data::boolean"));
-    CPPUNIT_ASSERT(std::dynamic_pointer_cast<data::object>(data_float)->is_a("sight::data::real"));
-    CPPUNIT_ASSERT(std::dynamic_pointer_cast<data::object>(data_integer)->is_a("sight::data::integer"));
-    CPPUNIT_ASSERT(std::dynamic_pointer_cast<data::object>(data_image)->is_a("sight::data::image"));
-    CPPUNIT_ASSERT(std::dynamic_pointer_cast<data::object>(data_tf)->is_a("sight::data::transfer_function"));
-
-    CPPUNIT_ASSERT(!data_map->is_a("sight::data::image"));
-    CPPUNIT_ASSERT(!data_boolean->is_a("sight::data::image"));
-    CPPUNIT_ASSERT(!data_float->is_a("sight::data::image"));
-    CPPUNIT_ASSERT(!data_integer->is_a("sight::data::image"));
-    CPPUNIT_ASSERT(!data_image->is_a("sight::data::boolean"));
-    CPPUNIT_ASSERT(!data_tf->is_a("sight::data::image"));
-}
-
-} // namespace sight::data::ut
+        CHECK(!data_map->is_a("sight::data::image"));
+        CHECK(!data_boolean->is_a("sight::data::image"));
+        CHECK(!data_float->is_a("sight::data::image"));
+        CHECK(!data_integer->is_a("sight::data::image"));
+        CHECK(!data_image->is_a("sight::data::boolean"));
+        CHECK(!data_tf->is_a("sight::data::image"));
+    }
+} // TEST_SUITE("sight::data::is_type_of")

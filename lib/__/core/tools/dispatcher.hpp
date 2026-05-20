@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -113,11 +113,7 @@ struct dispatcher
 
             // create the functor then execute it
             FUNCTOR f;
-#ifdef _WIN32
-            f.operator()<head>();
-#else
             f.template operator()<head>();
-#endif
 
             // recursively call other element in the list
             using type_x = BOOST_DEDUCED_TYPENAME mpl::if_<
@@ -140,11 +136,7 @@ struct dispatcher
             {
                 // create the functor then excute it
                 FUNCTOR f;
-#ifdef _WIN32
-                f.operator()<head>();
-#else
                 f.template operator()<head>();
-#endif
             }
             else
             {
@@ -174,11 +166,7 @@ struct dispatcher
             {
                 // create the functor then excute it
                 FUNCTOR f;
-#ifdef _WIN32
-                f.operator()<head>(_param);
-#else
                 f.template operator()<head>(_param);
-#endif
             }
             else
             {
@@ -205,11 +193,7 @@ struct dispatcher
             {
                 // create the functor then execute it
                 FUNCTOR f;
-            #ifdef _WIN32
-                f.operator()<head>(std::forward<Args>(_args) ...);
-            #else
                 f.template operator()<head>(std::forward<Args>(_args) ...);
-            #endif
             }
             else
             {
@@ -228,11 +212,7 @@ using integer_types = boost::mpl::vector<std::int8_t, std::uint8_t,
                                          std::int16_t, std::uint16_t,
                                          std::int32_t, std::uint32_t>::type;
 
-#ifdef DEBUG
-using intrinsic_types = boost::mpl::push_back<integer_types, float>::type;
-#else
-typedef boost::mpl::push_back<boost::mpl::push_back<integer_types, float>::type, double>::type intrinsic_types;
-#endif
+using intrinsic_types = boost::mpl::push_back<boost::mpl::push_back<integer_types, float>::type, double>::type;
 
 } //end namespace sight::core::tools
 

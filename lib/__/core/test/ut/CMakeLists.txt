@@ -17,6 +17,6 @@ target_compile_definitions(
                             SIGHT_VERSION="${PROJECT_VERSION}" BOOST_MAJOR_VERSION="${Boost_VERSION}"
 )
 
-target_link_libraries(${SIGHT_TARGET} PRIVATE core)
+target_link_libraries(${SIGHT_TARGET} PRIVATE utest core)
 
-add_dependencies(${SIGHT_TARGET} utest module_utest)
+add_dependencies(${SIGHT_TARGET} module_utest)

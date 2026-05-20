@@ -1,3 +1,3 @@
 sight_add_target(utest TYPE LIBRARY)
 
-target_link_libraries(utest PUBLIC core)
+target_link_libraries(utest PUBLIC core service)

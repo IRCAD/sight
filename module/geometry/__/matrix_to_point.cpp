@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -68,7 +68,7 @@ void matrix_to_point::updating()
     }
 
     point->async_emit(data::point::MODIFIED_SIG);
-    this->async_emit(signals::COMPUTED);
+    this->async_emit(signals::SUCCEEDED);
 }
 
 //-----------------------------------------------------------------------------

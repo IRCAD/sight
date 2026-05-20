@@ -1,4 +1,4 @@
-sight_add_target(module_geometry_vision_ut TYPE TEST)
+sight_add_target(module_geometry_vision_ut TYPE DOCTEST)
 
 add_dependencies(module_geometry_vision_ut data module_service module_data module_geometry_vision)
 

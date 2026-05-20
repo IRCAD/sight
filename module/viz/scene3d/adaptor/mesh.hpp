@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,12 @@
 
 #pragma once
 
-#include "module/viz/scene3d/adaptor/material.hpp"
-#include "module/viz/scene3d/adaptor/transform.hpp"
+#include "data/ptr.hpp"
 
+#include "module/viz/scene3d/adaptor/material.hpp"
+
+#include <data/boolean.hpp>
+#include <data/color.hpp>
 #include <data/material.hpp>
 #include <data/mesh.hpp>
 
@@ -72,9 +75,13 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b show(): shows the mesh.
  * - \b hide(): hides the mesh.
  * - \b update(): called when the mesh is modified.
- * - \b modifyColors(): called when the point colors are modified.
- * - \b modifyTexCoords(): called when the texture coordinates are modified.
- * - \b modifyVertices(): called when the vertices are modified.
+ * - \b modify_mesh(): called when the mesh topology is modified (cells or vertices added/removed).
+ * - \b modify_colors(): called when the point colors are modified.
+ * - \b modify_tex_coords(): called when the texture coordinates are modified.
+ * - \b modify_vertices(): called when the vertices are modified.
+ * - \b change_material(Ogre::MaterialPtr): change the material of the mesh.
+ * - \b change_color(): update the material diffuse color with the current mesh color.
+ * - \b change_bounding_box_visibility(): applies the current bounding box visibility from the property.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -108,8 +115,14 @@ namespace sight::module::viz::scene3d::adaptor
  *       material.
  *  - \b texture_name (optional, default=""): the name of the Ogre texture that the mesh will use.
  *  - \b shading (optional, none/flat/phong/ambient, default=phong): name of the used shading mode.
+ *  - \b representation (optional, surface/point/wireframe/edge, default=surface): representation mode of the material.
+ *  - \b options (optional, none/vertices_normals/cells_normals/selected, default=none): options mode of the material.
  *  - \b query_flags (optional, uint32, default=0x40000000): Used for picking. Picked only by pickers whose mask that
  *       match the flag.
+ *
+ * @subsection Properties Properties:
+ *  - \b color: the mesh color, used to set the material diffuse color if material_name is not set.
+ *  - \b bounding_box_visible (optional, bool, default=false): whether the bounding box is shown.
  */
 class mesh final :
     public sight::viz::scene3d::adaptor,
@@ -120,11 +133,22 @@ public:
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(mesh, sight::viz::scene3d::adaptor);
 
+    struct slots
+    {
+        static inline const slot_key_t MODIFY_MESH                    = "modify_mesh";
+        static inline const slot_key_t MODIFY_COLORS                  = "modify_colors";
+        static inline const slot_key_t MODIFY_POINT_TEX_COORDS        = "modify_point_tex_coords";
+        static inline const slot_key_t MODIFY_VERTICES                = "modify_vertices";
+        static inline const slot_key_t CHANGE_MATERIAL                = "change_material";
+        static inline const slot_key_t CHANGE_COLOR                   = "change_color";
+        static inline const slot_key_t CHANGE_BOUNDING_BOX_VISIBILITY = "change_bounding_box_visibility";
+    };
+
     /// Sets default parameters and initializes necessary members.
     mesh() noexcept;
 
     /// Destroys Ogre resources.
-    ~mesh() noexcept override;
+    ~mesh() noexcept final;
 
     /**
      * @brief Gets the associated material.
@@ -182,21 +206,21 @@ public:
     void set_query_flags(std::uint32_t _query_flags);
 
     /// Flags the r2vb objects as dirty and asks the render service to update.
-    void request_render() override;
+    void request_render() final;
 
     /**
      * @brief Sets the mesh visibility.
      * @param _visible the visibility status of the mesh.
      */
-    void set_visible(bool _visible) override;
+    void set_visible(bool _visible) final;
 
 protected:
 
     /// Configures the adaptor.
-    void configuring() override;
+    void configuring(const config_t& _config) final;
 
     /// Creates a Mesh in the Default Ogre resource group.
-    void starting() override;
+    void starting() final;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -208,13 +232,13 @@ protected:
      * Connect data::mesh::POINT_TEX_COORDS_MODIFIED_SIG to MODIFY_POINT_TEX_COORDS_SLOT
      * Connect data::mesh::MODIFIED_SIG to service::slots::UPDATE
      */
-    service::connections_t auto_connections() const override;
+    service::connections_t auto_connections() const final;
 
     /// Deletes the mesh after unregistering the service, and shutting connections.
-    void stopping() override;
+    void stopping() final;
 
     /// Updates the mesh.
-    void updating() override;
+    void updating() final;
 
 private:
 
@@ -226,6 +250,9 @@ private:
 
     /// Updates mesh texture coordinates.
     void modify_tex_coords();
+
+    /// Updates the bounding box visualization.
+    void update_bounding_box();
 
     /**
      * @brief Updates the mesh, checks if color, number of vertices have changed, and updates them.
@@ -256,6 +283,9 @@ private:
     /// Contains the node in the scene graph where the mesh is attached.
     Ogre::Entity* m_entity {nullptr};
 
+    /// Contains the bounding box visualization.
+    Ogre::ManualObject* m_bounding_box {nullptr};
+
     /// Contains the Ogre material adaptor.
     module::viz::scene3d::adaptor::material::sptr m_material_adaptor {nullptr};
 
@@ -277,6 +307,12 @@ private:
     /// Defines the configured shading mode.
     std::string m_shading_mode;
 
+    /// Defines the configured representation mode.
+    boost::optional<sight::data::material::representation_t> m_representation_mode;
+
+    /// Defines the configured options mode.
+    boost::optional<sight::data::material::options_t> m_options_mode;
+
     /// Defines if the mesh changes dynamically, defined in m_configuration.
     bool m_is_dynamic {false};
 
@@ -297,15 +333,21 @@ private:
 
     enum class update_flags : std::uint8_t
     {
-        MESH,
-        VERTICES,
-        COLORS,
-        TEX_COORDS
+        mesh,
+        vertices,
+        colors,
+        tex_coords
     };
 
     static constexpr std::string_view MESH_IN = "mesh";
     data::ptr<data::mesh, data::access::in> m_mesh {this, MESH_IN};
     data::ptr_vector<data::object, data::access::inout> m_uniforms {this, "uniforms", true};
+
+    /// Diffuse color of the mesh, used if no material is provided.
+    sight::data::property<sight::data::color> m_color {this, "color", {1.0F, 1.0F, 1.0F, 1.0F}};
+
+    /// Whether the bounding box visualization is shown.
+    sight::data::property<sight::data::boolean> m_bounding_box_visible {this, "bounding_box_visible", false};
 };
 
 //------------------------------------------------------------------------------

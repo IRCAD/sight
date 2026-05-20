@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2024 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,42 +19,40 @@
  *
  ***********************************************************************/
 
-#include "matrix4_test.hpp"
+#include <data/matrix4.hpp>
 
 #include <app/parser/matrix4.hpp>
 
-#include <data/matrix4.hpp>
-
 #include <boost/property_tree/ptree.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::app::parser::ut::matrix4_test);
+#include <doctest/doctest.h>
 
-namespace sight::app::parser::ut
+TEST_SUITE("sight::app::parser::Matrix4")
 {
-
 //------------------------------------------------------------------------------
 
-void matrix4_test::basic_test()
-{
-    boost::property_tree::ptree ptree;
-    ptree.put("matrix", R"(
+    TEST_CASE("basic")
+    {
+        boost::property_tree::ptree ptree;
+        ptree.put("matrix", R"(
         0 1 2 3
         10 11 12 13
         20 21 22 23
         30 31 32 33
     )");
-    auto matrix = std::make_shared<data::matrix4>();
-    parser::matrix4 matrix_parser;
-    CPPUNIT_ASSERT(matrix_parser.is_a("sight::app::parser::matrix4"));
-    service::object_parser::objects_t sub_objects;
-    matrix_parser.parse(ptree, matrix, sub_objects);
-    for(std::uint8_t i = 0 ; i < 4 ; i++)
-    {
-        for(std::uint8_t j = 0 ; j < 4 ; j++)
+        auto matrix = std::make_shared<sight::data::matrix4>();
+        sight::app::parser::matrix4 matrix_parser;
+        CHECK(matrix_parser.is_a("sight::app::parser::matrix4"));
+        sight::service::object_parser::objects_t sub_objects;
+        matrix_parser.parse(ptree, matrix, sub_objects);
+        for(std::uint8_t i = 0 ; i < 4 ; i++)
         {
-            CPPUNIT_ASSERT_EQUAL(j + 10. * i, (*matrix)(i, j));
+            for(std::uint8_t j = 0 ; j < 4 ; j++)
+            {
+                CHECK_EQ(j + 10. * i, (*matrix)(i, j));
+            }
         }
     }
-}
 
-} // namespace sight::app::parser::ut
+//------------------------------------------------------------------------------
+} // TEST_SUITE

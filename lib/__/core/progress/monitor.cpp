@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -338,6 +338,21 @@ void monitor::add_log_hook_no_lock(log_hook _callback)
 void monitor::add_state_hook_no_lock(state_hook _callback)
 {
     m_state_hooks.push_back(_callback);
+}
+
+//------------------------------------------------------------------------------
+
+void monitor::add_done_work(std::uint64_t _units)
+{
+    core::mt::read_to_write_lock lock(m_mutex);
+    if(m_state != canceled)
+    {
+        SIGHT_ASSERT(
+            "Can not report done work while the monitor is not running.",
+            m_state == running || m_state == canceling
+        );
+        this->done_work(m_done_work_units + _units, lock);
+    }
 }
 
 //------------------------------------------------------------------------------

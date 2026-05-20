@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,7 +40,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @brief This adaptor displays a 2D negato.
  *
  * @section Signals Signals
- * - \b sliceIndexChanged(): emitted when the slice index changed.
+ * - \b slice_index_changed(): emitted when the slice index changed.
  *
  * @section Slots Slots
  * - \b sliceType(int, int): updates image slice index .

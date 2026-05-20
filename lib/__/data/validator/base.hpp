@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,12 +23,14 @@
 
 #include <sight/data/config.hpp>
 
-#include "data/validator/base.hpp"
+#include "data/object.hpp"
 #include "data/validator/factory/new.hpp"
 #include "data/validator/registry/detail.hpp"
-#include "data/vector.hpp"
 
 #include <core/base.hpp>
+#include <core/com/signals.hpp>
+
+#include <boost/property_tree/ptree.hpp>
 
 namespace sight::data
 {
@@ -40,6 +42,7 @@ class object;
 namespace sight::data::validator
 {
 
+using config_t = boost::property_tree::ptree;
 using return_t = std::pair<bool, std::string>;
 
 /**
@@ -62,7 +65,7 @@ public:
     {
     public:
 
-        registry(std::string _functor_key)
+        explicit registry(std::string _functor_key)
         {
             sight::data::validator::registry::get()->add_factory(
                 _functor_key,
@@ -71,6 +74,12 @@ public:
         }
     };
     SIGHT_DECLARE_CLASS(base, core::base_object);
+
+    /**
+     * @brief Configures the validator with the given configuration.
+     * @param _config configuration to apply to the validator, this is used to initialize the validator.
+     */
+    SIGHT_DATA_API virtual void configure(const config_t& _config);
 
     /**
      * @brief Performs the validation of the given data.
@@ -83,6 +92,12 @@ public:
      */
     SIGHT_DATA_API virtual auto_connect_signals_t auto_connect_signals() const;
 };
+
+//------------------------------------------------------------------------------
+
+inline void base::configure(const config_t& /*_config*/)
+{
+}
 
 //------------------------------------------------------------------------------
 

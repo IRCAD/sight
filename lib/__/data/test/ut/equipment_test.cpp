@@ -1,6 +1,9 @@
+#include "utest_data/generator/series_set.hpp"
+#include <doctest/doctest.h>
+
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,61 +23,41 @@
  *
  ***********************************************************************/
 
-#include "equipment_test.hpp"
+#include <data/series.hpp>
 
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::equipment_test);
-
-namespace sight::data::ut
+TEST_SUITE("sight::data::equipment")
 {
+//------------------------------------------------------------------------------
+
+    TEST_CASE("institution_name")
+    {
+        const auto equipment               = std::make_shared<sight::data::series>();
+        const std::string institution_name = "IRCAD";
+        CHECK(equipment);
+        equipment->set_institution_name(institution_name);
+
+        CHECK_EQ(institution_name, equipment->get_institution_name());
+    }
 
 //------------------------------------------------------------------------------
 
-void equipment_test::setUp()
-{
-    // Set up context before running a test.
-    m_equipment = std::make_shared<data::series>();
-}
+    TEST_CASE("equality")
+    {
+        auto equipment1 = std::make_shared<sight::data::series>();
+        auto equipment2 = std::make_shared<sight::data::series>();
+
+        CHECK(*equipment1 == *equipment2);
+
+        equipment1->set_institution_name("IRCAD");
+        CHECK(*equipment1 != *equipment2);
+        equipment2->set_institution_name(equipment1->get_institution_name());
+        CHECK(*equipment1 == *equipment2);
+
+        // Test also deepcopy, just for fun
+        auto dicom_series3 = std::make_shared<sight::data::series>();
+        dicom_series3->deep_copy(equipment1);
+        CHECK(*equipment1 == *dicom_series3);
+    }
 
 //------------------------------------------------------------------------------
-
-void equipment_test::tearDown()
-{
-    // Clean up after the test run.
-    m_equipment.reset();
-}
-
-//------------------------------------------------------------------------------
-
-void equipment_test::institution_name_test()
-{
-    const std::string institution_name = "IRCAD";
-    CPPUNIT_ASSERT(m_equipment);
-    m_equipment->set_institution_name(institution_name);
-
-    CPPUNIT_ASSERT_EQUAL(institution_name, m_equipment->get_institution_name());
-}
-
-//------------------------------------------------------------------------------
-
-void equipment_test::equality_test()
-{
-    auto equipment1 = std::make_shared<data::series>();
-    auto equipment2 = std::make_shared<data::series>();
-
-    CPPUNIT_ASSERT(*equipment1 == *equipment2);
-
-    equipment1->set_institution_name("IRCAD");
-    CPPUNIT_ASSERT(*equipment1 != *equipment2);
-    equipment2->set_institution_name(equipment1->get_institution_name());
-    CPPUNIT_ASSERT(*equipment1 == *equipment2);
-
-    // Test also deepcopy, just for fun
-    auto dicom_series3 = std::make_shared<data::series>();
-    dicom_series3->deep_copy(equipment1);
-    CPPUNIT_ASSERT(*equipment1 == *dicom_series3);
-}
-
-//------------------------------------------------------------------------------
-
-} // namespace sight::data::ut
+} // TEST_SUITE("sight::data::equipment")

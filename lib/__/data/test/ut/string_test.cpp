@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,55 +20,36 @@
  *
  ***********************************************************************/
 
-#include "string_test.hpp"
-
 #include <data/string.hpp>
 
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::string_test);
+#include <doctest/doctest.h>
 
-namespace sight::data::ut
+TEST_SUITE("sight::data::string")
 {
-
 //------------------------------------------------------------------------------
 
-void string_test::setUp()
-{
-    // Set up context before running a test.
-}
-
-//------------------------------------------------------------------------------
-
-void string_test::tearDown()
-{
-    // Clean up after the test run.
-}
-
-//------------------------------------------------------------------------------
-
-void string_test::basic()
-{
+    TEST_CASE("basic")
     {
-        sight::data::string s;
-        CPPUNIT_ASSERT(s.is_type_of("sight::data::string"));
-        CPPUNIT_ASSERT(s.is_type_of("sight::data::string_serializable"));
+        {
+            sight::data::string s;
+            CHECK(s.is_type_of("sight::data::string"));
+            CHECK(s.is_type_of("sight::data::string_serializable"));
+        }
+
+        const std::array<std::string, 2> values = {"", "example_string"};
+
+        for(const std::string& value : values)
+        {
+            sight::data::string::sptr s0 = std::make_shared<sight::data::string>();
+            s0->value() = value;
+            sight::data::string::sptr s1 = std::make_shared<sight::data::string>(value);
+            sight::data::string::sptr s2 = std::make_shared<sight::data::string>(value + "other");
+
+            CHECK(*s0 == *s1);
+            CHECK(*s0 != *s2);
+            CHECK_EQ(value, s0->value());
+            CHECK_EQ(value, s1->value());
+            CHECK_EQ(value, std::make_shared<sight::data::string>(value)->value());
+        }
     }
-
-    const std::array<std::string, 2> values = {"", "chaine_caractere"};
-
-    for(const std::string& value : values)
-    {
-        data::string::sptr s0 = std::make_shared<data::string>();
-        s0->value() = value;
-        data::string::sptr s1 = std::make_shared<data::string>(value);
-        data::string::sptr s2 = std::make_shared<data::string>(value + "other");
-
-        CPPUNIT_ASSERT(*s0 == *s1);
-        CPPUNIT_ASSERT(*s0 != *s2);
-        CPPUNIT_ASSERT_EQUAL(value, s0->value());
-        CPPUNIT_ASSERT_EQUAL(value, s1->value());
-        CPPUNIT_ASSERT_EQUAL(value, std::make_shared<data::string>(value)->value());
-    }
-}
-
-} // namespace sight::data::ut
+} // TEST_SUITE("sight::data::string")

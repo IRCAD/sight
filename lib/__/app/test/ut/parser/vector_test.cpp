@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2024 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,65 +19,65 @@
  *
  ***********************************************************************/
 
-#include "vector_test.hpp"
-
 #include <core/runtime/path.hpp>
 #include <core/runtime/runtime.hpp>
 
 #include <data/string.hpp>
 #include <data/vector.hpp>
 
+#include <app/parser/vector.hpp>
+
 #include <boost/property_tree/ptree.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::app::parser::ut::vector_test);
+#include <doctest/doctest.h>
 
-namespace sight::app::parser::ut
+namespace
 {
 
+struct fixture
+{
+    fixture()
+    {
+        sight::core::runtime::init();
+
+        std::filesystem::path location = sight::core::runtime::get_resource_file_path("app_ut");
+        CHECK(std::filesystem::exists(location));
+        sight::core::runtime::add_modules(location);
+
+        sight::core::runtime::load_module("sight::module::app");
+    }
+};
+
+} // namespace
+
+TEST_SUITE("sight::app::parser::Vector")
+{
 //------------------------------------------------------------------------------
 
-void vector_test::setUp()
-{
-    core::runtime::init();
+    TEST_CASE_FIXTURE(fixture, "basic_test")
+    {
+        using namespace std::literals::string_literals;
 
-    std::filesystem::path location = core::runtime::get_resource_file_path("app_ut");
-    CPPUNIT_ASSERT(std::filesystem::exists(location));
-    core::runtime::add_modules(location);
-
-    core::runtime::load_module("sight::module::app");
-}
+        boost::property_tree::ptree root;
+        boost::property_tree::ptree first;
+        first.put("object.<xmlattr>.uid", "first");
+        first.put("object.<xmlattr>.type", "sight::data::string");
+        first.put("object.value", "First");
+        root.add_child("item", first);
+        boost::property_tree::ptree second;
+        second.put("object.<xmlattr>.uid", "second");
+        second.put("object.<xmlattr>.type", "sight::data::string");
+        second.put("object.value", "Second");
+        root.add_child("item", second);
+        auto vector = std::make_shared<sight::data::vector>();
+        sight::app::parser::vector vector_parser;
+        CHECK(vector_parser.is_a("sight::app::parser::vector"));
+        sight::service::object_parser::objects_t sub_objects;
+        vector_parser.parse(root, vector, sub_objects);
+        CHECK_EQ(std::size_t(2), vector->size());
+        CHECK_EQ("First"s, std::dynamic_pointer_cast<sight::data::string>((*vector)[0])->get_value());
+        CHECK_EQ("Second"s, std::dynamic_pointer_cast<sight::data::string>((*vector)[1])->get_value());
+    }
 
 //------------------------------------------------------------------------------
-
-void vector_test::tearDown()
-{
-}
-
-//------------------------------------------------------------------------------
-
-void vector_test::basic_test()
-{
-    using namespace std::literals::string_literals;
-
-    boost::property_tree::ptree root;
-    boost::property_tree::ptree first;
-    first.put("object.<xmlattr>.uid", "first");
-    first.put("object.<xmlattr>.type", "sight::data::string");
-    first.put("object.value", "First");
-    root.add_child("item", first);
-    boost::property_tree::ptree second;
-    second.put("object.<xmlattr>.uid", "second");
-    second.put("object.<xmlattr>.type", "sight::data::string");
-    second.put("object.value", "Second");
-    root.add_child("item", second);
-    auto vector = std::make_shared<data::vector>();
-    parser::vector vector_parser;
-    CPPUNIT_ASSERT(vector_parser.is_a("sight::app::parser::vector"));
-    service::object_parser::objects_t sub_objects;
-    vector_parser.parse(root, vector, sub_objects);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(2), vector->size());
-    CPPUNIT_ASSERT_EQUAL("First"s, std::dynamic_pointer_cast<data::string>((*vector)[0])->get_value());
-    CPPUNIT_ASSERT_EQUAL("Second"s, std::dynamic_pointer_cast<data::string>((*vector)[1])->get_value());
-}
-
-} // namespace sight::app::parser::ut
+} // TEST_SUITE

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,47 +19,34 @@
  *
  ***********************************************************************/
 
-#include "select_object_test.hpp"
-
-#include <core/com/slot_base.hxx>
+#include <core/com/slot.hpp>
+#include <core/com/slot.hxx>
 
 #include <data/string.hpp>
 
 #include <service/op.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::data::ut::select_object_test);
+#include <doctest/doctest.h>
 
-namespace sight::module::data::ut
+TEST_SUITE("sight::module::data::select_object")
 {
-
 //------------------------------------------------------------------------------
 
-void select_object_test::setUp()
-{
-    m_select_object = service::add("sight::module::data::select_object");
-}
+    TEST_CASE("basic")
+    {
+        auto select_object = sight::service::add("sight::module::data::select_object");
+        auto object1       = std::make_shared<sight::data::string>("Hello");
+        auto object2       = std::make_shared<sight::data::string>("world");
 
-//------------------------------------------------------------------------------
+        CHECK_NOTHROW(select_object->start().get());
+        select_object->slot("add")->run(std::dynamic_pointer_cast<sight::data::object>(object1));
+        CHECK(select_object->output<sight::data::string>("object").lock() == object1);
+        select_object->slot("remove")->run();
+        CHECK(select_object->output<sight::data::string>("object").lock() == nullptr);
+        select_object->slot("add")->run(std::dynamic_pointer_cast<sight::data::object>(object2));
+        CHECK(select_object->output<sight::data::string>("object").lock() == object2);
 
-void select_object_test::tearDown()
-{
-    CPPUNIT_ASSERT_NO_THROW(m_select_object->stop().get());
-    service::remove(m_select_object);
-}
-
-//------------------------------------------------------------------------------
-
-void select_object_test::basic_test()
-{
-    auto object1 = std::make_shared<sight::data::string>("Hello");
-    auto object2 = std::make_shared<sight::data::string>("world");
-    CPPUNIT_ASSERT_NO_THROW(m_select_object->start().get());
-    m_select_object->slot("add")->run(std::dynamic_pointer_cast<sight::data::object>(object1));
-    CPPUNIT_ASSERT(m_select_object->output<sight::data::string>("object").lock() == object1);
-    m_select_object->slot("remove")->run();
-    CPPUNIT_ASSERT(m_select_object->output<sight::data::string>("object").lock() == nullptr);
-    m_select_object->slot("add")->run(std::dynamic_pointer_cast<sight::data::object>(object2));
-    CPPUNIT_ASSERT(m_select_object->output<sight::data::string>("object").lock() == object2);
-}
-
-} // namespace sight::module::data::ut
+        CHECK_NOTHROW(select_object->stop().get());
+        sight::service::remove(select_object);
+    }
+} // TEST_SUITE("sight::module::data::select_object")

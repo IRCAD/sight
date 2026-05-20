@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -188,8 +188,8 @@ void point_list::starting()
 service::connections_t point_list::auto_connections() const
 {
     service::connections_t connections = adaptor::auto_connections();
-    connections.push(m_point_list, data::point_list::POINT_ADDED_SIG, adaptor::slots::LAZY_UPDATE);
-    connections.push(m_point_list, data::point_list::POINT_REMOVED_SIG, adaptor::slots::LAZY_UPDATE);
+    connections.push(m_point_list, data::point_list::signals::POINT_ADDED, adaptor::slots::LAZY_UPDATE);
+    connections.push(m_point_list, data::point_list::signals::POINT_REMOVED, adaptor::slots::LAZY_UPDATE);
     connections.push(m_point_list, data::point_list::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
 
     connections.push(m_points, data::object::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
@@ -254,7 +254,7 @@ void point_list::updating()
                 [&tmp_list](const auto& _x)
                 {
                     const auto point = _x.second->const_lock();
-                    tmp_list->get_points().push_back(std::const_pointer_cast<sight::data::point>(point.get_shared()));
+                    tmp_list->push_back(std::const_pointer_cast<sight::data::point>(point.get_shared()));
                 });
             this->update_mesh(tmp_list);
         }
@@ -292,7 +292,7 @@ void point_list::create_label(const data::point_list::csptr& _point_list)
     auto render_srv          = this->render_service();
     std::size_t i            = 0;
     std::string label_number = std::to_string(i);
-    for(const auto& point : _point_list->get_points())
+    for(const auto& point : *_point_list)
     {
         const auto label = point->get_label();
         if(!label.empty())
@@ -345,7 +345,7 @@ void point_list::update_mesh(const data::point_list::csptr& _point_list)
 
     detach_and_destroy_entity();
 
-    const std::size_t ui_num_vertices = _point_list->get_points().size();
+    const std::size_t ui_num_vertices = _point_list->size();
     if(ui_num_vertices == 0)
     {
         SIGHT_DEBUG("Empty mesh");
@@ -372,6 +372,14 @@ void point_list::update_mesh(const data::point_list::csptr& _point_list)
         m_entity = m_mesh_geometry->create_entity(*scene_mgr);
         m_entity->setVisible(visible());
         m_entity->setQueryFlags(m_query_flags);
+
+        if(m_exclude_from_camera_reset.value())
+        {
+            m_entity->getUserObjectBindings().setUserAny(
+                sight::viz::scene3d::helper::scene::EXCLUDE_FROM_CAMERA_RESET_FLAG,
+                true
+            );
+        }
     }
 
     //------------------------------------------

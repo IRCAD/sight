@@ -19,14 +19,14 @@
             <object uid="foregroundImage" type="sight::data::image" />
             <object uid="offscreenImage" type="sight::data::image" />
             <!-- Objects related to the camera managing the calibration data -->
-            <object uid="RGBDCameraSet" type="sight::data::camera_set" />
+            <object uid="RGBDepthCameraSet" type="sight::data::camera_set" />
             <object uid="RGBcamera" type="sight::data::camera" deferred="true" />
-            <object uid="Dcamera" type="sight::data::camera" deferred="true" />
-            <!-- Matrices to register to mesh in the right space regading the camera position -->
+            <object uid="DepthCamera" type="sight::data::camera" deferred="true" />
+            <!-- Matrices to register to mesh in the right space regarding the camera position -->
             <object uid="registrationMatrix" type="sight::data::matrix4" />
             <object uid="inverseMatrix" type="sight::data::matrix4" />
             <object uid="extrinsic" type="sight::data::matrix4" deferred="true" />
-            <!-- Objectes related to the models loaded to perform AR -->
+            <!-- Objects related to the models loaded to perform AR -->
             <object uid="seriesSet" type="sight::data::series_set" />
             <object uid="modelSeries" type="sight::data::model_series" deferred="true" />
             <object uid="mesh" type="sight::data::mesh" deferred="true" />
@@ -188,7 +188,7 @@
             <!-- ******************************* Begin Generic scene ******************************* -->
 
             <service uid="genericSceneSrv" type="sight::viz::scene3d::render">
-                <scene renderMode="manual">
+                <scene render_mode="manual">
                     <background topColor="#36393E" bottomColor="#36393E" />
 
                     <layer id="video">
@@ -258,7 +258,7 @@
                 </parameters>
             </service>
 
-            <!-- Parameter to tune the threshold value from the SRGBDImageMasking service -->
+            <!-- Parameter to tune the threshold value -->
             <service uid="maskerThresholdParamSrv" type="sight::module::ui::qt::parameters">
                 <parameters>
                     <param type="int" name="Masking threshold" key="threshold" defaultValue="10" min="0" max="50" />
@@ -266,14 +266,14 @@
             </service>
 
             <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::camera">
-                <inout key="camera_set" uid="RGBDCameraSet" />
+                <inout key="camera_set" uid="RGBDepthCameraSet" />
                 <createCameraNumber>2</createCameraNumber>
                 <videoSupport>true</videoSupport>
             </service>
 
             <!-- To get frames from the RealSense camera -->
             <service uid="videoGrabberSrv" type="sight::module::io::realsense::scan" worker="grabber">
-                <inout key="camera_set" uid="RGBDCameraSet" />
+                <inout key="camera_set" uid="RGBDepthCameraSet" />
                 <inout key="depth_tl" uid="frameTLDepth" />
                 <inout key="frame_tl" uid="frameTLVideo" />
                 <config fps="30" colorW="1280" colorH="720" depthW="1280" depthH="720" preset="Hand" alignTo="Color" />
@@ -292,7 +292,7 @@
             </service>
 
             <!-- Matrix (trf format) reader -->
-            <!-- This matrix is used to staticaly register the model onto the video -->
+            <!-- This matrix is used to statically register the model onto the video -->
             <service uid="transformReaderSrv" type="sight::module::ui::io::selector">
                 <inout key="data" uid="registrationMatrix" />
                 <!-- mode is optional (by default it is "reader") -->
@@ -322,13 +322,13 @@
                 </out>
             </service>
 
-            <!-- Extract RGB instrinsic Depth intrinsic and Extrinsic matrices from a sight::data::camera_set -->
+            <!-- Extract RGB intrinsic Depth intrinsic and Extrinsic matrices from a sight::data::camera_set -->
             <service uid="extractCameraSrv" type="sight::module::data::get_camera">
                 <!-- Source -->
-                <inout key="camera_set" uid="RGBDCameraSet" />
+                <inout key="camera_set" uid="RGBDepthCameraSet" />
                 <!-- Destination -->
                 <out group="camera">
-                    <key index="0" uid="Dcamera" />
+                    <key index="0" uid="DepthCamera" />
                     <key index="1" uid="RGBcamera" />
                 </out>
                 <out group="extrinsic">
@@ -442,7 +442,7 @@
             </connect>
 
             <connect>
-                <signal>RGBDCameraSet/added_camera</signal>
+                <signal>RGBDepthCameraSet/added_camera</signal>
                 <slot>extractCameraSrv/update</slot>
             </connect>
 

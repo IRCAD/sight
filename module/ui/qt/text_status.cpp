@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -60,8 +60,9 @@ void text_status::configuring()
 
     const QString service_id = QString::fromStdString(base_id());
 
-    const auto size   = config.get<std::string>("size", "14pt");
-    const auto weight = config.get<std::string>("weight", "normal");
+    const auto size      = config.get<std::string>("size", "14pt");
+    const auto weight    = config.get<std::string>("weight", "normal");
+    const auto word_wrap = config.get<bool>("word_wrap", false);
     m_decimals = config.get<int>("decimals", m_decimals);
 
     QString color = "red";
@@ -82,6 +83,7 @@ void text_status::configuring()
     m_label_value = new QLabel();
     m_label_value->setObjectName(service_id);
     m_label_value->setStyleSheet(m_label_value->styleSheet() + stylesheet);
+    m_label_value->setWordWrap(word_wrap);
 
     if(const auto label = config.get_optional<std::string>("label"); label.has_value())
     {

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -57,12 +57,20 @@ namespace compositor::manager
 
 class oit;
 
-} // namespace compositor
+} // namespace compositor::manager
 
 } // namespace sight::viz::scene3d
 
 namespace sight::viz::scene3d
 {
+
+struct pick_result_t
+{
+    Ogre::Vector3 position;                             ///< Intersection point in world coordinates
+    Ogre::MovableObject* object {nullptr};              ///< The intersected object, nullptr if no intersection
+    float distance {std::numeric_limits<float>::max()}; ///< Distance from ray origin to intersection point
+    std::size_t index {0};                              ///< Index of the intersected element (vertex, edge, face)
+};
 
 /**
  * @brief Provide some Ogre general functions for Sight
@@ -81,9 +89,9 @@ public:
      *        Add a path to load Ogre resources from a specific module.
      *        You must edit the resource.cfg file for each module containing specific resources
      *        In this case, you can call this method in the plugin.cpp file of this module
-     * @param _path Relative path to the resource.cfg file from a specific module
+     * @param _module_name Name of the module containing the resource.cfg file
      */
-    SIGHT_VIZ_SCENE3D_API static void add_resources_path(const std::string& _path);
+    SIGHT_VIZ_SCENE3D_API static void add_resources_path(const std::string& _module_name);
 
     /**
      * @brief getOgreRoot
@@ -101,7 +109,7 @@ public:
      */
     SIGHT_VIZ_SCENE3D_API static void convert_from_ogre_texture(
         Ogre::TexturePtr _texture,
-        const data::image::sptr _image_fw,
+        const data::image::sptr& _image_fw,
         bool _flip = false
     );
 
@@ -185,7 +193,7 @@ public:
      * @param _layer scene manager where to pick objects from.
      * @return Object and intersection.
      */
-    SIGHT_VIZ_SCENE3D_API static std::optional<std::pair<Ogre::MovableObject*, Ogre::Vector3> > pick_object(
+    SIGHT_VIZ_SCENE3D_API static std::optional<pick_result_t> pick_object(
         int _x,
         int _y,
         std::uint32_t _query_mask,

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,7 +36,6 @@
 #include <core/profiling.hpp>
 
 #include <core/runtime/utils/generic_executable_factory_registry.hpp>
-#include <core/ptree.hpp>
 
 #include <service/macros.hpp>
 
@@ -44,8 +43,6 @@
 #include <OGRE/OgreNode.h>
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreSceneNode.h>
-
-#include <stack>
 
 SIGHT_REGISTER_SERVICE(sight::viz::render, sight::viz::scene3d::render, sight::data::map);
 
@@ -127,7 +124,7 @@ void render::configuring()
     m_fullscreen = scene_cfg.get<bool>("<xmlattr>.fullscreen", false);
 
     const auto render_mode = core::ptree::get_and_deprecate<std::string>(
-        config,
+        scene_cfg,
         "<xmlattr>.render_mode",
         "<xmlattr>.renderMode",
         "26.0",
@@ -135,9 +132,9 @@ void render::configuring()
     );
     if(render_mode == "auto")
     {
-        m_render_mode = render_mode::AUTO;
+        m_render_mode = render_mode::automatic;
     }
-    else if(render_mode == "manual" || render_mode == "sync") /* Keep sync for backwards compatibility */
+    else if(render_mode == "manual")
     {
         m_render_mode = render_mode::manual;
     }
@@ -158,7 +155,7 @@ void render::configuring()
         for(const auto& it : boost::make_iterator_range(adaptor_configs))
         {
             const auto uid = it.second.get<std::string>("<xmlattr>.uid");
-            adaptor_registry[uid] = {this->get_id(), layer_id};
+            adaptor_registry[uid] = {.render = this->get_id(), .layer = layer_id};
             m_adaptors_index[uid] = num_adaptors++;
         }
 
@@ -184,7 +181,7 @@ void render::configuring()
     for(const auto& it : adaptor_configs)
     {
         const auto uid = it.second.get<std::string>("<xmlattr>.uid");
-        adaptor_registry[uid] = {this->get_id(), ""};
+        adaptor_registry[uid] = {.render = this->get_id(), .layer = ""};
         m_adaptors_index[uid] = num_adaptors++;
     }
 
@@ -629,7 +626,7 @@ Ogre::SceneManager* render::get_scene_manager(const std::string& _scene_id)
 viz::scene3d::layer::sptr render::layer(const std::string& _scene_id)
 {
     SIGHT_ASSERT("Empty sceneID", !_scene_id.empty());
-    SIGHT_ASSERT("layer ID " << _scene_id << " does not exist", m_layers.find(_scene_id) != m_layers.end());
+    SIGHT_ASSERT("Layer ID " << _scene_id << " does not exist", m_layers.contains(_scene_id));
 
     viz::scene3d::layer::sptr layer = m_layers.at(_scene_id);
 

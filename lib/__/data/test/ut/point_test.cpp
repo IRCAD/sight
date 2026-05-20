@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2025 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,126 +19,118 @@
  *
  ***********************************************************************/
 
-#include "point_test.hpp"
-
 #include <data/point.hpp>
 
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::point_test);
+#include <doctest/doctest.h>
 
-namespace sight::data::ut
+TEST_SUITE("sight::data::point")
 {
-
 //------------------------------------------------------------------------------
 
-void point_test::setUp()
-{
-}
-
-//------------------------------------------------------------------------------
-
-void point_test::tearDown()
-{
-}
-
-//------------------------------------------------------------------------------
-
-void point_test::copy_test()
-{
-    // shallow copy
+    TEST_CASE("copy")
     {
-        data::point::sptr p1 = std::make_shared<data::point>(1.F, 2.F, 3.F);
-        data::point::sptr p2 = std::make_shared<data::point>();
+        // shallow copy
+        {
+            sight::data::point::sptr p1 = std::make_shared<sight::data::point>(1.F, 2.F, 3.F);
+            sight::data::point::sptr p2 = std::make_shared<sight::data::point>();
 
-        CPPUNIT_ASSERT_NO_THROW(p2->shallow_copy(p1));
-        CPPUNIT_ASSERT_EQUAL((*p1)[0], (*p2)[0]);
-        CPPUNIT_ASSERT_EQUAL((*p1)[1], (*p2)[1]);
-        CPPUNIT_ASSERT_EQUAL((*p1)[2], (*p2)[2]);
+            CHECK_NOTHROW(p2->shallow_copy(p1));
+            CHECK_EQ((*p1)[0], (*p2)[0]);
+            CHECK_EQ((*p1)[1], (*p2)[1]);
+            CHECK_EQ((*p1)[2], (*p2)[2]);
+        }
+
+        // Deep copy
+        {
+            sight::data::point::sptr p1 = std::make_shared<sight::data::point>(1.F, 2.F, 3.F);
+            sight::data::point::sptr p2 = std::make_shared<sight::data::point>();
+
+            CHECK_NOTHROW(p2->deep_copy(p1));
+            CHECK_EQ((*p1)[0], (*p2)[0]);
+            CHECK_EQ((*p1)[1], (*p2)[1]);
+            CHECK_EQ((*p1)[2], (*p2)[2]);
+        }
     }
 
-    // Deep copy
+//------------------------------------------------------------------------------
+
+    TEST_CASE("getter")
     {
-        data::point::sptr p1 = std::make_shared<data::point>(1.F, 2.F, 3.F);
-        data::point::sptr p2 = std::make_shared<data::point>();
+        sight::data::point::sptr p1 = std::make_shared<sight::data::point>();
 
-        CPPUNIT_ASSERT_NO_THROW(p2->deep_copy(p1));
-        CPPUNIT_ASSERT_EQUAL((*p1)[0], (*p2)[0]);
-        CPPUNIT_ASSERT_EQUAL((*p1)[1], (*p2)[1]);
-        CPPUNIT_ASSERT_EQUAL((*p1)[2], (*p2)[2]);
+        *p1 = {0., 1., 10.};
+
+        CHECK_EQ(0., (*p1)[0]);
+        CHECK_EQ(1., (*p1)[1]);
+        CHECK_EQ(10., (*p1)[2]);
     }
-}
 
 //------------------------------------------------------------------------------
 
-void point_test::getter_test()
-{
-    data::point::sptr p1 = std::make_shared<data::point>();
+    TEST_CASE("setter")
+    {
+        sight::data::point::sptr p1 = std::make_shared<sight::data::point>();
 
-    *p1 = {0., 1., 10.};
+        sight::data::point::point_coord_array_t expected = {0.1, 0.2, 0.3};
 
-    CPPUNIT_ASSERT_EQUAL(0., (*p1)[0]);
-    CPPUNIT_ASSERT_EQUAL(1., (*p1)[1]);
-    CPPUNIT_ASSERT_EQUAL(10., (*p1)[2]);
-}
+        *p1 = {expected};
 
-//------------------------------------------------------------------------------
-
-void point_test::setter_test()
-{
-    data::point::sptr p1 = std::make_shared<data::point>();
-
-    data::point::point_coord_array_t expected = {0.1, 0.2, 0.3};
-
-    *p1 = {expected};
-
-    CPPUNIT_ASSERT_EQUAL(expected[0], (*p1)[0]);
-    CPPUNIT_ASSERT_EQUAL(expected[1], (*p1)[1]);
-    CPPUNIT_ASSERT_EQUAL(expected[2], (*p1)[2]);
-}
+        CHECK_EQ(expected[0], (*p1)[0]);
+        CHECK_EQ(expected[1], (*p1)[1]);
+        CHECK_EQ(expected[2], (*p1)[2]);
+    }
 
 //------------------------------------------------------------------------------
 
-void point_test::label_test()
-{
-    data::point::sptr p     = std::make_shared<data::point>(1., 2., 3.);
-    const std::string label = "TestPoint";
-    p->set_label(label);
+    TEST_CASE("label")
+    {
+        sight::data::point::sptr p = std::make_shared<sight::data::point>(1., 2., 3.);
+        const std::string label    = "TestPoint";
+        p->set_label(label);
 
-    const auto actual_label = p->get_label();
+        const auto actual_label = p->get_label();
 
-    CPPUNIT_ASSERT_EQUAL(label, actual_label);
-}
+        CHECK_EQ(label, actual_label);
+    }
 
 //------------------------------------------------------------------------------
 
-void point_test::equality_test()
-{
-    auto point1 = std::make_shared<data::point>();
-    auto point2 = std::make_shared<data::point>();
+    TEST_CASE("equality")
+    {
+        auto point1 = std::make_shared<sight::data::point>();
+        auto point2 = std::make_shared<sight::data::point>();
 
-    CPPUNIT_ASSERT(*point1 == *point2 && !(*point1 != *point2));
+        CHECK(*point1 == *point2);
+        CHECK(!(*point1 != *point2));
 
-    // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
+        // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
     #define TEST(op) \
             point1->op; \
-            CPPUNIT_ASSERT_MESSAGE( \
-                "Points should be different when using " #op " on the first one", \
-                *point1 != *point2 && !(*point1 == *point2) \
+            CHECK_MESSAGE( \
+                *point1 != *point2, \
+                "Points should be different when using " #op " on the first one" \
+            ); \
+            CHECK_MESSAGE( \
+                !(*point1 == *point2), \
+                "Points should be different when using " #op " on the first one" \
             ); \
             point2->op; \
-            CPPUNIT_ASSERT_MESSAGE( \
-                "Points should be equal when using " #op " on both", \
-                *point1 == *point2 && !(*point1 != *point2) \
+            CHECK_MESSAGE( \
+                *point1 == *point2, \
+                "Points should be equal when using " #op " on both" \
+            ); \
+            CHECK_MESSAGE( \
+                !(*point1 != *point2), \
+                "Points should be equal when using " #op " on both" \
             );
 
-    TEST(operator=({1, 0, 0}));
-    TEST(operator=({0, 1, 0}));
-    TEST(operator=({0, 0, 1}));
-    TEST(set_label("1"));
+        TEST(operator=({1, 0, 0}));
+        TEST(operator=({0, 1, 0}));
+        TEST(operator=({0, 0, 1}));
+        TEST(set_label("1"));
 
     #undef TEST
-}
+    }
 
 //------------------------------------------------------------------------------
-
-} // namespace sight::data::ut
+} // TEST_SUITE("sight::data::point")

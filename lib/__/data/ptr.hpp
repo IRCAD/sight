@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2025 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -169,15 +169,17 @@ public:
     ptr& operator=(ptr&&)      = delete;
 
     /// This method is only available if it is an output
-    template<data::access A = ACCESS, typename = typename std::enable_if_t<assignable_traits<A>::VALUE> >
+    template<data::access A = ACCESS>
     ptr& operator=(const typename access_type_traits<DATATYPE, ACCESS>::value& _obj)
+    requires assignable_traits<A>::VALUE
     {
         this->set(_obj, {}, {}, {}, true);
         return *this;
     }
 
     /// This method is only available if it is an output
-    template<data::access A = ACCESS, typename = typename std::enable_if_t<assignable_traits<A>::VALUE> >
+    template<data::access A = ACCESS>
+    requires assignable_traits<A>::VALUE
     void reset()
     {
         this->set(nullptr, {}, {}, {}, true);
@@ -284,7 +286,7 @@ private:
 
     //------------------------------------------------------------------------------
 
-    void set_deferred_id(const std::string& _id, std::optional<std::size_t> = std::nullopt) final
+    void set_deferred_id(const std::string& _id, std::optional<std::size_t>/*_index*/ = std::nullopt) final
     {
         SIGHT_ASSERT("Object id can not be empty", !_id.empty());
         m_deferred_id = _id;
@@ -305,7 +307,7 @@ private:
  *
  * This class purpose is to be used as a service class member to declare and access multiple data of the same type.
  */
-template<class DATATYPE, data::access ACCESS>
+template<class DATATYPE, data::access ACCESS = data::access::inout>
 class ptr_vector final : public base_ptr
 {
 public:
@@ -477,6 +479,8 @@ class property_base
 {
 public:
 
+    virtual ~property_base() = default;
+
     virtual sight::data::string_serializable::sptr make_default() = 0;
 };
 /**
@@ -504,7 +508,7 @@ public:
     {
     }
 
-    ~property() override = default;
+    ~property() final = default;
 
     //------------------------------------------------------------------------------
 
@@ -525,7 +529,7 @@ private:
 
     //------------------------------------------------------------------------------
 
-    sight::data::string_serializable::sptr make_default() override
+    sight::data::string_serializable::sptr make_default() final
     {
         auto default_object = std::make_shared<DATATYPE>(m_default_value);
         this->set(default_object, {}, {}, {}, false);

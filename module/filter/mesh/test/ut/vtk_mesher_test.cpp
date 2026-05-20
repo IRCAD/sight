@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2025 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,8 +19,6 @@
  *
  ***********************************************************************/
 
-#include "data/exception.hpp"
-
 #include <core/os/temp_path.hpp>
 #include <core/runtime/runtime.hpp>
 #include <core/tools/random/generator.hpp>
@@ -35,8 +33,6 @@
 #include <service/op.hpp>
 
 #include <utest_data/generator/image.hpp>
-
-#include <boost/property_tree/xml_parser.hpp>
 
 #include <doctest/doctest.h>
 
@@ -122,15 +118,12 @@ TEST_SUITE("sight::module::filter::mesh::vtk_mesher")
 
     TEST_CASE_FIXTURE(mesher_fixture, "generate_mesh")
     {
-        sight::service::config_t config;
-        std::stringstream config_string;
-        config_string
-        << R"(<in key="image_series" uid="image_series"/>)"
-           R"(<out key="model_series" uid="modelSeries"/>)"
-           R"(<properties percent_reduction="50" value="255" pass_band="0.1" boundary_smoothing="true" )"
-           R"(feature_smoothing="true" feature_angle="120"/>)";
+        const std::string config =
+            "<in key='image_series' uid='image_series'/>"
+            "<out key='model_series' uid='modelSeries'/>"
+            "<properties percent_reduction='50' value='255' pass_band='0.1' boundary_smoothing='true'"
+            "feature_smoothing='true' feature_angle='120'/>";
 
-        boost::property_tree::read_xml(config_string, config);
         mesher_service->set_config(config);
         mesher_service->configure();
         mesher_service->start().get();
@@ -146,14 +139,11 @@ TEST_SUITE("sight::module::filter::mesh::vtk_mesher")
 
     TEST_CASE_FIXTURE(mesher_fixture, "generate_mesh_with_min_reduction")
     {
-        sight::service::config_t config;
-        std::stringstream config_string;
-        config_string
-        << R"(<in key="image_series" uid="image_series"/>)"
-           R"(<out key="model_series" uid="modelSeries"/>)"
-           R"(<properties percent_reduction="0" value="255"/>)";
+        const std::string config =
+            "<in key='image_series' uid='image_series'/>"
+            "<out key='model_series' uid='modelSeries'/>"
+            "<properties percent_reduction='0' value='255'/>";
 
-        boost::property_tree::read_xml(config_string, config);
         mesher_service->set_config(config);
         mesher_service->configure();
         mesher_service->start().get();
@@ -169,14 +159,11 @@ TEST_SUITE("sight::module::filter::mesh::vtk_mesher")
 
     TEST_CASE_FIXTURE(mesher_fixture, "no_mesh_generated")
     {
-        sight::service::config_t config;
-        std::stringstream config_string;
-        config_string
-        << "<in key=\"image_series\" uid=\"image_series\"/>"
-           "<out key=\"model_series\" uid=\"modelSeries\"/>"
-           "<properties percent_reduction=\"90\" value=\"30\"/>";
+        const std::string config =
+            "<in key='image_series' uid='image_series'/>"
+            "<out key='model_series' uid='modelSeries'/>"
+            "<properties percent_reduction='90' value='30'/>";
 
-        boost::property_tree::read_xml(config_string, config);
         mesher_service->set_config(config);
         mesher_service->configure();
         mesher_service->start().get();

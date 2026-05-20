@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -72,7 +72,7 @@ void flip::updating()
 
         m_target = out_img;
 
-        this->signal<signals::computed_t>(signals::COMPUTED)->async_emit();
+        this->signal<signals::computed_t>(signals::SUCCEEDED)->async_emit();
     }
     else
     {

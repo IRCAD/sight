@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -31,14 +31,14 @@
 static void init_runtime()
 {
     // This variable is set when configuring this file in the fw_test() CMake macro
-    static const std::string MODULE_NAME = "@TESTED_MODULE@"; // NOLINT(readability-redundant-string-init)
-    if(!MODULE_NAME.empty())
+    static const std::string s_MODULE_NAME = "@TESTED_MODULE@"; // NOLINT(readability-redundant-string-init)
+    if(!s_MODULE_NAME.empty())
     {
-        SIGHT_INFO("Automatic loading of module '" + MODULE_NAME + "'");
+        SIGHT_INFO("Automatic loading of module '" + s_MODULE_NAME + "'");
         sight::core::runtime::init();
         const auto lib_location = boost::dll::this_line_location().parent_path().parent_path() / "@TESTED_MODULE_PATH@";
         sight::core::runtime::add_modules(lib_location.string());
-        sight::core::runtime::load_module(MODULE_NAME);
+        sight::core::runtime::load_module(s_MODULE_NAME);
     }
 }
 
@@ -47,8 +47,8 @@ static void init_runtime()
 static void shutdown_runtime()
 {
     // This variable is set when configuring this file in the fw_test() CMake macro
-    static const std::string MODULE_NAME = "@TESTED_MODULE@"; // NOLINT(readability-redundant-string-init)
-    if(!MODULE_NAME.empty())
+    static const std::string s_MODULE_NAME = "@TESTED_MODULE@"; // NOLINT(readability-redundant-string-init)
+    if(!s_MODULE_NAME.empty())
     {
         sight::core::runtime::shutdown();
     }
@@ -58,10 +58,30 @@ static void shutdown_runtime()
 
 int main(int argc, char** argv)
 {
+    const bool should_list_tests =
+        [&argc, &argv]()
+        {
+            for(int i = 1 ; i < argc ; ++i)
+            {
+                const std::string_view arg(argv[i]);
+                if(arg == "-ltc" || arg == "--list-test-cases"
+                   || arg == "-lts" || arg == "--list-test-suites"
+                   || arg == "-lr" || arg == "--list-reporters")
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }();
+
     doctest::Context context;
     context.applyCommandLine(argc, argv);
 
-    init_runtime();
+    if(!should_list_tests)
+    {
+        init_runtime();
+    }
 
     int res = context.run(); // run
 
@@ -70,7 +90,10 @@ int main(int argc, char** argv)
         return res; // propagate the result of the tests
     }
 
-    shutdown_runtime();
+    if(!should_list_tests)
+    {
+        shutdown_runtime();
+    }
 
     return res;
 }

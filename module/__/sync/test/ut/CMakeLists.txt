@@ -1,4 +1,4 @@
-sight_add_target(module_sync_ut TYPE TEST)
+sight_add_target(module_sync_ut TYPE DOCTEST)
 
 add_dependencies(module_sync_ut module_sync)
 

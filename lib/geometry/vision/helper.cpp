@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -232,7 +232,7 @@ void calibrate_pointing_tool(
         return;
     }
 
-    geometry::eigen::helper::EigenMatrix matrix_sum;
+    geometry::eigen::helper::eigen_matrix_t matrix_sum;
     matrix_sum.fill(0.);
     Eigen::Vector4d vector_sum;
     vector_sum.fill(0);
@@ -241,7 +241,7 @@ void calibrate_pointing_tool(
     {
         data::matrix4::csptr m1 = std::dynamic_pointer_cast<data::matrix4>(i);
         SIGHT_ASSERT("This element of the vector is not a data::matrix4", m1);
-        geometry::eigen::helper::EigenMatrix xyz1;
+        geometry::eigen::helper::eigen_matrix_t xyz1;
         xyz1.fill(0.);
         xyz1(0, 0) = (*m1)(0, 3);
         xyz1(0, 1) = (*m1)(1, 3);
@@ -252,7 +252,7 @@ void calibrate_pointing_tool(
         vector_sum = vector_sum + xyz1.squaredNorm() * Eigen::Vector4d(xyz1(0, 0), xyz1(0, 1), xyz1(0, 2), xyz1(0, 3));
     }
 
-    geometry::eigen::helper::EigenMatrix temp_matrix;
+    geometry::eigen::helper::eigen_matrix_t temp_matrix;
     temp_matrix.fill(0.);
     temp_matrix(0, 0) = vector_sum[0];
     temp_matrix(0, 1) = vector_sum[1];
@@ -270,15 +270,15 @@ void calibrate_pointing_tool(
     {
         data::matrix4::csptr m1 = std::dynamic_pointer_cast<data::matrix4>(i);
         SIGHT_ASSERT("This element of the vector is not a data::matrix4", m1);
-        const geometry::eigen::helper::EigenMatrix point_matrix = geometry::eigen::helper::to_eigen(m1);
-        geometry::eigen::helper::EigenMatrix center_matrix(point_matrix);
-        const geometry::eigen::helper::EigenMatrix point_matrix_inverse = point_matrix.inverse();
+        const geometry::eigen::helper::eigen_matrix_t point_matrix = geometry::eigen::helper::to_eigen(m1);
+        geometry::eigen::helper::eigen_matrix_t center_matrix(point_matrix);
+        const geometry::eigen::helper::eigen_matrix_t point_matrix_inverse = point_matrix.inverse();
 
         center_matrix(0, 3) = a;
         center_matrix(1, 3) = b;
         center_matrix(2, 3) = c;
 
-        const geometry::eigen::helper::EigenMatrix calibration_matrix = point_matrix_inverse * center_matrix;
+        const geometry::eigen::helper::eigen_matrix_t calibration_matrix = point_matrix_inverse * center_matrix;
         translation(0) += calibration_matrix(0, 3);
         translation(1) += calibration_matrix(1, 3);
         translation(2) += calibration_matrix(2, 3);
@@ -304,8 +304,6 @@ data::point_list::sptr detect_chessboard(
     float _scale
 )
 {
-    data::point_list::sptr pointlist;
-
     SIGHT_ASSERT("Expected 8bit pixel components, this image has: " << 8 * _img.elemSize1(), _img.elemSize1() == 1);
 
     // Ensure that we have a true depth-less 2D image.
@@ -342,6 +340,7 @@ data::point_list::sptr detect_chessboard(
 
     const bool pattern_was_found = cv::findChessboardCorners(detection_image, board_size, corners, flags);
 
+    data::point_list::sptr point_list;
     if(pattern_was_found)
     {
         // Rescale points to get their coordinates in the full scale image.
@@ -352,15 +351,14 @@ data::point_list::sptr detect_chessboard(
         cv::TermCriteria term(cv::TermCriteria::MAX_ITER + cv::TermCriteria::EPS, 30, 0.1);
         cv::cornerSubPix(gray_img, corners, cv::Size(5, 5), cv::Size(-1, -1), term);
 
-        pointlist = std::make_shared<data::point_list>();
-        data::point_list::container_t& points = pointlist->get_points();
-        points.reserve(corners.size());
+        point_list = std::make_shared<data::point_list>();
+        point_list->reserve(corners.size());
 
         const auto cv2_sight_pt = [](const cv::Point2f& _p){return std::make_shared<data::point>(_p.x, _p.y);};
-        std::ranges::transform(corners, std::back_inserter(points), cv2_sight_pt);
+        std::ranges::transform(corners, std::back_inserter(*point_list), cv2_sight_pt);
     }
 
-    return pointlist;
+    return point_list;
 }
 
 // ----------------------------------------------------------------------------

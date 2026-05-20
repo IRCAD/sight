@@ -66,21 +66,26 @@ string(REPLACE "\n" ";" output "${output}")
 # Parse output
 foreach(line ${output})
     if(NOT "${line}" MATCHES
-       "<TestCase name=\"([A-Za-z0-9:_]*)\" (testsuite=\"([A-Za-z0-9:_]*)\" )?filename=\"([/\\_A-Za-z0-9\\.:\\-]*)\" line=\"([0-9]*)\""
+       "<TestCase name=\"([ A-Za-z0-9:_]*)\" (testsuite=\"([ A-Za-z0-9:_]*)\" )?filename=\"([ /\\_A-Za-z0-9\\.:\\-]*)\" line=\"([0-9]*)\""
     )
         continue()
     endif()
     set(test ${CMAKE_MATCH_1})
     if(NOT ${CMAKE_MATCH_3} STREQUAL "")
-        set(prefix "${CMAKE_MATCH_3}::")
+        set(suite "${CMAKE_MATCH_3}")
+        set(prefix "${suite}::")
     endif()
     set(FILENAME ${CMAKE_MATCH_4})
     set(LINE_NUMBER ${CMAKE_MATCH_5})
 
+    if("${prefix}${test}" MATCHES ".* .*" )
+        message(FATAL_ERROR "Test case '${prefix}${test}' contains spaces, please stick to snake_case.")
+    endif()
+
     # use escape commas to handle properly test cases with commas inside the name
     string(REPLACE "," "\\," test_name ${test})
     # ...and add to script
-    add_command(add_test "${prefix}${test}${suffix}" "${TEST_EXECUTABLE}" "--test-case=${test_name}" ${extra_args})
+    add_command(add_test "${prefix}${test}${suffix}" "${TEST_EXECUTABLE}" "--test-case=${test_name}" "--test-suite=${suite}" ${extra_args})
     if(WIN32)
         add_command(
             set_tests_properties

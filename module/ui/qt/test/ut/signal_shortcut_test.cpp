@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -30,8 +30,6 @@
 #include <ui/qt/container/widget.hpp>
 
 #include <utest/wait.hpp>
-
-#include <boost/property_tree/xml_parser.hpp>
 
 #include <QLineEdit>
 #include <QTest>
@@ -79,22 +77,19 @@ public:
     {
         view = service::add("sight::module::ui::view");
         {
-            std::stringstream config_string;
-            config_string
-            << "<gui>"
-               R"(<layout type="sight::ui::layout::line">)"
-               R"(    <orientation value="horizontal" />)"
-               R"(</layout>)"
-               R"(</gui>)"
-               R"(<registry>)"
-               R"(</registry>)";
-
-            sight::service::base::config_t config;
-            boost::property_tree::read_xml(config_string, config);
+            const std::string config =
+                "<gui>"
+                "<layout type='sight::ui::layout::line'>"
+                "    <orientation value='horizontal' />"
+                "</layout>"
+                "</gui>"
+                "<registry>"
+                "</registry>";
 
             view->set_id(_uid);
             // Configure and start the container service
-            view->configure(config);
+            view->set_config(config);
+            view->configure();
             view->start().get();
         }
 

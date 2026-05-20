@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2025 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,7 +38,7 @@ void point_list::copy_to_cv(const data::point::csptr& _src, cv::Point2d& _dst)
 void point_list::copy_to_cv(const data::point_list::csptr& _src, std::vector<cv::Point2d>& _dst)
 {
     _dst.clear();
-    for(const auto& point : _src->get_points())
+    for(const auto& point : *_src)
     {
         cv::Point2d cv_point;
         copy_to_cv(point, cv_point);
@@ -50,10 +50,10 @@ void point_list::copy_to_cv(const data::point_list::csptr& _src, std::vector<cv:
 
 void point_list::copy_from_cv(const std::vector<cv::Point2d>& _src, const data::point_list::sptr& _dst)
 {
-    _dst->get_points().clear();
+    _dst->clear();
     for(const auto& cv_point : _src)
     {
-        _dst->get_points().push_back(std::make_shared<data::point>(cv_point.x, cv_point.y, 0.));
+        _dst->push_back(std::make_shared<data::point>(cv_point.x, cv_point.y, 0.));
     }
 }
 

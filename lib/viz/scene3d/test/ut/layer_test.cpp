@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,13 +29,21 @@
 #include <viz/scene3d/ogre.hpp>
 #include <viz/scene3d/render.hpp>
 
-#include <boost/property_tree/xml_parser.hpp>
-
 #include <doctest/doctest.h>
 
 #include <OGRE/OgreRenderTarget.h>
 
-#include <cstdint>
+namespace
+{
+
+struct initializer
+{
+    initializer()
+    {
+        sight::core::runtime::init();
+        sight::core::runtime::load_module("sight::module::viz::scene3d::test");
+    }
+};
 
 class dummy_render_target : public Ogre::RenderTarget
 {
@@ -65,6 +73,7 @@ public:
     }
 };
 
+} // namespace
 TEST_SUITE("sight::viz::scene3d::helper::layer")
 {
     TEST_CASE("set_orthographic")
@@ -76,22 +85,20 @@ TEST_SUITE("sight::viz::scene3d::helper::layer")
         CHECK(layer->is_orthographic_camera_force());
     }
 
-    TEST_CASE("reset_camera_clipping_range")
+    TEST_CASE_FIXTURE(initializer, "reset_camera_clipping_range")
     {
         auto offscreen  = std::make_shared<sight::data::image>();
         auto render_srv = sight::service::add<sight::viz::scene3d::render>("sight::viz::scene3d::render");
 
         sight::service::config_t config;
-        std::stringstream config_string;
-        config_string << R"(<inout key="offscreen" uid="dummy" />)"
-        << R"(<scene>)"
-           R"( <background color="#36393E" />)"
-           R"( <layer id="default" >)"
-           R"( </layer>)"
-           R"(</scene>)";
+        const std::string config_string =
+            "<inout key='offscreen' uid='dummy' />"
+            "<scene>"
+            "  <background color='#36393E' />"
+            "  <layer id='default' />"
+            "</scene>";
 
-        boost::property_tree::read_xml(config_string, config);
-        render_srv->set_config(config);
+        render_srv->set_config(config_string);
         render_srv->set_inout(offscreen, "offscreen");
         render_srv->configure();
 

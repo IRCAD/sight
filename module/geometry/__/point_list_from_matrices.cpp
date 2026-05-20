@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,6 +21,8 @@
  ***********************************************************************/
 
 #include "point_list_from_matrices.hpp"
+
+#include "data/object.hpp"
 
 #include <core/com/signal.hxx>
 
@@ -77,7 +79,7 @@ void point_list_from_matrices::updating()
     auto point_list = m_point_list.lock();
     if(!m_append)
     {
-        point_list->get_points().clear();
+        point_list->clear();
     }
 
     for(std::size_t j = 0 ; j < num_matrices ; ++j)
@@ -90,7 +92,7 @@ void point_list_from_matrices::updating()
         std::string label;
         if(m_append)
         {
-            label = std::to_string(point_list->get_points().size());
+            label = std::to_string(point_list->size());
         }
         else
         {
@@ -101,8 +103,8 @@ void point_list_from_matrices::updating()
         point_list->push_back(p);
     }
 
-    point_list->signal<data::point_list::modified_signal_t>(data::point_list::MODIFIED_SIG)->async_emit();
-    this->signal<signals::computed_t>(signals::COMPUTED)->async_emit();
+    point_list->async_emit(data::signals::MODIFIED);
+    this->async_emit(filter::signals::SUCCEEDED);
 }
 
 //-----------------------------------------------------------------------------

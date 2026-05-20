@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -113,21 +113,35 @@ activity_requirement::activity_requirement(const config_t& _config) :
         "minOccurs value shall be equal or greater than 0 and lower or equal to maxOccurs (" << max_occurs << ")",
         min_occurs <= max_occurs
     );
+
+    if(validator.empty())
+    {
+        if(const auto& validator_cfg = _config.get_child_optional("validator"); validator_cfg.has_value())
+        {
+            validator        = validator_cfg->get<std::string>("<xmlattr>.id", validator);
+            validator_config = *validator_cfg;
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 activity_info::activity_info(const SPTR(core::runtime::extension)& _ext) :
-    id(_ext->get_config().get<std::string>("id")),
-    title(_ext->get_config().get<std::string>("title")),
-    description(_ext->get_config().get<std::string>("desc")),
-    icon(core::runtime::get_module_resource_file_path(_ext->get_config().get<std::string>("icon")).string()),
-    tab_info(title),
-    bundle_id(_ext->get_module()->identifier()),
-    app_config(_ext->get_config().get_child("appConfig"))
+    bundle_id(_ext->get_module()->identifier())
 {
     const auto& config = _ext->get_config();
-    tab_info = config.get<std::string>("tabinfo", tab_info);
+
+    id          = config.get<std::string>("id");
+    title       = config.get<std::string>("title");
+    description = config.get<std::string>("desc");
+
+    if(const auto& icon_cfg = config.get<std::string>("icon"); !icon_cfg.empty())
+    {
+        icon = core::runtime::get_module_resource_file_path(icon_cfg).string();
+    }
+
+    tab_info   = config.get<std::string>("tabinfo", tab_info);
+    app_config = config.get_child("appConfig");
 
     if(const auto& requirements_cfg = config.get_child_optional("requirements"); requirements_cfg.has_value())
     {
@@ -211,7 +225,7 @@ bool activity_info::usable_with(data_count_t _data_counts) const
         {
             for(const auto& data_count : _data_counts)
             {
-                if(m_requirement_count.find(data_count.first) == m_requirement_count.end())
+                if(!m_requirement_count.contains(data_count.first))
                 {
                     ok = false;
                     break;
@@ -222,9 +236,6 @@ bool activity_info::usable_with(data_count_t _data_counts) const
 
     return ok;
 }
-
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
 
@@ -250,7 +261,7 @@ void activity::parse_plugin_infos()
         SIGHT_ASSERT(
             "The id " << info.id << "(" << info.title << ")"
             << " already exists in the Activity registry",
-            m_reg.find(info.id) == m_reg.end()
+            !m_reg.contains(info.id)
         );
         m_reg.insert(registry::value_type(info.id, info));
     }

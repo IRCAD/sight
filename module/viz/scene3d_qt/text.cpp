@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2025 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -294,7 +294,13 @@ void text::set_text_color(const Ogre::ColourValue& _color)
 {
     std::stringstream ss;
     ss << "#" << std::hex << std::setfill('0') << std::setw(8) << _color.getAsARGB();
-    m_text_color = QString::fromStdString(ss.str());
+    const auto text_color = QString::fromStdString(ss.str());
+    if(m_text_color == text_color)
+    {
+        return;
+    }
+
+    m_text_color = text_color;
     this->adjust_style();
 }
 
@@ -302,7 +308,13 @@ void text::set_text_color(const Ogre::ColourValue& _color)
 
 void text::set_text_color(const std::string& _color)
 {
-    m_text_color = QString::fromStdString(_color);
+    const auto text_color = QString::fromStdString(_color);
+    if(m_text_color == text_color)
+    {
+        return;
+    }
+
+    m_text_color = text_color;
     this->adjust_style();
 }
 
@@ -324,6 +336,11 @@ void text::set_visible(bool _visible)
 
 void text::set_text_alignment(const std::string& _h_align, const std::string& _v_align)
 {
+    if(m_horizontal_alignment == _h_align && m_vertical_alignment == _v_align)
+    {
+        return;
+    }
+
     m_horizontal_alignment = _h_align;
     m_vertical_alignment   = _v_align;
     this->adjust_size();

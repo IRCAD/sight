@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -55,15 +55,17 @@ public:
      * @param _show_title : if true, show the title of the current task.
      * @param _show_cancel : if true, show the cancel button of the current task.
      * @param _pulse : if true, the progress bar will be in pulse mode.
+     * @param _expanding : if true, the progress bar will expand to fill available space.
      * @param _svg_path : if valid, will display an svg for pulse mode.
      * @param _svg_size : the default size of the svg.
      * @param _finished_callback : callback called when all tasks are finished.
      */
-    SIGHT_UI_QT_API_QT progress_bar(
+    SIGHT_UI_QT_API_QT explicit progress_bar(
         QWidget* _parent,
         const std::optional<bool>& _show_title                = std::nullopt,
         const std::optional<bool>& _show_cancel               = std::nullopt,
         const std::optional<bool>& _pulse                     = std::nullopt,
+        const std::optional<bool>& _expanding                 = std::nullopt,
         const std::optional<std::filesystem::path>& _svg_path = std::nullopt,
         const std::optional<int>& _svg_size                   = std::nullopt,
         finished_callback_t _finished_callback                = nullptr
@@ -117,6 +119,9 @@ private:
     /// True for pulse mode
     std::optional<bool> m_pulse {false};
 
+    /// True for pulse mode
+    std::optional<bool> m_expanding {false};
+
     /// If path is valid, will display an svg for pulse mode
     std::optional<std::filesystem::path> m_svg_path;
 
@@ -125,7 +130,6 @@ private:
 
     /// UI elements
     QPointer<QWidget> m_container;
-    QPointer<QLabel> m_title;
     QPointer<QProgressBar> m_progress_bar;
     QPointer<QSvgWidget> m_svg_widget;
     QPointer<QToolButton> m_cancel_button;
@@ -165,7 +169,8 @@ inline bool progress_bar::is_finished() const
         m_progress_monitors,
         [](const auto& _monitor)
         {
-            return _monitor.expired() || _monitor.lock()->get_state() >= core::progress::monitor::state::canceled;
+            const auto monitor = _monitor.lock();
+            return !monitor || monitor->get_state() >= core::progress::monitor::state::canceled;
         });
 }
 

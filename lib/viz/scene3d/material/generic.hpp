@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -35,7 +35,7 @@ namespace sight::viz::scene3d
 
 class mesh;
 
-}
+} // namespace sight::viz::scene3d
 
 namespace sight::viz::scene3d::material
 {
@@ -88,10 +88,10 @@ public:
     SIGHT_VIZ_SCENE3D_API void set_ambient_diffuse(const data::material::sptr& _material);
 
     /// Return the unique name of the Ogre material resource
-    std::string name() const;
+    [[nodiscard]] std::string name() const;
 
     /// Return the Ogre material resource instance itself
-    Ogre::MaterialPtr material() const;
+    [[nodiscard]] Ogre::MaterialPtr material() const;
 
     /// @brief Set a texture and the associated unit state
     /// @param _sampler_name name of the sampler, as defined in the .material script
@@ -136,7 +136,7 @@ protected:
     void clean_generated_techniques();
 
     /// Helper function to execute a function for all techniques of this material
-    void for_all_techniques(const std::function<void(Ogre::Pass&)>);
+    void for_all_techniques(std::function<void(Ogre::Pass&)> _fn);
 
     /// Ogre material resource
     Ogre::MaterialPtr m_material;

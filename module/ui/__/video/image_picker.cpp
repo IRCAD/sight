@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -107,7 +107,7 @@ void image_picker::get_interaction(data::tools::picking_info _info)
                 std::size_t n_points = 0;
                 {
                     auto point_list = m_point_list.lock();
-                    n_points = point_list->get_points().size();
+                    n_points = point_list->size();
                 }
 
                 if(n_points > 0)
@@ -170,22 +170,16 @@ void image_picker::add_point(const std::array<double, 3>& _current_point)
 
     // "World" points.
     {
-        point_list->get_points().push_back(point);
-        auto sig = point_list->signal<data::point_list::modified_signal_t>(data::point_list::MODIFIED_SIG);
-        sig->async_emit();
-
-        auto sig2 = point_list->signal<data::point_list::point_added_signal_t>(data::point_list::POINT_ADDED_SIG);
-        sig2->async_emit(point);
+        point_list->push_back(point);
+        point_list->async_emit(data::signals::MODIFIED);
+        point_list->async_emit(data::point_list::signals::POINT_ADDED, point);
     }
 
     // Pixel points.
     {
-        pixel_point_list->get_points().push_back(pixel);
-        auto sig = pixel_point_list->signal<data::point_list::modified_signal_t>(data::point_list::MODIFIED_SIG);
-        sig->async_emit();
-
-        auto sig2 = pixel_point_list->signal<data::point_list::point_added_signal_t>(data::point_list::POINT_ADDED_SIG);
-        sig2->async_emit(point);
+        pixel_point_list->push_back(pixel);
+        pixel_point_list->async_emit(data::signals::MODIFIED);
+        pixel_point_list->async_emit(data::point_list::signals::POINT_ADDED, pixel);
     }
 }
 
@@ -197,31 +191,22 @@ void image_picker::remove_last_point()
     auto pixel_point_list = m_pixel_point_list.lock();
     data::point::sptr point;
 
-    if(!point_list->get_points().empty() && !pixel_point_list->get_points().empty())
+    if(!point_list->empty() && !pixel_point_list->empty())
     {
         {
-            point = point_list->get_points().back();
-            point_list->get_points().pop_back();
+            point = point_list->back();
+            point_list->pop_back();
 
-            auto sig = point_list->signal<data::point_list::modified_signal_t>(data::point_list::MODIFIED_SIG);
-            sig->async_emit();
-
-            auto sig2 =
-                point_list->signal<data::point_list::point_removed_signal_t>(data::point_list::POINT_REMOVED_SIG);
-            sig2->async_emit(point);
+            point_list->async_emit(data::signals::MODIFIED);
+            point_list->async_emit(data::point_list::signals::POINT_REMOVED, point);
         }
 
         {
-            point = pixel_point_list->get_points().back();
-            pixel_point_list->get_points().pop_back();
+            point = pixel_point_list->back();
+            pixel_point_list->pop_back();
 
-            auto sig = pixel_point_list->signal<data::point_list::modified_signal_t>(data::point_list::MODIFIED_SIG);
-            sig->async_emit();
-
-            auto sig2 = pixel_point_list->signal<data::point_list::point_removed_signal_t>(
-                data::point_list::POINT_REMOVED_SIG
-            );
-            sig2->async_emit(point);
+            pixel_point_list->async_emit(data::signals::MODIFIED);
+            pixel_point_list->async_emit(data::point_list::signals::POINT_REMOVED, point);
         }
     }
 }

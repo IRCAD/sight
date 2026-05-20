@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,8 +19,6 @@
  *
  ***********************************************************************/
 
-#include "chessboard_creator_test.hpp"
-
 #include <data/integer.hpp>
 #include <data/point_list.hpp>
 #include <data/real.hpp>
@@ -29,94 +27,79 @@
 
 #include <boost/property_tree/xml_parser.hpp>
 
+#include <doctest/doctest.h>
+
 #include <memory>
 
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::filter::image::ut::chessboard_creator_test);
-
-namespace sight::module::filter::image::ut
+TEST_SUITE("sight::module::geometry::vision::chessboard_creator")
 {
-
 //------------------------------------------------------------------------------
 
-void chessboard_creator_test::setUp()
-{
-}
+    TEST_CASE("creation")
+    {
+        auto chessboard = std::make_shared<sight::data::point_list>();
 
-//------------------------------------------------------------------------------
+        auto board_width_prop       = std::make_shared<sight::data::integer>();
+        auto board_height_prop      = std::make_shared<sight::data::integer>();
+        auto board_square_size_prop = std::make_shared<sight::data::real>();
 
-void chessboard_creator_test::tearDown()
-{
-}
+        board_width_prop->set_value(10);
+        board_height_prop->set_value(6);
+        board_square_size_prop->set_value(1.0);
 
-//------------------------------------------------------------------------------
+        // Create service
+        auto srv = sight::service::add("sight::module::geometry::vision::chessboard_creator");
+        CHECK(srv->is_a("sight::module::geometry::vision::chessboard_creator"));
+        CHECK(srv);
 
-void chessboard_creator_test::creation_test()
-{
-    auto chessboard = std::make_shared<sight::data::point_list>();
+        srv->set_worker(sight::core::thread::get_default_worker());
+        srv->set_inout(chessboard, "chessboard_model");
+        srv->set_inout(board_width_prop, "board_width");
+        srv->set_inout(board_height_prop, "board_height");
+        srv->set_inout(board_square_size_prop, "board_square_size");
+        srv->configure();
+        srv->start().wait();
+        srv->update().wait();
 
-    auto board_width_prop       = std::make_shared<sight::data::integer>();
-    auto board_height_prop      = std::make_shared<sight::data::integer>();
-    auto board_square_size_prop = std::make_shared<sight::data::real>();
+        CHECK_EQ(std::size_t(45), chessboard->size());
 
-    board_width_prop->set_value(10);
-    board_height_prop->set_value(6);
-    board_square_size_prop->set_value(1.0);
+        // Check the first point
+        auto pt = (*chessboard)[0];
+        CHECK_EQ(0., (*pt)[0]);
+        CHECK_EQ(0., (*pt)[1]);
+        CHECK_EQ(0., (*pt)[2]);
 
-    // Create service
-    auto srv = sight::service::add("sight::module::geometry::vision::chessboard_creator");
-    CPPUNIT_ASSERT(srv->is_a("sight::module::geometry::vision::chessboard_creator"));
-    CPPUNIT_ASSERT(srv);
+        // Check the last point
+        pt = (*chessboard)[chessboard->size() - 1];
+        CHECK_EQ(4., (*pt)[0]);
+        CHECK_EQ(8., (*pt)[1]);
+        CHECK_EQ(0., (*pt)[2]);
 
-    srv->set_worker(sight::core::thread::get_default_worker());
-    srv->set_inout(chessboard, "chessboard_model");
-    srv->set_inout(board_width_prop, "board_width");
-    srv->set_inout(board_height_prop, "board_height");
-    srv->set_inout(board_square_size_prop, "board_square_size");
-    srv->configure();
-    srv->start().wait();
-    srv->update().wait();
+        // Update the chessboard properties
+        board_width_prop->set_value(5);
+        board_height_prop->set_value(3);
+        board_square_size_prop->set_value(2.0);
+        srv->update().wait();
+        CHECK_EQ(std::size_t(8), chessboard->size());
+        // Check the first point
+        pt = (*chessboard)[0];
+        CHECK_EQ(0., (*pt)[0]);
+        CHECK_EQ(0., (*pt)[1]);
+        CHECK_EQ(0., (*pt)[2]);
+        // Check the last point
+        pt = (*chessboard)[chessboard->size() - 1];
+        CHECK_EQ(2., (*pt)[0]);
+        CHECK_EQ(6., (*pt)[1]);
+        CHECK_EQ(0., (*pt)[2]);
 
-    CPPUNIT_ASSERT_EQUAL(std::size_t(45), chessboard->get_points().size());
+        // Test with negative values
+        board_width_prop->set_value(-5);
+        board_height_prop->set_value(-3);
+        board_square_size_prop->set_value(-2.0);
+        srv->update().wait();
+        CHECK_EQ(std::size_t(0), chessboard->size());
 
-    // Check the first point
-    auto pt = chessboard->get_points()[0];
-    CPPUNIT_ASSERT_EQUAL(0., (*pt)[0]);
-    CPPUNIT_ASSERT_EQUAL(0., (*pt)[1]);
-    CPPUNIT_ASSERT_EQUAL(0., (*pt)[2]);
-
-    // Check the last point
-    pt = chessboard->get_points()[chessboard->get_points().size() - 1];
-    CPPUNIT_ASSERT_EQUAL(4., (*pt)[0]);
-    CPPUNIT_ASSERT_EQUAL(8., (*pt)[1]);
-    CPPUNIT_ASSERT_EQUAL(0., (*pt)[2]);
-
-    // Update the chessboard properties
-    board_width_prop->set_value(5);
-    board_height_prop->set_value(3);
-    board_square_size_prop->set_value(2.0);
-    srv->update().wait();
-    CPPUNIT_ASSERT_EQUAL(std::size_t(8), chessboard->get_points().size());
-    // Check the first point
-    pt = chessboard->get_points()[0];
-    CPPUNIT_ASSERT_EQUAL(0., (*pt)[0]);
-    CPPUNIT_ASSERT_EQUAL(0., (*pt)[1]);
-    CPPUNIT_ASSERT_EQUAL(0., (*pt)[2]);
-    // Check the last point
-    pt = chessboard->get_points()[chessboard->get_points().size() - 1];
-    CPPUNIT_ASSERT_EQUAL(2., (*pt)[0]);
-    CPPUNIT_ASSERT_EQUAL(6., (*pt)[1]);
-    CPPUNIT_ASSERT_EQUAL(0., (*pt)[2]);
-
-    // Test with negative values
-    board_width_prop->set_value(-5);
-    board_height_prop->set_value(-3);
-    board_square_size_prop->set_value(-2.0);
-    srv->update().wait();
-    CPPUNIT_ASSERT_EQUAL(std::size_t(0), chessboard->get_points().size());
-
-    srv->stop().wait();
-    sight::service::remove(srv);
-}
-
-} // namespace sight::module::filter::image::ut
+        srv->stop().wait();
+        sight::service::remove(srv);
+    }
+} // TEST_SUITE

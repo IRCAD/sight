@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024-2025 IRCAD France
+ * Copyright (C) 2024-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -59,6 +59,8 @@ sight::service::connections_t shape::auto_connections() const
         {s_IMAGE_INOUT, sight::data::object::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE},
         {s_IMAGE_INOUT, sight::data::image_series::SLICE_INDEX_MODIFIED_SIG, sight::service::slots::UPDATE},
         {s_IMAGE_INOUT, sight::data::image_series::SLICE_TYPE_MODIFIED_SIG, sight::service::slots::UPDATE},
+        {s_IMAGE_INOUT, sight::data::image_series::SLICE_INDEX_MODIFIED_SIG, adaptor::slots::LAZY_UPDATE},
+        {s_IMAGE_INOUT, sight::data::image_series::SLICE_TYPE_MODIFIED_SIG, adaptor::slots::LAZY_UPDATE}
     };
 }
 

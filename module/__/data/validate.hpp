@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,10 +21,13 @@
 
 #pragma once
 
+#include <data/boolean.hpp>
 #include <data/object.hpp>
 #include <data/validator/base.hpp>
 
 #include <service/controller.hpp>
+
+#include <optional>
 
 namespace sight::module::data
 {
@@ -36,10 +39,10 @@ namespace sight::module::data
  * update slot, triggering a validation check.
  *
  * @section Signals Signals
- * - \b valid() : The object is valid given the specified validator.
- * - \b invalid() : The object is invalid given the specified validator.
- * - \b is_valid(bool) : The object is valid given the specified validator.
- * - \b is_invalid(bool) : The object is invalid given the specified validator.
+ * - \b valid() : Emitted when the object is valid given the specified validator.
+ * - \b invalid() : Emitted when the object is invalid given the specified validator.
+ * - \b is_valid(bool) : Emitted with true if the object is valid, false otherwise.
+ * - \b is_invalid(bool) : Emitted with true if the object is invalid, false otherwise.
  *
  * @section XML XML Configuration
  *
@@ -51,8 +54,17 @@ namespace sight::module::data
        @endcode
  * @subsection Input Input
  * - \b data [sight::data::object]: data object to validate.
+ *
+ * @subsection Inout Inout
+ * - \b valid [sight::data::boolean] (optional): true if valid, false otherwise.
+ * - \b invalid [sight::data::boolean] (optional): true if invalid, false otherwise.
+ *
  * @subsection Configuration Configuration
  * - \b id (string): class identifier of the validator
+ *
+ * @subsection Properties Properties
+ * - \b on_change (sight::data::boolean): if true, signals are only emitted when the validation state changes
+ * (default: false).
  */
 class validate final : public service::controller
 {
@@ -88,7 +100,7 @@ protected:
     /// Does nothing
     void stopping() final;
 
-    /// Extract the object(s)
+    /// Validates the data object and emits the result signals
     void updating() final;
 
     /// Updates when object is modified, according to the validator auto_connect_signals() function
@@ -98,6 +110,14 @@ private:
 
     sight::data::validator::base::sptr m_validator;
     sight::data::ptr<sight::data::object, sight::data::access::in> m_data {this, "data"};
+    sight::data::property<sight::data::boolean> m_on_change {this, "on_change", false};
+
+    /// Store the validation state and track changes
+    sight::data::ptr<sight::data::boolean, sight::data::access::inout> m_valid {this, "valid", true};
+    sight::data::ptr<sight::data::boolean, sight::data::access::inout> m_invalid {this, "invalid", true};
+
+    /// Tracks the previous validation result to detect state changes
+    std::optional<bool> m_previous_result;
 };
 
 } // namespace sight::module::data

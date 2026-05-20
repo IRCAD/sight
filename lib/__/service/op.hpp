@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -35,23 +35,23 @@ namespace sight::service
  * @brief Create a service of type serviceType
  * @return a pointer to the new service
  */
-SIGHT_SERVICE_API service::base::sptr add(const std::string& _impl_type, const std::string& _id = "");
+SIGHT_SERVICE_API service::base::sptr add(const std::string& _impl_type, const std::string& _uid = "");
 
 /**
  * @brief Create a service of type serviceType
  * @return a pointer to the new service with the given template type
  */
 template<class SERVICE>
-SPTR(SERVICE) add(const std::string& _impl_type, const std::string& _id = "");
+SPTR(SERVICE) add(const std::string& _impl_type, const std::string& _uid = "");
 
 //@}
 
 //------------------------------------------------------------------------------
 
 template<class SERVICE>
-SPTR(SERVICE) add(const std::string& _impl_type, const std::string& _id)
+SPTR(SERVICE) add(const std::string& _impl_type, const std::string& _uid)
 {
-    service::base::sptr generic_srv = service::add(_impl_type, _id);
+    service::base::sptr generic_srv = service::add(_impl_type, _uid);
     auto srv                        = std::dynamic_pointer_cast<SERVICE>(generic_srv);
     SIGHT_THROW_IF(
         "Failed to cast service from factory type '" + _impl_type + "' into '"

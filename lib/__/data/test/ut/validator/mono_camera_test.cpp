@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2025 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,93 +20,58 @@
  *
  ***********************************************************************/
 
-#include "mono_camera_test.hpp"
-
 #include <data/camera.hpp>
 #include <data/camera_set.hpp>
 #include <data/validator/base.hpp>
 
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::validator::ut::mono_camera_test);
+#include <doctest/doctest.h>
 
-namespace sight::data::validator::ut
+TEST_SUITE("sight::data::validator::camera_set")
 {
-
-namespace factory = sight::data::validator::factory;
-using sight::data::validator::base;
+    namespace factory = sight::data::validator::factory;
+    using sight::data::validator::base;
 
 //------------------------------------------------------------------------------
 
-void mono_camera_test::setUp()
-{
-    // Set up context before running a test.
-}
+    TEST_CASE("mono_camera")
+    {
+        auto validator = factory::make("sight::data::validator::camera_set::mono_camera");
+        CHECK(validator);
+
+        auto obj_validator = std::dynamic_pointer_cast<sight::data::validator::base>(validator);
+        CHECK(obj_validator);
+
+        sight::data::validator::return_t validation;
+
+        sight::data::camera_set::sptr camera_set = std::make_shared<sight::data::camera_set>();
+        sight::data::camera::sptr camera         = std::make_shared<sight::data::camera>();
+        sight::data::camera::sptr camera2        = std::make_shared<sight::data::camera>();
+
+        {
+            validation = obj_validator->validate(camera_set);
+            CHECK_MESSAGE(false == validation.first, "CameraSet without camera should NOT be valid");
+        }
+        {
+            camera_set->add_camera(camera);
+            validation = obj_validator->validate(camera_set);
+            CHECK_MESSAGE(false == validation.first, "CameraSet with a non-calibrated camera should NOT be valid");
+        }
+        {
+            validation = obj_validator->validate(camera);
+            CHECK_MESSAGE(false == validation.first, "Validator on other object should not be valid");
+        }
+        {
+            camera->set_is_calibrated(true);
+            validation = obj_validator->validate(camera_set);
+            CHECK_MESSAGE(true == validation.first, "CameraSet with a calibrated camera should be valid");
+        }
+        {
+            camera2->set_is_calibrated(true);
+            camera_set->add_camera(camera2);
+            validation = obj_validator->validate(camera_set);
+            CHECK_MESSAGE(false == validation.first, "CameraSet with two cameras should NOT be valid");
+        }
+    }
 
 //------------------------------------------------------------------------------
-
-void mono_camera_test::tearDown()
-{
-    // Clean up after the test run.
-}
-
-//------------------------------------------------------------------------------
-
-void mono_camera_test::test_validator()
-{
-    auto validator = factory::make("sight::data::validator::camera_set::mono_camera");
-    CPPUNIT_ASSERT(validator);
-
-    auto obj_validator = std::dynamic_pointer_cast<sight::data::validator::base>(validator);
-    CPPUNIT_ASSERT(obj_validator);
-
-    sight::data::validator::return_t validation;
-
-    data::camera_set::sptr camera_set = std::make_shared<data::camera_set>();
-    data::camera::sptr camera         = std::make_shared<data::camera>();
-    data::camera::sptr camera2        = std::make_shared<data::camera>();
-
-    {
-        validation = obj_validator->validate(camera_set);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("CameraSet without camera should NOT be valid", false, validation.first);
-    }
-    {
-        camera_set->add_camera(camera);
-        validation = obj_validator->validate(camera_set);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "CameraSet with a non-calibrated camera should NOT be valid",
-            false,
-            validation.first
-        );
-    }
-    {
-        validation = obj_validator->validate(camera);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "Validator on other object should not be valid",
-            false,
-            validation.first
-        );
-    }
-    {
-        camera->set_is_calibrated(true);
-        validation = obj_validator->validate(camera_set);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "CameraSet with a calibrated camera should be valid",
-            true,
-            validation.first
-        );
-    }
-    {
-        camera2->set_is_calibrated(true);
-        camera_set->add_camera(camera2);
-        validation = obj_validator->validate(camera_set);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "CameraSet with two cameras should NOT be valid",
-            false,
-            validation.first
-        );
-    }
-}
-
-//------------------------------------------------------------------------------
-
-} // namespace sight::data::validator::ut
+} // TEST_SUITE("sight::data::validator")

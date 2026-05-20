@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -631,7 +631,7 @@ std::pair<std::vector<fiducials_series::query_result>, std::set<std::string> > q
 
             auto fiducial_set_index             = i - 1 + removed_fiducial_sets;
             auto fiducial_index                 = j - 1 + removed_fiducials;
-            auto graphic_coordinates_data_index = 0;
+            auto graphic_coordinates_data_index = current_shape_index;
 
             std::vector<std::int32_t> referenced_frame_numbers = _pimpl.get_values<kw::ReferencedFrameNumber>(
                 0,
@@ -860,9 +860,9 @@ std::tuple<fiducials_series::point3,
         .z = std::numeric_limits<double>::max()
     };
     fiducials_series::point3 max {
-        .x = std::numeric_limits<double>::min(),
-        .y = std::numeric_limits<double>::min(),
-        .z = std::numeric_limits<double>::min()
+        .x = std::numeric_limits<double>::lowest(),
+        .y = std::numeric_limits<double>::lowest(),
+        .z = std::numeric_limits<double>::lowest()
     };
 
     for(const auto& data : this->contour_data)
@@ -897,8 +897,8 @@ std::optional<std::tuple<fiducials_series::point2,
         .y = std::numeric_limits<double>::max(),
     };
     fiducials_series::point2 max {
-        .x = std::numeric_limits<double>::min(),
-        .y = std::numeric_limits<double>::min(),
+        .x = std::numeric_limits<double>::lowest(),
+        .y = std::numeric_limits<double>::lowest(),
     };
 
     for(const auto& data : this->graphic_coordinates_data_sequence.value().at(_index).graphic_data)

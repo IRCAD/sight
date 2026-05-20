@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,242 +20,242 @@
  *
  ***********************************************************************/
 
-#include "slots_signals_test.hpp"
-
 #include "slots_signals_stuff.hpp"
 
 #include <service/registry.hpp>
 
 #include <utest/exception.hpp>
 
+#include <doctest/doctest.h>
+
 #include <thread>
 
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::service::ut::slots_signals_test);
-//
 namespace sight::service::ut
 {
 
-static utest::exception fw_test_exception(""); // force link with fwTest
+static sight::utest::exception fw_test_exception(""); // force link with fwTest
 
+TEST_SUITE("sight::service::slots_signals")
+{
 //------------------------------------------------------------------------------
 
-void slots_signals_test::setUp()
-{
-    // Set up context before running a test.
-}
-
-//------------------------------------------------------------------------------
-
-void slots_signals_test::tearDown()
-{
-    // Clean up after the test run.
-}
-
-//------------------------------------------------------------------------------
-
-void slots_signals_test::basic_test()
-{
-    buffer::sptr buffer1 = std::make_shared<buffer>();
-    buffer::sptr buffer2 = std::make_shared<buffer>();
-
-    core::thread::worker::sptr worker = core::thread::worker::make();
-    core::thread::add_worker("test", worker);
-
-    s_basic_test::sptr basic_test_srv = service::factory::make<s_basic_test>();
-    service::register_service(basic_test_srv);
-    basic_test_srv->set_inout(buffer1, s_basic_test::BUFFER_INOUT);
-
-    basic_test_srv->set_worker(worker);
-
-    base::shared_future_t start_future = basic_test_srv->start();
-    CPPUNIT_ASSERT(basic_test_srv->status() != base::global_status::started);
-    start_future.wait();
-    CPPUNIT_ASSERT(basic_test_srv->status() == base::global_status::started);
-
-    base::shared_future_t update_future = basic_test_srv->update();
-    CPPUNIT_ASSERT(basic_test_srv->m_update_finished == false);
-    update_future.wait();
-    CPPUNIT_ASSERT(basic_test_srv->m_update_finished == true);
-
-    base::shared_future_t swap_future = basic_test_srv->swap_key(s_basic_test::BUFFER_INOUT, buffer2);
-    CPPUNIT_ASSERT(basic_test_srv->m_swap_finished == false);
-    swap_future.wait();
-    CPPUNIT_ASSERT(basic_test_srv->m_swap_finished == true);
-
-    base::shared_future_t stop_future = basic_test_srv->stop();
-    CPPUNIT_ASSERT(basic_test_srv->status() != base::global_status::stopped);
-    stop_future.wait();
-    CPPUNIT_ASSERT(basic_test_srv->status() == base::global_status::stopped);
-
-    service::unregister_service(basic_test_srv);
-
-    core::thread::remove_worker("test");
-}
-
-//------------------------------------------------------------------------------
-
-void slots_signals_test::com_object_service_test()
-{
-    core::thread::worker::sptr worker1 = core::thread::worker::make();
-    core::thread::add_worker("worker1", worker1);
-    core::thread::worker::sptr worker2 = core::thread::worker::make();
-    core::thread::add_worker("worker2", worker2);
-
-    buffer::sptr buffer1 = std::make_shared<buffer>();
+    TEST_CASE("basic")
     {
-        reader_test::sptr reader_test_srv = service::factory::make<reader_test>();
-        service::register_service(reader_test_srv);
-        reader_test_srv->set_inout(buffer1, basic_srv::BUFFER_INOUT);
+        auto buffer1 = std::make_shared<sight::service::ut::buffer>();
+        auto buffer2 = std::make_shared<sight::service::ut::buffer>();
 
-        s_show_test::sptr show_test_srv = service::factory::make<s_show_test>();
-        service::register_service(show_test_srv);
-        show_test_srv->set_inout(buffer1, basic_srv::BUFFER_INOUT);
+        sight::core::thread::worker::sptr worker = sight::core::thread::worker::make();
+        sight::core::thread::add_worker("test", worker);
+
+        auto basic_test_srv = sight::service::factory::make<sight::service::ut::basic_test>();
+        sight::service::register_service(basic_test_srv);
+        basic_test_srv->set_inout(buffer1, sight::service::ut::basic_test::BUFFER_INOUT);
+
+        basic_test_srv->set_worker(worker);
+
+        auto start_future = basic_test_srv->start();
+        CHECK(basic_test_srv->status() != sight::service::base::global_status::started);
+        start_future.wait();
+        CHECK(basic_test_srv->status() == sight::service::base::global_status::started);
+
+        auto update_future = basic_test_srv->update();
+        CHECK_EQ(basic_test_srv->m_update_finished, false);
+        update_future.wait();
+        CHECK_EQ(basic_test_srv->m_update_finished, true);
+
+        auto swap_future = basic_test_srv->swap_key(sight::service::ut::basic_test::BUFFER_INOUT, buffer2);
+        CHECK_EQ(basic_test_srv->m_swap_finished, false);
+        swap_future.wait();
+        CHECK_EQ(basic_test_srv->m_swap_finished, true);
+
+        auto stop_future = basic_test_srv->stop();
+        CHECK(basic_test_srv->status() != sight::service::base::global_status::stopped);
+        stop_future.wait();
+        CHECK(basic_test_srv->status() == sight::service::base::global_status::stopped);
+
+        sight::service::unregister_service(basic_test_srv);
+
+        sight::core::thread::remove_worker("test");
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("com_object_service")
+    {
+        sight::core::thread::worker::sptr worker1 = sight::core::thread::worker::make();
+        sight::core::thread::add_worker("worker1", worker1);
+        sight::core::thread::worker::sptr worker2 = sight::core::thread::worker::make();
+        sight::core::thread::add_worker("worker2", worker2);
+
+        auto buffer1 = std::make_shared<sight::service::ut::buffer>();
+        {
+            auto reader_test_srv = sight::service::factory::make<sight::service::ut::reader_test>();
+            sight::service::register_service(reader_test_srv);
+            reader_test_srv->set_inout(buffer1, sight::service::ut::basic_srv::BUFFER_INOUT);
+
+            auto show_test_srv = sight::service::factory::make<sight::service::ut::show_test>();
+            sight::service::register_service(show_test_srv);
+            show_test_srv->set_inout(buffer1, sight::service::ut::basic_srv::BUFFER_INOUT);
+            show_test_srv->set_worker(worker1);
+
+            buffer1->signal(sight::data::object::MODIFIED_SIG)->connect(
+                show_test_srv->slot(
+                    sight::service::slots::UPDATE
+                )
+            );
+
+            reader_test_srv->start();
+            show_test_srv->start();
+
+            reader_test_srv->update().wait();
+
+            sight::service::base::shared_future_t stop_reader_future = reader_test_srv->stop();
+            sight::service::base::shared_future_t stop_show_future   = show_test_srv->stop();
+            stop_reader_future.wait();
+            stop_show_future.wait();
+
+            CHECK_EQ(show_test_srv->m_receive_count, 1);
+
+            buffer1->signal(sight::data::object::MODIFIED_SIG)->disconnect(
+                show_test_srv->slot(
+                    sight::service::slots::UPDATE
+                )
+            );
+
+            sight::service::unregister_service(reader_test_srv);
+            sight::service::unregister_service(show_test_srv);
+        }
+
+        {
+            auto reader_test_srv = sight::service::factory::make<sight::service::ut::reader_test>();
+            sight::service::register_service(reader_test_srv);
+            reader_test_srv->set_inout(buffer1, sight::service::ut::basic_srv::BUFFER_INOUT);
+
+            auto reader2_test_srv = sight::service::factory::make<sight::service::ut::reader_test>();
+            sight::service::register_service(reader2_test_srv);
+            reader2_test_srv->set_inout(buffer1, sight::service::ut::basic_srv::BUFFER_INOUT);
+            reader2_test_srv->set_worker(worker2);
+
+            auto show_test_srv = sight::service::factory::make<sight::service::ut::show_test>();
+            sight::service::register_service(show_test_srv);
+            show_test_srv->set_inout(buffer1, sight::service::ut::basic_srv::BUFFER_INOUT, true);
+            show_test_srv->set_worker(worker1);
+
+            reader_test_srv->start();
+            reader2_test_srv->start();
+            show_test_srv->start().wait();
+
+            sight::service::base::shared_future_t update_reader_future  = reader_test_srv->update();
+            sight::service::base::shared_future_t update_reader2_future = reader2_test_srv->update();
+            update_reader_future.wait();
+            update_reader2_future.wait();
+
+            sight::service::base::shared_future_t stop_reader_future  = reader_test_srv->stop();
+            sight::service::base::shared_future_t stop_reader2_future = reader2_test_srv->stop();
+            sight::service::base::shared_future_t stop_show_future    = show_test_srv->stop();
+            stop_reader_future.wait();
+            stop_reader2_future.wait();
+            stop_show_future.wait();
+
+            CHECK_EQ(show_test_srv->m_receive_count, 2);
+
+            sight::service::unregister_service(reader_test_srv);
+            sight::service::unregister_service(reader2_test_srv);
+            sight::service::unregister_service(show_test_srv);
+        }
+
+        sight::core::thread::remove_worker("worker1");
+        sight::core::thread::remove_worker("worker2");
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("com_service_to_service")
+    {
+        auto buffer1 = std::make_shared<sight::service::ut::buffer>();
+
+        sight::core::thread::worker::sptr worker1 = sight::core::thread::worker::make();
+        sight::core::thread::add_worker("worker1", worker1);
+
+        auto reader_test_srv = sight::service::factory::make<sight::service::ut::reader2_test>();
+        sight::service::register_service(reader_test_srv);
+        reader_test_srv->set_inout(buffer1, sight::service::ut::basic_srv::BUFFER_INOUT);
+
+        auto show_test_srv = sight::service::factory::make<sight::service::ut::show_test>();
+        sight::service::register_service(show_test_srv);
+        show_test_srv->set_inout(buffer1, sight::service::ut::basic_srv::BUFFER_INOUT);
         show_test_srv->set_worker(worker1);
 
-        buffer1->signal(data::object::MODIFIED_SIG)->connect(show_test_srv->slot(service::slots::UPDATE));
+        reader_test_srv->signal(sight::service::ut::reader2_test::CHANGED_SIG)->connect(
+            show_test_srv->slot(
+                sight::service::ut::show_test::CHANGE_SLOT
+            )
+        );
 
         reader_test_srv->start();
         show_test_srv->start();
 
         reader_test_srv->update().wait();
 
-        base::shared_future_t stop_reader_future = reader_test_srv->stop();
-        base::shared_future_t stop_show_future   = show_test_srv->stop();
+        sight::service::base::shared_future_t stop_reader_future = reader_test_srv->stop();
+        sight::service::base::shared_future_t stop_show_future   = show_test_srv->stop();
         stop_reader_future.wait();
         stop_show_future.wait();
 
-        CPPUNIT_ASSERT_EQUAL(1, show_test_srv->m_receive_count);
+        reader_test_srv->signal(sight::service::ut::reader2_test::CHANGED_SIG)->disconnect(
+            show_test_srv->slot(
+                sight::service::ut::show_test::CHANGE_SLOT
+            )
+        );
 
-        buffer1->signal(data::object::MODIFIED_SIG)->disconnect(show_test_srv->slot(service::slots::UPDATE));
+        CHECK_EQ(show_test_srv->m_change_count, 1);
 
-        service::unregister_service(reader_test_srv);
-        service::unregister_service(show_test_srv);
+        sight::service::unregister_service(reader_test_srv);
+        sight::service::unregister_service(show_test_srv);
+
+        sight::core::thread::remove_worker("worker1");
     }
 
+//------------------------------------------------------------------------------
+
+    TEST_CASE("block_connection")
     {
-        reader_test::sptr reader_test_srv = service::factory::make<reader_test>();
-        service::register_service(reader_test_srv);
-        reader_test_srv->set_inout(buffer1, basic_srv::BUFFER_INOUT);
+        auto buffer1 = std::make_shared<sight::service::ut::buffer>();
 
-        reader_test::sptr reader2_test_srv = service::factory::make<reader_test>();
-        service::register_service(reader2_test_srv);
-        reader2_test_srv->set_inout(buffer1, basic_srv::BUFFER_INOUT);
-        reader2_test_srv->set_worker(worker2);
+        sight::core::thread::worker::sptr worker1 = sight::core::thread::worker::make();
+        sight::core::thread::add_worker("worker1", worker1);
 
-        s_show_test::sptr show_test_srv = service::factory::make<s_show_test>();
-        service::register_service(show_test_srv);
-        show_test_srv->set_inout(buffer1, basic_srv::BUFFER_INOUT, true);
+        auto reader_test_srv = sight::service::factory::make<sight::service::ut::reader_test>();
+        sight::service::register_service(reader_test_srv);
+        reader_test_srv->set_inout(buffer1, sight::service::ut::basic_srv::BUFFER_INOUT);
+
+        auto show_test_srv = sight::service::factory::make<sight::service::ut::show2_test>();
+        sight::service::register_service(show_test_srv);
+        show_test_srv->set_inout(buffer1, sight::service::ut::basic_srv::BUFFER_INOUT);
         show_test_srv->set_worker(worker1);
 
+        sight::core::com::connection connection;
+        connection = buffer1->signal(sight::data::object::MODIFIED_SIG)->
+                     connect(show_test_srv->slot(sight::service::ut::show2_test::UPDATE_BUFFER_SLOT));
+
         reader_test_srv->start();
-        reader2_test_srv->start();
-        show_test_srv->start().wait();
+        show_test_srv->start();
 
-        base::shared_future_t update_reader_future  = reader_test_srv->update();
-        base::shared_future_t update_reader2_future = reader2_test_srv->update();
-        update_reader_future.wait();
-        update_reader2_future.wait();
+        reader_test_srv->update();
 
-        base::shared_future_t stop_reader_future  = reader_test_srv->stop();
-        base::shared_future_t stop_reader2_future = reader2_test_srv->stop();
-        base::shared_future_t stop_show_future    = show_test_srv->stop();
+        std::this_thread::sleep_for(std::chrono::seconds(8));
+
+        sight::service::base::shared_future_t stop_reader_future = reader_test_srv->stop();
+        sight::service::base::shared_future_t stop_show_future   = show_test_srv->stop();
         stop_reader_future.wait();
-        stop_reader2_future.wait();
         stop_show_future.wait();
 
-        CPPUNIT_ASSERT_EQUAL(2, show_test_srv->m_receive_count);
+        connection.disconnect();
 
-        service::unregister_service(reader_test_srv);
-        service::unregister_service(reader2_test_srv);
-        service::unregister_service(show_test_srv);
+        CHECK_EQ(show_test_srv->m_receive_count, 1);
+
+        sight::core::thread::remove_worker("worker1");
     }
-
-    core::thread::remove_worker("worker1");
-    core::thread::remove_worker("worker2");
-}
-
-//------------------------------------------------------------------------------
-
-void slots_signals_test::com_service_to_service_test()
-{
-    buffer::sptr buffer1 = std::make_shared<buffer>();
-
-    core::thread::worker::sptr worker1 = core::thread::worker::make();
-    core::thread::add_worker("worker1", worker1);
-
-    reader2_test::sptr reader_test_srv = service::factory::make<reader2_test>();
-    service::register_service(reader_test_srv);
-    reader_test_srv->set_inout(buffer1, basic_srv::BUFFER_INOUT);
-
-    s_show_test::sptr show_test_srv = service::factory::make<s_show_test>();
-    service::register_service(show_test_srv);
-    show_test_srv->set_inout(buffer1, basic_srv::BUFFER_INOUT);
-    show_test_srv->set_worker(worker1);
-
-    reader_test_srv->signal(reader2_test::CHANGED_SIG)->connect(show_test_srv->slot(s_show_test::CHANGE_SLOT));
-
-    reader_test_srv->start();
-    show_test_srv->start();
-
-    reader_test_srv->update().wait();
-
-    base::shared_future_t stop_reader_future = reader_test_srv->stop();
-    base::shared_future_t stop_show_future   = show_test_srv->stop();
-    stop_reader_future.wait();
-    stop_show_future.wait();
-
-    reader_test_srv->signal(reader2_test::CHANGED_SIG)->disconnect(show_test_srv->slot(s_show_test::CHANGE_SLOT));
-
-    CPPUNIT_ASSERT_EQUAL(1, show_test_srv->m_change_count);
-
-    service::unregister_service(reader_test_srv);
-    service::unregister_service(show_test_srv);
-
-    core::thread::remove_worker("worker1");
-}
-
-//------------------------------------------------------------------------------
-
-void slots_signals_test::block_connection_test()
-{
-    buffer::sptr buffer1 = std::make_shared<buffer>();
-
-    core::thread::worker::sptr worker1 = core::thread::worker::make();
-    core::thread::add_worker("worker1", worker1);
-
-    reader_test::sptr reader_test_srv = service::factory::make<reader_test>();
-    service::register_service(reader_test_srv);
-    reader_test_srv->set_inout(buffer1, basic_srv::BUFFER_INOUT);
-
-    s_show2_test::sptr show_test_srv = service::factory::make<s_show2_test>();
-    service::register_service(show_test_srv);
-    show_test_srv->set_inout(buffer1, basic_srv::BUFFER_INOUT);
-    show_test_srv->set_worker(worker1);
-
-    core::com::connection connection;
-    connection = buffer1->signal(data::object::MODIFIED_SIG)->
-                 connect(show_test_srv->slot(s_show2_test::UPDATE_BUFFER_SLOT));
-
-    reader_test_srv->start();
-    show_test_srv->start();
-
-    reader_test_srv->update();
-
-    std::this_thread::sleep_for(std::chrono::seconds(8));
-
-    base::shared_future_t stop_reader_future = reader_test_srv->stop();
-    base::shared_future_t stop_show_future   = show_test_srv->stop();
-    stop_reader_future.wait();
-    stop_show_future.wait();
-
-    connection.disconnect();
-
-    CPPUNIT_ASSERT_EQUAL(1, show_test_srv->m_receive_count);
-
-    core::thread::remove_worker("worker1");
-}
-
-//------------------------------------------------------------------------------
+} // end TEST_SUITE
 
 } // namespace sight::service::ut

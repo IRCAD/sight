@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -30,7 +30,7 @@ namespace sight::io::http
 {
 
 // Private write method used by CURL to write the content of the downloaded file on the disk.
-size_t write_data(void* _ptr, size_t _size, size_t _nmemb, FILE* _stream)
+static size_t write_data(void* _ptr, size_t _size, size_t _nmemb, FILE* _stream)
 {
     size_t written = 0;
     written = fwrite(_ptr, _size, _nmemb, _stream);
@@ -69,6 +69,7 @@ void download_file(const std::string& _url, const std::filesystem::path& _file_l
         curl_easy_setopt(curl, CURLOPT_URL, _url.c_str());
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
+        curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
         if(_verbose)
         {
             // Can be useful to debug (Warning: very very verbose !).

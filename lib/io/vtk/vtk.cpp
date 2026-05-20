@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -90,7 +90,9 @@ static bool init_vtk_log_file()
     const auto& vtk_log         = core::tools::os::get_user_cache_dir(profile_name) / "VTK.log";
 
     // TODO: Gather all .log file together in Session.
-    vtkSmartPointer<vtkFileOutputWindow> outwin = vtkFileOutputWindow::New();
+    // Note: We use a raw pointer here because SetInstance() increments the reference count.
+    // After SetInstance(), we must call Delete() to balance the reference count.
+    vtkFileOutputWindow* outwin = vtkFileOutputWindow::New();
 
     // MSVC doesn't have std::filesystem::path::c_str()
     const auto& vtk_log_string = vtk_log.string();
@@ -101,6 +103,9 @@ static bool init_vtk_log_file()
     outwin->DisplayText(header.c_str());
 
     vtkFileOutputWindow::SetInstance(outwin);
+
+    // Delete our reference - SetInstance() has already incremented the ref count
+    outwin->Delete();
 
     return true;
 }

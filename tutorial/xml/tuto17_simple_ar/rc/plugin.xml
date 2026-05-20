@@ -409,7 +409,7 @@
             </service>
 
             <!-- Aruco tracker service -->
-            <service uid="tracker_srv" type="sight::module::navigation::optics::aruco_tracker" worker="tracking" auto_connect="false">
+            <service uid="tracker_srv" type="sight::module::geometry::vision::aruco_tracker" worker="tracking" auto_connect="false">
                 <in key="camera" uid="camera" />
                 <inout key="frame" uid="source_frame" />
                 <inout group="marker_map">
@@ -456,7 +456,7 @@
                 <inout key="output" uid="camera_to_marker" />
             </service>
 
-            <service uid="undistorter_srv" type="sight::module::geometry::vision::distortion">
+            <service uid="undistort_srv" type="sight::module::geometry::vision::distortion">
                 <in key="camera" uid="camera" auto_connect="true" />
                 <inout key="map" uid="undistort_map" />
                 <mode>undistort</mode>

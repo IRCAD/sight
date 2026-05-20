@@ -37,6 +37,19 @@ vertex_program Default/Billboard_Normal_VP glsl
 
 //---------------------------------------------------------------------------
 
+vertex_program Default/Billboard_Normal_Color_VP glsl
+{
+    source Billboard_Default_VP.glsl
+    preprocessor_defines VERTEX_NORMAL=1,VERTEX_COLOR=1
+    default_params
+    {
+        param_named_auto u_worldView worldview_matrix
+        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+    }
+}
+
+//---------------------------------------------------------------------------
+
 geometry_program Default/Billboard_GP glsl
 {
     source Billboard_Default_GP.glsl
@@ -70,6 +83,23 @@ geometry_program Default/Billboard_Normal_GP glsl
 {
     source Billboard_Default_GP.glsl
     preprocessor_defines VERTEX_NORMAL=1
+    default_params
+    {
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_proj projection_matrix
+        param_named_auto u_view view_matrix
+        param_named_auto u_viewport viewport_size
+        param_named u_billboardSize float 10.
+        param_named_auto u_cameraPos camera_position
+    }
+}
+
+//---------------------------------------------------------------------------
+
+geometry_program Default/Billboard_Normal_Color_GP glsl
+{
+    source Billboard_Default_GP.glsl
+    preprocessor_defines VERTEX_NORMAL=1,VERTEX_COLOR=1
     default_params
     {
         param_named_auto u_diffuse surface_diffuse_colour
@@ -176,6 +206,7 @@ fragment_program Default/Billboard_Normal_FP glsl
         param_named_auto u_f4LightPos light_position_array 4
     }
 }
+
 //---------------------------------------------------------------------------
 
 fragment_program Default/Billboard_FP glsl
@@ -426,6 +457,55 @@ material Billboard_Default_Normal
         pass
         {
             vertex_program_ref Default/Billboard_Normal_VP
+            {
+            }
+
+            geometry_program_ref Default/Billboard_Depth_Normal_GP
+            {
+            }
+        }
+    }
+
+}
+
+//---------------------------------------------------------------------------
+
+material Billboard_Default_Normal_Color
+{
+    // Default technique
+    technique
+    {
+        pass
+        {
+            cull_hardware none
+            depth_check off
+
+            vertex_program_ref Default/Billboard_Normal_Color_VP
+            {
+            }
+
+            geometry_program_ref Default/Billboard_Normal_Color_GP
+            {
+            }
+
+            fragment_program_ref Default/Billboard_Normal_FP
+            {
+            }
+
+            texture_unit sprite
+            {
+                texture sphere.dds 2d
+                tex_coord_set 0
+                filtering bilinear
+            }
+        }
+    }
+
+    technique depth
+    {
+        pass
+        {
+            vertex_program_ref Default/Billboard_Normal_Color_VP
             {
             }
 

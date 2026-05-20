@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -296,6 +296,34 @@ public:
 
         //------------------------------------------------------------------------------
 
+        axis_aligned_box_t() = default;
+
+        //------------------------------------------------------------------------------
+
+        axis_aligned_box_t(const glm::vec3& _min, const glm::vec3& _max)
+        {
+            min[0] = _min.x;
+            min[1] = _min.y;
+            min[2] = _min.z;
+            max[0] = _max.x;
+            max[1] = _max.y;
+            max[2] = _max.z;
+        }
+
+        //------------------------------------------------------------------------------
+
+        axis_aligned_box_t(const glm::dvec3& _min, const glm::dvec3& _max)
+        {
+            min[0] = static_cast<float>(_min.x);
+            min[1] = static_cast<float>(_min.y);
+            min[2] = static_cast<float>(_min.z);
+            max[0] = static_cast<float>(_max.x);
+            max[1] = static_cast<float>(_max.y);
+            max[2] = static_cast<float>(_max.z);
+        }
+
+        //------------------------------------------------------------------------------
+
         bool operator==(const axis_aligned_box_t& _other) const
         {
             return (min == _other.min) && (max == _other.max);
@@ -307,10 +335,18 @@ public:
         {
             return (min < _other.min) && (max < _other.max);
         }
+
+        /// Returns true when the box has never been populated or has been default-constructed.
+        /// The default state sets min to +∞ and max to −∞, so any min[i] > max[i] indicates
+        /// that no points were ever accumulated (empty or missing geometry).
+        bool is_invalid() const
+        {
+            return min[0] > max[0] || min[1] > max[1] || min[2] > max[2];
+        }
     };
 
     // Lazy-compute the bounding-box using the object timestamp
-    SIGHT_DATA_API const axis_aligned_box_t& get_bounding_box();
+    SIGHT_DATA_API const axis_aligned_box_t& get_bounding_box() const;
 
     /**
      * @name Signals
@@ -660,10 +696,10 @@ protected:
 private:
 
     /// Time stamp indicates if the bounding box has been computed or not.
-    std::uint64_t m_bb_last_updated {~0UL};
+    mutable std::uint64_t m_bb_last_updated {~0UL};
 
-    /// The Axis-Aligned Bounding Box of the mesh, lazy-computed in get_mesh().
-    axis_aligned_box_t m_bbox {};
+    /// The Axis-Aligned Bounding Box of the mesh, lazy-computed in get_bounding_box().
+    mutable axis_aligned_box_t m_bbox {};
 
     /// Helper function used to get the array given a point or cell attribute type
     template<class ATTR>

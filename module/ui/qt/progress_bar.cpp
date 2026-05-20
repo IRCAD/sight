@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024-2025 IRCAD France
+ * Copyright (C) 2024-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -73,6 +73,7 @@ void progress_bar::starting()
         show_title,
         show_cancel,
         pulse,
+        false,
         svg_path ? std::make_optional(*svg_path) : std::nullopt,
         svg_size ? std::make_optional(*svg_size) : std::nullopt,
         [weak_this]

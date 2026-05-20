@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -49,7 +49,7 @@ inline static void write(
 
     // Add points to children list
     int index = 0;
-    for(const auto& point : point_list->get_points())
+    for(const auto& point : *point_list)
     {
         _children[data::point::classname() + std::to_string(index++)] = point;
     }
@@ -73,7 +73,7 @@ inline static data::point_list::sptr read(
 
     // Deserialize points
     // Clearing is required in case the object is reused
-    point_list->get_points().clear();
+    point_list->clear();
 
     for(std::size_t index = 0, end = _children.size() ; index < end ; ++index)
     {

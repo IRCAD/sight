@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -78,27 +78,27 @@ void image_picker_test::basic_test()
     };
     m_image_picker->slot("get_interaction")->run(info);
 
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), point_list->get_points().size());
-    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(0., 0.), *point_list->get_points()[0]);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), pixel_point_list->get_points().size());
-    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(1., 2.), *pixel_point_list->get_points()[0]);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), point_list->size());
+    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(0., 0.), *(*point_list)[0]);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), pixel_point_list->size());
+    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(1., 2.), *(*pixel_point_list)[0]);
 
     info.m_world_pos = {1, 1, 0};
     m_image_picker->slot("get_interaction")->run(info);
 
-    CPPUNIT_ASSERT_EQUAL(std::size_t(2), point_list->get_points().size());
-    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(1., 1.), *point_list->get_points()[1]);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(2), pixel_point_list->get_points().size());
-    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(2., 1.), *pixel_point_list->get_points()[1]);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), point_list->size());
+    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(1., 1.), *(*point_list)[1]);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), pixel_point_list->size());
+    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(2., 1.), *(*pixel_point_list)[1]);
 
     // Clicking with the right mouse button should remove the last added point
     info.m_event_id = data::tools::picking_info::event::mouse_right_down;
     m_image_picker->slot("get_interaction")->run(info);
 
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), point_list->get_points().size());
-    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(0., 0.), *point_list->get_points()[0]);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), pixel_point_list->get_points().size());
-    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(1., 2.), *pixel_point_list->get_points()[0]);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), point_list->size());
+    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(0., 0.), *(*point_list)[0]);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), pixel_point_list->size());
+    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(1., 2.), *(*pixel_point_list)[0]);
 }
 
 //------------------------------------------------------------------------------
@@ -124,8 +124,8 @@ void image_picker_test::click_without_control_test()
     };
     m_image_picker->slot("get_interaction")->run(info);
 
-    CPPUNIT_ASSERT(point_list->get_points().empty());
-    CPPUNIT_ASSERT(pixel_point_list->get_points().empty());
+    CPPUNIT_ASSERT(point_list->empty());
+    CPPUNIT_ASSERT(pixel_point_list->empty());
 }
 
 //------------------------------------------------------------------------------
@@ -154,18 +154,18 @@ void image_picker_test::top_left_ref_test()
     };
     m_image_picker->slot("get_interaction")->run(info);
 
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), point_list->get_points().size());
-    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(0., 0.), *point_list->get_points()[0]);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), pixel_point_list->get_points().size());
-    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(0., 0.), *pixel_point_list->get_points()[0]);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), point_list->size());
+    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(0., 0.), *(*point_list)[0]);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), pixel_point_list->size());
+    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(0., 0.), *(*pixel_point_list)[0]);
 
     info.m_world_pos = {1, 1, 0};
     m_image_picker->slot("get_interaction")->run(info);
 
-    CPPUNIT_ASSERT_EQUAL(std::size_t(2), point_list->get_points().size());
-    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(1., 1.), *point_list->get_points()[1]);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(2), pixel_point_list->get_points().size());
-    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(1., 1.), *pixel_point_list->get_points()[1]);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), point_list->size());
+    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(1., 1.), *(*point_list)[1]);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), pixel_point_list->size());
+    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(1., 1.), *(*pixel_point_list)[1]);
 }
 
 //------------------------------------------------------------------------------
@@ -194,25 +194,25 @@ void image_picker_test::single_point_mode_test()
     };
     m_image_picker->slot("get_interaction")->run(info);
 
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), point_list->get_points().size());
-    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(0., 0.), *point_list->get_points()[0]);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), pixel_point_list->get_points().size());
-    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(1., 2.), *pixel_point_list->get_points()[0]);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), point_list->size());
+    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(0., 0.), *(*point_list)[0]);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), pixel_point_list->size());
+    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(1., 2.), *(*pixel_point_list)[0]);
 
     // Since the single point mode is enabled, the next click removes the last added point
     m_image_picker->slot("get_interaction")->run(info);
 
-    CPPUNIT_ASSERT(point_list->get_points().empty());
-    CPPUNIT_ASSERT(pixel_point_list->get_points().empty());
+    CPPUNIT_ASSERT(point_list->empty());
+    CPPUNIT_ASSERT(pixel_point_list->empty());
 
     // Clicking yet another time should add another point
     info.m_world_pos = {1, 1, 0};
     m_image_picker->slot("get_interaction")->run(info);
 
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), point_list->get_points().size());
-    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(1., 1.), *point_list->get_points()[0]);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), pixel_point_list->get_points().size());
-    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(2., 1.), *pixel_point_list->get_points()[0]);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), point_list->size());
+    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(1., 1.), *(*point_list)[0]);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), pixel_point_list->size());
+    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(2., 1.), *(*pixel_point_list)[0]);
 }
 
 //------------------------------------------------------------------------------
@@ -243,20 +243,20 @@ void image_picker_test::no_ctrl_modifier_test()
     };
     m_image_picker->slot("get_interaction")->run(info);
 
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), point_list->get_points().size());
-    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(0., 0.), *point_list->get_points()[0]);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), pixel_point_list->get_points().size());
-    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(1., 2.), *pixel_point_list->get_points()[0]);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), point_list->size());
+    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(0., 0.), *(*point_list)[0]);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), pixel_point_list->size());
+    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(1., 2.), *(*pixel_point_list)[0]);
 
     // Clicking with the control modifier held should still work.
     info.m_modifier_mask = data::tools::picking_info::ctrl;
     info.m_world_pos     = {1, 1, 0};
     m_image_picker->slot("get_interaction")->run(info);
 
-    CPPUNIT_ASSERT_EQUAL(std::size_t(2), point_list->get_points().size());
-    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(1., 1.), *point_list->get_points()[1]);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(2), pixel_point_list->get_points().size());
-    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(2., 1.), *pixel_point_list->get_points()[1]);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), point_list->size());
+    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(1., 1.), *(*point_list)[1]);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), pixel_point_list->size());
+    CPPUNIT_ASSERT_EQUAL(*std::make_shared<data::point>(2., 1.), *(*pixel_point_list)[1]);
 }
 
 //------------------------------------------------------------------------------

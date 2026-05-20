@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,104 +19,88 @@
  *
  ***********************************************************************/
 
-#include "fiducials_series_test.hpp"
-
 #include <core/tools/uuid.hpp>
 
 #include <data/helper/fiducials_series.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::helper::ut::fiducials_series_test);
+#include <doctest/doctest.h>
 
-namespace sight::data::helper::ut
+TEST_SUITE("sight::data::helper")
 {
-
 //------------------------------------------------------------------------------
 
-void fiducials_series_test::setUp()
-{
-}
+    TEST_CASE("to_point_list")
+    {
+        sight::data::fiducials_series::shape current_shape = sight::data::fiducials_series::shape::point;
 
-//------------------------------------------------------------------------------
+        // Failing tests
+        sight::data::fiducials_series::fiducial fiducial = sight::data::fiducials_series::fiducial();
+        // When no uid is specified, conversion must fail
+        CHECK(!sight::data::helper::fiducials_series::to_point_list(fiducial));
 
-void fiducials_series_test::tearDown()
-{
-}
+        fiducial              = sight::data::fiducials_series::fiducial();
+        fiducial.fiducial_uid = sight::core::tools::uuid::generate();
+        // When no data is specified -> FAIL
+        CHECK(!sight::data::helper::fiducials_series::to_point_list(fiducial));
 
-//------------------------------------------------------------------------------
+        // Point test
+        current_shape         = sight::data::fiducials_series::shape::point;
+        fiducial              = sight::data::fiducials_series::fiducial();
+        fiducial.fiducial_uid = sight::core::tools::uuid::generate();
+        fiducial.shape_type   = current_shape;
+        // When no data is specified -> FAIL
+        CHECK(!sight::data::helper::fiducials_series::to_point_list(fiducial));
 
-void fiducials_series_test::to_point_list()
-{
-    sight::data::fiducials_series::shape current_shape = sight::data::fiducials_series::shape::point;
+        fiducial              = sight::data::fiducials_series::fiducial();
+        fiducial.fiducial_uid = sight::core::tools::uuid::generate();
+        fiducial.shape_type   = current_shape;
+        fiducial.contour_data.push_back({0.0, 0.0, 0.0});
+        CHECK(sight::data::helper::fiducials_series::to_point_list(fiducial));
 
-    // Failing tests
-    sight::data::fiducials_series::fiducial fiducial = data::fiducials_series::fiducial();
-    // When no uid is specified, conversion must fail
-    CPPUNIT_ASSERT(!sight::data::helper::fiducials_series::to_point_list(fiducial));
+        // Ruler test
+        current_shape         = sight::data::fiducials_series::shape::ruler;
+        fiducial              = sight::data::fiducials_series::fiducial();
+        fiducial.fiducial_uid = sight::core::tools::uuid::generate();
+        fiducial.shape_type   = current_shape;
+        // When no data is specified -> FAIL
+        CHECK(!sight::data::helper::fiducials_series::to_point_list(fiducial));
 
-    fiducial              = sight::data::fiducials_series::fiducial();
-    fiducial.fiducial_uid = core::tools::uuid::generate();
-    // When no data is specified -> FAIL
-    CPPUNIT_ASSERT(!sight::data::helper::fiducials_series::to_point_list(fiducial));
+        fiducial              = sight::data::fiducials_series::fiducial();
+        fiducial.fiducial_uid = sight::core::tools::uuid::generate();
+        fiducial.shape_type   = current_shape;
+        fiducial.contour_data.push_back({0.0, 0.0, 0.0});
+        // Not enough points, should fail
+        CHECK(!sight::data::helper::fiducials_series::to_point_list(fiducial));
 
-    // Point test
-    current_shape         = sight::data::fiducials_series::shape::point;
-    fiducial              = sight::data::fiducials_series::fiducial();
-    fiducial.fiducial_uid = sight::core::tools::uuid::generate();
-    fiducial.shape_type   = current_shape;
-    // When no data is specified -> FAIL
-    CPPUNIT_ASSERT(!sight::data::helper::fiducials_series::to_point_list(fiducial));
+        fiducial              = sight::data::fiducials_series::fiducial();
+        fiducial.fiducial_uid = sight::core::tools::uuid::generate();
+        fiducial.shape_type   = current_shape;
+        fiducial.contour_data.push_back({0.0, 0.0, 0.0});
+        fiducial.contour_data.push_back({1.0, 1.0, 1.0});
+        CHECK(sight::data::helper::fiducials_series::to_point_list(fiducial));
 
-    fiducial              = sight::data::fiducials_series::fiducial();
-    fiducial.fiducial_uid = sight::core::tools::uuid::generate();
-    fiducial.shape_type   = current_shape;
-    fiducial.contour_data.push_back({0.0, 0.0, 0.0});
-    CPPUNIT_ASSERT(sight::data::helper::fiducials_series::to_point_list(fiducial));
+        // Shape test
+        current_shape         = sight::data::fiducials_series::shape::shape;
+        fiducial              = sight::data::fiducials_series::fiducial();
+        fiducial.fiducial_uid = sight::core::tools::uuid::generate();
+        fiducial.shape_type   = current_shape;
+        // When no data is specified -> FAIL
+        CHECK(!sight::data::helper::fiducials_series::to_point_list(fiducial));
 
-    // Ruler test
-    current_shape         = sight::data::fiducials_series::shape::ruler;
-    fiducial              = sight::data::fiducials_series::fiducial();
-    fiducial.fiducial_uid = sight::core::tools::uuid::generate();
-    fiducial.shape_type   = current_shape;
-    // When no data is specified -> FAIL
-    CPPUNIT_ASSERT(!sight::data::helper::fiducials_series::to_point_list(fiducial));
+        fiducial              = sight::data::fiducials_series::fiducial();
+        fiducial.fiducial_uid = sight::core::tools::uuid::generate();
+        fiducial.shape_type   = current_shape;
+        fiducial.contour_data.push_back({0.0, 0.0, 0.0});
+        fiducial.contour_data.push_back({1.0, 1.0, 1.0});
+        // Not enough points, should fail
+        CHECK(!sight::data::helper::fiducials_series::to_point_list(fiducial));
 
-    fiducial              = sight::data::fiducials_series::fiducial();
-    fiducial.fiducial_uid = sight::core::tools::uuid::generate();
-    fiducial.shape_type   = current_shape;
-    fiducial.contour_data.push_back({0.0, 0.0, 0.0});
-    // Not enough points, should fail
-    CPPUNIT_ASSERT(!sight::data::helper::fiducials_series::to_point_list(fiducial));
-
-    fiducial              = sight::data::fiducials_series::fiducial();
-    fiducial.fiducial_uid = sight::core::tools::uuid::generate();
-    fiducial.shape_type   = current_shape;
-    fiducial.contour_data.push_back({0.0, 0.0, 0.0});
-    fiducial.contour_data.push_back({1.0, 1.0, 1.0});
-    CPPUNIT_ASSERT(sight::data::helper::fiducials_series::to_point_list(fiducial));
-
-    // Shape test
-    current_shape         = sight::data::fiducials_series::shape::shape;
-    fiducial              = sight::data::fiducials_series::fiducial();
-    fiducial.fiducial_uid = sight::core::tools::uuid::generate();
-    fiducial.shape_type   = current_shape;
-    // When no data is specified -> FAIL
-    CPPUNIT_ASSERT(!sight::data::helper::fiducials_series::to_point_list(fiducial));
-
-    fiducial              = sight::data::fiducials_series::fiducial();
-    fiducial.fiducial_uid = sight::core::tools::uuid::generate();
-    fiducial.shape_type   = current_shape;
-    fiducial.contour_data.push_back({0.0, 0.0, 0.0});
-    fiducial.contour_data.push_back({1.0, 1.0, 1.0});
-    // Not enough points, should fail
-    CPPUNIT_ASSERT(!sight::data::helper::fiducials_series::to_point_list(fiducial));
-
-    fiducial              = sight::data::fiducials_series::fiducial();
-    fiducial.fiducial_uid = sight::core::tools::uuid::generate();
-    fiducial.shape_type   = current_shape;
-    fiducial.contour_data.push_back({0.0, 0.0, 0.0});
-    fiducial.contour_data.push_back({1.0, 1.0, 1.0});
-    fiducial.contour_data.push_back({0.0, 1.0, 0.0});
-    CPPUNIT_ASSERT(sight::data::helper::fiducials_series::to_point_list(fiducial));
-}
-
-} // namespace sight::data::helper::ut
+        fiducial              = sight::data::fiducials_series::fiducial();
+        fiducial.fiducial_uid = sight::core::tools::uuid::generate();
+        fiducial.shape_type   = current_shape;
+        fiducial.contour_data.push_back({0.0, 0.0, 0.0});
+        fiducial.contour_data.push_back({1.0, 1.0, 1.0});
+        fiducial.contour_data.push_back({0.0, 1.0, 0.0});
+        CHECK(sight::data::helper::fiducials_series::to_point_list(fiducial));
+    }
+} // TEST_SUITE("sight::data::helper")

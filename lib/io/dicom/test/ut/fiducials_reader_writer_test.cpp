@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,133 +19,167 @@
  *
  ***********************************************************************/
 
-#include "fiducials_reader_writer_test.hpp"
+#include "helper.hpp"
 
 #include <core/os/temp_path.hpp>
-
-#include <data/image_series.hpp>
 
 #include <io/dicom/reader/file.hpp>
 #include <io/dicom/writer/file.hpp>
 
-#include <utest_data/data.hpp>
+#include <doctest/doctest.h>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dicom::ut::fiducials_reader_writer_test);
+#include <filesystem>
 
 namespace sight::io::dicom::ut
 {
 
 //------------------------------------------------------------------------------
 
-void fiducials_reader_writer_test::basic_test()
+TEST_SUITE("sight::io::dicom::fiducials_reader_writer")
 {
-    auto original = std::make_shared<data::series_set>();
-    auto reader   = std::make_shared<io::dicom::reader::file>();
-    reader->set_object(original);
-    reader->set_folder(utest_data::dir() / "us/Enhanced US Volume Storage/GE, 3D+t, lossy JPEG");
+    TEST_CASE("basic")
     {
-        const auto observer = std::make_shared<core::progress::observer>("FIDUCIALS Reader Test");
-        CPPUNIT_ASSERT_NO_THROW(reader->read(observer));
+        auto original_image_series = get_us_volume_image_copy(0xFFFF, 2);
+        CHECK(original_image_series);
+
+        auto original_fiducials_series = original_image_series->get_fiducials();
+        CHECK(original_fiducials_series->get_fiducial_sets().empty());
+
+        original_fiducials_series->set_content_date("1");
+        original_fiducials_series->set_content_time("2");
+        original_fiducials_series->set_instance_number(3);
+        original_fiducials_series->set_content_label("4");
+        original_fiducials_series->set_content_description("5");
+        original_fiducials_series->set_content_creator_name("6");
+
+        data::fiducials_series::fiducial_set fiducial_set;
+
+        data::fiducials_series::referenced_image referenced_image;
+        referenced_image.referenced_sop_class_uid =
+            data::dicom::sop::get(original_image_series->get_sop_keyword()).m_uid;
+        referenced_image.referenced_sop_instance_uid = original_image_series->get_sop_instance_uid();
+        referenced_image.referenced_frame_number     = {7};
+        referenced_image.referenced_segment_number   = {8};
+        fiducial_set.referenced_image_sequence       = {referenced_image};
+
+        fiducial_set.frame_of_reference_uid = "9";
+
+        data::fiducials_series::fiducial fiducial;
+        fiducial.shape_type           = data::fiducials_series::shape::point;
+        fiducial.fiducial_description = "10";
+        fiducial.fiducial_identifier  = "11";
+
+        data::fiducials_series::graphic_coordinates_data graphic_coordinates_data;
+        graphic_coordinates_data.referenced_image_sequence.referenced_sop_class_uid = data::dicom::sop::get(
+            original_image_series->get_sop_keyword()
+        ).m_uid;
+        graphic_coordinates_data.referenced_image_sequence.referenced_sop_instance_uid =
+            original_image_series->get_sop_instance_uid();
+        graphic_coordinates_data.referenced_image_sequence.referenced_frame_number   = {12};
+        graphic_coordinates_data.referenced_image_sequence.referenced_segment_number = {13};
+        graphic_coordinates_data.graphic_data                                        = {{.x = 14, .y = 15}};
+        fiducial.graphic_coordinates_data_sequence                                   = {graphic_coordinates_data};
+
+        fiducial.fiducial_uid = "16";
+        fiducial.contour_data = {{.x = 17, .y = 18, .z = 19}};
+        fiducial_set.fiducial_sequence.push_back(fiducial);
+
+        fiducial_set.group_name = "20";
+
+        original_fiducials_series->set_sop_instance_uid(
+            std::string(
+                data::dicom::sop::get(
+                    data::dicom::sop::Keyword::
+                    SpatialFiducialsStorage
+                ).m_uid
+            ) + ".0"
+        );
+        original_fiducials_series->append_fiducial_set(fiducial_set);
+
+        auto original = std::make_shared<data::series_set>();
+        original->push_back(original_image_series);
+
+        auto writer = std::make_shared<io::dicom::writer::file>();
+        writer->set_object(original);
+
+        const core::os::temp_dir folder;
+        writer->set_folder(folder);
+        {
+            const auto observer = std::make_shared<core::progress::observer>("FIDUCIALS Writer Test");
+            CHECK_NOTHROW(writer->write(observer));
+        }
+
+        auto actual = std::make_shared<data::series_set>();
+        auto reader = std::make_shared<io::dicom::reader::file>();
+        reader->set_object(actual);
+        reader->set_folder(folder);
+
+        {
+            const auto observer = std::make_shared<core::progress::observer>("FIDUCIALS Reader Test");
+            CHECK_NOTHROW(reader->read(observer));
+        }
+        CHECK_EQ(std::size_t(1), actual->size());
+
+        auto actual_image_series = std::dynamic_pointer_cast<data::image_series>(actual->at(0));
+        CHECK(actual_image_series);
+        auto actual_fiducials_series = actual_image_series->get_fiducials();
+        CHECK(actual_fiducials_series);
+        std::vector<data::fiducials_series::fiducial_set> actual_fiducial_sets =
+            actual_fiducials_series->get_fiducial_sets();
+        REQUIRE_EQ(std::size_t(1), actual_fiducial_sets.size());
+
+        CHECK_EQ(original_fiducials_series->get_content_date(), actual_fiducials_series->get_content_date());
+        CHECK_EQ(original_fiducials_series->get_content_time(), actual_fiducials_series->get_content_time());
+        CHECK(original_fiducials_series->get_instance_number() == actual_fiducials_series->get_instance_number());
+        CHECK_EQ(original_fiducials_series->get_content_label(), actual_fiducials_series->get_content_label());
+        CHECK_EQ(
+            original_fiducials_series->get_content_description(),
+            actual_fiducials_series->get_content_description()
+        );
+        CHECK_EQ(
+            original_fiducials_series->get_content_creator_name(),
+            actual_fiducials_series->get_content_creator_name()
+        );
+        CHECK(fiducial_set == actual_fiducial_sets[0]);
     }
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), original->size());
 
-    auto original_image_series = std::dynamic_pointer_cast<data::image_series>(original->at(0));
-    CPPUNIT_ASSERT(original_image_series);
-    auto original_fiducials_series = original_image_series->get_fiducials();
-    CPPUNIT_ASSERT(original_fiducials_series->get_fiducial_sets().empty());
-
-    original_fiducials_series->set_content_date("1");
-    original_fiducials_series->set_content_time("2");
-    original_fiducials_series->set_instance_number(3);
-    original_fiducials_series->set_content_label("4");
-    original_fiducials_series->set_content_description("5");
-    original_fiducials_series->set_content_creator_name("6");
-
-    data::fiducials_series::fiducial_set fiducial_set;
-
-    data::fiducials_series::referenced_image referenced_image;
-    referenced_image.referenced_sop_class_uid =
-        data::dicom::sop::get(original_image_series->get_sop_keyword()).m_uid;
-    referenced_image.referenced_sop_instance_uid = original_image_series->get_sop_instance_uid();
-    referenced_image.referenced_frame_number     = {7};
-    referenced_image.referenced_segment_number   = {8};
-    fiducial_set.referenced_image_sequence       = {referenced_image};
-
-    fiducial_set.frame_of_reference_uid = "9";
-
-    data::fiducials_series::fiducial fiducial;
-    fiducial.shape_type           = data::fiducials_series::shape::point;
-    fiducial.fiducial_description = "10";
-    fiducial.fiducial_identifier  = "11";
-
-    data::fiducials_series::graphic_coordinates_data graphic_coordinates_data;
-    graphic_coordinates_data.referenced_image_sequence.referenced_sop_class_uid = data::dicom::sop::get(
-        original_image_series->get_sop_keyword()
-    ).m_uid;
-    graphic_coordinates_data.referenced_image_sequence.referenced_sop_instance_uid =
-        original_image_series->get_sop_instance_uid();
-    graphic_coordinates_data.referenced_image_sequence.referenced_frame_number   = {12};
-    graphic_coordinates_data.referenced_image_sequence.referenced_segment_number = {13};
-    graphic_coordinates_data.graphic_data                                        = {{.x = 14, .y = 15}};
-    fiducial.graphic_coordinates_data_sequence                                   = {graphic_coordinates_data};
-
-    fiducial.fiducial_uid = "16";
-    fiducial.contour_data = {{.x = 17, .y = 18, .z = 19}};
-    fiducial_set.fiducial_sequence.push_back(fiducial);
-
-    fiducial_set.group_name = "20";
-
-    original_fiducials_series->set_sop_instance_uid(
-        std::string(
-            data::dicom::sop::get(
-                data::dicom::sop::Keyword::
-                SpatialFiducialsStorage
-            ).m_uid
-        ) + ".0"
-    );
-    original_fiducials_series->append_fiducial_set(fiducial_set);
-
-    const core::os::temp_dir folder;
-
-    auto writer = std::make_shared<io::dicom::writer::file>();
-    writer->set_object(original);
-    writer->set_folder(folder);
+    TEST_CASE("remove_fiducials_file_when_no_fiducials")
     {
-        const auto observer = std::make_shared<core::progress::observer>("FIDUCIALS Writer Test");
-        CPPUNIT_ASSERT_NO_THROW(writer->write(observer));
+        auto image_series = get_us_volume_image_copy(0xBEEF, 2);
+        REQUIRE(image_series);
+
+        data::fiducials_series::fiducial_set fiducial_set;
+        fiducial_set.group_name = "group_to_remove";
+        image_series->get_fiducials()->append_fiducial_set(fiducial_set);
+
+        auto series_set = std::make_shared<data::series_set>();
+        series_set->push_back(image_series);
+
+        const core::os::temp_dir folder;
+        const auto image_filename = std::string("image_with_optional_fiducials.dcm");
+        const auto fiducials_path = std::filesystem::path(folder) / "image_with_optional_fiducials_fiducials.dcm";
+
+        auto writer = std::make_shared<io::dicom::writer::file>();
+        writer->set_object(series_set);
+        writer->set_folder(folder);
+        writer->set_file(image_filename);
+
+        {
+            const auto observer = std::make_shared<core::progress::observer>("FIDUCIALS Writer Test");
+            CHECK_NOTHROW(writer->write(observer));
+        }
+
+        REQUIRE(std::filesystem::exists(fiducials_path));
+
+        image_series->get_fiducials()->set_fiducial_sets({});
+
+        {
+            const auto observer = std::make_shared<core::progress::observer>("FIDUCIALS Writer Test");
+            CHECK_NOTHROW(writer->write(observer));
+        }
+
+        CHECK_FALSE(std::filesystem::exists(fiducials_path));
     }
-
-    auto actual = std::make_shared<data::series_set>();
-    reader->set_object(actual);
-    reader->set_folder(folder);
-
-    {
-        const auto observer = std::make_shared<core::progress::observer>("FIDUCIALS Reader Test");
-        CPPUNIT_ASSERT_NO_THROW(reader->read(observer));
-    }
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), actual->size());
-
-    auto actual_image_series = std::dynamic_pointer_cast<data::image_series>(actual->at(0));
-    CPPUNIT_ASSERT(actual_image_series);
-    auto actual_fiducials_series = actual_image_series->get_fiducials();
-    CPPUNIT_ASSERT(actual_fiducials_series);
-    std::vector<data::fiducials_series::fiducial_set> actual_fiducial_sets =
-        actual_fiducials_series->get_fiducial_sets();
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), actual_fiducial_sets.size());
-
-    CPPUNIT_ASSERT_EQUAL(original_fiducials_series->get_content_date(), actual_fiducials_series->get_content_date());
-    CPPUNIT_ASSERT_EQUAL(original_fiducials_series->get_content_time(), actual_fiducials_series->get_content_time());
-    CPPUNIT_ASSERT(original_fiducials_series->get_instance_number() == actual_fiducials_series->get_instance_number());
-    CPPUNIT_ASSERT_EQUAL(original_fiducials_series->get_content_label(), actual_fiducials_series->get_content_label());
-    CPPUNIT_ASSERT_EQUAL(
-        original_fiducials_series->get_content_description(),
-        actual_fiducials_series->get_content_description()
-    );
-    CPPUNIT_ASSERT_EQUAL(
-        original_fiducials_series->get_content_creator_name(),
-        actual_fiducials_series->get_content_creator_name()
-    );
-    CPPUNIT_ASSERT(fiducial_set == actual_fiducial_sets[0]);
 }
 
 } // namespace sight::io::dicom::ut

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2025 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -65,6 +65,7 @@ namespace sight::module::ui::qt
  * - \b size (optional, default="14pt") : size of the font used in the label, as supported by 'font-size' QSS attribute
  * - \b weight (optional, default="bold") : normal, bold any value supported by 'font-weight' QSS attribute
  * - \b decimals (optional, default="2") : if a sight::data::real data is provided, number of decimals to display
+ * - \b word_wrap (optional, default="false") : enable/disable word wrap in the label
  */
 class text_status final : public QObject,
                           public sight::ui::editor

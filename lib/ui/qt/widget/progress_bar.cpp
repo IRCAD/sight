@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -34,6 +34,7 @@ progress_bar::progress_bar(
     const std::optional<bool>& _show_title,
     const std::optional<bool>& _show_cancel,
     const std::optional<bool>& _pulse,
+    const std::optional<bool>& _expanding,
     const std::optional<std::filesystem::path>& _svg_path,
     const std::optional<int>& _svg_size,
     finished_callback_t _finished_callback
@@ -41,6 +42,7 @@ progress_bar::progress_bar(
     m_show_title(_show_title),
     m_show_cancel(_show_cancel),
     m_pulse(_pulse),
+    m_expanding(_expanding),
     m_svg_path(_svg_path),
     m_svg_size(_svg_size),
     m_container(new QWidget(_parent)),
@@ -53,14 +55,6 @@ progress_bar::progress_bar(
     auto* const layout = new QHBoxLayout();
     layout->setObjectName(QString::fromLatin1("/QHBoxLayout"));
     layout->setContentsMargins(0, 0, 0, 0);
-
-    // Create the label which holds the descriptive text shown with the progress bar.
-    if(m_show_title.value_or(false))
-    {
-        m_title = new QLabel(m_container);
-        m_title->setObjectName(object_name + QString::fromLatin1("/QLabel"));
-        layout->addWidget(m_title);
-    }
 
     // Create the progress bar.
     if(m_svg_path && !m_svg_path->empty() && m_pulse.value_or(false))
@@ -82,6 +76,7 @@ progress_bar::progress_bar(
     {
         m_progress_bar = new QProgressBar(m_container);
         m_progress_bar->setObjectName(object_name + QString::fromLatin1("/QProgressBar"));
+        m_progress_bar->setTextVisible(false);
 
         if(m_pulse.value_or(false))
         {
@@ -93,6 +88,11 @@ progress_bar::progress_bar(
         }
 
         layout->addWidget(m_progress_bar);
+
+        if(m_expanding.value())
+        {
+            m_progress_bar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        }
     }
 
     // Create button to cancel monitor.
@@ -116,11 +116,6 @@ progress_bar::progress_bar(
 
     // Update the minimum height of the container.
     int minimum_height = 0;
-
-    if(!m_title.isNull())
-    {
-        minimum_height = std::max(minimum_height, m_title->sizeHint().height());
-    }
 
     if(!m_svg_widget.isNull())
     {
@@ -146,12 +141,6 @@ progress_bar::~progress_bar()
 {
     std::lock_guard m_lock(m_mutex);
     m_progress_monitors.clear();
-
-    if(!m_title.isNull())
-    {
-        m_title->deleteLater();
-        m_title = nullptr;
-    }
 
     if(!m_progress_bar.isNull())
     {
@@ -290,25 +279,42 @@ void progress_bar::update_widgets()
     for(const auto& weak_monitor : safe_monitors_list)
     {
         // Get the current monitor as shared pointer.
-        if(const auto& monitor =
-               weak_monitor.lock(); monitor && monitor->get_state() == core::progress::monitor::state::running)
+        if(const auto& monitor = weak_monitor.lock();
+           monitor && monitor->get_state() == core::progress::monitor::state::running)
         {
             const auto name       = monitor->name();
             const std::string msg = (monitor->get_logs().empty()) ? "" : monitor->get_logs().back();
             const auto title      = name.empty() ? QString() : QString::fromStdString(
                 name + (msg.empty() ? "" : " - ") + msg
-            );
+                                    ) + " - %p%";
+
             const int value = int((float(monitor->get_done_work_units()) / float(monitor->get_total_work_units())
                                    * 100));
 
-            if(!m_title.isNull() && m_title->text() != title)
+            if(!m_progress_bar.isNull())
             {
-                m_title->setText(title);
-            }
+                if(const bool show_title = m_show_title.value_or(false); show_title != m_progress_bar->isTextVisible())
+                {
+                    if(show_title)
+                    {
+                        m_progress_bar->setAlignment(Qt::AlignCenter);
+                        m_progress_bar->setTextVisible(true);
+                    }
+                    else
+                    {
+                        m_progress_bar->setTextVisible(false);
+                    }
+                }
 
-            if(!m_pulse.value_or(false) && !m_progress_bar.isNull() && m_progress_bar->value() != value)
-            {
-                m_progress_bar->setValue(value);
+                if(const auto format = m_progress_bar->format(); title != format)
+                {
+                    m_progress_bar->setFormat(title);
+                }
+
+                if(!m_pulse.value_or(false) && m_progress_bar->value() != value)
+                {
+                    m_progress_bar->setValue(value);
+                }
             }
 
             if(!m_cancel_button.isNull())

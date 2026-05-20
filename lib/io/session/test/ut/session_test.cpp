@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -197,7 +197,7 @@ static inline void compare(const typename T::csptr& _actual, const std::size_t _
 //------------------------------------------------------------------------------
 
 template<typename T>
-static inline void test(const bool _encrypt, const bool _raw, const bool _empty_obj = false)
+static inline void test(const bool _encrypt, const bool _raw, const bool _empty_obj, const std::size_t _variant = 0)
 {
     static constexpr auto s_PASSWORD = "password";
 
@@ -212,10 +212,10 @@ static inline void test(const bool _encrypt, const bool _raw, const bool _empty_
     // Test serialization
     {
         // Create the data object
-        auto object = _empty_obj ? std::make_shared<T>() : create<T>(0);
+        auto object = _empty_obj ? std::make_shared<T>() : create<T>(_variant);
 
         // Add a field
-        object->set_field(s_FIELD_NAME, create<T>(1));
+        object->set_field(s_FIELD_NAME, create<T>(_variant + 1));
 
         // Create the session writer
         auto session_writer = std::make_shared<sight::io::session::session_writer>();
@@ -266,10 +266,10 @@ static inline void test(const bool _encrypt, const bool _raw, const bool _empty_
         auto actual_object = std::dynamic_pointer_cast<T>(session_reader->get_object());
 
         // Create the data object
-        auto expected_object = _empty_obj ? std::make_shared<T>() : create<T>(0);
+        auto expected_object = _empty_obj ? std::make_shared<T>() : create<T>(_variant);
 
         // Add a field
-        expected_object->set_field(s_FIELD_NAME, create<T>(1));
+        expected_object->set_field(s_FIELD_NAME, create<T>(_variant + 1));
 
         CHECK(*expected_object == *actual_object);
     }
@@ -278,14 +278,14 @@ static inline void test(const bool _encrypt, const bool _raw, const bool _empty_
 //------------------------------------------------------------------------------
 
 template<typename T>
-static inline void test_combine()
+static inline void test_combine(const std::size_t _variant = 0)
 {
-    test<T>(false, false, false);
-    test<T>(false, false, true);
-    test<T>(false, true, false);
-    test<T>(false, true, true);
-    test<T>(true, false, false);
-    test<T>(true, false, true);
+    test<T>(false, false, false, _variant);
+    test<T>(false, false, true, _variant);
+    test<T>(false, true, false, _variant);
+    test<T>(false, true, true, _variant);
+    test<T>(true, false, false, _variant);
+    test<T>(true, false, true, _variant);
 }
 
 //------------------------------------------------------------------------------
@@ -404,16 +404,105 @@ inline sight::data::mesh::sptr create<sight::data::mesh>(const std::size_t _vari
 //------------------------------------------------------------------------------
 
 template<>
-inline sight::data::mesh::sptr generate<sight::data::mesh>(const std::size_t /*unused*/)
+inline sight::data::mesh::sptr generate<sight::data::mesh>(const std::size_t _variant)
 {
     auto object = std::make_shared<sight::data::mesh>();
 
-    sight::utest_data::generator::mesh::generate_triangle_quad_mesh(object);
-    sight::geometry::data::mesh::shake_point(object);
-    sight::geometry::data::mesh::colorize_mesh_points(object);
-    sight::geometry::data::mesh::colorize_mesh_cells(object);
-    sight::geometry::data::mesh::generate_point_normals(object);
-    sight::geometry::data::mesh::generate_cell_normals(object);
+    if(_variant < 10)
+    {
+        sight::utest_data::generator::mesh::generate_triangle_quad_mesh(object);
+        sight::geometry::data::mesh::shake_point(object);
+        sight::geometry::data::mesh::colorize_mesh_points(object);
+        sight::geometry::data::mesh::colorize_mesh_cells(object);
+        sight::geometry::data::mesh::generate_point_normals(object);
+        sight::geometry::data::mesh::generate_cell_normals(object);
+    }
+    else if(_variant < 20)
+    {
+        const auto attributes = sight::data::mesh::attribute::point_normals
+                                | sight::data::mesh::attribute::point_colors
+                                | sight::data::mesh::attribute::point_tex_coords
+                                | sight::data::mesh::attribute::cell_normals
+                                | sight::data::mesh::attribute::cell_colors
+                                | sight::data::mesh::attribute::cell_tex_coords;
+
+        sight::utest_data::generator::mesh::generate_triangle_mesh(object, attributes);
+        sight::geometry::data::mesh::shake_point(object);
+        sight::geometry::data::mesh::colorize_mesh_points(object);
+        sight::geometry::data::mesh::colorize_mesh_cells(object);
+        sight::geometry::data::mesh::generate_point_normals(object);
+        sight::geometry::data::mesh::generate_cell_normals(object);
+    }
+    else if(_variant < 30)
+    {
+        const auto attributes = sight::data::mesh::attribute::point_normals
+                                | sight::data::mesh::attribute::point_tex_coords
+                                | sight::data::mesh::attribute::cell_colors
+                                | sight::data::mesh::attribute::cell_tex_coords;
+
+        sight::utest_data::generator::mesh::generate_triangle_mesh(object, attributes);
+        sight::geometry::data::mesh::shake_point(object);
+        sight::geometry::data::mesh::colorize_mesh_cells(object);
+        sight::geometry::data::mesh::generate_point_normals(object);
+    }
+    else if(_variant < 40)
+    {
+        const auto attributes = sight::data::mesh::attribute::point_colors
+                                | sight::data::mesh::attribute::point_tex_coords
+                                | sight::data::mesh::attribute::cell_colors
+                                | sight::data::mesh::attribute::cell_tex_coords;
+
+        sight::utest_data::generator::mesh::generate_triangle_mesh(object, attributes);
+        sight::geometry::data::mesh::shake_point(object);
+        sight::geometry::data::mesh::colorize_mesh_points(object);
+        sight::geometry::data::mesh::colorize_mesh_cells(object);
+    }
+    else if(_variant < 50)
+    {
+        const auto attributes = sight::data::mesh::attribute::point_colors
+                                | sight::data::mesh::attribute::cell_colors;
+
+        sight::utest_data::generator::mesh::generate_triangle_mesh(object, attributes);
+        sight::geometry::data::mesh::shake_point(object);
+        sight::geometry::data::mesh::colorize_mesh_points(object);
+        sight::geometry::data::mesh::colorize_mesh_cells(object);
+    }
+    else if(_variant < 60)
+    {
+        const auto attributes = sight::data::mesh::attribute::point_normals
+                                | sight::data::mesh::attribute::cell_normals;
+
+        sight::utest_data::generator::mesh::generate_triangle_mesh(object, attributes);
+        sight::geometry::data::mesh::shake_point(object);
+        sight::geometry::data::mesh::generate_point_normals(object);
+        sight::geometry::data::mesh::generate_cell_normals(object);
+    }
+    else if(_variant < 70)
+    {
+        const auto attributes = sight::data::mesh::attribute::point_tex_coords
+                                | sight::data::mesh::attribute::cell_tex_coords;
+
+        sight::utest_data::generator::mesh::generate_triangle_mesh(object, attributes);
+        sight::geometry::data::mesh::shake_point(object);
+    }
+    else if(_variant < 80)
+    {
+        const auto attributes = sight::data::mesh::attribute::point_normals
+                                | sight::data::mesh::attribute::point_tex_coords
+                                | sight::data::mesh::attribute::cell_normals
+                                | sight::data::mesh::attribute::cell_tex_coords;
+
+        sight::utest_data::generator::mesh::generate_triangle_mesh(object, attributes);
+        sight::geometry::data::mesh::shake_point(object);
+        sight::geometry::data::mesh::generate_point_normals(object);
+        sight::geometry::data::mesh::generate_cell_normals(object);
+    }
+    else if(_variant < 90)
+    {
+        sight::utest_data::generator::mesh::generate_triangle_mesh(object);
+        sight::geometry::data::mesh::shake_point(object);
+    }
+
     object->shrink_to_fit();
 
     return object;
@@ -752,15 +841,14 @@ inline sight::data::point::sptr generate<sight::data::point>(const std::size_t /
 template<>
 inline sight::data::point_list::sptr generate<sight::data::point_list>(const std::size_t _variant)
 {
-    auto object = std::make_shared<sight::data::point_list>();
+    auto points = std::make_shared<sight::data::point_list>();
 
-    auto& points = object->get_points();
     for(std::size_t i = 0, end = _variant + 3 ; i < end ; ++i)
     {
-        points.push_back(create<sight::data::point>(i));
+        points->push_back(create<sight::data::point>(i));
     }
 
-    return object;
+    return points;
 }
 
 //------------------------------------------------------------------------------
@@ -1422,6 +1510,14 @@ TEST_SUITE("sight::io::session")
     TEST_CASE("mesh")
     {
         test_combine<sight::data::mesh>();
+        test_combine<sight::data::mesh>(10);
+        test_combine<sight::data::mesh>(20);
+        test_combine<sight::data::mesh>(30);
+        test_combine<sight::data::mesh>(40);
+        test_combine<sight::data::mesh>(50);
+        test_combine<sight::data::mesh>(60);
+        test_combine<sight::data::mesh>(70);
+        test_combine<sight::data::mesh>(80);
     }
 
 //------------------------------------------------------------------------------

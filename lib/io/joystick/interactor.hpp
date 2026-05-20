@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -37,7 +37,7 @@ namespace detail
 
 class event_loop;
 
-}
+} // namespace detail
 
 enum class joystick_t : std::uint8_t
 {

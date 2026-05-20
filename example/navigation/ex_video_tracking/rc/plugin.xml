@@ -100,7 +100,7 @@
             <!-- ******************************* Begin Generic scene ******************************* -->
 
             <service uid="genericSceneSrv" type="sight::viz::scene3d::render">
-                <scene renderMode="manual">
+                <scene render_mode="manual">
                     <background topColor="#36393E" bottomColor="#36393E" />
 
                     <layer id="default">
@@ -152,7 +152,7 @@
                 </inout>
             </service>
 
-            <service uid="trackerSrv" type="sight::module::navigation::optics::aruco_tracker" worker="tracking" auto_connect="false">
+            <service uid="trackerSrv" type="sight::module::geometry::vision::aruco_tracker" worker="tracking" auto_connect="false">
                 <in key="camera" uid="camera" />
                 <inout key="frame" uid="videoImage" />
                 <inout group="marker_map">

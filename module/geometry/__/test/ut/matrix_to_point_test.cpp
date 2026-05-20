@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,8 +19,6 @@
  *
  ***********************************************************************/
 
-#include "matrix_to_point_test.hpp"
-
 #include <core/runtime/runtime.hpp>
 
 #include <data/matrix4.hpp>
@@ -31,38 +29,20 @@
 
 #include <boost/property_tree/xml_parser.hpp>
 
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::geometry::ut::matrix_to_point_test);
-
-namespace sight::module::geometry::ut
-{
-
-//------------------------------------------------------------------------------
-
-void matrix_to_point_test::setUp()
-{
-}
-
-//------------------------------------------------------------------------------
-
-void matrix_to_point_test::tearDown()
-{
-}
-
-//------------------------------------------------------------------------------
+#include <doctest/doctest.h>
 
 namespace
 {
 
-class context final
+class context
 {
 public:
 
     context()
     {
-        CPPUNIT_ASSERT_NO_THROW(srv = sight::service::add("sight::module::geometry::matrix_to_point"));
-        CPPUNIT_ASSERT(srv != nullptr);
-        CPPUNIT_ASSERT(srv->is_a("sight::module::geometry::matrix_to_point"));
+        CHECK_NOTHROW(srv = sight::service::add("sight::module::geometry::matrix_to_point"));
+        CHECK(srv != nullptr);
+        CHECK(srv->is_a("sight::module::geometry::matrix_to_point"));
 
         point = std::make_shared<sight::data::point>();
         srv->set_inout(point, "point");
@@ -74,7 +54,7 @@ public:
     {
         if(srv->started())
         {
-            CPPUNIT_ASSERT_NO_THROW(srv->stop().wait());
+            CHECK_NOTHROW(srv->stop().wait());
         }
 
         sight::service::remove(srv);
@@ -84,11 +64,7 @@ public:
 
     void set_config(const std::string& _config)
     {
-        sight::service::base::config_t config;
-        std::stringstream stream(_config);
-        boost::property_tree::read_xml(stream, config);
-
-        srv->set_config(config);
+        srv->set_config(_config);
 
         srv->configure();
         srv->start().wait();
@@ -100,33 +76,30 @@ public:
 
 } // namespace
 
-//------------------------------------------------------------------------------
-
-void matrix_to_point_test::update_test()
+TEST_SUITE("sight::module::geometry::matrix_to_point")
 {
-    context service_tester;
-    auto matrix = std::make_shared<sight::data::matrix4>();
-    service_tester.srv->set_input(matrix, "matrix");
-    service_tester.set_config("");
+    TEST_CASE_FIXTURE(context, "update_test")
+    {
+        auto matrix = std::make_shared<sight::data::matrix4>();
+        srv->set_input(matrix, "matrix");
+        set_config("");
 
-    service_tester.srv->update().get();
+        srv->update().get();
 
-    const auto& point = service_tester.point;
-    CPPUNIT_ASSERT_EQUAL(0., (*point)[0]);
-    CPPUNIT_ASSERT_EQUAL(0., (*point)[1]);
-    CPPUNIT_ASSERT_EQUAL(0., (*point)[2]);
+        CHECK_EQ(0., (*point)[0]);
+        CHECK_EQ(0., (*point)[1]);
+        CHECK_EQ(0., (*point)[2]);
 
-    data::matrix4::container_t expected;
-    expected[3]  = 14.0;
-    expected[7]  = 15.0;
-    expected[11] = -112.5;
-    *matrix      = expected;
+        sight::data::matrix4::container_t expected;
+        expected[3]  = 14.0;
+        expected[7]  = 15.0;
+        expected[11] = -112.5;
+        *matrix      = expected;
 
-    service_tester.srv->update().get();
+        srv->update().get();
 
-    CPPUNIT_ASSERT_EQUAL(expected[3], (*point)[0]);
-    CPPUNIT_ASSERT_EQUAL(expected[7], (*point)[1]);
-    CPPUNIT_ASSERT_EQUAL(expected[11], (*point)[2]);
-}
-
-} // namespace sight::module::geometry::ut
+        CHECK_EQ(expected[3], (*point)[0]);
+        CHECK_EQ(expected[7], (*point)[1]);
+        CHECK_EQ(expected[11], (*point)[2]);
+    }
+} // TEST_SUITE

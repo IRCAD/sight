@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,52 +19,34 @@
  *
  ***********************************************************************/
 
-#include "matrix_test.hpp"
-
 #include <geometry/__/matrix.hpp>
+
+#include <doctest/doctest.h>
 
 #include <glm/gtc/epsilon.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-namespace sight::geometry::ut
+TEST_SUITE("sight::geometry::matrix")
 {
-
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::geometry::ut::matrix_test);
-
 //------------------------------------------------------------------------------
 
-void matrix_test::setUp()
-{
-    // Set up context before running a test.
-}
-
-//------------------------------------------------------------------------------
-
-void matrix_test::tearDown()
-{
-    // Clean up after the test run.
-}
-
-//------------------------------------------------------------------------------
-
-void matrix_test::inverse_translation_rotation()
-{
-    glm::dmat4 matrix(1.);
-    matrix = glm::translate(matrix, glm::dvec3(10., 20., -30));
-    matrix = glm::rotate(matrix, glm::pi<double>() / 2., glm::dvec3(0., 0., 1.));
-
-    const glm::dmat4 fast_inverse_matrix = geometry::inverse_translation_rotation(matrix);
-    const glm::dmat4 inverse_matrix      = glm::inverse(matrix);
-
-    for(int i = 0 ; i < 4 ; ++i)
+    TEST_CASE("inverse_translation_rotation")
     {
-        for(int j = 0 ; j < 4 ; ++j)
+        glm::dmat4 matrix(1.);
+        matrix = glm::translate(matrix, glm::dvec3(10., 20., -30));
+        matrix = glm::rotate(matrix, glm::pi<double>() / 2., glm::dvec3(0., 0., 1.));
+
+        const glm::dmat4 fast_inverse_matrix = sight::geometry::inverse_translation_rotation(matrix);
+        const glm::dmat4 inverse_matrix      = glm::inverse(matrix);
+
+        for(int i = 0 ; i < 4 ; ++i)
         {
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(fast_inverse_matrix[i][j], inverse_matrix[i][j], 1e-5);
+            for(int j = 0 ; j < 4 ; ++j)
+            {
+                CHECK(fast_inverse_matrix[i][j] == doctest::Approx(inverse_matrix[i][j]).epsilon(1e-5));
+            }
         }
     }
-}
 
 //-----------------------------------------------------------------------------
-
-} // namespace sight::geometry::ut
+}

@@ -1,5 +1,5 @@
 <extension implements="sight::app::extension::config">
-    <id>sight::navigation::calibration::cal_extrinsic_view</id>
+    <id>sight::geometry::vision::cal_extrinsic_view</id>
     <parameters>
         <object uid="calibrationInfo1" type="sight::data::calibration_info" />
         <object uid="calibrationInfo2" type="sight::data::calibration_info" />
@@ -202,7 +202,7 @@
         <!-- ******************************* Begin Generic scene ******************************* -->
 
         <service uid="genericSceneSrv" type="sight::viz::scene3d::render">
-            <scene renderMode="manual">
+            <scene render_mode="manual">
                 <background topColor="#000000" bottomColor="#000000" />
 
                 <layer id="video1">
@@ -253,16 +253,9 @@
             <inout key="calInfo2" uid="${calibrationInfo2}" />
         </service>
 
-        <service uid="detectionStatusSrv" type="sight::module::ui::qt::status">
-            <green>Point are visible</green>
-            <orange>Calibration in progress</orange>
-            <red>Points are NOT visible</red>
-            <labels>
-                <name />
-            </labels>
-        </service>
+        <service uid="detectionStatusSrv" type="sight::module::ui::qt::status" />
 
-        <service uid="chessboardDetectorSrv" type="sight::module::geometry::vision::chess_board_detector" worker="extr_chess_checker">
+        <service uid="chessboardDetectorSrv" type="sight::module::geometry::vision::chess_board_detector" worker="chess_checker">
             <in group="image" auto_connect="false">
                 <key uid="frame1" />
                 <key uid="frame2" />
@@ -295,17 +288,17 @@
             </config>
         </service>
 
-        <service uid="openCVExtrinsicCalSrv" type="sight::module::geometry::vision::open_cv_extrinsic" worker="extr_chess_checker">
+        <service uid="openCVExtrinsicCalSrv" type="sight::module::geometry::vision::open_cv_extrinsic" worker="chess_checker">
             <in key="calibrationInfo1" uid="${calibrationInfo1}" />
             <in key="calibrationInfo2" uid="${calibrationInfo2}" />
-            <inout key="camera_set" uid="${cameraSet}" />
+            <inout key="camera_set" uid="${camera_set}" />
             <out key="matrix" uid="exportExtrinsicMat" />
             <camIndex>${camIndex}</camIndex>
             <properties from="${board_properties}" />
         </service>
 
         <service uid="cameraSetInfoSrv" type="sight::module::ui::qt::calibration::camera_set_editor" auto_connect="true">
-            <in key="camera_set" uid="${cameraSet}" />
+            <in key="camera_set" uid="${camera_set}" />
             <camIndex>${camIndex}</camIndex>
         </service>
 

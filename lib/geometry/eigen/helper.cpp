@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -63,7 +63,7 @@ data::matrix4::sptr from_eigen(const Eigen::Matrix4d& _mat)
 
 //-------------------------------------------------------------------------------------------------
 
-rvec_tvec_t eigen_mat_to_rvec_tvec(const Eigen::Matrix4d& _mat)
+rvec_tvec_t to_rvec_tvec(const Eigen::Matrix4d& _mat)
 {
     Eigen::AngleAxisd angle_axis;
 
@@ -87,52 +87,10 @@ rvec_tvec_t eigen_mat_to_rvec_tvec(const Eigen::Matrix4d& _mat)
 
 //-------------------------------------------------------------------------------------------------
 
-rvec_tvec_t f4s_mat_to_rvec_tvec(const data::matrix4::csptr _mat)
+rvec_tvec_t to_eigen_rvec_tvec(const data::matrix4::csptr& _mat)
 {
     Eigen::Matrix4d eigen_mat = to_eigen<double>(_mat);
-    return eigen_mat_to_rvec_tvec(eigen_mat);
-}
-
-//-------------------------------------------------------------------------------------------------
-
-EigenMatrix to_eigen(const std::array<float, 16>& _farray)
-{
-    Eigen::Matrix<double, 4, 4, Eigen::RowMajor> mat;
-
-    for(unsigned int r = 0 ; r < 4 ; ++r)
-    {
-        for(unsigned int c = 0 ; c < 4 ; ++c)
-        {
-            mat(r, c) = static_cast<double>(_farray[std::size_t(4) * r + c]);
-        }
-    }
-
-    return mat;
-}
-
-//-------------------------------------------------------------------------------------------------
-
-EigenMatrix to_eigen(const std::array<double, 16>& _farray)
-{
-    Eigen::Matrix<double, 4, 4, Eigen::RowMajor> mat;
-
-    for(unsigned int r = 0 ; r < 4 ; ++r)
-    {
-        for(unsigned int c = 0 ; c < 4 ; ++c)
-        {
-            mat(r, c) = _farray[std::size_t(4) * r + c];
-        }
-    }
-
-    return mat;
-}
-
-//-------------------------------------------------------------------------------------------------
-
-rvec_tvec_t float16_to_rvec_tvec(const std::array<float, 16>& _farray)
-{
-    Eigen::Matrix4d eigen_mat = to_eigen(_farray);
-    return eigen_mat_to_rvec_tvec(eigen_mat);
+    return to_rvec_tvec(eigen_mat);
 }
 
 //-------------------------------------------------------------------------------------------------

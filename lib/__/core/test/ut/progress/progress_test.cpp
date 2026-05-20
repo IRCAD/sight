@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -223,7 +223,8 @@ TEST_SUITE("sight::core::progress")
 
             progress1->done_work(100);
             progress2->done_work(100);
-            progress3->done_work(100);
+            progress3->add_done_work(30);
+            progress3->add_done_work(70);
 
             CHECK_EQ(agg_progress1->get_total_work_units(), std::uint64_t(300));
             CHECK_EQ(agg_progress1->get_done_work_units(), std::uint64_t(300));

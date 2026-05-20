@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2025 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,6 +20,8 @@
  ***********************************************************************/
 
 #include "io/itk/nifti_image_reader.hpp"
+
+#include "core/exceptionmacros.hpp"
 
 #include "factory/inr_image_io_factory.hpp"
 
@@ -88,7 +90,10 @@ void nifti_image_reader::read(sight::core::progress::observer::sptr _progress)
         };
 
     const std::filesystem::path file = get_file();
-    SIGHT_ASSERT("File: " << file << " doesn't exist", std::filesystem::exists(file));
+    SIGHT_THROW_EXCEPTION_IF(
+        core::exception("File: " + file.string() + " doesn't exist"),
+        !std::filesystem::exists(file)
+    );
     SIGHT_ASSERT("Object expired", !m_object.expired());
     SIGHT_ASSERT("Object null", m_object.lock());
 

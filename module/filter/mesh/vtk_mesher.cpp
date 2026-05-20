@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -105,8 +105,6 @@ vtk_mesher::vtk_mesher() noexcept :
     notifier(m_signals),
     has_monitors(m_signals)
 {
-    new_signal<signals::empty_t>(signals::COMPLETED);
-    new_signal<signals::empty_t>(signals::FAILED);
 }
 
 //-----------------------------------------------------------------------------
@@ -160,7 +158,7 @@ void vtk_mesher::updating()
             SIGHT_ERROR(msg);
             this->notifier::failure(msg);
 
-            this->async_emit(signals::FAILED);
+            this->async_emit(filter::signals::FAILED);
             progress->done();
 
             return;
@@ -310,8 +308,8 @@ void vtk_mesher::updating()
         }
 
         model_series->set_reconstruction_db(out_recs);
-        this->async_emit(signals::COMPLETED);
-        model_series->async_emit(sight::data::object::MODIFIED_SIG);
+        this->async_emit(filter::signals::SUCCEEDED);
+        model_series->async_emit(sight::data::signals::MODIFIED);
     }
 }
 
@@ -418,7 +416,7 @@ vtkSmartPointer<vtkPolyData> vtk_mesher::reconstruct(vtkSmartPointer<vtkImageDat
     {
         SIGHT_ERROR(*error);
         this->notifier::failure(*error);
-        this->async_emit(signals::FAILED);
+        this->async_emit(filter::signals::FAILED);
 
         return nullptr;
     }

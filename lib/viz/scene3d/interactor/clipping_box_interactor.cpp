@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2023 IRCAD France
+ * Copyright (C) 2019-2026 IRCAD France
  * Copyright (C) 2019-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -54,7 +54,7 @@ Ogre::MovableObject* clipping_box_interactor::pick_object(int _x, int _y)
     {
         const auto result = viz::scene3d::utils::pick_object(_x, _y, 0xFFFFFFFF, *layer->get_scene_manager());
 
-        return result.has_value() ? result->first : nullptr;
+        return result.has_value() ? result->object : nullptr;
     }
 
     return nullptr;

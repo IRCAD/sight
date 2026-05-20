@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -57,6 +57,7 @@ video::video() noexcept
     new_slot(slots::UPDATE_TF, [this](){lazy_update(update_flags::TF);});
     new_slot(slots::UPDATE_PL, [this](){lazy_update(update_flags::POINT_LIST);});
     new_slot(slots::SET_FILTERING, &video::set_filtering, this);
+    new_slot(slots::UPDATE_COLOR, &video::update_color, this);
     new_slot(slots::SCALE, &video::scale, this);
 }
 
@@ -75,7 +76,7 @@ void video::configuring()
     m_radius                 = config.get<std::string>(config::RADIUS, m_radius);
     m_display_label          = config.get<std::string>(config::DISPLAY_LABEL, m_display_label);
     m_label_color            = config.get<std::string>(config::LABEL_COLOR, m_label_color);
-    m_color                  = config.get<std::string>(config::COLOR, m_color);
+    m_point_color            = config.get<std::string>(config::POINT_COLOR, m_point_color);
     m_fixed_size             = config.get<std::string>(config::FIXED_SIZE, m_fixed_size);
     m_query_flags            = config.get<std::string>(config::QUERY, m_query_flags);
     m_font_source            = config.get<std::string>(config::FONT_SOURCE, m_font_source);
@@ -129,9 +130,9 @@ void video::starting()
             config.add(config::LABEL_COLOR, m_label_color);
         }
 
-        if(!m_color.empty())
+        if(!m_point_color.empty())
         {
-            config.add(config::COLOR, m_color);
+            config.add(config::POINT_COLOR, m_point_color);
         }
 
         if(!m_fixed_size.empty())
@@ -186,8 +187,8 @@ service::connections_t video::auto_connections() const
     connections.push(m_tf, data::transfer_function::WINDOWING_MODIFIED_SIG, slots::UPDATE_TF);
 
     connections.push(m_pl, data::point_list::MODIFIED_SIG, slots::UPDATE_PL);
-    connections.push(m_pl, data::point_list::POINT_ADDED_SIG, slots::UPDATE_PL);
-    connections.push(m_pl, data::point_list::POINT_REMOVED_SIG, slots::UPDATE_PL);
+    connections.push(m_pl, data::point_list::signals::POINT_ADDED, slots::UPDATE_PL);
+    connections.push(m_pl, data::point_list::signals::POINT_REMOVED, slots::UPDATE_PL);
 
     return connections;
 }
@@ -223,41 +224,31 @@ void video::updating()
 
         if(!m_is_texture_init || type != m_previous_type)
         {
-            auto& mtl_mgr = Ogre::MaterialManager::getSingleton();
             const auto tf = m_tf.lock();
 
+            std::string tpl_mat;
             Ogre::MaterialPtr default_mat;
             if(tf)
             {
                 if(type == core::type::FLOAT || type == core::type::DOUBLE)
                 {
-                    default_mat = mtl_mgr.getByName(VIDEO_WITH_TF_MATERIAL_NAME, sight::viz::scene3d::RESOURCE_GROUP);
+                    tpl_mat = VIDEO_WITH_TF_MATERIAL_NAME;
                 }
                 else
                 {
-                    default_mat = mtl_mgr.getByName(
-                        VIDEO_WITH_TF_INT_MATERIAL_NAME,
-                        sight::viz::scene3d::RESOURCE_GROUP
-                    );
+                    tpl_mat = VIDEO_WITH_TF_INT_MATERIAL_NAME;
                 }
             }
             else
             {
-                default_mat = mtl_mgr.getByName(VIDEO_MATERIAL_NAME, sight::viz::scene3d::RESOURCE_GROUP);
+                tpl_mat = VIDEO_MATERIAL_NAME;
             }
 
-            // Duplicate the template material to create our own material
-            auto material = Ogre::MaterialManager::getSingletonPtr()->createOrRetrieve(
-                gen_id("video_material"),
-                sight::viz::scene3d::RESOURCE_GROUP,
-                true
-            ).first;
-            m_material = Ogre::dynamic_pointer_cast<Ogre::Material>(material);
-
-            default_mat->copyDetailsTo(m_material);
+            m_material = std::make_unique<sight::viz::scene3d::material::generic>(gen_id("video_material"), tpl_mat);
 
             // Set the texture to the main material pass
             this->update_texture_filtering();
+            this->update_color();
 
             if(tf)
             {
@@ -283,8 +274,7 @@ void video::updating()
                    || viewport->getActualHeight() != m_previous_viewport_height))
            || m_force_plane_update)
         {
-            Ogre::Pass* pass = m_material->getTechnique(0)->getPass(0);
-            m_texture->bind(pass, "image");
+            m_material->set_texture("image", m_texture->get(), m_filtering ? Ogre::TFO_BILINEAR : Ogre::TFO_NONE);
 
             this->clear_entity();
 
@@ -313,7 +303,7 @@ void video::updating()
             // Create Ogre Entity
             m_entity = scene_manager->createEntity(entity_name, video_mesh_name);
             m_entity->setRenderQueueGroup(sight::viz::scene3d::rq::SURFACE);
-            m_entity->setMaterial(m_material);
+            m_entity->setMaterial(m_material.get()->material());
 
             // Add the entity to the scene
             m_scene_node = scene_manager->getRootSceneNode()->createChildSceneNode(node_name);
@@ -397,8 +387,7 @@ void video::update_tf()
     {
         m_gpu_tf->update();
 
-        Ogre::Pass* ogre_pass = m_material->getTechnique(0)->getPass(0);
-        m_gpu_tf->bind(ogre_pass, "tf", ogre_pass->getFragmentProgramParameters());
+        m_material->set_texture("tf", m_gpu_tf->get());
 
         this->request_render();
     }
@@ -411,15 +400,12 @@ void video::update_pl()
     const auto image = m_image.lock();
     const auto pl    = m_pl.lock();
 
-    const data::point_list::container_t& in_points = pl->get_points();
+    m_point_list->clear();
 
-    data::point_list::container_t& out_points = m_point_list->get_points();
-    out_points.clear();
-
-    for(const auto& in_point : in_points)
+    for(const auto& in_point : *pl)
     {
         const auto& point = *in_point;
-        out_points.push_back(
+        m_point_list->push_back(
             std::make_shared<data::point>(
                 point[0] - static_cast<double>(image->size()[0]) * 0.5,
                 -(point[1] - static_cast<double>(image->size()[1]) * 0.5),
@@ -480,13 +466,18 @@ void video::set_filtering(bool _filtering)
 
 void video::update_texture_filtering()
 {
-    Ogre::Pass* pass = m_material->getTechnique(0)->getPass(0);
-    SIGHT_ASSERT("The current pass cannot be retrieved.", pass);
-    Ogre::TextureUnitState* tus = pass->getTextureUnitState("image");
-    SIGHT_ASSERT("The texture unit cannot be retrieved.", tus);
+    m_material->set_texture("image", m_texture->get(), m_filtering ? Ogre::TFO_BILINEAR : Ogre::TFO_NONE);
+}
 
-    // Set up texture filtering
-    tus->setTextureFiltering(m_filtering ? Ogre::TFO_BILINEAR : Ogre::TFO_NONE);
+//------------------------------------------------------------------------------
+
+void video::update_color()
+{
+    if(m_material)
+    {
+        const auto color = Ogre::Vector4((*m_color)[0], (*m_color)[1], (*m_color)[2], 1.F);
+        m_material->set_fragment_uniform("u_color", color);
+    }
 }
 
 //------------------------------------------------------------------------------

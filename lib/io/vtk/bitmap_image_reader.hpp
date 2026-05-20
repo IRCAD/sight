@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2025 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,8 +47,8 @@ namespace sight::io::vtk
  *
  * Read a Bitmap image using the VTK library
  */
-class bitmap_image_reader : public reader::generic_object_reader<data::image>,
-                            public core::location::single_file
+class SIGHT_IO_VTK_CLASS_API bitmap_image_reader : public reader::generic_object_reader<data::image>,
+                                                   public core::location::single_file
 {
 public:
 

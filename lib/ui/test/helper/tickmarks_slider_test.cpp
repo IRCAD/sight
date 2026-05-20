@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -29,21 +29,21 @@
 
 #include <QApplication>
 #include <QLabel>
+#include <qobject.h>
 #include <QSlider>
+#include <qtestsupport_core.h>
 
 #include <QtTest/QSignalSpy>
 #include <QtTest/QTest>
 
-#include <QWidget>
-
-#include <utility>
+#include <qwidget.h>
 
 namespace sight::ui::test::helper
 {
 
 //------------------------------------------------------------------------------
 
-inline std::string position_to_string(tickmarks_slider_test::position _pos)
+static inline std::string position_to_string(tickmarks_slider_test::position _pos)
 {
     switch(_pos)
     {
@@ -65,36 +65,56 @@ inline std::string position_to_string(tickmarks_slider_test::position _pos)
 
 //------------------------------------------------------------------------------
 
-inline  QSlider* take(tester& _tester, const selector& _slider)
+static inline  QSlider* find_slider(tester& _tester, const selector& _slider)
 {
     _slider.select(_tester);
+    QSlider* slider = nullptr;
 
-    if(!_tester.is_a<QSlider*>())
-    {
-        _tester.yields<QSlider*>("'" + _slider.get_description(_tester) + "' is not a QSlider");
-    }
+    _tester.doubt(
+        "The slider should have a QSlider child",
+        [&slider](QObject* _obj)
+        {
+            slider = _obj->findChild<QSlider*>();
+            return slider != nullptr;
+        });
 
-    return _tester.get<QSlider*>();
+    return slider;
 }
 
 //------------------------------------------------------------------------------
 
-inline void move_impl(tester& _tester, const selector& _slider, tickmarks_slider_test::position _pos, int _times = 1)
+static inline void move_impl(
+    tester& _tester,
+    const selector& _slider,
+    tickmarks_slider_test::position _pos,
+    int _times = 1
+)
 {
     const QAbstractSlider::SliderAction action = _pos == tickmarks_slider_test::position::left
                                                  || _pos == tickmarks_slider_test::position::top
                                                  ? QAbstractSlider::SliderAction::SliderPageStepSub
                                                  : QAbstractSlider::SliderAction::SliderPageStepAdd;
 
-    QSlider* const slider = take(_tester, _slider);
+    _slider.select(_tester);
+    QSlider* const slider = find_slider(_tester, _slider);
 
-    for(int i = 0 ; i < _times ; i++)
-    {
-        slider->triggerAction(action);
-    }
+    qApp->postEvent(
+        qApp,
+        new test_event(
+            [action, _times, slider]
+        {
+            for(int i = 0 ; i < _times ; i++)
+            {
+                slider->triggerAction(action);
+            }
+        })
+    );
+
+    qApp->processEvents();
 }
 
 //------------------------------------------------------------------------------
+
 void tickmarks_slider_test::move(
     tester& _tester,
     const selector& _slider,
@@ -106,37 +126,111 @@ void tickmarks_slider_test::move(
         "moving \"" + _slider.get_description(_tester) + "\" slider "
         + std::to_string(_times) + " step(s) to the " + position_to_string(_pos)
     );
+
     move_impl(_tester, _slider, _pos, _times);
 }
 
 //----------------------------------------------------------------------------------
-void tickmarks_slider_test::check_value(tester& _tester, const selector& _slider, int _expected)
+void tickmarks_slider_test::check_value(tester& _tester, const selector& _slider, const std::string& _expected)
 {
     auto bt = _tester.add_in_backtrace(
-        "checking \"" + _slider.get_description(_tester) + "\" value == " + std::to_string(_expected)
+        "checking \"" + _slider.get_description(_tester) + "\" value == " + _expected
     );
-    QSlider* slider = take(_tester, _slider);
-    int value       = slider->value();
-    CPPUNIT_ASSERT_EQUAL(_expected, value);
+
+    _slider.select(_tester);
+
+    _tester.doubt(
+        _slider.get_description(_tester) + " should have the current_value property set to \"" + _expected + "\"",
+        [_expected](QObject* _obj)
+        {
+            return _obj->property("current_value").toString().toStdString() == _expected;
+        });
 }
 
 //----------------------------------------------------------------------------------
+
 void tickmarks_slider_test::mouse_drag_test(tester& _tester, const selector& _slider, QPoint _from, QPoint _to)
 {
     auto bt = _tester.add_in_backtrace("dragging \"" + _slider.get_description(_tester) + "\"");
 
-    QSlider* s = take(_tester, _slider);
+    _slider.select(_tester);
+    auto* widget = _tester.get<QWidget*>();
 
-    QMetaObject::invokeMethod(
-        s,
-        [ = ]
+    qApp->postEvent(
+        qApp,
+        new test_event(
+            [widget, _from, _to]
         {
-            QTest::mousePress(s, Qt::LeftButton, Qt::NoModifier, _from);
-            QTest::mouseMove(s, _to);
-            QTest::mouseRelease(s, Qt::LeftButton, Qt::NoModifier, _to);
-        },
-        Qt::BlockingQueuedConnection
+            tester::mouse_move(widget, _from);
+            QTest::mousePress(widget, Qt::LeftButton, Qt::NoModifier, _from);
+            tester::mouse_move(widget, _to, 10, Qt::LeftButton, Qt::NoModifier);
+            QTest::mouseRelease(widget, Qt::LeftButton, Qt::NoModifier, _to);
+        })
     );
+}
+
+//------------------------------------------------------------------------------
+
+void tickmarks_slider_test::set_current_text(
+    tester& _tester,
+    const selector& _slider,
+    const std::string& _text
+)
+{
+    auto bt = _tester.add_in_backtrace(
+        "set current text of \"" + _slider.get_description(_tester) + "\" slider to \"" + _text + "\""
+    );
+
+    _slider.select(_tester);
+    auto* widget = _tester.get<QWidget*>();
+
+    qApp->postEvent(
+        qApp,
+        new test_event(
+            [widget, _text]
+        {
+            widget->setProperty("current_value", QString::fromStdString(_text));
+        })
+    );
+
+    _tester.doubt(
+        _slider.get_description(_tester) + " should have the current_value property set to \"" + _text + "\"",
+        [&_text](QObject* _obj)
+        {
+            return _obj->property("current_value").toString().toStdString() == _text;
+        });
+}
+
+//------------------------------------------------------------------------------
+
+void tickmarks_slider_test::set_current_tick(
+    tester& _tester,
+    const selector& _slider,
+    int _tick
+)
+{
+    auto bt = _tester.add_in_backtrace(
+        "set current tick of \"" + _slider.get_description(_tester) + "\" slider to \"" + std::to_string(_tick) + "\""
+    );
+
+    _slider.select(_tester);
+    auto* widget = _tester.get<QWidget*>();
+
+    qApp->postEvent(
+        qApp,
+        new test_event(
+            [widget, _tick]
+        {
+            widget->setProperty("current_tick", _tick);
+        })
+    );
+
+    _tester.doubt(
+        _slider.get_description(_tester) + " should have the current_tick property set to " + std::to_string(_tick),
+        [&_tick](QObject* _obj)
+        {
+            return _obj->property("current_tick").toInt() == _tick;
+        });
 }
 
 } // namespace sight::ui::test::helper

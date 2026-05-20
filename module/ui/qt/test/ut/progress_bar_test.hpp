@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024 IRCAD France
+ * Copyright (C) 2024-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -51,8 +51,7 @@ private:
         bool _show_title,
         bool _show_cancel,
         bool _pulse,
-        const std::string& _svg = std::string(),
-        bool _show_log          = false
+        const std::string& _svg = std::string()
     );
 
     /// The container service.

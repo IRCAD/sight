@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -627,7 +627,7 @@ void layer::add_interactor(const viz::scene3d::interactor::base::sptr& _interact
                          };
 
     // Add the interactor if it doesn't already exit.
-    if(std::none_of(m_interactors.begin(), m_interactors.end(), is_pair))
+    if(std::ranges::none_of(m_interactors, is_pair))
     {
         m_interactors.insert(pair);
     }
@@ -642,7 +642,7 @@ void layer::remove_interactor(const viz::scene3d::interactor::base::sptr& _inter
                                       return _i.second.lock() == _interactor;
                                   };
 
-    const auto it = std::find_if(m_interactors.cbegin(), m_interactors.cend(), interactor_equal);
+    const auto it = std::ranges::find_if(m_interactors, interactor_equal);
 
     if(it != m_interactors.end())
     {
@@ -772,6 +772,42 @@ void layer::reset_camera_coordinates()
             // Set the position of the camera
             cam_node->setPosition((world_bounding_box.getCenter() + bounding_box_length * direction));
         }
+
+        if(m_camera_orthographic && m_camera->getProjectionType() != Ogre::PT_PERSPECTIVE)
+        {
+            // To compute the needed orthographic height,
+            // one needs to apply the camera transformation on the world bounding box.
+            auto transformed_bb = world_bounding_box;
+            Ogre::Matrix3 camera_transform;
+
+            // We inverse the orientation because it's being applied to an object in the world coordinate system.
+            m_camera->getRealOrientation().Inverse().ToRotationMatrix(camera_transform);
+
+            transformed_bb.transform(Ogre::Matrix4(camera_transform));
+
+            Ogre::Real margin = 0.1F;
+
+            // Use height as the difference on y coordinates.
+            const auto x1 = transformed_bb.getMinimum().x;
+            const auto x2 = transformed_bb.getMaximum().x;
+            Ogre::Real w  = x2 - x1;
+
+            const auto y1 = transformed_bb.getMinimum().y;
+            const auto y2 = transformed_bb.getMaximum().y;
+            Ogre::Real h  = y2 - y1;
+
+            const Ogre::Viewport* const viewport = get_viewport();
+            SIGHT_ASSERT("The current viewport cannot be retrieved.", viewport);
+
+            if(w / h > static_cast<float>(viewport->getActualWidth()) / static_cast<float>(viewport->getActualHeight()))
+            {
+                m_camera->setOrthoWindowWidth(w + w * margin);
+            }
+            else
+            {
+                m_camera->setOrthoWindowHeight(h + h * margin);
+            }
+        }
     }
 }
 
@@ -852,29 +888,7 @@ void layer::reset_camera_clipping_range() const
         auto far  = std::max(min_far, max_near);
 
         // Yeah, it's a kind of a magic number here.
-        auto min_space = 15.F;
-
-        if(m_camera_orthographic && m_camera->getProjectionType() != Ogre::PT_PERSPECTIVE)
-        {
-            min_space = 2.F;
-
-            // To compute the needed orthographic height,
-            // one needs to apply the camera transformation on the world bounding box.
-            auto transformed_bb = world_bounding_box;
-            Ogre::Matrix3 camera_transform;
-
-            // We inverse the orientation because it's being applied to an object in the world coordinate system.
-            m_camera->getRealOrientation().Inverse().ToRotationMatrix(camera_transform);
-
-            transformed_bb.transform(Ogre::Matrix4(camera_transform));
-
-            // Use height as the difference on y coordinates.
-            const auto y1     = transformed_bb.getMinimum().y;
-            const auto y2     = transformed_bb.getMaximum().y;
-            Ogre::Real h      = y2 - y1;
-            Ogre::Real margin = 0.1F;
-            m_camera->setOrthoWindowHeight(h + h * margin);
-        }
+        auto min_space = (m_camera_orthographic && m_camera->getProjectionType() != Ogre::PT_PERSPECTIVE) ? 2.F : 15.F;
 
         // Give ourselves a little breathing room, with a minimum depending on the projection type
         auto space = std::max((far - near) * 0.05F, min_space);
@@ -885,9 +899,8 @@ void layer::reset_camera_clipping_range() const
         near = std::max(near, 0.1F);
 
         const auto& chain            = this->get_compositor_chain();
-        const auto sao_compositor_it = std::find_if(
-            chain.begin(),
-            chain.end(),
+        const auto sao_compositor_it = std::ranges::find_if(
+            chain,
             [](const auto& _compositor)
             {
                 return _compositor.first == "SAO";
@@ -1086,14 +1099,14 @@ void layer::restart_adaptors()
         if(has_services != nullptr)
         {
             const auto& sub_services = has_services->get_registered_services();
-            std::copy(sub_services.begin(), sub_services.end(), std::back_inserter(sub_adaptors));
+            std::ranges::copy(sub_services, std::back_inserter(sub_adaptors));
         }
     }
 
     // Subadaptors should be started/stopped by their parent. Remove them from the list.
     for(const auto& sub_srv : sub_adaptors)
     {
-        auto it = std::find(adaptors.begin(), adaptors.end(), sub_srv.lock());
+        auto it = std::ranges::find(adaptors, sub_srv.lock());
 
         if(it != adaptors.end())
         {

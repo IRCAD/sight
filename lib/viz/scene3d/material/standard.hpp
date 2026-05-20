@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -56,7 +56,7 @@ public:
     static const inline std::string TEXTURE  = "diffuseTexture";
 
     /// Constructor
-    SIGHT_VIZ_SCENE3D_API standard(const std::string& _name);
+    SIGHT_VIZ_SCENE3D_API explicit standard(const std::string& _name);
 
     /// Destructor
     SIGHT_VIZ_SCENE3D_API ~standard() override = default;

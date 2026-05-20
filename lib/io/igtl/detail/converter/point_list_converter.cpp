@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -57,7 +57,7 @@ point_list_converter::~point_list_converter()
     data::point_list::csptr src_points = std::dynamic_pointer_cast<const data::point_list>(_src);
 
     ::igtl::PointMessage::Pointer dest = ::igtl::PointMessage::New();
-    for(data::point::sptr const& src_point : src_points->get_points())
+    for(data::point::sptr const& src_point : *src_points)
     {
         std::transform(
             (*src_point).begin(),
@@ -90,16 +90,15 @@ data::object::sptr point_list_converter::from_igtl_message(const ::igtl::Message
         fw_point = std::make_shared<data::point>();
         src_points->GetPointElement(i, elem);
         elem->GetPosition(igtl_pos.data());
-        std::transform(
-            igtl_pos.begin(),
-            igtl_pos.end(),
+        std::ranges::transform(
+            igtl_pos,
             (*fw_point).begin(),
             boost::numeric_cast<float, double>
         );
         fw_points.push_back(fw_point);
     }
 
-    dest->set_points(fw_points);
+    *dest = fw_points;
 
     return dest;
 }

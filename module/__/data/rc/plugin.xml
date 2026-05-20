@@ -10,6 +10,13 @@
 
     <extension implements="sight::service::extension::factory">
         <type>sight::service::controller</type>
+        <service>sight::module::data::copy_field</service>
+        <object>sight::data::object</object>
+        <desc>This service copies the fields of an object and updates its own object or the defined target.</desc>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::service::controller</type>
         <service>sight::module::data::reset</service>
         <object>sight::data::object</object>
         <desc>This service resets an object using the default constructor.</desc>
@@ -82,6 +89,22 @@
         <object key="vector">sight::data::vector</object>
         <object key="objects">sight::data::object</object>
         <desc>This service extracts objects from a vector</desc>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::service::controller</type>
+        <service>sight::module::data::insert_fiducials</service>
+        <object key="fiducials">sight::data::vector</object>
+        <object key="image">sight::data::image_series</object>
+        <desc>This service inserts fiducials into an image series</desc>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::service::controller</type>
+        <service>sight::module::data::inverse</service>
+        <object key="source">sight::data::string_serializable</object>
+        <object key="target">sight::data::string_serializable</object>
+        <desc>Inverts a boolean value from a string_serializable source</desc>
     </extension>
 
     <extension implements="sight::service::extension::factory">

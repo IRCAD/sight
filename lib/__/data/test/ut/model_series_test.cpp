@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,155 +20,143 @@
  *
  ***********************************************************************/
 
-#include "model_series_test.hpp"
-
-#include <core/type.hpp>
-
-#include <data/mesh.hpp>
-#include <data/reconstruction.hpp>
+#include <data/model_series.hpp>
 
 #include <utest_data/generator/mesh.hpp>
 
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::model_series_test);
+#include <doctest/doctest.h>
 
-namespace sight::data::ut
+TEST_SUITE("sight::data::model_series")
 {
+//------------------------------------------------------------------------------
+
+    TEST_CASE("model")
+    {
+        auto series = std::make_shared<sight::data::model_series>();
+        CHECK(series);
+
+        sight::data::reconstruction::sptr rec1 = std::make_shared<sight::data::reconstruction>();
+        CHECK(rec1);
+        sight::data::reconstruction::sptr rec2 = std::make_shared<sight::data::reconstruction>();
+        CHECK(rec2);
+
+        sight::data::mesh::sptr mesh1 = std::make_shared<sight::data::mesh>();
+        CHECK(mesh1);
+        sight::utest_data::generator::mesh::generate_quad_mesh(mesh1);
+
+        sight::data::mesh::sptr mesh2 = std::make_shared<sight::data::mesh>();
+        CHECK(mesh2);
+        sight::utest_data::generator::mesh::generate_quad_mesh(mesh2);
+
+        rec1->set_mesh(mesh1);
+        rec2->set_mesh(mesh2);
+
+        sight::data::model_series::reconstruction_vector_t recs;
+        recs.push_back(rec1);
+        recs.push_back(rec2);
+
+        series->set_reconstruction_db(recs);
+        CHECK_EQ(2, (int) series->get_reconstruction_db().size());
+        CHECK_EQ(rec1, series->get_reconstruction_db()[0]);
+        CHECK_EQ(rec2, series->get_reconstruction_db()[1]);
+    }
 
 //------------------------------------------------------------------------------
 
-void model_series_test::setUp()
-{
-    // Set up context before running a test.
-    m_series = std::make_shared<data::model_series>();
-}
+    TEST_CASE("deep_copy")
+    {
+        auto series = std::make_shared<sight::data::model_series>();
+        CHECK(series);
+
+        auto rec1  = std::make_shared<sight::data::reconstruction>();
+        auto mesh1 = std::make_shared<sight::data::mesh>();
+        sight::utest_data::generator::mesh::generate_quad_mesh(mesh1);
+
+        rec1->set_mesh(mesh1);
+        sight::data::model_series::reconstruction_vector_t recs;
+        recs.push_back(rec1);
+        series->set_reconstruction_db(recs);
+
+        auto second_series = std::make_shared<sight::data::model_series>();
+
+        CHECK(*series != *second_series);
+
+        second_series->deep_copy(series);
+
+        CHECK(*series == *second_series);
+
+        CHECK_EQ(1, (int) series->get_reconstruction_db().size());
+        CHECK_EQ(1, (int) second_series->get_reconstruction_db().size());
+        CHECK(series->get_reconstruction_db()[0] != second_series->get_reconstruction_db()[0]);
+    }
 
 //------------------------------------------------------------------------------
 
-void model_series_test::tearDown()
-{
-    // Clean up after the test run.
-    m_series.reset();
-}
+    TEST_CASE("shallow_copy")
+    {
+        auto series = std::make_shared<sight::data::model_series>();
+        CHECK(series);
+
+        auto rec1  = std::make_shared<sight::data::reconstruction>();
+        auto mesh1 = std::make_shared<sight::data::mesh>();
+        sight::utest_data::generator::mesh::generate_quad_mesh(mesh1);
+        rec1->set_mesh(mesh1);
+        sight::data::model_series::reconstruction_vector_t recs;
+        recs.push_back(rec1);
+        series->set_reconstruction_db(recs);
+
+        auto second_series = std::make_shared<sight::data::model_series>();
+
+        CHECK(*series != *second_series);
+
+        second_series->shallow_copy(series);
+
+        CHECK(*series == *second_series);
+
+        CHECK(series->get_reconstruction_db()[0] == second_series->get_reconstruction_db()[0]);
+        CHECK_EQ(series->get_reconstruction_db()[0], second_series->get_reconstruction_db()[0]);
+
+        CHECK_EQ(recs[0], series->get_reconstruction_db()[0]);
+        CHECK_EQ(recs[0], second_series->get_reconstruction_db()[0]);
+        CHECK_EQ(1, (int) series->get_reconstruction_db().size());
+        CHECK_EQ(1, (int) second_series->get_reconstruction_db().size());
+    }
 
 //------------------------------------------------------------------------------
 
-void model_series_test::model_test()
-{
-    CPPUNIT_ASSERT(m_series);
+    TEST_CASE("equality")
+    {
+        auto series1 = std::make_shared<sight::data::model_series>();
+        auto series2 = std::make_shared<sight::data::model_series>();
 
-    data::reconstruction::sptr rec1 = std::make_shared<data::reconstruction>();
-    CPPUNIT_ASSERT(rec1);
-    data::reconstruction::sptr rec2 = std::make_shared<data::reconstruction>();
-    CPPUNIT_ASSERT(rec2);
+        CHECK(*series1 == *series2);
+        CHECK(!(*series1 != *series2));
 
-    data::mesh::sptr mesh1 = std::make_shared<data::mesh>();
-    CPPUNIT_ASSERT(mesh1);
-    utest_data::generator::mesh::generate_quad_mesh(mesh1);
-
-    data::mesh::sptr mesh2 = std::make_shared<data::mesh>();
-    CPPUNIT_ASSERT(mesh2);
-    utest_data::generator::mesh::generate_quad_mesh(mesh2);
-
-    rec1->set_mesh(mesh1);
-    rec2->set_mesh(mesh2);
-
-    model_series::reconstruction_vector_t recs;
-    recs.push_back(rec1);
-    recs.push_back(rec2);
-
-    m_series->set_reconstruction_db(recs);
-    CPPUNIT_ASSERT_EQUAL(2, (int) m_series->get_reconstruction_db().size());
-    CPPUNIT_ASSERT_EQUAL(rec1, m_series->get_reconstruction_db()[0]);
-    CPPUNIT_ASSERT_EQUAL(rec2, m_series->get_reconstruction_db()[1]);
-}
-
-//------------------------------------------------------------------------------
-
-void model_series_test::deep_copy_test()
-{
-    CPPUNIT_ASSERT(m_series);
-
-    auto rec1  = std::make_shared<data::reconstruction>();
-    auto mesh1 = std::make_shared<data::mesh>();
-    utest_data::generator::mesh::generate_quad_mesh(mesh1);
-
-    rec1->set_mesh(mesh1);
-    model_series::reconstruction_vector_t recs;
-    recs.push_back(rec1);
-    m_series->set_reconstruction_db(recs);
-
-    auto second_series = std::make_shared<data::model_series>();
-
-    CPPUNIT_ASSERT(*m_series != *second_series);
-
-    second_series->deep_copy(m_series);
-
-    CPPUNIT_ASSERT(*m_series == *second_series);
-
-    CPPUNIT_ASSERT_EQUAL(1, (int) m_series->get_reconstruction_db().size());
-    CPPUNIT_ASSERT_EQUAL(1, (int) second_series->get_reconstruction_db().size());
-    CPPUNIT_ASSERT(m_series->get_reconstruction_db()[0] != second_series->get_reconstruction_db()[0]);
-}
-
-//------------------------------------------------------------------------------
-
-void model_series_test::shallow_copy_test()
-{
-    CPPUNIT_ASSERT(m_series);
-
-    auto rec1  = std::make_shared<data::reconstruction>();
-    auto mesh1 = std::make_shared<data::mesh>();
-    utest_data::generator::mesh::generate_quad_mesh(mesh1);
-    rec1->set_mesh(mesh1);
-    model_series::reconstruction_vector_t recs;
-    recs.push_back(rec1);
-    m_series->set_reconstruction_db(recs);
-
-    auto second_series = std::make_shared<data::model_series>();
-
-    CPPUNIT_ASSERT(*m_series != *second_series);
-
-    second_series->shallow_copy(m_series);
-
-    CPPUNIT_ASSERT(*m_series == *second_series);
-
-    CPPUNIT_ASSERT(m_series->get_reconstruction_db()[0] == second_series->get_reconstruction_db()[0]);
-    CPPUNIT_ASSERT_EQUAL(m_series->get_reconstruction_db()[0], second_series->get_reconstruction_db()[0]);
-
-    CPPUNIT_ASSERT_EQUAL(recs[0], m_series->get_reconstruction_db()[0]);
-    CPPUNIT_ASSERT_EQUAL(recs[0], second_series->get_reconstruction_db()[0]);
-    CPPUNIT_ASSERT_EQUAL(1, (int) m_series->get_reconstruction_db().size());
-    CPPUNIT_ASSERT_EQUAL(1, (int) second_series->get_reconstruction_db().size());
-}
-
-//------------------------------------------------------------------------------
-
-void model_series_test::equality_test()
-{
-    auto series1 = std::make_shared<data::model_series>();
-    auto series2 = std::make_shared<data::model_series>();
-
-    CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
-
-    // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
+        // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
     #define TEST(op) \
             series1->op; \
-            CPPUNIT_ASSERT_MESSAGE( \
-                "Series must be different when using " #op " on the first one", \
-                *series1 != *series2 && !(*series1 == *series2) \
+            CHECK_MESSAGE( \
+                *series1 != *series2, \
+                "Series must be different when using " #op " on the first one" \
+            ); \
+            CHECK_MESSAGE( \
+                !(*series1 == *series2), \
+                "Series must be different when using " #op " on the first one" \
             ); \
             series2->op; \
-            CPPUNIT_ASSERT_MESSAGE( \
-                "Series must be equal when using " #op " on both", \
-                *series1 == *series2 && !(*series1 != *series2) \
+            CHECK_MESSAGE( \
+                *series1 == *series2, \
+                "Series must be equal when using " #op " on both" \
+            ); \
+            CHECK_MESSAGE( \
+                !(*series1 != *series2), \
+                "Series must be equal when using " #op " on both" \
             );
 
-    TEST(set_reconstruction_db({std::make_shared<data::reconstruction>()}));
+        TEST(set_reconstruction_db({std::make_shared<sight::data::reconstruction>()}));
 
     #undef TEST
-}
+    }
 
 //------------------------------------------------------------------------------
-
-} // namespace sight::data::ut
+} // TEST_SUITE("sight::data::model_series")

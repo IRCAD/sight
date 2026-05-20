@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,132 +20,115 @@
  *
  ***********************************************************************/
 
-#include "type_test.hpp"
-
 #include <io/opencv/type.hpp>
 
+#include <doctest/doctest.h>
+
 #include <opencv2/core.hpp>
-
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::opencv::ut::type_test);
-
-namespace sight::io::opencv::ut
-{
-
-//------------------------------------------------------------------------------
-
-void type_test::setUp()
-{
-}
-
-//------------------------------------------------------------------------------
-
-void type_test::tearDown()
-{
-}
 
 //------------------------------------------------------------------------------
 
 template<typename T, std::size_t NUM_COMPONENTS>
-void test_to_cv(std::int32_t _expected_type)
+static void test_to_cv(std::int32_t _expected_type)
 {
-    core::type type         = core::type::get<T>();
-    const auto image_format = io::opencv::type::to_cv(type, NUM_COMPONENTS);
-    CPPUNIT_ASSERT_EQUAL(_expected_type, image_format);
+    sight::core::type type  = sight::core::type::get<T>();
+    const auto image_format = sight::io::opencv::type::to_cv(type, NUM_COMPONENTS);
+    CHECK_EQ(_expected_type, image_format);
 }
 
 //------------------------------------------------------------------------------
 
 template<typename EXPECTED_T, uint8_t EXPECTED_NUM_COMPONENTS>
-void test_from_cv(std::int32_t _cv_type)
+static void test_from_cv(std::int32_t _cv_type)
 {
-    core::type expected_type = core::type::get<EXPECTED_T>();
-    const auto format        = io::opencv::type::from_cv(_cv_type);
-    const auto type          = format.first;
-    const auto comp          = format.second;
+    sight::core::type expected_type = sight::core::type::get<EXPECTED_T>();
+    const auto format               = sight::io::opencv::type::from_cv(_cv_type);
+    const auto type                 = format.first;
+    const auto comp                 = format.second;
 
-    CPPUNIT_ASSERT_EQUAL(expected_type, type);
-    CPPUNIT_ASSERT_EQUAL(EXPECTED_NUM_COMPONENTS, comp);
+    CHECK_EQ(expected_type, type);
+    CHECK_EQ(EXPECTED_NUM_COMPONENTS, comp);
 }
 
 //------------------------------------------------------------------------------
 
-void type_test::to_cv()
+TEST_SUITE("sight::io::opencv::type")
 {
-    test_to_cv<std::uint8_t, 1>(CV_8UC1);
-    test_to_cv<std::uint8_t, 2>(CV_8UC2);
-    test_to_cv<std::uint8_t, 3>(CV_8UC3);
-    test_to_cv<std::uint8_t, 4>(CV_8UC4);
+    TEST_CASE("to_cv")
+    {
+        test_to_cv<std::uint8_t, 1>(CV_8UC1);
+        test_to_cv<std::uint8_t, 2>(CV_8UC2);
+        test_to_cv<std::uint8_t, 3>(CV_8UC3);
+        test_to_cv<std::uint8_t, 4>(CV_8UC4);
 
-    test_to_cv<std::int8_t, 1>(CV_8SC1);
-    test_to_cv<std::int8_t, 2>(CV_8SC2);
-    test_to_cv<std::int8_t, 3>(CV_8SC3);
-    test_to_cv<std::int8_t, 4>(CV_8SC4);
+        test_to_cv<std::int8_t, 1>(CV_8SC1);
+        test_to_cv<std::int8_t, 2>(CV_8SC2);
+        test_to_cv<std::int8_t, 3>(CV_8SC3);
+        test_to_cv<std::int8_t, 4>(CV_8SC4);
 
-    test_to_cv<std::uint16_t, 1>(CV_16UC1);
-    test_to_cv<std::uint16_t, 2>(CV_16UC2);
-    test_to_cv<std::uint16_t, 3>(CV_16UC3);
-    test_to_cv<std::uint16_t, 4>(CV_16UC4);
+        test_to_cv<std::uint16_t, 1>(CV_16UC1);
+        test_to_cv<std::uint16_t, 2>(CV_16UC2);
+        test_to_cv<std::uint16_t, 3>(CV_16UC3);
+        test_to_cv<std::uint16_t, 4>(CV_16UC4);
 
-    test_to_cv<std::int16_t, 1>(CV_16SC1);
-    test_to_cv<std::int16_t, 2>(CV_16SC2);
-    test_to_cv<std::int16_t, 3>(CV_16SC3);
-    test_to_cv<std::int16_t, 4>(CV_16SC4);
+        test_to_cv<std::int16_t, 1>(CV_16SC1);
+        test_to_cv<std::int16_t, 2>(CV_16SC2);
+        test_to_cv<std::int16_t, 3>(CV_16SC3);
+        test_to_cv<std::int16_t, 4>(CV_16SC4);
 
-    test_to_cv<std::int32_t, 1>(CV_32SC1);
-    test_to_cv<std::int32_t, 2>(CV_32SC2);
-    test_to_cv<std::int32_t, 3>(CV_32SC3);
-    test_to_cv<std::int32_t, 4>(CV_32SC4);
+        test_to_cv<std::int32_t, 1>(CV_32SC1);
+        test_to_cv<std::int32_t, 2>(CV_32SC2);
+        test_to_cv<std::int32_t, 3>(CV_32SC3);
+        test_to_cv<std::int32_t, 4>(CV_32SC4);
 
-    test_to_cv<float, 1>(CV_32FC1);
-    test_to_cv<float, 2>(CV_32FC2);
-    test_to_cv<float, 3>(CV_32FC3);
-    test_to_cv<float, 4>(CV_32FC4);
+        test_to_cv<float, 1>(CV_32FC1);
+        test_to_cv<float, 2>(CV_32FC2);
+        test_to_cv<float, 3>(CV_32FC3);
+        test_to_cv<float, 4>(CV_32FC4);
 
-    test_to_cv<double, 1>(CV_64FC1);
-    test_to_cv<double, 2>(CV_64FC2);
-    test_to_cv<double, 3>(CV_64FC3);
-    test_to_cv<double, 4>(CV_64FC4);
-}
+        test_to_cv<double, 1>(CV_64FC1);
+        test_to_cv<double, 2>(CV_64FC2);
+        test_to_cv<double, 3>(CV_64FC3);
+        test_to_cv<double, 4>(CV_64FC4);
+    }
 
 //------------------------------------------------------------------------------
 
-void type_test::from_cv()
-{
-    test_from_cv<std::uint8_t, 1>(CV_8UC1);
-    test_from_cv<std::uint8_t, 2>(CV_8UC2);
-    test_from_cv<std::uint8_t, 3>(CV_8UC3);
-    test_from_cv<std::uint8_t, 4>(CV_8UC4);
+    TEST_CASE("from_cv")
+    {
+        test_from_cv<std::uint8_t, 1>(CV_8UC1);
+        test_from_cv<std::uint8_t, 2>(CV_8UC2);
+        test_from_cv<std::uint8_t, 3>(CV_8UC3);
+        test_from_cv<std::uint8_t, 4>(CV_8UC4);
 
-    test_from_cv<std::int8_t, 1>(CV_8SC1);
-    test_from_cv<std::int8_t, 2>(CV_8SC2);
-    test_from_cv<std::int8_t, 3>(CV_8SC3);
-    test_from_cv<std::int8_t, 4>(CV_8SC4);
+        test_from_cv<std::int8_t, 1>(CV_8SC1);
+        test_from_cv<std::int8_t, 2>(CV_8SC2);
+        test_from_cv<std::int8_t, 3>(CV_8SC3);
+        test_from_cv<std::int8_t, 4>(CV_8SC4);
 
-    test_from_cv<std::uint16_t, 1>(CV_16UC1);
-    test_from_cv<std::uint16_t, 2>(CV_16UC2);
-    test_from_cv<std::uint16_t, 3>(CV_16UC3);
-    test_from_cv<std::uint16_t, 4>(CV_16UC4);
+        test_from_cv<std::uint16_t, 1>(CV_16UC1);
+        test_from_cv<std::uint16_t, 2>(CV_16UC2);
+        test_from_cv<std::uint16_t, 3>(CV_16UC3);
+        test_from_cv<std::uint16_t, 4>(CV_16UC4);
 
-    test_from_cv<std::int16_t, 1>(CV_16SC1);
-    test_from_cv<std::int16_t, 2>(CV_16SC2);
-    test_from_cv<std::int16_t, 3>(CV_16SC3);
-    test_from_cv<std::int16_t, 4>(CV_16SC4);
+        test_from_cv<std::int16_t, 1>(CV_16SC1);
+        test_from_cv<std::int16_t, 2>(CV_16SC2);
+        test_from_cv<std::int16_t, 3>(CV_16SC3);
+        test_from_cv<std::int16_t, 4>(CV_16SC4);
 
-    test_from_cv<std::int32_t, 1>(CV_32SC1);
-    test_from_cv<std::int32_t, 2>(CV_32SC2);
-    test_from_cv<std::int32_t, 3>(CV_32SC3);
-    test_from_cv<std::int32_t, 4>(CV_32SC4);
+        test_from_cv<std::int32_t, 1>(CV_32SC1);
+        test_from_cv<std::int32_t, 2>(CV_32SC2);
+        test_from_cv<std::int32_t, 3>(CV_32SC3);
+        test_from_cv<std::int32_t, 4>(CV_32SC4);
 
-    test_from_cv<float, 1>(CV_32FC1);
-    test_from_cv<float, 2>(CV_32FC2);
-    test_from_cv<float, 3>(CV_32FC3);
-    test_from_cv<float, 4>(CV_32FC4);
+        test_from_cv<float, 1>(CV_32FC1);
+        test_from_cv<float, 2>(CV_32FC2);
+        test_from_cv<float, 3>(CV_32FC3);
+        test_from_cv<float, 4>(CV_32FC4);
 
-    test_from_cv<double, 1>(CV_64FC1);
-    test_from_cv<double, 2>(CV_64FC2);
-    test_from_cv<double, 3>(CV_64FC3);
-    test_from_cv<double, 4>(CV_64FC4);
+        test_from_cv<double, 1>(CV_64FC1);
+        test_from_cv<double, 2>(CV_64FC2);
+        test_from_cv<double, 3>(CV_64FC3);
+        test_from_cv<double, 4>(CV_64FC4);
+    }
 }
-
-} // namespace sight::io::opencv::ut

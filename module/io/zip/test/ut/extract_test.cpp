@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,8 +21,6 @@
 
 // cspell:ignore bouboule
 
-#include "extract_test.hpp"
-
 #include <core/os/temp_path.hpp>
 #include <core/progress/observer.hpp>
 
@@ -37,39 +35,38 @@
 
 #include <utest_data/data.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::io::zip::ut::extract_test);
+#include <doctest/doctest.h>
 
-namespace sight::module::io::zip::ut
+TEST_SUITE("sight::module::io::zip::extract")
 {
-
 //------------------------------------------------------------------------------
 
-void extract_test::basic_archive_test()
-{
-    const core::os::temp_dir tmp_folder;
+    TEST_CASE("basic_archive")
+    {
+        const sight::core::os::temp_dir tmp_folder;
 
-    service::base::sptr extract = service::add("sight::module::io::zip::extract");
-    CPPUNIT_ASSERT(extract);
+        sight::service::base::sptr extract = sight::service::add("sight::module::io::zip::extract");
+        CHECK(extract);
 
-    CPPUNIT_ASSERT_NO_THROW(extract->configure());
-    CPPUNIT_ASSERT_NO_THROW(extract->start().get());
+        CHECK_NOTHROW(extract->configure());
+        CHECK_NOTHROW(extract->start().get());
 
-    // We select the archive we want to open.
-    ui::test::dialog::location::push_paths(
-        {utest_data::dir() / "sight/ui/archive_extractor/non-encrypted-archive.sample"
-        });
+        // We select the archive we want to open.
+        sight::ui::test::dialog::location::push_paths(
+            {sight::utest_data::dir() / "sight/ui/archive_extractor/non-encrypted-archive.sample"
+            });
 
-    // We choose the output path.
-    ui::test::dialog::location::push_paths({tmp_folder});
+        // We choose the output path.
+        sight::ui::test::dialog::location::push_paths({tmp_folder});
 
-    CPPUNIT_ASSERT_NO_THROW(extract->update().get());
+        CHECK_NOTHROW(extract->update().get());
 
-    // There must be precisely one VTI file inside.
-    std::filesystem::path vti_path;
-    std::size_t nb_vti_files = 0;
-    std::ranges::for_each(
-        std::filesystem::recursive_directory_iterator {tmp_folder},
-        [&vti_path, &nb_vti_files](const std::filesystem::directory_entry& _entry)
+        // There must be precisely one VTI file inside.
+        std::filesystem::path vti_path;
+        std::size_t nb_vti_files = 0;
+        std::ranges::for_each(
+            std::filesystem::recursive_directory_iterator {tmp_folder},
+            [&vti_path, &nb_vti_files](const std::filesystem::directory_entry& _entry)
         {
             if(_entry.path().extension() == ".vti")
             {
@@ -77,82 +74,82 @@ void extract_test::basic_archive_test()
                 vti_path = _entry;
             }
         });
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), nb_vti_files);
-    CPPUNIT_ASSERT(!vti_path.empty());
+        CHECK_EQ(std::size_t(1), nb_vti_files);
+        CHECK(!vti_path.empty());
 
-    // Try to open the file using VTK to check if it is valid.
-    auto vti_reader = std::make_shared<sight::io::vtk::vti_image_reader>();
-    vti_reader->set_file(vti_path);
-    auto img = std::make_shared<data::image>();
-    vti_reader->set_object(img);
-    auto observer = std::make_shared<core::progress::observer>("Reading VTI image");
-    CPPUNIT_ASSERT_NO_THROW(vti_reader->read(observer));
+        // Try to open the file using VTK to check if it is valid.
+        auto vti_reader = std::make_shared<sight::io::vtk::vti_image_reader>();
+        vti_reader->set_file(vti_path);
+        auto img = std::make_shared<sight::data::image>();
+        vti_reader->set_object(img);
+        auto observer = std::make_shared<sight::core::progress::observer>("Reading VTI image");
+        CHECK_NOTHROW(vti_reader->read(observer));
 
-    ui::test::dialog::location::push_paths(
-        {utest_data::dir() / "sight/ui/archive_extractor/non-encrypted-archive.sample"
-        });
-    ui::test::dialog::location::push_paths({tmp_folder});
+        sight::ui::test::dialog::location::push_paths(
+            {sight::utest_data::dir() / "sight/ui/archive_extractor/non-encrypted-archive.sample"
+            });
+        sight::ui::test::dialog::location::push_paths({tmp_folder});
 
-    // Oops, we choose the same folder again! We get a warning. Let's try again.
-    ui::test::dialog::message::push_action(ui::test::dialog::message::retry);
-    ui::test::dialog::location::push_paths({tmp_folder});
+        // Oops, we choose the same folder again! We get a warning. Let's try again.
+        sight::ui::test::dialog::message::push_action(sight::ui::test::dialog::message::retry);
+        sight::ui::test::dialog::location::push_paths({tmp_folder});
 
-    // Ah, clumsy us, we chose the exact same folder! Let's try again later.
-    ui::test::dialog::message::push_action(ui::test::dialog::message::cancel);
+        // Ah, clumsy us, we chose the exact same folder! Let's try again later.
+        sight::ui::test::dialog::message::push_action(sight::ui::test::dialog::message::cancel);
 
-    CPPUNIT_ASSERT_NO_THROW(extract->update().get());
+        CHECK_NOTHROW(extract->update().get());
 
-    ui::test::dialog::location::push_paths(
-        {utest_data::dir() / "sight/ui/archive_extractor/non-encrypted-archive.sample"
-        });
-    ui::test::dialog::location::push_paths({tmp_folder});
+        sight::ui::test::dialog::location::push_paths(
+            {sight::utest_data::dir() / "sight/ui/archive_extractor/non-encrypted-archive.sample"
+            });
+        sight::ui::test::dialog::location::push_paths({tmp_folder});
 
-    // Well, well, the folder still isn't empty. Tough luck. Let's simply overwrite it.
-    ui::test::dialog::message::push_action(ui::test::dialog::message::yes);
+        // Well, well, the folder still isn't empty. Tough luck. Let's simply overwrite it.
+        sight::ui::test::dialog::message::push_action(sight::ui::test::dialog::message::yes);
 
-    CPPUNIT_ASSERT_NO_THROW(extract->update().get());
+        CHECK_NOTHROW(extract->update().get());
 
-    CPPUNIT_ASSERT(ui::test::dialog::location::clear());
-    CPPUNIT_ASSERT(ui::test::dialog::message::clear());
+        CHECK(sight::ui::test::dialog::location::clear());
+        CHECK(sight::ui::test::dialog::message::clear());
 
-    CPPUNIT_ASSERT_NO_THROW(extract->stop().get());
-}
+        CHECK_NOTHROW(extract->stop().get());
+    }
 
 //------------------------------------------------------------------------------
 
-void extract_test::encrypted_archive_test()
-{
-    const core::os::temp_dir tmp_folder;
+    TEST_CASE("encrypted_archive")
+    {
+        const sight::core::os::temp_dir tmp_folder;
 
-    service::base::sptr extract = service::add("sight::module::io::zip::extract");
-    CPPUNIT_ASSERT(extract);
+        sight::service::base::sptr extract = sight::service::add("sight::module::io::zip::extract");
+        CHECK(extract);
 
-    CPPUNIT_ASSERT_NO_THROW(extract->configure());
-    CPPUNIT_ASSERT_NO_THROW(extract->start().get());
+        CHECK_NOTHROW(extract->configure());
+        CHECK_NOTHROW(extract->start().get());
 
-    // We select the archive we want to open.
-    ui::test::dialog::location::push_paths(
-        {utest_data::dir() / "sight/ui/archive_extractor/encrypted-archive.sample"
-        });
+        // We select the archive we want to open.
+        sight::ui::test::dialog::location::push_paths(
+            {sight::utest_data::dir() / "sight/ui/archive_extractor/encrypted-archive.sample"
+            });
 
-    // We choose the output path.
-    ui::test::dialog::location::push_paths({tmp_folder});
+        // We choose the output path.
+        sight::ui::test::dialog::location::push_paths({tmp_folder});
 
-    // The archive is encrypted, let's input a password.
-    ui::test::dialog::input::push_input("tartare");
+        // The archive is encrypted, let's input a password.
+        sight::ui::test::dialog::input::push_input("tartare");
 
-    // Ah, wrong one. Let's try again.
-    ui::test::dialog::message::push_action(ui::test::dialog::message::retry);
-    ui::test::dialog::input::push_input("bouboule");
+        // Ah, wrong one. Let's try again.
+        sight::ui::test::dialog::message::push_action(sight::ui::test::dialog::message::retry);
+        sight::ui::test::dialog::input::push_input("bouboule");
 
-    CPPUNIT_ASSERT_NO_THROW(extract->update().get());
+        CHECK_NOTHROW(extract->update().get());
 
-    // There must be precisely one VTI file inside.
-    std::filesystem::path vti_path;
-    std::size_t nb_vti_files = 0;
-    std::ranges::for_each(
-        std::filesystem::recursive_directory_iterator {tmp_folder},
-        [&vti_path, &nb_vti_files](const std::filesystem::directory_entry& _entry)
+        // There must be precisely one VTI file inside.
+        std::filesystem::path vti_path;
+        std::size_t nb_vti_files = 0;
+        std::ranges::for_each(
+            std::filesystem::recursive_directory_iterator {tmp_folder},
+            [&vti_path, &nb_vti_files](const std::filesystem::directory_entry& _entry)
         {
             if(_entry.path().extension() == ".vti")
             {
@@ -160,24 +157,23 @@ void extract_test::encrypted_archive_test()
                 vti_path = _entry;
             }
         });
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), nb_vti_files);
-    CPPUNIT_ASSERT(!vti_path.empty());
+        CHECK_EQ(std::size_t(1), nb_vti_files);
+        CHECK(!vti_path.empty());
 
-    // Try to open the file using VTK to check if it is valid.
-    auto vti_reader = std::make_shared<sight::io::vtk::vti_image_reader>();
-    vti_reader->set_file(vti_path);
-    auto img = std::make_shared<data::image>();
-    vti_reader->set_object(img);
-    auto observer = std::make_shared<core::progress::observer>("Reading VTI image");
-    CPPUNIT_ASSERT_NO_THROW(vti_reader->read(observer));
+        // Try to open the file using VTK to check if it is valid.
+        auto vti_reader = std::make_shared<sight::io::vtk::vti_image_reader>();
+        vti_reader->set_file(vti_path);
+        auto img = std::make_shared<sight::data::image>();
+        vti_reader->set_object(img);
+        auto observer = std::make_shared<sight::core::progress::observer>("Reading VTI image");
+        CHECK_NOTHROW(vti_reader->read(observer));
 
-    CPPUNIT_ASSERT(ui::test::dialog::location::clear());
-    CPPUNIT_ASSERT(ui::test::dialog::input::clear());
-    CPPUNIT_ASSERT(ui::test::dialog::message::clear());
+        CHECK(sight::ui::test::dialog::location::clear());
+        CHECK(sight::ui::test::dialog::input::clear());
+        CHECK(sight::ui::test::dialog::message::clear());
 
-    CPPUNIT_ASSERT_NO_THROW(extract->stop().get());
-}
+        CHECK_NOTHROW(extract->stop().get());
+    }
 
 //------------------------------------------------------------------------------
-
-} // namespace sight::module::io::zip::ut
+} // TEST_SUITE

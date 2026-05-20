@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024-2025 IRCAD France
+ * Copyright (C) 2024-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -33,6 +33,7 @@
 #include <ui/__/macros.hpp>
 
 #include <QLabel>
+#include <qprogressbar.h>
 #include <QProgressBar>
 #include <QSvgWidget>
 #include <QToolButton>
@@ -102,8 +103,7 @@ void progress_bar_test::launch_test(
     bool _show_title,
     bool _show_cancel,
     bool _pulse,
-    const std::string& _svg,
-    bool _show_log
+    const std::string& _svg
 )
 {
     // Build configuration
@@ -171,16 +171,17 @@ void progress_bar_test::launch_test(
                     }
                 }
 
-                auto check_label = !_show_title;
-                if(auto* label = _widget->findChild<QLabel*>(root_object_name + "/QLabel");
-                   label != nullptr)
+                // While we are in svg mode we do not show a title.
+                auto check_title = !_show_title || !_svg.empty();
+                if(auto* progress_bar = _widget->findChild<QProgressBar*>(root_object_name + "/QProgressBar");
+                   progress_bar != nullptr)
                 {
                     CPPUNIT_ASSERT_EQUAL_MESSAGE(
-                        "The label should not be visible before add_monitor().",
+                        "The title should not be visible before add_monitor().",
                         false,
-                        label->isVisible()
+                        progress_bar->isTextVisible()
                     );
-                    check_label = true;
+                    check_title = true;
                 }
 
                 auto check_button = !_show_cancel;
@@ -195,7 +196,7 @@ void progress_bar_test::launch_test(
                     check_button = true;
                 }
 
-                return check_progress_widget && check_label && check_button;
+                return check_progress_widget && check_title && check_button;
             }
 
             return false;
@@ -238,30 +239,14 @@ void progress_bar_test::launch_test(
     {
         monitor->done_work(std::uint64_t(i));
 
-        if(_show_log)
-        {
-            monitor->log(std::to_string(i));
-        }
-
         const auto check_progress_info = wait_for_widget(
-            [_show_title, _pulse, _svg, _show_log, i, monitor, task_name, this](QWidget* _widget)
+            [_show_title, _pulse, _svg, i, monitor, task_name, this](QWidget* _widget)
             {
                 const QString root_object_name = QString::fromStdString(m_child_uuid) + "/progress_bar";
 
                 if(_widget != nullptr && _widget->objectName().startsWith(root_object_name))
                 {
-                    auto correct_title = !_show_title;
-                    if(auto* label = _widget->findChild<QLabel*>(root_object_name + "/QLabel"); label != nullptr)
-                    {
-                        CPPUNIT_ASSERT_EQUAL_MESSAGE(
-                            "The title of progress_bar should be equal to monitor name.",
-                            task_name,
-                            label->text().toStdString() + (_show_log ? " - " + std::to_string(i) : "")
-                        );
-
-                        correct_title = true;
-                    }
-
+                    auto correct_title           = !_show_title || !_svg.empty();
                     auto correct_done_work_units = false;
 
                     if(_svg.empty())
@@ -280,6 +265,22 @@ void progress_bar_test::launch_test(
                                     value,
                                     progress_bar_widget->value()
                                 );
+                            }
+
+                            if(_show_title)
+                            {
+                                auto title = progress_bar_widget->format().toStdString();
+
+                                auto expected_title = task_name.empty() ? "%p%" : QString::fromStdString(
+                                    task_name + " - %p%"
+                                ).toStdString();
+
+                                CPPUNIT_ASSERT_EQUAL_MESSAGE(
+                                    "The title of progress_bar is incorrect.",
+                                    title,
+                                    expected_title
+                                );
+                                correct_title = true;
                             }
 
                             correct_done_work_units = true;

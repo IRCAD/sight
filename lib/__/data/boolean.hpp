@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -60,11 +60,11 @@ public:
     void from_string(const std::string& _value) final
     {
         const auto value = boost::trim_copy(_value);
-        if(value == "true")
+        if(value == "true" || value == "1")
         {
             this->value() = true;
         }
-        else if(value == "false")
+        else if(value == "false" || value == "0")
         {
             this->value() = false;
         }

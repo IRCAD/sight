@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2025 IRCAD France
+ * Copyright (C) 2016-2026 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -543,6 +543,7 @@ data::object::sptr data_view::check_data(std::size_t _index, std::string& _error
         auto data_validator = sight::data::validator::factory::make(req.validator);
         SIGHT_ASSERT("Validator '" + req.validator + "' instantiation failed", data_validator);
 
+        data_validator->configure(req.validator_config);
         sight::data::validator::return_t validation = data_validator->validate(object);
         if(!validation.first)
         {

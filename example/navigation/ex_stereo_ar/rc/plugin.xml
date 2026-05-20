@@ -257,7 +257,7 @@
             <!-- ******************************* Begin Generic scene ******************************* -->
 
             <service uid="leftGenericSceneSrv" type="sight::viz::scene3d::render">
-                <scene renderMode="manual">
+                <scene render_mode="manual">
                     <background topColor="#36393E" bottomColor="#36393E" />
 
                     <layer id="video">
@@ -287,7 +287,7 @@
 
             <!-- scene in which the video and the 3D will be rendered -->
             <service uid="rightGenericSceneSrv" type="sight::viz::scene3d::render">
-                <scene renderMode="manual">
+                <scene render_mode="manual">
                     <background topColor="#36393E" bottomColor="#36393E" />
 
                     <layer id="video">
@@ -424,7 +424,7 @@
             </service>
 
             <!-- Aruco tracker service -->
-            <service uid="arucoTracker1Srv" type="sight::module::navigation::optics::aruco_tracker" worker="tracking1">
+            <service uid="arucoTracker1Srv" type="sight::module::geometry::vision::aruco_tracker" worker="tracking1">
                 <in key="camera" uid="camera1" />
                 <inout key="frame" uid="videoImage1" auto_connect="false" />
                 <inout group="marker_map">
@@ -438,7 +438,7 @@
                 <properties from="${aruco_params}" />
             </service>
 
-            <service uid="arucoTracker2Srv" type="sight::module::navigation::optics::aruco_tracker" worker="tracking2">
+            <service uid="arucoTracker2Srv" type="sight::module::geometry::vision::aruco_tracker" worker="tracking2">
                 <in key="camera" uid="camera2" />
                 <inout key="frame" uid="videoImage2" auto_connect="false" />
                 <inout group="marker_map">

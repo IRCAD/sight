@@ -1,4 +1,4 @@
-sight_add_target(io_opencv_ut TYPE TEST)
+sight_add_target(io_opencv_ut TYPE DOCTEST)
 
 find_package(OpenCV QUIET REQUIRED COMPONENTS opencv_highgui)
 target_link_libraries(io_opencv_ut PRIVATE opencv_highgui)

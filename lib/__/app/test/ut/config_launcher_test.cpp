@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,8 +19,6 @@
  *
  ***********************************************************************/
 
-#include "config_launcher_test.hpp"
-
 #include "test_service.hpp"
 
 #include <core/runtime/path.hpp>
@@ -38,179 +36,188 @@
 #include <boost/config.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 
+#include <doctest/doctest.h>
+
 #include <filesystem>
 #include <regex>
 
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::app::ut::config_launcher_test);
-
-namespace sight::app::ut
+TEST_SUITE("sight::app::config_launcher")
 {
-
-static constexpr auto MULTI_CFG_CTL_1 = "multi_cfg_ctl_1";
-static constexpr auto MULTI_CFG_CTL_2 = "multi_cfg_ctl_2";
+    static constexpr auto MULTI_CFG_CTL_1 = "multi_cfg_ctl_1";
+    static constexpr auto MULTI_CFG_CTL_2 = "multi_cfg_ctl_2";
 
 //------------------------------------------------------------------------------
 
-int get_current_id()
-{
-    auto current_id_str = sight::app::extension::config::get_unique_identifier("get_id");
-    std::smatch match;
-    CPPUNIT_ASSERT(std::regex_match(current_id_str, match, std::regex("get_id[^0-9]+([0-9]*)")));
-    current_id_str = match[1].str();
-    return std::stoi(current_id_str);
-}
-
-//------------------------------------------------------------------------------
-
-void config_launcher_test::setUp()
-{
-    // Set up context before running a test
-    core::runtime::init();
-
-    std::filesystem::path location = core::runtime::get_resource_file_path("app_ut");
-    CPPUNIT_ASSERT(std::filesystem::exists(location));
-
-    core::runtime::add_modules(location);
-    core::runtime::load_module("sight::module::app");
-    core::runtime::load_module("config_test");
-
-    app::extension::config::sptr app_config = app::extension::config::get();
-    app_config->clear_registry();
-    app_config->parse_plugin_infos();
-}
-
-//------------------------------------------------------------------------------
-
-void config_launcher_test::tearDown()
-{
-    // Clean up after the test run.
-    // unregister the services that have not been unregistered because a test failed.
-
-    auto services = sight::service::get_services("sight::app::config_launcher");
-    for(const auto& srv : services)
+    static int get_current_id()
     {
-        if(srv->started())
+        auto current_id_str = sight::app::extension::config::get_unique_identifier("get_id");
+        std::smatch match;
+        CHECK(std::regex_match(current_id_str, match, std::regex("get_id[^0-9]+([0-9]*)")));
+        current_id_str = match[1].str();
+        return std::stoi(current_id_str);
+    }
+
+//------------------------------------------------------------------------------
+
+    struct config_launcher_fixture
+    {
+        config_launcher_fixture()
         {
-            srv->stop().get();
+            // Set up context before running a test
+            sight::core::runtime::init();
+
+            std::filesystem::path location = sight::core::runtime::get_resource_file_path("app_ut");
+            CHECK(std::filesystem::exists(location));
+
+            sight::core::runtime::add_modules(location);
+            sight::core::runtime::load_module("sight::module::app");
+            sight::core::runtime::load_module("config_test");
+
+            sight::app::extension::config::sptr app_config = sight::app::extension::config::get();
+            app_config->clear_registry();
+            app_config->parse_plugin_infos();
         }
 
-        service::unregister_service(srv);
-    }
-}
+        //------------------------------------------------------------------------------
+
+        ~config_launcher_fixture()
+        {
+            // Clean up after the test run.
+            // unregister the services that have not been unregistered because a test failed.
+
+            auto services = sight::service::get_services("sight::app::config_launcher");
+            for(const auto& srv : services)
+            {
+                if(srv->started())
+                {
+                    srv->stop().get();
+                }
+
+                sight::service::unregister_service(srv);
+            }
+        }
+    };
 
 //------------------------------------------------------------------------------
 
-void config_launcher_test::multi_config_test()
-{
-    auto config_id = std::make_shared<sight::data::string>();
-
-    auto srv = service::add("sight::app::config_launcher");
-    srv->set_inout(config_id, "config");
-
-    srv->configure();
-    srv->start().get();
-
-    // start the test!
-    // set config2 =>
-    //  srv1 : not existing
-    //  srv2 : started
-
-    int current_id = get_current_id();
-    config_id->set_value(MULTI_CFG_CTL_2);
-    srv->update().get();
-    auto srv1_uid = core::id::join(MULTI_CFG_CTL_1, current_id++, "srv");
-    auto srv2_uid = core::id::join(MULTI_CFG_CTL_2, current_id++, "srv");
-
-    auto srv1 = std::dynamic_pointer_cast<app::ut::test_service>(core::id::get_object(srv1_uid));
-    CPPUNIT_ASSERT(srv1 == nullptr);
-    auto srv2 = std::dynamic_pointer_cast<app::ut::test_service>(core::id::get_object(srv2_uid));
-    CPPUNIT_ASSERT(srv2 != nullptr && srv2->started());
-
-    // set config1 =>
-    //  srv1 : started
-    //  srv2 : stopped
-    config_id->set_value(MULTI_CFG_CTL_1);
-    config_id->emit(sight::data::object::MODIFIED_SIG);
-
-    srv1_uid = core::id::join(MULTI_CFG_CTL_1, current_id++, "srv");
-    srv1     = std::dynamic_pointer_cast<app::ut::test_service>(core::id::get_object(srv1_uid));
-    CPPUNIT_ASSERT(srv1 != nullptr && srv1->started());
-    srv2 = std::dynamic_pointer_cast<app::ut::test_service>(core::id::get_object(srv2_uid));
-    CPPUNIT_ASSERT(srv2 != nullptr && srv2->stopped());
+    TEST_CASE_FIXTURE(config_launcher_fixture, "multi_config")
     {
-        // Ensuring the service is really destroyed by the app config manager by releasing our reference
-        srv2.reset();
-        auto srv2_test = core::id::get_object(srv2_uid);
-        CPPUNIT_ASSERT(srv2_test == nullptr);
+        auto config_id = std::make_shared<sight::data::string>();
+
+        auto srv = sight::service::add("sight::app::config_launcher");
+        srv->set_inout(config_id, "config");
+
+        srv->configure();
+        srv->start().get();
+
+        // start the test!
+        // set config2 =>
+        //  srv1 : not existing
+        //  srv2 : started
+
+        int current_id = get_current_id();
+        config_id->set_value(MULTI_CFG_CTL_2);
+        srv->update().get();
+        auto srv1_uid = sight::core::id::join(MULTI_CFG_CTL_1, current_id++, "srv");
+        auto srv2_uid = sight::core::id::join(MULTI_CFG_CTL_2, current_id++, "srv");
+
+        auto srv1 = std::dynamic_pointer_cast<sight::app::ut::test_service>(sight::core::id::get_object(srv1_uid));
+        CHECK(srv1 == nullptr);
+        auto srv2 = std::dynamic_pointer_cast<sight::app::ut::test_service>(sight::core::id::get_object(srv2_uid));
+        CHECK(srv2 != nullptr);
+        CHECK(srv2->started());
+
+        // set config1 =>
+        //  srv1 : started
+        //  srv2 : stopped
+        config_id->set_value(MULTI_CFG_CTL_1);
+        config_id->emit(sight::data::object::MODIFIED_SIG);
+
+        srv1_uid = sight::core::id::join(MULTI_CFG_CTL_1, current_id++, "srv");
+        srv1     = std::dynamic_pointer_cast<sight::app::ut::test_service>(sight::core::id::get_object(srv1_uid));
+        CHECK(srv1 != nullptr);
+        CHECK(srv1->started());
+        srv2 = std::dynamic_pointer_cast<sight::app::ut::test_service>(sight::core::id::get_object(srv2_uid));
+        CHECK(srv2 != nullptr);
+        CHECK(srv2->stopped());
+        {
+            // Ensuring the service is really destroyed by the app config manager by releasing our reference
+            srv2.reset();
+            auto srv2_test = sight::core::id::get_object(srv2_uid);
+            CHECK(srv2_test == nullptr);
+        }
+
+        // set config2 =>
+        //  srv1 : stopped
+        //  srv2 : started
+        config_id->set_value(MULTI_CFG_CTL_2);
+        config_id->emit(sight::data::object::MODIFIED_SIG);
+
+        srv2_uid = sight::core::id::join(MULTI_CFG_CTL_2, current_id++, "srv");
+        srv1     = std::dynamic_pointer_cast<sight::app::ut::test_service>(sight::core::id::get_object(srv1_uid));
+        CHECK(srv1 != nullptr);
+        CHECK(srv1->stopped());
+        srv2 = std::dynamic_pointer_cast<sight::app::ut::test_service>(sight::core::id::get_object(srv2_uid));
+        CHECK(srv2 != nullptr);
+        CHECK(srv2->started());
+
+        // set again config2 => nothing should have changed, the service is not updated
+        //  srv1 : stopped
+        //  srv2 : started
+        config_id->emit(sight::data::object::MODIFIED_SIG);
+
+        srv1 = std::dynamic_pointer_cast<sight::app::ut::test_service>(sight::core::id::get_object(srv1_uid));
+        CHECK(srv1 != nullptr);
+        CHECK(srv1->stopped());
+        srv2 = std::dynamic_pointer_cast<sight::app::ut::test_service>(sight::core::id::get_object(srv2_uid));
+        CHECK(srv2 != nullptr);
+        CHECK(srv2->started());
+
+        srv->stop().wait();
     }
 
-    // set config2 =>
-    //  srv1 : stopped
-    //  srv2 : started
-    config_id->set_value(MULTI_CFG_CTL_2);
-    config_id->emit(sight::data::object::MODIFIED_SIG);
-
-    srv2_uid = core::id::join(MULTI_CFG_CTL_2, current_id++, "srv");
-    srv1     = std::dynamic_pointer_cast<app::ut::test_service>(core::id::get_object(srv1_uid));
-    CPPUNIT_ASSERT(srv1 != nullptr && srv1->stopped());
-    srv2 = std::dynamic_pointer_cast<app::ut::test_service>(core::id::get_object(srv2_uid));
-    CPPUNIT_ASSERT(srv2 != nullptr && srv2->started());
-
-    // set again config2 => nothing should have changed, the service is not updated
-    //  srv1 : stopped
-    //  srv2 : started
-    config_id->emit(sight::data::object::MODIFIED_SIG);
-
-    srv1 = std::dynamic_pointer_cast<app::ut::test_service>(core::id::get_object(srv1_uid));
-    CPPUNIT_ASSERT(srv1 != nullptr && srv1->stopped());
-    srv2 = std::dynamic_pointer_cast<app::ut::test_service>(core::id::get_object(srv2_uid));
-    CPPUNIT_ASSERT(srv2 != nullptr && srv2->started());
-
-    srv->stop().wait();
-}
-
 //------------------------------------------------------------------------------
 
-void config_launcher_test::set_config_key_test()
-{
-    auto config_id = std::make_shared<sight::data::string>(MULTI_CFG_CTL_1);
+    TEST_CASE_FIXTURE(config_launcher_fixture, "set_config_key")
+    {
+        auto config_id = std::make_shared<sight::data::string>(MULTI_CFG_CTL_1);
 
-    // Initialise the testing service
-    service::base::sptr srv = service::add("sight::app::config_launcher");
-    srv->set_inout(config_id, "config");
+        // Initialise the testing service
+        sight::service::base::sptr srv = sight::service::add("sight::app::config_launcher");
+        srv->set_inout(config_id, "config");
 
-    srv->configure();
-    srv->start().wait();
+        srv->configure();
+        srv->start().wait();
 
-    // start the test!
-    // set config2 =>
-    //  multi_cfg_ctl_1_10_srv : not existing
-    //  multi_cfg_ctl_2_8_srv : started
+        // start the test!
+        // set config2 =>
+        //  multi_cfg_ctl_1_10_srv : not existing
+        //  multi_cfg_ctl_2_8_srv : started
 
-    int current_id = get_current_id();
-    config_id->set_value(MULTI_CFG_CTL_2);
-    srv->update().get();
+        int current_id = get_current_id();
+        config_id->set_value(MULTI_CFG_CTL_2);
+        srv->update().get();
 
-    auto srv1_uid = core::id::join(MULTI_CFG_CTL_1, current_id++, "srv");
-    auto srv2_uid = core::id::join(MULTI_CFG_CTL_2, current_id++, "srv");
-    auto srv1     = std::dynamic_pointer_cast<app::ut::test_service>(core::id::get_object(srv1_uid));
-    CPPUNIT_ASSERT(srv1 == nullptr);
-    auto srv2 = std::dynamic_pointer_cast<app::ut::test_service>(core::id::get_object(srv2_uid));
-    CPPUNIT_ASSERT(srv2 != nullptr && srv2->started());
+        auto srv1_uid = sight::core::id::join(MULTI_CFG_CTL_1, current_id++, "srv");
+        auto srv2_uid = sight::core::id::join(MULTI_CFG_CTL_2, current_id++, "srv");
+        auto srv1     = std::dynamic_pointer_cast<sight::app::ut::test_service>(sight::core::id::get_object(srv1_uid));
+        CHECK(srv1 == nullptr);
+        auto srv2 = std::dynamic_pointer_cast<sight::app::ut::test_service>(sight::core::id::get_object(srv2_uid));
+        CHECK(srv2 != nullptr);
+        CHECK(srv2->started());
 
-    // set config with bad key
-    config_id->set_value("Unknown config");
-    CPPUNIT_ASSERT_THROW(srv->update().get(), core::exception);
+        // set config with bad key
+        config_id->set_value("Unknown config");
+        CHECK_THROWS_AS(srv->update().get(), sight::core::exception);
 
-    srv1 = std::dynamic_pointer_cast<app::ut::test_service>(core::id::get_object(srv1_uid));
-    CPPUNIT_ASSERT(srv1 == nullptr);
-    srv2 = std::dynamic_pointer_cast<app::ut::test_service>(core::id::get_object(srv2_uid));
-    CPPUNIT_ASSERT(srv2 != nullptr && srv2->stopped());
+        srv1 = std::dynamic_pointer_cast<sight::app::ut::test_service>(sight::core::id::get_object(srv1_uid));
+        CHECK(srv1 == nullptr);
+        srv2 = std::dynamic_pointer_cast<sight::app::ut::test_service>(sight::core::id::get_object(srv2_uid));
+        CHECK(srv2 != nullptr);
+        CHECK(srv2->stopped());
 
-    srv->stop().wait();
-}
+        srv->stop().wait();
+    }
 
 //------------------------------------------------------------------------------
-
-} // namespace sight::app::ut
+} // TEST_SUITE
