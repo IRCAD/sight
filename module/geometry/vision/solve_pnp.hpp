@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -77,14 +77,14 @@ public:
     /// Destructor.
     ~solve_pnp() noexcept override = default;
 
+protected:
+
     /**
      * @brief computeRegistration: compute the camera pose from 'pointList2d' and corresponding 'pointList3d'.
      * Update 'matrix' with the camera pose (or object pose if 'inverse' is "true")
      * @param _timestamp: not used by the method.
      */
     void compute_registration(core::clock::type _timestamp) override;
-
-protected:
 
     /// configures the service
     void configuring() override;

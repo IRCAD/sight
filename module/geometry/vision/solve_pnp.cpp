@@ -120,7 +120,7 @@ void solve_pnp::compute_registration(core::clock::type /*timestamp*/)
     }
 
     data::matrix4::sptr matrix = std::make_shared<data::matrix4>();
-    io::opencv::matrix::copy_from_cv(cv_mat, matrix);
+    io::opencv::matrix::copy_from_cv(cv_mat, *matrix);
 
     fw_matrix->deep_copy(matrix);
 

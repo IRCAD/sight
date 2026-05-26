@@ -36,15 +36,11 @@
 #include <io/opencv/matrix.hpp>
 #include <io/opencv/point_list.hpp>
 
-#include <service/macros.hpp>
-
-#include <ui/__/preferences.hpp>
-
 #include <opencv2/calib3d.hpp>
 #include <opencv2/core/types.hpp>
-#include <opencv2/opencv.hpp>
 
 #include <cstddef>
+#include <opencv2/imgproc.hpp>
 
 namespace sight::module::geometry::vision
 {
@@ -125,7 +121,7 @@ void chessboard_reprojection::updating()
         const auto transform = m_transform.lock();
         SIGHT_ASSERT("Missing 'transform'.", transform);
 
-        io::opencv::matrix::copy_to_cv(transform.get_shared(), rvec, tvec);
+        io::opencv::matrix::copy_to_cv(*transform, rvec, tvec);
 
         std::tie(rmse, reprojected_pts) = sight::geometry::vision::helper::compute_reprojection_error(
             m_chessboard_model_3d,

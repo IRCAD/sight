@@ -30,6 +30,54 @@ namespace sight::io::opencv
 
 //------------------------------------------------------------------------------
 
+std::string type::type2str(int _type)
+{
+    std::string r;
+    uchar depth = _type & CV_MAT_DEPTH_MASK;
+    uchar chans = 1 + static_cast<uchar>(_type >> CV_CN_SHIFT);
+
+    switch(depth)
+    {
+        case CV_8U:
+            r = "8U";
+            break;
+
+        case CV_8S:
+            r = "8S";
+            break;
+
+        case CV_16U:
+            r = "16U";
+            break;
+
+        case CV_16S:
+            r = "16S";
+            break;
+
+        case CV_32S:
+            r = "32S";
+            break;
+
+        case CV_32F:
+            r = "32F";
+            break;
+
+        case CV_64F:
+            r = "64F";
+            break;
+
+        default:
+            r = "User";
+            break;
+    }
+
+    r += "C";
+    r += std::to_string(chans);
+    return r;
+}
+
+//------------------------------------------------------------------------------
+
 std::int32_t type::to_cv(const core::type _type, const std::size_t _num_components)
 {
     SIGHT_ASSERT("Number of dimensions should be between 1 and 4", _num_components > 0 && _num_components <= 4);
@@ -90,7 +138,7 @@ std::pair<sight::core::type, uint8_t> type::from_cv(int32_t _cv_type)
     };
 
     const auto it = s_IMAGE_FORMAT_FROM_CV.find(_cv_type);
-    SIGHT_ASSERT("Format not handled by OpenCV: " + std::to_string(_cv_type), it != s_IMAGE_FORMAT_FROM_CV.end());
+    SIGHT_ASSERT("Format not handled by OpenCV: " + type2str(_cv_type), it != s_IMAGE_FORMAT_FROM_CV.end());
 
     return {it->second.first, static_cast<uint8_t>(it->second.second)};
 }

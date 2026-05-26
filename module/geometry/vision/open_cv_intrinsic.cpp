@@ -26,10 +26,7 @@
 
 #include <io/opencv/matrix.hpp>
 
-#include <ui/__/preferences.hpp>
-
 #include <opencv2/calib3d.hpp>
-#include <opencv2/core.hpp>
 
 namespace sight::module::geometry::vision
 {
@@ -117,7 +114,7 @@ void open_cv_intrinsic::updating()
             {
                 data::matrix4::sptr mat_3d = std::make_shared<data::matrix4>();
 
-                io::opencv::matrix::copy_from_cv(rvecs.at(index), tvecs.at(index), mat_3d);
+                io::opencv::matrix::copy_from_cv(rvecs.at(index), tvecs.at(index), *mat_3d);
 
                 pose_camera->push_back(mat_3d);
                 auto sig = pose_camera->signal<data::vector::added_signal_t>(
