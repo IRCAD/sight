@@ -451,7 +451,7 @@ public:
             return std::optional<return_t> {};
         }
 
-        gdcm::DataElement data_element = *_element;
+        const gdcm::DataElement& data_element = *_element;
         if(!data_element.IsEmpty())
         {
             if(const auto* byte_value = data_element.GetByteValue();
@@ -544,13 +544,15 @@ public:
             return std::optional<return_t> {};
         }
 
-        gdcm::DataElement data_element = *_element;
+        const gdcm::DataElement& data_element = *_element;
         if(!data_element.IsEmpty())
         {
             if(const auto* byte_value = data_element.GetByteValue();
                byte_value != nullptr && byte_value->GetPointer() != nullptr && byte_value->GetLength() > 0)
             {
                 // Now, we know that we have a non empty value, so we can safely return it.
+                // GDCM Attribute has an explicit default constructor; keep default init and silence member-init lint.
+                // NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init,hicpp-member-init)
                 A attribute;
 
                 attribute.SetFromDataElement(data_element);

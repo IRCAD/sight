@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,11 +26,10 @@
 
 #include <ui/__/editor.hpp>
 
+#include <QLabel>
 #include <QObject>
 #include <QPointer>
 #include <QVector>
-
-class QLabel;
 
 namespace sight::module::ui::qt::viz
 {
@@ -67,14 +66,6 @@ public:
     /// Destructor. Do nothing.
     ~matrix_viewer() noexcept override;
 
-    /**
-     * @brief Returns proposals to connect service slots to associated object signals,
-     * this method is used for obj/srv auto connection
-     *
-     * Connect Matrix4::MODIFIED_SIG to this::service::slots::UPDATE
-     */
-    connections_t auto_connections() const override;
-
 protected:
 
     /// Configures the title of the matrix viewer
@@ -88,6 +79,14 @@ protected:
 
     /// Updates the matrix values to display
     void updating() override;
+
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Matrix4::MODIFIED_SIG to this::service::slots::UPDATE
+     */
+    connections_t auto_connections() const override;
 
 private:
 

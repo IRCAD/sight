@@ -29,7 +29,6 @@
 #include <core/progress/observer.hpp>
 
 #include <data/fiducials_series.hpp>
-#include <data/helper/medical_image.hpp>
 #include <data/image_series.hpp>
 
 #include <gdcmImageChangeTransferSyntax.h>
@@ -56,19 +55,6 @@ inline static void compute_transform(
 {
     // Use the image metadata as a lower priority
     _matrix.set_position(_image_series.origin());
-
-    // Try also the magical field "direction"
-    ///@todo remove this when we get rid of the direction "field" from medical image
-    if(const auto& direction_matrix = data::helper::medical_image::get_direction(_image_series); direction_matrix)
-    {
-        for(std::size_t i = 0 ; i < 3 ; ++i)
-        {
-            for(std::size_t j = 0 ; j < 3 ; ++j)
-            {
-                _matrix(i, j) = (*direction_matrix)(i, j);
-            }
-        }
-    }
 
     // But DICOM metadata should have the highest priority !
     if(_image_series.get_ultrasound_acquisition_geometry() == data::dicom::ultrasound_acquisition_geometry_t::apex)
@@ -648,6 +634,9 @@ public:
     /// True to disable GPU codec
     bool m_force_cpu {false};
 
+    /// True to force DICOM (re)writing/override. If false, existing DICOM are not rewritten and only fiducials updated.
+    bool m_image_dcm_override {true};
+
     /// The overriden transfer syntax
     transfer_syntax m_transfer_syntax {transfer_syntax::sop_default};
 };
@@ -731,41 +720,44 @@ void file::write(sight::core::progress::observer::sptr _progress)
                 return folder / basename;
             }();
 
-        if(const auto& sop_keyword = series->get_sop_keyword();
-           sop_keyword == data::dicom::sop::Keyword::EnhancedUSVolumeStorage)
+        if(m_pimpl->m_image_dcm_override)
         {
-            const auto& image_series = std::dynamic_pointer_cast<data::image_series>(series);
-
-            SIGHT_THROW_IF(
-                "The series '" + series->get_series_instance_uid() + "' is not an image series.",
-                !image_series
-            );
-
-            // Shallow copy the series (but not the pixel data !)
-            // This will allow to modify the GDCM DICOM context using series API to workaround some GDCM bugs or
-            // unimplemented features like the image origin for Enhanced US Volume
-            auto series_copy = std::make_shared<data::series>();
-            series_copy->shallow_copy(series);
-
-            write_enhanced_us_volume(
-                *image_series,
-                *series_copy,
-                filepath.string(),
-                m_pimpl->m_transfer_syntax,
-                m_pimpl->m_force_cpu
-            );
-        }
-        else
-        {
-            try
+            if(const auto& sop_keyword = series->get_sop_keyword();
+               sop_keyword == data::dicom::sop::Keyword::EnhancedUSVolumeStorage)
             {
-                SIGHT_THROW(
-                    "SOP Class '" << data::dicom::sop::get(sop_keyword).m_name << "' is not supported."
+                const auto& image_series = std::dynamic_pointer_cast<data::image_series>(series);
+
+                SIGHT_THROW_IF(
+                    "The series '" + series->get_series_instance_uid() + "' is not an image series.",
+                    !image_series
+                );
+
+                // Shallow copy the series (but not the pixel data !)
+                // This will allow to modify the GDCM DICOM context using series API to workaround some GDCM bugs or
+                // unimplemented features like the image origin for Enhanced US Volume
+                auto series_copy = std::make_shared<data::series>();
+                series_copy->shallow_copy(series);
+
+                write_enhanced_us_volume(
+                    *image_series,
+                    *series_copy,
+                    filepath.string(),
+                    m_pimpl->m_transfer_syntax,
+                    m_pimpl->m_force_cpu
                 );
             }
-            catch(const std::exception&)
+            else
             {
-                SIGHT_THROW("SOP Class ID '" << int(sop_keyword) << "' is unknown.");
+                try
+                {
+                    SIGHT_THROW(
+                        "SOP Class '" << data::dicom::sop::get(sop_keyword).m_name << "' is not supported."
+                    );
+                }
+                catch(const std::exception&)
+                {
+                    SIGHT_THROW("SOP Class ID '" << int(sop_keyword) << "' is unknown.");
+                }
             }
         }
 
@@ -816,6 +808,13 @@ void file::write(sight::core::progress::observer::sptr _progress)
 void file::force_cpu(bool _force)
 {
     m_pimpl->m_force_cpu = _force;
+}
+
+//------------------------------------------------------------------------------
+
+void file::image_dcm_override(bool _force)
+{
+    m_pimpl->m_image_dcm_override = _force;
 }
 
 //------------------------------------------------------------------------------

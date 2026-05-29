@@ -24,18 +24,25 @@
 // cspell:ignore xaprotocol mkgmtime deidentification stoull stoll multiframe radiofluoroscopic tomosynthesis bscan
 // cspell:ignore dermoscopic
 
+#include "core/exceptionmacros.hpp"
+#include "core/spy_log.hpp"
+#include "data/detail/series_impl.hpp"
+#include "data/dicom/attribute.hpp"
+#include "data/dicom/coded_string.hpp"
 #include "data/image_series.hpp"
+#include "data/matrix4.hpp"
 #include "data/model_series.hpp"
+#include "data/series.hpp"
 
 #include "data/detail/series_impl.hxx"
 #include "data/dicom/sop.hpp"
+#include "data/object.hpp"
+#include "sight/data/config.hpp"
+
 #include "data/exception.hpp"
 #include "data/registry/macros.hpp"
 
 #include <core/clock.hpp>
-#include <core/compare.hpp>
-
-#include <boost/algorithm/string.hpp>
 
 #include <gdcmDict.h>
 #include <gdcmDicts.h>
@@ -43,14 +50,16 @@
 #include <gdcmPrivateTag.h>
 #include <gdcmUIDGenerator.h>
 
-#include <glm/glm.hpp>
 #include <glm/gtc/epsilon.hpp>
 
 #include <algorithm>
+#include <cstddef>
 #include <iomanip>
+#include <memory>
 #include <regex>
 #include <sstream>
-#include <utility>
+#include <string>
+#include <string_view>
 
 SIGHT_REGISTER_DATA(sight::data::series)
 
@@ -60,16 +69,16 @@ namespace sight::data
 namespace
 {
 
-constexpr size_t YEAR_LENGTH        = std::string_view("YYYY").length();
-constexpr size_t MONTH_LENGTH       = std::string_view("MM").length();
-constexpr size_t YEAR_MONTH_LENGTH  = YEAR_LENGTH + MONTH_LENGTH;
-constexpr size_t DAY_LENGTH         = std::string_view("DD").length();
-constexpr size_t DATE_LENGTH        = YEAR_MONTH_LENGTH + DAY_LENGTH;
-constexpr size_t HOUR_LENGTH        = std::string_view("HH").length();
-constexpr size_t MINUTE_LENGTH      = std::string_view("MM").length();
-constexpr size_t HOUR_MINUTE_LENGTH = HOUR_LENGTH + MINUTE_LENGTH;
-constexpr size_t SECOND_LENGTH      = std::string_view("SS").length();
-constexpr size_t TIME_LENGTH        = HOUR_MINUTE_LENGTH + SECOND_LENGTH;
+constexpr std::size_t YEAR_LENGTH        = std::string_view("YYYY").length();
+constexpr std::size_t MONTH_LENGTH       = std::string_view("MM").length();
+constexpr std::size_t YEAR_MONTH_LENGTH  = YEAR_LENGTH + MONTH_LENGTH;
+constexpr std::size_t DAY_LENGTH         = std::string_view("DD").length();
+constexpr std::size_t DATE_LENGTH        = YEAR_MONTH_LENGTH + DAY_LENGTH;
+constexpr std::size_t HOUR_LENGTH        = std::string_view("HH").length();
+constexpr std::size_t MINUTE_LENGTH      = std::string_view("MM").length();
+constexpr std::size_t HOUR_MINUTE_LENGTH = HOUR_LENGTH + MINUTE_LENGTH;
+constexpr std::size_t SECOND_LENGTH      = std::string_view("SS").length();
+constexpr std::size_t TIME_LENGTH        = HOUR_MINUTE_LENGTH + SECOND_LENGTH;
 
 // This allows to register private tags in the private dictionary and so to set and get value from them
 class gdcm_loader final
@@ -112,8 +121,30 @@ private:
     std::unique_ptr<gdcm::UIDGenerator> m_uid_generator;
 } gdcm_loader;
 
+} // namespace
+
+/// FNV-1a hash function for consistent cross-platform hashing of DICOM UIDs
+/// This is deterministic across all compilers and platforms, unlike std::hash
+static std::string fnv1a_hash(const std::string& _str)
+{
+    constexpr uint64_t fnv_prime  = 0x100000001B3ULL;      // FNV prime for 64-bit
+    constexpr uint64_t fnv_offset = 0xCBF29CE484222325ULL; // FNV offset basis for 64-bit
+
+    uint64_t hash = fnv_offset;
+    for(const char c : _str)
+    {
+        hash ^= static_cast<unsigned char>(c);
+        hash *= fnv_prime;
+    }
+
+    // Convert to hex string
+    std::ostringstream oss;
+    oss << std::hex << hash;
+    return oss.str();
+}
+
 /// helper function to get the value of a tag as a string like "(0020,0011)", which can be searched on the internet.
-inline std::string tag_to_string(const gdcm::Tag& _tag)
+static std::string tag_to_string(const gdcm::Tag& _tag)
 {
     std::stringstream ss;
     ss << "("
@@ -124,7 +155,7 @@ inline std::string tag_to_string(const gdcm::Tag& _tag)
 }
 
 /// Helper function to parse a path with DICOM tags
-inline std::filesystem::path parse_path(
+static std::filesystem::path parse_path(
     const sight::data::series* const _series,
     const std::string& _path
 )
@@ -139,8 +170,8 @@ inline std::filesystem::path parse_path(
     for(std::smatch dicom_match ; std::regex_search(path, dicom_match, s_DICOM_REGEX) ; )
     {
         // Parse the group and element
-        const auto group   = uint16_t(std::stoi(dicom_match.str(1), nullptr, 16));
-        const auto element = uint16_t(std::stoi(dicom_match.str(2), nullptr, 16));
+        const auto group   = static_cast<std::uint16_t>(std::stoi(dicom_match.str(1), nullptr, 16));
+        const auto element = static_cast<std::uint16_t>(std::stoi(dicom_match.str(2), nullptr, 16));
 
         // Find the value of the corresponding DICOM tag
         auto dicom_value = _series->get_string_value(group, element);
@@ -148,13 +179,11 @@ inline std::filesystem::path parse_path(
         // Get the attribute
         const auto& attribute = sight::data::dicom::attribute::get(group, element);
 
-        // If the Value Representation is UI, we will shorten it using hash
+        // If the Value Representation is UI, we will shorten it using FNV-1a hash
+        // FNV-1a ensures consistent hashing across all platforms and compilers
         if(attribute.m_vr == sight::data::dicom::attribute::VR::UI)
         {
-            std::ostringstream hex;
-            hex << std::hex << std::hash<std::string> {}(dicom_value);
-
-            dicom_value = hex.str();
+            dicom_value = fnv1a_hash(dicom_value);
         }
 
         if(dicom_value.empty())
@@ -177,10 +206,10 @@ inline std::filesystem::path parse_path(
     std::ranges::replace_if(
         path,
         [](char _c)
-            {
-                static constexpr std::string_view s_FORBIDDEN(":?\"<>|$;* \t\n\r");
-                return std::isprint(_c) == 0 || s_FORBIDDEN.find(_c) != std::string::npos;
-            },
+        {
+            static const std::string s_FORBIDDEN(":?\"<>|$;* \t\n\r");
+            return std::isprint(_c) == 0 || s_FORBIDDEN.find(_c) != std::string::npos;
+        },
         '_'
     );
 
@@ -189,7 +218,7 @@ inline std::filesystem::path parse_path(
 
 //------------------------------------------------------------------------------
 
-inline gdcm::VR::VRType tag_to_vr(std::uint16_t _group, std::uint16_t _element)
+static gdcm::VR::VRType tag_to_vr(std::uint16_t _group, std::uint16_t _element)
 {
     const auto& attribute = dicom::attribute::get(_group, _element);
 
@@ -316,7 +345,7 @@ inline gdcm::VR::VRType tag_to_vr(std::uint16_t _group, std::uint16_t _element)
 
 //------------------------------------------------------------------------------
 
-[[maybe_unused]] inline bool is_orthogonal(const matrix4& _transform)
+[[maybe_unused]] static bool is_orthogonal(const matrix4& _transform)
 {
     const glm::dvec3 x(_transform[0], _transform[4], _transform[8]);
     const glm::dvec3 y(_transform[1], _transform[5], _transform[9]);
@@ -325,8 +354,6 @@ inline gdcm::VR::VRType tag_to_vr(std::uint16_t _group, std::uint16_t _element)
 
     return glm::all(glm::epsilonEqual(computed_z, z, 1e-3));
 }
-
-} // namespace
 
 series::series() :
     m_pimpl(std::make_unique<detail::series_impl>(this))
@@ -506,7 +533,7 @@ std::string series::date_to_iso(const std::string& _date)
     }
 
     // Day
-    if(_date.length() >= (DATE_LENGTH))
+    if(_date.length() >= DATE_LENGTH)
     {
         date += "-" + _date.substr(YEAR_MONTH_LENGTH, DAY_LENGTH);
     }
@@ -1046,7 +1073,7 @@ void series::set_byte_value(
     // Create a new data element and assign the buffer from the string
     gdcm::DataElement data_element(tag);
     data_element.SetVR(vr);
-    data_element.SetByteValue(padded.c_str(), std::uint32_t(padded.size()));
+    data_element.SetByteValue(padded.c_str(), static_cast<std::uint32_t>(padded.size()));
 
     // Store back the data element to the data set
     m_pimpl->get_data_set(_instance).Replace(data_element);
@@ -1436,7 +1463,7 @@ std::size_t series::num_frames() const noexcept
     if(is_multi_frame())
     {
         const auto& number_of_frames = m_pimpl->get_value<gdcm::Keywords::NumberOfFrames>();
-        return std::size_t(number_of_frames.value_or(0));
+        return static_cast<std::size_t>(number_of_frames.value_or(0));
     }
 
     return num_instances();
@@ -2687,7 +2714,7 @@ series::sop_keywords_t series::dicom_types_to_sops(dicom_types _types) noexcept
 {
     sop_keywords_t keywords;
 
-    if((_types & std::uint64_t(dicom_t::image)) == std::uint64_t(dicom_t::image))
+    if((_types & static_cast<std::uint64_t>(dicom_t::image)) == static_cast<std::uint64_t>(dicom_t::image))
     {
         keywords.insert(
             {
@@ -2754,7 +2781,7 @@ series::sop_keywords_t series::dicom_types_to_sops(dicom_types _types) noexcept
             });
     }
 
-    if((_types & std::uint64_t(dicom_t::model)) == std::uint64_t(dicom_t::model))
+    if((_types & static_cast<std::uint64_t>(dicom_t::model)) == static_cast<std::uint64_t>(dicom_t::model))
     {
         keywords.insert(
             {
@@ -2767,7 +2794,7 @@ series::sop_keywords_t series::dicom_types_to_sops(dicom_types _types) noexcept
             });
     }
 
-    if((_types & std::uint64_t(dicom_t::fiducials)) == std::uint64_t(dicom_t::fiducials))
+    if((_types & static_cast<std::uint64_t>(dicom_t::fiducials)) == static_cast<std::uint64_t>(dicom_t::fiducials))
     {
         keywords.insert(
             {

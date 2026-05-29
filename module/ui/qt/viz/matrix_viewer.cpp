@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #include "matrix_viewer.hpp"
 
-#include <service/macros.hpp>
-
 #include <ui/qt/container/widget.hpp>
 
 #include <QHBoxLayout>
@@ -32,6 +30,8 @@
 #include <QSlider>
 #include <QString>
 #include <QVBoxLayout>
+
+#include <cmath>
 
 namespace sight::module::ui::qt::viz
 {
@@ -113,7 +113,8 @@ void matrix_viewer::update_from_matrix()
     {
         for(unsigned int j = 0 ; j < 4 ; ++j)
         {
-            m_matrix_labels[int(i * 4 + j)]->setText(QString("%1").arg((*matrix)(i, j), 0, 'f', 2));
+            const auto truncated_value = std::trunc((*matrix)(i, j) * 100.) / 100.;
+            m_matrix_labels[static_cast<int>(i * 4 + j)]->setText(QString("%1").arg(truncated_value, 0, 'f', 2));
         }
     }
 }
@@ -126,7 +127,7 @@ void matrix_viewer::clear_labels()
     {
         for(int j = 0 ; j < 4 ; ++j)
         {
-            m_matrix_labels[i * 4 + j]->setText(QString(""));
+            m_matrix_labels[static_cast<std::int64_t>(i * 4 + j)]->setText(QString(""));
         }
     }
 }

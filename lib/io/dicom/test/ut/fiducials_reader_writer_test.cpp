@@ -29,6 +29,7 @@
 #include <doctest/doctest.h>
 
 #include <filesystem>
+#include <fstream>
 
 namespace sight::io::dicom::ut
 {
@@ -179,6 +180,81 @@ TEST_SUITE("sight::io::dicom::fiducials_reader_writer")
         }
 
         CHECK_FALSE(std::filesystem::exists(fiducials_path));
+    }
+
+    TEST_CASE("force_fiducials_only_updates_companion_without_rewriting_image")
+    {
+        auto image_series = get_us_volume_image_copy(0xCAFE, 2);
+        REQUIRE(image_series);
+
+        auto series_set = std::make_shared<data::series_set>();
+        series_set->push_back(image_series);
+
+        const core::os::temp_dir folder;
+        const auto image_filename = std::string("fiducials_only_mode.dcm");
+        const auto image_path     = std::filesystem::path(folder) / image_filename;
+        const auto fiducials_path = std::filesystem::path(folder) / "fiducials_only_mode_fiducials.dcm";
+
+        auto writer = std::make_shared<io::dicom::writer::file>();
+        writer->set_object(series_set);
+        writer->set_folder(folder);
+        writer->set_file(image_filename);
+
+        {
+            const auto observer = std::make_shared<core::progress::observer>("FIDUCIALS Writer Test");
+            CHECK_NOTHROW(writer->write(observer));
+        }
+
+        REQUIRE(std::filesystem::exists(image_path));
+        CHECK_FALSE(std::filesystem::exists(fiducials_path));
+
+        std::ifstream before_stream(image_path, std::ios::binary);
+        REQUIRE(before_stream.good());
+        const std::string before_bytes(
+            (std::istreambuf_iterator<char>(before_stream)),
+            std::istreambuf_iterator<char>()
+        );
+
+        data::fiducials_series::fiducial_set fiducial_set;
+        fiducial_set.group_name = "forced_fiducials_update";
+        image_series->get_fiducials()->append_fiducial_set(fiducial_set);
+
+        // Request not to rewrite the existing DICOM image (only update fiducials)
+        writer->image_dcm_override(false);
+
+        {
+            const auto observer = std::make_shared<core::progress::observer>("FIDUCIALS Writer Test");
+            CHECK_NOTHROW(writer->write(observer));
+        }
+
+        REQUIRE(std::filesystem::exists(fiducials_path));
+
+        std::ifstream after_update_stream(image_path, std::ios::binary);
+        REQUIRE(after_update_stream.good());
+        const std::string after_update_bytes(
+            (std::istreambuf_iterator<char>(after_update_stream)),
+            std::istreambuf_iterator<char>()
+        );
+
+        CHECK_EQ(before_bytes, after_update_bytes);
+
+        image_series->get_fiducials()->set_fiducial_sets({});
+
+        {
+            const auto observer = std::make_shared<core::progress::observer>("FIDUCIALS Writer Test");
+            CHECK_NOTHROW(writer->write(observer));
+        }
+
+        CHECK_FALSE(std::filesystem::exists(fiducials_path));
+
+        std::ifstream after_remove_stream(image_path, std::ios::binary);
+        REQUIRE(after_remove_stream.good());
+        const std::string after_remove_bytes(
+            (std::istreambuf_iterator<char>(after_remove_stream)),
+            std::istreambuf_iterator<char>()
+        );
+
+        CHECK_EQ(before_bytes, after_remove_bytes);
     }
 }
 

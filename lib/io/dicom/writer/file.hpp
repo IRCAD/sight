@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -62,6 +62,12 @@ public:
     /// This can be useful in case of an unit test executed on a machine without GPU.
     /// @arg force: true to force CPU backend, false to use GPU and throw an exception if not available
     SIGHT_IO_DICOM_API void force_cpu(bool _force);
+
+    /// Control whether DICOM files should be (re)written when they already exist.
+    /// @arg _force true to force DICOM (re)writing/override, false to avoid rewriting existing DICOM and only update
+    /// fiducials.
+    /// Default is false.
+    SIGHT_IO_DICOM_API void image_dcm_override(bool _force);
 
     /// Allowed transfer syntax. The default will depends of the SOP classes.
     /// @note All transfer syntaxes are not supported by all SOP classes.
