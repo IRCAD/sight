@@ -409,17 +409,17 @@ vtkSmartPointer<vtkPolyData> vtk_mesher::reconstruct(vtkSmartPointer<vtkImageDat
 
     vtkSmartPointer<vtkPolyData> poly_data = last_filter->GetOutput();
 
-    SIGHT_INFO(this->get_id() << ": Value: " << _value << "Flying edges: " << std::to_string(*m_use_flying_edges));
-    SIGHT_INFO(this->get_id() << ": Contour timer: " << contour_timer->GetElapsedWallClockTime() << "s");
-    SIGHT_INFO(this->get_id() << ": Smooth timer: " << smooth_timer->GetElapsedWallClockTime() << "s");
-    SIGHT_INFO(this->get_id() << ": Decimate timer: " << decimate_timer->GetElapsedWallClockTime() << "s");
-    SIGHT_INFO(this->get_id() << ": Number of points: " << poly_data->GetNumberOfPoints());
-    SIGHT_INFO(this->get_id() << ": Number of cells: " << poly_data->GetNumberOfCells());
+    SIGHT_DEBUG(this->get_id() << ": Value: " << _value << "Flying edges: " << std::to_string(*m_use_flying_edges));
+    SIGHT_DEBUG(this->get_id() << ": Contour timer: " << contour_timer->GetElapsedWallClockTime() << "s");
+    SIGHT_DEBUG(this->get_id() << ": Smooth timer: " << smooth_timer->GetElapsedWallClockTime() << "s");
+    SIGHT_DEBUG(this->get_id() << ": Decimate timer: " << decimate_timer->GetElapsedWallClockTime() << "s");
+    SIGHT_DEBUG(this->get_id() << ": Number of points: " << poly_data->GetNumberOfPoints());
+    SIGHT_DEBUG(this->get_id() << ": Number of cells: " << poly_data->GetNumberOfCells());
 
     // Check for errors
     if(auto error = error_obs->get_error(); error.has_value())
     {
-        SIGHT_ERROR(*error);
+        SIGHT_DEBUG(*error);
         this->notifier::failure(*error);
         this->async_emit(filter::signals::FAILED);
 

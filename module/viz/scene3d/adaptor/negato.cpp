@@ -267,17 +267,20 @@ void negato::update_image(bool _new)
     int frontal_idx  = 0;
     int sagittal_idx = 0;
     {
-        const auto image = m_image.lock();
-
-        if(!data::helper::medical_image::check_image_validity(image.get_shared()))
         {
-            std::ranges::for_each(m_planes, [](auto& _p){_p.first.reset();});
-            return;
+            const auto image = m_image.lock();
+
+            if(!data::helper::medical_image::check_image_validity(image.get_shared()))
+            {
+                std::ranges::for_each(m_planes, [](auto& _p){_p.first.reset();});
+                return;
+            }
         }
 
         // Update the texture
         m_3d_ogre_texture->update();
 
+        const auto image = m_image.lock();
         if(_new)
         {
             const auto mask = m_mask.lock();
