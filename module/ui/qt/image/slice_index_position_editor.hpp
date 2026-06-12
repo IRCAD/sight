@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,17 +36,18 @@
 namespace sight::module::ui::qt::image
 {
 
-enum label_option_t
+enum label_option_t : std::uint8_t
 {
     index = 0,
     position
 };
-enum orientation_t
+
+enum orientation_t : std::uint8_t
 {
     /// Directions.
     x_axis = 0,
-    y_axis,
-    z_axis,
+    y_axis = 1,
+    z_axis = 2,
     /// Planar definitions.
     sagittal = x_axis,
     frontal  = y_axis,
@@ -143,7 +144,7 @@ protected:
     void update_slider_fiducial();
 
     /// This method is called when the label type changes, to destroy the previous type of `qt_container`.
-    void destroyEditorContainer();
+    void destroy_editor_container();
 
     /// This method is called when the slice label option changes. It notifies that the slice label option has been
     /// toggled.
@@ -182,7 +183,7 @@ private:
     label_option_t m_label_option {label_option_t::index};
     axis_t m_axis {axis_t::z_axis};
 
-    static std::map<axis_t, std::string> orientation_prefix_map;
+    static std::map<axis_t, std::string> s_orientation_prefix_map;
     bool m_display_axis_selector {true};
 
     bool m_display_step_buttons {false};

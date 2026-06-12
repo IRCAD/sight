@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,16 +22,8 @@
 
 #include "ui/qt/slice_selector.hpp"
 
-#include <core/base.hpp>
-#include <core/com/signal.hpp>
 #include <core/com/signal.hxx>
 #include <core/runtime/path.hpp>
-#include <core/tools/uuid.hpp>
-
-#include <data/fiducials_series.hpp>
-#include <data/has_fiducials.hpp>
-#include <data/helper/fiducials_series.hpp>
-#include <data/string.hpp>
 
 #include <QApplication>
 #include <QColor>
@@ -46,6 +38,8 @@
 #include <QToolButton>
 #include <QVector>
 #include <QWidget>
+
+#include <QSignalBlocker>
 
 namespace sight::ui::qt
 {
@@ -121,10 +115,6 @@ public:
         }
     }
 
-//------------------------------------------------------------------------------
-
-protected:
-
     //------------------------------------------------------------------------------
 
     [[nodiscard]] QSize minimumSizeHint() const override
@@ -147,6 +137,10 @@ protected:
     {
         return minimumSizeHint();
     }
+
+//------------------------------------------------------------------------------
+
+protected:
 
     //------------------------------------------------------------------------------
 
@@ -172,6 +166,10 @@ private:
         m_button->setGeometry(this->width() - frame_width - button_width, frame_width, button_width, button_height);
     }
 };
+
+namespace
+{
+
 // This proxy style class provides a way to set slider positions in an absolute way
 // which is very useful in general and especially for touchscreen input.
 // See: https://stackoverflow.com/questions/11132597/qslider-mouse-direct-jump
@@ -211,7 +209,7 @@ public:
 
     void add_slider_position(std::int64_t _position, const QColor& _color)
     {
-        m_position_colors[_position].push_back(_color);
+        m_position_colors[_position].insert(_color);
         update();
     }
 
@@ -221,7 +219,7 @@ public:
     {
         if(_position.has_value())
         {
-            m_position_colors[static_cast<int64_t>(_position.value())].push_back(_color);
+            m_position_colors[static_cast<int64_t>(_position.value())].insert(_color);
             update();
         }
     }
@@ -248,9 +246,21 @@ protected:
         QRect rect                = style()->subControlRect(QStyle::CC_Slider, &opt, QStyle::SC_SliderGroove, this);
         const int handle_width    = style()->pixelMetric(QStyle::PM_SliderControlThickness, &opt, this);
         const int effective_width = rect.width() - handle_width;
+        const int max_value       = maximum();
+
+        if(max_value <= 0)
+        {
+            return;
+        }
+
         for(const auto& [position, colors] : m_position_colors)
         {
-            const double position_scaled = static_cast<double>(position) / static_cast<double>(maximum());
+            if(colors.empty())
+            {
+                continue;
+            }
+
+            const double position_scaled = static_cast<double>(position) / static_cast<double>(max_value);
             const int x                  = rect.left() + handle_width / 2
                                            + static_cast<int>(position_scaled * effective_width);
             int segment_height_base     = rect.height() / static_cast<int>(colors.size());
@@ -259,13 +269,12 @@ protected:
 
             if(x >= rect.left() && x < rect.right())
             {
-                for(size_t i = 0 ; i < colors.size() ; ++i)
+                for(std::size_t i = 0 ; const auto& color : colors)
                 {
-                    const QColor& color = colors[i];
                     QPen pen(color, 3);
                     painter.setPen(pen);
 
-                    int segment_height = segment_height_base + (i < remaining_height ? 1 : 0);
+                    const int segment_height = segment_height_base + (i++ < remaining_height ? 1 : 0);
 
                     painter.drawLine(x, current_top, x, current_top + segment_height);
                     current_top += segment_height;
@@ -276,7 +285,17 @@ protected:
 
 private:
 
-    std::map<int64_t, std::vector<QColor> > m_position_colors;
+    struct color_less
+    {
+        //------------------------------------------------------------------------------
+
+        [[nodiscard]] bool operator()(const QColor& _lhs, const QColor& _rhs) const noexcept
+        {
+            return _lhs.rgba() < _rhs.rgba();
+        }
+    };
+
+    std::map<int64_t, std::set<QColor, color_less> > m_position_colors;
 };
 
 class second_proxy_style : public QProxyStyle
@@ -300,7 +319,9 @@ public:
         return QProxyStyle::styleHint(_hint, _option, _widget, _return_data);
     }
 };
-//------------------------------------------------------------------------------
+
+} // namespace
+
 slice_selector::slice_selector(
     bool _display_axis_selector,
     bool _display_step_buttons,
@@ -366,7 +387,7 @@ slice_selector::slice_selector(
 
         auto* step_forward = new QToolButton(this);
         step_forward->setIcon(QIcon(QString::fromStdString((path / "right.svg").string())));
-        step_backward->setToolTip(tr("Step forward"));
+        step_forward->setToolTip(tr("Step forward"));
 
         QObject::connect(
             step_forward,
@@ -458,7 +479,7 @@ slice_selector::slice_selector(
 
         auto* step_forward_p = new QToolButton(this);
         step_forward_p->setIcon(QIcon(QString::fromStdString((path / "right.svg").string())));
-        step_backward_p->setToolTip(tr("Step forward"));
+        step_forward_p->setToolTip(tr("Step forward"));
 
         QObject::connect(
             step_forward_p,
@@ -511,29 +532,34 @@ void slice_selector::set_index_digits(std::uint8_t _index_digits)
 //-----------------------------------------------------------------------------
 void slice_selector::clear_slider_index()
 {
-    auto* slider = dynamic_cast<custom_slider*>(m_slider.data());
-    slider->clear_positions();
+    if(auto* const slider = dynamic_cast<custom_slider*>(m_slider.data()); slider != nullptr)
+    {
+        slider->clear_positions();
+    }
 }
 
 //-----------------------------------------------------------------------------
 void slice_selector::clear_slider_position()
 {
-    auto* slider_position = dynamic_cast<custom_slider*>(m_slice_position_slider.data());
-    slider_position->clear_positions();
+    if(auto* const slider_position = dynamic_cast<custom_slider*>(m_slice_position_slider.data());
+       slider_position != nullptr)
+    {
+        slider_position->clear_positions();
+    }
 }
 
 //-----------------------------------------------------------------------------
 void slice_selector::add_slider_position(std::int64_t _position, const QColor& _color)
 {
-    auto* m_slider_widget = static_cast<custom_slider*>(m_slider.data());
-
-    m_slider_widget->blockSignals(true);
-    m_slider_widget->add_slider_position(_position, _color);
-    m_slider_widget->blockSignals(false);
+    if(auto* const m_slider_widget = static_cast<custom_slider*>(m_slider.data()); m_slider_widget != nullptr)
+    {
+        const QSignalBlocker blocker(m_slider_widget);
+        m_slider_widget->add_slider_position(_position, _color);
+    }
 }
 
 //------------------------------------------------
-void slice_selector::set_change_label_callback(ChangeLabelCallback _fct_label)
+void slice_selector::set_change_label_callback(change_label_callback_t _fct_label)
 {
     m_fct_change_label_callback = _fct_label;
 }
@@ -541,37 +567,53 @@ void slice_selector::set_change_label_callback(ChangeLabelCallback _fct_label)
 //------------------------------------------------------------------------------
 void slice_selector::add_position_slider(std::double_t _position, const QColor& _color)
 {
-    auto* m_slider_widget = static_cast<custom_slider*>(m_slice_position_slider.data());
-
-    m_slider_widget->blockSignals(true);
-    m_slider_widget->add_position_slider(_position, _color);
-    m_slider_widget->blockSignals(false);
+    if(auto* const m_slider_widget = static_cast<custom_slider*>(m_slice_position_slider.data());
+       m_slider_widget != nullptr)
+    {
+        const QSignalBlocker blocker(m_slider_widget);
+        m_slider_widget->add_position_slider(_position, _color);
+    }
 }
 
 //------------------------------------------------------------------------------
 void slice_selector::set_position_digits(double _pos_digits)
 {
-    auto* slice_position_widget = static_cast<slice_text_editor*>(m_slice_index_text.data());
+    if(m_slice_index_text != nullptr)
+    {
+        auto* slice_index_widget = static_cast<slice_text_editor*>(m_slice_index_text.data());
+        slice_index_widget->set_digits_position(_pos_digits);
+        slice_index_widget->updateGeometry();
+    }
 
-    slice_position_widget->set_digits_position(_pos_digits);
-    slice_position_widget->updateGeometry();
+    if(m_slice_position_text != nullptr)
+    {
+        auto* slice_position_widget = static_cast<slice_text_editor*>(m_slice_position_text.data());
+        slice_position_widget->set_digits_position(_pos_digits);
+        slice_position_widget->updateGeometry();
+    }
 }
 
 //-------------------------------------------------------------------------------
 void slice_selector::set_slice_range(int _min, int _max)
 {
-    m_slider->blockSignals(true);
-    m_slider->setRange(_min, _max);
-    m_slider->blockSignals(false);
+    if(m_slider != nullptr)
+    {
+        const QSignalBlocker blocker(m_slider);
+        m_slider->setRange(_min, _max);
+    }
 }
 
 //------------------------------------------------------------------------------
 
 void slice_selector::set_slice_value(int _index)
 {
-    m_slider->blockSignals(true);
+    if(m_slider == nullptr || m_slice_index_text == nullptr)
+    {
+        return;
+    }
+
+    const QSignalBlocker blocker(m_slider);
     m_slider->setValue(_index);
-    m_slider->blockSignals(false);
 
     std::stringstream ss;
     ss << _index << " / " << this->m_slider->maximum();
@@ -611,9 +653,11 @@ void slice_selector::update_label()
 
 void slice_selector::set_position_value(int _index)
 {
-    m_slice_position_slider->blockSignals(true);
-    m_slice_position_slider->setValue(_index);
-    m_slice_position_slider->blockSignals(false);
+    if(m_slice_position_slider != nullptr)
+    {
+        const QSignalBlocker blocker(m_slice_position_slider);
+        m_slice_position_slider->setValue(_index);
+    }
 }
 
 //-------------------------------------------------------------------------------
@@ -644,9 +688,11 @@ void slice_selector::set_image_info(double _origin, double _spacing)
 //------------------------------------------------------------------------------
 void slice_selector::set_position_range(double _min, double _max)
 {
-    m_slice_position_slider->blockSignals(true);
-    m_slice_position_slider->setRange(static_cast<int>(_min), static_cast<int>(_max));
-    m_slice_position_slider->blockSignals(false);
+    if(m_slice_position_slider != nullptr)
+    {
+        const QSignalBlocker blocker(m_slice_position_slider);
+        m_slice_position_slider->setRange(static_cast<int>(_min), static_cast<int>(_max));
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -678,14 +724,14 @@ void slice_selector::on_slice_position_change(int _value) noexcept
 
 //------------------------------------------------------------------------------
 
-void slice_selector::set_change_index_callback(ChangeIndexCallback _fct_index)
+void slice_selector::set_change_index_callback(change_index_callback_t _fct_index)
 {
     m_fct_change_index_callback = _fct_index;
 }
 
 //------------------------------------------------------------------------------
 
-void slice_selector::set_change_type_callback(ChangeTypeCallback _fct_type)
+void slice_selector::set_change_type_callback(change_type_callback_t _fct_type)
 {
     m_fct_change_type_callback = _fct_type;
 }

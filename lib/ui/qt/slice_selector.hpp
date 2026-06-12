@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,7 +43,6 @@
 
 #include <functional>
 #include <string>
-#include <variant>
 
 namespace sight::ui::qt
 {
@@ -72,6 +71,7 @@ public:
         double _pos_digits   = 0.0,
         QWidget* _parent_pos = nullptr
     ) noexcept;
+
     /// @brief Destructor.
     SIGHT_UI_QT_API_QT ~slice_selector() noexcept override;
 
@@ -86,23 +86,23 @@ public:
     SIGHT_UI_QT_API_QT void set_type_selection_pos(int _type_pos);
 
     SIGHT_UI_QT_API_QT void set_enable(bool _enable);
-    SIGHT_UI_QT_API_QT void set_position_digits(double value);
+    SIGHT_UI_QT_API_QT void set_position_digits(double _pos_digits);
 
     SIGHT_UI_QT_API_QT void clear_slider_index();
 
     SIGHT_UI_QT_API_QT void clear_slider_position();
 
-    SIGHT_UI_QT_API_QT void set_position_value(int index);
+    SIGHT_UI_QT_API_QT void set_position_value(int _index);
 
-    SIGHT_UI_QT_API_QT void set_position_text(double position_index);
+    SIGHT_UI_QT_API_QT void set_position_text(double _position_index);
 
-    SIGHT_UI_QT_API_QT void set_position_range(double min, double max);
+    SIGHT_UI_QT_API_QT void set_position_range(double _min, double _max);
 
-    SIGHT_UI_QT_API_QT void set_image_info(double origin, double spacing);
+    SIGHT_UI_QT_API_QT void set_image_info(double _origin, double _spacing);
 
     SIGHT_UI_QT_API_QT void on_slice_index_position_change(int _value);
 
-    SIGHT_UI_QT_API_QT void set_orientation(std::string& orientation);
+    SIGHT_UI_QT_API_QT void set_orientation(std::string& _orientation);
 
     SIGHT_UI_QT_API_QT void add_slider_position(std::int64_t _position, const QColor& _color);
 
@@ -112,14 +112,14 @@ public:
 
     SIGHT_UI_QT_API_QT void set_prefix(const std::string& _orientation_prefix);
 
-    using ChangeLabelCallback = std::function<void()>;
-    SIGHT_UI_QT_API_QT void set_change_label_callback(ChangeLabelCallback _fct_label);
+    using change_label_callback_t = std::function<void()>;
+    SIGHT_UI_QT_API_QT void set_change_label_callback(change_label_callback_t _fct_label);
 
-    using ChangeIndexCallback = std::function<void (int)>;
-    SIGHT_UI_QT_API_QT void set_change_index_callback(ChangeIndexCallback _fct_index);
+    using change_index_callback_t = std::function<void (int)>;
+    SIGHT_UI_QT_API_QT void set_change_index_callback(change_index_callback_t _fct_index);
 
-    using ChangeTypeCallback = std::function<void (int)>;
-    SIGHT_UI_QT_API_QT void set_change_type_callback(ChangeTypeCallback _fct_type);
+    using change_type_callback_t = std::function<void (int)>;
+    SIGHT_UI_QT_API_QT void set_change_type_callback(change_type_callback_t _fct_type);
 
     SIGHT_UI_QT_API_QT void update_label();
 
@@ -160,9 +160,9 @@ private:
     double m_spacing {0.00};
 
     std::string m_orientation_prefix;
-    ChangeIndexCallback m_fct_change_index_callback;
-    ChangeTypeCallback m_fct_change_type_callback;
-    ChangeLabelCallback m_fct_change_label_callback;
+    change_index_callback_t m_fct_change_index_callback;
+    change_type_callback_t m_fct_change_type_callback;
+    change_label_callback_t m_fct_change_label_callback;
 };
 
 } // namespace sight::ui::qt

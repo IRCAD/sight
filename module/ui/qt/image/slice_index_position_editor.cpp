@@ -24,31 +24,21 @@
 
 #include "data/image_series.hpp"
 
-#include <core/base.hpp>
 #include <core/com/signal.hxx>
 #include <core/com/slot.hxx>
 #include <core/com/slots.hxx>
 #include <core/spy_log.hpp>
 
-#include <data/helper/fiducials_series.hpp>
 #include <data/image.hpp>
-#include <data/integer.hpp>
 
 #include <geometry/data/image.hpp>
 
-#include <service/macros.hpp>
-
-#include <ui/__/container/widget.hpp>
+#include <iostream>
 #include <ui/qt/container/widget.hpp>
 
-#include <boost/algorithm/string/case_conv.hpp>
-#include <boost/algorithm/string/trim.hpp>
-
-#include <QVariant>
 #include <QVBoxLayout>
+#include <QVariant>
 #include <QWidget>
-
-#include <functional>
 
 namespace sight::module::ui::qt::image
 {
@@ -61,7 +51,7 @@ static const core::com::slots::key_t UPDATE_SLICE_TYPE_SLOT  = "updateSliceType"
 const service::base::key_t slice_index_position_editor::IMAGE_INOUT =
     "image";
 
-std::map<slice_index_position_editor::axis_t, std::string> slice_index_position_editor::orientation_prefix_map = {
+std::map<slice_index_position_editor::axis_t, std::string> slice_index_position_editor::s_orientation_prefix_map = {
     {slice_index_position_editor::axis_t::axial, "S"},
     {slice_index_position_editor::axis_t::frontal, "P"},
     {slice_index_position_editor::axis_t::sagittal, "L"}
@@ -138,12 +128,12 @@ void slice_index_position_editor::starting()
     const QString service_id = QString::fromStdString(base_id());
 
     auto* layout = new QVBoxLayout();
-    sight::ui::qt::slice_selector::ChangeIndexCallback fct_index = [this](int _index)
-                                                                   {
-                                                                       slice_index_notification(_index);
-                                                                   };
-    sight::ui::qt::slice_selector::ChangeTypeCallback fct_type = [this](int _type){slice_type_notification(_type);};
-    sight::ui::qt::slice_selector::ChangeLabelCallback fct_label = [this](){slice_label_notification();};
+    sight::ui::qt::slice_selector::change_index_callback_t fct_index = [this](int _index)
+                                                                       {
+                                                                           slice_index_notification(_index);
+                                                                       };
+    sight::ui::qt::slice_selector::change_type_callback_t fct_type = [this](int _type){slice_type_notification(_type);};
+    sight::ui::qt::slice_selector::change_label_callback_t fct_label = [this](){slice_label_notification();};
 
     if(m_label_option == label_option_t::index)
     {
@@ -176,7 +166,7 @@ void slice_index_position_editor::starting()
 
     layout->addWidget(m_slice_selector_with_index);
 
-    m_slice_selector_with_index->set_prefix(orientation_prefix_map.at(m_axis));
+    m_slice_selector_with_index->set_prefix(s_orientation_prefix_map.at(m_axis));
 
     layout->setContentsMargins(0, 0, 0, 0);
 
@@ -199,15 +189,15 @@ void slice_index_position_editor::updating()
             m_slice_selector_with_index->set_enable(image_is_valid);
 
             m_axial_index = std::max(
-                std::int64_t(0),
+                static_cast<std::int64_t>(0),
                 medical_image::get_slice_index(*image, axis_t::axial).value_or(0)
             );
             m_frontal_index = std::max(
-                std::int64_t(0),
+                static_cast<std::int64_t>(0),
                 medical_image::get_slice_index(*image, axis_t::frontal).value_or(0)
             );
             m_sagittal_index = std::max(
-                std::int64_t(0),
+                static_cast<std::int64_t>(0),
                 medical_image::get_slice_index(*image, axis_t::sagittal).value_or(0)
             );
 
@@ -223,17 +213,17 @@ void slice_index_position_editor::updating()
             m_axial_position = medical_image::get_slice_position(
                 *image,
                 axis_t::axial
-            ).value_or(double(origin[axis_t::axial]));
+            ).value_or(static_cast<double>(origin[axis_t::axial]));
 
             m_frontal_position = medical_image::get_slice_position(
                 *image,
                 axis_t::frontal
-            ).value_or(double(origin[axis_t::frontal]));
+            ).value_or(static_cast<double>(origin[axis_t::frontal]));
 
             m_sagittal_position = medical_image::get_slice_position(
                 *image,
                 axis_t::sagittal
-            ).value_or(double(origin[axis_t::sagittal]));
+            ).value_or(static_cast<double>(origin[axis_t::sagittal]));
 
             this->update_slice_index_from_img(*image);
         }
@@ -251,7 +241,7 @@ void slice_index_position_editor::stopping()
 
 //------------------------------------------------------------------------------------
 
-void slice_index_position_editor::destroyEditorContainer()
+void slice_index_position_editor::destroy_editor_container()
 {
     auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
         this->get_container()
@@ -314,8 +304,12 @@ void slice_index_position_editor::update_slice_index_from_img(const sight::data:
             m_slice_selector_with_index->set_slice_value(static_cast<int>(index_ind));
 
             // Find the max value for each dimension
-            const int absolute_max = int(*std::ranges::max_element(image_size) - 1);
-            m_slice_selector_with_index->set_index_digits(std::uint8_t(std::to_string(absolute_max).length()));
+            const int absolute_max = static_cast<int>(*std::ranges::max_element(image_size) - 1);
+            m_slice_selector_with_index->set_index_digits(
+                static_cast<std::uint8_t>(std::to_string(
+                                              absolute_max
+                ).length())
+            );
         }
 
         if(m_label_option == label_option_t::position)
@@ -375,7 +369,7 @@ void slice_index_position_editor::slice_label_notification()
 {
     m_label_option = (m_label_option == label_option_t::index) ? label_option_t::position : label_option_t::index;
 
-    this->destroyEditorContainer();
+    this->destroy_editor_container();
     this->create();
     auto* layout = new QVBoxLayout();
 
@@ -406,9 +400,9 @@ void slice_index_position_editor::slice_label_notification()
         );
     }
 
-    sight::ui::qt::slice_selector::ChangeIndexCallback fct_index = [this](int _t){slice_index_notification(_t);};
-    sight::ui::qt::slice_selector::ChangeTypeCallback fct_type = [this](int _t){slice_type_notification(_t);};
-    sight::ui::qt::slice_selector::ChangeLabelCallback fct_label = [this](){slice_label_notification();};
+    sight::ui::qt::slice_selector::change_index_callback_t fct_index = [this](int _t){slice_index_notification(_t);};
+    sight::ui::qt::slice_selector::change_type_callback_t fct_type = [this](int _t){slice_type_notification(_t);};
+    sight::ui::qt::slice_selector::change_label_callback_t fct_label = [this](){slice_label_notification();};
 
     m_slice_selector_with_index->setProperty("class", "slice_selector");
     m_slice_selector_with_index->set_enable(true);
@@ -417,7 +411,7 @@ void slice_index_position_editor::slice_label_notification()
     m_slice_selector_with_index->set_change_type_callback(fct_type);
     m_slice_selector_with_index->set_change_label_callback(fct_label);
     m_slice_selector_with_index->set_type_selection(m_axis);
-    m_slice_selector_with_index->set_prefix(orientation_prefix_map.at(m_axis));
+    m_slice_selector_with_index->set_prefix(s_orientation_prefix_map.at(m_axis));
 
     m_slice_selector_with_index->setObjectName(service_id);
 
@@ -458,7 +452,7 @@ void slice_index_position_editor::update_slice_type_from_img(const axis_t& _type
 {
     if(m_label_option == label_option_t::position)
     {
-        const std::string& new_orientation_prefix = orientation_prefix_map.at(_type);
+        const std::string& new_orientation_prefix = s_orientation_prefix_map.at(_type);
         m_slice_selector_with_index->set_prefix(new_orientation_prefix);
         m_slice_selector_with_index->set_type_selection(static_cast<int>(_type));
     }
@@ -581,7 +575,7 @@ void slice_index_position_editor::slice_type_notification(int _type)
 {
     auto type = static_cast<axis_t>(_type);
     SIGHT_ASSERT(
-        "Bad slice type " << type,
+        "Bad slice type " << static_cast<unsigned int>(type),
         type == axis_t::x_axis
         || type == axis_t::y_axis
         || type == axis_t::z_axis
@@ -623,7 +617,6 @@ service::connections_t slice_index_position_editor::auto_connections() const
         connections.push(IMAGE_INOUT, data::has_fiducials::signals::GROUP_REMOVED, service::slots::UPDATE);
         connections.push(IMAGE_INOUT, data::has_fiducials::signals::POINT_REMOVED, service::slots::UPDATE);
         connections.push(IMAGE_INOUT, data::has_fiducials::signals::POINT_ADDED, service::slots::UPDATE);
-        connections.push(IMAGE_INOUT, data::has_fiducials::signals::POINT_MODIFIED, service::slots::UPDATE);
     }
 
     return connections;
