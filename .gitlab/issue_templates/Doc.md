@@ -12,8 +12,10 @@ _Keep criteria concise, testable, and user-oriented._
 
 1. _criterion_
 
-## Specifications
+## References
 
-_Details of the implementation._
+_Optional section._
 
-/label ~"Type::feature" ~"Priority::medium"
+_List of internal or external references_
+
+/label ~"Type::doc" ~"Priority::medium"
