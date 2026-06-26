@@ -35,9 +35,11 @@ if("${spec}" MATCHES .)
 endif()
 
 # Horrible build of environment variables, one for the discovery, one for the execution
+# Use path_list_prepend for discovery so configured paths (vcpkg, build output) take
+# precedence over system-installed libraries and avoid DLL version mismatches on Windows.
 foreach(PATH ${TEST_ENV})
-    set(DISCOVERY_ENV --modify PATH=path_list_append:${PATH} ${DISCOVERY_ENV})
-    set(EXECUTION_ENV ${EXECUTION_ENV} ENVIRONMENT_MODIFICATION PATH=path_list_append:${PATH})
+    set(DISCOVERY_ENV --modify PATH=path_list_prepend:${PATH} ${DISCOVERY_ENV})
+    set(EXECUTION_ENV ${EXECUTION_ENV} ENVIRONMENT_MODIFICATION PATH=path_list_prepend:${PATH})
 endforeach()
 
 if(WIN32)

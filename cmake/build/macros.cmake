@@ -528,7 +528,7 @@ macro(sight_gui_test SIGHT_TARGET)
         # Set path to avoid using a launcher
         set(TEST_ENV "${SIGHT_VCPKG_RUNTIME_DIR};${FW_SIGHT_EXTERNAL_LIBRARIES_DIR}")
         foreach(PATH ${TEST_ENV})
-            set(EXECUTION_ENV "${EXECUTION_ENV}" PATH=path_list_append:${PATH})
+            set(EXECUTION_ENV "${EXECUTION_ENV}" PATH=path_list_prepend:${PATH})
         endforeach()
         # DEF_SOURCE_LINE mandatory for VSCode to trace the test location and debug it from the IDE
         set_tests_properties(
@@ -587,7 +587,7 @@ macro(fw_test SIGHT_TARGET)
         # Set path to avoid using a launcher
         set(TEST_ENV "${SIGHT_VCPKG_RUNTIME_DIR};${FW_SIGHT_EXTERNAL_LIBRARIES_DIR}")
         foreach(PATH ${TEST_ENV})
-            set(EXECUTION_ENV "${EXECUTION_ENV}" PATH=path_list_append:${PATH})
+            set(EXECUTION_ENV "${EXECUTION_ENV}" PATH=path_list_prepend:${PATH})
         endforeach()
         # DEF_SOURCE_LINE mandatory for VSCode to trace the test location and debug it from the IDE
         set_tests_properties(
