@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,41 +22,25 @@
 
 #include "dynamic_view.hpp"
 
-#include <activity/validator/activity.hpp>
-#include <activity/validator/base.hpp>
-
-#include <core/com/signal.hxx>
-#include <core/com/slot.hxx>
-#include <core/com/slots.hxx>
-#include <core/tools/date_and_time.hpp>
-
-#include <service/extension/config.hpp>
+#include <algorithm>
 
 #include <ui/__/dialog/message.hpp>
 #include <ui/__/registry.hpp>
 
 #include <QBoxLayout>
 #include <QTabWidget>
-#include <QtGui>
-
-#include <regex>
 
 namespace sight::module::ui::qt::activity
 {
-
-static const core::com::slots::key_t CREATE_TAB_SLOT = "create_tab";
-
-static const core::com::signals::key_t ACTIVITY_SELECTED_SLOT = "activitySelected";
-static const core::com::signals::key_t NOTHING_SELECTED_SLOT  = "nothingSelected";
 
 //------------------------------------------------------------------------------
 
 dynamic_view::dynamic_view() noexcept
 {
-    new_slot(CREATE_TAB_SLOT, &dynamic_view::create_tab, this);
+    new_slot(slots::CREATE_TAB, &dynamic_view::create_tab, this);
 
-    m_sig_activity_selected = new_signal<activity_selected_signal_t>(ACTIVITY_SELECTED_SLOT);
-    m_sig_nothing_selected  = new_signal<nothing_selected_signal_t>(NOTHING_SELECTED_SLOT);
+    new_signal<signals::activity_selected_t>(signals::ACTIVITY_SELECTED);
+    new_signal<signals::nothing_selected_t>(signals::NOTHING_SELECTED);
 }
 
 //------------------------------------------------------------------------------
@@ -161,7 +145,7 @@ void dynamic_view::create_tab(sight::activity::message _info)
 void dynamic_view::launch_tab(dynamic_view_info& _info)
 {
     static int count = 0;
-    auto iter        = std::find(m_activity_ids.begin(), m_activity_ids.end(), _info.activity->get_id());
+    auto iter        = std::ranges::find(m_activity_ids, _info.activity->get_id());
 
     if(iter != m_activity_ids.end())
     {
@@ -174,7 +158,7 @@ void dynamic_view::launch_tab(dynamic_view_info& _info)
         return;
     }
 
-    if(m_title_to_count.find(_info.title) != m_title_to_count.end())
+    if(m_title_to_count.contains(_info.title))
     {
         m_title_to_count[_info.title]++;
     }
@@ -259,7 +243,7 @@ void dynamic_view::close_tab(int _index, bool _force_close)
 {
     QWidget* widget = m_tab_widget->widget(_index);
 
-    SIGHT_ASSERT("Widget is not in dynamicInfoMap", m_dynamic_info_map.find(widget) != m_dynamic_info_map.end());
+    SIGHT_ASSERT("Widget is not in dynamicInfoMap", m_dynamic_info_map.contains(widget));
     dynamic_view_info info = m_dynamic_info_map[widget];
     if(info.closable || _force_close)
     {
@@ -331,11 +315,11 @@ void dynamic_view::changed_tab(int _index)
     if(_index >= 0)
     {
         dynamic_view_info info = m_dynamic_info_map[widget];
-        m_sig_activity_selected->async_emit(info.activity);
+        this->async_emit(signals::ACTIVITY_SELECTED, info.activity);
     }
     else
     {
-        m_sig_nothing_selected->async_emit();
+        this->async_emit(signals::NOTHING_SELECTED);
     }
 }
 

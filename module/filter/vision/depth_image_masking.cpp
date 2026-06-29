@@ -22,24 +22,18 @@
 
 #include "depth_image_masking.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-
 #include <io/opencv/image.hpp>
 
 namespace sight::module::filter::vision
 {
-
-static const core::com::slots::key_t SET_BACKGROUND_SLOT = "set_background";
-static const core::com::slots::key_t SET_THRESHOLD_SLOT  = "set_threshold";
 
 // ------------------------------------------------------------------------------
 
 depth_image_masking::depth_image_masking() noexcept :
     filter(has_signals::signals())
 {
-    new_slot(SET_BACKGROUND_SLOT, &depth_image_masking::set_background, this);
-    new_slot(SET_THRESHOLD_SLOT, &depth_image_masking::set_threshold, this);
+    new_slot(slots::SET_BACKGROUND, &depth_image_masking::set_background, this);
+    new_slot(slots::SET_THRESHOLD, &depth_image_masking::set_threshold, this);
 }
 
 // ------------------------------------------------------------------------------
@@ -66,7 +60,7 @@ service::connections_t depth_image_masking::auto_connections() const
 {
     connections_t connections;
 
-    connections.push(DEPTH_IMAGE_KEY, data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(DEPTH_IMAGE_KEY, data::image::signals::BUFFER_MODIFIED, service::slots::UPDATE);
 
     return connections;
 }
@@ -102,12 +96,9 @@ void depth_image_masking::updating()
 
         io::opencv::image::copy_from_cv(*foreground_image, cv_masked_video);
 
-        const auto sig = foreground_image->signal<data::image::buffer_modified_signal_t>(
-            data::image::BUFFER_MODIFIED_SIG
-        );
-        sig->async_emit();
+        foreground_image->async_emit(data::image::signals::BUFFER_MODIFIED);
 
-        this->signal<signals::computed_t>(signals::SUCCEEDED)->async_emit();
+        this->async_emit(signals::SUCCEEDED);
     }
 }
 

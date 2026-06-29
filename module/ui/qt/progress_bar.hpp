@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024-2025 IRCAD France
+ * Copyright (C) 2024-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -69,15 +69,13 @@ public:
 
     struct slots final
     {
-        using key_t = sight::core::com::slots::key_t;
         static inline const key_t ADD_MONITOR = "add_monitor";
     };
 
     struct signals final
     {
         using finished_t = core::com::signal<void ()>;
-        using key_t      = sight::core::com::signals::key_t;
-        static inline const key_t FINISHED = "finished";
+        static inline const signal_key_t FINISHED = "finished";
     };
 
 protected:

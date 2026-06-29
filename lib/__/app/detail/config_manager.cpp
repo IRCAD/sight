@@ -34,7 +34,7 @@
 
 #include <boost/algorithm/string/case_conv.hpp>
 #include <core/com/proxy.hpp>
-#include <core/com/slots.hxx>
+
 #include <core/runtime/exit_exception.hpp>
 #include <core/runtime/runtime.hpp>
 #include <memory>
@@ -53,21 +53,16 @@ namespace sight::app::detail
 
 // ------------------------------------------------------------------------
 
-static const core::com::slots::key_t ADD_OBJECTS_SLOT        = "addObject";
-static const core::com::slots::key_t REMOVE_OBJECTS_SLOT     = "removeObjects";
-static const core::com::slots::key_t ADD_STARTED_SRV_SLOT    = "add_started_service";
-static const core::com::slots::key_t REMOVE_STARTED_SRV_SLOT = "remove_started_service";
-
 static const std::string PREFERENCES_SRV = "__generated_preference_srv";
 
 // ------------------------------------------------------------------------
 
 config_manager::config_manager()
 {
-    new_slot(ADD_OBJECTS_SLOT, &config_manager::add_objects, this);
-    new_slot(REMOVE_OBJECTS_SLOT, &config_manager::remove_objects, this);
+    new_slot(slots::ADD_OBJECTS, &config_manager::add_objects, this);
+    new_slot(slots::REMOVE_OBJECTS, &config_manager::remove_objects, this);
     new_slot(
-        ADD_STARTED_SRV_SLOT,
+        slots::ADD_STARTED_SRV,
         [this](service::base::wptr _srv)
         {
             core::mt::scoped_lock lock(m_mutex);
@@ -85,7 +80,7 @@ config_manager::config_manager()
             }
         });
     new_slot(
-        REMOVE_STARTED_SRV_SLOT,
+        slots::REMOVE_STARTED_SRV,
         [this](service::base::wptr _srv)
         {
             core::mt::scoped_lock lock(m_mutex);
@@ -182,8 +177,8 @@ void config_manager::create()
 {
     SIGHT_ASSERT("Manager already running.", is_destroyed());
 
-    m_add_object_connection    = connect_register_out(this->slot(ADD_OBJECTS_SLOT));
-    m_remove_object_connection = connect_unregister_out(this->slot(REMOVE_OBJECTS_SLOT));
+    m_add_object_connection    = connect_register_out(this->slot(slots::ADD_OBJECTS));
+    m_remove_object_connection = connect_unregister_out(this->slot(slots::REMOVE_OBJECTS));
 
     this->create_objects(m_cfg_elem);
     this->create_connections();
@@ -269,7 +264,7 @@ void config_manager::stop()
             else
             {
                 auto sig = srv->signal(service::signals::STOPPED);
-                blockers.emplace_back(sig->get_connection(slot(REMOVE_STARTED_SRV_SLOT)));
+                blockers.emplace_back(sig->get_connection(slot(slots::REMOVE_STARTED_SRV)));
                 futures.emplace_back(srv->stop());
             }
         }
@@ -457,7 +452,7 @@ void config_manager::process_start_items(const core::runtime::config_t& _element
                 );
 
                 auto sig = srv->signal(service::signals::STARTED);
-                blockers.emplace_back(sig->get_connection(slot(ADD_STARTED_SRV_SLOT)));
+                blockers.emplace_back(sig->get_connection(slot(slots::ADD_STARTED_SRV)));
                 futures.emplace_back(srv->start());
                 m_started_srv.push_back(srv);
             }
@@ -728,8 +723,8 @@ service::base::sptr config_manager::create_service(const detail::service_config&
     // Configure
     srv->configure();
 
-    srv->signal(service::signals::STARTED)->connect(this->slot(ADD_STARTED_SRV_SLOT));
-    srv->signal(service::signals::STOPPED)->connect(this->slot(REMOVE_STARTED_SRV_SLOT));
+    srv->signal(service::signals::STARTED)->connect(this->slot(slots::ADD_STARTED_SRV));
+    srv->signal(service::signals::STOPPED)->connect(this->slot(slots::REMOVE_STARTED_SRV));
 
     return srv;
 }

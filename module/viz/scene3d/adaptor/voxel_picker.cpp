@@ -22,10 +22,6 @@
 
 #include "module/viz/scene3d/adaptor/voxel_picker.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/signals.hpp>
-#include <core/com/slots.hxx>
-
 #include <data/helper/medical_image.hpp>
 
 #include <viz/scene3d/helper/camera.hpp>
@@ -34,17 +30,13 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-const core::com::slots::key_t SLICE_TYPE_SLOT = "sliceType";
-
-static const core::com::signals::key_t PICKED_SIG = "picked";
-
 //-----------------------------------------------------------------------------
 
 voxel_picker::voxel_picker() noexcept
 {
-    new_slot(SLICE_TYPE_SLOT, &voxel_picker::change_slice_type, this);
+    new_slot(slots::SLICE_TYPE, &voxel_picker::change_slice_type, this);
 
-    m_picked_sig = new_signal<core::com::signal<void(data::tools::picking_info)> >(PICKED_SIG);
+    new_signal<signals::picked_t>(signals::PICKED);
 }
 
 //-----------------------------------------------------------------------------
@@ -102,7 +94,7 @@ void voxel_picker::starting()
 service::connections_t voxel_picker::auto_connections() const
 {
     service::connections_t connections = adaptor::auto_connections();
-    connections.push(IMAGE_INPUT, data::image::SLICE_TYPE_MODIFIED_SIG, SLICE_TYPE_SLOT);
+    connections.push(IMAGE_INPUT, data::image::signals::SLICE_TYPE_MODIFIED, slots::SLICE_TYPE);
 
     return connections;
 }
@@ -209,10 +201,7 @@ void voxel_picker::pick(mouse_button _button, modifier _mod, int _x, int _y, boo
                     const int sagittal_idx = static_cast<int>((info.m_world_pos[0] - origin[0]) / spacing[0]);
                     const int frontal_idx  = static_cast<int>((info.m_world_pos[1] - origin[1]) / spacing[1]);
                     const int axial_idx    = static_cast<int>((info.m_world_pos[2] - origin[2]) / spacing[2]);
-                    const auto sig         = image->signal<data::image::slice_index_modified_signal_t>(
-                        data::image::SLICE_INDEX_MODIFIED_SIG
-                    );
-                    sig->async_emit(axial_idx, frontal_idx, sagittal_idx);
+                    image->async_emit(data::image::signals::SLICE_INDEX_MODIFIED, axial_idx, frontal_idx, sagittal_idx);
                 }
             }
 
@@ -221,8 +210,7 @@ void voxel_picker::pick(mouse_button _button, modifier _mod, int _x, int _y, boo
                 info.m_modifier_mask |= data::tools::picking_info::shift;
             }
 
-            // Emit the picking info.
-            m_picked_sig->async_emit(info);
+            async_emit(signals::PICKED, info);
 
             // Cancel further interactors on the same layer.
             this->layer()->cancel_further_interaction();

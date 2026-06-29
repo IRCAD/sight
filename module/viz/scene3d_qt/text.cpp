@@ -24,9 +24,6 @@
 
 #include <core/com/slot.hpp>
 
-#include <ui/qt/container/widget.hpp>
-
-#include <viz/scene3d/helper/camera.hpp>
 #include <viz/scene3d/helper/scene.hpp>
 #include <viz/scene3d/registry/macros.hpp>
 
@@ -34,7 +31,6 @@
 
 #include <OGRE/OgreNode.h>
 
-#include <OgreAxisAlignedBox.h>
 #include <QStyle>
 
 //-----------------------------------------------------------------------------
@@ -46,11 +42,11 @@ SIGHT_REGISTER_SCENE3D_TEXT(sight::module::viz::scene3d_qt::text, sight::viz::sc
 namespace sight::module::viz::scene3d_qt
 {
 
-class NodeListener : public Ogre::SceneNode::Listener
+class node_listener : public Ogre::SceneNode::Listener
 {
 public:
 
-    explicit NodeListener(text& _text, Ogre::Camera& _camera, Ogre::Node& _node) :
+    explicit node_listener(text& _text, Ogre::Camera& _camera, Ogre::Node& _node) :
         m_text(_text),
         m_camera(_camera),
         m_node(_node)
@@ -77,6 +73,9 @@ public:
     Ogre::Node& m_node;
 };
 
+namespace
+{
+
 class camera_listener : public Ogre::SceneNode::Listener
 {
 public:
@@ -93,16 +92,16 @@ public:
         std::ranges::for_each(
             m_text,
             [this](auto& _p)
-            {
-                const auto* scene_node = dynamic_cast<Ogre::SceneNode*>(_p.second);
-                SIGHT_ASSERT("cast from Ogre::Node to Ogre::SceneNode failed", scene_node);
-                _p.first->set_underlying_node_rect(
-                    sight::viz::scene3d::helper::scene::compute_bounding_rect(
-                        m_camera,
-                        scene_node
-                    )
-                );
-            });
+                {
+                    const auto* scene_node = dynamic_cast<Ogre::SceneNode*>(_p.second);
+                    SIGHT_ASSERT("cast from Ogre::Node to Ogre::SceneNode failed", scene_node);
+                    _p.first->set_underlying_node_rect(
+                        sight::viz::scene3d::helper::scene::compute_bounding_rect(
+                            m_camera,
+                            scene_node
+                        )
+                    );
+                });
     }
 
     //------------------------------------------------------------------------------
@@ -132,7 +131,9 @@ private:
     Ogre::Camera& m_camera;
 };
 
-std::map<Ogre::Camera*, camera_listener*> s_camera_listeners;
+} // namespace
+
+static std::map<Ogre::Camera*, camera_listener*> s_camera_listeners;
 
 //------------------------------------------------------------------------------
 
@@ -150,7 +151,7 @@ text::text(const sight::viz::scene3d::layer::sptr& _layer)
         });
     m_resize_slot->set_worker(core::thread::get_default_worker());
 
-    m_resize_connection = _layer->signal(sight::viz::scene3d::layer::RESIZE_LAYER_SIG)->connect(m_resize_slot);
+    m_resize_connection = _layer->signal(sight::viz::scene3d::layer::signals::RESIZE_LAYER)->connect(m_resize_slot);
 
     auto interactor    = _layer->render_service()->get_interactor_manager();
     auto qt_interactor = std::dynamic_pointer_cast<sight::module::viz::scene3d_qt::window_interactor>(interactor);
@@ -193,7 +194,7 @@ text::text(const sight::viz::scene3d::layer::sptr& _layer)
         &QLineEdit::textEdited,
         [this](QString _text)
         {
-            signal<text::text_edited_signal_t>(text::TEXT_EDITED_SIGNAL)->async_emit(_text.toStdString());
+            async_emit(text::signals::TEXT_EDITED, _text.toStdString());
             adjust_size();
         });
     QObject::connect(
@@ -201,7 +202,7 @@ text::text(const sight::viz::scene3d::layer::sptr& _layer)
         &QLineEdit::editingFinished,
         [this]
         {
-            signal<text::editing_finished_signal_t>(text::EDITING_FINISHED_SIGNAL)->async_emit();
+            async_emit(text::signals::EDITING_FINISHED);
         });
     m_text->show();
 }
@@ -224,7 +225,7 @@ void text::attach_to_node(Ogre::SceneNode* _node, Ogre::Camera* _camera)
     SIGHT_ASSERT("Camera is null", _camera);
     SIGHT_ASSERT("Node is null", _node);
 
-    m_node_listener = new NodeListener(*this, *_camera, *_node);
+    m_node_listener = new node_listener(*this, *_camera, *_node);
     _node->setListener(m_node_listener);
 
     auto it_listener = s_camera_listeners.find(_camera);

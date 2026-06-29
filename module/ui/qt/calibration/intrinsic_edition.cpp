@@ -23,7 +23,6 @@
 #include "module/ui/qt/calibration/intrinsic_edition.hpp"
 
 #include <core/com/slots.hpp>
-#include <core/com/slots.hxx>
 
 #include <data/camera.hpp>
 
@@ -85,12 +84,7 @@ void intrinsic_edition::update_calibration()
 
     camera->set_skew(m_calibration[11]);
 
-    data::camera::intrinsic_calibrated_signal_t::sptr sig;
-    sig = camera->signal<data::camera::intrinsic_calibrated_signal_t>(
-        data::camera::INTRINSIC_CALIBRATED_SIG
-    );
-
-    sig->async_emit();
+    camera->async_emit(data::camera::signals::INTRINSIC_CALIBRATED);
 }
 
 // -------------------------------------------------------------------------

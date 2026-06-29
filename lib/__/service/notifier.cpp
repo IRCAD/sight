@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,6 @@
  ***********************************************************************/
 
 #include "notifier.hpp"
-
-#include <core/com/signal.hxx>
 
 #include <boost/range/iterator_range_core.hpp>
 

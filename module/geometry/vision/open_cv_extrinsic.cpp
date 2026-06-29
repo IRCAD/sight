@@ -22,8 +22,6 @@
 
 #include "open_cv_extrinsic.hpp"
 
-#include <core/com/slots.hxx>
-
 #include <data/calibration_info.hpp>
 #include <data/camera.hpp>
 #include <data/camera_set.hpp>
@@ -205,10 +203,7 @@ void open_cv_extrinsic::updating()
         cam_series->set_extrinsic_matrix(m_cam_index, matrix);
         cam_series->set_calibration_error(err);
 
-        auto sig = cam_series->signal<data::camera_set::extrinsic_calibrated_signal_t>(
-            data::camera_set::EXTRINSIC_CALIBRATED_SIG
-        );
-        sig->async_emit();
+        cam_series->async_emit(data::camera_set::signals::EXTRINSIC_CALIBRATED);
 
         // Export matrix if needed.
         m_matrix = matrix;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -71,6 +71,15 @@ class display_calibration_info final : public service::controller
 public:
 
     SIGHT_DECLARE_SERVICE(display_calibration_info, service::controller);
+
+    struct slots
+    {
+        using image_t = core::com::slot<void (sight::data::image::sptr)>;
+        using void_t  = core::com::slot<void ()>;
+
+        static inline const slot_key_t DISPLAY_IMAGE = "display_image";
+        static inline const slot_key_t STOP_CONFIG   = "stopConfig";
+    };
 
     /// Constructor. Does nothing.
     display_calibration_info() noexcept;

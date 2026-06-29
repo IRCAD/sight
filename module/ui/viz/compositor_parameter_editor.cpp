@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,19 +22,11 @@
 
 #include "compositor_parameter_editor.hpp"
 
-#include <core/com/slots.hxx>
-
-#include <data/boolean.hpp>
-#include <data/integer.hpp>
-#include <data/real.hpp>
-
-#include <service/macros.hpp>
 #include <service/op.hpp>
 
 #include <ui/__/registry.hpp>
 #include <ui/qt/container/widget.hpp>
 
-#include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/render.hpp>
 
 #include <module/ui/viz/helper/parameter_editor.hpp>
@@ -44,12 +36,10 @@
 namespace sight::module::ui::viz
 {
 
-const core::com::slots::key_t compositor_parameter_editor::UPDATE_COMPOSITOR_SLOT = "updateCompositor";
-
 //------------------------------------------------------------------------------
 compositor_parameter_editor::compositor_parameter_editor() noexcept
 {
-    new_slot(UPDATE_COMPOSITOR_SLOT, &compositor_parameter_editor::update_compositor, this);
+    new_slot(slots::UPDATE_COMPOSITOR, &compositor_parameter_editor::update_compositor, this);
 }
 
 //------------------------------------------------------------------------------

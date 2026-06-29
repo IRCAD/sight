@@ -352,16 +352,19 @@ public:
      * @name Signals
      * @{
      */
-    using signal_t = core::com::signal<void ()>;
+    struct signals
+    {
+        using signal_t = core::com::signal<void ()>;
 
-    /// Key in m_signals map of signal m_sigVertexModified
-    SIGHT_DATA_API static const core::com::signals::key_t VERTEX_MODIFIED_SIG;
-    SIGHT_DATA_API static const core::com::signals::key_t POINT_COLORS_MODIFIED_SIG;
-    SIGHT_DATA_API static const core::com::signals::key_t CELL_COLORS_MODIFIED_SIG;
-    SIGHT_DATA_API static const core::com::signals::key_t POINT_NORMALS_MODIFIED_SIG;
-    SIGHT_DATA_API static const core::com::signals::key_t CELL_NORMALS_MODIFIED_SIG;
-    SIGHT_DATA_API static const core::com::signals::key_t POINT_TEX_COORDS_MODIFIED_SIG;
-    SIGHT_DATA_API static const core::com::signals::key_t CELL_TEX_COORDS_MODIFIED_SIG;
+        /// Key in m_signals map of signal m_sigVertexModified
+        static const inline signal_key_t VERTEX_MODIFIED           = "vertexModified";
+        static const inline signal_key_t POINT_COLORS_MODIFIED     = "pointColorsModified";
+        static const inline signal_key_t CELL_COLORS_MODIFIED      = "cellColorsModified";
+        static const inline signal_key_t POINT_NORMALS_MODIFIED    = "pointNormalsModified";
+        static const inline signal_key_t CELL_NORMALS_MODIFIED     = "cellNormalsModified";
+        static const inline signal_key_t POINT_TEX_COORDS_MODIFIED = "pointTexCoordsModified";
+        static const inline signal_key_t CELL_TEX_COORDS_MODIFIED  = "cellTexCoordsModified";
+    };
     /// @}
 
     /**

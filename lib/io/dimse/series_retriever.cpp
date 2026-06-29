@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,17 +26,11 @@
 #include "io/dimse/helper/series.hpp"
 
 #include <core/runtime/path.hpp>
-#include <core/thread/worker.hpp>
-
-#include <dcmtk/config/osconfig.h>
-#include <dcmtk/dcmnet/diutil.h>
 
 #include <filesystem>
 
 namespace sight::io::dimse
 {
-
-const core::com::slots::key_t series_retriever::PROGRESS_CALLBACK_SLOT = "CMoveProgressCallback";
 
 // ----------------------------------------------------------------------------
 
@@ -73,7 +67,7 @@ void series_retriever::initialize(
     this->setAndCheckAssociationProfile("Default");
 
     // Set non blocking states & timeout so we don't end up in an infinite loop
-    this->setConnectionTimeout(Uint32(_timeout));
+    this->setConnectionTimeout(static_cast<Uint32>(_timeout));
     this->setConnectionBlockingMode(DUL_NOBLOCK);
 }
 
@@ -129,13 +123,10 @@ OFCondition series_retriever::handleSTORERequest(
             std::string file_path = io::dimse::helper::series::get_path(*dataset).string();
             dataset->saveFile(file_path.c_str());
 
-            // Send a store response
-            T_DIMSE_C_StoreRSP rsp {};
-            rsp.DimseStatus = STATUS_Success;
-            cond            = this->sendSTOREResponse(_pres_id, _incoming_msg->msg.CStoreRQ, rsp.DimseStatus);
+            Uint16 dimse_status = STATUS_Success;
+            cond = this->sendSTOREResponse(_pres_id, _incoming_msg->msg.CStoreRQ, dimse_status);
 
             // Dump outgoing message
-
             if(cond.bad())
             {
                 const std::string msg = "Cannot send C-STORE Response to the server.";

@@ -76,6 +76,11 @@ public:
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(frustum_list, sight::viz::scene3d::adaptor);
 
+    struct slots
+    {
+        static inline const slot_key_t CLEAR = "clear";
+    };
+
     /// Creates slots.
     frustum_list() noexcept;
 
@@ -100,7 +105,7 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::matrix4::MODIFIED_SIG of s_TRANSFORM_INPUT to adaptor::slots::LAZY_UPDATE
+     * Connect data::signals::MODIFIED of s_TRANSFORM_INPUT to adaptor::slots::LAZY_UPDATE
      */
     service::connections_t auto_connections() const override;
 

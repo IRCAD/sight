@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,6 @@
 
 #include "module/ui/qt/metrics/distance.hpp"
 
-#include <core/com/signal.hxx>
 #include <core/runtime/path.hpp>
 
 #include <data/helper/medical_image.hpp>
@@ -37,13 +36,9 @@ namespace sight::module::ui::qt::metrics
 
 //------------------------------------------------------------------------------
 
-const core::com::signals::key_t distance::DISTANCE_REQUESTED_SIG = "distance_requested";
-
-//------------------------------------------------------------------------------
-
 distance::distance() noexcept
 {
-    m_sig_distance_requested = new_signal<distance_requested_signal_t>(DISTANCE_REQUESTED_SIG);
+    new_signal<signals::distance_requested_t>(signals::DISTANCE_REQUESTED);
 }
 
 //------------------------------------------------------------------------------
@@ -109,7 +104,7 @@ void distance::on_distance_button()
 
     // force distance to be shown
     data::helper::medical_image::set_distance_visibility(*image, true);
-    m_sig_distance_requested->async_emit();
+    this->async_emit(signals::DISTANCE_REQUESTED);
 }
 
 //------------------------------------------------------------------------------

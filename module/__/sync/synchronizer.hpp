@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2025 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -139,14 +139,13 @@ public:
     /// Internal wrapper holding signals keys.
     struct signals
     {
-        using key_t = sight::core::com::signals::key_t;
-        static inline const key_t SYNCHRONIZATION_DONE  = "synchronization_done";
-        static inline const key_t FRAME_SYNCHRONIZED    = "frameSynchronized";
-        static inline const key_t FRAME_UNSYNCHRONIZED  = "frameUnsynchronized";
-        static inline const key_t MATRIX_SYNCHRONIZED   = "matrix_synchronized";
-        static inline const key_t MATRIX_UNSYNCHRONIZED = "matrix_unsynchronized";
+        static inline const signal_key_t SYNCHRONIZATION_DONE  = "synchronization_done";
+        static inline const signal_key_t FRAME_SYNCHRONIZED    = "frameSynchronized";
+        static inline const signal_key_t FRAME_UNSYNCHRONIZED  = "frameUnsynchronized";
+        static inline const signal_key_t MATRIX_SYNCHRONIZED   = "matrix_synchronized";
+        static inline const signal_key_t MATRIX_UNSYNCHRONIZED = "matrix_unsynchronized";
 
-        using timestamp_t = sight::core::com::signal<void (core::clock::type _timestamp)>;
+        using timestamp_t = sight::core::com::signal<void (core::clock::type)>;
         using void_t      = sight::core::com::signal<void ()>;
         using int_t       = sight::core::com::signal<void (int)>;
     };
@@ -154,13 +153,12 @@ public:
     /// Internal wrapper holding slots keys.
     struct slots
     {
-        using key_t = sight::core::com::slots::key_t;
-        static inline const key_t RESET_TIMELINE              = "reset";
-        static inline const key_t TRY_SYNC                    = "try_sync";
-        static inline const key_t REQUEST_SYNC                = "request_sync";
-        static inline const key_t SET_FRAME_BINDING           = "setFrameBinding";
-        static inline const key_t SET_MATRIX_BINDING          = "setMatrixBinding";
-        static inline const key_t SET_DELAY                   = "set_delay";
+        static inline const slot_key_t RESET_TIMELINE         = "reset";
+        static inline const slot_key_t TRY_SYNC               = "try_sync";
+        static inline const slot_key_t REQUEST_SYNC           = "request_sync";
+        static inline const slot_key_t SET_FRAME_BINDING      = "setFrameBinding";
+        static inline const slot_key_t SET_MATRIX_BINDING     = "setMatrixBinding";
+        static inline const slot_key_t SET_DELAY              = "set_delay";
         static constexpr std::string_view FRAME_DELAY_PREFIX  = "frameDelay_";
         static constexpr std::string_view MATRIX_DELAY_PREFIX = "matrixDelay_";
     };
@@ -204,6 +202,8 @@ public:
      */
     ~synchronizer() final = default;
 
+protected:
+
     /**
      * @brief Return proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connections
@@ -211,8 +211,6 @@ public:
      * Connect data::timeline::signals::CLEARED to RESET_TIMELINE
      */
     service::connections_t auto_connections() const final;
-
-protected:
 
     /**
      * @brief This method is used to configure the service.
@@ -407,5 +405,5 @@ private:
     data::ptr_vector<data::matrix4, data::access::inout> m_matrix {this, config_key::MATRIX_INOUT};
 };
 
-} // namespace sight::module
+} // namespace sight::module::sync
 // namespace sight::module::sync

@@ -24,16 +24,9 @@
 
 #include "module/viz/scene3d/adaptor/transform.hpp"
 
-#include <core/com/slots.hxx>
-
-#include <data/color.hpp>
-
 #include <viz/scene3d/helper/manual_object.hpp>
-#include <viz/scene3d/helper/scene.hpp>
 #include <viz/scene3d/ogre.hpp>
 #include <viz/scene3d/render.hpp>
-
-#include <OgreNode.h>
 
 #include <algorithm>
 

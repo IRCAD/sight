@@ -23,7 +23,6 @@
 
 #include "module/io/session/reader.hpp"
 
-#include <core/com/signal.hxx>
 #include <core/crypto/password_keeper.hpp>
 #include <core/crypto/secure_string.hpp>
 #include <core/location/single_folder.hpp>
@@ -226,7 +225,7 @@ void reader::updating()
         m_password_retry = 0;
 
         // Signal that we successfully read this file
-        this->signal<signals::session_path_t>(signals::SESSION_LOADED)->async_emit(filepath);
+        this->async_emit(signals::SESSION_LOADED, filepath);
     }
     catch(sight::io::zip::exception::bad_password&)
     {
@@ -251,7 +250,7 @@ void reader::updating()
         }
 
         // Signal that we failed to read this file
-        this->signal<signals::session_path_t>(signals::SESSION_LOADING_FAILED)->async_emit(filepath);
+        this->async_emit(signals::SESSION_LOADING_FAILED, filepath);
     }
     catch(const std::exception& e)
     {
@@ -267,7 +266,7 @@ void reader::updating()
         this->notifier::failure(e.what());
 
         // Signal that we failed to read this file
-        this->signal<signals::session_path_t>(signals::SESSION_LOADING_FAILED)->async_emit(filepath);
+        this->async_emit(signals::SESSION_LOADING_FAILED, filepath);
     }
     catch(...)
     {
@@ -282,7 +281,7 @@ void reader::updating()
         // );
 
         // Signal that we failed to read this file
-        this->signal<signals::session_path_t>(signals::SESSION_LOADING_FAILED)->async_emit(filepath);
+        this->async_emit(signals::SESSION_LOADING_FAILED, filepath);
     }
 }
 

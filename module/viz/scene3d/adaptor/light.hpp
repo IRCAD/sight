@@ -71,6 +71,12 @@ public:
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(light, sight::viz::scene3d::light_adaptor);
 
+    struct slots
+    {
+        static inline const slot_key_t SET_X_OFFSET = "setXOffset";
+        static inline const slot_key_t SET_Y_OFFSET = "setYOffset";
+    };
+
     /// Creates the service.
     light() noexcept;
 
@@ -187,8 +193,8 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::color::MODIFIED_SIG of s_DIFFUSE_COLOR_INOUT to service::slots::UPDATE
-     * Connect data::color::MODIFIED_SIG of s_DIFFUSE_COLOR_INOUT to service::slots::UPDATE
+     * Connect data::signals::MODIFIED of s_DIFFUSE_COLOR_INOUT to service::slots::UPDATE
+     * Connect data::signals::MODIFIED of s_DIFFUSE_COLOR_INOUT to service::slots::UPDATE
      */
     service::connections_t auto_connections() const final;
 

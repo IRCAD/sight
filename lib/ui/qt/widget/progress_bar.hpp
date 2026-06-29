@@ -155,7 +155,7 @@ inline QWidget* progress_bar::widget() const
 
 inline void progress_bar::set_finished_callback(finished_callback_t _callback)
 {
-    std::lock_guard lock(m_mutex);
+    std::scoped_lock lock(m_mutex);
     m_finished_callback = _callback;
 }
 
@@ -163,7 +163,7 @@ inline void progress_bar::set_finished_callback(finished_callback_t _callback)
 
 inline bool progress_bar::is_finished() const
 {
-    std::lock_guard lock(m_mutex);
+    std::scoped_lock lock(m_mutex);
 
     return m_progress_monitors.empty() || std::ranges::all_of(
         m_progress_monitors,

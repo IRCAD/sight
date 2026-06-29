@@ -86,18 +86,18 @@ public:
 
     struct signals
     {
-        using tool_disabled_signal_t = core::com::signal<void ()>;
-        static inline const core::com::signals::key_t TOOL_DISABLED = "tool_disabled";
+        using tool_disabled_t = core::com::signal<void ()>;
+        static inline const signal_key_t TOOL_DISABLED = "tool_disabled";
     };
 
     struct slots
     {
-        static inline const core::com::slots::key_t ENABLE_TOOL       = "enable_tool";
-        static inline const core::com::slots::key_t UNDO              = "undo";
-        static inline const core::com::slots::key_t DELETE_LAST_MESH  = "delete_last_mesh";
-        static inline const core::com::slots::key_t CANCEL_LAST_CLICK = "cancel_last_click";
-        static inline const core::com::slots::key_t RESET             = "reset";
-        static inline const core::com::slots::key_t VALIDATE          = "validate";
+        static inline const slot_key_t ENABLE_TOOL       = "enable_tool";
+        static inline const slot_key_t UNDO              = "undo";
+        static inline const slot_key_t DELETE_LAST_MESH  = "delete_last_mesh";
+        static inline const slot_key_t CANCEL_LAST_CLICK = "cancel_last_click";
+        static inline const slot_key_t RESET             = "reset";
+        static inline const slot_key_t VALIDATE          = "validate";
     };
 
     /// Generates default methods as New, dynamicCast, ...

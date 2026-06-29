@@ -27,7 +27,7 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-class CompositorListener;
+class compositor_listener;
 
 /**
  * @brief This adaptor binds a Sight data to a shader uniform from a specific compositor.
@@ -73,6 +73,11 @@ public:
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(compositor_parameter, sight::viz::scene3d::parameter_adaptor);
 
+    struct slots
+    {
+        static inline const slot_key_t ADD_LISTENER = "add_listener";
+    };
+
     /// Creates the adaptor.
     compositor_parameter() noexcept;
 
@@ -108,12 +113,12 @@ private:
     std::string m_compositor_name;
 
     /// Contains the Ogre compositor listener, we need to keep a pointer to unregister it.
-    CompositorListener* m_listener {nullptr};
+    compositor_listener* m_listener {nullptr};
 
     /// Handles connection with the layer.
     core::com::helper::sig_slot_connection m_resize_connection;
 
-    friend class CompositorListener;
+    friend class compositor_listener;
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

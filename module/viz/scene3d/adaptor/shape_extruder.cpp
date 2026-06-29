@@ -22,9 +22,6 @@
 
 #include "module/viz/scene3d/adaptor/shape_extruder.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-
 #include <data/mesh.hpp>
 #include <data/reconstruction.hpp>
 #include <data/tools/color.hpp>
@@ -146,7 +143,7 @@ shape_extruder::shape_extruder() noexcept :
     new_slot(slots::RESET, &shape_extruder::reset, this);
     new_slot(slots::VALIDATE, &shape_extruder::validate, this);
 
-    new_signal<signals::tool_disabled_signal_t>(signals::TOOL_DISABLED);
+    new_signal<signals::tool_disabled_t>(signals::TOOL_DISABLED);
 }
 
 //-----------------------------------------------------------------------------
@@ -291,10 +288,10 @@ void shape_extruder::delete_last_mesh()
         this->notifier::info("Last extrusion deleted.");
 
         // Send the signal.
-        auto sig = extruded_meshes->signal<data::model_series::reconstructions_removed_signal_t>(
-            data::model_series::RECONSTRUCTIONS_REMOVED_SIG
-        );
-        sig->async_emit(data::model_series::reconstruction_vector_t {reconstructions});
+        extruded_meshes->async_emit(
+            data::model_series::signals::RECONSTRUCTIONS_REMOVED,
+            data::model_series::reconstruction_vector_t {reconstructions
+            });
     }
     else
     {
@@ -338,8 +335,7 @@ void shape_extruder::reset()
         extruded_meshes->set_reconstruction_db(reconstructions);
 
         // Send the signal.
-        auto sig = extruded_meshes->signal<data::model_series::modified_signal_t>(data::model_series::MODIFIED_SIG);
-        sig->async_emit();
+        extruded_meshes->async_emit(data::signals::MODIFIED);
     }
 }
 
@@ -529,8 +525,7 @@ void shape_extruder::validate()
 
     this->enable_tool(false);
 
-    auto sig = this->signal<signals::tool_disabled_signal_t>(signals::TOOL_DISABLED);
-    sig->async_emit();
+    this->async_emit(signals::TOOL_DISABLED);
 
     // Send a render request.
     this->request_render();
@@ -846,10 +841,10 @@ void shape_extruder::generate_extruded_mesh(const std::vector<triangle3_d>& _tri
     extruded_meshes->set_reconstruction_db(reconstructions);
 
     // Send the signal.
-    auto sig = extruded_meshes->signal<data::model_series::reconstructions_added_signal_t>(
-        data::model_series::RECONSTRUCTIONS_ADDED_SIG
-    );
-    sig->async_emit(data::model_series::reconstruction_vector_t {reconstruction});
+    extruded_meshes->async_emit(
+        data::model_series::signals::RECONSTRUCTIONS_ADDED,
+        data::model_series::reconstruction_vector_t {reconstruction
+        });
 }
 
 //------------------------------------------------------------------------------

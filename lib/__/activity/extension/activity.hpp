@@ -66,7 +66,7 @@ struct SIGHT_ACTIVITY_CLASS_API activity_config_param
 
     [[nodiscard]] bool is_object_path() const
     {
-        return (by.substr(0, 1) == "@") || (by.substr(0, 1) == "!");
+        return (by.starts_with("@")) || (by.starts_with("!"));
     }
 
     std::string replace;
@@ -238,9 +238,7 @@ struct SIGHT_ACTIVITY_CLASS_API activity_info
 
     activity_config app_config;
 
-    protected:
-
-        requirements_min_max_count m_requirement_count;
+    requirements_min_max_count m_requirement_count;
 };
 
 /**
@@ -324,7 +322,7 @@ public:
         const activity_config_params_type& _parameters = activity_config_params_type()
     );
 
-protected:
+private:
 
     using registry = std::map<std::string, activity_info>;
 

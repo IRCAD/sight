@@ -22,37 +22,25 @@
 
 #include "chess_board_detector.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-
 #include <data/helper/medical_image.hpp>
 
 #include <geometry/vision/helper.hpp>
 
 #include <io/opencv/image.hpp>
 
-#include <ui/__/preferences.hpp>
-
-#include <opencv2/calib3d.hpp>
-#include <opencv2/imgproc.hpp>
-
 #include <thread>
 
 namespace sight::module::geometry::vision
 {
 
-static const core::com::slots::key_t RECORD_POINTS_SLOT = "record_points";
-
-static const core::com::signals::key_t CHESSBOARD_DETECTED_SIG = "chessboard_detected";
-static const core::com::signals::key_t CHESSBOARD_FOUND_SIG    = "chessboardFound";
-
 // ----------------------------------------------------------------------------
 
-chess_board_detector::chess_board_detector() noexcept :
-    m_sig_chessboard_detected(new_signal<chessboard_detected_signal_t>(CHESSBOARD_DETECTED_SIG)),
-    m_sig_chessboard_found(new_signal<chessboard_found_signal_t>(CHESSBOARD_FOUND_SIG))
+chess_board_detector::chess_board_detector() noexcept
 {
-    new_slot(RECORD_POINTS_SLOT, &chess_board_detector::record_points, this);
+    new_signal<signals::chessboard_detected_t>(signals::CHESSBOARD_DETECTED);
+    new_signal<signals::chessboard_found_t>(signals::CHESSBOARD_FOUND);
+
+    new_slot(slots::RECORD_POINTS, &chess_board_detector::record_points, this);
 }
 
 // ----------------------------------------------------------------------------
@@ -99,11 +87,11 @@ void chess_board_detector::updating()
 
     const bool all_detected = (std::count(m_images.begin(), m_images.end(), nullptr) == 0);
 
-    m_sig_chessboard_detected->async_emit(all_detected);
+    this->async_emit(signals::CHESSBOARD_DETECTED, all_detected);
 
     if(all_detected)
     {
-        m_sig_chessboard_found->async_emit();
+        this->async_emit(signals::CHESSBOARD_FOUND);
     }
 }
 
@@ -120,8 +108,8 @@ void chess_board_detector::stopping()
 service::connections_t chess_board_detector::auto_connections() const
 {
     connections_t connections;
-    connections.push(IMAGE_INPUT, data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE);
-    connections.push(IMAGE_INPUT, data::image::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(IMAGE_INPUT, data::image::signals::BUFFER_MODIFIED, service::slots::UPDATE);
+    connections.push(IMAGE_INPUT, data::signals::MODIFIED, service::slots::UPDATE);
 
     return connections;
 }
@@ -146,10 +134,7 @@ void chess_board_detector::record_points()
                 cal_info->add_record(m_images[i], m_point_lists[i]);
 
                 // Notify
-                auto sig = cal_info->signal<data::calibration_info::added_record_signal_t>(
-                    data::calibration_info::ADDED_RECORD_SIG
-                );
-                sig->async_emit();
+                cal_info->async_emit(data::calibration_info::signals::ADDED_RECORD);
             }
             else
             {
@@ -175,9 +160,9 @@ void chess_board_detector::do_detection(std::size_t _image_index)
         m_point_lists[_image_index] =
             sight::geometry::vision::helper::detect_chessboard(
                 cv_img,
-                std::size_t(*m_width),
-                std::size_t(*m_height),
-                float(*m_scale)
+                static_cast<std::size_t>(*m_width),
+                static_cast<std::size_t>(*m_height),
+                static_cast<float>(*m_scale)
             );
 
         if(m_point_lists[_image_index] != nullptr)
@@ -204,8 +189,7 @@ void chess_board_detector::do_detection(std::size_t _image_index)
                 out_pl->clear();
             }
 
-            auto sig = out_pl->signal<data::point_list::modified_signal_t>(data::point_list::MODIFIED_SIG);
-            sig->async_emit();
+            out_pl->async_emit(data::signals::MODIFIED);
         }
     }
 }

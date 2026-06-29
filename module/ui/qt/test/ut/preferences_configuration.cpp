@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,28 +23,21 @@
 
 #include "loader.hpp"
 
-#include <core/com/signal.hpp>
-#include <core/com/signal.hxx>
 #include <core/com/slots.hpp>
-#include <core/com/slots.hxx>
-#include <core/runtime/path.hpp>
+
 #include <core/runtime/profile.hpp>
-#include <core/runtime/runtime.hpp>
 #include <core/tools/os.hpp>
 #include <core/tools/uuid.hpp>
 
 #include <ui/__/parameter.hpp>
 #include <ui/__/preferences.hpp>
-#include <ui/__/registry.hpp>
-#include <ui/qt/container/widget.hpp>
-
-#include <boost/property_tree/xml_parser.hpp>
 
 #include <QAbstractButton>
 #include <QApplication>
 #include <QCheckBox>
 #include <QComboBox>
 #include <QLineEdit>
+#include <QPointer>
 #include <QTimer>
 #include <QWindow>
 

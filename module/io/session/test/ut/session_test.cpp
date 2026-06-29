@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2025 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,7 +20,7 @@
  ***********************************************************************/
 
 #include <core/com/slot.hpp>
-#include <core/com/slot.hxx>
+
 #include <core/os/temp_path.hpp>
 
 #include <data/string.hpp>

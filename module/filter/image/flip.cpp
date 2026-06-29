@@ -22,17 +22,10 @@
 
 #include "module/filter/image/flip.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-
 #include <filter/image/flipper.hpp>
 
 namespace sight::module::filter::image
 {
-
-const core::com::slots::key_t flip::FLIP_AXIS_X_SLOT = "flip_axis_x";
-const core::com::slots::key_t flip::FLIP_AXIS_Y_SLOT = "flip_axis_y";
-const core::com::slots::key_t flip::FLIP_AXIS_Z_SLOT = "flip_axis_z";
 
 //------------------------------------------------------------------------------
 
@@ -40,9 +33,9 @@ flip::flip() :
     filter(has_signals::signals())
 {
     // Initialize the slots
-    new_slot(FLIP_AXIS_X_SLOT, &flip::flip_axis_x, this);
-    new_slot(FLIP_AXIS_Y_SLOT, &flip::flip_axis_y, this);
-    new_slot(FLIP_AXIS_Z_SLOT, &flip::flip_axis_z, this);
+    new_slot(slots::FLIP_AXIS_X, &flip::flip_axis_x, this);
+    new_slot(slots::FLIP_AXIS_Y, &flip::flip_axis_y, this);
+    new_slot(slots::FLIP_AXIS_Z, &flip::flip_axis_z, this);
 }
 
 //------------------------------------------------------------------------------
@@ -72,7 +65,7 @@ void flip::updating()
 
         m_target = out_img;
 
-        this->signal<signals::computed_t>(signals::SUCCEEDED)->async_emit();
+        this->async_emit(signals::SUCCEEDED);
     }
     else
     {
@@ -116,8 +109,8 @@ void flip::flip_axis_z()
 service::connections_t flip::auto_connections() const
 {
     return {
-        {IMAGE_IN, data::image::MODIFIED_SIG, service::slots::UPDATE},
-        {IMAGE_IN, data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE}
+        {IMAGE_IN, data::signals::MODIFIED, service::slots::UPDATE},
+        {IMAGE_IN, data::image::signals::BUFFER_MODIFIED, service::slots::UPDATE}
     };
 }
 

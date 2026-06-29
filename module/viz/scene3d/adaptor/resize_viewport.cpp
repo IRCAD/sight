@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2024 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #include "module/viz/scene3d/adaptor/resize_viewport.hpp"
 
-#include <core/com/slots.hxx>
-
 #include <viz/scene3d/layer.hpp>
 
 #include <OGRE/OgreCamera.h>
@@ -33,15 +31,12 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const core::com::slots::key_t REVERT_SLOT = "revert";
-static const core::com::slots::key_t RESIZE_SLOT = "resize";
-
 //------------------------------------------------------------------------------
 
 resize_viewport::resize_viewport() noexcept
 {
-    new_slot(REVERT_SLOT, &resize_viewport::revert, this);
-    new_slot(RESIZE_SLOT, &resize_viewport::resize, this);
+    new_slot(slots::REVERT, &resize_viewport::revert, this);
+    new_slot(slots::RESIZE, &resize_viewport::resize, this);
 }
 
 //------------------------------------------------------------------------------

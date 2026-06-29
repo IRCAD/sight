@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,12 +22,6 @@
 
 #include "list_view.hpp"
 
-#include <core/base.hpp>
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-
-#include <service/macros.hpp>
-
 #include <ui/qt/container/widget.hpp>
 
 #include <QEvent>
@@ -37,23 +31,16 @@
 namespace sight::module::ui::qt
 {
 
-const core::com::signals::key_t list_view::ITEM_ADDED_SIG          = "itemAdded";
-const core::com::signals::key_t list_view::ITEM_REMOVED_SIG        = "itemRemoved";
-const core::com::signals::key_t list_view::ITEM_DOUBLE_CLICKED_SIG = "itemDoubleClicked";
-
-const core::com::slots::key_t list_view::INSERT_ITEM_SLOT = "insertItem";
-const core::com::slots::key_t list_view::REMOVE_ITEM_SLOT = "removeItem";
-
 //------------------------------------------------------------------------------
 
 list_view::list_view() noexcept
 {
-    new_signal<item_added_signal_t>(ITEM_ADDED_SIG);
-    new_signal<item_removed_signal_t>(ITEM_REMOVED_SIG);
-    new_signal<item_double_clicked_signal_t>(ITEM_DOUBLE_CLICKED_SIG);
+    new_signal<signals::item_added_t>(signals::ITEM_ADDED);
+    new_signal<signals::item_removed_t>(signals::ITEM_REMOVED);
+    new_signal<signals::item_double_clicked_t>(signals::ITEM_DOUBLE_CLICKED);
 
-    new_slot(INSERT_ITEM_SLOT, &list_view::insert_item, this);
-    new_slot(REMOVE_ITEM_SLOT, &list_view::remove_item, this);
+    new_slot(slots::INSERT_ITEM, &list_view::insert_item, this);
+    new_slot(slots::REMOVE_ITEM, &list_view::remove_item, this);
 }
 
 //------------------------------------------------------------------------------
@@ -128,7 +115,7 @@ void list_view::insert_item(int _index, std::string _value)
     m_list_widget->insertItem(_index, new_item);
 
     // notify
-    this->signal<item_added_signal_t>(ITEM_ADDED_SIG)->async_emit(_index);
+    this->async_emit(signals::ITEM_ADDED, _index);
 }
 
 //------------------------------------------------------------------------------
@@ -138,7 +125,7 @@ void list_view::remove_item(int _index)
     delete m_list_widget->takeItem(_index);
 
     // notify
-    this->signal<item_removed_signal_t>(ITEM_REMOVED_SIG)->async_emit(_index);
+    this->async_emit(signals::ITEM_REMOVED, _index);
 }
 
 //------------------------------------------------------------------------------
@@ -146,7 +133,7 @@ void list_view::remove_item(int _index)
 void list_view::on_item_double_clicked(QListWidgetItem* _item)
 {
     const int index = m_list_widget->row(_item);
-    this->signal<item_double_clicked_signal_t>(ITEM_DOUBLE_CLICKED_SIG)->async_emit(index);
+    this->async_emit(signals::ITEM_DOUBLE_CLICKED, index);
 }
 
 //------------------------------------------------------------------------------

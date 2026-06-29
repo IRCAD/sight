@@ -24,9 +24,6 @@
 
 #include "core/thread/worker.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-
 #include <io/__/service/reader.hpp>
 #include <io/__/service/writer.hpp>
 

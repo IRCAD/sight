@@ -22,9 +22,6 @@
 
 #include "db_merger.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hpp>
-#include <core/com/slots.hxx>
 #include <core/progress/monitor.hpp>
 
 #include <data/series_set.hpp>
@@ -37,14 +34,12 @@
 namespace sight::module::ui::series
 {
 
-static const core::com::slots::key_t FORWARD_MONITOR_SLOT = "forwardmonitor";
-
 //------------------------------------------------------------------------------
 
 db_merger::db_merger() noexcept :
     has_monitors(has_signals::signals()),
     m_io_selector_srv_config("IOSelectorServiceConfigVRRenderReader"),
-    m_slot_forward_monitor(new_slot(FORWARD_MONITOR_SLOT, &db_merger::forward_monitor, this))
+    m_slot_forward_monitor(new_slot(slots::FORWARD_MONITOR, &db_merger::forward_monitor, this))
 {
 }
 

@@ -71,6 +71,11 @@ public:
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(image_extruder, sight::service::filter);
 
+    struct slots
+    {
+        static inline const slot_key_t ADD_RECONSTRUCTIONS = "addReconstructions";
+    };
+
     /// Initializes the slot.
     image_extruder();
 
@@ -83,12 +88,12 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::model_series::MODIFIED_SIG of s_MESHES_INPUT to service::slots::UPDATE.
-     * Connect data::model_series::RECONSTRUCTIONS_ADDED_SIG of s_MESHES_INPUT to ADD_RECONSTRUCTIONS_SLOT.
-     * Connect data::model_series::RECONSTRUCTIONS_REMOVED_SIG of s_MESHES_INPUT to service::slots::UPDATE.
-     * Connect data::matrix4::MODIFIED_SIG of s_TRANSFORM_INPUT to service::slots::UPDATE.
-     * Connect data::image::MODIFIED_SIG of s_IMAGE_INPUT to service::slots::UPDATE.
-     * Connect data::image::BUFFER_MODIFIED_SIG of s_IMAGE_INPUT to service::slots::UPDATE.
+     * Connect data::signals::MODIFIED of s_MESHES_INPUT to service::slots::UPDATE.
+     * Connect data::model_series::signals::RECONSTRUCTIONS_ADDED of s_MESHES_INPUT to ADD_RECONSTRUCTIONS.
+     * Connect data::model_series::signals::RECONSTRUCTIONS_REMOVED of s_MESHES_INPUT to service::slots::UPDATE.
+     * Connect data::signals::MODIFIED of s_TRANSFORM_INPUT to service::slots::UPDATE.
+     * Connect data::signals::MODIFIED of s_IMAGE_INPUT to service::slots::UPDATE.
+     * Connect data::image::signals::BUFFER_MODIFIED of s_IMAGE_INPUT to service::slots::UPDATE.
      */
     connections_t auto_connections() const override;
 

@@ -75,6 +75,13 @@ public:
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(negato2d_camera, sight::viz::scene3d::adaptor);
 
+    struct slots
+    {
+        static inline const slot_key_t RESET_CAMERA       = "reset_camera";
+        static inline const slot_key_t RESIZE_VIEWPORT    = "resize_viewport";
+        static inline const slot_key_t CHANGE_ORIENTATION = "changeOrientation";
+    };
+
     /// Creates the service and initializes slots.
     negato2d_camera() noexcept;
 
@@ -183,9 +190,9 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::image::MODIFIED_SIG of s_IMAGE_INPUT to RESET_CAMERA_SLOT
-     * Connect data::image::SLICE_TYPE_MODIFIED_SIG of s_IMAGE_INPUT to CHANGE_ORIENTATION_SLOT
-     * Connect data::image::SLICE_INDEX_MODIFIED_SIG of s_IMAGE_INPUT to MOVE_BACK_SLOT
+     * Connect data::signals::MODIFIED of s_IMAGE_INPUT to RESET_CAMERA
+     * Connect data::image::signals::SLICE_TYPE_MODIFIED of s_IMAGE_INPUT to CHANGE_ORIENTATION
+     * Connect data::image::signals::SLICE_INDEX_MODIFIED of s_IMAGE_INPUT to MOVE_BACK
      */
     service::connections_t auto_connections() const final;
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -56,4 +56,4 @@ private:
     static std::queue<std::vector<std::filesystem::path> > s_paths_list;
 };
 
-}
+} // namespace sight::ui::test::dialog

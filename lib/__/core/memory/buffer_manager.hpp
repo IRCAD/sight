@@ -89,7 +89,10 @@ public:
 
     using size_t = buffer_info::size_t;
 
-    using updated_signal_t = core::com::signal<void ()>;
+    struct signals
+    {
+        using updated_t = core::com::signal<void ()>;
+    };
 
     using buffer_info_map_t = std::map<const_buffer_ptr_t, buffer_info>;
 
@@ -252,7 +255,7 @@ public:
      *
      * @return
      */
-    SPTR(updated_signal_t) get_updated_signal()
+    SPTR(signals::updated_t) get_updated_signal()
     {
         return m_updated_sig;
     };
@@ -359,7 +362,7 @@ private:
     SIGHT_CORE_API bool restore_buffer(buffer_info& _info, buffer_ptr_t _buffer_ptr, size_t _size = 0);
     /**  @} */
 
-    SPTR(updated_signal_t) m_updated_sig;
+    SPTR(signals::updated_t) m_updated_sig;
 
     core::logic_stamp m_last_access;
     buffer_info_map_t m_buffer_infos;

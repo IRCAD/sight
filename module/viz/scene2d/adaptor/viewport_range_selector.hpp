@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -86,7 +86,20 @@ public:
 
     SIGHT_DECLARE_SERVICE(viewport_range_selector, sight::viz::scene2d::adaptor);
 
+    struct slots
+    {
+        static inline const slot_key_t UPDATE_VIEWPORT = "update_viewport";
+    };
+
     viewport_range_selector();
+
+    /**
+     * @brief Filters the event to call the right methods from mouse informations.
+     * @param _event the 2D scene event.
+     */
+    void process_interaction(sight::viz::scene2d::data::event& _event) override;
+
+protected:
 
     /// Configures the adaptor.
     void configuring() override;
@@ -98,8 +111,8 @@ public:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect sight::viz::scene2d::data::viewport::MODIFIED_SIG of s_VIEWPORT_INPUT to
-     * module::viz::scene2d::adaptor::viewport_range_selector::service::slots::UPDATE.
+     * Connect sight::data::signals::MODIFIED of s_VIEWPORT_INPUT to
+     * module::viz::scene2d::adaptor::viewport_range_selector::slots::UPDATE_VIEWPORT.
      */
     connections_t auto_connections() const override;
 
@@ -110,12 +123,6 @@ public:
     void stopping() override;
 
 private:
-
-    /**
-     * @brief Filters the event to call the right methods from mouse informations.
-     * @param _event the 2D scene event.
-     */
-    void process_interaction(sight::viz::scene2d::data::event& _event) override;
 
     /// Recomputes the viewport. Can signal or not the data depending from where it is called.
     void update_viewport(bool _signal_selected_viewport);

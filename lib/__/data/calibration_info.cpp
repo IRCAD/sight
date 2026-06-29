@@ -22,9 +22,6 @@
 
 #include "data/calibration_info.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/signals.hpp>
-
 #include <data/registry/macros.hpp>
 
 #include <iterator>
@@ -33,11 +30,6 @@ namespace sight::data
 {
 
 SIGHT_REGISTER_DATA(sight::data::calibration_info);
-
-const core::com::signals::key_t calibration_info::ADDED_RECORD_SIG   = "added_record";
-const core::com::signals::key_t calibration_info::REMOVED_RECORD_SIG = "removed_record";
-const core::com::signals::key_t calibration_info::RESET_RECORD_SIG   = "reset_record";
-const core::com::signals::key_t calibration_info::GET_RECORD_SIG     = "get_record";
 
 using image_container_t            = std::list<image::sptr>;
 using point_list_container_t       = std::list<point_list::sptr>;
@@ -48,10 +40,10 @@ using const_point_list_container_t = std::list<point_list::csptr>;
 
 calibration_info::calibration_info()
 {
-    new_signal<added_record_signal_t>(ADDED_RECORD_SIG);
-    new_signal<removed_record_signal_t>(REMOVED_RECORD_SIG);
-    new_signal<reset_record_signal_t>(RESET_RECORD_SIG);
-    new_signal<get_record_signal_t>(GET_RECORD_SIG);
+    new_signal<signals::added_record_t>(signals::ADDED_RECORD);
+    new_signal<signals::removed_record_t>(signals::REMOVED_RECORD);
+    new_signal<signals::reset_record_t>(signals::RESET_RECORD);
+    new_signal<signals::get_record_t>(signals::GET_RECORD);
 }
 
 //------------------------------------------------------------------------------

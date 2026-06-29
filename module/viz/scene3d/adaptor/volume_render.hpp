@@ -105,6 +105,20 @@ public:
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(volume_render, sight::viz::scene3d::adaptor);
 
+    struct slots
+    {
+        static inline const slot_key_t NEW_IMAGE            = "new_image";
+        static inline const slot_key_t BUFFER_IMAGE         = "bufferImage";
+        static inline const slot_key_t UPDATE_IMAGE         = "update_image";
+        static inline const slot_key_t TOGGLE_WIDGETS       = "toggle_widgets";
+        static inline const slot_key_t SET_BOOL_PARAMETER   = "set_bool_parameter";
+        static inline const slot_key_t SET_INT_PARAMETER    = "set_int_parameter";
+        static inline const slot_key_t SET_DOUBLE_PARAMETER = "set_double_parameter";
+        static inline const slot_key_t UPDATE_CLIPPING_BOX  = "update_clipping_box";
+        static inline const slot_key_t UPDATE_TF            = "update_tf";
+        static inline const slot_key_t UPDATE_MASK          = "update_mask";
+    };
+
     /// Creates slots.
     volume_render() noexcept;
 
@@ -118,18 +132,6 @@ public:
     void set_visible(bool _visible) override;
 
 protected:
-
-    // Slot keys
-    static inline const sight::core::com::slots::key_t NEW_IMAGE_SLOT            = "new_image";
-    static inline const sight::core::com::slots::key_t BUFFER_IMAGE_SLOT         = "bufferImage";
-    static inline const sight::core::com::slots::key_t UPDATE_IMAGE_SLOT         = "update_image";
-    static inline const sight::core::com::slots::key_t TOGGLE_WIDGETS_SLOT       = "toggle_widgets";
-    static inline const sight::core::com::slots::key_t SET_BOOL_PARAMETER_SLOT   = "set_bool_parameter";
-    static inline const sight::core::com::slots::key_t SET_INT_PARAMETER_SLOT    = "set_int_parameter";
-    static inline const sight::core::com::slots::key_t SET_DOUBLE_PARAMETER_SLOT = "set_double_parameter";
-    static inline const sight::core::com::slots::key_t UPDATE_CLIPPING_BOX_SLOT  = "update_clipping_box";
-    static inline const sight::core::com::slots::key_t UPDATE_TF_SLOT            = "update_tf";
-    static inline const sight::core::com::slots::key_t UPDATE_MASK_SLOT          = "update_mask";
 
     ///@brief Internal wrapper holding config defines.
     struct config

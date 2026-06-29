@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2024 IRCAD France
+ * Copyright (C) 2019-2026 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -82,6 +82,12 @@ public:
 
     /// Destroys the adaptor.
     ~text() noexcept final = default;
+
+    struct slots
+    {
+        static inline const slot_key_t SET_TEXT  = "set_text";
+        static inline const slot_key_t SET_COLOR = "set_color";
+    };
 
 protected:
 

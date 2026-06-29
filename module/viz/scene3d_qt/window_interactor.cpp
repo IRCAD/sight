@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,10 +22,7 @@
 
 #include "module/viz/scene3d_qt/window_interactor.hpp"
 
-#include "module/viz/scene3d_qt/open_gl_context.hpp"
 #include "module/viz/scene3d_qt/open_gl_worker.hpp"
-
-#include <core/com/slots.hxx>
 
 #include <ui/qt/container/widget.hpp>
 
@@ -193,8 +190,9 @@ void window_interactor::on_interacted(sight::viz::scene3d::window_interactor::in
     for(const auto& layer_map : ogre_render_service->get_layers())
     {
         sight::viz::scene3d::layer::sptr layer = layer_map.second;
-        layer->slot<sight::viz::scene3d::layer::interaction_slot_t>(sight::viz::scene3d::layer::INTERACTION_SLOT)->
-        async_run(
+        layer->slot<core::com::slot<void(sight::viz::scene3d::window_interactor::interaction_info)> >(
+            sight::viz::scene3d::layer::slots::INTERACTION
+        )->async_run(
             _info
         );
     }
@@ -269,7 +267,7 @@ void window_interactor::set_fullscreen(bool _fullscreen, int _screen_number)
                 if(m_is_full_screen)
                 {
                     auto enable_full_screen_slot = ogre_render_service->slot(
-                        sight::viz::scene3d::render::ENABLE_FULLSCREEN
+                        sight::viz::scene3d::render::slots::ENABLE_FULLSCREEN
                     );
 
                     enable_full_screen_slot->run(0);
@@ -277,7 +275,7 @@ void window_interactor::set_fullscreen(bool _fullscreen, int _screen_number)
                 else
                 {
                     auto disable_full_screen_slot = ogre_render_service->slot(
-                        sight::viz::scene3d::render::DISABLE_FULLSCREEN
+                        sight::viz::scene3d::render::slots::DISABLE_FULLSCREEN
                     );
 
                     disable_full_screen_slot->run();

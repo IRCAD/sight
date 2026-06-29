@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -68,8 +68,11 @@ public:
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(texture, sight::viz::scene3d::adaptor);
 
-    /// Defines the keys of the slot @ref texture_swapped().
-    static const core::com::signals::key_t TEXTURE_SWAPPED_SIG;
+    struct signals
+    {
+        using texture_swapped_t = core::com::signal<void ()>;
+        static inline const signal_key_t TEXTURE_SWAPPED = "texture_swapped";
+    };
 
     /// Creates the adaptor and the signal.
     texture() noexcept;
@@ -104,8 +107,8 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::image::BUFFER_MODIFIED_SIG of s_TEXTURE_INOUT to service::slots::UPDATE
-     * Connect data::image::BUFFER_MODIFIED_SIG of s_TEXTURE_INOUT to service::slots::UPDATE
+     * Connect data::image::signals::BUFFER_MODIFIED of s_TEXTURE_INOUT to service::slots::UPDATE
+     * Connect data::image::signals::BUFFER_MODIFIED of s_TEXTURE_INOUT to service::slots::UPDATE
      */
     service::connections_t auto_connections() const final;
 
@@ -136,9 +139,6 @@ private:
     bool m_is_dynamic {false};
 
     /// Defines the signal emitted when the texture has to be changed on the associated material.
-    using texture_swapped_signal_t = core::com::signal<void ()>;
-    texture_swapped_signal_t::sptr m_sig_texture_swapped;
-
     static constexpr std::string_view TEXTURE_INOUT = "image";
     data::ptr<data::image, data::access::in> m_image {this, TEXTURE_INOUT};
 };

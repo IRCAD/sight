@@ -21,7 +21,6 @@
 
 #include "insert_fiducials.hpp"
 
-#include <core/com/signal.hxx>
 #include <core/tools/uuid.hpp>
 
 #include <data/fiducials_series.hpp>
@@ -80,8 +79,7 @@ void insert_fiducials::updating()
         }
 
         // Signal that the image has been modified
-        auto sig = image->signal<sight::data::object::modified_signal_t>(sight::data::object::MODIFIED_SIG);
-        sig->async_emit();
+        image->async_emit(sight::data::signals::MODIFIED);
     }
 }
 

@@ -114,7 +114,7 @@ void automatic_registration::updating()
     };
     sight::filter::image::perform_automatic_registration(*target, *reference, *transform, params);
 
-    this->signal<signals::computed_t>(signals::SUCCEEDED)->async_emit();
+    this->async_emit(signals::SUCCEEDED);
     transform->async_emit(sight::data::signals::MODIFIED);
 }
 
@@ -129,11 +129,11 @@ void automatic_registration::stopping()
 service::connections_t automatic_registration::auto_connections() const
 {
     return {
-        {TARGET_IN, data::image::MODIFIED_SIG, service::slots::UPDATE},
-        {TARGET_IN, data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE},
-        {REFERENCE_IN, data::image::MODIFIED_SIG, service::slots::UPDATE},
-        {REFERENCE_IN, data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE},
-        {TRANSFORM_INOUT, data::matrix4::MODIFIED_SIG, service::slots::UPDATE}
+        {TARGET_IN, data::signals::MODIFIED, service::slots::UPDATE},
+        {TARGET_IN, data::image::signals::BUFFER_MODIFIED, service::slots::UPDATE},
+        {REFERENCE_IN, data::signals::MODIFIED, service::slots::UPDATE},
+        {REFERENCE_IN, data::image::signals::BUFFER_MODIFIED, service::slots::UPDATE},
+        {TRANSFORM_INOUT, data::signals::MODIFIED, service::slots::UPDATE}
     };
 }
 

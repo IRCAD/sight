@@ -100,7 +100,7 @@ public:
      */
     struct signals
     {
-        using void_signal_t = core::com::signal<void ()>;
+        using void_t = core::com::signal<void ()>;
 
         static inline const signal_key_t FAILED          = "failed";
         static inline const signal_key_t SUCCEEDED       = "succeeded";

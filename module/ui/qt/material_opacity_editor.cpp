@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -89,8 +89,7 @@ void material_opacity_editor::on_opacity_slider(int _value)
     std::stringstream ss;
     ss << _value << "%";
     m_opacity_value->setText(QString::fromStdString(ss.str()));
-    auto sig = material->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-    sig->async_emit();
+    material->async_emit(data::signals::MODIFIED);
 }
 
 //------------------------------------------------------------------------------

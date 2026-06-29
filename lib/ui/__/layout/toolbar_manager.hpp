@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -106,7 +106,7 @@ public:
     using registry_key_t = std::string;
     using callbacks_t    = std::vector<ui::menu_item_callback::sptr>;
 
-    enum class accordion
+    enum class accordion : std::uint8_t
     {
         no,
         first,
@@ -227,6 +227,8 @@ protected:
      */
     SIGHT_UI_API virtual void destroy_actions();
 
+    // NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
+
     /// All actions managed by this layout.
     std::vector<ui::container::menu_item::sptr> m_menu_items;
 
@@ -247,6 +249,8 @@ protected:
 
     ///If set to true (uniformSize="true"), button will be expended to match the wider one.
     bool m_unify_button_size {true};
+
+    // NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 };
 
 } // namespace sight::ui::layout

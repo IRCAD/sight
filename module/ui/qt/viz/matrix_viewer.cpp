@@ -137,7 +137,7 @@ void matrix_viewer::clear_labels()
 service::connections_t matrix_viewer::auto_connections() const
 {
     connections_t connections;
-    connections.push(MATRIX, data::matrix4::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(MATRIX, data::signals::MODIFIED, service::slots::UPDATE);
     return connections;
 }
 

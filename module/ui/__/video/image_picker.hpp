@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -88,6 +88,10 @@ class image_picker : public service::controller
 public:
 
     SIGHT_DECLARE_SERVICE(image_picker, service::controller);
+    struct slots
+    {
+        static inline const std::string GET_INTERACTION = "get_interaction";
+    };
 
     /// Creates the video reference map..
     image_picker() noexcept;
@@ -112,7 +116,7 @@ protected:
 private:
 
     /// Manages several video coordinate system.
-    enum video_reference_t
+    enum video_reference_t : std::uint8_t
     {
         top_left = 0,
         center

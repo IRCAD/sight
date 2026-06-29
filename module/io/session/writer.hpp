@@ -109,6 +109,12 @@ public:
     /// Propose to create a medical data file
     void open_location_dialog() final;
 
+    /// Returns managed path type, here service manages only single file
+    sight::io::service::path_type_t get_path_type() const final
+    {
+        return sight::io::service::file;
+    }
+
 protected:
 
     /// Parses the configuration
@@ -122,12 +128,6 @@ protected:
 
     /// Writes session data to filesystem
     void updating() final;
-
-    /// Returns managed path type, here service manages only single file
-    sight::io::service::path_type_t get_path_type() const final
-    {
-        return sight::io::service::file;
-    }
 
 private:
 

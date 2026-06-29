@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2024 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,10 +21,9 @@
 
 #include "camera_set.hpp"
 
-#include "data/container.hpp"
 #include "data/registry/macros.hpp"
 
-#include <core/com/signal.hxx>
+#include <algorithm>
 
 SIGHT_REGISTER_DATA(sight::data::camera_set);
 
@@ -33,9 +32,9 @@ namespace sight::data
 
 camera_set::camera_set()
 {
-    new_signal<added_camera_signal_t>(ADDED_CAMERA_SIG);
-    new_signal<removed_camera_signal_t>(REMOVED_CAMERA_SIG);
-    new_signal<extrinsic_calibrated_signal_t>(EXTRINSIC_CALIBRATED_SIG);
+    new_signal<signals::added_camera_t>(signals::ADDED_CAMERA);
+    new_signal<signals::removed_camera_t>(signals::REMOVED_CAMERA);
+    new_signal<signals::extrinsic_calibrated_t>(signals::EXTRINSIC_CALIBRATED);
 }
 
 //------------------------------------------------------------------------------
@@ -109,7 +108,7 @@ void camera_set::add_camera(camera::sptr _camera)
         push_back({_camera, std::make_shared<matrix4>()});
     }
     // Check if the camera is already in the set before adding it
-    else if(cend() == std::find_if(cbegin(), cend(), [&](const auto& _value){return _value.first == _camera;}))
+    else if(cend() == std::ranges::find_if(*this, [&](const auto& _value){return _value.first == _camera;}))
     {
         // Add camera with nullptr matrix
         push_back({_camera, nullptr});
@@ -138,8 +137,7 @@ camera::sptr camera_set::get_camera(std::size_t _index)
 
 void camera_set::remove_camera(camera::sptr _camera)
 {
-    const auto& it = std::find_if(cbegin(), cend(), [&](const auto& _value){return _value.first == _camera;});
-
+    const auto& it = std::ranges::find_if(*this, [&](const auto& _value){return _value.first == _camera;});
     SIGHT_THROW_IF("Camera not found.", it == cend());
 
     erase(it);

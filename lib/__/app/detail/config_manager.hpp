@@ -66,6 +66,18 @@ public:
     SIGHT_DECLARE_CLASS(config_manager, app::config_manager);
 
     SIGHT_ALLOW_SHARED_FROM_THIS()
+
+    struct slots
+    {
+        using object_t = core::com::slot<void (data::object::sptr, const std::string&)>;
+        using void_t   = core::com::slot<void ()>;
+
+        static inline const slot_key_t ADD_OBJECTS        = "addObject";
+        static inline const slot_key_t REMOVE_OBJECTS     = "removeObjects";
+        static inline const slot_key_t ADD_STARTED_SRV    = "add_started_service";
+        static inline const slot_key_t REMOVE_STARTED_SRV = "remove_started_service";
+    };
+
     /// Creates slots.
     config_manager();
 

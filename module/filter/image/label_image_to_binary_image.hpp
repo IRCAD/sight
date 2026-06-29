@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2025 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -95,8 +95,8 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::image::BUFFER_MODIFIED_SIG of s_LABEL_IMAGE_INPUT to service::slots::UPDATE
-     * Connect data::image::MODIFIED_SIG of s_LABEL_IMAGE_INPUT to service::slots::UPDATE
+     * Connect data::image::signals::BUFFER_MODIFIED of s_LABEL_IMAGE_INPUT to service::slots::UPDATE
+     * Connect data::signals::MODIFIED of s_LABEL_IMAGE_INPUT to service::slots::UPDATE
      */
     connections_t auto_connections() const final;
 

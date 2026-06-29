@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2025 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,7 +35,7 @@ namespace sight::filter::image::detail
 
 /// Threshold filter
 template<typename IMAGE_TYPE, unsigned int DIM>
-typename itk::Image<std::uint8_t, DIM>::Pointer threshold(
+itk::Image<std::uint8_t, DIM>::Pointer threshold(
     typename itk::Image<IMAGE_TYPE, DIM>::Pointer _image,
     IMAGE_TYPE _lower_threshold,
     IMAGE_TYPE _upper_threshold
@@ -43,7 +43,7 @@ typename itk::Image<std::uint8_t, DIM>::Pointer threshold(
 
 /// Median filter
 template<typename IMAGE_TYPE, unsigned int DIM>
-typename itk::Image<IMAGE_TYPE, DIM>::Pointer median(
+itk::Image<IMAGE_TYPE, DIM>::Pointer median(
     typename itk::Image<IMAGE_TYPE, DIM>::Pointer _image,
     std::size_t _x,
     std::size_t _y,
@@ -52,14 +52,14 @@ typename itk::Image<IMAGE_TYPE, DIM>::Pointer median(
 
 /// labeling filter
 template<typename IMAGE_TYPE, unsigned int DIM>
-typename itk::Image<std::uint8_t, DIM>::Pointer labeling(
+itk::Image<std::uint8_t, DIM>::Pointer labeling(
     typename itk::Image<IMAGE_TYPE, DIM>::Pointer _image,
     unsigned int _num_labels
 );
 
 /// FillHole2D filter
 template<typename IMAGE_TYPE, unsigned int DIM>
-typename itk::Image<IMAGE_TYPE, DIM>::Pointer fill_hole_2d(
+itk::Image<IMAGE_TYPE, DIM>::Pointer fill_hole_2d(
     typename itk::Image<IMAGE_TYPE, DIM>::Pointer _image,
     unsigned int _direction,
     IMAGE_TYPE _background,
@@ -68,7 +68,7 @@ typename itk::Image<IMAGE_TYPE, DIM>::Pointer fill_hole_2d(
 
 /// Closing filter
 template<typename IMAGE_TYPE, unsigned int DIM>
-typename itk::Image<IMAGE_TYPE, DIM>::Pointer closing(
+itk::Image<IMAGE_TYPE, DIM>::Pointer closing(
     typename itk::Image<IMAGE_TYPE, DIM>::Pointer _image,
     std::size_t _x,
     std::size_t _y,

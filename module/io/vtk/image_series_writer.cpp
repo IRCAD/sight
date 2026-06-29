@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,22 +24,17 @@
 
 #include "module/io/vtk/image_writer.hpp"
 
-#include <core/com/signal.hxx>
 #include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
-#include <core/tools/failed.hpp>
 
 #include <data/image_series.hpp>
 
 #include <io/__/service/writer.hpp>
 #include <io/vtk/image_writer.hpp>
 #include <io/vtk/meta_image_writer.hpp>
-#include <io/vtk/vti_image_writer.hpp>
 
 #include <ui/__/cursor.hpp>
 #include <ui/__/dialog/location.hpp>
-#include <ui/__/dialog/message.hpp>
-#include <ui/__/dialog/progress.hpp>
 
 namespace sight::module::io::vtk
 {

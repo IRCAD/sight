@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,10 +22,6 @@
 
 #include "module/ui/qt/calibration/camera_information_editor.hpp"
 
-#include <core/com/slots.hxx>
-
-#include <service/macros.hpp>
-
 #include <ui/qt/container/widget.hpp>
 
 #include <QBoxLayout>
@@ -38,13 +34,9 @@ namespace sight::module::ui::qt::calibration
 
 // -------------------------------------------------------------------------
 
-const core::com::slots::key_t camera_information_editor::UPDATE_INFOS_SLOT = "updateInfos";
-
-// -------------------------------------------------------------------------
-
 camera_information_editor::camera_information_editor() noexcept
 {
-    new_slot(UPDATE_INFOS_SLOT, &camera_information_editor::update_informations, this);
+    new_slot(slots::UPDATE_INFOS, &camera_information_editor::update_informations, this);
 }
 
 // -------------------------------------------------------------------------
@@ -210,8 +202,8 @@ service::connections_t camera_information_editor::auto_connections() const
 {
     connections_t connections;
 
-    connections.push(CAMERA, data::camera::ID_MODIFIED_SIG, UPDATE_INFOS_SLOT);
-    connections.push(CAMERA, data::camera::INTRINSIC_CALIBRATED_SIG, UPDATE_INFOS_SLOT);
+    connections.push(CAMERA, data::camera::signals::ID_MODIFIED, slots::UPDATE_INFOS);
+    connections.push(CAMERA, data::camera::signals::INTRINSIC_CALIBRATED, slots::UPDATE_INFOS);
 
     return connections;
 }

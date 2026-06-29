@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -70,10 +70,7 @@ public:
     SIGHT_UI_QT_API_QT void remove_series(data::series::sptr _series);
 
     /// Returns the type of the item (SERIES or STUDY)
-    SIGHT_UI_QT_API_QT selector_model::item_t get_item_type(const QModelIndex& _index) const;
-
-    /// Catches the delete key event and remove the selected items.
-    SIGHT_UI_QT_API_QT void keyPressEvent(QKeyEvent* _event) override;
+    [[nodiscard]] SIGHT_UI_QT_API_QT selector_model::item_t get_item_type(const QModelIndex& _index) const;
 
     /**
      * @brief Sets the specific icons for series in selector.
@@ -94,13 +91,13 @@ public:
     void set_remove_series_icon(const std::filesystem::path& _path);
 
     /// Returns the selected series.
-    inline series_vector_t get_selected_series() const
+    [[nodiscard]] series_vector_t get_selected_series() const
     {
         return get_series(this->selectedIndexes());
     }
 
     /// Returns a meaningful preferred size for the selector.
-    SIGHT_UI_QT_API_QT QSize sizeHint() const override;
+    [[nodiscard]] SIGHT_UI_QT_API_QT QSize sizeHint() const override;
 
 Q_SIGNALS:
 
@@ -121,6 +118,11 @@ Q_SIGNALS:
      * @param _selection contains the deleted series.
      */
     void remove_series(QVector<data::series::sptr> _selection);
+
+protected:
+
+    /// Catches the delete key event and remove the selected items.
+    SIGHT_UI_QT_API_QT void keyPressEvent(QKeyEvent* _event) override;
 
 protected Q_SLOTS:
 
@@ -154,7 +156,7 @@ private:
      * @brief Returns all the Series associated to the selection.
      * @note If a study is selected, return an empty selection.
      */
-    static inline series_vector_t get_series(const QItemSelection& _selection)
+    static series_vector_t get_series(const QItemSelection& _selection)
     {
         return get_series(_selection.indexes());
     }
@@ -169,7 +171,7 @@ private:
     static QModelIndexList get_study_indexes(const QModelIndexList& _index_list);
 
     /// Returns all the series associated with the study index
-    series_vector_t get_series_from_study_index(const QModelIndex& _index) const;
+    [[nodiscard]] series_vector_t get_series_from_study_index(const QModelIndex& _index) const;
 
     /// Deletes the selected items and notify the deleted series.
     void delete_selection();

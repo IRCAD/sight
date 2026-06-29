@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2025 IRCAD France
+ * Copyright (C) 2019-2026 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -75,8 +75,8 @@ public:
 
     struct slots
     {
-        static inline const core::com::slots::key_t PICK  = "pick";
-        static inline const core::com::slots::key_t CLEAR = "clear";
+        static inline const slot_key_t PICK  = "pick";
+        static inline const slot_key_t CLEAR = "clear";
     };
 
     /// Generates default methods as New, dynamicCast, ...
@@ -88,7 +88,7 @@ public:
     /// Destroys the service.
     ~manage_point_list() noexcept final = default;
 
-private:
+protected:
 
     /// Configures the service.
     void configuring(const config_t& _config) final;
@@ -102,6 +102,8 @@ private:
     /// Does nothing.
     void stopping() final;
 
+private:
+
     /**
      * @brief SLOT: Add or remove a point from picking information.
      * @param _info picking information.
@@ -112,13 +114,13 @@ private:
      * @brief Adds a point in the point list
      * @param _point the point added to the list.
      */
-    void add_point(const data::point::sptr _point) const;
+    void add_point(data::point::sptr _point) const;
 
     /**
      * @brief Removes a point from the point list.
      * @param _point the point removed from the list.
      */
-    void remove_point(const data::point::csptr _point) const;
+    void remove_point(data::point::csptr _point) const;
 
     /// SLOT: Clears the point list.
     void clear() const;

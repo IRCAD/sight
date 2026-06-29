@@ -21,8 +21,6 @@
 
 #include "module/viz/scene3d/adaptor/negato.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
 #include <core/ptree.hpp>
 
 #include <data/helper/medical_image.hpp>
@@ -42,15 +40,15 @@ namespace sight::module::viz::scene3d::adaptor
 service::connections_t negato::auto_connections() const
 {
     service::connections_t connections = {
-        {m_image, data::image::MODIFIED_SIG, slots::UPDATE_IMAGE},
-        {m_image, data::image::BUFFER_MODIFIED_SIG, slots::UPDATE_IMAGE_BUFFER},
-        {m_image, data::image::SLICE_TYPE_MODIFIED_SIG, slots::SLICE_TYPE},
-        {m_image, data::image::SLICE_INDEX_MODIFIED_SIG, slots::SLICE_INDEX},
-        {m_tf, data::transfer_function::MODIFIED_SIG, slots::UPDATE_TF},
-        {m_tf, data::transfer_function::POINTS_MODIFIED_SIG, slots::UPDATE_TF},
-        {m_tf, data::transfer_function::WINDOWING_MODIFIED_SIG, slots::UPDATE_TF},
-        {m_mask, data::image::MODIFIED_SIG, slots::UPDATE_MASK},
-        {m_mask, data::image::BUFFER_MODIFIED_SIG, slots::UPDATE_MASK}
+        {m_image, data::signals::MODIFIED, slots::UPDATE_IMAGE},
+        {m_image, data::image::signals::BUFFER_MODIFIED, slots::UPDATE_IMAGE_BUFFER},
+        {m_image, data::image::signals::SLICE_TYPE_MODIFIED, slots::SLICE_TYPE},
+        {m_image, data::image::signals::SLICE_INDEX_MODIFIED, slots::SLICE_INDEX},
+        {m_tf, data::signals::MODIFIED, slots::UPDATE_TF},
+        {m_tf, data::transfer_function::signals::POINTS_MODIFIED, slots::UPDATE_TF},
+        {m_tf, data::transfer_function::signals::WINDOWING_MODIFIED, slots::UPDATE_TF},
+        {m_mask, data::signals::MODIFIED, slots::UPDATE_MASK},
+        {m_mask, data::image::signals::BUFFER_MODIFIED, slots::UPDATE_MASK}
     };
     return connections + adaptor::auto_connections();
 }
@@ -420,8 +418,7 @@ void negato::update_slices_from_world(double _x, double _y, double _z)
         return;
     }
 
-    const auto sig = image->signal<data::image::slice_index_modified_signal_t>(data::image::SLICE_INDEX_MODIFIED_SIG);
-    sig->async_emit(slice_idx[2], slice_idx[1], slice_idx[0]);
+    image->async_emit(data::image::signals::SLICE_INDEX_MODIFIED, slice_idx[2], slice_idx[1], slice_idx[0]);
 }
 
 //------------------------------------------------------------------------------
@@ -462,7 +459,7 @@ void negato::update_windowing(double _dw, double _dl)
             tf->set_level(new_level);
         }
 
-        tf->async_emit(data::transfer_function::WINDOWING_MODIFIED_SIG, new_window, new_level);
+        tf->async_emit(data::transfer_function::signals::WINDOWING_MODIFIED, new_window, new_level);
     }
 }
 

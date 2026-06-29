@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -70,12 +70,15 @@ class SIGHT_EX_TIMELINE_CLASS_API consumer : public sight::service::base
 {
 public:
 
-    SIGHT_EX_TIMELINE_API static const sight::core::com::slots::key_t CONSUME_SLOT;
-
     SIGHT_DECLARE_SERVICE(consumer, sight::service::base);
 
+    struct slots
+    {
+        static inline const slot_key_t CONSUME = "consume";
+    };
+
     SIGHT_EX_TIMELINE_API consumer() noexcept;
-    SIGHT_EX_TIMELINE_API ~consumer() noexcept override;
+    SIGHT_EX_TIMELINE_API ~consumer() noexcept override = default;
 
 protected:
 

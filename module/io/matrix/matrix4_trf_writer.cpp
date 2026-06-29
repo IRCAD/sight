@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,6 @@
 
 #include "module/io/matrix/matrix4_trf_writer.hpp"
 
-#include <core/base.hpp>
-#include <core/com/signal.hpp>
-#include <core/com/signal.hxx>
 #include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
 
@@ -32,12 +29,9 @@
 
 #include <io/__/writer/matrix4_writer.hpp>
 
-#include <service/macros.hpp>
-
 #include <ui/__/dialog/location.hpp>
 
 #include <filesystem>
-#include <fstream>
 #include <iostream>
 
 namespace sight::module::io::matrix

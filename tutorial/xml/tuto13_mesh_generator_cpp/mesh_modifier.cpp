@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #include "mesh_modifier.hpp"
-
-#include <core/com/signal.hxx>
 
 #include <geometry/data/mesh.hpp>
 
@@ -78,72 +76,47 @@ void mesh_modifier::updating()
         {
             geometry::data::mesh::shake_point(mesh.get_shared());
 
-            data::mesh::signal_t::sptr sig;
-            sig = mesh->signal<data::mesh::signal_t>(data::mesh::VERTEX_MODIFIED_SIG);
-            sig->async_emit();
+            data::mesh::signals::signal_t::sptr sig;
+            mesh->async_emit(data::mesh::signals::VERTEX_MODIFIED);
         }
         else if(m_functor == "ColorizeMeshCells")
         {
             geometry::data::mesh::colorize_mesh_cells(mesh.get_shared());
 
-            data::mesh::signal_t::sptr sig;
-            sig = mesh->signal<data::mesh::signal_t>(data::mesh::CELL_COLORS_MODIFIED_SIG);
-            sig->async_emit();
+            data::mesh::signals::signal_t::sptr sig;
+            mesh->async_emit(data::mesh::signals::CELL_COLORS_MODIFIED);
         }
         else if(m_functor == "ColorizeMeshPoints")
         {
             geometry::data::mesh::colorize_mesh_points(mesh.get_shared());
 
-            data::mesh::signal_t::sptr sig;
-            sig = mesh->signal<data::mesh::signal_t>(data::mesh::POINT_COLORS_MODIFIED_SIG);
-            sig->async_emit();
+            data::mesh::signals::signal_t::sptr sig;
+            mesh->async_emit(data::mesh::signals::POINT_COLORS_MODIFIED);
         }
         else if(m_functor == "ComputeCellNormals")
         {
             geometry::data::mesh::generate_cell_normals(mesh.get_shared());
-
-            data::mesh::signal_t::sptr sig;
-            sig = mesh->signal<data::mesh::signal_t>(
-                data::mesh::CELL_NORMALS_MODIFIED_SIG
-            );
-            sig->async_emit();
+            mesh->async_emit(data::mesh::signals::CELL_NORMALS_MODIFIED);
         }
         else if(m_functor == "ComputePointNormals")
         {
             geometry::data::mesh::generate_point_normals(mesh.get_shared());
-
-            data::mesh::signal_t::sptr sig;
-            sig = mesh->signal<data::mesh::signal_t>(
-                data::mesh::POINT_NORMALS_MODIFIED_SIG
-            );
-            sig->async_emit();
+            mesh->async_emit(data::mesh::signals::POINT_NORMALS_MODIFIED);
         }
         else if(m_functor == "ShakeCellNormals")
         {
             geometry::data::mesh::shake_cell_normals(mesh.get_shared());
-
-            data::mesh::signal_t::sptr sig;
-            sig = mesh->signal<data::mesh::signal_t>(data::mesh::CELL_NORMALS_MODIFIED_SIG);
-            sig->async_emit();
+            mesh->async_emit(data::mesh::signals::CELL_NORMALS_MODIFIED);
         }
         else if(m_functor == "ShakePointNormals")
         {
             geometry::data::mesh::shake_point_normals(mesh.get_shared());
-
-            data::mesh::signal_t::sptr sig;
-            sig = mesh->signal<data::mesh::signal_t>(
-                data::mesh::POINT_NORMALS_MODIFIED_SIG
-            );
-            sig->async_emit();
+            mesh->async_emit(data::mesh::signals::POINT_NORMALS_MODIFIED);
         }
         else if(m_functor == "MeshDeformation")
         {
             m_animator.compute_deformation(mesh.get_shared(), 100, 50);
-            const auto sig = mesh->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-            {
-                sight::core::com::connection::blocker block(sig->get_connection(slot(sight::service::slots::UPDATE)));
-                sig->async_emit();
-            }
+            mesh->async_emit(this, data::signals::MODIFIED);
         }
     }
     catch(const std::exception& e)

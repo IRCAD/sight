@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,32 +24,20 @@
 
 #include "module/filter/vision/optical_flow.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-
 #include <io/opencv/frame_tl.hpp>
 
-#include <opencv2/highgui.hpp>
 #include <opencv2/video/tracking.hpp>
 
 namespace sight::module::filter::vision
 {
 
-static const core::com::signals::key_t CAMERA_MOVED_SIG    = "camera_moved";
-static const core::com::signals::key_t CAMERA_REMAINED_SIG = "camera_remained";
-
 // ----------------------------------------------------------------------------
 
 optical_flow::optical_flow() noexcept
 {
-    m_motion_signal    = new_signal<motion_signal_t>(CAMERA_MOVED_SIG);
-    m_no_motion_signal = new_signal<no_motion_signal_t>(CAMERA_REMAINED_SIG);
+    m_motion_signal    = new_signal<signals::motion_t>(signals::CAMERA_MOVED);
+    m_no_motion_signal = new_signal<signals::no_motion_t>(signals::CAMERA_REMAINED);
 }
-
-// ----------------------------------------------------------------------------
-
-optical_flow::~optical_flow() noexcept =
-    default;
 
 // ----------------------------------------------------------------------------
 
@@ -153,9 +141,9 @@ void optical_flow::updating()
     cv::Vec2f corners_diff;
     std::vector<uchar> status;
     std::vector<float> err;
-    int acc         = 0; // Incremented each time the flow of a feature has been found.
-    long double rms = 0; // Root mean square difference between each detected corners.
-    int n_move      = 0; // Incremented each time a corners has moved.
+    int acc    = 0; // Incremented each time the flow of a feature has been found.
+    double rms = 0; // Root mean square difference between each detected corners.
+    int n_move = 0; // Incremented each time a corners has moved.
 
     m_main_mutex.lock();
 
@@ -178,7 +166,7 @@ void optical_flow::updating()
         {
             corners_diff = m_last_corners.at<cv::Vec2f>(index) - current_corners.at<cv::Vec2f>(index);
             rms         +=
-                static_cast<long double>(corners_diff[0] * corners_diff[0] + corners_diff[1] * corners_diff[1]);
+                static_cast<double>(corners_diff[0] * corners_diff[0] + corners_diff[1] * corners_diff[1]);
 
             // Check if corners has moved.
             if((corners_diff[0] * corners_diff[0] + corners_diff[1] * corners_diff[1]) > 2)
@@ -192,7 +180,7 @@ void optical_flow::updating()
 
     if(acc != 0)
     {
-        rms = rms / static_cast<long double>(acc);
+        rms = rms / static_cast<double>(acc);
         rms = std::sqrt(rms);
     }
 

@@ -25,8 +25,6 @@
 #include "viz/scene3d/layer.hpp"
 #include "viz/scene3d/utils.hpp"
 
-#include <core/com/slots.hxx>
-
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreNode.h>
 #include <OGRE/OgreSceneNode.h>
@@ -226,8 +224,8 @@ void predefined_camera::stopping()
 predefined_camera::connections_t predefined_camera::auto_connections() const
 {
     service::connections_t connections = {
-        {m_transform, sight::data::matrix4::MODIFIED_SIG, slots::SET_TRANSFORM},
-        {m_position, sight::data::string::MODIFIED_SIG, slots::SET_POSITION}
+        {m_transform, sight::data::signals::MODIFIED, slots::SET_TRANSFORM},
+        {m_position, sight::data::signals::MODIFIED, slots::SET_POSITION}
     };
     return connections + adaptor::auto_connections();
 }

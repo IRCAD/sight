@@ -24,20 +24,6 @@
 
 #include <memory>
 
-namespace sight::service
-{
-
-class base;
-
-} // namespace sight::service
-
-namespace sight::activity
-{
-
-class launcher;
-
-} // namespace sight::activity
-
 namespace sight::data::mt
 {
 
@@ -123,9 +109,6 @@ public:
     }
 
 protected:
-
-    /// @todo remove me when base will be ready to use lock()
-    friend class service::base;
 
     /// Convenience getter for weak_ptr
     /// @todo remove me when base will be ready to use lock()

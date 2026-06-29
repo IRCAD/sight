@@ -23,14 +23,9 @@
 #include "helper.hpp"
 
 #include "service/extension/config.hpp"
-#include "service/registry.hpp"
 
 #include "test_service.hpp"
 
-#include <core/com/signal.hpp>
-#include <core/com/signal.hxx>
-#include <core/com/slot.hxx>
-#include <core/runtime/helper.hpp>
 #include <core/runtime/path.hpp>
 #include <core/runtime/runtime.hpp>
 #include <core/time_stamp.hpp>
@@ -45,8 +40,6 @@
 #include <data/string.hpp>
 #include <data/transfer_function.hpp>
 
-#include <service/op.hpp>
-
 #include <utest/wait.hpp>
 
 #include <app/config_manager.hpp>
@@ -57,12 +50,7 @@
 
 //------------------------------------------------------------------------------
 
-namespace
-{
-
-//------------------------------------------------------------------------------
-
-sight::service::config_t build_config()
+static sight::service::config_t build_config()
 {
     sight::service::config_t cfg;
 
@@ -95,6 +83,8 @@ sight::service::config_t build_config()
 }
 
 //------------------------------------------------------------------------------
+namespace
+{
 
 struct fixture
 {
@@ -842,11 +832,7 @@ TEST_SUITE("sight::app::config")
                     SIGHT_TEST_WAIT(srv6->started());
                     CHECK_EQ(true, srv6->started());
 
-                    auto sig =
-                        srv5->signal<sight::app::ut::test_srv::signals::int_sent_t>(
-                            sight::app::ut::test_srv::signals::SIG_1
-                        );
-                    sig->async_emit(0);
+                    srv5->async_emit(sight::app::ut::test_srv::signals::SIG_1, 0);
 
                     SIGHT_TEST_WAIT(srv6->stopped());
                     CHECK_EQ(true, srv6->stopped());
@@ -880,11 +866,7 @@ TEST_SUITE("sight::app::config")
                     SIGHT_TEST_WAIT(srv6->started());
                     CHECK_EQ(true, srv6->started());
 
-                    auto sig =
-                        srv5->signal<sight::app::ut::test_srv::signals::int_sent_t>(
-                            sight::app::ut::test_srv::signals::SIG_1
-                        );
-                    sig->async_emit(0);
+                    srv5->async_emit(sight::app::ut::test_srv::signals::SIG_1, 0);
 
                     SIGHT_TEST_WAIT(srv6->stopped());
                     CHECK_EQ(true, srv6->stopped());
@@ -1326,7 +1308,7 @@ TEST_SUITE("sight::app::config")
             data4->async_emit(sight::data::signals::MODIFIED);
             SIGHT_TEST_WAIT(srv2->is_updated(), 2500);
             CHECK(!srv2->is_updated());
-            data4->async_emit(sight::data::image::BUFFER_MODIFIED_SIG);
+            data4->async_emit(sight::data::image::signals::BUFFER_MODIFIED);
             SIGHT_TEST_WAIT(srv2->is_updated());
             CHECK(srv2->is_updated());
 
@@ -1336,7 +1318,7 @@ TEST_SUITE("sight::app::config")
             SIGHT_TEST_WAIT(!srv2->is_updated());
             CHECK(!srv2->is_updated());
 
-            data5->async_emit(sight::data::image::BUFFER_MODIFIED_SIG);
+            data5->async_emit(sight::data::image::signals::BUFFER_MODIFIED);
             SIGHT_TEST_WAIT(srv2->is_updated(), 2500);
             CHECK(!srv2->is_updated());
         }

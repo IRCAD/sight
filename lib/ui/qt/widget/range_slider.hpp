@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -61,6 +61,8 @@ public:
             return m_widget->size();
         }
 
+    private:
+
         QPointer<QWidget> m_widget;
     };
 
@@ -101,6 +103,8 @@ protected:
     void mouseReleaseEvent(QMouseEvent* _event) override;
     void wheelEvent(QWheelEvent* _event) override;
     void resizeEvent(QResizeEvent* _event) override;
+
+private:
 
     paintable* m_min_handle;
     paintable* m_max_handle;

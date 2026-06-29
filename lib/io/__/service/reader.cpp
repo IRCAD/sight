@@ -22,7 +22,6 @@
 
 #include "io/__/service/reader.hpp"
 
-#include <core/com/slots.hxx>
 #include <core/runtime/path.hpp>
 
 #include <service/base.hpp>
@@ -38,8 +37,8 @@ reader::reader(const std::string& _default_window_title) noexcept :
     has_monitors(has_signals::signals()),
     m_window_title(this, WINDOW_TITLE_KEY, _default_window_title)
 {
-    new_signal<signals::void_signal_t>(signals::FAILED);
-    new_signal<signals::void_signal_t>(signals::SUCCEEDED);
+    new_signal<signals::void_t>(signals::FAILED);
+    new_signal<signals::void_t>(signals::SUCCEEDED);
 
     new_slot(slots::OPEN_LOCATION_DIALOG, &reader::open_location_dialog, this);
     new_slot(slots::UPDATE_DEFAULT_LOCATIONS, &reader::update_default_locations, this);
@@ -224,9 +223,9 @@ void reader::configuring()
 sight::service::base::connections_t reader::auto_connections() const
 {
     return {
-        {m_files, data::object::MODIFIED_SIG, slots::UPDATE_DEFAULT_LOCATIONS},
-        {m_folder, data::object::MODIFIED_SIG, slots::UPDATE_DEFAULT_LOCATIONS},
-        {m_resources, data::object::MODIFIED_SIG, slots::UPDATE_DEFAULT_LOCATIONS}
+        {m_files, data::signals::MODIFIED, slots::UPDATE_DEFAULT_LOCATIONS},
+        {m_folder, data::signals::MODIFIED, slots::UPDATE_DEFAULT_LOCATIONS},
+        {m_resources, data::signals::MODIFIED, slots::UPDATE_DEFAULT_LOCATIONS}
     };
 }
 

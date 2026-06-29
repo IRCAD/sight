@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,15 +22,11 @@
 
 #include "texture_selector.hpp"
 
-#include <core/com/signal.hxx>
-
-#include <data/array.hpp>
 #include <data/image.hpp>
 #include <data/material.hpp>
 
 #include <io/__/service/io_types.hpp>
 
-#include <service/macros.hpp>
 #include <service/op.hpp>
 
 #include <ui/__/dialog_editor.hpp>
@@ -145,15 +141,11 @@ void texture_selector::on_load_button()
     // If we didn't have to create a new texture, we can notify the associated image
     if(existing_texture)
     {
-        auto sig = image->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-        sig->emit();
+        image->emit(data::signals::MODIFIED);
     }
     else
     {
-        auto sig = material->signal<data::material::added_texture_signal_t>(
-            data::material::ADDED_TEXTURE_SIG
-        );
-        sig->emit(image);
+        material->emit(data::material::signals::ADDED_TEXTURE, image);
     }
 }
 
@@ -170,10 +162,7 @@ void texture_selector::on_delete_button()
     if(image)
     {
         material->set_diffuse_texture(nullptr);
-        auto sig = material->signal<data::material::removed_texture_signal_t>(
-            data::material::REMOVED_TEXTURE_SIG
-        );
-        sig->emit(image);
+        material->emit(data::material::signals::REMOVED_TEXTURE, image);
     }
 }
 

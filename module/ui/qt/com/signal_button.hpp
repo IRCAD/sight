@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2025 IRCAD France
+ * Copyright (C) 2015-2026 IRCAD France
  * Copyright (C) 2015-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -98,12 +98,25 @@ public:
         using bool_t = core::com::signal<void (bool)>;
         using void_t = core::com::signal<void ()>;
 
-        static inline const core::com::signals::key_t IS_CHECKED = "is_checked";
+        static inline const signal_key_t IS_CHECKED = "is_checked";
         /// Same as "is_checked" but kept for legacy reasons.
-        static inline const core::com::signals::key_t TOGGLED   = "toggled";
-        static inline const core::com::signals::key_t CLICKED   = "clicked";
-        static inline const core::com::signals::key_t CHECKED   = "checked";
-        static inline const core::com::signals::key_t UNCHECKED = "unchecked";
+        static inline const signal_key_t TOGGLED   = "toggled";
+        static inline const signal_key_t CLICKED   = "clicked";
+        static inline const signal_key_t CHECKED   = "checked";
+        static inline const signal_key_t UNCHECKED = "unchecked";
+    };
+
+    struct slots
+    {
+        static inline const slot_key_t SET_CHECKED = "set_checked";
+        static inline const slot_key_t CHECK       = "check";
+        static inline const slot_key_t UNCHECK     = "uncheck";
+        static inline const slot_key_t SET_ENABLED = "set_enabled";
+        static inline const slot_key_t ENABLE      = "enable";
+        static inline const slot_key_t DISABLE     = "disable";
+        static inline const slot_key_t SET_VISIBLE = "set_visible";
+        static inline const slot_key_t SHOW        = "show";
+        static inline const slot_key_t HIDE        = "hide";
     };
 
     /// Generates default methods as New, dynamicCast, ...
@@ -114,6 +127,24 @@ public:
 
     /// Destroys the service.
     ~signal_button() noexcept final;
+
+    /// SLOT: sets the button executability.
+    void set_enabled(bool _is_enabled) final;
+
+    /// SLOT: sets the button executable.
+    void enable() final;
+
+    /// SLOT: sets the button inexecutable.
+    void disable() final;
+
+    /// SLOT: sets the button visibility.
+    void set_visible(bool _is_visible) final;
+
+    /// SLOT: shows the button.
+    void show() final;
+
+    /// SLOT: hides he button.
+    void hide() final;
 
 protected:
 
@@ -152,24 +183,6 @@ private:
 
     /// SLOT: unchecks the button.
     void uncheck();
-
-    /// SLOT: sets the button executability.
-    void set_enabled(bool _is_enabled) final;
-
-    /// SLOT: sets the button executable.
-    void enable() final;
-
-    /// SLOT: sets the button inexecutable.
-    void disable() final;
-
-    /// SLOT: sets the button visibility.
-    void set_visible(bool _is_visible) final;
-
-    /// SLOT: shows the button.
-    void show() final;
-
-    /// SLOT: hides he button.
-    void hide() final;
 
     /// Contains the button
     QPointer<QPushButton> m_button {nullptr};

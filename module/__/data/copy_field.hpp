@@ -57,10 +57,10 @@ public:
     /// Destroys the service.
     ~copy_field() final = default;
 
+protected:
+
     /// Defines the connections to automatically update the copy when source or target fields are changed.
     connections_t auto_connections() const final;
-
-protected:
 
     /// Does nothing at start.
     void starting() final;

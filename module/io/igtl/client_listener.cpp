@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "client_listener.hpp"
 
-#include <core/com/signal.hxx>
+#include <algorithm>
 #include <core/tools/failed.hpp>
 
 #include <data/frame_tl.hpp>
@@ -34,7 +34,6 @@
 #include <ui/__/dialog/message.hpp>
 #include <ui/__/preferences.hpp>
 
-#include <functional>
 #include <string>
 
 namespace sight::module::io::igtl
@@ -101,7 +100,7 @@ void client_listener::run_client()
         const auto hostname = preferences.delimited_get<std::string>(m_hostname_config);
 
         m_client.connect(hostname, port);
-        m_sig_connected->async_emit();
+        this->async_emit(network_listener::signals::CONNECTED);
     }
     catch(core::exception& ex)
     {
@@ -131,7 +130,7 @@ void client_listener::run_client()
             data::object::sptr receive_object = m_client.receive_object(device_name);
             if(receive_object)
             {
-                const auto& iter = std::find(m_device_names.begin(), m_device_names.end(), device_name);
+                const auto& iter = std::ranges::find(m_device_names, device_name);
 
                 if(iter != m_device_names.end())
                 {
@@ -147,9 +146,7 @@ void client_listener::run_client()
                     {
                         obj->shallow_copy(receive_object);
 
-                        data::object::modified_signal_t::sptr sig;
-                        sig = obj->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-                        sig->async_emit();
+                        obj->async_emit(data::signals::MODIFIED);
                     }
                 }
             }
@@ -193,7 +190,7 @@ void client_listener::stopping()
 
         m_client_future.wait();
         m_tl_initialized = false;
-        m_sig_disconnected->async_emit();
+        this->async_emit(network_listener::signals::DISCONNECTED);
     }
     catch(core::exception& ex)
     {
@@ -231,8 +228,7 @@ void client_listener::manage_timeline(data::object::sptr _obj, std::size_t _inde
 
         matrix_buf->set_element(float_values, 0);
         mat_tl->push_object(matrix_buf);
-        auto sig = mat_tl->signal<data::timeline::signals::pushed_t>(data::timeline::signals::PUSHED);
-        sig->async_emit(timestamp);
+        mat_tl->async_emit(data::timeline::signals::PUSHED, timestamp);
     }
     //FrameTL
     else if(frame_tl)
@@ -282,11 +278,7 @@ void client_listener::manage_timeline(data::object::sptr _obj, std::size_t _inde
         std::copy(itr, end, dest_buffer);
 
         frame_tl->push_object(buffer);
-
-        data::timeline::signals::pushed_t::sptr sig;
-        sig = frame_tl->signal<data::timeline::signals::pushed_t>
-                  (data::timeline::signals::PUSHED);
-        sig->async_emit(timestamp);
+        frame_tl->async_emit(data::timeline::signals::PUSHED, timestamp);
     }
 }
 

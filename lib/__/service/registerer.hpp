@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,12 +42,10 @@ public:
 
     SIGHT_DECLARE_SERVICE(registerer, service::base);
 
-    /**
-     * @name Slots API
-     * @{
-     */
-    SIGHT_SERVICE_API static const core::com::slots::key_t COMPUTE_REGISTRATION_SLOT;
-    ///@}
+    struct slots
+    {
+        static inline const slot_key_t COMPUTE_REGISTRATION = "compute_registration";
+    };
 
     /**
      * @brief Constructor.

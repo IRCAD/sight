@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,6 @@
 
 #include "module/io/vtk/series_set_reader.hpp"
 
-#include <core/com/signal.hxx>
 #include <core/location/single_folder.hpp>
 #include <core/progress/observer.hpp>
 
@@ -33,7 +32,6 @@
 #include <ui/__/cursor.hpp>
 #include <ui/__/dialog/location.hpp>
 #include <ui/__/dialog/message.hpp>
-#include <ui/__/dialog/progress.hpp>
 
 #include <filesystem>
 

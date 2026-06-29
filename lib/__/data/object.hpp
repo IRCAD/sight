@@ -47,20 +47,20 @@ using fields_container_t = std::map<std::string, SPTR(object)>;
 // Generic signals
 struct signals
 {
-    using modified_t = core::com::signal<void ()>;
-    static const inline core::com::signals::key_t MODIFIED = "modified";
+    using modified_t = sight::core::com::signal<void ()>;
+    static const inline sight::core::com::signals::key_t MODIFIED = "modified";
 
     /// Type of signal when objects are added
-    using added_fields_t = core::com::signal<void (fields_container_t)>;
-    static const inline core::com::signals::key_t ADDED_FIELDS = "addedFields";
+    using added_fields_t = sight::core::com::signal<void (fields_container_t)>;
+    static const inline sight::core::com::signals::key_t ADDED_FIELDS = "addedFields";
 
     /// Type of signal when objects are changed (newObjects, oldObjects)
-    using changed_fields_t = core::com::signal<void (fields_container_t, fields_container_t)>;
-    static const inline core::com::signals::key_t CHANGED_FIELDS = "changedFields";
+    using changed_fields_t = sight::core::com::signal<void (fields_container_t, fields_container_t)>;
+    static const inline sight::core::com::signals::key_t CHANGED_FIELDS = "changedFields";
 
     /// Type of signal when objects are removed
-    using removed_fields_t = core::com::signal<void (fields_container_t)>;
-    static const inline core::com::signals::key_t REMOVED_FIELDS = "removedFields";
+    using removed_fields_t = sight::core::com::signal<void (fields_container_t)>;
+    static const inline sight::core::com::signals::key_t REMOVED_FIELDS = "removedFields";
 };
 
 namespace mt
@@ -107,21 +107,6 @@ public:
      * @name Signals
      * @{
      */
-    // For backward compatibility - this is duplicated for now because of a runtime error with GCC/Clang mix
-    using modified_signal_t = signals::modified_t;
-    static const inline signal_key_t MODIFIED_SIG = "modified";
-
-    /// Type of signal when objects are added
-    using added_fields_signal_t = signals::added_fields_t;
-    static const inline signal_key_t ADDED_FIELDS_SIG = "addedFields";
-
-    /// Type of signal when objects are changed (newObjects, oldObjects)
-    using changed_fields_signal_t = signals::changed_fields_t;
-    static const inline signal_key_t CHANGED_FIELDS_SIG = "changedFields";
-
-    /// Type of signal when objects are removed
-    using removed_fields_signal_t = signals::removed_fields_t;
-    static const inline signal_key_t REMOVED_FIELDS_SIG = "removedFields";
     /**
      * @}
      */

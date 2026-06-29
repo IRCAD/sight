@@ -77,10 +77,10 @@ public:
         using void_t = sight::core::com::signal<void ()>;
         using bool_t = sight::core::com::signal<void (bool)>;
 
-        inline static const sight::core::com::signals::key_t VALID      = "valid";
-        inline static const sight::core::com::signals::key_t INVALID    = "invalid";
-        inline static const sight::core::com::signals::key_t IS_VALID   = "is_valid";
-        inline static const sight::core::com::signals::key_t IS_INVALID = "is_invalid";
+        inline static const signal_key_t VALID      = "valid";
+        inline static const signal_key_t INVALID    = "invalid";
+        inline static const signal_key_t IS_VALID   = "is_valid";
+        inline static const signal_key_t IS_INVALID = "is_invalid";
     };
 
     /// Constructor

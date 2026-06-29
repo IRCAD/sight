@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -72,9 +72,10 @@ public:
     SIGHT_DECLARE_CLASS(series_enquirer, io::dimse::series_enquirer, std::make_shared<series_enquirer>);
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
-    SIGHT_IO_DIMSE_API static const core::com::slots::key_t PROGRESS_CALLBACK_SLOT;
-
-    using progress_callback_slot_t = core::com::slot<void (const std::string&, unsigned int, const std::string&)>;
+    struct slots
+    {
+        static inline const core::com::slots::key_t PROGRESS_CALLBACK = "CGetProgressCallback";
+    };
 
     using instance_uid_container_t = std::vector<std::string>;
 

@@ -70,6 +70,14 @@ public:
 
     SIGHT_DECLARE_SERVICE(matrix_writer, sight::io::service::writer);
 
+    struct slots
+    {
+        static inline const slot_key_t SAVE_MATRIX  = "saveMatrix";
+        static inline const slot_key_t START_RECORD = "start_record";
+        static inline const slot_key_t STOP_RECORD  = "stop_record";
+        static inline const slot_key_t WRITE        = "write";
+    };
+
     /// Constructor.
     matrix_writer() noexcept;
 

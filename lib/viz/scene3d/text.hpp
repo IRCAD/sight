@@ -53,6 +53,15 @@ public:
     SIGHT_DECLARE_CLASS(text, sight::core::base_object);
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
+    struct signals
+    {
+        using text_edited_t      = core::com::signal<void (std::string)>;
+        using editing_finished_t = core::com::signal<void ()>;
+
+        static inline const signal_key_t TEXT_EDITED      = "textEdited";
+        static inline const signal_key_t EDITING_FINISHED = "editingFinished";
+    };
+
     /// Class used to register a class factory in factory registry.
     template<typename T>
     class registry
@@ -80,16 +89,10 @@ public:
     /// Defines the key used for the factory.
     SIGHT_VIZ_SCENE3D_API static inline const std::string REGISTRY_KEY {"sight::viz::scene3d::text::REGISTRY_KEY"};
 
-    static const inline std::string TEXT_EDITED_SIGNAL = "textEdited";
-    using text_edited_signal_t = core::com::signal<void (std::string)>;
-
-    static const inline std::string EDITING_FINISHED_SIGNAL = "editingFinished";
-    using editing_finished_signal_t = core::com::signal<void ()>;
-
     text()
     {
-        new_signal<text_edited_signal_t>(TEXT_EDITED_SIGNAL);
-        new_signal<editing_finished_signal_t>(EDITING_FINISHED_SIGNAL);
+        new_signal<signals::text_edited_t>(signals::TEXT_EDITED);
+        new_signal<signals::editing_finished_t>(signals::EDITING_FINISHED);
     }
 
     /// Attach to a scene node.

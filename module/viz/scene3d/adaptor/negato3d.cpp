@@ -24,9 +24,6 @@
 
 #include "module/viz/scene3d/adaptor/negato3d.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-
 #include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
 
@@ -199,7 +196,7 @@ void negato3d::button_release_event(mouse_button /*_button*/, modifier /*_mods*/
     }
 
     m_picking_cross->set_visible(false);
-    this->signal<signals::picked_voxel_t>(signals::PICKED_VOXEL)->async_emit("");
+    this->async_emit(signals::PICKED_VOXEL, std::string());
     this->set_planes_query_flags(m_query_flags); // Make all planes pickable again.
 }
 
@@ -231,7 +228,7 @@ void negato3d::move_slices(int _x, int _y)
         const auto picked_voxel = geometry::data::world_to_image(*image, picked_pt, true, true);
 
         image->async_emit(
-            data::image::SLICE_INDEX_MODIFIED_SIG,
+            data::image::signals::SLICE_INDEX_MODIFIED,
             static_cast<int>(picked_voxel[2]),
             static_cast<int>(picked_voxel[1]),
             static_cast<int>(picked_voxel[0])

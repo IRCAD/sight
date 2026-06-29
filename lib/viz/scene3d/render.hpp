@@ -142,14 +142,25 @@ public:
 
     struct signals
     {
-        using key_t                       = sight::core::com::signals::key_t;
-        using void_signal_t               = sight::core::com::signal<void ()>;
-        using compositor_updated_signal_t = core::com::signal<void (std::string, bool, viz::scene3d::layer::sptr)>;
+        using void_t               = sight::core::com::signal<void ()>;
+        using compositor_updated_t = core::com::signal<void (std::string, bool, viz::scene3d::layer::sptr)>;
 
-        static inline const key_t FULLSCREEN_SET     = "fullscreen_set";
-        static inline const key_t FULLSCREEN_UNSET   = "fullscreen_unset";
-        static inline const key_t COMPOSITOR_UPDATED = "compositorUpdated";
-        static inline const key_t RENDERED           = "rendered";
+        static inline const signal_key_t FULLSCREEN_SET     = "fullscreen_set";
+        static inline const signal_key_t FULLSCREEN_UNSET   = "fullscreen_unset";
+        static inline const signal_key_t COMPOSITOR_UPDATED = "compositorUpdated";
+        static inline const signal_key_t RENDERED           = "rendered";
+    };
+
+    struct slots
+    {
+        static inline const slot_key_t COMPUTE_CAMERA_ORIG = "computeCameraParameters";
+        static inline const slot_key_t RESET_CAMERAS       = "reset_cameras";
+        static inline const slot_key_t REQUEST_RENDER      = "request_render";
+        static inline const slot_key_t RENDER              = "render";
+        static inline const slot_key_t DISABLE_FULLSCREEN  = "disable_fullscreen";
+        static inline const slot_key_t ENABLE_FULLSCREEN   = "enable_fullscreen";
+        static inline const slot_key_t SET_MANUAL_MODE     = "set_manual_mode";
+        static inline const slot_key_t SET_AUTO_MODE       = "set_auto_mode";
     };
 
     /// Defines the type of adaptors ID.
@@ -163,33 +174,6 @@ public:
 
     /// Defines actives layouts in the scene.
     using layer_map_t = std::map<scene_id_t, std::shared_ptr<viz::scene3d::layer> >;
-
-    /// Contains the slot name that computes the parameters to reset the camera.
-    SIGHT_VIZ_SCENE3D_API static const core::com::slots::key_t COMPUTE_CAMERA_ORIG_SLOT;
-
-    /// Contains the slot name that resets all layers camera.
-    SIGHT_VIZ_SCENE3D_API static const core::com::slots::key_t RESET_CAMERAS_SLOT;
-
-    /// Contains the slot name that request the picker to do a ray cast according to the passed position.
-    SIGHT_VIZ_SCENE3D_API static const core::com::slots::key_t DO_RAY_CAST_SLOT;
-
-    /// Contains the slot name that requests a rendering.
-    SIGHT_VIZ_SCENE3D_API static const core::com::slots::key_t REQUEST_RENDER_SLOT;
-
-    /// Contains the slot name that requests a rendering.
-    SIGHT_VIZ_SCENE3D_API static const core::com::slots::key_t RENDER_SLOT;
-
-    /// Contains the slot name that disables fullscreen rendering if it was enabled.
-    SIGHT_VIZ_SCENE3D_API static const core::com::slots::key_t DISABLE_FULLSCREEN;
-
-    /// Contains the slot name that enables fullscreen rendering on a specific screen.
-    SIGHT_VIZ_SCENE3D_API static const core::com::slots::key_t ENABLE_FULLSCREEN;
-
-    /// Contains the slot name that enables the manual rendering mode.
-    SIGHT_VIZ_SCENE3D_API static const core::com::slots::key_t SET_MANUAL_MODE;
-
-    /// Contains the slot name that enables the automatic rendering mode.
-    SIGHT_VIZ_SCENE3D_API static const core::com::slots::key_t SET_AUTO_MODE;
 
     struct layer
     {

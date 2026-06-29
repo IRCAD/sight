@@ -56,17 +56,20 @@ public:
      * @name Signals API
      * @{
      */
-    SIGHT_DATA_API static const core::com::signals::key_t ADDED_RECORD_SIG;
-    using added_record_signal_t = core::com::signal<void ()>;
+    struct signals
+    {
+        static const inline signal_key_t ADDED_RECORD = "added_record";
+        using added_record_t = core::com::signal<void ()>;
 
-    SIGHT_DATA_API static const core::com::signals::key_t REMOVED_RECORD_SIG;
-    using removed_record_signal_t = core::com::signal<void ()>;
+        static const inline signal_key_t REMOVED_RECORD = "removed_record";
+        using removed_record_t = core::com::signal<void ()>;
 
-    SIGHT_DATA_API static const core::com::signals::key_t RESET_RECORD_SIG;
-    using reset_record_signal_t = core::com::signal<void ()>;
+        static const inline signal_key_t RESET_RECORD = "reset_record";
+        using reset_record_t = core::com::signal<void ()>;
 
-    SIGHT_DATA_API static const core::com::signals::key_t GET_RECORD_SIG;
-    using get_record_signal_t = core::com::signal<void (std::size_t)>;
+        static const inline signal_key_t GET_RECORD = "get_record";
+        using get_record_t = core::com::signal<void (std::size_t)>;
+    };
 
     /**
      * @}

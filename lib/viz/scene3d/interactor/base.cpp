@@ -24,10 +24,6 @@
 
 #include "viz/scene3d/layer.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slot.hxx>
-#include <core/com/slots.hxx>
-
 namespace sight::viz::scene3d::interactor
 {
 

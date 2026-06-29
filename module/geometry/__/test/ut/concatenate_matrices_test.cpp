@@ -19,8 +19,6 @@
  *
  ***********************************************************************/
 
-#include <core/runtime/runtime.hpp>
-
 #include <data/matrix4.hpp>
 
 #include <service/op.hpp>
@@ -392,8 +390,7 @@ TEST_SUITE("sight::module::geometry::concatenate_matrices")
                 0., 0., 1., 2.,
                 0., 0., 0., 1.
             };
-            auto sig = in1->signal<sight::data::matrix4::modified_signal_t>(sight::data::matrix4::MODIFIED_SIG);
-            sig->emit();
+            in1->emit(sight::data::signals::MODIFIED);
             check_matrix(identity, *output);
 
             // Thus we require an update
@@ -408,8 +405,7 @@ TEST_SUITE("sight::module::geometry::concatenate_matrices")
                     0., 0.5, -0.866, 0.,
                     0., 0., 0., 1.
             };
-            auto sig = in2->signal<sight::data::matrix4::modified_signal_t>(sight::data::matrix4::MODIFIED_SIG);
-            sig->emit();
+            in2->emit(sight::data::signals::MODIFIED);
 
             const matrix_t expected = {
                 1., 0., 0., 4.,

@@ -26,9 +26,6 @@
 #include "viz/scene3d/registry/adaptor.hpp"
 #include "viz/scene3d/utils.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-
 #include <core/ptree.hpp>
 
 #define SIGHT_PROFILING_DISABLED
@@ -45,39 +42,28 @@ namespace sight::viz::scene3d
 
 //-----------------------------------------------------------------------------
 
-const core::com::slots::key_t render::COMPUTE_CAMERA_ORIG_SLOT = "computeCameraParameters";
-const core::com::slots::key_t render::RESET_CAMERAS_SLOT       = "reset_cameras";
-const core::com::slots::key_t render::REQUEST_RENDER_SLOT      = "request_render";
-const core::com::slots::key_t render::RENDER_SLOT              = "render";
-const core::com::slots::key_t render::DISABLE_FULLSCREEN       = "disable_fullscreen";
-const core::com::slots::key_t render::ENABLE_FULLSCREEN        = "enable_fullscreen";
-const core::com::slots::key_t render::SET_MANUAL_MODE          = "set_manual_mode";
-const core::com::slots::key_t render::SET_AUTO_MODE            = "set_auto_mode";
-
-//-----------------------------------------------------------------------------
-
 render::render() noexcept :
     m_ogre_root(viz::scene3d::utils::get_ogre_root())
 {
-    new_signal<signals::compositor_updated_signal_t>(signals::COMPOSITOR_UPDATED);
-    new_signal<signals::void_signal_t>(signals::FULLSCREEN_SET);
-    new_signal<signals::void_signal_t>(signals::FULLSCREEN_UNSET);
-    new_signal<signals::void_signal_t>(signals::RENDERED);
+    new_signal<signals::compositor_updated_t>(signals::COMPOSITOR_UPDATED);
+    new_signal<signals::void_t>(signals::FULLSCREEN_SET);
+    new_signal<signals::void_t>(signals::FULLSCREEN_UNSET);
+    new_signal<signals::void_t>(signals::RENDERED);
 
-    new_slot(COMPUTE_CAMERA_ORIG_SLOT, &render::reset_camera_coordinates, this);
-    new_slot(RESET_CAMERAS_SLOT, &render::reset_cameras, this);
+    new_slot(slots::COMPUTE_CAMERA_ORIG, &render::reset_camera_coordinates, this);
+    new_slot(slots::RESET_CAMERAS, &render::reset_cameras, this);
     new_slot(
-        REQUEST_RENDER_SLOT,
+        slots::REQUEST_RENDER,
         [this]()
         {
             FW_DEPRECATED_MSG("Slot 'requestRender' is deprecated, please use 'render' instead", "25.0");
             render_now();
         });
-    new_slot(RENDER_SLOT, &render::render_now, this);
-    new_slot(DISABLE_FULLSCREEN, &render::disable_fullscreen, this);
-    new_slot(ENABLE_FULLSCREEN, &render::enable_fullscreen, this);
-    new_slot(SET_MANUAL_MODE, [this](){this->set_render_mode(true);});
-    new_slot(SET_AUTO_MODE, [this](){this->set_render_mode(false);});
+    new_slot(slots::RENDER, &render::render_now, this);
+    new_slot(slots::DISABLE_FULLSCREEN, &render::disable_fullscreen, this);
+    new_slot(slots::ENABLE_FULLSCREEN, &render::enable_fullscreen, this);
+    new_slot(slots::SET_MANUAL_MODE, [this](){this->set_render_mode(true);});
+    new_slot(slots::SET_AUTO_MODE, [this](){this->set_render_mode(false);});
 }
 
 //-----------------------------------------------------------------------------
@@ -154,8 +140,8 @@ void render::configuring()
         }
 
         //create reset_camera_layer_<id> slot
-        const core::com::slots::key_t reset_camera_slot_key = "reset_camera_" + layer_id;
-        auto reset_camera_layer_slot                        = new_slot(
+        const slot_key_t reset_camera_slot_key = "reset_camera_" + layer_id;
+        auto reset_camera_layer_slot           = new_slot(
             reset_camera_slot_key,
             [this, layer_id]()
             {
@@ -504,8 +490,7 @@ void render::render_now()
     {
         m_interactor_manager->render_now();
 
-        auto sig = this->signal<signals::void_signal_t>(signals::RENDERED);
-        sig->async_emit();
+        this->async_emit(signals::RENDERED);
     }
 }
 
@@ -532,8 +517,7 @@ void render::request_render()
             viz::scene3d::utils::convert_from_ogre_texture(render_texture, image.get_shared(), m_flip);
         }
 
-        auto sig = image->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-        sig->async_emit();
+        image->async_emit(data::signals::MODIFIED);
     }
 }
 
@@ -647,7 +631,7 @@ void render::disable_fullscreen()
 {
     m_fullscreen = false;
     m_interactor_manager->set_fullscreen(m_fullscreen, -1);
-    this->signal<signals::void_signal_t>(signals::FULLSCREEN_UNSET)->async_emit();
+    this->async_emit(signals::FULLSCREEN_UNSET);
 }
 
 // ----------------------------------------------------------------------------
@@ -656,7 +640,7 @@ void render::enable_fullscreen(int _screen)
 {
     m_fullscreen = true;
     m_interactor_manager->set_fullscreen(m_fullscreen, _screen);
-    this->signal<signals::void_signal_t>(signals::FULLSCREEN_SET)->async_emit();
+    this->async_emit(signals::FULLSCREEN_SET);
 }
 
 // ----------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2025 IRCAD France
+ * Copyright (C) 2019-2026 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -89,6 +89,18 @@ class chessboard_reprojection final : public service::base
 {
 public:
 
+    struct signals
+    {
+        using error_computed_t = core::com::signal<void (double)>;
+        static inline const signal_key_t ERROR_COMPUTED = "error_computed";
+    };
+
+    struct slots
+    {
+        static inline const slot_key_t TOGGLE_DISTORTION       = "toggle_distortion";
+        static inline const slot_key_t UPDATE_CHESSBOARD_MODEL = "update_chessboard_model";
+    };
+
     SIGHT_DECLARE_SERVICE(chessboard_reprojection, service::base);
 
     ///Constructor
@@ -120,8 +132,6 @@ private:
     /// Updates the chessboard model from input data.
     void update_chessboard_model();
 
-    using error_computed_t = core::com::signal<void (double)>;
-
     /// Enables/disabled distorting the reprojected points.
     void toggle_distortion();
 
@@ -139,9 +149,6 @@ private:
 
     /// Chessboard model in 3D, used to compute the reprojection error.
     std::vector<cv::Point3f> m_chessboard_model_3d;
-
-    /// Signal sent when the reprojection error is computed.
-    error_computed_t::sptr m_error_computed_sig;
 
     static constexpr std::string_view TRANSFORM_INPUT           = "transform";
     static constexpr std::string_view DETECTED_CHESSBOARD_INPUT = "detectedChessboard";

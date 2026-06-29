@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -86,12 +86,11 @@ public:
 
     SIGHT_DECLARE_SERVICE(export_with_series_set, sight::ui::action);
 
-    /**
-     * @name Signal/Slot typedefs
-     * @{
-     */
-    using forward_monitor_slot_t = core::com::slot<void (std::shared_ptr<core::progress::monitor>)>;
-    /// @}
+    struct slots
+    {
+        using forward_monitor_t = core::com::slot<void (std::shared_ptr<core::progress::monitor>)>;
+        static inline const std::string FORWARD_MONITOR = "forwardmonitor";
+    };
 
     export_with_series_set() noexcept;
 
@@ -122,7 +121,7 @@ private:
 
     std::string m_io_selector_srv_config; ///< Configuration used for launched selector service
 
-    SPTR(forward_monitor_slot_t) m_slot_forward_monitor; ///< slot used to forward selector monitor process
+    SPTR(slots::forward_monitor_t) m_slot_forward_monitor; ///< slot used to forward selector monitor process
 
     data::ptr<data::series, data::access::inout> m_series {this, "series"};
 };

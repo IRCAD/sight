@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,22 +23,11 @@
 #include "module/ui/qt/calibration/display_calibration_info.hpp"
 
 #include <core/com/proxy.hpp>
-#include <core/com/slots.hpp>
-#include <core/com/slots.hxx>
-
-#include <data/string.hpp>
-
-#include <service/extension/config.hpp>
-
-#include <sstream>
 
 namespace sight::module::ui::qt::calibration
 {
 
 //------------------------------------------------------------------------------
-
-static const core::com::slots::key_t DISPLAY_IMAGE_SLOT = "display_image";
-static const core::com::slots::key_t STOP_CONFIG_SLOT   = "stopConfig";
 
 static const std::string SINGLE_IMAGE_CONFIG = "singleImageConfig";
 static const std::string TWO_IMAGES_CONFIG   = "twoImagesConfig";
@@ -49,8 +38,8 @@ static const std::string CLOSE_CONFIG_ID = "CLOSE_CONFIG";
 
 display_calibration_info::display_calibration_info() noexcept
 {
-    new_slot(DISPLAY_IMAGE_SLOT, &display_calibration_info::display_image, this);
-    new_slot(STOP_CONFIG_SLOT, &display_calibration_info::stop_config, this);
+    new_slot(slots::DISPLAY_IMAGE, &display_calibration_info::display_image, this);
+    new_slot(slots::STOP_CONFIG, &display_calibration_info::stop_config, this);
 }
 
 //------------------------------------------------------------------------------
@@ -75,7 +64,7 @@ void display_calibration_info::stopping()
     if(m_config_mgr)
     {
         core::com::proxy::sptr proxies = core::com::proxy::get();
-        proxies->disconnect(m_proxychannel, this->slot(STOP_CONFIG_SLOT));
+        proxies->disconnect(m_proxychannel, this->slot(slots::STOP_CONFIG));
         m_config_mgr->stop_and_destroy();
         m_config_mgr.reset();
     }
@@ -145,7 +134,7 @@ void display_calibration_info::display_image(std::size_t _idx)
 
         // Proxy to be notified of the window closure
         core::com::proxy::sptr proxies = core::com::proxy::get();
-        proxies->connect(m_proxychannel, this->slot(STOP_CONFIG_SLOT));
+        proxies->connect(m_proxychannel, this->slot(slots::STOP_CONFIG));
     }
 }
 

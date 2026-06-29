@@ -25,8 +25,6 @@
 #include "data/exception.hpp"
 #include "data/registry/macros.hpp"
 
-#include <core/com/signal.hxx>
-
 #include <array>
 #include <cstdlib>
 
@@ -55,25 +53,15 @@ static constexpr auto CELL_SIZE_TO_TYPE = [](std::size_t _size)
 
 //------------------------------------------------------------------------------
 
-const core::com::signals::key_t mesh::VERTEX_MODIFIED_SIG           = "vertexModified";
-const core::com::signals::key_t mesh::POINT_COLORS_MODIFIED_SIG     = "pointColorsModified";
-const core::com::signals::key_t mesh::CELL_COLORS_MODIFIED_SIG      = "cellColorsModified";
-const core::com::signals::key_t mesh::POINT_NORMALS_MODIFIED_SIG    = "pointNormalsModified";
-const core::com::signals::key_t mesh::CELL_NORMALS_MODIFIED_SIG     = "cellNormalsModified";
-const core::com::signals::key_t mesh::POINT_TEX_COORDS_MODIFIED_SIG = "pointTexCoordsModified";
-const core::com::signals::key_t mesh::CELL_TEX_COORDS_MODIFIED_SIG  = "cellTexCoordsModified";
-
-//------------------------------------------------------------------------------
-
 mesh::mesh()
 {
-    new_signal<signal_t>(VERTEX_MODIFIED_SIG);
-    new_signal<signal_t>(POINT_COLORS_MODIFIED_SIG);
-    new_signal<signal_t>(CELL_COLORS_MODIFIED_SIG);
-    new_signal<signal_t>(POINT_NORMALS_MODIFIED_SIG);
-    new_signal<signal_t>(CELL_NORMALS_MODIFIED_SIG);
-    new_signal<signal_t>(POINT_TEX_COORDS_MODIFIED_SIG);
-    new_signal<signal_t>(CELL_TEX_COORDS_MODIFIED_SIG);
+    new_signal<signals::signal_t>(signals::VERTEX_MODIFIED);
+    new_signal<signals::signal_t>(signals::POINT_COLORS_MODIFIED);
+    new_signal<signals::signal_t>(signals::CELL_COLORS_MODIFIED);
+    new_signal<signals::signal_t>(signals::POINT_NORMALS_MODIFIED);
+    new_signal<signals::signal_t>(signals::CELL_NORMALS_MODIFIED);
+    new_signal<signals::signal_t>(signals::POINT_TEX_COORDS_MODIFIED);
+    new_signal<signals::signal_t>(signals::CELL_TEX_COORDS_MODIFIED);
 
     std::ranges::for_each(m_points, [](auto& _array){_array = std::make_shared<data::array>();});
     std::ranges::for_each(m_cells, [](auto& _array){_array = std::make_shared<data::array>();});

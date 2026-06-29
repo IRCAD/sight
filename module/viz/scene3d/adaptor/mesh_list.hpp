@@ -75,6 +75,12 @@ public:
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(mesh_list, sight::viz::scene3d::adaptor);
 
+    struct slots
+    {
+        static inline const slot_key_t ADD   = "add";
+        static inline const slot_key_t CLEAR = "clear";
+    };
+
     /// Sets default parameters and initializes necessary members.
     mesh_list() noexcept;
 
@@ -99,7 +105,7 @@ protected:
      * @brief Proposal to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::matrix4::MODIFIED_SIG of s_TRANSFORM_INOUT to ADD_MESH_SLOT
+     * Connect data::signals::MODIFIED of s_TRANSFORM_INOUT to ADD_MESH
      */
     service::connections_t auto_connections() const final;
 

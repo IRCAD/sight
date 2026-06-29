@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -62,9 +62,6 @@ namespace sight::module::geometry::vision
 class open_cv_intrinsic : public sight::geometry::vision::calibrator
 {
 public:
-
-    /// Double changed signal type
-    using error_computed_t = core::com::signal<void (double)>;
 
     SIGHT_DECLARE_SERVICE(open_cv_intrinsic, sight::geometry::vision::calibrator);
 

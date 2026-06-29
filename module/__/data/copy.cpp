@@ -22,9 +22,6 @@
 
 #include "copy.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/signals.hpp>
-
 namespace sight::module::data
 {
 

@@ -38,7 +38,7 @@ translate::translate() :
 sight::service::base::connections_t translate::auto_connections() const
 {
     return {
-        {m_key, sight::data::object::MODIFIED_SIG, slots::UPDATE}
+        {m_key, sight::data::signals::MODIFIED, slots::UPDATE}
     };
 }
 
@@ -81,7 +81,7 @@ void translate::updating()
     SIGHT_THROW_IF("Can not map find any entry for key " << std::quoted(key_str), not m_map.contains(key_str));
 
     value->from_string(m_map[key_str]);
-    value->async_emit(sight::data::object::MODIFIED_SIG);
+    value->async_emit(sight::data::signals::MODIFIED);
 }
 
 //-----------------------------------------------------------------------------

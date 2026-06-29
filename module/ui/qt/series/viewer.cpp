@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,11 +21,6 @@
  ***********************************************************************/
 
 #include "viewer.hpp"
-
-#include <data/series.hpp>
-#include <data/string.hpp>
-
-#include <service/extension/config.hpp>
 
 #include <boost/range/iterator_range_core.hpp>
 
@@ -92,7 +87,7 @@ void viewer::updating()
             {
                 SIGHT_ASSERT(
                     "Value '" << elt.first << "' already used in extracted values.",
-                    replace_map.find(elt.first) == replace_map.end()
+                    !replace_map.contains(elt.first)
                 );
                 replace_map[elt.first] = elt.second;
             }
@@ -125,7 +120,7 @@ void viewer::configuring()
         SIGHT_ASSERT("'type' attribute must not be empty", !series_type.empty());
         SIGHT_ASSERT(
             "Type " << series_type << " is already defined.",
-            m_series_configs.find(series_type) == m_series_configs.end()
+            !m_series_configs.contains(series_type)
         );
 
         for(const auto& param : boost::make_iterator_range(elt.second.equal_range("parameter")))
@@ -152,8 +147,8 @@ service::connections_t viewer::auto_connections() const
 {
     connections_t connections;
 
-    connections.push(SERIES, data::vector::ADDED_OBJECTS_SIG, service::slots::UPDATE);
-    connections.push(SERIES, data::vector::REMOVED_OBJECTS_SIG, service::slots::UPDATE);
+    connections.push(SERIES, data::vector::signals::ADDED_OBJECTS, service::slots::UPDATE);
+    connections.push(SERIES, data::vector::signals::REMOVED_OBJECTS, service::slots::UPDATE);
 
     return connections;
 }

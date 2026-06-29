@@ -22,9 +22,6 @@
 
 #include "export_with_series_set.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hpp>
-#include <core/com/slots.hxx>
 #include <core/progress/monitor.hpp>
 
 #include <data/series_set.hpp>
@@ -37,15 +34,13 @@
 namespace sight::module::ui::series
 {
 
-static const core::com::slots::key_t FORWARD_MONITOR_SLOT = "forwardmonitor";
-
 //------------------------------------------------------------------------------
 
 export_with_series_set::export_with_series_set() noexcept :
     has_monitors(has_signals::signals()),
     m_io_selector_srv_config("IOSelectorServiceConfigVRRenderReader")
 {
-    m_slot_forward_monitor = new_slot(FORWARD_MONITOR_SLOT, &export_with_series_set::forward_monitor, this);
+    m_slot_forward_monitor = new_slot(slots::FORWARD_MONITOR, &export_with_series_set::forward_monitor, this);
 }
 
 //------------------------------------------------------------------------------
@@ -139,9 +134,7 @@ void export_with_series_set::stopping()
 
 void export_with_series_set::forward_monitor(core::progress::monitor::sptr _monitor)
 {
-    const auto monitor_signal =
-        this->signal<has_monitors::signals::monitor_created_t>(has_monitors::signals::MONITOR_CREATED);
-    monitor_signal->emit(_monitor);
+    this->emit(has_monitors::signals::MONITOR_CREATED, _monitor);
 }
 
 } // namespace sight::module::ui::series

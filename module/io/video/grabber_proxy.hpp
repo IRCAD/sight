@@ -120,8 +120,6 @@ public:
     /// Internal wrapper holding slots keys.
     struct slots
     {
-        using key_t = sight::core::com::slots::key_t;
-
         static inline const key_t RECONFIGURE = "reconfigure";
 
         static inline const key_t MODIFY_POSITION = "modifyPosition";

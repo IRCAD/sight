@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,27 +22,17 @@
 
 #include "module/viz/scene2d/adaptor/square.hpp"
 
-#include <core/com/slots.hxx>
-
-#include <service/macros.hpp>
-
 #include <QGraphicsItemGroup>
 
 namespace sight::module::viz::scene2d::adaptor
 {
 
-const core::com::slots::key_t square::SET_DOUBLE_PARAMETER_SLOT = "set_double_parameter";
 //-----------------------------------------------------------------------------
 
 square::square() noexcept
 {
-    new_slot(SET_DOUBLE_PARAMETER_SLOT, &square::set_double_parameter, this);
+    new_slot(slots::SET_DOUBLE_PARAMETER, &square::set_double_parameter, this);
 }
-
-//-----------------------------------------------------------------------------
-
-square::~square() noexcept =
-    default;
 
 //-----------------------------------------------------------------------------
 

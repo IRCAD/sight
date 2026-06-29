@@ -74,7 +74,11 @@ public:
 
     SIGHT_DECLARE_SERVICE(db_merger, sight::ui::action);
 
-    using forward_monitor_slot_t = core::com::slot<void (std::shared_ptr<core::progress::monitor>)>;
+    struct slots
+    {
+        using forward_monitor_t = core::com::slot<void (std::shared_ptr<core::progress::monitor>)>;
+        static inline const std::string FORWARD_MONITOR = "forwardmonitor";
+    };
 
     db_merger() noexcept;
     ~db_merger() noexcept override = default;
@@ -109,7 +113,7 @@ private:
 
     std::string m_io_selector_srv_config;
 
-    SPTR(forward_monitor_slot_t) m_slot_forward_monitor;
+    SPTR(slots::forward_monitor_t) m_slot_forward_monitor;
     static constexpr std::string_view SERIES_SET = "seriesSet";
 
     data::ptr<data::series_set, data::access::inout> m_series_set {this, SERIES_SET};

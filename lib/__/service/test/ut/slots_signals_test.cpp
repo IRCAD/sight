@@ -98,7 +98,7 @@ TEST_SUITE("sight::service::slots_signals")
             show_test_srv->set_inout(buffer1, sight::service::ut::basic_srv::BUFFER_INOUT);
             show_test_srv->set_worker(worker1);
 
-            buffer1->signal(sight::data::object::MODIFIED_SIG)->connect(
+            buffer1->signal(sight::data::signals::MODIFIED)->connect(
                 show_test_srv->slot(
                     sight::service::slots::UPDATE
                 )
@@ -116,7 +116,7 @@ TEST_SUITE("sight::service::slots_signals")
 
             CHECK_EQ(show_test_srv->m_receive_count, 1);
 
-            buffer1->signal(sight::data::object::MODIFIED_SIG)->disconnect(
+            buffer1->signal(sight::data::signals::MODIFIED)->disconnect(
                 show_test_srv->slot(
                     sight::service::slots::UPDATE
                 )
@@ -186,9 +186,9 @@ TEST_SUITE("sight::service::slots_signals")
         show_test_srv->set_inout(buffer1, sight::service::ut::basic_srv::BUFFER_INOUT);
         show_test_srv->set_worker(worker1);
 
-        reader_test_srv->signal(sight::service::ut::reader2_test::CHANGED_SIG)->connect(
+        reader_test_srv->signal(sight::service::ut::reader2_test::signals::CHANGED)->connect(
             show_test_srv->slot(
-                sight::service::ut::show_test::CHANGE_SLOT
+                sight::service::ut::show_test::slots::CHANGE
             )
         );
 
@@ -202,9 +202,9 @@ TEST_SUITE("sight::service::slots_signals")
         stop_reader_future.wait();
         stop_show_future.wait();
 
-        reader_test_srv->signal(sight::service::ut::reader2_test::CHANGED_SIG)->disconnect(
+        reader_test_srv->signal(sight::service::ut::reader2_test::signals::CHANGED)->disconnect(
             show_test_srv->slot(
-                sight::service::ut::show_test::CHANGE_SLOT
+                sight::service::ut::show_test::slots::CHANGE
             )
         );
 
@@ -235,8 +235,8 @@ TEST_SUITE("sight::service::slots_signals")
         show_test_srv->set_worker(worker1);
 
         sight::core::com::connection connection;
-        connection = buffer1->signal(sight::data::object::MODIFIED_SIG)->
-                     connect(show_test_srv->slot(sight::service::ut::show2_test::UPDATE_BUFFER_SLOT));
+        connection = buffer1->signal(sight::data::signals::MODIFIED)->
+                     connect(show_test_srv->slot(sight::service::ut::show2_test::slots::UPDATE_BUFFER));
 
         reader_test_srv->start();
         show_test_srv->start();

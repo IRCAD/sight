@@ -25,7 +25,7 @@
 #include <sight/ui/qt/config.hpp>
 
 #include <core/com/signal.hpp>
-#include <core/com/signal.hxx>
+
 #include <core/com/signals.hpp>
 
 #include <data/helper/fiducials_series.hpp>

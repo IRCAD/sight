@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2024 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -40,9 +40,11 @@ public:
 
     SIGHT_DECLARE_SERVICE(exporter, sight::ui::action);
 
-    /// Connect data::container<C>::ADDED_OBJECTS_SIG to this::CHECK_ADDED_OBJECTS_SLOT.
-    /// Connect data::container<C>::REMOVED_OBJECTS_SIG to this::CHECK_REMOVED_OBJECTS_SLOT.
-    connections_t auto_connections() const override;
+    struct slots
+    {
+        static inline const slot_key_t CHECK_ADDED_OBJECTS   = "checkAddedObjects";
+        static inline const slot_key_t CHECK_REMOVED_OBJECTS = "checkRemovedObjects";
+    };
 
 protected:
 
@@ -51,6 +53,10 @@ protected:
 
     /// Destructor
     ~exporter() noexcept override = default;
+
+    /// Connect data::container<C>::signals::ADDED_OBJECTS to this::CHECK_ADDED_OBJECTS.
+    /// Connect data::container<C>::signals::REMOVED_OBJECTS to this::CHECK_REMOVED_OBJECTS.
+    connections_t auto_connections() const override;
 
     /// This method is used to configure the service parameters
     void configuring() override;
@@ -68,23 +74,22 @@ protected:
 
     static constexpr std::string_view CONTAINER_INOUT = "container";
 
+    // NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
     data::ptr<C, data::access::inout> m_container {this, CONTAINER_INOUT};
 
-    using shared_pointer = typename C::value_type;
+    using shared_pointer = C::value_type;
     data::ptr<typename shared_pointer::element_type, data::access::inout> m_data {this, "data"};
+// NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 
 private:
 
     /// Slots
     /// @{
-    inline static const core::com::slots::key_t CHECK_ADDED_OBJECTS_SLOT   = "checkAddedObjects";
-    inline static const core::com::slots::key_t CHECK_REMOVED_OBJECTS_SLOT = "checkRemovedObjects";
-
     /// Slot: check if specified object is added and set action not executable
-    constexpr void check_added_objects(typename C::container_t _added_objects);
+    constexpr void check_added_objects(C::container_t _added_objects);
 
     /// Slot: check if specified object is removed and set action executable
-    constexpr void check_removed_objects(typename C::container_t _removed_objects);
+    constexpr void check_removed_objects(C::container_t _removed_objects);
     /// @}
 };
 

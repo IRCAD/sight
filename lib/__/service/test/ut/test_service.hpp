@@ -24,7 +24,6 @@
 
 #include <core/com/has_slots.hpp>
 #include <core/com/signal.hpp>
-#include <core/com/signal.hxx>
 
 #include <data/image.hpp>
 #include <data/integer.hpp>
@@ -156,20 +155,20 @@ public:
 
     struct signals
     {
-        static inline const core::com::signals::key_t SIG_1    = "signal1";
-        static inline const core::com::signals::key_t MSG_SENT = "msgSent";
+        static inline const signal_key_t SIG_1    = "signal1";
+        static inline const signal_key_t MSG_SENT = "msgSent";
 
         using int_sent_t = core::com::signal<void (int)>;
         using msg_sent_t = core::com::signal<void (std::string)>;
     };
     struct slots
     {
-        static inline const core::com::slots::key_t UPDATE2 = "update2";
-        static inline const core::com::slots::key_t SLOT_1  = "slot1";
+        static inline const slot_key_t UPDATE2 = "update2";
+        static inline const slot_key_t SLOT_1  = "slot1";
     };
 
     /// Type of signal
-    using int_sent_signal_t = core::com::signal<void (int)>;
+    using int_sent_t = core::com::signal<void (int)>;
 
     //-------------------------------------------------------------------------
 
@@ -253,8 +252,8 @@ protected:
     connections_t auto_connections() const override
     {
         return {
-            {"data1", data::object::MODIFIED_SIG, service::slots::UPDATE},
-            {"data2", data::object::MODIFIED_SIG, slots::UPDATE2}
+            {"data1", data::signals::MODIFIED, service::slots::UPDATE},
+            {"data2", data::signals::MODIFIED, slots::UPDATE2}
         };
     }
 
@@ -329,9 +328,9 @@ protected:
     connections_t auto_connections() const override
     {
         connections_t connections;
-        connections.push("data1", data::object::MODIFIED_SIG, service::slots::UPDATE);
-        connections.push("data2", data::object::MODIFIED_SIG, slots::SLOT_1);
-        connections.push("data3", data::object::MODIFIED_SIG, slots::SLOT_1);
+        connections.push("data1", data::signals::MODIFIED, service::slots::UPDATE);
+        connections.push("data2", data::signals::MODIFIED, slots::SLOT_1);
+        connections.push("data3", data::signals::MODIFIED, slots::SLOT_1);
         return connections;
     }
 
@@ -402,9 +401,9 @@ protected:
     connections_t auto_connections() const override
     {
         return {
-            {"data1", data::object::MODIFIED_SIG, service::slots::UPDATE},
-            {"data2", data::object::MODIFIED_SIG, slots::SLOT_1},
-            {"data3", data::object::MODIFIED_SIG, slots::SLOT_1},
+            {"data1", data::signals::MODIFIED, service::slots::UPDATE},
+            {"data2", data::signals::MODIFIED, slots::SLOT_1},
+            {"data3", data::signals::MODIFIED, slots::SLOT_1},
         };
     }
 

@@ -106,10 +106,10 @@ public:
     SIGHT_SERVICE_API static core::com::connection connect_unregister_out(const core::com::slot_base::sptr& _slot);
 
     /// Notify about a newly deferred object
-    SIGHT_SERVICE_API static void notify_register_out(data::object::sptr, const std::string&);
+    SIGHT_SERVICE_API static void notify_register_out(data::object::sptr /*_obj*/, const std::string& /*_id*/);
 
     /// Notify about a destroyed deferred object
-    SIGHT_SERVICE_API static void notify_unregister_out(data::object::sptr, const std::string&);
+    SIGHT_SERVICE_API static void notify_unregister_out(data::object::sptr /*_obj*/, const std::string& /*_id*/);
 
     /// Returns a boolean to indicate if the object is optional
     SIGHT_SERVICE_API static bool is_key_optional(const service::base::sptr& _srv, const std::string& _key);

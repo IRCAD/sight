@@ -22,7 +22,6 @@
 
 #include "module/io/matrix/matrix4_trf_reader.hpp"
 
-#include <core/com/signal.hxx>
 #include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
 #include <core/progress/observer.hpp>

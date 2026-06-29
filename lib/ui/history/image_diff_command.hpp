@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -57,7 +57,7 @@ private:
 
     data::image::sptr m_img;
 
-    data::image::buffer_modified_signal_t::sptr m_modified_sig;
+    data::image::signals::buffer_modified_t::sptr m_modified_sig;
 
     filter::image::image_diff m_diff;
 };

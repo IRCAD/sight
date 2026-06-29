@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -85,9 +85,9 @@ public:
      */
     void open_location_dialog() override;
 
-protected:
-
     sight::io::service::path_type_t get_path_type() const override;
+
+protected:
 
     /**
      * @brief Starting method.
@@ -133,7 +133,7 @@ private:
      * @param[in] _filename : name of the file to write with extension. extension will be used to choose the writer.
      * @param[in] _mesh : const pointer of the data mesh.
      */
-    void write_mesh(const std::filesystem::path& _filename, const data::mesh::csptr _mesh);
+    void write_mesh(const std::filesystem::path& _filename, data::mesh::csptr _mesh);
 
     ///  Stores the selectedExtension from dialog.
     std::string m_selected_extension;

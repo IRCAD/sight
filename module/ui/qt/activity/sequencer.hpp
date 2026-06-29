@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2025 IRCAD France
+ * Copyright (C) 2016-2026 IRCAD France
  * Copyright (C) 2016-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -119,26 +119,22 @@ public:
 
     struct slots final
     {
-        using key_t = sight::core::com::slots::key_t;
+        inline static const slot_key_t GO_TO         = "go_to";
+        inline static const slot_key_t CHECK_NEXT    = "check_next";
+        inline static const slot_key_t VALIDATE_NEXT = "validate_next";
+        inline static const slot_key_t NEXT          = "next";
+        inline static const slot_key_t PREVIOUS      = "previous";
+        inline static const slot_key_t SEND_INFO     = "send_info";
 
-        inline static const key_t GO_TO         = "go_to";
-        inline static const key_t CHECK_NEXT    = "check_next";
-        inline static const key_t VALIDATE_NEXT = "validate_next";
-        inline static const key_t NEXT          = "next";
-        inline static const key_t PREVIOUS      = "previous";
-        inline static const key_t SEND_INFO     = "send_info";
+        inline static const slot_key_t RESET_REQUIREMENTS = "reset_requirements";
 
-        inline static const key_t RESET_REQUIREMENTS = "reset_requirements";
-
-        inline static const key_t ENABLE_USER_WARNING  = "enable_user_warning";
-        inline static const key_t DISABLE_USER_WARNING = "disable_user_warning";
-        inline static const key_t SET_USER_WARNING     = "set_user_warning";
+        inline static const slot_key_t ENABLE_USER_WARNING  = "enable_user_warning";
+        inline static const slot_key_t DISABLE_USER_WARNING = "disable_user_warning";
+        inline static const slot_key_t SET_USER_WARNING     = "set_user_warning";
     };
 
     struct signals final
     {
-        using key_t = sight::core::com::signals::key_t;
-
         inline static const key_t ACTIVITY_CREATED = "activity_created";
         inline static const key_t DATA_REQUIRED    = "data_required";
         inline static const key_t HAS_PREVIOUS     = "hasPrevious";
@@ -149,9 +145,9 @@ public:
         inline static const key_t NEXT_VALID     = "next_valid";
         inline static const key_t NEXT_INVALID   = "next_invalid";
 
-        using void_signal_t     = core::com::signal<void ()>;
-        using bool_signal_t     = core::com::signal<void (bool)>;
-        using activity_signal_t = core::com::signal<void (data::activity::sptr)>;
+        using void_t     = core::com::signal<void ()>;
+        using bool_t     = core::com::signal<void (bool)>;
+        using activity_t = core::com::signal<void (data::activity::sptr)>;
     };
 
     /// Slot: Check if the next activities can be enabled
@@ -240,37 +236,14 @@ private:
     std::string m_button_width {"200"};
     double m_font_size {12.0};
 
-    const signals::activity_signal_t::sptr m_activity_created {
-        new_signal<signals::activity_signal_t>(signals::ACTIVITY_CREATED)
-    };
-
-    const signals::activity_signal_t::sptr m_data_required {
-        new_signal<signals::activity_signal_t>(signals::DATA_REQUIRED)
-    };
-
-    const signals::bool_signal_t::sptr m_has_previous {
-        new_signal<signals::bool_signal_t>(signals::HAS_PREVIOUS)
-    };
-
-    const signals::bool_signal_t::sptr m_has_next {
-        new_signal<signals::bool_signal_t>(signals::HAS_NEXT)
-    };
-
-    const signals::bool_signal_t::sptr m_next_enabled {
-        new_signal<signals::bool_signal_t>(signals::NEXT_ENABLED)
-    };
-
-    const signals::bool_signal_t::sptr m_next_validated {
-        new_signal<signals::bool_signal_t>(signals::NEXT_VALIDATED)
-    };
-
-    const signals::void_signal_t::sptr m_next_valid {
-        new_signal<signals::void_signal_t>(signals::NEXT_VALID)
-    };
-
-    const signals::void_signal_t::sptr m_next_invalid {
-        new_signal<signals::void_signal_t>(signals::NEXT_INVALID)
-    };
+    const signals::activity_t::sptr m_activity_created {new_signal<signals::activity_t>(signals::ACTIVITY_CREATED)};
+    const signals::activity_t::sptr m_data_required {new_signal<signals::activity_t>(signals::DATA_REQUIRED)};
+    const signals::bool_t::sptr m_has_previous {new_signal<signals::bool_t>(signals::HAS_PREVIOUS)};
+    const signals::bool_t::sptr m_has_next {new_signal<signals::bool_t>(signals::HAS_NEXT)};
+    const signals::bool_t::sptr m_next_enabled {new_signal<signals::bool_t>(signals::NEXT_ENABLED)};
+    const signals::bool_t::sptr m_next_validated {new_signal<signals::bool_t>(signals::NEXT_VALIDATED)};
+    const signals::void_t::sptr m_next_valid {new_signal<signals::void_t>(signals::NEXT_VALID)};
+    const signals::void_t::sptr m_next_invalid {new_signal<signals::void_t>(signals::NEXT_INVALID)};
 
     static constexpr std::string_view ACTIVITY_SET_INOUT = "activitySet";
     data::ptr<data::activity_set, data::access::inout> m_activity_set {this, ACTIVITY_SET_INOUT};

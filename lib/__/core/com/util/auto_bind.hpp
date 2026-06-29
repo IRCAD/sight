@@ -24,11 +24,9 @@
 
 #include "core/com/util/convert_function_type.hpp"
 
+#include <boost/function_types/function_arity.hpp>
 #include <functional>
 
-/**
- * @brief fwCom
- */
 namespace sight::core::com::util
 {
 
@@ -48,8 +46,13 @@ struct auto_bind<F, 0>
 {
     using function_type = convert_function_type<F>::type;
 
+    //------------------------------------------------------------------------------
+
     template<typename W, typename ... A>
-    static std::function<function_type> wrap(W _f, A ... _a);
+    static std::function<function_type> wrap(W _f, A ... _a)
+    {
+        return [... a = _a, _f](auto&& ...){return std::invoke(_f, a ...);};
+    }
 };
 
 /// AutoBind specialization.
@@ -58,8 +61,13 @@ struct auto_bind<F, 1>
 {
     using function_type = convert_function_type<F>::type;
 
+    //------------------------------------------------------------------------------
+
     template<typename W, typename ... A>
-    static std::function<function_type> wrap(W _f, A ... _a);
+    static std::function<function_type> wrap(W _f, A ... _a)
+    {
+        return [... a = _a, _f](auto _p1, auto&& ...){return std::invoke(_f, a ..., _p1);};
+    }
 };
 
 /// AutoBind specialization.
@@ -68,8 +76,13 @@ struct auto_bind<F, 2>
 {
     using function_type = convert_function_type<F>::type;
 
+    //------------------------------------------------------------------------------
+
     template<typename W, typename ... A>
-    static std::function<function_type> wrap(W _f, A ... _a);
+    static std::function<function_type> wrap(W _f, A ... _a)
+    {
+        return [... a = _a, _f](auto _p1, auto _p2, auto&& ...){return std::invoke(_f, a ..., _p1, _p2);};
+    }
 };
 
 /// AutoBind specialization.
@@ -78,8 +91,16 @@ struct auto_bind<F, 3>
 {
     using function_type = convert_function_type<F>::type;
 
+    //------------------------------------------------------------------------------
+
     template<typename W, typename ... A>
-    static std::function<function_type> wrap(W _f, A ... _a);
+    static std::function<function_type> wrap(W _f, A ... _a)
+    {
+        return [... a = _a, _f](auto _p1, auto _p2, auto _p3, auto&& ...)
+               {
+                   return std::invoke(_f, a ..., _p1, _p2, _p3);
+               };
+    }
 };
 
 /// AutoBind specialization.
@@ -88,8 +109,16 @@ struct auto_bind<F, 4>
 {
     using function_type = convert_function_type<F>::type;
 
+    //------------------------------------------------------------------------------
+
     template<typename W, typename ... A>
-    static std::function<function_type> wrap(W _f, A ... _a);
+    static std::function<function_type> wrap(W _f, A ... _a)
+    {
+        return [... a = _a, _f](auto _p1, auto _p2, auto _p3, auto _p4, auto&& ...)
+               {
+                   return std::invoke(_f, a ..., _p1, _p2, _p3, _p4);
+               };
+    }
 };
 
 /// AutoBind specialization.
@@ -98,8 +127,16 @@ struct auto_bind<F, 5>
 {
     using function_type = convert_function_type<F>::type;
 
+    //------------------------------------------------------------------------------
+
     template<typename W, typename ... A>
-    static std::function<function_type> wrap(W _f, A ... _a);
+    static std::function<function_type> wrap(W _f, A ... _a)
+    {
+        return [... a = _a, _f](auto _p1, auto _p2, auto _p3, auto _p4, auto _p5, auto&& ...)
+               {
+                   return std::invoke(_f, a ..., _p1, _p2, _p3, _p4, _p5);
+               };
+    }
 };
 
 /// AutoBind specialization.
@@ -108,8 +145,16 @@ struct auto_bind<F, 6>
 {
     using function_type = convert_function_type<F>::type;
 
+    //------------------------------------------------------------------------------
+
     template<typename W, typename ... A>
-    static std::function<function_type> wrap(W _f, A ... _a);
+    static std::function<function_type> wrap(W _f, A ... _a)
+    {
+        return [... a = _a, _f](auto _p1, auto _p2, auto _p3, auto _p4, auto _p5, auto _p6, auto&& ...)
+               {
+                   return std::invoke(_f, a ..., _p1, _p2, _p3, _p4, _p5, _p6);
+               };
+    }
 };
 
 /// AutoBind specialization.
@@ -118,8 +163,16 @@ struct auto_bind<F, 7>
 {
     using function_type = convert_function_type<F>::type;
 
+    //------------------------------------------------------------------------------
+
     template<typename W, typename ... A>
-    static std::function<function_type> wrap(W _f, A ... _a);
+    static std::function<function_type> wrap(W _f, A ... _a)
+    {
+        return [... a = _a, _f](auto _p1, auto _p2, auto _p3, auto _p4, auto _p5, auto _p6, auto _p7, auto&& ...)
+               {
+                   return std::invoke(_f, a ..., _p1, _p2, _p3, _p4, _p5, _p6, _p7);
+               };
+    }
 };
 
 /// AutoBind specialization.
@@ -128,8 +181,14 @@ struct auto_bind<F, 8>
 {
     using function_type = convert_function_type<F>::type;
 
+    //------------------------------------------------------------------------------
+
     template<typename W, typename ... A>
-    static std::function<function_type> wrap(W _f, A ... _a);
+    static std::function<function_type> wrap(W _f, A ... _a)
+    {
+        return [... a = _a, _f](auto _p1, auto _p2, auto _p3, auto _p4, auto _p5, auto _p6, auto _p7, auto _p8,
+                                auto&& ...){return std::invoke(_f, a ..., _p1, _p2, _p3, _p4, _p5, _p6, _p7, _p8);};
+    }
 };
 
 /// AutoBind specialization.
@@ -138,8 +197,17 @@ struct auto_bind<F, 9>
 {
     using function_type = convert_function_type<F>::type;
 
+    //------------------------------------------------------------------------------
+
     template<typename W, typename ... A>
-    static std::function<function_type> wrap(W _f, A ... _a);
+    static std::function<function_type> wrap(W _f, A ... _a)
+    {
+        return [... a = _a, _f](auto _p1, auto _p2, auto _p3, auto _p4, auto _p5, auto _p6, auto _p7, auto _p8,
+                                auto _p9, auto&& ...)
+               {
+                   return std::invoke(_f, a ..., _p1, _p2, _p3, _p4, _p5, _p6, _p7, _p8, _p9);
+               };
+    }
 };
 
 /**
@@ -151,6 +219,11 @@ struct auto_bind<F, 9>
  * as second argument.
  */
 template<typename F, typename ... A>
-std::function<typename convert_function_type<F>::type> autobind(F _f, A ... _a);
+std::function<typename convert_function_type<F>::type> autobind(F _f, A ... _a)
+{
+    using function_type = convert_function_type<F>::type;
+    const int arity = boost::function_types::function_arity<function_type>::value;
+    return auto_bind<F, arity>::wrap(_f, _a ...);
+}
 
 } // namespace sight::core::com::util

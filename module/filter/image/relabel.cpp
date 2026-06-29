@@ -119,7 +119,7 @@ void relabel::updating()
     SIGHT_ASSERT("No mask", mask);
 
     sight::filter::image::relabel(*mask, dictionary, star);
-    mask->async_emit(this, sight::data::image::BUFFER_MODIFIED_SIG);
+    mask->async_emit(this, sight::data::image::signals::BUFFER_MODIFIED);
 }
 
 //------------------------------------------------------------------------------
@@ -133,11 +133,11 @@ void relabel::stopping()
 sight::service::connections_t relabel::auto_connections() const
 {
     return {
-        {m_image_inout, sight::data::image::MODIFIED_SIG, sight::service::base::slots::UPDATE},
-        {m_image_inout, sight::data::image::BUFFER_MODIFIED_SIG, sight::service::base::slots::UPDATE},
-        {m_dictionary_in, sight::data::map::MODIFIED_SIG, sight::service::base::slots::UPDATE},
-        {m_dictionary_in, sight::data::map::ADDED_OBJECTS_SIG, sight::service::base::slots::UPDATE},
-        {m_dictionary_in, sight::data::map::CHANGED_OBJECTS_SIG, sight::service::base::slots::UPDATE}
+        {m_image_inout, sight::data::signals::MODIFIED, sight::service::base::slots::UPDATE},
+        {m_image_inout, sight::data::image::signals::BUFFER_MODIFIED, sight::service::base::slots::UPDATE},
+        {m_dictionary_in, sight::data::signals::MODIFIED, sight::service::base::slots::UPDATE},
+        {m_dictionary_in, sight::data::map::signals::ADDED_OBJECTS, sight::service::base::slots::UPDATE},
+        {m_dictionary_in, sight::data::map::signals::CHANGED_OBJECTS, sight::service::base::slots::UPDATE}
     };
 }
 

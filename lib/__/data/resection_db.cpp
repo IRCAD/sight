@@ -25,22 +25,17 @@
 #include "data/exception.hpp"
 #include "data/registry/macros.hpp"
 
-#include <core/com/signal.hxx>
-
 SIGHT_REGISTER_DATA(sight::data::resection_db);
 
 namespace sight::data
 {
 
-const core::com::signals::key_t resection_db::RESECTION_ADDED_SIG = "resectionAdded";
-const core::com::signals::key_t resection_db::SAFE_PART_ADDED_SIG = "safePartAdded";
-
 //------------------------------------------------------------------------------
 
 resection_db::resection_db()
 {
-    new_signal<resection_added_signal_t>(RESECTION_ADDED_SIG);
-    new_signal<safe_part_added_signal_t>(SAFE_PART_ADDED_SIG);
+    new_signal<signals::resection_added_t>(signals::RESECTION_ADDED);
+    new_signal<signals::safe_part_added_t>(signals::SAFE_PART_ADDED);
 }
 
 //-----------------------------------------------------------------------------

@@ -25,7 +25,6 @@
 #include "io/zip/archive.hpp"
 #include "io/zip/archive_reader.hpp"
 
-#include <core/com/signal.hxx>
 #include <core/crypto/password_keeper.hpp>
 #include <core/crypto/secure_string.hpp>
 #include <core/location/single_file.hpp>

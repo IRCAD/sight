@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,7 +34,7 @@
 #include <QPushButton>
 #include <QSlider>
 
-class QGroupBox;
+class QGroupBox; // NOLINT(readability-identifier-naming)
 
 namespace sight::module::ui::qt
 {
@@ -152,71 +152,68 @@ public:
     /// @brief  Struct to handle all signals.
     struct signals
     {
-        using signal_t = core::com::signals::key_t;
         /// Generic changed signal type
-        using changed_signal_t = core::com::signal<void (sight::ui::parameter_t, std::string)>;
+        using changed_t = core::com::signal<void (sight::ui::parameter_t, std::string)>;
 
         /// Boolean changed signal type
-        using boolean_changed_signal_t = core::com::signal<void (bool, std::string)>;
+        using boolean_changed_t = core::com::signal<void (bool, std::string)>;
 
         /// Color changed signal type
-        using color_changed_signal_t = core::com::signal<void (std::array<std::uint8_t, 4>, std::string)>;
+        using color_changed_t = core::com::signal<void (std::array<std::uint8_t, 4>, std::string)>;
 
         /// Double changed signal type
-        using double_changed_signal_t  = core::com::signal<void (double, std::string)>;
-        using double2_changed_signal_t = core::com::signal<void (double, double, std::string)>;
-        using double3_changed_signal_t = core::com::signal<void (double, double, double, std::string)>;
+        using double_changed_t  = core::com::signal<void (double, std::string)>;
+        using double2_changed_t = core::com::signal<void (double, double, std::string)>;
+        using double3_changed_t = core::com::signal<void (double, double, double, std::string)>;
 
         /// Integer changed signal type
-        using integer_changed_signal_t  = core::com::signal<void (int, std::string)>;
-        using integer2_changed_signal_t = core::com::signal<void (int, int, std::string)>;
-        using integer3_changed_signal_t = core::com::signal<void (int, int, int, std::string)>;
+        using integer_changed_t  = core::com::signal<void (int, std::string)>;
+        using integer2_changed_t = core::com::signal<void (int, int, std::string)>;
+        using integer3_changed_t = core::com::signal<void (int, int, int, std::string)>;
 
         /// Enum changed signal type
-        using enum_changed_signal_t       = core::com::signal<void (std::string, std::string)>;
-        using enum_changed_index_signal_t = core::com::signal<void (int, std::string)>;
+        using enum_changed_t       = core::com::signal<void (std::string, std::string)>;
+        using enum_changed_index_t = core::com::signal<void (int, std::string)>;
 
-        inline static const signal_t PARAMETER_CHANGED_SIG  = "parameter_changed";
-        inline static const signal_t BOOLEAN_CHANGED_SIG    = "bool_changed";
-        inline static const signal_t COLOR_CHANGED_SIG      = "color_changed";
-        inline static const signal_t DOUBLE_CHANGED_SIG     = "double_changed";
-        inline static const signal_t DOUBLE2_CHANGED_SIG    = "double2_changed";
-        inline static const signal_t DOUBLE3_CHANGED_SIG    = "double3_changed";
-        inline static const signal_t INTEGER_CHANGED_SIG    = "int_changed";
-        inline static const signal_t INTEGER2_CHANGED_SIG   = "int2_changed";
-        inline static const signal_t INTEGER3_CHANGED_SIG   = "int3_changed";
-        inline static const signal_t ENUM_CHANGED_SIG       = "enum_changed";
-        inline static const signal_t ENUM_INDEX_CHANGED_SIG = "enum_index_changed";
+        inline static const signal_key_t PARAMETER_CHANGED  = "parameter_changed";
+        inline static const signal_key_t BOOLEAN_CHANGED    = "bool_changed";
+        inline static const signal_key_t COLOR_CHANGED      = "color_changed";
+        inline static const signal_key_t DOUBLE_CHANGED     = "double_changed";
+        inline static const signal_key_t DOUBLE2_CHANGED    = "double2_changed";
+        inline static const signal_key_t DOUBLE3_CHANGED    = "double3_changed";
+        inline static const signal_key_t INTEGER_CHANGED    = "int_changed";
+        inline static const signal_key_t INTEGER2_CHANGED   = "int2_changed";
+        inline static const signal_key_t INTEGER3_CHANGED   = "int3_changed";
+        inline static const signal_key_t ENUM_CHANGED       = "enum_changed";
+        inline static const signal_key_t ENUM_INDEX_CHANGED = "enum_index_changed";
     };
 
     /// @brief  Struct to handle all slots
     struct slots
     {
-        using slots_t = core::com::slots::key_t;
-
-        inline static const slots_t SET_PARAMETER_SLOT               = "set_parameter";
-        inline static const slots_t SET_BOOL_PARAMETER_SLOT          = "set_bool_parameter";
-        inline static const slots_t SET_COLOR_PARAMETER_SLOT         = "set_color_parameter";
-        inline static const slots_t SET_DOUBLE_PARAMETER_SLOT        = "set_double_parameter";
-        inline static const slots_t SET_DOUBLE2_PARAMETER_SLOT       = "set_double2_parameter";
-        inline static const slots_t SET_DOUBLE3_PARAMETER_SLOT       = "set_double3_parameter";
-        inline static const slots_t SET_INT_PARAMETER_SLOT           = "set_int_parameter";
-        inline static const slots_t SET_INT2_PARAMETER_SLOT          = "set_int2_parameter";
-        inline static const slots_t SET_INT3_PARAMETER_SLOT          = "set_int3_parameter";
-        inline static const slots_t SET_ENUM_PARAMETER_SLOT          = "set_enum_parameter";
-        inline static const slots_t SET_ENUM_INDEX_PARAMETER_SLOT    = "set_enum_index_parameter";
-        inline static const slots_t UPDATE_ENUM_RANGE_SLOT           = "updateEnumRange";
-        inline static const slots_t UPDATE_INT_MIN_PARAMETER_SLOT    = "update_int_min_parameter";
-        inline static const slots_t UPDATE_INT_MAX_PARAMETER_SLOT    = "update_int_max_parameter";
-        inline static const slots_t UPDATE_DOUBLE_MIN_PARAMETER_SLOT = "update_double_min_parameter";
-        inline static const slots_t UPDATE_DOUBLE_MAX_PARAMETER_SLOT = "update_double_max_parameter";
+        inline static const slot_key_t SET_PARAMETER               = "set_parameter";
+        inline static const slot_key_t SET_BOOL_PARAMETER          = "set_bool_parameter";
+        inline static const slot_key_t SET_COLOR_PARAMETER         = "set_color_parameter";
+        inline static const slot_key_t SET_DOUBLE_PARAMETER        = "set_double_parameter";
+        inline static const slot_key_t SET_DOUBLE2_PARAMETER       = "set_double2_parameter";
+        inline static const slot_key_t SET_DOUBLE3_PARAMETER       = "set_double3_parameter";
+        inline static const slot_key_t SET_INT_PARAMETER           = "set_int_parameter";
+        inline static const slot_key_t SET_INT2_PARAMETER          = "set_int2_parameter";
+        inline static const slot_key_t SET_INT3_PARAMETER          = "set_int3_parameter";
+        inline static const slot_key_t SET_ENUM_PARAMETER          = "set_enum_parameter";
+        inline static const slot_key_t SET_ENUM_INDEX_PARAMETER    = "set_enum_index_parameter";
+        inline static const slot_key_t UPDATE_ENUM_RANGE           = "updateEnumRange";
+        inline static const slot_key_t UPDATE_INT_MIN_PARAMETER    = "update_int_min_parameter";
+        inline static const slot_key_t UPDATE_INT_MAX_PARAMETER    = "update_int_max_parameter";
+        inline static const slot_key_t UPDATE_DOUBLE_MIN_PARAMETER = "update_double_min_parameter";
+        inline static const slot_key_t UPDATE_DOUBLE_MAX_PARAMETER = "update_double_max_parameter";
     };
 
     struct enum_button_param
     {
-        std::string value {""};
-        std::string label {""};
-        std::string icon_path {""};
+        std::string value {};
+        std::string label {};
+        std::string icon_path {};
     };
 
     struct param_widget
@@ -243,6 +240,16 @@ public:
 
     /// Destructor. Does nothing
     ~parameters() noexcept override = default;
+
+    /**
+     * @brief Called on all dependent widget to update it.
+     * @param _watched Widget to update.
+     * @param _event Event type, only care about ::QEvent::EnabledChange
+     * @return False.
+     */
+    bool eventFilter(QObject* _watched, QEvent* _event) override;
+
+protected:
 
     /// Configure the editor.
     void configuring() override;
@@ -320,14 +327,6 @@ private Q_SLOTS:
     static void on_double_slider_range_mapped(QLabel* _min_label, QLabel* _max_label, QSlider* _slider);
 
 private:
-
-    /**
-     * @brief Called on all dependent widget to update it.
-     * @param _watched Widget to update.
-     * @param _event Event type, only care about ::QEvent::EnabledChange
-     * @return False.
-     */
-    bool eventFilter(QObject* _watched, QEvent* _event) override;
 
     /// Creates a reset button for one widget.
     /// @param _key Name of the parameter it resets.
@@ -416,9 +415,9 @@ private:
         QBoxLayout& _layout,
         const param_widget& _setup,
         const std::vector<enum_button_param>& _button_list,
-        const int _width,
-        const int _height,
-        const int _spacing,
+        int _width,
+        int _height,
+        int _spacing,
         const std::string& _style,
         Qt::Orientation _orientation
     ) const;
@@ -430,7 +429,7 @@ private:
     void emit_double_signal(QObject* _widget) const;
 
     /// Emit the signal for the color widget
-    void emit_color_signal(const QColor _color, const std::string& _key) const;
+    void emit_color_signal(QColor _color, const std::string& _key) const;
 
     /**
      * @name Slots
@@ -489,7 +488,7 @@ private:
 
     /// Internal function that updates enum widget value using a list of string (each element can contains value & data
     /// ex:"Value=data")
-    void update_enum_list(const std::vector<std::string>& _list, const std::string _key);
+    void update_enum_list(const std::vector<std::string>& _list, std::string _key);
 
     /// Return the widget of the parameter with the given key, or nullptr if it does not exist
     QObject* get_param_widget(const std::string& _key);

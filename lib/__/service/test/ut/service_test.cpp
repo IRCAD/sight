@@ -23,7 +23,7 @@
 #include "test_service.hpp"
 
 #include <core/com/helper/sig_slot_connection.hpp>
-#include <core/com/slots.hxx>
+
 #include <core/thread/worker.hpp>
 #include <core/time_stamp.hpp>
 
@@ -906,7 +906,7 @@ TEST_SUITE("sight::service::service")
         CHECK(not srv->is_updated2());
 
         // Auto-connected by default because there is a match in the auto_connections() map
-        obj1->signal<sight::data::object::modified_signal_t>(sight::data::object::MODIFIED_SIG)->emit();
+        obj1->emit(sight::data::signals::MODIFIED);
 
         CHECK(srv->is_updated());
         CHECK(not srv->is_updated2());
@@ -914,7 +914,7 @@ TEST_SUITE("sight::service::service")
         srv->reset_is_updated();
 
         // Auto-connected by default because there is a match in the auto_connections() map
-        obj2->signal<sight::data::object::modified_signal_t>(sight::data::object::MODIFIED_SIG)->emit();
+        obj2->emit(sight::data::signals::MODIFIED);
 
         CHECK(not srv->is_updated());
         CHECK(srv->is_updated2());
@@ -928,13 +928,13 @@ TEST_SUITE("sight::service::service")
 
         srv->reset_is_updated2();
 
-        obj2->signal<sight::data::object::modified_signal_t>(sight::data::object::MODIFIED_SIG)->emit();
+        obj2->emit(sight::data::signals::MODIFIED);
 
         CHECK(not srv->is_updated());
         CHECK(not srv->is_updated2());
 
         // Not auto-connected by default because there is no match in the auto_connections() map
-        obj3->signal<sight::data::object::modified_signal_t>(sight::data::object::MODIFIED_SIG)->emit();
+        obj3->emit(sight::data::signals::MODIFIED);
 
         CHECK(not srv->is_updated());
         CHECK(not srv->is_updated2());

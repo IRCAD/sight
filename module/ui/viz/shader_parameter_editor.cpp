@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,7 +23,6 @@
 #include "shader_parameter_editor.hpp"
 
 #include <data/material.hpp>
-#include <data/mesh.hpp>
 #include <data/reconstruction.hpp>
 
 #include <service/op.hpp>
@@ -46,7 +45,7 @@ void shader_parameter_editor::starting()
     {
         const auto rec                = m_reconstruction.lock();
         data::material::sptr material = rec->get_material();
-        m_connections.connect(material, data::material::MODIFIED_SIG, this->get_sptr(), service::slots::UPDATE);
+        m_connections.connect(material, data::signals::MODIFIED, this->get_sptr(), service::slots::UPDATE);
     }
 
     this->create();

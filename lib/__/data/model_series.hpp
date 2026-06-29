@@ -70,13 +70,16 @@ public:
      * @name Signals
      * @{
      */
-    /// Defines the type of signal sent when a reconstruction is added.
-    using reconstructions_added_signal_t = core::com::signal<void (reconstruction_vector_t)>;
-    SIGHT_DATA_API static const core::com::signals::key_t RECONSTRUCTIONS_ADDED_SIG;
+    struct signals
+    {
+        /// Defines the type of signal sent when a reconstruction is added.
+        using reconstructions_added_t = core::com::signal<void (reconstruction_vector_t)>;
+        static const inline signal_key_t RECONSTRUCTIONS_ADDED = "reconstructionsAdded";
 
-    /// Defines the type of signal sent when a reconstruction is removed.
-    using reconstructions_removed_signal_t = core::com::signal<void (reconstruction_vector_t)>;
-    SIGHT_DATA_API static const core::com::signals::key_t RECONSTRUCTIONS_REMOVED_SIG;
+        /// Defines the type of signal sent when a reconstruction is removed.
+        using reconstructions_removed_t = core::com::signal<void (reconstruction_vector_t)>;
+        static const inline signal_key_t RECONSTRUCTIONS_REMOVED = "reconstructionsRemoved";
+    };
 /**
  * @}
  */

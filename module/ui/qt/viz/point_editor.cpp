@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,15 +22,6 @@
 
 #include "module/ui/qt/viz/point_editor.hpp"
 
-#include <core/base.hpp>
-#include <core/com/slot.hpp>
-#include <core/com/slot.hxx>
-#include <core/com/slots.hpp>
-#include <core/com/slots.hxx>
-
-#include <data/map.hpp>
-#include <data/string.hpp>
-
 #include <ui/qt/container/widget.hpp>
 
 #include <QDoubleValidator>
@@ -45,17 +36,10 @@
 namespace sight::module::ui::qt::viz
 {
 
-static const core::com::slots::key_t GET_INTERACTION_SLOT = "get_interaction";
-
 point_editor::point_editor() noexcept
 {
-    new_slot(GET_INTERACTION_SLOT, &point_editor::get_interaction, this);
+    new_slot(slots::GET_INTERACTION, &point_editor::get_interaction, this);
 }
-
-//------------------------------------------------------------------------------
-
-point_editor::~point_editor() noexcept =
-    default;
 
 //------------------------------------------------------------------------------
 

@@ -25,9 +25,6 @@
 #include <io/opencv/camera.hpp>
 #include <io/opencv/image.hpp>
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-
 #define SIGHT_PROFILING_DISABLED
 #include <core/profiling.hpp>
 
@@ -39,18 +36,14 @@
 namespace sight::module::geometry::vision
 {
 
-// Public slot
-const core::com::slots::key_t distortion::CHANGE_STATE_SLOT = "change_state";
-
-// Private slot
-static const core::com::slots::key_t CALIBRATE_SLOT = "calibrate";
+// Public/Private slots
 
 //------------------------------------------------------------------------------
 distortion::distortion() noexcept :
     filter(has_signals::signals())
 {
-    new_slot(CHANGE_STATE_SLOT, &distortion::change_state, this);
-    new_slot(CALIBRATE_SLOT, &distortion::calibrate, this);
+    new_slot(slots::CHANGE_STATE, &distortion::change_state, this);
+    new_slot(slots::CALIBRATE, &distortion::calibrate, this);
 }
 
 // ----------------------------------------------------------------------------
@@ -58,10 +51,10 @@ distortion::distortion() noexcept :
 service::connections_t distortion::auto_connections() const
 {
     service::connections_t connections;
-    connections.push(CAMERA_INPUT, data::camera::MODIFIED_SIG, CALIBRATE_SLOT);
-    connections.push(CAMERA_INPUT, data::camera::INTRINSIC_CALIBRATED_SIG, CALIBRATE_SLOT);
-    connections.push(IMAGE_INPUT, data::image::MODIFIED_SIG, service::slots::UPDATE);
-    connections.push(IMAGE_INPUT, data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(CAMERA_INPUT, data::signals::MODIFIED, slots::CALIBRATE);
+    connections.push(CAMERA_INPUT, data::camera::signals::INTRINSIC_CALIBRATED, slots::CALIBRATE);
+    connections.push(IMAGE_INPUT, data::signals::MODIFIED, service::slots::UPDATE);
+    connections.push(IMAGE_INPUT, data::image::signals::BUFFER_MODIFIED, service::slots::UPDATE);
 
     return connections;
 }
@@ -153,18 +146,10 @@ void distortion::updating()
 
             if(reallocated)
             {
-                auto sig = output_image->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-                {
-                    core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
-                    sig->async_emit();
-                }
+                output_image->async_emit(this, data::signals::MODIFIED);
             }
 
-            auto sig = output_image->signal<data::image::buffer_modified_signal_t>(data::image::BUFFER_MODIFIED_SIG);
-            {
-                core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
-                sig->async_emit();
-            }
+            output_image->async_emit(this, data::image::signals::BUFFER_MODIFIED);
         }
     }
 }
@@ -185,7 +170,7 @@ void distortion::remap()
 
     SIGHT_PROFILE_AVG("distort", 5);
 
-    auto sig = input_image->signal<data::object::modified_signal_t>(data::image::BUFFER_MODIFIED_SIG);
+    auto sig = input_image->signal<data::signals::modified_t>(data::image::signals::BUFFER_MODIFIED);
 
     // Blocking signals early allows to discard any event while we are updating
     core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
@@ -295,15 +280,10 @@ void distortion::remap()
 
     if(prev_size != new_size)
     {
-        auto sig_modified = output_image->signal<data::image::modified_signal_t>(data::image::MODIFIED_SIG);
-        {
-            core::com::connection::blocker another_block(sig_modified->get_connection(slot(service::slots::UPDATE)));
-            sig_modified->async_emit();
-        }
+        output_image->async_emit(this, data::signals::MODIFIED);
     }
 
-    auto sig_out = output_image->signal<data::object::modified_signal_t>(data::image::BUFFER_MODIFIED_SIG);
-    sig_out->async_emit();
+    output_image->async_emit(data::image::signals::BUFFER_MODIFIED);
 }
 
 // ----------------------------------------------------------------------------
@@ -399,8 +379,7 @@ void distortion::calibrate()
 
         io::opencv::image::copy_from_cv(*map, cv_map);
 
-        auto sig_modified = map->signal<data::image::modified_signal_t>(data::image::MODIFIED_SIG);
-        sig_modified->async_emit();
+        map->async_emit(data::signals::MODIFIED);
     }
     else
     {

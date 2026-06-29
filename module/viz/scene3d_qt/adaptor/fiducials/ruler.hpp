@@ -82,10 +82,8 @@ public:
 
     struct signals
     {
-        using key_t = sight::core::com::signals::key_t;
-
-        static inline const key_t TOOL_DEACTIVATED = "tool_deactivated";
-        using void_signal_t = sight::core::com::signal<void ()>;
+        static inline const signal_key_t TOOL_DEACTIVATED = "tool_deactivated";
+        using void_t = sight::core::com::signal<void ()>;
     };
 
     /// Generates default methods as New, dynamicCast, ...
@@ -99,11 +97,9 @@ public:
 
     struct slots final
     {
-        using key_t = sight::core::com::slots::key_t;
-
-        inline static const key_t ACTIVATE_TOOL             = "activate_tool";
-        inline static const key_t REMOVE_ALL                = "remove_all";
-        inline static const key_t REMOVE_FROM_CURRENT_SLICE = "remove_from_current_slice";
+        inline static const slot_key_t ACTIVATE_TOOL             = "activate_tool";
+        inline static const slot_key_t REMOVE_ALL                = "remove_all";
+        inline static const slot_key_t REMOVE_FROM_CURRENT_SLICE = "remove_from_current_slice";
     };
 
     /// Changes visibility of rulers.
@@ -150,10 +146,9 @@ private:
 
     struct private_slots final
     {
-        using key_t = sight::core::com::slots::key_t;
-        inline static const key_t REMOVE_RULER_OGRE_SET    = "remove_ruler_ogre_set";
-        inline static const key_t UPDATE_MODIFIED_RULER    = "update_modified_ruler";
-        inline static const key_t DISPLAY_ON_CURRENT_SLICE = "display_on_current_slice";
+        inline static const slot_key_t REMOVE_RULER_OGRE_SET    = "remove_ruler_ogre_set";
+        inline static const slot_key_t UPDATE_MODIFIED_RULER    = "update_modified_ruler";
+        inline static const slot_key_t DISPLAY_ON_CURRENT_SLICE = "display_on_current_slice";
     };
 
     class delete_bin_button_when_focus_out : public QObject

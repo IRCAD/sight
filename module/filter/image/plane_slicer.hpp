@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2025 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -78,12 +78,12 @@ public:
     struct signals
     {
         using slice_range_changed_t = core::com::signal<void (double, double)>;
-        static inline const core::com::signals::key_t SLICE_RANGE_CHANGED = "slice_range_changed";
+        static inline const signal_key_t SLICE_RANGE_CHANGED = "slice_range_changed";
     };
 
     struct slots
     {
-        static inline const core::com::slots::key_t UPDATE_DEFAULT_VALUE = "update_default_value";
+        static inline const slot_key_t UPDATE_DEFAULT_VALUE = "update_default_value";
     };
 
     /// Constructor.
@@ -102,11 +102,11 @@ protected:
     /**
      * @brief Returns proposals to connect service slots to associated object signals.
      *
-     * Connect image::MODIFIED_SIG to this::service::slots::UPDATE
-     * Connect image::BUFFER_MODIFIED_SIG to this::service::slots::UPDATE
-     * Connect image::MODIFIED_SIG to slots::UPDATE_DEFAULT_VALUE
-     * Connect image::BUFFER_MODIFIED_SIG to slots::UPDATE_DEFAULT_VALUE
-     * Connect axes::MODIFIED_SIG to this::service::slots::UPDATE
+     * Connect data::signals::MODIFIED to this::service::slots::UPDATE
+     * Connect image::signals::BUFFER_MODIFIED to this::service::slots::UPDATE
+     * Connect data::signals::MODIFIED to slots::UPDATE_DEFAULT_VALUE
+     * Connect image::signals::BUFFER_MODIFIED to slots::UPDATE_DEFAULT_VALUE
+     * Connect data::signals::MODIFIED to this::service::slots::UPDATE
      */
     connections_t auto_connections() const final;
 

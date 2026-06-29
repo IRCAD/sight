@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -46,6 +46,8 @@ public:
 protected:
 
     SIGHT_CORE_API SPTR(std::istream) get() override;
+
+private:
 
     void* m_buf;
     std::size_t m_size;

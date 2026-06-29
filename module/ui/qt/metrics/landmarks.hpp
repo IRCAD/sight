@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2025 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -100,11 +100,35 @@ public:
 
     SIGHT_DECLARE_SERVICE(landmarks, sight::ui::editor);
 
+    struct signals
+    {
+        using world_coordinates_t = core::com::signal<void (double, double, double)>;
+        static inline const signal_key_t SEND_WORLD_COORD = "send_world_coord";
+
+        using group_selected_t = core::com::signal<void (std::string)>;
+        static inline const signal_key_t GROUP_SELECTED = "group_selected";
+    };
+
+    struct slots
+    {
+        static inline const slot_key_t ADD_POINT      = "add_point";
+        static inline const slot_key_t MODIFY_POINT   = "modifyPoint";
+        static inline const slot_key_t SELECT_POINT   = "selectPoint";
+        static inline const slot_key_t DESELECT_POINT = "deselectPoint";
+        static inline const slot_key_t REMOVE_POINT   = "removePoint";
+        static inline const slot_key_t ADD_GROUP      = "add_group";
+        static inline const slot_key_t REMOVE_GROUP   = "remove_group";
+        static inline const slot_key_t MODIFY_GROUP   = "modifyGroup";
+        static inline const slot_key_t RENAME_GROUP   = "rename_group";
+    };
+
     /// Initializes slots.
     landmarks() noexcept;
 
     /// Destroys the service.
     ~landmarks() noexcept final = default;
+
+protected:
 
     /// Configures the service.
     void configuring() final;
@@ -118,17 +142,13 @@ public:
      */
     connections_t auto_connections() const final;
 
-    /// Signal send when double clicked on a landmark, send its world coordinates;
-    static const core::com::signals::key_t SEND_WORLD_COORD;
-    using world_coordinates_signal_t = core::com::signal<void (double, double, double)>;
-    static const core::com::signals::key_t GROUP_SELECTED;
-    using group_selected_signal_t = core::com::signal<void (std::string)>;
-
     /// Resets the interface content and create connections between widgets and this service.
     void updating() final;
 
     /// Destroys the layout.
     void stopping() final;
+
+private:
 
     /// Called when a color button is clicked.
     void on_color_button();

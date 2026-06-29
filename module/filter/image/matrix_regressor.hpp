@@ -89,12 +89,12 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::vector::ADDED_OBJECTS_SIG of s_MATRIX_LIST_IN to service::slots::UPDATE
-     * Connect data::vector::REMOVED_OBJECTS_SIG of s_MATRIX_LIST_IN to service::slots::UPDATE
-     * Connect data::vector::MODIFIED_SIG of s_MATRIX_LIST_IN to service::slots::UPDATE
+     * Connect data::vector::signals::ADDED_OBJECTS of s_MATRIX_LIST_IN to service::slots::UPDATE
+     * Connect data::vector::signals::REMOVED_OBJECTS of s_MATRIX_LIST_IN to service::slots::UPDATE
+     * Connect data::signals::MODIFIED of s_MATRIX_LIST_IN to service::slots::UPDATE
      * Connect data::point_list::signals::POINT_ADDED of s_POINT_LIST_IN to service::slots::UPDATE
      * Connect data::point_list::signals::POINT_REMOVED of s_POINT_LIST_IN to service::slots::UPDATE
-     * Connect data::point_list::MODIFIED_SIG of s_POINT_LIST_IN to service::slots::UPDATE
+     * Connect data::signals::MODIFIED of s_POINT_LIST_IN to service::slots::UPDATE
      */
     connections_t auto_connections() const override;
 

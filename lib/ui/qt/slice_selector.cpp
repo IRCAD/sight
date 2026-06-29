@@ -22,7 +22,6 @@
 
 #include "ui/qt/slice_selector.hpp"
 
-#include <core/com/signal.hxx>
 #include <core/runtime/path.hpp>
 
 #include <QApplication>

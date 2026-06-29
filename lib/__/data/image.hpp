@@ -291,39 +291,42 @@ public:
      * @name Signals
      * @{
      */
-    /// Type of signal when image's buffer is added
-    using buffer_modified_signal_t = core::com::signal<void ()>;
-    SIGHT_DATA_API static const core::com::signals::key_t BUFFER_MODIFIED_SIG;
+    struct signals
+    {
+        /// Type of signal when image's buffer is added
+        using buffer_modified_t = core::com::signal<void ()>;
+        static const inline signal_key_t BUFFER_MODIFIED = "buffer_modified";
 
-    /// Type of signal when a landmark is added
-    using landmark_added_signal_t = core::com::signal<void (std::shared_ptr<point>)>;
-    SIGHT_DATA_API static const core::com::signals::key_t LANDMARK_ADDED_SIG;
+        /// Type of signal when a landmark is added
+        using landmark_added_t = core::com::signal<void (std::shared_ptr<point>)>;
+        static const inline signal_key_t LANDMARK_ADDED = "landmarkAdded";
 
-    /// Type of signal when a landmark is removed
-    using landmark_removed_signal_t = core::com::signal<void (std::shared_ptr<point>)>;
-    SIGHT_DATA_API static const core::com::signals::key_t LANDMARK_REMOVED_SIG;
+        /// Type of signal when a landmark is removed
+        using landmark_removed_t = core::com::signal<void (std::shared_ptr<point>)>;
+        static const inline signal_key_t LANDMARK_REMOVED = "landmarkRemoved";
 
-    /// Type of signal when a landmark is added
-    using landmark_displayed_signal_t = core::com::signal<void (bool)>;
-    SIGHT_DATA_API static const core::com::signals::key_t LANDMARK_DISPLAYED_SIG;
+        /// Type of signal when a landmark is added
+        using landmark_displayed_t = core::com::signal<void (bool)>;
+        static const inline signal_key_t LANDMARK_DISPLAYED = "landmarkDisplayed";
 
-    /// Type of signal when slice index is modified (axial index, frontal index, sagittal index)
-    using slice_index_modified_signal_t = core::com::signal<void (int, int, int)>;
-    SIGHT_DATA_API static const core::com::signals::key_t SLICE_INDEX_MODIFIED_SIG;
+        /// Type of signal when slice index is modified (axial index, frontal index, sagittal index)
+        using slice_index_modified_t = core::com::signal<void (int, int, int)>;
+        static const inline signal_key_t SLICE_INDEX_MODIFIED = "sliceIndexModified";
 
-    /// Type of signal when slice type is modified (from slice type, to slice type)
-    using slice_type_modified_signal_t = core::com::signal<void (int, int)>;
-    SIGHT_DATA_API static const core::com::signals::key_t SLICE_TYPE_MODIFIED_SIG;
+        /// Type of signal when slice type is modified (from slice type, to slice type)
+        using slice_type_modified_t = core::com::signal<void (int, int)>;
+        static const inline signal_key_t SLICE_TYPE_MODIFIED = "sliceTypeModified";
 
-    /// Type of signal when ruler fiducial is modified (the associated id of ruler fiducial and the new coordinates)
-    using ruler_modified_signal_t =
-        core::com::signal<void (std::optional<std::string>, std::array<double, 3>, std::array<double, 3>)>;
-    SIGHT_DATA_API static const core::com::signals::key_t RULER_MODIFIED_SIG;
+        /// Type of signal when ruler fiducial is modified (the associated id of ruler fiducial and the new coordinates)
+        using ruler_modified_t =
+            core::com::signal<void (std::optional<std::string>, std::array<double, 3>, std::array<double, 3>)>;
+        static const inline signal_key_t RULER_MODIFIED = "ruler_modified";
 
-    /// Type of signal when fiducial is removed (the associated id of fiducial)
-    using fiducial_removed_signal_t =
-        core::com::signal<void (std::optional<std::string>)>;
-    SIGHT_DATA_API static const core::com::signals::key_t FIDUCIAL_REMOVED_SIG;
+        /// Type of signal when fiducial is removed (the associated id of fiducial)
+        using fiducial_removed_t =
+            core::com::signal<void (std::optional<std::string>)>;
+        static const inline signal_key_t FIDUCIAL_REMOVED = "fiducial_removed";
+    };
     /**
      * @}
      */

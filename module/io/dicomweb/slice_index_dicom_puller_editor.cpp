@@ -24,8 +24,6 @@
 
 #include "detail/query.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
 #include <core/progress/observer.hpp>
 #include <core/thread/timer.hpp>
 
@@ -58,7 +56,7 @@ namespace sight::module::io::dicomweb
 service::connections_t slice_index_dicom_puller_editor::auto_connections() const
 {
     service::connections_t connections;
-    connections.push(m_series, data::series::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(m_series, data::signals::MODIFIED, service::slots::UPDATE);
 
     return connections;
 }
@@ -278,7 +276,7 @@ void slice_index_dicom_puller_editor::read_image(sight::data::series& _series, s
             m_sagittal_index->value()
         );
 
-        image->async_emit(data::image::MODIFIED_SIG);
+        image->async_emit(data::signals::MODIFIED);
     }
 }
 

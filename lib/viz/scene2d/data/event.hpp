@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,7 +39,7 @@ class event
 {
 public:
 
-    enum type
+    enum type : std::uint8_t
     {
         no_t,
         resize,   // change within the size of the widget/view
@@ -56,7 +56,7 @@ public:
         leave_event
     };
 
-    enum button
+    enum button : std::uint8_t
     {
         no_button,
         left_button,
@@ -64,7 +64,7 @@ public:
         mid_button
     };
 
-    enum modifier
+    enum modifier : std::uint8_t
     {
         no_modifier,
         shift_modifier,
@@ -75,8 +75,7 @@ public:
     /**
      * @brief Constructor
      */
-    event()
-    = default;
+    event() = default;
 
     [[nodiscard]] bool is_accepted() const;
     void set_accepted(bool _accepted);

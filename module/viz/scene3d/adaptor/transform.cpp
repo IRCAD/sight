@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,11 +22,6 @@
 
 #include "module/viz/scene3d/adaptor/transform.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-
-#include <service/macros.hpp>
-
 #include <viz/scene3d/helper/scene.hpp>
 
 namespace sight::module::viz::scene3d::adaptor
@@ -37,7 +32,7 @@ namespace sight::module::viz::scene3d::adaptor
 service::connections_t transform::auto_connections() const
 {
     service::connections_t connections = adaptor::auto_connections();
-    connections.push(TRANSFORM_INOUT, data::object::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
+    connections.push(TRANSFORM_INOUT, data::signals::MODIFIED, adaptor::slots::LAZY_UPDATE);
     return connections;
 }
 

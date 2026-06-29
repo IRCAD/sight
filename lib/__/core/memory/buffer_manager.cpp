@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,16 +26,13 @@
 #include "core/memory/stream/in/buffer.hpp"
 #include "core/memory/stream/in/raw.hpp"
 
-#include <core/com/signal.hxx>
 #include <core/lazy_instantiator.hpp>
 #include <core/os/temp_path.hpp>
 #include <core/thread/worker.hpp>
-#include <core/tools/system.hpp>
 
 #include <algorithm>
 #include <filesystem>
 #include <fstream>
-#include <functional>
 #include <iomanip>
 #include <iosfwd>
 #include <iostream>
@@ -43,10 +40,15 @@
 namespace sight::core::memory
 {
 
+namespace
+{
+
 SPTR(void) get_lock(const buffer_manager::sptr& _manager, buffer_manager::const_buffer_ptr_t _buffer_ptr)
 {
     return _manager->lock_buffer(_buffer_ptr).get();
 }
+
+} // namespace
 
 //-----------------------------------------------------------------------------
 
@@ -58,7 +60,7 @@ buffer_manager::sptr buffer_manager::get()
 //-----------------------------------------------------------------------------
 
 buffer_manager::buffer_manager() :
-    m_updated_sig(std::make_shared<updated_signal_t>()),
+    m_updated_sig(std::make_shared<signals::updated_t>()),
     m_dump_policy(std::make_shared<core::memory::policy::never_dump>()),
     m_worker(core::thread::worker::make())
 {
@@ -319,6 +321,9 @@ void buffer_manager::swap_buffer_impl(buffer_manager::buffer_ptr_t _buf_a, buffe
 
 //-----------------------------------------------------------------------------
 
+namespace
+{
+
 struct auto_unlock
 {
     auto_unlock(
@@ -359,6 +364,8 @@ struct auto_unlock
     buffer_manager::sptr m_manager;
     buffer_manager::const_buffer_ptr_t m_buffer_ptr;
 };
+
+} // namespace
 
 //------------------------------------------------------------------------------
 
@@ -478,7 +485,7 @@ bool buffer_manager::restore_buffer(
     buffer_manager::size_t _alloc_size
 )
 {
-    _alloc_size = ((_alloc_size) != 0U ? _alloc_size : _info.size);
+    _alloc_size = (_alloc_size != 0U ? _alloc_size : _info.size);
     if(!_info.loaded)
     {
         if(*_buffer_ptr == nullptr)
@@ -621,7 +628,7 @@ std::string buffer_manager::to_string_impl() const
     for(const auto& item : m_buffer_infos)
     {
         const buffer_info& info = item.second;
-        sstr << std::setw(18) << item.first << "->" << std::setw(18) << *(item.first) << " "
+        sstr << std::setw(18) << static_cast<const void*>(item.first) << "->" << std::setw(18) << *(item.first) << " "
         << std::setw(10) << info.size << " "
         << std::setw(18) << info.buffer_policy << " "
         << std::setw(6) << info.last_access << " "
@@ -675,7 +682,7 @@ std::shared_future<buffer_manager::buffer_stats> buffer_manager::get_buffer_stat
 
 buffer_manager::buffer_stats buffer_manager::compute_buffer_stats(const buffer_info_map_t& _buffer_info)
 {
-    buffer_stats stats = {0, 0};
+    buffer_stats stats = {.total_dumped = 0, .total_managed = 0};
     for(const auto& item : _buffer_info)
     {
         const auto& info = item.second;

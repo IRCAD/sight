@@ -71,6 +71,11 @@ public:
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(pacs_configuration_editor, sight::ui::editor);
 
+    struct slots
+    {
+        static inline const slot_key_t SHOW_DIALOG = "showDialog";
+    };
+
     /// Creates the service.
     pacs_configuration_editor() noexcept;
 

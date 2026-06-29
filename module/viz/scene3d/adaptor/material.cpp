@@ -25,8 +25,6 @@
 #include "module/viz/scene3d/adaptor/shader_parameter.hpp"
 #include "module/viz/scene3d/adaptor/texture.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
 #include <core/ptree.hpp>
 
 #include <data/helper/field.hpp>
@@ -191,7 +189,7 @@ void material::starting()
 
         m_texture_connection.connect(
             m_tex_adaptor,
-            module::viz::scene3d::adaptor::texture::TEXTURE_SWAPPED_SIG,
+            module::viz::scene3d::adaptor::texture::signals::TEXTURE_SWAPPED,
             this->get_sptr(),
             slots::SWAP_TEXTURE
         );
@@ -219,11 +217,11 @@ void material::starting()
 service::connections_t material::auto_connections() const
 {
     service::connections_t connections = adaptor::auto_connections();
-    connections.push(m_material_data.key(), data::material::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
-    connections.push(m_material_data.key(), data::material::ADDED_FIELDS_SIG, slots::UPDATE_FIELD);
-    connections.push(m_material_data.key(), data::material::CHANGED_FIELDS_SIG, slots::UPDATE_FIELD);
-    connections.push(m_material_data.key(), data::material::ADDED_TEXTURE_SIG, slots::ADD_TEXTURE);
-    connections.push(m_material_data.key(), data::material::REMOVED_TEXTURE_SIG, slots::REMOVE_TEXTURE);
+    connections.push(m_material_data.key(), data::signals::MODIFIED, adaptor::slots::LAZY_UPDATE);
+    connections.push(m_material_data.key(), data::signals::ADDED_FIELDS, slots::UPDATE_FIELD);
+    connections.push(m_material_data.key(), data::signals::CHANGED_FIELDS, slots::UPDATE_FIELD);
+    connections.push(m_material_data.key(), data::material::signals::ADDED_TEXTURE, slots::ADD_TEXTURE);
+    connections.push(m_material_data.key(), data::material::signals::REMOVED_TEXTURE, slots::REMOVE_TEXTURE);
     return connections;
 }
 
@@ -554,7 +552,7 @@ void material::create_texture_adaptor()
 
         m_texture_connection.connect(
             m_tex_adaptor,
-            module::viz::scene3d::adaptor::texture::TEXTURE_SWAPPED_SIG,
+            module::viz::scene3d::adaptor::texture::signals::TEXTURE_SWAPPED,
             this->get_sptr(),
             module::viz::scene3d::adaptor::material::slots::SWAP_TEXTURE
         );

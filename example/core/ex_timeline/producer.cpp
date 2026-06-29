@@ -22,7 +22,6 @@
 
 #include "producer.hpp"
 
-#include <core/com/signal.hxx>
 #include <core/thread/timer.hpp>
 
 #include <algorithm>
@@ -95,9 +94,7 @@ void producer::updating()
 
     //Notify
     sight::data::timeline::signals::pushed_t::sptr sig;
-    sig =
-        timeline->signal<sight::data::timeline::signals::pushed_t>(sight::data::timeline::signals::PUSHED);
-    sig->async_emit(timestamp);
+    timeline->async_emit(sight::data::timeline::signals::PUSHED, timestamp);
 }
 
 //------------------------------------------------------------------------------

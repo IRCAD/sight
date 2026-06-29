@@ -22,8 +22,6 @@
 
 #include "images_substract.hpp"
 
-#include <core/com/signal.hxx>
-
 #include <filter/image/substract.hpp>
 
 #include <ui/__/dialog/message.hpp>
@@ -76,7 +74,7 @@ void images_substract::updating()
         if(is_same_size)
         {
             sight::filter::image::substract(*image1, *image2, *image_result);
-            image_result->async_emit(data::object::MODIFIED_SIG);
+            image_result->async_emit(data::signals::MODIFIED);
         }
         else
         {

@@ -94,13 +94,11 @@ public:
 
     struct slots
     {
-        using slots_t = core::com::slots::key_t;
-
-        inline static const slots_t RESET         = "reset";
-        inline static const slots_t SET_TRANSFORM = "set_transform";
-        inline static const slots_t SET_POSITION  = "set_position";
-        inline static const slots_t NEXT_POSITION = "next_position";
-        inline static const slots_t PREV_POSITION = "prev_position";
+        inline static const slot_key_t RESET         = "reset";
+        inline static const slot_key_t SET_TRANSFORM = "set_transform";
+        inline static const slot_key_t SET_POSITION  = "set_position";
+        inline static const slot_key_t NEXT_POSITION = "next_position";
+        inline static const slot_key_t PREV_POSITION = "prev_position";
     };
 
     /// Predefined position with name and Rx, Ry, Rz rotation in degree.

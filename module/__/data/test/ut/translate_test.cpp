@@ -25,8 +25,6 @@
 
 #include <service/op.hpp>
 
-#include <boost/property_tree/xml_parser.hpp>
-
 #include <doctest/doctest.h>
 
 TEST_SUITE("sight::module::data::translate")
@@ -70,7 +68,7 @@ TEST_SUITE("sight::module::data::translate")
 
         // Test that it translates when data is modified if the key is set
         key->set_value("Num 3");
-        key->emit(sight::data::object::MODIFIED_SIG);
+        key->emit(sight::data::signals::MODIFIED);
         CHECK_EQ("value3"s, value->get_value());
 
         CHECK_NOTHROW(srv->stop().get());
@@ -111,7 +109,7 @@ TEST_SUITE("sight::module::data::translate")
         CHECK_EQ(false, value->get_value());
 
         key->set_value(-14);
-        key->emit(sight::data::object::MODIFIED_SIG);
+        key->emit(sight::data::signals::MODIFIED);
         CHECK_EQ(true, value->get_value());
 
         CHECK_NOTHROW(srv->stop().get());

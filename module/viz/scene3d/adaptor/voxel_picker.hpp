@@ -37,7 +37,7 @@ namespace sight::module::viz::scene3d::adaptor
  * a picking on all scene meshes. This one picks only on an image and computes exactly the intersection between the
  * picking coordinates, and image slices.
  *
- * In 3D mode, it's useless to connect data::image::SLICE_TYPE_MODIFIED_SIG of s_IMAGE_INPUT to SLICETYPE_SLOT.
+ * In 3D mode, it's useless to connect data::image::signals::SLICE_TYPE_MODIFIED of s_IMAGE_INPUT to SLICETYPE.
  * (auto connection to true), it's only used in 2D mode.
  *
  * @section Signals Signals
@@ -50,8 +50,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @code{.xml}
         <service type="sight::module::viz::scene3d::adaptor::voxel_picker">
             <in key="image" uid="..." />
-            <config priority="2" orientation="sagittal" mode="2D"
-                moveOnPick="false" />
+            <config priority="2" orientation="sagittal" mode="2D" moveOnPick="false" />
        </service>
    @endcode
  *
@@ -70,6 +69,17 @@ class voxel_picker final :
     public sight::viz::scene3d::interactor::base
 {
 public:
+
+    struct signals
+    {
+        using picked_t = core::com::signal<void (data::tools::picking_info)>;
+        static inline const signal_key_t PICKED = "picked";
+    };
+
+    struct slots
+    {
+        static inline const slot_key_t SLICE_TYPE = "sliceType";
+    };
 
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(voxel_picker, sight::viz::scene3d::adaptor);
@@ -98,7 +108,7 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::image::SLICE_TYPE_MODIFIED_SIG of s_IMAGE_INPUT to SLICETYPE_SLOT
+     * Connect data::image::signals::SLICE_TYPE_MODIFIED of s_IMAGE_INPUT to SLICETYPE
      */
     service::connections_t auto_connections() const final;
 
@@ -152,9 +162,6 @@ private:
 
     /// Defines if the image slices indexes will be updated with the picked position.
     bool m_move_on_pick {false};
-
-    /// Defines the signal sent on picking events.
-    core::com::signal<void(data::tools::picking_info)>::sptr m_picked_sig;
 
     static constexpr std::string_view IMAGE_INPUT = "image";
     sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, IMAGE_INPUT};

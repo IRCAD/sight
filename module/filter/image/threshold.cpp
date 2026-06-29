@@ -22,7 +22,6 @@
 
 #include "module/filter/image/threshold.hpp"
 
-#include <core/com/signal.hxx>
 #include <core/tools/dispatcher.hpp>
 
 #include <data/image.hpp>

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,10 +30,11 @@
 #include <QObject>
 #include <QPointer>
 
+// NOLINTBEGIN(readability-identifier-naming)
 class QMenu;
 class QActionGroup;
 class QPushButton;
-
+// NOLINTEND(readability-identifier-naming)
 namespace sight::module::ui::qt
 {
 
@@ -84,8 +85,38 @@ public:
 
     SIGHT_DECLARE_SERVICE(selection_menu_button, sight::ui::editor);
 
+    struct signals
+    {
+        using selected_t = core::com::signal<void (int)>;
+
+        static inline const signal_key_t SELECTED = "selected";
+    };
+
+    struct slots
+    {
+        static inline const slot_key_t SET_ENABLED = "set_enabled";
+        static inline const slot_key_t ENABLE      = "enable";
+        static inline const slot_key_t DISABLE     = "disable";
+    };
+
     selection_menu_button() noexcept;
     ~selection_menu_button() noexcept override = default;
+
+    /**
+     * @name Slots
+     * @{
+     */
+    /// Slot: enable/disable the button
+    void set_enabled(bool _enabled) override;
+
+    /// Slot: enable the button
+    void enable() override;
+
+    /// Slot: disable the button
+    void disable() override;
+/**
+ * @}
+ */
 
 protected:
 
@@ -120,24 +151,7 @@ private:
      * @{
      */
     /// Signal emitted when an item is selected
-    using selected_signal_t = core::com::signal<void (int)>;
-    selected_signal_t::sptr m_sig_selected;
-    /**
-     * @}
-     */
-
-    /**
-     * @name Slots
-     * @{
-     */
-    /// Slot: enable/disable the button
-    void set_enabled(bool _enabled) override;
-
-    /// Slot: enable the button
-    void enable() override;
-
-    /// Slot: disable the button
-    void disable() override;
+    signals::selected_t::sptr m_sig_selected;
     /**
      * @}
      */

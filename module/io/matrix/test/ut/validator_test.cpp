@@ -20,7 +20,6 @@
  ***********************************************************************/
 
 #include <core/com/slots.hpp>
-#include <core/com/slots.hxx>
 
 #include <data/matrix4.hpp>
 

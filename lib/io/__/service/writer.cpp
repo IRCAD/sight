@@ -21,9 +21,6 @@
  ***********************************************************************/
 #include "io/__/service/writer.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-
 #include <ui/__/preferences.hpp>
 
 namespace sight::io::service
@@ -35,10 +32,10 @@ writer::writer(const std::string& _default_window_title) noexcept :
     has_monitors(has_signals::signals()),
     m_window_title(this, WINDOW_TITLE_KEY, _default_window_title)
 {
-    new_signal<signals::void_signal_t>(signals::FAILED);
-    new_signal<signals::void_signal_t>(signals::SUCCEEDED);
-    new_signal<signals::void_signal_t>(signals::PREFIX_SET);
-    new_signal<signals::void_signal_t>(signals::BASE_FOLDER_SET);
+    new_signal<signals::void_t>(signals::FAILED);
+    new_signal<signals::void_t>(signals::SUCCEEDED);
+    new_signal<signals::void_t>(signals::PREFIX_SET);
+    new_signal<signals::void_t>(signals::BASE_FOLDER_SET);
 
     new_slot(slots::OPEN_LOCATION_DIALOG, &writer::open_location_dialog, this);
     new_slot(slots::SET_PREFIX, &writer::set_prefix, this);
@@ -259,8 +256,8 @@ void writer::configuring()
 sight::service::base::connections_t writer::auto_connections() const
 {
     return {
-        {m_files, data::object::MODIFIED_SIG, slots::UPDATE_DEFAULT_LOCATIONS},
-        {m_folder, data::object::MODIFIED_SIG, slots::UPDATE_DEFAULT_LOCATIONS}
+        {m_files, data::signals::MODIFIED, slots::UPDATE_DEFAULT_LOCATIONS},
+        {m_folder, data::signals::MODIFIED, slots::UPDATE_DEFAULT_LOCATIONS}
     };
 }
 

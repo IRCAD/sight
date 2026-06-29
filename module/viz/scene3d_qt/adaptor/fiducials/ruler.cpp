@@ -24,7 +24,6 @@
 
 #include "core/runtime/path.hpp"
 
-#include <core/com/slots.hxx>
 #include <core/tools/uuid.hpp>
 
 #include <data/tools/color.hpp>
@@ -54,7 +53,7 @@ ruler::ruler() noexcept
     new_slot(private_slots::REMOVE_RULER_OGRE_SET, &ruler::remove_ruler_ogre_set, this);
     new_slot(private_slots::DISPLAY_ON_CURRENT_SLICE, &ruler::display_on_current_slice, this);
 
-    new_signal<signals::void_signal_t>(signals::TOOL_DEACTIVATED);
+    new_signal<signals::void_t>(signals::TOOL_DEACTIVATED);
 }
 
 //------------------------------------------------------------------------------
@@ -62,13 +61,13 @@ ruler::ruler() noexcept
 sight::service::connections_t ruler::auto_connections() const
 {
     return {
-        {m_image, sight::data::object::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE},
-        {m_image, sight::data::image_series::RULER_MODIFIED_SIG, private_slots::UPDATE_MODIFIED_RULER},
-        {m_image, sight::data::image_series::FIDUCIAL_REMOVED_SIG, private_slots::REMOVE_RULER_OGRE_SET},
-        {m_image, sight::data::image_series::SLICE_INDEX_MODIFIED_SIG,
+        {m_image, sight::data::signals::MODIFIED, adaptor::slots::LAZY_UPDATE},
+        {m_image, sight::data::image::signals::RULER_MODIFIED, private_slots::UPDATE_MODIFIED_RULER},
+        {m_image, sight::data::image::signals::FIDUCIAL_REMOVED, private_slots::REMOVE_RULER_OGRE_SET},
+        {m_image, sight::data::image::signals::SLICE_INDEX_MODIFIED,
          private_slots::DISPLAY_ON_CURRENT_SLICE
         },
-        {m_image, sight::data::image_series::SLICE_TYPE_MODIFIED_SIG,
+        {m_image, sight::data::image::signals::SLICE_TYPE_MODIFIED,
          private_slots::DISPLAY_ON_CURRENT_SLICE
         },
     };
@@ -742,10 +741,7 @@ void ruler::remove_ruler_fiducial(std::optional<std::string> _id)
         image_series->get_fiducials()->set_fiducial_sets(fiducial_sets);
     }
 
-    const auto sig = image->signal<data::image::fiducial_removed_signal_t>(
-        data::image::FIDUCIAL_REMOVED_SIG
-    );
-    sig->async_emit(_id);
+    image->async_emit(data::image::signals::FIDUCIAL_REMOVED, _id);
 }
 
 //------------------------------------------------------------------------------
@@ -1078,8 +1074,8 @@ void ruler::mouse_move_event(
 
             {
                 const auto image = m_image.const_lock();
-                const auto& sig  = image->signal<sight::data::image_series::ruler_modified_signal_t>(
-                    sight::data::image_series::RULER_MODIFIED_SIG
+                const auto& sig  = image->signal<sight::data::image::signals::ruler_modified_t>(
+                    sight::data::image::signals::RULER_MODIFIED
                 );
 
                 sig->async_emit(
@@ -1267,7 +1263,7 @@ void ruler::button_release_event(mouse_button _button, modifier /*_mods*/, int /
         else
         {
             this->activate_tool(false);
-            this->signal<signals::void_signal_t>(signals::TOOL_DEACTIVATED)->async_emit();
+            this->async_emit(signals::TOOL_DEACTIVATED);
         }
     }
 }
@@ -1415,7 +1411,7 @@ void ruler::key_press_event(int _key, modifier /*_mods*/, int /*_mouseX*/, int /
     if(m_tool_activated && _key == Qt::Key_Escape)
     {
         this->activate_tool(false);
-        this->signal<signals::void_signal_t>(signals::TOOL_DEACTIVATED)->async_emit();
+        this->async_emit(signals::TOOL_DEACTIVATED);
     }
 }
 

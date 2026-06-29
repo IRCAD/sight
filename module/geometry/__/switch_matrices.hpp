@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -66,7 +66,7 @@ public:
 
     struct slots
     {
-        static inline const core::com::slots::key_t SWITCH = "switch_matrix";
+        static inline const slot_key_t SWITCH = "switch_matrix";
     };
 
     switch_matrices() noexcept;

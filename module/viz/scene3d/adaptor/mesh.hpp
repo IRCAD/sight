@@ -210,11 +210,11 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::mesh::VERTEX_MODIFIED_SIG to MODIFY_VERTICES_SLOT
-     * Connect data::mesh::POINT_COLORS_MODIFIED_SIG to MODIFY_COLORS_SLOT
-     * Connect data::mesh::CELL_COLORS_MODIFIED_SIG to MODIFY_COLORS_SLOT
-     * Connect data::mesh::POINT_TEX_COORDS_MODIFIED_SIG to MODIFY_POINT_TEX_COORDS_SLOT
-     * Connect data::mesh::MODIFIED_SIG to service::slots::UPDATE
+     * Connect data::mesh::signals::VERTEX_MODIFIED to MODIFY_VERTICES
+     * Connect data::mesh::signals::POINT_COLORS_MODIFIED to MODIFY_COLORS
+     * Connect data::mesh::signals::CELL_COLORS_MODIFIED to MODIFY_COLORS
+     * Connect data::mesh::signals::POINT_TEX_COORDS_MODIFIED to MODIFY_POINT_TEX_COORDS
+     * Connect data::signals::MODIFIED to service::slots::UPDATE
      */
     service::connections_t auto_connections() const final;
 

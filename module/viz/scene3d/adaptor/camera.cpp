@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,34 +22,26 @@
 
 #include "module/viz/scene3d/adaptor/camera.hpp"
 
-#include <core/com/slots.hxx>
-
 #include <viz/scene3d/helper/camera.hpp>
 #include <viz/scene3d/render.hpp>
 #include <viz/scene3d/utils.hpp>
 
-#include <Ogre.h>
 #include <OgreCamera.h>
 #include <OgreMatrix4.h>
-#include <OgreSceneManager.h>
 #include <OgreSceneNode.h>
 
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const core::com::slots::key_t TRANSFORM_SLOT = "transform";
-static const core::com::slots::key_t CALIBRATE_SLOT = "calibrate";
-static const core::com::slots::key_t UPDATE_TF_SLOT = "updateTransformation";
-
 //-----------------------------------------------------------------------------
 
-struct camera::CameraNodeListener : public Ogre::MovableObject::Listener
+struct camera::camera_node_listener : public Ogre::MovableObject::Listener
 {
     camera* m_layer {nullptr};
 
     //------------------------------------------------------------------------------
 
-    explicit CameraNodeListener(camera* _renderer) :
+    explicit camera_node_listener(camera* _renderer) :
         m_layer(_renderer)
     {
     }
@@ -66,9 +58,9 @@ struct camera::CameraNodeListener : public Ogre::MovableObject::Listener
 
 camera::camera() noexcept
 {
-    new_slot(TRANSFORM_SLOT, [this](){lazy_update(update_flags::TRANSFORM);});
-    new_slot(CALIBRATE_SLOT, [this](){lazy_update(update_flags::CALIBRATION);});
-    new_slot(UPDATE_TF_SLOT, &camera::update_tf_3d, this);
+    new_slot(slots::TRANSFORM, [this](){lazy_update(update_flags::transform);});
+    new_slot(slots::CALIBRATE, [this](){lazy_update(update_flags::calibration);});
+    new_slot(slots::UPDATE_TF, &camera::update_tf_3d, this);
 }
 
 //------------------------------------------------------------------------------
@@ -112,20 +104,20 @@ void camera::starting()
         this->layer()->set_orthographic_camera(true);
     }
 
-    m_camera_node_listener = new CameraNodeListener(this);
+    m_camera_node_listener = new camera_node_listener(this);
     m_camera->setListener(m_camera_node_listener);
 
     m_layer_connection.connect(
         this->layer(),
-        sight::viz::scene3d::layer::CAMERA_RANGE_UPDATED_SIG,
+        sight::viz::scene3d::layer::signals::CAMERA_RANGE_UPDATED,
         this->get_sptr(),
-        CALIBRATE_SLOT
+        slots::CALIBRATE
     );
     m_layer_connection.connect(
         this->layer(),
-        sight::viz::scene3d::layer::RESIZE_LAYER_SIG,
+        sight::viz::scene3d::layer::signals::RESIZE_LAYER,
         this->get_sptr(),
-        CALIBRATE_SLOT
+        slots::CALIBRATE
     );
 
     this->lazy_update();
@@ -138,11 +130,11 @@ service::connections_t camera::auto_connections() const
 {
     service::connections_t connections = adaptor::auto_connections();
 
-    connections.push(TRANSFORM_INOUT, data::matrix4::MODIFIED_SIG, TRANSFORM_SLOT);
-    connections.push(CALIBRATION_INPUT, data::camera::MODIFIED_SIG, CALIBRATE_SLOT);
-    connections.push(CALIBRATION_INPUT, data::camera::INTRINSIC_CALIBRATED_SIG, CALIBRATE_SLOT);
-    connections.push(CAMERA_SET_INPUT, data::camera_set::MODIFIED_SIG, CALIBRATE_SLOT);
-    connections.push(CAMERA_SET_INPUT, data::camera_set::EXTRINSIC_CALIBRATED_SIG, CALIBRATE_SLOT);
+    connections.push(TRANSFORM_INOUT, data::signals::MODIFIED, slots::TRANSFORM);
+    connections.push(CALIBRATION_INPUT, data::signals::MODIFIED, slots::CALIBRATE);
+    connections.push(CALIBRATION_INPUT, data::camera::signals::INTRINSIC_CALIBRATED, slots::CALIBRATE);
+    connections.push(CAMERA_SET_INPUT, data::signals::MODIFIED, slots::CALIBRATE);
+    connections.push(CAMERA_SET_INPUT, data::camera_set::signals::EXTRINSIC_CALIBRATED, slots::CALIBRATE);
 
     return connections;
 }
@@ -151,7 +143,7 @@ service::connections_t camera::auto_connections() const
 
 void camera::updating()
 {
-    if(update_needed(update_flags::TRANSFORM))
+    if(update_needed(update_flags::transform))
     {
         if(m_calibration_done || this->calibrate())
         {
@@ -195,7 +187,7 @@ void camera::updating()
         }
     }
 
-    if(update_needed(update_flags::CALIBRATION))
+    if(update_needed(update_flags::calibration))
     {
         this->calibrate();
     }
@@ -282,7 +274,7 @@ void camera::update_tf_3d()
         }
     }
 
-    transform->async_emit(this, data::object::MODIFIED_SIG);
+    transform->async_emit(this, data::signals::MODIFIED);
 }
 
 //------------------------------------------------------------------------------

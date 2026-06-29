@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,12 +24,6 @@
 
 #include "module/ui/viz/helper/utils.hpp"
 
-#include <core/com/slots.hxx>
-
-#include <data/map.hpp>
-
-#include <service/macros.hpp>
-
 #include <ui/qt/container/widget.hpp>
 
 #include <viz/scene3d/helper/scene.hpp>
@@ -48,13 +42,9 @@ using sight::viz::scene3d::layer;
 
 //------------------------------------------------------------------------------
 
-static const core::com::slots::key_t EDIT_LIGHT_SLOT = "edit_light";
-
-//------------------------------------------------------------------------------
-
 light_editor::light_editor() noexcept
 {
-    new_slot(EDIT_LIGHT_SLOT, &light_editor::edit_light, this);
+    new_slot(slots::EDIT_LIGHT, &light_editor::edit_light, this);
 }
 
 //------------------------------------------------------------------------------
@@ -487,11 +477,11 @@ void light_editor::edit_light(light_adaptor::sptr _light_adaptor)
 
         m_theta_slider->setValue(
             static_cast<int>(m_current_light->get_theta_offset()
-                             + float(light_adaptor::OFFSET_RANGE / 2.))
+                             + static_cast<float>(light_adaptor::OFFSET_RANGE / 2.))
         );
         m_phi_slider->setValue(
             static_cast<int>(m_current_light->get_phi_offset()
-                             + float(light_adaptor::OFFSET_RANGE / 2.))
+                             + static_cast<float>(light_adaptor::OFFSET_RANGE / 2.))
         );
 
         Ogre::SceneNode* const root        = m_current_light->layer()->get_scene_manager()->getRootSceneNode();

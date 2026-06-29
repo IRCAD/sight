@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,7 +39,7 @@ namespace detail::registry
 
 class toolbar;
 
-}
+} // namespace detail::registry
 
 /**
  * @brief   Defines the service interface managing the toolbar.
@@ -49,6 +49,8 @@ class SIGHT_UI_CLASS_API toolbar : public service::base
 public:
 
     SIGHT_DECLARE_SERVICE(toolbar, service::base);
+
+    SIGHT_UI_API ~toolbar() override = default;
 
     /// Method called when an action service is stopping
     SIGHT_UI_API void action_service_stopping(std::string _action_srv_sid);
@@ -72,7 +74,7 @@ public:
     SIGHT_UI_API bool visible() const;
 
     /// SLOT: show/hide the container using parameter_t (only testing bool alternative).
-    SIGHT_UI_API void set_visible_by_parameter(ui::parameter_t);
+    SIGHT_UI_API void set_visible_by_parameter(ui::parameter_t /*_is_visible*/);
 
     /// SLOT: show the container
     SIGHT_UI_API void show();
@@ -92,7 +94,6 @@ public:
 protected:
 
     SIGHT_UI_API toolbar();
-    SIGHT_UI_API ~toolbar() override = default;
 
     /**
      * @brief Initialize the layout and registry managers.
@@ -160,14 +161,13 @@ protected:
     /// @brief slots: change the toolbar visibility
     struct slots
     {
-        using key_t = sight::core::com::slots::key_t;
-        static inline const key_t SET_VISIBLE          = "set_visible";
-        static inline const key_t SET_VISIBLE_BY_PARAM = "setVisibleByParam";
-        static inline const key_t SHOW                 = "show";
-        static inline const key_t HIDE                 = "hide";
-        static inline const key_t SET_ENABLED          = "set_enabled";
-        static inline const key_t ENABLE               = "enable";
-        static inline const key_t DISABLE              = "disable";
+        static inline const slot_key_t SET_VISIBLE          = "set_visible";
+        static inline const slot_key_t SET_VISIBLE_BY_PARAM = "setVisibleByParam";
+        static inline const slot_key_t SHOW                 = "show";
+        static inline const slot_key_t HIDE                 = "hide";
+        static inline const slot_key_t SET_ENABLED          = "set_enabled";
+        static inline const slot_key_t ENABLE               = "enable";
+        static inline const slot_key_t DISABLE              = "disable";
     };
 
 private:

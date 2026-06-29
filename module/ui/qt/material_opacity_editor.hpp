@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -28,8 +28,10 @@
 #include <QObject>
 #include <QPointer>
 
+// NOLINTBEGIN(readability-identifier-naming)
 class QSlider;
 class QLabel;
+// NOLINTEND(readability-identifier-naming)
 
 namespace sight::module::ui::qt
 {
@@ -65,7 +67,7 @@ public:
     /// Destroys the service.
     ~material_opacity_editor() noexcept override = default;
 
-private:
+protected:
 
     /// Configures the slider's label.
     void configuring() override;
@@ -78,6 +80,8 @@ private:
 
     /// Destroys the connections and cleans the container.
     void stopping() override;
+
+private:
 
     QPointer<QSlider> m_opacity_slider;
     QPointer<QLabel> m_opacity_value;

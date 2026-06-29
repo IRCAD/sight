@@ -66,7 +66,7 @@ private:
 
     /// Association < key , SPTR( SignalBase ) >
     using signal_map_type = std::map<key_t, SPTR(signal_base)>;
-    signal_map_type m_signals;
+    signal_map_type m_signals {};
 };
 
 } // namespace sight::core::com

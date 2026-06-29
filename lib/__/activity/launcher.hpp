@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2024 IRCAD France
+ * Copyright (C) 2019-2026 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -73,9 +73,11 @@ protected:
         const data::activity::csptr& _activity
     );
 
+    // NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
     std::string m_main_activity_id; ///< configuration id of the main activity
 
     parameters_t m_parameters; ///< parameters given in configuration
+    // NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 };
 
 } // namespace sight::activity

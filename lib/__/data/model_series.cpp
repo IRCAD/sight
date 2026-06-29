@@ -22,9 +22,6 @@
 
 #include "data/model_series.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/signals.hpp>
-
 #include <data/exception.hpp>
 #include <data/reconstruction.hpp>
 #include <data/registry/macros.hpp>
@@ -34,14 +31,11 @@ SIGHT_REGISTER_DATA(sight::data::model_series)
 namespace sight::data
 {
 
-const core::com::signals::key_t model_series::RECONSTRUCTIONS_ADDED_SIG   = "reconstructionsAdded";
-const core::com::signals::key_t model_series::RECONSTRUCTIONS_REMOVED_SIG = "reconstructionsRemoved";
-
 model_series::model_series() :
     has_fiducials(has_signals::signals())
 {
-    new_signal<reconstructions_added_signal_t>(RECONSTRUCTIONS_ADDED_SIG);
-    new_signal<reconstructions_removed_signal_t>(RECONSTRUCTIONS_REMOVED_SIG);
+    new_signal<signals::reconstructions_added_t>(signals::RECONSTRUCTIONS_ADDED);
+    new_signal<signals::reconstructions_removed_t>(signals::RECONSTRUCTIONS_REMOVED);
 }
 
 //------------------------------------------------------------------------------

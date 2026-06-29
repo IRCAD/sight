@@ -25,8 +25,6 @@
 #include "module/viz/scene3d/adaptor/mesh.hpp"
 #include "module/viz/scene3d/adaptor/reconstruction.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
 #include <core/ptree.hpp>
 
 #include <data/boolean.hpp>
@@ -34,15 +32,11 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-//-----------------------------------------------------------------------------
-
-static const core::com::slots::key_t CHANGE_FIELD_SLOT = "changeField";
-
 //------------------------------------------------------------------------------
 
 model_series::model_series() noexcept
 {
-    new_slot(CHANGE_FIELD_SLOT, &model_series::show_reconstructions_on_field_changed, this);
+    new_slot(slots::CHANGE_FIELD, &model_series::show_reconstructions_on_field_changed, this);
 }
 
 //------------------------------------------------------------------------------
@@ -109,12 +103,12 @@ void model_series::starting()
 service::connections_t model_series::auto_connections() const
 {
     service::connections_t connections = adaptor::auto_connections();
-    connections.push(MODEL_INPUT, data::model_series::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
-    connections.push(MODEL_INPUT, data::model_series::RECONSTRUCTIONS_ADDED_SIG, adaptor::slots::LAZY_UPDATE);
-    connections.push(MODEL_INPUT, data::model_series::RECONSTRUCTIONS_REMOVED_SIG, adaptor::slots::LAZY_UPDATE);
-    connections.push(MODEL_INPUT, data::model_series::ADDED_FIELDS_SIG, CHANGE_FIELD_SLOT);
-    connections.push(MODEL_INPUT, data::model_series::REMOVED_FIELDS_SIG, CHANGE_FIELD_SLOT);
-    connections.push(MODEL_INPUT, data::model_series::CHANGED_FIELDS_SIG, CHANGE_FIELD_SLOT);
+    connections.push(MODEL_INPUT, data::signals::MODIFIED, adaptor::slots::LAZY_UPDATE);
+    connections.push(MODEL_INPUT, data::model_series::signals::RECONSTRUCTIONS_ADDED, adaptor::slots::LAZY_UPDATE);
+    connections.push(MODEL_INPUT, data::model_series::signals::RECONSTRUCTIONS_REMOVED, adaptor::slots::LAZY_UPDATE);
+    connections.push(MODEL_INPUT, data::signals::ADDED_FIELDS, slots::CHANGE_FIELD);
+    connections.push(MODEL_INPUT, data::signals::REMOVED_FIELDS, slots::CHANGE_FIELD);
+    connections.push(MODEL_INPUT, data::signals::CHANGED_FIELDS, slots::CHANGE_FIELD);
     return connections;
 }
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -59,13 +59,18 @@ public:
 
     SIGHT_DECLARE_SERVICE(light_editor, sight::ui::editor);
 
+    struct slots
+    {
+        static inline const slot_key_t EDIT_LIGHT = "edit_light";
+    };
+
     /// Creates the service.
     light_editor() noexcept;
 
     /// Destroys the service.
     ~light_editor() noexcept override;
 
-private:
+protected:
 
     /// Configures the service.
     void configuring() final;
@@ -78,6 +83,8 @@ private:
 
     /// Destroys the connections and cleans the container.
     void stopping() final;
+
+private:
 
     /**
      * @brief Gets the current light node.

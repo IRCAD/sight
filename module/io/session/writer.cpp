@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2025 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,7 +23,6 @@
 
 #include "module/io/session/writer.hpp"
 
-#include <core/com/signal.hxx>
 #include <core/crypto/secure_string.hpp>
 #include <core/location/single_folder.hpp>
 #include <core/os/temp_path.hpp>

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2025 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,11 +22,7 @@
 
 #include "module/ui/qt/notifier.hpp"
 
-#include <core/base.hpp>
-#include <core/com/slots.hxx>
 #include <core/runtime/path.hpp>
-
-#include <service/macros.hpp>
 
 #include <ui/__/registry.hpp>
 
@@ -37,10 +33,6 @@
 
 namespace sight::module::ui::qt
 {
-
-static const core::com::slots::key_t POP_NOTIFICATION_SLOT   = "pop";
-static const core::com::slots::key_t CLOSE_NOTIFICATION_SLOT = "close_notification";
-static const core::com::slots::key_t SET_ENUM_PARAMETER_SLOT = "set_enum_parameter";
 
 static const std::string POSITION_KEY("position");
 static const std::string DURATION_KEY("duration");
@@ -86,9 +78,9 @@ static const std::map<const std::string, const sight::ui::dialog::notification::
 
 notifier::notifier() noexcept
 {
-    new_slot(POP_NOTIFICATION_SLOT, &notifier::pop, this);
-    new_slot(CLOSE_NOTIFICATION_SLOT, &notifier::close_notification, this);
-    new_slot(SET_ENUM_PARAMETER_SLOT, &notifier::set_enum_parameter, this);
+    new_slot(slots::POP_NOTIFICATION, &notifier::pop, this);
+    new_slot(slots::CLOSE_NOTIFICATION, &notifier::close_notification, this);
+    new_slot(slots::SET_ENUM_PARAMETER, &notifier::set_enum_parameter, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -162,7 +154,7 @@ void notifier::configuring()
                         const auto width  = std::stoul(size->substr(0, pos));
                         const auto height = std::stoul(size->substr(pos + 1));
 
-                        channel_config.size = {int(width), int(height)};
+                        channel_config.size = {static_cast<int>(width), static_cast<int>(height)};
                     }
                     else
                     {
@@ -286,7 +278,7 @@ void notifier::set_enum_parameter(std::string _val, std::string _key)
                 const auto width  = std::stoul(_val.substr(0, pos));
                 const auto height = std::stoul(_val.substr(pos + 1));
 
-                m_channels[""].size = {int(width), int(height)};
+                m_channels[""].size = {static_cast<int>(width), static_cast<int>(height)};
             }
         }
         else if(_key == MAX_KEY)

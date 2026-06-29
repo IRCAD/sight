@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,10 +29,7 @@
 
 #include <string>
 
-namespace sight::core::memory
-{
-
-namespace policy
+namespace sight::core::memory::policy
 {
 
 class base;
@@ -47,6 +44,4 @@ SIGHT_CORE_API SPTR(type) get();
 
 } // namespace registry
 
-} // namespace policy
-
-} // namespace sight::core::memory
+} // namespace sight::core::memory::policy

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2024 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -58,9 +58,14 @@ public:
 
     SIGHT_DECLARE_SERVICE(timestamp_signal, sight::ui::action);
 
-    /// Type of triggered signal
-    using triggered_signal_t_t         = core::com::signal<void (sight::core::clock::type)>;
-    using triggered_as_string_signal_t = core::com::signal<void (std::string)>;
+    struct signals
+    {
+        using triggered_t           = core::com::signal<void (sight::core::clock::type)>;
+        using triggered_as_string_t = core::com::signal<void (std::string)>;
+
+        static inline const signal_key_t TRIGGERED           = "triggered";
+        static inline const signal_key_t TRIGGERED_AS_STRING = "triggered_as_string";
+    };
 
     /**
      * @brief Constructor. Do nothing.
@@ -89,6 +94,8 @@ protected:
     /// Give information about the class. Do nothing.
     void info(std::ostream& _sstream) override;
 
+private:
+
     /// Whether to use system clock or high resolution clock
     /// to compute the timestamp.
     bool m_use_system_clock {true};
@@ -98,10 +105,10 @@ protected:
     bool m_format_string_as_date {true};
 
     /// Signal triggered when action has been triggered
-    SPTR(triggered_signal_t_t) m_sig_triggered;
+    SPTR(signals::triggered_t) m_sig_triggered;
 
     /// Signal triggered when action has been triggered (message sent as string)
-    SPTR(triggered_as_string_signal_t) m_sig_triggered_as_string;
+    SPTR(signals::triggered_as_string_t) m_sig_triggered_as_string;
 };
 
 } // namespace sight::module::ui::com

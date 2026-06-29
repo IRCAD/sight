@@ -24,7 +24,6 @@
 #include "data/exception.hpp"
 
 #include <core/com/signal.hpp>
-#include <core/com/signal.hxx>
 
 namespace sight::data
 {
@@ -62,9 +61,9 @@ constexpr container<C>::container() :
     object(),
     container_wrapper<C>()
 {
-    new_signal<added_signal_t>(ADDED_OBJECTS_SIG);
-    new_signal<changed_signal_t>(CHANGED_OBJECTS_SIG);
-    new_signal<removed_signal_t>(REMOVED_OBJECTS_SIG);
+    new_signal<typename signals::added_t>(signals::ADDED_OBJECTS);
+    new_signal<typename signals::changed_t>(signals::CHANGED_OBJECTS);
+    new_signal<typename signals::removed_t>(signals::REMOVED_OBJECTS);
 }
 
 template<class C>
@@ -335,7 +334,9 @@ void container<C>::scoped_emitter::emit() noexcept
     // Send the notifications
     if(!added.empty())
     {
-        auto signal = m_container.template signal<container<C>::added_signal_t>(container<C>::ADDED_OBJECTS_SIG);
+        auto signal = m_container.template signal<typename container<C>::signals::added_t>(
+            container<C>::signals::ADDED_OBJECTS
+        );
         std::vector<core::com::connection::blocker> blockers;
         blockers.reserve(m_blocked_slots.size());
         for(auto& slot : m_blocked_slots)
@@ -349,7 +350,9 @@ void container<C>::scoped_emitter::emit() noexcept
     if(!before.empty() || !after.empty())
     {
         auto signal =
-            m_container.template signal<container<C>::changed_signal_t>(container<C>::CHANGED_OBJECTS_SIG);
+            m_container.template signal<typename container<C>::signals::changed_t>(
+                container<C>::signals::CHANGED_OBJECTS
+            );
 
         std::vector<core::com::connection::blocker> blockers;
         blockers.reserve(m_blocked_slots.size());
@@ -364,7 +367,9 @@ void container<C>::scoped_emitter::emit() noexcept
     if(!removed.empty())
     {
         auto signal =
-            m_container.template signal<container<C>::removed_signal_t>(container<C>::REMOVED_OBJECTS_SIG);
+            m_container.template signal<typename container<C>::signals::removed_t>(
+                container<C>::signals::REMOVED_OBJECTS
+            );
 
         std::vector<core::com::connection::blocker> blockers;
         blockers.reserve(m_blocked_slots.size());

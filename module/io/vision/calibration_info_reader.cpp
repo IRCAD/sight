@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2025 IRCAD France
+ * Copyright (C) 2019-2026 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,6 @@
 
 #include "calibration_info_reader.hpp"
 
-#include <core/com/slots.hxx>
 #include <core/location/single_folder.hpp>
 
 #include <data/calibration_info.hpp>
@@ -32,20 +31,16 @@
 
 #include <io/opencv/image.hpp>
 
-#include <service/macros.hpp>
-
+#include <opencv2/imgcodecs.hpp>
+#include <opencv2/imgproc.hpp>
 #include <ui/__/cursor.hpp>
 #include <ui/__/dialog/location.hpp>
 #include <ui/__/dialog/message.hpp>
-
-#include <opencv2/opencv.hpp>
 
 // cspell:ignore imread
 
 namespace sight::module::io::vision
 {
-
-static const core::com::slots::key_t UPDATE_CHESSBOARD_SIZE_SLOT = "update_chessboard_size";
 
 calibration_info_reader::calibration_info_reader() noexcept :
     reader("Choose a folder holding calibration inputs")
@@ -131,9 +126,9 @@ void calibration_info_reader::updating()
 
                 data::point_list::sptr chessboard_pts = geometry::vision::helper::detect_chessboard(
                     img,
-                    std::size_t(*m_width),
-                    std::size_t(*m_height),
-                    float(*m_scale)
+                    static_cast<std::size_t>(*m_width),
+                    static_cast<std::size_t>(*m_height),
+                    static_cast<float>(*m_scale)
                 );
 
                 if(chessboard_pts)
@@ -189,10 +184,7 @@ void calibration_info_reader::updating()
                 calib_info->add_record(img, chessboard);
             }
 
-            auto sig = calib_info->signal<data::calibration_info::added_record_signal_t>
-                           (data::calibration_info::MODIFIED_SIG);
-
-            sig->async_emit();
+            calib_info->async_emit(data::signals::MODIFIED);
         }
     }
     else

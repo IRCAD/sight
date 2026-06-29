@@ -21,7 +21,6 @@
 
 #include "module/io/dicom/reader.hpp"
 
-#include <core/com/signal.hxx>
 #include <core/location/single_folder.hpp>
 #include <core/progress/observer.hpp>
 

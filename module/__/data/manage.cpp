@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2025 IRCAD France
+ * Copyright (C) 2015-2026 IRCAD France
  * Copyright (C) 2015-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,9 +21,6 @@
  ***********************************************************************/
 
 #include "manage.hpp"
-
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
 
 #include <data/exception.hpp>
 #include <data/helper/field.hpp>
@@ -201,7 +198,7 @@ void manage::pop_front()
         if(const auto map = std::dynamic_pointer_cast<sight::data::map>(container.get_shared()); map)
         {
             const auto scoped_emitter = map->scoped_emit();
-            SIGHT_ASSERT("Can not find element " << std::quoted(m_map_key), map->find(m_map_key) != map->end());
+            SIGHT_ASSERT("Can not find element " << std::quoted(m_map_key), map->contains(m_map_key));
             obj->deep_copy((*map)[m_map_key]);
             map->erase(m_map_key);
         }

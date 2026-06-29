@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,9 +25,6 @@
 
 #include "ui/__/dialog/message.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slot.hxx>
-#include <core/com/slots.hxx>
 #include <core/ptree.hpp>
 
 namespace sight::ui
@@ -119,7 +116,7 @@ void action::set_checked(bool _checked)
             if(_checked != checked->value())
             {
                 *checked = _checked;
-                checked->async_emit(this, data::object::MODIFIED_SIG);
+                checked->async_emit(this, data::signals::MODIFIED);
             }
         }
         this->m_registry->action_service_set_checked(_checked);
@@ -158,7 +155,7 @@ void action::set_enabled(bool _enabled)
         if(_enabled != enabled->value())
         {
             *enabled = _enabled;
-            enabled->async_emit(this, data::object::MODIFIED_SIG);
+            enabled->async_emit(this, data::signals::MODIFIED);
         }
     }
 
@@ -198,7 +195,7 @@ void action::set_visible(bool _visible)
         if(_visible != visible->value())
         {
             *visible = _visible;
-            visible->async_emit(this, data::object::MODIFIED_SIG);
+            visible->async_emit(this, data::signals::MODIFIED);
         }
     }
     this->m_registry->action_service_set_visible(_visible);
@@ -281,9 +278,9 @@ bool action::confirm_action()
 service::connections_t action::auto_connections() const
 {
     return {
-        {m_checked, sight::data::object::MODIFIED_SIG, slots::APPLY_CHECKED},
-        {m_enabled, sight::data::object::MODIFIED_SIG, slots::APPLY_ENABLED},
-        {m_visible, sight::data::object::MODIFIED_SIG, slots::APPLY_VISIBLE}
+        {m_checked, sight::data::signals::MODIFIED, slots::APPLY_CHECKED},
+        {m_enabled, sight::data::signals::MODIFIED, slots::APPLY_ENABLED},
+        {m_visible, sight::data::signals::MODIFIED, slots::APPLY_VISIBLE}
     };
 }
 

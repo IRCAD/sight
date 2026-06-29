@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,10 +37,12 @@
 #include <QPointer>
 #include <QPushButton>
 
+// NOLINTBEGIN(readability-identifier-naming)
 class QTreeWidget;
 class QCheckBox;
 class QListWidgetItem;
 class QTreeWidgetItem;
+// NOLINTEND(readability-identifier-naming)
 
 namespace sight::module::ui::qt::model
 {
@@ -100,6 +102,20 @@ public:
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(model_series_list, sight::ui::editor);
 
+    struct signals
+    {
+        using reconstruction_selected_t = core::com::signal<void (data::object::sptr)>;
+        using emptied_selection_t       = core::com::signal<void ()>;
+
+        static inline const key_t RECONSTRUCTION_SELECTED = "reconstruction_selected";
+        static inline const key_t EMPTIED_SELECTION       = "emptied_selection";
+    };
+
+    struct slots
+    {
+        static inline const slot_key_t SHOW_RECONSTRUCTIONS = "showReconstructions";
+    };
+
     /// Initializes the slot and signals.
     model_series_list() noexcept;
 
@@ -118,9 +134,9 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::model_series::MODIFIED_SIG of s_MODEL_SERIES_INOUT to service::slots::UPDATE.
-     * Connect data::model_series::RECONSTRUCTIONS_ADDED_SIG of s_MODEL_SERIES_INOUT to service::slots::UPDATE.
-     * Connect data::model_series::RECONSTRUCTIONS_REMOVED_SIG of s_MODEL_SERIES_INOUT to service::slots::UPDATE.
+     * Connect data::signals::MODIFIED of s_MODEL_SERIES_INOUT to service::slots::UPDATE.
+     * Connect data::model_series::signals::RECONSTRUCTIONS_ADDED of s_MODEL_SERIES_INOUT to service::slots::UPDATE.
+     * Connect data::model_series::signals::RECONSTRUCTIONS_REMOVED of s_MODEL_SERIES_INOUT to service::slots::UPDATE.
      */
     connections_t auto_connections() const final;
 
@@ -209,12 +225,10 @@ private:
     QStringList m_headers;
 
     /// Contains the signal emitted when a reconstruction is selected.
-    using reconstruction_selected_signal_t = core::com::signal<void (data::object::sptr)>;
-    reconstruction_selected_signal_t::sptr m_sig_reconstruction_selected;
+    signals::reconstruction_selected_t::sptr m_sig_reconstruction_selected;
 
     /// Contains the signal emitted when we clean the list.
-    using emptied_selection_signal_t = core::com::signal<void ()>;
-    emptied_selection_signal_t::sptr m_sig_emptied_selection;
+    signals::emptied_selection_t::sptr m_sig_emptied_selection;
 
     /// Contains the slot to show (or hide) reconstructions.
     using show_reconstructions_slot_t = core::com::slot<void (bool)>;

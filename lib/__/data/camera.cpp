@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,24 +22,17 @@
 
 #include "data/camera.hpp"
 
-#include <core/base.hpp>
-#include <core/com/signal.hpp>
-#include <core/com/signal.hxx>
-#include <core/com/signals.hpp>
+#include <boost/assign/list_of.hpp>
 
 #include <data/exception.hpp>
 #include <data/registry/macros.hpp>
 
-#include <boost/assign.hpp>
 #include <boost/bimap/bimap.hpp>
 
 SIGHT_REGISTER_DATA(sight::data::camera);
 
 namespace sight::data
 {
-
-const core::com::signals::key_t camera::INTRINSIC_CALIBRATED_SIG = "intrinsicCalibrated";
-const core::com::signals::key_t camera::ID_MODIFIED_SIG          = "id_modified";
 
 //------------------------------------------------------------------------------
 
@@ -48,14 +41,14 @@ camera::camera()
     m_intrinsic.fill(0.);
     m_distortion_coefficient.fill(0.);
 
-    new_signal<intrinsic_calibrated_signal_t>(INTRINSIC_CALIBRATED_SIG);
-    new_signal<id_modified_signal_t>(ID_MODIFIED_SIG);
+    new_signal<signals::intrinsic_calibrated_t>(signals::INTRINSIC_CALIBRATED);
+    new_signal<signals::id_modified_t>(signals::ID_MODIFIED);
 }
 
 //------------------------------------------------------------------------------
 
 using pixel_format_translator_t = boost::bimaps::bimap<enum camera::pixel_format_t, std::string>;
-pixel_format_translator_t pixel_format_translator =
+static pixel_format_translator_t pixel_format_translator =
     boost::assign::list_of<pixel_format_translator_t::relation>
         (camera::pixel_format_t::invalid, std::string("invalid"))
         (camera::pixel_format_t::argb32, std::string("argb32"))

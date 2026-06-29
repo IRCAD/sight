@@ -85,9 +85,7 @@ public:
 
     struct slots final
     {
-        using key_t = sight::core::com::slots::key_t;
-
-        inline static const key_t ACTIVATE_SHAPE_TOOL = "activate_shape_tool";
+        inline static const slot_key_t ACTIVATE_SHAPE_TOOL = "activate_shape_tool";
     };
 
     /// SLOT: Activates the shape tool by changing the cursor and updating a boolean

@@ -95,28 +95,20 @@ class aruco_tracker final : public sight::io::tracking::base<sight::io::tracking
 {
 public:
 
+    struct signals
+    {
+        using detection_done_t  = core::com::signal<void (core::clock::type)>;
+        using marker_detected_t = core::com::signal<void (bool)>;
+        static inline const signal_key_t DETECTION_DONE  = "detectionDone";
+        static inline const signal_key_t MARKER_DETECTED = "marker_detected";
+    };
+
+    struct slots
+    {
+        static inline const slot_key_t SET_PARAMETER = "set_parameter";
+    };
+
     SIGHT_DECLARE_SERVICE(aruco_tracker, sight::io::tracking::base<sight::io::tracking::sensor_t>);
-
-    using detection_done_signal_t  = core::com::signal<void (core::clock::type)>;
-    using marker_detected_signal_t = core::com::signal<void (bool)>;
-
-    /**
-     * @name Signal API
-     * @{
-     */
-
-    /// Key in m_signals map of signal m_sigDetectionDone
-    static const core::com::signals::key_t DETECTION_DONE_SIG;
-
-    /// Signal always emitted with boolean true if a least a maker from id list is found, false otherwise.
-    static const core::com::signals::key_t MARKER_DETECTED_SIG;
-    /** @} */
-    /**
-     * @name Slots API
-     * @{
-     */
-    static const core::com::slots::key_t SET_PARAMETER_SLOT;
-    /** @} */
 
     using marker_id_t        = std::vector<int>;
     using marker_id_vector_t = std::vector<marker_id_t>;
@@ -161,6 +153,9 @@ protected:
     /// Detect marker
     void tracking(core::clock::type& _timestamp) final;
 
+    /// Slot called when a boolean value is changed
+    void on_property_set(std::string_view _key) final;
+
 private:
 
     /// Handles camera parameters (intrinsic matrix, distorsion coefficients and image size)
@@ -170,9 +165,6 @@ private:
         cv::Mat distorsion;
         cv::Size2i size;
     };
-
-    /// Slot called when a boolean value is changed
-    void on_property_set(std::string_view _key) final;
 
     /// Camera parameters
     camera m_camera_params;
@@ -188,9 +180,6 @@ private:
 
     /// Dictionary/Set of markers. It contains the inner codification
     cv::Ptr<cv::aruco::Dictionary> m_dictionary;
-
-    /// Signal to emit when
-    detection_done_signal_t::sptr m_sig_detection_done;
 
     static constexpr std::string_view CAMERA_INPUT           = "camera";
     static constexpr std::string_view MARKER_MAP_INOUT_GROUP = "marker_map";

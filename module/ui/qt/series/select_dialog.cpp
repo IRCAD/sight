@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,20 +21,15 @@
 
 #include "select_dialog.hpp"
 
-#include <core/com/signal.hxx>
-
 namespace sight::module::ui::qt::series
 {
-
-const core::com::signals::key_t select_dialog::IMAGE_SELECTED_SIG = "image_selected";
-const core::com::signals::key_t select_dialog::MODEL_SELECTED_SIG = "model_selected";
 
 //------------------------------------------------------------------------------
 
 select_dialog::select_dialog()
 {
-    new_signal<selected_signal_t>(IMAGE_SELECTED_SIG);
-    new_signal<selected_signal_t>(MODEL_SELECTED_SIG);
+    new_signal<signals::selected_t>(signals::IMAGE_SELECTED);
+    new_signal<signals::selected_t>(signals::MODEL_SELECTED);
 }
 
 //------------------------------------------------------------------------------
@@ -69,14 +64,12 @@ void select_dialog::updating()
     if(auto model_series = std::dynamic_pointer_cast<sight::data::model_series>(first_element); model_series)
     {
         m_model_series = model_series;
-        auto sig = this->signal<data::object::modified_signal_t>(MODEL_SELECTED_SIG);
-        sig->async_emit();
+        this->async_emit(signals::MODEL_SELECTED);
     }
     else if(auto image_series = std::dynamic_pointer_cast<sight::data::image_series>(first_element); image_series)
     {
         m_image = image_series;
-        auto sig = this->signal<data::object::modified_signal_t>(IMAGE_SELECTED_SIG);
-        sig->async_emit();
+        this->async_emit(signals::IMAGE_SELECTED);
     }
 }
 

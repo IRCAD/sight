@@ -60,11 +60,14 @@ class picker final : public sight::viz::scene3d::adaptor,
 {
 public:
 
-    /// Defines the type of signal sent when a picking query succeeded.
-    using point_clicked_sig_t = core::com::signal<void (data::tools::picking_info)>;
-
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(picker, sight::viz::scene3d::adaptor);
+
+    struct signals
+    {
+        using point_clicked_t = core::com::signal<void (data::tools::picking_info)>;
+        static inline const signal_key_t PICKED = "picked";
+    };
 
     /// Initializes the adaptor.
     picker() noexcept;

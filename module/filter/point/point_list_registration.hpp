@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -65,22 +65,18 @@ class point_list_registration : public service::registerer
 {
 public:
 
+    struct signals
+    {
+        using error_computed_t = core::com::signal<void (double)>;
+        static inline const signal_key_t ERROR_COMPUTED = "error_computed";
+    };
+
+    struct slots
+    {
+        static inline const slot_key_t CHANGE_MODE = "changeMode";
+    };
+
     SIGHT_DECLARE_SERVICE(point_list_registration, service::registerer);
-
-    /**
-     * @name Slots API
-     * @{
-     */
-    static const core::com::slots::key_t CHANGE_MODE;
-    ///@}
-
-    /**
-     * @name Signals API
-     * @{
-     */
-    /// Emitted when registration error is computed
-    using error_computed_t = core::com::signal<void (double)>;
-    ///@}
 
     point_list_registration();
 
@@ -92,7 +88,7 @@ protected:
     void compute_registration(core::clock::type _timestamp) override;
 
     /// Registration Mode (default: RIGID)
-    enum registration_mode_t
+    enum registration_mode_t : std::uint8_t
     {
         rigid,      /*!< rigid mode of VTK registration */
         similarity, /*!< similarity mode of VTK registration */

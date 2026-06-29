@@ -108,8 +108,13 @@ public:
      */
 
     /// Signal emitted when frame is closed and onclose policy is notify
-    static const core::com::signals::key_t CLOSED_SIG;
-    using closed_signal_t = core::com::signal<void ()>;
+    struct signals
+    {
+        using closed_t = core::com::signal<void ()>;
+
+        static inline const signal_key_t CLOSED = "closed";
+    };
+
     /**
      * @}
      */
@@ -119,14 +124,12 @@ public:
      * @{
      */
 
-    /// Slot to show/hide the container
-    static const core::com::slots::key_t SET_VISIBLE_SLOT;
-
-    /// Slot to show the container
-    static const core::com::slots::key_t SHOW_SLOT;
-
-    /// Slot to hide the container
-    static const core::com::slots::key_t HIDE_SLOT;
+    struct slots
+    {
+        static inline const slot_key_t SET_VISIBLE = "set_visible";
+        static inline const slot_key_t SHOW        = "show";
+        static inline const slot_key_t HIDE        = "hide";
+    };
 /**
  * @}
  */
@@ -186,7 +189,7 @@ private:
     std::string m_close_policy;
 
     /// Signal emitted when frame is closed and onclose mode is message
-    closed_signal_t::sptr m_sig_closed;
+    signals::closed_t::sptr m_sig_closed;
 };
 
 } // namespace sight::ui

@@ -24,9 +24,6 @@
 
 #include "data/image_series.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slot.hxx>
-#include <core/com/slots.hxx>
 #include <core/spy_log.hpp>
 
 #include <data/image.hpp>
@@ -45,9 +42,6 @@ namespace sight::module::ui::qt::image
 
 namespace medical_image = data::helper::medical_image;
 
-static const core::com::slots::key_t UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
-static const core::com::slots::key_t UPDATE_SLICE_TYPE_SLOT  = "updateSliceType";
-
 const service::base::key_t slice_index_position_editor::IMAGE_INOUT =
     "image";
 
@@ -61,8 +55,8 @@ std::map<slice_index_position_editor::axis_t, std::string> slice_index_position_
 
 slice_index_position_editor::slice_index_position_editor() noexcept
 {
-    new_slot(UPDATE_SLICE_INDEX_SLOT, &slice_index_position_editor::update_slice_index, this);
-    new_slot(UPDATE_SLICE_TYPE_SLOT, &slice_index_position_editor::update_slice_type, this);
+    new_slot(slots::UPDATE_SLICE_INDEX, &slice_index_position_editor::update_slice_index, this);
+    new_slot(slots::UPDATE_SLICE_TYPE, &slice_index_position_editor::update_slice_type, this);
 }
 
 //----------------------------------------------------------------------------------------
@@ -353,7 +347,7 @@ void slice_index_position_editor::slice_index_notification(int _index)
         static_cast<int>(medical_image::get_slice_index(*image, axis_t::axial).value_or(0))
     };
 
-    image->async_emit(this, data::image::SLICE_INDEX_MODIFIED_SIG, idx[2], idx[1], idx[0]);
+    image->async_emit(this, data::image::signals::SLICE_INDEX_MODIFIED, idx[2], idx[1], idx[0]);
 
     // No need to fill in the arguments of the signal since the connected adaptors will get the slice index directly
     // from the image. This is temporary until we decide to remove the slice indices as fields and use a real data.
@@ -589,7 +583,7 @@ void slice_index_position_editor::slice_type_notification(int _type)
     // Fire the signal
     {
         const auto image = m_image.const_lock();
-        image->async_emit(this, data::image::SLICE_TYPE_MODIFIED_SIG, static_cast<int>(old_type), _type);
+        image->async_emit(this, data::image::signals::SLICE_TYPE_MODIFIED, static_cast<int>(old_type), _type);
 
         this->update_slice_index_from_img(*image);
     }
@@ -600,13 +594,13 @@ service::connections_t slice_index_position_editor::auto_connections() const
 {
     connections_t connections;
 
-    connections.push(IMAGE_INOUT, data::image::MODIFIED_SIG, service::slots::UPDATE);
-    connections.push(IMAGE_INOUT, data::image::SLICE_INDEX_MODIFIED_SIG, UPDATE_SLICE_INDEX_SLOT);
-    connections.push(IMAGE_INOUT, data::image::SLICE_TYPE_MODIFIED_SIG, UPDATE_SLICE_TYPE_SLOT);
+    connections.push(IMAGE_INOUT, data::signals::MODIFIED, service::slots::UPDATE);
+    connections.push(IMAGE_INOUT, data::image::signals::SLICE_INDEX_MODIFIED, slots::UPDATE_SLICE_INDEX);
+    connections.push(IMAGE_INOUT, data::image::signals::SLICE_TYPE_MODIFIED, slots::UPDATE_SLICE_TYPE);
 
-    connections.push(IMAGE_INOUT, data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE);
-    connections.push(IMAGE_INOUT, data::image::RULER_MODIFIED_SIG, service::slots::UPDATE);
-    connections.push(IMAGE_INOUT, data::image::FIDUCIAL_REMOVED_SIG, service::slots::UPDATE);
+    connections.push(IMAGE_INOUT, data::image::signals::BUFFER_MODIFIED, service::slots::UPDATE);
+    connections.push(IMAGE_INOUT, data::image::signals::RULER_MODIFIED, service::slots::UPDATE);
+    connections.push(IMAGE_INOUT, data::image::signals::FIDUCIAL_REMOVED, service::slots::UPDATE);
 
     const auto image        = m_image.lock();
     const auto image_series = std::dynamic_pointer_cast<const sight::data::image_series>(image.get_shared());

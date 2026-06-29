@@ -658,17 +658,20 @@ public:
 
     /// Signals
     /// @{
-    /// Type of signal when objects are added
-    using added_signal_t = core::com::signal<void (container_t)>;
-    inline static const core::com::signals::key_t ADDED_OBJECTS_SIG = "added_objects";
+    struct signals
+    {
+        /// Type of signal when objects are added
+        using added_t = core::com::signal<void (container_t)>;
+        inline static const signal_key_t ADDED_OBJECTS = "added_objects";
 
-    /// Type of signal when objects are changed (newObjects, oldObjects)
-    using changed_signal_t = core::com::signal<void (container_t, container_t)>;
-    inline static const core::com::signals::key_t CHANGED_OBJECTS_SIG = "changedObjects";
+        /// Type of signal when objects are changed (newObjects, oldObjects)
+        using changed_t = core::com::signal<void (container_t, container_t)>;
+        inline static const signal_key_t CHANGED_OBJECTS = "changedObjects";
 
-    /// Type of signal when objects are removed
-    using removed_signal_t = core::com::signal<void (container_t)>;
-    inline static const core::com::signals::key_t REMOVED_OBJECTS_SIG = "removed_objects";
+        /// Type of signal when objects are removed
+        using removed_t = core::com::signal<void (container_t)>;
+        inline static const signal_key_t REMOVED_OBJECTS = "removed_objects";
+    };
     /// @}
 
     /// Returns a copy of the underlying container
@@ -690,7 +693,7 @@ public:
 
         const container& m_container;
         container::container_t m_backup;
-        std::vector<core::com::slot_base::sptr> m_blocked_slots;
+        std::vector<core::com::slot_base::sptr> m_blocked_slots {};
     };
 
     [[nodiscard]] constexpr auto scoped_emit() const noexcept;

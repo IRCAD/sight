@@ -66,6 +66,20 @@ public:
 
     SIGHT_DECLARE_SERVICE(frame_writer, sight::io::service::writer);
 
+    struct slots
+    {
+        using frame_t = core::com::slot<void (core::clock::type)>;
+        using void_t  = core::com::slot<void ()>;
+
+        static inline const slot_key_t SAVE_FRAME           = "save_frame";
+        static inline const slot_key_t START_RECORD         = "start_record";
+        static inline const slot_key_t STOP_RECORD          = "stop_record";
+        static inline const slot_key_t RECORD               = "record";
+        static inline const slot_key_t TOGGLE_RECORDING     = "toggle_recording";
+        static inline const slot_key_t WRITE                = "write";
+        static inline const slot_key_t SET_FORMAT_PARAMETER = "set_format_parameter";
+    };
+
     /// Constructor.
     frame_writer() noexcept;
 

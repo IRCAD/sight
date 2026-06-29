@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,6 @@
 
 #include "module/io/vtk/mesh_writer.hpp"
 
-#include <core/com/signal.hxx>
 #include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
 
@@ -37,7 +36,6 @@
 #include <ui/__/cursor.hpp>
 #include <ui/__/dialog/location.hpp>
 #include <ui/__/dialog/message.hpp>
-#include <ui/__/dialog/progress.hpp>
 
 namespace sight::module::io::vtk
 {
@@ -115,7 +113,7 @@ void mesh_writer::info(std::ostream& _sstream)
 //------------------------------------------------------------------------------
 
 template<typename WRITER>
-static typename WRITER::sptr configure_writer(const std::filesystem::path& _file)
+static WRITER::sptr configure_writer(const std::filesystem::path& _file)
 {
     typename WRITER::sptr writer = std::make_shared<WRITER>();
     writer->set_file(_file);

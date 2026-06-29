@@ -64,6 +64,12 @@ public:
 
     SIGHT_DECLARE_SERVICE(event, sight::viz::scene3d::adaptor);
 
+    struct signals
+    {
+        using triggered_t = core::com::signal<void (sight::viz::scene3d::window_interactor::interaction_info)>;
+        static inline const signal_key_t TRIGGERED = "triggered";
+    };
+
     event();
 
     void mouse_move_event(
@@ -86,8 +92,12 @@ public:
     void pan_gesture_release_event(int _x, int _y, int _dx, int _dy) final;
     void long_tap_gesture_event(int _x, int _y) final;
 
-    static const core::com::signals::key_t TRIGGERED;
-    using triggered_signal_t = core::com::signal<void (sight::viz::scene3d::window_interactor::interaction_info)>;
+protected:
+
+    void configuring() final;
+    void starting() final;
+    void updating() final;
+    void stopping() final;
 
 private:
 
@@ -105,11 +115,6 @@ private:
         std::optional<modifier> _modifiers,
         std::optional<int> _key
     );
-
-    void configuring() final;
-    void starting() final;
-    void updating() final;
-    void stopping() final;
 
     std::vector<filter> m_filters;
 };

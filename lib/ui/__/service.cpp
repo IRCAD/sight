@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,9 +28,6 @@
 #include "ui/__/container/widget.hpp"
 #include "ui/__/detail/registry/view.hpp"
 #include "ui/__/layout/view.hpp"
-
-#include <core/com/slot.hxx>
-#include <core/com/slots.hxx>
 
 #include <boost/range/iterator_range_core.hpp>
 

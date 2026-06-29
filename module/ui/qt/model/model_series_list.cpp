@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,31 +22,17 @@
 
 #include "model_series_list.hpp"
 
-#include <core/base.hpp>
 #include <core/com/signal.hpp>
-#include <core/com/signal.hxx>
-#include <core/com/signals.hpp>
-#include <core/com/slot.hpp>
-#include <core/com/slot.hxx>
-#include <core/com/slots.hpp>
-#include <core/com/slots.hxx>
+
 #include <core/id.hpp>
-#include <core/runtime/path.hpp>
 
 #include <data/boolean.hpp>
 #include <data/helper/field.hpp>
-#include <data/integer.hpp>
-#include <data/real.hpp>
 #include <data/reconstruction.hpp>
-#include <data/string.hpp>
 
 #include <service/base.hpp>
-#include <service/macros.hpp>
-#include <service/op.hpp>
 
 #include <ui/qt/container/widget.hpp>
-
-#include <boost/format.hpp>
 
 #include <QAction>
 #include <QCheckBox>
@@ -63,18 +49,12 @@ namespace sight::module::ui::qt::model
 
 //------------------------------------------------------------------------------
 
-static const core::com::signals::key_t RECONSTRUCTION_SELECTED_SIG = "reconstruction_selected";
-static const core::com::signals::key_t EMPTIED_SELECTION_SIG       = "emptied_selection";
-static const core::com::slots::key_t SHOW_RECONSTRUCTIONS_SLOT     = "showReconstructions";
-
-//------------------------------------------------------------------------------
-
 model_series_list::model_series_list() noexcept
 {
-    m_sig_reconstruction_selected = new_signal<reconstruction_selected_signal_t>(RECONSTRUCTION_SELECTED_SIG);
-    m_sig_emptied_selection       = new_signal<emptied_selection_signal_t>(EMPTIED_SELECTION_SIG);
+    m_sig_reconstruction_selected = new_signal<signals::reconstruction_selected_t>(signals::RECONSTRUCTION_SELECTED);
+    m_sig_emptied_selection       = new_signal<signals::emptied_selection_t>(signals::EMPTIED_SELECTION);
 
-    new_slot(SHOW_RECONSTRUCTIONS_SLOT, &model_series_list::show_reconstructions, this);
+    new_slot(slots::SHOW_RECONSTRUCTIONS, &model_series_list::show_reconstructions, this);
 }
 
 //------------------------------------------------------------------------------
@@ -184,9 +164,9 @@ void model_series_list::starting()
 service::connections_t model_series_list::auto_connections() const
 {
     return {
-        {MODEL_SERIES, data::model_series::MODIFIED_SIG, service::slots::UPDATE},
-        {MODEL_SERIES, data::model_series::RECONSTRUCTIONS_ADDED_SIG, service::slots::UPDATE},
-        {MODEL_SERIES, data::model_series::RECONSTRUCTIONS_REMOVED_SIG, service::slots::UPDATE}
+        {MODEL_SERIES, data::signals::MODIFIED, service::slots::UPDATE},
+        {MODEL_SERIES, data::model_series::signals::RECONSTRUCTIONS_ADDED, service::slots::UPDATE},
+        {MODEL_SERIES, data::model_series::signals::RECONSTRUCTIONS_REMOVED, service::slots::UPDATE}
     };
 }
 
@@ -346,12 +326,7 @@ void model_series_list::on_organ_choice_visibility(QTreeWidgetItem* _item, int /
     if(rec->get_is_visible() != item_is_checked)
     {
         rec->set_is_visible(item_is_checked);
-
-        data::reconstruction::visibility_modified_signal_t::sptr sig;
-        sig = rec->signal<data::reconstruction::visibility_modified_signal_t>(
-            data::reconstruction::VISIBILITY_MODIFIED_SIG
-        );
-        sig->async_emit(item_is_checked);
+        rec->async_emit(data::reconstruction::signals::VISIBILITY_MODIFIED, item_is_checked);
     }
 }
 
@@ -432,10 +407,7 @@ void model_series_list::on_delete_all_check_box()
     model_series->set_reconstruction_db(data::model_series::reconstruction_vector_t());
 
     // Send the signals.
-    auto sig = model_series->signal<data::model_series::reconstructions_removed_signal_t>(
-        data::model_series::RECONSTRUCTIONS_REMOVED_SIG
-    );
-    sig->async_emit(reconstructions);
+    model_series->async_emit(data::model_series::signals::RECONSTRUCTIONS_REMOVED, reconstructions);
 }
 
 //------------------------------------------------------------------------------
@@ -461,16 +433,13 @@ void model_series_list::on_custom_context_menu_requested(const QPoint& _pos)
                     model_series->get_reconstruction_db();
                 const auto rec_it =
                     reconstructions.begin() + index.row();
-                const data::reconstruction::sptr reconstruction = *rec_it;
+                const data::reconstruction::sptr& reconstruction = *rec_it;
                 reconstructions.erase(rec_it);
                 model_series->set_reconstruction_db(reconstructions);
 
                 // Send the signals.
                 deleted_reconstructions.push_back(reconstruction);
-                auto sig = model_series->signal<data::model_series::reconstructions_removed_signal_t>(
-                    data::model_series::RECONSTRUCTIONS_REMOVED_SIG
-                );
-                sig->async_emit(deleted_reconstructions);
+                model_series->async_emit(data::model_series::signals::RECONSTRUCTIONS_REMOVED, deleted_reconstructions);
             });
 
         QMenu context_menu;

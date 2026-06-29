@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -61,7 +61,7 @@ public:
     /// Destroys the service.
     ~text() override = default;
 
-private:
+protected:
 
     /// Configures the service.
     void configuring() override;
@@ -74,6 +74,8 @@ private:
 
     /// Destroys the layout.
     void stopping() override;
+
+private:
 
     /// Stores the static text to be displayed.
     QPointer<QLabel> m_label;

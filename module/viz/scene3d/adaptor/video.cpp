@@ -22,8 +22,6 @@
 
 #include "module/viz/scene3d/adaptor/video.hpp"
 
-#include <core/com/slots.hxx>
-
 #include <viz/scene3d/ogre.hpp>
 
 #include <OGRE/OgreCamera.h>
@@ -172,14 +170,14 @@ void video::starting()
 service::connections_t video::auto_connections() const
 {
     service::connections_t connections = adaptor::auto_connections();
-    connections.push(m_image, data::image::BUFFER_MODIFIED_SIG, slots::UPDATE_IMAGE);
-    connections.push(m_image, data::image::MODIFIED_SIG, slots::UPDATE_IMAGE);
+    connections.push(m_image, data::image::signals::BUFFER_MODIFIED, slots::UPDATE_IMAGE);
+    connections.push(m_image, data::signals::MODIFIED, slots::UPDATE_IMAGE);
 
-    connections.push(m_tf, data::transfer_function::MODIFIED_SIG, slots::UPDATE_TF);
-    connections.push(m_tf, data::transfer_function::POINTS_MODIFIED_SIG, slots::UPDATE_TF);
-    connections.push(m_tf, data::transfer_function::WINDOWING_MODIFIED_SIG, slots::UPDATE_TF);
+    connections.push(m_tf, data::signals::MODIFIED, slots::UPDATE_TF);
+    connections.push(m_tf, data::transfer_function::signals::POINTS_MODIFIED, slots::UPDATE_TF);
+    connections.push(m_tf, data::transfer_function::signals::WINDOWING_MODIFIED, slots::UPDATE_TF);
 
-    connections.push(m_pl, data::point_list::MODIFIED_SIG, slots::UPDATE_PL);
+    connections.push(m_pl, data::signals::MODIFIED, slots::UPDATE_PL);
     connections.push(m_pl, data::point_list::signals::POINT_ADDED, slots::UPDATE_PL);
     connections.push(m_pl, data::point_list::signals::POINT_REMOVED, slots::UPDATE_PL);
 
@@ -408,10 +406,7 @@ void video::update_pl()
     }
 
     // Send the signal:
-    auto modified_sig = m_point_list->signal<data::point_list::modified_signal_t>(
-        data::point_list::MODIFIED_SIG
-    );
-    modified_sig->async_emit();
+    m_point_list->async_emit(data::signals::MODIFIED);
 }
 
 //------------------------------------------------------------------------------

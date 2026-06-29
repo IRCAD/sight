@@ -24,8 +24,6 @@
 
 #include "data/object.hpp"
 
-#include <core/com/signal.hxx>
-
 namespace sight::module::geometry
 {
 

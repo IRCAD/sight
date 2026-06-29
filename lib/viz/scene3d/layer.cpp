@@ -30,8 +30,6 @@
 #include "viz/scene3d/light_adaptor.hpp"
 #include "viz/scene3d/ogre.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
 #include <core/thread/worker.hpp>
 
 #include <data/tools/color.hpp>
@@ -57,13 +55,6 @@ namespace sight::viz::scene3d
 {
 
 //-----------------------------------------------------------------------------
-
-const core::com::signals::key_t layer::INIT_LAYER_SIG           = "layerInitialized";
-const core::com::signals::key_t layer::RESIZE_LAYER_SIG         = "layerResized";
-const core::com::signals::key_t layer::CAMERA_RANGE_UPDATED_SIG = "CameraRangeUpdated";
-
-const core::com::slots::key_t layer::INTERACTION_SLOT  = "interaction";
-const core::com::slots::key_t layer::RESET_CAMERA_SLOT = "reset_camera";
 
 //-----------------------------------------------------------------------------
 
@@ -136,12 +127,12 @@ struct layer::layer_camera_listener : public Ogre::Camera::Listener
 
 layer::layer()
 {
-    new_signal<init_layer_signal_t>(INIT_LAYER_SIG);
-    new_signal<resize_layer_signal_t>(RESIZE_LAYER_SIG);
-    new_signal<camera_updated_signal_t>(CAMERA_RANGE_UPDATED_SIG);
+    new_signal<signals::init_layer_t>(signals::INIT_LAYER);
+    new_signal<signals::resize_layer_t>(signals::RESIZE_LAYER);
+    new_signal<signals::camera_updated_t>(signals::CAMERA_RANGE_UPDATED);
 
-    new_slot(INTERACTION_SLOT, &layer::interaction, this);
-    new_slot(RESET_CAMERA_SLOT, &layer::reset_camera_coordinates, this);
+    new_slot(slots::INTERACTION, &layer::interaction, this);
+    new_slot(slots::RESET_CAMERA, &layer::reset_camera_coordinates, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -358,7 +349,7 @@ void layer::create_scene()
 
     m_scene_created = true;
 
-    this->signal<init_layer_signal_t>(INIT_LAYER_SIG)->async_emit(this->get_sptr());
+    this->async_emit(signals::INIT_LAYER, this->get_sptr());
 }
 
 // ----------------------------------------------------------------------------
@@ -470,8 +461,7 @@ void layer::interaction(viz::scene3d::window_interactor::interaction_info _info)
 
         case viz::scene3d::window_interactor::interaction_info::resize:
         {
-            auto sig = this->signal<resize_layer_signal_t>(RESIZE_LAYER_SIG);
-            sig->async_emit(_info.x, _info.y);
+            this->async_emit(signals::RESIZE_LAYER, _info.x, _info.y);
 
             this->for_all_interactors(
                 [&_info](const interactor::base::sptr& _i)
@@ -915,7 +905,7 @@ void layer::reset_camera_clipping_range() const
 
         if(far != prev_far)
         {
-            this->signal<camera_updated_signal_t>(CAMERA_RANGE_UPDATED_SIG)->async_emit();
+            this->async_emit(signals::CAMERA_RANGE_UPDATED);
         }
     }
 }

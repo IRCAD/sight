@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,10 +34,7 @@
 #include <QObject>
 #include <QPointer>
 
-class QRadioButton;
-class QCheckBox;
-class QButtonGroup;
-class QAbstractButton;
+class QButtonGroup; // NOLINT(readability-identifier-naming)
 
 namespace sight::module::ui::qt::reconstruction
 {
@@ -88,7 +85,7 @@ protected:
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
      *
-     * Connect Reconstruction::MODIFIED_SIG to this::service::slots::UPDATE
+     * Connect data::signals::MODIFIED to this::service::slots::UPDATE
      */
     connections_t auto_connections() const override;
 

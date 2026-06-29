@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,6 +40,9 @@ class SIGHT_VIZ_SCENE2D_CLASS_API adaptor : public service::base
 {
 public:
 
+    /// Basic destructor, do nothing.
+    SIGHT_VIZ_SCENE2D_API ~adaptor() noexcept override;
+
     SIGHT_DECLARE_SERVICE(adaptor, service::base);
 
     /// Set the zValue.
@@ -59,9 +62,6 @@ protected:
 
     /// Constructor, set the zValue to 0.
     SIGHT_VIZ_SCENE2D_API adaptor() noexcept;
-
-    /// Basic destructor, do nothing.
-    SIGHT_VIZ_SCENE2D_API ~adaptor() noexcept override;
 
     /**
      * @brief Parse the xml configuration for Axis, z value and opacity
@@ -90,6 +90,7 @@ protected:
     /// Converts a point in pixel units into a viewport coordinates
     SIGHT_VIZ_SCENE2D_API vec2d_t view_to_viewport(const scene2d::data::viewport& _viewport) const;
 
+    // NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes))
     /// The x Axis.
     scene2d::data::axis::sptr m_x_axis;
 
@@ -102,6 +103,7 @@ protected:
 
     /// Opacity of the adaptor. Default value set to 1 (opaque).
     float m_opacity {1.F};
+    // NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes))
 };
 
 //------------------------------------------------------------------------------

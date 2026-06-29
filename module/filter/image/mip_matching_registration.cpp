@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2025 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,15 +22,7 @@
 
 #include "mip_matching_registration.hpp"
 
-#include <core/tools/dispatcher.hpp>
-
 #include <filter/image/mip_matching_registration.hpp>
-#include <filter/image/resampler.hpp>
-
-#include <geometry/data/matrix4.hpp>
-
-#include <functional>
-#include <numeric>
 
 namespace sight::module::filter::image
 {
@@ -67,7 +59,7 @@ void mip_matching_registration::updating()
 
     sight::filter::image::mip_matching_register(*fixed, *moving, *transform);
 
-    transform->signal<data::matrix4::modified_signal_t>(data::matrix4::MODIFIED_SIG)->async_emit();
+    transform->async_emit(data::signals::MODIFIED);
 }
 
 //------------------------------------------------------------------------------

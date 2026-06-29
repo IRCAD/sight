@@ -36,7 +36,7 @@ concat::concat() :
 service::connections_t concat::auto_connections() const
 {
     return {
-        {m_fragments, sight::data::object::MODIFIED_SIG, slots::UPDATE}
+        {m_fragments, sight::data::signals::MODIFIED, slots::UPDATE}
     };
 }
 
@@ -97,7 +97,7 @@ void concat::updating()
         auto target = m_target.lock();
         target->from_string(result);
 
-        target->async_emit(this, sight::data::object::MODIFIED_SIG);
+        target->async_emit(this, sight::data::signals::MODIFIED);
     }
 }
 

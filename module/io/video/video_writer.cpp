@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2025 IRCAD France
+ * Copyright (C) 2016-2026 IRCAD France
  * Copyright (C) 2016-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,30 +24,16 @@
 
 #include "video_writer.hpp"
 
-#include <core/com/slot.hpp>
-#include <core/com/slot.hxx>
-#include <core/com/slots.hpp>
-#include <core/com/slots.hxx>
 #include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
-
-#include <service/macros.hpp>
 
 #include <ui/__/dialog/location.hpp>
 #include <ui/__/dialog/message.hpp>
 
-#include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
-#include <opencv2/opencv.hpp>
 
 namespace sight::module::io::video
 {
-
-static const core::com::slots::key_t SAVE_FRAME       = "save_frame";
-static const core::com::slots::key_t START_RECORD     = "start_record";
-static const core::com::slots::key_t STOP_RECORD      = "stop_record";
-static const core::com::slots::key_t RECORD           = "record";
-static const core::com::slots::key_t TOGGLE_RECORDING = "toggle_recording";
 
 const std::string video_writer::P4_EXTENSION = ".mp4";
 const std::string video_writer::AV_C1_CODEC  = "avc1";
@@ -57,11 +43,11 @@ const std::string video_writer::AV_C1_CODEC  = "avc1";
 video_writer::video_writer() noexcept :
     writer("Choose a folder to save the video")
 {
-    new_slot(SAVE_FRAME, &video_writer::save_frame, this);
-    new_slot(START_RECORD, &video_writer::start_record, this);
-    new_slot(STOP_RECORD, &video_writer::stop_record, this);
-    new_slot(RECORD, &video_writer::record, this);
-    new_slot(TOGGLE_RECORDING, &video_writer::toggle_recording, this);
+    new_slot(slots::SAVE_FRAME, &video_writer::save_frame, this);
+    new_slot(slots::START_RECORD, &video_writer::start_record, this);
+    new_slot(slots::STOP_RECORD, &video_writer::stop_record, this);
+    new_slot(slots::RECORD, &video_writer::record, this);
+    new_slot(slots::TOGGLE_RECORDING, &video_writer::toggle_recording, this);
 }
 
 //------------------------------------------------------------------------------
@@ -377,7 +363,7 @@ void video_writer::toggle_recording()
 service::connections_t video_writer::auto_connections() const
 {
     service::connections_t connections;
-    connections.push(sight::io::service::DATA_KEY, data::timeline::signals::PUSHED, SAVE_FRAME);
+    connections.push(sight::io::service::DATA_KEY, data::timeline::signals::PUSHED, slots::SAVE_FRAME);
     return connections;
 }
 

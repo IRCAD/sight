@@ -24,8 +24,6 @@
 
 #include "data/object.hpp"
 
-#include <core/com/slots.hxx>
-
 #include <data/image.hpp>
 
 #include <viz/scene3d/helper/camera.hpp>
@@ -36,19 +34,15 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const core::com::slots::key_t RESET_CAMERA_SLOT       = "reset_camera";
-static const core::com::slots::key_t RESIZE_VIEWPORT_SLOT    = "resize_viewport";
-static const core::com::slots::key_t CHANGE_ORIENTATION_SLOT = "changeOrientation";
-
 namespace interactor_3d = sight::viz::scene3d::interactor;
 
 //-----------------------------------------------------------------------------
 
 negato2d_camera::negato2d_camera() noexcept
 {
-    new_slot(RESET_CAMERA_SLOT, &negato2d_camera::reset_camera, this);
-    new_slot(RESIZE_VIEWPORT_SLOT, &negato2d_camera::resize_viewport, this);
-    new_slot(CHANGE_ORIENTATION_SLOT, &negato2d_camera::change_orientation, this);
+    new_slot(slots::RESET_CAMERA, &negato2d_camera::reset_camera, this);
+    new_slot(slots::RESIZE_VIEWPORT, &negato2d_camera::resize_viewport, this);
+    new_slot(slots::CHANGE_ORIENTATION, &negato2d_camera::change_orientation, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -104,9 +98,9 @@ void negato2d_camera::starting()
 
     m_layer_connection.connect(
         this->layer(),
-        sight::viz::scene3d::layer::RESIZE_LAYER_SIG,
+        sight::viz::scene3d::layer::signals::RESIZE_LAYER,
         this->get_sptr(),
-        RESIZE_VIEWPORT_SLOT
+        slots::RESIZE_VIEWPORT
     );
 
     this->reset_camera();
@@ -136,8 +130,8 @@ void negato2d_camera::stopping()
 service::connections_t negato2d_camera::auto_connections() const
 {
     service::connections_t connections = {
-        {IMAGE_INOUT, data::image::MODIFIED_SIG, RESET_CAMERA_SLOT},
-        {IMAGE_INOUT, data::image::SLICE_TYPE_MODIFIED_SIG, CHANGE_ORIENTATION_SLOT}
+        {IMAGE_INOUT, data::signals::MODIFIED, slots::RESET_CAMERA},
+        {IMAGE_INOUT, data::image::signals::SLICE_TYPE_MODIFIED, slots::CHANGE_ORIENTATION}
     };
     return connections + adaptor::auto_connections();
 }
@@ -263,7 +257,7 @@ void negato2d_camera::wheel_event(modifier _modifier, double _delta, int _x, int
             m_has_moved = true;
 
             // Send signal.
-            image->async_emit(sight::data::image::SLICE_INDEX_MODIFIED_SIG, idx[2], idx[1], idx[0]);
+            image->async_emit(sight::data::image::signals::SLICE_INDEX_MODIFIED, idx[2], idx[1], idx[0]);
             image->async_emit(
                 sight::data::signals::CHANGED_FIELDS,
                 sight::data::fields_container_t(),

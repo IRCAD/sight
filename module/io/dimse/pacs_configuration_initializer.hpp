@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -90,7 +90,7 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect sight::io::dimse::data::pacs_configuration::MODIFIED_SIG of s_CONFIG_INOUT to
+     * Connect sight::data::signals::MODIFIED of s_CONFIG_INOUT to
      *::module::io::dimse::pacs_configuration_initializer::service::slots::UPDATE.
      */
     service::connections_t auto_connections() const final;

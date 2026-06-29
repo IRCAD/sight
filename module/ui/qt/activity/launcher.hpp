@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -118,32 +118,24 @@ public:
 
     SIGHT_DECLARE_SERVICE(launcher, sight::ui::action);
 
+    struct signals
+    {
+        using activity_launched_t = core::com::signal<void (sight::activity::message)>;
+        static inline const signal_key_t ACTIVITY_LAUNCHED = "activity_launched";
+    };
+
+    struct slots
+    {
+        static inline const slot_key_t LAUNCH_SERIES   = "launch_series";
+        static inline const slot_key_t LAUNCH_ACTIVITY = "launch_activity";
+        static inline const slot_key_t UPDATE_STATE    = "update_state";
+    };
+
     /// Constructor. Do nothing.
     launcher() noexcept;
 
     /// Destructor. Do nothing.
     ~launcher() noexcept override;
-
-    /**
-     * @name Slot API
-     * @{
-     */
-    static const core::com::slots::key_t LAUNCH_SERIES_SLOT;
-    static const core::com::slots::key_t LAUNCH_ACTIVITY_SLOT;
-    static const core::com::slots::key_t UPDATE_STATE_SLOT;
-
-    /// @}
-
-    /**
-     * @name Signal API
-     * @{
-     */
-    using activity_launched_signal_t = core::com::signal<void (sight::activity::message)>;
-
-    /// Key in m_signals map of signal m_sigActivityLaunched
-    static const core::com::signals::key_t ACTIVITY_LAUNCHED_SIG;
-
-    /// @}
 
 protected:
 
@@ -151,8 +143,8 @@ protected:
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
      *
-     * Connect Vector::ADDED_OBJECTS_SIG to this::UPDATE_STATE_SLOT
-     * Connect Vector::REMOVED_OBJECTS_SIG to this::UPDATE_STATE_SLOT
+     * Connect Vector::signals::ADDED_OBJECTS to this::UPDATE_STATE
+     * Connect Vector::signals::REMOVED_OBJECTS to this::UPDATE_STATE
      */
     connections_t auto_connections() const override;
 
@@ -240,9 +232,6 @@ private:
 
     /// Id-s of activity configurations to be enabled or disabled, according to filter mode.
     keys_t m_keys;
-
-    /// Signal emitted when activity is launched. Send a message containing the activity information.
-    activity_launched_signal_t::sptr m_sig_activity_launched;
 
     /// launcher's mode (message or immediate)
     std::string m_mode;

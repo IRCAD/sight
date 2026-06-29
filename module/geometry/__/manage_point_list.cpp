@@ -22,15 +22,6 @@
 
 #include "manage_point_list.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-
-#include <data/string.hpp>
-
-#include <boost/algorithm/string.hpp>
-
-#include <glm/mat4x4.hpp>
-#include <glm/vec4.hpp>
 namespace sight::module::geometry
 {
 

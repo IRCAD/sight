@@ -19,16 +19,12 @@
  *
  ***********************************************************************/
 
-#include <core/com/signal.hpp>
-#include <core/com/signal.hxx>
 #include <core/compare.hpp>
 
 #include <data/container.hpp>
-#include <data/integer.hpp>
 
 #include <doctest/doctest.h>
 
-#include <array>
 #include <deque>
 #include <list>
 #include <map>

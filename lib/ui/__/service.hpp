@@ -154,25 +154,23 @@ public:
 
     struct SIGHT_UI_CLASS_API slots : public sight::service::slots
     {
-        using key_t = sight::core::com::slots::key_t;
-
-        inline static const key_t SET_ENABLED          = "set_enabled";
-        inline static const key_t SET_ENABLED_BY_PARAM = "set_enabled_by_param";
-        inline static const key_t ENABLE               = "enable";
-        inline static const key_t DISABLE              = "disable";
-        inline static const key_t SET_VISIBLE          = "set_visible";
-        inline static const key_t SET_VISIBLE_BY_PARAM = "setVisibleByParam";
-        inline static const key_t SHOW                 = "show";
-        inline static const key_t HIDE                 = "hide";
-        inline static const key_t TOGGLE_VISIBILITY    = "toggle_visibility";
-        inline static const key_t MODIFY_LAYOUT        = "modify_layout";
+        inline static const slot_key_t SET_ENABLED          = "set_enabled";
+        inline static const slot_key_t SET_ENABLED_BY_PARAM = "set_enabled_by_param";
+        inline static const slot_key_t ENABLE               = "enable";
+        inline static const slot_key_t DISABLE              = "disable";
+        inline static const slot_key_t SET_VISIBLE          = "set_visible";
+        inline static const slot_key_t SET_VISIBLE_BY_PARAM = "setVisibleByParam";
+        inline static const slot_key_t SHOW                 = "show";
+        inline static const slot_key_t HIDE                 = "hide";
+        inline static const slot_key_t TOGGLE_VISIBILITY    = "toggle_visibility";
+        inline static const slot_key_t MODIFY_LAYOUT        = "modify_layout";
     };
 
     /// SLOT: enable/disable the container
     SIGHT_UI_API virtual void set_enabled(bool _is_enabled);
 
     /// SLOT: enable/disable the container using parameter_t (only testing bool alternative).
-    SIGHT_UI_API virtual void set_enabled_by_parameter(ui::parameter_t);
+    SIGHT_UI_API virtual void set_enabled_by_parameter(ui::parameter_t /*_is_enabled*/);
 
     /// SLOT: enable the container
     SIGHT_UI_API virtual void enable();
@@ -184,7 +182,7 @@ public:
     SIGHT_UI_API virtual void set_visible(bool _is_visible);
 
     /// SLOT: show/hide the container using parameter_t (only testing bool alternative).
-    SIGHT_UI_API virtual void set_visible_by_parameter(ui::parameter_t);
+    SIGHT_UI_API virtual void set_visible_by_parameter(ui::parameter_t /*_is_visible*/);
 
     /// SLOT: show the container
     SIGHT_UI_API virtual void show();

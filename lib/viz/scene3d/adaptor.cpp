@@ -22,8 +22,6 @@
 
 #include "viz/scene3d/adaptor.hpp"
 
-#include <core/com/slots.hxx>
-
 #include <service/registry.hpp>
 
 #include <viz/scene3d/registry/adaptor.hpp>
@@ -228,7 +226,7 @@ void adaptor::set_visible(bool /*unused*/)
 
 service::connections_t adaptor::auto_connections() const
 {
-    return {{m_visible, data::object::MODIFIED_SIG, slots::APPLY_VISIBILITY}};
+    return {{m_visible, data::signals::MODIFIED, slots::APPLY_VISIBILITY}};
 }
 
 //-----------------------------------------------------------------------------

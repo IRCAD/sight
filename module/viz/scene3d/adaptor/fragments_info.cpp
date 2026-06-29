@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2025 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,9 +23,6 @@
 #include "module/viz/scene3d/adaptor/fragments_info.hpp"
 
 #include <core/com/signals.hpp>
-#include <core/com/slots.hxx>
-
-#include <service/macros.hpp>
 
 #include <viz/scene3d/helper/technique.hpp>
 #include <viz/scene3d/ogre.hpp>
@@ -38,6 +35,9 @@
 #include <memory>
 
 namespace sight::module::viz::scene3d::adaptor
+{
+
+namespace
 {
 
 struct fragments_info_material_listener final : public Ogre::MaterialManager::Listener
@@ -80,14 +80,15 @@ struct fragments_info_material_listener final : public Ogre::MaterialManager::Li
     }
 };
 
+} // namespace
+
 static std::unique_ptr<fragments_info_material_listener> s_material_listener = nullptr;
-static const core::com::slots::key_t RESIZE_VIEWPORT_SLOT                    = "resize_viewport";
 
 //-----------------------------------------------------------------------------
 
 fragments_info::fragments_info() noexcept
 {
-    new_slot(RESIZE_VIEWPORT_SLOT, &fragments_info::resize_viewport, this);
+    new_slot(slots::RESIZE_VIEWPORT, &fragments_info::resize_viewport, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -147,9 +148,9 @@ void fragments_info::starting()
 
         m_resize_connection.connect(
             this->layer(),
-            sight::viz::scene3d::layer::RESIZE_LAYER_SIG,
+            sight::viz::scene3d::layer::signals::RESIZE_LAYER,
             this->get_sptr(),
-            RESIZE_VIEWPORT_SLOT
+            slots::RESIZE_VIEWPORT
         );
     }
 }
@@ -350,9 +351,7 @@ void fragments_info::postRenderTargetUpdate(const Ogre::RenderTargetEvent& /*evt
             const Ogre::TexturePtr text = m_compositor->getTextureInstance(m_target_name, 0);
             sight::viz::scene3d::utils::convert_from_ogre_texture(text, image.get_shared(), m_flip_image);
 
-            const auto sig =
-                image->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-            sig->async_emit();
+            image->async_emit(data::signals::MODIFIED);
         }
     }
 
@@ -363,9 +362,7 @@ void fragments_info::postRenderTargetUpdate(const Ogre::RenderTargetEvent& /*evt
             const Ogre::TexturePtr depth_text = m_compositor->getTextureInstance(m_target_name, 1);
             sight::viz::scene3d::utils::convert_from_ogre_texture(depth_text, depth.get_shared(), m_flip_image);
 
-            const auto depth_sig =
-                depth->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-            depth_sig->async_emit();
+            depth->async_emit(data::signals::MODIFIED);
         }
     }
 
@@ -380,9 +377,7 @@ void fragments_info::postRenderTargetUpdate(const Ogre::RenderTargetEvent& /*evt
                 m_flip_image
             );
 
-            const auto primitive_id_sig =
-                primitive_id->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-            primitive_id_sig->async_emit();
+            primitive_id->async_emit(data::signals::MODIFIED);
         }
     }
 }

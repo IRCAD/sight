@@ -68,17 +68,20 @@ public:
      * @name Signals
      * @{
      */
-    /// Signal emitted when a plane is added
-    using plane_added_signal_t = core::com::signal<void (plane::sptr)>;
-    SIGHT_DATA_API static const core::com::signals::key_t PLANE_ADDED_SIG;
+    struct signals
+    {
+        /// Signal emitted when a plane is added
+        using plane_added_t = core::com::signal<void (plane::sptr)>;
+        static const inline signal_key_t PLANE_ADDED = "planeAdded";
 
-    /// Signal emitted when a plane is removed
-    using plane_removed_signal_t = core::com::signal<void (plane::sptr)>;
-    SIGHT_DATA_API static const core::com::signals::key_t PLANE_REMOVED_SIG;
+        /// Signal emitted when a plane is removed
+        using plane_removed_t = core::com::signal<void (plane::sptr)>;
+        static const inline signal_key_t PLANE_REMOVED = "planeRemoved";
 
-    /// Signal emitted when the visibility changed
-    using visibility_modified_signal_t = core::com::signal<void (bool)>;
-    SIGHT_DATA_API static const core::com::signals::key_t VISIBILITY_MODIFIED_SIG;
+        /// Signal emitted when the visibility changed
+        using visibility_modified_t = core::com::signal<void (bool)>;
+        static const inline signal_key_t VISIBILITY_MODIFIED = "visibilityModified";
+    };
 /**
  * @}
  */

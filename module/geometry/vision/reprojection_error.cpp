@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,32 +22,24 @@
 
 #include "reprojection_error.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-
 #include <geometry/vision/helper.hpp>
 
 #include <io/opencv/camera.hpp>
 #include <io/opencv/image.hpp>
 
 #include <opencv2/calib3d.hpp>
-#include <opencv2/opencv.hpp>
+#include <opencv2/imgproc.hpp>
 
 namespace sight::module::geometry::vision
 {
-
-const core::com::slots::key_t reprojection_error::COMPUTE_SLOT       = "compute";
-const core::com::slots::key_t reprojection_error::SET_PARAMETER_SLOT = "set_parameter";
-
-static const core::com::signals::key_t ERROR_COMPUTED_SIG = "error_computed";
 
 //-----------------------------------------------------------------------------
 
 reprojection_error::reprojection_error()
 {
-    new_signal<error_computed_t>(ERROR_COMPUTED_SIG);
+    new_signal<signals::error_computed_t>(signals::ERROR_COMPUTED);
 
-    new_slot(COMPUTE_SLOT, &reprojection_error::compute, this);
+    new_slot(slots::COMPUTE, &reprojection_error::compute, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -181,7 +173,7 @@ void reprojection_error::compute(core::clock::type _timestamp)
                             m_distorsion_coef
                         );
 
-                    this->signal<error_computed_t>(ERROR_COMPUTED_SIG)->async_emit(err_p.first);
+                    this->async_emit(signals::ERROR_COMPUTED, err_p.first);
 
                     errors.push_back(err_p);
                 }
@@ -236,7 +228,7 @@ void reprojection_error::updating()
 service::connections_t reprojection_error::auto_connections() const
 {
     return {
-        {MATRIX_INPUT, data::object::MODIFIED_SIG, service::slots::UPDATE}
+        {MATRIX_INPUT, data::signals::MODIFIED, service::slots::UPDATE}
     };
 }
 

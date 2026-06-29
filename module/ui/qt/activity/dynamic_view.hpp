@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -57,9 +57,9 @@ namespace sight::module::ui::qt::activity
  * @note The same activity cannot be launch in two different tabs.
  *
  * @section Signal Signal
- * - \b activitySelected( data::object::sptr ): this signal is emitted when the current tab selection
- *   changed, it contains the associated Activity. The activity is send as a data::object in order to
- *   connect this signal to slots receiving a data::object.
+ * - \b activitySelected( data::activity::sptr ): this signal is emitted when the current tab selection
+ *   changed, it contains the associated Activity. The activity is send as a data::activity in order to
+ *   connect this signal to slots receiving a data::activity.
  * - \b nothingSelected(): this signal is emitted when no tab are selected.
  *
  * @section Slots Slots
@@ -98,17 +98,25 @@ public:
 
     SIGHT_DECLARE_SERVICE(dynamic_view, sight::ui::activity_view);
 
+    struct signals
+    {
+        using activity_selected_t = core::com::signal<void (data::activity::sptr)>;
+        using nothing_selected_t  = core::com::signal<void ()>;
+        static inline const signal_key_t ACTIVITY_SELECTED = "activitySelected";
+        static inline const signal_key_t NOTHING_SELECTED  = "nothingSelected";
+    };
+
+    struct slots
+    {
+        static inline const slot_key_t CREATE_TAB = "create_tab";
+    };
+
     /// Constructor. Do nothing.
     dynamic_view() noexcept;
 
     /// Destructor. Do nothing.
 
     ~dynamic_view() noexcept override;
-
-    using activity_selected_signal_t = core::com::signal<void (data::object::sptr)>;
-    static const core::com::signals::key_t ACTIVITY_SELECTED_SIG;
-    using nothing_selected_signal_t = core::com::signal<void ()>;
-    static const core::com::signals::key_t NOTHING_SELECTED_SIG;
 
 protected:
 
@@ -136,6 +144,12 @@ protected:
 
     void info(std::ostream& _sstream) override;
 
+    /**
+     * @brief Slot: Launch the given activity in a new tab.
+     * @note The same activity cannot be launched in two different tabs.
+     */
+    void launch_activity(data::activity::sptr _activity) override;
+
 private:
 
     using activity_id_t = std::set<std::string>;
@@ -161,12 +175,6 @@ private:
      * @brief Launch tab
      */
     void launch_tab(dynamic_view_info& _info);
-
-    /**
-     * @brief Slot: Launch the given activity in a new tab.
-     * @note The same activity cannot be launched in two different tabs.
-     */
-    void launch_activity(data::activity::sptr _activity) override;
 
     /// launch a new tab according to the receiving msg
     void create_tab(sight::activity::message _info);
@@ -204,9 +212,6 @@ private:
 
     QPointer<QTabWidget> m_tab_widget;
     QPointer<QWidget> m_current_widget;
-
-    activity_selected_signal_t::sptr m_sig_activity_selected;
-    nothing_selected_signal_t::sptr m_sig_nothing_selected;
 
     bool m_main_activity_closable {true};
 

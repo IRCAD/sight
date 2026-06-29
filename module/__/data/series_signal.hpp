@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2024 IRCAD France
+ * Copyright (C) 2016-2026 IRCAD France
  * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -77,16 +77,22 @@ public:
 
     SIGHT_DECLARE_SERVICE(series_signal, service::controller);
 
+    struct signals
+    {
+        using series_added_t = core::com::signal<void (sight::data::series::sptr)>;
+        static inline const signal_key_t SERIES_ADDED = "seriesAdded";
+    };
+
+    struct slots
+    {
+        static inline const slot_key_t REPORT_SERIES = "reportSeries";
+    };
+
     /// Constructor. Do nothing.
     series_signal() noexcept;
 
     /// Destructor. Do nothing.
     ~series_signal() noexcept override;
-
-    static const core::com::slots::key_t REPORT_SERIES_SLOT;
-
-    using series_added_signal_t = core::com::signal<void (sight::data::series::sptr)>;
-    static const core::com::signals::key_t SERIES_ADDED_SIG;
 
 protected:
 
@@ -106,8 +112,8 @@ protected:
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
      *
-     * Connect Vector::ADDED_OBJECTS_SIG to this::UPDATE_STATE_SLOT
-     * Connect Vector::REMOVED_OBJECTS_SIG to this::UPDATE_STATE_SLOT
+     * Connect Vector::signals::ADDED_OBJECTS to this::UPDATE_STATE
+     * Connect Vector::signals::REMOVED_OBJECTS to this::UPDATE_STATE
      */
     service::connections_t auto_connections() const override;
 
@@ -132,9 +138,6 @@ private:
 
     /// Types of series to be enabled or disabled, according to filter mode.
     types_t m_types;
-
-    /// Signal emitted when the added series correspond to the configured type.
-    series_added_signal_t::sptr m_sig_series_added;
 
     static constexpr std::string_view SERIES_SET_INPUT = "seriesSet";
     sight::data::ptr<sight::data::series_set, sight::data::access::in> m_series_set {this, SERIES_SET_INPUT};

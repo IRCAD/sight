@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -50,8 +50,8 @@ public:
     [[nodiscard]] SIGHT_UI_QT_API_QT const std::vector<int>& values() const;
     [[nodiscard]] SIGHT_UI_QT_API_QT std::size_t num_values() const;
 
-    QSize minimumSizeHint() const override;
-    QSize sizeHint() const override;
+    [[nodiscard]] QSize minimumSizeHint() const override;
+    [[nodiscard]] QSize sizeHint() const override;
 
 Q_SIGNALS:
 
@@ -68,4 +68,4 @@ private:
     std::unique_ptr<QSlider> m_slider = std::make_unique<QSlider>(this);
 };
 
-}
+} // namespace sight::ui::qt::widget

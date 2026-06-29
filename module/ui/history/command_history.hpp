@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -67,6 +67,21 @@ public:
 
     SIGHT_DECLARE_SERVICE(command_history, service::base);
 
+    struct signals
+    {
+        using can_do_t = core::com::signal<void (bool)>;
+        static inline const signal_key_t CAN_UNDO = "canUndo";
+        static inline const signal_key_t CAN_REDO = "canRedo";
+    };
+
+    struct slots
+    {
+        static inline const slot_key_t ENQUEUE = "enqueue";
+        static inline const slot_key_t UNDO    = "undo";
+        static inline const slot_key_t REDO    = "redo";
+        static inline const slot_key_t CLEAR   = "clear";
+    };
+
     /// Constructor.
     command_history();
 
@@ -89,8 +104,6 @@ protected:
 
 private:
 
-    using can_do_signal_t = core::com::signal<void (bool)>;
-
     /// SLOT: add a command to the history.
     void enqueue(sight::ui::history::command::sptr _command);
 
@@ -106,9 +119,9 @@ private:
     /// Send 'canUndo' and 'canRedo' signals.
     void emit_modified_sig() const;
 
-    can_do_signal_t::sptr m_can_undo_sig;
+    signals::can_do_t::sptr m_can_undo_sig;
 
-    can_do_signal_t::sptr m_can_redo_sig;
+    signals::can_do_t::sptr m_can_redo_sig;
 
     sight::ui::history::undo_redo_manager m_undo_redo_manager;
 };

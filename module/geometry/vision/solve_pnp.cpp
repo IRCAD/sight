@@ -22,8 +22,6 @@
 
 #include "solve_pnp.hpp"
 
-#include <core/com/signal.hxx>
-
 #include <geometry/vision/helper.hpp>
 
 #include <io/opencv/camera.hpp>
@@ -124,8 +122,7 @@ void solve_pnp::compute_registration(core::clock::type /*timestamp*/)
 
     fw_matrix->deep_copy(matrix);
 
-    const auto sig = fw_matrix->signal<data::matrix4::modified_signal_t>(data::matrix4::MODIFIED_SIG);
-    sig->async_emit();
+    fw_matrix->async_emit(data::signals::MODIFIED);
 }
 
 //-----------------------------------------------------------------------------

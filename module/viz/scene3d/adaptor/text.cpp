@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2024 IRCAD France
+ * Copyright (C) 2019-2026 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,12 +22,9 @@
 
 #include "module/viz/scene3d/adaptor/text.hpp"
 
-#include <core/com/slots.hxx>
-
 #include <data/string_serializable.hpp>
 
 #include <viz/scene3d/render.hpp>
-#include <viz/scene3d/window_interactor.hpp>
 
 #include <regex>
 
@@ -35,11 +32,8 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const core::com::slots::key_t SET_TEXT_SLOT  = "set_text";
-static const core::com::slots::key_t SET_COLOR_SLOT = "set_color";
-
 // Helper function to control color format in hexa.
-bool check_color_format(const std::string& _color)
+static bool check_color_format(const std::string& _color)
 {
     // Check that _color matches #RRGGBB or #RRGGBBAA in hexa format.
     const std::regex pattern("#[0-9a-fA-F]{6}(?:[0-9a-fA-F]{2})?");
@@ -51,8 +45,8 @@ bool check_color_format(const std::string& _color)
 
 text::text() noexcept
 {
-    new_slot(SET_TEXT_SLOT, &text::set_text, this);
-    new_slot(SET_COLOR_SLOT, &text::set_color, this);
+    new_slot(slots::SET_TEXT, &text::set_text, this);
+    new_slot(slots::SET_COLOR, &text::set_color, this);
 }
 
 //----------------------------------------------------------------------------
@@ -129,7 +123,7 @@ void text::starting()
 service::connections_t text::auto_connections() const
 {
     connections_t connections = adaptor::auto_connections();
-    connections.push(OBJECT_INPUT, data::object::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
+    connections.push(OBJECT_INPUT, data::signals::MODIFIED, adaptor::slots::LAZY_UPDATE);
     return connections;
 }
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "module/viz/scene3d/adaptor/transform.hpp"
-
 #include <data/camera.hpp>
 #include <data/camera_set.hpp>
 #include <data/matrix4.hpp>
@@ -31,13 +29,6 @@
 #include <viz/scene3d/adaptor.hpp>
 
 #include <OGRE/OgreMovableObject.h>
-
-namespace sight::data
-{
-
-class Camera;
-
-} // namespace sight::data
 
 namespace sight::module::viz::scene3d::adaptor
 {
@@ -74,6 +65,13 @@ public:
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(camera, sight::viz::scene3d::adaptor);
 
+    struct slots
+    {
+        static inline const slot_key_t TRANSFORM = "transform";
+        static inline const slot_key_t CALIBRATE = "calibrate";
+        static inline const slot_key_t UPDATE_TF = "updateTransformation";
+    };
+
     /// Creates the adaptor and initialize slots.
     camera() noexcept;
 
@@ -92,10 +90,10 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::matrix4::MODIFIED_SIG of s_TRANSFORM_INOUT to service::slots::UPDATE
-     * Connect data::camera::INTRINSIC_CALIBRATED_SIG of s_CALIBRATION_INPUT to CALIBRATE_SLOT
-     * Connect data::camera_set::MODIFIED_SIG of s_CAMERA_SET_INPUT to CALIBRATE_SLOT
-     * Connect data::camera_set::EXTRINSIC_CALIBRATED_SIG of s_CAMERA_SET_INPUT to CALIBRATE_SLOT
+     * Connect data::signals::MODIFIED of s_TRANSFORM_INOUT to service::slots::UPDATE
+     * Connect data::camera::signals::INTRINSIC_CALIBRATED of s_CALIBRATION_INPUT to CALIBRATE
+     * Connect data::signals::MODIFIED of s_CAMERA_SET_INPUT to CALIBRATE
+     * Connect data::camera_set::signals::EXTRINSIC_CALIBRATED of s_CAMERA_SET_INPUT to CALIBRATE
      */
     service::connections_t auto_connections() const override;
 
@@ -142,8 +140,8 @@ private:
     core::com::helper::sig_slot_connection m_layer_connection;
 
     /// Defines the camera listener class used to pass the projection matrix for autostereo shaders.
-    struct CameraNodeListener;
-    CameraNodeListener* m_camera_node_listener {nullptr};
+    struct camera_node_listener;
+    camera_node_listener* m_camera_node_listener {nullptr};
 
     /// This avoids a self-call to update_tf3D() when we update() the camera
     bool m_skip_update {false};
@@ -153,8 +151,8 @@ private:
 
     enum class update_flags : std::uint8_t
     {
-        TRANSFORM,
-        CALIBRATION
+        transform,
+        calibration
     };
 
     static constexpr std::string_view CALIBRATION_INPUT = "calibration";

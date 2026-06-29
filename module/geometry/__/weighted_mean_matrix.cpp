@@ -23,9 +23,6 @@
 
 #include "module/geometry/__/weighted_mean_matrix.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-
 #include <geometry/data/matrix4.hpp>
 
 namespace sight::module::geometry
@@ -55,7 +52,7 @@ void weighted_mean_matrix::starting()
 service::connections_t weighted_mean_matrix::auto_connections() const
 {
     return {
-        {m_matrix_in, data::object::MODIFIED_SIG, sight::service::slots::UPDATE}
+        {m_matrix_in, data::signals::MODIFIED, sight::service::slots::UPDATE}
     };
 }
 
@@ -69,7 +66,7 @@ void weighted_mean_matrix::updating()
     {
         auto output = m_matrix_out.lock();
         output->deep_copy(current_mat.get_shared());
-        output->async_emit(data::object::MODIFIED_SIG);
+        output->async_emit(data::signals::MODIFIED);
         this->async_emit(filter::signals::SUCCEEDED);
         m_initialized = false;
         return;
@@ -104,7 +101,7 @@ void weighted_mean_matrix::updating()
         auto output = m_matrix_out.lock();
 
         sight::geometry::data::from_glm_mat(*output, glm_output);
-        output->async_emit(data::object::MODIFIED_SIG);
+        output->async_emit(data::signals::MODIFIED);
     }
 
     this->async_emit(filter::signals::SUCCEEDED);

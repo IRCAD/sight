@@ -22,8 +22,6 @@
 
 #include "series_pusher.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
 #include <core/progress/observer.hpp>
 
 #include <data/series.hpp>
@@ -40,22 +38,15 @@ namespace sight::module::io::dimse
 
 //------------------------------------------------------------------------------
 
-const core::com::slots::key_t series_pusher::DISPLAY_SLOT = "displayMessage";
-
-const core::com::signals::key_t series_pusher::STARTED_PROGRESS_SIG = "started_progress";
-const core::com::signals::key_t series_pusher::STOPPED_PROGRESS_SIG = "stopped_progress";
-
-//------------------------------------------------------------------------------
-
 series_pusher::series_pusher() noexcept :
     has_monitors(has_signals::signals())
 {
     // Internal slots
-    m_slot_display_message = new_slot(DISPLAY_SLOT, &series_pusher::display_message);
+    m_slot_display_message = new_slot(slots::DISPLAY, &series_pusher::display_message);
 
     // Public signals
-    m_sig_started_progress = new_signal<started_progress_signal_t>(STARTED_PROGRESS_SIG);
-    m_sig_stopped_progress = new_signal<stopped_progress_signal_t>(STOPPED_PROGRESS_SIG);
+    new_signal<signals::started_progress_t>(signals::STARTED_PROGRESS);
+    new_signal<signals::stopped_progress_t>(signals::STOPPED_PROGRESS);
 }
 
 //------------------------------------------------------------------------------
@@ -232,7 +223,7 @@ bool series_pusher::check_series_on_pacs()
 
         // Set pushing boolean to false
         m_is_pushing = false;
-        m_sig_stopped_progress->async_emit();
+        this->async_emit(signals::STOPPED_PROGRESS);
     }
 
     return result;
@@ -291,7 +282,7 @@ void series_pusher::push_series()
         );
         // Connect from PACS
         series_enquirer->connect();
-        m_sig_started_progress->async_emit();
+        this->async_emit(signals::STARTED_PROGRESS);
 
         // Push series
         series_enquirer->push_series(dicom_container);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2025 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -83,15 +83,20 @@ public:
 
     SIGHT_DECLARE_SERVICE(pose_from2d, service::registerer);
 
+    struct slots
+    {
+        static inline const slot_key_t UPDATE_CAMERA = "updateCamera";
+    };
+
     using vect_key_t = std::vector<std::string>;
 
     pose_from2d() noexcept;
     ~pose_from2d() noexcept override = default;
 
-    /// Connect MarkerTL::signals::PUSHED to REGISTER_SLOT
-    service::connections_t auto_connections() const override;
-
 protected:
+
+    /// Connect MarkerTL::signals::PUSHED to UPDATE_CAMERA
+    service::connections_t auto_connections() const override;
 
     /**
      * @brief Configuring method : This method is used to configure the service.
@@ -180,13 +185,13 @@ private:
     /// List of tags associated with each inout matrix
     std::vector<data::marker_map::key_t> m_matrices_tag;
 
-    static constexpr std::string_view marker_map_INPUT = "marker_map";
+    static constexpr std::string_view MARKER_MAP_INPUT = "marker_map";
     static constexpr std::string_view CAMERA_INPUT     = "camera";
     static constexpr std::string_view EXTRINSIC_INPUT  = "extrinsic";
     static constexpr std::string_view MATRIX_INOUT     = "matrix";
     static constexpr std::string_view POINTLIST_INOUT  = "pointList";
 
-    data::ptr_vector<data::marker_map, data::access::in> m_marker_map {this, marker_map_INPUT};
+    data::ptr_vector<data::marker_map, data::access::in> m_marker_map {this, MARKER_MAP_INPUT};
     data::ptr_vector<data::camera, data::access::in> m_camera {this, CAMERA_INPUT};
     data::ptr<data::matrix4, data::access::in> m_extrinsic {this, EXTRINSIC_INPUT};
     data::ptr_vector<data::matrix4, data::access::inout> m_matrix {this, MATRIX_INOUT};

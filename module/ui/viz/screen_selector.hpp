@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2024 IRCAD France
+ * Copyright (C) 2019-2026 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -54,6 +54,12 @@ class screen_selector final : public sight::ui::action
 {
 public:
 
+    struct signals
+    {
+        using screen_selected_t = core::com::signal<void (int)>;
+        static inline const signal_key_t SCREEN_SELECTED = "screen_selected";
+    };
+
     SIGHT_DECLARE_SERVICE(screen_selector, sight::ui::action);
 
     /// Constructor.
@@ -78,14 +84,8 @@ protected:
 
 private:
 
-    /// Type of signal sent when a screen is selected.
-    using screen_selected_signal_t = core::com::signal<void (int)>;
-
     /// Prompts a dialog letting the user select a screen if there are multiple monitors.
     static int select_screen();
-
-    /// Signal sent when a screen is selected.
-    screen_selected_signal_t::sptr m_screen_selected_sig;
 
     /// Selection mode can be 'select', 'current' or 'neighbor' (cf XML configuration).
     std::string m_mode {"select"};

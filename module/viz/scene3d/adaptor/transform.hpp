@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -78,7 +78,7 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::object::MODIFIED_SIG of s_TRANSFORM_INOUT to service::slots::UPDATE
+     * Connect data::signals::MODIFIED of s_TRANSFORM_INOUT to service::slots::UPDATE
      */
     service::connections_t auto_connections() const final;
 

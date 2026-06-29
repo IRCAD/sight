@@ -26,8 +26,6 @@
 
 #include "viz/scene3d/ogre.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
 #include <core/ptree.hpp>
 
 #include <viz/scene3d/helper/scene.hpp>
@@ -182,12 +180,12 @@ service::connections_t point_list::auto_connections() const
     service::connections_t connections = adaptor::auto_connections();
     connections.push(m_point_list, data::point_list::signals::POINT_ADDED, adaptor::slots::LAZY_UPDATE);
     connections.push(m_point_list, data::point_list::signals::POINT_REMOVED, adaptor::slots::LAZY_UPDATE);
-    connections.push(m_point_list, data::point_list::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
+    connections.push(m_point_list, data::signals::MODIFIED, adaptor::slots::LAZY_UPDATE);
 
-    connections.push(m_points, data::object::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
+    connections.push(m_points, data::signals::MODIFIED, adaptor::slots::LAZY_UPDATE);
 
-    connections.push(m_mesh, data::mesh::VERTEX_MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
-    connections.push(m_mesh, data::mesh::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
+    connections.push(m_mesh, data::mesh::signals::VERTEX_MODIFIED, adaptor::slots::LAZY_UPDATE);
+    connections.push(m_mesh, data::signals::MODIFIED, adaptor::slots::LAZY_UPDATE);
 
     return connections;
 }

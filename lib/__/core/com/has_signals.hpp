@@ -140,7 +140,7 @@ public:
      * @param _a Arguments of the signal
      */
     template<typename ... A>
-    void async_emit(com::has_slots* _caller, const signals::key_t& _key, A ... _a) const
+    void async_emit(const com::has_slots* _caller, const signals::key_t& _key, A ... _a) const
     {
         SIGHT_ASSERT("Caller is null", _caller);
 
@@ -186,7 +186,7 @@ private:
      * @param _caller Caller of the signal
      * @param _signal Signal about to be emitted
      */
-    static blockers_t block_connections(com::has_slots* _caller, const core::com::signal_base::sptr& _signal)
+    static blockers_t block_connections(const com::has_slots* _caller, const core::com::signal_base::sptr& _signal)
     {
         blockers_t blockers;
         for(const auto& slot : _caller->slots())

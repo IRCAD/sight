@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2024 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,8 +22,6 @@
 #include "map.hpp"
 
 #include "data/registry/macros.hpp"
-
-#include <core/com/signal.hxx>
 
 SIGHT_REGISTER_DATA(sight::data::map);
 

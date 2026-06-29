@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,6 @@
 
 #include "module/io/vtk/image_reader.hpp"
 
-#include <core/com/signal.hxx>
 #include <core/location/single_folder.hpp>
 
 #include <data/image.hpp>
@@ -34,13 +33,9 @@
 #include <io/vtk/meta_image_reader.hpp>
 #include <io/vtk/vti_image_reader.hpp>
 
-#include <service/macros.hpp>
-
 #include <ui/__/cursor.hpp>
 #include <ui/__/dialog/location.hpp>
 #include <ui/__/dialog/message.hpp>
-
-#include <boost/algorithm/string.hpp>
 
 #include <filesystem>
 
@@ -180,7 +175,7 @@ void image_reader::updating()
 //------------------------------------------------------------------------------
 
 template<typename READER>
-static typename READER::sptr configure_reader(const std::filesystem::path& _img_file)
+static READER::sptr configure_reader(const std::filesystem::path& _img_file)
 {
     typename READER::sptr reader = std::make_shared<READER>();
     reader->set_file(_img_file);

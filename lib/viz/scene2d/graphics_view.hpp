@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,6 +47,14 @@ public:
 
     /// Events
 
+    SIGHT_VIZ_SCENE2D_API QSize sizeHint() const override;
+
+    SIGHT_VIZ_SCENE2D_API void update_from_viewport(const scene2d::data::viewport& _viewport);
+
+    SIGHT_VIZ_SCENE2D_API void set_scene_render(SPTR(viz::scene2d::render) _scene_render);
+
+protected:
+
     SIGHT_VIZ_SCENE2D_API void keyPressEvent(QKeyEvent* _event) override;
 
     SIGHT_VIZ_SCENE2D_API void keyReleaseEvent(QKeyEvent* _event) override;
@@ -66,13 +74,7 @@ public:
     SIGHT_VIZ_SCENE2D_API void enterEvent(QEnterEvent* _event) override;
     SIGHT_VIZ_SCENE2D_API void leaveEvent(QEvent* _event) override;
 
-    SIGHT_VIZ_SCENE2D_API QSize sizeHint() const override;
-
-    SIGHT_VIZ_SCENE2D_API void update_from_viewport(const scene2d::data::viewport& _viewport);
-
-    SIGHT_VIZ_SCENE2D_API void set_scene_render(SPTR(viz::scene2d::render) _scene_render);
-
-protected:
+private:
 
     scene2d::data::viewport m_viewport;
     WPTR(viz::scene2d::render) m_scene_2d_render;

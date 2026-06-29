@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -62,10 +62,10 @@ sight::data::validator::return_t has_fiducials::validate(const data::object::csp
 has_fiducials::auto_connect_signals_t has_fiducials::auto_connect_signals() const
 {
     return {
-        sight::data::object::MODIFIED_SIG,
-        sight::data::image_series::signals::POINT_ADDED,
-        sight::data::image_series::signals::POINT_INSERTED,
-        sight::data::image_series::signals::POINT_REMOVED
+        sight::data::signals::MODIFIED,
+        sight::data::has_fiducials::signals::POINT_ADDED,
+        sight::data::has_fiducials::signals::POINT_INSERTED,
+        sight::data::has_fiducials::signals::POINT_REMOVED
     };
 }
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2025 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,20 +22,9 @@
 
 #include "series_pusher.hpp"
 
-#include <core/com/signal.hpp>
-#include <core/com/signal.hxx>
-#include <core/com/slots.hpp>
-#include <core/com/slots.hxx>
 #include <core/tools/failed.hpp>
 
-#include <data/image_series.hpp>
 #include <data/vector.hpp>
-
-#include <io/http/exceptions/base.hpp>
-#include <io/http/helper/series.hpp>
-#include <io/http/request.hpp>
-
-#include <service/macros.hpp>
 
 #include <ui/__/dialog/message.hpp>
 #include <ui/__/preferences.hpp>
@@ -226,7 +215,7 @@ void series_pusher::display_message(const std::string& _message, bool _error)
     sight::ui::dialog::message message_box;
     message_box.set_title((_error ? "Error" : "Information"));
     message_box.set_message(_message);
-    message_box.set_icon(_error ? (ui::dialog::message::critical) : (ui::dialog::message::info));
+    message_box.set_icon(_error ? ui::dialog::message::critical : ui::dialog::message::info);
     message_box.add_button(ui::dialog::message::ok);
     message_box.show();
 }

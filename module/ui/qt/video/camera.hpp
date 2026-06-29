@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -108,6 +108,23 @@ public:
 
     SIGHT_DECLARE_SERVICE(camera, sight::ui::editor);
 
+    struct signals
+    {
+        using configured_t = core::com::signal<void ()>;
+
+        static inline const signal_key_t CONFIGURED_CAMERAS = "configured_cameras";
+        static inline const signal_key_t CONFIGURED_DEVICE  = "configured_device";
+        static inline const signal_key_t CONFIGURED_FILE    = "configured_file";
+        static inline const signal_key_t CONFIGURED_STREAM  = "configured_stream";
+    };
+
+    struct slots
+    {
+        static inline const slot_key_t CONFIGURE_DEVICE = "configureDevice";
+        static inline const slot_key_t CONFIGURE_FILE   = "configureFile";
+        static inline const slot_key_t CONFIGURE_STREAM = "configureStream";
+    };
+
     /// Initialize signals and slots.
     camera();
 
@@ -134,11 +151,6 @@ protected Q_SLOTS:
     /// Allows setting the camera resolution preference.
     void set_preference();
 
-private:
-
-    /// Type of the 'configured' signal.
-    using configured_signal_t = core::com::signal<void ()>;
-
     /// Configures the service.
     void configuring() final;
 
@@ -150,6 +162,11 @@ private:
 
     /// Does nothing.
     void updating() final;
+
+private:
+
+    /// Type of the 'configured' signal.
+    using configured_t = core::com::signal<void ()>;
 
     /// Calls when user select a file.
     void on_choose_file();
@@ -176,7 +193,7 @@ private:
     bool m_use_absolute_path {false};
 
     /// Signal emitted when the camera_set has been configured.
-    configured_signal_t::sptr m_sig_configured_cameras;
+    configured_t::sptr m_sig_configured_cameras;
 
     /// Label of the selector.
     std::string m_label {"Video source: "};

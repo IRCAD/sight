@@ -22,9 +22,6 @@
 
 #include "module/viz/scene3d/adaptor/volume_render.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-
 #include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
 
@@ -41,20 +38,20 @@ namespace sight::module::viz::scene3d::adaptor
 volume_render::volume_render() noexcept
 {
     // Auto-connected slots
-    new_slot(NEW_IMAGE_SLOT, [this](){lazy_update(update_flags::image);});
-    new_slot(BUFFER_IMAGE_SLOT, [this](){lazy_update(update_flags::image_buffer);});
-    new_slot(UPDATE_MASK_SLOT, [this](){lazy_update(update_flags::mask_buffer);});
-    new_slot(UPDATE_TF_SLOT, [this](){lazy_update(update_flags::tf);});
-    new_slot(UPDATE_CLIPPING_BOX_SLOT, [this](){lazy_update(update_flags::clipping_box);});
+    new_slot(slots::NEW_IMAGE, [this](){lazy_update(update_flags::image);});
+    new_slot(slots::BUFFER_IMAGE, [this](){lazy_update(update_flags::image_buffer);});
+    new_slot(slots::UPDATE_MASK, [this](){lazy_update(update_flags::mask_buffer);});
+    new_slot(slots::UPDATE_TF, [this](){lazy_update(update_flags::tf);});
+    new_slot(slots::UPDATE_CLIPPING_BOX, [this](){lazy_update(update_flags::clipping_box);});
 
     // Interaction slots
-    new_slot(TOGGLE_WIDGETS_SLOT, &volume_render::toggle_widgets, this);
-    new_slot(SET_BOOL_PARAMETER_SLOT, &volume_render::set_bool_parameter, this);
-    new_slot(SET_INT_PARAMETER_SLOT, &volume_render::set_int_parameter, this);
-    new_slot(SET_DOUBLE_PARAMETER_SLOT, &volume_render::set_double_parameter, this);
+    new_slot(slots::TOGGLE_WIDGETS, &volume_render::toggle_widgets, this);
+    new_slot(slots::SET_BOOL_PARAMETER, &volume_render::set_bool_parameter, this);
+    new_slot(slots::SET_INT_PARAMETER, &volume_render::set_int_parameter, this);
+    new_slot(slots::SET_DOUBLE_PARAMETER, &volume_render::set_double_parameter, this);
 
     // Slot for async update
-    new_slot(UPDATE_IMAGE_SLOT, &volume_render::update_image, this);
+    new_slot(slots::UPDATE_IMAGE, &volume_render::update_image, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -62,14 +59,14 @@ volume_render::volume_render() noexcept
 service::connections_t volume_render::auto_connections() const
 {
     service::connections_t connections = {
-        {objects::IMAGE_IN, data::image::MODIFIED_SIG, NEW_IMAGE_SLOT},
-        {objects::IMAGE_IN, data::image::BUFFER_MODIFIED_SIG, BUFFER_IMAGE_SLOT},
-        {objects::MASK_IN, data::image::MODIFIED_SIG, NEW_IMAGE_SLOT},
-        {objects::MASK_IN, data::image::BUFFER_MODIFIED_SIG, UPDATE_MASK_SLOT},
-        {objects::CLIPPING_MATRIX_INOUT, data::matrix4::MODIFIED_SIG, UPDATE_CLIPPING_BOX_SLOT},
-        {objects::VOLUME_TF_IN, data::transfer_function::MODIFIED_SIG, UPDATE_TF_SLOT},
-        {objects::VOLUME_TF_IN, data::transfer_function::POINTS_MODIFIED_SIG, UPDATE_TF_SLOT},
-        {objects::VOLUME_TF_IN, data::transfer_function::WINDOWING_MODIFIED_SIG, UPDATE_TF_SLOT},
+        {objects::IMAGE_IN, data::signals::MODIFIED, slots::NEW_IMAGE},
+        {objects::IMAGE_IN, data::image::signals::BUFFER_MODIFIED, slots::BUFFER_IMAGE},
+        {objects::MASK_IN, data::signals::MODIFIED, slots::NEW_IMAGE},
+        {objects::MASK_IN, data::image::signals::BUFFER_MODIFIED, slots::UPDATE_MASK},
+        {objects::CLIPPING_MATRIX_INOUT, data::signals::MODIFIED, slots::UPDATE_CLIPPING_BOX},
+        {objects::VOLUME_TF_IN, data::signals::MODIFIED, slots::UPDATE_TF},
+        {objects::VOLUME_TF_IN, data::transfer_function::signals::POINTS_MODIFIED, slots::UPDATE_TF},
+        {objects::VOLUME_TF_IN, data::transfer_function::signals::WINDOWING_MODIFIED, slots::UPDATE_TF},
     };
 
     return connections + adaptor::auto_connections();
@@ -322,7 +319,7 @@ void volume_render::buffer_image()
 
                 // Switch back to the main thread to compute the proxy geometry.
                 // Ogre can't handle parallel rendering.
-                this->slot(UPDATE_IMAGE_SLOT)->async_run();
+                this->slot(slots::UPDATE_IMAGE)->async_run();
             };
 
         m_buffering_worker->push_task(buffering_fn);
@@ -825,7 +822,7 @@ void volume_render::update_clipping_matrix()
     if(clipping_matrix)
     {
         sight::viz::scene3d::utils::from_ogre_matrix(m_widget->get_clipping_transform(), clipping_matrix.get_shared());
-        clipping_matrix->async_emit(this, data::object::MODIFIED_SIG);
+        clipping_matrix->async_emit(this, data::signals::MODIFIED);
     }
 
     std::scoped_lock swap_lock(m_mutex);

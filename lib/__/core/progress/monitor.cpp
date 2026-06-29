@@ -24,8 +24,6 @@
 
 #include "core/spy_log.hpp"
 
-#include <core/com/signal.hxx>
-
 namespace sight::core::progress
 {
 

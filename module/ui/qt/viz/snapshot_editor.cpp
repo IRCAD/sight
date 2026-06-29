@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,6 @@
 
 #include "module/ui/qt/viz/snapshot_editor.hpp"
 
-#include <core/base.hpp>
-#include <core/com/signal.hxx>
-#include <core/com/signals.hpp>
 #include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
 #include <core/runtime/path.hpp>
@@ -44,13 +41,9 @@ namespace sight::module::ui::qt::viz
 
 //------------------------------------------------------------------------------
 
-const core::com::signals::key_t snapshot_editor::SNAPPED_SIG = "snapped";
-
-//------------------------------------------------------------------------------
-
 snapshot_editor::snapshot_editor() noexcept
 {
-    m_sig_snapped = new_signal<snapped_signal_t>(SNAPPED_SIG);
+    new_signal<signals::snapped_t>(signals::SNAPPED);
 }
 
 //------------------------------------------------------------------------------
@@ -124,7 +117,7 @@ void snapshot_editor::on_snap_button()
 
         if(!filename.empty())
         {
-            m_sig_snapped->async_emit(filename);
+            this->async_emit(signals::SNAPPED, filename);
         }
     }
     else

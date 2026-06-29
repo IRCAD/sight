@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2024 IRCAD France
+ * Copyright (C) 2019-2026 IRCAD France
  * Copyright (C) 2019-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -97,6 +97,7 @@ protected:
      */
     SIGHT_ACTIVITY_API void reset_requirements();
 
+    // NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
     /// List of the activity to create.
     std::vector<std::string> m_activity_ids;
 
@@ -105,6 +106,7 @@ protected:
 
     /// Map containing all the data produced by the activities. It is used to create the next one.
     std::map<std::string, data::object::sptr> m_requirements;
+    // NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 };
 
 } // namespace sight::activity

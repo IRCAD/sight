@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -51,10 +51,13 @@ public:
     //Destructor
     ~open_cv_reader() override;
 
-protected:
-
     /// configure the service using a GUI.
     void open_location_dialog() override;
+
+    /// Returns managed path type, here service manages only single file
+    sight::io::service::path_type_t get_path_type() const override;
+
+protected:
 
     /**
      * @brief Prompt a dialog to define file location.
@@ -75,9 +78,6 @@ protected:
 
     /// Removes connections
     void stopping() override;
-
-    /// Returns managed path type, here service manages only single file
-    sight::io::service::path_type_t get_path_type() const override;
 };
 
 } //namespace sight::module::io::vision

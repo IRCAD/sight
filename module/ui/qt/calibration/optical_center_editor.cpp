@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #include "module/ui/qt/calibration/optical_center_editor.hpp"
-
-#include <service/macros.hpp>
 
 #include <ui/qt/container/widget.hpp>
 
@@ -154,9 +152,9 @@ service::connections_t optical_center_editor::auto_connections() const
 {
     connections_t connections;
 
-    connections.push(CAMERA, data::camera::INTRINSIC_CALIBRATED_SIG, service::slots::UPDATE);
-    connections.push(CAMERA, data::camera::MODIFIED_SIG, service::slots::UPDATE);
-    connections.push(MATRIX, data::matrix4::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(CAMERA, data::camera::signals::INTRINSIC_CALIBRATED, service::slots::UPDATE);
+    connections.push(CAMERA, data::signals::MODIFIED, service::slots::UPDATE);
+    connections.push(MATRIX, data::signals::MODIFIED, service::slots::UPDATE);
 
     return connections;
 }
@@ -174,11 +172,7 @@ void optical_center_editor::on_cx_slider_changed(int _value)
 
     m_cx_label->setText(QString("%1").arg(_value));
 
-    auto sig = matrix->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-    {
-        core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
-        sig->async_emit();
-    }
+    matrix->async_emit(this, data::signals::MODIFIED);
 }
 
 //------------------------------------------------------------------------------
@@ -194,11 +188,7 @@ void optical_center_editor::on_cy_slider_changed(int _value)
 
     m_cy_label->setText(QString("%1").arg(_value));
 
-    auto sig = matrix->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-    {
-        core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
-        sig->async_emit();
-    }
+    matrix->async_emit(this, data::signals::MODIFIED);
 }
 
 //------------------------------------------------------------------------------
@@ -214,11 +204,7 @@ void optical_center_editor::on_fy_slider_changed(int _value)
 
     m_fy_label->setText(QString("%1").arg(_value));
 
-    auto sig = matrix->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-    {
-        core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
-        sig->async_emit();
-    }
+    matrix->async_emit(this, data::signals::MODIFIED);
 }
 
 //------------------------------------------------------------------------------

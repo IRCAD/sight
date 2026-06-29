@@ -104,7 +104,7 @@ public:
 
     struct slots
     {
-        static inline const core::com::slots::key_t SET_TRANSPARENCY = "set_transparency";
+        static inline const slot_key_t SET_TRANSPARENCY = "set_transparency";
     };
 
     /// Creates slots.

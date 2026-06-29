@@ -92,12 +92,12 @@ public:
 
     struct slots
     {
-        inline static const core::com::slots::key_t UPDATE_IMAGE  = "update_image";
-        inline static const core::com::slots::key_t UPDATE_TF     = "update_tf";
-        inline static const core::com::slots::key_t UPDATE_PL     = "update_pl";
-        inline static const core::com::slots::key_t UPDATE_COLOR  = "update_color";
-        inline static const core::com::slots::key_t SET_FILTERING = "set_filtering";
-        inline static const core::com::slots::key_t SCALE         = "scale";
+        inline static const slot_key_t UPDATE_IMAGE  = "update_image";
+        inline static const slot_key_t UPDATE_TF     = "update_tf";
+        inline static const slot_key_t UPDATE_PL     = "update_pl";
+        inline static const slot_key_t UPDATE_COLOR  = "update_color";
+        inline static const slot_key_t SET_FILTERING = "set_filtering";
+        inline static const slot_key_t SCALE         = "scale";
     };
 
     /// Creates the adaptor an initialize slots.
@@ -124,11 +124,11 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::image::MODIFIED_SIG of s_IMAGE_INPUT to service::slots::UPDATE
-     * Connect data::image::BUFFER_MODIFIED_SIG of s_IMAGE_INPUT to service::slots::UPDATE
-     * Connect data::transfer_function::MODIFIED_SIG of s_TF_INPUT to :UPDATE_TF_SLOT
-     * Connect data::transfer_function::POINTS_MODIFIED_SIG of s_TF_INPUT to UPDATE_TF_SLOT
-     * Connect data::transfer_function::WINDOWING_MODIFIED_SIG of s_TF_INPUT to UPDATE_TF_SLOT
+     * Connect data::signals::MODIFIED of s_IMAGE_INPUT to service::slots::UPDATE
+     * Connect data::image::signals::BUFFER_MODIFIED of s_IMAGE_INPUT to service::slots::UPDATE
+     * Connect data::signals::MODIFIED of s_TF_INPUT to :UPDATE_TF
+     * Connect data::transfer_function::signals::POINTS_MODIFIED of s_TF_INPUT to UPDATE_TF
+     * Connect data::transfer_function::signals::WINDOWING_MODIFIED of s_TF_INPUT to UPDATE_TF
      */
     service::connections_t auto_connections() const final;
 

@@ -120,18 +120,20 @@ public:
      * @name Signals
      * @{
      */
+    struct signals
+    {
+        /// Type of signal when a reconstruction is added
+        using reconstruction_added_t = core::com::signal<void ()>;
 
-    /// Type of signal when a reconstruction is added
-    using reconstruction_added_signal_t = core::com::signal<void ()>;
+        /// Key in m_signals map of signal m_sigReconstructionAdded
+        static const inline signal_key_t RECONSTRUCTION_ADDED = "reconstructionAdded";
 
-    /// Key in m_signals map of signal m_sigReconstructionAdded
-    SIGHT_DATA_API static const core::com::signals::key_t RECONSTRUCTION_ADDED_SIG;
+        /// Type of signal when the resection visibility is modified
+        using visibility_modified_t = core::com::signal<void ()>;
 
-    /// Type of signal when the resection visibility is modified
-    using visibility_modified_signal_t = core::com::signal<void ()>;
-
-    /// Key in m_signals map of signal m_sigVisibilityModified
-    SIGHT_DATA_API static const core::com::signals::key_t VISIBILITY_MODIFIED_SIG;
+        /// Key in m_signals map of signal m_sigVisibilityModified
+        static const inline signal_key_t VISIBILITY_MODIFIED = "pointTexCoordsModified";
+    };
     /**
      * @}
      */

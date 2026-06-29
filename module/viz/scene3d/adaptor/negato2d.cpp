@@ -22,7 +22,6 @@
 
 #include "module/viz/scene3d/adaptor/negato2d.hpp"
 
-#include <core/com/slots.hxx>
 #include <core/ptree.hpp>
 
 #include <data/helper/medical_image.hpp>
@@ -166,7 +165,7 @@ void negato2d::button_release_event(mouse_button /*_button*/, modifier /*_mods*/
 {
     m_picked = false;
     m_picking_cross->set_visible(false);
-    this->signal<signals::picked_voxel_t>(signals::PICKED_VOXEL)->async_emit("");
+    this->async_emit(signals::PICKED_VOXEL, std::string());
 }
 
 //------------------------------------------------------------------------------
@@ -205,7 +204,7 @@ void negato2d::pick_intensity(int _x, int _y)
             m_picking_cross->update(cross_lines[0], cross_lines[1], cross_lines[2], cross_lines[3]);
 
             const auto picking_text = sight::viz::scene3d::utils::pick_image(*image, result->position);
-            this->signal<signals::picked_voxel_t>(signals::PICKED_VOXEL)->async_emit(picking_text);
+            this->async_emit(signals::PICKED_VOXEL, picking_text);
 
             this->request_render();
         }

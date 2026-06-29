@@ -21,7 +21,6 @@
 
 #include "long_job.hpp"
 
-#include <core/com/signal.hxx>
 #include <core/progress/observer.hpp>
 
 #include <atomic>

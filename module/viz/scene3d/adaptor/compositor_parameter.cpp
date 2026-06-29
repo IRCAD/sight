@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,34 +22,25 @@
 
 #include "module/viz/scene3d/adaptor/compositor_parameter.hpp"
 
-#include <core/com/slots.hxx>
-
 #include <viz/scene3d/compositor/chain_manager.hpp>
 
-#include <OgreCompositor.h>
 #include <OgreCompositorChain.h>
 #include <OgreCompositorInstance.h>
 #include <OgreCompositorManager.h>
-#include <OgreGpuProgramParams.h>
-#include <OgreMaterial.h>
-#include <OgreMaterialManager.h>
-#include <OgreTechnique.h>
-
-#include <algorithm>
 
 namespace sight::module::viz::scene3d::adaptor
 {
 
-class CompositorListener : public Ogre::CompositorInstance::Listener
+class compositor_listener : public Ogre::CompositorInstance::Listener
 {
 public:
 
-    CompositorListener(Ogre::Viewport* /*unused*/, compositor_parameter::sptr _adaptor) :
+    compositor_listener(Ogre::Viewport* /*unused*/, compositor_parameter::sptr _adaptor) :
         m_adaptor(_adaptor)
     {
     }
 
-    ~CompositorListener() override
+    ~compositor_listener() override
     = default;
 
     //------------------------------------------------------------------------------
@@ -82,13 +73,11 @@ private:
     module::viz::scene3d::adaptor::compositor_parameter::wptr m_adaptor;
 };
 
-static const core::com::slots::key_t ADD_LISTENER_SLOT = "addListener";
-
 //-----------------------------------------------------------------------------
 
 compositor_parameter::compositor_parameter() noexcept
 {
-    new_slot(ADD_LISTENER_SLOT, &compositor_parameter::add_listener, this);
+    new_slot(slots::ADD_LISTENER, &compositor_parameter::add_listener, this);
 }
 
 //------------------------------------------------------------------------------
@@ -114,16 +103,16 @@ void compositor_parameter::starting()
 
     if(!visible())
     {
-        this->slot(slots::UPDATE_VISIBILITY)->async_run(visible());
+        this->slot(adaptor::slots::UPDATE_VISIBILITY)->async_run(visible());
     }
 
     this->add_listener();
 
     m_resize_connection.connect(
         layer,
-        sight::viz::scene3d::layer::RESIZE_LAYER_SIG,
+        sight::viz::scene3d::layer::signals::RESIZE_LAYER,
         this->get_sptr(),
-        ADD_LISTENER_SLOT
+        slots::ADD_LISTENER
     );
 }
 
@@ -178,7 +167,7 @@ void compositor_parameter::set_visible(bool _enable)
     {
         // Association of a listener attached to this adaptor to the configured compositor
         m_listener =
-            new CompositorListener(
+            new compositor_listener(
                 layer->get_viewport(),
                 std::dynamic_pointer_cast<compositor_parameter>(this->get_sptr())
             );
@@ -217,7 +206,7 @@ void compositor_parameter::add_listener()
 
     // Association of a listener attached to this adaptor to the configured compositor
     m_listener =
-        new CompositorListener(
+        new compositor_listener(
             layer->get_viewport(),
             std::dynamic_pointer_cast<compositor_parameter>(this->get_sptr())
         );

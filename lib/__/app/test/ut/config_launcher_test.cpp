@@ -24,17 +24,8 @@
 #include <core/runtime/path.hpp>
 #include <core/runtime/runtime.hpp>
 
-#include <service/extension/config.hpp>
+#include <app/extension/config.hpp>
 #include <service/op.hpp>
-
-#include <ui/__/parameter.hpp>
-
-#include <utest/wait.hpp>
-
-#include <app/extension/parameters.hpp>
-
-#include <boost/config.hpp>
-#include <boost/property_tree/xml_parser.hpp>
 
 #include <doctest/doctest.h>
 
@@ -58,6 +49,8 @@ TEST_SUITE("sight::app::config_launcher")
     }
 
 //------------------------------------------------------------------------------
+    namespace
+    {
 
     struct config_launcher_fixture
     {
@@ -73,7 +66,7 @@ TEST_SUITE("sight::app::config_launcher")
             sight::core::runtime::load_module("sight::module::app");
             sight::core::runtime::load_module("config_test");
 
-            sight::app::extension::config::sptr app_config = sight::app::extension::config::get();
+            auto app_config = sight::app::extension::config::get();
             app_config->clear_registry();
             app_config->parse_plugin_infos();
         }
@@ -97,6 +90,8 @@ TEST_SUITE("sight::app::config_launcher")
             }
         }
     };
+
+    } // namespace
 
 //------------------------------------------------------------------------------
 
@@ -131,7 +126,7 @@ TEST_SUITE("sight::app::config_launcher")
         //  srv1 : started
         //  srv2 : stopped
         config_id->set_value(MULTI_CFG_CTL_1);
-        config_id->emit(sight::data::object::MODIFIED_SIG);
+        config_id->emit(sight::data::signals::MODIFIED);
 
         srv1_uid = sight::core::id::join(MULTI_CFG_CTL_1, current_id++, "srv");
         srv1     = std::dynamic_pointer_cast<sight::app::ut::test_service>(sight::core::id::get_object(srv1_uid));
@@ -151,7 +146,7 @@ TEST_SUITE("sight::app::config_launcher")
         //  srv1 : stopped
         //  srv2 : started
         config_id->set_value(MULTI_CFG_CTL_2);
-        config_id->emit(sight::data::object::MODIFIED_SIG);
+        config_id->emit(sight::data::signals::MODIFIED);
 
         srv2_uid = sight::core::id::join(MULTI_CFG_CTL_2, current_id++, "srv");
         srv1     = std::dynamic_pointer_cast<sight::app::ut::test_service>(sight::core::id::get_object(srv1_uid));
@@ -164,7 +159,7 @@ TEST_SUITE("sight::app::config_launcher")
         // set again config2 => nothing should have changed, the service is not updated
         //  srv1 : stopped
         //  srv2 : started
-        config_id->emit(sight::data::object::MODIFIED_SIG);
+        config_id->emit(sight::data::signals::MODIFIED);
 
         srv1 = std::dynamic_pointer_cast<sight::app::ut::test_service>(sight::core::id::get_object(srv1_uid));
         CHECK(srv1 != nullptr);

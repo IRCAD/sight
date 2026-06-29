@@ -67,21 +67,23 @@ class series_pusher : public service::controller,
 {
 public:
 
+    struct signals
+    {
+        using started_progress_t = core::com::signal<void ()>;
+        using stopped_progress_t = core::com::signal<void ()>;
+        static inline const signal_key_t STARTED_PROGRESS = "started_progress";
+        static inline const signal_key_t STOPPED_PROGRESS = "stopped_progress";
+    };
+
+    struct slots
+    {
+        static inline const slot_key_t DISPLAY = "displayMessage";
+    };
+
     SIGHT_DECLARE_SERVICE(series_pusher, service::controller);
 
     using dicom_series_container_t = std::vector<std::shared_ptr<const data::series> >;
-
-    static const core::com::slots::key_t DISPLAY_SLOT;
-    using display_message_slot_t = core::com::slot<void (const std::string&, bool)>;
-
-    /// Signal to start the progress (bar id)
-    using started_progress_signal_t = core::com::signal<void ()>;
-    /// Signal to stop the progress (bar id)
-    using stopped_progress_signal_t = core::com::signal<void ()>;
-
-    /// Key in m_signals map of signal m_sigProgressed
-    static const core::com::signals::key_t STARTED_PROGRESS_SIG;
-    static const core::com::signals::key_t STOPPED_PROGRESS_SIG;
+    using display_message_slot_t   = core::com::slot<void (const std::string&, bool)>;
 
     /**
      * @brief Constructor
@@ -130,12 +132,6 @@ private:
 
     /// Slot to call displayMessage method;
     display_message_slot_t::sptr m_slot_display_message;
-
-    /// Signal emitted when the bar is starting
-    started_progress_signal_t::sptr m_sig_started_progress;
-
-    /// Signal emitted when the bar is stopping
-    stopped_progress_signal_t::sptr m_sig_stopped_progress;
 
     /// Push Worker
     core::thread::worker::sptr m_push_series_worker;

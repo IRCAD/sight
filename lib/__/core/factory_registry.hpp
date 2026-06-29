@@ -99,7 +99,7 @@ public:
 
 private:
 
-    registry_t m_registry;
+    registry_t m_registry {};
     mutable core::mt::read_write_mutex m_mutex;
 };
 

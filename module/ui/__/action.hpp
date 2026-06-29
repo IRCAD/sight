@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2025 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -69,16 +69,15 @@ public:
 
     struct signals final
     {
-        using key_t = core::com::signals::key_t;
-        inline static const key_t CLICKED           = "clicked";
-        inline static const key_t PARAMETER_CHANGED = "parameter_changed";
+        inline static const signal_key_t CLICKED           = "clicked";
+        inline static const signal_key_t PARAMETER_CHANGED = "parameter_changed";
 
         using changed_t = core::com::signal<void (sight::ui::parameter_t, std::string)>;
     };
 
     SIGHT_DECLARE_SERVICE(action, sight::ui::action);
 
-    action() noexcept = default;
+    action() noexcept;
     ~action() noexcept final = default;
 
 protected:
@@ -100,15 +99,6 @@ protected:
     void joystick_axis_direction_event(const sight::io::joystick::axis_direction_event& _event) final;
 
 private:
-
-    /// Signals
-    const sight::ui::action::signals::void_t::sptr m_clicked_sig {new_signal<sight::ui::action::signals::void_t>(
-                                                                      signals::CLICKED
-    )
-    };
-    const signals::changed_t::sptr m_parameter_changed_sig {
-        new_signal<signals::changed_t>(signals::PARAMETER_CHANGED)
-    };
 
     /// Configuration option to emit the clicked signal synchronously or asynchronously
     bool m_sync {false};

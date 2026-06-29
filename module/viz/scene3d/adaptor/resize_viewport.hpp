@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -57,6 +57,12 @@ public:
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(resize_viewport, sight::viz::scene3d::adaptor);
 
+    struct slots
+    {
+        static inline const slot_key_t REVERT = "revert";
+        static inline const slot_key_t RESIZE = "resize";
+    };
+
     /// Initializes slots.
     resize_viewport() noexcept;
 
@@ -82,7 +88,7 @@ private:
     /// Switches to the initial/new viewport depending on the input.
     void resize(bool _resize);
 
-    /// Defines the original viewports dimensions on the layer.
+    /// Reverts to the original viewport dimensions.
     void revert();
 
     /// Defines the initial viewport dimensions.

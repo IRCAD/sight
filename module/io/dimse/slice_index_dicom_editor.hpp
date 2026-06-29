@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2025 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -101,7 +101,7 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::dicom_series::MODIFIED_SIG of s_DICOMSERIES_INOUT to service::slots::UPDATE
+     * Connect data::signals::MODIFIED of s_DICOMSERIES_INOUT to service::slots::UPDATE
      */
     service::connections_t auto_connections() const override;
 

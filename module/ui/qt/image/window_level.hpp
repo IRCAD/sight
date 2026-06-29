@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,6 +33,7 @@
 #include <QObject>
 #include <QPointer>
 
+// NOLINTBEGIN(readability-identifier-naming)
 class QAction;
 class QComboBox;
 class QLabel;
@@ -40,6 +41,7 @@ class QLineEdit;
 class QMenu;
 class QSlider;
 class QToolButton;
+// NOLINTEND(readability-identifier-naming)
 
 namespace sight::ui::qt::widget
 {
@@ -96,7 +98,7 @@ public:
 
     struct slots
     {
-        static inline const core::com::slots::key_t UPDATE_IMAGE = "update_image";
+        static inline const slot_key_t UPDATE_IMAGE = "update_image";
     };
 
     /// Initialize signals and slots.
@@ -123,8 +125,8 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::image::MODIFIED_SIG to module::ui::qt::image::window_level::service::slots::UPDATE
-     * Connect image::BUFFER_MODIFIED_SIG to module::ui::qt::image::window_level::service::slots::UPDATE
+     * Connect data::signals::MODIFIED to module::ui::qt::image::window_level::service::slots::UPDATE
+     * Connect image::signals::BUFFER_MODIFIED to module::ui::qt::image::window_level::service::slots::UPDATE
      */
     connections_t auto_connections() const final;
 

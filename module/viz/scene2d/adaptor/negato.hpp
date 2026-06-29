@@ -86,24 +86,26 @@ public:
         static inline const slot_key_t UPDATE_TF          = "update_tf";
     };
 
-    /**
-     * @brief Proposals to connect service slots to associated object signals.
-     * @return A map of each proposed connection.
-     *
-     * Connect image::MODIFIED_SIG to this::service::slots::UPDATE
-     * Connect image::SLICE_TYPE_MODIFIED_SIG to this::UPDATE_SLICE_INDEX_SLOT
-     * Connect image::SLICE_INDEX_MODIFIED_SIG to this::UPDATE_SLICE_TYPE_SLOT
-     * Connect image::BUFFER_MODIFIED_SIG to this::UPDATE_BUFFER_SLOT
-     */
-    service::connections_t auto_connections() const override;
-
     /// Creates the service.
     negato() noexcept;
 
     /// Destroys the service.
     ~negato() noexcept override;
 
+    void process_interaction(sight::viz::scene2d::data::event& _event) override;
+
 protected:
+
+    /**
+     * @brief Proposals to connect service slots to associated object signals.
+     * @return A map of each proposed connection.
+     *
+     * Connect data::signals::MODIFIED to this::service::slots::UPDATE
+     * Connect image::signals::SLICE_TYPE_MODIFIED to this::UPDATE_SLICE_INDEX
+     * Connect image::signals::SLICE_INDEX_MODIFIED to this::UPDATE_SLICE_TYPE
+     * Connect image::signals::BUFFER_MODIFIED to this::UPDATE_BUFFER
+     */
+    service::connections_t auto_connections() const override;
 
     void configuring() override;
 
@@ -112,8 +114,6 @@ protected:
     void updating() override;
 
     void stopping() override;
-
-    void process_interaction(sight::viz::scene2d::data::event& _event) override;
 
     /// Slot: updates the TF
     void update_tf();

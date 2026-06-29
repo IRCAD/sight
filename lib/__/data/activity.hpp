@@ -48,7 +48,7 @@ public:
     /// @}
 
     /// Gets the activity configuration ID.
-    const config_id_t& get_activity_config_id() const;
+    [[nodiscard]] const config_id_t& get_activity_config_id() const;
 
     /// Sets the activity configuration ID.
     void set_activity_config_id(const config_id_t& _val);

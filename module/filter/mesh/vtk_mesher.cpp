@@ -24,8 +24,6 @@
 
 #include "core/progress/observer.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
 #include <core/profiling.hpp>
 
 #include <data/helper/field.hpp>
@@ -436,17 +434,17 @@ vtkSmartPointer<vtkPolyData> vtk_mesher::reconstruct(vtkSmartPointer<vtkImageDat
 vtk_mesher::connections_t vtk_mesher::auto_connections() const
 {
     return {
-        {m_boundary_smoothing, data::object::MODIFIED_SIG, service::slots::UPDATE},
-        {m_non_manifold_smoothing, data::object::MODIFIED_SIG, service::slots::UPDATE},
-        {m_feature_smoothing, data::object::MODIFIED_SIG, service::slots::UPDATE},
-        {m_preserve_topology, data::object::MODIFIED_SIG, service::slots::UPDATE},
-        {m_use_flying_edges, data::object::MODIFIED_SIG, service::slots::UPDATE},
-        {m_value, data::object::MODIFIED_SIG, service::slots::UPDATE},
-        {m_pass_band, data::object::MODIFIED_SIG, service::slots::UPDATE},
-        {m_num_iterations, data::object::MODIFIED_SIG, service::slots::UPDATE},
-        {m_feature_angle, data::object::MODIFIED_SIG, service::slots::UPDATE},
-        {m_reduction, data::object::MODIFIED_SIG, service::slots::UPDATE},
-        {m_quadric_reduction, data::object::MODIFIED_SIG, service::slots::UPDATE}
+        {m_boundary_smoothing, data::signals::MODIFIED, service::slots::UPDATE},
+        {m_non_manifold_smoothing, data::signals::MODIFIED, service::slots::UPDATE},
+        {m_feature_smoothing, data::signals::MODIFIED, service::slots::UPDATE},
+        {m_preserve_topology, data::signals::MODIFIED, service::slots::UPDATE},
+        {m_use_flying_edges, data::signals::MODIFIED, service::slots::UPDATE},
+        {m_value, data::signals::MODIFIED, service::slots::UPDATE},
+        {m_pass_band, data::signals::MODIFIED, service::slots::UPDATE},
+        {m_num_iterations, data::signals::MODIFIED, service::slots::UPDATE},
+        {m_feature_angle, data::signals::MODIFIED, service::slots::UPDATE},
+        {m_reduction, data::signals::MODIFIED, service::slots::UPDATE},
+        {m_quadric_reduction, data::signals::MODIFIED, service::slots::UPDATE}
     };
 }
 

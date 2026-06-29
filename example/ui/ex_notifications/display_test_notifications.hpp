@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2024 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,8 +34,6 @@
  * cspell:ignore ex_notifications
  */
 
-namespace dial = sight::ui::dialog;
-
 namespace ex_notifications
 {
 
@@ -57,6 +55,13 @@ class SIGHT_EX_NOTIFICATIONS_CLASS_API display_test_notifications final :
 public:
 
     SIGHT_DECLARE_SERVICE(display_test_notifications, sight::ui::action);
+
+    struct slots
+    {
+        static inline const slot_key_t SET_ENUM_PARAMETER = "set_enum_parameter";
+        static inline const slot_key_t SET_BOOL_PARAMETER = "set_bool_parameter";
+        static inline const slot_key_t CLOSE_CHANNEL1     = "close_channel1";
+    };
 
     /// Constructor/Destructor
     /// @{

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2025 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -101,6 +101,13 @@ class notifier final : public service::controller
 public:
 
     SIGHT_DECLARE_SERVICE(notifier, service::controller);
+
+    struct slots
+    {
+        static inline const slot_key_t POP_NOTIFICATION   = "pop";
+        static inline const slot_key_t CLOSE_NOTIFICATION = "close_notification";
+        static inline const slot_key_t SET_ENUM_PARAMETER = "set_enum_parameter";
+    };
 
     /// Constructor, initializes position map & slots.
     notifier() noexcept;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,12 +22,9 @@
 
 #include "module/viz/scene2d/adaptor/histogram.hpp"
 
-#include <core/com/slots.hxx>
-
 #include <data/helper/medical_image.hpp>
 
 #include <viz/scene2d/data/init_qt_pen.hpp>
-#include <viz/scene2d/graphics_view.hpp>
 
 #include <QGraphicsRectItem>
 #include <QGraphicsView>
@@ -35,13 +32,11 @@
 namespace sight::module::viz::scene2d::adaptor
 {
 
-const core::com::slots::key_t IMAGE_CHANGE_SLOT = "imageChange";
-
 //---------------------------------------------------------------------------------------------------------
 
 histogram::histogram() noexcept
 {
-    new_slot(IMAGE_CHANGE_SLOT, &histogram::on_image_change, this);
+    new_slot(slots::IMAGE_CHANGE, &histogram::on_image_change, this);
 }
 
 //---------------------------------------------------------------------------------------------------------
@@ -221,7 +216,10 @@ void histogram::process_interaction(sight::viz::scene2d::data::event& _event)
         if(_event.get_modifier() == sight::viz::scene2d::data::event::control_modifier)
         {
             m_histogram_bins_width = std::min(
-                std::max(std::size_t(1), static_cast<std::size_t>(m_histogram->max() - m_histogram->min())),
+                std::max(
+                    static_cast<std::size_t>(1),
+                    static_cast<std::size_t>(m_histogram->max() - m_histogram->min())
+                ),
                 m_histogram_bins_width * 2
             );
             this->updating();
@@ -242,8 +240,7 @@ void histogram::process_interaction(sight::viz::scene2d::data::event& _event)
             m_y_axis->set_scale(m_scale);
 
             auto viewport = m_viewport.lock();
-            auto sig      = viewport->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-            sig->async_emit();
+            viewport->async_emit(data::signals::MODIFIED);
         }
 
         update_pointed_pos = true;
@@ -252,7 +249,7 @@ void histogram::process_interaction(sight::viz::scene2d::data::event& _event)
     {
         if(_event.get_modifier() == sight::viz::scene2d::data::event::control_modifier)
         {
-            m_histogram_bins_width = std::max(std::size_t(1), m_histogram_bins_width / 2);
+            m_histogram_bins_width = std::max(static_cast<std::size_t>(1), m_histogram_bins_width / 2);
             this->updating();
         }
         else
@@ -271,8 +268,7 @@ void histogram::process_interaction(sight::viz::scene2d::data::event& _event)
             m_y_axis->set_scale(m_scale);
 
             auto viewport = m_viewport.lock();
-            auto sig      = viewport->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-            sig->async_emit();
+            viewport->async_emit(data::signals::MODIFIED);
         }
 
         update_pointed_pos = true;
@@ -313,8 +309,8 @@ void histogram::process_interaction(sight::viz::scene2d::data::event& _event)
 service::connections_t histogram::auto_connections() const
 {
     return {
-        {IMAGE_INPUT, data::image::MODIFIED_SIG, IMAGE_CHANGE_SLOT},
-        {IMAGE_INPUT, data::image::BUFFER_MODIFIED_SIG, IMAGE_CHANGE_SLOT}
+        {IMAGE_INPUT, data::signals::MODIFIED, slots::IMAGE_CHANGE},
+        {IMAGE_INPUT, data::image::signals::BUFFER_MODIFIED, slots::IMAGE_CHANGE}
     };
 }
 

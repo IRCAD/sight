@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,23 +22,18 @@
 
 #include "folder_selector.hpp"
 
-#include <core/com/signal.hxx>
 #include <core/location/single_folder.hpp>
-
-#include <service/macros.hpp>
 
 #include <ui/__/dialog/location.hpp>
 
 namespace sight::module::ui::io
 {
 
-const core::com::signals::key_t folder_selector::FOLDER_SELECTED_SIG = "folderSelected";
-
 //------------------------------------------------------------------------------
 
 folder_selector::folder_selector() noexcept
 {
-    new_signal<folder_selected_signal_t>(FOLDER_SELECTED_SIG);
+    new_signal<signals::folder_selected_t>(signals::FOLDER_SELECTED);
 }
 
 //------------------------------------------------------------------------------
@@ -74,8 +69,7 @@ void folder_selector::updating()
     auto result = std::dynamic_pointer_cast<core::location::single_folder>(dialog_file.show());
     if(result)
     {
-        auto sig = this->signal<folder_selected_signal_t>(FOLDER_SELECTED_SIG);
-        sig->async_emit(result->get_folder());
+        this->async_emit(signals::FOLDER_SELECTED, result->get_folder());
     }
 }
 

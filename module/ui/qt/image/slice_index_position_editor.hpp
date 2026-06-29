@@ -87,6 +87,14 @@ public:
 
     SIGHT_DECLARE_SERVICE(slice_index_position_editor, sight::ui::editor);
 
+    struct slots
+    {
+        using int_t = core::com::slot<void (int)>;
+
+        static inline const slot_key_t UPDATE_SLICE_INDEX = "updateSliceIndex";
+        static inline const slot_key_t UPDATE_SLICE_TYPE  = "updateSliceType";
+    };
+
     /// Constructor. Do nothing.
     slice_index_position_editor() noexcept;
 
@@ -118,10 +126,10 @@ protected:
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
      *
-     * Connect image::MODIFIED_SIG to this::service::slots::UPDATE
-     * Connect image::SLICE_INDEX_MODIFIED_SIG to this::UPDATE_SLICE_INDEX_SLOT
-     * Connect image::SLICE_TYPE_MODIFIED_SIG to this::UPDATE_SLICE_TYPE_SLOT
-     * Connect image::BUFFER_MODIFIED_SIG to this::UPDATE_BUFFER_SLOT
+     * Connect data::signals::MODIFIED to this::service::slots::UPDATE
+     * Connect image::signals::SLICE_INDEX_MODIFIED to this::slots::UPDATE_SLICE_INDEX
+     * Connect image::signals::SLICE_TYPE_MODIFIED to this::slots::UPDATE_SLICE_TYPE
+     * Connect image::signals::BUFFER_MODIFIED to this::slots::UPDATE_BUFFER
      */
     connections_t auto_connections() const override;
 

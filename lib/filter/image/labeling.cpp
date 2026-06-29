@@ -24,12 +24,8 @@
 
 #include "filter/image/detail/filters.hxx"
 
-#include <core/com/signal.hpp>
-#include <core/com/signal.hxx>
-#include <core/com/signals.hpp>
 #include <core/tools/dispatcher.hpp>
 
-#include <data/boolean.hpp>
 #include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
 #include <data/string.hpp>
@@ -40,6 +36,9 @@ namespace sight::filter::image
 {
 
 //------------------------------------------------------------------------------
+
+namespace
+{
 
 struct labeling_filter
 {
@@ -66,6 +65,8 @@ struct labeling_filter
         io::itk::move_from_itk<binary_image_t>(out, *_params.m_output_image);
     }
 };
+
+} // namespace
 
 //------------------------------------------------------------------------------
 
@@ -97,8 +98,6 @@ data::image::sptr labeling(data::image::sptr _image, unsigned int _num_labels)
 
 //------------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
-
 void compute_centroids(
     data::image::sptr _image,
     std::vector<data::point_list::sptr> _point_list_centroids,
@@ -113,7 +112,7 @@ void compute_centroids(
         {
             [[maybe_unused]] const unsigned int dimension = 3;
             SIGHT_ASSERT("Only image dimension 3 managed.", _image->num_dimensions() == dimension);
-            using input_image_t = typename itk::Image<PIXEL_TYPE, dimension>;
+            using input_image_t = itk::Image<PIXEL_TYPE, dimension>;
             typename input_image_t::Pointer itk_input_image = io::itk::move_to_itk<input_image_t>(_image);
 
             using label_t              = PIXEL_TYPE;
@@ -122,7 +121,7 @@ void compute_centroids(
             using label_map_t          = itk::LabelMap<shape_label_object_t>;
 
             // Extract shapes
-            using i2l_t = typename itk::LabelImageToShapeLabelMapFilter<output_image_t, label_map_t>;
+            using i2l_t = itk::LabelImageToShapeLabelMapFilter<output_image_t, label_map_t>;
 
             auto i2l = i2l_t::New();
             i2l->SetInput(itk_input_image);
@@ -222,7 +221,8 @@ void compute_centroids(
     );
 }
 
-using function_t = std::function<std::uint8_t(const std::uint8_t&)>;
+namespace
+{
 
 template<class PIXELTYPE>
 class lambda_functor
@@ -272,7 +272,8 @@ struct convert_label_image_to_binary_mask_filter
     template<class PIXELTYPE>
     void operator()(parameters& _params)
     {
-        using image_t = typename itk::Image<PIXELTYPE, 3>;
+        using function_t = std::function<PIXELTYPE(const PIXELTYPE&)>;
+        using image_t    = itk::Image<PIXELTYPE, 3>;
 
         lambda_functor<PIXELTYPE> functor;
 
@@ -296,31 +297,31 @@ struct convert_label_image_to_binary_mask_filter
                 labels->begin(),
                 labels->end(),
                 [&label_set](data::object::csptr _o)
-                {
-                    data::integer::csptr int_obj = std::dynamic_pointer_cast<const data::integer>(_o);
-                    SIGHT_ASSERT("The label vector should only contain integers.", int_obj);
-                    const int val = int(int_obj->value());
-
-                    if constexpr(std::is_same_v<PIXELTYPE, char>)
                     {
-                        SIGHT_ASSERT("Integer value outside char range", val >= CHAR_MIN && val <= CHAR_MAX);
-                    }
-                    else
-                    {
-                        SIGHT_ASSERT("Integer value outside pixel type range", std::in_range<PIXELTYPE>(val));
-                    }
+                        data::integer::csptr int_obj = std::dynamic_pointer_cast<const data::integer>(_o);
+                        SIGHT_ASSERT("The label vector should only contain integers.", int_obj);
+                        const int val = static_cast<int>(int_obj->value());
 
-                    label_set.insert(static_cast<PIXELTYPE>(val));
-                });
+                        if constexpr(std::is_same_v<PIXELTYPE, char>)
+                        {
+                            SIGHT_ASSERT("Integer value outside char range", val >= CHAR_MIN && val <= CHAR_MAX);
+                        }
+                        else
+                        {
+                            SIGHT_ASSERT("Integer value outside pixel type range", std::in_range<PIXELTYPE>(val));
+                        }
+
+                        label_set.insert(static_cast<PIXELTYPE>(val));
+                    });
 
             functor = lambda_functor<PIXELTYPE>(
                 function_t(
                     [label_set](const PIXELTYPE& _in) -> PIXELTYPE
-                {
-                    return label_set.find(_in) != label_set.end()
-                           ? std::numeric_limits<PIXELTYPE>::max()
-                           : static_cast<PIXELTYPE>(0);
-                })
+                    {
+                        return label_set.find(_in) != label_set.end()
+                               ? std::numeric_limits<PIXELTYPE>::max()
+                               : static_cast<PIXELTYPE>(0);
+                    })
             );
         }
         else
@@ -328,11 +329,11 @@ struct convert_label_image_to_binary_mask_filter
             functor = lambda_functor<PIXELTYPE>(
                 function_t(
                     [](const PIXELTYPE& _in) -> PIXELTYPE
-                {
-                    return _in > static_cast<PIXELTYPE>(0)
-                           ? std::numeric_limits<PIXELTYPE>::max()
-                           : static_cast<PIXELTYPE>(0);
-                })
+                    {
+                        return _in > static_cast<PIXELTYPE>(0)
+                               ? std::numeric_limits<PIXELTYPE>::max()
+                               : static_cast<PIXELTYPE>(0);
+                    })
             );
         }
 
@@ -348,6 +349,8 @@ struct convert_label_image_to_binary_mask_filter
         io::itk::move_from_itk<image_t>(itk_mask_img, _params.output_image);
     }
 };
+
+} // namespace
 
 //------------------------------------------------------------------------------
 

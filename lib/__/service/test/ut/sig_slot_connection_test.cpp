@@ -22,12 +22,7 @@
 
 #include "slots_signals_stuff.hpp"
 
-#include <core/com/helper/sig_slot_connection.hpp>
-
-#include <service/macros.hpp>
 #include <service/registry.hpp>
-
-#include <utest/exception.hpp>
 
 #include <doctest/doctest.h>
 
@@ -42,17 +37,15 @@ TEST_SUITE("sight::service::sig_slot_connection")
         show_test_srv->set_inout(buffer_data, sight::service::ut::basic_srv::BUFFER_INOUT, true);
         show_test_srv->set_worker(sight::core::thread::get_default_worker());
 
-        sight::data::object::modified_signal_t::sptr sig =
-            buffer_data->signal<sight::data::object::modified_signal_t>(sight::data::object::MODIFIED_SIG);
-        sig->async_emit();
+        buffer_data->async_emit(sight::data::signals::MODIFIED);
         CHECK_EQ(0, show_test_srv->m_receive_count);
 
         show_test_srv->start().wait();
-        sig->async_emit();
+        buffer_data->async_emit(sight::data::signals::MODIFIED);
         show_test_srv->stop().wait();
         CHECK_EQ(1, show_test_srv->m_receive_count);
 
-        sig->async_emit();
+        buffer_data->async_emit(sight::data::signals::MODIFIED);
         CHECK_EQ(1, show_test_srv->m_receive_count);
 
         sight::service::unregister_service(show_test_srv);

@@ -87,7 +87,7 @@ protected:
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
      *
-     * Connect Object::MODIFIED_SIG to service::slots::UPDATE
+     * Connect data::signals::MODIFIED to service::slots::UPDATE
      */
     connections_t auto_connections() const override;
 

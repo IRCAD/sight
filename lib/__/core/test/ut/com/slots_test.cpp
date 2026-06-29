@@ -22,7 +22,7 @@
 
 #include <core/com/has_slots.hpp>
 #include <core/com/slots.hpp>
-#include <core/com/slots.hxx>
+
 #include <core/thread/worker.hpp>
 
 #include <doctest/doctest.h>

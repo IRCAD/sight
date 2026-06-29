@@ -21,8 +21,6 @@
 
 #include "shape.hpp"
 
-#include <core/com/slots.hxx>
-
 #define SIGHT_PROFILING_DISABLED
 #include <core/profiling.hpp>
 
@@ -50,11 +48,11 @@ shape::shape() noexcept
 sight::service::connections_t shape::auto_connections() const
 {
     return {
-        {m_image, sight::data::object::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE},
-        {m_image, sight::data::image_series::SLICE_INDEX_MODIFIED_SIG, sight::service::slots::UPDATE},
-        {m_image, sight::data::image_series::SLICE_TYPE_MODIFIED_SIG, sight::service::slots::UPDATE},
-        {m_image, sight::data::image_series::SLICE_INDEX_MODIFIED_SIG, adaptor::slots::LAZY_UPDATE},
-        {m_image, sight::data::image_series::SLICE_TYPE_MODIFIED_SIG, adaptor::slots::LAZY_UPDATE}
+        {m_image, sight::data::signals::MODIFIED, adaptor::slots::LAZY_UPDATE},
+        {m_image, sight::data::image::signals::SLICE_INDEX_MODIFIED, sight::service::slots::UPDATE},
+        {m_image, sight::data::image::signals::SLICE_TYPE_MODIFIED, sight::service::slots::UPDATE},
+        {m_image, sight::data::image::signals::SLICE_INDEX_MODIFIED, adaptor::slots::LAZY_UPDATE},
+        {m_image, sight::data::image::signals::SLICE_TYPE_MODIFIED, adaptor::slots::LAZY_UPDATE}
     };
 }
 

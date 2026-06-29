@@ -22,9 +22,6 @@
 
 #include "pacs_configuration_editor.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-
 #include <io/dimse/exceptions/base.hpp>
 
 #include <ui/__/dialog/message.hpp>
@@ -38,8 +35,6 @@
 namespace sight::module::io::dimse
 {
 
-static const core::com::slots::key_t SHOW_DIALOG_SLOT = "showDialog";
-
 static const service::base::key_t SHOW_DIALOG_CONFIG = "showDialog";
 
 //------------------------------------------------------------------------------
@@ -47,7 +42,7 @@ static const service::base::key_t SHOW_DIALOG_CONFIG = "showDialog";
 pacs_configuration_editor::pacs_configuration_editor() noexcept :
     sight::service::notifier(has_signals::signals())
 {
-    m_slot_show_dialog = this->new_slot(SHOW_DIALOG_SLOT, &pacs_configuration_editor::show_dialog);
+    m_slot_show_dialog = this->new_slot(slots::SHOW_DIALOG, &pacs_configuration_editor::show_dialog);
 }
 
 //------------------------------------------------------------------------------
@@ -312,11 +307,7 @@ void pacs_configuration_editor::ping_pacs()
 
 void pacs_configuration_editor::modified_notify(sight::io::dimse::data::pacs_configuration::sptr _pacs_configuration)
 {
-    auto sig = _pacs_configuration->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-    {
-        core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
-        sig->async_emit();
-    }
+    _pacs_configuration->async_emit(this, data::signals::MODIFIED);
 }
 
 //------------------------------------------------------------------------------

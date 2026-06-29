@@ -24,8 +24,6 @@
 
 #include "detail/query.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
 #include <core/progress/observer.hpp>
 
 #include <io/dicom/helper/series.hpp>

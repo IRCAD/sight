@@ -22,20 +22,15 @@
 
 #include "mesh_list.hpp"
 
-#include <core/com/slots.hxx>
-
 namespace sight::module::viz::scene3d::adaptor
 {
-
-static const core::com::slots::key_t ADD_SLOT   = "add";
-static const core::com::slots::key_t CLEAR_SLOT = "clear";
 
 //-----------------------------------------------------------------------------
 
 mesh_list::mesh_list() noexcept
 {
-    new_slot(ADD_SLOT, &mesh_list::add, this);
-    new_slot(CLEAR_SLOT, &mesh_list::clear, this);
+    new_slot(slots::ADD, &mesh_list::add, this);
+    new_slot(slots::CLEAR, &mesh_list::clear, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -153,7 +148,7 @@ void mesh_list::starting()
 service::connections_t mesh_list::auto_connections() const
 {
     service::connections_t connections = adaptor::auto_connections();
-    connections.push(TRANSFORM_INPUT, data::matrix4::MODIFIED_SIG, ADD_SLOT);
+    connections.push(TRANSFORM_INPUT, data::signals::MODIFIED, slots::ADD);
     return connections;
 }
 

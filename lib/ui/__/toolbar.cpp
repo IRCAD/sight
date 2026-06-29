@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,13 +25,8 @@
 #include "ui/__/action.hpp"
 #include "ui/__/menu_item_callback.hpp"
 
-#include <core/com/slot.hxx>
-#include <core/com/slots.hxx>
-#include <core/id.hpp>
 #include <core/thread/worker.hpp>
-#include <core/thread/worker.hxx>
 
-#include <service/macros.hpp>
 #include <service/op.hpp>
 
 namespace sight::ui

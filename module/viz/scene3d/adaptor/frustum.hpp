@@ -94,8 +94,8 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::camera::INTRINSIC_CALIBRATED_SIG of s_CAMERA_INPUT to adaptor::slots::LAZY_UPDATE
-     * Connect data::camera::MODIFIED_SIG of s_CAMERA_INPUT to adaptor::slots::LAZY_UPDATE
+     * Connect data::camera::signals::INTRINSIC_CALIBRATED of s_CAMERA_INPUT to adaptor::slots::LAZY_UPDATE
+     * Connect data::signals::MODIFIED of s_CAMERA_INPUT to adaptor::slots::LAZY_UPDATE
      */
     service::connections_t auto_connections() const override;
 

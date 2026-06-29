@@ -22,11 +22,9 @@
 
 #pragma once
 
-// define required by Slots.hxx
-#define FWCOM_HASSLOTS_HPP
-
 #include <sight/core/config.hpp>
 
+#include "core/com/slot.hpp"
 #include "core/com/slots.hpp"
 #include "core/com/util/convert_function_type.hpp"
 #include "core/function.hpp"
@@ -111,5 +109,40 @@ private:
     /// Mapping between a key_t and a slot.
     core::com::slots m_slots;
 };
+
+template<typename F, typename A>
+SPTR(slot<typename core::com::util::convert_function_type<F>::type>)
+has_slots::new_slot(const core::com::slots::key_t& _key, F _f, A _a)
+{
+    auto slot = sight::core::com::new_slot(_f, _a);
+    this->m_slots(_key, slot);
+    return slot;
+}
+
+// Prototype used for lambdas functions
+template<typename F>
+SPTR(slot<core::lambda_to_function_t<F> >)
+has_slots::new_slot(const core::com::slots::key_t& _key, F _f)
+{
+    auto slot = sight::core::com::new_slot(_f);
+    this->m_slots(_key, slot);
+    return slot;
+}
+
+//------------------------------------------------------------------------------
+
+template<typename F>
+auto has_slots::new_slot(
+    const core::com::slots::key_t& _key,
+    F _f
+) -> std::enable_if_t<std::is_function_v<std::remove_pointer_t<F> >,
+                      SPTR(core::com::slot<typename core::com::util::convert_function_type<F>::type>)>
+{
+    auto slot = core::com::new_slot(_f);
+    this->m_slots(_key, slot);
+    return slot;
+}
+
+//------------------------------------------------------------------------------
 
 } // namespace sight::core::com

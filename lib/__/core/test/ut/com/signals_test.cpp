@@ -22,7 +22,7 @@
 
 #include <core/com/has_signals.hpp>
 #include <core/com/signal.hpp>
-#include <core/com/signal.hxx>
+
 #include <core/com/signals.hpp>
 
 #include <doctest/doctest.h>

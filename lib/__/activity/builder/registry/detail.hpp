@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,6 +43,6 @@ using type = core::factory_registry<std::shared_ptr<activity::builder::base>(), 
 
 SIGHT_ACTIVITY_API SPTR(type) get();
 
-} // namespace builder::registry
+} // namespace registry
 
-} // namespace sight::activity
+} // namespace sight::activity::builder

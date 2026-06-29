@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2025 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -89,6 +89,17 @@ class matrices_reader : public sight::io::service::reader
 public:
 
     SIGHT_DECLARE_SERVICE(matrices_reader, sight::io::service::reader);
+
+    struct slots
+    {
+        static inline const slot_key_t START_READING    = "start_reading";
+        static inline const slot_key_t STOP_READING     = "stop_reading";
+        static inline const slot_key_t PAUSE            = "pause";
+        static inline const slot_key_t TOGGLE_LOOP_MODE = "toggle_loop_mode";
+        static inline const slot_key_t READ_NEXT        = "readNext";
+        static inline const slot_key_t READ_PREVIOUS    = "readPrevious";
+        static inline const slot_key_t SET_STEP         = "set_step";
+    };
 
     /// Constructor.
     matrices_reader() noexcept;

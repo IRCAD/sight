@@ -22,8 +22,6 @@
 
 #include "module/geometry/__/decompose_matrix.hpp"
 
-#include <core/com/signal.hxx>
-
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/matrix_decompose.hpp>
 #include <glm/gtx/quaternion.hpp>
@@ -60,7 +58,7 @@ void decompose_matrix::stopping()
 
 service::connections_t decompose_matrix::auto_connections() const
 {
-    return {{SOURCE_INPUT, data::object::MODIFIED_SIG, service::slots::UPDATE}};
+    return {{SOURCE_INPUT, data::signals::MODIFIED, service::slots::UPDATE}};
 }
 
 // ----------------------------------------------------------------------------
@@ -88,8 +86,7 @@ void decompose_matrix::updating()
             sight::geometry::data::identity(*rotation);
             sight::geometry::data::from_glm_mat(*rotation, orientation_mat);
 
-            auto rot_sig = rotation->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-            rot_sig->async_emit();
+            rotation->async_emit(data::signals::MODIFIED);
         }
     }
     {
@@ -102,9 +99,7 @@ void decompose_matrix::updating()
                 (*translation)(i, 3) = glm_translation[static_cast<int>(i)];
             }
 
-            auto trans_sig =
-                translation->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-            trans_sig->async_emit();
+            translation->async_emit(data::signals::MODIFIED);
         }
     }
 
@@ -124,12 +119,11 @@ void decompose_matrix::updating()
                 }
             }
 
-            auto scale_sig = scale->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-            scale_sig->async_emit();
+            scale->async_emit(data::signals::MODIFIED);
         }
     }
 
-    this->signal<signals::computed_t>(signals::SUCCEEDED)->async_emit();
+    this->async_emit(signals::SUCCEEDED);
 }
 
 // ----------------------------------------------------------------------------

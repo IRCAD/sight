@@ -47,8 +47,10 @@ public:
     SIGHT_DECLARE_CLASS(series_retriever, io::dimse::series_retriever);
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
-    SIGHT_IO_DIMSE_API static const core::com::slots::key_t PROGRESS_CALLBACK_SLOT;
-    using progress_callback_slot_t = core::com::slot<void (const std::string&, unsigned int, const std::string&)>;
+    struct slots
+    {
+        static inline const core::com::slots::key_t PROGRESS_CALLBACK = "CMoveProgressCallback";
+    };
 
     /// Constructor
     SIGHT_IO_DIMSE_API series_retriever();

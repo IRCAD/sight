@@ -20,10 +20,9 @@
  ***********************************************************************/
 
 #include <core/com/slots.hpp>
-#include <core/com/slots.hxx>
+
 #include <core/os/temp_path.hpp>
 #include <core/runtime/profile.hpp>
-#include <core/runtime/runtime.hpp>
 #include <core/tools/uuid.hpp>
 
 #include <data/matrix_tl.hpp>
@@ -81,7 +80,7 @@ TEST_SUITE("sight::module::io::matrix::writer")
                         0., 0., 0., 1.
                     };
 
-                    matrix[0] = float(_timestamp);
+                    matrix[0] = static_cast<float>(_timestamp);
                     data->set_element(matrix, 0);
                     matrix_tl->push_object(data);
                 };
@@ -122,9 +121,9 @@ TEST_SUITE("sight::module::io::matrix::writer")
         matrix_writer->slot("set_base_folder")->run(tmp_dir.string());
 
         matrix_writer->slot("start_record")->run();
-        matrix_writer->slot("write")->run(sight::core::clock::type(1));
-        matrix_writer->slot("write")->run(sight::core::clock::type(2));
-        matrix_writer->slot("write")->run(sight::core::clock::type(3));
+        matrix_writer->slot("write")->run(static_cast<sight::core::clock::type>(1));
+        matrix_writer->slot("write")->run(static_cast<sight::core::clock::type>(2));
+        matrix_writer->slot("write")->run(static_cast<sight::core::clock::type>(3));
         matrix_writer->slot("stop_record")->run();
 
         // Stop the service
@@ -175,9 +174,9 @@ TEST_SUITE("sight::module::io::matrix::writer")
         matrix_writer->slot("set_base_folder")->run(tmp_dir.string());
 
         // Test writing
-        matrix_writer->slot("write")->run(sight::core::clock::type(1));
-        matrix_writer->slot("write")->run(sight::core::clock::type(2));
-        matrix_writer->slot("write")->run(sight::core::clock::type(3));
+        matrix_writer->slot("write")->run(static_cast<sight::core::clock::type>(1));
+        matrix_writer->slot("write")->run(static_cast<sight::core::clock::type>(2));
+        matrix_writer->slot("write")->run(static_cast<sight::core::clock::type>(3));
 
         // Stop the service (the recording should be also stopped)
         CHECK_NOTHROW(matrix_writer->stop().wait());

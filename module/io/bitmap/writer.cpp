@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,15 +21,11 @@
 
 #include "writer.hpp"
 
-#include <core/com/signal.hxx>
 #include <core/location/single_folder.hpp>
-#include <core/tools/system.hpp>
 
 #include <ui/__/cursor.hpp>
 #include <ui/__/dialog/location.hpp>
 #include <ui/__/dialog/message.hpp>
-
-#include <boost/algorithm/string.hpp>
 
 #include <algorithm>
 
@@ -211,7 +207,7 @@ void writer::configuring()
     m_mode_by_backend.insert_or_assign(sight::io::bitmap::backend::libpng, mode);
     m_mode_by_backend.insert_or_assign(sight::io::bitmap::backend::libtiff, mode);
 
-#if defined(SIGHT_ENABLE_NVJPEG)
+#ifdef SIGHT_ENABLE_NVJPEG
     if(sight::io::bitmap::nvjpeg())
     {
         m_mode_by_backend.insert_or_assign(sight::io::bitmap::backend::nvjpeg, mode);
@@ -231,7 +227,7 @@ void writer::configuring()
         m_mode_by_backend.insert_or_assign(sight::io::bitmap::backend::libjpeg, mode);
     }
 
-#if defined(SIGHT_ENABLE_NVJPEG2K)
+#ifdef SIGHT_ENABLE_NVJPEG2K
     if(sight::io::bitmap::nvjpeg2k())
     {
         m_mode_by_backend.insert_or_assign(sight::io::bitmap::backend::nvjpeg2k, mode);
@@ -291,9 +287,9 @@ void writer::updating()
             // If the user selected a specific backend, it must match the one given by the file extension.
             SIGHT_THROW(
                 "Backend mismatch: "
-                << std::uint8_t(m_selected_backend)
+                << static_cast<unsigned int>(std::uint8_t(m_selected_backend))
                 << " != "
-                << std::uint8_t(backend_from_extension)
+                << static_cast<unsigned int>(std::uint8_t(backend_from_extension))
             );
         }
     }

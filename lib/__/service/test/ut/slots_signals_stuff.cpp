@@ -22,9 +22,6 @@
 
 #include "slots_signals_stuff.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-
 #include <data/registry/macros.hpp>
 
 #include <service/macros.hpp>
@@ -89,19 +86,17 @@ void basic_test::updating()
 void reader_test::updating()
 {
     auto buff = m_buffer.lock();
-    buff->async_emit(this, data::object::MODIFIED_SIG);
+    buff->async_emit(this, data::signals::MODIFIED);
 }
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 
-const core::com::slots::key_t show_test::CHANGE_SLOT = "change";
-
 //------------------------------------------------------------------------------
 
 show_test::show_test()
 {
-    new_slot(CHANGE_SLOT, &show_test::change, this);
+    new_slot(slots::CHANGE, &show_test::change, this);
 }
 
 //------------------------------------------------------------------------------
@@ -125,21 +120,19 @@ void show_test::change()
 
 service::connections_t show_test::auto_connections() const
 {
-    return {{BUFFER_INOUT, data::object::MODIFIED_SIG, slots::UPDATE}};
+    return {{BUFFER_INOUT, data::signals::MODIFIED, service::slots::UPDATE}};
 }
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 
-const core::com::signals::key_t reader2_test::CHANGED_SIG = "changed";
-
 //------------------------------------------------------------------------------
 
 reader2_test::reader2_test() :
-    m_sig_changed(std::make_shared<changed_signal_t>())
+    m_sig_changed(std::make_shared<signals::changed_t>())
 {
     // Register
-    new_signal<changed_signal_t>(CHANGED_SIG);
+    new_signal<signals::changed_t>(signals::CHANGED);
 }
 
 //------------------------------------------------------------------------------
@@ -147,19 +140,17 @@ reader2_test::reader2_test() :
 void reader2_test::updating()
 {
     // Emit object Modified
-    this->async_emit(reader2_test::CHANGED_SIG);
+    this->async_emit(signals::CHANGED);
 }
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 
-const core::com::slots::key_t show2_test::UPDATE_BUFFER_SLOT = "updateBuffer";
-
 //------------------------------------------------------------------------------
 
 show2_test::show2_test()
 {
-    new_slot(UPDATE_BUFFER_SLOT, &show2_test::update_buffer, this);
+    new_slot(slots::UPDATE_BUFFER, &show2_test::update_buffer, this);
 }
 
 //------------------------------------------------------------------------------
@@ -167,7 +158,7 @@ show2_test::show2_test()
 void show2_test::updating()
 {
     const auto buffer = m_buffer.lock();
-    buffer->async_emit(this, data::object::MODIFIED_SIG);
+    buffer->async_emit(this, data::signals::MODIFIED);
 }
 
 //------------------------------------------------------------------------------

@@ -25,9 +25,7 @@
 #include "ui/__/application.hpp"
 
 #include <core/com/signal.hpp>
-#include <core/com/signal.hxx>
-#include <core/com/slot.hxx>
-#include <core/com/slots.hxx>
+
 #include <core/thread/worker.hpp>
 
 namespace sight::ui
@@ -37,12 +35,6 @@ const std::string frame::CLOSE_POLICY_EXIT    = "exit";
 const std::string frame::CLOSE_POLICY_NOTIFY  = "notify";
 const std::string frame::CLOSE_POLICY_MESSAGE = "message";
 
-const core::com::slots::key_t frame::SET_VISIBLE_SLOT = "set_visible";
-const core::com::slots::key_t frame::SHOW_SLOT        = "show";
-const core::com::slots::key_t frame::HIDE_SLOT        = "hide";
-
-const core::com::signals::key_t frame::CLOSED_SIG = "closed";
-
 ui::container::widget::wptr frame::s_progress_widget = std::weak_ptr<ui::container::widget>();
 
 //-----------------------------------------------------------------------------
@@ -51,11 +43,11 @@ frame::frame() :
 
     m_close_policy("exit")
 {
-    m_sig_closed = new_signal<closed_signal_t>(CLOSED_SIG);
+    m_sig_closed = new_signal<signals::closed_t>(signals::CLOSED);
 
-    new_slot(SET_VISIBLE_SLOT, &frame::set_visible, this);
-    new_slot(SHOW_SLOT, &frame::show, this);
-    new_slot(HIDE_SLOT, &frame::hide, this);
+    new_slot(slots::SET_VISIBLE, &frame::set_visible, this);
+    new_slot(slots::SHOW, &frame::show, this);
+    new_slot(slots::HIDE, &frame::hide, this);
 }
 
 //-----------------------------------------------------------------------------

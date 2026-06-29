@@ -25,9 +25,6 @@
 #include "service/detail/service.hpp"
 #include "service/manager.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slot.hxx>
-#include <core/com/slots.hxx>
 #include <core/thread/worker.hpp>
 
 #include <boost/property_tree/xml_parser.hpp>

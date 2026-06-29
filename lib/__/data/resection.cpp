@@ -25,23 +25,18 @@
 #include "data/exception.hpp"
 #include "data/registry/macros.hpp"
 
-#include <core/com/signal.hxx>
-
 SIGHT_REGISTER_DATA(sight::data::resection);
 
 namespace sight::data
 {
-
-const core::com::signals::key_t resection::RECONSTRUCTION_ADDED_SIG = "reconstructionAdded";
-const core::com::signals::key_t resection::VISIBILITY_MODIFIED_SIG  = "pointTexCoordsModified";
 
 //------------------------------------------------------------------------------
 
 resection::resection() :
     m_plane_list(std::make_shared<data::plane_list>())
 {
-    new_signal<reconstruction_added_signal_t>(RECONSTRUCTION_ADDED_SIG);
-    new_signal<visibility_modified_signal_t>(VISIBILITY_MODIFIED_SIG);
+    new_signal<signals::reconstruction_added_t>(signals::RECONSTRUCTION_ADDED);
+    new_signal<signals::visibility_modified_t>(signals::VISIBILITY_MODIFIED);
 }
 
 //-----------------------------------------------------------------------------

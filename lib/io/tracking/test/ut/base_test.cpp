@@ -20,17 +20,16 @@
  ***********************************************************************/
 
 #include <io/tracking/base.hpp>
-#include <io/tracking/base.hxx>
 
 #include <doctest/doctest.h>
 
 #include <memory>
 
-namespace sight::io::tracking::ut
+namespace
 {
 
 /// Test implementation of tracking::base interface
-class test_tracker final : public base<sensor_t>
+class test_tracker final : public sight::io::tracking::base<sight::io::tracking::sensor_t>
 {
 public:
 
@@ -54,7 +53,7 @@ public:
 protected:
 
     /// Implementation of tracking method for testing
-    void tracking(core::clock::type& /*_timestamp*/) final
+    void tracking(sight::core::clock::type& /*_timestamp*/) final
     {
         m_tracking_call_count++;
     }
@@ -79,13 +78,13 @@ private:
     std::size_t m_tracking_call_count = 0;
 };
 
-} // namespace sight::io::tracking::ut
+} // namespace
 
 TEST_SUITE("sight::io::tracking::base")
 {
     TEST_CASE("is_tracking_and_set_tracking")
     {
-        auto tracker = std::make_shared<sight::io::tracking::ut::test_tracker>();
+        auto tracker = std::make_shared<test_tracker>();
 
         // Initially not tracking
         CHECK_FALSE(tracker->is_tracking());
@@ -103,7 +102,7 @@ TEST_SUITE("sight::io::tracking::base")
 
     TEST_CASE("enable_drop_and_is_dropping")
     {
-        auto tracker = std::make_shared<sight::io::tracking::ut::test_tracker>();
+        auto tracker = std::make_shared<test_tracker>();
 
         // By default, drop is enabled
         CHECK(tracker->is_dropping());
@@ -119,7 +118,7 @@ TEST_SUITE("sight::io::tracking::base")
 
     TEST_CASE("sensors_access")
     {
-        auto tracker = std::make_shared<sight::io::tracking::ut::test_tracker>();
+        auto tracker = std::make_shared<test_tracker>();
 
         // Initially no sensors
         CHECK_EQ(tracker->sensors().size(), 0);
@@ -163,7 +162,7 @@ TEST_SUITE("sight::io::tracking::base")
 
     TEST_CASE("multiple_sensors")
     {
-        auto tracker = std::make_shared<sight::io::tracking::ut::test_tracker>();
+        auto tracker = std::make_shared<test_tracker>();
 
         // Add multiple sensors
         for(std::size_t i = 0 ; i < 5 ; ++i)

@@ -62,21 +62,21 @@ public:
     SIGHT_UI_API const static std::string REGISTRY_KEY;
 
     /// Defines the horizontal alignment of the widget.
-    enum h_alignment
+    enum h_alignment : std::uint8_t
     {
         right,
         left
     };
 
     /// Defines the vertical alignment of the widget.
-    enum v_alignment
+    enum v_alignment : std::uint8_t
     {
         top,
         bottom
     };
 
     /// Defines animation direction.
-    enum animatable_alignment
+    enum animatable_alignment : std::uint8_t
     {
         right_animation,
         left_animation,

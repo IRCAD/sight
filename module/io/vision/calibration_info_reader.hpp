@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2025 IRCAD France
+ * Copyright (C) 2019-2026 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -65,10 +65,10 @@ public:
     /// Configures the folder path.
     void open_location_dialog() override;
 
-protected:
-
     /// Returns the folder path type.
     sight::io::service::path_type_t get_path_type() const override;
+
+protected:
 
     /// Configures the output file format and the chessboard preference keys.
     void configuring() override;

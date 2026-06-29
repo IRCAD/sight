@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,10 +25,9 @@
 #include "data/exception.hpp"
 #include "data/registry/macros.hpp"
 
-#include <core/com/signal.hxx>
 #include <core/type.hpp>
 
-#include <glm/common.hpp>
+#include <glm/common.hpp> // NOLINT(misc-include-cleaner)
 
 SIGHT_REGISTER_DATA(sight::data::transfer_function)
 
@@ -38,9 +37,6 @@ namespace sight::data
 //------------------------------------------------------------------------------
 
 const std::string transfer_function::DEFAULT_TF_NAME = "GreyLevel";
-
-const core::com::signals::key_t transfer_function::POINTS_MODIFIED_SIG    = "pointsModified";
-const core::com::signals::key_t transfer_function::WINDOWING_MODIFIED_SIG = "windowingModified";
 
 //------------------------------------------------------------------------------
 
@@ -267,8 +263,8 @@ data::transfer_function::sptr transfer_function::create_default_tf(core::type _t
 
 transfer_function::transfer_function()
 {
-    new_signal<points_modified_signal_t>(POINTS_MODIFIED_SIG);
-    new_signal<windowing_modified_signal_t>(WINDOWING_MODIFIED_SIG);
+    new_signal<signals::points_modified_t>(signals::POINTS_MODIFIED);
+    new_signal<signals::windowing_modified_t>(signals::WINDOWING_MODIFIED);
 }
 
 //------------------------------------------------------------------------------

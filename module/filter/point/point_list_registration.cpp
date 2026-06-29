@@ -22,16 +22,8 @@
 
 #include "point_list_registration.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-
-#include <data/map.hpp>
 #include <data/matrix4.hpp>
-#include <data/mesh.hpp>
 #include <data/point_list.hpp>
-#include <data/string.hpp>
-
-#include <service/macros.hpp>
 
 #include <ui/__/dialog/message.hpp>
 
@@ -43,13 +35,10 @@
 namespace sight::module::filter::point
 {
 
-const core::com::slots::key_t point_list_registration::CHANGE_MODE = "changeMode";
-static const core::com::signals::key_t ERROR_COMPUTED_SIG          = "error_computed";
-
 point_list_registration::point_list_registration()
 {
-    new_signal<error_computed_t>(ERROR_COMPUTED_SIG);
-    new_slot(CHANGE_MODE, &point_list_registration::change_mode, this);
+    new_signal<signals::error_computed_t>(signals::ERROR_COMPUTED);
+    new_slot(slots::CHANGE_MODE, &point_list_registration::change_mode, this);
 }
 
 // ----------------------------------------------------------------------------
@@ -220,14 +209,9 @@ void point_list_registration::compute_registration(core::clock::type /*timestamp
 
         error_value /= static_cast<double>(source_pts->GetNumberOfPoints());
 
-        this->signal<error_computed_t>(ERROR_COMPUTED_SIG)->async_emit(error_value);
+        this->async_emit(signals::ERROR_COMPUTED, error_value);
 
-        // Notify Matrix modified
-        auto sig = matrix->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-        {
-            core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
-            sig->async_emit();
-        }
+        matrix->async_emit(this, data::signals::MODIFIED);
     }
     else
     {

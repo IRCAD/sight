@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -66,7 +66,7 @@ public:
      * @brief Returns the current horizontal offset of the thumb.
      * @return The current horizontal offset in pixels.
      */
-    SIGHT_UI_QT_API_QT int offset() const;
+    [[nodiscard]] SIGHT_UI_QT_API_QT int offset() const;
 
     /**
      * @brief Sets the horizontal offset of the thumb to the given value.
@@ -93,7 +93,7 @@ public:
      * @brief Returns the color of the track when the switch is on.
      * @return The track's 'on' color .
      */
-    SIGHT_UI_QT_API_QT QColor track_color_on() const;
+    [[nodiscard]] SIGHT_UI_QT_API_QT QColor track_color_on() const;
 
     /**
      * @brief Sets the color of the track for the 'on' state.
@@ -105,7 +105,7 @@ public:
      * @brief Returns the color of the track when the switch is off.
      * @return The track's 'off' color .
      */
-    SIGHT_UI_QT_API_QT QColor track_color_off() const;
+    [[nodiscard]] SIGHT_UI_QT_API_QT QColor track_color_off() const;
 
     /**
      * @brief Sets the color of the track for the 'off' state.
@@ -117,13 +117,13 @@ public:
      * @brief Returns the current color of the track.
      * @return The current track color.
      */
-    SIGHT_UI_QT_API_QT QColor current_track_color() const;
+    [[nodiscard]] SIGHT_UI_QT_API_QT QColor current_track_color() const;
 
     /**
      * @brief Returns the current color of the thumb.
      * @return The current thumb color.
      */
-    SIGHT_UI_QT_API_QT QColor current_thumb_color() const;
+    [[nodiscard]] SIGHT_UI_QT_API_QT QColor current_thumb_color() const;
 
     /**
      * @brief Sets the current color of the track.
@@ -148,19 +148,19 @@ public:
      * @brief Returns the current check state of the switch.
      * @return The current check state as a Qt::CheckState enum.
      */
-    SIGHT_UI_QT_API_QT Qt::CheckState check_state() const;
+    [[nodiscard]] SIGHT_UI_QT_API_QT Qt::CheckState check_state() const;
 
     /**
      * @brief Returns the color of the thumb when the switch is on.
      * @return The thumb's 'on' color .
      */
-    SIGHT_UI_QT_API_QT QColor thumb_color_on() const;
+    [[nodiscard]] SIGHT_UI_QT_API_QT QColor thumb_color_on() const;
 
     /**
      * @brief Returns the color of the thumb when the switch is off.
      * @return The thumb's 'off' color .
      */
-    SIGHT_UI_QT_API_QT QColor thumb_color_off() const;
+    [[nodiscard]] SIGHT_UI_QT_API_QT QColor thumb_color_off() const;
 
     /**
      * @brief Sets the color of the thumb for the 'on' state.
@@ -179,7 +179,7 @@ public:
      * @brief Returns the color of the icon when the switch is on.
      * @return The icon's 'on' color .
      */
-    SIGHT_UI_QT_API_QT  QColor icon_color_on() const;
+    [[nodiscard]] SIGHT_UI_QT_API_QT  QColor icon_color_on() const;
 
     /**
      * @brief Sets the color of the icon for the 'on' state.
@@ -191,7 +191,7 @@ public:
      * @brief Returns the current color of the icon.
      * @return The current icon color.
      */
-    SIGHT_UI_QT_API_QT QColor current_icon_color() const;
+    [[nodiscard]] SIGHT_UI_QT_API_QT QColor current_icon_color() const;
 
     /**
      * @brief Sets the current color of the icon.
@@ -206,7 +206,7 @@ public:
      * @brief Returns the color of the icon when the switch is off.
      * @return The icon's 'off' color .
      */
-    SIGHT_UI_QT_API_QT   QColor icon_color_off() const;
+    [[nodiscard]] SIGHT_UI_QT_API_QT   QColor icon_color_off() const;
 
     /**
      * @brief Sets the color of the icon for the 'off' state.
@@ -225,8 +225,8 @@ Q_SIGNALS:
 protected:
 
     SIGHT_UI_QT_API_QT void paintEvent(QPaintEvent* /*e*/) override;
-    SIGHT_UI_QT_API_QT void resizeEvent(QResizeEvent* e) override;
-    SIGHT_UI_QT_API_QT void mousePressEvent(QMouseEvent* e) override;
+    SIGHT_UI_QT_API_QT void resizeEvent(QResizeEvent* _e) override;
+    SIGHT_UI_QT_API_QT void mousePressEvent(QMouseEvent* _e) override;
 
 private:
 

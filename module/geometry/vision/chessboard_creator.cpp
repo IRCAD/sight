@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,14 +20,6 @@
  ***********************************************************************/
 
 #include "chessboard_creator.hpp"
-
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-
-#include <io/opencv/matrix.hpp>
-#include <io/opencv/point_list.hpp>
-
-#include <service/macros.hpp>
 
 namespace sight::module::geometry::vision
 {
@@ -67,17 +59,16 @@ void chessboard_creator::updating()
     chessboard_data->clear();
     for(std::uint64_t i = 0 ; i < height - 1 ; ++i)
     {
-        const double x = double(i) * square_size;
+        const double x = static_cast<double>(i) * square_size;
 
         for(std::uint64_t j = 0 ; j < width - 1 ; ++j)
         {
-            const double y = double(j) * square_size;
+            const double y = static_cast<double>(j) * square_size;
             chessboard_data->push_back(std::make_shared<data::point>(x, y, 0.));
         }
     }
 
-    auto sig = chessboard_data->signal<data::point_list::modified_signal_t>(data::point_list::MODIFIED_SIG);
-    sig->async_emit();
+    chessboard_data->async_emit(data::signals::MODIFIED);
 }
 
 //-----------------------------------------------------------------------------
@@ -91,9 +82,9 @@ void chessboard_creator::stopping()
 service::connections_t chessboard_creator::auto_connections() const
 {
     return {
-        {m_width, data::object::MODIFIED_SIG, slots::UPDATE},
-        {m_height, data::object::MODIFIED_SIG, slots::UPDATE},
-        {m_square_size, data::object::MODIFIED_SIG, slots::UPDATE}
+        {m_width, data::signals::MODIFIED, slots::UPDATE},
+        {m_height, data::signals::MODIFIED, slots::UPDATE},
+        {m_square_size, data::signals::MODIFIED, slots::UPDATE}
     };
 }
 

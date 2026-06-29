@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024-2025 IRCAD France
+ * Copyright (C) 2024-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -167,12 +167,11 @@ public:
     /// @brief  Struct to handle all slots
     struct slots
     {
-        using key_t = core::com::slots::key_t;
-        inline static const key_t UPDATE_ENUM_RANGE           = "update_enum_range";
-        inline static const key_t UPDATE_INT_MIN_PARAMETER    = "update_int_min_parameter";
-        inline static const key_t UPDATE_INT_MAX_PARAMETER    = "update_int_max_parameter";
-        inline static const key_t UPDATE_DOUBLE_MIN_PARAMETER = "update_double_min_parameter";
-        inline static const key_t UPDATE_DOUBLE_MAX_PARAMETER = "update_double_max_parameter";
+        inline static const slot_key_t UPDATE_ENUM_RANGE           = "update_enum_range";
+        inline static const slot_key_t UPDATE_INT_MIN_PARAMETER    = "update_int_min_parameter";
+        inline static const slot_key_t UPDATE_INT_MAX_PARAMETER    = "update_int_max_parameter";
+        inline static const slot_key_t UPDATE_DOUBLE_MIN_PARAMETER = "update_double_min_parameter";
+        inline static const slot_key_t UPDATE_DOUBLE_MAX_PARAMETER = "update_double_max_parameter";
     };
 
     struct enum_button_param
@@ -198,11 +197,11 @@ public:
 
     struct qt_property
     {
-        inline static const char* key        = "key";
-        inline static const char* data_index = "data_index";
-        inline static const char* count      = "count";
-        inline static const char* index      = "index";
-        inline static const char* use_index  = "use_index";
+        inline static const char* s_key        = "key";
+        inline static const char* s_data_index = "data_index";
+        inline static const char* s_count      = "count";
+        inline static const char* s_index      = "index";
+        inline static const char* s_use_index  = "use_index";
     };
 
     template<typename T>
@@ -219,6 +218,14 @@ public:
 
     /// Destructor. Does nothing
     ~settings() noexcept override = default;
+
+    /**
+     * @brief Called on all dependent widget to update it.
+     * @param _watched Widget to update.
+     * @param _event Event type, only care about ::QEvent::EnabledChange
+     * @return False.
+     */
+    bool eventFilter(QObject* _watched, QEvent* _event) override;
 
 protected:
 
@@ -315,14 +322,6 @@ private Q_SLOTS:
     static void on_double_slider_range_mapped(QLabel* _min_label, QLabel* _max_label, QSlider* _slider);
 
 private:
-
-    /**
-     * @brief Called on all dependent widget to update it.
-     * @param _watched Widget to update.
-     * @param _event Event type, only care about ::QEvent::EnabledChange
-     * @return False.
-     */
-    bool eventFilter(QObject* _watched, QEvent* _event) override;
 
     /// Creates a reset button for one widget.
     /// @param _key Name of the parameter it resets.
@@ -423,9 +422,9 @@ private:
         QBoxLayout* _layout,
         const param_widget& _setup,
         const std::vector<enum_button_param>& _button_list,
-        const int _width,
-        const int _height,
-        const int _spacing,
+        int _width,
+        int _height,
+        int _spacing,
         const std::string& _style,
         Qt::Orientation _orientation
     );
@@ -469,7 +468,7 @@ private:
 
     /// Updates the values of tickmarks widgets
     void update_tickmarks(
-        sight::ui::qt::widget::tickmarks_slider* const _tickmarks,
+        sight::ui::qt::widget::tickmarks_slider* _tickmarks,
         const std::string& _options
     );
 

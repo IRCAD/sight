@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,24 +23,14 @@
 #include "module/viz/scene2d/adaptor/axis.hpp"
 
 #include <viz/scene2d/data/init_qt_pen.hpp>
-#include <viz/scene2d/graphics_view.hpp>
-
-#include <glm/common.hpp>
 
 #include <QGraphicsItemGroup>
 
 #include <cmath>
+#include <glm/common.hpp> // NOLINT(misc-include-cleaner)
 
 namespace sight::module::viz::scene2d::adaptor
 {
-
-axis::axis() noexcept =
-    default;
-
-//--------------------------------------------------------------------------------------------------
-
-axis::~axis() noexcept =
-    default;
 
 //--------------------------------------------------------------------------------------------------
 
@@ -532,7 +522,7 @@ void axis::process_interaction(sight::viz::scene2d::data::event& _event)
 service::connections_t axis::auto_connections() const
 {
     connections_t connections;
-    connections.push(VIEWPORT_INPUT, sight::viz::scene2d::data::viewport::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(VIEWPORT_INPUT, sight::data::signals::MODIFIED, service::slots::UPDATE);
     return connections;
 }
 

@@ -81,9 +81,12 @@ public:
      * @name Signals
      * @{
      */
-    /// Signal emitted when plane is selected/deselected
-    using selected_signal_t = core::com::signal<void (bool)>;
-    SIGHT_DATA_API static const core::com::signals::key_t SELECTED_SIG;
+    struct signals
+    {
+        /// Signal emitted when plane is selected/deselected
+        using selected_t = core::com::signal<void (bool)>;
+        static const inline signal_key_t SELECTED = "selected";
+    };
 /**
  * @}
  */

@@ -21,9 +21,6 @@
 
 #include "progress_bar.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-
 #include <ui/qt/container/widget.hpp>
 
 namespace sight::module::ui::qt

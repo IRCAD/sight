@@ -86,6 +86,11 @@ public:
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(model_series, sight::viz::scene3d::adaptor);
 
+    struct slots
+    {
+        static inline const slot_key_t CHANGE_FIELD = "changeField";
+    };
+
     /// Initialisa slots.
     model_series() noexcept;
 
@@ -110,12 +115,12 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::model_series::VERTEX_MODIFIED_SIG to service::slots::UPDATE
-     * Connect data::model_series::RECONSTRUCTIONS_ADDED_SIG to service::slots::UPDATE
-     * Connect data::model_series::RECONSTRUCTIONS_REMOVED_SIG to service::slots::UPDATE
-     * Connect data::model_series::ADDED_FIELDS_SIG to CHANGE_FIELD_SLOT
-     * Connect data::model_series::REMOVED_FIELDS_SIG to CHANGE_FIELD_SLOT
-     * Connect data::model_series::CHANGED_FIELDS_SIG to CHANGE_FIELD_SLOT
+     * Connect data::model_series::signals::VERTEX_MODIFIED to service::slots::UPDATE
+     * Connect data::model_series::signals::RECONSTRUCTIONS_ADDED to service::slots::UPDATE
+     * Connect data::model_series::signals::RECONSTRUCTIONS_REMOVED to service::slots::UPDATE
+     * Connect data::signals::ADDED_FIELDS to CHANGE_FIELD
+     * Connect data::signals::REMOVED_FIELDS to CHANGE_FIELD
+     * Connect data::signals::CHANGED_FIELDS to CHANGE_FIELD
      */
     service::connections_t auto_connections() const final;
 

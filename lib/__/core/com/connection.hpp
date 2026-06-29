@@ -81,7 +81,7 @@ struct SIGHT_CORE_CLASS_API connection
     protected:
 
         /// Returns a Blocker.
-        slot_connection_base::blocker_sptr_type get_blocker()
+        [[nodiscard]] slot_connection_base::blocker_sptr_type get_blocker() const
         {
             slot_connection_base::blocker_sptr_type blocker;
             slot_connection_base::sptr connection(m_connection_base.lock());

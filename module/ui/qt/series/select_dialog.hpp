@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2025 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -62,13 +62,14 @@ class select_dialog : public service::controller
 {
 public:
 
-    /// Type of signal sent when a screen is selected.
-    using selected_signal_t = core::com::signal<void ()>;
-
-    static const core::com::signals::key_t IMAGE_SELECTED_SIG;
-    static const core::com::signals::key_t MODEL_SELECTED_SIG;
-
     SIGHT_DECLARE_SERVICE(select_dialog, service::controller);
+
+    struct signals
+    {
+        using selected_t = core::com::signal<void ()>;
+        static inline const signal_key_t IMAGE_SELECTED = "image_selected";
+        static inline const signal_key_t MODEL_SELECTED = "model_selected";
+    };
 
     /// Constructor
     select_dialog();

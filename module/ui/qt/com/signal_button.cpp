@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2025 IRCAD France
+ * Copyright (C) 2015-2026 IRCAD France
  * Copyright (C) 2015-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,6 @@
 
 #include "signal_button.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slot.hxx>
-#include <core/com/slots.hxx>
 #include <core/ptree.hpp>
 #include <core/runtime/path.hpp>
 
@@ -32,22 +29,11 @@
 
 #include <ui/qt/container/widget.hpp>
 
-#include <QVariant>
 #include <QVBoxLayout>
+#include <QVariant>
 
 namespace sight::module::ui::qt::com
 {
-
-static const core::com::slots::key_t SET_CHECKED_SLOT = "set_checked";
-static const core::com::slots::key_t CHECK_SLOT       = "check";
-static const core::com::slots::key_t UNCHECK_SLOT     = "uncheck";
-
-static const core::com::slots::key_t SET_ENABLED_SLOT = "set_enabled";
-static const core::com::slots::key_t ENABLE_SLOT      = "enable";
-static const core::com::slots::key_t DISABLE_SLOT     = "disable";
-static const core::com::slots::key_t SET_VISIBLE_SLOT = "set_visible";
-static const core::com::slots::key_t SHOW_SLOT        = "show";
-static const core::com::slots::key_t HIDE_SLOT        = "hide";
 
 //-----------------------------------------------------------------------------
 
@@ -59,15 +45,15 @@ signal_button::signal_button() noexcept
     new_signal<signals::void_t>(signals::CHECKED);
     new_signal<signals::void_t>(signals::UNCHECKED);
 
-    new_slot(SET_CHECKED_SLOT, &signal_button::set_checked, this);
-    new_slot(CHECK_SLOT, &signal_button::check, this);
-    new_slot(UNCHECK_SLOT, &signal_button::uncheck, this);
-    new_slot(SET_ENABLED_SLOT, &signal_button::set_enabled, this);
-    new_slot(ENABLE_SLOT, &signal_button::enable, this);
-    new_slot(DISABLE_SLOT, &signal_button::disable, this);
-    new_slot(SET_VISIBLE_SLOT, &signal_button::set_visible, this);
-    new_slot(SHOW_SLOT, &signal_button::show, this);
-    new_slot(HIDE_SLOT, &signal_button::hide, this);
+    new_slot(slots::SET_CHECKED, &signal_button::set_checked, this);
+    new_slot(slots::CHECK, &signal_button::check, this);
+    new_slot(slots::UNCHECK, &signal_button::uncheck, this);
+    new_slot(slots::SET_ENABLED, &signal_button::set_enabled, this);
+    new_slot(slots::ENABLE, &signal_button::enable, this);
+    new_slot(slots::DISABLE, &signal_button::disable, this);
+    new_slot(slots::SET_VISIBLE, &signal_button::set_visible, this);
+    new_slot(slots::SHOW, &signal_button::show, this);
+    new_slot(slots::HIDE, &signal_button::hide, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -143,7 +129,7 @@ void signal_button::starting()
 
     if(m_icon_width > 0 && m_icon_height > 0)
     {
-        m_button->setIconSize(QSize(int(m_icon_width), int(m_icon_height)));
+        m_button->setIconSize(QSize(static_cast<int>(m_icon_width), static_cast<int>(m_icon_height)));
     }
 
     if(m_checkable)
@@ -210,8 +196,7 @@ void signal_button::joystick_axis_direction_event(const sight::io::joystick::axi
 
 void signal_button::on_clicked()
 {
-    const auto sig = this->signal<signals::void_t>(signals::CLICKED);
-    sig->async_emit();
+    this->async_emit(signals::CLICKED);
 }
 
 //-----------------------------------------------------------------------------
@@ -222,26 +207,22 @@ void signal_button::on_toggled(bool _toggled)
 
     // legacy
     {
-        const auto sig = this->signal<signals::bool_t>(signals::TOGGLED);
-        sig->async_emit(_toggled);
+        this->async_emit(signals::TOGGLED, _toggled);
     }
 
     // current signal
     {
-        const auto sig = this->signal<signals::bool_t>(signals::IS_CHECKED);
-        sig->async_emit(_toggled);
+        this->async_emit(signals::IS_CHECKED, _toggled);
     }
 
     // checked/unchecked signals
     if(_toggled)
     {
-        const auto sig = this->signal<signals::void_t>(signals::CHECKED);
-        sig->async_emit();
+        this->async_emit(signals::CHECKED);
     }
     else
     {
-        const auto sig = this->signal<signals::void_t>(signals::UNCHECKED);
-        sig->async_emit();
+        this->async_emit(signals::UNCHECKED);
     }
 }
 

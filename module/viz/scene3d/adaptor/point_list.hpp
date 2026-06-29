@@ -163,9 +163,9 @@ protected:
      *
      * Connect data::point_list::signals::POINT_ADDED of s_POINTLIST_INPUT to service::slots::UPDATE
      * Connect data::point_list::signals::POINT_REMOVED of s_POINTLIST_INPUT to service::slots::UPDATE
-     * Connect data::point_list::MODIFIED_SIG of s_POINTLIST_INPUT to service::slots::UPDATE
-     * Connect data::mesh::VERTEX_MODIFIED_SIG of s_MESH_INPUT to service::slots::UPDATE
-     * Connect data::mesh::MODIFIED_SIG of s_MESH_INPUT to service::slots::UPDATE
+     * Connect data::signals::MODIFIED of s_POINTLIST_INPUT to service::slots::UPDATE
+     * Connect data::mesh::signals::VERTEX_MODIFIED of s_MESH_INPUT to service::slots::UPDATE
+     * Connect data::signals::MODIFIED of s_MESH_INPUT to service::slots::UPDATE
      */
     service::connections_t auto_connections() const final;
 

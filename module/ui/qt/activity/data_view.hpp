@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2024 IRCAD France
+ * Copyright (C) 2016-2026 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -50,19 +50,19 @@ public:
     using object_icon_map_t = std::map<std::string, std::string>;
 
     /// Defines common header columns used in the tree widget of all created tabs.
-    enum class column_commun_t : int
+    enum class column_commun_t : std::uint8_t
     {
         id = 0
     };
 
     /// Defines header columns used in the tree widget of all data.
-    enum class column_object_t : int
+    enum class column_object_t : std::uint8_t
     {
         desc = 1
     };
 
     /// Defines header columns used in the tree widget of all series.
-    enum class column_series_t : int
+    enum class column_series_t : std::uint8_t
     {
         name = 1,
         sex,
@@ -76,7 +76,7 @@ public:
     };
 
     /// Defines header columns used in the tree widget of image series.
-    enum column_image_series_t : int
+    enum column_image_series_t : std::uint8_t
     {
         body_part_examined = 10,
         patient_position,
@@ -138,7 +138,7 @@ public:
      * @brief Sets the IO selector configuration used to import data.
      * @param _io_selector_srv_config the service configuration used for the IO selector.
      */
-    inline void set_io_selector_config(const std::string& _io_selector_srv_config)
+    void set_io_selector_config(const std::string& _io_selector_srv_config)
     {
         m_io_selector_srv_config = _io_selector_srv_config;
     }
@@ -147,7 +147,7 @@ public:
      * @brief Sets the IO selector configuration used to import data from a series set.
      * @param _io_selector_srv_config the service configuration used for the IO selector.
      */
-    inline void set_sdbio_selector_config(const std::string& _io_selector_srv_config)
+    void set_sdbio_selector_config(const std::string& _io_selector_srv_config)
     {
         m_sdb_io_selector_srv_config = _io_selector_srv_config;
     }
@@ -163,8 +163,6 @@ public:
     {
         m_object_icons = _object_icons;
     }
-
-protected:
 
     /// Catch KeyEvent and DropEvent from tree widgets
     bool eventFilter(QObject* _obj, QEvent* _event) override;

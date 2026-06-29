@@ -22,8 +22,6 @@
 
 #include "series_puller.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
 #include <core/progress/observer.hpp>
 
 #include <data/series_set.hpp>
@@ -39,19 +37,14 @@
 namespace sight::module::io::dimse
 {
 
-static const core::com::signals::key_t STARTED_PROGRESS_SIG = "progress_started";
-static const core::com::signals::key_t STOPPED_PROGRESS_SIG = "progress_stopped";
-
-static const core::com::slots::key_t REMOVE_SERIES_SLOT = "removeSeries";
-
 series_puller::series_puller() noexcept :
     service::notifier(has_signals::signals()),
     has_monitors(has_signals::signals())
 {
-    m_sig_progress_started = this->new_signal<progress_started_signal_t>(STARTED_PROGRESS_SIG);
-    m_sig_progress_stopped = this->new_signal<progress_stopped_signal_t>(STOPPED_PROGRESS_SIG);
+    this->new_signal<signals::progress_started_t>(signals::STARTED_PROGRESS);
+    this->new_signal<signals::progress_stopped_t>(signals::STOPPED_PROGRESS);
 
-    new_slot(REMOVE_SERIES_SLOT, &series_puller::remove_series, this);
+    new_slot(slots::REMOVE_SERIES, &series_puller::remove_series, this);
 }
 
 //------------------------------------------------------------------------------
@@ -146,7 +139,7 @@ void series_puller::pull_series()
         this->notifier::info("Downloading series...");
 
         // Notify Progress Dialog.
-        m_sig_progress_started->async_emit();
+        this->async_emit(signals::STARTED_PROGRESS);
 
         // Retrieve informations.
         const auto pacs_config = m_config.lock();
@@ -255,7 +248,7 @@ void series_puller::pull_series()
     }
 
     // Notify Progress Dialog.
-    m_sig_progress_stopped->async_emit();
+    this->async_emit(signals::STOPPED_PROGRESS);
 }
 
 //------------------------------------------------------------------------------
@@ -343,7 +336,7 @@ void series_puller::remove_series(data::series_set::container_t _removed_series)
 service::connections_t series_puller::auto_connections() const
 {
     connections_t connections;
-    connections.push(SERIES_SET_INOUT, data::series_set::REMOVED_OBJECTS_SIG, REMOVE_SERIES_SLOT);
+    connections.push(SERIES_SET_INOUT, data::series_set::signals::REMOVED_OBJECTS, slots::REMOVE_SERIES);
 
     return connections;
 }

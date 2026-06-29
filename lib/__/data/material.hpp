@@ -185,13 +185,16 @@ public:
      * @name Signals
      * @{
      */
-    /// Type of signal when a texture is added
-    using added_texture_signal_t = core::com::signal<void (image::sptr)>;
-    SIGHT_DATA_API static const core::com::signals::key_t ADDED_TEXTURE_SIG;
+    struct signals
+    {
+        /// Type of signal when a texture is added
+        using added_texture_t = core::com::signal<void (image::sptr)>;
+        static const inline signal_key_t ADDED_TEXTURE = "addedTexture";
 
-    /// Type of signal when a texture is removed
-    using removed_texture_signal_t = core::com::signal<void (image::sptr)>;
-    SIGHT_DATA_API static const core::com::signals::key_t REMOVED_TEXTURE_SIG;
+        /// Type of signal when a texture is removed
+        using removed_texture_t = core::com::signal<void (image::sptr)>;
+        static const inline signal_key_t REMOVED_TEXTURE = "removedTexture";
+    };
 /**
  * @}
  */

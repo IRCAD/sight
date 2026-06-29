@@ -22,9 +22,6 @@
 
 #include "transform_depth_map2mm.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-
 #include <data/image.hpp>
 
 namespace sight::module::filter::vision
@@ -105,8 +102,8 @@ void transform_depth_map2mm::updating()
         *depth_buffer_out_itr = static_cast<std::uint16_t>((*depth_buffer_in_itr) * scale);
     }
 
-    scaled_frame->signal<data::image::modified_signal_t>(data::image::MODIFIED_SIG)->async_emit();
-    this->signal<signals::computed_t>(signals::SUCCEEDED)->async_emit();
+    scaled_frame->async_emit(data::signals::MODIFIED);
+    this->async_emit(signals::SUCCEEDED);
 }
 
 //-----------------------------------------------------------------------------

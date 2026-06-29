@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #include "module/geometry/__/concatenate_matrices.hpp"
-
-#include <core/com/signal.hxx>
 
 #include <geometry/data/matrix4.hpp>
 
@@ -89,14 +87,14 @@ void concatenate_matrices::updating()
         }
     }
 
-    output_matrix->async_emit(this, data::object::MODIFIED_SIG);
+    output_matrix->async_emit(this, data::signals::MODIFIED);
 }
 
 // ----------------------------------------------------------------------------
 
 service::connections_t concatenate_matrices::auto_connections() const
 {
-    return {{MATRIX_GROUP_INPUT, data::object::MODIFIED_SIG, service::slots::UPDATE}};
+    return {{MATRIX_GROUP_INPUT, data::signals::MODIFIED, service::slots::UPDATE}};
 }
 
 // ----------------------------------------------------------------------------

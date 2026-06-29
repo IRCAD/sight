@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024-2025 IRCAD France
+ * Copyright (C) 2024-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -84,8 +84,8 @@ public:
 
     struct slots final
     {
-        static inline const sight::core::com::slots::key_t CLEAR     = "clear";
-        static inline const sight::core::com::slots::key_t PROPAGATE = "propagate";
+        static inline const slot_key_t CLEAR     = "clear";
+        static inline const slot_key_t PROPAGATE = "propagate";
     };
 
     /// Initializes slots signals and member variables.
@@ -118,8 +118,8 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::image::MODIFIED_SIG of s_IMAGE_IN to service::slots::UPDATE
-     * Connect data::point_list::MODIFIED_SIG of s_SEEDS_IN to slots::PROPAGATE
+     * Connect data::signals::MODIFIED of s_IMAGE_IN to service::slots::UPDATE
+     * Connect data::signals::MODIFIED of s_SEEDS_IN to slots::PROPAGATE
      */
     connections_t auto_connections() const override;
 

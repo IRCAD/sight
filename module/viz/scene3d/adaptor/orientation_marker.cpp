@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2025 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2020-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,11 +26,6 @@
 
 #include <viz/scene3d/layer.hpp>
 #include <viz/scene3d/ogre.hpp>
-
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-
-#include <OGRE/OgreCamera.h>
 
 #include <OgreEntity.h>
 
@@ -161,7 +156,7 @@ void orientation_marker::set_visible(bool _visible)
 service::connections_t orientation_marker::auto_connections() const
 {
     service::connections_t connections = adaptor::auto_connections();
-    connections.push(MATRIX_IN, data::matrix4::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
+    connections.push(MATRIX_IN, data::signals::MODIFIED, adaptor::slots::LAZY_UPDATE);
     return connections;
 }
 

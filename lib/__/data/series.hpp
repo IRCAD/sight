@@ -278,7 +278,7 @@ public:
         };
 
         // NOLINTNEXTLINE(readability-reduce-member-init)
-        std::vector<std::string> other_values;
+        std::vector<std::string> other_values {};
     };
 
     SIGHT_DATA_API image_type_t get_image_type() const;

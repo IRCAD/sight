@@ -22,8 +22,6 @@
 
 #include "data/buffer_tl.hpp"
 
-#include <core/com/signal.hxx>
-
 #include <cmath>
 
 namespace sight::data
@@ -232,8 +230,7 @@ void buffer_tl::clear_timeline()
 {
     m_timeline.clear();
 
-    auto sig = this->signal<timeline::signals::cleared_t>(timeline::signals::CLEARED);
-    sig->async_emit();
+    this->async_emit(timeline::signals::CLEARED);
 }
 
 //------------------------------------------------------------------------------

@@ -22,8 +22,6 @@
 
 #include "module/viz/scene3d/adaptor/mesh.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
 #include <core/ptree.hpp>
 
 #include <viz/scene3d/r2vb_renderable.hpp>
@@ -248,10 +246,10 @@ void mesh::starting()
 service::connections_t mesh::auto_connections() const
 {
     const service::connections_t connections = {
-        {m_mesh, data::mesh::VERTEX_MODIFIED_SIG, slots::MODIFY_VERTICES},
-        {m_mesh, data::mesh::POINT_COLORS_MODIFIED_SIG, slots::MODIFY_COLORS},
-        {m_mesh, data::mesh::CELL_COLORS_MODIFIED_SIG, slots::MODIFY_COLORS},
-        {m_mesh, data::mesh::POINT_TEX_COORDS_MODIFIED_SIG, slots::MODIFY_POINT_TEX_COORDS},
+        {m_mesh, data::mesh::signals::VERTEX_MODIFIED, slots::MODIFY_VERTICES},
+        {m_mesh, data::mesh::signals::POINT_COLORS_MODIFIED, slots::MODIFY_COLORS},
+        {m_mesh, data::mesh::signals::CELL_COLORS_MODIFIED, slots::MODIFY_COLORS},
+        {m_mesh, data::mesh::signals::POINT_TEX_COORDS_MODIFIED, slots::MODIFY_POINT_TEX_COORDS},
         {m_mesh, data::signals::MODIFIED, slots::MODIFY_MESH},
         {m_color, data::signals::MODIFIED, slots::CHANGE_COLOR},
         {m_bounding_box_visible, data::signals::MODIFIED, slots::CHANGE_BOUNDING_BOX_VISIBILITY}

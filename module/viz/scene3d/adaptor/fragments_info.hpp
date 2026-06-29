@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2024 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -62,6 +62,11 @@ public:
 
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(fragments_info, sight::viz::scene3d::adaptor);
+
+    struct slots
+    {
+        static inline const slot_key_t RESIZE_VIEWPORT = "resize_viewport";
+    };
 
     /// Initializes the adaptor.
     fragments_info() noexcept;

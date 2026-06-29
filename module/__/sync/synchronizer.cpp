@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2025 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,9 +21,7 @@
 
 #include "synchronizer.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-#include <core/ptree.hpp>
+#include <algorithm>
 
 #include <data/image_series.hpp>
 
@@ -165,12 +163,12 @@ void synchronizer::starting()
                 m_frame_out_var_parameters.emplace_back(
                     out_var_parameter(
                     {
-                        frame_index,
-                        tl_index,
-                        element_index,
-                        false,
-                        send_status,
-                        0
+                        .out_var_index          = frame_index,
+                        .tl_index               = tl_index,
+                        .tl_element_index       = element_index,
+                        .is_synchronized        = false,
+                        .signal_synchronization = send_status,
+                        .delay                  = 0
                     })
                 );
             }
@@ -199,12 +197,12 @@ void synchronizer::starting()
                 m_matrix_out_var_parameters.emplace_back(
                     out_var_parameter(
                     {
-                        matrix_index,
-                        tl_index,
-                        element_index,
-                        false,
-                        send_status,
-                        0
+                        .out_var_index          = matrix_index,
+                        .tl_index               = tl_index,
+                        .tl_element_index       = element_index,
+                        .is_synchronized        = false,
+                        .signal_synchronization = send_status,
+                        .delay                  = 0
                     })
                 );
             }
@@ -293,18 +291,14 @@ void synchronizer::synchronize()
     // step 2: find the synchronization timestamp
 
     // Timestamp reference for the synchronization
-    const auto frame_tl_max_timestamp = frame_tl_populated_timestamp.empty() ? 0 : *(std::max_element(
-                                                                                         frame_tl_populated_timestamp.
-                                                                                         begin(),
-                                                                                         frame_tl_populated_timestamp.
-                                                                                         end()
+    const auto frame_tl_max_timestamp = frame_tl_populated_timestamp.empty() ? 0 : *(std::ranges::max_element(
+                                                                                         frame_tl_populated_timestamp
+
     ));
 
-    const auto matrix_tl_max_timestamp = matrix_tl_populated_timestamp.empty() ? 0 : *(std::max_element(
+    const auto matrix_tl_max_timestamp = matrix_tl_populated_timestamp.empty() ? 0 : *(std::ranges::max_element(
                                                                                            matrix_tl_populated_timestamp
-                                                                                           .begin(),
-                                                                                           matrix_tl_populated_timestamp
-                                                                                           .end()
+
     ));
 
     core::clock::type max_synchronization_timestamp = std::max(
@@ -324,7 +318,7 @@ void synchronizer::synchronize()
     {
         // Nothing to synchronize, print a debug message
         SIGHT_DEBUG("skip sync, because there is nothing to sync");
-        this->signal<signals::timestamp_t>(signals::SYNCHRONIZATION_DONE)->async_emit(max_synchronization_timestamp);
+        this->async_emit(signals::SYNCHRONIZATION_DONE, max_synchronization_timestamp);
         return;
     }
 
@@ -365,13 +359,13 @@ void synchronizer::synchronize()
             copy_matrix_from_tl_to_output(tl_index, synchronization_timestamp);
         }
 
-        this->signal<signals::timestamp_t>(signals::SYNCHRONIZATION_DONE)->async_emit(synchronization_timestamp);
+        this->async_emit(signals::SYNCHRONIZATION_DONE, synchronization_timestamp);
         send_frame_var_status(frame_tl_to_synch_index);
         send_matrix_var_status(matrix_tl_to_synch_index);
     }
     else
     {
-        this->signal<signals::timestamp_t>(signals::SYNCHRONIZATION_DONE)->async_emit(synchronization_timestamp);
+        this->async_emit(signals::SYNCHRONIZATION_DONE, synchronization_timestamp);
     }
 }
 
@@ -496,8 +490,8 @@ void synchronizer::copy_frame_from_tl_to_output(
             std::memcpy(&*iter, frame_buff, buffer->size());
 
             // Notify
-            auto sig = frame->signal<data::image::buffer_modified_signal_t>(data::image::BUFFER_MODIFIED_SIG);
-            sig->async_emit();
+
+            frame->async_emit(data::image::signals::BUFFER_MODIFIED);
         }
     }
     else
@@ -558,8 +552,7 @@ void synchronizer::copy_matrix_from_tl_to_output(
                     }
                 }
 
-                auto sig = matrix->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-                sig->async_emit();
+                matrix->async_emit(data::signals::MODIFIED);
             }
         }
     }
@@ -583,9 +576,9 @@ void synchronizer::send_frame_var_status(const std::vector<std::size_t>& _synch_
         {
             //a signal should be send when synchronized/un-synchronized
             bool is_synch =
-                std::find(
-                    _synch_frame_tl_index.begin(),
-                    _synch_frame_tl_index.end(),
+                std::ranges::find(
+                    _synch_frame_tl_index,
+
                     output_var_param.tl_index
                 ) != _synch_frame_tl_index.end();
             if(output_var_param.is_synchronized != is_synch)
@@ -593,7 +586,8 @@ void synchronizer::send_frame_var_status(const std::vector<std::size_t>& _synch_
                 output_var_param.is_synchronized = is_synch;
                 const auto signal_key =
                     is_synch ? signals::FRAME_SYNCHRONIZED : signals::FRAME_UNSYNCHRONIZED;
-                this->signal<signals::int_t>(signal_key)->async_emit(
+                this->async_emit(
+                    signal_key,
                     static_cast<int>(output_var_param.
                                      out_var_index)
                 );
@@ -612,9 +606,9 @@ void synchronizer::send_matrix_var_status(const std::vector<std::size_t>& _synch
         {
             //a signal should be send when synchronized/un-synchronized
             bool is_synch =
-                std::find(
-                    _synch_matrix_tl_index.begin(),
-                    _synch_matrix_tl_index.end(),
+                std::ranges::find(
+                    _synch_matrix_tl_index,
+
                     output_var_param.tl_index
                 ) != _synch_matrix_tl_index.end();
             if(output_var_param.is_synchronized != is_synch)
@@ -622,7 +616,8 @@ void synchronizer::send_matrix_var_status(const std::vector<std::size_t>& _synch
                 output_var_param.is_synchronized = is_synch;
                 const auto signal_key =
                     is_synch ? signals::MATRIX_SYNCHRONIZED : signals::MATRIX_UNSYNCHRONIZED;
-                this->signal<signals::int_t>(signal_key)->async_emit(
+                this->async_emit(
+                    signal_key,
                     static_cast<int>(output_var_param.
                                      out_var_index)
                 );

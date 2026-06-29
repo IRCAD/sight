@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,20 +22,14 @@
 
 #include "module/ui/qt/image/window_level.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
 #include <core/runtime/path.hpp>
 
 #include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
 #include <data/transfer_function.hpp>
 
-#include <service/macros.hpp>
-
 #include <ui/qt/container/widget.hpp>
 #include <ui/qt/widget/range_slider.hpp>
-
-#include <boost/math/special_functions/fpclassify.hpp>
 
 #include <QApplication>
 #include <QComboBox>
@@ -48,7 +42,6 @@
 #include <QWidget>
 
 #include <cmath>
-#include <functional>
 
 namespace sight::module::ui::qt::image
 {
@@ -332,7 +325,7 @@ void window_level::update_image_window_level(double _image_min, double _image_ma
         tf->set_window_min_max({_image_min, _image_max});
     }
 
-    tf->async_emit(this, data::transfer_function::WINDOWING_MODIFIED_SIG, tf->window(), tf->level());
+    tf->async_emit(this, data::transfer_function::signals::WINDOWING_MODIFIED, tf->window(), tf->level());
 }
 
 //------------------------------------------------------------------------------
@@ -454,7 +447,7 @@ void window_level::on_toggle_tf(bool _square_tf)
     current_tf->deep_copy(new_tf);
 
     // Send signal
-    current_tf->async_emit(this, data::transfer_function::POINTS_MODIFIED_SIG);
+    current_tf->async_emit(this, data::transfer_function::signals::POINTS_MODIFIED);
 }
 
 //------------------------------------------------------------------------------
@@ -527,11 +520,11 @@ void window_level::set_widget_dynamic_range(double _min, double _max)
 service::connections_t window_level::auto_connections() const
 {
     return {
-        {IMAGE, data::image::MODIFIED_SIG, slots::UPDATE_IMAGE},
-        {IMAGE, data::image::BUFFER_MODIFIED_SIG, slots::UPDATE_IMAGE},
-        {TF, data::transfer_function::MODIFIED_SIG, service::slots::UPDATE},
-        {TF, data::transfer_function::POINTS_MODIFIED_SIG, service::slots::UPDATE},
-        {TF, data::transfer_function::WINDOWING_MODIFIED_SIG, service::slots::UPDATE}
+        {IMAGE, data::signals::MODIFIED, slots::UPDATE_IMAGE},
+        {IMAGE, data::image::signals::BUFFER_MODIFIED, slots::UPDATE_IMAGE},
+        {TF, data::signals::MODIFIED, service::slots::UPDATE},
+        {TF, data::transfer_function::signals::POINTS_MODIFIED, service::slots::UPDATE},
+        {TF, data::transfer_function::signals::WINDOWING_MODIFIED, service::slots::UPDATE}
     };
 }
 

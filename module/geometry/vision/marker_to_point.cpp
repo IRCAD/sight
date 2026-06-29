@@ -22,26 +22,18 @@
 
 #include "marker_to_point.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-
 #include <data/matrix4.hpp>
 #include <data/point.hpp>
 
-#include <service/base.hpp>
-
 namespace sight::module::geometry::vision
 {
-
-const core::com::slots::key_t marker_to_point::ADD_POINT_SLOT = "add_point";
-const core::com::slots::key_t marker_to_point::CLEAR_SLOT     = "clear";
 
 // ----------------------------------------------------------------------------
 
 marker_to_point::marker_to_point() noexcept
 {
-    new_slot(ADD_POINT_SLOT, &marker_to_point::add_point, this);
-    new_slot(CLEAR_SLOT, &marker_to_point::clear, this);
+    new_slot(slots::ADD_POINT, &marker_to_point::add_point, this);
+    new_slot(slots::CLEAR, &marker_to_point::clear, this);
 }
 
 // ----------------------------------------------------------------------------
@@ -91,7 +83,7 @@ void marker_to_point::add_point()
     {
         for(unsigned int j = 0 ; j < 4 ; ++j)
         {
-            (*matrix_3d)(i, j) = values[i * std::size_t(4) + j];
+            (*matrix_3d)(i, j) = values[i * static_cast<std::size_t>(4) + j];
         }
     }
 

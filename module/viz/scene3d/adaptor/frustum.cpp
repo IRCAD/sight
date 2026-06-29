@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2025 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,17 +22,12 @@
 
 #include "module/viz/scene3d/adaptor/frustum.hpp"
 
-#include <core/com/slots.hxx>
-
 #include <viz/scene3d/helper/camera.hpp>
 #include <viz/scene3d/helper/manual_object.hpp>
-#include <viz/scene3d/helper/scene.hpp>
 #include <viz/scene3d/ogre.hpp>
 
 #include <OgreCamera.h>
-#include <OgreEntity.h>
 #include <OgreMaterial.h>
-#include <OgreMeshManager.h>
 
 namespace sight::module::viz::scene3d::adaptor
 {
@@ -92,7 +87,13 @@ void frustum::starting()
 
     // Set position
     trans_node->setPosition(Ogre::Vector3(0, 0, 0));
-    trans_node->setDirection(Ogre::Vector3(Ogre::Real(0), Ogre::Real(0), Ogre::Real(1)));
+    trans_node->setDirection(
+        Ogre::Vector3(
+            static_cast<Ogre::Real>(0),
+            static_cast<Ogre::Real>(0),
+            static_cast<Ogre::Real>(1)
+        )
+    );
 
     // Create material for the frustum
     m_material = std::make_unique<sight::viz::scene3d::material::standard>(gen_id("material"));
@@ -114,8 +115,8 @@ void frustum::starting()
 service::connections_t frustum::auto_connections() const
 {
     service::connections_t connections = adaptor::auto_connections();
-    connections.push(CAMERA_INPUT, data::camera::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
-    connections.push(CAMERA_INPUT, data::camera::INTRINSIC_CALIBRATED_SIG, adaptor::slots::LAZY_UPDATE);
+    connections.push(CAMERA_INPUT, data::signals::MODIFIED, adaptor::slots::LAZY_UPDATE);
+    connections.push(CAMERA_INPUT, data::camera::signals::INTRINSIC_CALIBRATED, adaptor::slots::LAZY_UPDATE);
 
     return connections;
 }

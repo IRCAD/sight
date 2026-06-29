@@ -29,6 +29,7 @@
 #include <data/image_series.hpp>
 #include <data/material.hpp>
 
+#include <utility>
 #include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/fiducials_configuration.hpp>
 #include <viz/scene3d/material/standard.hpp>
@@ -123,21 +124,19 @@ public:
 
     struct slots final
     {
-        using key_t = sight::core::com::slots::key_t;
+        inline static const slot_key_t REMOVE_FIDUCIALS         = "remove_all";
+        inline static const slot_key_t REMOVE_VISIBLE_FIDUCIALS = "remove_landmarks";
+        inline static const slot_key_t SET_CURRENT_GROUP        = "set_current_group";
+        inline static const slot_key_t CONFIGURE_FIDUCIALS      = "configure_landmarks";
 
-        inline static const key_t REMOVE_FIDUCIALS         = "remove_all";
-        inline static const key_t REMOVE_VISIBLE_FIDUCIALS = "remove_landmarks";
-        inline static const key_t SET_CURRENT_GROUP        = "set_current_group";
-        inline static const key_t CONFIGURE_FIDUCIALS      = "configure_landmarks";
-
-        inline static const key_t ENABLE_EDIT_MODE  = "enableEditMode";
-        inline static const key_t DISABLE_EDIT_MODE = "disableEditMode";
-        inline static const key_t TOGGLE_EDIT_MODE  = "toggleEditMode";
-        inline static const key_t CHANGE_EDIT_MODE  = "change_edit_mode";
-        inline static const key_t ENABLE_MOVE_MODE  = "enableMoveMode";
-        inline static const key_t DISABLE_MOVE_MODE = "disableMoveMode";
-        inline static const key_t TOGGLE_MOVE_MODE  = "toggleMoveMode";
-        inline static const key_t CHANGE_MOVE_MODE  = "change_move_mode";
+        inline static const slot_key_t ENABLE_EDIT_MODE  = "enableEditMode";
+        inline static const slot_key_t DISABLE_EDIT_MODE = "disableEditMode";
+        inline static const slot_key_t TOGGLE_EDIT_MODE  = "toggleEditMode";
+        inline static const slot_key_t CHANGE_EDIT_MODE  = "change_edit_mode";
+        inline static const slot_key_t ENABLE_MOVE_MODE  = "enableMoveMode";
+        inline static const slot_key_t DISABLE_MOVE_MODE = "disableMoveMode";
+        inline static const slot_key_t TOGGLE_MOVE_MODE  = "toggleMoveMode";
+        inline static const slot_key_t CHANGE_MOVE_MODE  = "change_move_mode";
     };
 
     /**
@@ -191,13 +190,11 @@ public:
 
     struct signals final
     {
-        using key_t = sight::core::com::signals::key_t;
-
         /// Signal send when double clicked on a landmark, send its world coordinates;
-        inline static const key_t SEND_WORLD_COORD = "send_world_coord";
+        inline static const signal_key_t SEND_WORLD_COORD = "send_world_coord";
         using send_world_coordinates_t = core::com::signal<void (double, double, double)>;
 
-        inline static const key_t EDIT_MODE_CHANGED = "edit_mode_changed";
+        inline static const signal_key_t EDIT_MODE_CHANGED = "edit_mode_changed";
         using edit_mode_changed_t = core::com::signal<void (bool)>;
     };
 
@@ -208,39 +205,6 @@ public:
         current_slice,
         all_slices
     };
-
-protected:
-
-    /**
-     * @brief Configure the adaptor.
-     *
-     */
-    void configuring() final;
-
-    /**
-     * @brief Initialize Ogre resources.
-     *
-     */
-    void starting() final;
-
-    /**
-     * @brief Proposals to connect service slots to associated object signals.
-     *
-     * @return A map of each proposed connection.
-     */
-    service::connections_t auto_connections() const final;
-
-    /**
-     * @brief Redraw all fiducials.
-     *
-     */
-    void updating() final;
-
-    /**
-     * @brief Free Ogre resources.
-     *
-     */
-    void stopping() final;
 
     /**
      * @brief Retrieves a fiducial or create a new one. Stores the result in m_picked_data.
@@ -299,6 +263,39 @@ protected:
      */
     void key_press_event(int _key, modifier _mods, int _mouse_x, int _mouse_y) final;
 
+protected:
+
+    /**
+     * @brief Configure the adaptor.
+     *
+     */
+    void configuring() final;
+
+    /**
+     * @brief Initialize Ogre resources.
+     *
+     */
+    void starting() final;
+
+    /**
+     * @brief Proposals to connect service slots to associated object signals.
+     *
+     * @return A map of each proposed connection.
+     */
+    service::connections_t auto_connections() const final;
+
+    /**
+     * @brief Redraw all fiducials.
+     *
+     */
+    void updating() final;
+
+    /**
+     * @brief Free Ogre resources.
+     *
+     */
+    void stopping() final;
+
 private:
 
     /// Stores data used to display one landmark.
@@ -313,9 +310,9 @@ private:
         ) :
             m_node(_node),
             m_manual_object(_manual_object),
-            m_group_name(_group_name),
+            m_group_name(std::move(_group_name)),
             m_index(_index),
-            m_label(_label)
+            m_label(std::move(_label))
         {
         }
 
@@ -342,8 +339,8 @@ private:
     struct selected_ogre_fiducial final
     {
         selected_ogre_fiducial(core::thread::timer::sptr _timer, std::shared_ptr<ogre_fiducial> _ogre_fiducial) :
-            m_timer(_timer),
-            m_ogre_fiducial(_ogre_fiducial)
+            m_timer(std::move(_timer)),
+            m_ogre_fiducial(std::move(_ogre_fiducial))
         {
         }
 
@@ -510,7 +507,7 @@ private:
     std::size_t destroy_ogre_fiducials(
         const std::string& _group_name,
         const std::optional<std::size_t>& _index = std::nullopt,
-        const bool _rebuild_indexes              = false
+        bool _rebuild_indexes                    = false
     );
 
     /**
@@ -653,7 +650,7 @@ private:
         edit    = 1 << 2
     };
 
-    std::uint8_t m_edit_mode {std::uint8_t(edit_mode::display)};
+    std::uint8_t m_edit_mode {static_cast<std::uint8_t>(edit_mode::display)};
 
     /// Whether all fiducials can be modified or only fiducials belonging to the current group
     bool m_can_only_modify_current {false};
@@ -676,4 +673,4 @@ private:
     sight::data::property<sight::data::integer> m_max_fiducials_per_slice {this, "max_fiducials_per_slice", {0}};
 };
 
-} // namespace sight::module::viz::scene3d_qt::adaptor.
+} // namespace sight::module::viz::scene3d_qt::adaptor::fiducials

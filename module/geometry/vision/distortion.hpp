@@ -79,13 +79,11 @@ public:
 
     SIGHT_DECLARE_SERVICE(distortion, sight::service::filter);
 
-    /**
-     * @name Slots API
-     * @{
-     */
-    static const core::com::slots::key_t CHANGE_STATE_SLOT;
-    using change_state_slot_t = core::com::slot<void ()>;
-    ///@}
+    struct slots
+    {
+        static inline const slot_key_t CHANGE_STATE = "change_state";
+        static inline const slot_key_t CALIBRATE    = "calibrate";
+    };
 
     /// Constructor.
     distortion() noexcept;
@@ -96,8 +94,8 @@ public:
 protected:
 
     /**
-     * @brief Connect data::image::MODIFIED_SIG to service::slots::UPDATE
-     * and data::image::BUFFER_MODIFIED_SIG to service::slots::UPDATE
+     * @brief Connect data::signals::MODIFIED to service::slots::UPDATE
+     * and data::image::signals::BUFFER_MODIFIED to service::slots::UPDATE
      */
     service::connections_t auto_connections() const override;
 

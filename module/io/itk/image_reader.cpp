@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,6 @@
 
 #include "image_reader.hpp"
 
-#include <core/com/signal.hxx>
 #include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
 #include <core/progress/observer.hpp>
@@ -36,9 +35,6 @@
 #include <ui/__/cursor.hpp>
 #include <ui/__/dialog/location.hpp>
 #include <ui/__/dialog/message.hpp>
-#include <ui/__/dialog/progress.hpp>
-
-#include <boost/algorithm/string.hpp>
 
 namespace sight::module::io::itk
 {
@@ -125,11 +121,7 @@ void image_reader::updating()
             if(sight::module::io::itk::image_reader::load_image(this->get_file(), image, read_observer))
             {
                 m_read_failed = false;
-                auto sig = image->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-                {
-                    core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
-                    sig->async_emit();
-                }
+                image->async_emit(this, data::signals::MODIFIED);
             }
         }
         catch(core::tools::failed& e)

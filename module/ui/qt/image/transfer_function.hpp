@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2024 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -97,13 +97,19 @@ public:
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(module::ui::qt::image::transfer_function, sight::ui::editor);
 
+    struct slots
+    {
+        static inline const slot_key_t UPDATE_DEFAULT_PRESET = "updateDefaultPreset";
+        static inline const slot_key_t UPDATE_PRESETS        = "updatePresets";
+    };
+
     /// Creates the editor.
     transfer_function();
 
     /// Destroyes the editor.
     ~transfer_function() noexcept override = default;
 
-private:
+protected:
 
     /// Configures the editor.
     void configuring() override;
@@ -119,10 +125,12 @@ private:
 
     /**
      * @brief
-     * Connect image::MODIFIED_SIG to this::service::slots::UPDATE
-     * Connect image::BUFFER_MODIFIED_SIG to this::UPDATE_BUFFER_SLOT
+     * Connect data::signals::MODIFIED to this::service::slots::UPDATE
+     * Connect image::signals::BUFFER_MODIFIED to this::UPDATE_BUFFER
      */
     connections_t auto_connections() const override;
+
+private:
 
     /**
      * @brief Checks if the map contains the specified key.

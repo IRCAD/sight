@@ -21,8 +21,6 @@
 
 #include "image_picker_test.hpp"
 
-#include <core/com/slot_base.hxx>
-
 #include <data/camera.hpp>
 #include <data/point.hpp>
 #include <data/point_list.hpp>

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024 IRCAD France
+ * Copyright (C) 2024-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -61,11 +61,10 @@ public:
 
     struct signals
     {
-        using key_t         = sight::core::com::signals::key_t;
-        using void_signal_t = sight::core::com::signal<void ()>;
+        using void_t = sight::core::com::signal<void ()>;
 
-        static inline const key_t VALID   = "valid";
-        static inline const key_t INVALID = "invalid";
+        static inline const signal_key_t VALID   = "valid";
+        static inline const signal_key_t INVALID = "invalid";
     };
 
     SIGHT_DECLARE_SERVICE(validator, sight::service::controller);

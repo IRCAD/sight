@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,22 +22,17 @@
 
 #include "network_sender.hpp"
 
-#include <core/com/signal.hxx>
-
 #include <data/object.hpp>
 
 namespace sight::module::io::igtl
 {
 
-const core::com::signals::key_t network_sender::CONNECTED_SIGNAL    = "connected";
-const core::com::signals::key_t network_sender::DISCONNECTED_SIGNAL = "disconnected";
-
 //-----------------------------------------------------------------------------
 
-network_sender::network_sender() :
-    m_sig_connected(new_signal<connected_signal_t>(CONNECTED_SIGNAL)),
-    m_sig_disconnected(new_signal<disconnect_signal_t>(DISCONNECTED_SIGNAL))
+network_sender::network_sender()
 {
+    new_signal<signals::connected_t>(signals::CONNECTED);
+    new_signal<signals::disconnected_t>(signals::DISCONNECTED);
 }
 
 //-----------------------------------------------------------------------------
@@ -70,7 +65,7 @@ void network_sender::updating()
 service::connections_t network_sender::auto_connections() const
 {
     service::connections_t connections;
-    connections.push(OBJECTS_INPUT, data::object::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(OBJECTS_INPUT, data::signals::MODIFIED, service::slots::UPDATE);
     return connections;
 }
 

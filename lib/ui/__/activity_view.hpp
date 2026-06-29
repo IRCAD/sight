@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -67,7 +67,13 @@ public:
 
     SIGHT_DECLARE_CLASS(activity_view, ui::service);
 
-    SIGHT_UI_API static const core::com::slots::key_t LAUNCH_ACTIVITY_SLOT;
+    struct slots
+    {
+        static inline const slot_key_t LAUNCH_ACTIVITY = "launch_activity";
+    };
+
+    /// Destructor. Do nothing.
+    SIGHT_UI_API ~activity_view() override = default;
 
 protected:
 
@@ -76,9 +82,6 @@ protected:
 
     /// Constructor. Do nothing.
     SIGHT_UI_API activity_view();
-
-    /// Destructor. Do nothing.
-    SIGHT_UI_API ~activity_view() override = default;
 
     /// Parses the configuration
     SIGHT_UI_API void configuring() override;
@@ -97,6 +100,8 @@ protected:
 
     /// Create the activity given in 'mainActivity' configuration
     SIGHT_UI_API data::activity::sptr create_main_activity() const override;
+
+private:
 
     /// Input data to pass to the configuration
     data::ptr_vector<data::object, data::access::inout> m_data {this, "data"};

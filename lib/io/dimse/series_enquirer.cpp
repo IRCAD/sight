@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,11 +28,8 @@
 #include "io/dimse/exceptions/request_failure.hpp"
 #include "io/dimse/helper/series.hpp"
 
-#include <core/os/temp_path.hpp>
-
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmdata/dcfilefo.h>
-#include <dcmtk/dcmnet/diutil.h>
 
 #include <filesystem>
 #include <utility>
@@ -50,8 +47,6 @@
 
 namespace sight::io::dimse
 {
-
-const core::com::slots::key_t series_enquirer::PROGRESS_CALLBACK_SLOT = "CGetProgressCallback";
 
 //------------------------------------------------------------------------------
 

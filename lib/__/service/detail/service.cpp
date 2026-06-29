@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2025 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,13 +21,9 @@
 
 #include "service/detail/service.hpp"
 
-#include "service/registry.hpp"
-
 #include <core/com/helper/sig_slot_connection.hpp>
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-#include <core/runtime/helper.hpp>
-#include <core/thread/worker.hpp>
+
+#include <core/ptree.hpp>
 
 #include <ranges>
 
@@ -297,8 +293,7 @@ base::shared_future_t service::start(bool _async)
         started->async_emit(&m_service, sight::data::signals::MODIFIED);
     }
 
-    auto sig = m_service.signal<sight::service::signals::started_t>(sight::service::signals::STARTED);
-    sig->async_emit(m_service.get_sptr());
+    m_service.async_emit(sight::service::signals::STARTED, sight::service::base::wptr(m_service.get_sptr()));
 
     return future;
 }
@@ -343,8 +338,7 @@ base::shared_future_t service::stop(bool _async)
     }
     m_global_state = base::global_status::stopped;
 
-    auto sig = m_service.signal<sight::service::signals::stopped_t>(sight::service::signals::STOPPED);
-    sig->async_emit(m_service.get_sptr());
+    m_service.async_emit(sight::service::signals::STOPPED, sight::service::base::wptr(m_service.get_sptr()));
 
     {
         const auto started = m_service.m_start_property.lock();
@@ -401,8 +395,7 @@ base::shared_future_t service::swap_key(std::string_view _key, data::object::spt
 
     this->auto_connect();
 
-    auto sig = m_service.signal<sight::service::signals::swapped_t>(sight::service::signals::SWAPPED);
-    sig->async_emit(m_service.get_sptr());
+    m_service.async_emit(sight::service::signals::SWAPPED, sight::service::base::wptr(m_service.get_sptr()));
 
     return future;
 }
@@ -452,8 +445,7 @@ base::shared_future_t service::update(bool _async)
     }
     m_updating_state = base::updating_status::notupdating;
 
-    auto sig = m_service.signal<sight::service::signals::updated_t>(sight::service::signals::UPDATED);
-    sig->async_emit(m_service.get_sptr());
+    m_service.async_emit(sight::service::signals::UPDATED, sight::service::base::wptr(m_service.get_sptr()));
 
     return future;
 }

@@ -70,6 +70,11 @@ public:
 
     SIGHT_DECLARE_SERVICE(grid, sight::viz::scene3d::adaptor);
 
+    struct slots
+    {
+        static inline const slot_key_t UPDATE_LENGTH = "updateSize";
+    };
+
     grid() noexcept;
     ~grid() noexcept override = default;
 

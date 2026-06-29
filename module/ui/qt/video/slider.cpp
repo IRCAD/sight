@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,14 +22,6 @@
 
 #include "slider.hpp"
 
-#include <core/base.hpp>
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-
-#include <data/object.hpp>
-
-#include <service/macros.hpp>
-
 #include <ui/qt/container/widget.hpp>
 
 #include <QHBoxLayout>
@@ -41,16 +33,11 @@
 namespace sight::module::ui::qt::video
 {
 
-const core::com::signals::key_t slider::POSITION_CHANGED_SIG = "position_changed";
-
-const core::com::slots::key_t slider::SET_POSITION_SLIDER_SLOT = "set_position_slider";
-const core::com::slots::key_t slider::SET_DURATION_SLIDER_SLOT = "set_duration_slider";
-
 static const char* s_unknown_time = "--:--:--";
 
 //------------------------------------------------------------------------------
 
-QString convert_m_sec_to_hhmmss(int64_t _milliseconds)
+static QString convert_m_sec_to_hhmmss(int64_t _milliseconds)
 {
     std::chrono::milliseconds ms(_milliseconds);
     std::chrono::hours hours = std::chrono::duration_cast<std::chrono::hours>(ms);
@@ -59,7 +46,8 @@ QString convert_m_sec_to_hhmmss(int64_t _milliseconds)
     ms -= minutes;
     std::chrono::seconds seconds = std::chrono::duration_cast<std::chrono::seconds>(ms);
 
-    QTime time(int(hours.count()), int(minutes.count()), static_cast<std::int32_t>(seconds.count()));
+    QTime time(static_cast<int>(hours.count()), static_cast<int>(minutes.count()),
+               static_cast<std::int32_t>(seconds.count()));
     return time.toString("hh:mm:ss");
 }
 
@@ -68,11 +56,11 @@ QString convert_m_sec_to_hhmmss(int64_t _milliseconds)
 slider::slider() noexcept
 {
     /// Slot to change the position of the slider
-    new_slot(SET_POSITION_SLIDER_SLOT, &slider::set_position, this);
+    new_slot(slots::SET_POSITION, &slider::set_position, this);
     /// Slot to change the duration of the slider
-    new_slot(SET_DURATION_SLIDER_SLOT, &slider::set_duration, this);
+    new_slot(slots::SET_DURATION, &slider::set_duration, this);
 
-    m_sig_position_changed = new_signal<position_changed_signal_t>(POSITION_CHANGED_SIG);
+    new_signal<signals::position_changed_t>(signals::POSITION_CHANGED);
 }
 
 //------------------------------------------------------------------------------
@@ -145,7 +133,7 @@ void slider::change_position()
     }
 
     // Notify the new position
-    m_sig_position_changed->async_emit(new_pos);
+    this->async_emit(signals::POSITION_CHANGED, new_pos);
 
     m_slider_pressed = false;
 }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2025 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -178,16 +178,32 @@ class scan : public sight::io::service::rgbd_grabber
 {
 public:
 
+    struct signals
+    {
+        using distance_computed_t = core::com::signal<void (double)>;
+        using device_played_t     = core::com::signal<void (void)>;
+        using file_played_t       = core::com::signal<void (void)>;
+        static inline const signal_key_t DISTANCE_COMPUTED = "distance_computed";
+        static inline const signal_key_t DEVICE_PLAYED     = "device_played";
+        static inline const signal_key_t FILE_PLAYED       = "file_played";
+    };
+
+    struct slots
+    {
+        static inline const slot_key_t CONFIGURE_RECORDING_PATH = "configure_recording_path";
+        static inline const slot_key_t RECORD                   = "record";
+    };
+
     SIGHT_DECLARE_SERVICE(scan, sight::io::service::rgbd_grabber);
 
     /// Signal send when Distance is computed.
-    typedef core::com::signal<void (double)> distance_computed_t;
+    typedef signals::distance_computed_t distance_computed_t;
 
     /// Signal send when stream from a realsense device, can be useful to enable/disable some gui actions.
-    typedef core::com::signal<void (void)> device_played_signal_t;
+    typedef signals::device_played_t device_played_signal_t;
 
     /// Signal send when stream from a file (.bag), can be useful to enable/disable some gui actions.
-    typedef core::com::signal<void (void)> file_played_signal_t;
+    typedef signals::file_played_t file_played_signal_t;
 
     /// Constructor. Initializes signals/slots.
     scan() noexcept;

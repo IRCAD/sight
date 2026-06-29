@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2025 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,6 @@
 
 #include "pose_from2d.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-
 #include <geometry/vision/helper.hpp>
 
 #include <io/opencv/camera.hpp>
@@ -34,13 +31,11 @@
 namespace sight::module::geometry::vision
 {
 
-static const std::string UPDATE_CAMERA_SLOT = "updateCamera";
-
 //-----------------------------------------------------------------------------
 
 pose_from2d::pose_from2d() noexcept
 {
-    new_slot(UPDATE_CAMERA_SLOT, &pose_from2d::initialize, this);
+    new_slot(slots::UPDATE_CAMERA, &pose_from2d::initialize, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -92,8 +87,7 @@ void pose_from2d::starting()
             pl->push_back(point);
         }
 
-        auto sig = pl->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-        sig->async_emit();
+        pl->async_emit(data::signals::MODIFIED);
     }
 
     this->initialize();
@@ -111,8 +105,7 @@ void pose_from2d::stopping()
     if(pl)
     {
         pl->clear();
-        auto sig = pl->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-        sig->async_emit();
+        pl->async_emit(data::signals::MODIFIED);
     }
 }
 
@@ -194,8 +187,7 @@ void pose_from2d::compute_registration(core::clock::type /*timestamp*/)
 
             // Always send the signal even if we did not find anything.
             // This allows to keep updating the whole processing pipeline.
-            auto sig = matrix->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-            sig->async_emit();
+            matrix->async_emit(data::signals::MODIFIED);
 
             ++marker_index;
         }
@@ -292,9 +284,9 @@ cv::Matx44f pose_from2d::camera_pose_from_mono(const pose_from2d::marker& _marke
 service::connections_t pose_from2d::auto_connections() const
 {
     return {
-        {marker_map_INPUT, data::object::MODIFIED_SIG, service::slots::UPDATE},
-        {CAMERA_INPUT, data::object::MODIFIED_SIG, UPDATE_CAMERA_SLOT},
-        {CAMERA_INPUT, data::camera::INTRINSIC_CALIBRATED_SIG, UPDATE_CAMERA_SLOT}
+        {MARKER_MAP_INPUT, data::signals::MODIFIED, service::slots::UPDATE},
+        {CAMERA_INPUT, data::signals::MODIFIED, slots::UPDATE_CAMERA},
+        {CAMERA_INPUT, data::camera::signals::INTRINSIC_CALIBRATED, slots::UPDATE_CAMERA}
     };
 }
 

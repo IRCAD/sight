@@ -21,8 +21,6 @@
 
 #include "module/io/matrix/validator.hpp"
 
-#include <core/com/signal.hxx>
-
 #include <geometry/data/matrix4.hpp>
 
 namespace sight::module::io::matrix
@@ -33,8 +31,8 @@ namespace sight::module::io::matrix
 validator::validator() :
     notifier(has_signals::signals())
 {
-    new_signal<signals::void_signal_t>(signals::VALID);
-    new_signal<signals::void_signal_t>(signals::INVALID);
+    new_signal<signals::void_t>(signals::VALID);
+    new_signal<signals::void_t>(signals::INVALID);
 }
 
 //-----------------------------------------------------------------------------
@@ -64,7 +62,7 @@ void validator::updating()
 
     if(!matrix)
     {
-        this->signal<signals::void_signal_t>(signals::INVALID)->async_emit();
+        this->async_emit(signals::INVALID);
         this->notify(sight::service::notification::type::failure, "matrix is empty");
         return;
     }
@@ -74,7 +72,7 @@ void validator::updating()
     if(!is_ortho)
     {
         this->notify(sight::service::notification::type::failure, "matrix is not orthogonal");
-        this->signal<signals::void_signal_t>(signals::INVALID)->async_emit();
+        this->async_emit(signals::INVALID);
         return;
     }
 
@@ -83,11 +81,11 @@ void validator::updating()
     if(!is_homogeneous)
     {
         this->notify(sight::service::notification::type::failure, "matrix is not homogeneous");
-        this->signal<signals::void_signal_t>(signals::INVALID)->async_emit();
+        this->async_emit(signals::INVALID);
         return;
     }
 
-    this->signal<signals::void_signal_t>(signals::VALID)->async_emit();
+    this->async_emit(signals::VALID);
 }
 
 //-----------------------------------------------------------------------------

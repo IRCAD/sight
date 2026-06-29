@@ -109,32 +109,32 @@ public:
         using bool_t = core::com::signal<void (bool)>;
         using void_t = core::com::signal<void ()>;
 
-        static inline const core::com::signals::key_t IS_ENABLED = "is_enabled";
-        static inline const core::com::signals::key_t ENABLED    = "enabled";
-        static inline const core::com::signals::key_t DISABLED   = "disabled";
-        static inline const core::com::signals::key_t IS_CHECKED = "is_checked";
-        static inline const core::com::signals::key_t CHECKED    = "checked";
-        static inline const core::com::signals::key_t UNCHECKED  = "unchecked";
-        static inline const core::com::signals::key_t IS_VISIBLE = "is_visible";
+        static inline const signal_key_t IS_ENABLED = "is_enabled";
+        static inline const signal_key_t ENABLED    = "enabled";
+        static inline const signal_key_t DISABLED   = "disabled";
+        static inline const signal_key_t IS_CHECKED = "is_checked";
+        static inline const signal_key_t CHECKED    = "checked";
+        static inline const signal_key_t UNCHECKED  = "unchecked";
+        static inline const signal_key_t IS_VISIBLE = "is_visible";
     };
 
     struct slots
     {
-        static inline const core::com::slots::key_t SET_CHECKED       = "set_checked";
-        static inline const core::com::slots::key_t CHECK             = "check";
-        static inline const core::com::slots::key_t UNCHECK           = "uncheck";
-        static inline const core::com::slots::key_t APPLY_CHECKED     = "apply_checked";
-        static inline const core::com::slots::key_t SET_VISIBLE       = "set_visible";
-        static inline const core::com::slots::key_t SET_HIDDEN        = "set_hidden";
-        static inline const core::com::slots::key_t SHOW              = "show";
-        static inline const core::com::slots::key_t HIDE              = "hide";
-        static inline const core::com::slots::key_t TOGGLE_VISIBILITY = "toggle_visibility";
-        static inline const core::com::slots::key_t APPLY_VISIBLE     = "apply_visible";
-        static inline const core::com::slots::key_t SET_ENABLED       = "set_enabled";
-        static inline const core::com::slots::key_t SET_DISABLED      = "set_disabled";
-        static inline const core::com::slots::key_t ENABLE            = "enable";
-        static inline const core::com::slots::key_t DISABLE           = "disable";
-        static inline const core::com::slots::key_t APPLY_ENABLED     = "apply_enabled";
+        static inline const slot_key_t SET_CHECKED       = "set_checked";
+        static inline const slot_key_t CHECK             = "check";
+        static inline const slot_key_t UNCHECK           = "uncheck";
+        static inline const slot_key_t APPLY_CHECKED     = "apply_checked";
+        static inline const slot_key_t SET_VISIBLE       = "set_visible";
+        static inline const slot_key_t SET_HIDDEN        = "set_hidden";
+        static inline const slot_key_t SHOW              = "show";
+        static inline const slot_key_t HIDE              = "hide";
+        static inline const slot_key_t TOGGLE_VISIBILITY = "toggle_visibility";
+        static inline const slot_key_t APPLY_VISIBLE     = "apply_visible";
+        static inline const slot_key_t SET_ENABLED       = "set_enabled";
+        static inline const slot_key_t SET_DISABLED      = "set_disabled";
+        static inline const slot_key_t ENABLE            = "enable";
+        static inline const slot_key_t DISABLE           = "disable";
+        static inline const slot_key_t APPLY_ENABLED     = "apply_enabled";
     };
 
     SIGHT_UI_API ~action() override = default;

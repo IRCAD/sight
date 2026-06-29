@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2025 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,25 +24,17 @@
 
 #include "module/io/vtk/image_reader.hpp"
 
-#include <core/com/signal.hxx>
 #include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
 #include <core/tools/date_and_time.hpp>
-#include <core/tools/failed.hpp>
 #include <core/tools/os.hpp>
 #include <core/tools/uuid.hpp>
-
-#include <data/image.hpp>
 
 #include <io/__/service/io_types.hpp>
 #include <io/vtk/bitmap_image_reader.hpp>
 
 #include <ui/__/cursor.hpp>
 #include <ui/__/dialog/location.hpp>
-#include <ui/__/dialog/message.hpp>
-#include <ui/__/dialog/progress.hpp>
-
-#include <boost/date_time/posix_time/posix_time.hpp>
 
 #include <filesystem>
 

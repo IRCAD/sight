@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -51,13 +51,11 @@ public:
 
     SIGHT_DECLARE_SERVICE(folder_selector, sight::ui::action);
 
-    /**
-     * @name Signals API
-     * @{
-     */
-    using folder_selected_signal_t = core::com::signal<void (std::filesystem::path)>;
-    static const core::com::signals::key_t FOLDER_SELECTED_SIG;
-    /// @}
+    struct signals
+    {
+        using folder_selected_t = core::com::signal<void (std::filesystem::path)>;
+        static inline const signal_key_t FOLDER_SELECTED = "folderSelected";
+    };
 
     folder_selector() noexcept;
     ~folder_selector() noexcept override;

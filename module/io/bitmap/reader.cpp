@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,16 +21,12 @@
 
 #include "reader.hpp"
 
-#include <core/com/signal.hxx>
 #include <core/location/single_folder.hpp>
 #include <core/progress/observer.hpp>
-#include <core/tools/system.hpp>
 
 #include <ui/__/cursor.hpp>
 #include <ui/__/dialog/location.hpp>
 #include <ui/__/dialog/message.hpp>
-
-#include <boost/algorithm/string.hpp>
 
 #include <algorithm>
 
@@ -193,7 +189,7 @@ void reader::configuring()
     m_backends.emplace(sight::io::bitmap::backend::libpng);
     m_backends.emplace(sight::io::bitmap::backend::libtiff);
 
-#if defined(SIGHT_ENABLE_NVJPEG)
+#ifdef SIGHT_ENABLE_NVJPEG
     if(sight::io::bitmap::nvjpeg())
     {
         m_backends.emplace(sight::io::bitmap::backend::nvjpeg);
@@ -213,7 +209,7 @@ void reader::configuring()
         m_backends.emplace(sight::io::bitmap::backend::libjpeg);
     }
 
-#if defined(SIGHT_ENABLE_NVJPEG2K)
+#ifdef SIGHT_ENABLE_NVJPEG2K
     if(sight::io::bitmap::nvjpeg2k())
     {
         m_backends.emplace(sight::io::bitmap::backend::nvjpeg2k);
@@ -372,11 +368,7 @@ void reader::updating()
     }
 
     auto image = m_data.lock();
-    auto sig   = image->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-    {
-        core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
-        sig->async_emit();
-    }
+    image->async_emit(this, data::signals::MODIFIED);
 
     m_dialog_shown = false;
 }

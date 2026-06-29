@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2025 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,11 +22,8 @@
 
 #include "module/viz/scene3d/adaptor/frustum_list.hpp"
 
-#include <core/com/slots.hxx>
-
 #include <viz/scene3d/helper/camera.hpp>
 #include <viz/scene3d/helper/manual_object.hpp>
-#include <viz/scene3d/helper/scene.hpp>
 #include <viz/scene3d/ogre.hpp>
 
 #include <OgreCamera.h>
@@ -35,13 +32,11 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const core::com::slots::key_t CLEAR_SLOT = "clear";
-
 //-----------------------------------------------------------------------------
 
 frustum_list::frustum_list() noexcept
 {
-    new_slot(CLEAR_SLOT, &frustum_list::clear, this);
+    new_slot(slots::CLEAR, &frustum_list::clear, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -91,7 +86,7 @@ void frustum_list::starting()
 service::connections_t frustum_list::auto_connections() const
 {
     service::connections_t connections = adaptor::auto_connections();
-    connections.push(TRANSFORM_INPUT, data::matrix4::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
+    connections.push(TRANSFORM_INPUT, data::signals::MODIFIED, adaptor::slots::LAZY_UPDATE);
     return connections;
 }
 

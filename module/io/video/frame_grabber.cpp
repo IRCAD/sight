@@ -22,10 +22,6 @@
 
 #include "frame_grabber.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slot.hxx>
-#include <core/com/slots.hxx>
-
 #include <data/camera.hpp>
 #include <data/frame_tl.hpp>
 
@@ -50,7 +46,7 @@ namespace sight::module::io::video
 
 frame_grabber::frame_grabber() noexcept
 {
-    new_slot(SET_STEP_SLOT, &frame_grabber::set_step, this);
+    new_slot(slots::SET_STEP, &frame_grabber::set_step, this);
 }
 
 // -----------------------------------------------------------------------------
@@ -206,17 +202,14 @@ void frame_grabber::stop_camera()
     if(m_is_initialized)
     {
         // Clear the timeline: send a black frame
-        const auto sig_position = this->signal<position_modified_signal_t>(POSITION_MODIFIED_SIG);
-        sig_position->async_emit(static_cast<std::int64_t>(-1));
+        this->async_emit(signals::POSITION_MODIFIED, static_cast<std::int64_t>(-1));
 
-        const auto sig_duration = this->signal<duration_modified_signal_t>(DURATION_MODIFIED_SIG);
-        sig_duration->async_emit(static_cast<std::int64_t>(-1));
+        this->async_emit(signals::DURATION_MODIFIED, static_cast<std::int64_t>(-1));
 
         const auto frame_tl = m_frame.lock();
         sight::module::io::video::frame_grabber::clear_timeline(*frame_tl);
 
-        const auto sig = this->signal<grabber::camera_stopped_signal_t>(grabber::CAMERA_STOPPED_SIG);
-        sig->async_emit();
+        this->async_emit(grabber::signals::CAMERA_STOPPED);
 
         this->set_start_state(false);
     }
@@ -249,11 +242,8 @@ void frame_grabber::read_video(const std::filesystem::path& _file)
             return;
         }
 
-        const auto sig_duration = this->signal<duration_modified_signal_t>(DURATION_MODIFIED_SIG);
-        sig_duration->async_emit(static_cast<std::int64_t>((m_video_frames_nb / fps) * 1000));
-
-        const auto sig_position = this->signal<position_modified_signal_t>(POSITION_MODIFIED_SIG);
-        sig_position->async_emit(0);
+        this->async_emit(signals::DURATION_MODIFIED, static_cast<std::int64_t>((m_video_frames_nb / fps) * 1000));
+        this->async_emit(signals::POSITION_MODIFIED, static_cast<std::int64_t>(0));
 
         core::thread::timer::time_duration_t duration = std::chrono::milliseconds(1000 / fps);
 
@@ -262,8 +252,7 @@ void frame_grabber::read_video(const std::filesystem::path& _file)
         m_timer->start();
 
         this->set_start_state(true);
-        auto sig = this->signal<grabber::camera_started_signal_t>(grabber::CAMERA_STARTED_SIG);
-        sig->async_emit();
+        this->async_emit(grabber::signals::CAMERA_STARTED);
     }
     else
     {
@@ -341,8 +330,7 @@ void frame_grabber::read_device(const data::camera& _camera)
         m_timer->start();
 
         this->set_start_state(true);
-        auto sig = this->signal<grabber::camera_started_signal_t>(grabber::CAMERA_STARTED_SIG);
-        sig->async_emit();
+        this->async_emit(grabber::signals::CAMERA_STARTED);
     }
     else
     {
@@ -508,8 +496,6 @@ void frame_grabber::read_images(const std::filesystem::path& _folder, const std:
         m_is_initialized = true;
         this->set_start_state(true);
 
-        const auto sig_duration = this->signal<duration_modified_signal_t>(DURATION_MODIFIED_SIG);
-
         std::int64_t video_duration = 0;
         if(!m_use_timelapse)
         {
@@ -521,10 +507,8 @@ void frame_grabber::read_images(const std::filesystem::path& _folder, const std:
                              - static_cast<std::int64_t>(m_image_timestamps.front());
         }
 
-        sig_duration->async_emit(video_duration);
-
-        const auto sig_position = this->signal<position_modified_signal_t>(POSITION_MODIFIED_SIG);
-        sig_position->async_emit(0);
+        this->async_emit(signals::DURATION_MODIFIED, video_duration);
+        this->async_emit(signals::POSITION_MODIFIED, static_cast<std::int64_t>(0));
 
         if(m_one_shot)
         {
@@ -561,8 +545,7 @@ void frame_grabber::read_images(const std::filesystem::path& _folder, const std:
             m_timer->start();
         }
 
-        auto sig = this->signal<grabber::camera_started_signal_t>(grabber::CAMERA_STARTED_SIG);
-        sig->async_emit();
+        this->async_emit(grabber::signals::CAMERA_STARTED);
     }
 }
 
@@ -654,9 +637,8 @@ void frame_grabber::grab_video()
             }
 
             // Get time slider position.
-            const auto ms           = static_cast<std::size_t>(m_video_capture.get(cv::CAP_PROP_POS_MSEC));
-            const auto sig_position = this->signal<position_modified_signal_t>(POSITION_MODIFIED_SIG);
-            sig_position->async_emit(static_cast<std::int64_t>(ms));
+            const auto ms = static_cast<std::size_t>(m_video_capture.get(cv::CAP_PROP_POS_MSEC));
+            this->async_emit(signals::POSITION_MODIFIED, static_cast<std::int64_t>(ms));
 
             // Get the buffer of the timeline to fill
             SPTR(data::frame_tl::buffer_t) buffer_out = frame_tl->create_buffer(timestamp);
@@ -682,9 +664,7 @@ void frame_grabber::grab_video()
 
             frame_tl->push_object(buffer_out);
 
-            const auto sig =
-                frame_tl->signal<data::timeline::signals::pushed_t>(data::timeline::signals::PUSHED);
-            sig->async_emit(timestamp);
+            frame_tl->async_emit(data::timeline::signals::PUSHED, timestamp);
         }
 
         if(m_loop_video)
@@ -739,8 +719,7 @@ void frame_grabber::grab_image()
 
         if(width == frame_tl->get_width() && height == frame_tl->get_height())
         {
-            const auto sig_position = this->signal<position_modified_signal_t>(POSITION_MODIFIED_SIG);
-            sig_position->async_emit(static_cast<std::int64_t>(m_image_count) * 30);
+            this->async_emit(signals::POSITION_MODIFIED, static_cast<std::int64_t>(m_image_count) * 30);
 
             // Get the buffer of the timeline to fill
             SPTR(data::frame_tl::buffer_t) buffer_out = frame_tl->create_buffer(timestamp);
@@ -766,9 +745,7 @@ void frame_grabber::grab_image()
 
             frame_tl->push_object(buffer_out);
 
-            const auto sig =
-                frame_tl->signal<data::timeline::signals::pushed_t>(data::timeline::signals::PUSHED);
-            sig->async_emit(timestamp);
+            frame_tl->async_emit(data::timeline::signals::PUSHED, timestamp);
 
             const double t1           = core::clock::get_time_in_milli_sec();
             const double elapsed_time = t1 - t0;

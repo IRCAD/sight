@@ -81,7 +81,7 @@ void center::stopping()
 
 service::connections_t center::auto_connections() const
 {
-    return {{m_mesh, data::mesh::MODIFIED_SIG, service::slots::UPDATE}};
+    return {{m_mesh, data::signals::MODIFIED, service::slots::UPDATE}};
 }
 
 //------------------------------------------------------------------------------

@@ -22,9 +22,6 @@
 
 #include "module/io/video/grabber_proxy.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-
 #include <data/camera.hpp>
 #include <data/camera_set.hpp>
 #include <data/frame_tl.hpp>
@@ -511,33 +508,48 @@ void grabber_proxy::start_camera()
                 srv->set_worker(this->worker());
                 srv->start();
 
-                m_connections.connect(srv, grabber::POSITION_MODIFIED_SIG, this->get_sptr(), slots::MODIFY_POSITION);
-                m_connections.connect(srv, grabber::DURATION_MODIFIED_SIG, this->get_sptr(), slots::MODIFY_DURATION);
-                m_connections.connect(srv, grabber::CAMERA_STARTED_SIG, this->get_sptr(), slots::FWD_START_CAMERA);
-                m_connections.connect(srv, grabber::CAMERA_STOPPED_SIG, this->get_sptr(), slots::FWD_STOP_CAMERA);
-                m_connections.connect(srv, grabber::FRAME_PRESENTED_SIG, this->get_sptr(), slots::FWD_PRESENT_FRAME);
+                m_connections.connect(
+                    srv,
+                    grabber::signals::POSITION_MODIFIED,
+                    this->get_sptr(),
+                    slots::MODIFY_POSITION
+                );
+                m_connections.connect(
+                    srv,
+                    grabber::signals::DURATION_MODIFIED,
+                    this->get_sptr(),
+                    slots::MODIFY_DURATION
+                );
+                m_connections.connect(srv, grabber::signals::CAMERA_STARTED, this->get_sptr(), slots::FWD_START_CAMERA);
+                m_connections.connect(srv, grabber::signals::CAMERA_STOPPED, this->get_sptr(), slots::FWD_STOP_CAMERA);
+                m_connections.connect(
+                    srv,
+                    grabber::signals::FRAME_PRESENTED,
+                    this->get_sptr(),
+                    slots::FWD_PRESENT_FRAME
+                );
 
                 m_connections.connect(srv, notifier::signals::NOTIFIED, this->get_sptr(), slots::FWD_NOTIFY);
 
                 m_connections.connect(
                     srv,
-                    grabber::PARAMETER_CHANGED_SIG,
+                    grabber::signals::PARAMETER_CHANGED,
                     this->get_sptr(),
                     slots::FWD_SET_PARAMETER
                 );
 
                 m_connections.connect(
                     srv,
-                    grabber::MONITOR_CREATED_SIG,
+                    grabber::signals::MONITOR_CREATED,
                     this->get_sptr(),
                     slots::FWD_CREATE_MONITOR
                 );
 
                 m_connections.connect(
                     srv,
-                    grabber::FPS_CHANGED_SIG,
+                    grabber::signals::FPS_CHANGED,
                     this->get_sptr(),
-                    grabber::FORWARD_FPS_CHANGED_SLOT
+                    grabber::slots::FORWARD_FPS_CHANGED
                 );
 
                 ++srv_count;
@@ -732,40 +744,35 @@ void grabber_proxy::reconfigure()
 
 void grabber_proxy::modify_position(int64_t _position)
 {
-    auto sig = this->signal<position_modified_signal_t>(POSITION_MODIFIED_SIG);
-    sig->async_emit(static_cast<std::int64_t>(_position));
+    this->async_emit(signals::POSITION_MODIFIED, static_cast<std::int64_t>(_position));
 }
 
 //-----------------------------------------------------------------------------
 
 void grabber_proxy::modify_duration(int64_t _duration)
 {
-    auto sig = this->signal<duration_modified_signal_t>(DURATION_MODIFIED_SIG);
-    sig->async_emit(static_cast<std::int64_t>(_duration));
+    this->async_emit(signals::DURATION_MODIFIED, static_cast<std::int64_t>(_duration));
 }
 
 //-----------------------------------------------------------------------------
 
 void grabber_proxy::fwd_start_camera()
 {
-    auto sig = this->signal<camera_started_signal_t>(CAMERA_STARTED_SIG);
-    sig->async_emit();
+    this->async_emit(signals::CAMERA_STARTED);
 }
 
 //-----------------------------------------------------------------------------
 
 void grabber_proxy::fwd_stop_camera()
 {
-    auto sig = this->signal<camera_stopped_signal_t>(CAMERA_STOPPED_SIG);
-    sig->async_emit();
+    this->async_emit(signals::CAMERA_STOPPED);
 }
 
 //-----------------------------------------------------------------------------
 
 void grabber_proxy::fwd_present_frame()
 {
-    auto sig = this->signal<frame_presented_signal_t>(FRAME_PRESENTED_SIG);
-    sig->async_emit();
+    this->async_emit(signals::FRAME_PRESENTED);
 }
 
 //-----------------------------------------------------------------------------
@@ -779,23 +786,21 @@ void grabber_proxy::fwd_notify(service::notification _notification)
 
 void grabber_proxy::fwd_set_parameter(ui::parameter_t _value, std::string _key)
 {
-    this->async_emit(grabber::PARAMETER_CHANGED_SIG, _value, _key);
+    this->async_emit(grabber::signals::PARAMETER_CHANGED, _value, _key);
 }
 
 //------------------------------------------------------------------------------
 
 void grabber_proxy::fwd_create_monitor(sight::core::progress::monitor::sptr _monitor)
 {
-    auto sig = this->signal<grabber::monitor_created_signal_t>(grabber::MONITOR_CREATED_SIG);
-    sig->async_emit(_monitor);
+    this->async_emit(grabber::signals::MONITOR_CREATED, _monitor);
 }
 
 //------------------------------------------------------------------------------
 
 void grabber_proxy::forward_fps_changed(double _fps)
 {
-    auto sig = this->signal<grabber::fps_changed_signal_t>(grabber::FPS_CHANGED_SIG);
-    sig->async_emit(_fps);
+    this->async_emit(grabber::signals::FPS_CHANGED, _fps);
 }
 
 //------------------------------------------------------------------------------

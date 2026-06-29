@@ -22,9 +22,6 @@
 
 #include "plane_slicer.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-
 #include <data/helper/medical_image.hpp>
 
 #include <filter/image/types.hpp>
@@ -89,7 +86,7 @@ void plane_slicer::updating()
         // Resets the slice
         auto slice = m_slice.lock();
         slice->deep_copy(std::make_shared<sight::data::image>());
-        slice->async_emit(data::image::MODIFIED_SIG);
+        slice->async_emit(data::signals::MODIFIED);
         return;
     }
 
@@ -212,7 +209,7 @@ void plane_slicer::updating()
         slice->set_origin(output_slice_matrix.position());
         slice->set_orientation(output_slice_matrix.orientation());
 
-        slice->async_emit(data::image::MODIFIED_SIG);
+        slice->async_emit(data::signals::MODIFIED);
     }
 
     // Compute the range so that we can slide on this axis
@@ -363,13 +360,13 @@ void plane_slicer::updating()
 service::connections_t plane_slicer::auto_connections() const
 {
     return {
-        {m_image, data::image::MODIFIED_SIG, service::slots::UPDATE},
-        {m_image, data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE},
-        {m_image, data::image::MODIFIED_SIG, slots::UPDATE_DEFAULT_VALUE},
-        {m_image, data::image::BUFFER_MODIFIED_SIG, slots::UPDATE_DEFAULT_VALUE},
-        {m_axes, data::matrix4::MODIFIED_SIG, service::slots::UPDATE},
-        {m_offset, data::matrix4::MODIFIED_SIG, service::slots::UPDATE},
-        {m_center, data::object::MODIFIED_SIG, service::slots::UPDATE}
+        {m_image, data::signals::MODIFIED, service::slots::UPDATE},
+        {m_image, data::image::signals::BUFFER_MODIFIED, service::slots::UPDATE},
+        {m_image, data::signals::MODIFIED, slots::UPDATE_DEFAULT_VALUE},
+        {m_image, data::image::signals::BUFFER_MODIFIED, slots::UPDATE_DEFAULT_VALUE},
+        {m_axes, data::signals::MODIFIED, service::slots::UPDATE},
+        {m_offset, data::signals::MODIFIED, service::slots::UPDATE},
+        {m_center, data::signals::MODIFIED, service::slots::UPDATE}
     };
 }
 

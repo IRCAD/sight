@@ -22,9 +22,8 @@
 
 #pragma once
 
-#define FWCOM_SLOT_HPP
-
 #include "core/com/slot_call.hpp"
+#include "core/com/util/auto_bind.hpp"
 #include "core/function.hpp"
 
 #include <functional>
@@ -119,5 +118,73 @@ template<typename F, typename>
 SPTR(slot<core::lambda_to_function_t<F> >) new_slot(F _f);
 
 //-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+
+template<typename R, typename ... A>
+slot<R(A ...)>::slot() :
+    slot_call<R(A ...)>()
+{
+    // 'this->' is needed by gcc 4.2
+    //NOLINTNEXTLINE(cppcoreguidelines-prefer-member-initializer)
+    this->slot_base::m_signature = slot_base::get_type_name<R(A ...)>();
+}
+
+//-----------------------------------------------------------------------------
+
+template<typename R, typename ... A>
+template<typename F>
+slot<slot<R(A ...)> >::slot(SPTR(slot_run<F>)_slot) :
+    core::com::slot<function_t>(
+        core::com::util::auto_bind<
+            signature_type,
+            boost::function_types::function_arity<F>::value
+        >::wrap(&slot_run<F>::run, _slot.get()))
+{
+    static_assert(std::is_same_v<void, R>);
+    this->set_worker(_slot->get_worker());
+    this->m_source_slot = _slot;
+}
+
+//-----------------------------------------------------------------------------
+
+template<typename R, typename ... A>
+template<typename F>
+slot<slot<R(A ...)> >::slot(SPTR(slot<F>)_slot) :
+    core::com::slot<function_t>(
+        core::com::util::auto_bind<
+            signature_type,
+            boost::function_types::function_arity<F>::value
+        >::wrap(&core::com::slot<F>::call, _slot.get()))
+{
+    this->set_worker(_slot->get_worker());
+    this->m_source_slot = _slot;
+}
+
+//-----------------------------------------------------------------------------
+
+template<typename F, std::enable_if_t<std::is_function_v<typename core::com::util::convert_function_type<F>::type>,
+                                      bool> = true,
+         typename ... BINDING>
+SPTR(slot<typename core::com::util::convert_function_type<F>::type>) new_slot(F _f, BINDING ... _binding)
+{
+#ifdef _DEBUG
+    constexpr bool has_valid_nb_args = (sizeof...(_binding) < 2);
+    SIGHT_ASSERT("Too many arguments", has_valid_nb_args);
+#endif
+    using function_t = std::function<typename core::com::util::convert_function_type<F>::type>;
+    function_t func = core::com::util::autobind(_f, _binding ...);
+    return std::make_shared<slot<function_t> >(func);
+}
+
+//-----------------------------------------------------------------------------
+
+template<typename F>
+SPTR(slot<core::lambda_to_function_t<F> >) new_slot(F _f)
+requires(!std::is_function_v<typename core::com::util::convert_function_type<F>::type>)
+{
+    auto fn = lambda_to_function(_f);
+    return std::make_shared<sight::core::com::slot<core::lambda_to_function_t<F> > >(fn);
+}
 
 } // namespace sight::core::com

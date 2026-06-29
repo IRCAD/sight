@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,9 +21,6 @@
 
 #include "icon_speed_dial.hpp"
 
-#include "core/thread/worker.hpp"
-
-#include <core/com/slots.hxx>
 #include <core/runtime/path.hpp>
 
 #include <service/op.hpp>
@@ -35,6 +32,9 @@
 
 #include <QBoxLayout>
 #include <QResizeEvent>
+
+namespace
+{
 
 class resize_actions_filter : public QObject
 {
@@ -80,6 +80,8 @@ public:
         return false;
     }
 };
+
+} // namespace
 
 namespace sight::module::ui::qt
 {

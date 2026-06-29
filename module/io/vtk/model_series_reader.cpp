@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,6 @@
 
 #include "module/io/vtk/model_series_reader.hpp"
 
-#include <core/com/signal.hxx>
 #include <core/location/multiple_files.hpp>
 #include <core/location/single_folder.hpp>
 #include <core/progress/observer.hpp>
@@ -40,7 +39,6 @@
 #include <ui/__/cursor.hpp>
 #include <ui/__/dialog/location.hpp>
 #include <ui/__/dialog/message.hpp>
-#include <ui/__/dialog/progress.hpp>
 
 #include <filesystem>
 
@@ -164,20 +162,14 @@ void model_series_reader::updating()
         cursor.set_default_cursor();
         model_series->set_reconstruction_db(rec_db);
 
-        auto sig = model_series->signal<data::model_series::reconstructions_added_signal_t>(
-            data::model_series::RECONSTRUCTIONS_ADDED_SIG
-        );
-        {
-            core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
-            sig->async_emit(added_recs);
-        }
+        model_series->async_emit(this, data::model_series::signals::RECONSTRUCTIONS_ADDED, added_recs);
     }
 }
 
 //------------------------------------------------------------------------------
 
 template<typename READER>
-static typename READER::sptr configure_reader(const std::filesystem::path& _file)
+static READER::sptr configure_reader(const std::filesystem::path& _file)
 {
     typename READER::sptr reader = std::make_shared<READER>();
     reader->set_file(_file);

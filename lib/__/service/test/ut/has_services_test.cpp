@@ -164,9 +164,9 @@ TEST_SUITE("sight::service::has_services")
         sight::data::boolean::sptr data2 = std::make_shared<sight::data::boolean>();
         sight::data::boolean::sptr data3 = std::make_shared<sight::data::boolean>();
 
-        auto sig1 = data1->signal<sight::data::object::modified_signal_t>(sight::data::object::MODIFIED_SIG);
-        auto sig2 = data2->signal<sight::data::object::modified_signal_t>(sight::data::object::MODIFIED_SIG);
-        auto sig3 = data3->signal<sight::data::object::modified_signal_t>(sight::data::object::MODIFIED_SIG);
+        auto sig1 = data1->signal<sight::data::signals::modified_t>(sight::data::signals::MODIFIED);
+        auto sig2 = data2->signal<sight::data::signals::modified_t>(sight::data::signals::MODIFIED);
+        auto sig3 = data3->signal<sight::data::signals::modified_t>(sight::data::signals::MODIFIED);
         {
             auto test_service =
                 this->register_service<sight::service::ut::test_srv>("sight::service::ut::test3_inouts_v2");
@@ -261,9 +261,9 @@ TEST_SUITE("sight::service::has_services")
             CHECK(nullptr == test_service->get_swapped_object());
         }
 
-        auto sig1 = data1->signal<sight::data::object::modified_signal_t>(sight::data::object::MODIFIED_SIG);
-        auto sig2 = data2->signal<sight::data::object::modified_signal_t>(sight::data::object::MODIFIED_SIG);
-        auto sig3 = data3->signal<sight::data::object::modified_signal_t>(sight::data::object::MODIFIED_SIG);
+        auto sig1 = data1->signal<sight::data::signals::modified_t>(sight::data::signals::MODIFIED);
+        auto sig2 = data2->signal<sight::data::signals::modified_t>(sight::data::signals::MODIFIED);
+        auto sig3 = data3->signal<sight::data::signals::modified_t>(sight::data::signals::MODIFIED);
 
         {
             auto test_service = this->register_service<sight::service::ut::test_srv>(

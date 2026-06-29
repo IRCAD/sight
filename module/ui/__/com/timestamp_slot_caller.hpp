@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -55,7 +55,7 @@ public:
 protected:
 
     using has_slot_id_type      = std::string;
-    using slot_info_t           = std::pair<has_slot_id_type, core::com::slots::key_t>;
+    using slot_info_t           = std::pair<has_slot_id_type, slot_key_t>;
     using slot_info_container_t = std::vector<slot_info_t>;
 
     /// Does nothing
@@ -69,6 +69,8 @@ protected:
 
     /// This method run the specified slots.
     void updating() override;
+
+private:
 
     /// vector representing slots
     slot_info_container_t m_slot_infos;

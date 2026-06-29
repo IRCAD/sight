@@ -25,9 +25,6 @@
 #include "data/exception.hpp"
 #include "data/registry/macros.hpp"
 
-#include <core/com/signal.hpp>
-#include <core/com/signal.hxx>
-
 SIGHT_REGISTER_DATA(sight::data::material);
 
 namespace sight::data
@@ -35,15 +32,12 @@ namespace sight::data
 
 //------------------------------------------------------------------------------
 
-const core::com::signals::key_t material::ADDED_TEXTURE_SIG   = "addedTexture";
-const core::com::signals::key_t material::REMOVED_TEXTURE_SIG = "removedTexture";
-
 //------------------------------------------------------------------------------
 
 material::material()
 {
-    new_signal<added_texture_signal_t>(ADDED_TEXTURE_SIG);
-    new_signal<removed_texture_signal_t>(REMOVED_TEXTURE_SIG);
+    new_signal<signals::added_texture_t>(signals::ADDED_TEXTURE);
+    new_signal<signals::removed_texture_t>(signals::REMOVED_TEXTURE);
 }
 
 //------------------------------------------------------------------------------

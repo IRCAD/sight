@@ -22,8 +22,6 @@
 
 #include "module/filter/image/matrix_regressor.hpp"
 
-#include <core/com/signal.hxx>
-
 #include <filter/image/matrix_regressor.hpp>
 
 namespace sight::module::filter::image
@@ -80,7 +78,7 @@ void matrix_regressor::updating()
         data::matrix4::sptr res = regressor.minimize(*init_val, 1., 1e-4, 1e-4);
         optimal_matrix->deep_copy(res);
 
-        this->signal<signals::computed_t>(signals::SUCCEEDED)->async_emit();
+        this->async_emit(signals::SUCCEEDED);
     }
 }
 
@@ -95,9 +93,9 @@ void matrix_regressor::stopping()
 service::connections_t matrix_regressor::auto_connections() const
 {
     return {
-        {MATRIX_LIST_IN, data::vector::ADDED_OBJECTS_SIG, service::slots::UPDATE},
-        {MATRIX_LIST_IN, data::vector::REMOVED_OBJECTS_SIG, service::slots::UPDATE},
-        {MATRIX_LIST_IN, data::vector::MODIFIED_SIG, service::slots::UPDATE},
+        {MATRIX_LIST_IN, data::vector::signals::ADDED_OBJECTS, service::slots::UPDATE},
+        {MATRIX_LIST_IN, data::vector::signals::REMOVED_OBJECTS, service::slots::UPDATE},
+        {MATRIX_LIST_IN, data::signals::MODIFIED, service::slots::UPDATE},
         {POINT_LIST_IN, data::point_list::signals::POINT_ADDED, service::slots::UPDATE},
         {POINT_LIST_IN, data::point_list::signals::POINT_REMOVED, service::slots::UPDATE},
         {POINT_LIST_IN, data::signals::MODIFIED, service::slots::UPDATE}

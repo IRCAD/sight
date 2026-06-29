@@ -22,7 +22,6 @@
 
 #include "module/viz/scene3d/adaptor/reconstruction.hpp"
 
-#include <core/com/slots.hxx>
 #include <core/ptree.hpp>
 
 #include <data/mesh.hpp>
@@ -81,8 +80,12 @@ void reconstruction::starting()
 service::connections_t module::viz::scene3d::adaptor::reconstruction::auto_connections() const
 {
     service::connections_t connections = adaptor::auto_connections();
-    connections.push(RECONSTRUCTION_INPUT, data::reconstruction::MESH_CHANGED_SIG, adaptor::slots::LAZY_UPDATE);
-    connections.push(RECONSTRUCTION_INPUT, data::reconstruction::VISIBILITY_MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
+    connections.push(RECONSTRUCTION_INPUT, data::reconstruction::signals::MESH_CHANGED, adaptor::slots::LAZY_UPDATE);
+    connections.push(
+        RECONSTRUCTION_INPUT,
+        data::reconstruction::signals::VISIBILITY_MODIFIED,
+        adaptor::slots::LAZY_UPDATE
+    );
     return connections;
 }
 

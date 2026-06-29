@@ -22,9 +22,6 @@
 
 #include "module/geometry/__/switch_matrices.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-
 namespace sight::module::geometry
 {
 
@@ -59,8 +56,8 @@ void switch_matrices::stopping()
 service::connections_t switch_matrices::auto_connections() const
 {
     return {
-        {m_current_index, data::object::MODIFIED_SIG, service::slots::UPDATE},
-        {m_matrix, data::object::MODIFIED_SIG, service::slots::UPDATE}
+        {m_current_index, data::signals::MODIFIED, service::slots::UPDATE},
+        {m_matrix, data::signals::MODIFIED, service::slots::UPDATE}
     };
 }
 
@@ -75,7 +72,7 @@ void switch_matrices::updating()
 
     auto desired_matrix = m_matrix[current_index].lock();
     matrix->shallow_copy(desired_matrix.get_shared());
-    matrix->async_emit(this, data::object::MODIFIED_SIG);
+    matrix->async_emit(this, data::signals::MODIFIED);
 }
 
 // ----------------------------------------------------------------------------

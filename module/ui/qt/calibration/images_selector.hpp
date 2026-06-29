@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -69,25 +69,18 @@ public:
 
     SIGHT_DECLARE_SERVICE(images_selector, sight::ui::editor);
 
+    struct slots
+    {
+        static inline const slot_key_t ADD    = "add";
+        static inline const slot_key_t REMOVE = "remove";
+        static inline const slot_key_t RESET  = "reset";
+    };
+
     /// Constructor.
     images_selector() noexcept;
 
     /// Destructor. Does nothing
     ~images_selector() noexcept override;
-
-    /**
-     * @name Slots API
-     * @{
-     */
-    static const core::com::slots::key_t ADD_SLOT;
-    using add_slot_t = core::com::slot<void (core::clock::type)>;
-
-    static const core::com::slots::key_t REMOVE_SLOT;
-    using remove_slot_t = core::com::slot<void ()>;
-
-    static const core::com::slots::key_t RESET_SLOT;
-    using reset_slot_type = core::com::slot<void ()>;
-    ///@}
 
 protected:
 

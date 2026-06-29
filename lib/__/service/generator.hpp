@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,13 +39,13 @@ public:
 
     SIGHT_DECLARE_SERVICE(generator, service::base);
 
+    /// Destroys the interface.
+    SIGHT_SERVICE_API ~generator() override;
+
 protected:
 
     /// Does nothing.
     SIGHT_SERVICE_API generator();
-
-    /// Destroys the interface.
-    SIGHT_SERVICE_API ~generator() override;
 };
 
 } // namespace sight::service

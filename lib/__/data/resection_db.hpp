@@ -85,18 +85,20 @@ public:
      * @name Signals
      * @{
      */
+    struct signals
+    {
+        /// Type of signal when the safe part is added
+        using safe_part_added_t = core::com::signal<void ()>;
 
-    /// Type of signal when the safe part is added
-    using safe_part_added_signal_t = core::com::signal<void ()>;
+        /// Key in m_signals map of signal m_sigSafePartAdded
+        static const inline signal_key_t SAFE_PART_ADDED = "safePartAdded";
 
-    /// Key in m_signals map of signal m_sigSafePartAdded
-    SIGHT_DATA_API static const core::com::signals::key_t SAFE_PART_ADDED_SIG;
+        /// Type of signal when a resection is added
+        using resection_added_t = core::com::signal<void ()>;
 
-    /// Type of signal when a resection is added
-    using resection_added_signal_t = core::com::signal<void ()>;
-
-    /// Key in m_signals map of signal m_sigResectionAdded
-    SIGHT_DATA_API static const core::com::signals::key_t RESECTION_ADDED_SIG;
+        /// Key in m_signals map of signal m_sigResectionAdded
+        static const inline signal_key_t RESECTION_ADDED = "resectionAdded";
+    };
 
     /**
      * @}

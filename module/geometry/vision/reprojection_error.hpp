@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2025 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -80,21 +80,27 @@ class reprojection_error : public service::controller
 {
 public:
 
+    struct signals
+    {
+        using error_computed_t = core::com::signal<void (double)>;
+        static inline const signal_key_t ERROR_COMPUTED = "error_computed";
+    };
+
+    struct slots
+    {
+        static inline const slot_key_t COMPUTE       = "compute";
+        static inline const slot_key_t SET_PARAMETER = "set_parameter";
+    };
+
     SIGHT_DECLARE_SERVICE(reprojection_error, service::controller);
-
-    /// Double changed signal type
-    using error_computed_t = core::com::signal<void (double)>;
-
-    static const core::com::slots::key_t COMPUTE_SLOT;
-    static const core::com::slots::key_t SET_PARAMETER_SLOT;
 
     reprojection_error();
     ~reprojection_error() override = default;
 
-    /// Connect MatrixTL::signals::PUSHED to COMPUTE_SLOT
-    service::connections_t auto_connections() const override;
-
 protected:
+
+    /// Connect MatrixTL::signals::PUSHED to COMPUTE
+    service::connections_t auto_connections() const override;
 
     /**
      * @brief Configuring method : This method is used to configure the service.
@@ -136,13 +142,13 @@ private:
     std::vector<data::marker_map::key_t> m_matrices_tag;
 
     static constexpr std::string_view MATRIX_INPUT     = "matrix";
-    static constexpr std::string_view marker_map_INPUT = "marker_map";
+    static constexpr std::string_view MARKER_MAP_INPUT = "marker_map";
     static constexpr std::string_view CAMERA_INPUT     = "camera";
     static constexpr std::string_view EXTRINSIC_INPUT  = "extrinsic";
     static constexpr std::string_view FRAME_INOUT      = "frame";
 
     data::ptr_vector<data::matrix4, data::access::in> m_matrix {this, MATRIX_INPUT};
-    data::ptr<data::marker_map, data::access::in> m_marker_map {this, marker_map_INPUT};
+    data::ptr<data::marker_map, data::access::in> m_marker_map {this, MARKER_MAP_INPUT};
     data::ptr<data::camera, data::access::in> m_camera {this, CAMERA_INPUT};
     data::ptr<data::matrix4, data::access::in> m_extrinsic {this, EXTRINSIC_INPUT};
     data::ptr<data::image, data::access::inout> m_frame {this, FRAME_INOUT};

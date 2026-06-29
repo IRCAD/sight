@@ -125,18 +125,20 @@ public:
      * @name Signals
      * @{
      */
+    struct signals
+    {
+        /// Type of signal when the mesh pointer has changed, mesh parameter is used to store old mesh
+        using mesh_changed_t = core::com::signal<void (mesh::sptr)>;
 
-    /// Type of signal when the mesh pointer has changed, mesh parameter is used to store old mesh
-    using mesh_changed_signal_t = core::com::signal<void (mesh::sptr)>;
+        /// Key in m_signals map of signal m_sigMeshModified
+        static const inline signal_key_t MESH_CHANGED = "meshModified";
 
-    /// Key in m_signals map of signal m_sigMeshModified
-    SIGHT_DATA_API static const core::com::signals::key_t MESH_CHANGED_SIG;
+        /// Type of signal when mesh is modified
+        using visibility_modified_t = core::com::signal<void (bool)>;
 
-    /// Type of signal when mesh is modified
-    using visibility_modified_signal_t = core::com::signal<void (bool)>;
-
-    /// Key in m_signals map of signal m_sigVisibilityModified
-    SIGHT_DATA_API static const core::com::signals::key_t VISIBILITY_MODIFIED_SIG;
+        /// Key in m_signals map of signal m_sigVisibilityModified
+        static const inline signal_key_t VISIBILITY_MODIFIED = "visibilityModified";
+    };
 /**
  * @}
  */

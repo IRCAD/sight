@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2024 IRCAD France
+ * Copyright (C) 2019-2026 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,9 +23,7 @@
 #include "scan.hpp"
 
 #include <core/base.hpp>
-#include <core/com/signal.hxx>
-#include <core/com/slot.hxx>
-#include <core/com/slots.hxx>
+
 #include <core/location/single_file.hpp>
 #include <core/runtime/path.hpp>
 #include <core/type.hpp>
@@ -70,14 +68,6 @@ static const std::string s_TEMPORAL_SMOOTH_DELTA       = "temporalSmoothDelta";
 static const std::string s_TEMPORAL_PERSISTENCY        = "temporalPersistency";
 static const std::string s_HOLE_FILLING                = "holeFilling";
 
-static const core::com::slots::key_t CONFIGURE_RECORDING_PATH_SLOT = "configure_recording_path";
-
-static const core::com::slots::key_t RECORD = "record";
-
-static const core::com::signals::key_t DISTANCE_COMPUTED_SIG = "distance_computed";
-static const core::com::signals::key_t DEVICE_PLAYED_SIG     = "device_played";
-static const core::com::signals::key_t FILE_PLAYED_SIG       = "file_played";
-
 // Determine depth value corresponding to one meter
 static const float s_METERS_TO_MMS = 1000.F;
 
@@ -85,12 +75,12 @@ static const float s_METERS_TO_MMS = 1000.F;
 
 scan::scan() noexcept
 {
-    new_slot(CONFIGURE_RECORDING_PATH_SLOT, &scan::configureRecordingPath, this);
-    new_slot(RECORD, &scan::record, this);
+    new_slot(slots::CONFIGURE_RECORDING_PATH, &scan::configureRecordingPath, this);
+    new_slot(slots::RECORD, &scan::record, this);
 
-    new_signal<distance_computed_t>(DISTANCE_COMPUTED_SIG);
-    new_signal<device_played_signal_t>(DEVICE_PLAYED_SIG);
-    new_signal<file_played_signal_t>(FILE_PLAYED_SIG);
+    new_signal<distance_computed_t>(signals::DISTANCE_COMPUTED);
+    new_signal<device_played_t>(signals::DEVICE_PLAYED);
+    new_signal<file_played_t>(signals::FILE_PLAYED);
 }
 
 //-----------------------------------------------------------------------------
@@ -275,11 +265,9 @@ void scan::initialize(const rs2::pipeline_profile& _profile)
 
                 camera_set->add_camera(depthCamera);
                 camera_set->add_camera(colorCamera);
-                auto sig = camera_set->signal<data::camera_set::added_camera_signal_t>(
-                    data::camera_set::ADDED_CAMERA_SIG
-                );
-                sig->async_emit(depthCamera);
-                sig->async_emit(colorCamera);
+
+                camera_set->async_emit(data::camera_set::signals::ADDED_CAMERA, depthCamera);
+                camera_set->async_emit(data::camera_set::signals::ADDED_CAMERA, colorCamera);
             }
             else if(camera_set->size() == 1) // missing one camera
             {
@@ -287,10 +275,7 @@ void scan::initialize(const rs2::pipeline_profile& _profile)
                 colorCamera = std::make_shared<data::camera>();
                 camera_set->add_camera(colorCamera);
 
-                auto sig = camera_set->signal<data::camera_set::added_camera_signal_t>(
-                    data::camera_set::ADDED_CAMERA_SIG
-                );
-                sig->async_emit(colorCamera);
+                camera_set->async_emit(data::camera_set::signals::ADDED_CAMERA, colorCamera);
             }
             else
             {
@@ -358,10 +343,7 @@ void scan::initialize(const rs2::pipeline_profile& _profile)
 
                 camera_set->set_extrinsic_matrix(1, matrix);
 
-                auto sig = camera_set->signal<data::camera_set::modified_signal_t>(
-                    data::camera_set::MODIFIED_SIG
-                );
-                sig->async_emit();
+                auto sig = camera_set->async_emit(data::signals::MODIFIED);
             }
         }
     }
@@ -408,7 +390,7 @@ void scan::startCamera()
                 {
                     m_playbackMode     = true;
                     m_playbackFileName = camera->getVideoFile().string();
-                    this->signal<file_played_signal_t>(FILE_PLAYED_SIG)->async_emit();
+                    this->async_emit(signals::FILE_PLAYED);
                 }
                 else if(camera->getCameraSource() == data::camera::STREAM)
                 {
@@ -429,7 +411,7 @@ void scan::startCamera()
                         m_deviceID = this->selectDevice();
                     }
 
-                    this->signal<device_played_signal_t>(DEVICE_PLAYED_SIG)->async_emit();
+                    this->async_emit(signals::DEVICE_PLAYED);
                 }
             };
 
@@ -583,10 +565,7 @@ void scan::startCamera()
         this->setMinMaxRange();
     }
 
-    auto sigStarted = this->signal<grabber::camera_started_signal_t>(
-        grabber::CAMERA_STARTED_SIG
-    );
-    sigStarted->async_emit();
+    this->async_emit(grabber::signals::CAMERA_STARTED);
 }
 
 //-----------------------------------------------------------------------------
@@ -621,8 +600,7 @@ void scan::stopCamera()
         m_pipe->stop();
         m_pipe.reset();
 
-        auto sig = this->signal<grabber::camera_stopped_signal_t>(grabber::CAMERA_STOPPED_SIG);
-        sig->async_emit();
+        this->async_emit(grabber::signals::CAMERA_STOPPED);
     }
 }
 
@@ -1097,9 +1075,7 @@ void scan::grab()
 
             // Compute the z value of the center pixel, to give the distance "object-camera" in mm.
             const auto distanceToCenter = depth.get_distance(depth.get_width() / 2, depth.get_height() / 2);
-            this->signal<distance_computed_t>(DISTANCE_COMPUTED_SIG)->async_emit(
-                static_cast<double>(distanceToCenter * s_METERS_TO_MMS)
-            );
+            this->async_emit(signals::DISTANCE_COMPUTED, static_cast<double>(distanceToCenter * s_METERS_TO_MMS));
         }
         catch(const std::exception& e)
         {
@@ -1191,8 +1167,6 @@ void scan::onCameraImage(const uint8_t* _buffer)
 {
     // Filling timeline's buffer
     const fwClock::type timestamp(fwClock::get_time_in_milli_sec());
-    data::timeline::signals::pushed_t::sptr sig;
-
     {
         const auto colorTimeline = m_frame.lock();
         const auto colorBuffer   = colorTimeline->create_buffer(timestamp);
@@ -1204,10 +1178,8 @@ void scan::onCameraImage(const uint8_t* _buffer)
         // Push buffer to timeline and notify
         colorTimeline->pushObject(colorBuffer);
 
-        sig = colorTimeline->signal<data::timeline::signals::pushed_t>(data::timeline::signals::PUSHED);
+        colorTimeline->async_emit(data::timeline::signals::PUSHED, timestamp);
     }
-
-    sig->async_emit(timestamp);
 }
 
 //-----------------------------------------------------------------------------
@@ -1216,8 +1188,6 @@ void scan::onCameraImageDepth(const std::uint16_t* _buffer)
 {
     // Filling the depth image buffer in the timeline
     const fwClock::type timestamp(fwClock::get_time_in_milli_sec());
-    data::timeline::signals::pushed_t::sptr sig;
-
     {
         const auto depthTimeline = m_depth.lock();
         const auto depthTL       = depthTimeline->create_buffer(timestamp);
@@ -1236,11 +1206,8 @@ void scan::onCameraImageDepth(const std::uint16_t* _buffer)
 
         // Push buffer to timeline and notify
         depthTimeline->pushObject(depthTL);
-
-        sig = depthTimeline->signal<data::timeline::signals::pushed_t>(data::timeline::signals::PUSHED);
+        depthTimeline->async_emit(data::timeline::signals::PUSHED, timestamp);
     }
-
-    sig->async_emit(timestamp);
 }
 
 //-----------------------------------------------------------------------------
@@ -1307,11 +1274,9 @@ void scan::onPointCloud(const rs2::points& _pc, const rs2::video_frame& _texture
             ++colors;
         }
 
-        const auto sigVertex = pointcloud->signal<data::mesh::signal_t>(data::mesh::VERTEX_MODIFIED_SIG);
-        sigVertex->async_emit();
+        pointcloud->async_emit(data::mesh::signals::VERTEX_MODIFIED);
 
-        const auto sigcolor = pointcloud->signal<data::mesh::signal_t>(data::mesh::POINT_COLORS_MODIFIED_SIG);
-        sigcolor->async_emit();
+        pointcloud->async_emit(data::mesh::signals::POINT_COLORS_MODIFIED);
     }
 }
 

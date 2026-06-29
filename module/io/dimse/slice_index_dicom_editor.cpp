@@ -24,8 +24,6 @@
 
 #include "core/progress/observer.hpp"
 
-#include <core/com/slots.hxx>
-
 #include <data/helper/medical_image.hpp>
 #include <data/image_series.hpp>
 #include <data/integer.hpp>
@@ -115,7 +113,7 @@ void slice_index_dicom_editor::starting()
 service::connections_t slice_index_dicom_editor::auto_connections() const
 {
     service::connections_t connections;
-    connections.push(m_series, data::series::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(m_series, data::signals::MODIFIED, service::slots::UPDATE);
 
     return connections;
 }
@@ -345,8 +343,7 @@ void slice_index_dicom_editor::read_slice(
         );
 
         // Send the signal
-        const auto sig = image->signal<data::image::modified_signal_t>(data::image::MODIFIED_SIG);
-        sig->async_emit();
+        image->async_emit(data::signals::MODIFIED);
     }
     else
     {

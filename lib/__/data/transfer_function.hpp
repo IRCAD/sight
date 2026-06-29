@@ -294,13 +294,16 @@ public:
 
     /// @name Signals
     /// @{
-    /// Defines the type of signal sent when points are modified.
-    using points_modified_signal_t = core::com::signal<void ()>;
-    SIGHT_DATA_API static const core::com::signals::key_t POINTS_MODIFIED_SIG;
+    struct signals
+    {
+        /// Defines the type of signal sent when points are modified.
+        using points_modified_t = core::com::signal<void ()>;
+        static const inline signal_key_t POINTS_MODIFIED = "pointsModified";
 
-    /// Defines the type of signal sent when window-level is modified (window, level).
-    using windowing_modified_signal_t = core::com::signal<void (value_t, value_t)>;
-    SIGHT_DATA_API static const core::com::signals::key_t WINDOWING_MODIFIED_SIG;
+        /// Defines the type of signal sent when window-level is modified (window, level).
+        using windowing_modified_t = core::com::signal<void (value_t, value_t)>;
+        static const inline signal_key_t WINDOWING_MODIFIED = "windowingModified";
+    };
     /// @}
 
     /// Defines shallow copy

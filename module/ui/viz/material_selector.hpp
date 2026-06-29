@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -67,19 +67,17 @@ public:
 
     SIGHT_DECLARE_SERVICE(material_selector, sight::ui::editor);
 
+    struct signals
+    {
+        using selected_t = core::com::signal<void (std::string)>;
+        static inline const signal_key_t SELECTED = "selected";
+    };
+
     /// Constructor.
     material_selector() noexcept;
 
     /// Destructor. Does nothing
     ~material_selector() noexcept override = default;
-
-    /**
-     * @name Signals API
-     * @{
-     */
-    static const core::com::signals::key_t SELECTED_SIG;
-    using selected_signal_t = core::com::signal<void (std::string)>;
-/** @} */
 
 protected:
 

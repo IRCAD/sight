@@ -112,13 +112,16 @@ public:
     /**@name Signals API
      * @{
      */
-    /// Signal when camera is calibrated
-    SIGHT_DATA_API static const core::com::signals::key_t INTRINSIC_CALIBRATED_SIG;
-    using intrinsic_calibrated_signal_t = core::com::signal<void ()>;
+    struct signals
+    {
+        /// Signal when camera is calibrated
+        static const inline signal_key_t INTRINSIC_CALIBRATED = "intrinsicCalibrated";
+        using intrinsic_calibrated_t = core::com::signal<void ()>;
 
-    /// Signal when camera id is modified
-    SIGHT_DATA_API static const core::com::signals::key_t ID_MODIFIED_SIG;
-    using id_modified_signal_t = core::com::signal<void (std::string)>;
+        /// Signal when camera id is modified
+        static const inline signal_key_t ID_MODIFIED = "id_modified";
+        using id_modified_t = core::com::signal<void (std::string)>;
+    };
     /** @} */
 
     /// @return cx or u0 = x-coordinate of optical center

@@ -22,30 +22,24 @@
 
 #include "display_test_notifications.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-
 namespace ex_notifications
 {
-
-static const sight::core::com::slots::key_t SET_ENUM_PARAMETER_SLOT = "set_enum_parameter";
-static const sight::core::com::slots::key_t SET_BOOL_PARAMETER_SLOT = "set_bool_parameter";
-static const sight::core::com::slots::key_t CLOSE_CHANNEL1_SLOT     = "close_channel1";
 
 //------------------------------------------------------------------------------
 
 display_test_notifications::display_test_notifications() noexcept :
     notifier(has_signals::signals())
 {
-    new_slot(SET_ENUM_PARAMETER_SLOT, &display_test_notifications::set_enum_parameter, this);
-    new_slot(SET_BOOL_PARAMETER_SLOT, &display_test_notifications::set_bool_parameter, this);
-    new_slot(CLOSE_CHANNEL1_SLOT, &display_test_notifications::close_channel1, this);
+    new_slot(slots::SET_ENUM_PARAMETER, &display_test_notifications::set_enum_parameter, this);
+    new_slot(slots::SET_BOOL_PARAMETER, &display_test_notifications::set_bool_parameter, this);
+    new_slot(slots::CLOSE_CHANNEL1, &display_test_notifications::close_channel1, this);
 }
 
 //------------------------------------------------------------------------------
 
 void display_test_notifications::set_enum_parameter(std::string _val, std::string _key)
 {
+    namespace dial = sight::ui::dialog;
     if(_key == "position")
     {
         m_display_all = false;
@@ -55,31 +49,31 @@ void display_test_notifications::set_enum_parameter(std::string _val, std::strin
         }
         else if(_val == "TOP_LEFT")
         {
-            m_notification.m_position = ::dial::notification::position::top_left;
+            m_notification.m_position = dial::notification::position::top_left;
         }
         else if(_val == "TOP_RIGHT")
         {
-            m_notification.m_position = ::dial::notification::position::top_right;
+            m_notification.m_position = dial::notification::position::top_right;
         }
         else if(_val == "CENTERED_TOP")
         {
-            m_notification.m_position = ::dial::notification::position::centered_top;
+            m_notification.m_position = dial::notification::position::centered_top;
         }
         else if(_val == "CENTERED")
         {
-            m_notification.m_position = ::dial::notification::position::centered;
+            m_notification.m_position = dial::notification::position::centered;
         }
         else if(_val == "BOTTOM_LEFT")
         {
-            m_notification.m_position = ::dial::notification::position::bottom_left;
+            m_notification.m_position = dial::notification::position::bottom_left;
         }
         else if(_val == "BOTTOM_RIGHT")
         {
-            m_notification.m_position = ::dial::notification::position::bottom_right;
+            m_notification.m_position = dial::notification::position::bottom_right;
         }
         else if(_val == "CENTERED_BOTTOM")
         {
-            m_notification.m_position = ::dial::notification::position::centered_bottom;
+            m_notification.m_position = dial::notification::position::centered_bottom;
         }
         else
         {
@@ -90,15 +84,15 @@ void display_test_notifications::set_enum_parameter(std::string _val, std::strin
     {
         if(_val == "SUCCESS")
         {
-            m_notification.m_type = ::dial::notification::type::success;
+            m_notification.m_type = dial::notification::type::success;
         }
         else if(_val == "INFO")
         {
-            m_notification.m_type = ::dial::notification::type::info;
+            m_notification.m_type = dial::notification::type::info;
         }
         else if(_val == "FAILURE")
         {
-            m_notification.m_type = ::dial::notification::type::failure;
+            m_notification.m_type = dial::notification::type::failure;
         }
         else
         {
@@ -270,6 +264,7 @@ void display_test_notifications::updating()
     }
     else
     {
+        namespace dial = sight::ui::dialog;
         // Mode 2: Standalone, you decide where to pop the notification by calling directly the notification.
         if(m_display_all)
         {
@@ -285,7 +280,7 @@ void display_test_notifications::updating()
                     position_t::centered_bottom
                 })
             {
-                ::dial::notification::show(
+                dial::notification::show(
                     sight::service::notification
                     {
                         .m_type     = m_notification.m_type,
@@ -299,7 +294,7 @@ void display_test_notifications::updating()
         }
         else
         {
-            ::dial::notification::show(
+            dial::notification::show(
                 sight::service::notification
                 {
                     .m_type     = m_notification.m_type,

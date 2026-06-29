@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,12 +22,6 @@
 
 #include "module/ui/qt/calibration/images_selector.hpp"
 
-#include <core/com/slot.hpp>
-#include <core/com/slot.hxx>
-#include <core/com/slots.hpp>
-#include <core/com/slots.hxx>
-#include <core/id.hpp>
-
 #include <data/image.hpp>
 
 #include <ui/qt/container/widget.hpp>
@@ -39,16 +33,12 @@
 namespace sight::module::ui::qt::calibration
 {
 
-const core::com::slots::key_t images_selector::ADD_SLOT    = "add";
-const core::com::slots::key_t images_selector::REMOVE_SLOT = "remove";
-const core::com::slots::key_t images_selector::RESET_SLOT  = "reset";
-
 //------------------------------------------------------------------------------
 images_selector::images_selector() noexcept
 {
-    new_slot(ADD_SLOT, &images_selector::add, this);
-    new_slot(REMOVE_SLOT, &images_selector::remove, this);
-    new_slot(RESET_SLOT, &images_selector::reset, this);
+    new_slot(slots::ADD, &images_selector::add, this);
+    new_slot(slots::REMOVE, &images_selector::remove, this);
+    new_slot(slots::RESET, &images_selector::reset, this);
 }
 
 //------------------------------------------------------------------------------
@@ -139,7 +129,7 @@ void images_selector::remove()
     if(idx >= 0)
     {
         const auto vector      = m_selected_image.lock();
-        data::object::sptr obj = (*vector)[std::size_t(idx)];
+        data::object::sptr obj = (*vector)[static_cast<std::size_t>(idx)];
 
         const auto scoped_emitter = vector->scoped_emit();
         vector->remove(obj);

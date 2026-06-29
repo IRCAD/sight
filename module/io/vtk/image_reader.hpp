@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -90,9 +90,9 @@ public:
         SPTR(core::progress::observer) _progress
     );
 
-protected:
-
     sight::io::service::path_type_t get_path_type() const override;
+
+protected:
 
     /// Method called when the service is started, does nothing.
     void starting() override;
@@ -100,7 +100,7 @@ protected:
     /// Method called when the service is stopped, does nothing.
     void stopping() override;
 
-    /// Method called when the service is stopped, does nothing.
+    /// Method called when the service is configured, does nothing.
     void configuring() override;
 
     /**

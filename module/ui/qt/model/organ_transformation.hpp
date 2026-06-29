@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,11 +35,13 @@
 #include <map>
 #include <string>
 
+// NOLINTBEGIN(readability-identifier-naming)
 class QListWidget;
 class QPushButton;
 class QListWidgetItem;
 class QComboBox;
 class QCheckBox;
+// NOLINTEND(readability-identifier-naming)
 
 namespace sight::module::ui::qt::model
 {
@@ -83,13 +85,13 @@ protected:
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
      *
-     * Connect ModelSeries::MODIFIED_SIG to this::service::slots::UPDATE
-     * Connect ModelSeries::RECONSTRUCTIONS_ADDED_SIG to this::service::slots::UPDATE
-     * Connect ModelSeries::RECONSTRUCTIONS_REMOVED_SIG to this::service::slots::UPDATE
-     * Connect Map::MODIFIED_SIG to this::service::slots::UPDATE
-     * Connect Map::ADDED_OBJECTS_SIG to this::service::slots::UPDATE
-     * Connect Map::REMOVED_OBJECTS_SIG to this::service::slots::UPDATE
-     * Connect Map::CHANGED_OBJECTS_SIG to this::service::slots::UPDATE
+     * Connect data::signals::MODIFIED to this::service::slots::UPDATE
+     * Connect ModelSeries::signals::RECONSTRUCTIONS_ADDED to this::service::slots::UPDATE
+     * Connect ModelSeries::signals::RECONSTRUCTIONS_REMOVED to this::service::slots::UPDATE
+     * Connect data::signals::MODIFIED to this::service::slots::UPDATE
+     * Connect Map::signals::ADDED_OBJECTS to this::service::slots::UPDATE
+     * Connect Map::signals::REMOVED_OBJECTS to this::service::slots::UPDATE
+     * Connect Map::signals::CHANGED_OBJECTS to this::service::slots::UPDATE
      */
     connections_t auto_connections() const override;
 

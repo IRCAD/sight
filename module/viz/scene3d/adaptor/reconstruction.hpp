@@ -130,7 +130,7 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::reconstruction::MESH_CHANGED_SIG of s_RECONSTRUCTION_INPUT to adaptor::slots::LAZY_UPDATE
+     * Connect data::reconstruction::signals::MESH_CHANGED of s_RECONSTRUCTION_INPUT to adaptor::slots::LAZY_UPDATE
      */
     service::connections_t auto_connections() const final;
 

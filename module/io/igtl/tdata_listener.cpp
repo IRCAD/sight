@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,21 +22,14 @@
 
 #include "tdata_listener.hpp"
 
-#include <core/com/signal.hpp>
-#include <core/com/signal.hxx>
-
 #include <data/map.hpp>
 #include <data/matrix4.hpp>
-
-#include <service/macros.hpp>
 
 #include <ui/__/dialog/message.hpp>
 #include <ui/__/preferences.hpp>
 
-#include <boost/lexical_cast.hpp>
 #include <boost/range/iterator_range_core.hpp>
 
-#include <functional>
 #include <string>
 
 namespace sight::module::io::igtl
@@ -99,7 +92,7 @@ void tdata_listener::run_client()
         }
 
         m_client.connect(hostname, port);
-        m_sig_connected->async_emit();
+        this->async_emit(network_listener::signals::CONNECTED);
     }
     catch(core::exception& ex)
     {
@@ -170,7 +163,7 @@ void tdata_listener::stopping()
 {
     m_client.disconnect();
     m_client_future.wait();
-    m_sig_disconnected->async_emit();
+    this->async_emit(network_listener::signals::DISCONNECTED);
 }
 
 //-----------------------------------------------------------------------------
@@ -210,9 +203,7 @@ void tdata_listener::manage_timeline(const data::map::sptr& _obj, double _timest
 
     mat_tl->push_object(matrix_buf);
 
-    data::timeline::signals::pushed_t::sptr sig;
-    sig = mat_tl->signal<data::timeline::signals::pushed_t>(data::timeline::signals::PUSHED);
-    sig->async_emit(_timestamp);
+    mat_tl->async_emit(data::timeline::signals::PUSHED, _timestamp);
 }
 
 //-----------------------------------------------------------------------------

@@ -22,8 +22,6 @@
 
 #include "bitwise_and.hpp"
 
-#include <core/com/signal.hxx>
-
 #include <filter/image/bitwise_and.hpp>
 
 namespace sight::module::filter::image

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024-2025 IRCAD France
+ * Copyright (C) 2024-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -70,8 +70,7 @@ public:
 
     struct slots
     {
-        using slots_t = sight::core::com::slots::key_t;
-        static inline const slots_t SET_PARAMETER = "set_parameter";
+        static inline const slot_key_t SET_PARAMETER = "set_parameter";
     };
 
     struct config

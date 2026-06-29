@@ -23,8 +23,6 @@
 #include "helper.hpp"
 #include "test_services.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slot.hxx>
 #include <core/runtime/path.hpp>
 #include <core/runtime/runtime.hpp>
 #include <core/time_stamp.hpp>

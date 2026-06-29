@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #include "dump_editor.hpp"
 
-#include <core/base.hpp>
-#include <core/com/slots.hxx>
 #include <core/memory/buffer_manager.hpp>
 #include <core/memory/byte_size.hpp>
 #include <core/memory/policy/base.hpp>
@@ -39,26 +37,29 @@
 #include <QItemDelegate>
 #include <QStringList>
 #include <QTableWidgetItem>
-#include <QtConcurrentRun>
 #include <QTimer>
 #include <QVBoxLayout>
+#include <QtConcurrentRun>
 
 namespace sight::module::ui::debug
 {
 
 //------------------------------------------------------------------------------
 
-core::memory::buffer_manager::buffer_info_map_t m_buffer_infos;
-core::memory::buffer_manager::buffer_stats m_buffer_stats = {0, 0};
+static core::memory::buffer_manager::buffer_info_map_t m_buffer_infos;
+static core::memory::buffer_manager::buffer_stats m_buffer_stats = {.total_dumped = 0, .total_managed = 0};
 
 //------------------------------------------------------------------------------
 
-QString get_human_readable_size(core::memory::byte_size::size_t _bytes)
+static QString get_human_readable_size(core::memory::byte_size::size_t _bytes)
 {
     return QString::fromStdString(core::memory::byte_size(_bytes));
 }
 
 //------------------------------------------------------------------------------
+
+namespace
+{
 
 class policy_combo_box_delegate : public QItemDelegate
 {
@@ -84,6 +85,61 @@ public:
         const QModelIndex& _index
     ) const override;
 };
+
+class policy_table_model : public QAbstractTableModel
+{
+public:
+
+    explicit policy_table_model(QObject* _parent = nullptr);
+
+    [[nodiscard]] int rowCount(const QModelIndex& _parent) const override;
+    [[nodiscard]] int columnCount(const QModelIndex& _parent) const override;
+    [[nodiscard]] QVariant data(const QModelIndex& _index, int _role) const override;
+    [[nodiscard]] QVariant headerData(int _section, Qt::Orientation _orientation, int _role) const override;
+    [[nodiscard]] Qt::ItemFlags flags(const QModelIndex& _index) const override;
+    bool setData(const QModelIndex& _index, const QVariant& _value, int _role = Qt::EditRole) override;
+
+    static const int EXTRA_INFO_NB;
+
+private:
+
+    core::memory::buffer_manager::sptr m_buff_manager;
+};
+
+class info_table_model : public QAbstractTableModel
+{
+public:
+
+    explicit info_table_model(QObject* _parent = nullptr);
+
+    [[nodiscard]] int rowCount(const QModelIndex& _parent) const override;
+    [[nodiscard]] int columnCount(const QModelIndex& _parent) const override;
+    [[nodiscard]] QVariant data(const QModelIndex& _index, int _role) const override;
+    [[nodiscard]] QVariant headerData(int _section, Qt::Orientation _orientation, int _role) const override;
+
+private:
+
+    core::memory::buffer_manager::sptr m_buff_manager;
+};
+
+class size_table_widget_item : public QTableWidgetItem
+{
+public:
+
+    explicit size_table_widget_item(const QString& _text) :
+        QTableWidgetItem(_text)
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    bool operator<(const QTableWidgetItem& _other) const override
+    {
+        return data(Qt::UserRole).toULongLong() < _other.data(Qt::UserRole).toULongLong();
+    }
+};
+
+} // namespace
 
 //------------------------------------------------------------------------------
 
@@ -152,26 +208,6 @@ void policy_combo_box_delegate::updateEditorGeometry(
     _editor->setGeometry(_option.rect);
 }
 
-class policy_table_model : public QAbstractTableModel
-{
-public:
-
-    explicit policy_table_model(QObject* _parent = nullptr);
-
-    [[nodiscard]] int rowCount(const QModelIndex& _parent) const override;
-    [[nodiscard]] int columnCount(const QModelIndex& _parent) const override;
-    [[nodiscard]] QVariant data(const QModelIndex& _index, int _role) const override;
-    [[nodiscard]] QVariant headerData(int _section, Qt::Orientation _orientation, int _role) const override;
-    [[nodiscard]] Qt::ItemFlags flags(const QModelIndex& _index) const override;
-    bool setData(const QModelIndex& _index, const QVariant& _value, int _role = Qt::EditRole) override;
-
-    static const int EXTRA_INFO_NB;
-
-private:
-
-    core::memory::buffer_manager::sptr m_buff_manager;
-};
-
 const int policy_table_model::EXTRA_INFO_NB = 1;
 
 policy_table_model::policy_table_model(QObject* _parent) :
@@ -216,7 +252,7 @@ QVariant policy_table_model::data(const QModelIndex& _index, int _role) const
     core::mt::read_lock lock(m_buff_manager->get_mutex());
     auto current_policy = m_buff_manager->get_dump_policy();
 
-    if(_index.row() > int((EXTRA_INFO_NB + current_policy->get_param_names().size())) || _index.row() < 0)
+    if(_index.row() > static_cast<int>((EXTRA_INFO_NB + current_policy->get_param_names().size())) || _index.row() < 0)
     {
         return {};
     }
@@ -231,9 +267,9 @@ QVariant policy_table_model::data(const QModelIndex& _index, int _role) const
                 return QString::fromStdString(current_policy->get_leaf_classname());
             }
 
-            if((unsigned int) _index.row() <= names.size())
+            if(static_cast<unsigned int>(_index.row()) <= names.size())
             {
-                const auto& name = names.at(std::size_t(_index.row() - 1));
+                const auto& name = names.at(static_cast<std::size_t>(_index.row() - 1));
 
                 return QString::fromStdString(current_policy->get_param(name));
             }
@@ -262,9 +298,10 @@ QVariant policy_table_model::headerData(int _section, Qt::Orientation _orientati
             return QString("Current policy");
         }
 
-        if((unsigned int) _section <= names.size())
+        if(static_cast<unsigned int>(_section) <= names.size())
         {
-            const core::memory::policy::base::param_names_type::value_type& name = names.at(std::size_t(_section - 1));
+            const core::memory::policy::base::param_names_type::value_type& name =
+                names.at(static_cast<std::size_t>(_section - 1));
             return QString::fromStdString(name);
         }
     }
@@ -286,7 +323,7 @@ bool policy_table_model::setData(const QModelIndex& _index, const QVariant& _val
         auto current_policy                                       = m_buff_manager->get_dump_policy();
         const core::memory::policy::base::param_names_type& names = current_policy->get_param_names();
 
-        if(col == 0 && (unsigned int) row <= names.size())
+        if(col == 0 && static_cast<unsigned int>(row) <= names.size())
         {
             core::memory::policy::base::sptr dump_policy;
             if(row == 0)
@@ -306,7 +343,7 @@ bool policy_table_model::setData(const QModelIndex& _index, const QVariant& _val
                 else
                 {
                     const core::memory::policy::base::param_names_type::value_type& name =
-                        names.at(std::size_t(row - 1));
+                        names.at(static_cast<std::size_t>(row - 1));
                     current_policy->set_param(name, strvalue);
                     return true;
                 }
@@ -330,22 +367,6 @@ Qt::ItemFlags policy_table_model::flags(const QModelIndex& _index) const
 }
 
 //------------------------------------------------------------------------------
-
-class info_table_model : public QAbstractTableModel
-{
-public:
-
-    explicit info_table_model(QObject* _parent = nullptr);
-
-    [[nodiscard]] int rowCount(const QModelIndex& _parent) const override;
-    [[nodiscard]] int columnCount(const QModelIndex& _parent) const override;
-    [[nodiscard]] QVariant data(const QModelIndex& _index, int _role) const override;
-    [[nodiscard]] QVariant headerData(int _section, Qt::Orientation _orientation, int _role) const override;
-
-private:
-
-    core::memory::buffer_manager::sptr m_buff_manager;
-};
 
 info_table_model::info_table_model(QObject* _parent) :
     QAbstractTableModel(_parent),
@@ -568,26 +589,7 @@ void dump_editor::configuring()
 
 //------------------------------------------------------------------------------
 
-class size_table_widget_item : public QTableWidgetItem
-{
-public:
-
-    explicit size_table_widget_item(const QString& _text) :
-        QTableWidgetItem(_text)
-    {
-    }
-
-    //------------------------------------------------------------------------------
-
-    bool operator<(const QTableWidgetItem& _other) const override
-    {
-        return data(Qt::UserRole).toULongLong() < _other.data(Qt::UserRole).toULongLong();
-    }
-};
-
-//------------------------------------------------------------------------------
-
-core::memory::buffer_manager::buffer_info_map_t get_info_map()
+static core::memory::buffer_manager::buffer_info_map_t get_info_map()
 {
     core::memory::buffer_manager::buffer_info_map_t info_map;
     core::memory::buffer_manager::sptr buff_manager = core::memory::buffer_manager::get();
@@ -661,7 +663,7 @@ void dump_editor::on_buffer_info()
         date = std::to_string(dump_buff_info.last_access.get_logic_stamp());
 
         QTableWidgetItem* current_size_item = new size_table_widget_item(get_human_readable_size(dump_buff_info.size));
-        current_size_item->setData(Qt::UserRole, (qulonglong) dump_buff_info.size);
+        current_size_item->setData(Qt::UserRole, static_cast<qulonglong>(dump_buff_info.size));
         current_size_item->setFlags(Qt::ItemIsEnabled);
         current_size_item->setBackground(back_color);
         m_list->setItem(item_count, 0, current_size_item);
@@ -681,7 +683,7 @@ void dump_editor::on_buffer_info()
         lock_status_item->setBackground(back_color);
         m_list->setItem(item_count, 3, lock_status_item);
 
-        auto* action_item = new QPushButton(QString::fromStdString((loaded) ? "Dump" : "Restore"), m_list);
+        auto* action_item = new QPushButton(QString::fromStdString(loaded ? "Dump" : "Restore"), m_list);
         action_item->setEnabled(!is_lock && (dump_buff_info.size > 0));
         m_list->setCellWidget(item_count, 4, action_item);
 
@@ -724,7 +726,8 @@ void dump_editor::change_status(int _index)
     if(buff_manager)
     {
         const core::memory::buffer_manager::buffer_info_map_t buff_info_map = m_buffer_infos;
-        const auto* selected_buffer                                         = m_objects_uid[std::size_t(_index)];
+        const auto* selected_buffer                                         =
+            m_objects_uid[static_cast<std::size_t>(_index)];
 
         core::memory::buffer_manager::buffer_info_map_t::const_iterator iter;
         iter = buff_info_map.find(selected_buffer);

@@ -25,19 +25,16 @@
 
 #include "loader.hpp"
 
-#include <core/com/slot_base.hxx>
 #include <core/progress/monitor.hpp>
 
 #include <service/op.hpp>
 
-#include <ui/__/macros.hpp>
-
 #include <QLabel>
-#include <qprogressbar.h>
 #include <QProgressBar>
 #include <QSvgWidget>
 #include <QToolButton>
 #include <QWidget>
+#include <qprogressbar.h>
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::ui::qt::ut::progress_bar_test);
 
@@ -237,7 +234,7 @@ void progress_bar_test::launch_test(
     // Check that progress_bar is set with correct information.
     for(int i = 1 ; i <= 100 ; i++)
     {
-        monitor->done_work(std::uint64_t(i));
+        monitor->done_work(static_cast<std::uint64_t>(i));
 
         const auto check_progress_info = wait_for_widget(
             [_show_title, _pulse, _svg, i, monitor, task_name, this](QWidget* _widget)
@@ -259,7 +256,9 @@ void progress_bar_test::launch_test(
                             if(!_pulse)
                             {
                                 // Do the same operation that the progress_bar does.
-                                int value = (int) (float(i) / float(monitor->get_total_work_units()) * 100);
+                                int value = static_cast<int>(static_cast<float>(i)
+                                                             / static_cast<float>(monitor->get_total_work_units())
+                                                             * 100);
                                 CPPUNIT_ASSERT_EQUAL_MESSAGE(
                                     "The value of progress_bar should be equal to done work units.",
                                     value,

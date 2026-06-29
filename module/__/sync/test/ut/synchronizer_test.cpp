@@ -19,10 +19,8 @@
  *
  ***********************************************************************/
 
-#include <core/com/signal.hpp>
-#include <core/com/signal.hxx>
 #include <core/com/slots.hpp>
-#include <core/com/slots.hxx>
+
 #include <core/runtime/runtime.hpp>
 
 #include <data/frame_tl.hpp>
@@ -30,7 +28,6 @@
 #include <data/image_series.hpp>
 #include <data/matrix4.hpp>
 #include <data/matrix_tl.hpp>
-#include <data/mt/weak_ptr.hpp>
 
 #include <service/op.hpp>
 
@@ -99,7 +96,7 @@ public:
         );
         {
             auto dump_lock_frame1 = m_frame1->dump_lock();
-            std::fill(m_frame1->begin<std::uint8_t>(), m_frame1->end<std::uint8_t>(), std::uint8_t(0));
+            std::fill(m_frame1->begin<std::uint8_t>(), m_frame1->end<std::uint8_t>(), static_cast<std::uint8_t>(0));
         }
 
         m_frame2 = std::make_shared<sight::data::image>();
@@ -110,7 +107,7 @@ public:
         );
         {
             auto dump_lock_frame2 = m_frame2->dump_lock();
-            std::fill(m_frame2->begin<std::uint8_t>(), m_frame2->end<std::uint8_t>(), std::uint8_t(0));
+            std::fill(m_frame2->begin<std::uint8_t>(), m_frame2->end<std::uint8_t>(), static_cast<std::uint8_t>(0));
         }
 
         m_matrix1          = std::make_shared<sight::data::matrix4>();
@@ -146,7 +143,7 @@ public:
                                       0., 0., 1., 0.,
                                       0., 0., 0., 1.
         };
-        matrix[0] = float(_timestamp);
+        matrix[0] = static_cast<float>(_timestamp);
         data->set_element(matrix, _element_index);
         _matrix_tl->push_object(data);
     }
@@ -182,7 +179,7 @@ public:
                                           0., 0., 1., 0.,
                                           0., 0., 0., 1.
             };
-            matrix[0] = float(_timestamp * 10 + element_index);
+            matrix[0] = static_cast<float>(_timestamp * 10 + element_index);
             data->set_element(matrix, element_index);
         }
 
@@ -949,7 +946,7 @@ TEST_SUITE("sight::module::sync::synchronizer")
         );
         {
             auto dump_lock_frame = frame->dump_lock();
-            std::fill(frame->begin<std::uint8_t>(), frame->end<std::uint8_t>(), std::uint8_t(0));
+            std::fill(frame->begin<std::uint8_t>(), frame->end<std::uint8_t>(), static_cast<std::uint8_t>(0));
         }
 
         srv->set_inout(frame, "frames", false, false, 0);
@@ -1041,7 +1038,7 @@ TEST_SUITE("sight::module::sync::synchronizer")
         );
         {
             auto dump_lock_frame1 = frame1->dump_lock();
-            std::fill(frame1->begin<std::uint8_t>(), frame1->end<std::uint8_t>(), std::uint8_t(0));
+            std::fill(frame1->begin<std::uint8_t>(), frame1->end<std::uint8_t>(), static_cast<std::uint8_t>(0));
         }
         auto frame4 = std::make_shared<sight::data::image>();
         frame4->resize(
@@ -1051,7 +1048,7 @@ TEST_SUITE("sight::module::sync::synchronizer")
         );
         {
             auto dump_lock_frame4 = frame4->dump_lock();
-            std::fill(frame4->begin<std::uint8_t>(), frame4->end<std::uint8_t>(), std::uint8_t(0));
+            std::fill(frame4->begin<std::uint8_t>(), frame4->end<std::uint8_t>(), static_cast<std::uint8_t>(0));
         }
         auto frame6 = std::make_shared<sight::data::image>();
         frame6->resize(
@@ -1061,7 +1058,7 @@ TEST_SUITE("sight::module::sync::synchronizer")
         );
         {
             auto dump_lock_frame6 = frame6->dump_lock();
-            std::fill(frame6->begin<std::uint8_t>(), frame6->end<std::uint8_t>(), std::uint8_t(0));
+            std::fill(frame6->begin<std::uint8_t>(), frame6->end<std::uint8_t>(), static_cast<std::uint8_t>(0));
         }
         auto frame11 = std::make_shared<sight::data::image>();
         frame11->resize(
@@ -1071,7 +1068,7 @@ TEST_SUITE("sight::module::sync::synchronizer")
         );
         {
             auto dump_lock_frame11 = frame11->dump_lock();
-            std::fill(frame11->begin<std::uint8_t>(), frame11->end<std::uint8_t>(), std::uint8_t(0));
+            std::fill(frame11->begin<std::uint8_t>(), frame11->end<std::uint8_t>(), static_cast<std::uint8_t>(0));
         }
 
         srv->set_inout(frame1, "frames", false, false, 0);
@@ -1186,7 +1183,7 @@ TEST_SUITE("sight::module::sync::synchronizer")
         );
         {
             auto dump_lock_frame1 = frame1->dump_lock();
-            std::fill(frame1->begin<std::uint8_t>(), frame1->end<std::uint8_t>(), std::uint8_t(0));
+            std::fill(frame1->begin<std::uint8_t>(), frame1->end<std::uint8_t>(), static_cast<std::uint8_t>(0));
         }
         auto frame4 = std::make_shared<sight::data::image>();
         frame4->resize(
@@ -1196,7 +1193,7 @@ TEST_SUITE("sight::module::sync::synchronizer")
         );
         {
             auto dump_lock_frame4 = frame4->dump_lock();
-            std::fill(frame4->begin<std::uint8_t>(), frame4->end<std::uint8_t>(), std::uint8_t(0));
+            std::fill(frame4->begin<std::uint8_t>(), frame4->end<std::uint8_t>(), static_cast<std::uint8_t>(0));
         }
         auto frame6 = std::make_shared<sight::data::image>();
         frame6->resize(
@@ -1206,7 +1203,7 @@ TEST_SUITE("sight::module::sync::synchronizer")
         );
         {
             auto dump_lock_frame6 = frame6->dump_lock();
-            std::fill(frame6->begin<std::uint8_t>(), frame6->end<std::uint8_t>(), std::uint8_t(0));
+            std::fill(frame6->begin<std::uint8_t>(), frame6->end<std::uint8_t>(), static_cast<std::uint8_t>(0));
         }
         auto frame11 = std::make_shared<sight::data::image>();
         frame11->resize(
@@ -1216,7 +1213,7 @@ TEST_SUITE("sight::module::sync::synchronizer")
         );
         {
             auto dump_lock_frame11 = frame11->dump_lock();
-            std::fill(frame11->begin<std::uint8_t>(), frame11->end<std::uint8_t>(), std::uint8_t(0));
+            std::fill(frame11->begin<std::uint8_t>(), frame11->end<std::uint8_t>(), static_cast<std::uint8_t>(0));
         }
 
         srv->set_inout(frame1, "frames", false, false, 0);
@@ -1359,8 +1356,8 @@ TEST_SUITE("sight::module::sync::synchronizer")
         check_frame(m_frame1, 4);
         check_frame(m_frame2, 5);
         check_matrix(m_matrix1, 60);
-        srv->slot("setFrameBinding")->run(std::size_t(1), 0U, std::size_t(0));
-        srv->slot("setMatrixBinding")->run(std::size_t(0), 1U, std::size_t(0));
+        srv->slot("setFrameBinding")->run(static_cast<std::size_t>(1), 0U, static_cast<std::size_t>(0));
+        srv->slot("setMatrixBinding")->run(static_cast<std::size_t>(0), 1U, static_cast<std::size_t>(0));
 
         //time 3: synch with frame TL 2 on both frame outputs and matrix on second element
         add_frame_to_frame_tl(m_frame_tl_1, 10);
@@ -1373,7 +1370,7 @@ TEST_SUITE("sight::module::sync::synchronizer")
         check_frame(m_frame2, 11);
         check_matrix(m_matrix1, 121);
 
-        srv->slot("setFrameBinding")->run(std::size_t(0), 0U, std::size_t(1));
+        srv->slot("setFrameBinding")->run(static_cast<std::size_t>(0), 0U, static_cast<std::size_t>(1));
 
         //time 4: synch with frame TL1 => frame2 and frameTL2 => frame1
         add_frame_to_frame_tl(m_frame_tl_1, 20);
@@ -1780,7 +1777,7 @@ TEST_SUITE("sight::module::sync::synchronizer")
         );
         {
             auto dump_lock_frame1 = frame1->dump_lock();
-            std::fill(frame1->begin<std::uint8_t>(), frame1->end<std::uint8_t>(), std::uint8_t(0));
+            std::fill(frame1->begin<std::uint8_t>(), frame1->end<std::uint8_t>(), static_cast<std::uint8_t>(0));
         }
 
         srv->set_inout(frame1, "frames", false, false, 0);
@@ -1884,7 +1881,7 @@ TEST_SUITE("sight::module::sync::synchronizer")
         );
         {
             auto dump_lock_frame1 = frame1->dump_lock();
-            std::fill(frame1->begin<std::uint8_t>(), frame1->end<std::uint8_t>(), std::uint8_t(0));
+            std::fill(frame1->begin<std::uint8_t>(), frame1->end<std::uint8_t>(), static_cast<std::uint8_t>(0));
         }
 
         sight::data::image::sptr frame2 = std::make_shared<sight::data::image>();
@@ -1895,7 +1892,7 @@ TEST_SUITE("sight::module::sync::synchronizer")
         );
         {
             auto dump_lock_frame2 = frame2->dump_lock();
-            std::fill(frame2->begin<std::uint8_t>(), frame2->end<std::uint8_t>(), std::uint8_t(0));
+            std::fill(frame2->begin<std::uint8_t>(), frame2->end<std::uint8_t>(), static_cast<std::uint8_t>(0));
         }
 
         /// Processing

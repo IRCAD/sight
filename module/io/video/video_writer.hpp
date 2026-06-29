@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2024 IRCAD France
+ * Copyright (C) 2016-2026 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -54,14 +54,23 @@ public:
 
     SIGHT_DECLARE_SERVICE(video_writer, sight::io::service::writer);
 
+    struct slots
+    {
+        using frame_t = core::com::slot<void (core::clock::type)>;
+        using void_t  = core::com::slot<void ()>;
+
+        static inline const slot_key_t SAVE_FRAME       = "save_frame";
+        static inline const slot_key_t START_RECORD     = "start_record";
+        static inline const slot_key_t STOP_RECORD      = "stop_record";
+        static inline const slot_key_t RECORD           = "record";
+        static inline const slot_key_t TOGGLE_RECORDING = "toggle_recording";
+    };
+
     /// Constructor.
     video_writer() noexcept;
 
     /// Destructor. Does nothing
     ~video_writer() noexcept override;
-
-    /// Defines auto connection for this service (saveFrame()) to the frame timeline (objectPushed)
-    service::connections_t auto_connections() const override;
 
     /// Display a location dialog allowing to select the video file to save
     void open_location_dialog() override;
@@ -70,6 +79,9 @@ public:
     sight::io::service::path_type_t get_path_type() const override;
 
 protected:
+
+    /// Defines auto connection for this service (saveFrame()) to the frame timeline (objectPushed)
+    service::connections_t auto_connections() const override;
 
     /// Does nothing
     void configuring() override;

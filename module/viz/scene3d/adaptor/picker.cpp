@@ -25,20 +25,16 @@
 #include "viz/scene3d/layer.hpp"
 #include "viz/scene3d/utils.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/signals.hpp>
 #include <core/ptree.hpp>
 
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const core::com::signals::key_t PICKED_SIG = "picked";
-
 //-----------------------------------------------------------------------------
 
 picker::picker() noexcept
 {
-    new_signal<point_clicked_sig_t>(PICKED_SIG);
+    new_signal<signals::point_clicked_t>(signals::PICKED);
 }
 
 //-----------------------------------------------------------------------------
@@ -196,7 +192,7 @@ void picker::pick(mouse_button _button, modifier _mod, int _x, int _y, bool _pre
                 info.m_modifier_mask |= data::tools::picking_info::shift;
             }
 
-            this->async_emit(PICKED_SIG, info);
+            this->async_emit(signals::PICKED, info);
         }
     }
 }

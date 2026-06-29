@@ -72,16 +72,16 @@ public:
 
     struct slots
     {
-        static inline const core::com::slots::key_t CHANGE_TO_GREEN_SLOT  = "change_to_green";
-        static inline const core::com::slots::key_t CHANGE_TO_RED_SLOT    = "change_to_red";
-        static inline const core::com::slots::key_t CHANGE_TO_ORANGE_SLOT = "change_to_orange";
-        static inline const core::com::slots::key_t TOGGLE_GREEN_RED_SLOT = "toggle_green_red";
+        static inline const slot_key_t CHANGE_TO_GREEN  = "change_to_green";
+        static inline const slot_key_t CHANGE_TO_RED    = "change_to_red";
+        static inline const slot_key_t CHANGE_TO_ORANGE = "change_to_orange";
+        static inline const slot_key_t TOGGLE_GREEN_RED = "toggle_green_red";
     };
+
+protected:
 
     /// Defines the automatic connections between signals and slots of the service.
     service::connections_t auto_connections() const override;
-
-protected:
 
     void configuring(const config_t& _config) override;
     void starting() override;

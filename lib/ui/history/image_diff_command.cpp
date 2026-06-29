@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,11 +22,6 @@
 
 #include "ui/history/image_diff_command.hpp"
 
-#include <core/com/signal.hpp>
-#include <core/com/signal.hxx>
-#include <core/com/signals.hpp>
-#include <core/type.hpp>
-
 namespace sight::ui::history
 {
 
@@ -34,7 +29,7 @@ namespace sight::ui::history
 
 image_diff_command::image_diff_command(const data::image::sptr& _img, filter::image::image_diff _diff) :
     m_img(_img),
-    m_modified_sig(_img->signal<data::image::buffer_modified_signal_t>(data::image::BUFFER_MODIFIED_SIG)),
+    m_modified_sig(_img->signal<data::image::signals::buffer_modified_t>(data::image::signals::BUFFER_MODIFIED)),
     m_diff(std::move(_diff))
 {
     m_diff.shrink();

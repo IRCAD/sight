@@ -21,8 +21,6 @@
 
 #include "timestamp_slot_caller_test.hpp"
 
-#include <core/com/slots.hxx>
-
 #include <service/op.hpp>
 
 #include <utest/wait.hpp>

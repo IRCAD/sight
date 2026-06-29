@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -140,11 +140,7 @@ void transfer_function_opacity::change_opacity(int _value)
 
     m_previous_value = _value;
 
-    auto sig = tf->signal<data::object::modified_signal_t>(data::transfer_function::POINTS_MODIFIED_SIG);
-    {
-        const core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
-        sig->async_emit();
-    }
+    tf->async_emit(this, data::transfer_function::signals::POINTS_MODIFIED);
 }
 
 //------------------------------------------------------------------------------
@@ -152,9 +148,9 @@ void transfer_function_opacity::change_opacity(int _value)
 service::connections_t transfer_function_opacity::auto_connections() const
 {
     return {
-        {TF, data::transfer_function::MODIFIED_SIG, service::slots::UPDATE},
-        {TF, data::transfer_function::POINTS_MODIFIED_SIG, service::slots::UPDATE},
-        {TF, data::transfer_function::WINDOWING_MODIFIED_SIG, service::slots::UPDATE}
+        {TF, data::signals::MODIFIED, service::slots::UPDATE},
+        {TF, data::transfer_function::signals::POINTS_MODIFIED, service::slots::UPDATE},
+        {TF, data::transfer_function::signals::WINDOWING_MODIFIED, service::slots::UPDATE}
     };
 }
 

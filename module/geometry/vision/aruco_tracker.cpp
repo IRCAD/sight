@@ -20,25 +20,17 @@
  *
  ***********************************************************************/
 
-// cspell:ignore NOLINTNEXTLINE
-
 #include "aruco_tracker.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-
 #include <io/opencv/camera.hpp>
-#include <io/opencv/frame_tl.hpp>
 #include <io/opencv/image.hpp>
-#include <io/tracking/base.hxx>
 
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/tokenizer.hpp>
 
 #include <opencv2/calib3d.hpp>
-#include <opencv2/core.hpp>
-#include <opencv2/opencv.hpp>
+#include <opencv2/imgproc.hpp>
 
 //-----------------------------------------------------------------------------
 
@@ -47,17 +39,10 @@ namespace sight::module::geometry::vision
 
 //-----------------------------------------------------------------------------
 
-const core::com::signals::key_t aruco_tracker::DETECTION_DONE_SIG  = "detectionDone";
-const core::com::signals::key_t aruco_tracker::MARKER_DETECTED_SIG = "marker_detected";
-
-const core::com::slots::key_t aruco_tracker::SET_PARAMETER_SLOT = "set_parameter";
-
-//-----------------------------------------------------------------------------
-
-aruco_tracker::aruco_tracker() noexcept :
-    m_sig_detection_done(new_signal<detection_done_signal_t>(DETECTION_DONE_SIG))
+aruco_tracker::aruco_tracker() noexcept
 {
-    new_signal<marker_detected_signal_t>(MARKER_DETECTED_SIG);
+    new_signal<signals::detection_done_t>(signals::DETECTION_DONE);
+    new_signal<signals::marker_detected_t>(signals::MARKER_DETECTED);
 
     // Initialize detector parameters
     m_detector_params = cv::makePtr<cv::aruco::DetectorParameters>();
@@ -88,8 +73,8 @@ aruco_tracker::~aruco_tracker() noexcept =
 service::connections_t aruco_tracker::auto_connections() const
 {
     return {
-        {FRAME_INOUT, data::object::MODIFIED_SIG, service::slots::UPDATE},
-        {FRAME_INOUT, data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE}
+        {FRAME_INOUT, data::signals::MODIFIED, service::slots::UPDATE},
+        {FRAME_INOUT, data::image::signals::BUFFER_MODIFIED, service::slots::UPDATE}
     };
 }
 
@@ -277,16 +262,15 @@ void aruco_tracker::tracking(core::clock::type& _timestamp)
             auto marker_map = m_marker_map[tag_tl_index].lock();
             // Always send the signal even if we did not find anything.
             // This allows to keep updating the whole processing pipeline.
-            auto sig = marker_map->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-            sig->async_emit();
+            marker_map->async_emit(data::signals::MODIFIED);
 
-            this->signal<marker_detected_signal_t>(MARKER_DETECTED_SIG)->async_emit(found_marker);
+            this->async_emit(signals::MARKER_DETECTED, found_marker);
 
             ++tag_tl_index;
         }
 
         // Emit
-        m_sig_detection_done->async_emit(_timestamp);
+        this->async_emit(signals::DETECTION_DONE, _timestamp);
     }
 }
 

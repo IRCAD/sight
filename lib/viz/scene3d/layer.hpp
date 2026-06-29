@@ -94,26 +94,22 @@ public:
     /// Defines the viewport parameters relatively to the screen: left, top, width ,height.
     using viewport_config_t = std::tuple<float, float, float, float>;
 
-    /// Contains the signal sent when the layer is initialized.
-    SIGHT_VIZ_SCENE3D_API static const core::com::signals::key_t INIT_LAYER_SIG;
-    using init_layer_signal_t = core::com::signal<void (viz::scene3d::layer::sptr)>;
+    struct signals
+    {
+        using init_layer_t     = core::com::signal<void (viz::scene3d::layer::sptr)>;
+        using resize_layer_t   = core::com::signal<void (int, int)>;
+        using camera_updated_t = core::com::signal<void ()>;
 
-    /// Contains the signal sent when the layer is resized.
-    SIGHT_VIZ_SCENE3D_API static const core::com::signals::key_t RESIZE_LAYER_SIG;
-    using resize_layer_signal_t = core::com::signal<void (int, int)>;
+        static inline const signal_key_t INIT_LAYER           = "layerInitialized";
+        static inline const signal_key_t RESIZE_LAYER         = "layerResized";
+        static inline const signal_key_t CAMERA_RANGE_UPDATED = "CameraRangeUpdated";
+    };
 
-    /// Contains signals sent when the camera is modified.
-    SIGHT_VIZ_SCENE3D_API static const core::com::signals::key_t CAMERA_RANGE_UPDATED_SIG;
-    using camera_updated_signal_t = core::com::signal<void ()>;
-
-    using interaction_slot_t = core::com::slot<void (viz::scene3d::window_interactor::interaction_info)>;
-    using destroy_slot_t     = core::com::slot<void ()>;
-
-    /// Contains the slot name that request the picker to do a ray cast according to the passed position.
-    SIGHT_VIZ_SCENE3D_API static const core::com::slots::key_t INTERACTION_SLOT;
-
-    /// Contains the slot name that request the reset of camera.
-    SIGHT_VIZ_SCENE3D_API static const core::com::slots::key_t RESET_CAMERA_SLOT;
+    struct slots
+    {
+        static inline const slot_key_t INTERACTION  = "interaction";
+        static inline const slot_key_t RESET_CAMERA = "reset_camera";
+    };
 
     /// Defines the default camera name.
     SIGHT_VIZ_SCENE3D_API static const std::string DEFAULT_CAMERA_NAME;

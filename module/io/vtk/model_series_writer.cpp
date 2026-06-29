@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,12 +22,10 @@
 
 #include "module/io/vtk/model_series_writer.hpp"
 
-#include <core/com/signal.hxx>
 #include <core/location/single_folder.hpp>
 
 #include <data/mesh.hpp>
 #include <data/model_series.hpp>
-#include <data/reconstruction.hpp>
 
 #include <io/vtk/mesh_writer.hpp>
 #include <io/vtk/obj_mesh_writer.hpp>
@@ -39,8 +37,6 @@
 #include <ui/__/dialog/location.hpp>
 #include <ui/__/dialog/message.hpp>
 #include <ui/__/dialog/selector.hpp>
-
-#include <boost/algorithm/string.hpp>
 
 #include <algorithm>
 #include <filesystem>
@@ -186,7 +182,7 @@ void model_series_writer::info(std::ostream& _sstream)
 //------------------------------------------------------------------------------
 
 template<typename WRITER>
-static typename WRITER::sptr configure_writer(const std::filesystem::path& _filename)
+static WRITER::sptr configure_writer(const std::filesystem::path& _filename)
 {
     typename WRITER::sptr writer = std::make_shared<WRITER>();
     writer->set_file(_filename);

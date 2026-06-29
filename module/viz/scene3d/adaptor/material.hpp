@@ -171,11 +171,11 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::material::MODIFIED_SIG of s_MATERIAL_INOUT to service::slots::UPDATE
-     * Connect data::material::ADDED_FIELDS_SIG of s_MATERIAL_INOUT to UPDATE_FIELD
-     * Connect data::material::CHANGED_FIELDS_SIG of s_MATERIAL_INOUT to UPDATE_FIELD
-     * Connect data::material::ADDED_TEXTURE_SIG of s_MATERIAL_INOUT to ADD_TEXTURE
-     * Connect data::material::REMOVED_TEXTURE_SIG of s_MATERIAL_INOUT to REMOVE_TEXTURE
+     * Connect data::signals::MODIFIED of s_MATERIAL_INOUT to service::slots::UPDATE
+     * Connect data::signals::ADDED_FIELDS of s_MATERIAL_INOUT to UPDATE_FIELD
+     * Connect data::signals::CHANGED_FIELDS of s_MATERIAL_INOUT to UPDATE_FIELD
+     * Connect data::material::signals::ADDED_TEXTURE of s_MATERIAL_INOUT to ADD_TEXTURE
+     * Connect data::material::signals::REMOVED_TEXTURE of s_MATERIAL_INOUT to REMOVE_TEXTURE
      */
     service::connections_t auto_connections() const final;
 

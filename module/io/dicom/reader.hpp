@@ -79,7 +79,7 @@ public:
 
     SIGHT_DECLARE_SERVICE(reader, sight::io::service::reader);
 
-    using monitor_created_signal_t = core::com::signal<void (core::progress::monitor::sptr)>;
+    using monitor_created_t = core::com::signal<void (core::progress::monitor::sptr)>;
 
     reader() noexcept;
 

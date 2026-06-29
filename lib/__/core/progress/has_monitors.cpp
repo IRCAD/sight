@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,6 @@
  ***********************************************************************/
 
 #include "core/progress/has_monitors.hpp"
-
-#include <core/com/signal.hxx>
 
 namespace sight::core::progress
 {

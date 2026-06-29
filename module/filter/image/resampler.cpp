@@ -22,8 +22,6 @@
 
 #include "resampler.hpp"
 
-#include <core/com/signal.hxx>
-
 #include <filter/image/resampler.hpp>
 
 namespace sight::module::filter::image
@@ -71,7 +69,7 @@ void resampler::updating()
     );
 
     this->async_emit(signals::SUCCEEDED);
-    out_img->async_emit(data::image::MODIFIED_SIG);
+    out_img->async_emit(data::signals::MODIFIED);
 }
 
 //------------------------------------------------------------------------------
@@ -85,9 +83,9 @@ void resampler::stopping()
 service::connections_t resampler::auto_connections() const
 {
     service::connections_t connections;
-    connections.push(IMAGE_IN, data::image::MODIFIED_SIG, service::slots::UPDATE);
-    connections.push(IMAGE_IN, data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE);
-    connections.push(TRANSFORM_IN, data::matrix4::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(IMAGE_IN, data::signals::MODIFIED, service::slots::UPDATE);
+    connections.push(IMAGE_IN, data::image::signals::BUFFER_MODIFIED, service::slots::UPDATE);
+    connections.push(TRANSFORM_IN, data::signals::MODIFIED, service::slots::UPDATE);
 
     return connections;
 }

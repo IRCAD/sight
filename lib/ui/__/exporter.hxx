@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2024 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -24,9 +24,8 @@
 #include "exporter.hpp"
 
 #include <core/com/slot.hpp>
-#include <core/com/slot.hxx>
+
 #include <core/com/slots.hpp>
-#include <core/com/slots.hxx>
 
 #include <ui/__/dialog/input.hpp>
 
@@ -36,17 +35,17 @@ namespace sight::ui
 template<class C>
 constexpr exporter<C>::exporter()
 {
-    new_slot(exporter<C>::CHECK_ADDED_OBJECTS_SLOT, &exporter<C>::check_added_objects, this);
-    new_slot(exporter<C>::CHECK_REMOVED_OBJECTS_SLOT, &exporter<C>::check_removed_objects, this);
+    new_slot(slots::CHECK_ADDED_OBJECTS, &exporter<C>::check_added_objects, this);
+    new_slot(slots::CHECK_REMOVED_OBJECTS, &exporter<C>::check_removed_objects, this);
 }
 
 //------------------------------------------------------------------------------
 template<class C>
-typename exporter<C>::connections_t exporter<C>::auto_connections() const
+exporter<C>::connections_t exporter<C>::auto_connections() const
 {
     return {
-        {CONTAINER_INOUT, C::ADDED_OBJECTS_SIG, CHECK_ADDED_OBJECTS_SLOT},
-        {CONTAINER_INOUT, C::REMOVED_OBJECTS_SIG, CHECK_REMOVED_OBJECTS_SLOT}
+        {CONTAINER_INOUT, C::signals::ADDED_OBJECTS, slots::CHECK_ADDED_OBJECTS},
+        {CONTAINER_INOUT, C::signals::REMOVED_OBJECTS, slots::CHECK_REMOVED_OBJECTS}
     };
 }
 
@@ -124,7 +123,7 @@ void exporter<C>::info(std::ostream& _sstream)
 //------------------------------------------------------------------------------
 
 template<class C>
-constexpr void exporter<C>::check_added_objects(typename C::container_t _added_objects)
+constexpr void exporter<C>::check_added_objects(C::container_t _added_objects)
 {
     auto data = m_data.lock();
 
@@ -138,7 +137,7 @@ constexpr void exporter<C>::check_added_objects(typename C::container_t _added_o
 //------------------------------------------------------------------------------
 
 template<class C>
-constexpr void exporter<C>::check_removed_objects(typename C::container_t _removed_objects)
+constexpr void exporter<C>::check_removed_objects(C::container_t _removed_objects)
 {
     auto data = m_data.lock();
 

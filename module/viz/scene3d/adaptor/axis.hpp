@@ -152,10 +152,10 @@ private:
     bool m_axis_visibility {true};
 
     /// Contains the lines along the x,y,z axis.
-    Ogre::ManualObject* m_line[3] {nullptr, nullptr, nullptr};
+    std::array<Ogre::ManualObject*, 3> m_line {nullptr, nullptr, nullptr};
 
     /// Contains the arrows along the x,y,z axis.
-    Ogre::ManualObject* m_cone[3] {nullptr, nullptr, nullptr};
+    std::array<Ogre::ManualObject*, 3> m_cone {nullptr, nullptr, nullptr};
 
     /// Contains the scene node where all of manual objects are attached.
     Ogre::SceneNode* m_scene_node {nullptr};

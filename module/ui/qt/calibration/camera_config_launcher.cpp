@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,6 @@
 
 #include "module/ui/qt/calibration/camera_config_launcher.hpp"
 
-#include <core/com/signal.hxx>
 #include <core/runtime/path.hpp>
 
 #include <data/calibration_info.hpp>
@@ -35,12 +34,8 @@
 
 #include <service/op.hpp>
 
-#include <ui/__/dialog/input.hpp>
-#include <ui/__/dialog/location.hpp>
 #include <ui/__/dialog/message.hpp>
 #include <ui/qt/container/widget.hpp>
-
-#include <boost/lexical_cast.hpp>
 
 #include <QHBoxLayout>
 #include <QInputDialog>
@@ -317,12 +312,9 @@ void camera_config_launcher::on_import_clicked()
             const auto selected_camera = camera_map[selected_std];
             const auto cam_idx         = m_camera_combo_box->currentIndex();
             const auto camera_set      = m_camera_set.lock();
-            auto camera                = camera_set->get_camera(std::size_t(cam_idx));
+            auto camera                = camera_set->get_camera(static_cast<std::size_t>(cam_idx));
             camera->deep_copy(selected_camera);
-            camera->signal<data::camera::intrinsic_calibrated_signal_t>(
-                data::camera::INTRINSIC_CALIBRATED_SIG
-            )
-            ->async_emit();
+            camera->async_emit(data::camera::signals::INTRINSIC_CALIBRATED);
         }
     }
 }
@@ -342,10 +334,7 @@ void camera_config_launcher::on_remove_clicked()
             data::camera::sptr camera = camera_set->get_camera(index);
             camera_set->remove_camera(camera);
 
-            auto sig = camera_set->signal<data::camera_set::removed_camera_signal_t>(
-                data::camera_set::REMOVED_CAMERA_SIG
-            );
-            sig->async_emit(camera);
+            camera_set->async_emit(data::camera_set::signals::REMOVED_CAMERA, camera);
 
             // Remove calibrationInfo
             std::string calibration_info_key = "calibrationInfo_" + std::to_string(index);
@@ -430,7 +419,7 @@ void camera_config_launcher::start_extrinsic_config(std::size_t _index)
 {
     sight::app::field_adaptor_t replace_map;
     {
-        const std::size_t camera_idx = std::max(_index, std::size_t(1));
+        const std::size_t camera_idx = std::max(_index, static_cast<std::size_t>(1));
 
         const auto camera_set = m_camera_set.lock();
 
@@ -453,8 +442,8 @@ void camera_config_launcher::start_extrinsic_config(std::size_t _index)
         data::calibration_info::sptr calib_info1;
         data::calibration_info::sptr calib_info2;
         // Get the calibrationInfo from the activity if it exists or create it.
-        if(activity->find(calibration_info1_key) == activity->end()
-           || activity->find(calibration_info2_key) == activity->end())
+        if(!activity->contains(calibration_info1_key)
+           || !activity->contains(calibration_info2_key))
         {
             calib_info1 = std::make_shared<data::calibration_info>();
             calib_info2 = std::make_shared<data::calibration_info>();
@@ -504,10 +493,7 @@ void camera_config_launcher::add_camera()
 
         // Add the camera
         camera_set->add_camera(camera);
-        auto sig = camera_set->signal<data::camera_set::added_camera_signal_t>(
-            data::camera_set::ADDED_CAMERA_SIG
-        );
-        sig->async_emit(camera);
+        camera_set->async_emit(data::camera_set::signals::ADDED_CAMERA, camera);
     }
 
     m_camera_combo_box->blockSignals(true);

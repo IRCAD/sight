@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2025 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,7 +23,6 @@
 
 #include "module/io/itk/image_reader.hpp"
 
-#include <core/com/signal.hxx>
 #include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
 #include <core/tools/date_and_time.hpp>
@@ -31,17 +30,11 @@
 #include <core/tools/os.hpp>
 #include <core/tools/uuid.hpp>
 
-#include <data/image.hpp>
-
 #include <io/__/service/io_types.hpp>
 #include <io/__/service/reader.hpp>
 
 #include <ui/__/cursor.hpp>
 #include <ui/__/dialog/location.hpp>
-#include <ui/__/dialog/message.hpp>
-#include <ui/__/dialog/progress.hpp>
-
-#include <boost/date_time/posix_time/posix_time.hpp>
 
 #include <filesystem>
 
@@ -167,11 +160,7 @@ void image_series_reader::updating()
             {
                 init_series(image_series);
 
-                auto sig = image_series->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-                {
-                    core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
-                    sig->async_emit();
-                }
+                image_series->async_emit(this, data::signals::MODIFIED);
             }
         }
         catch(core::tools::failed& e)

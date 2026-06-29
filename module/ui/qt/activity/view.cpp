@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,13 +22,6 @@
 
 #include "view.hpp"
 
-#include <core/com/signal.hpp>
-#include <core/com/signal.hxx>
-#include <core/com/signals.hpp>
-
-#include <service/extension/config.hpp>
-#include <service/macros.hpp>
-
 #include <ui/__/dialog/message.hpp>
 #include <ui/__/registry.hpp>
 #include <ui/qt/container/widget.hpp>
@@ -39,21 +32,14 @@
 namespace sight::module::ui::qt::activity
 {
 
-const core::com::signals::key_t ACTIVITY_LAUNCHED_SIG = "activity_launched";
-
 static const std::string BORDER_CONFIG = "border";
 
 //------------------------------------------------------------------------------
 
-view::view() :
-    m_sig_activity_launched(new_signal<activity_launched_signal_t>(ACTIVITY_LAUNCHED_SIG))
+view::view()
 {
+    new_signal<signals::activity_launched_t>(signals::ACTIVITY_LAUNCHED);
 }
-
-//------------------------------------------------------------------------------
-
-view::~view()
-= default;
 
 //-----------------------------------------------------------------------------
 
@@ -158,7 +144,7 @@ void view::launch_activity(data::activity::sptr _activity)
             m_config_manager->set_config(info.app_config.id, replacementMap);
             m_config_manager->launch();
 
-            m_sig_activity_launched->async_emit(_activity);
+            async_emit(signals::ACTIVITY_LAUNCHED, _activity);
         }
         catch(std::exception& e)
         {

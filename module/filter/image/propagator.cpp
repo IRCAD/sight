@@ -21,8 +21,6 @@
 
 #include "module/filter/image/propagator.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
 #include <core/progress/observer.hpp>
 
 #include <data/helper/medical_image.hpp>
@@ -181,7 +179,7 @@ void propagator::propagate()
         bool filled = false;
         if(propag_diff.num_elements() > 0)
         {
-            image_out->async_emit(data::image::BUFFER_MODIFIED_SIG);
+            image_out->async_emit(data::image::signals::BUFFER_MODIFIED);
             this->async_emit(filter::signals::SUCCEEDED);
 
             const auto samples_out = m_samples_out.lock();
@@ -197,7 +195,7 @@ void propagator::propagate()
                     samples_out->set_pixel(i, propag_diff.get_element(i).m_old_value);
                 }
 
-                samples_out->async_emit(data::image::MODIFIED_SIG);
+                samples_out->async_emit(data::signals::MODIFIED);
             }
 
             filled = true;
@@ -207,7 +205,7 @@ void propagator::propagate()
         if(mask_filled)
         {
             *mask_filled = filled;
-            mask_filled->async_emit(this, data::object::MODIFIED_SIG);
+            mask_filled->async_emit(this, data::signals::MODIFIED);
         }
     }
 
@@ -223,7 +221,7 @@ void propagator::clear()
         const auto lock      = image_out->dump_lock();
 
         std::fill(image_out->begin(), image_out->end(), static_cast<std::uint8_t>(0));
-        image_out->async_emit(data::image::BUFFER_MODIFIED_SIG);
+        image_out->async_emit(data::image::signals::BUFFER_MODIFIED);
     }
     {
         const auto image_in = m_image_in.lock();
@@ -234,13 +232,13 @@ void propagator::clear()
 
         sight::data::image::size_t voxels_size {0, 1, 1};
         samples_out->resize(voxels_size, image_in->type(), image_in->pixel_format());
-        samples_out->async_emit(data::image::MODIFIED_SIG);
+        samples_out->async_emit(data::signals::MODIFIED);
 
         const auto mask_filled = m_mask_filled_out.lock();
         if(mask_filled)
         {
             *mask_filled = false;
-            mask_filled->async_emit(this, data::object::MODIFIED_SIG);
+            mask_filled->async_emit(this, data::signals::MODIFIED);
         }
     }
 }
@@ -256,8 +254,8 @@ void propagator::stopping()
 service::connections_t propagator::auto_connections() const
 {
     return {
-        {m_image_in, data::image::MODIFIED_SIG, service::slots::UPDATE},
-        {m_seeds_in, data::point_list::MODIFIED_SIG, slots::PROPAGATE}
+        {m_image_in, data::signals::MODIFIED, service::slots::UPDATE},
+        {m_seeds_in, data::signals::MODIFIED, slots::PROPAGATE}
     };
 }
 

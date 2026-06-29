@@ -99,7 +99,7 @@ void image_center::updating()
     matrix->set_orientation(orientation);
     matrix->set_position(world_center);
 
-    matrix->signal<data::matrix4::modified_signal_t>(data::matrix4::MODIFIED_SIG)->async_emit();
+    matrix->async_emit(data::signals::MODIFIED);
     this->async_emit(signals::SUCCEEDED);
 }
 
@@ -113,7 +113,7 @@ void image_center::stopping()
 
 service::connections_t image_center::auto_connections() const
 {
-    return {{IMAGE_IN, data::image::MODIFIED_SIG, service::slots::UPDATE}};
+    return {{IMAGE_IN, data::signals::MODIFIED, service::slots::UPDATE}};
 }
 
 //------------------------------------------------------------------------------

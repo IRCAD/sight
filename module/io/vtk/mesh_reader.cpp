@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,6 @@
 
 #include "module/io/vtk/mesh_reader.hpp"
 
-#include <core/com/signal.hxx>
 #include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
 #include <core/progress/observer.hpp>
@@ -116,7 +115,7 @@ void mesh_reader::info(std::ostream& _sstream)
 //------------------------------------------------------------------------------
 
 template<typename READER>
-static typename READER::sptr configure_reader(const std::filesystem::path& _file)
+static READER::sptr configure_reader(const std::filesystem::path& _file)
 {
     typename READER::sptr reader = std::make_shared<READER>();
     reader->set_file(_file);
@@ -249,12 +248,7 @@ void mesh_reader::notification_of_update()
     const auto locked = m_data.lock();
     const auto mesh   = std::dynamic_pointer_cast<data::mesh>(locked.get_shared());
 
-    data::object::modified_signal_t::sptr sig;
-    sig = mesh->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-    {
-        core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
-        sig->async_emit();
-    }
+    mesh->async_emit(this, data::signals::MODIFIED);
 }
 
 //------------------------------------------------------------------------------

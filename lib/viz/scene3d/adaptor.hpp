@@ -120,12 +120,12 @@ protected:
 
     struct slots
     {
-        static inline const core::com::slots::key_t APPLY_VISIBILITY  = "apply_visibility";
-        static inline const core::com::slots::key_t UPDATE_VISIBILITY = "update_visibility";
-        static inline const core::com::slots::key_t TOGGLE_VISIBILITY = "toggle_visibility";
-        static inline const core::com::slots::key_t SHOW              = "show";
-        static inline const core::com::slots::key_t HIDE              = "hide";
-        static inline const core::com::slots::key_t LAZY_UPDATE       = "lazy_update";
+        static inline const slot_key_t APPLY_VISIBILITY  = "apply_visibility";
+        static inline const slot_key_t UPDATE_VISIBILITY = "update_visibility";
+        static inline const slot_key_t TOGGLE_VISIBILITY = "toggle_visibility";
+        static inline const slot_key_t SHOW              = "show";
+        static inline const slot_key_t HIDE              = "hide";
+        static inline const slot_key_t LAZY_UPDATE       = "lazy_update";
     };
 
     /// Initializes slots.

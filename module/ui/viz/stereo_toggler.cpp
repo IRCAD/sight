@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,19 +22,16 @@
 
 #include "stereo_toggler.hpp"
 
-#include <viz/scene3d/compositor/core.hpp>
 #include <viz/scene3d/render.hpp>
 
 namespace sight::module::ui::viz
 {
 
-static const core::com::signals::key_t STEREO_ACTIVE_SIG = "stereoActive";
-
 //------------------------------------------------------------------------------
 
-stereo_toggler::stereo_toggler() :
-    m_stereo_active_sig(new_signal<stereo_active_sig_t>(STEREO_ACTIVE_SIG))
+stereo_toggler::stereo_toggler()
 {
+    new_signal<signals::stereo_active_t>(signals::STEREO_ACTIVE);
 }
 
 //------------------------------------------------------------------------------
@@ -110,7 +107,7 @@ void stereo_toggler::updating()
             }
         }
 
-        m_stereo_active_sig->async_emit(enable_stereo);
+        this->async_emit(signals::STEREO_ACTIVE, enable_stereo);
     }
 }
 

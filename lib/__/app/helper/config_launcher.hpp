@@ -78,7 +78,7 @@ public:
     }
 
     SIGHT_APP_API void set_config(const std::string& _key);
-    const std::string& config() const;
+    [[nodiscard]] const std::string& config() const;
 
 private:
 

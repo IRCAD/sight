@@ -22,8 +22,6 @@
 
 #include "module/filter/image/image_extruder.hpp"
 
-#include <core/com/slots.hxx>
-
 #include <data/helper/medical_image.hpp>
 #include <data/reconstruction.hpp>
 
@@ -32,14 +30,12 @@
 namespace sight::module::filter::image
 {
 
-static const core::com::slots::key_t ADD_RECONSTRUCTIONS_SLOT = "addReconstructions";
-
 //------------------------------------------------------------------------------
 
 image_extruder::image_extruder() :
     filter(has_signals::signals())
 {
-    new_slot(ADD_RECONSTRUCTIONS_SLOT, &image_extruder::add_reconstructions, this);
+    new_slot(slots::ADD_RECONSTRUCTIONS, &image_extruder::add_reconstructions, this);
 }
 
 //------------------------------------------------------------------------------
@@ -64,12 +60,12 @@ void image_extruder::starting()
 service::connections_t image_extruder::auto_connections() const
 {
     service::connections_t connections;
-    connections.push(MESHES_INPUT, data::model_series::MODIFIED_SIG, service::slots::UPDATE);
-    connections.push(MESHES_INPUT, data::model_series::RECONSTRUCTIONS_ADDED_SIG, ADD_RECONSTRUCTIONS_SLOT);
-    connections.push(MESHES_INPUT, data::model_series::RECONSTRUCTIONS_REMOVED_SIG, service::slots::UPDATE);
+    connections.push(MESHES_INPUT, data::signals::MODIFIED, service::slots::UPDATE);
+    connections.push(MESHES_INPUT, data::model_series::signals::RECONSTRUCTIONS_ADDED, slots::ADD_RECONSTRUCTIONS);
+    connections.push(MESHES_INPUT, data::model_series::signals::RECONSTRUCTIONS_REMOVED, service::slots::UPDATE);
 
-    connections.push(IMAGE_INPUT, data::image::MODIFIED_SIG, service::slots::UPDATE);
-    connections.push(TRANSFORM_INPUT, data::matrix4::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(IMAGE_INPUT, data::signals::MODIFIED, service::slots::UPDATE);
+    connections.push(TRANSFORM_INPUT, data::signals::MODIFIED, service::slots::UPDATE);
 
     return connections;
 }
@@ -135,10 +131,9 @@ void image_extruder::add_reconstructions(data::model_series::reconstruction_vect
     }
 
     // Send signals.
-    const auto sig = image_out->signal<data::image::buffer_modified_signal_t>(data::image::MODIFIED_SIG);
-    sig->async_emit();
+    image_out->async_emit(data::signals::MODIFIED);
 
-    this->signal<signals::computed_t>(signals::SUCCEEDED)->async_emit();
+    this->async_emit(signals::SUCCEEDED);
 }
 
 //------------------------------------------------------------------------------

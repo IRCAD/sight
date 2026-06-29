@@ -23,7 +23,6 @@
 #include <core/type.hpp>
 
 #include <data/boolean.hpp>
-#include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
 #include <data/point_list.hpp>
 #include <data/string.hpp>
@@ -153,7 +152,7 @@ TEST_SUITE("sight::module::filter::image::propagator")
         // Reset the output image
         {
             const auto lock = mask->dump_lock();
-            std::fill(mask->begin(), mask->end(), std::uint8_t(0));
+            std::fill(mask->begin(), mask->end(), static_cast<std::uint8_t>(0));
         }
 
         // One seed in the '2554' region and one seed in the '1200' region, propagation expected in both regions
@@ -231,8 +230,7 @@ TEST_SUITE("sight::module::filter::image::propagator")
 
         // Switch to standard deviation mode
         mode->set_value("stddev");
-        auto sig = mode->signal<sight::data::object::modified_signal_t>(sight::data::object::MODIFIED_SIG);
-        sig->emit();
+        mode->emit(sight::data::signals::MODIFIED);
 
         point_list->push_back(std::make_shared<sight::data::point>(105., -190., 52.));
 

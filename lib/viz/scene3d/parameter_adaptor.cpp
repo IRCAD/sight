@@ -22,8 +22,6 @@
 
 #include "viz/scene3d/parameter_adaptor.hpp"
 
-#include <core/com/slots.hxx>
-
 #include <data/array.hpp>
 #include <data/boolean.hpp>
 #include <data/color.hpp>
@@ -70,7 +68,7 @@ const std::string& parameter_adaptor::get_param_name() const
 
 service::connections_t parameter_adaptor::auto_connections() const
 {
-    return {{PARAMETER_INOUT, data::object::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE}};
+    return {{PARAMETER_INOUT, data::signals::MODIFIED, adaptor::slots::LAZY_UPDATE}};
 }
 
 //------------------------------------------------------------------------------

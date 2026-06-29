@@ -72,6 +72,12 @@ public:
 
     SIGHT_DECLARE_SERVICE(depth_image_masking, service::filter);
 
+    struct slots
+    {
+        static inline const slot_key_t SET_BACKGROUND = "set_background";
+        static inline const slot_key_t SET_THRESHOLD  = "set_threshold";
+    };
+
     /// Initializes slots
     depth_image_masking() noexcept;
 
