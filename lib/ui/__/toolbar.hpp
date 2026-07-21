@@ -29,8 +29,6 @@
 
 #include <service/base.hpp>
 
-#include <ui/__/parameter.hpp>
-
 namespace sight::ui
 {
 
@@ -72,9 +70,6 @@ public:
 
     /// SLOT: return the visibility of the container
     SIGHT_UI_API bool visible() const;
-
-    /// SLOT: show/hide the container using parameter_t (only testing bool alternative).
-    SIGHT_UI_API void set_visible_by_parameter(ui::parameter_t /*_is_visible*/);
 
     /// SLOT: show the container
     SIGHT_UI_API void show();
@@ -136,9 +131,6 @@ protected:
      *
      *  * @section Slots Slots
      * - \b set_visible(bool isVisible) : this slot shows the toolbar (if isVisible = true) or hides it.
-     * - \b set_visible_by_parameter(ui::parameter_t isVisible) : this slot shows the toolbar (if isEnabled holds
-     * boolean
-     * alternative) or hides it.
      * - \b show() : this slot shows the toolbar.
      * - \b hide() : this slot hides the toolbar.
      *

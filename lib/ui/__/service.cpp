@@ -39,14 +39,15 @@ namespace sight::ui
 service::service()
 {
     new_slot(slots::SET_ENABLED, &service::set_enabled, this);
-    new_slot(slots::SET_ENABLED_BY_PARAM, &service::set_enabled_by_parameter, this);
     new_slot(slots::ENABLE, &service::enable, this);
     new_slot(slots::DISABLE, &service::disable, this);
     new_slot(slots::SET_VISIBLE, &service::set_visible, this);
-    new_slot(slots::SET_VISIBLE_BY_PARAM, &service::set_visible_by_parameter, this);
     new_slot(slots::SHOW, &service::show, this);
     new_slot(slots::HIDE, &service::hide, this);
     new_slot(slots::TOGGLE_VISIBILITY, &service::toggle_visibility, this);
+    new_slot(slots::SET_BLURRED, &service::set_blurred, this);
+    new_slot(slots::BLUR, [this](){this->set_blurred(true);});
+    new_slot(slots::UNBLUR, [this](){this->set_blurred(false);});
     new_slot(slots::MODIFY_LAYOUT, &service::modify_layout, this);
 }
 
@@ -284,21 +285,10 @@ void service::set_parent(std::string _wid)
 
 //-----------------------------------------------------------------------------
 
-void service::set_enabled(bool _is_enabled)
+void service::set_enabled(bool _enabled)
 {
     ui::container::widget::sptr container = m_view_registry->get_parent();
-    container->set_enabled(_is_enabled);
-}
-
-//-----------------------------------------------------------------------------
-
-void service::set_enabled_by_parameter(ui::parameter_t _is_enabled)
-{
-    // Only consider boolean alternative, skip all other type of the variant.
-    if(std::holds_alternative<bool>(_is_enabled))
-    {
-        this->set_enabled(std::get<bool>(_is_enabled));
-    }
+    container->set_enabled(_enabled);
 }
 
 //-----------------------------------------------------------------------------
@@ -317,21 +307,10 @@ void service::disable()
 
 //-----------------------------------------------------------------------------
 
-void service::set_visible(bool _is_visible)
+void service::set_visible(bool _visible)
 {
     ui::container::widget::sptr container = m_view_registry->get_parent();
-    container->set_visible(_is_visible);
-}
-
-//-----------------------------------------------------------------------------
-
-void service::set_visible_by_parameter(ui::parameter_t _is_visible)
-{
-    // Only consider boolean alternative, skip all other type of the variant.
-    if(std::holds_alternative<bool>(_is_visible))
-    {
-        this->set_visible(std::get<bool>(_is_visible));
-    }
+    container->set_visible(_visible);
 }
 
 //-----------------------------------------------------------------------------
@@ -353,6 +332,14 @@ void service::hide()
 void service::toggle_visibility()
 {
     this->set_visible(!m_view_registry->get_parent()->is_shown_on_screen());
+}
+
+//-----------------------------------------------------------------------------
+
+void service::set_blurred(bool _blurred)
+{
+    ui::container::widget::sptr container = m_view_registry->get_parent();
+    container->set_blurred(_blurred);
 }
 
 //-----------------------------------------------------------------------------

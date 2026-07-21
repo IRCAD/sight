@@ -24,16 +24,11 @@
 
 #include <sight/ui/qt/config.hpp>
 
-#include <core/base.hpp>
-#include <core/object.hpp>
-
 #include <ui/__/container/widget.hpp>
 
 #include <QLayout>
 #include <QPointer>
 #include <QWidget>
-#include <qmainwindow.h>
-#include <qnamespace.h>
 
 namespace sight::ui::qt::container
 {
@@ -69,6 +64,7 @@ public:
 
     SIGHT_UI_QT_API void set_visible(bool _is_visible) override;
     SIGHT_UI_QT_API void set_enabled(bool _is_enabled) override;
+    SIGHT_UI_QT_API void set_blurred(bool _is_blurred) override;
 
 private:
 

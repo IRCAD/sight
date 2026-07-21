@@ -68,26 +68,27 @@ class slideview;
  *
  * @section Slots Slots
  *
- * - \b set_enabled(bool isEnabled) : this slot enables the container (if isEnabled = true) or disables it.
- * - \b set_enabled_by_param(ui::parameter_t isEnabled) : this slot enables the container (if isEnabled holds boolean
+ * - \b set_enabled(bool enabled) : this slot enables the container (if enabled = true) or disables it.
+ * - \b set_enabled_by_param(ui::parameter_t enabled) : this slot enables the container (if enabled holds boolean
  * alternative) or disables it.
  * - \b enable() : this slot enables the container.
  * - \b disable() : this slot disables the container
- * - \b set_visible(bool isVisible) : this slot shows the container (if isVisible = true) or hides it.
- * - \b set_visible_by_parameter(ui::parameter_t isVisible) : this slot shows the container (if isEnabled holds boolean
- * alternative) or hides it.
+ * - \b set_visible(bool visible) : this slot shows the container (if visible = true) or hides it.
  * - \b show() : this slot shows the container.
  * - \b hide() : this slot hides the container.
  * - \b toggle_visibility() : this slot shows the container if it is hidden or hides it if it is shown
+ * - \b set_blurred(bool blurred) : this slot blurs the container (if blurred = true) or unblurs it.
+ * - \b blur() : this slot blurs the container.
+ * - \b unblur() : this slot unblurs the container.
  * - \b modify_layout(ui::parameter_t parameter, std::string key) : this slot modifies a layout element, depending
- *                                                                       of the key.
+ *                                                                  of the key.
  *
  * @section XML Example of XML configuration
  *
  * @code{.xml}
-   <service uid="subView1" type="sight::module::ui::view" auto_connect="false" >
+   <service uid="..." type="sight::module::ui::view" >
        <gui>
-           <layout type="ui::layout::line" >
+           <layout type="sight::ui::layout::line" >
                <orientation value="horizontal" />
                <view caption="view3" />
                <view caption="view4" />
@@ -100,29 +101,29 @@ class slideview;
            </slideView>
        </gui>
        <registry>
-           <parent wid="myView" />
+           <parent wid="my_view" />
            <toolbar sid="toolbar1" />
-           <view sid="subView3" />
-           <view wid="subView4" />
-           <view sid="subView5" />
-           <slideView sid="slideView1" start="true />
-           <slideView wid="slideView2" />
+           <view sid="sub_view3" />
+           <view wid="sub_view4" />
+           <view sid="sub_view5" />
+           <slideView sid="slide_view1" />
+           <slideView wid="slide_view2" />
         </registry>
    </service>
    @endcode
  *  - \<layout type="ui::layout::line" \> : give the type of layout.
- *    - \b type {::ui::layout::line | ui::layout::cardinal | ui::layout::tab |
- *              ui::layout::toolbox} :
- *     - \b ui::layout::line : all views will be on the same line or column (it depends of the orientation
+ *    - \b type {sight::ui::layout::line | sight::ui::layout::cardinal | sight::ui::layout::tab |
+ *               sight::ui::layout::toolbox} :
+ *     - \b sight::ui::layout::line : all views will be on the same line or column (it depends of the orientation
  *           value attribute)
- *           @see ui::layout::line
- *     - \b ui::layout::cardinal : all views will be added around a central view define by the align
+ *           @see sight::ui::layout::line
+ *     - \b sight::ui::layout::cardinal : all views will be added around a central view define by the align
  * attribute.
- *           @see ui::layout::cardinal
- *     - \b ui::layout::tab : all views will be draw as tab.
- *           @see ui::layout::tab
- *     - \b ui::layout::toolbox : all views will be draw in toolbox.
- *           @see ui::layout::toolbox
+ *           @see sight::ui::layout::cardinal
+ *     - \b sight::ui::layout::tab : all views will be draw as tab.
+ *           @see sight::ui::layout::tab
+ *     - \b sight::ui::layout::toolbox : all views will be draw in toolbox.
+ *           @see sight::ui::layout::toolbox
  *  - \b toolbar: defines the toolbar configuration.
  *           @see ui::builder::toolbar
  *  - \b slideView: defines a slide view.
@@ -132,9 +133,8 @@ class slideview;
  *
  * @warning
  * - The order of the view in each section (gui and registry) must be the same.\n
- *   For example: the view caption "view3" will be connected with the service which have the sid = "subView3" and so one
+ *   For example: the view caption "view3" will be connected with the service which have the sid =sub_view3" and so one
  *   (it also could be a wid).
- *
  *
  */
 class SIGHT_UI_CLASS_API service : public sight::service::base
@@ -148,29 +148,26 @@ public:
     SIGHT_UI_API SPTR(ui::container::widget) get_container();
 
     SIGHT_UI_API void set_parent(std::string _wid);
-
     /// @name Slots
     /// @{
 
     struct SIGHT_UI_CLASS_API slots : public sight::service::slots
     {
-        inline static const slot_key_t SET_ENABLED          = "set_enabled";
-        inline static const slot_key_t SET_ENABLED_BY_PARAM = "set_enabled_by_param";
-        inline static const slot_key_t ENABLE               = "enable";
-        inline static const slot_key_t DISABLE              = "disable";
-        inline static const slot_key_t SET_VISIBLE          = "set_visible";
-        inline static const slot_key_t SET_VISIBLE_BY_PARAM = "setVisibleByParam";
-        inline static const slot_key_t SHOW                 = "show";
-        inline static const slot_key_t HIDE                 = "hide";
-        inline static const slot_key_t TOGGLE_VISIBILITY    = "toggle_visibility";
-        inline static const slot_key_t MODIFY_LAYOUT        = "modify_layout";
+        inline static const slot_key_t SET_ENABLED       = "set_enabled";
+        inline static const slot_key_t ENABLE            = "enable";
+        inline static const slot_key_t DISABLE           = "disable";
+        inline static const slot_key_t SET_VISIBLE       = "set_visible";
+        inline static const slot_key_t SHOW              = "show";
+        inline static const slot_key_t HIDE              = "hide";
+        inline static const slot_key_t TOGGLE_VISIBILITY = "toggle_visibility";
+        inline static const slot_key_t SET_BLURRED       = "set_blurred";
+        inline static const slot_key_t BLUR              = "blur";
+        inline static const slot_key_t UNBLUR            = "unblur";
+        inline static const slot_key_t MODIFY_LAYOUT     = "modify_layout";
     };
 
     /// SLOT: enable/disable the container
-    SIGHT_UI_API virtual void set_enabled(bool _is_enabled);
-
-    /// SLOT: enable/disable the container using parameter_t (only testing bool alternative).
-    SIGHT_UI_API virtual void set_enabled_by_parameter(ui::parameter_t /*_is_enabled*/);
+    SIGHT_UI_API virtual void set_enabled(bool _enabled);
 
     /// SLOT: enable the container
     SIGHT_UI_API virtual void enable();
@@ -179,10 +176,7 @@ public:
     SIGHT_UI_API virtual void disable();
 
     /// SLOT: show/hide the container
-    SIGHT_UI_API virtual void set_visible(bool _is_visible);
-
-    /// SLOT: show/hide the container using parameter_t (only testing bool alternative).
-    SIGHT_UI_API virtual void set_visible_by_parameter(ui::parameter_t /*_is_visible*/);
+    SIGHT_UI_API virtual void set_visible(bool _visible);
 
     /// SLOT: show the container
     SIGHT_UI_API virtual void show();
@@ -192,6 +186,9 @@ public:
 
     /// SLOT: show the container if it is hidden or hide it if it is shown
     SIGHT_UI_API void toggle_visibility();
+
+    /// SLOT: blur/unblur the container
+    SIGHT_UI_API void set_blurred(bool _blurred);
 
     /// SLOT: modify a layout element, depending of the key. Forwarded to the view layout manager.
     SIGHT_UI_API virtual void modify_layout(ui::parameter_t _parameter, std::string _key);
