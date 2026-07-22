@@ -289,7 +289,7 @@
 
             <!-- Camera for the 3D layer -->
             <service uid="camera_adp" type="sight::module::viz::scene3d::adaptor::camera">
-                <inout key="transform" uid="camera_to_marker_damped" />
+                <in key="transform_in" uid="camera_to_marker_damped" />
                 <in key="calibration" uid="camera" />
             </service>
 

@@ -104,7 +104,8 @@ void mesh::starting()
     );
 
     m_camera_srv = sight::service::add("sight::module::viz::scene3d::adaptor::camera");
-    m_camera_srv->set_inout(m_camera_transform->get_sptr(), "transform", true);
+    m_camera_srv->set_input(m_camera_transform->get_sptr(), "transform_in", true);
+    m_camera_srv->set_inout(m_camera_transform->get_sptr(), "transform_out", true);
     m_camera_srv->set_id(this->get_id() + "cameraAdaptor");
     m_camera_srv->configure();
 

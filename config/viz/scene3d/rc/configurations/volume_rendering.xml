@@ -134,7 +134,7 @@
         </service>
 
         <service uid="global_camera_adp" type="sight::module::viz::scene3d::adaptor::camera">
-            <inout key="transform" uid="global_camera" />
+            <inout key="transform_out" uid="global_camera" />
         </service>
 
         <service uid="trackball_interactor_adp" type="sight::module::viz::scene3d::adaptor::trackball_camera">

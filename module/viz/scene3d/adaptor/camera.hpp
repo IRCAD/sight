@@ -42,10 +42,11 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b calibrate(): applies calibration information to Ogre camera.
  *
  * @section XML XML Configuration
- *  *
+ *
  * @code{.xml}
     <service uid="cameraAdaptor" type="sight::module::viz::scene3d::adaptor::camera">
-        <inout key="transform" uid="..." />
+        <in key="transform_in" uid="..." />
+        <inout key="transform_out" uid="..." />
         <in key="calibration" uid="..." />
         <in key="camera_set" uid="..." />
     </service>
@@ -53,10 +54,14 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * @subsection Input Input
  * - \b calibration [sight::data::camera] (optional): camera containing calibration information.
- * - \b calibration [sight::data::camera_set] (optional): camera series containing calibration information.
+ * - \b camera_set [sight::data::camera_set] (optional): camera series containing calibration information.
  *
  * @subsection InOut InOut
- * - \b transform [sight::data::matrix4]: transform matrix for the camera.
+ * - \b transform_in [sight::data::matrix4] (optional): input transform matrix for the camera.
+ * - \b transform_out [sight::data::matrix4] (optional): output transform matrix for the camera, allows to update the
+ * camera position from the scene.
+ * - \b transform [sight::data::matrix4]: transform matrix for the camera. Deprecated, use transform_in and
+ * transform_out instead.
  */
 class camera final : public sight::viz::scene3d::adaptor
 {
@@ -69,7 +74,6 @@ public:
     {
         static inline const slot_key_t TRANSFORM = "transform";
         static inline const slot_key_t CALIBRATE = "calibrate";
-        static inline const slot_key_t UPDATE_TF = "updateTransformation";
     };
 
     /// Creates the adaptor and initialize slots.
@@ -158,10 +162,14 @@ private:
     static constexpr std::string_view CALIBRATION_INPUT = "calibration";
     static constexpr std::string_view CAMERA_SET_INPUT  = "camera_set";
     static constexpr std::string_view TRANSFORM_INOUT   = "transform";
+    static constexpr std::string_view TRANSFORM_IN      = "transform_in";
+    static constexpr std::string_view TRANSFORM_OUT     = "transform_out";
 
     data::ptr<data::camera, data::access::in> m_camera_calibration {this, CALIBRATION_INPUT, true};
     data::ptr<data::camera_set, data::access::in> m_camera_set {this, CAMERA_SET_INPUT, true};
-    data::ptr<data::matrix4, data::access::inout> m_transform {this, TRANSFORM_INOUT};
+    data::ptr<data::matrix4, data::access::inout> m_transform {this, TRANSFORM_INOUT, true}; // @deprecated
+    data::ptr<data::matrix4, data::access::in> m_transform_in {this, TRANSFORM_IN, true};
+    data::ptr<data::matrix4, data::access::inout> m_transform_out {this, TRANSFORM_OUT, true};
 
     bool m_use_orthographic_projection {false};
 };
