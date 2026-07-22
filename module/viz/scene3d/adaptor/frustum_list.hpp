@@ -35,7 +35,7 @@ namespace sight::module::viz::scene3d::adaptor
 {
 
 /**
- * @brief This adaptor displays a new Frustum each time the transform is updated.
+ * @brief This adaptor displays a new Frustum each time a matrix is given to add_frustum.
  * The number of Frustum is fixed, if the maximum number of Frustum is reached the oldest one will be replaced.
  *
  * @section Slots Slots
@@ -43,7 +43,8 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b toggle_visibility(): toggles whether frustums are shown or not.
  * - \b show(): shows frustums.
  * - \b hide(): hides frustums.
- * - \b update(bool): adds a frustum in the list and displays it.
+ * - \b add_frustum(data::matrix4::sptr): adds a frustum in the list and displays it, using the given
+ *   matrix.
  * - \b clear(): clears frustum list.
  *
  * @section XML XML Configuration
@@ -51,14 +52,12 @@ namespace sight::module::viz::scene3d::adaptor
  * @code{.xml}
         <service type="sight::module::viz::scene3d::adaptor::frustum_list">
             <in key="camera" uid="..." />
-            <in key="transform" uid="..." />
             <config near="0.1" far="300" color="#f8e119" transform="..." />
        </service>
    @endcode
  *
  * @subsection Input Input:
  * - \b camera [sight::data::camera]: data::camera that handles calibration parameters
- * - \b transform [sight::data::matrix4]: each time this transform is modified, a frustum is created.
  *
  * @subsection Configuration Configuration:
  * - \b near (optional, float, default=1.0): near clipping distance of the Ogre::Camera
@@ -78,7 +77,8 @@ public:
 
     struct slots
     {
-        static inline const slot_key_t CLEAR = "clear";
+        static inline const slot_key_t CLEAR       = "clear";
+        static inline const slot_key_t ADD_FRUSTUM = "add_frustum";
     };
 
     /// Creates slots.
@@ -101,14 +101,6 @@ protected:
     /// Initializes the material.
     void starting() override;
 
-    /**
-     * @brief Proposals to connect service slots to associated object signals.
-     * @return A map of each proposed connection.
-     *
-     * Connect data::signals::MODIFIED of s_TRANSFORM_INPUT to adaptor::slots::LAZY_UPDATE
-     */
-    service::connections_t auto_connections() const override;
-
     /// Updates the adaptor by attaching new cameras to scene nodes.
     void updating() override;
 
@@ -120,11 +112,14 @@ private:
     /// SLOT: clears frustum list.
     void clear();
 
-    /// SLOT: adds a frustum in the list and displays it.
-    void add_frustum();
+    /// SLOT: adds a frustum in the list and displays it, using the given matrix.
+    void add_frustum(sight::data::matrix4::sptr _matrix);
 
-    /// Transform the data::Transform into position / oriention of the scene node.
-    void set_transfrom_to_node(Ogre::SceneNode* _node);
+    /// Creates a frustum and places its scene node according to the given matrix.
+    void add_frustum_impl(const sight::data::matrix4::csptr& _matrix);
+
+    /// Sets the position/orientation of the scene node according to the given matrix.
+    static void set_transform_to_node(Ogre::SceneNode* _node, const sight::data::matrix4::csptr& _matrix);
 
     /// Defines the near clipping distance.
     float m_near {1.F};
@@ -149,10 +144,10 @@ private:
     /// Contains the material.
     sight::viz::scene3d::material::standard::uptr m_material;
 
-    static constexpr std::string_view TRANSFORM_INPUT = "transform";
+    /// Contains the Ogre camera used to compute each frustum's corners.
+    Ogre::Camera* m_ogre_camera {nullptr};
 
     sight::data::ptr<sight::data::camera, sight::data::access::in> m_camera {this, "camera"};
-    sight::data::ptr<sight::data::matrix4, sight::data::access::in> m_transform {this, TRANSFORM_INPUT};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

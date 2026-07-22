@@ -25,6 +25,7 @@
 #include <viz/scene3d/helper/camera.hpp>
 #include <viz/scene3d/helper/manual_object.hpp>
 #include <viz/scene3d/ogre.hpp>
+#include <viz/scene3d/utils.hpp>
 
 #include <OgreCamera.h>
 #include <OgreSceneNode.h>
@@ -37,6 +38,11 @@ namespace sight::module::viz::scene3d::adaptor
 frustum_list::frustum_list() noexcept
 {
     new_slot(slots::CLEAR, &frustum_list::clear, this);
+    new_slot(
+        slots::ADD_FRUSTUM,
+        &frustum_list::add_frustum,
+        this
+    );
 }
 
 //-----------------------------------------------------------------------------
@@ -71,6 +77,8 @@ void frustum_list::starting()
 {
     adaptor::init();
 
+    this->render_service()->make_current();
+
     m_frustum_list.set_capacity(m_capacity);
 
     // Create material
@@ -79,22 +87,28 @@ void frustum_list::starting()
 
     sight::data::color color(m_color);
     m_material->material()->setDiffuse(Ogre::ColourValue(color[0], color[1], color[2], color[3]));
-}
 
-//-----------------------------------------------------------------------------
+    // Create the Ogre camera once. It is only used to compute each frustum's corners, never rendered from.
+    auto* scene_manager = this->get_scene_manager();
+    m_ogre_camera = scene_manager->createCamera(gen_id("camera"));
 
-service::connections_t frustum_list::auto_connections() const
-{
-    service::connections_t connections = adaptor::auto_connections();
-    connections.push(TRANSFORM_INPUT, data::signals::MODIFIED, adaptor::slots::LAZY_UPDATE);
-    return connections;
+    if(m_near != 0.F)
+    {
+        m_ogre_camera->setNearClipDistance(m_near);
+    }
+
+    if(m_far != 0.F)
+    {
+        m_ogre_camera->setFarClipDistance(m_far);
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 void frustum_list::updating()
 {
-    this->add_frustum();
+    this->render_service()->make_current();
+
     this->update_done();
     this->request_render();
 }
@@ -103,7 +117,12 @@ void frustum_list::updating()
 
 void frustum_list::stopping()
 {
+    this->render_service()->make_current();
+
     this->clear();
+
+    this->get_scene_manager()->destroyCamera(m_ogre_camera);
+    m_ogre_camera = nullptr;
 
     m_material.reset();
 
@@ -122,28 +141,14 @@ void frustum_list::set_visible(bool _visible)
 
 //-----------------------------------------------------------------------------
 
-void frustum_list::add_frustum()
+void frustum_list::add_frustum(sight::data::matrix4::sptr _matrix)
 {
+    this->render_service()->make_current();
+
     //Get camera parameters
     auto* scene_manager          = this->get_scene_manager();
     const auto camera_data       = m_camera.lock();
     const auto current_index_str = std::to_string(m_current_cam_index);
-    Ogre::Camera* ogre_camera    = scene_manager->createCamera(gen_id("camera" + current_index_str));
-
-    Ogre::SceneNode* root_scene_node = scene_manager->getRootSceneNode();
-    Ogre::SceneNode* trans_node      = this->get_or_create_transform_node(root_scene_node);
-    trans_node->attachObject(ogre_camera);
-
-    // Clipping
-    if(m_near != 0.F)
-    {
-        ogre_camera->setNearClipDistance(m_near);
-    }
-
-    if(m_far != 0.F)
-    {
-        ogre_camera->setFarClipDistance(m_far);
-    }
 
     if(camera_data->get_is_calibrated())
     {
@@ -152,7 +157,7 @@ void frustum_list::add_frustum()
         const auto height = static_cast<float>(camera_data->get_height());
         Ogre::Matrix4 m   =
             sight::viz::scene3d::helper::camera::compute_projection_matrix(*camera_data, width, height, m_near, m_far);
-        ogre_camera->setCustomProjectionMatrix(true, m);
+        m_ogre_camera->setCustomProjectionMatrix(true, m);
 
         if(m_frustum_list.full())
         {
@@ -161,15 +166,16 @@ void frustum_list::add_frustum()
 
             f.first->detachFromParent();
             scene_manager->destroyManualObject(f.first);
+            scene_manager->destroySceneNode(f.second);
         }
 
         auto* const frustum = scene_manager->createManualObject(gen_id("frustum" + current_index_str));
         frustum->setRenderQueueGroup(sight::viz::scene3d::rq::SURFACE);
-        auto* const frustum_node = root_scene_node->createChildSceneNode("Node_" + current_index_str);
+        auto* const frustum_node = scene_manager->getRootSceneNode()->createChildSceneNode("Node_" + current_index_str);
 
-        sight::viz::scene3d::helper::manual_object::create_frustum(frustum, m_material->name(), *ogre_camera);
+        sight::viz::scene3d::helper::manual_object::create_frustum(frustum, m_material->name(), *m_ogre_camera);
 
-        this->set_transfrom_to_node(frustum_node);
+        set_transform_to_node(frustum_node, _matrix);
         frustum_node->attachObject(frustum);
 
         //Add the new one
@@ -177,7 +183,7 @@ void frustum_list::add_frustum()
 
         m_current_cam_index++;
 
-        this->updating();
+        this->request_render();
     }
     else
     {
@@ -187,18 +193,9 @@ void frustum_list::add_frustum()
 
 //-----------------------------------------------------------------------------
 
-void frustum_list::set_transfrom_to_node(Ogre::SceneNode* _node)
+void frustum_list::set_transform_to_node(Ogre::SceneNode* _node, const sight::data::matrix4::csptr& _matrix)
 {
-    const auto transform = m_transform.lock();
-    Ogre::Affine3 ogre_mat;
-
-    for(std::size_t lt = 0 ; lt < 4 ; lt++)
-    {
-        for(std::size_t ct = 0 ; ct < 4 ; ct++)
-        {
-            ogre_mat[ct][lt] = static_cast<Ogre::Real>((*transform)(ct, lt));
-        }
-    }
+    Ogre::Affine3 ogre_mat(sight::viz::scene3d::utils::to_ogre_matrix(_matrix));
 
     // Decompose the matrix
     Ogre::Vector3 position;
@@ -222,6 +219,7 @@ void frustum_list::clear()
     {
         f.first->detachFromParent();
         this->get_scene_manager()->destroyManualObject(f.first);
+        this->get_scene_manager()->destroySceneNode(f.second);
     }
 
     m_frustum_list.clear();
