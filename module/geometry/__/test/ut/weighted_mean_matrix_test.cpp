@@ -19,8 +19,6 @@
  *
  ***********************************************************************/
 
-#include <core/runtime/runtime.hpp>
-
 #include <data/matrix4.hpp>
 
 #include <service/op.hpp>
@@ -45,7 +43,7 @@ struct weighted_mean_matrix_tester
 
     ~weighted_mean_matrix_tester()
     {
-        CHECK_NOTHROW(srv->stop().wait());
+        CHECK_NOTHROW(srv->stop().get());
         sight::service::remove(srv);
     }
 
@@ -61,7 +59,7 @@ struct weighted_mean_matrix_tester
         );
         srv->set_config(config);
         srv->configure();
-        srv->start().wait();
+        srv->start().get();
     }
 
     //------------------------------------------------------------------------------
@@ -116,7 +114,7 @@ TEST_SUITE("sight::module::geometry::weighted_mean_matrix")
         init();
         set_config();
 
-        srv->update().wait();
+        srv->update().get();
 
         check_identity();
     }
@@ -133,14 +131,14 @@ TEST_SUITE("sight::module::geometry::weighted_mean_matrix")
         input->at(7)  = 0;
         input->at(11) = 0;
 
-        srv->update().wait();
+        srv->update().get();
 
         // translate
         input->at(3)  = 10;
         input->at(7)  = 20;
         input->at(11) = 30;
 
-        srv->update().wait();
+        srv->update().get();
 
         const auto res = output->get_content();
 
@@ -175,7 +173,7 @@ TEST_SUITE("sight::module::geometry::weighted_mean_matrix")
         init();
         set_config(0.5F);
 
-        srv->update().wait();
+        srv->update().get();
 
         // Rotation part
         input->at(0) = -0.1736482;
@@ -195,7 +193,7 @@ TEST_SUITE("sight::module::geometry::weighted_mean_matrix")
         input->at(7)  = 2;
         input->at(11) = 30;
 
-        srv->update().wait();
+        srv->update().get();
 
         // weight 0.5 should give a result around 50°
         const auto res = output->get_content();
@@ -231,7 +229,7 @@ TEST_SUITE("sight::module::geometry::weighted_mean_matrix")
         init();
         set_config(0.3F);
 
-        srv->update().wait();
+        srv->update().get();
 
         // Rotation part
         input->at(0) = -0.1736482;
@@ -251,7 +249,7 @@ TEST_SUITE("sight::module::geometry::weighted_mean_matrix")
         input->at(7)  = 100;
         input->at(11) = 1000;
 
-        srv->update().wait();
+        srv->update().get();
 
         // weight 0.7 should give a result around 30°
 
@@ -288,7 +286,7 @@ TEST_SUITE("sight::module::geometry::weighted_mean_matrix")
         init();
         set_config(0.7F);
 
-        srv->update().wait();
+        srv->update().get();
 
         // Rotation part
         input->at(0) = -0.1736482;
@@ -308,7 +306,7 @@ TEST_SUITE("sight::module::geometry::weighted_mean_matrix")
         input->at(7)  = 100;
         input->at(11) = 1000;
 
-        srv->update().wait();
+        srv->update().get();
 
         // weight 0.3 should give a result around 70°
 
@@ -345,7 +343,7 @@ TEST_SUITE("sight::module::geometry::weighted_mean_matrix")
         init();
         set_config(0.1F);
 
-        srv->update().wait();
+        srv->update().get();
 
         // Rotation part
         input->at(0) = -0.1736482;
@@ -365,7 +363,7 @@ TEST_SUITE("sight::module::geometry::weighted_mean_matrix")
         input->at(7)  = 100;
         input->at(11) = 1000;
 
-        srv->update().wait();
+        srv->update().get();
 
         const auto res = output->get_content();
 
@@ -401,7 +399,7 @@ TEST_SUITE("sight::module::geometry::weighted_mean_matrix")
         init();
         set_config(1.F);
 
-        srv->update().wait();
+        srv->update().get();
 
         // Rotation part
         input->at(0) = -0.1736482;
@@ -421,7 +419,7 @@ TEST_SUITE("sight::module::geometry::weighted_mean_matrix")
         input->at(7)  = 2;
         input->at(11) = 30;
 
-        srv->update().wait();
+        srv->update().get();
 
         // weight 1.0 should give the latest matrix, no averaging.
         const auto res = output->get_content();

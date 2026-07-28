@@ -19,8 +19,6 @@
  *
  ***********************************************************************/
 
-#include <core/runtime/runtime.hpp>
-
 #include <data/activity_set.hpp>
 #include <data/image_series.hpp>
 #include <data/model_series.hpp>
@@ -79,8 +77,8 @@ TEST_SUITE("sight::module::data::get_activity_object")
         srv->set_config(config);
         srv->set_input(activity_set, "activity_set");
         srv->configure();
-        srv->start().wait();
-        srv->update().wait();
+        srv->start().get();
+        srv->update().get();
 
         CHECK(*srv->output("objects", 0).lock() == *series1);
         CHECK(*srv->output("objects", 1).lock() == *series2);
@@ -98,7 +96,7 @@ TEST_SUITE("sight::module::data::get_activity_object")
         CHECK(srv->output("objects", 0).lock() == nullptr);
         CHECK(srv->output("objects", 1).lock() == nullptr);
 
-        srv->stop().wait();
+        srv->stop().get();
         sight::service::remove(srv);
     }
 
@@ -128,10 +126,10 @@ TEST_SUITE("sight::module::data::get_activity_object")
         srv->set_config(config);
         srv->set_input(activity_set, "activity_set");
         srv->configure();
-        srv->start().wait();
+        srv->start().get();
         CHECK_THROWS_AS(srv->update().get(), sight::data::exception);
 
-        srv->stop().wait();
+        srv->stop().get();
         sight::service::remove(srv);
     }
 

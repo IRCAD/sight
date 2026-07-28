@@ -28,9 +28,6 @@
 
 #include <service/op.hpp>
 
-#include <utest_data/data.hpp>
-#include <utest_data/generator/image.hpp>
-
 #include <doctest/doctest.h>
 
 // cspell:ignore nvjpeg
@@ -52,9 +49,9 @@ inline static void runwriter(
 
     CHECK_NOTHROW(swriter->set_config(_config));
     CHECK_NOTHROW(swriter->configure());
-    CHECK_NOTHROW(swriter->start().wait());
-    CHECK_NOTHROW(swriter->update().wait());
-    CHECK_NOTHROW(swriter->stop().wait());
+    CHECK_NOTHROW(swriter->start().get());
+    CHECK_NOTHROW(swriter->update().get());
+    CHECK_NOTHROW(swriter->stop().get());
     service::remove(swriter);
 
     // Check the result...

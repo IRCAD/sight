@@ -257,9 +257,9 @@ TEST_SUITE("sight::app::config")
             auto srv2                         = std::dynamic_pointer_cast<sight::service::base>(gn_srv2);
             CHECK(srv2 != nullptr);
             CHECK_EQ(sight::service::base::global_status::started, srv2->status());
-            srv2->stop().wait();
+            srv2->stop().get();
             CHECK_EQ(sight::service::base::global_status::stopped, srv2->status());
-            srv2->start().wait();
+            srv2->start().get();
             CHECK_EQ(sight::service::base::global_status::started, srv2->status());
         }
 
@@ -828,7 +828,7 @@ TEST_SUITE("sight::app::config")
                     CHECK(srv6 != nullptr);
                     CHECK_EQ(sight::service::base::global_status::stopped, srv6->status());
 
-                    srv5->update().wait();
+                    srv5->update().get();
                     SIGHT_TEST_WAIT(srv6->started());
                     CHECK_EQ(true, srv6->started());
 
@@ -862,7 +862,7 @@ TEST_SUITE("sight::app::config")
                     CHECK(srv6 != nullptr);
                     CHECK_EQ(sight::service::base::global_status::stopped, srv6->status());
 
-                    srv5->update().wait();
+                    srv5->update().get();
                     SIGHT_TEST_WAIT(srv6->started());
                     CHECK_EQ(true, srv6->started());
 
@@ -871,14 +871,14 @@ TEST_SUITE("sight::app::config")
                     SIGHT_TEST_WAIT(srv6->stopped());
                     CHECK_EQ(true, srv6->stopped());
 
-                    srv5->update().wait();
+                    srv5->update().get();
                     SIGHT_TEST_WAIT(srv6->started());
                     CHECK_EQ(true, srv6->started());
 
                     sight::core::object::sptr gn_srv7 = sight::core::id::get_object("TestService7Uid");
                     auto srv7                         =
                         std::dynamic_pointer_cast<sight::app::ut::test_service>(gn_srv7);
-                    srv6->update().wait();
+                    srv6->update().get();
                     SIGHT_TEST_WAIT(srv7->stopped());
                     CHECK_EQ(true, srv7->stopped());
                 }

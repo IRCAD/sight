@@ -94,9 +94,9 @@ inline static void basic_test(const bool _raw = false)
         writer->configure();
 
         // Execute the writer sight::service
-        writer->start().wait();
-        writer->update().wait();
-        writer->stop().wait();
+        writer->start().get();
+        writer->update().get();
+        writer->stop().get();
 
         // Cleanup
         sight::service::unregister_service(writer);
@@ -149,9 +149,9 @@ inline static void basic_test(const bool _raw = false)
         reader->configure();
 
         // Execute the writer sight::service
-        reader->start().wait();
-        reader->update().wait();
-        reader->stop().wait();
+        reader->start().get();
+        reader->update().get();
+        reader->stop().get();
 
         // Cleanup
         sight::service::unregister_service(reader);
@@ -265,9 +265,9 @@ TEST_SUITE("sight::module::io::session")
             reader->configure();
 
             // Execute the writer sight::service
-            reader->start().wait();
-            reader->update().wait();
-            reader->stop().wait();
+            reader->start().get();
+            reader->update().get();
+            reader->stop().get();
 
             // Cleanup
             sight::service::unregister_service(reader);
@@ -320,12 +320,12 @@ TEST_SUITE("sight::module::io::session")
             writer->configure();
 
             // Execute the writer sight::service
-            writer->start().wait();
+            writer->start().get();
 
             sight::ui::test::dialog::location::set_paths({tmp_file});
 
-            writer->update().wait();
-            writer->stop().wait();
+            writer->update().get();
+            writer->stop().get();
 
             // Cleanup
             sight::service::unregister_service(writer);
@@ -356,12 +356,12 @@ TEST_SUITE("sight::module::io::session")
             reader->configure();
 
             // Execute the writer sight::service
-            reader->start().wait();
+            reader->start().get();
 
             sight::ui::test::dialog::location::set_paths({tmp_file});
 
-            reader->update().wait();
-            reader->stop().wait();
+            reader->update().get();
+            reader->stop().get();
 
             // Cleanup
             sight::service::unregister_service(reader);
@@ -401,12 +401,12 @@ TEST_SUITE("sight::module::io::session")
             writer->configure();
 
             // Execute the writer sight::service
-            writer->start().wait();
+            writer->start().get();
 
             sight::ui::test::dialog::input::push_input("case-sensitive");
 
-            writer->update().wait();
-            writer->stop().wait();
+            writer->update().get();
+            writer->stop().get();
 
             // Cleanup
             sight::service::unregister_service(writer);
@@ -440,7 +440,7 @@ TEST_SUITE("sight::module::io::session")
             reader->configure();
 
             // Execute the writer sight::service
-            reader->start().wait();
+            reader->start().get();
 
             sight::ui::test::dialog::input::push_input("Oops");
             sight::ui::test::dialog::message::push_action(sight::ui::test::dialog::message::retry);
@@ -450,8 +450,8 @@ TEST_SUITE("sight::module::io::session")
             sight::ui::test::dialog::message::push_action(sight::ui::test::dialog::message::retry);
             sight::ui::test::dialog::input::push_input("case-sensitive");
 
-            reader->update().wait();
-            reader->stop().wait();
+            reader->update().get();
+            reader->stop().get();
 
             // Cleanup
             sight::service::unregister_service(reader);

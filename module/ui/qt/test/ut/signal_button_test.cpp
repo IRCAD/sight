@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,18 +23,13 @@
 
 #include "loader.hpp"
 
-#include <core/runtime/profile.hpp>
 #include <core/runtime/runtime.hpp>
-
-#include <ui/__/service.hpp>
-#include <ui/qt/container/widget.hpp>
 
 #include <utest/wait.hpp>
 
-#include <boost/property_tree/xml_parser.hpp>
-
 #include <QAbstractButton>
 #include <QApplication>
+#include <QPointer>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::ui::qt::ut::signal_button_test);
@@ -74,6 +69,9 @@ void signal_button_test::tearDown()
     }
 }
 
+namespace
+{
+
 class signal_button_test_context
 {
 public:
@@ -101,7 +99,7 @@ public:
     {
         if(signal_button_srv->started())
         {
-            signal_button_srv->stop().wait();
+            signal_button_srv->stop().get();
         }
 
         service::remove(signal_button_srv);
@@ -109,6 +107,8 @@ public:
 
     sight::service::base::sptr signal_button_srv;
 };
+
+} // namespace
 
 //------------------------------------------------------------------------------
 

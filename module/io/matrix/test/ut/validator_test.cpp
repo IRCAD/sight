@@ -73,7 +73,7 @@ TEST_SUITE("sight::module::io::matrix::validator")
         // Start the service
         CHECK_NOTHROW(validator->set_config(config));
         CHECK_NOTHROW(validator->configure());
-        CHECK_NOTHROW(validator->start().wait());
+        CHECK_NOTHROW(validator->start().get());
 
         validator->slot(s_update_slot)->run();
 
@@ -84,7 +84,7 @@ TEST_SUITE("sight::module::io::matrix::validator")
         CHECK(!invalid);
 
         // Stop the service
-        CHECK_NOTHROW(validator->stop().wait());
+        CHECK_NOTHROW(validator->stop().get());
         sight::service::remove(validator);
     }
 
@@ -129,7 +129,7 @@ TEST_SUITE("sight::module::io::matrix::validator")
         // Start the service
         CHECK_NOTHROW(validator->set_config(config));
         CHECK_NOTHROW(validator->configure());
-        CHECK_NOTHROW(validator->start().wait());
+        CHECK_NOTHROW(validator->start().get());
 
         validator->slot(s_update_slot)->run();
 
@@ -157,7 +157,7 @@ TEST_SUITE("sight::module::io::matrix::validator")
         CHECK(!invalid);
 
         // Stop the service
-        CHECK_NOTHROW(validator->stop().wait());
+        CHECK_NOTHROW(validator->stop().get());
         sight::service::remove(validator);
     }
 
@@ -203,7 +203,7 @@ TEST_SUITE("sight::module::io::matrix::validator")
         // Start the service
         CHECK_NOTHROW(validator->set_config(config));
         CHECK_NOTHROW(validator->configure());
-        CHECK_NOTHROW(validator->start().wait());
+        CHECK_NOTHROW(validator->start().get());
 
         validator->slot(s_update_slot)->run();
 
@@ -231,7 +231,7 @@ TEST_SUITE("sight::module::io::matrix::validator")
         CHECK(!invalid);
 
         // Stop the service
-        CHECK_NOTHROW(validator->stop().wait());
+        CHECK_NOTHROW(validator->stop().get());
         sight::service::remove(validator);
     }
 
@@ -267,7 +267,7 @@ TEST_SUITE("sight::module::io::matrix::validator")
         // Start the service
         CHECK_NOTHROW(validator->set_config(config));
         CHECK_NOTHROW(validator->configure());
-        CHECK_NOTHROW(validator->start().wait());
+        CHECK_NOTHROW(validator->start().get());
 
         validator->slot(s_update_slot)->run();
 
@@ -278,7 +278,7 @@ TEST_SUITE("sight::module::io::matrix::validator")
         CHECK(invalid);
 
         // Stop the service
-        CHECK_NOTHROW(validator->stop().wait());
+        CHECK_NOTHROW(validator->stop().get());
         sight::service::remove(validator);
     }
 } // TEST_SUITE

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -109,7 +109,7 @@ public:
     SIGHT_CORE_API bool set_param(const std::string& _name, const std::string& _value) override;
     SIGHT_CORE_API const core::memory::policy::base::param_names_type& get_param_names() const override;
 
-protected:
+private:
 
     SIGHT_CORE_API std::size_t get_total_alive() const;
     SIGHT_CORE_API bool is_barrier_crossed() const;

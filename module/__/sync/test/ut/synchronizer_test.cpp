@@ -56,7 +56,7 @@ public:
     {
         if(srv->started())
         {
-            srv->stop().wait();
+            srv->stop().get();
         }
 
         sight::service::remove(srv);
@@ -184,7 +184,7 @@ public:
         }
 
         _matrix_tl->push_object(data);
-        srv->update().wait();
+        srv->update().get();
     }
 
     //------------------------------------------------------------------------------
@@ -275,8 +275,8 @@ public:
         srv->set_config(config_string);
 
         srv->configure();
-        srv->start().wait();
-        srv->update().wait();
+        srv->start().get();
+        srv->update().get();
     }
 };
 
@@ -753,7 +753,7 @@ TEST_SUITE("sight::module::sync::synchronizer")
         srv->slot("reset")->run();
 
         //time 6: sync without anything in timeline:
-        srv->update().wait();
+        srv->update().get();
 
         //time 7: sync
         add_frame_to_frame_tl(m_frame_tl_1, 1);
@@ -807,8 +807,8 @@ TEST_SUITE("sight::module::sync::synchronizer")
         srv->set_inout(matrix1, "matrix", false, false, 1);
 
         //start
-        srv->start().wait();
-        srv->update().wait();
+        srv->start().get();
+        srv->update().get();
 
         sight::core::clock::type last_timestamp_synch = 0;
         auto slot_synchronization_done                =
@@ -834,7 +834,7 @@ TEST_SUITE("sight::module::sync::synchronizer")
         check_matrix(matrix0, 61);
         check_matrix(matrix1, 60);
 
-        srv->stop().wait();
+        srv->stop().get();
     }
 
     TEST_CASE_FIXTURE(fixture, "mixt_matrix_tl_config")
@@ -881,8 +881,8 @@ TEST_SUITE("sight::module::sync::synchronizer")
         srv->set_inout(matrix3, "matrix", false, false, 3);
         srv->set_inout(matrix4, "matrix", false, false, 4);
         //start
-        srv->start().wait();
-        srv->update().wait();
+        srv->start().get();
+        srv->update().get();
 
         sight::core::clock::type last_timestamp_synch = 0;
         auto slot_synchronization_done                =
@@ -909,7 +909,7 @@ TEST_SUITE("sight::module::sync::synchronizer")
         check_matrix(matrix3, 21);
         check_matrix(matrix4, 32);
 
-        srv->stop().wait();
+        srv->stop().get();
     }
 
     TEST_CASE_FIXTURE(fixture, "single_frame_tl_config")
@@ -951,8 +951,8 @@ TEST_SUITE("sight::module::sync::synchronizer")
 
         srv->set_inout(frame, "frames", false, false, 0);
 
-        srv->start().wait();
-        srv->update().wait();
+        srv->start().get();
+        srv->update().get();
 
         sight::core::clock::type last_timestamp_synch = 0;
         auto slot_synchronization_done                =
@@ -978,7 +978,7 @@ TEST_SUITE("sight::module::sync::synchronizer")
         SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 6);
         check_frame(frame, 6);
 
-        srv->stop().wait();
+        srv->stop().get();
     }
 
     TEST_CASE_FIXTURE(fixture, "mixt_frame_tl_config")
@@ -1076,8 +1076,8 @@ TEST_SUITE("sight::module::sync::synchronizer")
         srv->set_inout(frame4, "frames", false, false, 2);
         srv->set_inout(frame11, "frames", false, false, 3);
 
-        srv->start().wait();
-        srv->update().wait();
+        srv->start().get();
+        srv->update().get();
 
         sight::core::clock::type last_timestamp_synch = 0;
         auto slot_synchronization_done                =
@@ -1105,7 +1105,7 @@ TEST_SUITE("sight::module::sync::synchronizer")
         check_frame(frame6, 6);
         check_frame(frame11, 4);
 
-        srv->stop().wait();
+        srv->stop().get();
     }
 
     TEST_CASE_FIXTURE(fixture, "full_config")
@@ -1237,8 +1237,8 @@ TEST_SUITE("sight::module::sync::synchronizer")
         srv->set_inout(matrix3, "matrix", false, false, 3);
         srv->set_inout(matrix4, "matrix", false, false, 4);
 
-        srv->start().wait();
-        srv->update().wait();
+        srv->start().get();
+        srv->update().get();
 
         sight::core::clock::type last_timestamp_synch = 0;
         auto slot_synchronization_done                =
@@ -1316,7 +1316,7 @@ TEST_SUITE("sight::module::sync::synchronizer")
         check_matrix(matrix3, 61);
         check_matrix(matrix4, 62);
 
-        srv->stop().wait();
+        srv->stop().get();
     }
 
     TEST_CASE_FIXTURE(simple_fixture, "update_config")
@@ -1407,8 +1407,8 @@ TEST_SUITE("sight::module::sync::synchronizer")
         srv->configure();
 
         init_standard_in_out();
-        srv->start().wait();
-        srv->update().wait();
+        srv->start().get();
+        srv->update().get();
 
         sight::core::clock::type last_timestamp_synch = 0;
         auto slot_synchronization_done                =
@@ -1585,8 +1585,8 @@ TEST_SUITE("sight::module::sync::synchronizer")
         srv->set_config(config_string);
         srv->configure();
         init_standard_in_out();
-        srv->start().wait();
-        srv->update().wait();
+        srv->start().get();
+        srv->update().get();
 
         sight::core::clock::type last_timestamp_synch = 0;
         auto slot_synchronization_done                =
@@ -1752,8 +1752,8 @@ TEST_SUITE("sight::module::sync::synchronizer")
         srv->set_config(config_string);
         srv->configure();
 
-        srv->start().wait();
-        srv->update().wait();
+        srv->start().get();
+        srv->update().get();
 
         // create and set the input TL
         sight::data::frame_tl::sptr frame_tl_1 = std::make_shared<sight::data::frame_tl>();
@@ -1815,7 +1815,7 @@ TEST_SUITE("sight::module::sync::synchronizer")
         std::int64_t ts = std::chrono::duration_cast<std::chrono::milliseconds>(time_point->time_since_epoch()).count();
         CHECK(ts == timestamp);
 
-        srv->stop().wait();
+        srv->stop().get();
     }
 
     TEST_CASE_FIXTURE(fixture, "single_image_series_tl_population")
@@ -1843,8 +1843,8 @@ TEST_SUITE("sight::module::sync::synchronizer")
         srv->set_config(config_string);
         srv->configure();
 
-        srv->start().wait();
-        srv->update().wait();
+        srv->start().get();
+        srv->update().get();
 
         /// Input/output setup
         // create and set the input TL
@@ -1954,6 +1954,6 @@ TEST_SUITE("sight::module::sync::synchronizer")
         ts = std::chrono::duration_cast<std::chrono::milliseconds>(time_point->time_since_epoch()).count();
         CHECK(ts == 3);
 
-        srv->stop().wait();
+        srv->stop().get();
     }
 }

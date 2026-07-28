@@ -115,7 +115,7 @@ TEST_SUITE("sight::module::io::matrix::writer")
         // Start the service
         CHECK_NOTHROW(matrix_writer->set_config(config));
         CHECK_NOTHROW(matrix_writer->configure());
-        CHECK_NOTHROW(matrix_writer->start().wait());
+        CHECK_NOTHROW(matrix_writer->start().get());
 
         // Test writing in the temporary directory
         matrix_writer->slot("set_base_folder")->run(tmp_dir.string());
@@ -127,7 +127,7 @@ TEST_SUITE("sight::module::io::matrix::writer")
         matrix_writer->slot("stop_record")->run();
 
         // Stop the service
-        CHECK_NOTHROW(matrix_writer->stop().wait());
+        CHECK_NOTHROW(matrix_writer->stop().get());
         sight::service::remove(matrix_writer);
 
         // Check the result...
@@ -165,7 +165,7 @@ TEST_SUITE("sight::module::io::matrix::writer")
         // Start the service
         CHECK_NOTHROW(matrix_writer->set_config(config));
         CHECK_NOTHROW(matrix_writer->configure());
-        CHECK_NOTHROW(matrix_writer->start().wait());
+        CHECK_NOTHROW(matrix_writer->start().get());
 
         // Start recording immediately (no dialog)
         matrix_writer->slot("start_record")->run();
@@ -179,7 +179,7 @@ TEST_SUITE("sight::module::io::matrix::writer")
         matrix_writer->slot("write")->run(static_cast<sight::core::clock::type>(3));
 
         // Stop the service (the recording should be also stopped)
-        CHECK_NOTHROW(matrix_writer->stop().wait());
+        CHECK_NOTHROW(matrix_writer->stop().get());
         sight::service::remove(matrix_writer);
 
         // Check the result...

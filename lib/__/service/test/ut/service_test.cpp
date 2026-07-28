@@ -56,7 +56,7 @@ struct fixture
         {
             if(srv->started())
             {
-                srv->stop().wait();
+                srv->stop().get();
             }
 
             sight::service::unregister_service(srv);
@@ -349,16 +349,16 @@ TEST_SUITE("sight::service::service")
         CHECK(!service->started());
 
         // Start service
-        service->start().wait();
+        service->start().get();
         CHECK(service->started());
         CHECK(!service->stopped());
 
         // Update service
-        service->update().wait();
+        service->update().get();
         CHECK(service->is_updated());
 
         // Stop service
-        service->stop().wait();
+        service->stop().get();
         CHECK(service->stopped());
         CHECK(!service->started());
 
@@ -378,11 +378,11 @@ TEST_SUITE("sight::service::service")
             CHECK(service->stopped());
 
             // Start service
-            service->start().wait();
+            service->start().get();
             CHECK(service->started());
 
             // Stop service
-            service->stop().wait();
+            service->stop().get();
             CHECK(service->stopped());
 
             // Start service with exceptions
@@ -406,11 +406,11 @@ TEST_SUITE("sight::service::service")
 
             // Start service again
             service->set_raise_exception(false);
-            service->start().wait();
+            service->start().get();
             CHECK(service->started());
 
             // Update service
-            service->update().wait();
+            service->update().get();
             CHECK(service->is_updated());
             service->reset_is_updated();
             CHECK(!service->is_updated());
@@ -436,7 +436,7 @@ TEST_SUITE("sight::service::service")
 
             // Update service
             service->set_raise_exception(false);
-            service->update().wait();
+            service->update().get();
             CHECK(service->is_updated());
 
             // Stop service with exception caught
@@ -459,7 +459,7 @@ TEST_SUITE("sight::service::service")
             CHECK(service->started());
 
             service->set_raise_exception(false);
-            service->stop().wait();
+            service->stop().get();
             CHECK(service->stopped());
 
             // Erase Service
@@ -475,11 +475,11 @@ TEST_SUITE("sight::service::service")
             CHECK(service->stopped());
 
             // Start service
-            service->start().wait();
+            service->start().get();
             CHECK(service->started());
 
             // Stop service
-            service->stop().wait();
+            service->stop().get();
             CHECK(service->stopped());
 
             // Start service with exceptions
@@ -503,11 +503,11 @@ TEST_SUITE("sight::service::service")
 
             // Start service again
             service->set_raise_exception(false);
-            service->start().wait();
+            service->start().get();
             CHECK(service->started());
 
             // Update service
-            service->update().wait();
+            service->update().get();
             CHECK(service->is_updated());
             service->reset_is_updated();
             CHECK(!service->is_updated());
@@ -533,7 +533,7 @@ TEST_SUITE("sight::service::service")
 
             // Update service
             service->set_raise_exception(false);
-            service->update().wait();
+            service->update().get();
             CHECK(service->is_updated());
 
             // Stop service with exception caught
@@ -556,7 +556,7 @@ TEST_SUITE("sight::service::service")
             CHECK(service->started());
 
             service->set_raise_exception(false);
-            service->stop().wait();
+            service->stop().get();
             CHECK(service->stopped());
 
             // Erase Service
@@ -667,8 +667,8 @@ TEST_SUITE("sight::service::service")
         CHECK_EQ(false, receiver2->m_stopped);
 
         // Start services
-        service1->start().wait();
-        service2->start().wait();
+        service1->start().get();
+        service2->start().get();
         CHECK(service1->started());
         CHECK(service2->started());
 
@@ -695,8 +695,8 @@ TEST_SUITE("sight::service::service")
             service1->async_emit(service1.get(), sight::service::ut::test_srv::signals::MSG_SENT, event);
         }
 
-        service1->update().wait();
-        service2->update().wait();
+        service1->update().get();
+        service2->update().get();
         CHECK(service2->is_updated2());
 
         SIGHT_TEST_WAIT(receiver1->m_updated && receiver2->m_updated)
@@ -708,8 +708,8 @@ TEST_SUITE("sight::service::service")
         CHECK_EQ(false, receiver2->m_stopped);
 
         // Test if service2 has received the message
-        service1->stop().wait();
-        service2->stop().wait();
+        service1->stop().get();
+        service2->stop().get();
 
         SIGHT_TEST_WAIT(receiver1->m_stopped && receiver2->m_stopped)
         CHECK_EQ(true, receiver1->m_started);
@@ -741,7 +741,7 @@ TEST_SUITE("sight::service::service")
         service->set_inout(obj[0], sight::service::ut::test_service_with_data::INOUT_GROUP, true, false, 0);
         service->set_inout(obj[1], sight::service::ut::test_service_with_data::INOUT_GROUP, true, false, 1);
 
-        service->start().wait();
+        service->start().get();
         CHECK(service->started());
         CHECK(
             nullptr
@@ -750,7 +750,7 @@ TEST_SUITE("sight::service::service")
                 sight::data::access::in
             )
         );
-        service->update().wait();
+        service->update().get();
         CHECK(
             nullptr
             != service->sight::data::has_data::object(
@@ -793,7 +793,7 @@ TEST_SUITE("sight::service::service")
             ++it_obj;
         }
 
-        service->stop().wait();
+        service->stop().get();
 
         auto null_integer = service->output<sight::data::integer>(sight::service::ut::test_service_with_data::OUTPUT);
         CHECK(null_integer.expired());
@@ -830,12 +830,12 @@ TEST_SUITE("sight::service::service")
             service->configure();
             CHECK_EQ(sight::service::base::configuration_status::configured, service->config_status());
 
-            service->start().wait();
+            service->start().get();
             CHECK(service->started());
             CHECK(nullptr != service->sight::data::has_data::object("prop1", sight::data::access::inout));
-            service->update().wait();
+            service->update().get();
             CHECK_EQ(std::int64_t(12), *service->m_prop1);
-            service->stop().wait();
+            service->stop().get();
         }
         {
             // Value set directly in configuring
@@ -847,12 +847,12 @@ TEST_SUITE("sight::service::service")
             service->set_config(config);
             service->configure();
 
-            service->start().wait();
+            service->start().get();
             CHECK(service->started());
             CHECK(nullptr != service->sight::data::has_data::object("prop1", sight::data::access::inout));
-            service->update().wait();
+            service->update().get();
             CHECK_EQ(std::int64_t(1234), service->m_prop1.value());
-            service->stop().wait();
+            service->stop().get();
         }
         {
             // Value set as object
@@ -864,12 +864,12 @@ TEST_SUITE("sight::service::service")
             service->set_inout(i1, "prop1");
             service->configure();
 
-            service->start().wait();
+            service->start().get();
             CHECK(service->started());
             CHECK(nullptr != service->sight::data::has_data::object("prop1", sight::data::access::inout));
-            service->update().wait();
+            service->update().get();
             CHECK_EQ(i1->value(), *service->m_prop1);
-            service->stop().wait();
+            service->stop().get();
             sight::service::unregister_service(service);
         }
     }
@@ -900,7 +900,7 @@ TEST_SUITE("sight::service::service")
         srv->set_input(obj3, data_key3);
         srv->set_worker(m_worker);
 
-        srv->start().wait();
+        srv->start().get();
 
         CHECK(not srv->is_updated());
         CHECK(not srv->is_updated2());
@@ -919,12 +919,12 @@ TEST_SUITE("sight::service::service")
         CHECK(not srv->is_updated());
         CHECK(srv->is_updated2());
 
-        srv->stop().wait();
+        srv->stop().get();
 
         // Auto-connected by default because there is a match in the auto_connections() map
         // BUT, it has been configured to false in set_inout()
         srv->set_inout(obj2, data_key2, false, false);
-        srv->start().wait();
+        srv->start().get();
 
         srv->reset_is_updated2();
 
@@ -939,7 +939,7 @@ TEST_SUITE("sight::service::service")
         CHECK(not srv->is_updated());
         CHECK(not srv->is_updated2());
 
-        srv->stop().wait();
+        srv->stop().get();
 
         sight::service::unregister_service(srv);
     }

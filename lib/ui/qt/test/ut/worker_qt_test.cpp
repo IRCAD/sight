@@ -22,7 +22,6 @@
 
 #include <core/thread/timer.hpp>
 #include <core/thread/worker.hpp>
-#include <core/thread/worker.hxx>
 
 #include <ui/qt/app.hpp>
 #include <ui/qt/worker_qt.hpp>
@@ -42,6 +41,9 @@ namespace sight::ui::qt
 
 // Defined in worker_qt.cpp
 class worker_qt;
+
+namespace
+{
 
 struct test_handler
 {
@@ -76,23 +78,20 @@ struct test_handler
     core::thread::thread_id_t m_worker_thread_id;
 };
 
-namespace
-{
-
 struct fixture
 {
     fixture()
     {
         // Set up context before running a test.
         static std::string arg1 = "worker_qt_test";
-#if defined(__linux)
+#ifdef __linux
         static std::string arg2 = "-platform";
         static std::string arg3 = "offscreen";
         std::array argv         = {arg1.data(), arg2.data(), arg3.data(), static_cast<char*>(nullptr)};
 #else
         std::array argv = {arg1.data(), static_cast<char*>(nullptr)};
 #endif
-        int argc = int(argv.size() - 1);
+        int argc = static_cast<int>(argv.size() - 1);
 
         CHECK(qApp == nullptr);
         std::function<QSharedPointer<QCoreApplication>(int&, char**)> callback =
@@ -151,7 +150,7 @@ TEST_SUITE("sight::ui::qt::worker")
 
         run_basic_test(handler, m_worker);
 
-        m_worker->get_future().wait();
+        m_worker->get_future().get();
 
         run_basic_test_checks(handler);
     }
@@ -162,7 +161,7 @@ TEST_SUITE("sight::ui::qt::worker")
 
         m_worker->post([&handler, this]{run_basic_test(handler, m_worker);});
 
-        m_worker->get_future().wait();
+        m_worker->get_future().get();
 
         run_basic_test_checks(handler);
     }
@@ -178,7 +177,7 @@ TEST_SUITE("sight::ui::qt::worker")
     static void run_from_outside_test(test_handler& _handler, sight::core::thread::worker::sptr _worker)
     {
         //waiting for worker_qt to start
-        _worker->post_task<void>([]{do_nothing();}).wait();
+        _worker->post_task<void>([]{do_nothing();}).get();
 
         run_basic_test(_handler, _worker);
     }
@@ -189,7 +188,7 @@ TEST_SUITE("sight::ui::qt::worker")
 
         std::thread test_thread([&handler, this]{run_from_outside_test(handler, m_worker);});
 
-        m_worker->get_future().wait();
+        m_worker->get_future().get();
 
         run_basic_test_checks(handler);
 
@@ -291,7 +290,7 @@ TEST_SUITE("sight::ui::qt::worker")
         m_worker->post([&handler, &timer, duration]{run_basic_timer_test(handler, timer, duration);});
 
         sight::core::thread::worker::future_t future = m_worker->get_future();
-        future.wait();
+        future.get();
 
         CHECK_EQ(0, std::any_cast<int>(future.get()));
     }

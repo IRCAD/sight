@@ -20,21 +20,16 @@
  *
  ***********************************************************************/
 
-#include <core/tools/system.hpp>
-
 #include <data/image.hpp>
 #include <data/image_series.hpp>
 #include <data/mesh.hpp>
 #include <data/model_series.hpp>
 #include <data/reconstruction.hpp>
-#include <data/series.hpp>
 #include <data/series_set.hpp>
 
 #include <service/op.hpp>
 
 #include <utest_data/data.hpp>
-
-#include <boost/property_tree/xml_parser.hpp>
 
 #include <doctest/doctest.h>
 
@@ -72,9 +67,9 @@ TEST_SUITE("sight::module::io::vtk::series_set_reader")
         srv->set_inout(series_set, "data");
         srv->set_config(reader_srv_cfg);
         srv->configure();
-        srv->start().wait();
-        srv->update().wait();
-        srv->stop().wait();
+        srv->start().get();
+        srv->update().get();
+        srv->stop().get();
         sight::service::remove(srv);
 
         // Data expected
@@ -150,9 +145,9 @@ TEST_SUITE("sight::module::io::vtk::series_set_reader")
         srv->set_inout(series_set, "data");
         srv->set_config(reader_srv_cfg);
         srv->configure();
-        srv->start().wait();
-        srv->update().wait();
-        srv->stop().wait();
+        srv->start().get();
+        srv->update().get();
+        srv->stop().get();
         sight::service::remove(srv);
 
         CHECK_EQ(std::size_t(1), series_set->size());

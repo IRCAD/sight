@@ -255,11 +255,11 @@ TEST_SUITE("sight::core::com::slot")
         slot4->set_worker(w);
         slot5->set_worker(w);
 
-        slot1->async_run(40, 2).wait();
+        slot1->async_run(40, 2).get();
         slot2->async_run();
-        slot3->async_run(w, 2.1F).wait();
-        slot4->async_run(w, 40, 2, 3).wait();
-        slot5->async_run().wait();
+        slot3->async_run(w, 2.1F).get();
+        slot4->async_run(w, 40, 2, 3).get();
+        slot5->async_run().get();
 
         CHECK_EQ(last_sum_result, 42);
         CHECK(a.m_method0);
@@ -277,28 +277,28 @@ TEST_SUITE("sight::core::com::slot")
         std::shared_future<int> f4   = slot4->async_call(w, 40, 2, 3);
         std::shared_future<int> f5   = slot5->async_call();
 
-        f1.wait();
+        f1.get();
         CHECK(f1.valid());
         CHECK_EQ(f1.get(), 42);
         CHECK(f1.valid());
 
-        f2.wait();
+        f2.get();
         CHECK(f2.valid());
         CHECK(a.m_method0);
         CHECK(f2.valid());
 
-        f3.wait();
+        f3.get();
         CHECK(f3.valid());
         CHECK_EQ(f3.get(), 4.2F);
         CHECK(f3.valid());
         CHECK(a.m_method1);
 
-        f4.wait();
+        f4.get();
         CHECK(f4.valid());
         CHECK_EQ(f4.get(), 45);
         CHECK(f4.valid());
 
-        f5.wait();
+        f5.get();
         CHECK(f5.valid());
         CHECK_EQ(f5.get(), 4321);
         CHECK(f5.valid());
@@ -358,10 +358,10 @@ TEST_SUITE("sight::core::com::slot")
         slot3->set_worker(w);
         slot4->set_worker(w);
 
-        slot1->async_run(40, 2).wait();
+        slot1->async_run(40, 2).get();
         slot2->async_run();
-        slot3->async_run(2.1F).wait();
-        slot4->async_run(40, 2, 3).wait();
+        slot3->async_run(2.1F).get();
+        slot4->async_run(40, 2, 3).get();
 
         CHECK_EQ(last_sum_result, 42);
         CHECK(a.m_method0);
@@ -378,23 +378,23 @@ TEST_SUITE("sight::core::com::slot")
         std::shared_future<float> f3 = slot3->async_call<float>(2.1F);
         std::shared_future<int> f4   = slot4->async_call<int>(40, 2, 3);
 
-        f1.wait();
+        f1.get();
         CHECK(f1.valid());
         CHECK_EQ(f1.get(), 42);
         CHECK(f1.valid());
 
-        f2.wait();
+        f2.get();
         CHECK(f2.valid());
         CHECK(a.m_method0);
         CHECK(f2.valid());
 
-        f3.wait();
+        f3.get();
         CHECK(f3.valid());
         CHECK_EQ(f3.get(), 4.2F);
         CHECK(f3.valid());
         CHECK(a.m_method1);
 
-        f4.wait();
+        f4.get();
         CHECK(f4.valid());
         CHECK_EQ(f4.get(), 45);
         CHECK(f4.valid());
@@ -480,12 +480,12 @@ TEST_SUITE("sight::core::com::slot")
             }
 
             m0->set_worker(w2);
-            future1.wait();
+            future1.get();
             CHECK(b.m_thread_id == w1->get_thread_id());
 
             sight::core::com::slot<signature>::void_shared_future_type future2 = m0->async_run(1);
 
-            future2.wait();
+            future2.get();
 
             CHECK(b.m_thread_id == w2->get_thread_id());
             w1->stop();
@@ -515,12 +515,12 @@ TEST_SUITE("sight::core::com::slot")
             }
 
             m0->set_worker(w2);
-            future1.wait();
+            future1.get();
             CHECK(b.m_thread_id == w1->get_thread_id());
 
             sight::core::com::slot<signature>::shared_future_type future2 = m0->async_call(1);
 
-            future2.wait();
+            future2.get();
 
             CHECK(b.m_thread_id == w2->get_thread_id());
             CHECK(future1.get() == std::thread::id());
@@ -570,9 +570,9 @@ TEST_SUITE("sight::core::com::slot")
         slot2->set_worker(w);
         slot3->set_worker(w);
 
-        slot1->async_run(40, 2, 3).wait();
+        slot1->async_run(40, 2, 3).get();
         slot2->async_run("Hello world");
-        slot3->async_run(2.1F, 4.2F).wait();
+        slot3->async_run(2.1F, 4.2F).get();
 
         CHECK_EQ(last_sum_result, 42);
         CHECK(a.m_method0);
@@ -586,17 +586,17 @@ TEST_SUITE("sight::core::com::slot")
         std::shared_future<void> f2  = slot2->async_call<void>("Hello world");
         std::shared_future<float> f3 = slot3->async_call<float>(2.1F, 4.2F);
 
-        f1.wait();
+        f1.get();
         CHECK(f1.valid());
         CHECK_EQ(f1.get(), 42);
         CHECK(f1.valid());
 
-        f2.wait();
+        f2.get();
         CHECK(f2.valid());
         CHECK(a.m_method0);
         CHECK(f2.valid());
 
-        f3.wait();
+        f3.get();
         CHECK(f3.valid());
         CHECK_EQ(f3.get(), 4.2F);
         CHECK(f3.valid());

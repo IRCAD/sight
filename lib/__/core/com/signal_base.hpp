@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -64,7 +64,7 @@ struct SIGHT_CORE_CLASS_API signal_base : virtual core::base_object
     virtual void disconnect(SPTR(slot_base) _slot) = 0;
 
     /// Returns number of connections.
-    virtual std::size_t num_connections() const = 0;
+    [[nodiscard]] virtual std::size_t num_connections() const = 0;
 
     /**
      * @brief Returns the connection handler matching given slot.

@@ -132,7 +132,7 @@ struct client_qt_test_fixture
         if(m_worker)
         {
             m_worker->post([]{QCoreApplication::quit();});
-            m_worker->get_future().wait();
+            m_worker->get_future().get();
             m_worker.reset();
         }
     }

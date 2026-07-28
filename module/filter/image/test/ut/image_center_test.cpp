@@ -21,7 +21,6 @@
 
 #include <core/type.hpp>
 
-#include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
 #include <data/matrix4.hpp>
 
@@ -74,9 +73,9 @@ TEST_SUITE("sight::module::filter::image::image_center")
 
         // Expected image center in mm
         const glm::dvec4 expected_image_center {
-            double(size[0]) * spacing[0] / 2.0,
-            double(size[1]) * spacing[1] / 2.0,
-            double(size[2]) * spacing[2] / 2.0,
+            static_cast<double>(size[0]) * spacing[0] / 2.0,
+            static_cast<double>(size[1]) * spacing[1] / 2.0,
+            static_cast<double>(size[2]) * spacing[2] / 2.0,
             1
         };
 
@@ -92,8 +91,8 @@ TEST_SUITE("sight::module::filter::image::image_center")
         srv->set_input(image, "image");
         srv->set_inout(transform, "transform");
         srv->configure();
-        srv->start().wait();
-        srv->update().wait();
+        srv->start().get();
+        srv->update().get();
 
         // This should never be the case
         CHECK(!sight::geometry::data::is_identity(*transform));
@@ -113,7 +112,7 @@ TEST_SUITE("sight::module::filter::image::image_center")
         CHECK(double(size[1]) / 2.0 == doctest::Approx(double(image_position[1])).epsilon(.5));
         CHECK(double(size[2]) / 2.0 == doctest::Approx(double(image_position[2])).epsilon(.5));
 
-        srv->stop().wait();
+        srv->stop().get();
         sight::service::remove(srv);
     }
 }

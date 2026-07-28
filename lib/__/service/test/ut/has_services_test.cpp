@@ -53,14 +53,14 @@ TEST_SUITE("sight::service::has_services")
             {
                 auto test_service1 = this->register_service("sight::service::ut::test1_inout");
                 test_service1->set_inout(data1, "data1", true);
-                test_service1->start().wait();
+                test_service1->start().get();
                 ref_service1 = test_service1;
             }
 
             sight::service::base::wptr ref_service2;
             {
                 auto test_service2 = this->register_service("sight::service::ut::test_no_data");
-                test_service2->start().wait();
+                test_service2->start().get();
                 ref_service2 = test_service2;
             }
 
@@ -83,14 +83,14 @@ TEST_SUITE("sight::service::has_services")
             {
                 auto test_service1 = this->register_service("sight::service::ut::test1_input");
                 test_service1->set_input(data1, "data1", true);
-                test_service1->start().wait();
+                test_service1->start().get();
                 ref_service1 = test_service1;
             }
 
             sight::service::base::wptr ref_service2;
             {
                 auto test_service2 = this->register_service("sight::service::ut::test_no_data");
-                test_service2->start().wait();
+                test_service2->start().get();
                 ref_service2 = test_service2;
             }
 
@@ -113,14 +113,14 @@ TEST_SUITE("sight::service::has_services")
             {
                 auto test_service1 = this->register_service("sight::service::ut::test1_inout");
                 test_service1->set_inout(data1, "data1", true);
-                test_service1->start().wait();
+                test_service1->start().get();
                 ref_service1 = test_service1;
             }
 
             sight::service::base::wptr ref_service2;
             {
                 auto test_service2 = this->register_service("sight::service::ut::test_no_data");
-                test_service2->start().wait();
+                test_service2->start().get();
                 ref_service2 = test_service2;
             }
 
@@ -140,14 +140,14 @@ TEST_SUITE("sight::service::has_services")
         {
             auto test_service1 = this->register_service("sight::service::ut::test1_inout");
             test_service1->set_inout(data1, "data1", true);
-            test_service1->start().wait();
+            test_service1->start().get();
 
             auto test_service2 = this->register_service("sight::service::ut::test_no_data");
-            test_service2->start().wait();
+            test_service2->start().get();
 
             auto test_service3 = this->register_service("sight::service::ut::test1_inout");
             test_service3->set_inout(data1, "data1", true);
-            test_service3->start().wait();
+            test_service3->start().get();
 
             // The destructor of sight::service::has_services would assert if unregister is not done properly
             // So if the test passes, that means we are ok with the unregistering
@@ -173,7 +173,7 @@ TEST_SUITE("sight::service::has_services")
             test_service->set_inout(data1, "data1", true);
             test_service->set_inout(data2, "data2", false);
             test_service->set_inout(data3, "data3", true);
-            test_service->start().wait();
+            test_service->start().get();
 
             CHECK(!test_service->is_updated());
             CHECK(!test_service->get_received());
@@ -192,7 +192,7 @@ TEST_SUITE("sight::service::has_services")
             test_service->set_inout(data1, "data1", true);
             test_service->set_inout(data2, "data2", true);
             test_service->set_inout(data3, "data3", false);
-            test_service->start().wait();
+            test_service->start().get();
 
             CHECK(!test_service->is_updated());
             CHECK(!test_service->get_received());
@@ -212,7 +212,7 @@ TEST_SUITE("sight::service::has_services")
             test_service->set_inout(data1, "data1", true);
             test_service->set_inout(data2, "data2", true);
             test_service->set_inout(data3, "data3", false);
-            test_service->start().wait();
+            test_service->start().get();
 
             CHECK(!test_service->is_updated());
             CHECK(!test_service->get_received());
@@ -241,22 +241,22 @@ TEST_SUITE("sight::service::has_services")
                 "sight::service::ut::test1_input1_opt_input1_opt_in_out"
             );
             test_service->set_input(data1, "data1", true, false);
-            test_service->start().wait();
+            test_service->start().get();
 
             CHECK(test_service->get_swapped_object_key().empty());
             CHECK(nullptr == test_service->get_swapped_object());
 
             test_service->set_input(data2, "data2");
-            test_service->swap_key("data2", nullptr).wait();
+            test_service->swap_key("data2", nullptr).get();
             CHECK_EQ(std::string("data2"), test_service->get_swapped_object_key());
             CHECK(data2 == test_service->get_swapped_object());
 
             test_service->set_inout(data3, "data3");
-            test_service->swap_key("data3", nullptr).wait();
+            test_service->swap_key("data3", nullptr).get();
             CHECK_EQ(std::string("data3"), test_service->get_swapped_object_key());
 
             test_service->set_input(nullptr, "data2");
-            test_service->swap_key("data2", nullptr).wait();
+            test_service->swap_key("data2", nullptr).get();
             CHECK_EQ(std::string("data2"), test_service->get_swapped_object_key());
             CHECK(nullptr == test_service->get_swapped_object());
         }
@@ -270,7 +270,7 @@ TEST_SUITE("sight::service::has_services")
                 "sight::service::ut::test1_input1_opt_input1_opt_in_out"
             );
             test_service->set_input(data1, "data1", true, false);
-            test_service->start().wait();
+            test_service->start().get();
 
             CHECK(!test_service->is_updated());
             CHECK(!test_service->get_received());
@@ -279,13 +279,13 @@ TEST_SUITE("sight::service::has_services")
             CHECK(test_service->is_updated());
 
             test_service->set_input(data2, "data2", false, true);
-            test_service->swap_key("data2", nullptr).wait();
+            test_service->swap_key("data2", nullptr).get();
 
             sig2->emit();
             CHECK(!test_service->get_received());
 
             test_service->set_inout(data3, "data3", true, true);
-            test_service->swap_key("data3", data3).wait();
+            test_service->swap_key("data3", data3).get();
 
             sig3->emit();
             CHECK(test_service->get_received());

@@ -22,9 +22,7 @@
 #include "helper.hxx"
 
 #include <core/os/temp_path.hpp>
-#include <core/profiling.hpp>
 #include <core/progress/observer.hpp>
-#include <core/tools/uuid.hpp>
 
 #include <io/bitmap/writer.hpp>
 #include <io/dicom/reader/file.hpp>
@@ -60,7 +58,7 @@ inline static std::vector<data::image::sptr> read_dicom_images(std::size_t _coun
             }
 
             // Just to be sure we read the good data
-            if(series_set->size() != std::size_t(1))
+            if(series_set->size() != static_cast<std::size_t>(1))
             {
                 throw std::runtime_error("Expected 1 series, got " + std::to_string(series_set->size()));
             }
@@ -72,7 +70,8 @@ inline static std::vector<data::image::sptr> read_dicom_images(std::size_t _coun
             }
 
             auto size = image_series->size();
-            if(size[0] != std::size_t(636) || size[1] != std::size_t(434) || size[2] != std::size_t(1))
+            if(size[0] != static_cast<std::size_t>(636) || size[1] != static_cast<std::size_t>(434)
+               || size[2] != static_cast<std::size_t>(1))
             {
                 throw std::runtime_error("Image size mismatch");
             }
@@ -88,7 +87,7 @@ inline static std::vector<data::image::sptr> read_dicom_images(std::size_t _coun
             }
 
             // Just to be sure we read the good data
-            if(series_set->size() != std::size_t(1))
+            if(series_set->size() != static_cast<std::size_t>(1))
             {
                 throw std::runtime_error("Expected 1 series at second read");
             }
@@ -100,7 +99,8 @@ inline static std::vector<data::image::sptr> read_dicom_images(std::size_t _coun
             }
 
             size = image_series->size();
-            if(size[0] != std::size_t(800) || size[1] != std::size_t(600) || size[2] != std::size_t(1))
+            if(size[0] != static_cast<std::size_t>(800) || size[1] != static_cast<std::size_t>(600)
+               || size[2] != static_cast<std::size_t>(1))
             {
                 throw std::runtime_error("Image size mismatch at second read");
             }
@@ -116,7 +116,7 @@ inline static std::vector<data::image::sptr> read_dicom_images(std::size_t _coun
             }
 
             // Just to be sure we read the good data
-            if(series_set->size() != std::size_t(1))
+            if(series_set->size() != static_cast<std::size_t>(1))
             {
                 throw std::runtime_error("Expected 1 series at third read");
             }
@@ -128,7 +128,8 @@ inline static std::vector<data::image::sptr> read_dicom_images(std::size_t _coun
             }
 
             size = image_series->size();
-            if(size[0] != std::size_t(800) || size[1] != std::size_t(600) || size[2] != std::size_t(60))
+            if(size[0] != static_cast<std::size_t>(800) || size[1] != static_cast<std::size_t>(600)
+               || size[2] != static_cast<std::size_t>(60))
             {
                 throw std::runtime_error("Image size mismatch at third read");
             }
@@ -208,7 +209,7 @@ inline static void profile_writer(
     // Wait for all file delete task to finish
     while(!_tasks.empty())
     {
-        _tasks.back().wait();
+        _tasks.back().get();
         _tasks.pop_back();
     }
 }
@@ -316,7 +317,7 @@ inline static void profile_open_cv_writer(
     // Wait for all file delete task to finish
     while(!_tasks.empty())
     {
-        _tasks.back().wait();
+        _tasks.back().get();
         _tasks.pop_back();
     }
 }
@@ -637,7 +638,7 @@ TEST_SUITE("sight::io::bitmap::writer")
                 CHECK_NOTHROW(writer->write(observer));
                 CHECK(std::filesystem::exists(tmp_path));
 
-                return std::int64_t(std::filesystem::file_size(tmp_path));
+                return static_cast<std::int64_t>(std::filesystem::file_size(tmp_path));
             };
 
         for(std::size_t i = 0 ; const auto& image : image_series)
@@ -900,9 +901,9 @@ TEST_SUITE("sight::io::bitmap::writer")
             );
         }
 
-        for(const auto& task : tasks)
+        for(auto& task : tasks)
         {
-            task.wait();
+            task.get();
         }
     }
 } // TEST_SUITE

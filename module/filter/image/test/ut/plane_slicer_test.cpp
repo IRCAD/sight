@@ -24,11 +24,8 @@
 
 #include <data/image.hpp>
 #include <data/matrix4.hpp>
-#include <data/point_list.hpp>
 
 #include <service/op.hpp>
-
-#include <boost/property_tree/xml_parser.hpp>
 
 #include <doctest/doctest.h>
 
@@ -95,11 +92,11 @@ TEST_SUITE("sight::module::filter::image::plane_slicer")
         srv->set_input(axes, "axes");
         srv->set_inout(slice, "slice");
         srv->configure();
-        srv->start().wait();
+        srv->start().get();
 
         // Slice outside the image
         {
-            srv->update().wait();
+            srv->update().get();
             auto spacing = slice->spacing();
             CHECK_EQ(3.0, spacing[0]);
             CHECK_EQ(0.25, spacing[1]);
@@ -134,7 +131,7 @@ TEST_SUITE("sight::module::filter::image::plane_slicer")
             (*axes)[7]  = -200.;
             (*axes)[11] = 20.;
 
-            srv->update().wait();
+            srv->update().get();
             auto spacing = slice->spacing();
             CHECK_EQ(3.0, spacing[0]);
             CHECK_EQ(0.25, spacing[1]);
@@ -166,7 +163,7 @@ TEST_SUITE("sight::module::filter::image::plane_slicer")
             (*axes)[7]  = -200.25;
             (*axes)[11] = 20.;
 
-            srv->update().wait();
+            srv->update().get();
             auto spacing = slice->spacing();
             CHECK_EQ(3.0, spacing[0]);
             CHECK_EQ(0.25, spacing[1]);
@@ -212,7 +209,7 @@ TEST_SUITE("sight::module::filter::image::plane_slicer")
             (*axes)[7]  = -200.;
             (*axes)[11] = 20.;
 
-            srv->update().wait();
+            srv->update().get();
             auto spacing = slice->spacing();
             CHECK_EQ(3.0, spacing[0]);
             CHECK_EQ(0.5, spacing[1]);
@@ -243,7 +240,7 @@ TEST_SUITE("sight::module::filter::image::plane_slicer")
             (*axes)[7]  = -199.75;
             (*axes)[11] = 20.0;
 
-            srv->update().wait();
+            srv->update().get();
             auto spacing = slice->spacing();
             CHECK_EQ(3.0, spacing[0]);
             CHECK_EQ(0.5, spacing[1]);
@@ -277,7 +274,7 @@ TEST_SUITE("sight::module::filter::image::plane_slicer")
             (*offset)[11] = -.25;
             srv->set_input(offset, "offset");
 
-            srv->update().wait();
+            srv->update().get();
             auto spacing = slice->spacing();
             CHECK_EQ(3.0, spacing[0]);
             CHECK_EQ(0.5, spacing[1]);
@@ -301,7 +298,7 @@ TEST_SUITE("sight::module::filter::image::plane_slicer")
             }
         }
 
-        srv->stop().wait();
+        srv->stop().get();
         sight::service::remove(srv);
     }
 
@@ -324,11 +321,11 @@ TEST_SUITE("sight::module::filter::image::plane_slicer")
         srv->set_input(axes, "axes");
         srv->set_inout(slice, "slice");
         srv->configure();
-        srv->start().wait();
+        srv->start().get();
 
         // Empty image, slice is empty
         {
-            srv->update().wait();
+            srv->update().get();
 
             auto spacing = slice->spacing();
             CHECK_EQ(0., spacing[0]);
@@ -353,7 +350,7 @@ TEST_SUITE("sight::module::filter::image::plane_slicer")
             (*axes)[7]  = -200.;
             (*axes)[11] = 20.;
 
-            srv->update().wait();
+            srv->update().get();
 
             auto spacing = slice->spacing();
             CHECK_EQ(3.0, spacing[0]);
@@ -387,7 +384,7 @@ TEST_SUITE("sight::module::filter::image::plane_slicer")
 
         // Empty image, we keep the previous metadata, but filled with zeroes
         {
-            srv->update().wait();
+            srv->update().get();
 
             auto spacing = slice->spacing();
             CHECK_EQ(0., spacing[0]);
@@ -404,7 +401,7 @@ TEST_SUITE("sight::module::filter::image::plane_slicer")
             CHECK_EQ(0., origin[2]);
         }
 
-        srv->stop().wait();
+        srv->stop().get();
         sight::service::remove(srv);
     }
 }

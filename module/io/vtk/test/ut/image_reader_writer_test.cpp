@@ -60,9 +60,9 @@ TEST_SUITE("sight::module::io::vtk::image_reader_writer")
 
         CHECK_NOTHROW(srv->set_config(_cfg));
         CHECK_NOTHROW(srv->configure());
-        CHECK_NOTHROW(srv->start().wait());
-        CHECK_NOTHROW(srv->update().wait());
-        CHECK_NOTHROW(srv->stop().wait());
+        CHECK_NOTHROW(srv->start().get());
+        CHECK_NOTHROW(srv->update().get());
+        CHECK_NOTHROW(srv->stop().get());
         sight::service::remove(srv);
     }
 
@@ -262,9 +262,9 @@ TEST_SUITE("sight::module::io::vtk::image_reader_writer")
 
             CHECK_NOTHROW(srv->set_config(get_io_configuration(tmp_file)));
             CHECK_NOTHROW(srv->configure());
-            CHECK_NOTHROW(srv->start().wait());
+            CHECK_NOTHROW(srv->start().get());
             CHECK_THROWS_AS(srv->update().get(), sight::core::tools::failed);
-            CHECK_NOTHROW(srv->stop().wait());
+            CHECK_NOTHROW(srv->stop().get());
             sight::service::remove(srv);
         }
     }
@@ -561,9 +561,9 @@ TEST_SUITE("sight::module::io::vtk::image_reader_writer")
             srv->set_input(image, "data");
             CHECK_NOTHROW(srv->set_config(get_io_configuration(file)));
             CHECK_NOTHROW(srv->configure());
-            CHECK_NOTHROW(srv->start().wait());
+            CHECK_NOTHROW(srv->start().get());
             CHECK_THROWS_AS(srv->update().get(), sight::core::tools::failed);
-            CHECK_NOTHROW(srv->stop().wait());
+            CHECK_NOTHROW(srv->stop().get());
             sight::service::remove(srv);
         }
     }

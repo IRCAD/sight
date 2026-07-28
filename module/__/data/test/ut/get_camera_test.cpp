@@ -28,8 +28,6 @@
 #include <service/base.hpp>
 #include <service/op.hpp>
 
-#include <boost/config.hpp>
-
 #include <doctest/doctest.h>
 
 TEST_SUITE("sight::module::data::get_camera")
@@ -73,14 +71,14 @@ TEST_SUITE("sight::module::data::get_camera")
         get_camera_srv->set_config(config);
         get_camera_srv->set_inout(camera_set, "camera_set");
         get_camera_srv->configure();
-        get_camera_srv->start().wait();
+        get_camera_srv->start().get();
 
         CHECK_NOTHROW(get_camera_srv->update().get());
         CHECK_EQ(get_camera_srv->output("camera", 0).lock()->get_id(), camera1->get_id());
         CHECK_EQ(get_camera_srv->output("camera", 1).lock()->get_id(), camera2->get_id());
         CHECK_EQ(get_camera_srv->output("extrinsic", 0).lock()->get_id(), matrix->get_id());
 
-        get_camera_srv->stop().wait();
+        get_camera_srv->stop().get();
         sight::service::remove(get_camera_srv);
     }
 
@@ -103,10 +101,10 @@ TEST_SUITE("sight::module::data::get_camera")
         get_camera_srv->set_config(config);
         get_camera_srv->set_inout(nullptr, "camera_set");
         get_camera_srv->configure();
-        get_camera_srv->start().wait();
+        get_camera_srv->start().get();
 
         CHECK_THROWS_AS(get_camera_srv->update().get(), sight::data::exception);
-        get_camera_srv->stop().wait();
+        get_camera_srv->stop().get();
         sight::service::remove(get_camera_srv);
     }
 
@@ -136,12 +134,12 @@ TEST_SUITE("sight::module::data::get_camera")
         get_camera_srv->set_config(config);
         get_camera_srv->set_inout(camera_set, "camera_set");
         get_camera_srv->configure();
-        get_camera_srv->start().wait();
+        get_camera_srv->start().get();
 
         CHECK_NOTHROW(get_camera_srv->update().get());
         CHECK_EQ(get_camera_srv->output("camera", 0).lock()->get_id(), camera1->get_id());
         CHECK_EQ(get_camera_srv->output("camera", 1).lock()->get_id(), camera2->get_id());
-        get_camera_srv->stop().wait();
+        get_camera_srv->stop().get();
         sight::service::remove(get_camera_srv);
     }
 
@@ -174,12 +172,12 @@ TEST_SUITE("sight::module::data::get_camera")
         get_camera_srv->set_config(config);
         get_camera_srv->set_inout(camera_set, "camera_set");
         get_camera_srv->configure();
-        get_camera_srv->start().wait();
+        get_camera_srv->start().get();
 
         CHECK_NOTHROW(get_camera_srv->update().get());
         CHECK_EQ(get_camera_srv->output("camera", 0).lock()->get_id(), camera1->get_id());
         CHECK_EQ(get_camera_srv->output("camera", 1).lock()->get_id(), camera2->get_id());
-        get_camera_srv->stop().wait();
+        get_camera_srv->stop().get();
         sight::service::remove(get_camera_srv);
     }
 
@@ -213,10 +211,10 @@ TEST_SUITE("sight::module::data::get_camera")
         get_camera_srv->set_config(config);
         get_camera_srv->set_inout(camera_set, "camera_set");
         get_camera_srv->configure();
-        get_camera_srv->start().wait();
+        get_camera_srv->start().get();
 
         CHECK_THROWS_AS(get_camera_srv->update().get(), std::out_of_range);
-        get_camera_srv->stop().wait();
+        get_camera_srv->stop().get();
         sight::service::remove(get_camera_srv);
     }
 
@@ -250,10 +248,10 @@ TEST_SUITE("sight::module::data::get_camera")
         get_camera_srv->set_config(config);
         get_camera_srv->set_inout(camera_set, "camera_set");
         get_camera_srv->configure();
-        get_camera_srv->start().wait();
+        get_camera_srv->start().get();
 
         CHECK_THROWS_AS(get_camera_srv->update().get(), std::out_of_range);
-        get_camera_srv->stop().wait();
+        get_camera_srv->stop().get();
         sight::service::remove(get_camera_srv);
     }
 
@@ -288,13 +286,13 @@ TEST_SUITE("sight::module::data::get_camera")
         get_camera_srv->set_config(config);
         get_camera_srv->set_inout(camera_set, "camera_set");
         get_camera_srv->configure();
-        get_camera_srv->start().wait();
+        get_camera_srv->start().get();
 
         CHECK_THROWS_AS(get_camera_srv->update().get(), sight::core::exception);
         CHECK_EQ(get_camera_srv->output("camera", 0).lock()->get_id(), camera1->get_id());
         CHECK_EQ(get_camera_srv->output("camera", 1).lock()->get_id(), camera2->get_id());
 
-        get_camera_srv->stop().wait();
+        get_camera_srv->stop().get();
         sight::service::remove(get_camera_srv);
     }
 

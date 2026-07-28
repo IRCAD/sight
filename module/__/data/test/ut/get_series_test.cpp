@@ -19,16 +19,12 @@
  *
  ***********************************************************************/
 
-#include <core/runtime/runtime.hpp>
-
 #include <data/model_series.hpp>
 #include <data/series_set.hpp>
 
 #include <service/op.hpp>
 
 #include <doctest/doctest.h>
-
-#include <sstream>
 
 TEST_SUITE("sight::module::data::get_series")
 {
@@ -82,13 +78,13 @@ TEST_SUITE("sight::module::data::get_series")
         get_series->set_config(config);
         get_series->set_input(series_set, "seriesSet");
         get_series->configure();
-        get_series->start().wait();
-        get_series->update().wait();
+        get_series->start().get();
+        get_series->update().get();
 
         CHECK_EQ(index_0_id, get_series->output("series", 0).lock()->get_id());
         CHECK_EQ(index_3_id, get_series->output("series", 1).lock()->get_id());
 
-        get_series->stop().wait();
+        get_series->stop().get();
 
         sight::service::remove(get_series);
     }
@@ -108,9 +104,9 @@ TEST_SUITE("sight::module::data::get_series")
             "</out>";
         get_series->set_config(config);
         get_series->set_input(nullptr, "seriesSet");
-        get_series->start().wait();
+        get_series->start().get();
         CHECK_THROWS_AS(get_series->update().get(), sight::data::exception);
-        get_series->stop().wait();
+        get_series->stop().get();
         sight::service::remove(get_series);
     }
 

@@ -40,9 +40,9 @@ TEST_SUITE("sight::service::sig_slot_connection")
         buffer_data->async_emit(sight::data::signals::MODIFIED);
         CHECK_EQ(0, show_test_srv->m_receive_count);
 
-        show_test_srv->start().wait();
+        show_test_srv->start().get();
         buffer_data->async_emit(sight::data::signals::MODIFIED);
-        show_test_srv->stop().wait();
+        show_test_srv->stop().get();
         CHECK_EQ(1, show_test_srv->m_receive_count);
 
         buffer_data->async_emit(sight::data::signals::MODIFIED);

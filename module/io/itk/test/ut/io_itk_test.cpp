@@ -21,10 +21,7 @@
  ***********************************************************************/
 
 #include <core/os/temp_path.hpp>
-#include <core/thread/worker.hpp>
-#include <core/tools/date_and_time.hpp>
 
-#include <data/helper/medical_image.hpp>
 #include <data/image_series.hpp>
 #include <data/series_set.hpp>
 
@@ -68,9 +65,9 @@ TEST_SUITE("sight::module::io::itk")
 
         srv->set_config(_cfg);
         CHECK_NOTHROW(srv->configure());
-        CHECK_NOTHROW(srv->start().wait());
-        CHECK_NOTHROW(srv->update().wait());
-        CHECK_NOTHROW(srv->stop().wait());
+        CHECK_NOTHROW(srv->start().get());
+        CHECK_NOTHROW(srv->update().get());
+        CHECK_NOTHROW(srv->stop().get());
         sight::service::unregister_service(srv);
     }
 

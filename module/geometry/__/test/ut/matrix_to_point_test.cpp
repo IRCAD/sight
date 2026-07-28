@@ -19,15 +19,10 @@
  *
  ***********************************************************************/
 
-#include <core/runtime/runtime.hpp>
-
 #include <data/matrix4.hpp>
 #include <data/point.hpp>
-#include <data/tools/picking_info.hpp>
 
 #include <service/op.hpp>
-
-#include <boost/property_tree/xml_parser.hpp>
 
 #include <doctest/doctest.h>
 
@@ -54,7 +49,7 @@ public:
     {
         if(srv->started())
         {
-            CHECK_NOTHROW(srv->stop().wait());
+            CHECK_NOTHROW(srv->stop().get());
         }
 
         sight::service::remove(srv);
@@ -67,7 +62,7 @@ public:
         srv->set_config(_config);
 
         srv->configure();
-        srv->start().wait();
+        srv->start().get();
     }
 
     sight::service::base::sptr srv;

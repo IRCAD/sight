@@ -168,7 +168,7 @@ TEST_SUITE("sight::app::config_launcher")
         CHECK(srv2 != nullptr);
         CHECK(srv2->started());
 
-        srv->stop().wait();
+        srv->stop().get();
     }
 
 //------------------------------------------------------------------------------
@@ -182,7 +182,7 @@ TEST_SUITE("sight::app::config_launcher")
         srv->set_inout(config_id, "config");
 
         srv->configure();
-        srv->start().wait();
+        srv->start().get();
 
         // start the test!
         // set config2 =>
@@ -211,7 +211,7 @@ TEST_SUITE("sight::app::config_launcher")
         CHECK(srv2 != nullptr);
         CHECK(srv2->stopped());
 
-        srv->stop().wait();
+        srv->stop().get();
     }
 
 //------------------------------------------------------------------------------

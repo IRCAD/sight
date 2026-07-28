@@ -1,6 +1,3 @@
-#include "utest_data/generator/series_set.hpp"
-#include <doctest/doctest.h>
-
 /************************************************************************
  *
  * Copyright (C) 2009-2026 IRCAD France
@@ -23,7 +20,9 @@
  *
  ***********************************************************************/
 
+#include "utest_data/generator/series_set.hpp"
 #include <data/series.hpp>
+#include <doctest/doctest.h>
 
 TEST_SUITE("sight::data::equipment")
 {

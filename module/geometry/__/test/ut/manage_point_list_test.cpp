@@ -19,8 +19,6 @@
  *
  ***********************************************************************/
 
-#include <core/runtime/runtime.hpp>
-
 #include <data/matrix4.hpp>
 #include <data/point_list.hpp>
 #include <data/tools/picking_info.hpp>
@@ -52,7 +50,7 @@ public:
     {
         if(srv->started())
         {
-            CHECK_NOTHROW(srv->stop().wait());
+            CHECK_NOTHROW(srv->stop().get());
         }
 
         sight::service::remove(srv);
@@ -65,7 +63,7 @@ public:
         srv->set_config(_config);
 
         srv->configure();
-        srv->start().wait();
+        srv->start().get();
     }
 
     sight::service::base::sptr srv;

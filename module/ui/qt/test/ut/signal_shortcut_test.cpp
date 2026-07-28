@@ -23,11 +23,7 @@
 
 #include "loader.hpp"
 
-#include <core/runtime/profile.hpp>
 #include <core/runtime/runtime.hpp>
-
-#include <ui/__/service.hpp>
-#include <ui/qt/container/widget.hpp>
 
 #include <utest/wait.hpp>
 
@@ -36,6 +32,67 @@
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::ui::qt::ut::signal_shortcut_test);
+
+namespace
+{
+
+class test_context
+{
+public:
+
+    test_context(const std::string& _uid, const std::string& _shortcuts)
+    {
+        view = sight::service::add("sight::module::ui::view");
+        {
+            const std::string config =
+                "<gui>"
+                "<layout type='sight::ui::layout::line'>"
+                "    <orientation value='horizontal' />"
+                "</layout>"
+                "</gui>"
+                "<registry>"
+                "</registry>";
+
+            view->set_id(_uid);
+            // Configure and start the container service
+            view->set_config(config);
+            view->configure();
+            view->start().get();
+        }
+
+        // Register the service
+        signal_shortcut_srv = sight::service::add("sight::module::ui::qt::com::signal_shortcut");
+        {
+            // Build configuration
+            sight::service::config_t config;
+            config.put("<xmlattr>.shortcut", _shortcuts);
+            config.put("<xmlattr>.sid", _uid);
+
+            config.add_child("config", config);
+
+            CPPUNIT_ASSERT_NO_THROW(signal_shortcut_srv->configure(config));
+            CPPUNIT_ASSERT_NO_THROW(signal_shortcut_srv->start().get());
+        }
+    }
+
+    ~test_context()
+    {
+        if(signal_shortcut_srv->started())
+        {
+            signal_shortcut_srv->stop().get();
+        }
+
+        sight::service::remove(signal_shortcut_srv);
+
+        view->stop().get();
+        sight::service::remove(view);
+    }
+
+    sight::service::base::sptr view;
+    sight::service::base::sptr signal_shortcut_srv;
+};
+
+} // namespace
 
 namespace sight::module::ui::qt::ut
 {
@@ -68,62 +125,6 @@ void signal_shortcut_test::tearDown()
 
     m_module->stop();
 }
-
-class test_context
-{
-public:
-
-    test_context(const std::string& _uid, const std::string& _shortcuts)
-    {
-        view = service::add("sight::module::ui::view");
-        {
-            const std::string config =
-                "<gui>"
-                "<layout type='sight::ui::layout::line'>"
-                "    <orientation value='horizontal' />"
-                "</layout>"
-                "</gui>"
-                "<registry>"
-                "</registry>";
-
-            view->set_id(_uid);
-            // Configure and start the container service
-            view->set_config(config);
-            view->configure();
-            view->start().get();
-        }
-
-        // Register the service
-        signal_shortcut_srv = service::add("sight::module::ui::qt::com::signal_shortcut");
-        {
-            // Build configuration
-            service::config_t config;
-            config.put("<xmlattr>.shortcut", _shortcuts);
-            config.put("<xmlattr>.sid", _uid);
-
-            config.add_child("config", config);
-
-            CPPUNIT_ASSERT_NO_THROW(signal_shortcut_srv->configure(config));
-            CPPUNIT_ASSERT_NO_THROW(signal_shortcut_srv->start().get());
-        }
-    }
-
-    ~test_context()
-    {
-        if(signal_shortcut_srv->started())
-        {
-            signal_shortcut_srv->stop().wait();
-        }
-
-        service::remove(signal_shortcut_srv);
-
-        view->stop().get();
-        service::remove(view);
-    }
-
-    sight::service::base::sptr view;
-    sight::service::base::sptr signal_shortcut_srv;
-};
 
 //------------------------------------------------------------------------------
 

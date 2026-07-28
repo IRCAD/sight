@@ -25,8 +25,6 @@
 
 #include <service/op.hpp>
 
-#include <boost/property_tree/xml_parser.hpp>
-
 #include <doctest/doctest.h>
 
 #include <memory>
@@ -58,8 +56,8 @@ TEST_SUITE("sight::module::geometry::vision::chessboard_creator")
         srv->set_inout(board_height_prop, "board_height");
         srv->set_inout(board_square_size_prop, "board_square_size");
         srv->configure();
-        srv->start().wait();
-        srv->update().wait();
+        srv->start().get();
+        srv->update().get();
 
         CHECK_EQ(std::size_t(45), chessboard->size());
 
@@ -79,7 +77,7 @@ TEST_SUITE("sight::module::geometry::vision::chessboard_creator")
         board_width_prop->set_value(5);
         board_height_prop->set_value(3);
         board_square_size_prop->set_value(2.0);
-        srv->update().wait();
+        srv->update().get();
         CHECK_EQ(std::size_t(8), chessboard->size());
         // Check the first point
         pt = (*chessboard)[0];
@@ -96,10 +94,10 @@ TEST_SUITE("sight::module::geometry::vision::chessboard_creator")
         board_width_prop->set_value(-5);
         board_height_prop->set_value(-3);
         board_square_size_prop->set_value(-2.0);
-        srv->update().wait();
+        srv->update().get();
         CHECK_EQ(std::size_t(0), chessboard->size());
 
-        srv->stop().wait();
+        srv->stop().get();
         sight::service::remove(srv);
     }
 } // TEST_SUITE

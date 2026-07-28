@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,8 @@
 
 #pragma once
 
+#include <core/macros.hpp>
 #include <sight/utest_data/config.hpp>
-
-#include <core/base.hpp>
 
 namespace sight::data
 {
@@ -39,12 +38,9 @@ class series_set;
 class series;
 class study;
 
-}
+} // namespace sight::data
 
-namespace sight::utest_data
-{
-
-namespace generator
+namespace sight::utest_data::generator
 {
 
 /**
@@ -62,8 +58,8 @@ public:
      * @return The created series_set
      */
     SIGHT_UTEST_DATA_API static SPTR(data::series_set) create_series_set(
-        const unsigned char _nb_img_series,
-        const unsigned char _nb_model_series
+        unsigned char _nb_img_series,
+        unsigned char _nb_model_series
     );
 
     /// Generates dummy informations for the series
@@ -92,6 +88,4 @@ public:
     SIGHT_UTEST_DATA_API static void generate_reconstruction(SPTR(data::reconstruction) _rec, int _index = -1);
 };
 
-} // namespace generator
-
-} // namespace sight::utest_data
+} // namespace sight::utest_data::generator

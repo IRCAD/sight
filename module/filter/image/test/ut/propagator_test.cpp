@@ -99,8 +99,8 @@ TEST_SUITE("sight::module::filter::image::propagator")
         srv->set_inout(mask, "image_out");
         srv->set_inout(mode, "mode");
         srv->configure();
-        srv->start().wait();
-        srv->update().wait();
+        srv->start().get();
+        srv->update().get();
 
         // No seed, no change expected
         {
@@ -124,7 +124,7 @@ TEST_SUITE("sight::module::filter::image::propagator")
         // One seed in the '2554' region, propagation expected
         point_list->push_back(std::make_shared<sight::data::point>(105., -190., 40.));
 
-        srv->update().wait();
+        srv->update().get();
         {
             const auto mask_lock = mask->dump_lock();
             for(std::size_t x = 0 ; x < 10 ; ++x)
@@ -162,7 +162,7 @@ TEST_SUITE("sight::module::filter::image::propagator")
         auto mask_filled_out = std::make_shared<sight::data::boolean>(false);
         srv->set_inout(mask_filled_out, "mask_filled_out");
 
-        srv->update().wait();
+        srv->update().get();
         {
             const auto mask_lock = mask->dump_lock();
             for(std::size_t x = 0 ; x < 10 ; ++x)
@@ -249,7 +249,7 @@ TEST_SUITE("sight::module::filter::image::propagator")
             }
         }
 
-        srv->update().wait();
+        srv->update().get();
 
         {
             const auto mask_lock = mask->dump_lock();
@@ -293,7 +293,7 @@ TEST_SUITE("sight::module::filter::image::propagator")
             CHECK_EQ(true, mask_filled_out->value());
         }
 
-        srv->stop().wait();
+        srv->stop().get();
         sight::service::remove(srv);
     }
 }

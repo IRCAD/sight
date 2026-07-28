@@ -22,11 +22,8 @@
 
 #include <core/os/temp_path.hpp>
 
-#include <data/activity_set.hpp>
-#include <data/array.hpp>
 #include <data/mesh.hpp>
 #include <data/model_series.hpp>
-#include <data/reconstruction.hpp>
 #include <data/series_set.hpp>
 
 #include <service/op.hpp>
@@ -40,14 +37,11 @@
 #include <string>
 #include <vector>
 
-namespace
-{
-
 using file_container_t = std::vector<std::string>;
 namespace fs           = std::filesystem;
 
 //------------------------------------------------------------------------------
-void run_model_series_srv(
+static void run_model_series_srv(
     const std::string& _impl,
     const boost::property_tree::ptree& _cfg,
     const sight::data::object::sptr& _obj
@@ -68,15 +62,15 @@ void run_model_series_srv(
 
     CHECK_NOTHROW(srv->set_config(_cfg));
     CHECK_NOTHROW(srv->configure());
-    CHECK_NOTHROW(srv->start().wait());
-    CHECK_NOTHROW(srv->update().wait());
-    CHECK_NOTHROW(srv->stop().wait());
+    CHECK_NOTHROW(srv->start().get());
+    CHECK_NOTHROW(srv->update().get());
+    CHECK_NOTHROW(srv->stop().get());
     sight::service::remove(srv);
 }
 
 //------------------------------------------------------------------------------
 
-boost::property_tree::ptree get_io_cfg_from_folder(const fs::path& _file)
+static boost::property_tree::ptree get_io_cfg_from_folder(const fs::path& _file)
 {
     sight::service::config_t srv_cfg;
     srv_cfg.add("folder", _file.string());
@@ -86,7 +80,7 @@ boost::property_tree::ptree get_io_cfg_from_folder(const fs::path& _file)
 
 //------------------------------------------------------------------------------
 
-boost::property_tree::ptree get_io_cfg_from_files(const file_container_t& _files)
+static boost::property_tree::ptree get_io_cfg_from_files(const file_container_t& _files)
 {
     sight::service::config_t srv_cfg;
     for(const auto& file : _files)
@@ -96,8 +90,6 @@ boost::property_tree::ptree get_io_cfg_from_files(const file_container_t& _files
 
     return srv_cfg;
 }
-
-} // namespace
 
 TEST_SUITE("sight::module::io::vtk::model_series_writer")
 {
