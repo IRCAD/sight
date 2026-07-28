@@ -1129,12 +1129,12 @@ macro(sight_add_target)
         get_target_property(TARGET_TYPE ${SIGHT_TARGET} TYPE)
         # Skip libraries without code
         if(NOT "${TARGET_TYPE}" STREQUAL "INTERFACE_LIBRARY")
-            fw_manage_warnings(${SIGHT_TARGET})
+            sight_configure_warnings(${SIGHT_TARGET})
         endif()
 
         # Forward the flag on the object library if it is used
         if(SIGHT_TARGET_OBJECT_LIBRARY)
-            fw_manage_warnings(${SIGHT_TARGET}_obj)
+            sight_configure_warnings(${SIGHT_TARGET}_obj)
         endif()
     endif()
 
@@ -1170,21 +1170,18 @@ macro(sight_generate_profile TARGET)
 endmacro()
 
 # Treat warnings as errors if requested
-#   to activate "warning as errors", simply write in the Properties.cmake of your project:
-#   set(WARNINGS_AS_ERRORS ON)
-macro(fw_manage_warnings PROJECT)
-    if(MSVC)
-        if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 19.14)
-            # wd4996: deprecated declaration will be displayed as warning and not errors
-            target_compile_options(${PROJECT} PRIVATE /WX /wd4996)
-        else()
-            message(WARNING "Your version of MSVC is too old to use WARNINGS_AS_ERRORS.")
-        endif()
-    endif()
-
-    # deprecated declaration will be displayed as warning and not errors
+# - deprecated declaration will be displayed as warning and not errors
+# - enabled by default on all projects, and strongly recommended to not disable it
+# - if really necessary, you can disable them by defining sight_add_target(foo TYPE ... WARNINGS_AS_ERRORS OFF)
+macro(sight_configure_warnings PROJECT)
     target_compile_options(
-        ${PROJECT} PRIVATE "$<$<CXX_COMPILER_ID:GNU,Clang>:-Werror;-Wno-error=deprecated-declarations>"
+        ${PROJECT}
+        PRIVATE "$<$<AND:$<CXX_COMPILER_ID:GNU,Clang>,$<COMPILE_LANGUAGE:C,CXX>>:"
+                "-Werror;-Wno-error=deprecated-declarations>"
+                "$<$<AND:$<CXX_COMPILER_ID:GNU,Clang>,$<COMPILE_LANGUAGE:CUDA>>:"
+                "--Werror;all-warnings;-Xcompiler=-Werror,-Wno-error=deprecated-declarations>"
+                "$<$<AND:$<CXX_COMPILER_ID:MSVC>,$<COMPILE_LANGUAGE:C,CXX>>:/WX;/wd4996>"
+                "$<$<AND:$<CXX_COMPILER_ID:MSVC>,$<COMPILE_LANGUAGE:CUDA>>:-Xcompiler=/WX;-Xcompiler=/wd4996>"
     )
 
     if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
@@ -1197,14 +1194,13 @@ macro(fw_manage_warnings PROJECT)
         endif()
 
         if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 13)
-            # disable specific buggy warnings with GCC12, see https://gcc.gnu.org/bugzilla/show_bug.cgi?id=105329
+            # disable specific buggy warnings with GCC13, see https://gcc.gnu.org/bugzilla/show_bug.cgi?id=105329
             target_compile_options(
                 ${PROJECT} PRIVATE "$<$<CONFIG:Release,RelWithDebInfo,MinSizeRel>:"
                                    "-Wno-stringop-overread;-Wno-error=nonnull>"
             )
         endif()
     endif()
-
 endmacro()
 
 # Find link and manual dependencies for a target
