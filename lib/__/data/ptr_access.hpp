@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,10 +21,13 @@
 
 #pragma once
 
+#include <core/macros.hpp>
 #include <cstdint>
 
 namespace sight::data
 {
+
+class object;
 
 //------------------------------------------------------------------------------
 
@@ -44,7 +47,7 @@ struct access_type_traits;
 template<class DATATYPE>
 struct access_type_traits<DATATYPE, data::access::in>
 {
-    using value  = CSPTR(DATATYPE);
+    using value  = sight::csptr<DATATYPE>;
     using object = const DATATYPE;
     static constexpr bool OPTIONAL_DEFAULT = false;
 };
@@ -52,7 +55,7 @@ struct access_type_traits<DATATYPE, data::access::in>
 template<class DATATYPE>
 struct access_type_traits<DATATYPE, data::access::inout>
 {
-    using value  = SPTR(DATATYPE);
+    using value  = sight::sptr<DATATYPE>;
     using object = DATATYPE;
     static constexpr bool OPTIONAL_DEFAULT = false;
 };
@@ -60,7 +63,7 @@ struct access_type_traits<DATATYPE, data::access::inout>
 template<class DATATYPE>
 struct access_type_traits<DATATYPE, data::access::out>
 {
-    using value  = SPTR(DATATYPE);
+    using value  = sight::sptr<DATATYPE>;
     using object = DATATYPE;
     static constexpr bool OPTIONAL_DEFAULT = true;
 };

@@ -28,6 +28,7 @@
 #include <viz/scene3d/ogre.hpp>
 
 #include <OgreEntity.h>
+#include <OgreMeshManager.h>
 
 namespace sight::module::viz::scene3d::adaptor
 {

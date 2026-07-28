@@ -148,24 +148,24 @@ TEST_SUITE("sight::data::frame_tl")
         sight::core::clock::type time1 = sight::core::clock::get_time_in_milli_sec();
         sight::core::clock::type time2 = time1 + 42;
 
-        SPTR(sight::data::frame_tl::buffer_t) data1 = timeline->create_buffer(time1);
-        std::uint8_t* buffer_data1 = data1->add_element(0);
+        sight::sptr<sight::data::frame_tl::buffer_t> data1 = timeline->create_buffer(time1);
+        std::uint8_t* buffer_data1                         = data1->add_element(0);
         std::memset(buffer_data1, 1, (10LL * 20 * 3));
-        SPTR(sight::data::frame_tl::buffer_t) data2 = timeline->create_buffer(time2);
-        std::uint8_t* buffer_data2 = data2->add_element(0);
+        sight::sptr<sight::data::frame_tl::buffer_t> data2 = timeline->create_buffer(time2);
+        std::uint8_t* buffer_data2                         = data2->add_element(0);
         std::memset(buffer_data2, 2, (10LL * 20 * 3));
 
         timeline->push_object(data1);
         timeline->push_object(data2);
 
-        CSPTR(sight::data::timeline::object) data_pushed1 = timeline->get_object(time1);
+        sight::csptr<sight::data::timeline::object> data_pushed1 = timeline->get_object(time1);
         CHECK(data1 == data_pushed1);
 
-        CSPTR(sight::data::timeline::object) data_pushed2 = timeline->get_object(time2);
+        sight::csptr<sight::data::timeline::object> data_pushed2 = timeline->get_object(time2);
         CHECK(data2 == data_pushed2);
 
-        CSPTR(sight::data::timeline::object) data_pushed1_bis = timeline->get_closest_object(time1 + 1.5);
-        CSPTR(sight::data::frame_tl::buffer_t) buff           =
+        sight::csptr<sight::data::timeline::object> data_pushed1_bis = timeline->get_closest_object(time1 + 1.5);
+        sight::csptr<sight::data::frame_tl::buffer_t> buff           =
             std::dynamic_pointer_cast<const sight::data::frame_tl::buffer_t>(data_pushed1_bis);
         CHECK(buff);
         CHECK_EQ(buff, timeline->get_closest_buffer(time1 + 1.5));
@@ -174,14 +174,14 @@ TEST_SUITE("sight::data::frame_tl")
         CHECK_EQ(std::uint8_t(1), buff_data[300]);
         CHECK_EQ(std::uint8_t(1), buff_data[599]);
 
-        CSPTR(sight::data::timeline::object) data_pushed2_bis = timeline->get_newer_object();
+        sight::csptr<sight::data::timeline::object> data_pushed2_bis = timeline->get_newer_object();
         CHECK(data2 == data_pushed2_bis);
 
         sight::core::clock::type time2_pushed = timeline->get_newer_timestamp();
         CHECK_EQ(time2, time2_pushed);
 
         timeline->clear_timeline();
-        CSPTR(sight::data::timeline::object) null_obj = timeline->get_newer_object();
+        sight::csptr<sight::data::timeline::object> null_obj = timeline->get_newer_object();
         CHECK(null_obj == nullptr);
     }
 
@@ -201,30 +201,30 @@ TEST_SUITE("sight::data::frame_tl")
         sight::core::clock::type time1 = sight::core::clock::get_time_in_milli_sec();
         sight::core::clock::type time2 = time1 + 125;
 
-        SPTR(sight::data::frame_tl::buffer_t) data1 = timeline->create_buffer(time1);
-        std::uint8_t* buffer_data1 = data1->add_element(0);
+        sight::sptr<sight::data::frame_tl::buffer_t> data1 = timeline->create_buffer(time1);
+        std::uint8_t* buffer_data1                         = data1->add_element(0);
         std::memset(buffer_data1, 1, (11LL * 22 * 4));
-        SPTR(sight::data::frame_tl::buffer_t) data2 = timeline->create_buffer(time2);
-        std::uint8_t* buffer_data2 = data2->add_element(0);
+        sight::sptr<sight::data::frame_tl::buffer_t> data2 = timeline->create_buffer(time2);
+        std::uint8_t* buffer_data2                         = data2->add_element(0);
         std::memset(buffer_data2, 2, (11LL * 22 * 4));
 
         timeline->push_object(data1);
         timeline->push_object(data2);
 
-        CSPTR(sight::data::timeline::object) data_pushed1 = timeline->get_object(time1);
+        sight::csptr<sight::data::timeline::object> data_pushed1 = timeline->get_object(time1);
         CHECK(data1 == data_pushed1);
 
-        CSPTR(sight::data::timeline::object) data_pushed2 = timeline->get_object(time2);
+        sight::csptr<sight::data::timeline::object> data_pushed2 = timeline->get_object(time2);
         CHECK(data2 == data_pushed2);
 
         sight::data::frame_tl::sptr copied_timeline = sight::data::frame_tl::copy(timeline);
 
-        CSPTR(sight::data::timeline::object) copied_data1 = copied_timeline->get_closest_object(time1);
+        sight::csptr<sight::data::timeline::object> copied_data1 = copied_timeline->get_closest_object(time1);
         CHECK_EQ(time1, copied_data1->timestamp());
-        CSPTR(sight::data::frame_tl::buffer_t) copied_buff =
+        sight::csptr<sight::data::frame_tl::buffer_t> copied_buff =
             std::dynamic_pointer_cast<const sight::data::frame_tl::buffer_t>(copied_data1);
         CHECK(copied_buff);
-        CSPTR(sight::data::frame_tl::buffer_t) buff =
+        sight::csptr<sight::data::frame_tl::buffer_t> buff =
             std::dynamic_pointer_cast<const sight::data::frame_tl::buffer_t>(timeline->get_closest_buffer(time1));
         const std::uint8_t* copied_buff_data = &copied_buff->get_element(0);
         const std::uint8_t* buff_data        = &buff->get_element(0);
@@ -238,15 +238,15 @@ TEST_SUITE("sight::data::frame_tl")
         CHECK_EQ(time2, copied_time2);
 
         timeline->clear_timeline();
-        CSPTR(sight::data::timeline::object) null_obj = timeline->get_newer_object();
+        sight::csptr<sight::data::timeline::object> null_obj = timeline->get_newer_object();
         CHECK(null_obj == nullptr);
 
-        CSPTR(sight::data::timeline::object) copied_data2 = copied_timeline->get_closest_buffer(time2);
+        sight::csptr<sight::data::timeline::object> copied_data2 = copied_timeline->get_closest_buffer(time2);
         CHECK(copied_data2);
         CHECK_EQ(time2, copied_data2->timestamp());
 
         copied_timeline->clear_timeline();
-        CSPTR(sight::data::timeline::object) null_obj2 = timeline->get_newer_object();
+        sight::csptr<sight::data::timeline::object> null_obj2 = timeline->get_newer_object();
         CHECK(null_obj == nullptr);
     }
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,11 +22,7 @@
 
 #pragma once
 
-#include <sight/service/config.hpp>
-
-#include <core/base.hpp>
-
-#include <string>
+#include <core/macros.hpp>
 
 namespace sight::service
 {
@@ -36,11 +32,12 @@ class base;
 namespace factory
 {
 
-template<class CLASSNAME>
-SPTR(CLASSNAME)  make()
-{
-    SPTR(CLASSNAME) srv = std::make_shared<CLASSNAME>();
+//------------------------------------------------------------------------------
 
+template<class CLASSNAME>
+sight::sptr<CLASSNAME> make()
+{
+    sight::sptr<CLASSNAME> srv = std::make_shared<CLASSNAME>();
     return srv;
 }
 

@@ -77,7 +77,8 @@ struct SIGHT_CORE_CLASS_API slot_run<void(A ...)>: slot_base
      * @return a shared_future object associated with Slot's run result.
      * @throws NoWorker if given worker is not valid.
      */
-    virtual slot_base::void_shared_future_type async_run(const SPTR(core::thread::worker) & _worker, A ... _args) const;
+    virtual slot_base::void_shared_future_type async_run(const sight::sptr<core::thread::worker>& _worker,
+                                                         A ... _args) const;
 
     /**
      * @brief Run the Slot with the given parameters asynchronously.
@@ -92,7 +93,7 @@ struct SIGHT_CORE_CLASS_API slot_run<void(A ...)>: slot_base
     protected:
 
         template<typename R, typename WEAKCALL>
-        static std::shared_future<R> post_weak_call(const SPTR(core::thread::worker)& _worker, WEAKCALL _f);
+        static std::shared_future<R> post_weak_call(const sight::sptr<core::thread::worker>& _worker, WEAKCALL _f);
 
         /**
          * @brief Binds the given parameters to the run method within a void() function.

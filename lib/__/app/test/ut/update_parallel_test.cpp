@@ -22,26 +22,25 @@
 #include <core/runtime/path.hpp>
 #include <core/runtime/runtime.hpp>
 
+#include <service/macros.hpp>
 #include <service/op.hpp>
 
-#include <utest/wait.hpp>
-
 #include <doctest/doctest.h>
-
-#include <ranges>
 
 namespace sight::app::ut
 {
 
-/**
- * @brief Service interface for test
- */
+// NOLINTNEXTLINE(misc-use-internal-linkage) Fails under windows because the id can't be parsed by boost
 class test_update_srv final : public sight::service::base
 {
 public:
 
     SIGHT_DECLARE_SERVICE(test_update_srv, sight::service::base);
     ~test_update_srv() noexcept final = default;
+
+//------------------------------------------------------------------------------
+
+protected:
 
     //------------------------------------------------------------------------------
 
@@ -68,6 +67,8 @@ public:
         m_updated = true;
     }
 
+public:
+
     bool m_updated {false};
 };
 
@@ -75,18 +76,18 @@ public:
 
 SIGHT_REGISTER_SERVICE(sight::service::base, sight::app::ut::test_update_srv);
 
-namespace
-{
-
 //------------------------------------------------------------------------------
 
-auto create_srv()
+static auto create_srv()
 {
     auto srv = sight::service::add<sight::app::ut::test_update_srv>("sight::app::ut::test_update_srv");
     CHECK_NOTHROW(srv->configure());
     CHECK_NOTHROW(srv->start().get());
     return srv;
 }
+
+namespace
+{
 
 //------------------------------------------------------------------------------
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,6 @@
 
 #include <io/__/service/reader.hpp>
 
-#include <filesystem>
 #include <string>
 
 namespace sight::data
@@ -34,14 +33,14 @@ namespace sight::data
 
 class image;
 
-}
+} // namespace sight::data
 
 namespace sight::data
 {
 
 class series;
 
-}
+} // namespace sight::data
 
 namespace sight::module::io::itk
 {
@@ -73,8 +72,17 @@ public:
     SIGHT_DECLARE_SERVICE(series_set_reader, sight::io::service::reader);
 
     series_set_reader() noexcept;
-
     ~series_set_reader() noexcept override = default;
+
+    /**
+     * @brief Configure the inr files path.
+     *
+     * This method is used to find the inr files path using a files selector.
+     */
+    void open_location_dialog() override;
+
+    /// Returns managed file type, here FILES
+    sight::io::service::path_type_t get_path_type() const override;
 
 protected:
 
@@ -94,20 +102,10 @@ protected:
     /// Reads inr files specified by user (configure or open_location_dialog) and pushes them into series_set.
     void updating() override;
 
-    /**
-     * @brief Configure the inr files path.
-     *
-     * This method is used to find the inr files path using a files selector.
-     */
-    void open_location_dialog() override;
-
-    /// Returns managed file type, here FILES
-    sight::io::service::path_type_t get_path_type() const override;
-
 private:
 
     /// Initializes Series with dummy values and Study with specified instanceUID.
-    static void init_series(SPTR(data::series) _series, const std::string& _instance_uid);
+    static void init_series(sight::sptr<data::series> _series, const std::string& _instance_uid);
 };
 
 } // namespace sight::module::io::itk

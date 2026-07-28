@@ -43,7 +43,8 @@ namespace sight::module::io::bitmap
  * @copydoc sight::io::bitmap::writer
  *
  * @section Signals Signals
- * - \b monitor_created(SPTR(core::progress::monitor)): emitted to display a progress bar while the image is written
+ * - \b monitor_created(sight::sptr<core::progress::monitor>): emitted to display a progress bar while the image is
+ * written
  *
  * @section XML XML Configuration
  *

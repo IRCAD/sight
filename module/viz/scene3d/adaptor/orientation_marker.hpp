@@ -22,9 +22,10 @@
 
 #pragma once
 
+#include <data/matrix4.hpp>
+
 #include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/material/standard.hpp>
-#include <viz/scene3d/transformable.hpp>
 
 namespace sight::module::viz::scene3d::adaptor
 {

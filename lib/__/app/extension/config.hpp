@@ -24,10 +24,7 @@
 
 #include <sight/app/config.hpp>
 
-#include "service/extension/config.hpp"
-
 #include <core/mt/types.hpp>
-#include <core/object.hpp>
 #include <core/runtime/extension.hpp>
 
 #include <data/map.hpp>
@@ -50,7 +47,7 @@ class SIGHT_APP_CLASS_API app_info
 {
 public:
 
-    using sptr = SPTR(app_info);
+    using sptr = sight::sptr<app_info>;
 
     std::string group;
     std::string desc;
@@ -78,7 +75,7 @@ class SIGHT_APP_CLASS_API config final
 {
 public:
 
-    using sptr = SPTR(config);
+    using sptr = sight::sptr<config>;
 
     /**
      * @brief Parses module information to retrieve configuration declaration.

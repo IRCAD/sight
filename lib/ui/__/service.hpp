@@ -145,7 +145,7 @@ public:
 
     SIGHT_UI_API ~service() override = default;
 
-    SIGHT_UI_API SPTR(ui::container::widget) get_container();
+    SIGHT_UI_API sight::sptr<ui::container::widget> get_container();
 
     SIGHT_UI_API void set_parent(std::string _wid);
     /// @name Slots
@@ -226,11 +226,11 @@ private:
     void initialize_slide_view_builder(const ui::config_t& _slide_view_config);
 
     bool m_view_layout_manager_is_created {false};
-    SPTR(ui::layout::view) m_view_layout_manager;
+    sight::sptr<ui::layout::view> m_view_layout_manager;
 
-    SPTR(ui::detail::registry::view) m_view_registry;
-    SPTR(ui::builder::toolbar) m_tool_bar_builder;
-    SPTR(ui::builder::widget) m_container_builder;
+    sight::sptr<ui::detail::registry::view> m_view_registry;
+    sight::sptr<ui::builder::toolbar> m_tool_bar_builder;
+    sight::sptr<ui::builder::widget> m_container_builder;
     slide_view_container_t m_slide_view_builders;
 
     bool m_has_tool_bar {false};

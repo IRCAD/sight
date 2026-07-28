@@ -93,7 +93,7 @@ void transform_depth_tl2mm::compute(core::clock::type _timestamp)
 
             const auto* depth_buffer_in = reinterpret_cast<const std::uint16_t*>(&depth_buffer_obj->get_element(0));
 
-            SPTR(data::frame_tl::buffer_t) depth_buffer_out_obj = scaled_frame_tl->create_buffer(_timestamp);
+            sight::sptr<data::frame_tl::buffer_t> depth_buffer_out_obj = scaled_frame_tl->create_buffer(_timestamp);
 
             auto* depth_buffer_out = reinterpret_cast<std::uint16_t*>(depth_buffer_out_obj->add_element(0));
 

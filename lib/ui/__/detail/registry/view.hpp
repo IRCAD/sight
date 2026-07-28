@@ -67,7 +67,7 @@ public:
     /// Destructor. Do nothing
     SIGHT_UI_API ~view() override;
 
-    SIGHT_UI_API virtual SPTR(ui::container::widget) get_parent();
+    SIGHT_UI_API virtual sight::sptr<ui::container::widget> get_parent();
 
     SIGHT_UI_API virtual void set_parent(std::string _wid);
 
@@ -127,17 +127,17 @@ public:
      * @pre view must be initialized before.
      * @pre sub containers must be instanced before.
      */
-    SIGHT_UI_API virtual void manage(std::vector<SPTR(ui::container::widget)> _sub_views);
+    SIGHT_UI_API virtual void manage(std::vector<sight::sptr<ui::container::widget> > _sub_views);
 
     /**
      * @brief Register menu bar.
      */
-    SIGHT_UI_API virtual void manage_menu_bar(SPTR(ui::container::menubar) _menu_bar);
+    SIGHT_UI_API virtual void manage_menu_bar(sight::sptr<ui::container::menubar> _menu_bar);
 
     /**
      * @brief Register tool bar.
      */
-    SIGHT_UI_API virtual void manage_tool_bar(SPTR(ui::container::toolbar) _tool_bar);
+    SIGHT_UI_API virtual void manage_tool_bar(sight::sptr<ui::container::toolbar> _tool_bar);
 
     /**
      * @brief Stopping view manager.
@@ -182,7 +182,7 @@ protected:
     sid_tool_bar_pair_type m_tool_bar_sid;
 
     std::string m_parent_wid;
-    SPTR(ui::container::widget) m_parent_container;
+    sight::sptr<ui::container::widget> m_parent_container;
 
     /// Main service ID associate with this view
     std::string m_sid;

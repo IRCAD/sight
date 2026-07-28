@@ -42,7 +42,8 @@ namespace sight::module::io::vtk
  * @brief Service reading a VTK image using the fwVtkIO lib.
  *
  * @section Signals Signals
- * - \b monitor_created(SPTR(core::progress::monitor)): emitted to display a progress bar while the image is loading,
+ * - \b monitor_created(sight::sptr<core::progress::monitor>): emitted to display a progress bar while the image is
+ * loading,
  * it should be connected to a progress bar.
  *
  * @section Slots Slots
@@ -87,7 +88,7 @@ public:
     static bool load_image(
         const std::filesystem::path& _vtk_file,
         std::shared_ptr<data::image> _image,
-        SPTR(core::progress::observer) _progress
+        sight::sptr<core::progress::observer> _progress
     );
 
     sight::io::service::path_type_t get_path_type() const override;

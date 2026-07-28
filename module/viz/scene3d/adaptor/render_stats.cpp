@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,9 @@
 
 #include "module/viz/scene3d/adaptor/render_stats.hpp"
 
+#include <data/color.hpp>
+
 #include <viz/scene3d/render.hpp>
-#include <viz/scene3d/window_interactor.hpp>
 
 #include <OGRE/OgreRenderTarget.h>
 #include <OGRE/OgreRenderTargetListener.h>
@@ -33,11 +34,11 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-class PostWindowRenderListener : public Ogre::RenderTargetListener
+class post_window_render_listener : public Ogre::RenderTargetListener
 {
 public:
 
-    explicit PostWindowRenderListener(render_stats& _render_stats_adaptor) :
+    explicit post_window_render_listener(render_stats& _render_stats_adaptor) :
         m_render_stats_adaptor(_render_stats_adaptor)
     {
     }
@@ -110,7 +111,7 @@ void render_stats::starting()
     const sight::viz::scene3d::layer::sptr layer = this->layer();
     auto* render_window                          = layer->get_render_target();
 
-    m_listener = std::make_unique<module::viz::scene3d::adaptor::PostWindowRenderListener>(*this);
+    m_listener = std::make_unique<module::viz::scene3d::adaptor::post_window_render_listener>(*this);
     render_window->addListener(m_listener.get());
 }
 

@@ -219,7 +219,7 @@ void client_listener::manage_timeline(data::object::sptr _obj, std::size_t _inde
             m_tl_initialized = true;
         }
 
-        SPTR(data::matrix_tl::buffer_t) matrix_buf;
+        sight::sptr<data::matrix_tl::buffer_t> matrix_buf;
         matrix_buf = mat_tl->create_buffer(timestamp);
 
         data::matrix4::sptr t = std::dynamic_pointer_cast<data::matrix4>(_obj);
@@ -267,7 +267,7 @@ void client_listener::manage_timeline(data::object::sptr _obj, std::size_t _inde
             m_tl_initialized = true;
         }
 
-        SPTR(data::frame_tl::buffer_t) buffer = frame_tl->create_buffer(timestamp);
+        sight::sptr<data::frame_tl::buffer_t> buffer = frame_tl->create_buffer(timestamp);
 
         auto* dest_buffer = reinterpret_cast<std::uint8_t*>(buffer->add_element(0));
 

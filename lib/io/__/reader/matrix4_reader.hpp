@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -51,7 +51,7 @@ public:
     SIGHT_IO_API ~matrix4_reader() override = default;
 
     /// Reads the file using standard iostream API.
-    SIGHT_IO_API void read(SPTR(sight::core::progress::observer) _progress) override;
+    SIGHT_IO_API void read(sight::sptr<sight::core::progress::observer> _progress) override;
 
     /// Defines the extensions supported by this reader. Here: ".trf"
     SIGHT_IO_API std::string extension() const override;

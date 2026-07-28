@@ -116,7 +116,7 @@ void video_writer::updating()
 
 //------------------------------------------------------------------------------
 
-void video_writer::write_buffer(int _width, int _height, CSPTR(data::frame_tl::buffer_t)_buffer)
+void video_writer::write_buffer(int _width, int _height, sight::csptr<data::frame_tl::buffer_t> _buffer)
 {
     SIGHT_ASSERT("OpenCV video writer not initialized", m_writer);
     const std::uint8_t* image_buffer = &_buffer->get_element(0);
@@ -178,7 +178,7 @@ void video_writer::save_frame(core::clock::type _timestamp)
         if(m_writer && m_writer->isOpened())
         {
             // Get the buffer of the copied timeline
-            CSPTR(data::frame_tl::buffer_t) buffer = frame_tl->get_closest_buffer(_timestamp);
+            sight::csptr<data::frame_tl::buffer_t> buffer = frame_tl->get_closest_buffer(_timestamp);
             if(buffer)
             {
                 const int width  = static_cast<int>(frame_tl->get_width());
@@ -254,7 +254,7 @@ void video_writer::save_frame(core::clock::type _timestamp)
                     for(const auto& old_timestamp : m_timestamps)
                     {
                         // writes the old frames used to compute the number of fps
-                        CSPTR(data::frame_tl::buffer_t) buffer = frame_tl->get_closest_buffer(old_timestamp);
+                        sight::csptr<data::frame_tl::buffer_t> buffer = frame_tl->get_closest_buffer(old_timestamp);
                         if(buffer)
                         {
                             this->write_buffer(width, height, buffer);

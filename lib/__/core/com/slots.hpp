@@ -50,7 +50,7 @@ class slot;
  * @brief   This class proposes a storage for slots.
  */
 class SIGHT_CORE_CLASS_API slots : public std::map<std::string,
-                                                   SPTR(slot_base)>
+                                                   sight::sptr<slot_base> >
 {
 public:
 
@@ -64,21 +64,21 @@ public:
     slots(const slots& /*unused*/) = delete;
 
     /// Registers SlotBase in m_slots
-    SIGHT_CORE_API slots& operator()(const key_t& _key, const SPTR(slot_base)& _slot);
+    SIGHT_CORE_API slots& operator()(const key_t& _key, const sight::sptr<slot_base>& _slot);
 
     /// Registers Slot  in m_slots (defined here to avoid compiler error C2244)
     template<typename R, typename ... A>
-    slots& operator()(const key_t& _key, SPTR(slot<R(A ...)>)_slot)
+    slots& operator()(const key_t& _key, sight::sptr<slot<R(A ...)> > _slot)
     {
-        SPTR(slot_base) base = std::dynamic_pointer_cast<slot_base>(_slot);
+        sight::sptr<slot_base> base = std::dynamic_pointer_cast<slot_base>(_slot);
         return this->operator()(_key, base);
     }
 
     /// Returns the SlotBase associated to the key, if key does not exist, the ptr is null
-    SIGHT_CORE_API SPTR(slot_base) operator[](const key_t& _key) const;
+    SIGHT_CORE_API sight::sptr<slot_base> operator[](const key_t& _key) const;
 
     /// Assigns the worker to all slots stored in m_slots
-    SIGHT_CORE_API void set_worker(const SPTR(core::thread::worker)& _worker);
+    SIGHT_CORE_API void set_worker(const sight::sptr<core::thread::worker>& _worker);
 
     /// Returns all key_t registered in m_slots
     [[nodiscard]] SIGHT_CORE_API slot_key_container_t get_slot_keys() const;

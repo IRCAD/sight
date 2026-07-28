@@ -336,22 +336,22 @@ protected:
 private:
 
     /// Signal emitted when cancel has been requested
-    SPTR(cancel_requested_signal) m_sig_cancel_requested;
+    sight::sptr<cancel_requested_signal> m_sig_cancel_requested;
 
     /// Signal emitted when the monitor has been canceled.
-    SPTR(state_signal) m_sig_canceled;
+    sight::sptr<state_signal> m_sig_canceled;
 
     /// Signal emitted when the monitor has been started.
-    SPTR(state_signal) m_sig_started;
+    sight::sptr<state_signal> m_sig_started;
 
     /// Signal emitted when the monitor has been finished.
-    SPTR(state_signal) m_sig_finished;
+    sight::sptr<state_signal> m_sig_finished;
 
     /// Signal emitted when done work units have been changed. Takes a std::uint64_t as parameter.
-    SPTR(done_work_signal) m_sig_done_work;
+    sight::sptr<done_work_signal> m_sig_done_work;
 
     /// Signal emitted when a message has been added to logs. Takes a std::string as parameter.
-    SPTR(log_signal) m_sig_logged;
+    sight::sptr<log_signal> m_sig_logged;
 
     /// monitor's name
     std::string m_name;

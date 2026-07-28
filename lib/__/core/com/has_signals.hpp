@@ -47,20 +47,26 @@ public:
     has_signals()          = default;
     virtual ~has_signals() = default;
 
-    [[nodiscard]] SPTR(signal_base) signal(const signals::key_t& _key) const
+    //------------------------------------------------------------------------------
+
+    [[nodiscard]] sight::sptr<signal_base> signal(const signals::key_t& _key) const
     {
         return m_signals[_key];
     }
 
+    //------------------------------------------------------------------------------
+
     template<typename signal_type>
-    [[nodiscard]] SPTR(signal_type) signal(const signals::key_t& _key) const
+    [[nodiscard]] sight::sptr<signal_type> signal(const signals::key_t& _key) const
     {
         auto signal = std::dynamic_pointer_cast<signal_type>(this->signal(_key));
         return signal;
     }
 
+    //------------------------------------------------------------------------------
+
     template<typename signal_type>
-    SPTR(signal_type) new_signal(const signals::key_t& _key)
+    sight::sptr<signal_type> new_signal(const signals::key_t& _key)
     {
         auto sig = std::make_shared<signal_type>();
         m_signals(_key, sig);

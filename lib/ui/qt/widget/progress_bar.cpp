@@ -22,7 +22,6 @@
 #include "progress_bar.hpp"
 
 #include <core/runtime/path.hpp>
-#include <core/thread/worker.hxx>
 
 #include <QSvgRenderer>
 
@@ -139,7 +138,7 @@ progress_bar::progress_bar(
 
 progress_bar::~progress_bar()
 {
-    std::lock_guard m_lock(m_mutex);
+    std::scoped_lock m_lock(m_mutex);
     m_progress_monitors.clear();
 
     if(!m_progress_bar.isNull())
@@ -172,7 +171,7 @@ progress_bar::~progress_bar()
 void progress_bar::add_monitor(core::progress::monitor::sptr _monitor)
 {
     {
-        std::lock_guard m_lock(m_mutex);
+        std::scoped_lock m_lock(m_mutex);
 
         // Add the monitor to the list.
         if(std::ranges::find_if(
@@ -216,7 +215,7 @@ void progress_bar::add_monitor(core::progress::monitor::sptr _monitor)
                         if(auto shared_this = dynamic_pointer_cast<progress_bar>(weak_this.lock()); shared_this)
                         {
                             { // Some cleanup to remove expired monitors.
-                                std::lock_guard m_lock(shared_this->m_mutex);
+                                std::scoped_lock m_lock(shared_this->m_mutex);
                                 std::erase_if(
                                     shared_this->m_progress_monitors,
                                     [weak_monitor](const auto& _weak_monitor)
@@ -260,7 +259,7 @@ void progress_bar::add_monitor(core::progress::monitor::sptr _monitor)
 
 void progress_bar::update_widgets()
 {
-    std::lock_guard m_lock(m_mutex);
+    std::scoped_lock m_lock(m_mutex);
 
     // Update visibility of the widgets.
     const bool visible = !m_progress_monitors.empty();
@@ -288,8 +287,9 @@ void progress_bar::update_widgets()
                 name + (msg.empty() ? "" : " - ") + msg
                                     ) + " - %p%";
 
-            const int value = int((float(monitor->get_done_work_units()) / float(monitor->get_total_work_units())
-                                   * 100));
+            const int value = static_cast<int>((static_cast<float>(monitor->get_done_work_units())
+                                                / static_cast<float>(monitor->get_total_work_units())
+                                                * 100));
 
             if(!m_progress_bar.isNull())
             {

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,6 +21,7 @@
  ***********************************************************************/
 
 #include "io/__/reader/object_reader.hpp"
+#include <core/spy_log.hpp>
 
 namespace sight::io::reader
 {

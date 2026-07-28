@@ -26,7 +26,6 @@
 
 #include "core/progress/observer.hpp"
 
-#include <core/base.hpp>
 #include <core/object.hpp>
 
 namespace sight::core::progress
@@ -63,7 +62,7 @@ public:
      *
      * This method write the object given in parameter of set_object method.
      */
-    SIGHT_IO_API virtual void write(SPTR(sight::core::progress::observer) _progress) = 0;
+    SIGHT_IO_API virtual void write(sight::sptr<sight::core::progress::observer> _progress) = 0;
 
     /**
      * @brief m_object setter.

@@ -272,7 +272,7 @@ OFCondition series_enquirer::send_store_request(const std::filesystem::path& _pa
 
 //------------------------------------------------------------------------------
 
-OFCondition series_enquirer::send_store_request(const CSPTR(DcmDataset)& _dataset)
+OFCondition series_enquirer::send_store_request(const sight::csptr<DcmDataset>& _dataset)
 {
     // Try to find a presentation context.
     T_ASC_PresentationContextID pres_id = this->find_uncompressed_pc(UID_MOVEStudyRootQueryRetrieveInformationModel);

@@ -417,7 +417,7 @@ void matrices_reader::read_matrices()
         }
 
         // Push matrix in timeline
-        SPTR(data::matrix_tl::buffer_t) matrix_buf;
+        sight::sptr<data::matrix_tl::buffer_t> matrix_buf;
         matrix_buf = matrix_tl->create_buffer(timestamp);
         matrix_tl->push_object(matrix_buf);
 

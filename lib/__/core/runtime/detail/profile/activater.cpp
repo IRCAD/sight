@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,8 @@
 
 #include "core/runtime/detail/profile/activater.hpp"
 
-#include "core/runtime/detail/extension_point.hpp"
 #include "core/runtime/detail/module.hpp"
-#include "core/runtime/extension.hpp"
+#include <core/spy_log.hpp>
 
 #include <boost/algorithm/string/replace.hpp>
 

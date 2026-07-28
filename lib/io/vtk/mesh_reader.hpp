@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,8 +30,6 @@
 
 #include <io/__/reader/generic_object_reader.hpp>
 
-#include <filesystem>
-
 namespace sight::io::vtk
 {
 
@@ -48,7 +46,7 @@ public:
     SIGHT_DECLARE_CLASS(mesh_reader, io::reader::generic_object_reader<data::mesh>)
 
     /// @brief Reading operator.
-    SIGHT_IO_VTK_API void read(SPTR(sight::core::progress::observer) _progress) override;
+    SIGHT_IO_VTK_API void read(sight::sptr<sight::core::progress::observer> _progress) override;
 
     /// @return ".vtk"
     SIGHT_IO_VTK_API std::string extension() const override;

@@ -60,7 +60,7 @@ public:
     SIGHT_IO_VTK_API bitmap_image_reader();
 
     //! @brief Reading operator.
-    SIGHT_IO_VTK_API void read(SPTR(sight::core::progress::observer) _progress) override;
+    SIGHT_IO_VTK_API void read(sight::sptr<sight::core::progress::observer> _progress) override;
 
     /// @return The available file extensions for loading bitmap images.
     SIGHT_IO_VTK_API std::string extension() const override;

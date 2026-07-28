@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -41,7 +41,7 @@ public:
      * @note Given object should be a single data::image or data::image_series
      * @see data::validator::base::validate
      */
-    sight::data::validator::return_t validate(const CSPTR(data::object)& _object) const override;
+    sight::data::validator::return_t validate(const sight::csptr<data::object>& _object) const override;
 };
 
 } // namespace sight::data::validator

@@ -26,8 +26,9 @@
 #include <future>
 #include <optional>
 
-#include <core/base.hpp>
 #include <core/clock.hpp>
+#include <core/macros.hpp>
+#include <core/thread/task_handler.hpp>
 
 #include <sight/core/config.hpp>
 
@@ -146,7 +147,7 @@ public:
     SIGHT_CORE_API virtual void set_thread_name(const std::string& _thread_name) = 0;
 
     /// Creates and returns a core::thread::timer running in this Worker
-    SIGHT_CORE_API virtual SPTR(core::thread::timer) create_timer() = 0;
+    SIGHT_CORE_API virtual sight::sptr<core::thread::timer> create_timer() = 0;
 
     /**
      * @brief Returns a std::shared_future associated with the execution of Worker's loop
@@ -179,7 +180,7 @@ public:
 
     /// Creates and returns a new instance of Worker default implementation
     /// (boost::Asio).
-    SIGHT_CORE_API static SPTR(worker) make();
+    SIGHT_CORE_API static sight::sptr<worker> make();
 
 protected:
 
@@ -254,6 +255,26 @@ SIGHT_CORE_API void set_default_worker(core::thread::worker::sptr _worker);
  */
 SIGHT_CORE_API void reset_default_worker();
 
-} // namespace sight::core::thread
+//------------------------------------------------------------------------------
 
-#include "core/thread/worker.hxx"
+template<typename R, typename TASK>
+std::shared_future<R> worker::post_task(TASK _f)
+{
+    std::packaged_task<R()> task(_f);
+    std::future<R> future = task.get_future();
+
+    std::function<void()> f_task = core::thread::move_task_into_function(task);
+
+    if(core::thread::get_current_thread_id() == this->get_thread_id())
+    {
+        f_task();
+    }
+    else
+    {
+        this->post(f_task);
+    }
+
+    return future;
+}
+
+} // namespace sight::core::thread

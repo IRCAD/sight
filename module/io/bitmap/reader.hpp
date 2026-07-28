@@ -21,11 +21,9 @@
 
 #pragma once
 
-#include <core/com/signal.hpp>
-#include <core/progress/monitor.hpp>
-
 #include <io/__/service/reader.hpp>
-#include <io/bitmap/reader.hpp>
+
+#include <io/bitmap/backend.hpp>
 
 #include <set>
 
@@ -49,7 +47,7 @@ namespace sight::module::io::bitmap
  * @copydoc sight::io::bitmap::reader
  *
  * @section Signals Signals
- * - \b monitor_created(SPTR(core::progress::monitor)): emitted to display a progress bar while the image is read
+ * - \b monitor_created(sight::sptr<core::progress::monitor>): emitted to display a progress bar while the image is read
  *
  * @section XML XML Configuration
  *

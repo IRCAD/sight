@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -63,14 +63,19 @@ public:
     SIGHT_DECLARE_SERVICE(image_writer, sight::io::service::writer);
 
     image_writer() noexcept;
-
     ~image_writer() noexcept override = default;
 
     static bool save_image(
         const std::filesystem::path& _img_save_path,
-        const CSPTR(data::image)& _image,
-        const SPTR(core::progress::observer)& _progress
+        const sight::csptr<data::image>& _image,
+        const sight::sptr<core::progress::observer>& _progress
     );
+
+    /// configure using GUI.
+    void open_location_dialog() override;
+
+    /// Return managed file type, here FILE
+    sight::io::service::path_type_t get_path_type() const override;
 
 protected:
 
@@ -88,12 +93,6 @@ protected:
 
     /// Override
     void info(std::ostream& _sstream) override;
-
-    /// configure using GUI.
-    void open_location_dialog() override;
-
-    /// Return managed file type, here FILE
-    sight::io::service::path_type_t get_path_type() const override;
 };
 
 } // namespace sight::module::io::itk

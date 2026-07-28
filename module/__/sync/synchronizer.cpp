@@ -412,8 +412,8 @@ void synchronizer::copy_frame_from_tl_to_output(
     core::clock::type _synchronization_timestamp
 )
 {
-    const auto frame_tl = m_frame_tls[_frame_tl_index].lock();
-    CSPTR(data::frame_tl::buffer_t) buffer =
+    const auto frame_tl                           = m_frame_tls[_frame_tl_index].lock();
+    sight::csptr<data::frame_tl::buffer_t> buffer =
         frame_tl->get_closest_buffer(_synchronization_timestamp - m_frame_tl_delay[_frame_tl_index]);
 
     data::image::size_t frame_tl_size = {frame_tl->get_width(), frame_tl->get_height(), 0};
@@ -528,8 +528,8 @@ void synchronizer::copy_matrix_from_tl_to_output(
     core::clock::type _synchronization_timestamp
 )
 {
-    const auto matrix_tl = m_matrix_tl_s[_matrix_tl_index].lock();
-    CSPTR(data::matrix_tl::buffer_t) buffer =
+    const auto matrix_tl                           = m_matrix_tl_s[_matrix_tl_index].lock();
+    sight::csptr<data::matrix_tl::buffer_t> buffer =
         matrix_tl->get_closest_buffer(_synchronization_timestamp - m_matrix_tl_delay[_matrix_tl_index]);
 
     if(buffer)

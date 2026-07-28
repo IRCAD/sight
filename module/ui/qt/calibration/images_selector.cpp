@@ -155,8 +155,8 @@ void images_selector::reset()
 
 void images_selector::add(core::clock::type _timestamp)
 {
-    const auto frame_tl = m_frame_tl.lock();
-    CSPTR(data::frame_tl::buffer_t) buffer = frame_tl->get_closest_buffer(_timestamp);
+    const auto frame_tl                           = m_frame_tl.lock();
+    sight::csptr<data::frame_tl::buffer_t> buffer = frame_tl->get_closest_buffer(_timestamp);
 
     if(!buffer)
     {

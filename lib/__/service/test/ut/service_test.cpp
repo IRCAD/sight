@@ -30,6 +30,7 @@
 #include <data/map.hpp>
 #include <data/object.hpp>
 
+#include <service/extension/factory.hpp>
 #include <service/op.hpp>
 
 #include <utest/wait.hpp>

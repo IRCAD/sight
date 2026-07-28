@@ -24,18 +24,9 @@
 
 #include <sight/viz/scene3d/config.hpp>
 
-#include <core/com/has_signals.hpp>
-#include <core/com/signal.hpp>
-#include <core/com/signals.hpp>
-#include <core/com/slot.hpp>
-#include <core/com/slots.hpp>
-
-#include <data/tools/picking_info.hpp>
-
 #include <viz/scene3d/factory/new.hpp>
 
-#include <OGRE/Ogre.h>
-#include <OGRE/OgreSceneManager.h>
+#include <OgreVector3.h>
 
 #include <memory>
 
@@ -178,7 +169,7 @@ public:
      * @param _mouse_y height coordinate of the mouse in pixels.
      * @param _layer layer on which to check the cursor's belonging.
      */
-    SIGHT_VIZ_SCENE3D_API static bool is_in_layer(int _mouse_x, int _mouse_y, SPTR(layer) _layer);
+    SIGHT_VIZ_SCENE3D_API static bool is_in_layer(int _mouse_x, int _mouse_y, sight::sptr<layer> _layer);
 
     /**
      * @brief Listen to render window resize events.

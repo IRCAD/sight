@@ -24,9 +24,9 @@
 
 #include "id.hpp"
 
-#include "object.hpp"
-
-#include "tools/failed.hpp"
+#include <core/object.hpp>
+#include <core/spy_log.hpp>
+#include <core/tools/failed.hpp>
 
 namespace sight::core
 {

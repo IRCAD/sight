@@ -51,7 +51,7 @@ public:
 
     SIGHT_VIZ_SCENE2D_API void update_from_viewport(const scene2d::data::viewport& _viewport);
 
-    SIGHT_VIZ_SCENE2D_API void set_scene_render(SPTR(viz::scene2d::render) _scene_render);
+    SIGHT_VIZ_SCENE2D_API void set_scene_render(sight::sptr<viz::scene2d::render> _scene_render);
 
 protected:
 
@@ -77,7 +77,7 @@ protected:
 private:
 
     scene2d::data::viewport m_viewport;
-    WPTR(viz::scene2d::render) m_scene_2d_render;
+    sight::wptr<viz::scene2d::render> m_scene_2d_render;
 
     static scene2d::data::event::button get_scene_2d_button_from_event(QMouseEvent* _event);
     static scene2d::data::event::modifier get_scene_2d_modifier_from_event(QInputEvent* _event);

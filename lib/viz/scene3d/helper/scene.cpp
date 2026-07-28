@@ -24,6 +24,7 @@
 
 #include "camera.hpp"
 
+#include <OgreEntity.h>
 #include <algorithm>
 #include <stack>
 

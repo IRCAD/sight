@@ -23,6 +23,7 @@
 #include "module/viz/scene3d/adaptor/transform.hpp"
 
 #include <viz/scene3d/helper/scene.hpp>
+#include <viz/scene3d/utils.hpp>
 
 namespace sight::module::viz::scene3d::adaptor
 {

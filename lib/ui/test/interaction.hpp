@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2024 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -236,4 +236,4 @@ private:
     std::pair<QPoint, QPoint> m_second_finger_pos;
 };
 
-} // namespace sight::ui::testCore
+} // namespace sight::ui::test

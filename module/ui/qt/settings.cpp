@@ -3123,7 +3123,7 @@ std::shared_ptr<const DATATYPE> settings::data(const QObject* _widget)
 
 template<class DATATYPE, class SUBTYPE>
 requires std::derived_from<DATATYPE, sight::data::generic<SUBTYPE> >
-void settings::connect_data(const CSPTR(DATATYPE)& _obj, const std::string& _key)
+void settings::connect_data(const sight::csptr<DATATYPE>& _obj, const std::string& _key)
 {
     const auto sig  = _obj->template signal<data::signals::modified_t>(data::signals::MODIFIED);
     const auto slot = core::com::new_slot(

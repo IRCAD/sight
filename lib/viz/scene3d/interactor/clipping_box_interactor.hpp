@@ -38,7 +38,7 @@ public:
 
     /// Creates the widget.
     SIGHT_VIZ_SCENE3D_API clipping_box_interactor(
-        SPTR(sight::viz::scene3d::layer) _layer,
+        sight::sptr<sight::viz::scene3d::layer> _layer,
         const std::string& _id,
         Ogre::SceneNode* _parent_scene_node,
         const Ogre::Matrix4& _clipping_matrix,

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,7 @@
 #include <data/material.hpp>
 #include <data/mesh.hpp>
 
-#include <OGRE/OgreTechnique.h>
+#include <OgreGpuProgram.h>
 
 #include <string>
 
@@ -133,7 +133,7 @@ public:
      * @param[in] _type type of the shader parameter
      * @param[in] _value value of the shader parameter
      */
-    SIGHT_VIZ_SCENE3D_API static SPTR(data::object) create_object_from_shader_parameter(
+    SIGHT_VIZ_SCENE3D_API static sight::sptr<data::object> create_object_from_shader_parameter(
         Ogre::GpuConstantType _type,
         constant_value_t _value
     );

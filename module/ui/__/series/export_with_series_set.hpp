@@ -39,13 +39,15 @@ namespace sight::module::ui::series
  * on the created series_set with the given configuration.
  *
  * @section Signal Signal
- * - \b monitor_created(SPTR(core::progress::monitor)) : This signal is emitted by the slot 'forwardmonitor' to forward
+ * - \b monitor_created(sight::sptr<core::progress::monitor>) : This signal is emitted by the slot 'forwardmonitor' to
+ * forward
  * monitor
  * process
  *   between selector service (monitorCreated signal) and other services.
  *
  * @section Slot Slot
- * - \b forwardmonitor(SPTR(core::progress::monitor)) : This slot allows to forward monitor process between selector
+ * - \b forwardmonitor(sight::sptr<core::progress::monitor>) : This slot allows to forward monitor process between
+ * selector
  * service
  *   and other services. It is connected to selector 'monitorCreated' signal.
  *
@@ -117,11 +119,11 @@ protected:
 private:
 
     /// SLOT: Allows to forward monitor process between io selector service and other services.
-    void forward_monitor(SPTR(core::progress::monitor) _monitor);
+    void forward_monitor(sight::sptr<core::progress::monitor> _monitor);
 
     std::string m_io_selector_srv_config; ///< Configuration used for launched selector service
 
-    SPTR(slots::forward_monitor_t) m_slot_forward_monitor; ///< slot used to forward selector monitor process
+    sight::sptr<slots::forward_monitor_t> m_slot_forward_monitor; ///< slot used to forward selector monitor process
 
     data::ptr<data::series, data::access::inout> m_series {this, "series"};
 };

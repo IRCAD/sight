@@ -239,7 +239,7 @@ void series_pusher::push_series()
     try
     {
         // List of dicom slice that must be pushed
-        std::vector<CSPTR(DcmDataset)> dicom_container;
+        std::vector<sight::csptr<DcmDataset> > dicom_container;
 
         // Connect to PACS
         for(const auto& series : *series_vector)

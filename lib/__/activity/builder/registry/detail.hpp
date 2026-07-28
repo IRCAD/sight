@@ -41,7 +41,7 @@ using key_t = std::string;
 
 using type = core::factory_registry<std::shared_ptr<activity::builder::base>(), key_t>;
 
-SIGHT_ACTIVITY_API SPTR(type) get();
+SIGHT_ACTIVITY_API sight::sptr<type> get();
 
 } // namespace registry
 

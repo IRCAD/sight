@@ -179,7 +179,7 @@ private:
     void initialize_tool_bar_builder(const ui::config_t& _tool_bar_config);
 
     ui::layout::frame_manager::sptr m_frame_layout_manager;
-    SPTR(ui::detail::registry::view) m_view_registry;
+    sight::sptr<ui::detail::registry::view> m_view_registry;
     ui::builder::menubar::sptr m_menu_bar_builder;
     ui::builder::toolbar::sptr m_tool_bar_builder;
 

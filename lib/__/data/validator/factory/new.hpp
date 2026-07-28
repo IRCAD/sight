@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,8 +26,6 @@
 
 #include "data/validator/registry/detail.hpp"
 
-#include <string>
-
 namespace sight::data::validator
 {
 
@@ -37,14 +35,16 @@ namespace factory
 {
 
 template<class CLASSNAME>
-SPTR(CLASSNAME)  make();
+sight::sptr<CLASSNAME> make();
 
-SIGHT_DATA_API SPTR(data::validator::base) make(const data::validator::registry::key_t& _classname);
+SIGHT_DATA_API sight::sptr<data::validator::base> make(const data::validator::registry::key_t& _classname);
+
+//------------------------------------------------------------------------------
 
 template<class CLASSNAME>
-SPTR(CLASSNAME)  make()
+sight::sptr<CLASSNAME> make()
 {
-    SPTR(CLASSNAME) validator = std::make_shared<CLASSNAME>();
+    sight::sptr<CLASSNAME> validator = std::make_shared<CLASSNAME>();
     return validator;
 }
 

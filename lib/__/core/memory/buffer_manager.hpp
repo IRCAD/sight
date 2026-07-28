@@ -27,7 +27,6 @@
 #include "core/memory/buffer_info.hpp"
 #include "core/memory/file_holder.hpp"
 
-#include <core/base.hpp>
 #include <core/base_object.hpp>
 #include <core/com/signal.hpp>
 #include <core/mt/types.hpp>
@@ -63,7 +62,7 @@ class buffer_manager;
 
 class key
 {
-friend SPTR(buffer_manager) get();
+friend sight::sptr<buffer_manager> get();
 
 key()
 = default;
@@ -117,7 +116,7 @@ public:
     struct stream_info
     {
         size_t size {};
-        SPTR(std::istream) stream;
+        sight::sptr<std::istream> stream {};
         /// path of the file containing the dumped buffer
         core::memory::file_holder fs_file;
         /// format of the dumped file
@@ -198,7 +197,7 @@ public:
      *
      * @return false if the BufferManager supported the action
      */
-    SIGHT_CORE_API virtual std::shared_future<SPTR(void)> lock_buffer(const_buffer_ptr_t _buffer_ptr);
+    SIGHT_CORE_API virtual std::shared_future<sight::sptr<void> > lock_buffer(const_buffer_ptr_t _buffer_ptr);
 
     /**
      * @brief Hook called when a BufferObject lock is released
@@ -255,10 +254,10 @@ public:
      *
      * @return
      */
-    SPTR(signals::updated_t) get_updated_signal()
+    sight::sptr<signals::updated_t> get_updated_signal()
     {
         return m_updated_sig;
-    };
+    }
 
     /**
      * @brief Returns the Buffer info map
@@ -276,12 +275,12 @@ public:
     /**
      * @brief Sets the dump policy
      */
-    SIGHT_CORE_API void set_dump_policy(const SPTR(core::memory::policy::base)& _policy);
+    SIGHT_CORE_API void set_dump_policy(const sight::sptr<core::memory::policy::base>& _policy);
 
     /**
      * @brief Returns the dump policy
      */
-    SIGHT_CORE_API SPTR(core::memory::policy::base) get_dump_policy() const;
+    SIGHT_CORE_API sight::sptr<core::memory::policy::base> get_dump_policy() const;
 
     /**
      * @brief Returns stream info
@@ -290,7 +289,7 @@ public:
 
     SIGHT_CORE_API std::shared_future<void> set_istream_factory(
         buffer_ptr_t _buffer_ptr,
-        const SPTR(core::memory::stream::in::factory)& _factory,
+        const sight::sptr<core::memory::stream::in::factory>& _factory,
         size_t _size,
         core::memory::file_holder _fs_file,
         core::memory::file_format_type _format,
@@ -334,7 +333,7 @@ private:
     virtual void reallocate_buffer_impl(buffer_ptr_t _buffer_ptr, size_t _new_size);
     virtual void destroy_buffer_impl(buffer_ptr_t _buffer_ptr);
     virtual void swap_buffer_impl(buffer_ptr_t _buf_a, buffer_ptr_t _buf_b);
-    virtual SPTR(void) lock_buffer_impl(const_buffer_ptr_t _buffer_ptr);
+    virtual sight::sptr<void> lock_buffer_impl(const_buffer_ptr_t _buffer_ptr);
     virtual bool unlock_buffer_impl(const_buffer_ptr_t _buffer_ptr);
     virtual std::string to_string_impl() const;
     bool dump_buffer_impl(const_buffer_ptr_t _buffer);
@@ -345,7 +344,7 @@ private:
     stream_info get_stream_info_impl(const_buffer_ptr_t _buffer_ptr) const;
     void set_istream_factory_impl(
         buffer_ptr_t _buffer_ptr,
-        const SPTR(core::memory::stream::in::factory)& _factory,
+        const sight::sptr<core::memory::stream::in::factory>& _factory,
         size_t _size,
         core::memory::file_holder _fs_file,
         core::memory::file_format_type _format,
@@ -362,16 +361,16 @@ private:
     SIGHT_CORE_API bool restore_buffer(buffer_info& _info, buffer_ptr_t _buffer_ptr, size_t _size = 0);
     /**  @} */
 
-    SPTR(signals::updated_t) m_updated_sig;
+    sight::sptr<signals::updated_t> m_updated_sig;
 
     core::logic_stamp m_last_access;
     buffer_info_map_t m_buffer_infos;
 
-    SPTR(core::memory::policy::base) m_dump_policy;
+    sight::sptr<core::memory::policy::base> m_dump_policy;
 
     loading_mode_type m_loading_mode {buffer_manager::direct};
 
-    SPTR(core::thread::worker) m_worker;
+    sight::sptr<core::thread::worker> m_worker;
 
     /// Mutex to protect concurrent access in BufferManager
     mutable core::mt::read_write_mutex m_mutex;

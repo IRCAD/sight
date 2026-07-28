@@ -49,7 +49,9 @@ public:
 
     virtual ~has_slots() = default;
 
-    [[nodiscard]] SPTR(slot_base) slot(const slots::key_t& _key) const
+    //------------------------------------------------------------------------------
+
+    [[nodiscard]] sight::sptr<slot_base> slot(const slots::key_t& _key) const
     {
         return m_slots[_key];
     }
@@ -57,9 +59,9 @@ public:
     //------------------------------------------------------------------------------
 
     template<typename slot_type>
-    [[nodiscard]] SPTR(slot_type) slot(const slots::key_t& _key) const
+    [[nodiscard]] sight::sptr<slot_type> slot(const slots::key_t& _key) const
     {
-        SPTR(slot_type) slot = std::dynamic_pointer_cast<slot_type>(this->slot(_key));
+        sight::sptr<slot_type> slot = std::dynamic_pointer_cast<slot_type>(this->slot(_key));
         return slot;
     }
 
@@ -80,21 +82,21 @@ public:
     //------------------------------------------------------------------------------
 
     template<typename F, typename A>
-    SPTR(core::com::slot<typename core::com::util::convert_function_type<F>::type>) new_slot(
+    sight::sptr<core::com::slot<typename core::com::util::convert_function_type<F>::type> > new_slot(
         const slots::key_t& _key,
         F _f,
         A _a
     );
 
     template<typename F>
-    SPTR(core::com::slot<core::lambda_to_function_t<F> >) new_slot(const slots::key_t& _key, F _f);
+    sight::sptr<core::com::slot<core::lambda_to_function_t<F> > > new_slot(const slots::key_t& _key, F _f);
 
     template<typename F>
     auto new_slot(
         const slots::key_t& _key,
         F _f
     ) -> std::enable_if_t<std::is_function_v<std::remove_pointer_t<F> >,
-                          SPTR(core::com::slot<typename core::com::util::convert_function_type<F>::type>)>;
+                          sight::sptr<core::com::slot<typename core::com::util::convert_function_type<F>::type> > >;
 
 protected:
 
@@ -110,9 +112,14 @@ private:
     core::com::slots m_slots;
 };
 
+//------------------------------------------------------------------------------
+
 template<typename F, typename A>
-SPTR(slot<typename core::com::util::convert_function_type<F>::type>)
-has_slots::new_slot(const core::com::slots::key_t& _key, F _f, A _a)
+sight::sptr<slot<typename core::com::util::convert_function_type<F>::type> > has_slots::new_slot(
+    const core::com::slots::key_t& _key,
+    F _f,
+    A _a
+)
 {
     auto slot = sight::core::com::new_slot(_f, _a);
     this->m_slots(_key, slot);
@@ -121,8 +128,7 @@ has_slots::new_slot(const core::com::slots::key_t& _key, F _f, A _a)
 
 // Prototype used for lambdas functions
 template<typename F>
-SPTR(slot<core::lambda_to_function_t<F> >)
-has_slots::new_slot(const core::com::slots::key_t& _key, F _f)
+sight::sptr<slot<core::lambda_to_function_t<F> > > has_slots::new_slot(const core::com::slots::key_t& _key, F _f)
 {
     auto slot = sight::core::com::new_slot(_f);
     this->m_slots(_key, slot);
@@ -136,7 +142,7 @@ auto has_slots::new_slot(
     const core::com::slots::key_t& _key,
     F _f
 ) -> std::enable_if_t<std::is_function_v<std::remove_pointer_t<F> >,
-                      SPTR(core::com::slot<typename core::com::util::convert_function_type<F>::type>)>
+                      sight::sptr<core::com::slot<typename core::com::util::convert_function_type<F>::type> > >
 {
     auto slot = core::com::new_slot(_f);
     this->m_slots(_key, slot);

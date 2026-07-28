@@ -100,7 +100,7 @@ protected:
 private:
 
     /// Timer used to read messages periodically
-    SPTR(sight::core::thread::timer) m_timer;
+    sight::sptr<sight::core::thread::timer> m_timer;
 
     /// Id of the receiver
     unsigned int m_receiver_id {};

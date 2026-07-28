@@ -63,36 +63,36 @@ public:
     SIGHT_DATA_API ~base() override = default;
 
     /// Push an object to the base
-    SIGHT_DATA_API virtual void push_object(const SPTR(timeline::object)& _obj) = 0;
+    SIGHT_DATA_API virtual void push_object(const sight::sptr<timeline::object>& _obj) = 0;
 
     /// Removes an object from the base
-    SIGHT_DATA_API virtual SPTR(timeline::object) pop_object(core::clock::type _timestamp) = 0;
+    SIGHT_DATA_API virtual sight::sptr<timeline::object> pop_object(core::clock::type _timestamp) = 0;
 
     /// modify an object timestamp
     SIGHT_DATA_API virtual void modify_time(core::clock::type _timestamp, core::clock::type _new_timestamp) = 0;
 
     /// Change an object to the specified timestamp
-    SIGHT_DATA_API virtual void set_object(core::clock::type _timestamp, const SPTR(timeline::object)& _obj) = 0;
+    SIGHT_DATA_API virtual void set_object(core::clock::type _timestamp, const sight::sptr<timeline::object>& _obj) = 0;
 
     /**
      * @brief Return a new timeline::object with the given timestamp.
      * @note This buffer memory is managed by the pool.
      * @warning This buffer is not registered in the base. You must call pushObject() to register it.
      */
-    SIGHT_DATA_API virtual SPTR(timeline::object) create_object(core::clock::type _timestamp) = 0;
+    SIGHT_DATA_API virtual sight::sptr<timeline::object> create_object(core::clock::type _timestamp) = 0;
 
     /**
      * @brief Return the closest object to the given timestamp
      * @param _timestamp timestamp used to find the closest object
      * @param _direction direction to find the closest object (PAST, FUTURE, BOTH)
      */
-    SIGHT_DATA_API virtual CSPTR(timeline::object) get_closest_object(
+    SIGHT_DATA_API virtual sight::csptr<timeline::object> get_closest_object(
         core::clock::type _timestamp,
         direction_t _direction = both
-    ) const = 0;
+    ) const                    = 0;
 
     /// Return the object with the specified timestamp
-    SIGHT_DATA_API virtual CSPTR(timeline::object) get_object(core::clock::type _timestamp) const = 0;
+    SIGHT_DATA_API virtual sight::csptr<timeline::object> get_object(core::clock::type _timestamp) const = 0;
 
     /// Equality comparison operators
     /// @{

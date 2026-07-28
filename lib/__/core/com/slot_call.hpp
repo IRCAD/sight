@@ -82,7 +82,7 @@ struct SIGHT_CORE_CLASS_API slot_call<R(A ...)>: slot_run<void(A ...)>
      *
      * @throws NoWorker if given worker is not valid.
      */
-    virtual shared_future_type async_call(const SPTR(core::thread::worker) & _worker, A ... _args) const;
+    virtual shared_future_type async_call(const sight::sptr<core::thread::worker>& _worker, A ... _args) const;
 
     /**
      * @brief Call the Slot with the given parameters asynchronously.
@@ -97,7 +97,7 @@ struct SIGHT_CORE_CLASS_API slot_call<R(A ...)>: slot_run<void(A ...)>
     protected:
 
         template<typename WEAKCALL>
-        static std::shared_future<R> post_weak_call(const SPTR(core::thread::worker)& _worker, WEAKCALL _f);
+        static std::shared_future<R> post_weak_call(const sight::sptr<core::thread::worker>& _worker, WEAKCALL _f);
 
         /**
          * @brief Binds the given parameters to the call method within a R() function.

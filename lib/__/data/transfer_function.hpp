@@ -28,10 +28,6 @@
 
 #include <core/type.hpp>
 
-#include <glm/vec4.hpp>
-
-#include <span>
-
 namespace sight::data
 {
 
@@ -117,7 +113,7 @@ class SIGHT_DATA_CLASS_API transfer_function_piece final : public container_wrap
 {
 public:
 
-    using sptr = SPTR(transfer_function_piece);
+    using sptr = sight::sptr<transfer_function_piece>;
     using container_wrapper<data_t>::container_wrapper;
 
     SIGHT_DATA_API ~transfer_function_piece() final = default;

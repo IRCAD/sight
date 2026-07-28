@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,8 +27,6 @@
 #include "core/runtime/detail/runtime.hpp"
 #include "core/runtime/module.hpp"
 
-#include <core/base.hpp>
-
 #include <filesystem>
 #include <map>
 #include <set>
@@ -52,12 +50,12 @@ public:
      * @name    Type definitions
      */
     //@{
-    using extension_impl_container = std::set<SPTR(detail::extension)>;
+    using extension_impl_container = std::set<sight::sptr<detail::extension> >;
 
-    using executable_factory_container      = std::set<SPTR(executable_factory)>;
+    using executable_factory_container      = std::set<sight::sptr<executable_factory> >;
     using executable_factory_const_iterator = executable_factory_container::const_iterator;
 
-    using extension_point_container      = std::set<SPTR(extension_point)>;
+    using extension_point_container      = std::set<sight::sptr<extension_point> >;
     using extension_point_const_iterator = extension_point_container::const_iterator;
 
     using extension_const_iterator = extension_impl_container::const_iterator;
@@ -139,7 +137,7 @@ public:
      *
      * @return  a shared pointer to a plugin instance or null if the module has not been started.
      */
-    SPTR(plugin) get_plugin() const final;
+    sight::sptr<plugin> get_plugin() const final;
 
     /** @copydoc core::runtime::module */
     std::string get_parameter_value(const std::string& _identifier) const final;
@@ -160,7 +158,7 @@ public:
     /**
      * @brief   Retrieves the pointer to the module that is currently loading its dynamic libraries
      */
-    static SPTR(module) get_loading_module();
+    static sight::sptr<module> get_loading_module();
 
     /**
      * @name    Dynamic Libraries
@@ -171,7 +169,7 @@ public:
      *
      * @param[in]   _library a shared pointer to the library to add
      */
-    void set_library(SPTR(dl::library) _library);
+    void set_library(sight::sptr<dl::library> _library);
     //@}
 
     /**
@@ -183,7 +181,7 @@ public:
      *
      * @param[in]   _factory a shared pointer to the executable factory instance to add
      */
-    void add_executable_factory(SPTR(executable_factory) _factory);
+    void add_executable_factory(sight::sptr<executable_factory> _factory);
 
     /**
      * @brief   Create an instance of the given executable object type.
@@ -219,7 +217,7 @@ public:
      *
      * @return      a shared pointer to the found executable factory instance or null if none
      */
-    SPTR(executable_factory) find_executable_factory(const std::string& _type) const;
+    sight::sptr<executable_factory> find_executable_factory(const std::string& _type) const;
     //@}
 
     /**
@@ -231,7 +229,7 @@ public:
      *
      * @param[in]   _extension   a shared pointer to the extension to add
      */
-    void add_extension(SPTR(detail::extension) _extension);
+    void add_extension(sight::sptr<detail::extension> _extension);
 
     /**
      * @brief       Tells if an specific extension exists.
@@ -279,7 +277,7 @@ public:
      *
      * @param[in]   _extension   a shared pointer to the extension point to add
      */
-    void add_extension_point(SPTR(extension_point) _extension);
+    void add_extension_point(sight::sptr<extension_point> _extension);
 
     /**
      * @brief       Retrieves the extension point for the given identifier.
@@ -288,7 +286,7 @@ public:
      *
      * @return      a shared pointer to the found extension point, may be empty if none
      */
-    SPTR(extension_point) find_extension_point(const std::string& _identifier) const;
+    sight::sptr<extension_point> find_extension_point(const std::string& _identifier) const;
 
     /**
      * @brief       Tells if a specific extension point exists.
@@ -395,7 +393,7 @@ private:
     // type.
     using parameter_container = std::map<std::string, std::string>; ///< defines the parameter container type
 
-    static SPTR(module) s_loading_module; ///< a pointer to the module that is currently loading its
+    static sight::sptr<module> s_loading_module; ///< a pointer to the module that is currently loading its
     // dynamic libraries
 
     std::filesystem::path m_library_location;            ///< the path to the module libraries
@@ -406,8 +404,8 @@ private:
     extension_point_container m_extension_points;        ///< all extension points
     executable_factory_container m_executable_factories; ///< all executable factories
     requirement_container m_requirements;                ///< all requirements of the module
-    SPTR(plugin)  m_plugin;                              ///< a shared pointer to the plugin instance
-    SPTR(dl::library) m_library;                         ///< library that is part of the module
+    sight::sptr<plugin> m_plugin;                        ///< a shared pointer to the plugin instance
+    sight::sptr<dl::library> m_library;                  ///< library that is part of the module
     parameter_container m_parameters;                    ///< all parameters
 
     bool m_enabled {false}; ///< a boolean telling if the module is enabled or not

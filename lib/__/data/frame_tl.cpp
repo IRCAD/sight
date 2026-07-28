@@ -65,7 +65,7 @@ void frame_tl::deep_copy(const object::csptr& _source, const std::unique_ptr<dee
 
     for(const auto& elt : other->m_timeline)
     {
-        SPTR(data::timeline::buffer) tl_obj = this->create_buffer(elt.first);
+        sight::sptr<data::timeline::buffer> tl_obj = this->create_buffer(elt.first);
         tl_obj->deep_copy(*elt.second);
         m_timeline.insert(timeline_t::value_type(elt.first, tl_obj));
     }

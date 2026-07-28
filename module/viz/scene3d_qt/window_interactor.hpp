@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,8 +23,6 @@
 #pragma once
 
 #include "module/viz/scene3d_qt/window.hpp"
-
-#include <core/base.hpp>
 
 #include <ui/__/container/widget.hpp>
 
@@ -124,7 +122,7 @@ private:
     QPointer<QShortcut> m_fullscreen_shortcut;
 
     /// Contains the parent of the widget.
-    SPTR(ui::qt::container::widget) m_parent_container;
+    sight::sptr<ui::qt::container::widget> m_parent_container;
 };
 
 //-----------------------------------------------------------------------------

@@ -22,8 +22,7 @@
 
 #pragma once
 
-#include "core/base.hpp"
-#include "core/clock.hpp"
+#include <core/base_object.hpp>
 
 namespace sight::core
 {
@@ -58,7 +57,7 @@ public:
     /**
      * @return LogicStamp's current value
      */
-    logic_stamp_type get_logic_stamp() const
+    [[nodiscard]] logic_stamp_type get_logic_stamp() const
     {
         return this->m_modified_logical_time;
     }

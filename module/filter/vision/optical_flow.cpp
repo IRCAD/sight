@@ -86,7 +86,7 @@ void optical_flow::updating()
 
         m_last_timestamp = timestamp;
 
-        CSPTR(data::frame_tl::buffer_t) buffer = frame_tl->get_closest_buffer(frame_tl->get_newer_timestamp());
+        sight::csptr<data::frame_tl::buffer_t> buffer = frame_tl->get_closest_buffer(frame_tl->get_newer_timestamp());
         // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
         auto* frame_buff = const_cast<std::uint8_t*>(&buffer->get_element(0));
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2025 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -46,7 +46,7 @@ public:
     SIGHT_DECLARE_CLASS(ply_mesh_reader, io::reader::generic_object_reader<data::mesh>)
 
     /// @brief Reading operator.
-    SIGHT_IO_VTK_API void read(SPTR(sight::core::progress::observer) _progress) override;
+    SIGHT_IO_VTK_API void read(sight::sptr<sight::core::progress::observer> _progress) override;
 
     /// @return ".ply"
     SIGHT_IO_VTK_API std::string extension() const override;

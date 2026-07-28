@@ -22,11 +22,9 @@
 
 #pragma once
 
+#include <core/macros.hpp>
+#include <core/mt/types.hpp>
 #include <sight/core/config.hpp>
-
-#include "base.hpp"
-
-#include "mt/types.hpp"
 
 #include "string.hpp"
 
@@ -71,10 +69,10 @@ public:
      * @brief Retrieve the object attached to the given id. Return a null sptr if no correspondence exists.
      * @note This method is thread-safe.
      */
-    SIGHT_CORE_API static SPTR(object) get_object(type _request_id);
+    SIGHT_CORE_API static sight::sptr<object> get_object(type _request_id);
 
     template<typename T, typename ... Args>
-    static SPTR(object) get_object(const T& _first, const Args & ... _args);
+    static sight::sptr<object> get_object(const T& _first, const Args& ... _args);
 
     /**
      * @brief Concatenate things with the separator `s_separator`.
@@ -186,7 +184,7 @@ private:
 //------------------------------------------------------------------------------
 
 template<typename T, typename ... Args>
-SPTR(object) id::get_object(const T& _first, const Args & ... _args)
+sight::sptr<object> id::get_object(const T& _first, const Args& ... _args)
 {
     return get_object(join(_first, _args ...));
 }

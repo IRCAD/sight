@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include <data/mesh.hpp>
-
 #include <io/__/service/writer.hpp>
 
 #include <filesystem>
@@ -44,7 +42,8 @@ namespace sight::module::io::vtk
  * Service writing a model series as .obj files using the fwVtkIO lib.
  *
  * @section Signals Signals
- * - \b monitor_created(SPTR(core::progress::monitor)): emitted to display a progress bar while the image is written,
+ * - \b monitor_created(sight::sptr<core::progress::monitor>): emitted to display a progress bar while the image is
+ * written,
  * it should be connected to a progress bar
  *
  * @section XML XML Configuration
@@ -80,9 +79,9 @@ public:
      */
     void open_location_dialog() override;
 
-protected:
-
     sight::io::service::path_type_t get_path_type() const override;
+
+protected:
 
     /**
      * @brief Starting method.

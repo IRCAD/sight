@@ -52,7 +52,7 @@ public:
     SIGHT_IO_DICOM_API ~file() noexcept override;
 
     /// Main writing method from generic_object_writer
-    SIGHT_IO_DICOM_API void write(SPTR(sight::core::progress::observer) _progress) override;
+    SIGHT_IO_DICOM_API void write(sight::sptr<sight::core::progress::observer> _progress) override;
 
     /// Return the extension to use, by default, or the one from file set by single_file::set_file(), if valid
     /// @return an extension as string

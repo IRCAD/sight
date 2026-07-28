@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,14 +23,9 @@
 #include "app/extension/config.hpp"
 #include "app/helper/config.hpp"
 
-#include "core/com/proxy.hpp"
-
-#include "service/detail/service.hpp"
+#include "service/extension/config.hpp"
 #include "service/extension/factory.hpp"
 
-#include <core/com/has_signals.hpp>
-#include <core/com/has_slots.hpp>
-#include <core/com/helper/sig_slot_connection.hpp>
 #include <core/object.hpp>
 #include <core/ptree.hpp>
 #include <core/runtime/runtime.hpp>
@@ -38,7 +33,6 @@
 #include <data/extension/config.hpp>
 #include <data/object.hpp>
 
-#include <array>
 #include <regex>
 #include <string>
 #include <vector>
@@ -248,7 +242,7 @@ void config::parse_object(
 data::object::sptr config::get_new_object(config_attribute_t _type, config_attribute_t _uid)
 {
     // Building object structure
-    SPTR(core::runtime::extension) ext = core::runtime::find_extension(_type.first);
+    sight::sptr<core::runtime::extension> ext = core::runtime::find_extension(_type.first);
     if(ext)
     {
         const std::string class_name = core::get_classname<data::object>();
@@ -547,7 +541,7 @@ app::detail::service_config config::parse_service(
 
 bool config::is_key_optional(const std::string& _service_type, const std::string& _key)
 {
-    std::lock_guard guard(s_services_props_mutex);
+    std::scoped_lock guard(s_services_props_mutex);
 
     service::base::sptr srv;
     auto it = s_services_props.find(_service_type);
@@ -569,7 +563,7 @@ bool config::is_key_optional(const std::string& _service_type, const std::string
 
 void config::clear_props()
 {
-    std::lock_guard guard(s_services_props_mutex);
+    std::scoped_lock guard(s_services_props_mutex);
     s_services_props.clear();
 }
 

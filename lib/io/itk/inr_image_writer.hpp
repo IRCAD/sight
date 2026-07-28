@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,7 +43,7 @@ public:
 
     SIGHT_IO_ITK_API ~inr_image_writer() override = default;
 
-    SIGHT_IO_ITK_API void write(SPTR(sight::core::progress::observer) _progress) override;
+    SIGHT_IO_ITK_API void write(sight::sptr<sight::core::progress::observer> _progress) override;
 
     SIGHT_IO_ITK_API std::string extension() const override;
 };

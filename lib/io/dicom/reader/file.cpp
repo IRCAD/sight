@@ -1606,7 +1606,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void read(SPTR(sight::core::progress::observer) _progress)
+    void read(sight::sptr<sight::core::progress::observer> _progress)
     {
         m_progress = _progress;
 

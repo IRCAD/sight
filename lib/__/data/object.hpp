@@ -27,10 +27,8 @@
 #include "data/factory/new.hpp"
 #include "data/registry/detail.hpp"
 
-#include <core/base.hpp>
 #include <core/com/has_signals.hpp>
 #include <core/com/signal.hpp>
-#include <core/compare.hpp>
 #include <core/mt/types.hpp>
 #include <core/object.hpp>
 
@@ -42,7 +40,7 @@ namespace sight::data
 
 class object;
 
-using fields_container_t = std::map<std::string, SPTR(object)>;
+using fields_container_t = std::map<std::string, sight::sptr<object> >;
 
 // Generic signals
 struct signals
@@ -134,7 +132,7 @@ public:
      * @return pointer to corresponding field, nullptr if field is not found.
      */
     template<typename DATA_TYPE>
-    SPTR(DATA_TYPE) get_field(const field_name_t& _name) const;
+    sight::sptr<DATA_TYPE> get_field(const field_name_t& _name) const;
 
     /**
      * @brief Returns a pointer of corresponding field.
@@ -143,7 +141,7 @@ public:
      * @return pointer to corresponding field, defaultValue if field is not found.
      */
     template<typename DATA_TYPE>
-    SPTR(DATA_TYPE) get_field(const field_name_t& _name, SPTR(DATA_TYPE) _default_value) const;
+    sight::sptr<DATA_TYPE> get_field(const field_name_t& _name, sight::sptr<DATA_TYPE> _default_value) const;
 
     /**
      * @brief Returns a pointer of corresponding field. If field did not exist, it is set to defaultValue if
@@ -153,7 +151,7 @@ public:
      * @return pointer to corresponding field.
      */
     template<typename DATA_TYPE>
-    SPTR(DATA_TYPE) set_default_field(const field_name_t& _name, SPTR(DATA_TYPE) _default_value);
+    sight::sptr<DATA_TYPE> set_default_field(const field_name_t& _name, sight::sptr<DATA_TYPE> _default_value);
 
     /**
      * @brief Returns fields map.
@@ -207,14 +205,14 @@ public:
     );
 
     template<typename DATA_TYPE>
-    static SPTR(DATA_TYPE) copy(
-        const CSPTR(DATA_TYPE) & _source,
+    static sight::sptr<DATA_TYPE> copy(
+        const sight::csptr<DATA_TYPE>& _source,
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     );
 
     template<typename DATA_TYPE>
-    static SPTR(DATA_TYPE) copy(
-        const SPTR(DATA_TYPE) & _source,
+    static sight::sptr<DATA_TYPE> copy(
+        const sight::sptr<DATA_TYPE>& _source,
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     );
     /** @} */
@@ -272,14 +270,24 @@ private:
     SIGHT_DATA_API inline void set_modified() noexcept;
 };
 
+//------------------------------------------------------------------------------
+
 template<typename DATA_TYPE>
-SPTR(DATA_TYPE) object::copy(const CSPTR(DATA_TYPE) & _source, const std::unique_ptr<deep_copy_cache_t>& _cache)
+sight::sptr<DATA_TYPE> object::copy(
+    const sight::csptr<DATA_TYPE>& _source,
+    const std::unique_ptr<deep_copy_cache_t>& _cache
+)
 {
     return std::dynamic_pointer_cast<DATA_TYPE>(object::copy(object::csptr(_source), _cache));
 }
 
+//------------------------------------------------------------------------------
+
 template<typename DATA_TYPE>
-SPTR(DATA_TYPE) object::copy(const SPTR(DATA_TYPE) & _source, const std::unique_ptr<deep_copy_cache_t>& _cache)
+sight::sptr<DATA_TYPE> object::copy(
+    const sight::sptr<DATA_TYPE>& _source,
+    const std::unique_ptr<deep_copy_cache_t>& _cache
+)
 {
     return std::dynamic_pointer_cast<DATA_TYPE>(object::copy(object::csptr(_source), _cache));
 }
@@ -287,31 +295,31 @@ SPTR(DATA_TYPE) object::copy(const SPTR(DATA_TYPE) & _source, const std::unique_
 //-----------------------------------------------------------------------------
 
 template<typename DATA_TYPE>
-SPTR(DATA_TYPE) object::get_field(const field_name_t& _name) const
+sight::sptr<DATA_TYPE> object::get_field(const field_name_t& _name) const
 {
     object::sptr field;
-    field                  = this->get_field(_name, field);
-    SPTR(DATA_TYPE) result = std::dynamic_pointer_cast<DATA_TYPE>(field);
+    field = this->get_field(_name, field);
+    sight::sptr<DATA_TYPE> result = std::dynamic_pointer_cast<DATA_TYPE>(field);
     return result;
 }
 
 //-----------------------------------------------------------------------------
 
 template<typename DATA_TYPE>
-SPTR(DATA_TYPE) object::get_field(const field_name_t& _name, SPTR(DATA_TYPE) _default_value) const
+sight::sptr<DATA_TYPE> object::get_field(const field_name_t& _name, sight::sptr<DATA_TYPE> _default_value) const
 {
     object::sptr field = _default_value;
-    field                  = this->get_field(_name, field);
-    SPTR(DATA_TYPE) result = std::dynamic_pointer_cast<DATA_TYPE>(field);
+    field = this->get_field(_name, field);
+    sight::sptr<DATA_TYPE> result = std::dynamic_pointer_cast<DATA_TYPE>(field);
     return result;
 }
 
 //-----------------------------------------------------------------------------
 
 template<typename DATA_TYPE>
-SPTR(DATA_TYPE) object::set_default_field(const field_name_t& _name, SPTR(DATA_TYPE) _default_value)
+sight::sptr<DATA_TYPE> object::set_default_field(const field_name_t& _name, sight::sptr<DATA_TYPE> _default_value)
 {
-    SPTR(DATA_TYPE) result = get_field<DATA_TYPE>(_name);
+    sight::sptr<DATA_TYPE> result = get_field<DATA_TYPE>(_name);
     if(!result && _default_value)
     {
         result = _default_value;

@@ -51,7 +51,7 @@ public:
 
 protected:
 
-    SIGHT_CORE_API SPTR(std::istream) get() override;
+    SIGHT_CORE_API sight::sptr<std::istream> get() override;
 
 private:
 

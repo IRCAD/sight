@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -117,11 +117,15 @@ protected:
      */
     SIGHT_UI_API virtual void destroy_menus();
 
+    // NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
+
     /// All sub containers managed by this layout.
     std::vector<ui::container::menu::sptr> m_menus;
 
     /// Save menu name from configuration.
     std::vector<std::string> m_menu_names;
+
+    // NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 };
 
 } // namespace sight::ui::layout

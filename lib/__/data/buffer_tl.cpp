@@ -22,6 +22,8 @@
 
 #include "data/buffer_tl.hpp"
 
+#include <core/compare.hpp>
+
 #include <cmath>
 
 namespace sight::data
@@ -55,7 +57,7 @@ void buffer_tl::alloc_pool_size(std::size_t _size)
 
 //------------------------------------------------------------------------------
 
-void buffer_tl::push_object(const SPTR(data::timeline::object)& _obj)
+void buffer_tl::push_object(const sight::sptr<data::timeline::object>& _obj)
 {
     // This check is important for inherited classes
     SIGHT_ASSERT("Trying to push not compatible Object in the buffer_tl.", is_object_valid(_obj));
@@ -66,20 +68,20 @@ void buffer_tl::push_object(const SPTR(data::timeline::object)& _obj)
         m_timeline.erase(begin);
     }
 
-    SPTR(data::timeline::buffer) src_obj = std::dynamic_pointer_cast<data::timeline::buffer>(_obj);
+    sight::sptr<data::timeline::buffer> src_obj = std::dynamic_pointer_cast<data::timeline::buffer>(_obj);
     m_timeline.insert(timeline_t::value_type(_obj->timestamp(), src_obj));
 }
 
 //------------------------------------------------------------------------------
 
-SPTR(data::timeline::object) buffer_tl::pop_object(timestamp_t _timestamp)
+sight::sptr<data::timeline::object> buffer_tl::pop_object(timestamp_t _timestamp)
 {
     const auto it_find = m_timeline.find(_timestamp);
 
     // Check if timestamp exists
     SIGHT_ASSERT("Trying to erase not existing timestamp", it_find != m_timeline.end());
 
-    SPTR(data::timeline::object) object = it_find->second;
+    sight::sptr<data::timeline::object> object = it_find->second;
 
     m_timeline.erase(it_find);
 
@@ -104,23 +106,23 @@ void buffer_tl::modify_time(timestamp_t _timestamp, timestamp_t _new_timestamp)
 
 //------------------------------------------------------------------------------
 
-void buffer_tl::set_object(timestamp_t _timestamp, const SPTR(data::timeline::object)& _obj)
+void buffer_tl::set_object(timestamp_t _timestamp, const sight::sptr<data::timeline::object>& _obj)
 {
     // Check if timestamp exists
     SIGHT_ASSERT("Trying to set an object at non-existing timestamp", m_timeline.contains(_timestamp));
 
-    SPTR(data::timeline::buffer) src_obj = std::dynamic_pointer_cast<data::timeline::buffer>(_obj);
-    m_timeline[_timestamp]               = src_obj;
+    sight::sptr<data::timeline::buffer> src_obj = std::dynamic_pointer_cast<data::timeline::buffer>(_obj);
+    m_timeline[_timestamp] = src_obj;
 }
 
 //------------------------------------------------------------------------------
 
-CSPTR(data::timeline::object) buffer_tl::get_closest_object(
+sight::csptr<data::timeline::object> buffer_tl::get_closest_object(
     core::clock::type _timestamp,
     timeline::direction_t _direction
 ) const
 {
-    SPTR(data::timeline::buffer) result;
+    sight::sptr<data::timeline::buffer> result;
     if(m_timeline.empty())
     {
         return result;
@@ -134,14 +136,14 @@ CSPTR(data::timeline::object) buffer_tl::get_closest_object(
         {
             if(_direction != timeline::future)
             {
-                SPTR(data::timeline::buffer) previous_obj = (--iter)->second;
-                result                                    = previous_obj;
+                sight::sptr<data::timeline::buffer> previous_obj = (--iter)->second;
+                result = previous_obj;
             }
         }
         else
         {
-            core::clock::type next_ts = iter->first;
-            SPTR(data::timeline::buffer) next_obj = iter->second;
+            core::clock::type next_ts                    = iter->first;
+            sight::sptr<data::timeline::buffer> next_obj = iter->second;
 
             switch(_direction)
             {
@@ -151,9 +153,9 @@ CSPTR(data::timeline::object) buffer_tl::get_closest_object(
 
                 case timeline::both:
                 {
-                    core::clock::type previous_ts = (--iter)->first;
-                    SPTR(data::timeline::buffer) previous_obj = iter->second;
-                    result                                    =
+                    core::clock::type previous_ts                    = (--iter)->first;
+                    sight::sptr<data::timeline::buffer> previous_obj = iter->second;
+                    result =
                         ((next_ts - _timestamp) > (_timestamp - previous_ts)) ? previous_obj : next_obj;
                     break;
                 }
@@ -168,8 +170,8 @@ CSPTR(data::timeline::object) buffer_tl::get_closest_object(
     {
         if(_direction != timeline::past)
         {
-            SPTR(data::timeline::buffer) next_obj = iter->second;
-            result                                = next_obj;
+            sight::sptr<data::timeline::buffer> next_obj = iter->second;
+            result = next_obj;
         }
     }
 
@@ -178,9 +180,9 @@ CSPTR(data::timeline::object) buffer_tl::get_closest_object(
 
 //------------------------------------------------------------------------------
 
-CSPTR(data::timeline::object) buffer_tl::get_object(core::clock::type _timestamp) const
+sight::csptr<data::timeline::object> buffer_tl::get_object(core::clock::type _timestamp) const
 {
-    SPTR(data::timeline::buffer) result;
+    sight::sptr<data::timeline::buffer> result;
     auto iter = m_timeline.find(_timestamp);
 
     if(iter != m_timeline.end())
@@ -198,9 +200,9 @@ CSPTR(data::timeline::object) buffer_tl::get_object(core::clock::type _timestamp
 
 //------------------------------------------------------------------------------
 
-CSPTR(data::timeline::object) buffer_tl::get_newer_object() const
+sight::csptr<data::timeline::object> buffer_tl::get_newer_object() const
 {
-    SPTR(data::timeline::object) result;
+    sight::sptr<data::timeline::object> result;
 
     if(!m_timeline.empty())
     {

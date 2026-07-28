@@ -25,17 +25,16 @@
 #include <sight/core/config.hpp>
 
 #include "core/com/exception/bad_call.hpp"
-#include "core/com/util/convert_function_type.hpp"
 #include "core/thread/worker.hpp"
 
 #include <core/base_object.hpp>
+#include <core/exceptionmacros.hpp>
 #include <core/mt/types.hpp>
 #include <core/spy_log.hpp>
 
 #include <format>
 
 #include <future>
-#include <queue>
 #include <set>
 
 namespace sight::core::thread
@@ -100,14 +99,14 @@ struct SIGHT_CORE_CLASS_API slot_base : virtual core::base_object
     }
 
     /// Sets Slot's Worker.
-    void set_worker(const SPTR(core::thread::worker)& _worker)
+    void set_worker(const sight::sptr<core::thread::worker>& _worker)
     {
         core::mt::write_lock lock(m_worker_mutex);
         m_worker = _worker;
     }
 
     /// Returns Slot's Worker.
-    SPTR(core::thread::worker) get_worker() const
+    sight::sptr<core::thread::worker> get_worker() const
     {
         core::mt::read_lock lock(m_worker_mutex);
         return m_worker;
@@ -241,10 +240,10 @@ struct SIGHT_CORE_CLASS_API slot_base : virtual core::base_object
 
         /// When the slot is wrapped to reduce the number of arguments in a connection, this stores a pointer
         /// to the original slot. This is important in the mechanism used to keep the slot alive during an async call.
-        WPTR(slot_base) m_source_slot;
+        sight::wptr<slot_base> m_source_slot {};
 
         /// Slot's Worker.
-        SPTR(core::thread::worker) m_worker;
+        sight::sptr<core::thread::worker> m_worker {};
 
         mutable core::mt::read_write_mutex m_worker_mutex;
 
@@ -256,7 +255,7 @@ struct SIGHT_CORE_CLASS_API slot_base : virtual core::base_object
         const unsigned int m_arity;
 
         /// Container of current connections.
-        connection_set_type m_connections;
+        connection_set_type m_connections {};
 
         mutable core::mt::read_write_mutex m_connections_mutex;
 };

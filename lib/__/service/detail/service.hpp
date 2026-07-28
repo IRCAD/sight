@@ -21,8 +21,6 @@
 
 #pragma once
 
-#include <sight/service/config.hpp>
-
 #include "service/base.hpp"
 #include "service/detail/service_connection.hpp"
 
@@ -97,7 +95,7 @@ public:
     config_t m_configuration;
 
     /// Associated worker
-    SPTR(core::thread::worker) m_worker;
+    sight::sptr<core::thread::worker> m_worker;
 
     /**
      * @brief Defines the current global status of the service.

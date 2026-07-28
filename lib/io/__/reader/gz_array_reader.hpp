@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,8 +30,6 @@
 
 #include <data/array.hpp>
 
-#include <filesystem>
-
 namespace sight::io::reader
 {
 
@@ -52,7 +50,7 @@ public:
     SIGHT_IO_API ~gz_array_reader() override = default;
 
     /// Reads the file using the zlib API.
-    SIGHT_IO_API void read(SPTR(sight::core::progress::observer) _progress) override;
+    SIGHT_IO_API void read(sight::sptr<sight::core::progress::observer> _progress) override;
 
     /// Defines extensions supported by this reader. Here: ".raw.gz"
     SIGHT_IO_API std::string extension() const override;

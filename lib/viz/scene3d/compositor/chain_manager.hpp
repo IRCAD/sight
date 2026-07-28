@@ -53,7 +53,7 @@ public:
     using compositor_t       = std::pair<compositor_id_t, bool>;
     using compositor_chain_t = std::vector<compositor_t>;
 
-    SIGHT_VIZ_SCENE3D_API explicit chain_manager(const SPTR(viz::scene3d::layer)& _layer);
+    SIGHT_VIZ_SCENE3D_API explicit chain_manager(const sight::sptr<viz::scene3d::layer>& _layer);
     SIGHT_VIZ_SCENE3D_API ~chain_manager() override;
 
     /// Inserts the new compositor in the compositor chain vector
@@ -85,7 +85,7 @@ private:
     compositor_chain_t m_compositor_chain;
 
     /// The parent layer's.
-    WPTR(viz::scene3d::layer) m_layer;
+    sight::wptr<viz::scene3d::layer> m_layer;
 
     /// Map allowing to keep the objects of the created adaptors alive
     std::map<std::string, data::object::sptr> m_adaptors_objects_owner;

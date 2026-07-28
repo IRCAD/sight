@@ -51,10 +51,10 @@ public:
     signals& operator=(const signals&) = delete;
 
     /// Registers SignalBase in m_signals
-    SIGHT_CORE_API signals& operator()(const key_t& _key, const SPTR(signal_base)& _signal);
+    SIGHT_CORE_API signals& operator()(const key_t& _key, const sight::sptr<signal_base>& _signal);
 
     /// Returns the SignalBase associated to the key, if key does not exist, the ptr is null
-    SIGHT_CORE_API SPTR(signal_base) operator[](const key_t& _key) const;
+    SIGHT_CORE_API sight::sptr<signal_base> operator[](const key_t& _key) const;
 
     /// Returns all key_t registered in m_signals
     [[nodiscard]] SIGHT_CORE_API signal_key_container_t get_signal_keys() const;
@@ -64,8 +64,8 @@ private:
     /// Copy constructor forbidden
     signals(const signals& /*unused*/);
 
-    /// Association < key , SPTR( SignalBase ) >
-    using signal_map_type = std::map<key_t, SPTR(signal_base)>;
+    /// Association < key , sight::sptr<signal_base> >
+    using signal_map_type = std::map<key_t, sight::sptr<signal_base> >;
     signal_map_type m_signals {};
 };
 

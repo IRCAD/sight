@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,16 +23,15 @@
 ///// ugly but we must for windows system typedef SSIZE_T to ssize_t for portability
 #pragma once
 
-#if defined(_WIN32)
+#ifdef _WIN32
 #include <BaseTsd.h>
 typedef SSIZE_T ssize_t;
 #endif
 
 #include <sight/io/igtl/config.hpp>
 
-#include <io/zip/write_archive.hpp>
-#include <io/zip/exception/write.hpp>
 #include <core/macros.hpp>
+#include <io/zip/write_archive.hpp>
 
 #include <archive.h>
 
@@ -87,7 +86,7 @@ public:
      */
     std::streamsize write(const char* _buf, std::streamsize _n);
 
-protected:
+private:
 
     /// instance archive
     struct archive* m_archive;
@@ -124,7 +123,7 @@ public:
      * @param[in] _path file in archive
      * @return output stream of memory entry archive
      */
-    SIGHT_IO_IGTL_API SPTR(std::ostream) create_file(const std::filesystem::path& _path) override;
+    SIGHT_IO_IGTL_API sight::sptr<std::ostream> create_file(const std::filesystem::path& _path) override;
 
     /**
      * @brief Write source file in memory archive
@@ -185,7 +184,7 @@ public:
      */
     static int close(struct archive* _archive, void* _client_data);
 
-protected:
+private:
 
     using stream_sptr = std::shared_ptr<boost::iostreams::stream<memory_archive_sink> >;
 

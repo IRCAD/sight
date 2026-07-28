@@ -28,8 +28,6 @@
 
 #include <core/object.hpp>
 
-#include <data/map.hpp>
-
 #include <service/manager.hpp>
 
 namespace sight::app
@@ -54,7 +52,7 @@ public:
     /// Return a new config_manager implementation. Should be used for all the config_manager of the
     /// application,
     /// except the first one which must be explicitly called.
-    SIGHT_APP_API static SPTR(config_manager) make();
+    SIGHT_APP_API static sight::sptr<config_manager> make();
 
     /// Return state
     bool is_created() const;

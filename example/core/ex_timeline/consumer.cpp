@@ -70,8 +70,8 @@ void consumer::updating()
 {
     const auto timeline = m_timeline.lock();
 
-    const auto timestamp = sight::core::clock::get_time_in_milli_sec();
-    const CSPTR(::ex_timeline::message_tl::buffer_t) buffer = timeline->get_closest_buffer(timestamp);
+    const auto timestamp                                           = sight::core::clock::get_time_in_milli_sec();
+    const sight::csptr<::ex_timeline::message_tl::buffer_t> buffer = timeline->get_closest_buffer(timestamp);
 
     if(buffer)
     {
@@ -88,7 +88,7 @@ void consumer::consume(sight::core::clock::type _timestamp)
 {
     const auto timeline = m_timeline.lock();
 
-    const CSPTR(::ex_timeline::message_tl::buffer_t) buffer = timeline->get_closest_buffer(_timestamp);
+    const sight::csptr<::ex_timeline::message_tl::buffer_t> buffer = timeline->get_closest_buffer(_timestamp);
 
     if(buffer)
     {

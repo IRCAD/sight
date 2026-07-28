@@ -27,6 +27,7 @@
 #include <data/image.hpp>
 
 #include <viz/scene3d/helper/camera.hpp>
+#include <viz/scene3d/utils.hpp>
 
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreNode.h>

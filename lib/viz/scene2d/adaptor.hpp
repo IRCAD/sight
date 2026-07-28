@@ -52,7 +52,7 @@ public:
     SIGHT_VIZ_SCENE2D_API float get_z_value() const;
 
     /// Get the render that manages the adaptor.
-    SIGHT_VIZ_SCENE2D_API SPTR(viz::scene2d::render) get_scene_2d_render() const;
+    SIGHT_VIZ_SCENE2D_API sight::sptr<viz::scene2d::render> get_scene_2d_render() const;
 
     /// Interact with the mouse events catched on the adaptor
     /// (virtual function, its behavior is only defined in the specific adaptors).

@@ -23,18 +23,12 @@
 
 #include <core/thread/timer.hpp>
 
+#include <data/matrix4.hpp>
 #include <data/string.hpp>
-
-#include <ui/__/parameter.hpp>
 
 #include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/interactor/base.hpp>
 
-#include <glm/glm.hpp>
-
-#include <OGRE/Ogre.h>
-
-#include <memory>
 #include <optional>
 
 namespace sight::module::viz::scene3d::adaptor

@@ -287,7 +287,7 @@ void render::stopping()
 void render::updating()
 {
     // Run the update on a copy of the adaptors list, because the adaptors update calls may add or remove sub-adaptors
-    std::vector<SPTR(viz::scene3d::adaptor)> adaptors;
+    std::vector<sight::sptr<viz::scene3d::adaptor> > adaptors;
     std::ranges::copy(m_adaptors, std::back_inserter(adaptors));
 
     for(const auto& adaptor : adaptors)

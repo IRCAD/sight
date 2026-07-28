@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -26,18 +26,18 @@
 
 #include <QEvent>
 #include <QList>
-#include <qnamespace.h>
 #include <QObject>
 #include <QPoint>
 #include <QString>
 #include <QVector>
 #include <QWidget>
+#include <qnamespace.h>
 
 #include <cstdint>
 #include <optional>
 
 /// An enumeration which represents the type of a user interaction
-enum interaction_t
+enum interaction_t : std::uint8_t
 {
     mouse_click,
     mouse_double_click,
@@ -51,7 +51,7 @@ enum interaction_t
 };
 
 /// An enumeration which represents how to find a widget, @see FindStrategy
-enum class find_strategy_t
+enum class find_strategy_t : std::uint8_t
 {
     root,                // The object to be found is root
     active_modal_widget, // The object to be found is the active modal widget
@@ -63,7 +63,7 @@ enum class find_strategy_t
     cant_be_found        // Error: the object can't be found
 };
 
-enum class modification_t
+enum class modification_t : std::uint8_t
 {
     increment,
     decrement,

@@ -27,10 +27,7 @@
 #include "data/validator/factory/new.hpp"
 #include "data/validator/registry/detail.hpp"
 
-#include <core/base.hpp>
 #include <core/com/signals.hpp>
-
-#include <boost/property_tree/ptree.hpp>
 
 namespace sight::data
 {
@@ -85,7 +82,7 @@ public:
      * @brief Performs the validation of the given data.
      * @note  This data could be a single data, or a Vector or a Map of one type of data.
      */
-    SIGHT_DATA_API virtual return_t validate(const CSPTR(data::object)& _current_data) const = 0;
+    SIGHT_DATA_API virtual return_t validate(const sight::csptr<data::object>& _current_data) const = 0;
 
     /**
      * @brief Allows to specify the signals that require a new validation. Default to sight::data::signals::MODIFIED.

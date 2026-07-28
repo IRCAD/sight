@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,7 +20,9 @@
  *
  ***********************************************************************/
 
-#include "core/log/logger.hpp"
+#include <algorithm>
+#include <core/log/logger.hpp>
+#include <core/spy_log.hpp>
 
 namespace sight::core::log
 {
@@ -95,7 +97,7 @@ std::size_t logger::count(core::log::log::level_t _level) const
 
 void logger::sort()
 {
-    std::sort(m_log_container.begin(), m_log_container.end(), logger::log_sorter);
+    std::ranges::sort(m_log_container, logger::log_sorter);
 }
 
 //-----------------------------------------------------------------------------

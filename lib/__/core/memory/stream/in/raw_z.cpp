@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,10 +33,12 @@
 #include <boost/iostreams/filter/gzip.hpp>
 #include <boost/iostreams/filtering_stream.hpp>
 
-#include <filesystem>
 #include <fstream>
 
 namespace sight::core::memory::stream::in
+{
+
+namespace
 {
 
 struct filtering_stream : boost::iostreams::filtering_istream
@@ -52,15 +54,19 @@ struct filtering_stream : boost::iostreams::filtering_istream
         }
     }
 
-    SPTR(void) held_stream;
+    sight::sptr<void> held_stream;
 };
 
-SPTR(std::istream) raw_z::get()
+} // namespace
+
+//------------------------------------------------------------------------------
+
+sight::sptr<std::istream> raw_z::get()
 {
-    SPTR(std::ifstream) fs =
+    sight::sptr<std::ifstream> fs =
         std::make_shared<std::ifstream>(m_path, std::ios::in | std::ios::binary);
 
-    SPTR(filtering_stream) filter = std::make_shared<filtering_stream>();
+    sight::sptr<filtering_stream> filter = std::make_shared<filtering_stream>();
 
     filter->held_stream = fs;
 

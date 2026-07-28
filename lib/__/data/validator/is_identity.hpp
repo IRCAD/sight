@@ -40,7 +40,7 @@ public:
      * @brief Checks that the object is a data::matrix4 and that it equals the identity matrix.
      * @see data::validator::base::validate
      */
-    sight::data::validator::return_t validate(const CSPTR(data::object)& _object) const final;
+    sight::data::validator::return_t validate(const sight::csptr<data::object>& _object) const final;
 };
 
 } // namespace sight::data::validator

@@ -82,7 +82,7 @@ inline C::sptr map::get(const std::string& _key) const noexcept
         // Just ignore the error and return nullptr
     }
 
-    return SPTR(C)();
+    return sight::sptr<C>();
 }
 
 } // namespace sight::data

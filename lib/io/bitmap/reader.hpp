@@ -27,7 +27,6 @@
 
 #include <core/location/single_file.hpp>
 
-#include <data/container.hpp>
 #include <data/image.hpp>
 
 #include <io/__/reader/generic_object_reader.hpp>
@@ -72,7 +71,7 @@ public:
     SIGHT_IO_BITMAP_API ~reader() final;
 
     /// Main writing method from generic_object_reader
-    SIGHT_IO_BITMAP_API void read(SPTR(sight::core::progress::observer) _progress) final;
+    SIGHT_IO_BITMAP_API void read(sight::sptr<sight::core::progress::observer> _progress) final;
 
     /// Specialized reading method that allows to specify the backend
     /// @arg _backend: the backend to use. Can be LIBJPEG, LIBTIFF, LIBPNG, OPENJPEG or, if available, NVJPEG and

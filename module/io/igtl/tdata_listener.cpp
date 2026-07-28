@@ -171,7 +171,7 @@ void tdata_listener::stopping()
 void tdata_listener::manage_timeline(const data::map::sptr& _obj, double _timestamp)
 {
     const auto mat_tl = m_timeline.lock();
-    SPTR(data::matrix_tl::buffer_t) matrix_buf;
+    sight::sptr<data::matrix_tl::buffer_t> matrix_buf;
     matrix_buf = mat_tl->create_buffer(_timestamp);
 
     for(const auto& elt : *_obj)

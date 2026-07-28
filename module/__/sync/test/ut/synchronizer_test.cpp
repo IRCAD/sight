@@ -122,8 +122,8 @@ public:
 
     void add_frame_to_frame_tl(sight::data::frame_tl::sptr& _frame_tl, const std::uint8_t _timestamp)
     {
-        const SPTR(sight::data::frame_tl::buffer_t) data = _frame_tl->create_buffer(_timestamp);
-        std::uint8_t* elt_buffer                         = data->add_element(0);
+        const sight::sptr<sight::data::frame_tl::buffer_t> data = _frame_tl->create_buffer(_timestamp);
+        std::uint8_t* elt_buffer                                = data->add_element(0);
         memset(elt_buffer, _timestamp, m_frame_size[0] * m_frame_size[1]);
 
         _frame_tl->push_object(data);
@@ -137,7 +137,7 @@ public:
         const std::uint8_t _timestamp
 )
     {
-        const SPTR(sight::data::matrix_tl::buffer_t) data = _matrix_tl->create_buffer(_timestamp);
+        const sight::sptr<sight::data::matrix_tl::buffer_t> data = _matrix_tl->create_buffer(_timestamp);
         std::array<float, 16> matrix {1., 0., 0., 0.,
                                       0., 1., 0., 0.,
                                       0., 0., 1., 0.,
@@ -170,7 +170,7 @@ public:
         // by testing the first value of the matrix, it  is possible to verify that the
         // appropriate matrix has be put to a given output.
 
-        const SPTR(sight::data::matrix_tl::buffer_t) data = _matrix_tl->create_buffer(_timestamp);
+        const sight::sptr<sight::data::matrix_tl::buffer_t> data = _matrix_tl->create_buffer(_timestamp);
 
         for(const auto element_index : _element_index_list)
         {
@@ -1796,8 +1796,8 @@ TEST_SUITE("sight::module::sync::synchronizer")
         // This is done just to handle automatic synch at first data push
         const std::uint64_t timestamp = 13;
 
-        const SPTR(sight::data::frame_tl::buffer_t) data = frame_tl_1->create_buffer(timestamp);
-        std::uint8_t* elt_buffer = data->add_element(0);
+        const sight::sptr<sight::data::frame_tl::buffer_t> data = frame_tl_1->create_buffer(timestamp);
+        std::uint8_t* elt_buffer                                = data->add_element(0);
         memset(elt_buffer, timestamp, frame_size[0] * frame_size[1]);
 
         frame_tl_1->push_object(data);

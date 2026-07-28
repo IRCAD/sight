@@ -25,12 +25,9 @@
 #include <sight/io/dimse/config.hpp>
 
 #include <core/base_object.hpp>
-#include <core/com/slot.hpp>
 #include <core/com/slots.hpp>
-#include <core/memory/buffer_object.hpp>
 #include <core/progress/observer.hpp>
 
-#include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmnet/scu.h>
 
 #include <filesystem>
@@ -264,7 +261,7 @@ protected:
      * @param _dataset The dicom dataset.
      * @return OFTrue on success.
      */
-    SIGHT_IO_DIMSE_API OFCondition send_store_request(const CSPTR(DcmDataset)& _dataset);
+    SIGHT_IO_DIMSE_API OFCondition send_store_request(const sight::csptr<DcmDataset>& _dataset);
 
     /**
      * @brief Handles a C-MOVE response.

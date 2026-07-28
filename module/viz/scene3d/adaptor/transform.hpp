@@ -22,6 +22,8 @@
 
 #pragma once
 
+#include <data/matrix4.hpp>
+
 #include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/render.hpp>
 #include <viz/scene3d/transformable.hpp>

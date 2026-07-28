@@ -26,36 +26,38 @@
 
 #pragma once
 
-#include "core/demangler.hpp"
+#include "core/demangler.hpp" // NOLINT(misc-include-cleaner)
 
-#include <boost/preprocessor/cat.hpp>
-#include <boost/preprocessor/facilities/empty.hpp>
 #include <boost/preprocessor/facilities/overload.hpp>
 
 #include <memory>
-#include <string>
-#include <type_traits>
+
+namespace sight
+{
+
+template<typename T, typename deleter = std::default_delete<T> >
+using uptr = std::unique_ptr<T, deleter>;
+
+template<typename T, typename deleter = std::default_delete<T> >
+using cuptr = std::unique_ptr<const T, deleter>;
+
+template<typename T>
+using sptr = std::shared_ptr<T>;
+
+template<typename T>
+using csptr = std::shared_ptr<const T>;
+
+template<typename T>
+using wptr = std::weak_ptr<T>;
+
+template<typename T>
+using cwptr = std::weak_ptr<const T>;
+
+} // namespace sight
 
 //NOLINTBEGIN(cppcoreguidelines-macro-usage)
 
 #define SIGHT_NOT_USED(x) ((void) (x))
-
-/**
- * @name Smart pointers macro
- * @{ */
-// Expand to shared_ptr < _cls_ >
-#define SPTR(_cls_) std::shared_ptr<_cls_>
-// Expand to shared_ptr < const _cls_ >
-#define CSPTR(_cls_) std::shared_ptr<const _cls_>
-// Expand to weak_ptr < _cls_ >
-#define WPTR(_cls_) std::weak_ptr<_cls_>
-// Expand to weak_ptr < const _cls_ >
-#define CWPTR(_cls_) std::weak_ptr<const _cls_>
-// Expand to unique_ptr < _cls_ >
-#define UPTR(_cls_) std::unique_ptr<_cls_>
-// Expand to unique_ptr < const _cls_ >
-#define CUPTR(_cls_) std::unique_ptr<const _cls_>
-/**  @} */
 
 /*
  * @brief Define several typdefs for classes (sptr, wptr, ...)
@@ -68,17 +70,17 @@
         /** Type of root class  */ \
         using root_class_t = self_t; \
         /** Shared pointer type  */ \
-        using sptr = SPTR(self_t); \
+        using sptr = sight::sptr<self_t>; \
         /** Weak pointer type  */ \
-        using wptr = WPTR(self_t); \
+        using wptr = sight::wptr<self_t>; \
         /** Unique pointer type  */ \
-        using uptr = UPTR(self_t); \
+        using uptr = sight::uptr<self_t>; \
         /** Const shared pointer type  */ \
-        using csptr = CSPTR(self_t); \
+        using csptr = sight::csptr<self_t>; \
         /** Const weak pointer type  */ \
-        using cwptr = CWPTR(self_t); \
+        using cwptr = sight::cwptr<self_t>; \
         /** Const unique pointer type  */ \
-        using cuptr = CUPTR(self_t); \
+        using cuptr = sight::cuptr<self_t>; \
 
 /**
  * @brief Define several typdefs for classes (sptr, wptr, ...)
@@ -93,17 +95,17 @@
         /** Type of root class  */ \
         using root_class_t = base_class_t::root_class_t; \
         /** Shared pointer type  */ \
-        using sptr = SPTR(self_t); \
+        using sptr = sight::sptr<self_t>; \
         /** Weak pointer type  */ \
-        using wptr = WPTR(self_t); \
+        using wptr = sight::wptr<self_t>; \
         /** Unique pointer type  */ \
-        using uptr = UPTR(self_t); \
+        using uptr = sight::uptr<self_t>; \
         /** Const shared pointer type  */ \
-        using csptr = CSPTR(self_t); \
+        using csptr = sight::csptr<self_t>; \
         /** Const weak pointer type  */ \
-        using cwptr = CWPTR(self_t); \
+        using cwptr = sight::cwptr<self_t>; \
         /** Const unique pointer type  */ \
-        using cuptr = CUPTR(self_t);
+        using cuptr = sight::cuptr<self_t>;
 
 #define FWCORE_STATIC_CACHE(value) \
         static const std::string __cache__(value); \
@@ -266,26 +268,3 @@
 #else
     #define FINLINE __attribute__((always_inline))
 #endif
-
-namespace sight
-{
-
-template<typename T, typename deleter = std::default_delete<T> >
-using uptr = std::unique_ptr<T, deleter>;
-
-template<typename T, typename deleter = std::default_delete<T> >
-using cuptr = std::unique_ptr<const T, deleter>;
-
-template<typename T>
-using sptr = std::shared_ptr<T>;
-
-template<typename T>
-using csptr = std::shared_ptr<const T>;
-
-template<typename T>
-using wptr = std::weak_ptr<T>;
-
-template<typename T>
-using cwptr = std::weak_ptr<const T>;
-
-} // namespace sight

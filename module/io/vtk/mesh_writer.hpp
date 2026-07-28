@@ -42,7 +42,8 @@ namespace sight::module::io::vtk
  * Service writing a VTK Mesh using the fwVtkIO lib.
  *
  * @section Signals Signals
- * - \b monitor_created(SPTR(core::progress::monitor)): emitted to display a progress bar while the image is written,
+ * - \b monitor_created(sight::sptr<core::progress::monitor>): emitted to display a progress bar while the image is
+ * written,
  * it should be connected to a progress bar
  *
  * @section XML XML Configuration

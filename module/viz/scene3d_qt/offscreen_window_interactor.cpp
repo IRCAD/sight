@@ -32,6 +32,7 @@
 #include <core/profiling.hpp>
 
 #include <OGRE/OgreHardwarePixelBuffer.h>
+#include <OGRE/OgreRenderTexture.h> // NOLINT(misc-include-cleaner)
 #include <OGRE/OgreTextureManager.h>
 
 //-----------------------------------------------------------------------------

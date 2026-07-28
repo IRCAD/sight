@@ -21,16 +21,11 @@
 
 #pragma once
 
-#include <sight/viz/scene3d/config.hpp>
-
 #include <core/lazy_instantiator.hpp>
-
 #include <data/mt/locked_ptr.hpp>
 #include <data/object.hpp>
-
 #include <viz/scene3d/ogre.hpp>
 
-#include <OGRE/OgreSharedPtr.h>
 #include <OGRE/OgreTextureManager.h>
 
 namespace sight::viz::scene3d::detail
@@ -83,7 +78,7 @@ public:
     /// @param _object CPU representation of the object
     /// @param _suffix_id optional suffix to the object identifier, this allows to create different copies of the object
     /// @return shared pointer on the resource
-    std::shared_ptr<RESOURCE> instantiate(CSPTR(OBJECT) _object, const std::string& _suffix_id = "");
+    std::shared_ptr<RESOURCE> instantiate(sight::csptr<OBJECT> _object, const std::string& _suffix_id = "");
 
     /// Removes a reference to a GPU resource. If this was the last reference, it destroys it.
     void release(std::shared_ptr<RESOURCE>/*_resource*/);
@@ -106,13 +101,13 @@ private:
     struct resource
     {
         std::shared_ptr<RESOURCE> resource;
-        CWPTR(OBJECT) object;
+        sight::cwptr<OBJECT> object {};
         std::size_t use_count {0};
         std::uint64_t last_modified {~0UL};
         LOADER::return_t loading_result {0}; // Extra attribute to store resource-specific loading data
     };
 
-    std::map<std::string, resource> m_registry;
+    std::map<std::string, resource> m_registry {};
 };
 
 // ----------------------------------------------------------------------------
@@ -127,7 +122,7 @@ resource_manager<OBJECT, RESOURCE, LOADER>::~resource_manager()
 
 template<class OBJECT, class RESOURCE, class LOADER>
 std::shared_ptr<RESOURCE> resource_manager<OBJECT, RESOURCE, LOADER>::instantiate(
-    CSPTR(OBJECT)_object,
+    sight::csptr<OBJECT> _object,
     const std::string& _suffix_id
 )
 {

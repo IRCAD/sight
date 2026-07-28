@@ -21,8 +21,11 @@
 
 #include "reader.hpp"
 
+#include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
 #include <core/progress/observer.hpp>
+
+#include <io/bitmap/reader.hpp>
 
 #include <ui/__/cursor.hpp>
 #include <ui/__/dialog/location.hpp>

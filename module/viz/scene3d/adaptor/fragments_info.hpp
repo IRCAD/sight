@@ -24,7 +24,7 @@
 
 #include <viz/scene3d/adaptor.hpp>
 
-#include <OGRE/OgreCompositionTechnique.h>
+#include <OGRE/OgreRenderTargetListener.h>
 
 namespace sight::module::viz::scene3d::adaptor
 {

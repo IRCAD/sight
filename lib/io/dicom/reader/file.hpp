@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2025 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -47,7 +47,7 @@ public:
     SIGHT_IO_DICOM_API ~file() noexcept override;
 
     /// Reads DICOM data
-    SIGHT_IO_DICOM_API void read(SPTR(sight::core::progress::observer) _progress) override;
+    SIGHT_IO_DICOM_API void read(sight::sptr<sight::core::progress::observer> _progress) override;
 
     inline std::string extension() const override;
 

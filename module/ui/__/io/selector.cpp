@@ -28,6 +28,7 @@
 #include <io/__/service/writer.hpp>
 
 #include <service/extension/config.hpp>
+#include <service/extension/factory.hpp>
 #include <service/op.hpp>
 
 #include <ui/__/cursor.hpp>

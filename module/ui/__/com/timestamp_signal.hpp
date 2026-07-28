@@ -105,10 +105,10 @@ private:
     bool m_format_string_as_date {true};
 
     /// Signal triggered when action has been triggered
-    SPTR(signals::triggered_t) m_sig_triggered;
+    sight::sptr<signals::triggered_t> m_sig_triggered;
 
     /// Signal triggered when action has been triggered (message sent as string)
-    SPTR(signals::triggered_as_string_t) m_sig_triggered_as_string;
+    sight::sptr<signals::triggered_as_string_t> m_sig_triggered_as_string;
 };
 
 } // namespace sight::module::ui::com

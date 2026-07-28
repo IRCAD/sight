@@ -172,7 +172,7 @@ void colour_image_masking::updating()
         core::clock::type current_timestamp = video_tl->get_newer_timestamp();
 
         // Get image from the video timeline
-        CSPTR(data::frame_tl::buffer_t) video_buffer = video_tl->get_closest_buffer(current_timestamp);
+        sight::csptr<data::frame_tl::buffer_t> video_buffer = video_tl->get_closest_buffer(current_timestamp);
 
         if(!video_buffer)
         {
@@ -205,8 +205,8 @@ void colour_image_masking::updating()
         const cv::Mat video_cv = io::opencv::frame_tl::move_to_cv(video_tl.get_shared(), frame_buff_out_video);
 
         // Create image mask to put inside the timeline
-        SPTR(data::frame_tl::buffer_t) mask_buffer = video_mask_tl->create_buffer(current_timestamp);
-        std::uint8_t* frame_buff_out_mask = mask_buffer->add_element(0);
+        sight::sptr<data::frame_tl::buffer_t> mask_buffer = video_mask_tl->create_buffer(current_timestamp);
+        std::uint8_t* frame_buff_out_mask                 = mask_buffer->add_element(0);
 
         cv::Mat video_mask_cv = io::opencv::frame_tl::move_to_cv(video_mask_tl.get_shared(), frame_buff_out_mask);
 
@@ -230,8 +230,8 @@ void colour_image_masking::set_background()
     const auto mask     = m_mask.lock();
     const auto video_tl = m_video_tl.lock();
 
-    core::clock::type current_timestamp = core::clock::get_time_in_milli_sec();
-    CSPTR(data::frame_tl::buffer_t) video_buffer = video_tl->get_closest_buffer(current_timestamp);
+    core::clock::type current_timestamp                 = core::clock::get_time_in_milli_sec();
+    sight::csptr<data::frame_tl::buffer_t> video_buffer = video_tl->get_closest_buffer(current_timestamp);
     if(!video_buffer)
     {
         SIGHT_ERROR("Buffer not found with timestamp " << current_timestamp);
@@ -290,8 +290,8 @@ void colour_image_masking::set_foreground()
 {
     const auto video_tl = m_video_tl.lock();
 
-    core::clock::type current_timestamp = core::clock::get_time_in_milli_sec();
-    CSPTR(data::frame_tl::buffer_t) video_buffer = video_tl->get_closest_buffer(current_timestamp);
+    core::clock::type current_timestamp                 = core::clock::get_time_in_milli_sec();
+    sight::csptr<data::frame_tl::buffer_t> video_buffer = video_tl->get_closest_buffer(current_timestamp);
     if(!video_buffer)
     {
         SIGHT_ERROR("Buffer not found with timestamp " << current_timestamp);

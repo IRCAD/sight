@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,11 +22,14 @@
 
 #pragma once
 
-#include <itkCommand.h>
-#include <itkProcessObject.h>
-
+#include <core/macros.hpp>
 #include <core/progress/observer.hpp>
 #include <memory>
+
+#include <itkCommand.h>
+#include <itkEventObject.h>
+#include <itkProcessObject.h>
+#include <itkSmartPointer.h>
 
 namespace sight::io::itk
 {
@@ -47,7 +50,7 @@ class progress_itk_to_fw : public progressor_base
 {
 public:
 
-    progress_itk_to_fw(OBSERVEE _observee, SPTR(core::progress::observer)_observer);
+    progress_itk_to_fw(OBSERVEE _observee, sight::sptr<core::progress::observer> _observer);
     virtual ~progress_itk_to_fw();
 
 private:
@@ -66,7 +69,7 @@ public:
     using sptr = std::shared_ptr<progressor>;
 
     template<typename OBS>
-    progressor(OBS _filter, SPTR(core::progress::observer)_observer) :
+    progressor(OBS _filter, sight::sptr<core::progress::observer> _observer) :
         m_progressor(std::make_shared<progress_itk_to_fw<OBS> >(_filter, _observer))
     {
     }
@@ -74,6 +77,59 @@ public:
     progressor_base::sptr m_progressor;
 };
 
-} // namespace sight::io::itk
+//------------------------------------------------------------------------------
 
-#include "io/itk/helper/progress_itk_to_fw.hxx"
+template<typename OBSERVEE>
+progress_itk_to_fw<OBSERVEE>::progress_itk_to_fw(
+    OBSERVEE _observee,
+    sight::sptr<core::progress::observer> _observer
+) :
+    m_observee(std::move(_observee)),
+    m_obs_tag(std::numeric_limits<std::uint64_t>::max())
+{
+    class local_command : public ::itk::Command
+    {
+    public:
+
+        using self_t  = local_command;
+        using Pointer = ::itk::SmartPointer<self_t>; // NOLINT(readability-identifier-naming)
+        itkNewMacro(local_command);
+
+        //------------------------------------------------------------------------------
+
+        void Execute(const ::itk::Object* _caller, const ::itk::EventObject& /*event*/) override
+        {
+            const auto* po = dynamic_cast<const ::itk::ProcessObject*>(_caller);
+            if(po != nullptr)
+            {
+                auto percent = po->GetProgress();
+                m_observer->done_work(static_cast<std::uint64_t>(percent * 100));
+            }
+        }
+
+        //------------------------------------------------------------------------------
+
+        void Execute(::itk::Object* _caller, const ::itk::EventObject& _event) override
+        {
+            const ::itk::Object* const_caller = _caller;
+            Execute(const_caller, _event);
+        }
+
+        sight::sptr<core::progress::observer> m_observer {};
+    };
+
+    typename local_command::Pointer itk_call_back;
+    itk_call_back             = local_command::New();
+    itk_call_back->m_observer = _observer;
+    m_obs_tag                 = m_observee->AddObserver(::itk::ProgressEvent(), itk_call_back);
+}
+
+//------------------------------------------------------------------------------
+
+template<typename OBSERVEE>
+progress_itk_to_fw<OBSERVEE>::~progress_itk_to_fw()
+{
+    m_observee->RemoveObserver(m_obs_tag);
+}
+
+} // namespace sight::io::itk

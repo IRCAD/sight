@@ -24,7 +24,6 @@
 #include <io/joystick/interactor.hpp>
 
 #include <ui/__/editor.hpp>
-#include <ui/__/parameter.hpp>
 #include <ui/qt/widget/switch_button.hpp>
 #include <ui/qt/widget/tickmarks_slider.hpp>
 
@@ -494,11 +493,12 @@ private:
 
     /// Returns the data pointer at the given index and key
     template<class DATATYPE, class SUBTYPE = DATATYPE::value_t>
-    requires std::derived_from<DATATYPE, sight::data::generic<SUBTYPE> > CSPTR(DATATYPE) data(const QObject * _widget);
+    requires std::derived_from<DATATYPE,
+                               sight::data::generic<SUBTYPE> > sight::csptr<DATATYPE> data(const QObject* _widget);
 
     template<class DATATYPE, class SUBTYPE = DATATYPE::value_t>
     requires std::derived_from<DATATYPE, sight::data::generic<SUBTYPE> >
-    void connect_data(const CSPTR(DATATYPE)& _obj, const std::string& _key);
+    void connect_data(const sight::csptr<DATATYPE>& _obj, const std::string& _key);
 
     template<class DATATYPE, class SUBTYPE = DATATYPE::value_t>
     requires std::derived_from<DATATYPE, sight::data::generic<SUBTYPE> >
@@ -519,7 +519,7 @@ private:
     data::ptr<data::map, data::access::inout> m_settings_map {this, "map"};
 
     using object_modified_t         = core::com::slot<void ()>;
-    using settings_slot_container_t = std::map<std::string, SPTR(object_modified_t)>;
+    using settings_slot_container_t = std::map<std::string, sight::sptr<object_modified_t> >;
     settings_slot_container_t m_settings_slots;
 
     struct widget_joystick

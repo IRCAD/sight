@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -85,7 +85,7 @@ protected:
 private:
 
     /// Timer used to send messages periodically
-    SPTR(sight::core::thread::timer) m_timer;
+    sight::sptr<sight::core::thread::timer> m_timer;
 
     /// Message to be sent
     std::string m_message;

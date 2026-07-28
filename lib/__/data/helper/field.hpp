@@ -50,7 +50,10 @@ public:
      * @return pointer to corresponding field.
      */
     template<typename DATA_TYPE>
-    SPTR(DATA_TYPE) set_default_field(const data::object::field_name_t& _name, SPTR(DATA_TYPE) _default_value);
+    sight::sptr<DATA_TYPE> set_default_field(
+        const data::object::field_name_t& _name,
+        sight::sptr<DATA_TYPE> _default_value
+    );
 
     /**
      * @brief Register field with specified name. If the name does already exist, the matching field will be replaced.
@@ -141,8 +144,13 @@ private:
     data::object::wptr m_object;
 };
 
+//------------------------------------------------------------------------------
+
 template<typename DATA_TYPE>
-inline SPTR(DATA_TYPE) field::set_default_field(const data::object::field_name_t& _name, SPTR(DATA_TYPE) _default_value)
+inline sight::sptr<DATA_TYPE> field::set_default_field(
+    const data::object::field_name_t& _name,
+    sight::sptr<DATA_TYPE> _default_value
+)
 {
     SIGHT_ASSERT("field helper need a non-null object pointer", !m_object.expired());
     data::object::sptr object = m_object.lock();

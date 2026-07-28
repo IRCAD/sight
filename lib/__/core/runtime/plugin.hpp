@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,11 +23,9 @@
 #pragma once
 
 #include "core/runtime/executable.hpp"
+#include <core/runtime/utils/generic_executable_factory_registry.hpp> // NOLINT(misc-include-cleaner)
 
 #include "sight/core/config.hpp"
-
-#include <core/macros.hpp>
-#include <core/runtime/utils/generic_executable_factory_registry.hpp>
 
 namespace sight::core::runtime
 {
@@ -66,6 +64,7 @@ private:
     std::weak_ptr<module> m_module;
 };
 
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define SIGHT_REGISTER_PLUGIN(class) \
         static sight::core::runtime::utils::generic_executable_factory_registry<plugin> BOOST_PP_CAT( \
             __registry, \

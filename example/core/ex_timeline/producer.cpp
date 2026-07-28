@@ -80,8 +80,8 @@ void producer::updating()
 {
     const auto timeline = m_timeline.lock();
 
-    const auto timestamp = sight::core::clock::get_time_in_milli_sec();
-    SPTR(::ex_timeline::message_tl::buffer_t) buffer = timeline->create_buffer(timestamp);
+    const auto timestamp                                    = sight::core::clock::get_time_in_milli_sec();
+    sight::sptr<::ex_timeline::message_tl::buffer_t> buffer = timeline->create_buffer(timestamp);
 
     ::ex_timeline::msg_data* data = buffer->add_element(0);
 

@@ -27,7 +27,6 @@
 #include <core/com/has_signals.hpp>
 #include <core/com/has_slots.hpp>
 #include <core/com/helper/sig_slot_connection.hpp>
-#include <core/com/slot.hpp>
 #include <core/thread/worker.hpp>
 
 #include <viz/scene3d/compositor/chain_manager.hpp>
@@ -37,9 +36,7 @@
 #include <viz/scene3d/interactor/base.hpp>
 #include <viz/scene3d/window_interactor.hpp>
 
-#include <OGRE/Ogre.h>
 #include <OGRE/OgreAxisAlignedBox.h>
-#include <OGRE/OgreRenderWindow.h>
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreViewport.h>
 
@@ -187,10 +184,10 @@ public:
     SIGHT_VIZ_SCENE3D_API void set_worker(const core::thread::worker::sptr& _worker);
 
     /// @returns the render service.
-    SIGHT_VIZ_SCENE3D_API SPTR(viz::scene3d::render) render_service() const;
+    SIGHT_VIZ_SCENE3D_API sight::sptr<viz::scene3d::render> render_service() const;
 
     /// Sets the render service.
-    SIGHT_VIZ_SCENE3D_API void set_render_service(const SPTR(viz::scene3d::render)& _service);
+    SIGHT_VIZ_SCENE3D_API void set_render_service(const sight::sptr<viz::scene3d::render>& _service);
 
     /// Requests render.
     SIGHT_VIZ_SCENE3D_API void request_render();
@@ -258,7 +255,7 @@ public:
     SIGHT_VIZ_SCENE3D_API int num_lights() const;
 
     /// @returns the light adaptors used in this layer.
-    SIGHT_VIZ_SCENE3D_API std::vector<SPTR(viz::scene3d::light_adaptor)> get_light_adaptors() const;
+    SIGHT_VIZ_SCENE3D_API std::vector<sight::sptr<viz::scene3d::light_adaptor> > get_light_adaptors() const;
 
     /**
      * Computes the bounding box of the scene.
@@ -283,7 +280,7 @@ public:
     SIGHT_VIZ_SCENE3D_API void set_camera_calibrations(const camera_calibrations_t& _calibrations);
 
     /// @returns true if a specified light is the default light in the layer.
-    SIGHT_VIZ_SCENE3D_API bool is_default_light(const CSPTR(viz::scene3d::light_adaptor)& /*_light*/) const;
+    SIGHT_VIZ_SCENE3D_API bool is_default_light(const sight::csptr<viz::scene3d::light_adaptor>& /*_light*/) const;
 
     /// Removes the default light in the layer.
     SIGHT_VIZ_SCENE3D_API void remove_default_light();
@@ -333,7 +330,7 @@ private:
     std::string m_raw_compositor_chain;
 
     /// Contains the Ogre default compositor for this layer.
-    SPTR(viz::scene3d::compositor::core) m_core_compositor {nullptr};
+    sight::sptr<viz::scene3d::compositor::core> m_core_compositor {nullptr};
 
     /// Contains the Ogre default compositor default transparency technique.
     viz::scene3d::compositor::transparency_technique m_transparency_technique {viz::scene3d::compositor::DEFAULT};
@@ -376,7 +373,7 @@ private:
     core::com::helper::sig_slot_connection m_connections;
 
     /// Contains the render service which this layer is attached.
-    WPTR(viz::scene3d::render) m_render_service;
+    sight::wptr<viz::scene3d::render> m_render_service;
 
     /// Defines the layer identifier as referenced in render.
     std::string m_id;
@@ -391,13 +388,13 @@ private:
     bool m_has_default_light {true};
 
     /// Contains the abstract light used to set the default light.
-    SPTR(viz::scene3d::light_adaptor) m_light_adaptor {nullptr};
+    sight::sptr<viz::scene3d::light_adaptor> m_light_adaptor {nullptr};
 
     /// Contains the diffuse color of the default light.
-    SPTR(data::color) m_default_light_diffuse_color {nullptr};
+    sight::sptr<data::color> m_default_light_diffuse_color {nullptr};
 
     /// Contains the specular color of the specular light.
-    SPTR(data::color) m_default_light_specular_color {nullptr};
+    sight::sptr<data::color> m_default_light_specular_color {nullptr};
 
     /// Defines the camera listener class used to pass the projection matrix for autostereo shaders.
     struct layer_camera_listener;

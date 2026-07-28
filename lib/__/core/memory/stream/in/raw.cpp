@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,14 +31,16 @@
 namespace sight::core::memory::stream::in
 {
 
-SPTR(std::istream) raw::get()
+//------------------------------------------------------------------------------
+
+sight::sptr<std::istream> raw::get()
 {
     SIGHT_THROW_IF(
         "file " << m_path.string() << " does not exist anymore or has been moved.",
         !std::filesystem::exists(m_path)
     );
 
-    SPTR(std::ifstream) fs =
+    sight::sptr<std::ifstream> fs =
         std::make_shared<std::ifstream>(m_path.string(), std::ios::in | std::ios::binary);
     return fs;
 }

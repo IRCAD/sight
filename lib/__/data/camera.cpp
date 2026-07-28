@@ -24,6 +24,7 @@
 
 #include <boost/assign/list_of.hpp>
 
+#include <core/compare.hpp>
 #include <data/exception.hpp>
 #include <data/registry/macros.hpp>
 

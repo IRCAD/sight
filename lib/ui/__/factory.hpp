@@ -40,7 +40,7 @@ namespace registry
 using key_t = std::string;
 using type  = sight::core::factory_registry<std::shared_ptr<sight::ui::object>(), key_t>;
 
-SIGHT_UI_API SPTR(type) get();
+SIGHT_UI_API sight::sptr<type> get();
 
 } // namespace registry
 

@@ -57,25 +57,25 @@ public:
      * @param _nb_model_series     number of ModelSeries to add in series_set
      * @return The created series_set
      */
-    SIGHT_UTEST_DATA_API static SPTR(data::series_set) create_series_set(
+    SIGHT_UTEST_DATA_API static sight::sptr<data::series_set> create_series_set(
         unsigned char _nb_img_series,
         unsigned char _nb_model_series
     );
 
     /// Generates dummy informations for the series
-    SIGHT_UTEST_DATA_API static void generate_series_information(SPTR(data::series) _series);
+    SIGHT_UTEST_DATA_API static void generate_series_information(sight::sptr<data::series> _series);
 
     /// Returns an ImageSeries with a randomized image
-    SIGHT_UTEST_DATA_API static SPTR(data::image_series) create_image_series();
+    SIGHT_UTEST_DATA_API static sight::sptr<data::image_series> create_image_series();
 
     /**
      * @brief Returns a ModelSeries containing random Reconstructions
      * @param _nb_reconstruction number of Reconstrutions to add in the ModelSeries
      */
-    SIGHT_UTEST_DATA_API static SPTR(data::model_series) create_model_series(unsigned char _nb_reconstruction);
+    SIGHT_UTEST_DATA_API static sight::sptr<data::model_series> create_model_series(unsigned char _nb_reconstruction);
 
     /// Returns an Activity with dummy data
-    SIGHT_UTEST_DATA_API static SPTR(data::activity) create_activity();
+    SIGHT_UTEST_DATA_API static sight::sptr<data::activity> create_activity();
 
     /**
      * @brief Generate a reconstruction.
@@ -85,7 +85,7 @@ public:
      * this can be helpful in tests to ensure that readers will load reconstruction in the same order than the
      * reconstructionDB.
      */
-    SIGHT_UTEST_DATA_API static void generate_reconstruction(SPTR(data::reconstruction) _rec, int _index = -1);
+    SIGHT_UTEST_DATA_API static void generate_reconstruction(sight::sptr<data::reconstruction> _rec, int _index = -1);
 };
 
 } // namespace sight::utest_data::generator

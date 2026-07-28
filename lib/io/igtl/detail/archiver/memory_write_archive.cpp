@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,8 +25,6 @@
 #include <io/zip/exception/write.hpp>
 
 #include <archive_entry.h>
-
-#include <boost/date_time.hpp>
 
 #include <filesystem>
 #include <fstream>
@@ -58,7 +56,7 @@ void memory_archive_sink::archive()
     archive_entry_set_pathname(entry, m_path.string().c_str());
     archive_entry_set_filetype(entry, AE_IFREG);
     archive_entry_set_perm(entry, 0444);
-    archive_entry_set_size(entry, la_int64_t(m_buffer.size()));
+    archive_entry_set_size(entry, static_cast<la_int64_t>(m_buffer.size()));
     const time_t seconds   = now.time_of_day().total_seconds();
     const long nanoseconds = static_cast<long>(now.time_of_day().total_nanoseconds()); // NOLINT(google-runtime-int)
     archive_entry_set_atime(entry, seconds, nanoseconds);
@@ -74,7 +72,7 @@ void memory_archive_sink::archive()
     for(std::size_t i = 0 ; i < m_buffer.size() ; i += memory_archive_sink::WRITE_BUFFER_SIZE)
     {
         std::size_t size = memory_archive_sink::WRITE_BUFFER_SIZE;
-        if(std::size_t(i + memory_archive_sink::WRITE_BUFFER_SIZE) > m_buffer.size())
+        if((i + memory_archive_sink::WRITE_BUFFER_SIZE) > m_buffer.size())
         {
             size = m_buffer.size() - i;
         }
@@ -109,7 +107,7 @@ ssize_t memory_write_archive::write(struct archive* /*a*/, void* _client_data, c
     const char* bytes_to_write = reinterpret_cast<const char*>(_buff);
 
     bytes->insert(bytes->end(), bytes_to_write, bytes_to_write + _size);
-    return ssize_t(_size);
+    return static_cast<ssize_t>(_size);
 }
 
 //-----------------------------------------------------------------------------
@@ -175,11 +173,9 @@ bool memory_write_archive::create_dir(const std::filesystem::path& /*path*/)
 
 //-----------------------------------------------------------------------------
 
-SPTR(std::ostream) memory_write_archive::create_file(const std::filesystem::path& _path)
+sight::sptr<std::ostream> memory_write_archive::create_file(const std::filesystem::path& _path)
 {
-    SPTR(boost::iostreams::stream<memory_archive_sink>) os;
-
-    os = std::make_shared<boost::iostreams::stream<memory_archive_sink> >(m_archive, _path);
+    auto os = std::make_shared<boost::iostreams::stream<memory_archive_sink> >(m_archive, _path);
     m_sinks.push_back(os);
     return os;
 }
@@ -191,7 +187,7 @@ void memory_write_archive::put_file(
     const std::filesystem::path& _archive_file
 )
 {
-    SPTR(std::ostream)  os;
+    sight::sptr<std::ostream> os;
     std::ifstream is(_source_file.string().c_str(), std::ios::binary);
 
     if(is.is_open())

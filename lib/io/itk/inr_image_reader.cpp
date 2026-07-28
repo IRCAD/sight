@@ -25,6 +25,7 @@
 #include "io/itk/helper/progress_itk_to_fw.hpp"
 #include "io/itk/itk.hpp"
 
+#include <core/progress/observer.hpp>
 #include <core/tools/dispatcher.hpp>
 
 #include <data/image.hpp>

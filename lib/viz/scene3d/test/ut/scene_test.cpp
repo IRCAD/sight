@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2025 IRCAD France
+ * Copyright (C) 2015-2026 IRCAD France
  * Copyright (C) 2015-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,12 +21,11 @@
  ***********************************************************************/
 
 #include "viz/scene3d/helper/scene.hpp"
+#include "viz/scene3d/utils.hpp"
 
 #include <doctest/doctest.h>
 
 #include <OGRE/OgreSceneNode.h>
-
-#include <cstdint>
 
 //------------------------------------------------------------------------------
 

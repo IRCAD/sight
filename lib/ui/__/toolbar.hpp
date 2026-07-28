@@ -167,7 +167,7 @@ private:
     void initialize_layout_manager(const ui::config_t& _layout_config);
 
     ui::layout::toolbar_manager::sptr m_layout_manager;
-    SPTR(ui::detail::registry::toolbar) m_registry;
+    sight::sptr<ui::detail::registry::toolbar> m_registry;
 
     /// Flag to hide or disable the actions if the service is stopped
     bool m_hide_actions {false};

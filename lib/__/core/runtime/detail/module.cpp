@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,9 +29,6 @@
 #include "core/runtime/executable.hpp"
 #include "core/runtime/executable_factory.hpp"
 #include "core/runtime/extension.hpp"
-#include "core/runtime/utils/generic_executable_factory.hpp"
-
-#include <core/base.hpp>
 
 #include <algorithm>
 #include <cassert>
@@ -43,11 +40,11 @@ namespace sight::core::runtime::detail
 
 //------------------------------------------------------------------------------
 
-SPTR(module) module::s_loading_module;
+sight::sptr<module> module::s_loading_module;
 
 //------------------------------------------------------------------------------
 
-SPTR(module) module::get_loading_module()
+sight::sptr<module> module::get_loading_module()
 {
     return s_loading_module;
 }
@@ -81,7 +78,7 @@ module::module(
 
 //------------------------------------------------------------------------------
 
-void module::add_executable_factory(SPTR(executable_factory)_factory)
+void module::add_executable_factory(sight::sptr<executable_factory> _factory)
 {
     m_executable_factories.insert(_factory);
 }
@@ -102,7 +99,7 @@ module::executable_factory_const_iterator module::executable_factories_end() con
 
 //------------------------------------------------------------------------------
 
-SPTR(executable_factory) module::find_executable_factory(const std::string& _type) const
+sight::sptr<executable_factory> module::find_executable_factory(const std::string& _type) const
 {
     std::shared_ptr<executable_factory> res_executable_factory;
     for(const auto& factory : m_executable_factories)
@@ -119,7 +116,7 @@ SPTR(executable_factory) module::find_executable_factory(const std::string& _typ
 
 //------------------------------------------------------------------------------
 
-void module::add_extension(SPTR(extension)_extension)
+void module::add_extension(sight::sptr<extension> _extension)
 {
     m_extensions.insert(_extension);
 }
@@ -171,14 +168,14 @@ module::extension_const_iterator module::extensions_end() const
 
 //------------------------------------------------------------------------------
 
-void module::add_extension_point(SPTR(extension_point)_extension_point)
+void module::add_extension_point(sight::sptr<extension_point> _extension_point)
 {
     m_extension_points.insert(_extension_point);
 }
 
 //------------------------------------------------------------------------------
 
-SPTR(extension_point) module::find_extension_point(const std::string& _identifier) const
+sight::sptr<extension_point> module::find_extension_point(const std::string& _identifier) const
 {
     std::shared_ptr<extension_point> res_extension_point;
     for(const auto& extension_point : m_extension_points)
@@ -240,7 +237,7 @@ module::extension_point_const_iterator module::extension_points_end() const
 
 //------------------------------------------------------------------------------
 
-void module::set_library(SPTR(dl::library)_library)
+void module::set_library(sight::sptr<dl::library> _library)
 {
     _library->set_search_path(this->get_library_location());
     m_library = _library;
@@ -290,7 +287,7 @@ const std::filesystem::path& module::get_resources_location() const
 
 //------------------------------------------------------------------------------
 
-SPTR(plugin) module::get_plugin() const
+sight::sptr<plugin> module::get_plugin() const
 {
     return m_plugin;
 }
@@ -424,7 +421,7 @@ void module::start_plugin()
 
     // According to the presence of a class or not, build and empty
     // plugin or attempt to instantiate a user defined plugin.
-    SPTR(plugin) plugin;
+    sight::sptr<plugin> plugin;
 
     if(plugin_type.empty())
     {
@@ -433,7 +430,7 @@ void module::start_plugin()
     else
     {
         auto& runtime = runtime::get();
-        SPTR(executable) executable(runtime.create_executable_instance(plugin_type));
+        sight::sptr<executable> executable(runtime.create_executable_instance(plugin_type));
 
         plugin = std::dynamic_pointer_cast<sight::core::runtime::plugin>(executable);
     }
@@ -531,7 +528,7 @@ std::string module::get_parameter_value(const std::string& _identifier) const
 
 bool module::has_parameter(const std::string& _identifier) const
 {
-    return m_parameters.find(_identifier) != m_parameters.end();
+    return m_parameters.contains(_identifier);
 }
 
 //------------------------------------------------------------------------------

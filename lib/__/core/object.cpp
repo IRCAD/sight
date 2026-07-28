@@ -24,7 +24,8 @@
 
 #include "object.hpp"
 
-#include "tools/uuid.hpp"
+#include <core/spy_log.hpp>
+#include <core/tools/uuid.hpp>
 
 #include <map>
 #include <mutex>

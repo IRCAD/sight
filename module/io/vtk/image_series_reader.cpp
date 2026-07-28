@@ -30,6 +30,8 @@
 #include <core/tools/os.hpp>
 #include <core/tools/uuid.hpp>
 
+#include <data/image_series.hpp>
+
 #include <io/__/service/io_types.hpp>
 #include <io/vtk/bitmap_image_reader.hpp>
 

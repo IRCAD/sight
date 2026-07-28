@@ -83,13 +83,13 @@ struct SIGHT_CORE_CLASS_API signal<R(A ...)>: signal_base
      * @throws BadSlot If given slot doesn't match signal type.
      * @throws AlreadyConnected If given slot is already connected.
      */
-    connection connect(SPTR(slot_base) _slot) override;
+    connection connect(sight::sptr<slot_base> _slot) override;
 
     /**
      * @brief Disconnects the given slot.
      * @throws BadSlot If given slot is not found in current connections.
      */
-    void disconnect(SPTR(slot_base) _slot) override;
+    void disconnect(sight::sptr<slot_base> _slot) override;
 
     /// Disconnects all slots.
     void disconnect_all();
@@ -111,7 +111,7 @@ struct SIGHT_CORE_CLASS_API signal<R(A ...)>: signal_base
      * @brief Returns the connection handler matching given slot.
      * @throws BadSlot if given slot is not connected and `throws` is true.
      */
-    connection get_connection(SPTR(slot_base) _slot, bool _throws = false) override;
+    connection get_connection(sight::sptr<slot_base> _slot, bool _throws = false) override;
 
     protected:
 
@@ -127,7 +127,7 @@ struct SIGHT_CORE_CLASS_API signal<R(A ...)>: signal_base
          * @throws AlreadyConnected If given slot is already connected.
          */
         template<typename FROM_F>
-        connection connect(SPTR(slot_base) _slot);
+        connection connect(sight::sptr<slot_base> _slot);
 
     private:
 
@@ -223,7 +223,7 @@ void signal<R(A ...)>::async_emit(A ... _a) const
     // If we don't do this, we could end up with a deadlock on m_connectionsMutex
     // because of the automatic disconnection from this signal
     // With this vector, we ensure the potential destruction occurs outside the scope of the mutex
-    std::vector<SPTR(slot_run_type)> keep_slots_alive;
+    std::vector<sight::sptr<slot_run_type> > keep_slots_alive;
     {
         core::mt::read_lock lock(m_connections_mutex);
         typename slot_container_t::const_iterator iter;

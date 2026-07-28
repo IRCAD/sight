@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,7 +52,7 @@ public:
     SIGHT_IO_API ~matrix4_writer() override = default;
 
     /// Writes the file using the standard iostream API.
-    SIGHT_IO_API void write(SPTR(sight::core::progress::observer) _progress) override;
+    SIGHT_IO_API void write(sight::sptr<sight::core::progress::observer> _progress) override;
 
     /// Defines the extensions supported by this writer. Here: ".trf"
     SIGHT_IO_API std::string extension() const override;

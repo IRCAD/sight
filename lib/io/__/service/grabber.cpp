@@ -136,8 +136,8 @@ void grabber::clear_timeline(data::frame_tl& _tl)
         // Clear the timeline: send a black frame
         const core::clock::type timestamp = _tl.get_newer_timestamp() + 1;
 
-        SPTR(data::frame_tl::buffer_t) buffer = _tl.create_buffer(timestamp);
-        auto* dest_buffer = reinterpret_cast<std::uint8_t*>(buffer->add_element(0));
+        sight::sptr<data::frame_tl::buffer_t> buffer = _tl.create_buffer(timestamp);
+        auto* dest_buffer                            = reinterpret_cast<std::uint8_t*>(buffer->add_element(0));
 
         std::memset(dest_buffer, 0, _tl.get_width() * _tl.get_height() * _tl.num_components() * _tl.type().size());
 

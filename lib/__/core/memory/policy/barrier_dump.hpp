@@ -27,9 +27,6 @@
 #include "core/memory/buffer_info.hpp"
 #include "core/memory/buffer_manager.hpp"
 #include "core/memory/policy/base.hpp"
-#include "core/memory/policy/factory/new.hpp"
-
-#include <core/base.hpp>
 
 namespace sight::core::memory::policy
 {

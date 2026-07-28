@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,8 +28,6 @@
 
 #include <io/__/writer/generic_object_writer.hpp>
 
-#include <filesystem>
-
 namespace sight::data
 {
 
@@ -53,7 +51,7 @@ public:
     SIGHT_DECLARE_CLASS(model_series_obj_writer, io::writer::generic_object_writer<data::model_series>)
 
     /// Writing operator.
-    SIGHT_IO_VTK_API void write(SPTR(sight::core::progress::observer) _progress) override;
+    SIGHT_IO_VTK_API void write(sight::sptr<sight::core::progress::observer> _progress) override;
 
     /**
      * @return ".obj"

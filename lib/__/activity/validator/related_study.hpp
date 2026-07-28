@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -46,7 +46,7 @@ public:
      */
     SIGHT_ACTIVITY_API validator::return_t validate(
         const activity::extension::activity_info& _activity_info,
-        const CSPTR(data::vector)& _current_selection
+        const sight::csptr<data::vector>& _current_selection
     ) const override;
 };
 

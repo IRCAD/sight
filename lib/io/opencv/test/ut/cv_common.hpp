@@ -26,8 +26,7 @@
 
 #include <core/spy_log.hpp>
 
-#include <opencv2/core.hpp>
-
+#include <opencv2/core/mat.hpp>
 #include <random>
 
 namespace sight::io::opencv::ut
@@ -38,6 +37,7 @@ namespace sight::io::opencv::ut
 template<typename T>
 struct getCvFormat;
 
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define DECLARE_CV_FORMAT(_TYPE, _CVTYPE1, _CVTYPE2, _CVTYPE3, _CVTYPE4) \
         template<> \
         struct getCvFormat<_TYPE> \

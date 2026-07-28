@@ -28,7 +28,6 @@
 #include "core/memory/buffer_manager.hpp"
 
 #include <filesystem>
-#include <istream>
 #include <type_traits>
 
 namespace sight::core::memory
@@ -118,7 +117,7 @@ public:
          *
          * @param _bo buffer_object to lock
          */
-        lock_base(const SPTR(T)& _bo) :
+        lock_base(const sight::sptr<T>& _bo) :
             m_count(_bo->m_count.lock()),
             m_buffer_object(_bo)
         {
@@ -158,7 +157,7 @@ public:
         // Using a shared_ptr allows to keep the buffer alive until the lock is destroyed,
         // otherwise we would raise the lock count assert in the destruction of the buffer,
         // in BufferManager::::unregisterBufferImpl()
-        SPTR(T) m_buffer_object;
+        sight::sptr<T> m_buffer_object {};
     };
 
     /**
@@ -316,7 +315,7 @@ public:
      * @param _policy Buffer allocation policy
      */
     SIGHT_CORE_API void set_istream_factory(
-        const SPTR(core::memory::stream::in::factory)& _factory,
+        const sight::sptr<core::memory::stream::in::factory>& _factory,
         size_t _size,
         const std::filesystem::path& _source_file                   = "",
         core::memory::file_format_type _format                      = core::memory::other,

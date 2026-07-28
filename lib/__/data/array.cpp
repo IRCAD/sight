@@ -25,6 +25,8 @@
 #include "data/exception.hpp"
 #include "data/registry/macros.hpp"
 
+#include <core/compare.hpp>
+
 #include <algorithm>
 #include <cstdlib>
 #include <functional>

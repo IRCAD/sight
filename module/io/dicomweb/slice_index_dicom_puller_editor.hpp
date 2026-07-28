@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2025 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -116,17 +116,17 @@ private:
     std::string m_image_key;
 
     /// Axial slice index
-    SPTR(data::integer) m_axial_index;
+    sight::sptr<data::integer> m_axial_index;
     /// Frontal slice index
-    SPTR(data::integer) m_frontal_index;
+    sight::sptr<data::integer> m_frontal_index;
     /// Sagittal slice index
-    SPTR(data::integer) m_sagittal_index;
+    sight::sptr<data::integer> m_sagittal_index;
 
     /// Series enquirer
     sight::io::http::client_qt m_client_qt;
 
     /// Timer used to generate the new slice selection delay
-    SPTR(core::thread::timer) m_delay_timer;
+    sight::sptr<core::thread::timer> m_delay_timer;
 
     /// Delay
     unsigned int m_delay {500};

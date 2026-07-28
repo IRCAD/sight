@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include <data/mesh.hpp>
-
 #include <io/__/service/reader.hpp>
 
 #include <filesystem>
@@ -45,7 +43,8 @@ namespace sight::module::io::vtk
  * Accepted extensions: *.vtk *.vtp *.vti *.mhd *.vtu *.obj *.ply *.stl
  *
  * @section Signals Signals
- * - \b monitor_created(SPTR(core::progress::monitor)): emitted to display a progress bar while the image is loading,
+ * - \b monitor_created(sight::sptr<core::progress::monitor>): emitted to display a progress bar while the image is
+ * loading,
  * it should be connected to a progress bar
  *
  * @section XML XML Configuration
@@ -137,7 +136,7 @@ private:
      */
     void load_series_set(
         const std::vector<std::filesystem::path>& _vtk_files,
-        const SPTR(data::series_set)& _series_set
+        const sight::sptr<data::series_set>& _series_set
     );
 };
 

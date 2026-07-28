@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,11 +24,11 @@
 
 #include <sight/activity/config.hpp>
 
-#include "activity/extension/activity.hpp"
-#include "activity/validator/factory/new.hpp"
-#include "activity/validator/registry/detail.hpp"
+#include <activity/extension/activity.hpp>
+#include <activity/validator/factory/new.hpp>
+#include <activity/validator/registry/detail.hpp>
 
-#include <core/base.hpp>
+#include <core/base_object.hpp>
 
 namespace sight::data
 {
@@ -86,7 +86,7 @@ public:
      */
     SIGHT_ACTIVITY_API virtual return_t validate(
         const activity::extension::activity_info& _activity_info,
-        const CSPTR(data::vector)& _current_selection
+        const sight::csptr<data::vector>& _current_selection
     ) const = 0;
 };
 

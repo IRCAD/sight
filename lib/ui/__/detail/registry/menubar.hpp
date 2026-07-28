@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include <sight/ui/__/config.hpp>
 
 #include "ui/__/container/menu.hpp"
 #include "ui/__/container/menubar.hpp"
@@ -107,7 +105,7 @@ public:
      */
     virtual void unmanage();
 
-protected:
+private:
 
     using sid_menu_map_t = std::map<std::string, std::pair<unsigned int, bool> >;
 

@@ -21,9 +21,6 @@
 
 #pragma once
 
-#include <core/com/signal.hpp>
-#include <core/progress/monitor.hpp>
-
 #include <io/__/service/reader.hpp>
 
 namespace sight::module::io::zip
@@ -36,7 +33,8 @@ namespace sight::module::io::zip
  * so, a popup will ask the user for the password.
  *
  * @section Signals Signals
- * - \b monitor_created(SPTR(core::progress::monitor)): emitted to display a progress bar while the image is written,
+ * - \b monitor_created(sight::sptr<core::progress::monitor>): emitted to display a progress bar while the image is
+ * written,
  * it should be connected to a progress bar
  *
  * @section XML XML Configuration

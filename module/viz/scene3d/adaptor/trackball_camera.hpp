@@ -24,11 +24,9 @@
 
 #include <core/thread/timer.hpp>
 
+#include <data/matrix4.hpp>
+
 #include <viz/scene3d/adaptor.hpp>
-
-#include <OGRE/Ogre.h>
-
-#include <memory>
 
 namespace sight::module::viz::scene3d::adaptor
 {

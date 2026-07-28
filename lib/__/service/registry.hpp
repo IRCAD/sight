@@ -31,7 +31,7 @@
 namespace sight::service
 {
 
-using service_vector_t = std::set<SPTR(service::base)>;
+using service_vector_t = std::set<sight::sptr<service::base> >;
 
 /// Returns a list of all registered services
 SIGHT_SERVICE_API std::string get_registry_information();
@@ -44,33 +44,33 @@ SIGHT_SERVICE_API service_vector_t get_services(const std::string& _service_type
 
 /// Returns a container with all registered services of a given template type
 template<class SERVICE>
-std::set<SPTR(SERVICE)> get_services();
+std::set<sight::sptr<SERVICE> > get_services();
 
 /**
  * @brief Register the service alone
  *
  * @param _service Service to add to the OSR
  */
-SIGHT_SERVICE_API void register_service(SPTR(service::base) _service);
+SIGHT_SERVICE_API void register_service(sight::sptr<service::base> _service);
 
 /**
  * @brief Remove the service (service) from the m_container
  *
  * @param _service Service whose key should be removed
  */
-SIGHT_SERVICE_API void unregister_service(SPTR(service::base) _service);
+SIGHT_SERVICE_API void unregister_service(sight::sptr<service::base> _service);
 
 //------------------------------------------------------------------------------
 
 template<class SERVICE>
-std::set<SPTR(SERVICE)> get_services()
+std::set<sight::sptr<SERVICE> > get_services()
 {
     const auto& all_services = get_services();
-    std::set<SPTR(SERVICE)> services;
+    std::set<sight::sptr<SERVICE> > services;
 
     for(const auto& srv : all_services)
     {
-        SPTR(SERVICE) service = std::dynamic_pointer_cast<SERVICE>(srv);
+        sight::sptr<SERVICE> service = std::dynamic_pointer_cast<SERVICE>(srv);
         if(service)
         {
             services.insert(service);

@@ -23,6 +23,7 @@
 #pragma once
 
 #include <data/helper/medical_image.hpp>
+#include <data/tools/picking_info.hpp>
 
 #include <viz/scene3d/adaptor.hpp>
 

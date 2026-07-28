@@ -109,11 +109,11 @@ protected:
 
 private:
 
-    void forward_monitor(SPTR(core::progress::monitor) _monitor);
+    void forward_monitor(sight::sptr<core::progress::monitor> _monitor);
 
     std::string m_io_selector_srv_config;
 
-    SPTR(slots::forward_monitor_t) m_slot_forward_monitor;
+    sight::sptr<slots::forward_monitor_t> m_slot_forward_monitor;
     static constexpr std::string_view SERIES_SET = "seriesSet";
 
     data::ptr<data::series_set, data::access::inout> m_series_set {this, SERIES_SET};

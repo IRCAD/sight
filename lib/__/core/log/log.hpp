@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,6 @@
 
 #include <sight/core/config.hpp>
 
-#include <core/base_object.hpp>
-
 #include <string>
 
 namespace sight::core::log
@@ -39,7 +37,7 @@ class SIGHT_CORE_CLASS_API log final
 {
 public:
 
-    enum level_t
+    enum level_t : std::uint8_t
     {
         information = 0,
         warning     = 5,
@@ -59,7 +57,7 @@ public:
     }
 
     /// Get Log level
-    level_t get_level() const
+    [[nodiscard]] level_t get_level() const
     {
         return m_level;
     }
@@ -71,12 +69,12 @@ public:
     }
 
     // Get Log message
-    std::string get_message() const
+    [[nodiscard]] std::string get_message() const
     {
         return m_message;
     }
 
-protected:
+private:
 
     /// Log level
     level_t m_level;

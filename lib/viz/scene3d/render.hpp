@@ -25,17 +25,13 @@
 #include <sight/viz/scene3d/config.hpp>
 
 #include "viz/scene3d/layer.hpp"
-#include "viz/scene3d/utils.hpp"
 #include "viz/scene3d/window_interactor.hpp"
 
 #include <data/image.hpp>
 
 #include <viz/__/render.hpp>
 
-#include <OGRE/OgreAxisAlignedBox.h>
-
 #include <map>
-#include <tuple>
 
 namespace sight::viz::scene3d
 {
@@ -215,13 +211,13 @@ public:
     SIGHT_VIZ_SCENE3D_API void reset_cameras();
 
     template<class T>
-    std::vector<SPTR(T)> get_adaptors() const;
+    std::vector<sight::sptr<T> > get_adaptors() const;
 
     /// Registers the adaptor for update
-    void register_adaptor(const SPTR(viz::scene3d::adaptor)& _adaptor);
+    void register_adaptor(const sight::sptr<viz::scene3d::adaptor>& _adaptor);
 
     /// Unregisters the adaptor
-    void unregister_adaptor(const SPTR(viz::scene3d::adaptor)& _adaptor);
+    void unregister_adaptor(const sight::sptr<viz::scene3d::adaptor>& _adaptor);
 
     /// Sets the rendering mode
     void set_render_mode(bool _manual) const;
@@ -296,7 +292,7 @@ private:
 
     /// List of adaptors, each adaptor registers itself at start().
     /// The order of declaration is respected because it is required for the update
-    std::vector<SPTR(viz::scene3d::adaptor)> m_adaptors;
+    std::vector<sight::sptr<viz::scene3d::adaptor> > m_adaptors;
 
     /// Index of the adaptor according to its uid
     std::map<std::string, std::size_t> m_adaptors_index;
@@ -308,14 +304,14 @@ private:
 //-----------------------------------------------------------------------------
 
 template<class T>
-std::vector<SPTR(T)> render::get_adaptors() const
+std::vector<sight::sptr<T> > render::get_adaptors() const
 {
     auto services_vector = sight::service::get_services("sight::viz::scene3d::adaptor");
-    std::vector<SPTR(T)> result_vector;
+    std::vector<sight::sptr<T> > result_vector;
 
     for(const auto& scene_adaptor : services_vector)
     {
-        SPTR(T) adaptor = std::dynamic_pointer_cast<T>(scene_adaptor);
+        sight::sptr<T> adaptor = std::dynamic_pointer_cast<T>(scene_adaptor);
         if(adaptor)
         {
             if(adaptor->render_service() == this->get_const_sptr())

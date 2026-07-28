@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,10 +21,12 @@
 
 #include "event_loop.hpp"
 
-#include <core/exception.hpp>
+#include <SDL.h>
+#include <SDL_events.h>
+#include <SDL_timer.h>
+#include <algorithm>
 #include <core/exceptionmacros.hpp>
 #include <core/thread/worker.hpp>
-#include <core/thread/worker.hxx>
 
 // cspell:ignore disrumpere interactor interactors jaxis jball jhat jbutton jdevice xrel yrel
 // cspell:ignore JOYBUTTONDOWN JOYBUTTONUP JOYAXISMOTION JOYHATMOTION JOYBALLMOTION JOYDEVICEADDED JOYDEVICEREMOVED
@@ -618,35 +620,35 @@ void event_loop::loop()
         for(auto& [axis_id, auto_repeat] : instance->m_auto_repeat_directions)
         {
             const auto delay =
-                [] (std::uint32_t _count) constexpr->std::uint32_t
-            {
-                if(_count < 2)
+                [](std::uint32_t _count) constexpr -> std::uint32_t
                 {
-                    return 500;
-                }
+                    if(_count < 2)
+                    {
+                        return 500;
+                    }
 
-                if(_count < 4)
-                {
-                    return 200;
-                }
+                    if(_count < 4)
+                    {
+                        return 200;
+                    }
 
-                if(_count < 8)
-                {
-                    return 100;
-                }
+                    if(_count < 8)
+                    {
+                        return 100;
+                    }
 
-                if(_count < 16)
-                {
-                    return 50;
-                }
+                    if(_count < 16)
+                    {
+                        return 50;
+                    }
 
-                if(_count < 32)
-                {
-                    return 25;
-                }
+                    if(_count < 32)
+                    {
+                        return 25;
+                    }
 
-                return 0;
-            };
+                    return 0;
+                };
 
             // If skip if auto repeat is not set or it is not the time to repeat
             if(!auto_repeat
@@ -724,9 +726,9 @@ SDL_JoystickID event_loop::add_joystick(int _index)
     std::string joystick_guid(34, '\0');
 
     if(const auto& guid = SDL_JoystickGetGUID(joystick);
-       std::any_of(std::begin(guid.data), std::end(guid.data), [](auto _i){return _i != 0;}))
+       std::ranges::any_of(guid.data, [](auto _i){return _i != 0;}))
     {
-        SDL_JoystickGetGUIDString(guid, joystick_guid.data(), int(joystick_guid.size()));
+        SDL_JoystickGetGUIDString(guid, joystick_guid.data(), static_cast<int>(joystick_guid.size()));
 
         // Resize the string to remove the trailing null characters
         joystick_guid.resize(std::strlen(joystick_guid.data()));
@@ -752,7 +754,7 @@ SDL_JoystickID event_loop::add_joystick(int _index)
 
     // Compute the initial axis state, so we can distinguish between trigger and axis
     std::vector<std::optional<std::int16_t> > initial_axis_state;
-    initial_axis_state.reserve(std::size_t(joystick_axes));
+    initial_axis_state.reserve(static_cast<std::size_t>(joystick_axes));
 
     for(std::int32_t i = 0 ; i < joystick_axes ; ++i)
     {

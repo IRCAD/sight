@@ -25,7 +25,7 @@
 
 #include "data/generic.hpp"
 
-#include <core/compound_types.hpp>
+#include <boost/lexical_cast.hpp>
 
 namespace sight::data
 {

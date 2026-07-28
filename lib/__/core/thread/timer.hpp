@@ -25,6 +25,7 @@
 #include <sight/core/config.hpp>
 
 #include "core/thread/worker.hpp"
+#include <core/base_object.hpp>
 
 #include <core/mt/types.hpp>
 

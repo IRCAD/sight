@@ -40,15 +40,12 @@
 namespace sight::core::memory
 {
 
-namespace
-{
+//------------------------------------------------------------------------------
 
-SPTR(void) get_lock(const buffer_manager::sptr& _manager, buffer_manager::const_buffer_ptr_t _buffer_ptr)
+static sight::sptr<void> get_lock(const buffer_manager::sptr& _manager, buffer_manager::const_buffer_ptr_t _buffer_ptr)
 {
     return _manager->lock_buffer(_buffer_ptr).get();
 }
-
-} // namespace
 
 //-----------------------------------------------------------------------------
 
@@ -369,18 +366,24 @@ struct auto_unlock
 
 //------------------------------------------------------------------------------
 
-std::shared_future<SPTR(void)> buffer_manager::lock_buffer(buffer_manager::const_buffer_ptr_t _buffer_ptr)
+std::shared_future<sight::sptr<void> > buffer_manager::lock_buffer(buffer_manager::const_buffer_ptr_t _buffer_ptr)
 {
-    return m_worker->post_task<SPTR(void)>([this, _buffer_ptr](auto&& ...){return lock_buffer_impl(_buffer_ptr);});
+    return m_worker->post_task<sight::sptr<void> >(
+        [this, _buffer_ptr](auto&& ...)
+        {
+            return lock_buffer_impl(_buffer_ptr);
+        });
 }
 
-SPTR(void) buffer_manager::lock_buffer_impl(buffer_manager::const_buffer_ptr_t _buffer_ptr)
+//------------------------------------------------------------------------------
+
+sight::sptr<void> buffer_manager::lock_buffer_impl(buffer_manager::const_buffer_ptr_t _buffer_ptr)
 {
     buffer_info& info = m_buffer_infos[_buffer_ptr];
 
     m_dump_policy->lock_request(info, _buffer_ptr);
 
-    SPTR(void) counter = info.lock_counter.lock();
+    sight::sptr<void> counter = info.lock_counter.lock();
     if(!counter)
     {
         counter           = std::make_shared<auto_unlock>(this->get_sptr(), _buffer_ptr, info);
@@ -501,9 +504,12 @@ bool buffer_manager::restore_buffer(
         size_t size     = std::min(_alloc_size, _info.size);
         bool not_failed = false;
         {
-            SPTR(std::istream) stream = (*_info.istream_factory)();
-            std::istream& is = *stream;
-            const auto read  = static_cast<size_t>(is.read(char_buf, static_cast<std::streamsize>(size)).gcount());
+            sight::sptr<std::istream> stream = (*_info.istream_factory)();
+            std::istream& is                 = *stream;
+            const auto read                  = static_cast<size_t>(is.read(
+                                                                       char_buf,
+                                                                       static_cast<std::streamsize>(size)
+            ).gcount());
 
             SIGHT_THROW_IF(" Bad file size, expected: " << size << ", was: " << read, size - read != 0);
             not_failed = !is.fail();
@@ -701,7 +707,7 @@ buffer_manager::buffer_stats buffer_manager::compute_buffer_stats(const buffer_i
 
 std::shared_future<void> buffer_manager::set_istream_factory(
     buffer_ptr_t _buffer_ptr,
-    const SPTR(core::memory::stream::in::factory)& _factory,
+    const sight::sptr<core::memory::stream::in::factory>& _factory,
     size_t _size,
     core::memory::file_holder _fs_file,
     core::memory::file_format_type _format,
@@ -719,7 +725,7 @@ std::shared_future<void> buffer_manager::set_istream_factory(
 
 void buffer_manager::set_istream_factory_impl(
     buffer_ptr_t _buffer_ptr,
-    const SPTR(core::memory::stream::in::factory)& _factory,
+    const sight::sptr<core::memory::stream::in::factory>& _factory,
     size_t _size,
     core::memory::file_holder _fs_file,
     core::memory::file_format_type _format,

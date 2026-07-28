@@ -68,8 +68,8 @@ public:
 
     static bool load_image(
         const std::filesystem::path& _img_file,
-        const SPTR(data::image)& _img,
-        const SPTR(core::progress::observer)& _read_observer
+        const sight::sptr<data::image>& _img,
+        const sight::sptr<core::progress::observer>& _read_observer
     );
 
     /// Return managed file type, here FILE

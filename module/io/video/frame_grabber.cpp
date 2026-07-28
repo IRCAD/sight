@@ -641,8 +641,8 @@ void frame_grabber::grab_video()
             this->async_emit(signals::POSITION_MODIFIED, static_cast<std::int64_t>(ms));
 
             // Get the buffer of the timeline to fill
-            SPTR(data::frame_tl::buffer_t) buffer_out = frame_tl->create_buffer(timestamp);
-            std::uint8_t* frame_buff_out = buffer_out->add_element(0);
+            sight::sptr<data::frame_tl::buffer_t> buffer_out = frame_tl->create_buffer(timestamp);
+            std::uint8_t* frame_buff_out                     = buffer_out->add_element(0);
 
             // Create an OpenCV mat that aliases the buffer created from the output timeline.
             cv::Mat img_out(image.size(), image.type(), reinterpret_cast<void*>(frame_buff_out), cv::Mat::AUTO_STEP);
@@ -722,8 +722,8 @@ void frame_grabber::grab_image()
             this->async_emit(signals::POSITION_MODIFIED, static_cast<std::int64_t>(m_image_count) * 30);
 
             // Get the buffer of the timeline to fill
-            SPTR(data::frame_tl::buffer_t) buffer_out = frame_tl->create_buffer(timestamp);
-            std::uint8_t* frame_buff_out = buffer_out->add_element(0);
+            sight::sptr<data::frame_tl::buffer_t> buffer_out = frame_tl->create_buffer(timestamp);
+            std::uint8_t* frame_buff_out                     = buffer_out->add_element(0);
 
             // Create an openCV mat that aliases the buffer created from the output timeline
             cv::Mat img_out(image.size(), image.type(), reinterpret_cast<void*>(frame_buff_out), cv::Mat::AUTO_STEP);

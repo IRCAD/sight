@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,6 @@
 #include "ui/__/menubar.hpp"
 
 #include <core/thread/worker.hpp>
-#include <core/thread/worker.hxx>
 
 namespace sight::ui
 {

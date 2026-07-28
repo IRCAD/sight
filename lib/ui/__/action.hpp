@@ -194,7 +194,7 @@ protected:
 
 private:
 
-    SPTR(ui::detail::registry::action) m_registry;
+    sight::sptr<ui::detail::registry::action> m_registry;
 
     sight::data::property<sight::data::boolean> m_checked {this, "checked", false};
     sight::data::property<sight::data::boolean> m_enabled {this, "enabled", true};

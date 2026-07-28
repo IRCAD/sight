@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,15 +25,17 @@
 
 #include <core/time_stamp.hpp>
 
-#include <boost/asio.hpp>
 #include <boost/asio/deadline_timer.hpp>
 #include <boost/asio/io_context.hpp>
 #include <boost/asio/placeholders.hpp>
-#include <boost/bind.hpp>
+#include <boost/asio/post.hpp>
 
 #include <thread>
 
 namespace sight::core::thread
+{
+
+namespace
 {
 
 /**
@@ -44,7 +46,6 @@ class worker_asio final : public core::thread::worker
 public:
 
     worker_asio();
-
     ~worker_asio() final;
 
     void stop() final;
@@ -55,7 +56,7 @@ public:
 
     void set_thread_name(const std::string& _thread_name) final;
 
-    SPTR(core::thread::timer) create_timer() final;
+    sight::sptr<core::thread::timer> create_timer() final;
 
     void process_tasks() final;
 
@@ -137,10 +138,15 @@ public:
         return m_running;
     }
 
+    void rearm_no_lock(time_duration_t _duration);
+    std::pair<bool, time_duration_t> get_timer_state() const;
+    void rearm_if_running(time_duration_t _duration);
+    void execute_function();
+    void mark_stopped();
+
 protected:
 
     void cancel_no_lock();
-    void rearm_no_lock(time_duration_t _duration);
 
     /// Copy constructor forbidden.
     timer_asio(const timer_asio&);
@@ -149,8 +155,6 @@ protected:
     timer_asio& operator=(const timer_asio&);
 
 private:
-
-    friend struct timer_callback;
 
     /// Timer object.
     boost::asio::deadline_timer m_timer;
@@ -164,6 +168,36 @@ private:
     /// Timer's state.
     bool m_running {false};
 };
+
+//------------------------------------------------------------------------------
+
+struct timer_callback
+{
+    //------------------------------------------------------------------------------
+
+    static void call(const boost::system::error_code& _error, timer_asio::sptr _timer)
+    {
+        if(!_error)
+        {
+            timer_asio::time_duration_t duration;
+            bool one_shot = false;
+            std::tie(one_shot, duration) = _timer->get_timer_state();
+
+            if(!one_shot)
+            {
+                _timer->rearm_if_running(duration);
+                _timer->execute_function();
+            }
+            else
+            {
+                _timer->execute_function();
+                _timer->mark_stopped();
+            }
+        }
+    }
+};
+
+} // namespace
 
 //------------------------------------------------------------------------------
 
@@ -211,7 +245,7 @@ void worker_asio::stop()
 
 //------------------------------------------------------------------------------
 
-SPTR(core::thread::timer) worker_asio::create_timer()
+sight::sptr<core::thread::timer> worker_asio::create_timer()
 {
     return std::make_shared<timer_asio>(m_context->m_io_context);
 }
@@ -258,7 +292,7 @@ void worker_asio::process_tasks(period_t _maxtime)
 }
 
 // ---------- Worker ----------
-SPTR(worker) worker::make()
+sight::sptr<worker> worker::make()
 {
     return std::make_shared<worker_asio>();
 }
@@ -304,45 +338,6 @@ void timer_asio::stop()
 
 //------------------------------------------------------------------------------
 
-struct timer_callback
-{
-    //------------------------------------------------------------------------------
-
-    static void call(const boost::system::error_code& _error, timer_asio::sptr _timer)
-    {
-        if(!_error)
-        {
-            timer_asio::time_duration_t duration;
-            bool one_shot = false;
-            {
-                core::mt::scoped_lock lock(_timer->m_mutex);
-                one_shot = _timer->m_one_shot;
-                duration = _timer->m_duration;
-            }
-
-            if(!one_shot)
-            {
-                {
-                    core::mt::scoped_lock lock(_timer->m_mutex);
-                    if(_timer->m_running)
-                    {
-                        _timer->rearm_no_lock(duration);
-                    }
-                }
-                _timer->m_function();
-            }
-            else
-            {
-                _timer->m_function();
-                core::mt::scoped_lock lock(_timer->m_mutex);
-                _timer->m_running = false;
-            }
-        }
-    }
-};
-
-//------------------------------------------------------------------------------
-
 void timer_asio::rearm_no_lock(time_duration_t _duration)
 {
     this->cancel_no_lock();
@@ -355,9 +350,52 @@ void timer_asio::rearm_no_lock(time_duration_t _duration)
 
 //------------------------------------------------------------------------------
 
+std::pair<bool, timer_asio::time_duration_t> timer_asio::get_timer_state() const
+{
+    core::mt::scoped_lock lock(m_mutex);
+    return std::make_pair(m_one_shot, m_duration);
+}
+
+//------------------------------------------------------------------------------
+
+void timer_asio::rearm_if_running(time_duration_t _duration)
+{
+    core::mt::scoped_lock lock(m_mutex);
+    if(m_running)
+    {
+        this->rearm_no_lock(_duration);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void timer_asio::execute_function()
+{
+    function_type function;
+    {
+        core::mt::scoped_lock lock(m_mutex);
+        function = m_function;
+    }
+
+    if(function)
+    {
+        function();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void timer_asio::mark_stopped()
+{
+    core::mt::scoped_lock lock(m_mutex);
+    m_running = false;
+}
+
+//------------------------------------------------------------------------------
+
 void timer_asio::cancel_no_lock()
 {
     m_timer.cancel();
 }
 
-} //namespace sight::core::thread
+} // namespace sight::core::thread

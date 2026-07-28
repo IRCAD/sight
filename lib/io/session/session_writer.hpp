@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2025 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -31,8 +31,6 @@
 
 #include <io/__/writer/object_writer.hpp>
 #include <io/zip/archive_writer.hpp>
-
-#include <boost/property_tree/ptree.hpp>
 
 namespace sight::io::session
 {
@@ -77,7 +75,7 @@ public:
     SIGHT_IO_SESSION_API session_writer();
 
     /// Write the file
-    SIGHT_IO_SESSION_API void write(SPTR(sight::core::progress::observer) _progress) override;
+    SIGHT_IO_SESSION_API void write(sight::sptr<sight::core::progress::observer> _progress) override;
 
     /// Defines extension supported by this writer ".zip"
     SIGHT_IO_SESSION_API std::string extension() const override;

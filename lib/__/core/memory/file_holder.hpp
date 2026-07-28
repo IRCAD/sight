@@ -72,7 +72,7 @@ public:
 private:
 
     std::filesystem::path m_path;
-    SPTR(file_auto_delete) m_auto_delete;
+    sight::sptr<file_auto_delete> m_auto_delete {};
 };
 
 } // namespace sight::core::memory

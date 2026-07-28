@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,12 +23,10 @@
 
 #include "../interactor.hpp"
 
+#include <SDL_joystick.h>
 #include <core/thread/timer.hpp>
 
-#include <SDL2/SDL.h>
-
 #include <map>
-#include <ranges>
 
 namespace sight::io::joystick::detail
 {
@@ -36,6 +34,12 @@ namespace sight::io::joystick::detail
 class event_loop
 {
 public:
+
+    /// Non-copyable
+    /// @{
+    event_loop(const event_loop&)            = delete;
+    event_loop& operator=(const event_loop&) = delete;
+    /// @}
 
     /**
      * @brief Return the singleton instance of the event loop, returns nullptr if singleton is not created
@@ -56,7 +60,7 @@ public:
      *
      * @param _interactor : The interactor to add
      */
-    void add_interactor(interactor* const _interactor);
+    void add_interactor(interactor* _interactor);
 
     /**
      * @brief Remove an interactor to the event loop
@@ -64,7 +68,7 @@ public:
      * @param _interactor : The interactor to remove
      * @param _finalize : If true, we will assert the interactor has already be removed from the event loop
      */
-    void remove_interactor(const interactor* const _interactor, bool _finalize = false);
+    void remove_interactor(const interactor* _interactor, bool _finalize = false);
 
     /**
      * @brief
@@ -93,7 +97,7 @@ public:
 protected:
 
     event_loop();
-    virtual ~event_loop();
+    ~event_loop();
 
 private:
 
@@ -112,12 +116,6 @@ private:
         /// Axis alias mapping and the upward direction
         const axis_aliases_t axis_aliases;
     };
-
-    /// Non-copyable
-    /// @{
-    event_loop(const event_loop&)            = delete;
-    event_loop& operator=(const event_loop&) = delete;
-    /// @}
 
     /**
      * @brief This function is called by the timer to poll the SDL events and forward them to the interactors

@@ -24,9 +24,6 @@
 
 #include "data/factory/new.hpp"
 #include "data/generic_tl.hpp"
-#include "data/generic_tl.hxx"
-#include "data/timeline/generic_object.hpp"
-#include "data/timeline/generic_object.hxx"
 
 #include <core/type.hpp>
 

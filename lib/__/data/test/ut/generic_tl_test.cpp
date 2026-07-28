@@ -21,10 +21,8 @@
  ***********************************************************************/
 
 #include <data/generic_tl.hpp>
-#include <data/generic_tl.hxx> // NOLINT(misc-include-cleaner)
 #include <data/registry/macros.hpp>
 #include <data/timeline/generic_object.hpp>
-#include <data/timeline/generic_object.hxx> // NOLINT(misc-include-cleaner)
 
 #include <doctest/doctest.h>
 
@@ -133,21 +131,22 @@ TEST_SUITE("sight::data::generic_tl")
         ////////////////////////////////////////////////////////////////////////////
         /// Check first data with all elements set
         {
-            CSPTR(sight::data::timeline::object) data_pushed1 = timeline->get_object(time1);
+            sight::csptr<sight::data::timeline::object> data_pushed1 = timeline->get_object(time1);
             CHECK(data1 == data_pushed1);
             CHECK(data_pushed1->timestamp() == time1);
 
-            CSPTR(sight::data::timeline::object) data_pushed2 = timeline->get_object(time2);
+            sight::csptr<sight::data::timeline::object> data_pushed2 = timeline->get_object(time2);
             CHECK(data2 == data_pushed2);
             CHECK(data_pushed2->timestamp() == time2);
 
-            CSPTR(sight::data::timeline::object) data_pushed3 = timeline->get_object(time3);
+            sight::csptr<sight::data::timeline::object> data_pushed3 = timeline->get_object(time3);
             CHECK(data3 == data_pushed3);
             CHECK(data_pushed3->timestamp() == time3);
 
-            CSPTR(sight::data::timeline::object) data_pushed1_bis = timeline->get_closest_object(time1 + 1.5);
+            sight::csptr<sight::data::timeline::object> data_pushed1_bis = timeline->get_closest_object(time1 + 1.5);
 
-            CSPTR(float4_tl::buffer_t) obj = std::dynamic_pointer_cast<const float4_tl::buffer_t>(data_pushed1_bis);
+            sight::csptr<float4_tl::buffer_t> obj =
+                std::dynamic_pointer_cast<const float4_tl::buffer_t>(data_pushed1_bis);
             CHECK(obj);
             CHECK_EQ(obj, timeline->get_closest_buffer(time1 + 1.5));
 
@@ -181,13 +180,14 @@ TEST_SUITE("sight::data::generic_tl")
         ////////////////////////////////////////////////////////////////////////////
         /// Check second data with one missing element
         {
-            CSPTR(sight::data::timeline::object) data_pushed3_bis = timeline->get_newer_object();
+            sight::csptr<sight::data::timeline::object> data_pushed3_bis = timeline->get_newer_object();
             CHECK(data3 == data_pushed3_bis);
 
             sight::core::clock::type time3_pushed = timeline->get_newer_timestamp();
             CHECK_EQ(time3, doctest::Approx(time3_pushed).epsilon(0.00001));
 
-            CSPTR(float4_tl::buffer_t) obj = std::dynamic_pointer_cast<const float4_tl::buffer_t>(data_pushed3_bis);
+            sight::csptr<float4_tl::buffer_t> obj =
+                std::dynamic_pointer_cast<const float4_tl::buffer_t>(data_pushed3_bis);
             CHECK(obj);
 
             CHECK_EQ(2U, obj->get_present_element_num());
@@ -220,13 +220,13 @@ TEST_SUITE("sight::data::generic_tl")
         ////////////////////////////////////////////////////////////////////////////
         /// Check pop method
         {
-            CSPTR(sight::data::timeline::object) data_pushed2_bis = timeline->get_closest_object(time2);
+            sight::csptr<sight::data::timeline::object> data_pushed2_bis = timeline->get_closest_object(time2);
             CHECK(data2 == data_pushed2_bis);
 
-            CSPTR(sight::data::timeline::object) data_popped2 = timeline->pop_object(time2);
+            sight::csptr<sight::data::timeline::object> data_popped2 = timeline->pop_object(time2);
             CHECK(data2 == data_popped2);
 
-            CSPTR(sight::data::timeline::object) data_pushed3_bis = timeline->get_closest_object(time2);
+            sight::csptr<sight::data::timeline::object> data_pushed3_bis = timeline->get_closest_object(time2);
             CHECK(data3 == data_pushed3_bis);
 
             timeline->push_object(data2);
@@ -237,7 +237,7 @@ TEST_SUITE("sight::data::generic_tl")
             data_pushed3_bis = timeline->get_closest_object(time3);
             CHECK(data3 == data_pushed3_bis);
 
-            CSPTR(sight::data::timeline::object) data_popped3 = timeline->pop_object(time3);
+            sight::csptr<sight::data::timeline::object> data_popped3 = timeline->pop_object(time3);
             CHECK(data3 == data_popped3);
 
             data_pushed2_bis = timeline->get_closest_object(time3);
@@ -246,12 +246,12 @@ TEST_SUITE("sight::data::generic_tl")
             data_pushed2_bis = timeline->get_newer_object();
             CHECK(data2 == data_pushed2_bis);
 
-            CSPTR(sight::data::timeline::object) data_pushed1_bis = timeline->get_closest_object(time1);
+            sight::csptr<sight::data::timeline::object> data_pushed1_bis = timeline->get_closest_object(time1);
             CHECK(data1 == data_pushed1_bis);
         }
 
         timeline->clear_timeline();
-        CSPTR(sight::data::timeline::object) null_obj = timeline->get_newer_object();
+        sight::csptr<sight::data::timeline::object> null_obj = timeline->get_newer_object();
         CHECK(null_obj == nullptr);
     }
 
@@ -406,10 +406,10 @@ TEST_SUITE("sight::data::generic_tl")
         deep_timeline->deep_copy(timeline);
         timeline.reset();
 
-        CSPTR(sight::data::timeline::object) deep_data_pushed1 = deep_timeline->get_object(time1);
+        sight::csptr<sight::data::timeline::object> deep_data_pushed1 = deep_timeline->get_object(time1);
         CHECK(deep_data_pushed1);
         CHECK(data1 != deep_data_pushed1);
-        CSPTR(float3_tl::buffer_t) obj1 =
+        sight::csptr<float3_tl::buffer_t> obj1 =
             std::dynamic_pointer_cast<const float3_tl::buffer_t>(deep_data_pushed1);
         CHECK(obj1);
         CHECK_EQ(obj1, deep_timeline->get_buffer(time1));
@@ -440,7 +440,7 @@ TEST_SUITE("sight::data::generic_tl")
         CHECK_EQ(0.0F, buff_data[2]);
 
         /// Second element
-        CSPTR(float3_tl::buffer_t) obj2 = deep_timeline->get_buffer(time2);
+        sight::csptr<float3_tl::buffer_t> obj2 = deep_timeline->get_buffer(time2);
 
         CHECK_EQ(3U, obj2->get_present_element_num());
         CHECK_EQ(std::size_t(12), obj2->get_element_size());
@@ -467,7 +467,7 @@ TEST_SUITE("sight::data::generic_tl")
         CHECK_EQ(2.5F, buff_data[2]);
 
         /// Third element
-        CSPTR(float3_tl::buffer_t) obj3 = deep_timeline->get_buffer(time3);
+        sight::csptr<float3_tl::buffer_t> obj3 = deep_timeline->get_buffer(time3);
 
         CHECK_EQ(2U, obj3->get_present_element_num());
         CHECK_EQ(std::size_t(12), obj3->get_element_size());
@@ -494,7 +494,7 @@ TEST_SUITE("sight::data::generic_tl")
         CHECK_EQ(11.F, buff_data[2]);
 
         /// Fourth element
-        CSPTR(float3_tl::buffer_t) obj4 = deep_timeline->get_buffer(time4);
+        sight::csptr<float3_tl::buffer_t> obj4 = deep_timeline->get_buffer(time4);
 
         CHECK_EQ(0U, obj4->get_present_element_num());
         CHECK_EQ(std::size_t(12), obj4->get_element_size());
@@ -540,26 +540,26 @@ TEST_SUITE("sight::data::generic_tl")
         std::array<float, 3> values5 = {8.0F, 9.0F, 66.F};
         std::array<float, 3> values6 = {2.0F, 1.2F, 11.F};
 
-        SPTR(float3_tl::buffer_t) data1 = timeline->create_buffer(time1);
+        sight::sptr<float3_tl::buffer_t> data1 = timeline->create_buffer(time1);
         data1->set_element(values1, 0);
 
-        SPTR(float3_tl::buffer_t) data2 = timeline->create_buffer(time2);
+        sight::sptr<float3_tl::buffer_t> data2 = timeline->create_buffer(time2);
         data2->set_element(values2, 0);
         data2->set_element(values3, 2);
         data2->set_element(values4, 4);
 
-        SPTR(float3_tl::buffer_t) data3 = timeline->create_buffer(time3);
+        sight::sptr<float3_tl::buffer_t> data3 = timeline->create_buffer(time3);
         data3->set_element(values5, 1);
         data3->set_element(values6, 2);
 
-        SPTR(float3_tl::buffer_t) data4 = timeline->create_buffer(time4);
+        sight::sptr<float3_tl::buffer_t> data4 = timeline->create_buffer(time4);
 
         timeline->push_object(data1);
         timeline->push_object(data2);
         timeline->push_object(data3);
         timeline->push_object(data4);
 
-        CSPTR(float3_tl::buffer_t) obj1 = timeline->get_buffer(time1);
+        sight::csptr<float3_tl::buffer_t> obj1 = timeline->get_buffer(time1);
 
         /// First element
         float3_tl::buffer_t::iterator it = obj1->get_presence_iterator();
@@ -575,8 +575,8 @@ TEST_SUITE("sight::data::generic_tl")
         CHECK_EQ(false, it.is_valid());
 
         /// Second element
-        CSPTR(float3_tl::buffer_t) obj2 = timeline->get_buffer(time2);
-        it                              = obj2->get_presence_iterator();
+        sight::csptr<float3_tl::buffer_t> obj2 = timeline->get_buffer(time2);
+        it = obj2->get_presence_iterator();
         CHECK_EQ(3U, obj2->get_present_element_num());
 
         buff_data = *it;
@@ -601,8 +601,8 @@ TEST_SUITE("sight::data::generic_tl")
         CHECK_EQ(false, it.is_valid());
 
         /// Third element
-        CSPTR(float3_tl::buffer_t) obj3 = timeline->get_buffer(time3);
-        it                              = obj3->get_presence_iterator();
+        sight::csptr<float3_tl::buffer_t> obj3 = timeline->get_buffer(time3);
+        it = obj3->get_presence_iterator();
         CHECK_EQ(2U, obj3->get_present_element_num());
 
         buff_data = *it;
@@ -621,8 +621,8 @@ TEST_SUITE("sight::data::generic_tl")
         CHECK_EQ(false, it.is_valid());
 
         /// Fourth element
-        CSPTR(float3_tl::buffer_t) obj4 = timeline->get_buffer(time4);
-        it                              = obj4->get_presence_iterator();
+        sight::csptr<float3_tl::buffer_t> obj4 = timeline->get_buffer(time4);
+        it = obj4->get_presence_iterator();
         CHECK_EQ(0U, obj4->get_present_element_num());
 
         CHECK_EQ(false, it.is_valid());

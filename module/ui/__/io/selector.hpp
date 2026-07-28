@@ -166,10 +166,10 @@ private:
     /// classname of the read object (used if the data is set as output instead of inout)
     std::string m_data_classname;
 
-    SPTR(signals::failed_t) m_sig_failed;
-    SPTR(signals::succeeded_t) m_sig_succeeded;
+    sight::sptr<signals::failed_t> m_sig_failed;
+    sight::sptr<signals::succeeded_t> m_sig_succeeded;
 
-    SPTR(slots::forward_monitor_t) m_slot_forward_monitor;
+    sight::sptr<slots::forward_monitor_t> m_slot_forward_monitor;
 
     data::ptr<data::object, data::access::inout> m_data {this, sight::io::service::DATA_KEY};
 };

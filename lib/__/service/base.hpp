@@ -28,15 +28,12 @@
 
 #include <core/com/has_signals.hpp>
 #include <core/com/has_slots.hpp>
-#include <core/com/slot.hpp>
 #include <core/object.hpp>
 
 #include <data/boolean.hpp>
 #include <data/map.hpp>
-#include <data/mt/locked_ptr.hpp>
+#include <data/mt/locked_ptr.hpp> // NOLINT(misc-include-cleaner)
 #include <data/ptr.hpp>
-
-#include <boost/property_tree/ptree.hpp>
 
 namespace sight::core::thread
 {
@@ -201,8 +198,8 @@ public:
     SIGHT_SERVICE_API ~base() override;
 
     /// Sets a worker to all service slots
-    SIGHT_SERVICE_API void set_worker(SPTR(core::thread::worker) _worker);
-    SIGHT_SERVICE_API SPTR(core::thread::worker) worker() const;
+    SIGHT_SERVICE_API void set_worker(sight::sptr<core::thread::worker> _worker);
+    SIGHT_SERVICE_API sight::sptr<core::thread::worker> worker() const;
     //@}
 
     /**

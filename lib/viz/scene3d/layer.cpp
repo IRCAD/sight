@@ -29,6 +29,7 @@
 #include "viz/scene3d/helper/camera.hpp"
 #include "viz/scene3d/light_adaptor.hpp"
 #include "viz/scene3d/ogre.hpp"
+#include "viz/scene3d/utils.hpp"
 
 #include <core/thread/worker.hpp>
 
@@ -1081,7 +1082,7 @@ void layer::restart_adaptors()
     std::vector<service::base::wptr> sub_adaptors;
     for(auto& adapt : adaptors)
     {
-        SPTR(service::has_services) has_services = std::dynamic_pointer_cast<service::has_services>(adapt);
+        sight::sptr<service::has_services> has_services = std::dynamic_pointer_cast<service::has_services>(adapt);
         if(has_services != nullptr)
         {
             const auto& sub_services = has_services->get_registered_services();

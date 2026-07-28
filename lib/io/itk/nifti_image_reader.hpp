@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -42,7 +42,7 @@ public:
 
     SIGHT_IO_ITK_API ~nifti_image_reader() override = default;
 
-    SIGHT_IO_ITK_API void read(SPTR(sight::core::progress::observer) _progress) override;
+    SIGHT_IO_ITK_API void read(sight::sptr<sight::core::progress::observer> _progress) override;
 };
 
 } // namespace sight::io::itk

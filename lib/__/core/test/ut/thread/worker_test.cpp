@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include <core/spy_log.hpp>
+#include <core/exception.hpp>
 #include <core/thread/timer.hpp>
 #include <core/thread/worker.hpp>
 
@@ -29,54 +29,56 @@
 #include <doctest/doctest.h>
 
 #include <atomic>
-#include <exception>
-#include <iostream>
 #include <thread>
+
+//-----------------------------------------------------------------------------
+namespace
+{
+
+struct test_handler
+{
+    test_handler() :
+        m_constructor_thread_id(sight::core::thread::get_current_thread_id())
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void next_step()
+    {
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        this->next_step_no_sleep();
+    }
+
+    //------------------------------------------------------------------------------
+
+    void next_step_no_sleep()
+    {
+        m_thread_check_ok = m_thread_check_ok.load()
+                            && (m_constructor_thread_id != sight::core::thread::get_current_thread_id())
+                            && (m_worker_thread_id == sight::core::thread::get_current_thread_id());
+
+        ++m_step;
+    }
+
+    //------------------------------------------------------------------------------
+
+    void set_worker_id(sight::core::thread::thread_id_t _id)
+    {
+        m_worker_thread_id = _id;
+    }
+
+    std::atomic_int m_step {0};
+    std::atomic_bool m_thread_check_ok {true};
+    sight::core::thread::thread_id_t m_constructor_thread_id;
+    sight::core::thread::thread_id_t m_worker_thread_id;
+};
+
+} // namespace
 
 TEST_SUITE("sight::core::thread::worker")
 {
     static sight::utest::exception e(""); // force link with fwTest
-
-//-----------------------------------------------------------------------------
-
-    struct test_handler
-    {
-        test_handler() :
-            m_constructor_thread_id(sight::core::thread::get_current_thread_id())
-        {
-        }
-
-        //------------------------------------------------------------------------------
-
-        void next_step()
-        {
-            std::this_thread::sleep_for(std::chrono::milliseconds(50));
-            this->next_step_no_sleep();
-        }
-
-        //------------------------------------------------------------------------------
-
-        void next_step_no_sleep()
-        {
-            m_thread_check_ok = m_thread_check_ok.load()
-                                && (m_constructor_thread_id != sight::core::thread::get_current_thread_id())
-                                && (m_worker_thread_id == sight::core::thread::get_current_thread_id());
-
-            ++m_step;
-        }
-
-        //------------------------------------------------------------------------------
-
-        void set_worker_id(sight::core::thread::thread_id_t _id)
-        {
-            m_worker_thread_id = _id;
-        }
-
-        std::atomic_int m_step {0};
-        std::atomic_bool m_thread_check_ok {true};
-        sight::core::thread::thread_id_t m_constructor_thread_id;
-        sight::core::thread::thread_id_t m_worker_thread_id;
-    };
 
 //-----------------------------------------------------------------------------
 

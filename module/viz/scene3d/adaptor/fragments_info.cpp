@@ -26,6 +26,7 @@
 
 #include <viz/scene3d/helper/technique.hpp>
 #include <viz/scene3d/ogre.hpp>
+#include <viz/scene3d/utils.hpp>
 
 #include <OGRE/OgreCompositionTargetPass.h>
 #include <OGRE/OgreCompositor.h>

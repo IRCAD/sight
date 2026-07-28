@@ -211,9 +211,9 @@ private:
     std::shared_ptr<DATATYPE> m_data;
 
     /// Read lock if the data is const, write lock otherwise
-    lock m_locker;
+    lock m_locker {};
 
-    std::vector<core::memory::buffer_object::lock_t> m_dump_locks;
+    std::vector<core::memory::buffer_object::lock_t> m_dump_locks {};
 };
 
 } // namespace sight::data::mt

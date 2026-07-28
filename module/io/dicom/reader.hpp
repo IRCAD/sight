@@ -41,7 +41,8 @@ namespace sight::module::io::dicom
  *          typeFilter configuration parameters.
  *
  * @section Signals Signals
- * - \b monitor_created(SPTR(core::progress::monitor)): emitted to display a progress bar while the image is read,
+ * - \b monitor_created(sight::sptr<core::progress::monitor>): emitted to display a progress bar while the image is
+ * read,
  * it should be connected to a progress bar
  *
  * @section XML XML Configuration

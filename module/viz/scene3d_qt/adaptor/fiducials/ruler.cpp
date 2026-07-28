@@ -34,6 +34,7 @@
 #include <viz/scene3d/helper/manual_object.hpp>
 #include <viz/scene3d/helper/scene.hpp>
 #include <viz/scene3d/ogre.hpp>
+#include <viz/scene3d/utils.hpp>
 
 #include <module/viz/scene3d_qt/window_interactor.hpp>
 

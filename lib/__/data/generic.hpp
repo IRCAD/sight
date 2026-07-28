@@ -28,7 +28,7 @@
 #include "data/factory/new.hpp"
 #include "data/string_serializable.hpp"
 
-#include <boost/lexical_cast.hpp>
+#include <core/compare.hpp>
 
 #include <string>
 

@@ -101,7 +101,7 @@ private:
     void save_frame(core::clock::type _timestamp);
 
     /// saves current buffer with OpenCV video writer (m_writer must be initialized)
-    void write_buffer(int _width, int _height, CSPTR(data::frame_tl::buffer_t) _buffer);
+    void write_buffer(int _width, int _height, sight::csptr<data::frame_tl::buffer_t> _buffer);
 
     /// SLOT: Starts recording
     void start_record();
@@ -116,7 +116,7 @@ private:
     void toggle_recording();
 
     /// opencv video writer
-    UPTR(cv::VideoWriter) m_writer;
+    sight::uptr<cv::VideoWriter> m_writer;
 
     /// opencv image type ( CV_8UC3, CV_8UC4, ...)
     int m_image_type {0};

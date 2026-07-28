@@ -100,22 +100,22 @@ public:
     using function_t     = std::function<signature_type>;
 
     template<typename F>
-    explicit slot(SPTR(slot_run<F>)_slot);
+    explicit slot(sight::sptr<slot_run<F> > _slot);
 
     template<typename F>
-    explicit slot(SPTR(slot<F>)_slot);
+    explicit slot(sight::sptr<slot<F> > _slot);
 };
 
 //-----------------------------------------------------------------------------
 
 template<typename F, typename, typename ... bindings>
-SPTR(slot<typename core::com::util::convert_function_type<F>::type>) new_slot(F _f, bindings ... _bindings);
+sight::sptr<slot<typename core::com::util::convert_function_type<F>::type> > new_slot(F _f, bindings ... _bindings);
 
 //-----------------------------------------------------------------------------
 
 // Prototype used for lambdas functions
 template<typename F, typename>
-SPTR(slot<core::lambda_to_function_t<F> >) new_slot(F _f);
+sight::sptr<slot<core::lambda_to_function_t<F> > > new_slot(F _f);
 
 //-----------------------------------------------------------------------------
 
@@ -134,7 +134,7 @@ slot<R(A ...)>::slot() :
 
 template<typename R, typename ... A>
 template<typename F>
-slot<slot<R(A ...)> >::slot(SPTR(slot_run<F>)_slot) :
+slot<slot<R(A ...)> >::slot(sight::sptr<slot_run<F> > _slot) :
     core::com::slot<function_t>(
         core::com::util::auto_bind<
             signature_type,
@@ -150,7 +150,7 @@ slot<slot<R(A ...)> >::slot(SPTR(slot_run<F>)_slot) :
 
 template<typename R, typename ... A>
 template<typename F>
-slot<slot<R(A ...)> >::slot(SPTR(slot<F>)_slot) :
+slot<slot<R(A ...)> >::slot(sight::sptr<slot<F> > _slot) :
     core::com::slot<function_t>(
         core::com::util::auto_bind<
             signature_type,
@@ -166,7 +166,7 @@ slot<slot<R(A ...)> >::slot(SPTR(slot<F>)_slot) :
 template<typename F, std::enable_if_t<std::is_function_v<typename core::com::util::convert_function_type<F>::type>,
                                       bool> = true,
          typename ... BINDING>
-SPTR(slot<typename core::com::util::convert_function_type<F>::type>) new_slot(F _f, BINDING ... _binding)
+sight::sptr<slot<typename core::com::util::convert_function_type<F>::type> > new_slot(F _f, BINDING ... _binding)
 {
 #ifdef _DEBUG
     constexpr bool has_valid_nb_args = (sizeof...(_binding) < 2);
@@ -180,7 +180,7 @@ SPTR(slot<typename core::com::util::convert_function_type<F>::type>) new_slot(F 
 //-----------------------------------------------------------------------------
 
 template<typename F>
-SPTR(slot<core::lambda_to_function_t<F> >) new_slot(F _f)
+sight::sptr<slot<core::lambda_to_function_t<F> > > new_slot(F _f)
 requires(!std::is_function_v<typename core::com::util::convert_function_type<F>::type>)
 {
     auto fn = lambda_to_function(_f);

@@ -74,7 +74,7 @@ struct SIGHT_CORE_CLASS_API slot_connection<void(A ...)>: slot_connection_base
     /// Build a new connection with the given signal, slot and wrapper.
     slot_connection(
         const signal_sptr_type& _signal,
-        const SPTR(slot_base)& _slot,
+        const sight::sptr<slot_base>& _slot,
         const slot_wrapper_sptr_type& _slot_wrapper
     );
 
@@ -96,7 +96,7 @@ struct SIGHT_CORE_CLASS_API slot_connection<void(A ...)>: slot_connection_base
         void disconnect_signal_no_lock(const signal_sptr_type& _sig);
 
         /// *NOT THREAD SAFE* Disconnect the related slot.
-        void disconnect_slot_no_lock(const SPTR(slot_base)& _slot);
+        void disconnect_slot_no_lock(const sight::sptr<slot_base>& _slot);
 
         /// *NOT THREAD SAFE* Disconnect the related slot and signal.
         void disconnect_weak_lock() override;
@@ -110,10 +110,10 @@ struct SIGHT_CORE_CLASS_API slot_connection<void(A ...)>: slot_connection_base
         signal_wptr_type m_signal;
 
         /// Related Slot.
-        WPTR(slot_base) m_connected_slot;
+        sight::wptr<slot_base> m_connected_slot {};
 
         /// Slot wrapper.
-        SPTR(slot_base) m_slot_wrapper;
+        sight::sptr<slot_base> m_slot_wrapper {};
 
         /**
          * @brief Associates state of this connection to related Slot.

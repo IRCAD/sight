@@ -27,6 +27,7 @@
 #include <data/frame_tl.hpp>
 
 #include <service/extension/config.hpp>
+#include <service/extension/factory.hpp>
 
 #include <ui/__/dialog/message.hpp>
 #include <ui/__/dialog/selector.hpp>

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,8 +38,6 @@
 #include <ui/__/dialog/location.hpp>
 #include <ui/__/dialog/message.hpp>
 #include <ui/__/dialog/progress.hpp>
-
-#include <boost/algorithm/string.hpp>
 
 namespace sight::module::io::vtk
 {
@@ -115,8 +113,8 @@ void image_writer::info(std::ostream& _sstream)
 
 bool image_writer::save_image(
     const std::filesystem::path& _img_file,
-    const CSPTR(data::image)& _image,
-    SPTR(core::progress::observer) _progress
+    const sight::csptr<data::image>& _image,
+    sight::sptr<core::progress::observer> _progress
 )
 {
     bool b_value = true;
