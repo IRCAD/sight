@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -58,4 +58,4 @@ private:
     sight::core::runtime::profile::sptr m_profile;
 };
 
-} // namespace sight::ui::testCore
+} // namespace sight::ui::test

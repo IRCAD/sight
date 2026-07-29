@@ -1,0 +1,5 @@
+sight_add_target(module_viz_scene2d_ut TYPE DOCTEST)
+
+add_dependencies(module_viz_scene2d_ut module_viz_scene2d)
+
+target_link_libraries(module_viz_scene2d_ut PUBLIC core service viz_scene2d)

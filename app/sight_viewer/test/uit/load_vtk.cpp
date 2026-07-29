@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2025 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,15 +20,48 @@
  ***********************************************************************/
 
 #include "load_vtk.hpp"
+#include <QPainter>
 
 #include <ui/test/helper/button.hpp>
 
 #include <utest_data/data.hpp>
 
+#include <QImage>
+
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::sight_viewer::uit::load_vtk);
 
 namespace sight::sight_viewer::uit
 {
+
+//------------------------------------------------------------------------------
+
+static void normalize_snapshot_to_reference(
+    const std::filesystem::path& _snapshot_path,
+    const std::filesystem::path& _reference_path
+)
+{
+    const QImage snapshot(QString::fromStdString(_snapshot_path.string()));
+    const QImage reference(QString::fromStdString(_reference_path.string()));
+
+    CPPUNIT_ASSERT(!snapshot.isNull());
+    CPPUNIT_ASSERT(!reference.isNull());
+
+    QImage normalized(reference.size(), QImage::Format_RGBA8888);
+    normalized.fill(Qt::black);
+
+    {
+        QPainter painter(&normalized);
+        painter.drawImage(
+            QPoint(
+                (reference.width() - snapshot.width()) / 2,
+                (reference.height() - snapshot.height()) / 2
+            ),
+            snapshot
+        );
+    }
+
+    CPPUNIT_ASSERT(normalized.save(QString::fromStdString(_snapshot_path.string())));
+}
 
 //------------------------------------------------------------------------------
 
@@ -69,16 +102,19 @@ void load_vtk::test()
             );
 
             save_snapshot(_tester, snapshot_show1_path);
+            normalize_snapshot_to_reference(snapshot_show1_path, reference_show_path);
             compare_images(snapshot_show1_path, reference_show_path);
 
             helper::button::push(_tester, "list_organ_editor_srv/Hide all organs");
 
             save_snapshot(_tester, snapshot_hide_path);
+            normalize_snapshot_to_reference(snapshot_hide_path, reference_hide_path);
             compare_images(snapshot_hide_path, reference_hide_path);
 
             helper::button::push(_tester, "list_organ_editor_srv/Hide all organs");
 
             save_snapshot(_tester, snapshot_show2_path);
+            normalize_snapshot_to_reference(snapshot_show2_path, reference_show_path);
             compare_images(snapshot_show2_path, reference_show_path);
         },
         true

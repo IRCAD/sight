@@ -22,7 +22,6 @@
 
 #include <core/tools/random/generator.hpp>
 
-#include <data/array.hpp>
 #include <data/helper/histogram.hpp>
 #include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
@@ -253,7 +252,7 @@ TEST_SUITE("sight::data::tools::medical_image_helper")
     static sight::data::image::sptr create_image_from_pixel_buffer()
     {
         constexpr std::size_t img_dimensions = 100;
-        using sub_pixel_t = typename P::value_type;
+        using sub_pixel_t = P::value_type;
 
         // Create a new image
         auto image                      = std::make_shared<sight::data::image>();
@@ -264,7 +263,7 @@ TEST_SUITE("sight::data::tools::medical_image_helper")
 
         // Zero the buffer
         const auto dump_lock = image->dump_lock();
-        std::fill(image->begin(), image->end(), std::int8_t(0));
+        std::fill(image->begin(), image->end(), static_cast<std::int8_t>(0));
 
         return image;
     }
@@ -274,8 +273,8 @@ TEST_SUITE("sight::data::tools::medical_image_helper")
     template<class P>
     static void get_pixel_test_helper(const P& _pixel_value)
     {
-        using sub_pixel_t = typename P::value_type;
-        constexpr std::size_t n_components = std::tuple_size<P>::value;
+        using sub_pixel_t = P::value_type;
+        constexpr std::size_t n_components = std::tuple_size_v<P>;
         sight::data::image::sptr image     = create_image_from_pixel_buffer<P>();
         const auto size                    = image->size();
 
@@ -341,7 +340,7 @@ TEST_SUITE("sight::data::tools::medical_image_helper")
     template<class P>
     static void set_pixel_test_helper(P& _pixel_value)
     {
-        using sub_pixel_t = typename P::value_type;
+        using sub_pixel_t = P::value_type;
         auto image      = create_image_from_pixel_buffer<P>();
         const auto size = image->size();
 
@@ -465,7 +464,7 @@ TEST_SUITE("sight::data::tools::medical_image_helper")
 
             CHECK_EQ(double(25), position.value());
 
-            med_im_helper::set_slice_position(*image, orientation, std::double_t(35.0));
+            med_im_helper::set_slice_position(*image, orientation, static_cast<std::double_t>(35.0));
 
             position = med_im_helper::get_slice_position(*image, orientation);
 
@@ -484,7 +483,7 @@ TEST_SUITE("sight::data::tools::medical_image_helper")
 
             CHECK_EQ(double(128), index.value());
 
-            med_im_helper::set_slice_position(*image, orientation, std::double_t(0.0));
+            med_im_helper::set_slice_position(*image, orientation, static_cast<std::double_t>(0.0));
 
             index = med_im_helper::get_slice_position(*image, orientation);
 
@@ -502,7 +501,7 @@ TEST_SUITE("sight::data::tools::medical_image_helper")
 
             CHECK_EQ(double(75), index.value());
 
-            med_im_helper::set_slice_position(*image, orientation, std::double_t(17.0));
+            med_im_helper::set_slice_position(*image, orientation, static_cast<std::double_t>(17.0));
 
             index = med_im_helper::get_slice_position(*image, orientation);
 
@@ -536,7 +535,7 @@ TEST_SUITE("sight::data::tools::medical_image_helper")
 
             CHECK_EQ(std::int64_t(50), index.value());
 
-            med_im_helper::set_slice_index(*image, axis, std::int64_t(35));
+            med_im_helper::set_slice_index(*image, axis, static_cast<std::int64_t>(35));
 
             index = med_im_helper::get_slice_index(*image, axis);
 
@@ -555,7 +554,7 @@ TEST_SUITE("sight::data::tools::medical_image_helper")
 
             CHECK_EQ(std::int64_t(128), index.value());
 
-            med_im_helper::set_slice_index(*image, axis, std::int64_t(0));
+            med_im_helper::set_slice_index(*image, axis, static_cast<std::int64_t>(0));
 
             index = med_im_helper::get_slice_index(*image, axis);
 
@@ -574,7 +573,7 @@ TEST_SUITE("sight::data::tools::medical_image_helper")
 
             CHECK_EQ(std::int64_t(75), index.value());
 
-            med_im_helper::set_slice_index(*image, axis, std::int64_t(17));
+            med_im_helper::set_slice_index(*image, axis, static_cast<std::int64_t>(17));
 
             index = med_im_helper::get_slice_index(*image, axis);
 
@@ -591,6 +590,27 @@ TEST_SUITE("sight::data::tools::medical_image_helper")
 
             CHECK_EQ(false, index.has_value());
         }
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("check_out_of_bounds_axial_slice_index")
+    {
+        const auto image = generate_image();
+        const auto axial = med_im_helper::axis_t::axial;
+
+        const auto out_of_bounds_index = static_cast<std::int64_t>(image->size()[2] + 1);
+        med_im_helper::set_slice_index(*image, axial, out_of_bounds_index);
+
+        const auto index_before_check = med_im_helper::get_slice_index(*image, axial);
+        REQUIRE(index_before_check.has_value());
+        CHECK_EQ(out_of_bounds_index, index_before_check.value());
+
+        CHECK(med_im_helper::check_image_slice_index(*image));
+
+        const auto corrected_index = med_im_helper::get_slice_index(*image, axial);
+        REQUIRE(corrected_index.has_value());
+        CHECK_EQ(static_cast<std::int64_t>(image->size()[2] / 2), corrected_index.value());
     }
 
 //------------------------------------------------------------------------------

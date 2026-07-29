@@ -24,6 +24,8 @@
         <channel name="shape_extruder_reset" />
         <channel name="world_coords_landmarks" />
         <channel name="negato_3d_transparency" />
+        <channel name="mesh_activation" optional="true" />
+        <channel name="volume_activation" optional="true" />
         <channel name="ruler_activation" />
         <channel name="ruler_deactivation" />
         <channel name="landmarks_edit_mode" />
@@ -39,10 +41,10 @@
 
         <service uid="main_view" type="sight::module::ui::view">
             <gui>
-                <layout type="sight::ui::layout::line">
+                <layout type="sight::ui::layout::line" spacing="2">
                     <orientation value="vertical" />
-                    <view proportion="0" spacing="2" />
-                    <view proportion="0" spacing="2" />
+                    <view proportion="0" />
+                    <view proportion="0" />
                 </layout>
             </gui>
             <registry>
@@ -54,24 +56,24 @@
 
         <service uid="top_scenes_view" type="sight::module::ui::view">
             <gui>
-                <layout type="sight::ui::layout::line">
+                <layout type="sight::ui::layout::line" spacing="2">
                     <orientation value="horizontal" />
-                    <view proportion="1" minWidth="0" visible="true" />
-                    <view proportion="1" minWidth="0" visible="false" spacing="2" />
+                    <view proportion="1" min_width="0" visible="false" />
+                    <view proportion="1" min_width="0" visible="true" />
                 </layout>
             </gui>
             <registry>
-                <view wid="main_scene_view" />
                 <view wid="axial_scene_view" />
+                <view wid="main_scene_view" />
             </registry>
         </service>
 
         <service uid="bottom_scenes_view" type="sight::module::ui::view">
             <gui>
-                <layout type="sight::ui::layout::line">
+                <layout type="sight::ui::layout::line" spacing="2">
                     <orientation value="horizontal" />
-                    <view proportion="1" minWidth="0" visible="false" />
-                    <view proportion="1" minWidth="0" visible="false" spacing="2" />
+                    <view proportion="1" min_width="0" visible="false" />
+                    <view proportion="1" min_width="0" visible="false" />
                 </layout>
             </gui>
             <registry>
@@ -110,6 +112,8 @@
             <channel name="shape_extruder_reset" uid="${shape_extruder_reset}" />
             <channel name="world_coords_landmarks" uid="${world_coords_landmarks}" />
             <channel name="negato_3d_transparency" uid="${negato_3d_transparency}" />
+            <channel name="mesh_activation" uid="${mesh_activation}" />
+            <channel name="volume_activation" uid="${volume_activation}" />
             <channel name="ruler_activation" uid="${ruler_activation}" />
             <channel name="ruler_deactivation" uid="${ruler_deactivation}" />
             <channel name="landmarks_edit_mode" uid="${landmarks_edit_mode}" />

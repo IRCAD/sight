@@ -22,9 +22,9 @@
 
 #include "module/ui/qt/metrics/landmarks.hpp"
 
+#include <QHBoxLayout>
 #include <data/fiducials_series.hpp>
 #include <data/image_series.hpp>
-
 #include <ui/qt/container/widget.hpp>
 
 #include <QColorDialog>
@@ -236,7 +236,6 @@ void landmarks::starting()
     grid_layout->addWidget(m_opacity_slider, 2, 1);
     grid_layout->addWidget(shape_label, 3, 0);
     grid_layout->addWidget(m_shape_selector, 3, 1);
-    grid_layout->addWidget(m_remove_button, 4, 1);
 
     m_group_editor_widget = new QWidget();
     m_group_editor_widget->setLayout(grid_layout);
@@ -249,12 +248,17 @@ void landmarks::starting()
         layout->addWidget(helper_text_label);
     }
 
+    layout->addWidget(m_tree_widget);
+    auto* const buttons_layout = new QHBoxLayout();
+
     if(m_advanced_mode)
     {
-        layout->addWidget(m_new_group_button);
+        buttons_layout->addWidget(m_new_group_button);
     }
 
-    layout->addWidget(m_tree_widget);
+    buttons_layout->addWidget(m_remove_button);
+
+    layout->addLayout(buttons_layout);
     layout->addWidget(m_group_editor_widget);
     m_group_editor_widget->setDisabled(true);
 

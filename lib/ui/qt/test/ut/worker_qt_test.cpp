@@ -24,7 +24,10 @@
 #include <core/thread/worker.hpp>
 
 #include <iostream>
+#include <ui/qt/action_callback.hpp>
 #include <ui/qt/app.hpp>
+#include <ui/qt/container/toolbar.hpp>
+#include <ui/qt/layout/toolbar.hpp>
 #include <ui/qt/worker_qt.hpp>
 
 #include <doctest/doctest.h>
@@ -32,6 +35,8 @@
 #include <QApplication>
 #include <QSharedPointer>
 #include <QTimer>
+#include <QToolBar>
+#include <QWidget>
 
 #include <array>
 #include <functional>
@@ -294,6 +299,99 @@ TEST_SUITE("sight::ui::qt::worker")
         future.get();
 
         CHECK_EQ(0, std::any_cast<int>(future.get()));
+    }
+} // TEST_SUITE
+
+TEST_SUITE("sight::ui::qt::layout::toolbar")
+{
+    TEST_CASE_FIXTURE(fixture, "create_layout")
+    {
+        m_worker->post(
+            []
+            {
+                QWidget parent_widget;
+
+                auto callback =
+                    std::make_shared<sight::ui::qt::action_callback>();
+
+                sight::ui::config_t config;
+
+                // Accordion:
+                // first item must be checkable.
+                sight::ui::config_t accordion;
+
+                sight::ui::config_t first_item;
+                first_item.put("<xmlattr>.name", "First");
+                first_item.put("<xmlattr>.style", "check");
+                accordion.add_child("menuItem", first_item);
+
+                sight::ui::config_t second_item;
+                second_item.put("<xmlattr>.name", "Second");
+                accordion.add_child("menuItem", second_item);
+
+                config.add_child("accordion", accordion);
+
+                // Normal action without icon -> covers addAction(name).
+                sight::ui::config_t normal_item;
+                normal_item.put("<xmlattr>.name", "Normal");
+                config.add_child("menuItem", normal_item);
+
+                // ---------------------------------------------------------
+                // Horizontal toolbar
+                // ---------------------------------------------------------
+
+                {
+                    auto* qt_toolbar = new QToolBar(&parent_widget);
+                    qt_toolbar->setOrientation(Qt::Horizontal);
+
+                    auto container =
+                        sight::ui::qt::container::toolbar::make();
+
+                    container->set_qt_tool_bar(qt_toolbar);
+
+                    auto layout =
+                        std::make_shared<sight::ui::qt::layout::toolbar>();
+
+                    layout->initialize(config);
+                    layout->set_callbacks({callback, callback, callback});
+
+                    layout->create_layout(container, "horizontal_toolbar");
+
+                    CHECK(!layout->get_menu_items().empty());
+
+                    layout->destroy_layout();
+                }
+
+                // ---------------------------------------------------------
+                // Vertical toolbar
+                // ---------------------------------------------------------
+
+                {
+                    auto* qt_toolbar = new QToolBar(&parent_widget);
+                    qt_toolbar->setOrientation(Qt::Vertical);
+
+                    auto container =
+                        sight::ui::qt::container::toolbar::make();
+
+                    container->set_qt_tool_bar(qt_toolbar);
+
+                    auto layout =
+                        std::make_shared<sight::ui::qt::layout::toolbar>();
+
+                    layout->initialize(config);
+                    layout->set_callbacks({callback, callback, callback});
+
+                    layout->create_layout(container, "vertical_toolbar");
+
+                    CHECK(!layout->get_menu_items().empty());
+
+                    layout->destroy_layout();
+                }
+
+                QApplication::quit();
+            });
+
+        m_worker->get_future().get();
     }
 } // TEST_SUITE
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2025 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,7 +22,6 @@
 #include "test.hpp"
 
 #include <core/runtime/path.hpp>
-#include <core/runtime/runtime.hpp>
 
 #include <ui/test/helper/button.hpp>
 #include <ui/test/helper/file_dialog.hpp>
@@ -53,8 +52,8 @@ void test::open_file(
     const std::filesystem::path& _path
 )
 {
-    // Click on the "Load series" button
-    helper::button::push(_tester, "toolbar_view/Load series");
+    // Click on the "Load Folders" button
+    helper::button::push(_tester, "data_tools_row_1/Load Folders");
 
     // Once we clicked the button, a selection window should appear. We select the format we want.
     helper::selector_dialog::select(_tester, _format);
@@ -70,13 +69,15 @@ void test::open_file(
         // The Show/hide volume button becomes enabled when the image effectively shows up.
         helper::button::wait_for_clickability(
             _tester,
-            helper::selector("toolbar_view/Show/hide volume").with_timeout(sight::ui::test::tester::DEFAULT_TIMEOUT * 5)
+            helper::selector("top_toolbar_left/volume").with_timeout(
+                sight::ui::test::tester::DEFAULT_TIMEOUT * 5
+            )
         );
     }
     else if(_format == "VTK")
     {
         // The Show/hide mesh button becomes enabled when the image is loaded.
-        helper::button::wait_for_clickability(_tester, "toolbar_view/Show/hide mesh");
+        helper::button::wait_for_clickability(_tester, "top_toolbar_left/mesh");
     }
 }
 
@@ -105,7 +106,7 @@ void test::save_snapshot(sight::ui::test::tester& _tester, const std::filesystem
 
 void test::reset_negatos(sight::ui::test::tester& _tester)
 {
-    const std::array negatos {"top_scenes_view/1", "bottom_scenes_view/0", "bottom_scenes_view/1"};
+    const std::array negatos {"top_scenes_view/0", "bottom_scenes_view/0", "bottom_scenes_view/1"};
     for(std::string parent : negatos)
     {
         helper::slider::set(_tester, helper::selector::from_parent(parent, "negato_slicer_srv"), 0);

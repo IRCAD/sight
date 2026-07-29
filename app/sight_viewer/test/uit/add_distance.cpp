@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2025 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -56,31 +56,45 @@ void add_distance::test()
             reset_negatos(_tester);
 
             // We want to hide the volume, we must click on the Show/hide volume button to achieve this
-            helper::button::push(_tester, "toolbar_view/Show/hide volume");
+            helper::button::push(_tester, "top_toolbar_left/volume");
 
             // Activate the add distance mode
-            helper::button::push(_tester, "toolbar_view/Add/Edit distance");
+            helper::button::push(_tester, "parameter_toolbar_view/Annotation");
+            helper::button::push(_tester, "annotation_tools_toolbar/Add / edit distance");
 
             // Add distance
-            _tester.take(
-                "ogre scene",
-                [&_tester]() -> QObject* {return _tester.get_main_window()->findChild<QWidget*>("scene_srv");});
-            _tester.interact(std::make_unique<sight::ui::test::mouse_drag>(QPoint(150, 250), QPoint(300, 250)));
+            helper::selector::from_parent("top_scenes_view/1", "scene_srv").select(_tester);
+            _tester.interact(
+                std::make_unique<sight::ui::test::mouse_drag>(
+                    QPoint(259, 250),
+                    QPoint(409, 250)
+                )
+            );
 
-            // Modify the distance by moving one extremity
-            _tester.take(
-                "ogre scene",
-                [&_tester]() -> QObject* {return _tester.get_main_window()->findChild<QWidget*>("scene_srv");});
-            _tester.interact(std::make_unique<sight::ui::test::mouse_drag>(QPoint(300, 250), QPoint(300, 300)));
+            // Modify the second extremity
+            helper::selector::from_parent("top_scenes_view/1", "scene_srv").select(_tester);
+            _tester.interact(
+                std::make_unique<sight::ui::test::mouse_drag>(
+                    QPoint(409, 250),
+                    QPoint(409, 300)
+                )
+            );
 
-            // Modify the distance by moving one extremity
-            _tester.take(
-                "ogre scene",
-                [&_tester]() -> QObject* {return _tester.get_main_window()->findChild<QWidget*>("scene_srv");});
-            _tester.interact(std::make_unique<sight::ui::test::mouse_drag>(QPoint(150, 250), QPoint(310, 310)));
+            // Modify the first extremity
+            helper::selector::from_parent("top_scenes_view/1", "scene_srv").select(_tester);
+            _tester.interact(
+                std::make_unique<sight::ui::test::mouse_drag>(
+                    QPoint(259, 250),
+                    QPoint(419, 310)
+                )
+            );
 
             // The image appears small, zoom in with the mouse to make it bigger
-            helper::scene3d::zoom(_tester, "scene_srv", 7);
+            helper::scene3d::zoom(
+                _tester,
+                helper::selector::from_parent("top_scenes_view/1", "scene_srv"),
+                7
+            );
 
             save_snapshot(_tester, snapshot_path);
             compare_images(snapshot_path, reference_path);

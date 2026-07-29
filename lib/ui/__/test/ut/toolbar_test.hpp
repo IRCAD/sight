@@ -1,6 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2026 IRCAD France
+ * Copyright (C) 2026 IRCAD France
+
  *
  * This file is part of Sight.
  *
@@ -21,26 +22,24 @@
 
 #pragma once
 
-#include <ui/test/test.hpp>
+#include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::sight_viewer::uit
+namespace sight::ui::ut
 {
 
-class test : public sight::ui::test::base
+class toolbar_test : public CPPUNIT_NS::TestFixture
 {
+CPPUNIT_TEST_SUITE(toolbar_test);
+CPPUNIT_TEST(initialize_test);
+CPPUNIT_TEST_SUITE_END();
+
 public:
 
-    static void open_file(
-        sight::ui::test::tester& _tester,
-        const std::string& _format,
-        const std::filesystem::path& _path
-    );
-    static void save_snapshot(sight::ui::test::tester& _tester, const std::filesystem::path& _path);
-    static void reset_negatos(sight::ui::test::tester& _tester);
+    void setUp() override;
+    void tearDown() override;
 
-protected:
-
-    std::filesystem::path get_profile_path() override;
+    void initialize_test();
 };
 
-} // namespace sight::sight_viewer::uit
+} // namespace sight::ui::ut
+// namespace sight::ui::ut

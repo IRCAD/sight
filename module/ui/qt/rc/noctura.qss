@@ -1494,6 +1494,14 @@ QProgressBar::chunk
     border-radius: 10%;
 }
 
+.transparent_toolbox_content .toolbox_frame
+{
+    background: transparent;
+    padding: 0;
+    margin: 0;
+    border: none;
+}
+
 /************************************************************************/
 /********************** Notification Popups *****************************/
 /************************************************************************/
@@ -1618,6 +1626,5 @@ QProgressBar::chunk
     min-width: 85 px;
     min-height: 35 px; 
 }
-
 
 

@@ -25,13 +25,11 @@
 
 #include <ui/test/tester.hpp>
 
-#include <cppunit/extensions/HelperMacros.h>
-
 #include <QApplication>
 #include <QLabel>
-#include <qobject.h>
+#include <QPropertyAnimation>
 #include <QSlider>
-#include <qtestsupport_core.h>
+#include <qobject.h>
 
 #include <QtTest/QSignalSpy>
 #include <QtTest/QTest>
@@ -154,7 +152,11 @@ void tickmarks_slider_test::mouse_drag_test(tester& _tester, const selector& _sl
     auto bt = _tester.add_in_backtrace("dragging \"" + _slider.get_description(_tester) + "\"");
 
     _slider.select(_tester);
-    auto* widget = _tester.get<QWidget*>();
+    auto* widget    = _tester.get<QWidget*>();
+    auto* animation = widget->findChild<QPropertyAnimation*>();
+    CPPUNIT_ASSERT(animation != nullptr);
+
+    QSignalSpy animation_finished(animation, &QPropertyAnimation::finished);
 
     qApp->postEvent(
         qApp,
@@ -167,6 +169,8 @@ void tickmarks_slider_test::mouse_drag_test(tester& _tester, const selector& _sl
             QTest::mouseRelease(widget, Qt::LeftButton, Qt::NoModifier, _to);
         })
     );
+
+    CPPUNIT_ASSERT(animation_finished.wait(1000));
 }
 
 //------------------------------------------------------------------------------

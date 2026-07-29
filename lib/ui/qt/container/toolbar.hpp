@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,9 +31,11 @@
 
 #include <QPointer>
 
+// NOLINTBEGIN(readability-identifier-naming)
 QT_BEGIN_NAMESPACE
 class QToolBar;
 QT_END_NAMESPACE
+// NOLINTEND(readability-identifier-naming)
 
 namespace sight::ui::qt::container
 {

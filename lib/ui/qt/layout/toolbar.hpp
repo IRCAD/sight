@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -88,10 +88,14 @@ public:
 
 protected:
 
+    // NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
+
     ui::qt::container::toolbar::sptr m_parent;
 
     // Hidden QAction which allows to change the toolbar visibility.
     QAction* m_toggle_toolbar_visibility_action {nullptr};
+
+// NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 
 private:
 

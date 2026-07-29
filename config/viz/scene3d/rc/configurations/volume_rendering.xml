@@ -28,6 +28,8 @@
         <channel name="negato_3d_transparency" />
         <channel name="ruler_activation" optional="true" />
         <channel name="ruler_deactivation" optional="true" />
+        <channel name="mesh_activation" optional="true" />
+        <channel name="volume_activation" optional="true" />
         <channel name="landmarks_edit_mode" />
         <channel name="world_coords_landmarks" />
         <channel name="landmarks_group_selected" />
@@ -51,22 +53,24 @@
             <gui>
                 <layout type="sight::ui::layout::overlay">
                     <view />
-                    <view x="0" y="0" />
+                    <view x="-1" y="0" />
+                    <view x="-82%" y="0" />
                 </layout>
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
                 <view sid="scene_view" />
                 <view sid="top_toolbar_slider_view" />
+                <view sid="top_toolbar_left_view" />
             </registry>
         </service>
 
         <service uid="scene_view" type="sight::module::ui::view">
             <gui>
-                <layout type="sight::ui::layout::line">
+                <layout type="sight::ui::layout::line" spacing="0">
                     <orientation value="vertical" />
                     <view proportion="1" />
-                    <view proportion="0" QSSClass="view_background" spacing="0" />
+                    <view proportion="0" QSSClass="view_background" />
                 </layout>
             </gui>
             <registry>
@@ -80,6 +84,7 @@
                 <toolbar background_color="#00000000" />
                 <layout type="sight::ui::layout::line">
                     <orientation value="vertical" />
+                    <view />
                 </layout>
             </gui>
             <registry>
@@ -87,19 +92,50 @@
             </registry>
         </service>
 
+        <service uid="top_toolbar_left_view" type="sight::module::ui::view">
+            <gui>
+                <toolbar background_color="#00000000" />
+                <layout type="sight::ui::layout::line">
+                    <orientation value="horizontal" />
+                    <view />
+                </layout>
+            </gui>
+            <registry>
+                <toolbar sid="top_toolbar_left" />
+            </registry>
+        </service>
+
         <service uid="top_toolbar_view" type="sight::module::ui::toolbar">
             <gui>
                 <layout>
+                    <menu_item name="Snapshot" icon="sight::module::ui::icons/frame.svg" shortcut="CTRL+S" />
                     <menu_item name="Maximize" icon="sight::module::ui::icons/maximize.svg" />
                     <menu_item name="Restore" icon="sight::module::ui::icons/restore.svg" shortcut="1" />
-                    <menu_item name="Snapshot" icon="sight::module::ui::icons/frame.svg" shortcut="CTRL+S" />
                     <spacer />
                 </layout>
             </gui>
             <registry>
+                <menu_item sid="snapshot_act" />
                 <menu_item sid="maximize_act" />
                 <menu_item sid="restore_act" />
-                <menu_item sid="snapshot_act" />
+            </registry>
+        </service>
+
+        <service uid="top_toolbar_left" type="sight::module::ui::toolbar">
+            <gui>
+                <layout>
+                    <menu_item name="mesh" icon="sight::module::ui::icons/show_mesh.svg" style="check" />
+                    <menu_item name="volume" icon="sight::module::ui::icons/show_volume.svg" style="check" />
+                    <menu_item name="negato" icon="sight::module::ui::icons/show_negato.svg" style="check" />
+                    <menu_item name="axis" icon="sight::module::ui::icons/axis.svg" style="check" />
+                    <spacer />
+                </layout>
+            </gui>
+            <registry>
+                <menu_item sid="mesh_visibility_act" />
+                <menu_item sid="volume_visibility_act" />
+                <menu_item sid="negato3_d_visibility_act" />
+                <menu_item sid="axis_visibility_act" />
             </registry>
         </service>
 
@@ -237,18 +273,33 @@
 
         <service uid="sliderCfg" type="sight::app::config_launcher">
             <properties config="sight::config::viz::image::imageSlider" />
-            <parameter replace="WID_PARENT" by="slider_view" />
-            <parameter replace="sliceIndex" by="axial" />
-            <parameter replace="enableSliceSlider" by="false" />
-            <parameter replace="enableSliceType" by="false" />
-            <parameter replace="enableOpacity" by="true" />
             <inout group="object">
                 <key name="image" uid="${image}" />
                 <key name="transferFunction" uid="${volume_tf}" />
             </inout>
+            <param name="WID_PARENT" value="slider_view" />
+            <param name="sliceIndex" value="axial" />
+            <param name="enableSliceSlider" value="false" />
+            <param name="enableSliceType" value="false" />
+            <param name="enableOpacity" value="true" />
         </service>
 
         <!-- ************************************* Actions ************************************ -->
+        <service uid="volume_visibility_act" type="sight::module::ui::action">
+            <properties checked="${vr_visibility}" enabled="false" />
+        </service>
+
+        <service uid="negato3_d_visibility_act" type="sight::module::ui::action">
+            <properties checked="${negato_visibility}" enabled="false" />
+        </service>
+
+        <service uid="mesh_visibility_act" type="sight::module::ui::action">
+            <properties checked="${model_visibility}" enabled="false" />
+        </service>
+
+        <service uid="axis_visibility_act" type="sight::module::ui::action">
+            <properties checked="${axis_visibility}" />
+        </service>
 
         <!-- Set the view in full screen -->
         <service uid="maximize_act" type="sight::module::ui::action">
@@ -354,6 +405,17 @@
             <signal>restore_act/clicked</signal>
             <slot>restore_act/hide</slot>
             <slot>maximize_act/show</slot>
+        </connect>
+
+        <connect channel="${mesh_activation}">
+            <slot>mesh_visibility_act/enable</slot>
+        </connect>
+
+        <connect channel="${volume_activation}">
+            <slot>volume_visibility_act/enable</slot>
+            <slot>volume_visibility_act/check</slot>
+            <slot>negato3_d_visibility_act/enable</slot>
+            <slot>negato3_d_visibility_act/check</slot>
         </connect>
 
         <!-- Display the picked voxel information -->

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2025 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,7 +23,6 @@
 #include "load_dicom.hpp"
 
 #include <ui/test/helper/button.hpp>
-#include <ui/test/helper/scene3d.hpp>
 
 #include <utest_data/data.hpp>
 
@@ -55,7 +54,7 @@ void load_dicom::test()
                 utest_data::dir() / "sight/Patient/Dicom/JMSGenou"
             );
 
-            helper::button::push(_tester, "toolbar_view/Show/hide volume");
+            helper::button::push(_tester, "top_toolbar_left/volume");
 
             save_snapshot(_tester, snapshot_path);
 

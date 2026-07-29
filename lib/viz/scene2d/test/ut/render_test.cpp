@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2026 IRCAD France
+ * Copyright (C) 2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,28 +19,29 @@
  *
  ***********************************************************************/
 
-#pragma once
+#include <viz/scene2d/data/event.hpp>
+#include <viz/scene2d/registry/adaptor.hpp>
+#include <viz/scene2d/render.hpp>
 
-#include <ui/test/test.hpp>
+#include <doctest/doctest.h>
 
-namespace sight::sight_viewer::uit
+TEST_CASE("dispatch_interaction")
 {
+    auto renderer = std::make_shared<sight::viz::scene2d::render>();
 
-class test : public sight::ui::test::base
-{
-public:
+    auto& registry =
+        sight::viz::scene2d::registry::get_adaptor_registry();
 
-    static void open_file(
-        sight::ui::test::tester& _tester,
-        const std::string& _format,
-        const std::filesystem::path& _path
-    );
-    static void save_snapshot(sight::ui::test::tester& _tester, const std::filesystem::path& _path);
-    static void reset_negatos(sight::ui::test::tester& _tester);
+    const auto saved_registry = registry;
+    registry.clear();
 
-protected:
+    sight::viz::scene2d::data::event event;
 
-    std::filesystem::path get_profile_path() override;
-};
+    CHECK_FALSE(event.is_accepted());
 
-} // namespace sight::sight_viewer::uit
+    renderer->dispatch_interaction(event);
+
+    CHECK_FALSE(event.is_accepted());
+
+    registry = saved_registry;
+}

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -49,4 +49,4 @@ public:
     SIGHT_UI_TEST_API static void color_equals(tester& _tester, const selector& _color_param, const QColor& _color);
 };
 
-} // namespace sight::ui::testCore::helper
+} // namespace sight::ui::test::helper
