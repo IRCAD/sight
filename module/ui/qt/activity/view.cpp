@@ -22,6 +22,8 @@
 
 #include "view.hpp"
 
+#include <app/extension/config.hpp>
+
 #include <ui/__/dialog/message.hpp>
 #include <ui/__/registry.hpp>
 #include <ui/qt/container/widget.hpp>
@@ -106,6 +108,8 @@ void view::stopping()
         m_config_manager->stop_and_destroy();
     }
 
+    m_local_value_objects.clear();
+
     auto sub_container = sight::ui::registry::get_wid_container(m_wid);
     sight::ui::registry::unregister_wid_container(m_wid);
 
@@ -129,6 +133,7 @@ void view::launch_activity(data::activity::sptr _activity)
         if(m_config_manager->started())
         {
             m_config_manager->stop_and_destroy();
+            m_local_value_objects.clear();
         }
 
         auto [info, replacementMap] = sight::activity::extension::activity::get_default()->get_info_and_replacement_map(
@@ -141,6 +146,21 @@ void view::launch_activity(data::activity::sptr _activity)
 
         try
         {
+            m_local_value_objects = materialize_value_parameters(
+                m_value_parameters,
+                replacementMap,
+                [&info](const std::string& _key) -> std::string
+                {
+                    const auto object_parameter =
+                        app::extension::config::get()->get_object_parameter(info.app_config.id, _key);
+                    return object_parameter.has_value() ? object_parameter->type : std::string {};
+                },
+                [](const std::string& _key) -> std::string
+                {
+                    return app::extension::config::get_unique_identifier("activity_value_" + _key);
+                },
+                info.app_config.id
+            );
             m_config_manager->set_config(info.app_config.id, replacementMap);
             m_config_manager->launch();
 

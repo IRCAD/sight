@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2025 IRCAD France
+ * Copyright (C) 2019-2026 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,14 +23,16 @@
 #include "activity/launcher.hpp"
 
 #include "activity/validator/activity.hpp"
-#include "activity/validator/base.hpp"
 
 #include <activity/builder/data.hpp>
 
+#include <core/object.hpp>
 #include <core/runtime/runtime.hpp>
 
+#include <data/factory/new.hpp>
 #include <data/map.hpp>
 #include <data/mt/locked_ptr.hpp>
+#include <data/string_serializable.hpp>
 
 #include <boost/range/iterator_range_core.hpp>
 
@@ -41,6 +43,9 @@ namespace sight::activity
 
 void launcher::parse_configuration(const configuration_t& _config, const in_out_map_t& _inouts)
 {
+    m_parameters.clear();
+    m_value_parameters.clear();
+
     m_main_activity_id = _config.get<std::string>("mainActivity.<xmlattr>.id", "");
     SIGHT_DEBUG_IF("main activity 'id' is not defined", m_main_activity_id.empty());
 
@@ -55,21 +60,42 @@ void launcher::parse_configuration(const configuration_t& _config, const in_out_
                 const auto key = it_cfg.second.get<std::string>("<xmlattr>.name");
                 SIGHT_ASSERT("Missing 'name' tag.", !key.empty());
 
-                const auto uid = it_cfg.second.get<std::string>("<xmlattr>.uid");
-                SIGHT_ASSERT("Missing 'uid' tag.", !uid.empty());
+                const auto uid   = it_cfg.second.get_optional<std::string>("<xmlattr>.uid");
+                const auto value = it_cfg.second.get_optional<std::string>("<xmlattr>.value");
+
+                SIGHT_ASSERT(
+                    "Exactly one of 'uid' or 'value' is required in <inout><key>.",
+                    uid.has_value() != value.has_value()
+                );
 
                 const bool optional = it_cfg.second.get<bool>("<xmlattr>.optional", false);
-                const auto& obj_id  = _inouts[i];
                 parameter_t param;
                 param.replace = key;
-                if(optional)
+
+                if(uid.has_value())
                 {
-                    param.by = uid;
+                    if(optional)
+                    {
+                        param.by = *uid;
+                    }
+                    else
+                    {
+                        SIGHT_ASSERT(
+                            "Not enough inout objects provided for non-optional key '" + key + "'.",
+                            i < _inouts.size()
+                        );
+                        param.by = _inouts[i];
+                        ++i;
+                    }
                 }
                 else
                 {
-                    param.by = obj_id;
-                    ++i;
+                    SIGHT_ASSERT(
+                        "'optional' cannot be used with literal 'value' in <inout><key>.",
+                        !optional
+                    );
+                    param.by                = *value;
+                    m_value_parameters[key] = *value;
                 }
 
                 m_parameters.push_back(param);
@@ -129,6 +155,63 @@ void launcher::parse_configuration(const configuration_t& _config, const in_out_
         param.by      = uid;
         m_parameters.push_back(param);
     }
+}
+
+//------------------------------------------------------------------------------
+
+std::vector<data::object::sptr> launcher::materialize_value_parameters(
+    const value_parameters_t& _value_parameters,
+    replace_map_t& _replacement_map,
+    const type_resolver_t& _type_resolver,
+    const uid_generator_t& _uid_generator,
+    const std::string& _context_id
+)
+{
+    std::vector<data::object::sptr> local_objects;
+
+    for(const auto& [key, value] : _value_parameters)
+    {
+        const auto object_type = _type_resolver(key);
+        SIGHT_THROW_IF(
+            "[" << _context_id << "] key '" << key << "' is passed with 'value' but no object parameter exists.",
+            object_type.empty()
+        );
+
+        if(auto ext = core::runtime::find_extension(object_type); ext)
+        {
+            const auto class_name = core::get_classname<data::object>();
+            SIGHT_ASSERT("Extension and classname are different.", ext->point() == class_name);
+            ext->get_module()->start();
+        }
+
+        const auto object = data::factory::make(object_type);
+        SIGHT_THROW_IF("Factory failed to build object: " << object_type, !object);
+
+        const auto serializable = std::dynamic_pointer_cast<data::string_serializable>(object);
+        SIGHT_THROW_IF(
+            "[" << _context_id << "] object parameter '" << key << "' of type '" << object_type
+            << "' does not support literal values.",
+            !serializable
+        );
+
+        serializable->from_string(value);
+        serializable->set_default_value();
+
+        if(!object->has_id())
+        {
+            const auto uid = _uid_generator(key);
+            SIGHT_THROW_IF(
+                "[" << _context_id << "] cannot generate UID for key '" << key << "'.",
+                uid.empty()
+            );
+            object->set_id(uid);
+        }
+
+        _replacement_map[key] = object->get_id();
+        local_objects.push_back(object);
+    }
+
+    return local_objects;
 }
 
 //------------------------------------------------------------------------------

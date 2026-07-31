@@ -29,8 +29,11 @@
 #include <core/tools/failed.hpp>
 
 #include <data/activity.hpp>
+#include <data/object.hpp>
 
 #include <ui/__/activity_view.hpp>
+
+#include <vector>
 
 namespace sight::module::ui::qt::activity
 {
@@ -106,6 +109,9 @@ private:
 
     /// Helper to launch activity configuration
     sight::app::config_manager::sptr m_config_manager;
+
+    /// Keep objects created from literal inout values alive while a sub-configuration is running.
+    std::vector<data::object::sptr> m_local_value_objects;
 
     /// WID used to register the activity container
     std::string m_wid;

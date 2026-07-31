@@ -30,6 +30,7 @@
 #include <data/map.hpp>
 
 #include <map>
+#include <optional>
 #include <unordered_set>
 
 namespace sight::app
@@ -56,8 +57,8 @@ public:
     struct objects_info_t
     {
         std::string type;
-        bool deferred;
-        bool optional;
+        bool deferred {false};
+        bool optional {false};
         std::string value;
     };
     using objects_t = std::map<std::string, objects_info_t>;
@@ -142,6 +143,18 @@ public:
      * @note This method is thread safe.
      */
     SIGHT_APP_API std::vector<std::string> get_configs_from_group(const std::string& _group) const;
+
+    /**
+     * @brief Return object parameter metadata for a given configuration.
+     * @param _config_id the configuration identifier
+     * @param _object_uid the object parameter uid declared in <parameters>
+     * @return object metadata if found, std::nullopt otherwise.
+     * @note This method is thread safe.
+     */
+    SIGHT_APP_API std::optional<app_info::objects_info_t> get_object_parameter(
+        const std::string& _config_id,
+        const std::string& _object_uid
+    ) const;
 
     /**
      * @brief Clear the registry.

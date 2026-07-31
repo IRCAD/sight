@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,14 +23,11 @@
 #include "app/extension/config.hpp"
 
 #include <core/id.hpp>
-#include <core/runtime/helper.hpp>
 #include <core/runtime/module.hpp>
 #include <core/runtime/runtime.hpp>
 
 #include <data/map.hpp>
 #include <data/string.hpp>
-
-#include <boost/algorithm/string.hpp>
 
 namespace sight::app::extension
 {
@@ -220,7 +217,7 @@ void config::clear_registry()
 
 core::runtime::config_t config::get_adapted_template_config(
     const std::string& _config_id,
-    const field_adaptor_t _field_adaptors,
+    const field_adaptor_t _replace_fields,
     const std::string& _auto_prefix_id
 )
 {
@@ -240,7 +237,7 @@ core::runtime::config_t config::get_adapted_template_config(
     for(const auto& param : iter->second->parameters)
     {
         const std::string variable = to_variable(param.first);
-        if(auto iter_field = _field_adaptors.find(param.first); iter_field != _field_adaptors.end())
+        if(auto iter_field = _replace_fields.find(param.first); iter_field != _replace_fields.end())
         {
             fields[variable] = iter_field->second;
         }
@@ -263,7 +260,7 @@ core::runtime::config_t config::get_adapted_template_config(
         const std::string variable      = to_variable(object.first);
         bool object_passed_as_parameter = false;
 
-        if(const auto iter_field = _field_adaptors.find(object.first); iter_field != _field_adaptors.end())
+        if(const auto iter_field = _replace_fields.find(object.first); iter_field != _replace_fields.end())
         {
             fields[variable]           = iter_field->second;
             object_passed_as_parameter = true;
@@ -399,6 +396,30 @@ std::vector<std::string> config::get_configs_from_group(const std::string& _grou
 
 //-----------------------------------------------------------------------------
 
+std::optional<app_info::objects_info_t> config::get_object_parameter(
+    const std::string& _config_id,
+    const std::string& _object_uid
+) const
+{
+    core::mt::read_lock lock(m_registry_mutex);
+
+    const auto config_it = m_reg.find(_config_id);
+    SIGHT_THROW_IF(
+        "The id " << _config_id << " is not found in the application configuration registry",
+        config_it == m_reg.end()
+    );
+
+    const auto object_it = config_it->second->objects.find(_object_uid);
+    if(object_it == config_it->second->objects.end())
+    {
+        return std::nullopt;
+    }
+
+    return object_it->second;
+}
+
+//-----------------------------------------------------------------------------
+
 field_adaptor_t config::map_to_field_adaptor(data::map::csptr _field_adaptors)
 {
     field_adaptor_t fields;
@@ -503,7 +524,7 @@ core::runtime::config_t config::adapt_config(
                 if(attribute.first == "by" || (_parent == "param" && attribute.first == "value"))
                 {
                     // Look inside the map of potential replacements
-                    if(_uid_parameter_replace.find(attribute_value) != _uid_parameter_replace.end())
+                    if(_uid_parameter_replace.contains(attribute_value))
                     {
                         result.put(
                             "<xmlattr>." + attribute.first,

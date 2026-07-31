@@ -27,7 +27,8 @@
 #include "app/config_manager.hpp"
 
 #include "service/base.hpp"
-#include "service/extension/config.hpp"
+
+#include <data/object.hpp>
 
 #include <core/tools/failed.hpp>
 
@@ -107,6 +108,12 @@ private:
 
     /// Stores key and uid of optional inputs.
     std::map<std::string, std::pair<std::string, size_t> > m_optional_inputs;
+
+    /// Stores key and value for keys passed with a literal value.
+    std::map<std::string, std::string> m_value_inputs;
+
+    /// Keep local objects created from literal values alive while the configuration is running.
+    std::vector<data::object::sptr> m_local_value_objects;
 };
 
 //------------------------------------------------------------------------------

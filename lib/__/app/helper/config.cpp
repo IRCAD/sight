@@ -102,11 +102,11 @@ core::com::helper::proxy_connections config::parse_connections(
 //------------------------------------------------------------------------------
 
 void config::parse_object(
-    const boost::property_tree::ptree& _config,
+    const boost::property_tree::ptree& _cfg,
     service::object_parser::objects_t& _objects
 )
 {
-    const boost::property_tree::ptree config = _config.get_child("object", _config);
+    const boost::property_tree::ptree config = _cfg.get_child("object", _cfg);
 
     // Id
     config_attribute_t id("", false);
@@ -323,6 +323,8 @@ app::detail::service_config config::parse_service(
     // AutoConnect
     srv_config.m_global_auto_connect = core::ptree::get_value(_srv_elem, "<xmlattr>.auto_connect", true);
 
+    const bool is_config_launcher = srv_config.m_type.ends_with("::config_launcher");
+
     // Worker key
     srv_config.m_worker = _srv_elem.get<std::string>("<xmlattr>.worker", "");
 
@@ -415,7 +417,16 @@ app::detail::service_config config::parse_service(
                 app::detail::object_serviceconfig group_objconfig = objconfig;
 
                 // Identifier
-                group_objconfig.m_uid = group_cfg->second.get<std::string>("<xmlattr>.uid", "");
+                const auto uid   = group_cfg->second.get_optional<std::string>("<xmlattr>.uid");
+                const auto value = group_cfg->second.get_optional<std::string>("<xmlattr>.value");
+
+                if(!uid.has_value() && is_config_launcher && value.has_value())
+                {
+                    // Value-only keys are handled by config_launcher itself, no object binding is needed here.
+                    continue;
+                }
+
+                group_objconfig.m_uid = uid.value_or("");
                 SIGHT_ASSERT(
                     std::string(_err_msg_head) + "\"uid\" attribute is empty" + err_msg_tail,
                     !group_objconfig.m_uid.empty()
@@ -448,7 +459,16 @@ app::detail::service_config config::parse_service(
         else
         {
             // Identifier
-            objconfig.m_uid = cfg.second.get<std::string>("<xmlattr>.uid", "");
+            const auto uid   = cfg.second.get_optional<std::string>("<xmlattr>.uid");
+            const auto value = cfg.second.get_optional<std::string>("<xmlattr>.value");
+
+            if(!uid.has_value() && is_config_launcher && value.has_value())
+            {
+                // Value-only keys are handled by config_launcher itself, no object binding is needed here.
+                continue;
+            }
+
+            objconfig.m_uid = uid.value_or("");
             SIGHT_ASSERT(
                 std::string(_err_msg_head) + "\"uid\" attribute is empty" + err_msg_tail,
                 !objconfig.m_uid.empty()

@@ -23,6 +23,8 @@
 #include "app/helper/config_launcher.hpp"
 
 #include "app/detail/config_manager.hpp"
+#include "app/extension/config.hpp"
+#include "app/helper/config.hpp"
 
 #include "core/runtime/path.hpp"
 #include "core/runtime/validator.hpp"
@@ -41,6 +43,10 @@ void config_launcher::parse_config(
     const service::base::sptr& _service
 )
 {
+    m_parameters.clear();
+    m_optional_inputs.clear();
+    m_value_inputs.clear();
+
     const service::config_t& old_config = _config;
     if(old_config.count("appConfig") == 1)
     {
@@ -88,7 +94,7 @@ service::config_t config_launcher::init_config(
         SIGHT_FATAL_IF("validation", not s_VALIDATOR->validate(validate_cfg));
     }
 
-    size_t i = 0;
+    size_t inout_index = 0;
     if(const auto inouts_cfg = _old_config.get_child_optional("inout"); inouts_cfg.has_value())
     {
         for(const auto& it_cfg : boost::make_iterator_range(inouts_cfg->equal_range("key")))
@@ -98,33 +104,54 @@ service::config_t config_launcher::init_config(
             const auto key = it_cfg.second.get<std::string>("<xmlattr>.name");
             SIGHT_ASSERT("[" + _service->get_id() + "] Missing 'key' tag.", !key.empty());
 
-            const auto uid = it_cfg.second.get<std::string>("<xmlattr>.uid");
-            SIGHT_ASSERT("[" + _service->get_id() + "] Missing 'uid' tag.", !uid.empty());
+            const auto uid   = it_cfg.second.get_optional<std::string>("<xmlattr>.uid");
+            const auto value = it_cfg.second.get_optional<std::string>("<xmlattr>.value");
+
+            SIGHT_ASSERT(
+                "[" + _service->get_id() + "] Exactly one of 'uid' or 'value' is required in <key>.",
+                uid.has_value() != value.has_value()
+            );
 
             parameter_cfg.add("<xmlattr>.replace", key);
 
             const bool optional = core::ptree::get_value(it_cfg.second, "<xmlattr>.optional", false);
 
-            if(optional)
+            if(uid.has_value())
             {
-                m_optional_inputs[key] = {uid, i};
-                parameter_cfg.add("<xmlattr>.by", uid);
+                if(optional)
+                {
+                    m_optional_inputs[key] = {*uid, inout_index};
+                    parameter_cfg.add("<xmlattr>.by", *uid);
+                }
+                else
+                {
+                    auto obj = _service->inout(OBJECT_GROUP, inout_index).lock();
+                    if(obj == nullptr)
+                    {
+                        // Backwards compatibility
+                        obj = _service->inout(DATA_GROUP, inout_index).lock();
+                    }
+
+                    SIGHT_ASSERT(
+                        std::string("Object key '") + key + "' with uid '" + *uid + "' does not exist.",
+                        obj
+                    );
+                    parameter_cfg.add("<xmlattr>.by", obj->get_id());
+                }
+
+                ++inout_index;
             }
             else
             {
-                auto obj = _service->inout(OBJECT_GROUP, i).lock();
-                if(obj == nullptr)
-                {
-                    // Backwards compatibility
-                    obj = _service->inout(DATA_GROUP, i).lock();
-                }
-
-                SIGHT_ASSERT(std::string("Object key '") + key + "' with uid '" + uid + "' does not exist.", obj);
-                parameter_cfg.add("<xmlattr>.by", obj->get_id());
+                SIGHT_ASSERT(
+                    "[" + _service->get_id() + "] 'optional' cannot be used with literal 'value' in <key>.",
+                    !optional
+                );
+                m_value_inputs[key] = *value;
+                parameter_cfg.add("<xmlattr>.by", *value);
             }
 
             srv_cfg.add_child("parameters.parameter", parameter_cfg);
-            ++i;
         }
     }
 
@@ -193,9 +220,46 @@ void config_launcher::start_config(
 {
     field_adaptor_t replace_map(_opt_replace_map);
 
+    m_local_value_objects.clear();
+
     for(const auto& param : m_parameters)
     {
         replace_map[param.first] = param.second;
+    }
+
+    for(const auto& [key, value] : m_value_inputs)
+    {
+        const auto object_parameter = app::extension::config::get()->get_object_parameter(m_config_key, key);
+
+        SIGHT_THROW_IF(
+            "[" << m_config_key << "] key '" << key << "' is passed with 'value' but no object parameter exists.",
+            !object_parameter.has_value()
+        );
+
+        const auto& object_type = object_parameter->type;
+        SIGHT_THROW_IF(
+            "[" << m_config_key << "] object parameter '" << key << "' has an empty type.",
+            object_type.empty()
+        );
+
+        const auto object_uid = app::extension::config::get_unique_identifier("config_launcher_" + key);
+
+        service::config_t object_cfg;
+        object_cfg.put("<xmlattr>.uid", object_uid);
+        object_cfg.put("<xmlattr>.type", object_type);
+        object_cfg.put("<xmlattr>.value", value);
+
+        service::object_parser::objects_t objects;
+        app::helper::config::parse_object(object_cfg, objects);
+
+        const auto created_object = objects.created.find(object_uid);
+        SIGHT_ASSERT(
+            "[" + m_config_key + "] value object '" + object_uid + "' has not been created.",
+            created_object != objects.created.end()
+        );
+
+        m_local_value_objects.push_back(created_object->second);
+        replace_map[key] = created_object->second->get_id();
     }
 
     // Init manager
@@ -238,6 +302,8 @@ void config_launcher::stop_config()
         m_config_manager->stop_and_destroy();
         m_config_manager.reset();
     }
+
+    m_local_value_objects.clear();
 
     m_config_is_running = false;
 }

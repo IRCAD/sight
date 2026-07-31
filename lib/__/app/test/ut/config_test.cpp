@@ -1523,6 +1523,118 @@ TEST_SUITE("sight::app::config")
 
 //------------------------------------------------------------------------------
 
+    TEST_CASE_FIXTURE(fixture, "value_inout_parameter_test")
+    {
+        m_app_config_mgr = sight::app::ut::launch_app_config_mgr("value_inout_parameter_test", true);
+
+        sight::core::object::sptr receiver_obj;
+        int j = 0;
+        while(receiver_obj == nullptr && j++ < 200)
+        {
+            receiver_obj = sight::core::id::get_object("value_inout_parameter_sub_config", j, "receiver");
+        }
+
+        CHECK(receiver_obj != nullptr);
+
+        auto receiver = std::dynamic_pointer_cast<sight::app::ut::test_service>(receiver_obj);
+        CHECK(receiver != nullptr);
+        CHECK(receiver->started());
+
+        auto show_image =
+            std::dynamic_pointer_cast<const sight::data::boolean>(receiver->input("data1").lock().get_shared());
+        CHECK(show_image != nullptr);
+        CHECK_EQ(true, show_image->value());
+
+        auto position =
+            std::dynamic_pointer_cast<const sight::data::dvec3>(receiver->input("data2").lock().get_shared());
+        CHECK(position != nullptr);
+        CHECK_EQ(sight::vec3d_t({100., 20., 12.}), position->value());
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE_FIXTURE(fixture, "value_inout_dvec3_test")
+    {
+        m_app_config_mgr = sight::app::ut::launch_app_config_mgr("value_inout_dvec3_test", true);
+
+        sight::core::object::sptr receiver_obj;
+        int j = 0;
+        while(receiver_obj == nullptr && j++ < 200)
+        {
+            receiver_obj = sight::core::id::get_object("value_inout_dvec3_sub_config", j, "receiver");
+        }
+
+        CHECK(receiver_obj != nullptr);
+
+        auto receiver = std::dynamic_pointer_cast<sight::app::ut::test_service>(receiver_obj);
+        CHECK(receiver != nullptr);
+        CHECK(receiver->started());
+
+        auto position =
+            std::dynamic_pointer_cast<const sight::data::dvec3>(receiver->input("data1").lock().get_shared());
+        CHECK(position != nullptr);
+        CHECK_EQ(sight::vec3d_t({11.5, -42.0, 7.25}), position->value());
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE_FIXTURE(fixture, "value_inout_optional_override_test")
+    {
+        m_app_config_mgr = sight::app::ut::launch_app_config_mgr("value_inout_optional_override_test", true);
+
+        sight::core::object::sptr receiver_obj;
+        int j = 0;
+        while(receiver_obj == nullptr && j++ < 200)
+        {
+            receiver_obj = sight::core::id::get_object("value_inout_optional_override_sub_config", j, "receiver");
+        }
+
+        CHECK(receiver_obj != nullptr);
+
+        auto receiver = std::dynamic_pointer_cast<sight::app::ut::test_service>(receiver_obj);
+        CHECK(receiver != nullptr);
+        CHECK(receiver->started());
+
+        auto position =
+            std::dynamic_pointer_cast<const sight::data::dvec3>(receiver->input("data1").lock().get_shared());
+        CHECK(position != nullptr);
+
+        // Optional object has default "1;2;3" in target config, but launcher-provided value must take precedence.
+        CHECK_EQ(sight::vec3d_t({9., 8., 7.}), position->value());
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE_FIXTURE(fixture, "value_inout_optional_mixed_test")
+    {
+        m_app_config_mgr = sight::app::ut::launch_app_config_mgr("value_inout_optional_mixed_test", true);
+
+        sight::core::object::sptr receiver_obj;
+        int j = 0;
+        while(receiver_obj == nullptr && j++ < 200)
+        {
+            receiver_obj = sight::core::id::get_object("value_inout_optional_mixed_sub_config", j, "receiver");
+        }
+
+        CHECK(receiver_obj != nullptr);
+
+        auto receiver = std::dynamic_pointer_cast<sight::app::ut::test_service>(receiver_obj);
+        CHECK(receiver != nullptr);
+        CHECK(receiver->started());
+
+        auto position_opt =
+            std::dynamic_pointer_cast<const sight::data::dvec3>(receiver->input("data1").lock().get_shared());
+        CHECK(position_opt != nullptr);
+        CHECK_EQ(sight::vec3d_t({9., 8., 7.}), position_opt->value());
+
+        auto position_uid =
+            std::dynamic_pointer_cast<const sight::data::dvec3>(receiver->input("data2").lock().get_shared());
+        CHECK(position_uid != nullptr);
+        CHECK_EQ(sight::vec3d_t({-5., 0., 4.}), position_uid->value());
+    }
+
+//------------------------------------------------------------------------------
+
     TEST_CASE_FIXTURE(fixture, "object_config_test")
     {
         m_app_config_mgr = sight::app::ut::launch_app_config_mgr("objectConfigTest");

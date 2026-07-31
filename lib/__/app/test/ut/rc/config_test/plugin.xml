@@ -386,6 +386,120 @@
     </extension>
 
     <extension implements="sight::app::extension::config">
+        <id>value_inout_parameter_sub_config</id>
+        <parameters>
+            <object uid="show_image" type="sight::data::boolean" />
+            <object uid="position" type="sight::data::dvec3" />
+        </parameters>
+        <desc>Sub-configuration for config_launcher value-based inout parameters</desc>
+        <config>
+            <service uid="receiver" type="sight::app::ut::test2_inputs">
+                <in key="data1" uid="${show_image}" />
+                <in key="data2" uid="${position}" />
+            </service>
+        </config>
+    </extension>
+
+    <extension implements="sight::app::extension::config">
+        <id>value_inout_parameter_test</id>
+        <desc>Test configuration for mixed uid/value object parameters in config_launcher</desc>
+        <config>
+            <object uid="position_ref" type="sight::data::dvec3" value="100;20;12" />
+
+            <service uid="value_launcher" type="sight::app::config_launcher">
+                <properties config="value_inout_parameter_sub_config" />
+                <inout group="object">
+                    <key name="show_image" value="true" />
+                    <key name="position" uid="position_ref" />
+                </inout>
+            </service>
+        </config>
+    </extension>
+
+    <extension implements="sight::app::extension::config">
+        <id>value_inout_dvec3_sub_config</id>
+        <parameters>
+            <object uid="position" type="sight::data::dvec3" />
+        </parameters>
+        <desc>Sub-configuration for dvec3 value passed through config_launcher</desc>
+        <config>
+            <service uid="receiver" type="sight::app::ut::test1_input">
+                <in key="data1" uid="${position}" />
+            </service>
+        </config>
+    </extension>
+
+    <extension implements="sight::app::extension::config">
+        <id>value_inout_dvec3_test</id>
+        <desc>Test configuration for dvec3 literal value in config_launcher</desc>
+        <config>
+            <service uid="value_launcher" type="sight::app::config_launcher">
+                <properties config="value_inout_dvec3_sub_config" />
+                <inout group="object">
+                    <key name="position" value="11.5;-42.0;7.25" />
+                </inout>
+            </service>
+        </config>
+    </extension>
+
+    <extension implements="sight::app::extension::config">
+        <id>value_inout_optional_override_sub_config</id>
+        <parameters>
+            <object uid="position" type="sight::data::dvec3" optional="true" value="1;2;3" />
+        </parameters>
+        <desc>Sub-configuration to ensure passed value overrides optional default</desc>
+        <config>
+            <service uid="receiver" type="sight::app::ut::test1_input">
+                <in key="data1" uid="${position}" />
+            </service>
+        </config>
+    </extension>
+
+    <extension implements="sight::app::extension::config">
+        <id>value_inout_optional_override_test</id>
+        <desc>Test configuration for optional object parameter override with value in config_launcher</desc>
+        <config>
+            <service uid="value_launcher" type="sight::app::config_launcher">
+                <properties config="value_inout_optional_override_sub_config" />
+                <inout group="object">
+                    <key name="position" value="9;8;7" />
+                </inout>
+            </service>
+        </config>
+    </extension>
+
+    <extension implements="sight::app::extension::config">
+        <id>value_inout_optional_mixed_sub_config</id>
+        <parameters>
+            <object uid="position_opt" type="sight::data::dvec3" optional="true" value="1;2;3" />
+            <object uid="position_uid" type="sight::data::dvec3" />
+        </parameters>
+        <desc>Sub-configuration for mixed optional value and uid object parameters</desc>
+        <config>
+            <service uid="receiver" type="sight::app::ut::test2_inputs">
+                <in key="data1" uid="${position_opt}" />
+                <in key="data2" uid="${position_uid}" />
+            </service>
+        </config>
+    </extension>
+
+    <extension implements="sight::app::extension::config">
+        <id>value_inout_optional_mixed_test</id>
+        <desc>Test configuration for mixed value and uid with optional object in config_launcher</desc>
+        <config>
+            <object uid="position_uid_ref" type="sight::data::dvec3" value="-5;0;4" />
+
+            <service uid="value_launcher" type="sight::app::config_launcher">
+                <properties config="value_inout_optional_mixed_sub_config" />
+                <inout group="object">
+                    <key name="position_opt" value="9;8;7" />
+                    <key name="position_uid" uid="position_uid_ref" />
+                </inout>
+            </service>
+        </config>
+    </extension>
+
+    <extension implements="sight::app::extension::config">
         <id>default_object_id_test_sub_config</id>
         <parameters>
             <object uid="data1" type="sight::data::string" optional="true" value="default_value" />

@@ -22,6 +22,8 @@
 
 #include "dynamic_view.hpp"
 
+#include <app/extension/config.hpp>
+
 #include <algorithm>
 
 #include <ui/__/dialog/message.hpp>
@@ -182,6 +184,21 @@ void dynamic_view::launch_tab(dynamic_view_info& _info)
 
     try
     {
+        _info.local_value_objects = materialize_value_parameters(
+            m_value_parameters,
+            _info.replacement_map,
+            [&_info](const std::string& _key) -> std::string
+            {
+                const auto object_parameter =
+                    app::extension::config::get()->get_object_parameter(_info.view_config_id, _key);
+                return object_parameter.has_value() ? object_parameter->type : std::string {};
+            },
+            [](const std::string& _key) -> std::string
+            {
+                return app::extension::config::get_unique_identifier("activity_value_" + _key);
+            },
+            _info.view_config_id
+        );
         helper->set_config(_info.view_config_id, _info.replacement_map);
         if(!m_dynamic_config_start_stop)
         {

@@ -28,6 +28,7 @@
 #include <app/config_manager.hpp>
 
 #include <data/activity.hpp>
+#include <data/object.hpp>
 
 #include <ui/__/activity_view.hpp>
 #include <ui/qt/container/widget.hpp>
@@ -37,6 +38,7 @@
 
 #include <map>
 #include <set>
+#include <vector>
 
 class QTabWidget;
 namespace sight::data
@@ -166,6 +168,7 @@ private:
         std::string tab_id;
         std::string view_config_id;
         std::map<std::string, std::string> replacement_map;
+        std::vector<data::object::sptr> local_value_objects;
         data::activity::sptr activity;
     };
 

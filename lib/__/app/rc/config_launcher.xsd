@@ -35,7 +35,8 @@
 
     <xs:complexType name="key_t">
         <xs:attribute name='name' type='xs:string' use="required" />
-        <xs:attribute name='uid' type='xs:string' use="required" />
+        <xs:attribute name='uid' type='xs:string' />
+        <xs:attribute name='value' type='xs:string' />
         <xs:attribute name='optional' type='boolean_t' />
     </xs:complexType>
 
