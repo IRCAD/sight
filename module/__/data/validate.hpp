@@ -113,8 +113,8 @@ private:
     sight::data::property<sight::data::boolean> m_on_change {this, "on_change", false};
 
     /// Store the validation state and track changes
-    sight::data::ptr<sight::data::boolean, sight::data::access::inout> m_valid {this, "valid", true};
-    sight::data::ptr<sight::data::boolean, sight::data::access::inout> m_invalid {this, "invalid", true};
+    sight::data::ptr<sight::data::boolean, sight::data::access::inout> m_valid {this, "valid", std::nullopt};
+    sight::data::ptr<sight::data::boolean, sight::data::access::inout> m_invalid {this, "invalid", std::nullopt};
 
     /// Tracks the previous validation result to detect state changes
     std::optional<bool> m_previous_result;

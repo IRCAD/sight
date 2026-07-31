@@ -25,7 +25,10 @@
 
 #include <core/ptree.hpp>
 
+#include <service/value_parameters.hpp>
+
 #include <ranges>
+#include <set>
 
 namespace sight::service::detail
 {
@@ -154,7 +157,7 @@ void service::configure()
                         else
                         {
                             auto new_obj = property->make_default();
-                            m_created_properties.emplace_back(new_obj);
+                            m_created_objects.emplace_back(new_obj);
 
                             if(const auto& prop_cfg = properties_cfgs.find(std::string(key.first));
                                prop_cfg != properties_cfgs.end())
@@ -195,6 +198,8 @@ void service::configure()
                     }
                 }
 
+                this->create_value_objects();
+
                 m_service.configuring();
                 m_service.configuring(m_configuration);
             }
@@ -231,6 +236,155 @@ void service::configure()
     }
 
     m_connections.connect_start_slot(m_service);
+}
+
+//-----------------------------------------------------------------------------
+
+void service::create_value_objects()
+{
+    // Collect the keys that are not bound to an object uid. Those are left empty on purpose by the application
+    // configuration, so that we can fill them here, either from the literal value or from the declared default value.
+    std::map<std::pair<std::string, std::optional<std::size_t> >, std::optional<std::string> > value_cfgs;
+
+    // All the keys mentioned in the configuration, whether they declare a uid or not.
+    std::set<std::string> declared_keys;
+
+    for(const auto* data_keyword : {"in", "inout"})
+    {
+        const auto obj_cfgs = m_configuration.equal_range(data_keyword);
+        for(auto obj_cfg = obj_cfgs.first ; obj_cfg != obj_cfgs.second ; ++obj_cfg)
+        {
+            if(const auto group = obj_cfg->second.get_optional<std::string>("<xmlattr>.group"); group.has_value())
+            {
+                declared_keys.insert(*group);
+
+                // The index must be computed exactly like in app::helper::config::parse_service, i.e. every key
+                // consumes one index, whether it declares a uid or a value.
+                std::size_t index   = 0;
+                const auto key_cfgs = obj_cfg->second.equal_range("key");
+                for(auto key_cfg = key_cfgs.first ; key_cfg != key_cfgs.second ; ++key_cfg)
+                {
+                    const auto uid   = key_cfg->second.get_optional<std::string>("<xmlattr>.uid");
+                    const auto value = key_cfg->second.get_optional<std::string>("<xmlattr>.value");
+                    if(!uid.has_value() && value.has_value())
+                    {
+                        value_cfgs[{*group, index}] = *value;
+                    }
+
+                    ++index;
+                }
+            }
+            else
+            {
+                const auto key = obj_cfg->second.get<std::string>("<xmlattr>.key", "");
+                if(key.empty())
+                {
+                    // Not a data declaration, this is left to the application configuration parser.
+                    continue;
+                }
+
+                declared_keys.insert(key);
+
+                if(const auto uid = obj_cfg->second.get_optional<std::string>("<xmlattr>.uid"); !uid.has_value())
+                {
+                    const auto value = obj_cfg->second.get_optional<std::string>("<xmlattr>.value");
+                    value_cfgs[{key, std::nullopt}] =
+                        value.has_value() ? std::make_optional(*value) : std::nullopt;
+                }
+            }
+        }
+    }
+
+    const auto& container = m_service.container();
+
+    // Keys that are not mentioned at all in the configuration, but that declare a default value, are built as well.
+    for(const auto& [id, ptr] : container)
+    {
+        const auto& [key, index] = id;
+        if(!index.has_value() && !declared_keys.contains(std::string(key)) && ptr->make_default_object() != nullptr)
+        {
+            value_cfgs[{std::string(key), std::nullopt}] = std::nullopt;
+        }
+    }
+
+    for(const auto& [id, value] : value_cfgs)
+    {
+        const auto& [key, index] = id;
+
+        const auto declaration = container.find({key, {}});
+        SIGHT_THROW_IF(
+            "No data::ptr declared with key '" << key << "' in service '" << m_service.get_id() << "'.",
+            declaration == container.end()
+        );
+
+        auto* const ptr = declaration->second;
+        SIGHT_THROW_IF(
+            "Key '" << key << "' of service '" << m_service.get_id()
+            << "' is an output, it can not be declared with a value.",
+            ptr->access() == data::access::out
+        );
+
+        if(!value.has_value() && ptr->get() != nullptr)
+        {
+            // Already assigned, typically set programmatically before the service was configured.
+            continue;
+        }
+
+        sight::data::object::sptr new_obj;
+
+        if(value.has_value())
+        {
+            const auto object_type = m_service.resolve_object_type(key, index);
+            if(!object_type.has_value())
+            {
+                // The service builds the object itself at a later stage, typically when it knows the configuration
+                // the value will be forwarded to.
+                continue;
+            }
+
+            SIGHT_THROW_IF(
+                "Could not resolve the type of the object to build for key '" << key << "' of service '"
+                << m_service.get_id() << "'. Either use a 'uid', or override resolve_object_type() in the service.",
+                object_type->empty()
+            );
+
+            try
+            {
+                new_obj = sight::service::make_object_from_value(*object_type, *value);
+            }
+            catch(const std::exception& e)
+            {
+                SIGHT_THROW(
+                    "Key '" << key << "' of service '" << m_service.get_id() << "' can not be built. " << e.what()
+                );
+            }
+        }
+        else
+        {
+            // No literal value, fall back on the default value declared with the data::ptr, if any. When there is
+            // none, the key is simply left unassigned, like it was before, and the object may be set programmatically
+            // or reported as missing when the service starts.
+            new_obj = ptr->make_default_object();
+            if(!new_obj)
+            {
+                continue;
+            }
+        }
+
+        if(!new_obj->has_id())
+        {
+            // Give a deterministic identifier, so that the object can be referenced like any other one, typically
+            // when it is forwarded to a sub-configuration.
+            new_obj->set_id(
+                core::id::join(m_service.get_id(), key, index.has_value() ? std::to_string(*index) : "value")
+            );
+        }
+
+        m_created_objects.emplace_back(new_obj);
+        // We do not connect created objects since they are not accessible from outside the service, and thus can not
+        // be modified by other services.
+        m_service.set_object(new_obj, key, index, ptr->access(), false, ptr->optional());
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -456,6 +610,14 @@ void service::auto_connect()
 {
     sight::service::connections_t connection_map = m_service.auto_connections();
     m_auto_connected = false;
+
+    if(m_service.get_id().ends_with("swap_target_tool_srv"))
+    {
+        SIGHT_WARN(
+            "Service " << std::quoted(m_service.get_id())
+            << " is auto-connected, this is likely to introduce timing issues."
+        );
+    }
 
     for(const auto& [key, ptr] : m_service.container())
     {

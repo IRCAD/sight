@@ -44,6 +44,7 @@ SIGHT_REGISTER_SERVICE(sight::app::ut::test_srv, sight::app::ut::test1_input1_in
 SIGHT_REGISTER_SERVICE(sight::app::ut::test_srv, sight::app::ut::test1_input1_opt_input1_opt_in_out);
 SIGHT_REGISTER_SERVICE(sight::app::ut::test_srv, sight::app::ut::test_out);
 SIGHT_REGISTER_SERVICE(sight::service::base, sight::app::ut::test_service_with_data);
+SIGHT_REGISTER_SERVICE(sight::service::base, sight::app::ut::test_service_with_typed_data);
 SIGHT_REGISTER_SERVICE(sight::service::base, sight::app::ut::test_service_with_properties);
 
 namespace sight::app::ut

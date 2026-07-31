@@ -25,6 +25,7 @@
 #include <core/com/has_slots.hpp>
 #include <core/com/signal.hpp>
 
+#include <data/boolean.hpp>
 #include <data/dvec3.hpp>
 #include <data/generic.hpp>
 #include <data/image.hpp>
@@ -560,6 +561,50 @@ public:
     data::ptr<data::object, data::access::in> m_input {this, "input"};
     data::ptr_vector<data::integer, data::access::inout> m_inout_group {this, "inoutGroup"};
     data::ptr<data::object, data::access::out> m_output {this, "output", true};
+};
+
+class test_service_with_typed_data : public service::base
+{
+public:
+
+    SIGHT_DECLARE_SERVICE(test_service_with_typed_data, service::base);
+    test_service_with_typed_data() noexcept = default;
+    ~test_service_with_typed_data() noexcept override = default;
+
+protected:
+
+    //------------------------------------------------------------------------------
+
+    void configuring() override
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void starting() override
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void stopping() override
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void updating() override
+    {
+    }
+
+public:
+
+    data::ptr<data::boolean, data::access::in> m_flag {this, "flag"};
+    data::ptr<data::dvec3, data::access::inout> m_position {this, "position"};
+
+    /// Declared with a default value, so it can be omitted in the configuration.
+    data::ptr<data::integer, data::access::in> m_threshold {this, "threshold", 50};
+    data::ptr<data::integer, data::access::inout> m_offset {this, "offset", -3};
 };
 
 class test_service_with_properties : public service::base

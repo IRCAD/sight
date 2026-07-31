@@ -104,7 +104,7 @@ public:
 
     sight::data::ptr<sight::data::object, sight::data::access::in> m_input {this, INPUT};
     sight::data::ptr<sight::data::integer, sight::data::access::inout> m_inout {this, INOUT};
-    sight::data::ptr<sight::data::integer, sight::data::access::out> m_output {this, OUTPUT, true};
+    sight::data::ptr<sight::data::integer, sight::data::access::out> m_output {this, OUTPUT};
 };
 
 const sight::service::base::key_t locked_srv::INPUT  = "input";

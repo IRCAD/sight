@@ -29,6 +29,8 @@
 #include <data/activity.hpp>
 #include <data/object.hpp>
 
+#include <service/value_parameters.hpp>
+
 #include <boost/property_tree/ptree.hpp>
 
 #include <functional>
@@ -48,12 +50,12 @@ public:
     using configuration_t    = boost::property_tree::ptree;
     using parameter_t        = activity::extension::activity_config_param;
     using parameters_t       = activity::extension::activity_config_params_type;
-    using replace_map_t      = std::map<std::string, std::string>;
+    using replace_map_t      = service::replace_map_t;
     using in_out_map_t       = std::vector<std::string>;
-    using value_parameters_t = std::map<std::string, std::string>;
+    using value_parameters_t = service::value_parameters_t;
 
-    using type_resolver_t = std::function<std::string(const std::string&)>;
-    using uid_generator_t = std::function<std::string(const std::string&)>;
+    using type_resolver_t = service::type_resolver_t;
+    using uid_generator_t = service::uid_generator_t;
 
     /// Constructor. Do nothing.
     SIGHT_ACTIVITY_API launcher() = default;
@@ -67,23 +69,6 @@ protected:
     SIGHT_ACTIVITY_API virtual void parse_configuration(
         const configuration_t& _config,
         const in_out_map_t& _inouts = in_out_map_t()
-    );
-
-    /**
-     * @brief Create typed objects from literal value parameters and update replacement map with their UIDs.
-     * @param _value_parameters key/value parameters parsed from <inout><key value="..."/>
-     * @param _replacement_map replacement map updated with generated object UIDs
-     * @param _type_resolver callback returning the expected object type for a key
-     * @param _uid_generator callback used to generate a unique UID for a key
-     * @param _context_id human-readable context used in error messages
-     * @return created objects that must be kept alive while the launched config is running
-     */
-    static SIGHT_ACTIVITY_API std::vector<data::object::sptr> materialize_value_parameters(
-        const value_parameters_t& _value_parameters,
-        replace_map_t& _replacement_map,
-        const type_resolver_t& _type_resolver,
-        const uid_generator_t& _uid_generator,
-        const std::string& _context_id
     );
 
     /// Create the activity given in 'mainActivity' configuration

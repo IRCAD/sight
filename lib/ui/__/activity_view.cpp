@@ -61,6 +61,21 @@ void activity_view::configuring()
 
 //------------------------------------------------------------------------------
 
+std::optional<std::string> activity_view::resolve_object_type(
+    std::string_view _key,
+    std::optional<std::size_t> _index
+) const
+{
+    if(_index.has_value() && _key == m_data.key())
+    {
+        return std::nullopt;
+    }
+
+    return service::base::resolve_object_type(_key, _index);
+}
+
+//------------------------------------------------------------------------------
+
 bool activity_view::validate_activity(data::activity::sptr _activity) const
 {
     bool is_valid = false;

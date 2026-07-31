@@ -139,7 +139,7 @@ service::config_t config_launcher::init_config(
                     parameter_cfg.add("<xmlattr>.by", obj->get_id());
                 }
 
-                ++inout_index;
+                srv_cfg.add_child("parameters.parameter", parameter_cfg);
             }
             else
             {
@@ -147,11 +147,15 @@ service::config_t config_launcher::init_config(
                     "[" + _service->get_id() + "] 'optional' cannot be used with literal 'value' in <key>.",
                     !optional
                 );
+
+                // The type of the object is declared by the sub-configuration, which may only be known at runtime.
+                // The object is thus built when the configuration is launched, see start_config().
                 m_value_inputs[key] = *value;
-                parameter_cfg.add("<xmlattr>.by", *value);
             }
 
-            srv_cfg.add_child("parameters.parameter", parameter_cfg);
+            // The index is consumed by every key, including the ones declaring a literal value, so that it stays
+            // aligned with the group indices computed when parsing the service configuration.
+            ++inout_index;
         }
     }
 
@@ -220,47 +224,27 @@ void config_launcher::start_config(
 {
     field_adaptor_t replace_map(_opt_replace_map);
 
-    m_local_value_objects.clear();
-
     for(const auto& param : m_parameters)
     {
         replace_map[param.first] = param.second;
     }
 
-    for(const auto& [key, value] : m_value_inputs)
-    {
-        const auto object_parameter = app::extension::config::get()->get_object_parameter(m_config_key, key);
-
-        SIGHT_THROW_IF(
-            "[" << m_config_key << "] key '" << key << "' is passed with 'value' but no object parameter exists.",
-            !object_parameter.has_value()
-        );
-
-        const auto& object_type = object_parameter->type;
-        SIGHT_THROW_IF(
-            "[" << m_config_key << "] object parameter '" << key << "' has an empty type.",
-            object_type.empty()
-        );
-
-        const auto object_uid = app::extension::config::get_unique_identifier("config_launcher_" + key);
-
-        service::config_t object_cfg;
-        object_cfg.put("<xmlattr>.uid", object_uid);
-        object_cfg.put("<xmlattr>.type", object_type);
-        object_cfg.put("<xmlattr>.value", value);
-
-        service::object_parser::objects_t objects;
-        app::helper::config::parse_object(object_cfg, objects);
-
-        const auto created_object = objects.created.find(object_uid);
-        SIGHT_ASSERT(
-            "[" + m_config_key + "] value object '" + object_uid + "' has not been created.",
-            created_object != objects.created.end()
-        );
-
-        m_local_value_objects.push_back(created_object->second);
-        replace_map[key] = created_object->second->get_id();
-    }
+    // Build the objects declared with a literal value. This can only be done now, because their type is declared by
+    // the sub-configuration, which may be chosen at runtime.
+    m_local_value_objects = service::materialize_value_parameters(
+        m_value_inputs,
+        replace_map,
+        [this](const std::string& _key) -> std::string
+        {
+            const auto object_parameter = app::extension::config::get()->get_object_parameter(m_config_key, _key);
+            return object_parameter.has_value() ? object_parameter->type : std::string {};
+        },
+        [](const std::string& _key) -> std::string
+        {
+            return app::extension::config::get_unique_identifier("config_launcher_value_" + _key);
+        },
+        m_config_key
+    );
 
     // Init manager
     auto config_manager = std::make_shared<app::detail::config_manager>();
@@ -304,7 +288,6 @@ void config_launcher::stop_config()
     }
 
     m_local_value_objects.clear();
-
     m_config_is_running = false;
 }
 

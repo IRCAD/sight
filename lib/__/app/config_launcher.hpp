@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -52,7 +52,7 @@ namespace sight::app
             <properties config="..." />
             <inout group="object">
                 <key name="object1" uid="..." />
-                <key name="object2" uid="..." />
+                <key name="object2" value="..." />
                 ...
             </inout>
             <parameter replace="channel" by="changeValueChannel" />
@@ -63,7 +63,9 @@ namespace sight::app
  * - \b config [sight::data::string]: identifier of the configuration to launch.
  * @subsection In-Out In-Out:
  * - \b data [sight::data::object]: \b key specifies the name of the parameter in the target configuration and \b uid
- * identifies the objects whose uid are passed as value of the parameter.
+ * identifies the objects whose uid are passed as value of the parameter. Alternatively, \b value gives a literal
+ * value, and the object is then built and owned by this service. Its type is resolved from the declaration of the
+ * matching object in the sub-configuration, when the service starts. The configuration may thus be chosen at runtime.
  * @subsection Configuration Configuration:
  * - \b parameter: \b replace specifies the name of the parameter in the target configuration and \b by the value of
  * this parameter.
@@ -94,6 +96,10 @@ protected:
 
     /// Configures the service
     void configuring(const config_t& _config) override;
+
+    /// Defers the creation of the objects declared with a literal value, until the sub-configuration is known
+    std::optional<std::string> resolve_object_type(std::string_view _key, std::optional<std::size_t> _index)
+    const override;
 
     /// Starts the config
     void starting() override;

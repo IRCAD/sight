@@ -365,6 +365,30 @@ protected:
     SIGHT_SERVICE_API virtual void on_property_set(std::string_view /*unused*/);
 
     /**
+     * @brief Resolves the type of the object to create when a literal value is set in the configuration.
+     *
+     * When an input or an inout is configured with a "value" attribute instead of an object "uid", the object has to
+     * be built on the fly. This method tells which data type must be instantiated for the given key.
+     *
+     * The default implementation relies on the type the matching data::ptr is templated with. It is thus enough for
+     * most services. However, it can not resolve anything for generic declarations, typically
+     * data::ptr_vector<data::object>, and returns an empty string in that case. Services owning such a declaration,
+     * like the configuration launchers, must override this method to resolve the type themselves.
+     *
+     * @warning This is called before configuring(), so an override must only rely on the raw configuration returned by
+     * get_config(), and not on members initialized in configuring().
+     *
+     * @param _key key of the input or inout being configured
+     * @param _index index of the element in the group, if the key belongs to a group
+     * @return the class name of the data to instantiate, an empty string if it can not be resolved, or std::nullopt if
+     * the service builds the object itself at a later stage.
+     */
+    SIGHT_SERVICE_API virtual std::optional<std::string> resolve_object_type(
+        std::string_view _key,
+        std::optional<std::size_t> _index = std::nullopt
+    ) const;
+
+    /**
      * @brief Write information in a stream.
      *
      * This method is used by operator<<(std::ostream & _sstream, base& _service)

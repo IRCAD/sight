@@ -1635,6 +1635,61 @@ TEST_SUITE("sight::app::config")
 
 //------------------------------------------------------------------------------
 
+    TEST_CASE_FIXTURE(fixture, "value_simple_key_test")
+    {
+        m_app_config_mgr = sight::app::ut::launch_app_config_mgr("value_simple_key_test");
+
+        // A simple input and a simple inout, both declared with a literal value instead of an object uid. The type is
+        // deduced from the type the data::ptr is templated with.
+        {
+            auto srv = std::dynamic_pointer_cast<sight::app::ut::test_service_with_typed_data>(
+                sight::core::id::get_object("typed_srv")
+            );
+            CHECK(srv != nullptr);
+            CHECK_EQ(sight::service::base::configuration_status::configured, srv->config_status());
+            CHECK(srv->started());
+
+            const auto flag = srv->m_flag.const_lock();
+            CHECK(flag != nullptr);
+            CHECK_EQ(true, flag->value());
+
+            const auto position = srv->m_position.const_lock();
+            CHECK(position != nullptr);
+            CHECK(sight::vec3d_t({4.5, -1., 0.25}) == position->value());
+
+            // Not declared at all in the configuration, built from the default value declared with the data::ptr.
+            const auto threshold = srv->m_threshold.const_lock();
+            CHECK(threshold != nullptr);
+            CHECK_EQ(std::int64_t(50), threshold->value());
+
+            // Declared without 'uid' nor 'value', built from the default value as well.
+            const auto offset = srv->m_offset.const_lock();
+            CHECK(offset != nullptr);
+            CHECK_EQ(std::int64_t(-3), offset->value());
+        }
+
+        // A group templated with a concrete type, mixing a literal value and an object uid. The value must land at the
+        // right index, the uid keeping its own position.
+        {
+            auto srv = std::dynamic_pointer_cast<sight::app::ut::test_service_with_data>(
+                sight::core::id::get_object("typed_group_srv")
+            );
+            CHECK(srv != nullptr);
+            CHECK_EQ(sight::service::base::configuration_status::configured, srv->config_status());
+            CHECK(srv->started());
+
+            const auto from_value = srv->m_inout_group[0].const_lock();
+            CHECK(from_value != nullptr);
+            CHECK_EQ(std::int64_t(11), from_value->value());
+
+            const auto from_uid = srv->m_inout_group[1].const_lock();
+            CHECK(from_uid != nullptr);
+            CHECK_EQ(std::int64_t(7), from_uid->value());
+        }
+    }
+
+//------------------------------------------------------------------------------
+
     TEST_CASE_FIXTURE(fixture, "object_config_test")
     {
         m_app_config_mgr = sight::app::ut::launch_app_config_mgr("objectConfigTest");

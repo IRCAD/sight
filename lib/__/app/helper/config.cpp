@@ -323,8 +323,6 @@ app::detail::service_config config::parse_service(
     // AutoConnect
     srv_config.m_global_auto_connect = core::ptree::get_value(_srv_elem, "<xmlattr>.auto_connect", true);
 
-    const bool is_config_launcher = srv_config.m_type.ends_with("::config_launcher");
-
     // Worker key
     srv_config.m_worker = _srv_elem.get<std::string>("<xmlattr>.worker", "");
 
@@ -420,9 +418,11 @@ app::detail::service_config config::parse_service(
                 const auto uid   = group_cfg->second.get_optional<std::string>("<xmlattr>.uid");
                 const auto value = group_cfg->second.get_optional<std::string>("<xmlattr>.value");
 
-                if(!uid.has_value() && is_config_launcher && value.has_value())
+                if(!uid.has_value() && value.has_value())
                 {
-                    // Value-only keys are handled by config_launcher itself, no object binding is needed here.
+                    // The object is built on the fly by the service itself, there is nothing to bind here. The index
+                    // is still consumed so that the next keys of the group keep their position.
+                    ++count;
                     continue;
                 }
 
@@ -459,12 +459,12 @@ app::detail::service_config config::parse_service(
         else
         {
             // Identifier
-            const auto uid   = cfg.second.get_optional<std::string>("<xmlattr>.uid");
-            const auto value = cfg.second.get_optional<std::string>("<xmlattr>.value");
+            const auto uid = cfg.second.get_optional<std::string>("<xmlattr>.uid");
 
-            if(!uid.has_value() && is_config_launcher && value.has_value())
+            if(!uid.has_value())
             {
-                // Value-only keys are handled by config_launcher itself, no object binding is needed here.
+                // Without an object uid, the object is built on the fly by the service itself, either from the
+                // literal value or from the default value declared with the data::ptr. Nothing to bind here.
                 continue;
             }
 

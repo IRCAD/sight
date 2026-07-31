@@ -301,6 +301,19 @@ void base::on_property_set(std::string_view /*unused*/)
 {
 }
 
+//------------------------------------------------------------------------------
+
+std::optional<std::string> base::resolve_object_type(std::string_view _key, std::optional<std::size_t>/*_index*/) const
+{
+    const auto& container = this->container();
+    if(const auto it = container.find({_key, {}}); it != container.end())
+    {
+        return it->second->default_object_type();
+    }
+
+    return std::string();
+}
+
 //-----------------------------------------------------------------------------
 
 void base::info(std::ostream& /*unused*/)

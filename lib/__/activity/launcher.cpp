@@ -29,10 +29,8 @@
 #include <core/object.hpp>
 #include <core/runtime/runtime.hpp>
 
-#include <data/factory/new.hpp>
 #include <data/map.hpp>
 #include <data/mt/locked_ptr.hpp>
-#include <data/string_serializable.hpp>
 
 #include <boost/range/iterator_range_core.hpp>
 
@@ -155,63 +153,6 @@ void launcher::parse_configuration(const configuration_t& _config, const in_out_
         param.by      = uid;
         m_parameters.push_back(param);
     }
-}
-
-//------------------------------------------------------------------------------
-
-std::vector<data::object::sptr> launcher::materialize_value_parameters(
-    const value_parameters_t& _value_parameters,
-    replace_map_t& _replacement_map,
-    const type_resolver_t& _type_resolver,
-    const uid_generator_t& _uid_generator,
-    const std::string& _context_id
-)
-{
-    std::vector<data::object::sptr> local_objects;
-
-    for(const auto& [key, value] : _value_parameters)
-    {
-        const auto object_type = _type_resolver(key);
-        SIGHT_THROW_IF(
-            "[" << _context_id << "] key '" << key << "' is passed with 'value' but no object parameter exists.",
-            object_type.empty()
-        );
-
-        if(auto ext = core::runtime::find_extension(object_type); ext)
-        {
-            const auto class_name = core::get_classname<data::object>();
-            SIGHT_ASSERT("Extension and classname are different.", ext->point() == class_name);
-            ext->get_module()->start();
-        }
-
-        const auto object = data::factory::make(object_type);
-        SIGHT_THROW_IF("Factory failed to build object: " << object_type, !object);
-
-        const auto serializable = std::dynamic_pointer_cast<data::string_serializable>(object);
-        SIGHT_THROW_IF(
-            "[" << _context_id << "] object parameter '" << key << "' of type '" << object_type
-            << "' does not support literal values.",
-            !serializable
-        );
-
-        serializable->from_string(value);
-        serializable->set_default_value();
-
-        if(!object->has_id())
-        {
-            const auto uid = _uid_generator(key);
-            SIGHT_THROW_IF(
-                "[" << _context_id << "] cannot generate UID for key '" << key << "'.",
-                uid.empty()
-            );
-            object->set_id(uid);
-        }
-
-        _replacement_map[key] = object->get_id();
-        local_objects.push_back(object);
-    }
-
-    return local_objects;
 }
 
 //------------------------------------------------------------------------------

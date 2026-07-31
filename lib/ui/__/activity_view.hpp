@@ -87,6 +87,17 @@ protected:
     SIGHT_UI_API void configuring() override;
 
     /**
+     * @brief Defers the creation of the objects declared with a literal value.
+     *
+     * The type of such an object is declared by the activity configuration, which is only known when the activity is
+     * launched. The objects are thus built at that moment, see service::materialize_value_parameters().
+     */
+    SIGHT_UI_API std::optional<std::string> resolve_object_type(
+        std::string_view _key,
+        std::optional<std::size_t> _index
+    ) const override;
+
+    /**
      * @brief Slot: Launch the given activity in a new tab.
      * @note The same activity cannot be launch in two different tabs.
      */

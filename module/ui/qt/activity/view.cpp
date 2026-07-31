@@ -146,7 +146,7 @@ void view::launch_activity(data::activity::sptr _activity)
 
         try
         {
-            m_local_value_objects = materialize_value_parameters(
+            m_local_value_objects = sight::service::materialize_value_parameters(
                 m_value_parameters,
                 replacementMap,
                 [&info](const std::string& _key) -> std::string

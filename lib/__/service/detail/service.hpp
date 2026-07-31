@@ -88,6 +88,10 @@ public:
     /// Returns a boolean to indicate if the object at the given key is optional
     [[nodiscard]] bool is_key_optional(const std::string& _key) const;
 
+    /// Builds the inputs and inouts declared with a literal value instead of an object uid.
+    /// Such objects are not created by the application configuration, so the service owns them, like the properties.
+    void create_value_objects();
+
     /// Connections with data and other services, connected at start, and disconnected at stop
     service_connection m_connections;
 
@@ -121,9 +125,10 @@ public:
     /// Reference to the service
     sight::service::base& m_service;
 
-    /// List of created properties during configuring in order to keep them alive
-    using properties_t = std::vector<sight::data::object::sptr>;
-    properties_t m_created_properties;
+    /// List of objects created during configuring, in order to keep them alive. This holds the properties as well as
+    /// the inputs and inouts declared with a literal value instead of an object uid.
+    using created_objects_t = std::vector<sight::data::object::sptr>;
+    created_objects_t m_created_objects;
 
     /// Tells if the service is auto-connected or not. Could be reevaluated but normally safe to store.
     bool m_auto_connected {false};

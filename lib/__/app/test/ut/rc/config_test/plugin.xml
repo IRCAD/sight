@@ -567,6 +567,29 @@
     </extension>
 
     <extension implements="sight::app::extension::config">
+        <id>value_simple_key_test</id>
+        <desc>Test configuration for literal values on simple keys and on a typed group</desc>
+        <config>
+            <object uid="int_ref" type="sight::data::integer" value="7" />
+
+            <service uid="typed_srv" type="sight::app::ut::test_service_with_typed_data">
+                <in key="flag" value="true" />
+                <inout key="position" value="4.5;-1;0.25" />
+                <!-- "threshold" is omitted on purpose, it must fall back on its default value -->
+                <inout key="offset" />
+            </service>
+
+            <service uid="typed_group_srv" type="sight::app::ut::test_service_with_data">
+                <in key="input" uid="int_ref" />
+                <inout group="inoutGroup">
+                    <key value="11" />
+                    <key uid="int_ref" />
+                </inout>
+            </service>
+        </config>
+    </extension>
+
+    <extension implements="sight::app::extension::config">
         <id>properties_cfg_test</id>
         <desc>Test configuration for properties</desc>
         <config>

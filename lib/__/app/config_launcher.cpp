@@ -56,6 +56,25 @@ void config_launcher::configuring(const config_t& _config)
 
 //------------------------------------------------------------------------------
 
+std::optional<std::string> config_launcher::resolve_object_type(
+    std::string_view _key,
+    std::optional<std::size_t> _index
+) const
+{
+    // The type of the objects forwarded to the sub-configuration is declared by that sub-configuration, which is only
+    // known when the service starts, since it may be set at runtime through the "config" property. The objects are
+    // thus built at that moment, see app::helper::config_launcher::start_config().
+    if(_index.has_value()
+       && (_key == helper::config_launcher::OBJECT_GROUP || _key == helper::config_launcher::DATA_GROUP))
+    {
+        return std::nullopt;
+    }
+
+    return base::resolve_object_type(_key, _index);
+}
+
+//------------------------------------------------------------------------------
+
 void config_launcher::starting()
 {
     const auto config = *m_config_id;

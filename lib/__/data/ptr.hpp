@@ -28,8 +28,10 @@
 #include <data/mt/locked_ptr.hpp>
 #include <data/mt/shared_ptr.hpp>
 
+#include <functional>
 #include <optional>
 #include <string_view>
+#include <type_traits>
 #include <utility>
 
 namespace sight::data
@@ -41,6 +43,10 @@ using ptr_type_traits = std::conditional_t<ACCESS == data::access::out,
                                            data::mt::weak_ptr<typename access_type_traits<DATATYPE, ACCESS>::object> >;
 
 class has_data;
+
+/// Constrains the types that can be built from a string representation, and can thus declare a default value.
+template<class T>
+concept serializable = std::derived_from<T, sight::data::string_serializable>&& !std::is_abstract_v<T>;
 
 /**
  * @brief Interface class for ptr and ptr_vector.
@@ -70,6 +76,22 @@ public:
 
     // Generic getter
     SIGHT_DATA_API virtual sight::data::object::csptr get() = 0;
+
+    /**
+     * @brief Returns the class name of the data type this pointer is templated with.
+     *
+     * This is only returned when the type is a concrete sight::data::string_serializable, i.e. when an object can be
+     * built from a string representation. In any other case, an empty string is returned. This notably occurs with
+     * generic types such as sight::data::object, for which the actual type can only be resolved at a higher level.
+     */
+    [[nodiscard]] SIGHT_DATA_API virtual std::string default_object_type() const = 0;
+
+    /**
+     * @brief Builds a new object initialized with the default value declared with this pointer.
+     *
+     * @return a new object, or nullptr when no default value was declared.
+     */
+    [[nodiscard]] SIGHT_DATA_API virtual sight::data::object::sptr make_default_object() const = 0;
 
 protected:
 
@@ -152,13 +174,52 @@ public:
 
     using base_ptr_t = ptr_type_traits<DATATYPE, ACCESS>;
 
-    /// Constructor that registers the pointer into the owner, i.e. a service instance.
+    /**
+     * @brief Constructor that registers the pointer into the owner, i.e. a service instance.
+     *
+     * The template parameter forbids any implicit conversion into the 'optional' flag.
+     */
+    template<class T = bool>
+    requires(!serializable<DATATYPE>) && std::same_as<T, bool>
     ptr(
         has_data* _holder,
         std::string_view _key,
-        bool _optional                    = access_type_traits<DATATYPE, ACCESS>::OPTIONAL_DEFAULT, //NOLINT(modernize-avoid-c-style-cast)
-        std::optional<std::size_t> _index = {}) noexcept :
-        base_ptr(_holder, _key, _optional, ACCESS, _index)
+        T _optional = access_type_traits<DATATYPE, ACCESS>::OPTIONAL_DEFAULT //NOLINT(modernize-avoid-c-style-cast)
+    ) noexcept :
+        base_ptr(_holder, _key, _optional, ACCESS)
+    {
+    }
+
+    /// Constructor that registers a mandatory pointer into the owner, i.e. a service instance.
+    ptr(has_data* _holder, std::string_view _key) noexcept
+    requires serializable<DATATYPE>:
+        base_ptr(_holder, _key, access_type_traits<DATATYPE, ACCESS>::OPTIONAL_DEFAULT, ACCESS)
+    {
+    }
+
+    /// Constructor that registers an optional pointer, left unassigned when the configuration provides no object.
+    ptr(has_data* _holder, std::string_view _key, std::nullopt_t /*no default value*/) noexcept
+    requires serializable<DATATYPE>:
+        base_ptr(_holder, _key, true, ACCESS)
+    {
+    }
+
+    /**
+     * @brief Constructor that registers the pointer into the owner, with a default value.
+     *
+     * When neither a 'uid' nor a 'value' is given in the configuration, the service builds the object itself from this
+     * default value, like it does for the properties. The pointer is thus always assigned, so it is optional.
+     *
+     * @note A bool is rejected on purpose, so that the legacy 'optional' flag can not be silently converted into a
+     * default value. A data::boolean must thus be spelled out, i.e. data::boolean(true) and not true.
+     */
+    template<class T>
+    requires serializable<DATATYPE>&& (ACCESS != data::access::out)
+    && (!std::same_as<std::remove_cvref_t<T>, bool>) && std::constructible_from<DATATYPE, T>
+    ptr(has_data* _holder, std::string_view _key, T&& _default_value) noexcept :
+        base_ptr(_holder, _key, true, ACCESS),
+        m_default_factory(
+            [value = DATATYPE(std::forward<T>(_default_value))]{return std::make_shared<DATATYPE>(value);})
     {
     }
 
@@ -193,6 +254,51 @@ public:
     sight::data::object::csptr get() final
     {
         return std::dynamic_pointer_cast<const data::object>(base_ptr_t::get_shared());
+    }
+
+    //------------------------------------------------------------------------------
+
+    [[nodiscard]] std::string default_object_type() const final
+    {
+        if constexpr(serializable<DATATYPE>)
+        {
+            return DATATYPE::classname();
+        }
+        else
+        {
+            return {};
+        }
+    }
+
+    //------------------------------------------------------------------------------
+
+    [[nodiscard]] sight::data::object::sptr make_default_object() const final
+    {
+        return m_default_factory ? m_default_factory() : nullptr;
+    }
+
+    /// @brief Get the value (only available for a data::generic<value_t>-derived DATATYPE)
+    template<class T = DATATYPE>
+    requires serializable<T>&& requires {typename T::value_t;
+    }
+    //------------------------------------------------------------------------------
+
+    const typename T::value_t& value() const
+    {
+        const auto obj = this->const_lock();
+        return obj->value();
+    }
+
+    //------------------------------------------------------------------------------
+
+    template<class T = DATATYPE>
+    requires serializable<T>&& requires {typename T::value_t;
+    }
+    //------------------------------------------------------------------------------
+
+    const typename T::value_t& operator*() const
+    {
+        return this->value();
     }
 
 protected:
@@ -277,7 +383,7 @@ protected:
 
 private:
 
-    /// Constructor used by ptr_vector, allowing to duplicate the auto_connect status between elements.
+    /// Constructor used by ptr_vector, which is the only holder allowed to index a pointer.
     ptr(
         has_data* _holder,
         std::string_view _key,
@@ -296,14 +402,12 @@ private:
     template<class, data::access>
     friend class ptr_vector;
 
-    /// Only the owner of the pointer can update the content of the pointer
-    friend class has_data;
-    template<class, data::access>
-    friend class ptr_vector;
-
     // Pointer on deferred objects (created at runtime) may reference different objects over time
     // To reference the same object amongst different services, we use a specific label
     std::string m_deferred_id;
+
+    /// Builds a new object initialized with the default value, empty when no default value was declared.
+    std::function<sight::data::object::sptr()> m_default_factory;
 };
 
 /**
@@ -408,6 +512,28 @@ public:
         return nullptr;
     }
 
+    //------------------------------------------------------------------------------
+
+    [[nodiscard]] std::string default_object_type() const final
+    {
+        if constexpr(serializable<DATATYPE>)
+        {
+            return DATATYPE::classname();
+        }
+        else
+        {
+            return {};
+        }
+    }
+
+    //------------------------------------------------------------------------------
+
+    [[nodiscard]] sight::data::object::sptr make_default_object() const final
+    {
+        // A default value makes no sense for a group, an element only exists when it is declared in the configuration.
+        return nullptr;
+    }
+
 protected:
 
     /// Pointer assignment
@@ -444,7 +570,7 @@ protected:
             if(m_ptrs.find(index) == m_ptrs.end())
             {
                 const bool optional = _optional.has_value() ? *_optional : this->optional();
-                m_ptrs.emplace(std::make_pair(index, new ptr_t(m_holder, m_key, optional, index)));
+                m_ptrs.emplace(std::make_pair(index, new ptr_t(m_holder, m_key, optional, index, {})));
             }
 
             m_ptrs[index]->set(_obj, _auto_connect, _optional, _signal);
@@ -462,7 +588,7 @@ protected:
             m_ptrs.emplace(
                 std::make_pair(
                     _index.value(),
-                    new ptr_t(m_holder, m_key, m_optional, _index)
+                    new ptr_t(m_holder, m_key, m_optional, _index, {})
                 )
             );
         }
@@ -509,27 +635,12 @@ public:
         std::string_view _key,
         DATATYPE  _default_value
     ) noexcept :
-        ptr<DATATYPE, data::access::inout>(_holder, _key, true),
+        ptr<DATATYPE, data::access::inout>(_holder, _key, std::nullopt),
         m_default_value(std::move(_default_value))
     {
     }
 
     ~property() final = default;
-
-    //------------------------------------------------------------------------------
-
-    const DATATYPE::value_t& value() const
-    {
-        const auto prop = this->const_lock();
-        return prop->value();
-    }
-
-    //------------------------------------------------------------------------------
-
-    const DATATYPE::value_t& operator*() const
-    {
-        return this->value();
-    }
 
     //------------------------------------------------------------------------------
 

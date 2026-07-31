@@ -184,7 +184,7 @@ void dynamic_view::launch_tab(dynamic_view_info& _info)
 
     try
     {
-        _info.local_value_objects = materialize_value_parameters(
+        _info.local_value_objects = sight::service::materialize_value_parameters(
             m_value_parameters,
             _info.replacement_map,
             [&_info](const std::string& _key) -> std::string
