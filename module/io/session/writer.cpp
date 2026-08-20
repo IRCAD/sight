@@ -289,4 +289,11 @@ void writer::open_location_dialog()
 
 //-----------------------------------------------------------------------------
 
+std::vector<std::pair<std::string, std::string> > writer::get_supported_extensions()
+{
+    return {{m_extension_description, "*" + m_extension_name}};
+}
+
+//-----------------------------------------------------------------------------
+
 } // namespace sight::module::io::session

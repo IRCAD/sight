@@ -63,11 +63,9 @@ void matrix4_trf_reader::info(std::ostream& _sstream)
 
 //-----------------------------------------------------------------------------
 
-std::vector<std::string> matrix4_trf_reader::get_supported_extensions()
+std::vector<std::pair<std::string, std::string> > matrix4_trf_reader::get_supported_extensions()
 {
-    std::vector<std::string> extensions;
-    extensions.emplace_back(".trf");
-    return extensions;
+    return {{"TRF files", "*.trf"}};
 }
 
 //-----------------------------------------------------------------------------

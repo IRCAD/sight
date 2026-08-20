@@ -70,6 +70,33 @@ sight::io::service::path_type_t writer::get_path_type() const
 
 //------------------------------------------------------------------------------
 
+std::vector<std::pair<std::string, std::string> > writer::get_supported_extensions()
+{
+    std::vector<std::pair<std::string, std::string> > result;
+    std::string all_wildcards;
+
+    for(const auto& [backend, mode] : m_mode_by_backend)
+    {
+        const auto filter = sight::io::bitmap::wildcard_filter(backend);
+        if(!all_wildcards.empty())
+        {
+            all_wildcards += ' ';
+        }
+
+        all_wildcards += filter.second;
+        result.push_back(filter);
+    }
+
+    if(result.size() >= 2)
+    {
+        result.insert(result.begin(), {"All supported images", all_wildcards});
+    }
+
+    return result;
+}
+
+//------------------------------------------------------------------------------
+
 void writer::open_location_dialog()
 {
     static auto default_location = std::make_shared<core::location::single_folder>();

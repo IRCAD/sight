@@ -116,6 +116,8 @@ public:
         return sight::io::service::file;
     }
 
+    std::vector<std::pair<std::string, std::string> > get_supported_extensions() final;
+
 protected:
 
     /// Parses the configuration

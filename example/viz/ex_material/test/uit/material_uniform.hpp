@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -38,9 +38,11 @@ CPPUNIT_TEST_SUITE_END();
 
 public:
 
-    std::filesystem::path get_profile_path() override;
-
     void test();
+
+protected:
+
+    std::filesystem::path get_profile_path() override;
 };
 
-} // sight::example::ui::ex_material::uit
+} // namespace sight::example::ui::ex_material::uit

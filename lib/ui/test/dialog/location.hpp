@@ -27,6 +27,7 @@
 
 #include <ui/__/dialog/location_base.hpp>
 
+#include <optional>
 #include <queue>
 
 namespace sight::ui::test::dialog
@@ -39,7 +40,7 @@ public:
     SIGHT_UI_TEST_API void set_type(types _type) override;
     SIGHT_UI_TEST_API void set_option(location::options _option) override;
     SIGHT_UI_TEST_API void add_filter(const std::string& _filter_name, const std::string& _wildcard_list) override;
-    SIGHT_UI_TEST_API std::string get_current_selection() const override;
+    SIGHT_UI_TEST_API filter_t get_current_filter() const override;
 
     SIGHT_UI_TEST_API sight::core::location::base::sptr show() override;
 
@@ -47,13 +48,20 @@ public:
 
     SIGHT_UI_TEST_API static void push_paths(const std::vector<std::filesystem::path>& _files);
 
+    SIGHT_UI_TEST_API static void set_current_filter(const filter_t& _filter);
+
+    SIGHT_UI_TEST_API static const std::vector<filter_t>& get_filters();
+
     SIGHT_UI_TEST_API static bool clear();
 
 private:
 
     location::types m_type {location::single_file};
+    filter_t m_current_filter;
 
     static std::queue<std::vector<std::filesystem::path> > s_paths_list;
+    static std::optional<filter_t> s_current_filter;
+    static std::vector<filter_t> s_filters;
 };
 
 } // namespace sight::ui::test::dialog

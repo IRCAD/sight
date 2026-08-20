@@ -26,6 +26,8 @@
 #include <data/model_series.hpp>
 #include <data/reconstruction.hpp>
 #include <data/series_set.hpp>
+#include <io/__/service/reader.hpp>
+#include <ui/test/dialog/location.hpp>
 
 #include <service/op.hpp>
 
@@ -151,5 +153,37 @@ TEST_SUITE("sight::module::io::vtk::series_set_reader")
         sight::service::remove(srv);
 
         CHECK_EQ(std::size_t(1), series_set->size());
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("open_location_dialog")
+    {
+        const auto file1 = std::filesystem::temp_directory_path() / "image.vtk";
+        const auto file2 = std::filesystem::temp_directory_path() / "mesh.vtp";
+
+        CHECK(sight::ui::test::dialog::location::clear());
+
+        sight::ui::test::dialog::location::set_paths({file1, file2});
+
+        auto reader = sight::service::add<sight::io::service::reader>(
+            "sight::module::io::vtk::series_set_reader"
+        );
+
+        REQUIRE(reader);
+
+        reader->configure();
+
+        CHECK_NOTHROW(reader->open_location_dialog());
+
+        const auto& files = reader->get_files();
+
+        REQUIRE_EQ(files.size(), std::size_t(2));
+        CHECK_EQ(files[0], file1);
+        CHECK_EQ(files[1], file2);
+
+        sight::service::remove(reader);
+
+        CHECK(sight::ui::test::dialog::location::clear());
     }
 } // TEST_SUITE

@@ -45,6 +45,12 @@ writer::writer(const std::string& _default_window_title) noexcept :
 }
 
 //-----------------------------------------------------------------------------
+std::vector<std::pair<std::string, std::string> > writer::get_supported_extensions()
+{
+    return {};
+}
+
+//-----------------------------------------------------------------------------
 
 std::filesystem::path writer::get_file() const
 {

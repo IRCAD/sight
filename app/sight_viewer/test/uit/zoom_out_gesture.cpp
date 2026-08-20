@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2025 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -50,7 +50,7 @@ void zoom_out_gesture::test()
         {
             open_file(
                 _tester,
-                "VTK",
+                "VTK Legacy Files(.vtk) (*.vtk)",
                 utest_data::dir() / "sight/mesh/vtk/sphere.vtk"
             );
 
@@ -62,14 +62,20 @@ void zoom_out_gesture::test()
             ogre_scene->raise();
             ogre_scene->activateWindow();
             _tester.interact(
-                // Pinch fingers...
                 std::make_unique<sight::ui::test::pinch_gesture>(
-                    // ...with the first finger going to the center from 70 pixels higher...
-                    std::pair(ogre_scene->rect().center() + QPoint(0, 70), ogre_scene->rect().center() + QPoint(0, 1)),
-                    // ...and the second finger going to the center from 70 pixels lower
-                    std::pair(ogre_scene->rect().center() - QPoint(0, 70), ogre_scene->rect().center() - QPoint(0, 1))
+                    std::pair(
+                        ogre_scene->rect().center() + QPoint(0, 70),
+                        ogre_scene->rect().center() + QPoint(0, 1)
+                    ),
+                    std::pair(
+                        ogre_scene->rect().center() - QPoint(0, 70),
+                        ogre_scene->rect().center() - QPoint(0, 1)
+                    )
                 )
             );
+
+            QApplication::processEvents();
+            std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
             save_snapshot(_tester, snapshot_path);
 

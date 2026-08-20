@@ -51,7 +51,7 @@ void axial_negato::test()
         {
             open_file(
                 _tester,
-                "Nifti or Inr images",
+                "Inr (.inr.gz) (*.inr.gz)",
                 utest_data::dir() / "sight/image/inr/image.inr.gz"
             );
 

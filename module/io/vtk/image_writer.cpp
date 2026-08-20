@@ -58,6 +58,17 @@ sight::io::service::path_type_t image_writer::get_path_type() const
 
 //------------------------------------------------------------------------------
 
+std::vector<std::pair<std::string, std::string> > image_writer::get_supported_extensions()
+{
+    return {
+        {"Vtk", "*.vtk"},
+        {"Vti", "*.vti"},
+        {"MetaImage", "*.mhd"}
+    };
+}
+
+//------------------------------------------------------------------------------
+
 void image_writer::open_location_dialog()
 {
     static auto default_directory = std::make_shared<core::location::single_folder>();

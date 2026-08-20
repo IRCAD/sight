@@ -90,6 +90,7 @@ public:
     void open_location_dialog() final;
 
     sight::io::service::path_type_t get_path_type() const final;
+    std::vector<std::pair<std::string, std::string> > get_supported_extensions() final;
 
 protected:
 
@@ -116,7 +117,7 @@ private:
     dialog_policy m_dialog_policy {dialog_policy::never};
 
     /// Selected backend
-    sight::io::bitmap::backend m_selected_backend {sight::io::bitmap::backend::libtiff};
+    sight::io::bitmap::backend m_selected_backend {sight::io::bitmap::backend::any};
 
     /// Enabled backends
     std::map<sight::io::bitmap::backend, sight::io::bitmap::writer::mode> m_mode_by_backend {

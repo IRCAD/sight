@@ -45,8 +45,7 @@ reader::reader(const std::string& _default_window_title) noexcept :
 }
 
 //-----------------------------------------------------------------------------
-
-std::vector<std::string> reader::get_supported_extensions()
+std::vector<std::pair<std::string, std::string> > reader::get_supported_extensions()
 {
     return {};
 }

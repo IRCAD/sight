@@ -68,7 +68,7 @@ public:
     /**
      * @brief   returns  (filename) extension
      */
-    std::vector<std::string> get_supported_extensions() override;
+    std::vector<std::pair<std::string, std::string> > get_supported_extensions() override;
     /// @}
 
     /// Return path type managed by the service, here FILE

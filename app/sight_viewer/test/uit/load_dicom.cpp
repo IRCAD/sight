@@ -48,9 +48,8 @@ void load_dicom::test()
         test_name,
         [&snapshot_path, &reference_path](sight::ui::test::tester& _tester)
         {
-            open_file(
+            open_folder(
                 _tester,
-                "DICOM",
                 utest_data::dir() / "sight/Patient/Dicom/JMSGenou"
             );
 

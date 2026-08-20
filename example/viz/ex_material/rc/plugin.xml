@@ -10,13 +10,13 @@ This example shows some possibilities of material configuration in the 3D scene:
     <requirement id="sight::module::viz::scene3d" />
     <requirement id="sight::module::viz::scene3d_qt" />
 
-    <extension implements="sight::service::extension::config">
+    <!-- <extension implements="sight::service::extension::config">
         <id>vtk_srv_cfg</id>
         <desc>VTK</desc>
         <config>
             <config window_title="Open VTK file" />
         </config>
-    </extension>
+    </extension> -->
 
     <extension implements="sight::app::extension::config">
         <id>ex_material_app_cfg</id>
@@ -129,7 +129,8 @@ This example shows some possibilities of material configuration in the 3D scene:
             <!-- model_series reader -->
             <service uid="model_series_reader_srv" type="sight::module::ui::io::selector">
                 <data read="${model_series}" />
-                <config id="vtk_srv_cfg" service="sight::module::io::vtk::model_series_reader" />
+                <selection mode="include" />
+                <addSelection service="sight::module::io::vtk::model_series_reader" />
             </service>
 
             <!-- Write the snapshot image -->

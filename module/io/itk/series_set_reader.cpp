@@ -91,6 +91,15 @@ void series_set_reader::open_location_dialog()
 }
 
 //------------------------------------------------------------------------------
+std::vector<std::pair<std::string, std::string> > series_set_reader::get_supported_extensions()
+{
+    return {
+        {"NIfTI (.nii)", "*.nii *.nii.gz"},
+        {"Inr (.inr.gz)", "*.inr.gz"}
+    };
+}
+
+//------------------------------------------------------------------------------
 
 void series_set_reader::updating()
 {

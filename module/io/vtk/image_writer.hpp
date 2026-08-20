@@ -100,6 +100,7 @@ public:
     );
 
     sight::io::service::path_type_t get_path_type() const override;
+    std::vector<std::pair<std::string, std::string> > get_supported_extensions() override;
 
 protected:
 

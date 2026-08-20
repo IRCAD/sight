@@ -50,7 +50,7 @@ void add_distance::test()
         {
             open_file(
                 _tester,
-                "Nifti or Inr images",
+                "Inr (.inr.gz) (*.inr.gz)",
                 utest_data::dir() / "sight/image/inr/image.inr.gz"
             );
             reset_negatos(_tester);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,14 +25,7 @@
 #include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
 
-#include <data/string.hpp>
-
-#include <service/base.hpp>
-#include <service/registry.hpp>
-
 #include <ui/__/preferences.hpp>
-
-#include <boost/algorithm/string.hpp>
 
 namespace sight::ui::dialog
 {
@@ -157,6 +150,13 @@ void location_base::save_default_location(core::location::base::sptr _loc)
             // Nothing to do..
         }
     }
+}
+
+//------------------------------------------------------------------------------
+
+std::string location_base::get_current_selection() const
+{
+    return get_current_filter().second;
 }
 
 //------------------------------------------------------------------------------

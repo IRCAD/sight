@@ -59,6 +59,38 @@ sight::io::service::path_type_t image_reader::get_path_type() const
 
 //------------------------------------------------------------------------------
 
+std::vector<std::pair<std::string, std::string> > image_reader::get_supported_extensions()
+{
+    std::vector<std::string> extensions;
+    sight::io::vtk::bitmap_image_reader::get_available_extensions(extensions);
+
+    std::string bitmap_wildcards;
+    for(const auto& extension : extensions)
+    {
+        if(!bitmap_wildcards.empty())
+        {
+            bitmap_wildcards += ' ';
+        }
+
+        bitmap_wildcards += "*" + extension;
+    }
+
+    std::vector<std::pair<std::string, std::string> > filters {
+        {"Vtk", "*.vtk"},
+        {"Vti", "*.vti"},
+        {"MetaImage", "*.mhd"}
+    };
+
+    if(!bitmap_wildcards.empty())
+    {
+        filters.emplace_back("Bitmap image", std::move(bitmap_wildcards));
+    }
+
+    return filters;
+}
+
+//------------------------------------------------------------------------------
+
 void image_reader::open_location_dialog()
 {
     static auto default_directory = std::make_shared<core::location::single_folder>();

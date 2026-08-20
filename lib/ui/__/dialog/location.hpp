@@ -87,6 +87,9 @@ public:
     /// Gets the current extension file selection
     SIGHT_UI_API std::string get_current_selection() const override;
 
+    /// Gets the selected filter as its display name and wildcard list.
+    SIGHT_UI_API filter_t get_current_filter() const override;
+
 private:
 
     ui::dialog::location_base::sptr m_implementation;

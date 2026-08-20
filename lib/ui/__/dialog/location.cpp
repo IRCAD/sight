@@ -124,4 +124,11 @@ std::string location::get_current_selection() const
 
 //-----------------------------------------------------------------------------
 
+location::filter_t location::get_current_filter() const
+{
+    return m_implementation->get_current_filter();
+}
+
+//-----------------------------------------------------------------------------
+
 } // namespace sight::ui::dialog

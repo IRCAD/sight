@@ -35,6 +35,10 @@ public:
         const std::string& _format,
         const std::filesystem::path& _path
     );
+    static void open_folder(
+        sight::ui::test::tester& _tester,
+        const std::filesystem::path& _path
+    );
     static void save_snapshot(sight::ui::test::tester& _tester, const std::filesystem::path& _path);
     static void reset_negatos(sight::ui::test::tester& _tester);
 

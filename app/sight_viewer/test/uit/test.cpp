@@ -24,9 +24,9 @@
 #include <core/runtime/path.hpp>
 
 #include <ui/test/helper/button.hpp>
+#include <ui/test/helper/combo_box.hpp>
 #include <ui/test/helper/file_dialog.hpp>
 #include <ui/test/helper/select.hpp>
-#include <ui/test/helper/selector_dialog.hpp>
 #include <ui/test/helper/slider.hpp>
 
 #include <array>
@@ -52,21 +52,29 @@ void test::open_file(
     const std::filesystem::path& _path
 )
 {
-    // Click on the "Load Folders" button
-    helper::button::push(_tester, "data_tools_row_1/Load Folders");
+    // Click on the "Load Files" button
+    helper::button::push(_tester, "data_tools_row_1/Load Files");
 
-    // Once we clicked the button, a selection window should appear. We select the format we want.
-    helper::selector_dialog::select(_tester, _format);
+    // Select the file extension directly in the file dialog.
+    helper::combo_box::select(
+        _tester,
+        helper::selector::from_dialog("fileTypeCombo"),
+        _format
+    );
+    helper::combo_box::value_equals(
+        _tester,
+        helper::selector::from_dialog("fileTypeCombo"),
+        _format
+    );
 
-    // Fill the file dialog, tap PATH
+    // Fill the file dialog.
     helper::file_dialog::fill(_tester, _path);
 
     // Ensure the image loading is started, otherwise it will hang the test.
     QTest::qWait(1000);
 
-    if(_format == "DICOM" || _format == "Nifti or Inr images")
+    if(_format == "Inr (.inr.gz) (*.inr.gz)" || _format == "NIfTI (.nii) (*.nii *.nii.gz)")
     {
-        // The Show/hide volume button becomes enabled when the image effectively shows up.
         helper::button::wait_for_clickability(
             _tester,
             helper::selector("top_toolbar_left/volume").with_timeout(
@@ -74,11 +82,37 @@ void test::open_file(
             )
         );
     }
-    else if(_format == "VTK")
+    else if(_format == "VTK Legacy Files(.vtk) (*.vtk)")
     {
         // The Show/hide mesh button becomes enabled when the image is loaded.
         helper::button::wait_for_clickability(_tester, "top_toolbar_left/mesh");
     }
+}
+
+//-------------------------------------------------------
+void test::open_folder(
+    sight::ui::test::tester& _tester,
+    const std::filesystem::path& _path
+)
+{
+    helper::button::push(
+        _tester,
+        "data_tools_row_1/Load DICOM Folders"
+    );
+
+    helper::file_dialog::fill(
+        _tester,
+        _path
+    );
+
+    QTest::qWait(1000);
+
+    helper::button::wait_for_clickability(
+        _tester,
+        helper::selector("top_toolbar_left/volume").with_timeout(
+            sight::ui::test::tester::DEFAULT_TIMEOUT * 5
+        )
+    );
 }
 
 //------------------------------------------------------------------------------

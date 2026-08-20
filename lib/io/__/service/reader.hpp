@@ -120,7 +120,7 @@ public:
     /**
      * @brief   returns  (filename) extension
      */
-    SIGHT_IO_API virtual std::vector<std::string> get_supported_extensions();
+    SIGHT_IO_API virtual std::vector<std::pair<std::string, std::string> > get_supported_extensions();
 
     /**
      * @brief This method must be implemented by concrete service readers

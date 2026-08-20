@@ -26,9 +26,11 @@
 #include <data/series_set.hpp>
 
 #include <io/__/service/io_types.hpp>
+#include <io/__/service/reader.hpp>
 
 #include <service/op.hpp>
 #include <service/registry.hpp>
+#include <ui/test/dialog/location.hpp>
 
 #include <utest_data/data.hpp>
 #include <utest_data/generator/image.hpp>
@@ -376,4 +378,34 @@ TEST_SUITE("sight::module::io::itk")
     }
 
 //------------------------------------------------------------------------------
+
+    TEST_CASE("series_set_reader_open_location_dialog")
+    {
+        const auto file1 = std::filesystem::temp_directory_path() / "image.nii";
+        const auto file2 = std::filesystem::temp_directory_path() / "image.inr.gz";
+
+        CHECK(sight::ui::test::dialog::location::clear());
+
+        sight::ui::test::dialog::location::set_paths({file1, file2});
+
+        auto reader = sight::service::add<sight::io::service::reader>(
+            "sight::module::io::itk::series_set_reader"
+        );
+
+        REQUIRE(reader);
+
+        reader->configure();
+
+        CHECK_NOTHROW(reader->open_location_dialog());
+
+        const auto& files = reader->get_files();
+
+        REQUIRE_EQ(files.size(), std::size_t(2));
+        CHECK_EQ(files[0], file1);
+        CHECK_EQ(files[1], file2);
+
+        sight::service::remove(reader);
+
+        CHECK(sight::ui::test::dialog::location::clear());
+    }
 } // TEST_SUITE

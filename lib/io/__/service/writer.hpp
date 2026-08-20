@@ -139,6 +139,9 @@ public:
      */
     SIGHT_IO_API virtual void open_location_dialog() = 0;
 
+    /// Returns the filename extensions supported by this writer.
+    SIGHT_IO_API virtual std::vector<std::pair<std::string, std::string> > get_supported_extensions();
+
     /**
      * @brief This method must be implemented by concrete service writers
      * that use path file system to write data.

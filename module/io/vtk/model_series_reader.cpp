@@ -166,6 +166,19 @@ void model_series_reader::updating()
     }
 }
 
+//------------------------------------------------------------------------------------
+std::vector<std::pair<std::string, std::string> > model_series_reader::get_supported_extensions()
+{
+    return {
+        {"All supported files", "*.vtk *.vtp *.obj *.ply *.stl"},
+        {"OBJ Files(.obj)", "*.obj"},
+        {"PLY Files(.ply)", "*.ply"},
+        {"STL Files(.stl)", "*.stl"},
+        {"VTK Legacy Files(.vtk)", "*.vtk"},
+        {"VTK Polydata Files(.vtp)", "*.vtp"},
+    };
+}
+
 //------------------------------------------------------------------------------
 
 template<typename READER>

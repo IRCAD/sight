@@ -61,7 +61,7 @@ void series_set_reader::open_location_dialog()
     dialog_file.set_default_location(default_directory);
     dialog_file.set_type(ui::dialog::location::multi_files);
     dialog_file.set_title(*m_window_title);
-    dialog_file.add_filter("All supported files", "*.vtk *.vtp *.vti *.mhd *.vtu *.obj *.ply *.stl");
+    dialog_file.add_filter("All supported files", "*.mhd *.obj *.ply *.stl *.vti *.vtk *.vtp *.vtu");
     dialog_file.add_filter("MetaImage files", "*.mhd");
     dialog_file.add_filter("OBJ Files(.obj)", "*.obj");
     dialog_file.add_filter("PLY Files(.ply)", "*.ply");
@@ -89,6 +89,21 @@ void series_set_reader::open_location_dialog()
     {
         this->clear_locations();
     }
+}
+
+//------------------------------------------------------------------------------------
+std::vector<std::pair<std::string, std::string> > series_set_reader::get_supported_extensions()
+{
+    return {
+        {"MetaImage files", "*.mhd"},
+        {"OBJ Files(.obj)", "*.obj"},
+        {"PLY Files(.ply)", "*.ply"},
+        {"STL Files(.stl)", "*.stl"},
+        {"VTI image files", "*.vti"},
+        {"VTK Legacy Files(.vtk)", "*.vtk"},
+        {"VTK Polydata Files(.vtp)", "*.vtp"},
+        {"VTU image files", "*.vtu"}
+    };
 }
 
 //------------------------------------------------------------------------------

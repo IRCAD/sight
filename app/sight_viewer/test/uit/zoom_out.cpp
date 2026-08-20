@@ -52,7 +52,7 @@ void zoom_out::test()
         {
             open_file(
                 _tester,
-                "VTK",
+                "VTK Legacy Files(.vtk) (*.vtk)",
                 utest_data::dir() / "sight/mesh/vtk/sphere.vtk"
             );
 

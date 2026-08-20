@@ -62,10 +62,9 @@ void landmarks_interaction::test()
         {
             open_file(
                 _tester,
-                "Nifti or Inr images",
+                "Inr (.inr.gz) (*.inr.gz)",
                 utest_data::dir() / "sight/image/inr/image.inr.gz"
             );
-
             {
                 auto bt = _tester.add_in_backtrace("Create three landmarks groups");
                 helper::button::push(_tester, "top_toolbar_left/volume");

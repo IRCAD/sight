@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,10 +22,9 @@
 #include "material_uniform.hpp"
 
 #include <core/runtime/path.hpp>
-
 #include <ui/test/helper/button.hpp>
+#include <ui/test/helper/combo_box.hpp>
 #include <ui/test/helper/file_dialog.hpp>
-#include <ui/test/helper/selector_dialog.hpp>
 #include <ui/test/tester.hpp>
 
 #include <utest_data/data.hpp>
@@ -47,7 +46,7 @@ std::filesystem::path material_uniform::get_profile_path()
 
 //------------------------------------------------------------------------------
 
-void save_snapshot(sight::ui::test::tester& _tester, const std::filesystem::path& _path)
+static void save_snapshot(sight::ui::test::tester& _tester, const std::filesystem::path& _path)
 {
     // Click on the "snapshot" button
     helper::button::push(_tester, "toolbar/Make a snapshot");
@@ -82,12 +81,16 @@ void material_uniform::test()
             // Click on the "Load series" button
             helper::button::push(_tester, "toolbar/Load a model series");
 
-            // Once we clicked the button, a selection window should appear. We select the format we want.
-            helper::selector_dialog::select(_tester, "VTK");
-
+            helper::combo_box::select(
+                _tester,
+                helper::selector::from_dialog("fileTypeCombo"),
+                "VTK Legacy Files(.vtk) (*.vtk)"
+            );
             // Fill the file dialog, tap PATH
-            helper::file_dialog::fill(_tester, utest_data::dir() / "sight/mesh/vtk/sphere.vtk");
-
+            helper::file_dialog::fill(
+                _tester,
+                utest_data::dir() / "sight/mesh/vtk/sphere.vtk"
+            );
             // Ensure the image loading is started, otherwise it will hang the test.
             QTest::qWait(1000);
 

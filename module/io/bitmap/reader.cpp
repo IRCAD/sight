@@ -37,6 +37,33 @@
 namespace sight::module::io::bitmap
 {
 
+//------------------------------------------------------------------------------
+
+std::vector<std::pair<std::string, std::string> > reader::get_supported_extensions()
+{
+    std::vector<std::pair<std::string, std::string> > result;
+    std::string all_wildcards;
+
+    for(const auto backend : m_backends)
+    {
+        const auto filter = sight::io::bitmap::wildcard_filter(backend);
+        if(!all_wildcards.empty())
+        {
+            all_wildcards += ' ';
+        }
+
+        all_wildcards += filter.second;
+        result.push_back(filter);
+    }
+
+    if(result.size() >= 2)
+    {
+        result.insert(result.begin(), {"All supported images", all_wildcards});
+    }
+
+    return result;
+}
+
 // Retrieve the backend from the extension
 sight::io::bitmap::backend reader::find_backend(const std::string& _extension) const
 {

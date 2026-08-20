@@ -54,6 +54,16 @@ sight::io::service::path_type_t image_reader::get_path_type() const
 
 //------------------------------------------------------------------------------
 
+std::vector<std::pair<std::string, std::string> > image_reader::get_supported_extensions()
+{
+    return {
+        {"NIfTI (.nii)", "*.nii *.nii.gz"},
+        {"Inr (.inr.gz)", "*.inr.gz"}
+    };
+}
+
+//------------------------------------------------------------------------------
+
 void image_reader::open_location_dialog()
 {
     static auto default_directory = std::make_shared<core::location::single_folder>();

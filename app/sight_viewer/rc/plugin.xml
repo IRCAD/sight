@@ -6,36 +6,11 @@
     <requirement id="sight::module::io::session" />
 
     <extension implements="sight::service::extension::config">
-        <id>SightViewer_SightData_SrvCfg</id>
-        <desc>Sight data</desc>
-        <config>
-            <dialog extension=".sight" description="Sight data" policy="default" />
-            <password policy="default" encryption="default" />
-        </config>
-    </extension>
-
-    <extension implements="sight::service::extension::config">
-        <id>SightViewer_vtk_SrvCfg</id>
-        <desc>VTK</desc>
-        <config>
-            <config window_title="Open VTK file" />
-        </config>
-    </extension>
-
-    <extension implements="sight::service::extension::config">
-        <id>SightViewer_itk_SrvCfg</id>
-        <desc>Nifti or Inr images</desc>
-        <config>
-            <config window_title="Open an .inr or .nii file" />
-        </config>
-    </extension>
-
-    <extension implements="sight::service::extension::config">
         <id>SightViewer_dicom_SrvCfg</id>
         <desc>DICOM</desc>
         <config>
+            <windowTitle>Open DICOM directory</windowTitle>
             <dialog filter="image" />
-            <config window_title="Open DICOM directory" />
         </config>
     </extension>
 
@@ -244,12 +219,14 @@
             <service uid="data_tools_row_1" type="sight::module::ui::toolbar">
                 <gui>
                     <layout>
-                        <menu_item name="Load Folders" icon="sight::module::ui::icons/load.svg" />
+                        <menu_item name="Load DICOM Folders" icon="sight::module::ui::icons/load.svg" />
+                        <menu_item name="Load Files" icon="sight::module::ui::icons/file.svg" />
                         <menu_item name="Open PACS" icon="sight::module::ui::icons/connection.svg" style="check" />
                     </layout>
                 </gui>
                 <registry>
-                    <menu_item sid="open_series_set_act" />
+                    <menu_item sid="open_folder_act" />
+                    <menu_item sid="open_files_act" />
                     <menu_item sid="pacs_act" />
                 </registry>
             </service>
@@ -375,18 +352,25 @@
 
             <!-- ******************************* Actions ****************************************** -->
 
-            <service uid="open_series_set_act" type="sight::module::ui::action" />
+            <service uid="open_folder_act" type="sight::module::ui::action" />
+            <service uid="open_files_act" type="sight::module::ui::action" />
 
             <!-- Read a series -->
-            <service uid="open_series_set_srv" type="sight::module::ui::io::selector">
+            <service uid="open_folder_srv" type="sight::module::ui::io::selector">
                 <data read="${series_set}" />
+                <selection mode="include" />
+                <addSelection service="sight::module::io::dicom::reader" />
                 <selection mode="exclude" />
                 <addSelection service="sight::module::io::dicom::series_set_reader" />
                 <addSelection service="sight::module::io::dicom::dicom_series_set_reader" />
-                <config id="SightViewer_SightData_SrvCfg" service="sight::module::io::session::reader" />
-                <config id="SightViewer_vtk_SrvCfg" service="sight::module::io::vtk::series_set_reader" />
-                <config id="SightViewer_itk_SrvCfg" service="sight::module::io::itk::series_set_reader" />
                 <config id="SightViewer_dicom_SrvCfg" service="sight::module::io::dicom::reader" />
+            </service>
+
+            <service uid="open_files_srv" type="sight::module::ui::io::selector">
+                <data read="${series_set}" />
+                <selection mode="include" />
+                <addSelection service="sight::module::io::itk::series_set_reader" />
+                <addSelection service="sight::module::io::vtk::series_set_reader" />
             </service>
 
             <!-- Switch between parameters -->
@@ -593,13 +577,18 @@
             <!-- ******************************* Connections ***************************************** -->
 
             <connect>
-                <signal>open_series_set_srv/notification_created</signal>
+                <signal>open_folder_srv/notification_created</signal>
                 <slot>progress_bar_srv/add_monitor</slot>
             </connect>
 
             <connect>
-                <signal>open_series_set_act/clicked</signal>
-                <slot>open_series_set_srv/update</slot>
+                <signal>open_folder_act/clicked</signal>
+                <slot>open_folder_srv/update</slot>
+            </connect>
+
+            <connect>
+                <signal>open_files_act/clicked</signal>
+                <slot>open_files_srv/update</slot>
             </connect>
 
             <connect channel="box_widget_visibility">

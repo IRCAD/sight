@@ -27,23 +27,24 @@
 #include <core/notification/base.hpp>
 #include <core/notification/has_monitors.hpp>
 
-#include <ui/__/dialog_editor.hpp>
+#include <io/__/service/reader.hpp>
+#include <io/__/service/writer.hpp>
 
+#include <ui/__/dialog_editor.hpp>
 namespace sight::module::ui::io
 {
 
 /**
- * @brief  This service displays a list of available readers or writers and lets you select one to load or save a data.
+ * @brief This service selects and runs a reader or writer compatible with the configured data object.
  *
  * @section Signals Signals
- * - \b notification_created(core::notification::monitor::sptr) : emitted when a monitor is created.
+ * - \b notification_created(core::notification::base::sptr): forwards notifications emitted by the reader/writer.
  * - \b failed() : emitted when the reader/writer has been cancelled by the user or has failed.
  * - \b succeeded() : emitted when a reader/writer finishes correctly.
  *
  * @section Slots Slots
- * - \b forward_notification(core::notification::monitor::sptr ) : slot connected to the reader/writer to forward the
- * signal
- * 'monitorCreated'
+ * - \b forward_notification(core::notification::base::sptr): forwards the reader/writer notification through the
+ * 'notification_created' signal.
  *
  * @section XML XML Configuration
  *
@@ -63,13 +64,12 @@ namespace sight::module::ui::io
  * - \b data.write [sight::data::object]: the object to save.
  * @subsection Configuration Configuration
  * - \b selection
- *      - \b mode (mandatory) : must be include (to add the selection to selector list ) or exclude (to exclude the
- * selection of the selector list).
+ *      - \b mode (optional, default "exclude"): includes or excludes the services listed with addSelection.
  * - \b addSelection
  *      - \b service (mandatory) : Name of the service to include/exclude to the choice list of the selector.
- * - \b config
- *      - \b id (mandatory) : the id of the configuration to use.
- *      - \b service (mandatory) :  the name of the service.
+ * - \b config (optional)
+ *      - \b id (mandatory): identifier of the configuration to use.
+ *      - \b service (mandatory): name of the associated service.
  */
 class selector : public sight::ui::dialog_editor,
                  public sight::core::notification::has_monitors
@@ -94,7 +94,7 @@ public:
     };
 
     /**
-     * @brief   Constructor. Do nothing (Just initialize parameters).
+     * @brief Initializes the service signals and the notification forwarding slot.
      *
      * By default, selector::m_servicesAreExcluded is true.
      */
@@ -105,28 +105,71 @@ public:
 
 protected:
 
-    ///Starts the service. Do nothing.
+    /// Moves the notification forwarding slot to the default worker.
     void starting() override;
 
     /// Stops the service. Do nothing.
     void stopping() override;
 
     /**
-     * @brief   This method initializes class member parameters from configuration elements.
+     * @brief Reads the selector mode, service filtering rules and optional service configurations from XML.
      *
-     * The method verifies if the configuration is well written and retrieves user parameter values.
-     * Thanks to this method, selector::m_selectedServices value is up to date.
-     **/
+     * The optional \c config elements associate a configuration with a reader or writer. When none is provided,
+     * the selected service is configured with its own default configuration.
+     */
     void configuring() override;
 
-    /// Create a dialogue box to provide the user different available readers (writer) for the IOSelector associated
-    // objects. Then, the selected reader (writer) is executed.
+    /// Selects a compatible reader/writer, opens the appropriate location dialog and executes the service.
     void updating() override;
 
-    /// Gives the name of the class. Do nothing.
+    /// Writes the service name to the supplied stream.
     void info(std::ostream& _sstream) override;
 
 private:
+
+    /**
+     * @brief Selects the reader workflow according to the path types supported by the available services.
+     * @param[in] _available_services pairs containing each reader implementation identifier and display name.
+     */
+    void update_reader(
+        const std::vector<std::pair<std::string, std::string> >& _available_services
+    );
+
+    /**
+     * @brief Selects and executes a writer, using a shared file dialog when its extensions are available.
+     * @param[in] _available_extensions_map pairs containing each writer implementation identifier and display name.
+     * @param[in] _available_extensions_selector display names presented when a writer must be selected explicitly.
+     */
+    void update_writer(
+        const std::vector<std::pair<std::string, std::string> >& _available_extensions_map,
+        const std::vector<std::string>& _available_extensions_selector
+    );
+
+    /**
+     * @brief Creates, binds and configures a reader service.
+     * @param[in] _service_id reader implementation identifier.
+     * @return The configured reader service.
+     */
+    sight::io::service::reader::sptr create_and_configure_reader(const std::string& _service_id);
+
+    /**
+     * @brief Creates, binds and configures a writer service.
+     * @param[in] _service_id writer implementation identifier.
+     * @return The configured writer service.
+     */
+    sight::io::service::writer::sptr create_and_configure_writer(const std::string& _service_id);
+
+    /**
+     * @brief Builds a shared file dialog from reader extensions and executes the reader matching the selected file.
+     * @param[in] _available_services pairs containing each reader implementation identifier and display name.
+     */
+    void select_file_reader(const std::vector<std::pair<std::string, std::string> >& _available_services);
+
+    /**
+     * @brief Selects a reader and lets it open its own location dialog before execution.
+     * @param[in] _available_services pairs containing each reader implementation identifier and display name.
+     */
+    void select_folder_reader(const std::vector<std::pair<std::string, std::string> >& _available_services);
 
     void forward_notification(core::notification::base::sptr _notification);
 
@@ -134,13 +177,13 @@ private:
     bool m_services_are_excluded {true};
 
     /**
-     * @brief List of services to be included or excluded.
+     * @brief Services to include or exclude from the available services.
      *
-     * @see selector::m_servicesAreExcluded.
+     * @see selector::m_services_are_excluded.
      */
     std::vector<std::string> m_selected_services;
 
-    /// Map that specifies a configuration extension for a service
+    /// Maps each service implementation to its optional service configuration.
     std::map<std::string, std::string> m_service_to_config;
 
     sight::sptr<signals::failed_t> m_sig_failed;
