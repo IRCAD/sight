@@ -103,6 +103,12 @@ public:
         level _level                                 = level::standard
     )                                                = 0;
 
+    /// Finalize the archive and close the underlying file. Contrary to the destructor, which can only log,
+    /// it reports a failure by throwing, so call it explicitly whenever the integrity of the written archive
+    /// matters. All streams returned by open_file() must have been destroyed beforehand. Calling it more than
+    /// once is a no-op.
+    SIGHT_IO_ZIP_API virtual void close() = 0;
+
     /// Returns true for raw archive
     [[nodiscard]] SIGHT_IO_ZIP_API virtual bool is_raw() const = 0;
 

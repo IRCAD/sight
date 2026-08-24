@@ -203,6 +203,13 @@ public:
 
     //------------------------------------------------------------------------------
 
+    void close() final
+    {
+        // Nothing to do: each file is written and closed by its own stream
+    }
+
+    //------------------------------------------------------------------------------
+
     [[nodiscard]] bool is_raw() const final
     {
         return true;
@@ -274,22 +281,32 @@ public:
 
     ~zip_handle()
     {
-        // Close zip handle
-        const auto result = mz_zip_writer_close(m_zip_writer);
+        const auto result = close();
 
         // Cleanup
         mz_zip_writer_delete(&m_zip_writer);
 
-        SIGHT_THROW_EXCEPTION_IF(
-            exception::write(
-                "Cannot close writer for archive '"
-                + m_archive_path
-                + "'. Error code: "
-                + std::to_string(result),
-                result
-            ),
+        // Never throw from a destructor: it would terminate the application, all the more while unwinding
+        SIGHT_ERROR_IF(
+            "Cannot close writer for archive '"
+            + m_archive_path
+            + "'. Error code: "
+            + std::to_string(result),
             result != MZ_OK
         );
+    }
+
+    /// Write the central directory and close the archive file. Idempotent.
+    std::int32_t close()
+    {
+        if(m_closed)
+        {
+            return MZ_OK;
+        }
+
+        m_closed = true;
+
+        return mz_zip_writer_close(m_zip_writer);
     }
 
     // Path to the archive converted to string because on Windows std::filesystem::path.c_str() returns a wchar*
@@ -300,6 +317,9 @@ public:
 
     // Zip writer handle
     void* m_zip_writer {nullptr};
+
+    // True once the archive has been finalized, to keep close() idempotent
+    bool m_closed {false};
 };
 
 class zip_file_handle final
@@ -382,7 +402,10 @@ public:
 
     ~zip_file_handle()
     {
-        const auto result = mz_zip_writer_entry_close(m_zip_handle->m_zip_writer);
+        // Closing the archive also closes the pending entry, so there is nothing left to do here
+        const auto result = m_zip_handle->m_closed
+                            ? MZ_OK
+                            : mz_zip_writer_entry_close(m_zip_handle->m_zip_writer);
 
         // Restore defaults
         mz_zip_writer_set_compress_method(m_zip_handle->m_zip_writer, MZ_COMPRESS_METHOD_ZSTD);
@@ -390,16 +413,14 @@ public:
         mz_zip_writer_set_aes(m_zip_handle->m_zip_writer, 0);
         mz_zip_writer_set_password(m_zip_handle->m_zip_writer, nullptr);
 
-        SIGHT_THROW_EXCEPTION_IF(
-            exception::write(
-                "Cannot close file '"
-                + m_file_name
-                + "' in archive '"
-                + m_zip_handle->m_archive_path
-                + "'. Error code: "
-                + std::to_string(result),
-                result
-            ),
+        // Never throw from a destructor: it would terminate the application, all the more while unwinding
+        SIGHT_ERROR_IF(
+            "Cannot close file '"
+            + m_file_name
+            + "' in archive '"
+            + m_zip_handle->m_archive_path
+            + "'. Error code: "
+            + std::to_string(result),
             result != MZ_OK
         );
     }
@@ -591,6 +612,24 @@ public:
                 MZ_WRITE_ERROR
             ),
             remaining_size > 0
+        );
+    }
+
+    //------------------------------------------------------------------------------
+
+    void close() final
+    {
+        const auto result = m_zip_handle->close();
+
+        SIGHT_THROW_EXCEPTION_IF(
+            exception::write(
+                "Cannot close archive '"
+                + m_zip_handle->m_archive_path
+                + "'. Error code: "
+                + std::to_string(result),
+                result
+            ),
+            result != MZ_OK
         );
     }
 

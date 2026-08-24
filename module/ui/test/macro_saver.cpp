@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2025 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,7 +22,8 @@
 
 #include "macro_saver.hpp"
 
-#include <core/runtime/profile/profile.hpp>
+#include <core/runtime/profile.hpp>
+#include <core/spy_log.hpp>
 
 #include <QAction>
 #include <QCheckBox>
@@ -42,7 +43,7 @@ const QEvent::Type NUMBER_INPUT_MODIFICATION_TYPE = static_cast<QEvent::Type>(QE
 
 //------------------------------------------------------------------------------
 
-QString modifiers_to_string(Qt::KeyboardModifiers _modifiers)
+static QString modifiers_to_string(Qt::KeyboardModifiers _modifiers)
 {
     QString res;
     static const std::map<QString, Qt::KeyboardModifier> s_MODIFIERS_LIST {
@@ -440,20 +441,23 @@ QVector<find_strategy> macro_saver::find(QObject* _o)
 
     if(_o == m_main_window)
     {
-        return {{find_strategy_t::root, class_name, "", 0}};
+        return {{.type = find_strategy_t::root, .class_name = class_name, .string = "", .integer = 0}};
     }
 
     if(_o == qApp->activeModalWidget())
     {
-        return {{find_strategy_t::active_modal_widget, class_name,
-            w->objectName().isEmpty() ? w->windowTitle() : w->objectName(), 0
+        return {{.type = find_strategy_t::active_modal_widget, .class_name = class_name,
+            .string    = w->objectName().isEmpty() ? w->windowTitle() : w->objectName(), .integer = 0
         }
         };
     }
 
     if(_o->objectName() != "")
     {
-        QVector<find_strategy> res {{find_strategy_t::object_name, class_name, _o->objectName().toLatin1(), 0}};
+        QVector<find_strategy> res {{.type = find_strategy_t::object_name, .class_name = class_name,
+            .string = _o->objectName().toLatin1(), .integer = 0
+        }
+        };
         if(QObjectList children;
            w != nullptr
            && (children = findChildren(w->window(), class_name, _o->objectName())).size() == 1 && children[0] == _o)
@@ -487,7 +491,9 @@ QVector<find_strategy> macro_saver::find(QObject* _o)
 
             if(best_ancestor_strat.empty())
             {
-                res.append({find_strategy_t::cant_be_found, class_name, "", 0});
+                res.append(
+                    {.type = find_strategy_t::cant_be_found, .class_name = class_name, .string = "", .integer = 0
+                    });
             }
             else
             {
@@ -500,24 +506,30 @@ QVector<find_strategy> macro_saver::find(QObject* _o)
 
     if(findChildren(m_main_window, class_name).size() == 1)
     {
-        return {{find_strategy_t::global_type, class_name, "", 0}};
+        return {{.type = find_strategy_t::global_type, .class_name = class_name, .string = "", .integer = 0}};
     }
 
     if(w != nullptr && w->actions().size() == 1)
     {
-        QVector<find_strategy> res {{find_strategy_t::action, class_name, "", 0}};
+        QVector<find_strategy> res {{.type = find_strategy_t::action, .class_name = class_name, .string = "",
+            .integer = 0
+        }
+        };
         res.append(find(w->actions()[0]));
         return res;
     }
 
     if(parent_of(_o) == nullptr)
     {
-        return {{find_strategy_t::cant_be_found, class_name, "", 0}};
+        return {{.type = find_strategy_t::cant_be_found, .class_name = class_name, .string = "", .integer = 0}};
     }
 
     if(findChildren(parent_of(_o), class_name, "", Qt::FindDirectChildrenOnly).size() == 1)
     {
-        QVector<find_strategy> res {{find_strategy_t::local_type, class_name, "", 0}};
+        QVector<find_strategy> res {{.type = find_strategy_t::local_type, .class_name = class_name, .string = "",
+            .integer = 0
+        }
+        };
         res.append(find(parent_of(_o)));
         return res;
     } // else
@@ -531,7 +543,10 @@ QVector<find_strategy> macro_saver::find(QObject* _o)
         }
     }
 
-    QVector<find_strategy> res {{find_strategy_t::nth_child, class_name, "", index}};
+    QVector<find_strategy> res {{.type = find_strategy_t::nth_child, .class_name = class_name, .string = "",
+        .integer = index
+    }
+    };
     res.append(find(parent_of(_o)));
     return res;
 }
@@ -723,7 +738,7 @@ void macro_saver::save()
         }
         else if(m_interactions[i]->type == QEvent::Type::KeyPress)
         {
-            const auto& ik = static_cast<pre_interaction_keyboard&>(*m_interactions[i].get());
+            const auto& ik = static_cast<pre_interaction_keyboard&>(*m_interactions[i]);
             if(ik.is_printable())
             {
                 // If the key is printable, we will attempt to "compress" it with the following key events if they are
@@ -1385,7 +1400,10 @@ void macro_saver::save()
                                     };
 
     QFile cpp("gui_test.cpp");
-    cpp.open(QIODevice::WriteOnly);
+    if(!cpp.open(QIODevice::WriteOnly))
+    {
+        throw std::runtime_error("Couldn't open the file.");
+    }
 
     s_WRITE(cpp, 0, "#include \"gui_test.hpp\"");
     s_WRITE(cpp, 0, "");
@@ -1659,7 +1677,11 @@ void macro_saver::save()
     s_WRITE(cpp, 0, "}");
 
     QFile hpp("gui_test.hpp");
-    hpp.open(QIODevice::WriteOnly);
+    if(!hpp.open(QIODevice::WriteOnly))
+    {
+        throw std::runtime_error("Couldn't open the file.");
+    }
+
     s_WRITE(hpp, 0, "#pragma once");
     s_WRITE(hpp, 0, "");
     s_WRITE(hpp, 0, "#include <ui/test/test.hpp>");

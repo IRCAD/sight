@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2025 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -26,9 +26,6 @@
 #include "exception/read.hpp"
 
 #include "minizip/mz.h"
-#include "minizip/mz_os.h"
-#include "minizip/mz_strm.h"
-#include "minizip/mz_strm_os.h"
 #include "minizip/mz_zip.h"
 #include "minizip/mz_zip_rw.h"
 
@@ -45,6 +42,9 @@
 #pragma warning(pop)
 #endif
 
+#include <algorithm>
+#include <array>
+#include <cstdint>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -101,7 +101,7 @@ public:
         const std::streamsize size = file.tellg();
         file.seekg(0, std::ios::beg);
 
-        std::string content(std::size_t(size), 0);
+        std::string content(static_cast<std::size_t>(size), 0);
         file.read(content.data(), size);
 
         return content;
@@ -172,14 +172,12 @@ public:
         // Cleanup
         mz_zip_reader_delete(&m_zip_reader);
 
-        SIGHT_THROW_EXCEPTION_IF(
-            exception::read(
-                "Cannot close writer for archive '"
-                + m_archive_path
-                + "'. Error code: "
-                + std::to_string(result),
-                result
-            ),
+        // Never throw from a destructor: it would terminate the application, all the more while unwinding
+        SIGHT_ERROR_IF(
+            "Cannot close writer for archive '"
+            + m_archive_path
+            + "'. Error code: "
+            + std::to_string(result),
             result != MZ_OK
         );
     }
@@ -214,6 +212,78 @@ public:
         // Set encryption
         mz_zip_reader_set_password(m_zip_handle->m_zip_reader, m_password.empty() ? nullptr : m_password.c_str());
 
+        open_entry();
+    }
+
+    ~zip_file_handle()
+    {
+        const auto result = mz_zip_reader_entry_close(m_zip_handle->m_zip_reader);
+
+        // Restore defaults
+        mz_zip_reader_set_password(m_zip_handle->m_zip_reader, nullptr);
+
+        // Never throw from a destructor: it would terminate the application, all the more while unwinding.
+        // MZ_CRC_ERROR only means the entry was not read until its end, which is legitimate for a stream.
+        SIGHT_DEBUG_IF(close_error_message(result), result == MZ_CRC_ERROR);
+        SIGHT_ERROR_IF(close_error_message(result), result != MZ_OK && result != MZ_CRC_ERROR);
+    }
+
+    /// Return the uncompressed size of the entry, in bytes.
+    [[nodiscard]] std::uint64_t size() const
+    {
+        mz_zip_file* file_info = nullptr;
+
+        const auto result = mz_zip_reader_entry_get_info(m_zip_handle->m_zip_reader, &file_info);
+
+        SIGHT_THROW_EXCEPTION_IF(
+            exception::read(
+                "Cannot get information for file '"
+                + m_file_path
+                + "' in archive '"
+                + m_zip_handle->m_archive_path
+                + "'. Error code: "
+                + std::to_string(result),
+                result
+            ),
+            result != MZ_OK || file_info == nullptr
+        );
+
+        return static_cast<std::uint64_t>(file_info->uncompressed_size);
+    }
+
+    /// Reopen the entry so that the next read starts again from the beginning. Minizip only supports
+    /// forward, streamed reading, so this is the only way to move the read position backward.
+    void rewind()
+    {
+        // Minizip verifies the whole entry CRC when closing, so closing here fails with MZ_CRC_ERROR as soon
+        // as the entry has not been read until its end - which is precisely why we rewind. The entry is
+        // closed in all cases, so we can reopen it right away.
+        if(const auto result = mz_zip_reader_entry_close(m_zip_handle->m_zip_reader);
+           result != MZ_OK && result != MZ_CRC_ERROR)
+        {
+            SIGHT_THROW_EXCEPTION(exception::read(close_error_message(result), result));
+        }
+
+        open_entry();
+    }
+
+private:
+
+    /// Message used when closing the entry failed.
+    [[nodiscard]] std::string close_error_message(std::int32_t _result) const
+    {
+        return "Cannot close file '"
+               + m_file_path
+               + "' from archive '"
+               + m_zip_handle->m_archive_path
+               + "'. Error code: "
+               + std::to_string(_result);
+    }
+
+    /// Locate and open the entry in the archive. Used by the constructor and by rewind() to restart reading
+    /// the entry from the beginning.
+    void open_entry()
+    {
         if(const auto result = mz_zip_reader_locate_entry(m_zip_handle->m_zip_reader, m_file_path.c_str(), 0);
            result != MZ_OK)
         {
@@ -266,29 +336,6 @@ public:
         // NOLINTEND(readability-else-after-return)
     }
 
-    ~zip_file_handle()
-    {
-        const auto result = mz_zip_reader_entry_close(m_zip_handle->m_zip_reader);
-
-        // Restore defaults
-        mz_zip_reader_set_password(m_zip_handle->m_zip_reader, nullptr);
-
-        SIGHT_THROW_EXCEPTION_IF(
-            exception::read(
-                "Cannot close file '"
-                + m_file_path
-                + "' from archive '"
-                + m_zip_handle->m_archive_path
-                + "'. Error code: "
-                + std::to_string(result),
-                result
-            ),
-            result != MZ_OK
-        );
-    }
-
-private:
-
     friend class zip_source;
     friend class zip_archive_reader;
 
@@ -306,21 +353,66 @@ class zip_source final
 {
 public:
 
-    // Needed by Boost
+    // Needed by Boost. GDCM (since 3.2.x) queries the current stream position and total size
+    // (std::istream::tellg()/seekg()) to validate declared value lengths before reading them, so the device
+    // must advertise itself as seekable, even though minizip only ever streams the entry forward.
     using char_type = char;
-    using category  = boost::iostreams::source_tag;
+    struct category :
+        boost::iostreams::input_seekable,
+        boost::iostreams::device_tag
+    {
+    };
 
     // BEWARE: Boost make shallow copies of the ZipSource...
     explicit zip_source(std::shared_ptr<zip_file_handle> _zip_file_handle) :
-        m_zip_file_handle(std::move(_zip_file_handle))
+        m_zip_file_handle(std::move(_zip_file_handle)),
+        m_size(m_zip_file_handle->size())
     {
     }
 
     // Boost use this to read things
     std::streamsize read(char* _buffer, std::streamsize _size)
     {
-        const std::int32_t block_size = std::int32_t(
-            std::min(_size, std::streamsize(std::numeric_limits<std::int32_t>::max()))
+        // A previous seek() may have only moved the logical position (m_position), without touching
+        // minizip's own, forward-only, read cursor (m_physical_position): catch it up first.
+        synchronize();
+
+        const auto read = raw_read(_buffer, _size);
+        m_position += static_cast<std::uint64_t>(read);
+
+        return read;
+    }
+
+    // Boost uses this for tellg()/seekg(). GDCM only uses this to query the current position and the total
+    // size, then to seek back to where it was, so we simply update the logical position here: the
+    // underlying minizip stream, which can only be read forward, is only ever actually moved, lazily, by
+    // read() (see synchronize()), i.e. when data is genuinely requested.
+    std::streampos seek(boost::iostreams::stream_offset _offset, std::ios_base::seekdir _way)
+    {
+        const auto base = _way == std::ios_base::beg
+                          ? static_cast<std::int64_t>(0)
+                          : _way == std::ios_base::end
+                          ? static_cast<std::int64_t>(m_size)
+                          : static_cast<std::int64_t>(m_position);
+
+        m_position = static_cast<std::uint64_t>(
+            std::clamp(
+                base + static_cast<std::int64_t>(_offset),
+                static_cast<std::int64_t>(0),
+                static_cast<std::int64_t>(m_size)
+            )
+        );
+
+        return std::streampos {static_cast<std::streamoff>(m_position)};
+    }
+
+private:
+
+    // Perform the actual read on the minizip entry and advance the physical read position.
+    std::streamsize raw_read(char* _buffer, std::streamsize _size)
+    {
+        const std::int32_t block_size = static_cast<std::int32_t>(
+            std::min(_size, static_cast<std::streamsize>(std::numeric_limits<std::int32_t>::max()))
         );
 
         const auto read = mz_zip_reader_entry_read(
@@ -342,12 +434,49 @@ public:
             read < 0
         );
 
-        return std::streamsize(read);
+        m_physical_position += static_cast<std::uint64_t>(read);
+
+        return static_cast<std::streamsize>(read);
     }
 
-private:
+    // Bring minizip's physical read cursor to the logical position requested by the last seek(), by
+    // reopening the entry (if we need to move backward) and/or reading and discarding bytes (to move
+    // forward), since minizip cannot do either of these itself.
+    void synchronize()
+    {
+        if(m_position < m_physical_position)
+        {
+            m_zip_file_handle->rewind();
+            m_physical_position = 0;
+        }
+
+        std::array<char, 8192> discard {};
+
+        for(auto remaining = m_position - m_physical_position ; remaining > 0 ;
+            remaining = m_position - m_physical_position)
+        {
+            const auto chunk = static_cast<std::streamsize>(std::min(remaining, discard.size()));
+
+            SIGHT_THROW_EXCEPTION_IF(
+                exception::read(
+                    "Cannot seek to position "
+                    + std::to_string(m_position)
+                    + " in file '"
+                    + m_zip_file_handle->m_file_path
+                    + "' in archive '"
+                    + m_zip_file_handle->m_zip_handle->m_archive_path
+                    + "': unexpected end of stream.",
+                    MZ_SEEK_ERROR
+                ),
+                raw_read(discard.data(), chunk) <= 0
+            );
+        }
+    }
 
     const std::shared_ptr<zip_file_handle> m_zip_file_handle;
+    const std::uint64_t m_size;
+    std::uint64_t m_position {0};
+    std::uint64_t m_physical_position {0};
 };
 
 class zip_archive_reader final : public archive_reader
@@ -416,13 +545,13 @@ public:
             result != MZ_OK
         );
 
-        std::string content(std::size_t(file_info->uncompressed_size), 0);
+        std::string content(static_cast<std::size_t>(file_info->uncompressed_size), 0);
 
         std::size_t remaining_size = content.size();
         char* remaining_buffer     = content.data();
 
-        std::int32_t block_size = std::int32_t(
-            std::min(remaining_size, std::size_t(std::numeric_limits<std::int32_t>::max()))
+        std::int32_t block_size = static_cast<std::int32_t>(
+            std::min(remaining_size, static_cast<std::size_t>(std::numeric_limits<std::int32_t>::max()))
         );
 
         while(remaining_size > 0)
@@ -451,7 +580,7 @@ public:
                 read < 0
             );
 
-            remaining_size   -= std::size_t(read);
+            remaining_size   -= static_cast<std::size_t>(read);
             remaining_buffer += read;
         }
 

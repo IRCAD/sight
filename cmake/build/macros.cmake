@@ -1171,6 +1171,9 @@ endmacro()
 
 # Treat warnings as errors if requested
 # - deprecated declaration will be displayed as warning and not errors
+# - C4211 (nonstandard extension used: redefined extern to static) is disabled for CUDA: nvcc's generated
+#   device-function registration stubs (*.cudafe1.stub.c) trigger it under MSVC, it's not something we can
+#   fix in our own .cu files
 # - enabled by default on all projects, and strongly recommended to not disable it
 # - if really necessary, you can disable them by defining sight_add_target(foo TYPE ... WARNINGS_AS_ERRORS OFF)
 macro(sight_configure_warnings PROJECT)

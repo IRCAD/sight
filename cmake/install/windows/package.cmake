@@ -96,6 +96,7 @@ macro(win_package PRJ_NAME)
     string(REPLACE "/" "\\\\" CPACK_RESOURCE_FILE_LICENSE ${CPACK_RESOURCE_FILE_LICENSE})
 
     # Avoid a useless warning
+    cmake_policy(SET CMP0219 NEW)
     include(CPack)
 
 endmacro()

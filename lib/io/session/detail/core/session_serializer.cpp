@@ -292,6 +292,10 @@ void session_serializer::serialize(
         // Write the final property tree back to the archive
         boost::property_tree::write_json(*ostream, tree, false);
     }
+
+    // Explicitly finalize the archive, so a failure is reported here instead of being only logged by the
+    // destructor. All streams opened above are out of scope at this point.
+    archive->close();
 }
 
 } // namespace sight::io::session::detail

@@ -25,11 +25,7 @@
 #include <data/string.hpp>
 #include <data/vector.hpp>
 
-#include <service/op.hpp>
-
 #include <utest/service_fixture.hpp>
-
-#include <grpcpp/server_context.h>
 
 namespace
 {
