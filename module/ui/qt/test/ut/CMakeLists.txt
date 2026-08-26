@@ -13,6 +13,7 @@ target_link_libraries(
            utest_data
            core
            data
+           io
            service
            ui_qt
            ui_test

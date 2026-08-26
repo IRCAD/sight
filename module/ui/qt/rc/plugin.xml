@@ -358,4 +358,11 @@
         <object>sight::data::material</object>
         <desc>Allows to edit a Mesh's opacity</desc>
     </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::service::controller</type>
+        <service>sight::module::ui::qt::io::drag_and_drop</service>
+        <object>sight::data::series_set</object>
+        <desc>Enables drag-and-drop loading of image files or DICOM folders.</desc>
+    </extension>
 </plugin>

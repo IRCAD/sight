@@ -155,21 +155,30 @@ void reader::updating()
 {
     // Set to failed until successful
     m_read_failed = true;
-
-    // If the user did not choose a series, we stop here
-    if(!m_reader)
-    {
-        return;
-    }
-
-    const auto read_progress = this->observe("Reading DICOM series");
-
     try
     {
         // Set cursor to busy state. It will be reset to default even if exception occurs
         const sight::ui::busy_cursor busy_cursor;
 
-        SIGHT_THROW_IF("No series were selected.", !m_selection || m_selection->empty());
+        if(!m_reader)
+        {
+            SIGHT_THROW_IF(
+                "No DICOM folder was provided.",
+                !has_location_defined()
+            );
+
+            if(!scan())
+            {
+                clear();
+                return;
+            }
+        }
+
+        SIGHT_THROW_IF(
+            "No DICOM series were found.",
+            !m_selection || m_selection->empty()
+        );
+        const auto read_progress = this->observe("Reading DICOM series");
 
         // Sort the series
         m_reader->sort();
