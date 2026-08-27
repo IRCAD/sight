@@ -55,10 +55,10 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::adaptor::volume_render" >
-        <in key="image" uid="..." auto_connect="true" />
-        <in key="mask" uid="..." auto_connect="true" />
-        <in key="tf" uid="..." />
-        <inout key="clippingMatrix" uid="..." />
+        <data image="${...}" />
+        <data mask="${...}" />
+        <data tf="${...}" />
+        <data clippingMatrix="${...}" />
         <config samples="1024" preintegration="true" dynamic="false" ao="false" colorBleeding="false" shadows="false"
                 satSizeRatio="0.25" satShells="3" satShellRadius="7" satConeAngle="0.1" satConeSamples="50"
                 aoFactor="0.5" colorBleedingFactor="0.5" autoresetcamera="true" transform="..."/>
@@ -66,13 +66,16 @@ namespace sight::module::viz::scene3d::adaptor
    @endcode
  *
  * @subsection Input Input
- * - \b image [sight::data::image]: input volume data.
- * - \b mask [sight::data::image]: mask used to crop regions.
- * - \b tf [sight::data::transfer_function] (optional): the current TransferFunction. If it is not defined, we use the
+ * - \b data.image [sight::data::image]: input volume data.
+ * - \b data.mask [sight::data::image]: mask used to crop regions.
+ * - \b data.tf [sight::data::transfer_function] (optional): the current TransferFunction. If it is not defined, we use
+ * the
  *      image's default transferFunction (CT-GreyLevel).
  *
  * @subsection In-Out In-Out
- * - \b clippingMatrix [sight::data::matrix4]: matrix used to clip the volume.
+ * - \b data.clippingMatrix [sight::data::matrix4]: matrix used to clip the volume.
+ *
+ * - \b config.visible [sight::data::boolean] (optional, default=true): the visibility of the adaptor.
  *
  * @subsection Configuration Configuration
  * - \b samples (optional, unsigned int, default=512): maximum number of samples per ray or number of slices.
@@ -94,7 +97,6 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b colorBleedingFactor (optional, double, default=1.0): factor used to weight the color bleeding.
  * - \b autoresetcamera (optional, true/false, default=true): reset the camera at image update to view the whole volume.
  * - \b transform (optional, string, default=""): transform applied to the adaptor's scene node.
- * - \b visible (optional, bool, default=true): the visibility of the adaptor.
  */
 class volume_render final :
     public sight::viz::scene3d::adaptor,
@@ -188,10 +190,10 @@ protected:
     /// Internal wrapper holding object keys
     struct objects
     {
-        static constexpr std::string_view IMAGE_IN              = "image";
-        static constexpr std::string_view MASK_IN               = "mask";
-        static constexpr std::string_view VOLUME_TF_IN          = "tf";
-        static constexpr std::string_view CLIPPING_MATRIX_INOUT = "clippingMatrix";
+        static constexpr std::string_view IMAGE_IN              = "data.image";
+        static constexpr std::string_view MASK_IN               = "data.mask";
+        static constexpr std::string_view VOLUME_TF_IN          = "data.tf";
+        static constexpr std::string_view CLIPPING_MATRIX_INOUT = "data.clippingMatrix";
     };
 
     /// Configures the service.

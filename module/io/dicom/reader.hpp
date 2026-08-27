@@ -46,18 +46,17 @@ namespace sight::module::io::dicom
  * @section XML XML Configuration
  * @code{.xml}
     <service type="sight::module::io::dicom::reader">
-        <inout key="data" uid="..." />
-        <config>
-            <windowTitle>Open DICOM directory</windowTitle>
-            <dialog sopFilter="1.2.840.10008.5.1.4.1.1.2, 1.2.840.10008.5.1.4.1.1.4.1"/>
-        </config>
+        <data read="..." />
+        <dialog sopFilter="1.2.840.10008.5.1.4.1.1.2, 1.2.840.10008.5.1.4.1.1.4.1"/>
+        <config window_title="Open DICOM directory" />
     </service>
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b data [sight::data::object]: object to read to.
+ * - \b data.read [sight::data::object]: object to read to.
  *
  * @subsection Configuration Configuration
+ * - \b config.window_title (optional): allows overriding the default title of the modal file selection window.
  * - \b dialog(optional):
  *      \b sopFilter: The SOP class uids to filter. If empty, and if typeFilter is also empty, the default type filter
  *                    "image", "model", "report" is used.

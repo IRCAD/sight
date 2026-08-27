@@ -46,11 +46,11 @@ namespace sight::module::viz::sample
  * @section XML XML Configuration
  * @code{.xml}
    <service uid="..." type="sight::module::viz::sample::mesh" >
-      <in key="mesh" uid="..." />
+    <data mesh="${...}" />
    </service>
  *
  * @subsection Input Input
- * - \b mesh [sight::data::mesh]: mesh to display.
+ * - \b data.mesh [sight::data::mesh]: mesh to display.
  */
 class mesh : public sight::ui::service
 {
@@ -115,7 +115,7 @@ private:
     /// Stores connection with the camera transform.
     core::com::helper::sig_slot_connection m_connections;
 
-    data::ptr<data::mesh, data::access::in> m_mesh {this, "mesh"};
+    data::ptr<data::mesh, data::access::in> m_mesh {this, "data.mesh"};
 };
 
 } // namespace sight::module::viz::sample.

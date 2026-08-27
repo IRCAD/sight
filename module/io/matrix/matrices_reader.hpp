@@ -24,8 +24,6 @@
 
 #include <core/thread/timer.hpp>
 
-#include <data/matrix_tl.hpp>
-
 #include <io/__/service/reader.hpp>
 
 #include <array>
@@ -58,17 +56,17 @@ namespace sight::module::io::matrix
  *
  * @code{.xml}
    <service type="sight::module::io::matrix::matrices_reader">
-       <inout key="matrix_tl" uid="..." />
+       <data read="..." />
        <oneShot>false</oneShot>
        <fps>30</fps>
        <useTimelapse>true</useTimelapse>
        <createTimestamp>false</createTimestamp>
-       <windowTitle>Select the matrix timeline to load</windowTitle>
+       <config window_title="Select the matrix timeline to load" />
        <step>5</step>
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b matrix_tl [sight::data::matrix_tl]: timeline in which matrices will be pushed.
+ * - \b data.read [sight::data::matrix_tl]: timeline in which matrices will be pushed.
  * @subsection Configuration Configuration
  * - \b oneShot (optional): if true reader will read csv line per line.
  * to read next/previous line you should call readNext/readPrevious. If false reader will read each line with
@@ -77,7 +75,7 @@ namespace sight::module::io::matrix
  * - \b fps (optional): frequency at which matrices are pushed in the timeline (default 30),
  *  only used if oneShot is off.
  * - \b createTimestamp(optional): create a new timestamp instead of using csv file (default: false).
- * - \b windowTitle: allow overriding the default title of the modal file selection window. \see io::reader
+ * - \b config.window_title: allow overriding the default title of the modal file selection window. \see io::reader
  * - \b useTimelapse: if set to true, ignore the fps value and use the matrix
  *     timestamps to figure out at which speed to read the matrices. (default: false)
  * - \b step (optional): value to jump between two matrices when calling readNext/readPrevious slots (default: 1)
@@ -194,8 +192,6 @@ private:
     std::uint64_t m_step {1};
     /// Step value updated in set_step() slot used to compute a shift value when calling readPrevious()/readNext() slots
     std::uint64_t m_step_changed {1};
-
-    sight::data::ptr<sight::data::matrix_tl, sight::data::access::inout> m_matrix_tl {this, "matrix_tl"};
 };
 
 } // namespace sight::module::io::matrix

@@ -48,16 +48,16 @@ namespace sight::module::io::video
  *
  * @code{.xml}
    <service type="sight::module::io::video::frame_writer">
-       <in key="data" uid="..." auto_connect="true" />
-       <windowTitle>Select the image file to load</windowTitle>
+       <data write="..." />
+       <config window_title ="Select the image file to load" />
        <format>.tiff</format>
    </service>
    @endcode
  * @subsection Input Input
- * - \b data [sight::data::frame_tl]: timeline containing the frame to save.
+ * - \b data.write [sight::data::frame_tl]: timeline containing the frame to save.
  *
  * @subsection Configuration Configuration
- * - \b windowTitle: allow overriding the default title of the modal file selection window. \see io::writer
+ * - \b config.window_title: allow overriding the default title of the modal file selection window. \see io::writer
  * - \b format: optional, file format used to store frames. Possible extensions (.jpeg ,.bmp, .tiff, .png, .jp2,... )
  */
 class frame_writer : public sight::io::service::writer

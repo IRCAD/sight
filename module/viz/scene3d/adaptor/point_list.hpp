@@ -27,6 +27,7 @@
 
 #include <data/material.hpp>
 #include <data/point_list.hpp>
+#include <data/string.hpp>
 
 #include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/mesh.hpp>
@@ -68,43 +69,41 @@ namespace sight::module::viz::scene3d::adaptor
  *  The service can be configured in three different ways, with 3 different input data:
  *  - a sight::data::point_list:
     <service uid="..." type="sight::module::viz::scene3d::adaptor::point_list" >
-        <in key="pointList" uid="..." />
+        <data pointList="${...}" />
         <!-- .... />
     </service>
 
     - a set of sight::data::point (for conveniency with a few points):
     <service uid="..." type="sight::module::viz::scene3d::adaptor::point_list" >
-        <in group="points" >
-            <key uid="..." />
-        </in>
+            <data points="${...}" />
         <!-- .... />
     </service>
 
  *  - a sight::data::mesh (the most efficient structure):
     <service uid="..." type="sight::module::viz::scene3d::adaptor::point_list" >
-        <in key="mesh" uid="..." />
+        <data mesh="${...}" />
         <!-- .... />
     </service>
 
     Whatever the input data type, it provides other options:
 
     <service uid="..." type="sight::module::viz::scene3d::adaptor::point_list" >
-        <in key="pointList" uid="..." />
-        <inout group="uniforms">
-            <key uid="..." name="u_uniform_name" />
-       </inout>
+        <data pointList="${...}" />
+            <uniform object="${...}" name="..." />
         <config transform="..." texture_name="..." radius="1.0" fontSource="DejaVuSans.ttf" fontSize="16"
                 labelColor="#0xFFFFFF" fixedSize="false" query_flags="0x40000000" displayLabel="false"/>
-        <properties visible="true" />
+        <config visible="true" />
     </service>
    @endcode
  *
  * @subsection Input Input
- * - \b pointList [sight::data::point_list] (optional): point list to display.
- * - \b points [sight::data::point] (optional): group of points to display.
- * - \b mesh [sight::data::mesh] (optional): point based mesh to display. If the mesh contains any topology, it will be
+ * - \b data.pointList [sight::data::point_list] (optional): point list to display.
+ * - \b data.points [sight::data::point] (optional): group of points to display.
+ * - \b data.mesh [sight::data::mesh] (optional): point based mesh to display. If the mesh contains any topology, it
+ * will be
  *      ignored and only raw vertices will be displayed. or add some fields.
- * - \b uniforms: list of data to bind to material uniforms.
+ * - \b uniform.object [sight::data::object]: data to bind to a material uniform.
+ * - \b uniform.name [sight::data::string]: name of the material uniform associated with the object.
  *
  * @subsection Configuration Configuration:
  * - \b autoresetcamera (optional, true/false, default=true): reset the camera when this mesh is modified, "true" or
@@ -125,8 +124,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b fontSource (optional, string, default=DejaVuSans.ttf): true_t font (*.ttf) source file.
  * - \b fontSize (optional, unsigned int, default=16): font size in points.
  *
- * @subsection Properties Properties:
- * - \b visible (optional, bool, default=true): the pointlist visibility at start.
+ * - \b config.visible [sight::data::boolean] (optional, default=true): the pointlist visibility at start.
  */
 class point_list final :
     public sight::viz::scene3d::adaptor,
@@ -272,13 +270,17 @@ private:
     /// Defines the font size in points.
     std::size_t m_font_size {16};
 
-    data::ptr<data::point_list, data::access::in> m_point_list {this, "pointList", true};
-    data::ptr_vector<data::point, data::access::in> m_points {this, "points", true};
-    data::ptr<data::mesh, data::access::in> m_mesh {this, "mesh", true};
-    data::ptr_vector<data::object, data::access::inout> m_uniforms {this, "uniforms", true};
+    data::ptr<data::point_list, data::access::in> m_point_list {this, "data.pointList", true};
+    data::ptr_vector<data::point, data::access::in> m_points {this, "data.points", true};
+    data::ptr<data::mesh, data::access::in> m_mesh {this, "data.mesh", true};
+    data::ptr_vector<data::object, data::access::inout> m_uniform_objects {this, "uniform.object", true};
+    data::ptr_vector<data::string, data::access::in> m_uniform_names {this, "uniform.name", true};
 
     /// Enables the adaptor visibility.
-    sight::data::property<sight::data::boolean> m_exclude_from_camera_reset {this, "exclude_from_camera_reset", false};
+    sight::data::ptr<sight::data::boolean, sight::data::access::in> m_exclude_from_camera_reset {this,
+                                                                                                 "config.exclude_from_camera_reset",
+                                                                                                 false
+    };
 };
 
 //------------------------------------------------------------------------------

@@ -18,7 +18,7 @@
         <id>SightViewer_vtk_SrvCfg</id>
         <desc>VTK</desc>
         <config>
-            <windowTitle>Open VTK file</windowTitle>
+            <config window_title="Open VTK file" />
         </config>
     </extension>
 
@@ -26,7 +26,7 @@
         <id>SightViewer_itk_SrvCfg</id>
         <desc>Nifti or Inr images</desc>
         <config>
-            <windowTitle>Open an .inr or .nii file</windowTitle>
+            <config window_title="Open an .inr or .nii file" />
         </config>
     </extension>
 
@@ -34,8 +34,8 @@
         <id>SightViewer_dicom_SrvCfg</id>
         <desc>DICOM</desc>
         <config>
-            <windowTitle>Open DICOM directory</windowTitle>
             <dialog filter="image" />
+            <config window_title="Open DICOM directory" />
         </config>
     </extension>
 
@@ -379,8 +379,7 @@
 
             <!-- Read a series -->
             <service uid="open_series_set_srv" type="sight::module::ui::io::selector">
-                <inout key="data" uid="series_set" />
-                <type mode="reader" />
+                <data read="${series_set}" />
                 <selection mode="exclude" />
                 <addSelection service="sight::module::io::dicom::series_set_reader" />
                 <addSelection service="sight::module::io::dicom::dicom_series_set_reader" />
@@ -488,17 +487,15 @@
             <!-- ************************ Configuration launchers ********************************* -->
 
             <service uid="image_split_views_cfg" type="sight::app::config_launcher">
-                <properties config="sight::config::viz::scene3d::image_split_views" />
-                <inout group="object">
-                    <key name="model_series" uid="model_series" optional="true" />
-                    <key name="image" uid="image" optional="true" />
-                    <key name="volume_tf" uid="volume_tf" />
-                    <key name="extruded_model_series" uid="extruded_model_series" />
-                    <key name="vr_visibility" uid="${vr_visibility}" />
-                    <key name="negato_visibility" uid="${negato_visibility}" />
-                    <key name="model_visibility" uid="${model_visibility}" />
-                    <key name="axis_visibility" uid="${axis_visibility}" />
-                </inout>
+                <config id="sight::config::viz::scene3d::image_split_views" />
+                <object name="model_series" uid="model_series" optional="true" />
+                <object name="image" uid="image" optional="true" />
+                <object name="volume_tf" uid="volume_tf" />
+                <object name="extruded_model_series" uid="extruded_model_series" />
+                <object name="vr_visibility" uid="${vr_visibility}" />
+                <object name="negato_visibility" uid="${negato_visibility}" />
+                <object name="model_visibility" uid="${model_visibility}" />
+                <object name="axis_visibility" uid="${axis_visibility}" />
                 <param name="WID_PARENT" value="scene_view" />
                 <channel name="vr_bool_param" uid="volume_bool" />
                 <channel name="vr_int_param" uid="volume_int" />
@@ -525,28 +522,23 @@
 
             <!-- TF manager -->
             <service uid="tf_manager_cfg" type="sight::app::config_launcher">
-                <properties config="sight::config::viz::scene2d::TransferFunctionWidgetCfg" />
-                <inout group="object">
-                    <key name="image" uid="image" />
-                    <key name="currentTF" uid="volume_tf" />
-                </inout>
+                <config id="sight::config::viz::scene2d::TransferFunctionWidgetCfg" />
+                <object name="image" uid="image" />
+                <object name="currentTF" uid="volume_tf" />
                 <param name="WID_PARENT" value="tf_cfg_parameter_view" />
             </service>
 
             <service uid="organ_manager_cfg" type="sight::app::config_launcher">
-                <properties config="sight::config::viz::scene3d::organManager" />
-                <inout group="object">
-                    <key name="model_series" uid="model_series" />
-                </inout>
+                <config id="sight::config::viz::scene3d::organManager" />
+                <object name="model_series" uid="model_series" />
                 <param name="WID_PARENT" value="organs_parameter_view" />
                 <param name="enable_delete" value="true" />
             </service>
 
             <service uid="pacs_cfg" type="sight::app::config_launcher">
-                <properties config="sight::config::io::dicom::pacs_selector_window" start="false" />
-                <inout group="object">
-                    <key name="output_series_set" uid="pacs_series_set" />
-                </inout>
+                <config id="sight::config::io::dicom::pacs_selector_window" start="false" />
+
+                <object name="output_series_set" uid="pacs_series_set" />
                 <param name="WINDOW_TITLE" value="PACS" />
                 <param name="WINDOW_ICON" value="sight::module::ui::icons/liver.svg" />
             </service>

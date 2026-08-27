@@ -312,26 +312,13 @@ void material::create_shader_parameter_adaptors()
 
         sight::data::object::sptr obj;
 
-        const config_t config = this->get_config();
-
-        if(const auto inouts_cfg = config.get_child_optional("inout"); inouts_cfg.has_value())
+        for(const auto& uniform_object : m_uniform_objects)
         {
-            const auto group = inouts_cfg->get<std::string>("<xmlattr>.group", "");
-            if(group == "uniforms")
+            const auto index = uniform_object.first;
+            if(m_uniform_names[index].const_lock()->value() == constant_name)
             {
-                std::size_t i = 0;
-                for(const auto& it_cfg : boost::make_iterator_range(inouts_cfg->equal_range("key")))
-                {
-                    const auto name = it_cfg.second.get<std::string>("<xmlattr>.name");
-                    SIGHT_ASSERT("Missing 'name' tag.", !name.empty());
-
-                    if(name == constant_name)
-                    {
-                        obj = m_uniforms[i].lock().get_shared();
-                    }
-
-                    ++i;
-                }
+                obj = uniform_object.second->lock().get_shared();
+                break;
             }
         }
 
@@ -380,7 +367,7 @@ void material::create_shader_parameter_adaptors()
                 "sight::module::viz::scene3d::adaptor::shader_parameter",
                 id
             );
-        srv->set_inout(obj, "parameter", true);
+        srv->set_inout(obj, "data.parameter", true);
 
         // Naming convention for shader parameters
         srv->set_render_service(this->render_service());

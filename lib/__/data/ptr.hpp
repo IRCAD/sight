@@ -233,9 +233,18 @@ public:
      * @note A bool is rejected on purpose, so that the legacy 'optional' flag can not be silently converted into a
      * default value. A data::boolean must thus be spelled out, i.e. data::boolean(true) and not true.
      */
+    ptr(has_data* _holder, std::string_view _key, DATATYPE _default_value) noexcept
+    requires serializable<DATATYPE>&& (ACCESS != data::access::out) :
+        base_ptr(_holder, _key, true, ACCESS),
+        m_default_factory(
+            [value = std::move(_default_value)]{return std::make_shared<DATATYPE>(value);})
+    {
+    }
+
     template<class T>
     requires serializable<DATATYPE>&& (ACCESS != data::access::out)
     && std::constructible_from<DATATYPE, T>
+    // NOLINTNEXTLINE(cppcoreguidelines-missing-std-forward)
     ptr(has_data* _holder, std::string_view _key, T&& _default_value) noexcept :
         base_ptr(_holder, _key, true, ACCESS),
         m_default_factory(
@@ -303,7 +312,7 @@ public:
     }
     //------------------------------------------------------------------------------
 
-    const T::value_t& value() const
+    [[nodiscard]] const T::value_t& value() const
     {
         const auto obj = this->const_lock();
         return obj->value();

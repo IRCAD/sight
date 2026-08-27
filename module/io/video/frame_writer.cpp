@@ -203,7 +203,7 @@ void frame_writer::start_record()
             "The object is not a '"
             + data::frame_tl::classname()
             + "' or '"
-            + sight::io::service::DATA_KEY
+            + sight::io::service::WRITER_DATA_KEY
             + "' is not correctly set.",
             frame_tl
         );
@@ -309,7 +309,7 @@ void frame_writer::set_format_parameter(std::string _val, std::string _key)
 service::connections_t frame_writer::auto_connections() const
 {
     service::connections_t connections;
-    connections.push(sight::io::service::DATA_KEY, data::timeline::signals::PUSHED, slots::WRITE);
+    connections.push(sight::io::service::WRITER_DATA_KEY, data::timeline::signals::PUSHED, slots::WRITE);
     return connections;
 }
 

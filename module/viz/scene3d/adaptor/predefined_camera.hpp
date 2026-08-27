@@ -46,22 +46,23 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service type="sight::module::viz::scene3d::adaptor::predefined_camera">
-        <config priority="0" mouseRotation="true" zoom="1.5"/>
-        <in key="transform" uid="..." auto_connect="true"/>
-        <in key="view_up" uid="..." />
+        <config priority="0" mouseRotation="true" zoom="1.5" position="pos3" follow_orientation="false" />
+        <data transform="${...}" />
+        <data view_up="${...}" />
         <positions>
             <position name="pos1" rx="-30.0" />
             <position name="pos2" rx="-30.0" ry="90.0" />
             <position name="pos3" rx="-30.0" ry="-90.0"/>
         </positions>
-        <properties position="pos3" follow_orientation="false" />
    </service>
    @endcode
  *
  *
  * @subsection Input Input:
- * - \b transform (optional): initial transform (registration, tracking, ...) to apply to the adaptor first.
- * - \b view_up (optional): used to extract the up vector of the camera. We only use the Y axis of this transform.
+ * - \b data.transform [sight::data::matrix4] (optional): initial transform (registration, tracking, ...) to apply to
+ * the adaptor first.
+ * - \b data.view_up [sight::data::matrix4] (optional): used to extract the up vector of the camera. We only use the Y
+ * axis of this transform.
  *
  * @subsection Configuration Configuration:
  * - \b priority (optional, int, default=0): interaction priority, higher priority interactions are performed first.
@@ -69,9 +70,8 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b animate (optional, bool, default=true): defines if an animation is used when switching position or not.
  * - \b zoom (optional, default="1.0"): defines the zoom ratio against the size of the scene.
  *
- * @subsection Properties Properties:
- * - \b position (optional, string, default=""): defines the default position to use.
- * - \b follow_orientation (optional, bool, default=false) defines if we use a fixed orientation
+ * - \b config.position [sight::data::string] (optional, default=""): defines the default position to use.
+ * - \b config.follow_orientation [sight::data::boolean] (optional, default=false) defines if we use a fixed orientation
  *      or if we follow the orientation of the target.
  *
  * @section Slots Slots
@@ -252,16 +252,19 @@ private:
     float m_zoom {1.0};
 
     /// Input transform.
-    sight::data::ptr<sight::data::matrix4, sight::data::access::in> m_transform {this, "transform", true};
+    sight::data::ptr<sight::data::matrix4, sight::data::access::in> m_transform {this, "data.transform", true};
 
     /// Matrix used to extract the up vector of the camera. We only use the Y axis of this transform.
-    sight::data::ptr<sight::data::matrix4, sight::data::access::in> m_view_up {this, "view_up", true};
+    sight::data::ptr<sight::data::matrix4, sight::data::access::in> m_view_up {this, "data.view_up", true};
 
     /// Defines if we use a fixed orientation or if we follow the orientation of the target.
-    sight::data::property<sight::data::boolean> m_follow_orientation {this, "follow_orientation", false};
+    sight::data::ptr<sight::data::boolean, sight::data::access::in> m_follow_orientation {this,
+                                                                                          "config.follow_orientation",
+                                                                                          false
+    };
 
     /// Defines the default position to use.
-    sight::data::property<sight::data::string> m_position {this, "position", {}};
+    sight::data::ptr<sight::data::string, sight::data::access::in> m_position {this, "config.position", {}};
 
     // Interactor members
 

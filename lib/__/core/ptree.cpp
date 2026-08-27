@@ -23,7 +23,6 @@
 
 #include <boost/property_tree/xml_parser.hpp>
 
-#include <iostream>
 #include <map>
 
 namespace sight::core::ptree
@@ -90,6 +89,33 @@ std::vector<flat_entry> flatten(
     std::vector<flat_entry> entries;
     flatten_rec(_tree, "", _reserved, entries);
     return entries;
+}
+
+//------------------------------------------------------------------------------
+
+void merge(boost::property_tree::ptree& _destination, const boost::property_tree::ptree& _source)
+{
+    for(const auto& source_child : _source)
+    {
+        auto destination_child = _destination.end();
+        for(auto it = _destination.begin() ; it != _destination.end() ; ++it)
+        {
+            if(it->first == source_child.first)
+            {
+                destination_child = it;
+                break;
+            }
+        }
+
+        if(destination_child == _destination.end())
+        {
+            _destination.push_back(source_child);
+        }
+        else
+        {
+            merge(destination_child->second, source_child.second);
+        }
+    }
 }
 
 } // namespace sight::core::ptree

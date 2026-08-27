@@ -8,7 +8,6 @@ Module containing services to read/write matrices from/to files.
 - **matrix_writer**: saves a timeline of matrices in a csv file.
 - **matrix4_trf_reader**: reads a sight::data::matrix4 from a .trf file
 - **matrix4_trf_writer**: writes a sight::data::matrix4 into a .trf file.
-- **validator**: checks if a given matrix4 is valid or not as a rigid transformation matrix (homogenous and orthogonal).
 
 ## How to use it
 

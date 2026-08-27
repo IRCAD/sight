@@ -84,7 +84,7 @@ inline static void basic_test(const bool _raw = false)
 
         // Set data input
         auto in_string = std::make_shared<sight::data::string>(expected);
-        writer->set_input(in_string, sight::io::service::DATA_KEY);
+        writer->set_input(in_string, sight::io::service::WRITER_DATA_KEY);
 
         // Set file output
         writer->set_file(tmp_file);
@@ -116,7 +116,7 @@ inline static void basic_test(const bool _raw = false)
 
         // Set data output
         auto out_string = std::make_shared<sight::data::string>();
-        reader->set_inout(out_string, sight::io::service::DATA_KEY);
+        reader->set_inout(out_string, sight::io::service::READER_DATA_KEY);
 
         // Set file input
         reader->set_file(tmp_file);
@@ -232,7 +232,7 @@ TEST_SUITE("sight::module::io::session")
 
             // Set data output
             auto out_string = std::make_shared<sight::data::string>();
-            reader->set_inout(out_string, sight::io::service::DATA_KEY);
+            reader->set_inout(out_string, sight::io::service::READER_DATA_KEY);
 
             // Set file input
             reader->set_file(tmp_file);
@@ -311,7 +311,7 @@ TEST_SUITE("sight::module::io::session")
 
             // Set data input
             auto in_string = std::make_shared<sight::data::string>(expected);
-            writer->set_input(in_string, sight::io::service::DATA_KEY);
+            writer->set_input(in_string, sight::io::service::WRITER_DATA_KEY);
 
             // Configure the writer sight::service
             auto config = setup_config(false);
@@ -347,7 +347,7 @@ TEST_SUITE("sight::module::io::session")
 
             // Set data output
             auto out_string = std::make_shared<sight::data::string>();
-            reader->set_inout(out_string, sight::io::service::DATA_KEY);
+            reader->set_inout(out_string, sight::io::service::READER_DATA_KEY);
 
             // Configure the reader sight::service
             auto config = setup_config(true);
@@ -389,7 +389,7 @@ TEST_SUITE("sight::module::io::session")
 
             // Set data input
             auto in_string = std::make_shared<sight::data::string>(expected);
-            writer->set_input(in_string, sight::io::service::DATA_KEY);
+            writer->set_input(in_string, sight::io::service::WRITER_DATA_KEY);
 
             // Set file output
             writer->set_file(tmp_file);
@@ -428,7 +428,7 @@ TEST_SUITE("sight::module::io::session")
 
             // Set data output
             auto out_string = std::make_shared<sight::data::string>();
-            reader->set_inout(out_string, sight::io::service::DATA_KEY);
+            reader->set_inout(out_string, sight::io::service::READER_DATA_KEY);
 
             // Set file input
             reader->set_file(tmp_file);

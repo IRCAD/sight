@@ -100,7 +100,7 @@ void reconstruction::updating()
         module::viz::scene3d::adaptor::mesh::sptr mesh_adaptor = this->get_mesh_adaptor();
 
         // Do nothing if the mesh is identical
-        auto mesh = mesh_adaptor->input<sight::data::mesh>("mesh").lock();
+        auto mesh = mesh_adaptor->input<sight::data::mesh>("data.mesh").lock();
         if(mesh.get_shared() != reconstruction->get_mesh())
         {
             // Updates the mesh adaptor according to the reconstruction
@@ -141,7 +141,7 @@ void reconstruction::create_mesh_service()
         auto mesh_adaptor = this->register_service<module::viz::scene3d::adaptor::mesh>(
             "sight::module::viz::scene3d::adaptor::mesh"
         );
-        mesh_adaptor->set_input(mesh, "mesh", true);
+        mesh_adaptor->set_input(mesh, "data.mesh", true);
 
         config_t mesh_adaptor_config;
         mesh_adaptor_config.put("properties.<xmlattr>.visible", visible() && reconstruction->get_is_visible());
@@ -154,22 +154,14 @@ void reconstruction::create_mesh_service()
             mesh_adaptor_config.put("config.<xmlattr>.material_template", m_material_template_name);
         }
 
-        if(!m_uniforms.empty())
+        if(!m_uniform_objects.empty())
         {
             std::size_t i = 0;
-            for(const auto& uniform_data : m_uniforms)
+            for(const auto& uniform_object : m_uniform_objects)
             {
-                mesh_adaptor->set_inout(uniform_data.second->lock().get_shared(), "uniforms", true, {}, i++);
-            }
-
-            const auto config = this->get_config();
-            if(const auto inouts_cfg = config.get_child_optional("inout"); inouts_cfg.has_value())
-            {
-                const auto group = inouts_cfg->get<std::string>("<xmlattr>.group");
-                if(group == "uniforms")
-                {
-                    mesh_adaptor_config.add_child("inout", inouts_cfg.value());
-                }
+                const auto index = i++;
+                mesh_adaptor->set_inout(uniform_object.second->lock().get_shared(), "uniform.object", true, {}, index);
+                mesh_adaptor->set_input(m_uniform_names[index].lock().get_shared(), "uniform.name", true, {}, index);
             }
         }
 

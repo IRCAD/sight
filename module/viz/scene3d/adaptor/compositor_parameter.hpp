@@ -50,16 +50,18 @@ class compositor_listener;
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::adaptor::compositor_parameter">
-        <inout key="parameter" uid="collimation" />
+        <data parameter="${collimation}" />
         <config compositor_name="compositor" parameter="u_value" shader_type="fragment" />
     </service>
    @endcode
  *
  * @subsection InOut InOut:
- * - \b parameter [sight::data::object]: parameter containing the data to upload.
+ * - \b data.parameter [sight::data::object]: parameter containing the data to upload.
+ *
+ * @subsection Input Input:
+ * - \b config.visible [sight::data::boolean] (optional, default=true): defines if the compositor is enabled or not.
  *
  * @subsection Configuration Configuration:
- * - \b visible (optional, bool, default=true): defines if the compositor is enabled or not.
  * - \b compositor_name (mandatory, string): the name of the associated Ogre compositor.
  * - \b parameter (mandatory, string): name of the shader parameter to set.
  * - \b technique (optional, string, default=""): name of the technique, default to the first in the compositor.

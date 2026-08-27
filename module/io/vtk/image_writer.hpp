@@ -53,12 +53,12 @@ namespace sight::module::io::vtk
  *
  * @code{.xml}
    <service type="sight::module::io::vtk::image_writer">
-       <in key="data" uid="..." />
-       <file>...</file>
+       <data write="..." />
+       <path file="..." />
    </service>
    @endcode
  * @subsection Input Input
- * - \b data [sight::data::image]: image to save.
+ * - \b data.write [sight::data::image]: image to save.
  * @subsection Configuration Configuration
  * - \b file (optional): path of the file to save, if it is not defined, 'open_location_dialog()' should be called to
  * define the path.

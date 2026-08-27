@@ -39,13 +39,13 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service type="sight::module::viz::scene3d::adaptor::transform">
-        <inout key="transform" uid="..." />
+        <data transform="${...}" />
         <config transform="meshTFAdaptor" />
    </service>
    @endcode
  *
  * @subsection In-Out In-Out:
- * - \b transform [sight::data::matrix4]: Sight transform matrix.
+ * - \b data.transform [sight::data::matrix4]: Sight transform matrix.
  *
  * @subsection Configuration Configuration:
  * - \b transform (mandatory, string): Name of the Ogre Transform.
@@ -57,7 +57,7 @@ class transform final :
 {
 public:
 
-    static constexpr std::string_view TRANSFORM_INOUT = "transform";
+    static constexpr std::string_view TRANSFORM_INOUT = "data.transform";
 
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(transform, sight::viz::scene3d::adaptor);

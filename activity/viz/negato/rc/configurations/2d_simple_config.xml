@@ -38,13 +38,13 @@
         </service>
 
         <service uid="interactor4Negato" type="sight::module::viz::scene3d::adaptor::negato2d_camera" auto_connect="true">
-            <inout key="image" uid="${objectID}" />
+            <data image="${objectID}" />
             <config priority="0" orientation="${orientation}" />
         </service>
 
         <service uid="seriesAdaptor" type="sight::module::viz::scene3d::adaptor::negato2d" auto_connect="true">
-            <in key="image" uid="${objectID}" />
-            <inout key="tf" uid="tf" />
+            <data image="${objectID}" />
+            <data tf="${tf}" />
             <config autoresetcamera="true" orientation="${orientation}" />
         </service>
 
@@ -55,7 +55,7 @@
         </service>
 
         <service uid="sliderIndexEditor" type="sight::module::ui::qt::image::slice_index_position_editor" auto_connect="true">
-            <inout key="image" uid="${objectID}" />
+            <data image="${objectID}" />
             <config orientation="${orientation}" label="index" display_axis_selector="false" display_step_buttons="false" />
         </service>
 

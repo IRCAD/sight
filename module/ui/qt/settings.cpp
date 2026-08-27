@@ -32,7 +32,6 @@
 #include <data/integer.hpp>
 #include <data/ivec2.hpp>
 #include <data/ivec3.hpp>
-#include <data/map.hpp>
 #include <data/real.hpp>
 #include <data/string.hpp>
 
@@ -120,9 +119,10 @@ void settings::starting()
 
     service::config_t config = this->get_config();
 
-    const auto& ui_cfg    = config.get_child("ui");
-    const bool scrollable = ui_cfg.get<bool>("<xmlattr>.scrollable", false);
-    const auto spacing    = ui_cfg.get_optional<int>("<xmlattr>.spacing");
+    const auto& item_cfg  = config;
+    const auto config_cfg = config.get_child_optional("config");
+    const bool scrollable = config_cfg && config_cfg->get<bool>("<xmlattr>.scrollable", false);
+    const auto spacing    = config_cfg ? config_cfg->get_optional<int>("<xmlattr>.spacing") : boost::optional<int> {};
 
     auto* layout = new QFormLayout;
     layout->setAlignment(Qt::AlignCenter);
@@ -150,10 +150,8 @@ void settings::starting()
     // This set keeps tracks of the ones we add, and triggers and assert if it already exists.
     [[maybe_unused]] std::set<std::string> keys;
 
-    const bool use_map = m_settings_map.const_lock() != nullptr;
-
     // Create widgets
-    for(std::size_t data_index = 0 ; const auto& param : boost::make_iterator_range(ui_cfg.equal_range("item")))
+    for(std::size_t data_index = 0 ; const auto& param : boost::make_iterator_range(item_cfg.equal_range("item")))
     {
         const service::config_t& cfg = param.second;
 
@@ -179,21 +177,11 @@ void settings::starting()
         const std::string type =
             [&, this]()
             {
-                sight::data::mt::locked_ptr<const sight::data::map> map_lock;
                 sight::data::mt::locked_ptr<const sight::data::object> lock;
                 sight::data::object::csptr obj;
-                if(use_map)
-                {
-                    widget.key = cfg.get<std::string>("<xmlattr>.key");
-                    map_lock   = m_settings_map.const_lock();
-                    obj        = map_lock->at(widget.key);
-                }
-                else
-                {
-                    lock       = m_settings[widget.data_index].const_lock();
-                    obj        = lock.get_shared();
-                    widget.key = obj->base_id();
-                }
+                lock       = m_settings[widget.data_index].const_lock();
+                obj        = lock.get_shared();
+                widget.key = cfg.get<std::string>("<xmlattr>.key", obj->base_id());
 
                 auto serializable_data = std::dynamic_pointer_cast<const sight::data::string_serializable>(obj);
                 widget.default_value = serializable_data->to_string();
@@ -486,27 +474,17 @@ void settings::starting()
         }
     }
 
-    for(std::size_t data_index = 0 ; const auto& param : boost::make_iterator_range(ui_cfg.equal_range("item")))
+    for(std::size_t data_index = 0 ; const auto& param : boost::make_iterator_range(item_cfg.equal_range("item")))
     {
         const service::config_t& cfg = param.second;
 
         std::string key;
 
-        sight::data::mt::locked_ptr<const sight::data::map> map_lock;
         sight::data::mt::locked_ptr<sight::data::object> lock;
         sight::data::object::sptr obj;
-        if(use_map)
-        {
-            key      = cfg.get<std::string>("<xmlattr>.key");
-            map_lock = m_settings_map.const_lock();
-            obj      = map_lock->at(key);
-        }
-        else
-        {
-            lock = m_settings[data_index].lock();
-            obj  = lock.get_shared();
-            key  = obj->base_id();
-        }
+        lock = m_settings[data_index].lock();
+        obj  = lock.get_shared();
+        key  = cfg.get<std::string>("<xmlattr>.key", obj->base_id());
 
         const std::string depends       = cfg.get<std::string>("<xmlattr>.depends", "");
         const std::string depends_value = cfg.get<std::string>("<xmlattr>.depends_value", "");
@@ -3100,17 +3078,8 @@ std::shared_ptr<const DATATYPE> settings::data(const QObject* _widget)
     {
         sight::data::mt::locked_ptr<const sight::data::object> lock;
         sight::data::object::csptr obj;
-        const std::string key = _widget->property(qt_property::s_key).toString().toStdString();
-        const auto map        = m_settings_map.lock();
-        if(map)
-        {
-            obj = map->at(key);
-        }
-        else
-        {
-            lock = m_settings[static_cast<std::size_t>(data_index.toUInt())].const_lock();
-            obj  = lock.get_shared();
-        }
+        lock = m_settings[static_cast<std::size_t>(data_index.toUInt())].const_lock();
+        obj  = lock.get_shared();
 
         const auto typed_obj = std::dynamic_pointer_cast<const DATATYPE>(obj);
         return typed_obj;
@@ -3147,17 +3116,8 @@ void settings::update_data(const QObject* _widget, const SUBTYPE& _val)
     {
         sight::data::mt::locked_ptr<sight::data::object> lock;
         sight::data::object::sptr obj;
-        const std::string key = _widget->property(qt_property::s_key).toString().toStdString();
-        const auto map        = m_settings_map.lock();
-        if(map)
-        {
-            obj = map->at(key);
-        }
-        else
-        {
-            lock = m_settings[static_cast<std::size_t>(data_index.toUInt())].lock();
-            obj  = lock.get_shared();
-        }
+        lock = m_settings[static_cast<std::size_t>(data_index.toUInt())].lock();
+        obj  = lock.get_shared();
 
         const auto typed_obj = std::dynamic_pointer_cast<DATATYPE>(obj);
         typed_obj->set_value(_val);

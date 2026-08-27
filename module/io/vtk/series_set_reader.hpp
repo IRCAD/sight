@@ -52,14 +52,14 @@ namespace sight::module::io::vtk
  *
  * @code{.xml}
    <service type="sight::module::io::vtk::series_set_reader">
-      <inout key="data" uid="..." />
-      <file>...</file>
-      <file>...</file>
-      <file>...</file>
+      <data read="..." />
+      <path file="..." />
+      <path file="..." />
+      <path file="..." />
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b data [sight::data::series_set]: series_set to load.
+ * - \b data.read [sight::data::series_set]: series_set to load.
  * @subsection Configuration Configuration
  * - \b file (optional): path of the files to load, if it is not defined, 'open_location_dialog()' should be called to
  * define the path.

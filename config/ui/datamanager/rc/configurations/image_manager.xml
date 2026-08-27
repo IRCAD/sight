@@ -5,12 +5,10 @@ for slices and transfer function.
 Example:
 
 <service uid="..." type="sight::app::config_launcher">
-    <properties config="ImageManager" />
-    <parameter replace="WID_PARENT" by="referenceSceneEditor" />
-    <inout group="object">
-        <key name="image" uid="..." />
-        <key name="transferFunction" uid="..." />
-    </inout>
+    <config id="ImageManager" />
+    <object name="image" uid="..." />
+    <object name="transferFunction" uid="..." />
+    <param name="WID_PARENT" value="referenceSceneEditor" />
 </service>
 -->
 <extension implements="sight::app::extension::config">
@@ -56,7 +54,7 @@ Example:
 
         <!-- Editor to manage slice index and image orientation (axial, frontal, sagittal) -->
         <service uid="selectorSliderNegatoImage" type="sight::module::ui::qt::image::slice_index_position_editor" auto_connect="true">
-            <inout key="image" uid="${image}" />
+            <data image="${image}" />
             <config orientation="axial" label="index" display_axis_selector="false" display_step_buttons="false" />
         </service>
 

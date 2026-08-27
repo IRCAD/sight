@@ -65,7 +65,7 @@
 
             <service uid="quit_act" type="sight::module::ui::quit" />
             <service uid="launch_config_act" type="sight::module::ui::action">
-                <properties checked="${config_started}" />
+                <state checked="${config_started}" />
             </service>
 
             <!-- ************************ Configuration launchers ********************************* -->
@@ -76,24 +76,23 @@
                 The configuration is defined by its id.
             -->
             <service uid="frame_cfg" type="sight::app::config_launcher">
-                <properties config="tuto10_launch_basic_config::basic_frame_config" start="${config_started}" />
+                <config id="tuto10_launch_basic_config::basic_frame_config" start="${config_started}" />
+
                 <!--
                     replace ${image} in the sub-config by the uid of the object with the key
                     (ie. ${image} is replaced by "image")
                 -->
-                <inout group="object">
-                    <key name="image" uid="image" />
-                </inout>
+                <object name="image" uid="image" />
             </service>
 
             <!-- ******************************* Services ***************************************** -->
 
             <service uid="image_reader_srv" type="sight::module::ui::io::selector">
-                <inout key="data" uid="image" />
+                <data read="${image}" />
             </service>
 
             <service uid="image_renderer_srv" type="sight::module::viz::sample::image">
-                <in key="image" uid="image" />
+                <data image="${image}" />
             </service>
 
             <connect>

@@ -40,7 +40,7 @@ public:
 
     SIGHT_DECLARE_CLASS(parameter_adaptor, viz::scene3d::adaptor);
 
-    SIGHT_VIZ_SCENE3D_API static constexpr std::string_view PARAMETER_INOUT = "parameter";
+    SIGHT_VIZ_SCENE3D_API static constexpr std::string_view PARAMETER_INOUT = "data.parameter";
 
     SIGHT_VIZ_SCENE3D_API parameter_adaptor() noexcept = default;
     SIGHT_VIZ_SCENE3D_API ~parameter_adaptor() noexcept override = default;

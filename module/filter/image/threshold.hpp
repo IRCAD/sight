@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,8 +38,8 @@ namespace sight::module::filter::image
  *
  * @code{.xml}
         <service type="sight::module::filter::image::threshold">
-            <in key="source" uid="..." />
-            <out key="target" uid="..." />
+            <input image="${...}" />
+            <output image="${...}" />
             <config>
                 <threshold>50</threshold>
             </config>
@@ -47,10 +47,10 @@ namespace sight::module::filter::image
    @endcode
  *
  * @subsection Input Input:
- * - \b source [sight::data::object]: Source image, can be a data::image_series or a data::image.
+ * - \b input.image [sight::data::object]: Source image, can be a data::image_series or a data::image.
  * @subsection Output Output:
- * - \b target [sight::data::object]: Target image (ie the filtered image),
- * if the type of the source is a data::image_series then target will be a data::image_series,
+ * - \b output.image [sight::data::object]: Target image (ie the filtered image),
+ * if the type of the source is a data::image_series then output.image will be a data::image_series,
  * otherwise it will be an simple data::image.
  * @subsection Configuration Configuration
  * - \b threshold : Specify the desired threshold used in filter
@@ -84,8 +84,8 @@ private:
     /// Threshold value used in filter
     double m_threshold {50.0};
 
-    static constexpr std::string_view IMAGE_IN  = "source";
-    static constexpr std::string_view IMAGE_OUT = "target";
+    static constexpr std::string_view IMAGE_IN  = "input.image";
+    static constexpr std::string_view IMAGE_OUT = "output.image";
 
     sight::data::ptr<sight::data::object, sight::data::access::in> m_source {this, IMAGE_IN};
     sight::data::ptr<sight::data::object, sight::data::access::out> m_target {this, IMAGE_OUT};

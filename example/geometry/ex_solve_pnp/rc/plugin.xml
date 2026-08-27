@@ -205,21 +205,21 @@
             </service>
 
             <service uid="ARVideoAdp" type="sight::module::viz::scene3d::adaptor::video" auto_connect="true">
-                <in key="image" uid="videoImage" />
+                <data image="${videoImage}" />
             </service>
 
             <service uid="ARPointListAdp" type="sight::module::viz::scene3d::adaptor::point_list" auto_connect="true">
-                <in key="pointList" uid="2dPoints" />
+                <data pointList="${2dPoints}" />
                 <config color="#619647" radius="0.01" />
             </service>
 
             <service uid="ARCameraAdp" type="sight::module::viz::scene3d::adaptor::camera" auto_connect="true">
-                <inout key="transform" uid="registrationMatrix" />
-                <in key="calibration" uid="camera" />
+                <data transform="${registrationMatrix}" />
+                <data calibration="${camera}" />
             </service>
 
             <service uid="ARMeshAdp" type="sight::module::viz::scene3d::adaptor::mesh" auto_connect="true">
-                <in key="mesh" uid="cube" />
+                <data mesh="${cube}" />
                 <config autoresetcamera="false" />
             </service>
 
@@ -250,19 +250,19 @@
             </service>
 
             <service uid="VRPointListAdp" type="sight::module::viz::scene3d::adaptor::point_list" auto_connect="true">
-                <in key="pointList" uid="3dPoints" />
+                <data pointList="${3dPoints}" />
                 <config color="#619647" radius="0.01" />
             </service>
 
             <service uid="VRMeshAdp" type="sight::module::viz::scene3d::adaptor::mesh" auto_connect="true">
-                <in key="mesh" uid="cube" />
+                <data mesh="${cube}" />
             </service>
 
             <!-- ******************************* Services ***************************************** -->
 
             <!-- Calibration reader (here OpenCV's XML/YAML) -->
             <service uid="calibrationReaderSrv" type="sight::module::io::vision::open_cv_reader">
-                <inout key="data" uid="camera_set" />
+                <data read="${camera_set}" />
             </service>
 
             <!-- extract a sight::data::camera from the sight::data::camera_set -->
@@ -274,8 +274,8 @@
             </service>
 
             <service uid="meshReaderSrv" type="sight::module::io::vtk::mesh_reader">
-                <inout key="data" uid="cube" />
-                <resource>ex_solve_pnp/plane.vtp</resource>
+                <data read="${cube}" />
+                <path resource="ex_solve_pnp/plane.vtp" />
             </service>
 
             <!-- GUI to select camera (device, file, or stream) -->

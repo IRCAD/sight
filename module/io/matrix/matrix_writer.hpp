@@ -49,16 +49,16 @@ namespace sight::module::io::matrix
  *
  * @code{.xml}
    <service type="sight::module::io::matrix::matrix_writer">
-       <in key="data" uid="..." auto_connect="true" />
-       <windowTitle>Select the file to save the matrix timeline to</windowTitle>
+       <data write="..." />
+       <config window_title ="Select the file to save the matrix timeline to" />
        <config interactive="true" />
    </service>
    @endcode
  * @subsection Input Input
- * - \b data [sight::data::matrix_tl]: timeline containing the matrices to save.
+ * - \b data.write [sight::data::matrix_tl]: timeline containing the matrices to save.
  *
  * @subsection Configuration Configuration
- * - \b windowTitle: allow overriding the default title of the modal file selection window. \see io::writer
+ * - \b config.window_title: allow overriding the default title of the modal file selection window. \see io::writer
  * - \b config:
  *   - \b interactive: if true, the service will display a dialog box to select the file to save. If false, no dialog
  *                     box will be shown. In this case, for practical reasons, the recording will start when setting a

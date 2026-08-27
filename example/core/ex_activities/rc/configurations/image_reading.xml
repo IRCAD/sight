@@ -26,8 +26,7 @@
         <!-- ******************************* Actions ****************************************** -->
 
         <service uid="import_act" type="sight::module::ui::io::selector">
-            <inout key="data" uid="${image_series}" />
-            <type mode="reader" />
+            <data read="${image_series}" />
             <selection mode="include" />
             <addSelection service="sight::module::io::vtk::image_reader" />
         </service>
@@ -35,7 +34,7 @@
         <!-- ************************************* Services ************************************ -->
 
         <service uid="image_scene" type="sight::module::viz::sample::image">
-            <in key="image" uid="${image_series}" />
+            <config image="${image_series}" />
         </service>
 
         <!-- ******************************* Connections ***************************************** -->

@@ -53,7 +53,7 @@ namespace sight::module::io::session
  * @section XML XML Configuration
  * @code{.xml}
     <service type="sight::module::io::session::reader">
-        <inout key="data" uid="..." />
+        <data read="..." />
         <dialog extension=".sample" description="Sample Sight session file" policy="always"/>
         <password policy="once, encryption=salted"/>
         <archive format="default"/>
@@ -61,7 +61,7 @@ namespace sight::module::io::session
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b data [sight::data::object]: object to read.
+ * - \b data.read [sight::data::object]: object to read.
  *
  * @subsection Configuration Configuration
  * - \b dialog(optional):

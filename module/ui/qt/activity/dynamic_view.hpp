@@ -35,12 +35,12 @@
 
 #include <QObject>
 #include <QPointer>
+#include <QTabWidget>
 
 #include <map>
 #include <set>
 #include <vector>
 
-class QTabWidget;
 namespace sight::data
 {
 

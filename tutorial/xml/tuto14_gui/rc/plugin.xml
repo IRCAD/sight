@@ -41,7 +41,7 @@
 
             <service uid="hide_logo_shortcut" type="sight::module::ui::qt::com::signal_shortcut">
                 <config shortcut="Ctrl+l" sid="view" />
-                <properties checked="true" />
+                <state checked="true" />
             </service>
 
             <connect>
@@ -349,23 +349,26 @@
             <!-- ******************************* Actions ****************************************** -->
 
             <service uid="item1Act" type="sight::module::ui::action">
-                <properties checked="true" />
+                <state checked="true" />
             </service>
 
             <service uid="item2Act" type="sight::module::ui::action">
-                <properties checked="true" start="false" />
+                <state checked="true" />
+                <config start="false" />
             </service>
 
             <service uid="item3Act" type="sight::module::ui::action">
-                <properties start="false" />
+                <config start="false" />
             </service>
 
             <service uid="item4Act" type="sight::module::ui::action">
-                <properties checked="false" start="false" />
+                <state checked="false" />
+                <config start="false" />
             </service>
 
             <service uid="item5Act" type="sight::module::ui::action">
-                <properties checked="true" start="false" />
+                <state checked="true" />
+                <config start="false" />
             </service>
 
             <service uid="startAct" type="sight::module::ui::action">
@@ -373,15 +376,15 @@
             </service>
 
             <service uid="stopAct" type="sight::module::ui::action">
-                <properties enabled="false" />
+                <state enabled="false" />
             </service>
 
             <service uid="pauseAct" type="sight::module::ui::action">
-                <properties checked="true" visible="false" />
+                <state checked="true" visible="false" />
             </service>
 
             <service uid="item16Act" type="sight::module::ui::action">
-                <properties checked="true" />
+                <state checked="true" />
             </service>
 
             <service uid="item17Act" type="sight::module::ui::action" />
@@ -423,7 +426,7 @@
             <service uid="quitAct" type="sight::module::ui::quit" />
 
             <service uid="subToolBarConfig" type="sight::app::config_launcher">
-                <properties config="SubToolBarCfg" />
+                <config id="SubToolBarCfg" />
                 <param name="TOOLBAR" value="subToolBarView" />
                 <channel name="logo_visibility" uid="logo_visibility" />
             </service>

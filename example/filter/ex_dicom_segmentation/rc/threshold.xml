@@ -1,8 +1,8 @@
 <extension implements="sight::app::extension::config">
     <id>ExDicomSegmentation_Threshold_AppCfg</id>
     <parameters>
-        <object uid="seriesSet" type="sight::data::series_set" />
-        <object uid="imageSeries" type="sight::data::image_series" />
+        <object uid="series_set" type="sight::data::series_set" />
+        <object uid="image_series" type="sight::data::image_series" />
 
         <param name="WID_PARENT" />
         <param name="GENERIC_UID" />
@@ -10,7 +10,7 @@
     <config>
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="imageSeriesMask" type="sight::data::image_series" deferred="true" />
+        <object uid="image_series_mask" type="sight::data::image_series" deferred="true" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
@@ -35,7 +35,7 @@
             <gui>
                 <layout>
                     <menuItem name="Threshold" icon="sight::module::ui::icons/menu.svg" />
-                    <menuItem name="Export ImageSeries Mask" icon="sight::module::ui::icons/save.svg" />
+                    <menuItem name="Export Mask" icon="sight::module::ui::icons/save.svg" />
                 </layout>
             </gui>
             <registry>
@@ -47,36 +47,31 @@
         <!-- ************************************* Action ************************************ -->
 
         <service uid="thresholdAct" type="sight::module::filter::image::threshold">
-            <in key="source" uid="${imageSeries}" />
-            <out key="target" uid="imageSeriesMask" />
+            <input image="${image_series}" />
+            <output image="${image_series_mask}" />
             <config>
                 <threshold>50</threshold>
             </config>
         </service>
 
         <service uid="exportAct" type="sight::module::ui::series::exporter" auto_connect="true">
-            <inout key="container" uid="${seriesSet}" />
-            <inout key="data" uid="imageSeriesMask" />
+            <data container="${series_set}" element="${image_series_mask}" />
         </service>
 
         <!-- ******************************* Services ***************************************** -->
 
         <service uid="negato1Srv" type="sight::app::config_launcher">
-            <properties config="sight::activity::viz::negato::2d" />
-            <inout group="object">
-                <key name="image" uid="${imageSeries}" />
-            </inout>
-            <parameter replace="WID_PARENT" by="negato1View" />
-            <parameter replace="patient_name" by="Source Image" />
+            <config id="sight::activity::viz::negato::2d" />
+            <object name="image" uid="${image_series}" />
+            <param name="WID_PARENT" value="negato1View" />
+            <param name="patient_name" value="Source Image" />
         </service>
 
         <service uid="negato2Srv" type="sight::app::config_launcher">
-            <properties config="sight::activity::viz::negato::2d" />
-            <inout group="object">
-                <key name="image" uid="imageSeriesMask" />
-            </inout>
-            <parameter replace="WID_PARENT" by="negato2View" />
-            <parameter replace="patient_name" by="Mask Image" />
+            <config id="sight::activity::viz::negato::2d" />
+            <object name="image" uid="${image_series_mask}" />
+            <param name="WID_PARENT" value="negato2View" />
+            <param name="patient_name" value="Mask Image" />
         </service>
     </config>
 </extension>

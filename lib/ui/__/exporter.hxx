@@ -44,8 +44,8 @@ template<class C>
 exporter<C>::connections_t exporter<C>::auto_connections() const
 {
     return {
-        {CONTAINER_INOUT, C::signals::ADDED_OBJECTS, slots::CHECK_ADDED_OBJECTS},
-        {CONTAINER_INOUT, C::signals::REMOVED_OBJECTS, slots::CHECK_REMOVED_OBJECTS}
+        {m_container, C::signals::ADDED_OBJECTS, slots::CHECK_ADDED_OBJECTS},
+        {m_container, C::signals::REMOVED_OBJECTS, slots::CHECK_REMOVED_OBJECTS}
     };
 }
 

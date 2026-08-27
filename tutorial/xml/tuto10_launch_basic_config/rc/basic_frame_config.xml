@@ -30,7 +30,7 @@
         <!-- ******************************* Services ***************************************** -->
 
         <service uid="image_renderer_srv" type="sight::module::viz::sample::image">
-            <in key="image" uid="${image}" />
+            <data image="${image}" />
         </service>
 
         <!-- ******************************* Connections ***************************************** -->

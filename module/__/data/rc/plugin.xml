@@ -25,8 +25,8 @@
     <extension implements="sight::service::extension::factory">
         <type>sight::service::controller</type>
         <service>sight::module::data::manage</service>
-        <object key="object">sight::data::object</object>
-        <object key="container">sight::data::object</object>
+        <object key="data.element">sight::data::object</object>
+        <object key="data.container">sight::data::object</object>
         <desc>This service manages an object (add/swap/remove) into a container object (Map, Vector, SeriesSet).</desc>
     </extension>
 
@@ -102,16 +102,16 @@
     <extension implements="sight::service::extension::factory">
         <type>sight::service::controller</type>
         <service>sight::module::data::inverse</service>
-        <object key="source">sight::data::string_serializable</object>
-        <object key="target">sight::data::string_serializable</object>
+        <object key="data.source">sight::data::string_serializable</object>
+        <object key="data.target">sight::data::string_serializable</object>
         <desc>Inverts a boolean value from a string_serializable source</desc>
     </extension>
 
     <extension implements="sight::service::extension::factory">
         <type>sight::service::filter</type>
         <service>sight::module::data::translate</service>
-        <object key="key">sight::data::string_serializable</object>
-        <object key="value">sight::data::string_serializable</object>
+        <object key="data.input">sight::data::string_serializable</object>
+        <object key="data.output">sight::data::string_serializable</object>
         <desc>Translate a string to another.</desc>
     </extension>
 
@@ -126,7 +126,7 @@
     <extension implements="sight::service::extension::factory">
         <type>sight::service::controller</type>
         <service>sight::module::data::validate</service>
-        <object key="data">sight::data::object</object>
+        <object key="data.input">sight::data::object</object>
         <desc>Validate an object.</desc>
     </extension>
 </plugin>

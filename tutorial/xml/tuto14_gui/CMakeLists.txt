@@ -2,14 +2,13 @@ sight_add_target(tuto14_gui TYPE APP)
 
 add_dependencies(
     tuto14_gui
-    sightrun
-    module_app
-    module_ui
-    module_ui_qt
     data
+    module_app
     module_service
     module_ui
     module_ui_icons
+    module_ui_qt
+    sightrun
 )
 
 # Allow dark theme via module_ui_qt

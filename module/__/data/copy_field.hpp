@@ -33,16 +33,16 @@ namespace sight::module::data
  * @section XML XML Configuration
  * @code{.xml}
        <service uid="..." type="sight::module::data::copy_field" >
-           <in key="source" uid="..." />
-           <inout key="target" uid="..." />
+           <data source="${...}" />
+           <data target="${...}" />
        </service>
    @endcode
  *
  * @subsection Input Input
- * - \b source [sight::data::object]: define the source object whose fields to copy.
+ * - \b data.source [sight::data::object]: define the source object whose fields to copy.
  *
  * @subsection In-Out In-Out
- * - \b target [sight::data::object]: define the target object to update.
+ * - \b data.target [sight::data::object]: define the target object to update.
  */
 class copy_field final : public service::controller
 {
@@ -73,8 +73,8 @@ protected:
 
 private:
 
-    sight::data::ptr<sight::data::object, sight::data::access::in> m_source {this, "source"};
-    sight::data::ptr<sight::data::object, sight::data::access::inout> m_target {this, "target", true};
+    sight::data::ptr<sight::data::object, sight::data::access::in> m_source {this, "data.source"};
+    sight::data::ptr<sight::data::object, sight::data::access::inout> m_target {this, "data.target", true};
 };
 
 } // namespace sight::module::data

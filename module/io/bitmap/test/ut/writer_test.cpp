@@ -45,7 +45,7 @@ inline static void runwriter(
 {
     service::base::sptr swriter = service::add("sight::module::io::bitmap::writer");
     CHECK_MESSAGE(swriter, std::string("Failed to create service 'sight::module::io::bitmap::writer'"));
-    swriter->set_input(_image, "data");
+    swriter->set_input(_image, "data.write");
 
     CHECK_NOTHROW(swriter->set_config(_config));
     CHECK_NOTHROW(swriter->configure());
@@ -137,7 +137,7 @@ inline static void test_enable(
         {
             // Add file
             service::config_t config;
-            config.add("file", file_path.string());
+            config.add("path.<xmlattr>.file", file_path.string());
             config.add("gpu_required", _gpu_required);
 
             // Run the service
@@ -165,7 +165,7 @@ TEST_SUITE("sight::module::io::bitmap::writer")
         const auto& file_path = tmp_dir / "basic.tiff";
 
         service::config_t config;
-        config.add("file", file_path.string());
+        config.add("path.<xmlattr>.file", file_path.string());
 
         const auto& expected_image = get_synthetic_image();
         runwriter(config, expected_image);

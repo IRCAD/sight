@@ -46,13 +46,13 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service type="sight::module::viz::scene3d::adaptor::texture">
-        <in key="image" uid="..." />
+        <data image="${...}" />
         <config texture_name="texName" filtering="linear" wrapping="repeat" useAlpha="false" />
     </service>
    @endcode
  *
  * @subsection Input Input:
- * - \b image [sight::data::image]: the image to map as a texture.
+ * - \b data.image [sight::data::image]: the image to map as a texture.
  *
  * @subsection Configuration Configuration:
  *  - \b texture_name (optional, string, default="") : the name of the ogre texture managed by the adaptor
@@ -139,7 +139,7 @@ private:
     bool m_is_dynamic {false};
 
     /// Defines the signal emitted when the texture has to be changed on the associated material.
-    static constexpr std::string_view TEXTURE_INOUT = "image";
+    static constexpr std::string_view TEXTURE_INOUT = "data.image";
     data::ptr<data::image, data::access::in> m_image {this, TEXTURE_INOUT};
 };
 

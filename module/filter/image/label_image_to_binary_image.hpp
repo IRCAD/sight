@@ -47,17 +47,18 @@ namespace sight::module::filter::image
  * @section XML XML Configuration
  * @code{.xml}
    <service type="sight::module::filter::image::label_image_to_binary_image">
-       <in key="labelImage" uid="..." auto_connect="true" />
-       <inout key="binaryMask" uid="..." />
+       <input label_image="${...}" />
+       <output binary_mask="${...}" />
        <config labelsField="maskLabels" />
    </service>
    @endcode
  *
  * @subsection Input Input
- * - \b labelImage [sight::data::image]: image from which we extract the mask.
+ * - \b input.label_image [sight::data::image]: image from which we extract the mask.
  *
  * @subsection InOut InOut
- * - \b binaryMask [sight::data::image]: The binary mask, extracted from the set of labels or all non zero values.
+ * - \b output.binary_mask [sight::data::image]: The binary mask, extracted from the set of labels or all non zero
+ * values.
  *
  * @subsection Configuration Configuration
  * If you decide to set your own parameters:
@@ -104,8 +105,8 @@ private:
 
     std::string m_label_set_field_name;
 
-    static constexpr std::string_view LABEL_IMAGE_INPUT = "labelImage";
-    static constexpr std::string_view BINARY_MASK_INOUT = "binaryMask";
+    static constexpr std::string_view LABEL_IMAGE_INPUT = "input.label_image";
+    static constexpr std::string_view BINARY_MASK_INOUT = "output.binary_mask";
 
     sight::data::ptr<sight::data::image, sight::data::access::in> m_label_image {this, LABEL_IMAGE_INPUT};
     sight::data::ptr<sight::data::image, sight::data::access::inout> m_binary_mask {this, BINARY_MASK_INOUT};

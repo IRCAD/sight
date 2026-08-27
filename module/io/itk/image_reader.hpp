@@ -46,12 +46,12 @@ namespace sight::module::io::itk
  *
  * @code{.xml}
    <service type="sight::module::io::itk::image_reader">
-       <inout key="data" uid="..." />
-       <file>...</file>
+       <data read="..." />
+       <path file="..." />
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b data [sight::data::image]: loaded image.
+ * - \b data.read [sight::data::image]: loaded image.
  * @subsection Configuration Configuration
  * - \b file (optional): path of the image to load, if it is not defined, 'open_location_dialog()' should be called to
  * define the path.

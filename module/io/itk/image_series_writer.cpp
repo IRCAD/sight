@@ -112,7 +112,7 @@ void image_series_writer::updating()
         const auto data         = m_data.lock();
         const auto image_series = std::dynamic_pointer_cast<const data::image_series>(data.get_shared());
         SIGHT_ASSERT(
-            "The input key '" + sight::io::service::DATA_KEY + "' is not correctly set.",
+            "The input key '" + sight::io::service::WRITER_DATA_KEY + "' is not correctly set.",
             image_series
         );
 

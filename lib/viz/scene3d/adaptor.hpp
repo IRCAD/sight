@@ -56,8 +56,8 @@ namespace sight::viz::scene3d
     </service>
    @endcode
  *
- * @subsection Configuration Configuration:
- * - \b visible (optional, bool, default=true): the visibility of the adaptor.
+ * @subsection Input Input:
+ * - \b config.visible [sight::data::boolean] (optional, default=true): the visibility of the adaptor.
  */
 class SIGHT_VIZ_SCENE3D_CLASS_API adaptor :
     public service::base,
@@ -187,7 +187,7 @@ private:
     bool m_visibility_applied {true};
 
     /// Enables the adaptor visibility.
-    sight::data::property<sight::data::boolean> m_visible {this, "visible", true};
+    sight::data::ptr<sight::data::boolean, sight::data::access::in> m_visible {this, "config.visible", true};
 };
 
 //------------------------------------------------------------------------------

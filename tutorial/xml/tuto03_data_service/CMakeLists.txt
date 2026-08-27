@@ -2,14 +2,14 @@ sight_add_target(tuto03_data_service TYPE APP)
 
 add_dependencies(
     tuto03_data_service
-    sightrun
-    module_app
-    module_ui_qt
     data
+    module_app
+    module_io_vtk
     module_service
     module_ui
-    module_io_vtk
+    module_ui_qt
     module_viz_sample
+    sightrun
 )
 
 # Main application's configuration to launch

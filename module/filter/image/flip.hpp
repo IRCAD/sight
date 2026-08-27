@@ -22,9 +22,6 @@
 
 #pragma once
 
-#include <core/com/signal.hpp>
-#include <core/com/slots.hpp>
-
 #include <data/image.hpp>
 
 #include <service/filter.hpp>
@@ -44,14 +41,14 @@ namespace sight::module::filter::image
  *
  * @code{.xml}
        <service type="sight::module::filter::image::flip">
-           <in key="source" uid="..." auto_connect="true" />
-           <out key="target" uid="..." />
+           <input image="${...}" />
+           <output image="${...}" />
        </service>
    @endcode
  * @subsection Input Input
- * - \b source [sight::data::image]: image to flip.
+ * - \b input.image [sight::data::image]: image to flip.
  * @subsection Output Output:
- * - \b target [sight::data::image]: New flipped image.
+ * - \b output.image [sight::data::image]: New flipped image.
  */
 class flip : public service::filter
 {
@@ -108,8 +105,8 @@ private:
     // Store whether to flip or not one of the 3 axis
     std::array<bool, 3> m_flip_axes {{false, false, false}};
 
-    static constexpr std::string_view IMAGE_IN  = "source";
-    static constexpr std::string_view IMAGE_OUT = "target";
+    static constexpr std::string_view IMAGE_IN  = "input.image";
+    static constexpr std::string_view IMAGE_OUT = "output.image";
 
     sight::data::ptr<sight::data::image, sight::data::access::in> m_source {this, IMAGE_IN};
     sight::data::ptr<sight::data::image, sight::data::access::out> m_target {this, IMAGE_OUT};

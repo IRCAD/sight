@@ -54,20 +54,19 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::adaptor::line">
-        <config transform="transformUID"  />
-        <properties length="30" dashLength="2.5" color="#0000FF" dashed="false" />
+        <config transform="transformUID" length="30" dashLength="2.5" color="#0000FF" dashed="false" />
     </service>
    @endcode
  *
  * @subsection Configuration Configuration:
  * - \b transform (optional, string, default=""): the name of the Ogre transform node where to attach the mesh, as it
  *      was specified in the transform adaptor
- * @subsection Properties Properties:
- * - \b length (optional, float, default=50.0): length of the line in mm (default 50)
- * - \b dash_length (optional, float, default=2.5): length of a dash
- * - \b color (optional, hexadecimal, default=#FFFFFF): color of the line
- * - \b dashed (optional, bool, default=false): display a dashed line instead of a solid line
- * - \b visible (optional, bool, default=true): the visibility of the adaptor.
+ * @subsection Input Input:
+ * - \b config.length [sight::data::real] (optional, default=50.0): length of the line in mm (default 50)
+ * - \b config.dash_length [sight::data::real] (optional, default=2.5): length of a dash
+ * - \b config.color [sight::data::color] (optional, default=#FFFFFF): color of the line
+ * - \b config.dashed [sight::data::boolean] (optional, default=false): display a dashed line instead of a solid line
+ * - \b config.visible [sight::data::boolean] (optional, default=true): the visibility of the adaptor.
  */
 class line final :
     public sight::viz::scene3d::adaptor,
@@ -130,10 +129,10 @@ private:
     /// Contains the scene node where all of manual objects are attached.
     Ogre::SceneNode* m_scene_node {nullptr};
 
-    sight::data::property<sight::data::real> m_length {this, "length", 50.0};
-    sight::data::property<sight::data::color> m_color {this, "color", {1.0, 1.0, 1.0, 1.0}};
-    sight::data::property<sight::data::boolean> m_dashed {this, "dashed", false};
-    sight::data::property<sight::data::real> m_dash_length {this, "dash_length", 2.5};
+    sight::data::ptr<sight::data::real, sight::data::access::in> m_length {this, "config.length", 50.0};
+    sight::data::ptr<sight::data::color, sight::data::access::in> m_color {this, "config.color", {1.0, 1.0, 1.0, 1.0}};
+    sight::data::ptr<sight::data::boolean, sight::data::access::in> m_dashed {this, "config.dashed", false};
+    sight::data::ptr<sight::data::real, sight::data::access::in> m_dash_length {this, "config.dash_length", 2.5};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

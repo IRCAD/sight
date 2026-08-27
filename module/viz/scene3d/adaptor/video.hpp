@@ -51,19 +51,21 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service type="sight::module::viz::scene3d::adaptor::video" auto_connect="true" >
-        <in key="image" uid="..." />
-        <in key="tf" uid="..." />
+        <data image="${...}" />
+        <data tf="${...}" />
         <config texture_name="videoFrame" />
     </service>
    @endcode
  *
  * @subsection Input Input:
- * - \b image [sight::data::image]: frame displayed.
- * - \b tf [sight::data::transfer_function] (optional): a transfer function that can be applied to the video.
- * - \b pointList [sight::data::point_list] (optional): point list to display (coordinates must be in the image space).
+ * - \b data.image [sight::data::image]: frame displayed.
+ * - \b data.tf [sight::data::transfer_function] (optional): a transfer function that can be applied to the video.
+ * - \b data.pointList [sight::data::point_list] (optional): point list to display (coordinates must be in the image
+ * space).
+ *
+ * - \b config.visible [sight::data::boolean] (optional, default=true): the visibility of the adaptor.
  *
  * @subsection Configuration Configuration:
- * - \b visible (optional, bool, default=true): the visibility of the adaptor.
  * - \b material_template (optional, string, default='Billboard_Default'): the name of the base Ogre material for the
  *      internally created material.
  * - \b texture_name (optional, string, default=""): the name of the Ogre texture the mesh will use.
@@ -80,8 +82,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b fontSource (optional, string, default=DejaVuSans.ttf): true_t font (*.ttf) source file.
  * - \b fontSize (optional, unsigned int, default=16): font size in points.
  *
- * @subsection Properties Properties:
- * - \b color (optional, hexadecimal, default=#FFFFFFFF): color of the texture in hexadecimal.
+ * - \b config.color [sight::data::color] (optional, default=#FFFFFFFF): color of the texture in hexadecimal.
  */
 class video final : public sight::viz::scene3d::adaptor
 {
@@ -267,11 +268,11 @@ private:
         point_list
     };
 
-    sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, "image"};
-    sight::data::ptr<sight::data::transfer_function, sight::data::access::in> m_tf {this, "tf", true};
-    sight::data::ptr<sight::data::point_list, sight::data::access::in> m_pl {this, "pointList", true};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, "data.image"};
+    sight::data::ptr<sight::data::transfer_function, sight::data::access::in> m_tf {this, "data.tf", true};
+    sight::data::ptr<sight::data::point_list, sight::data::access::in> m_pl {this, "data.pointList", true};
 
-    sight::data::property<sight::data::color> m_color {this, "color", {1.0, 1.0, 1.0, 1.0}};
+    sight::data::ptr<sight::data::color, sight::data::access::in> m_color {this, "config.color", {1.0, 1.0, 1.0, 1.0}};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor

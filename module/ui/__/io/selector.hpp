@@ -27,8 +27,6 @@
 #include <core/notification/base.hpp>
 #include <core/notification/has_monitors.hpp>
 
-#include <io/__/service/io_types.hpp>
-
 #include <ui/__/dialog_editor.hpp>
 
 namespace sight::module::ui::io
@@ -52,8 +50,7 @@ namespace sight::module::ui::io
  * Sample of configuration :
  * @code{.xml}
           <service uid="..." type="sight::module::ui::io::selector">
-              <inout key="data" uid="${selection}" />
-              <type mode="writer" />
+              <data write="${selection}" />
               <selection mode="include" />
               <addSelection service="sight::module::io::session::writer" />
               <config id="SightDataConfig" service="sight::module::io::session::writer" />
@@ -61,11 +58,10 @@ namespace sight::module::ui::io
  * @endcode
  *
  * @subsection In-Out In-Out
- * - \b data [sight::data::object]: the read or saved object.
+ * - \b data.read [sight::data::object]: the object to read.
+ * @subsection Input Input
+ * - \b data.write [sight::data::object]: the object to save.
  * @subsection Configuration Configuration
- * - \b type
- *      - \b mode (mandatory) : selector type must be "reader" (to open file) or "writer" (to write a new file).
- *      - \b data (mandatory if the object is set as an output): classname of the object to read
  * - \b selection
  *      - \b mode (mandatory) : must be include (to add the selection to selector list ) or exclude (to exclude the
  * selection of the selector list).
@@ -79,13 +75,6 @@ class selector : public sight::ui::dialog_editor,
                  public sight::core::notification::has_monitors
 {
 public:
-
-    /// IOMode enum definition
-    enum io_mode : std::uint8_t
-    {
-        reader_mode, /**< this mode allows to configure the service as a reader */
-        writer_mode  /**< this mode allows to configure the service as a writer */
-    };
 
     SIGHT_DECLARE_SERVICE(selector, sight::ui::dialog_editor);
 
@@ -107,19 +96,12 @@ public:
     /**
      * @brief   Constructor. Do nothing (Just initialize parameters).
      *
-     * By default, the selector::m_mode is defined as reader_mode, and selector::m_servicesAreExcluded as true.
+     * By default, selector::m_servicesAreExcluded is true.
      */
     selector();
 
     /// Destructor. Do nothing.
     ~selector() noexcept override = default;
-
-    /**
-     * @brief This method allows to configure the service in reader or writer mode (set selector::m_mode).
-     *
-     *@param[in] _mode the value can be selector::reader_mode or selector::writer_mode.
-     */
-    void set_io_mode(io_mode _mode);
 
 protected:
 
@@ -148,9 +130,6 @@ private:
 
     void forward_notification(core::notification::base::sptr _notification);
 
-    /// Configure the service as writer or reader.
-    io_mode m_mode {reader_mode};
-
     /// Configure if selected services are included or excluded.
     bool m_services_are_excluded {true};
 
@@ -164,15 +143,13 @@ private:
     /// Map that specifies a configuration extension for a service
     std::map<std::string, std::string> m_service_to_config;
 
-    /// classname of the read object (used if the data is set as output instead of inout)
-    std::string m_data_classname;
-
     sight::sptr<signals::failed_t> m_sig_failed;
     sight::sptr<signals::succeeded_t> m_sig_succeeded;
 
     sight::sptr<slots::forward_notification_t> m_slot_forward_notification;
 
-    data::ptr<data::object, data::access::inout> m_data {this, sight::io::service::DATA_KEY};
+    data::ptr<data::object, data::access::inout> m_read {this, "data.read"};
+    data::ptr<data::object, data::access::in> m_write {this, "data.write"};
 };
 
 } // namespace sight::module::ui::io

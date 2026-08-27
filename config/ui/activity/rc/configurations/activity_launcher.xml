@@ -6,13 +6,11 @@
     The configuration can be launched by a 'config_launcher':
 
     <service uid="sight::config::ui::activity::launcher" type="sight::app::config_launcher">
-        <properties config="sight::config::ui::activity::launcher" />
-        <inout group="object">
-            <key name="activity_set" uid="..." />
-        </inout>
-        <parameter replace="WID_PARENT" by="activityView" />
-        <parameter replace="icon_path" by="${icon_path}" />
-        <parameter replace="sequencer_config" by="sequencerServiceConfigName" />
+        <config id="sight::config::ui::activity::launcher" />
+        <object name="activity_set" uid="..." />
+        <param name="WID_PARENT" value="activityView" />
+        <param name="icon_path" value="${icon_path}" />
+        <param name="sequencer_config" value="sequencerServiceConfigName" />
     </service>
 
     You can also launch this configuration as an activity :
@@ -147,11 +145,11 @@
         <!-- ************************************* Begin reader/writer declaration ********************************* -->
 
         <service uid="sdb_reader" type="sight::module::io::session::reader" config="${session_reader_config}">
-            <inout key="data" uid="${activity_set}" />
+            <data read="${activity_set}" />
         </service>
 
         <service uid="sdb_writer" type="sight::module::io::session::writer" config="${session_writer_config}">
-            <in key="data" uid="${activity_set}" />
+            <data write="${activity_set}" />
         </service>
 
         <!-- *************************************** Begin view declaration **************************************** -->

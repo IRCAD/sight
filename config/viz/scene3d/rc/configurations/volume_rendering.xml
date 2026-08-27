@@ -170,7 +170,7 @@
         </service>
 
         <service uid="global_camera_adp" type="sight::module::viz::scene3d::adaptor::camera">
-            <inout key="transform_out" uid="global_camera" />
+            <data transform_out="${global_camera}" />
         </service>
 
         <service uid="trackball_interactor_adp" type="sight::module::viz::scene3d::adaptor::trackball_camera">
@@ -182,41 +182,36 @@
         </service>
 
         <service uid="model_series_adp" type="sight::module::viz::scene3d::adaptor::model_series" auto_connect="true">
-            <in key="model" uid="${model_series}" />
-            <config query_flags="0x40000000" autoresetcamera="true" />
-            <properties visible="${model_visibility}" />
+            <data model="${model_series}" />
+            <config query_flags="0x40000000" autoresetcamera="true" visible="${model_visibility}" />
         </service>
 
         <service uid="volume_adp" type="sight::module::viz::scene3d::adaptor::volume_render">
-            <in key="image" uid="${image}" />
-            <in key="mask" uid="mask" />
-            <in key="tf" uid="${volume_tf}" />
-            <inout key="clippingMatrix" uid="clipping_matrix" />
-            <config widgets="false" preintegration="false" autoresetcamera="true" samples="1200" />
-            <properties visible="${vr_visibility}" />
+            <data image="${image}" />
+            <data mask="${mask}" />
+            <data tf="${volume_tf}" />
+            <data clippingMatrix="${clipping_matrix}" />
+            <config widgets="false" preintegration="false" autoresetcamera="true" samples="1200" visible="${vr_visibility}" />
         </service>
 
         <service uid="3d_negato_adp" type="sight::module::viz::scene3d::adaptor::negato3d">
-            <in key="image" uid="${image}" />
-            <inout key="tf" uid="${volume_tf}" />
-            <config query_flags="0x40000000" interactive="true" priority="2" />
-            <properties visible="${negato_visibility}" />
+            <data image="${image}" />
+            <data tf="${volume_tf}" />
+            <config query_flags="0x40000000" interactive="true" priority="2" visible="${negato_visibility}" />
         </service>
 
         <service uid="landmarks_adp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::point" auto_connect="true">
-            <inout key="imageSeries" uid="${image}" />
+            <data imageSeries="${image}" />
             <config fontSize="16" priority="4" initialGroup="Group_0" initialSize="10.0" viewDistance="allSlices" />
         </service>
 
         <service uid="ruler_fiducial_adp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::ruler" auto_connect="true">
-            <inout key="image" uid="${image}" />
-            <config font_size="16" query_flags="0x40000000" always_display_all="true" priority="3" />
-            <properties radius="1.5" />
+            <data image="${image}" />
+            <config font_size="16" query_flags="0x40000000" always_display_all="true" priority="3" radius="1.5" />
         </service>
 
         <service uid="axis_adp" type="sight::module::viz::scene3d::adaptor::axis">
-            <config origin="true" label="false" />
-            <properties visible="${axis_visibility}" />
+            <config origin="true" label="false" visible="${axis_visibility}" />
         </service>
 
         <service uid="picked_voxel_text_adp" type="sight::module::viz::scene3d::adaptor::text">
@@ -225,12 +220,12 @@
         </service>
 
         <service uid="shape_extruder_adp" type="sight::module::viz::scene3d::adaptor::shape_extruder">
-            <inout key="extrudedMeshes" uid="${extruded_model_series}" />
+            <data extrudedMeshes="${extruded_model_series}" />
             <config lineColor="#FFC66D" edgeColor="#D35151" />
         </service>
 
         <service uid="snapshot_adp" type="sight::module::viz::scene3d::adaptor::fragments_info">
-            <inout key="image" uid="snapshot" />
+            <data image="${snapshot}" />
         </service>
 
         <service uid="event_adp" type="sight::module::viz::scene3d::adaptor::event">
@@ -238,7 +233,7 @@
         </service>
 
         <service uid="orientation_marker_adp" type="sight::module::viz::scene3d::adaptor::orientation_marker" auto_connect="true">
-            <in key="matrix" uid="global_camera" />
+            <data matrix="${global_camera}" />
         </service>
 
         <service uid="grid_adp" type="sight::module::viz::scene3d::adaptor::grid">
@@ -247,14 +242,12 @@
 
         <!-- Reset the clipping box matrix -->
         <service uid="clipping_box_reset_srv" type="sight::module::data::copy">
-            <in key="source" uid="identity_matrix" />
-            <inout key="target" uid="clipping_matrix" />
+            <data source="${identity_matrix}" target="${clipping_matrix}" />
         </service>
 
         <service uid="image_extruder_srv" type="sight::module::filter::image::image_extruder" worker="EXTRUSION">
-            <in key="meshes" uid="${extruded_model_series}" />
-            <in key="image" uid="${image}" />
-            <inout key="mask" uid="mask" />
+            <input meshes="${extruded_model_series}" image="${image}" />
+            <output mask="${mask}" />
         </service>
 
         <service uid="notifier_srv" type="sight::module::ui::qt::notifier">
@@ -266,17 +259,15 @@
 
         <!-- Write the snapshot image -->
         <service uid="image_writer_srv" type="sight::module::io::bitmap::writer">
-            <in key="data" uid="snapshot" />
+            <data write="${snapshot}" />
             <dialog policy="always" />
             <backends enable="all" mode="best" />
         </service>
 
-        <service uid="sliderCfg" type="sight::app::config_launcher">
-            <properties config="sight::config::viz::image::imageSlider" />
-            <inout group="object">
-                <key name="image" uid="${image}" />
-                <key name="transferFunction" uid="${volume_tf}" />
-            </inout>
+        <service uid="slider_cfg" type="sight::app::config_launcher">
+            <config id="sight::config::viz::image::image_slider" />
+            <object name="image" uid="${image}" />
+            <object name="transferFunction" uid="${volume_tf}" />
             <param name="WID_PARENT" value="slider_view" />
             <param name="sliceIndex" value="axial" />
             <param name="enableSliceSlider" value="false" />
@@ -286,19 +277,19 @@
 
         <!-- ************************************* Actions ************************************ -->
         <service uid="volume_visibility_act" type="sight::module::ui::action">
-            <properties checked="${vr_visibility}" enabled="false" />
+            <state checked="${vr_visibility}" enabled="false" />
         </service>
 
         <service uid="negato3_d_visibility_act" type="sight::module::ui::action">
-            <properties checked="${negato_visibility}" enabled="false" />
+            <state checked="${negato_visibility}" enabled="false" />
         </service>
 
         <service uid="mesh_visibility_act" type="sight::module::ui::action">
-            <properties checked="${model_visibility}" enabled="false" />
+            <state checked="${model_visibility}" enabled="false" />
         </service>
 
         <service uid="axis_visibility_act" type="sight::module::ui::action">
-            <properties checked="${axis_visibility}" />
+            <state checked="${axis_visibility}" />
         </service>
 
         <!-- Set the view in full screen -->

@@ -47,20 +47,21 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::adaptor::frustum">
-        <in key="camera" uid="..." />
-        <config transform="..." near="..." far="..."/>
+        <data camera="${...}" />
+        <config transform="..." near="..." far="..." />
     </service>
    @endcode
  *
  * @subsection Input Input:
- * - \b camera [sight::data::camera]:  camera containing calibration information.
+ * - \b data.camera [sight::data::camera]:  camera containing calibration information.
+ *
+ * - \b config.visible [sight::data::boolean] (optional, default=true): the visibility of the adaptor.
  *
  * @subsection Configuration Configuration:
  * - \b transform (optional, string, default=""): transform applied to the frustum's scene node
  * - \b near (optional, float, default=1.0): near clipping distance of the Ogre::Camera
  * - \b far (optional, float, default=20.0): far clipping distance of the Ogre::Camera
  * - \b color (optional, hexadecimal, default=0xFF0000): frustum's color
- * - \b visible (optional, bool, default=true): the visibility of the adaptor.
  */
 class frustum final : public sight::viz::scene3d::adaptor,
                       public sight::viz::scene3d::transformable
@@ -128,7 +129,7 @@ private:
     /// Defines the color of frustum.
     std::string m_color {"#FF0000"};
 
-    static constexpr std::string_view CAMERA_INPUT = "camera";
+    static constexpr std::string_view CAMERA_INPUT = "data.camera";
     sight::data::ptr<sight::data::camera, sight::data::access::in> m_camera {this, CAMERA_INPUT};
 };
 

@@ -378,10 +378,8 @@ void transfer_function::initialize_presets(const std::string& _current_preset_na
             {
                 // Creates the TF reader.
                 const auto tf        = std::make_shared<data::transfer_function>();
-                const auto tf_reader = sight::service::add<io::service::reader>(
-                    "sight::module::io::session::reader"
-                );
-                tf_reader->set_inout(tf, io::service::DATA_KEY);
+                const auto tf_reader = sight::service::add<io::service::reader>("sight::module::io::session::reader");
+                tf_reader->set_inout(tf, io::service::READER_DATA_KEY);
 
                 // Parse all paths contained in m_path and read basic TF.
                 for(const std::filesystem::path& dir_path : m_paths)
@@ -400,7 +398,7 @@ void transfer_function::initialize_presets(const std::string& _current_preset_na
 
                             // Add a new map for each TF path.
                             service::config_t config;
-                            config.put("file", file.string());
+                            config.add("path.<xmlattr>.file", file.string());
                             config.put("archive.<xmlattr>.format", "filesystem");
 
                             tf_reader->set_config(config);
@@ -799,7 +797,7 @@ void transfer_function::import_preset()
 
     const auto reader = sight::service::add<io::service::reader>("sight::module::io::session::reader");
 
-    reader->set_inout(new_tf, io::service::DATA_KEY);
+    reader->set_inout(new_tf, io::service::READER_DATA_KEY);
 
     service::config_t config;
     config.put("dialog.<xmlattr>.extension", ".tf");
@@ -848,7 +846,7 @@ void transfer_function::export_preset()
     const auto writer = sight::service::add<io::service::writer>("sight::module::io::session::writer");
     {
         const auto current_tf = m_current_tf.const_lock();
-        writer->set_input(current_tf.get_shared(), io::service::DATA_KEY);
+        writer->set_input(current_tf.get_shared(), io::service::WRITER_DATA_KEY);
     }
 
     service::config_t config;

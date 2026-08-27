@@ -50,13 +50,13 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  * @code{.xml}
         <service type="sight::module::viz::scene3d::adaptor::voxel_picker">
-            <in key="image" uid="..." />
+            <data image="${...}" />
             <config priority="2" orientation="sagittal" mode="2D" moveOnPick="false" />
        </service>
    @endcode
  *
  * @subsection Input Input:
- * - \b image [sight::data::image]: image to pick.
+ * - \b data.image [sight::data::image]: image to pick.
  *
  * @subsection Configuration Configuration:
  * - \b priority (optional, int, default=0): picking priority, higher priority interactions are performed first.
@@ -164,7 +164,7 @@ private:
     /// Defines if the image slices indexes will be updated with the picked position.
     bool m_move_on_pick {false};
 
-    static constexpr std::string_view IMAGE_INPUT = "image";
+    static constexpr std::string_view IMAGE_INPUT = "data.image";
     sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, IMAGE_INPUT};
 };
 

@@ -46,19 +46,20 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::mesh_list">
-        <inout key="mesh" uid="..." />
-        <in key="transform" uid="..." />
-        <in key="texture" uid="..." />
+        <data mesh="${...}" />
+        <data transform="${...}" />
+        <data texture="${...}" />
         <config capacity="50" drop="1" textureAlpha="false" />
     </service>
    @endcode
  *
  * @subsection Input Input
- * - \b texture [sight::data::image]: image displayed as a texture on the mesh
- * - \b transform [sight::data::matrix4]: Sight transform matrix.
+ * - \b data.texture [sight::data::image]: image displayed as a texture on the mesh
+ * - \b data.transform [sight::data::matrix4]: Sight transform matrix.
  *
  * @subsection In-Out In-Out
- * - \b mesh [sight::data::mesh]: adapted mesh. It can not be a read-only data because we may generate normals or add
+ * - \b data.mesh [sight::data::mesh]: adapted mesh. It can not be a read-only data because we may generate normals or
+ * add
  * some
  *      fields.
  *
@@ -153,11 +154,9 @@ private:
     /// Generates alpha value for the texture if the image contains only 1 or 3 channels. It may be slower.
     bool m_generate_alpha {false};
 
-    static constexpr std::string_view TRANSFORM_INPUT = "transform";
-
-    sight::data::ptr<sight::data::image, sight::data::access::in> m_texture {this, "texture"};
-    sight::data::ptr<sight::data::matrix4, sight::data::access::in> m_transform {this, TRANSFORM_INPUT};
-    sight::data::ptr<sight::data::mesh, sight::data::access::inout> m_mesh {this, "mesh"};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_texture {this, "data.texture"};
+    sight::data::ptr<sight::data::matrix4, sight::data::access::in> m_transform {this, "data.transform"};
+    sight::data::ptr<sight::data::mesh, sight::data::access::inout> m_mesh {this, "data.mesh"};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor

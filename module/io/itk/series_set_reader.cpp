@@ -102,7 +102,7 @@ void series_set_reader::updating()
         // Retrieve dataStruct associated with this service
         const auto data       = m_data.lock();
         const auto series_set = std::dynamic_pointer_cast<data::series_set>(data.get_shared());
-        SIGHT_ASSERT("The inout key '" + sight::io::service::DATA_KEY + "' is not correctly set.", series_set);
+        SIGHT_ASSERT("The inout key '" + sight::io::service::READER_DATA_KEY + "' is not correctly set.", series_set);
 
         // Set cursor busy
         sight::ui::busy_cursor cursor;

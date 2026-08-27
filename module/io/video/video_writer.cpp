@@ -170,7 +170,7 @@ void video_writer::save_frame(core::clock::type _timestamp)
             "The object is not a '"
             + data::frame_tl::classname()
             + "' or '"
-            + sight::io::service::DATA_KEY
+            + sight::io::service::WRITER_DATA_KEY
             + "' is not correctly set.",
             frame_tl
         );
@@ -363,7 +363,7 @@ void video_writer::toggle_recording()
 service::connections_t video_writer::auto_connections() const
 {
     service::connections_t connections;
-    connections.push(sight::io::service::DATA_KEY, data::timeline::signals::PUSHED, slots::SAVE_FRAME);
+    connections.push(sight::io::service::WRITER_DATA_KEY, data::timeline::signals::PUSHED, slots::SAVE_FRAME);
     return connections;
 }
 

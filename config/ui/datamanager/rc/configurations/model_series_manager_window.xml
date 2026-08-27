@@ -4,12 +4,10 @@ color, ...
 
 Example:
 <service uid="..." type="sight::app::config_launcher">
-    <properties config="ModelSeriesManagerWindow" />
-    <inout group="object">
-        <key name="organ_manager_modelseries" uid="..." />
-    </inout>
-    <parameter replace="ICON_PATH" by="my/icon/path.ico" />
-    <parameter name="WindowTitle"  by="" />
+    <config id="ModelSeriesManagerWindow" />
+    <object name="organ_manager_modelseries" uid="..." />
+    <param name="ICON_PATH" value="my/icon/path.ico" />
+    <param name="WindowTitle" value="" />
 </service>
 With:
 - organ_manager_modelseries (mandatory): uid of the ModelSeries to manage
@@ -43,11 +41,9 @@ With:
         </service>
 
         <service uid="modelManager" type="sight::app::config_launcher">
-            <properties config="ModelSeriesManagerView" />
-            <inout group="object">
-                <key name="organ_manager_modelseries" uid="${organ_manager_modelseries}" />
-            </inout>
-            <parameter replace="WID_PARENT" by="OrganManagerView" />
+            <config id="ModelSeriesManagerView" />
+            <object name="organ_manager_modelseries" uid="${organ_manager_modelseries}" />
+            <param name="WID_PARENT" value="OrganManagerView" />
         </service>
 
         <connect channel="${CLOSE_CONFIG}">

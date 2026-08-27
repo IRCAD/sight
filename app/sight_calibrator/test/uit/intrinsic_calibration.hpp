@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -32,9 +32,11 @@ CPPUNIT_TEST_SUITE(intrinsic_calibration);
 CPPUNIT_TEST(test);
 CPPUNIT_TEST_SUITE_END();
 
-public:
+protected:
 
     std::filesystem::path get_profile_path() override;
+
+public:
 
     void test();
 };

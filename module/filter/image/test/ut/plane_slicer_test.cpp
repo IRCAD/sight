@@ -88,9 +88,9 @@ TEST_SUITE("sight::module::filter::image::plane_slicer")
         auto slice = std::make_shared<sight::data::image>();
 
         srv->set_worker(sight::core::thread::get_default_worker());
-        srv->set_input(image, "image");
-        srv->set_input(axes, "axes");
-        srv->set_inout(slice, "slice");
+        srv->set_input(image, "input.image");
+        srv->set_input(axes, "input.axes");
+        srv->set_inout(slice, "output.slice");
         srv->configure();
         srv->start().get();
 
@@ -272,7 +272,7 @@ TEST_SUITE("sight::module::filter::image::plane_slicer")
 
             auto offset = std::make_shared<sight::data::matrix4>();
             (*offset)[11] = -.25;
-            srv->set_input(offset, "offset");
+            srv->set_input(offset, "input.offset");
 
             srv->update().get();
             auto spacing = slice->spacing();
@@ -317,9 +317,9 @@ TEST_SUITE("sight::module::filter::image::plane_slicer")
         auto slice = std::make_shared<sight::data::image>();
 
         srv->set_worker(sight::core::thread::get_default_worker());
-        srv->set_input(image, "image");
-        srv->set_input(axes, "axes");
-        srv->set_inout(slice, "slice");
+        srv->set_input(image, "input.image");
+        srv->set_input(axes, "input.axes");
+        srv->set_inout(slice, "output.slice");
         srv->configure();
         srv->start().get();
 

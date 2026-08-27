@@ -23,6 +23,7 @@
 #pragma once
 
 #include <data/model_series.hpp>
+#include <data/string.hpp>
 
 #include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/material/standard.hpp>
@@ -45,18 +46,20 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * @code{.xml}
     <service type="sight::module::viz::scene3d::adaptor::model_series">
-        <in key="model" uid="..." />
-        <inout group="uniforms">
-            <key uid="..." name="u_uniform_name" />
-        </inout>
+        <data model="${...}" />
+        <uniform object="${...}" name="..." />
         <config transform="..." material_template="..." autoresetcamera="true" dynamic="false" dynamic_vertices="false"
         query_flags="0x40000000" />
    </service>
    @endcode
  *
- * @subsection In-Out In-Out:
- * - \b model [sight::data::model_series]: adapted model series.
- * - \b uniforms: list of data to bind to material uniforms.
+ * @subsection Input Input:
+ * - \b data.model [sight::data::model_series]: adapted model series.
+ * - \b uniform.object [sight::data::object]: data to bind to a material uniform.
+ * - \b uniform.name [sight::data::string]: name of the material uniform associated with the object.
+ *
+ * @subsection Input Input:
+ * - \b config.visible [sight::data::boolean] (optional, default=true): default visibility of the model series.
  *
  * @subsection Configuration Configuration:
  * - \b transform (optional, string, default=""): the transformation matrix to associate to the adaptor.
@@ -71,7 +74,6 @@ namespace sight::module::viz::scene3d::adaptor
  *      This is a performance hint that will choose a specific GPU memory pool accordingly.
  * - \b query_flags (optional, uint32, default=0x40000000): Used for picking. Picked only by pickers whose mask that
  *      match the flag.
- * - \b visible (optional, true/false, default=true): Used to define the default visibility of the modelSeries. If the
  *      tag is not present, the visibility will be set by the value of the modelSeries field. If the tag is present,
  *      the visibility is set by the value of this tag.
  * - \b material_template (optional, string, default=""): the name of the base Ogre material for the internally created
@@ -156,9 +158,10 @@ private:
     /// Defines if the visibility tag is present in the configuration.
     bool m_is_visible_tag {false};
 
-    static constexpr std::string_view MODEL_INPUT = "model";
+    static constexpr std::string_view MODEL_INPUT = "data.model";
     data::ptr<data::model_series, data::access::in> m_model {this, MODEL_INPUT};
-    data::ptr_vector<data::object, data::access::inout> m_uniforms {this, "uniforms", true};
+    data::ptr_vector<data::object, data::access::inout> m_uniform_objects {this, "uniform.object", true};
+    data::ptr_vector<data::string, data::access::in> m_uniform_names {this, "uniform.name", true};
 };
 
 //------------------------------------------------------------------------------

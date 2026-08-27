@@ -105,7 +105,7 @@
             <service uid="error_act" type="sight::module::ui::action" />
             <service uid="close_errors_act" type="sight::module::ui::action" />
             <service uid="progress_act" type="sight::module::ui::action">
-                <properties enabled="false" />
+                <state enabled="false" />
             </service>
 
             <service uid="notification_zone_srv" type="sight::module::ui::qt::notification_zone" />

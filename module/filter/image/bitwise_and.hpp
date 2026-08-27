@@ -35,9 +35,8 @@ namespace sight::module::filter::image
  * @section XML XML Configuration
  * @code{.xml}
        <service uid="..." type="sight::module::filter::image::bitwise_and">
-           <in key="image" uid="..."/>
-           <in key="mask" uid="..."/>
-           <out key="outputImage" uid="..." />
+           <input image="${...}" mask="${...}" />
+           <output image="${...}" />
        </service>
    @endcode
  *
@@ -46,7 +45,7 @@ namespace sight::module::filter::image
  * - \b mask [sight::data::image]: mask
  *
  * @subsection Output Output
- * - \b outputImage [sight::data::image]: result of operation 'AND' between input image and mask
+ * - \b output.image [sight::data::image]: result of operation 'AND' between input image and mask
  */
 class bitwise_and final : public sight::service::filter
 {
@@ -77,10 +76,10 @@ protected:
 
 private:
 
-    static constexpr std::string_view OUTPUTIMAGE_OUT = "outputImage";
+    static constexpr std::string_view OUTPUTIMAGE_OUT = "output.image";
 
-    sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, "image"};
-    sight::data::ptr<sight::data::image, sight::data::access::in> m_mask {this, "mask"};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, "input.image"};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_mask {this, "input.mask"};
     sight::data::ptr<sight::data::image, sight::data::access::out> m_output_image {this, OUTPUTIMAGE_OUT};
 };
 

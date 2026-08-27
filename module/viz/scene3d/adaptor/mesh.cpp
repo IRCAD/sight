@@ -63,7 +63,7 @@ mesh::mesh() noexcept
         [this]()
         {
             SIGHT_ASSERT("Material not found", m_material);
-            *m_material->diffuse() = m_color.value();
+            *m_material->diffuse() = *m_color;
             m_material_adaptor->slot(service::slots::UPDATE)->run();
         });
     new_slot(
@@ -72,7 +72,7 @@ mesh::mesh() noexcept
         {
             if(m_bounding_box != nullptr)
             {
-                m_bounding_box->setVisible(m_bounding_box_visible.value());
+                m_bounding_box->setVisible(*m_bounding_box_visible);
                 this->request_render();
             }
         });
@@ -168,7 +168,7 @@ void mesh::configuring(const config_t& _config)
     }
 
     SIGHT_ASSERT("Material not found", m_material);
-    *m_material->diffuse() = m_color.value();
+    *m_material->diffuse() = *m_color;
 }
 
 //-----------------------------------------------------------------------------
@@ -225,7 +225,7 @@ void mesh::starting()
     const std::string bb_obj_name = gen_id("bounding_box");
     m_bounding_box = this->get_scene_manager()->createManualObject(bb_obj_name);
     m_bounding_box->setRenderQueueGroup(sight::viz::scene3d::rq::SURFACE);
-    m_bounding_box->setVisible(m_bounding_box_visible.value());
+    m_bounding_box->setVisible(*m_bounding_box_visible);
 
     const auto basic_ambient_mat = Ogre::MaterialManager::getSingleton().getByName(
         "BasicAmbient",
@@ -483,22 +483,26 @@ void mesh::update_new_material_adaptor(data::mesh::csptr _mesh)
             config_t material_adp_config;
             material_adp_config.put("config.<xmlattr>.material_template", m_material_template_name);
 
-            if(!m_uniforms.empty())
+            if(!m_uniform_objects.empty())
             {
                 std::size_t i = 0;
-                for(const auto& uniform_data : m_uniforms)
+                for(const auto& uniform_object : m_uniform_objects)
                 {
-                    m_material_adaptor->set_inout(uniform_data.second->lock().get_shared(), "uniforms", true, {}, i++);
-                }
-
-                const auto config = this->get_config();
-                if(const auto inouts_cfg = config.get_child_optional("inout"); inouts_cfg.has_value())
-                {
-                    const auto group = inouts_cfg->get<std::string>("<xmlattr>.group");
-                    if(group == "uniforms")
-                    {
-                        material_adp_config.add_child("inout", inouts_cfg.value());
-                    }
+                    const auto index = i++;
+                    m_material_adaptor->set_inout(
+                        uniform_object.second->lock().get_shared(),
+                        "uniform.object",
+                        true,
+                        {},
+                        index
+                    );
+                    m_material_adaptor->set_input(
+                        m_uniform_names[index].lock().get_shared(),
+                        "uniform.name",
+                        true,
+                        {},
+                        index
+                    );
                 }
             }
 
@@ -556,7 +560,7 @@ void mesh::update_xml_material_adaptor()
 {
     SIGHT_THROW_IF(
         "Can not provide both a user-defined material adaptor and uniforms.",
-        !m_uniforms.empty()
+        !m_uniform_objects.empty()
     );
 
     if(m_material_adaptor->updating_status() == updating_status::notupdating)

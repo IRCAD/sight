@@ -363,7 +363,7 @@ void point_list::update_mesh(const data::point_list::csptr& _point_list)
         m_entity->setVisible(visible());
         m_entity->setQueryFlags(m_query_flags);
 
-        if(m_exclude_from_camera_reset.value())
+        if(*m_exclude_from_camera_reset)
         {
             m_entity->getUserObjectBindings().setUserAny(
                 sight::viz::scene3d::helper::scene::EXCLUDE_FROM_CAMERA_RESET_FLAG,
@@ -466,22 +466,26 @@ void point_list::update_material_adaptor(const std::string& _mesh_id)
             config_t material_adp_config;
             material_adp_config.put("config.<xmlattr>.material_template", m_material_template_name);
 
-            if(!m_uniforms.empty())
+            if(!m_uniform_objects.empty())
             {
                 std::size_t i = 0;
-                for(const auto& uniform_data : m_uniforms)
+                for(const auto& uniform_object : m_uniform_objects)
                 {
-                    m_material_adaptor->set_inout(uniform_data.second->lock().get_shared(), "uniforms", true, {}, i++);
-                }
-
-                const auto config = this->get_config();
-                if(const auto inouts_cfg = config.get_child_optional("inout"); inouts_cfg.has_value())
-                {
-                    const auto group = inouts_cfg->get<std::string>("<xmlattr>.group");
-                    if(group == "uniforms")
-                    {
-                        material_adp_config.add_child("inout", inouts_cfg.value());
-                    }
+                    const auto index = i++;
+                    m_material_adaptor->set_inout(
+                        uniform_object.second->lock().get_shared(),
+                        "uniform.object",
+                        true,
+                        {},
+                        index
+                    );
+                    m_material_adaptor->set_input(
+                        m_uniform_names[index].lock().get_shared(),
+                        "uniform.name",
+                        true,
+                        {},
+                        index
+                    );
                 }
             }
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -61,8 +61,8 @@ namespace sight::module::data
  * For data::map:
  * @code{.xml}
    <service type="sight::module::data::manage">
-      <inout key="object" uid="..." />
-      <inout key="container" uid="..." />
+      <data element="..." />
+      <data container="..." />
       <mapKey>...</mapKey>
    </service>
    @endcode
@@ -70,33 +70,34 @@ namespace sight::module::data
  * For data::vector:
  * @code{.xml}
    <service type="sight::module::data::manage">
-      <inout key="object" uid="..." />
-      <inout key="container" uid="..." />
+      <data element="..." />
+      <data container="..." />
    </service>
    @endcode
  *
  * For data::series_set:
  * @code{.xml}
    <service type="sight::module::data::manage">
-      <inout key="object" uid="..." />
-      <inout key="container" uid="..." />
+      <data element="..." />
+      <data container="..." />
    </service>
    @endcode
  *
  * For data::object:
  * @code{.xml}
    <service type="sight::module::data::manage">
-      <inout key="object" uid="..." />
-      <inout key="container" uid="..." />
+      <data element="..." />
+      <data container="..." />
       <field>...</field>
    </service>
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b object [sight::data::object] (optional): object to add/swap/remove. Not needed when invoking clean slot and
+ * - \b data.element [sight::data::object] (optional): object to add/swap/remove. Not needed when invoking clean slot
+ * and
  * remove
  * slots with maps and fields, since the removal is based on the name.
- * - \b container [sight::data::object]: Map/Vector/Series where to add/swap/remove object, or where
+ * - \b data.container [sight::data::object]: Map/Vector/Series where to add/swap/remove object, or where
  * to add/swap/remove object as a field.
  *
  * @subsection Configuration Configuration
@@ -190,8 +191,8 @@ private:
     std::string m_map_key;    ///< key of the object to manage in the map
     std::string m_field_name; ///< name of the field to manage in the object
 
-    sight::data::ptr<sight::data::object, sight::data::access::inout> m_object {this, "object", true};
-    sight::data::ptr<sight::data::object, sight::data::access::inout> m_container {this, "container"};
+    sight::data::ptr<sight::data::object, sight::data::access::inout> m_object {this, "data.element", true};
+    sight::data::ptr<sight::data::object, sight::data::access::inout> m_container {this, "data.container"};
 };
 
 } // namespace sight::module::data

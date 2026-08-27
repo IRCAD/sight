@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -27,8 +27,6 @@
 #include <service/op.hpp>
 
 #include <ui/test/dialog/input.hpp>
-
-#include <utest/wait.hpp>
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::ui::series::ut::export_test);
 
@@ -60,9 +58,9 @@ void export_test::tearDown()
 void export_test::basic_test()
 {
     auto data = std::make_shared<data::series>();
-    m_export->set_inout(data, "data");
+    m_export->set_inout(data, "data.element");
     auto container = std::make_shared<data::series_set>();
-    m_export->set_inout(container, "container");
+    m_export->set_inout(container, "data.container");
     CPPUNIT_ASSERT(container->empty());
     CPPUNIT_ASSERT_NO_THROW(m_export->configure());
     CPPUNIT_ASSERT_NO_THROW(m_export->start().get());

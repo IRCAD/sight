@@ -44,9 +44,8 @@ namespace sight::module::filter::image
  *
  * @code{.xml}
    <service type="sight::module::filter::image::automatic_registration">
-       <in key="target" uid="..." />
-       <in key="reference" uid="..." />
-       <inout key="transform" uid="..." />
+       <input target="${...}" reference="${...}" />
+       <output transform="${...}" />
        <minStep>0.0001</minStep>
        <maxIterations>500</maxIterations>
        <metric>MeanSquare</metric>
@@ -147,9 +146,9 @@ private:
     /// Percentage of samples used for registration.
     double m_sampling_percentage {};
 
-    static constexpr std::string_view TRANSFORM_INOUT = "transform";
-    static constexpr std::string_view TARGET_IN       = "target";
-    static constexpr std::string_view REFERENCE_IN    = "reference";
+    static constexpr std::string_view TRANSFORM_INOUT = "output.transform";
+    static constexpr std::string_view TARGET_IN       = "input.target";
+    static constexpr std::string_view REFERENCE_IN    = "input.reference";
 
     sight::data::ptr<sight::data::matrix4, sight::data::access::inout> m_transform {this, TRANSFORM_INOUT};
     sight::data::ptr<sight::data::image, sight::data::access::in> m_target {this, TARGET_IN};

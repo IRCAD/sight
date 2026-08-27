@@ -255,12 +255,12 @@
             </service>
 
             <service uid="N1SnapshotAdp" type="sight::module::viz::scene3d::adaptor::fragments_info">
-                <inout key="image" uid="snapshot1" />
+                <data image="${snapshot1}" />
             </service>
 
             <service uid="N1NegatoAdp" type="sight::module::viz::scene3d::adaptor::negato3d" auto_connect="true">
-                <in key="image" uid="image1" />
-                <inout key="tf" uid="tf" />
+                <data image="${image1}" />
+                <data tf="${tf}" />
                 <config orientation="axial" interactive="true" />
             </service>
 
@@ -283,12 +283,12 @@
             </service>
 
             <service uid="N2SnapshotAdp" type="sight::module::viz::scene3d::adaptor::fragments_info">
-                <inout key="image" uid="snapshot2" />
+                <data image="${snapshot2}" />
             </service>
 
             <service uid="N2NegatoAdp" type="sight::module::viz::scene3d::adaptor::negato3d" auto_connect="true">
-                <in key="image" uid="image2" />
-                <inout key="tf" uid="tf" />
+                <data image="${image2}" />
+                <data tf="${tf}" />
                 <config orientation="axial" interactive="true" />
             </service>
 
@@ -311,13 +311,13 @@
             </service>
 
             <service uid="N3SnapshotAdp" type="sight::module::viz::scene3d::adaptor::fragments_info">
-                <inout key="image" uid="snapshot3" />
+                <data image="${snapshot3}" />
                 <config />
             </service>
 
             <service uid="N3NegatoAdp" type="sight::module::viz::scene3d::adaptor::negato3d" auto_connect="true">
-                <in key="image" uid="imageResult" />
-                <inout key="tf" uid="tf" />
+                <data image="${imageResult}" />
+                <data tf="${tf}" />
                 <config orientation="axial" interactive="true" />
             </service>
 
@@ -345,57 +345,50 @@
             </service>
 
             <service uid="readerFile1Srv" type="sight::module::ui::io::selector">
-                <inout key="data" uid="image1" />
-                <type mode="reader" />
+                <data read="${image1}" />
             </service>
 
             <!-- Editors for Negato1 -->
             <service uid="sliderNegato1Srv" type="sight::module::ui::qt::image::slice_index_position_editor" auto_connect="true">
-                <inout key="image" uid="image1" />
+                <data image="${image1}" />
                 <config orientation="axial" label="position" display_axis_selector="true" display_step_buttons="false" />
             </service>
 
             <service uid="readerFile2Srv" type="sight::module::ui::io::selector">
-                <inout key="data" uid="image2" />
-                <type mode="reader" />
+                <data read="${image2}" />
             </service>
 
             <!-- Editors for Negato2 -->
             <service uid="sliderNegato2Srv" type="sight::module::ui::qt::image::slice_index_position_editor" auto_connect="true">
-                <inout key="image" uid="image2" />
+                <data image="${image2}" />
                 <config orientation="axial" label="index" display_axis_selector="true" display_step_buttons="false" />
             </service>
 
             <service uid="imageSubstractSrv" type="sight::module::filter::image::images_substract">
-                <in key="image1" uid="image1" />
-                <in key="image2" uid="image2" />
-                <inout key="result" uid="imageResult" />
+                <input image1="${image1}" image2="${image2}" />
+                <output result="${imageResult}" />
             </service>
 
             <!-- Editors for Negato3 -->
             <service uid="sliderNegato3Srv" type="sight::module::ui::qt::image::slice_index_position_editor" auto_connect="true">
-                <inout key="image" uid="imageResult" />
+                <data image="${imageResult}" />
                 <config orientation="axial" label="index" display_axis_selector="true" display_step_buttons="false" />
             </service>
 
             <service uid="imageWriterSrv" type="sight::module::ui::io::selector">
-                <inout key="data" uid="imageResult" />
-                <type mode="writer" />
+                <data write="${imageResult}" />
             </service>
 
             <service uid="imageWriter1Srv" type="sight::module::ui::io::selector">
-                <inout key="data" uid="snapshot1" />
-                <type mode="writer" />
+                <data write="${snapshot1}" />
             </service>
 
             <service uid="imageWriter2Srv" type="sight::module::ui::io::selector">
-                <inout key="data" uid="snapshot2" />
-                <type mode="writer" />
+                <data write="${snapshot2}" />
             </service>
 
             <service uid="imageWriter3Srv" type="sight::module::ui::io::selector">
-                <inout key="data" uid="snapshot3" />
-                <type mode="writer" />
+                <data write="${snapshot3}" />
             </service>
 
             <!-- ******************************* Connections ***************************************** -->

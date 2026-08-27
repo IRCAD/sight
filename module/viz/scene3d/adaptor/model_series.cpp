@@ -126,7 +126,7 @@ void model_series::updating()
         auto adaptor = this->register_service<module::viz::scene3d::adaptor::reconstruction>(
             "sight::module::viz::scene3d::adaptor::reconstruction"
         );
-        adaptor->set_input(reconstruction, "reconstruction", true);
+        adaptor->set_input(reconstruction, "data.reconstruction", true);
 
         bool is_visible = visible();
         if(const auto visibility_field = model_series->get_field("ShowReconstructions"); visibility_field)
@@ -136,25 +136,17 @@ void model_series::updating()
         }
 
         config_t rec_adaptor_config;
-        rec_adaptor_config.put("properties.<xmlattr>.visible", is_visible);
+        rec_adaptor_config.put("config.<xmlattr>.visible", is_visible);
         rec_adaptor_config.put("config.<xmlattr>.material_template", m_material_template_name);
 
-        if(!m_uniforms.empty())
+        if(!m_uniform_objects.empty())
         {
             std::size_t i = 0;
-            for(const auto& uniform_data : m_uniforms)
+            for(const auto& uniform_object : m_uniform_objects)
             {
-                adaptor->set_inout(uniform_data.second->lock().get_shared(), "uniforms", true, {}, i++);
-            }
-
-            const auto config = this->get_config();
-            if(const auto inouts_cfg = config.get_child_optional("inout"); inouts_cfg.has_value())
-            {
-                const auto group = inouts_cfg->get<std::string>("<xmlattr>.group");
-                if(group == "uniforms")
-                {
-                    rec_adaptor_config.add_child("inout", inouts_cfg.value());
-                }
+                const auto index = i++;
+                adaptor->set_inout(uniform_object.second->lock().get_shared(), "uniform.object", true, {}, index);
+                adaptor->set_input(m_uniform_names[index].lock().get_shared(), "uniform.name", true, {}, index);
             }
         }
 

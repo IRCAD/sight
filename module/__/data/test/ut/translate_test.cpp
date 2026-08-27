@@ -39,8 +39,8 @@ TEST_SUITE("sight::module::data::translate")
         auto key   = std::make_shared<sight::data::string>();
         auto value = std::make_shared<sight::data::string>();
 
-        srv->set_input(key, "key");
-        srv->set_inout(value, "value");
+        srv->set_input(key, "data.input");
+        srv->set_inout(value, "data.output");
 
         const std::string config =
             "<map>"
@@ -85,8 +85,8 @@ TEST_SUITE("sight::module::data::translate")
         auto key   = std::make_shared<sight::data::integer>();
         auto value = std::make_shared<sight::data::boolean>();
 
-        srv->set_input(key, "key");
-        srv->set_inout(value, "value");
+        srv->set_input(key, "data.input");
+        srv->set_inout(value, "data.output");
 
         const std::string config =
             "<map>"

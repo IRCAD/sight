@@ -103,20 +103,18 @@
         </service>
 
         <service uid="negato_adp" type="sight::module::viz::scene3d::adaptor::negato2d">
-            <in key="image" uid="${image}" />
-            <inout key="tf" uid="${transfer_function}" />
-            <config orientation="${slice_index}" filtering="${filtering}" />
-            <properties classification="${classification}" />
+            <data image="${image}" />
+            <data tf="${transfer_function}" />
+            <config orientation="${slice_index}" filtering="${filtering}" classification="${classification}" />
         </service>
 
         <service uid="ruler_fiducial_adp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::ruler" auto_connect="true">
-            <inout key="image" uid="${image}" />
-            <config font_size="16" query_flags="0x40000000" orientation="${slice_index}" />
-            <properties radius="${fiducial_size}" />
+            <data image="${image}" />
+            <config font_size="16" query_flags="0x40000000" orientation="${slice_index}" radius="${fiducial_size}" />
         </service>
 
         <service uid="negato_camera_adp" type="sight::module::viz::scene3d::adaptor::negato2d_camera">
-            <inout key="image" uid="${image}" />
+            <data image="${image}" />
             <config priority="0" orientation="${slice_index}" />
         </service>
 
@@ -125,7 +123,7 @@
         </service>
 
         <service uid="landmarks_adp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::point" auto_connect="true">
-            <inout key="imageSeries" uid="${image}" />
+            <data imageSeries="${image}" />
             <config label="false" orientation="${slice_index}" priority="4" initialGroup="Group_0" initialSize="10.0" />
         </service>
 
@@ -140,14 +138,12 @@
         <!-- ************************************* Services ************************************ -->
 
         <service uid="negato_slider_cfg" type="sight::app::config_launcher">
-            <properties config="sight::config::viz::image::imageSlider" />
-            <inout group="object">
-                <key name="image" uid="${image}" />
-                <key name="transferFunction" uid="${transfer_function}" />
-            </inout>
-            <param name="WID_PARENT" value="negato_slider_view" />
+            <config id="sight::config::viz::image::image_slider" />
+            <object name="image" uid="${image}" />
+            <object name="transferFunction" uid="${transfer_function}" />
             <param name="sliceIndex" value="${slice_index}" />
             <param name="enableSliceType" value="${enable_slice_type}" />
+            <param name="WID_PARENT" value="negato_slider_view" />
         </service>
 
         <!-- ******************************* Connections ***************************************** -->

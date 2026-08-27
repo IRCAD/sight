@@ -413,7 +413,7 @@ private:
     sight::data::ptr<sight::data::map, sight::data::access::inout> m_properties_map {this, "from"};
 
     /// Allows to control the automatic start of the service
-    data::property<data::boolean> m_start_property {this, "start", true};
+    data::ptr<data::boolean> m_start_property {this, "config.start", true};
 };
 
 //------------------------------------------------------------------------------

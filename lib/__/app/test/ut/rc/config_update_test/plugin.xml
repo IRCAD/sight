@@ -79,7 +79,7 @@
     </extension>
 
     <extension implements="sight::app::extension::config">
-        <id>mutiple_config_sequence_cfg_test</id>
+        <id>multiple_config_sequence_cfg_test</id>
         <desc>Test configuration for sequences over multiple configuration</desc>
         <config>
             <service uid="test1_srv" type="sight::app::ut::test_order_srv" />
@@ -88,13 +88,13 @@
             <service uid="test8_srv" type="sight::app::ut::test_reset_order_srv" />
 
             <service uid="sub_cfg1_srv" type="sight::app::config_launcher">
-                <properties config="sub_sequence_cfg_test" />
-                <parameter replace="updater" by="sub_updater1" />
+                <config id="sub_sequence_cfg_test" />
+                <param name="updater" value="sub_updater1" />
             </service>
 
             <service uid="sub_cfg2_srv" type="sight::app::config_launcher">
-                <properties config="sub_sequence_cfg_test" />
-                <parameter replace="updater" by="sub_updater2" />
+                <config id="sub_sequence_cfg_test" />
+                <param name="updater" value="sub_updater2" />
             </service>
 
             <update>

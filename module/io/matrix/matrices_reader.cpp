@@ -27,6 +27,8 @@
 #include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
 
+#include <data/matrix_tl.hpp>
+
 #include <ui/__/dialog/location.hpp>
 #include <ui/__/dialog/message.hpp>
 
@@ -266,7 +268,9 @@ void matrices_reader::start_reading()
 
                 const auto nb_of_matrices = static_cast<unsigned int>((nb_of_elements - 1) / 16);
 
-                const auto matrix_tl = m_matrix_tl.lock();
+                const auto data      = m_data.lock();
+                const auto matrix_tl = std::dynamic_pointer_cast<data::matrix_tl>(data.get_shared());
+                SIGHT_ASSERT("The object is not a '" + data::matrix_tl::classname() + "'.", matrix_tl);
                 matrix_tl->init_pool_size(nb_of_matrices);
 
                 time_stamped_matrices current_ts_mat;
@@ -377,7 +381,9 @@ void matrices_reader::stop_reading()
     m_ts_matrices_count = 0;
 
     //clear the timeline
-    const auto matrix_tl = m_matrix_tl.lock();
+    const auto data      = m_data.lock();
+    const auto matrix_tl = std::dynamic_pointer_cast<data::matrix_tl>(data.get_shared());
+    SIGHT_ASSERT("The object is not a '" + data::matrix_tl::classname() + "'.", matrix_tl);
     matrix_tl->clear_timeline();
 
     matrix_tl->async_emit(data::timeline::signals::CLEARED);
@@ -401,7 +407,9 @@ void matrices_reader::read_matrices()
     if(!m_is_paused && m_ts_matrices_count < m_ts_matrices.size())
     {
         const auto t_start   = core::clock::get_time_in_milli_sec();
-        const auto matrix_tl = m_matrix_tl.lock();
+        const auto data      = m_data.lock();
+        const auto matrix_tl = std::dynamic_pointer_cast<data::matrix_tl>(data.get_shared());
+        SIGHT_ASSERT("The object is not a '" + data::matrix_tl::classname() + "'.", matrix_tl);
 
         time_stamped_matrices current_matrices = m_ts_matrices[m_ts_matrices_count];
 
@@ -474,7 +482,9 @@ void matrices_reader::read_matrices()
     }
     else if(!m_is_paused && m_loop_matrix)
     {
-        const auto matrix_tl = m_matrix_tl.lock();
+        const auto data      = m_data.lock();
+        const auto matrix_tl = std::dynamic_pointer_cast<data::matrix_tl>(data.get_shared());
+        SIGHT_ASSERT("The object is not a '" + data::matrix_tl::classname() + "'.", matrix_tl);
         matrix_tl->clear_timeline();
         m_ts_matrices_count = 0;
     }

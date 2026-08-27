@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024 IRCAD France
+ * Copyright (C) 2024-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -36,8 +36,8 @@ namespace sight::app::parser
  * @section XML XML Configuration
  * @code{.xml}
     <object uid="camera" type="sight::data::camera" >
-        <resource>sight::io:resources/my/video</resource>
-        <file>/absolute/path/to/my/video</file>
+        <path resource="sight::io:resources/my/video" />
+        <path file="/absolute/path/to/my/video" />
     </object>
  * @endcode
  * @subsection Configuration Configuration:

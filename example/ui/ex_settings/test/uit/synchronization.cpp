@@ -23,9 +23,6 @@
 
 #include <core/runtime/path.hpp>
 
-#include <data/activity.hpp>
-#include <data/string.hpp>
-
 #include <ui/test/helper/button.hpp>
 #include <ui/test/helper/check_box.hpp>
 #include <ui/test/helper/color_parameter.hpp>
@@ -80,7 +77,7 @@ void synchronization::test()
                     _tester.add_in_backtrace(
                         "Check that 'Boolean' checkbox doesn't do anything because it is disabled"
                     );
-                helper::check_box::toggle(_tester, selector::from_parent("properties1_srv", "bool_1"));
+                helper::check_box::toggle(_tester, selector::from_parent("properties1_srv", "sight::data::boolean_1"));
                 helper::check_box::should_not_be_checked(_tester, selector::current());
             }
 
@@ -93,9 +90,15 @@ void synchronization::test()
 
             {
                 auto bt = _tester.add_in_backtrace("Check synchronization between 'Boolean' checkboxes");
-                helper::check_box::toggle(_tester, selector::from_parent("properties1_srv", "bool_1"));
+                helper::check_box::toggle(_tester, selector::from_parent("properties1_srv", "sight::data::boolean_1"));
                 helper::check_box::should_be_checked(_tester, selector::current());
-                helper::check_box::should_be_checked(_tester, selector::from_parent("properties2_srv", "bool_obj"));
+                helper::check_box::should_be_checked(
+                    _tester,
+                    selector::from_parent(
+                        "properties2_srv",
+                        "sight::data::boolean_1"
+                    )
+                );
             }
             {
                 auto bt = _tester.add_in_backtrace("Check synchronization between 'Enable' switch buttons");
@@ -112,7 +115,13 @@ void synchronization::test()
                     _tester.add_in_backtrace(
                         "Check that 'Boolean_switch' switch_button doesn't do anything because it is disabled"
                     );
-                helper::switch_button_test::toggle(_tester, selector::from_parent("properties1_srv", "bool_2"));
+                helper::switch_button_test::toggle(
+                    _tester,
+                    selector::from_parent(
+                        "properties1_srv",
+                        "sight::data::boolean_2"
+                    )
+                );
                 helper::switch_button_test::should_not_be_checked(_tester, selector::current());
             }
 
@@ -132,23 +141,35 @@ void synchronization::test()
 
             {
                 auto bt = _tester.add_in_backtrace("Check synchronization between 'Boolean' switch_buttons");
-                helper::switch_button_test::toggle(_tester, selector::from_parent("properties1_srv", "bool_2"));
+                helper::switch_button_test::toggle(
+                    _tester,
+                    selector::from_parent(
+                        "properties1_srv",
+                        "sight::data::boolean_2"
+                    )
+                );
                 helper::switch_button_test::should_be_checked(_tester, selector::current());
                 helper::switch_button_test::should_be_checked(
                     _tester,
                     selector::from_parent(
                         "properties2_srv",
-                        "bool_obj_2"
+                        "sight::data::boolean_2"
                     )
                 );
             }
             {
                 auto bt = _tester.add_in_backtrace("Check reverse synchronization from panel 2 to panel 1");
-                helper::switch_button_test::toggle(_tester, selector::from_parent("properties2_srv", "bool_obj"));
+                helper::switch_button_test::toggle(
+                    _tester,
+                    selector::from_parent(
+                        "properties2_srv",
+                        "sight::data::boolean_1"
+                    )
+                );
                 helper::switch_button_test::should_not_be_checked(_tester, selector::current());
                 helper::switch_button_test::should_not_be_checked(
                     _tester,
-                    selector::from_parent("properties1_srv", "bool_1")
+                    selector::from_parent("properties1_srv", "sight::data::boolean_1")
                 );
             }
 
@@ -156,31 +177,35 @@ void synchronization::test()
                 auto bt = _tester.add_in_backtrace("Check synchronization between 'Color' color selectors");
                 helper::color_parameter::select(
                     _tester,
-                    selector::from_parent("properties1_srv", "color_1"),
+                    selector::from_parent("properties1_srv", "sight::data::color_0"),
                     {0, 0, 0
                     });
                 helper::color_parameter::color_equals(
                     _tester,
                     selector::from_parent(
                         "properties1_srv",
-                        "color_1"
+                        "sight::data::color_0"
                     ),
                     {0, 0, 0
                     });
                 helper::color_parameter::color_equals(
                     _tester,
-                    selector::from_parent("properties2_srv", "color_obj"),
+                    selector::from_parent("properties2_srv", "sight::data::color_0"),
                     {0, 0, 0
                     });
             }
 
             {
                 auto bt = _tester.add_in_backtrace("Check synchronization between 'Double 1' spinboxes");
-                helper::spin_box::increment(_tester, selector::from_parent("properties1_srv", "double_1"), 5);
+                helper::spin_box::increment(
+                    _tester,
+                    selector::from_parent("properties1_srv", "sight::data::real_0"),
+                    5
+                );
                 helper::spin_box::value_equals(_tester, selector::current(), "0.08");
                 helper::spin_box::value_equals(
                     _tester,
-                    selector::from_parent("properties2_srv", "double_1_obj"),
+                    selector::from_parent("properties2_srv", "sight::data::real_0"),
                     "0.08"
                 );
             }
@@ -189,7 +214,7 @@ void synchronization::test()
                 auto bt = _tester.add_in_backtrace("Check synchronization between 'Double 2' sliders");
                 helper::slider::move(
                     _tester,
-                    selector::from_parent("properties1_srv", "double_2"),
+                    selector::from_parent("properties1_srv", "sight::data::real_1"),
                     helper::slider::position::right,
                     5
                 );
@@ -197,7 +222,7 @@ void synchronization::test()
                     _tester,
                     selector::from_parent(
                         "properties1_srv",
-                        "double_2/valueLabel"
+                        "sight::data::real_1/valueLabel"
                     ),
                     "500.31"
                 );
@@ -205,7 +230,7 @@ void synchronization::test()
                     _tester,
                     selector::from_parent(
                         "properties2_srv",
-                        "double_2_obj/valueLabel"
+                        "sight::data::real_1/valueLabel"
                     ),
                     "500.31"
                 );
@@ -213,40 +238,60 @@ void synchronization::test()
 
             {
                 auto bt = _tester.add_in_backtrace("Check synchronization between '2 Double' spinboxes");
-                helper::spin_box::increment(_tester, selector::from_parent("properties1_srv", "double2_1"), 5);
+                helper::spin_box::increment(
+                    _tester,
+                    selector::from_parent("properties1_srv", "sight::data::dvec2_0"),
+                    5
+                );
                 helper::spin_box::value_equals(_tester, selector::current(), "10.000");
-                helper::spin_box::decrement(_tester, selector::from_parent("properties1_srv", "double2_1/1"), 5);
+                helper::spin_box::decrement(
+                    _tester,
+                    selector::from_parent("properties1_srv", "sight::data::dvec2_0/1"),
+                    5
+                );
                 helper::spin_box::value_equals(_tester, selector::current(), "2.000");
                 helper::spin_box::value_equals(
                     _tester,
-                    selector::from_parent("properties2_srv", "double2_1_obj"),
+                    selector::from_parent("properties2_srv", "sight::data::dvec2_0"),
                     "10.000"
                 );
                 helper::spin_box::value_equals(
                     _tester,
-                    selector::from_parent("properties2_srv", "double2_1_obj/1"),
+                    selector::from_parent("properties2_srv", "sight::data::dvec2_0/1"),
                     "2.000"
                 );
             }
 
             {
                 auto bt = _tester.add_in_backtrace("Check synchronization between '3 Double' spinboxes");
-                helper::spin_box::increment(_tester, selector::from_parent("properties1_srv", "double3_1"), 4);
+                helper::spin_box::increment(
+                    _tester,
+                    selector::from_parent("properties1_srv", "sight::data::dvec3_0"),
+                    4
+                );
                 helper::spin_box::value_equals(_tester, selector::current(), "9.000");
-                helper::spin_box::decrement(_tester, selector::from_parent("properties1_srv", "double3_1/1"), 4);
+                helper::spin_box::decrement(
+                    _tester,
+                    selector::from_parent("properties1_srv", "sight::data::dvec3_0/1"),
+                    4
+                );
                 helper::spin_box::value_equals(_tester, selector::current(), "4.000");
-                helper::spin_box::increment(_tester, selector::from_parent("properties1_srv", "double3_1/2"), 4);
+                helper::spin_box::increment(
+                    _tester,
+                    selector::from_parent("properties1_srv", "sight::data::dvec3_0/2"),
+                    4
+                );
                 helper::spin_box::value_equals(_tester, selector::current(), "24.000");
                 helper::spin_box::value_equals(
                     _tester,
-                    selector::from_parent("properties2_srv", "double3_1_obj"),
+                    selector::from_parent("properties2_srv", "sight::data::dvec3_0"),
                     "9.000"
                 );
                 helper::spin_box::value_equals(
                     _tester,
                     selector::from_parent(
                         "properties2_srv",
-                        "double3_1_obj/1"
+                        "sight::data::dvec3_0/1"
                     ),
                     "4.000"
                 );
@@ -254,7 +299,7 @@ void synchronization::test()
                     _tester,
                     selector::from_parent(
                         "properties2_srv",
-                        "double3_1_obj/2"
+                        "sight::data::dvec3_0/2"
                     ),
                     "24.000"
                 );
@@ -262,79 +307,121 @@ void synchronization::test()
 
             {
                 auto bt = _tester.add_in_backtrace("Check synchronization between 'Integer 1' spinboxes");
-                helper::spin_box::decrement(_tester, selector::from_parent("properties1_srv", "int_1"), 5);
+                helper::spin_box::decrement(
+                    _tester,
+                    selector::from_parent("properties1_srv", "sight::data::integer_1"),
+                    5
+                );
                 helper::spin_box::value_equals(_tester, selector::current(), 45);
-                helper::spin_box::value_equals(_tester, selector::from_parent("properties2_srv", "int_1_obj"), 45);
+                helper::spin_box::value_equals(
+                    _tester,
+                    selector::from_parent(
+                        "properties2_srv",
+                        "sight::data::integer_1"
+                    ),
+                    45
+                );
             }
 
             {
                 auto bt = _tester.add_in_backtrace("Check synchronization between 'Integer 2' sliders");
                 helper::slider::move(
                     _tester,
-                    selector::from_parent("properties1_srv", "int_2"),
+                    selector::from_parent("properties1_srv", "sight::data::integer_2"),
                     helper::slider::position::left,
                     2
                 );
                 helper::label::exactly_match(
                     _tester,
-                    selector::from_parent("properties1_srv", "int_2/valueLabel"),
+                    selector::from_parent("properties1_srv", "sight::data::integer_2/valueLabel"),
                     "30"
                 );
                 helper::label::exactly_match(
                     _tester,
-                    selector::from_parent("properties2_srv", "int_2_obj/valueLabel"),
+                    selector::from_parent("properties2_srv", "sight::data::integer_2/valueLabel"),
                     "30"
                 );
             }
 
             {
                 auto bt = _tester.add_in_backtrace("Check synchronization between '2 Integer' spinboxes");
-                helper::spin_box::increment(_tester, selector::from_parent("properties1_srv", "int2_1"), 5);
+                helper::spin_box::increment(
+                    _tester,
+                    selector::from_parent("properties1_srv", "sight::data::ivec2_0"),
+                    5
+                );
                 helper::spin_box::value_equals(_tester, selector::current(), 10);
-                helper::spin_box::decrement(_tester, selector::from_parent("properties1_srv", "int2_1/1"), 5);
+                helper::spin_box::decrement(
+                    _tester,
+                    selector::from_parent("properties1_srv", "sight::data::ivec2_0/1"),
+                    5
+                );
                 helper::spin_box::value_equals(_tester, selector::current(), 5);
                 helper::spin_box::value_equals(
                     _tester,
-                    selector::from_parent("properties2_srv", "int2_1_obj"),
+                    selector::from_parent("properties2_srv", "sight::data::ivec2_0"),
                     10
                 );
                 helper::spin_box::value_equals(
                     _tester,
-                    selector::from_parent("properties2_srv", "int2_1_obj/1"),
+                    selector::from_parent("properties2_srv", "sight::data::ivec2_0/1"),
                     5
                 );
             }
 
             {
                 auto bt = _tester.add_in_backtrace("Check synchronization between '3 Integer' spinboxes");
-                helper::spin_box::increment(_tester, selector::from_parent("properties1_srv", "int3_1"), 5);
+                helper::spin_box::increment(
+                    _tester,
+                    selector::from_parent("properties1_srv", "sight::data::ivec3_0"),
+                    5
+                );
                 helper::spin_box::value_equals(_tester, selector::current(), 10);
-                helper::spin_box::decrement(_tester, selector::from_parent("properties1_srv", "int3_1/1"), 5);
+                helper::spin_box::decrement(
+                    _tester,
+                    selector::from_parent("properties1_srv", "sight::data::ivec3_0/1"),
+                    5
+                );
                 helper::spin_box::value_equals(_tester, selector::current(), 7);
-                helper::spin_box::increment(_tester, selector::from_parent("properties1_srv", "int3_1/2"), 5);
+                helper::spin_box::increment(
+                    _tester,
+                    selector::from_parent("properties1_srv", "sight::data::ivec3_0/2"),
+                    5
+                );
                 helper::spin_box::value_equals(_tester, selector::current(), 17);
                 helper::spin_box::value_equals(
                     _tester,
-                    selector::from_parent("properties2_srv", "int3_1_obj"),
+                    selector::from_parent("properties2_srv", "sight::data::ivec3_0"),
                     10
                 );
                 helper::spin_box::value_equals(
                     _tester,
-                    selector::from_parent("properties2_srv", "int3_1_obj/1"),
+                    selector::from_parent("properties2_srv", "sight::data::ivec3_0/1"),
                     7
                 );
                 helper::spin_box::value_equals(
                     _tester,
-                    selector::from_parent("properties2_srv", "int3_1_obj/2"),
+                    selector::from_parent("properties2_srv", "sight::data::ivec3_0/2"),
                     17
                 );
             }
 
             {
                 auto bt = _tester.add_in_backtrace("Check synchronization between 'Enum' comboboxes");
-                helper::combo_box::select(_tester, selector::from_parent("properties1_srv", "enum_1"), "V1");
+                helper::combo_box::select(
+                    _tester,
+                    selector::from_parent("properties1_srv", "sight::data::string_4"),
+                    "V1"
+                );
                 helper::combo_box::value_equals(_tester, selector::current(), "V1");
-                helper::combo_box::value_equals(_tester, selector::from_parent("properties2_srv", "enum_1_obj"), "V1");
+                helper::combo_box::value_equals(
+                    _tester,
+                    selector::from_parent(
+                        "properties2_srv",
+                        "sight::data::string_4"
+                    ),
+                    "V1"
+                );
             }
 
             {
@@ -345,29 +432,40 @@ void synchronization::test()
                     _tester,
                     selector::from_parent(
                         "properties1_srv",
-                        "nonlin"
+                        "sight::data::integer_3"
                     ),
                     helper::slider::position::right
                 );
                 helper::label::exactly_match(
                     _tester,
-                    selector::from_parent("properties1_srv", "nonlin/valueLabel"),
+                    selector::from_parent("properties1_srv", "sight::data::integer_3/valueLabel"),
                     "120"
                 );
-                helper::combo_box::value_equals(_tester, selector::from_parent("properties2_srv", "nonlin_obj"), "120");
+                helper::combo_box::value_equals(
+                    _tester,
+                    selector::from_parent(
+                        "properties2_srv",
+                        "sight::data::integer_3"
+                    ),
+                    "120"
+                );
             }
 
             {
                 auto bt = _tester.add_in_backtrace(
                     "Check synchronization from 'Nonlinear' combobox to non-linear slider"
                 );
-                helper::combo_box::select(_tester, selector::from_parent("properties2_srv", "nonlin_obj"), "50");
+                helper::combo_box::select(
+                    _tester,
+                    selector::from_parent("properties2_srv", "sight::data::integer_3"),
+                    "50"
+                );
                 helper::combo_box::value_equals(_tester, selector::current(), "50");
                 helper::label::exactly_match(
                     _tester,
                     selector::from_parent(
                         "properties1_srv",
-                        "nonlin/valueLabel"
+                        "sight::data::integer_3/valueLabel"
                     ),
                     "50"
                 );
@@ -375,9 +473,12 @@ void synchronization::test()
 
             {
                 auto bt = _tester.add_in_backtrace("Check synchronization button bar enum to button bar enum");
-                helper::button::push(_tester, selector::from_parent("properties1_srv", "buttonRaw_button1"));
+                helper::button::push(
+                    _tester,
+                    selector::from_parent("properties1_srv", "sight::data::integer_4_button1")
+                );
 
-                selector::from_parent("properties2_srv", "button_obj_button1").select(_tester);
+                selector::from_parent("properties2_srv", "sight::data::integer_4_button1").select(_tester);
                 _tester.doubt<QToolButton*>(
                     "buttonRaw_button1 should be checked",
                     [](QToolButton* _obj)
@@ -387,18 +488,51 @@ void synchronization::test()
             }
             {
                 auto bt = _tester.add_in_backtrace("Check synchronization text string");
-                helper::line_edit::set_current_text(_tester, selector::from_parent("properties1_srv", "text"), "test");
-                helper::line_edit::match(_tester, selector::from_parent("properties2_srv", "text_obj"), "test");
+                helper::line_edit::set_current_text(
+                    _tester,
+                    selector::from_parent(
+                        "properties1_srv",
+                        "sight::data::string_0"
+                    ),
+                    "test"
+                );
+                helper::line_edit::match(
+                    _tester,
+                    selector::from_parent("properties2_srv", "sight::data::string_0"),
+                    "test"
+                );
             }
             {
                 auto bt = _tester.add_in_backtrace("Check synchronization text string");
-                helper::line_edit::set_current_text(_tester, selector::from_parent("properties1_srv", "file"), "ff");
-                helper::line_edit::match(_tester, selector::from_parent("properties2_srv", "file_obj"), "ff");
+                helper::line_edit::set_current_text(
+                    _tester,
+                    selector::from_parent(
+                        "properties1_srv",
+                        "sight::data::string_2"
+                    ),
+                    "ff"
+                );
+                helper::line_edit::match(
+                    _tester,
+                    selector::from_parent("properties2_srv", "sight::data::string_2"),
+                    "ff"
+                );
             }
             {
                 auto bt = _tester.add_in_backtrace("Check synchronization text string");
-                helper::line_edit::set_current_text(_tester, selector::from_parent("properties1_srv", "dir"), "dd");
-                helper::line_edit::match(_tester, selector::from_parent("properties2_srv", "dir_obj"), "dd");
+                helper::line_edit::set_current_text(
+                    _tester,
+                    selector::from_parent(
+                        "properties1_srv",
+                        "sight::data::string_3"
+                    ),
+                    "dd"
+                );
+                helper::line_edit::match(
+                    _tester,
+                    selector::from_parent("properties2_srv", "sight::data::string_3"),
+                    "dd"
+                );
             }
 
             {
@@ -407,119 +541,119 @@ void synchronization::test()
                 // Set slider 1 tick to 2, so the displayed value should be 100
                 helper::tickmarks_slider_test::set_current_tick(
                     _tester,
-                    selector::from_parent("properties1_srv", "text_ticks"),
+                    selector::from_parent("properties1_srv", "sight::data::string_1"),
                     2
                 );
 
                 helper::tickmarks_slider_test::set_current_tick(
                     _tester,
-                    selector::from_parent("properties1_srv", "int_ticks"),
+                    selector::from_parent("properties1_srv", "sight::data::integer_0"),
                     2
                 );
 
                 helper::tickmarks_slider_test::check_value(
                     _tester,
-                    selector::from_parent("properties1_srv", "text_ticks"),
+                    selector::from_parent("properties1_srv", "sight::data::string_1"),
                     "100"
                 );
 
                 // The choosen displayed value on slider 2 should be 100 because the slider 1 tick is set to 2
                 helper::tickmarks_slider_test::check_value(
                     _tester,
-                    selector::from_parent("properties2_srv", "text_ticks_obj"),
+                    selector::from_parent("properties2_srv", "sight::data::string_1"),
                     "100"
                 );
 
                 helper::tickmarks_slider_test::check_value(
                     _tester,
-                    selector::from_parent("properties1_srv", "int_ticks"),
+                    selector::from_parent("properties1_srv", "sight::data::integer_0"),
                     "100"
                 );
 
                 // The choosen displayed value on slider 2 should be 100 because the slider 1 tick is set to 2
                 helper::tickmarks_slider_test::check_value(
                     _tester,
-                    selector::from_parent("properties2_srv", "int_ticks_obj"),
+                    selector::from_parent("properties2_srv", "sight::data::integer_0"),
                     "100"
                 );
 
                 // Move one step right
                 helper::tickmarks_slider_test::move(
                     _tester,
-                    selector::from_parent("properties1_srv", "text_ticks"),
+                    selector::from_parent("properties1_srv", "sight::data::string_1"),
                     helper::tickmarks_slider_test::position::right,
                     1
                 );
 
                 helper::tickmarks_slider_test::check_value(
                     _tester,
-                    selector::from_parent("properties1_srv", "text_ticks"),
+                    selector::from_parent("properties1_srv", "sight::data::string_1"),
                     "150"
                 );
 
                 // Move one step left
                 helper::tickmarks_slider_test::move(
                     _tester,
-                    selector::from_parent("properties1_srv", "text_ticks"),
+                    selector::from_parent("properties1_srv", "sight::data::string_1"),
                     helper::tickmarks_slider_test::position::left,
                     1
                 );
 
                 helper::tickmarks_slider_test::check_value(
                     _tester,
-                    selector::from_parent("properties1_srv", "text_ticks"),
+                    selector::from_parent("properties1_srv", "sight::data::string_1"),
                     "100"
                 );
 
                 // Test mouse drag on slider 1
                 helper::tickmarks_slider_test::mouse_drag_test(
                     _tester,
-                    selector::from_parent("properties1_srv", "text_ticks"),
+                    selector::from_parent("properties1_srv", "sight::data::string_1"),
                     QPoint {10, 20},
                     QPoint {60, 20
                     });
 
                 helper::tickmarks_slider_test::mouse_drag_test(
                     _tester,
-                    selector::from_parent("properties1_srv", "int_ticks"),
+                    selector::from_parent("properties1_srv", "sight::data::integer_0"),
                     QPoint {10, 20},
                     QPoint {60, 20
                     });
 
                 helper::tickmarks_slider_test::check_value(
                     _tester,
-                    selector::from_parent("properties1_srv", "text_ticks"),
+                    selector::from_parent("properties1_srv", "sight::data::string_1"),
                     "45"
                 );
 
                 helper::tickmarks_slider_test::check_value(
                     _tester,
-                    selector::from_parent("properties2_srv", "text_ticks_obj"),
+                    selector::from_parent("properties2_srv", "sight::data::string_1"),
                     "45"
                 );
 
                 helper::tickmarks_slider_test::check_value(
                     _tester,
-                    selector::from_parent("properties1_srv", "int_ticks"),
+                    selector::from_parent("properties1_srv", "sight::data::integer_0"),
                     "45"
                 );
 
                 helper::tickmarks_slider_test::check_value(
                     _tester,
-                    selector::from_parent("properties2_srv", "int_ticks_obj"),
+                    selector::from_parent("properties2_srv", "sight::data::integer_0"),
                     "45"
                 );
 
                 // Test low level API on slider 1 + 2
                 helper::tickmarks_slider_test::set_current_text(
                     _tester,
-                    selector::from_parent("properties1_srv", "text_ticks"),
+                    selector::from_parent("properties1_srv", "sight::data::string_1"),
                     "200"
                 );
 
                 helper::tickmarks_slider_test::set_current_text(
                     _tester,
-                    selector::from_parent("properties1_srv", "int_ticks"),
+                    selector::from_parent("properties1_srv", "sight::data::integer_0"),
                     "200"
                 );
             }

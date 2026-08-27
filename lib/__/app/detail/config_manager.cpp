@@ -619,7 +619,7 @@ void config_manager::create_services(const core::runtime::config_t& _cfg_elem)
         if(create_service)
         {
             auto srv                  = this->create_service(srv_config);
-            const auto start_property = srv->inout<sight::data::boolean>("start");
+            const auto start_property = srv->inout<sight::data::boolean>("config.start");
             if(*start_property.lock())
             {
                 config_t auto_start_cfg;
@@ -977,10 +977,10 @@ void config_manager::create_updater_services()
 
             service_cfg.add_child("config", config);
 
-            config_t properties;
+            config_t start_cfg;
             const auto start = _elem.get("<xmlattr>.start", true);
-            properties.put("<xmlattr>.start", start);
-            service_cfg.add_child("properties", properties);
+            start_cfg.put("<xmlattr>.start", start);
+            service_cfg.add_child("config", start_cfg);
 
             config_t updater_service_cfg;
             updater_service_cfg.add_child("service", service_cfg);
@@ -1287,7 +1287,7 @@ void config_manager::add_objects(data::object::sptr _obj, const std::string& _id
         auto it_srv = new_services.find(uid);
         if(it_srv != new_services.end())
         {
-            const auto start_property = it_srv->second->inout<sight::data::boolean>("start");
+            const auto start_property = it_srv->second->inout<sight::data::boolean>("config.start");
             // Autostart with respect to the start property
             if(*start_property.lock())
             {

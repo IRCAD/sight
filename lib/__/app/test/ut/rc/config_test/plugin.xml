@@ -163,7 +163,7 @@
         <config>
             <service uid="TestService5Uid" type="sight::app::ut::test_no_data" />
             <service uid="TestService6Uid" type="sight::app::ut::test_no_data">
-                <properties start="false" />
+                <config start="false" />
             </service>
             <service uid="TestService7Uid" type="sight::app::ut::test_no_data" />
 
@@ -302,16 +302,14 @@
             </service>
 
             <service uid="TestService2Uid" type="sight::app::config_launcher">
-                <properties config="parameter_replace_test_sub_config" />
-                <inout group="object">
-                    <key name="data1" uid="${data1}" />
-                    <key name="data2" uid="data2Id" />
-                    <key name="data3" uid="data3Id" />
-                </inout>
-                <parameter replace="patient" by="name" />
-                <parameter replace="channel1" by="Channel No5" />
-                <parameter replace="channel2" by="disneyChannel" />
-                <parameter replace="WID_PARENT" by="view1" />
+                <config id="parameter_replace_test_sub_config" />
+                <object name="data1" uid="${data1}" />
+                <object name="data2" uid="data2Id" />
+                <object name="data3" uid="data3Id" />
+                <param name="patient" value="name" />
+                <param name="channel1" value="Channel No5" />
+                <param name="channel2" value="disneyChannel" />
+                <param name="WID_PARENT" value="view1" />
             </service>
 
             <connect channel="disneyChannel">
@@ -372,15 +370,15 @@
         <desc>Test configuration for optional parameter replace</desc>
         <config>
             <service uid="test1_srv" type="sight::app::config_launcher">
-                <properties config="default_object_id_test_sub_config" />
+                <config id="default_object_id_test_sub_config" />
             </service>
 
             <service uid="test2_srv" type="sight::app::config_launcher">
-                <properties config="default_object_id_test_sub_config" />
+                <config id="default_object_id_test_sub_config" />
             </service>
 
             <service uid="test3_srv" type="sight::app::config_launcher">
-                <properties config="default_object_id_test_sub_config" />
+                <config id="default_object_id_test_sub_config" />
             </service>
         </config>
     </extension>
@@ -407,11 +405,9 @@
             <object uid="position_ref" type="sight::data::dvec3" value="100;20;12" />
 
             <service uid="value_launcher" type="sight::app::config_launcher">
-                <properties config="value_inout_parameter_sub_config" />
-                <inout group="object">
-                    <key name="show_image" value="true" />
-                    <key name="position" uid="position_ref" />
-                </inout>
+                <config id="value_inout_parameter_sub_config" />
+                <object name="show_image" value="true" />
+                <object name="position" uid="position_ref" />
             </service>
         </config>
     </extension>
@@ -434,10 +430,8 @@
         <desc>Test configuration for dvec3 literal value in config_launcher</desc>
         <config>
             <service uid="value_launcher" type="sight::app::config_launcher">
-                <properties config="value_inout_dvec3_sub_config" />
-                <inout group="object">
-                    <key name="position" value="11.5;-42.0;7.25" />
-                </inout>
+                <config id="value_inout_dvec3_sub_config" />
+                <object name="position" value="11.5;-42.0;7.25" />
             </service>
         </config>
     </extension>
@@ -460,10 +454,8 @@
         <desc>Test configuration for optional object parameter override with value in config_launcher</desc>
         <config>
             <service uid="value_launcher" type="sight::app::config_launcher">
-                <properties config="value_inout_optional_override_sub_config" />
-                <inout group="object">
-                    <key name="position" value="9;8;7" />
-                </inout>
+                <config id="value_inout_optional_override_sub_config" />
+                <object name="position" value="9;8;7" />
             </service>
         </config>
     </extension>
@@ -490,11 +482,9 @@
             <object uid="position_uid_ref" type="sight::data::dvec3" value="-5;0;4" />
 
             <service uid="value_launcher" type="sight::app::config_launcher">
-                <properties config="value_inout_optional_mixed_sub_config" />
-                <inout group="object">
-                    <key name="position_opt" value="9;8;7" />
-                    <key name="position_uid" uid="position_uid_ref" />
-                </inout>
+                <config id="value_inout_optional_mixed_sub_config" />
+                <object name="position_opt" value="9;8;7" />
+                <object name="position_uid" uid="position_uid_ref" />
             </service>
         </config>
     </extension>
@@ -540,6 +530,12 @@
 
             <service uid="TestService1Uid" type="sight::app::ut::test1_input" config="serviceConfigTest">
                 <in key="data1" uid="compo1Id" />
+                <settings>
+                    <fromService>service</fromService>
+                    <nested>
+                        <fromService>service</fromService>
+                    </nested>
+                </settings>
             </service>
         </config>
     </extension>
@@ -551,6 +547,12 @@
         <config>
             <param1>value1</param1>
             <param2>value2</param2>
+            <settings>
+                <fromConfig>config</fromConfig>
+                <nested>
+                    <fromConfig>config</fromConfig>
+                </nested>
+            </settings>
         </config>
     </extension>
 
@@ -670,6 +672,29 @@
     </extension>
 
     <extension implements="sight::app::extension::config">
+        <id>nested_key_collision_test</id>
+        <desc>Test that hierarchical and legacy service keys cannot be configured twice</desc>
+        <config>
+            <object uid="threshold_object" type="sight::data::integer" value="42" />
+            <service uid="nested_key_collision_srv" type="sight::app::ut::test_service_with_nested_keys">
+                <in key="config.threshold" uid="threshold_object" />
+                <config threshold="42" />
+            </service>
+        </config>
+    </extension>
+
+    <extension implements="sight::app::extension::config">
+        <id>nested_key_value_collision_test</id>
+        <desc>Test that hierarchical and legacy literal service keys cannot be configured twice</desc>
+        <config>
+            <service uid="nested_key_value_collision_srv" type="sight::app::ut::test_service_with_nested_keys">
+                <in key="config.threshold" value="42" />
+                <config threshold="42" />
+            </service>
+        </config>
+    </extension>
+
+    <extension implements="sight::app::extension::config">
         <id>properties_cfg_test</id>
         <desc>Test configuration for properties</desc>
         <config>
@@ -758,17 +783,13 @@
             </object>
 
             <service uid="test1_srv" type="sight::app::config_launcher">
-                <properties config="default_object_id_test_sub_config" />
-                <inout group="object">
-                    <key name="data1" uid="${properties_map}.string" />
-                </inout>
+                <config id="default_object_id_test_sub_config" />
+                <object name="data1" uid="${properties_map}.string" />
             </service>
 
             <service uid="test2_srv" type="sight::app::config_launcher">
-                <properties config="properties_map_element_parameter_subconfig" />
-                <inout group="object">
-                    <key name="map" uid="${properties_map}" />
-                </inout>
+                <config id="properties_map_element_parameter_subconfig" />
+                <object name="map" uid="${properties_map}" />
             </service>
         </config>
     </extension>
@@ -788,12 +809,10 @@
             <object uid="data_deferred" type="sight::data::string" deferred="true" />
 
             <service uid="test3_srv" type="sight::app::config_launcher">
-                <properties config="default_object_id_test_sub_config" />
-                <inout group="object">
-                    <key name="data1" uid="${properties_map}.string" />
-                    <!-- Not declared but allows to make the service deferred and delay the start -->
-                    <key name="data_unused" uid="${data_deferred}" />
-                </inout>
+                <config id="default_object_id_test_sub_config" />
+                <object name="data1" uid="${properties_map}.string" />
+                <!-- Not declared but allows to make the service deferred and delay the start -->
+                <object name="data_unused" uid="${data_deferred}" />
             </service>
 
             <service uid="generate_data" type="sight::app::ut::test_out">
@@ -831,10 +850,9 @@
             <object uid="map" type="sight::data::map" config="map_config" />
 
             <service uid="test1_srv" type="sight::app::config_launcher">
-                <properties start="false" config="default_object_id_test_sub_config" />
-                <inout group="object">
-                    <key name="data1" uid="map" />
-                </inout>
+                <config id="default_object_id_test_sub_config" start="false" />
+
+                <object name="data1" uid="map" />
             </service>
         </config>
     </extension>
@@ -862,10 +880,9 @@
             <object uid="matrix" type="sight::data::matrix4" config="matrix_config" />
 
             <service uid="test1_srv" type="sight::app::config_launcher">
-                <properties start="false" config="default_object_id_test_sub_config" />
-                <inout group="object">
-                    <key name="data1" uid="matrix" />
-                </inout>
+                <config id="default_object_id_test_sub_config" start="false" />
+
+                <object name="data1" uid="matrix" />
             </service>
         </config>
     </extension>

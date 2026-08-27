@@ -51,15 +51,15 @@ namespace sight::module::io::bitmap
  *
  * @code{.xml}
     <service type="sight::module::io::bitmap::writer">
-        <in key="data" uid="..." />
-        <file>...</file>
+        <data write="..." />
+        <path file="..." />
         <dialog>...</dialog>
         <gpu_required>true|false</gpu_required>
         <mode>best|fast</mode>
     </service>
    @endcode
  * @subsection Input Input
- * - \b data [sight::data::image]: image to save.
+ * - \b data.write [sight::data::image]: image to save.
  * @subsection Configuration Configuration
  * - \b file (optional): path of the file to save, if it is not defined, 'open_location_dialog()' should be called to
  *           define the path.

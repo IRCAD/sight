@@ -218,11 +218,11 @@
         </service>
 
         <service uid="video1Adp" type="sight::module::viz::scene3d::adaptor::video">
-            <in key="image" uid="frame1" />
+            <data image="${frame1}" />
         </service>
 
         <service uid="video2Adp" type="sight::module::viz::scene3d::adaptor::video">
-            <in key="image" uid="frame2" />
+            <data image="${frame2}" />
         </service>
 
         <!-- ************************************* Services ************************************ -->
@@ -242,8 +242,7 @@
         </service>
 
         <service uid="extrinsicExporterSrv" type="sight::module::ui::io::selector">
-            <inout key="data" uid="exportExtrinsicMat" />
-            <type mode="writer" />
+            <data write="${exportExtrinsicMat}" />
             <selection mode="include" />
             <addSelection service="sight::module::io::matrix::Matrix4WriterService" />
         </service>
@@ -311,24 +310,24 @@
         </service>
 
         <service uid="calibrationDataWriter1Srv" type="sight::module::io::vision::calibration_images_writer">
-            <in key="data" uid="${calibrationInfo1}" />
+            <data write="${calibrationInfo1}" />
             <format>.tiff</format>
         </service>
 
         <service uid="calibrationDataWriter2Srv" type="sight::module::io::vision::calibration_images_writer">
-            <in key="data" uid="${calibrationInfo2}" />
+            <data write="${calibrationInfo2}" />
             <format>.tiff</format>
         </service>
 
         <service uid="calibrationDataReader1Srv" type="sight::module::io::vision::calibration_info_reader">
-            <windowTitle>Load left images.</windowTitle>
-            <inout key="data" uid="${calibrationInfo1}" />
+            <config window_title="Load left images." />
+            <data read="${calibrationInfo1}" />
             <properties from="${board_properties}" />
         </service>
 
         <service uid="calibrationDataReader2Srv" type="sight::module::io::vision::calibration_info_reader">
-            <windowTitle>Load right images.</windowTitle>
-            <inout key="data" uid="${calibrationInfo2}" />
+            <config window_title="Load right images." />
+            <data read="${calibrationInfo2}" />
             <properties from="${board_properties}" />
         </service>
 

@@ -130,7 +130,7 @@ void texture_selector::on_load_button()
     }
 
     auto srv = sight::service::add<sight::ui::dialog_editor>("sight::module::ui::io::selector");
-    srv->set_inout(image, io::service::DATA_KEY);
+    srv->set_inout(image, io::service::READER_DATA_KEY);
 
     srv->configure();
     srv->start();

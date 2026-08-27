@@ -30,7 +30,6 @@
 #include <ui/__/registry.hpp>
 
 #include <QBoxLayout>
-#include <QTabWidget>
 
 namespace sight::module::ui::qt::activity
 {

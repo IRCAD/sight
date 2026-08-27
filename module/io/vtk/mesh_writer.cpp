@@ -138,7 +138,7 @@ void mesh_writer::updating()
             "The object is not a '"
             + data::mesh::classname()
             + "' or '"
-            + sight::io::service::DATA_KEY
+            + sight::io::service::WRITER_DATA_KEY
             + "' is not correctly set.",
             mesh
         );

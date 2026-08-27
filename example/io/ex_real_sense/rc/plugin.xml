@@ -311,19 +311,19 @@
             </service>
 
             <service uid="DMDepthAdp" type="sight::module::viz::scene3d::adaptor::video" auto_connect="true">
-                <in key="image" uid="imageDepth" />
-                <in key="tf" uid="tfDepth" />
+                <data image="${imageDepth}" />
+                <data tf="${tfDepth}" />
             </service>
 
             <service uid="DMPointAdp" type="sight::module::viz::scene3d::adaptor::point_list" auto_connect="true">
-                <in key="mesh" uid="pointcloud" />
+                <data mesh="${pointcloud}" />
                 <config autoresetcamera="false" radius="1" visible="false" />
             </service>
 
             <service uid="DMCameraAdp" type="sight::module::viz::scene3d::adaptor::camera">
-                <inout key="transform" uid="identity" />
+                <data transform="${identity}" />
                 <!-- Projection matrix of Depth/Infrared Sensor -->
-                <in key="calibration" uid="DCamera" />
+                <data calibration="${DCamera}" />
             </service>
 
             <!-- ******************************* Begin Generic scene ******************************* -->
@@ -344,18 +344,18 @@
             </service>
 
             <service uid="VVideoAdp" type="sight::module::viz::scene3d::adaptor::video" auto_connect="true">
-                <in key="image" uid="imageVideo" />
+                <data image="${imageVideo}" />
             </service>
 
             <service uid="VPointAdp" type="sight::module::viz::scene3d::adaptor::point_list" auto_connect="true">
-                <in key="mesh" uid="pointcloud" />
+                <data mesh="${pointcloud}" />
                 <config autoresetcamera="false" radius="1" visible="false" />
             </service>
 
             <service uid="VCameraAdp" type="sight::module::viz::scene3d::adaptor::camera">
-                <inout key="transform" uid="identity" />
+                <data transform="${identity}" />
                 <!-- Projection matrix of Color Sensor -->
-                <in key="calibration" uid="RGBCamera" />
+                <data calibration="${RGBCamera}" />
             </service>
 
             <!-- ******************************* Begin Generic scene ******************************* -->
@@ -372,12 +372,12 @@
             </service>
 
             <service uid="RPointAdp" type="sight::module::viz::scene3d::adaptor::point_list" auto_connect="true">
-                <in key="mesh" uid="pointcloud" />
+                <data mesh="${pointcloud}" />
                 <config autoresetcamera="false" radius="1" />
             </service>
 
             <service uid="RCameraAdp" type="sight::module::viz::scene3d::adaptor::camera">
-                <inout key="transform" uid="3dCameraTrf" />
+                <data transform="${3dCameraTrf}" />
             </service>
 
             <!-- ******************************* Services ***************************************** -->

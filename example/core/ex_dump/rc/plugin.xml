@@ -162,7 +162,7 @@
             <!-- ******************************* Services ***************************************** -->
 
             <service uid="SDBWriterSrv" type="sight::module::ui::io::selector" config="SDBSessionWriterIOSelectorConfig">
-                <inout key="data" uid="seriesSet" />
+                <data write="${seriesSet}" />
             </service>
 
             <service uid="selectorSrv" type="sight::module::ui::qt::series::selector" auto_connect="true">

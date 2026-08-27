@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,11 +38,11 @@ namespace sight::module::io::matrix
  *
  * @code{.xml}
    <service type="sight::module::io::matrix::matrix4writer_service">
-       <in key="data" uid="..." />
+       <data write="..." />
    </service>
    @endcode
  * @subsection Input Input
- * - \b data [sight::data::matrix4]: matrix to save.
+ * - \b data.write [sight::data::matrix4]: matrix to save.
  */
 class matrix4_trf_writer : public sight::io::service::writer
 {

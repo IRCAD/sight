@@ -67,7 +67,7 @@
         </service>
 
         <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::video" auto_connect="true">
-            <in key="image" uid="frame" />
+            <data image="${frame}" />
         </service>
 
         <!-- ************************************* Services ************************************ -->

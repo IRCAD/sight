@@ -172,11 +172,10 @@
             <service uid="organ_manager_act" type="sight::module::ui::action" />
 
             <service uid="organ_manager_cfg" type="sight::app::config_launcher">
-                <properties config="ModelSeriesManagerWindow" start="false" />
-                <inout group="object">
-                    <key name="organ_manager_modelseries" uid="modelSeries" />
-                </inout>
-                <parameter replace="ICON_PATH" by="ex_rgbd_image_masking/app.ico" />
+                <config id="ModelSeriesManagerWindow" start="false" />
+
+                <object name="organ_manager_modelseries" uid="modelSeries" />
+                <param name="ICON_PATH" value="ex_rgbd_image_masking/app.ico" />
             </service>
 
             <service uid="learnBackgroundAct" type="sight::module::ui::action">
@@ -233,21 +232,21 @@
             </service>
 
             <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::video" auto_connect="true">
-                <in key="image" uid="videoImage" />
+                <data image="${videoImage}" />
             </service>
 
             <service uid="foregroundAdp" type="sight::module::viz::scene3d::adaptor::video" auto_connect="true">
-                <in key="image" uid="foregroundMask" />
+                <data image="${foregroundMask}" />
             </service>
 
             <service uid="modelSeriesAdp" type="sight::module::viz::scene3d::adaptor::model_series" auto_connect="true">
-                <in key="model" uid="modelSeries" />
+                <data model="${modelSeries}" />
                 <config autoresetcamera="false" />
             </service>
 
             <service uid="cameraAdp" type="sight::module::viz::scene3d::adaptor::camera" auto_connect="true">
-                <inout key="transform" uid="inverseMat" />
-                <in key="calibration" uid="cameraRGB" />
+                <data transform="${inverseMat}" />
+                <data calibration="${cameraRGB}" />
             </service>
 
             <!-- ******************************* Begin Generic scene ******************************* -->
@@ -265,20 +264,19 @@
             </service>
 
             <service uid="meshOffscreenAdp" type="sight::module::viz::scene3d::adaptor::mesh" auto_connect="true">
-                <in key="mesh" uid="skinMesh" />
+                <data mesh="${skinMesh}" />
                 <config autoresetcamera="false" shading="ambient" />
             </service>
 
             <service uid="cameraOffscreenAdp" type="sight::module::viz::scene3d::adaptor::camera" auto_connect="true">
-                <inout key="transform" uid="inverseMat" />
-                <in key="calibration" uid="cameraRGB" />
+                <data transform="${inverseMat}" />
+                <data calibration="${cameraRGB}" />
             </service>
 
             <!-- ******************************* Services ***************************************** -->
 
             <service uid="meshReaderSrv" type="sight::module::ui::io::selector">
-                <inout key="data" uid="seriesSet" />
-                <type mode="reader" />
+                <data read="${seriesSet}" />
             </service>
             <service uid="extractModelSeriesSrv" type="sight::module::data::get_series">
                 <in key="seriesSet" uid="seriesSet" />
@@ -289,15 +287,13 @@
 
             <!-- Calibration reader (here OpenCV's XML/YAML) -->
             <service uid="calibrationReaderSrv" type="sight::module::io::vision::open_cv_reader">
-                <inout key="data" uid="camera_set" />
+                <data read="${camera_set}" />
             </service>
 
             <!-- Matrix (trf format) reader -->
             <!-- This matrix is used to statically register the model onto the video -->
             <service uid="transformReaderSrv" type="sight::module::ui::io::selector">
-                <inout key="data" uid="matrix" />
-                <!-- mode is optional (by default it is "reader") -->
-                <type mode="reader" />
+                <data read="${matrix}" />
                 <selection mode="include" />
                 <addSelection service="sight::module::io::matrix::Matrix4ReaderService" />
             </service>
@@ -353,11 +349,9 @@
 
             <!-- Use the extrinsic matrix to get back in the RGB space -->
             <service uid="concatenateSrv" type="sight::module::geometry::concatenate_matrices">
-                <in group="matrix">
-                    <key uid="matrix" auto_connect="true" inverse="true" />
-                    <key uid="extrinsic" auto_connect="true" inverse="true" />
-                </in>
-                <inout key="output" uid="inverseMat" />
+                <data input="${matrix}" inverse="true" />
+                <data input="${extrinsic}" inverse="true" />
+                <data output="${inverseMat}" />
             </service>
 
             <!-- To synchronize matrix, frame and detection -->

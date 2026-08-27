@@ -33,6 +33,7 @@
 #include <doctest/doctest.h>
 
 #include <algorithm>
+#include <boost/algorithm/string/join.hpp>
 #include <filesystem>
 #include <string>
 #include <vector>
@@ -53,11 +54,11 @@ static void run_model_series_srv(
 
     if(srv->is_a("sight::io::service::reader"))
     {
-        srv->set_inout(_obj, "data");
+        srv->set_inout(_obj, "data.read");
     }
     else
     {
-        srv->set_input(_obj, "data");
+        srv->set_input(_obj, "data.write");
     }
 
     CHECK_NOTHROW(srv->set_config(_cfg));
@@ -73,7 +74,7 @@ static void run_model_series_srv(
 static boost::property_tree::ptree get_io_cfg_from_folder(const fs::path& _file)
 {
     sight::service::config_t srv_cfg;
-    srv_cfg.add("folder", _file.string());
+    srv_cfg.add("path.<xmlattr>.folder", _file.string());
 
     return srv_cfg;
 }
@@ -83,10 +84,7 @@ static boost::property_tree::ptree get_io_cfg_from_folder(const fs::path& _file)
 static boost::property_tree::ptree get_io_cfg_from_files(const file_container_t& _files)
 {
     sight::service::config_t srv_cfg;
-    for(const auto& file : _files)
-    {
-        srv_cfg.add("file", file);
-    }
+    srv_cfg.add("path.<xmlattr>.file", boost::algorithm::join(_files, ";"));
 
     return srv_cfg;
 }

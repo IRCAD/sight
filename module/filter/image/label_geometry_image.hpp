@@ -43,8 +43,7 @@ namespace sight::module::filter::image
  * @section XML XML Configuration
  * @code{.xml}
        <service uid="..." type="sight::module::filter::image::label_geometry_image">
-           <inout key="image" uid="..."/>
-           <out key="pointList" uid"..."/>
+           <output image="${...}" point_list="${...}" />
            <clusters>
             <cluster>1,2,3</cluster>
             <cluster>20,17,9</cluster>
@@ -57,9 +56,10 @@ namespace sight::module::filter::image
  * - \b image [sight::data::image]: labeled image to which the 'landmark' field will be added.
  *
  * @subsection Out Out
- * - \b pointList [sight::data::point_list]: PointList containing centroid points position. Each Point contains a label
+ * - \b output.point_list [sight::data::point_list]: Point list containing centroid points position. Each Point contains
+ * a label
  * in
- * field. This pointList is optional.
+ * field. This output is optional.
  *
  * @subsection Configuration Configuration
  * - \b clusters: Must contains a group a clusters.
@@ -105,8 +105,8 @@ private:
     std::vector<std::vector<std::size_t> > m_l_point_list_labels;
     std::vector<data::point_list::sptr> m_l_point_list_centroids;
 
-    sight::data::ptr<sight::data::image, sight::data::access::inout> m_image {this, "image"};
-    sight::data::ptr<sight::data::point_list, sight::data::access::out> m_point_list {this, "pointList"};
+    sight::data::ptr<sight::data::image, sight::data::access::inout> m_image {this, "output.image"};
+    sight::data::ptr<sight::data::point_list, sight::data::access::out> m_point_list {this, "output.point_list"};
 };
 
 } // namespace sight::module::filter::image

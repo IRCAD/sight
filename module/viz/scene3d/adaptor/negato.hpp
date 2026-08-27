@@ -192,8 +192,8 @@ protected:
     /// Defines the mask used for picking request.
     std::uint32_t m_query_flags {Ogre::SceneManager::ENTITY_TYPE_MASK};
 
-    sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, "image"};
-    sight::data::ptr<sight::data::transfer_function, sight::data::access::inout> m_tf {this, "tf", true};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, "data.image"};
+    sight::data::ptr<sight::data::transfer_function, sight::data::access::inout> m_tf {this, "data.tf", true};
 //NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 
 private:
@@ -227,13 +227,15 @@ private:
         tf
     };
 
-    sight::data::ptr<sight::data::image, sight::data::access::in> m_mask {this, "mask", true};
-    sight::data::property<sight::data::string> m_classification {this, "classification", std::string("post")};
-    sight::data::property<sight::data::real> m_depth_bias {this, "depth_bias", 0.};
-    sight::data::property<sight::data::boolean> m_rgb_negato {this, "rgb_negato", false};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_mask {this, "data.mask", true};
+    sight::data::ptr<sight::data::string, sight::data::access::in> m_classification {this, "config.classification",
+                                                                                     "post"
+    };
+    sight::data::ptr<sight::data::real, sight::data::access::in> m_depth_bias {this, "config.depth_bias", 0.};
+    sight::data::ptr<sight::data::boolean, sight::data::access::in> m_rgb_negato {this, "config.rgb_negato", false};
 
     /// Sets the order for interactions and display.
-    sight::data::property<sight::data::integer> m_priority {this, "priority", 1};
+    sight::data::ptr<sight::data::integer, sight::data::access::in> m_priority {this, "config.priority", 1};
 };
 
 //------------------------------------------------------------------------------

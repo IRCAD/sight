@@ -1403,7 +1403,7 @@ TEST_SUITE("sight::app::config")
         auto srv2           = std::dynamic_pointer_cast<sight::service::base>(gn_srv2);
         auto adapted_config = srv2->get_config();
 
-        const auto params = adapted_config.equal_range("parameter");
+        const auto params = adapted_config.equal_range("param");
 
         std::vector<sight::service::config_t> params_cfg;
         std::for_each(params.first, params.second, [&params_cfg](const auto& _p){params_cfg.push_back(_p.second);});
@@ -1411,16 +1411,16 @@ TEST_SUITE("sight::app::config")
         CHECK_EQ(static_cast<std::size_t>(4), params_cfg.size());
 
         std::string replace_by;
-        CHECK_EQ(std::string("patient"), params_cfg[0].get<std::string>("<xmlattr>.replace"));
-        CHECK_EQ(std::string("name"), params_cfg[0].get<std::string>("<xmlattr>.by"));
+        CHECK_EQ(std::string("patient"), params_cfg[0].get<std::string>("<xmlattr>.name"));
+        CHECK_EQ(std::string("name"), params_cfg[0].get<std::string>("<xmlattr>.value"));
 
-        replace_by = params_cfg[1].get<std::string>("<xmlattr>.by");
+        replace_by = params_cfg[1].get<std::string>("<xmlattr>.value");
         CHECK_EQ(sight::core::id::join("parameterReplaceTest", i, "Channel No5"), replace_by);
 
-        replace_by = params_cfg[2].get<std::string>("<xmlattr>.by");
+        replace_by = params_cfg[2].get<std::string>("<xmlattr>.value");
         CHECK_EQ(sight::core::id::join("parameterReplaceTest", i, "disneyChannel"), replace_by);
 
-        replace_by = params_cfg[3].get<std::string>("<xmlattr>.by");
+        replace_by = params_cfg[3].get<std::string>("<xmlattr>.value");
         CHECK_EQ(sight::core::id::join("parameterReplaceTest", i, "view1"), replace_by);
 
         // Not really elegant, but we have to "guess" how it is replaced
@@ -1749,13 +1749,13 @@ TEST_SUITE("sight::app::config")
 
             // Groups, indexed by the rank of the repeated <tracker> tag
             REQUIRE_EQ(std::size_t(2), srv->m_tracker_ip.size());
-            CHECK_EQ(std::string("127.0.0.1"), srv->m_tracker_ip[0].const_lock()->value());
-            CHECK_EQ(std::string("192.168.0.1"), srv->m_tracker_ip[1].const_lock()->value());
+            CHECK_EQ(std::string("127.0.0.1"), *srv->m_tracker_ip[0]);
+            CHECK_EQ(std::string("192.168.0.1"), *srv->m_tracker_ip[1]);
 
             REQUIRE_EQ(std::size_t(2), srv->m_tracker_port.size());
-            CHECK_EQ(std::int64_t(3000), srv->m_tracker_port[0].const_lock()->value());
+            CHECK_EQ(std::int64_t(3000), *srv->m_tracker_port[0]);
             // The second port is an object uid, not a literal value
-            CHECK_EQ(std::int64_t(4242), srv->m_tracker_port[1].const_lock()->value());
+            CHECK_EQ(std::int64_t(4242), *srv->m_tracker_port[1]);
         }
 
         // Keys omitted in the configuration fall back on the default value declared with the pointer
@@ -1795,10 +1795,24 @@ TEST_SUITE("sight::app::config")
         );
         REQUIRE(group_srv != nullptr);
         CHECK(group_srv->started());
-        CHECK_EQ(std::string("127.0.0.1"), group_srv->m_tracker_ip[1].const_lock()->value());
+        CHECK_EQ(std::string("127.0.0.1"), *group_srv->m_tracker_ip[1]);
 
         // Without it, the service waits for the deferred object
         CHECK(sight::core::id::get_object("nested_group_deferred_srv") == nullptr);
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE_FIXTURE(fixture, "nested_key_collision_test")
+    {
+        CHECK_THROWS(sight::app::ut::launch_app_config_mgr("nested_key_collision_test"));
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE_FIXTURE(fixture, "nested_key_value_collision_test")
+    {
+        CHECK_THROWS(sight::app::ut::launch_app_config_mgr("nested_key_value_collision_test"));
     }
 
 //------------------------------------------------------------------------------
@@ -1832,6 +1846,10 @@ TEST_SUITE("sight::app::config")
         auto config = srv1->get_config();
         CHECK_EQ(std::string("value1"), config.get<std::string>("param1"));
         CHECK_EQ(std::string("value2"), config.get<std::string>("param2"));
+        CHECK_EQ(std::string("config"), config.get<std::string>("settings.fromConfig"));
+        CHECK_EQ(std::string("service"), config.get<std::string>("settings.fromService"));
+        CHECK_EQ(std::string("config"), config.get<std::string>("settings.nested.fromConfig"));
+        CHECK_EQ(std::string("service"), config.get<std::string>("settings.nested.fromService"));
     }
 
 //------------------------------------------------------------------------------

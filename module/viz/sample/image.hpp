@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,11 +36,11 @@ namespace sight::module::viz::sample
  * @section XML XML Configuration
  * @code{.xml}
    <service uid="..." type="sight::module::viz::sample::image" >
-      <in key="image" uid="..."/>
+        <data image="${image}"/>
    </service>
  *
  * @subsection Input Input
- * - \b image [sight::data::image]: image to display.
+ * - \b data.image [sight::data::image]: image to display.
  */
 class image : public sight::ui::service
 {
@@ -83,7 +83,7 @@ private:
     /// Default transfer function
     data::transfer_function::sptr m_tf;
 
-    data::ptr<data::image, data::access::in> m_image {this, "image"};
+    data::ptr<data::image, data::access::in> m_image {this, "data.image"};
 };
 
 } // namespace sight::module::viz::sample.

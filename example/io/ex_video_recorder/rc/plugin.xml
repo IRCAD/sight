@@ -66,18 +66,16 @@
             </service>
 
             <service uid="videoToolbarConfig" type="sight::app::config_launcher">
-                <properties config="sight::config::io::video::controls" />
-                <inout group="object">
-                    <key name="camera" uid="camera" />
-                    <key name="frameTL" uid="frameTL" />
-                </inout>
-                <parameter replace="TOOLBAR" by="subToolbarView" />
-                <parameter replace="addROICenterChannelIn" by="addROICenterChannelIn" />
-                <parameter replace="removeROICenterChannelIn" by="removeROICenterChannelIn" />
-                <parameter replace="cameraStartedChannelOut" by="camera_started_channel" />
-                <parameter replace="cameraPausedChannelOut" by="camera_paused_channel" />
-                <parameter replace="cameraResumePauseChannelOut" by="camera_resume_pause_channel" />
-                <parameter replace="cameraStoppedChannelOut" by="camera_stopped_channel" />
+                <config id="sight::config::io::video::controls" />
+                <object name="camera" uid="camera" />
+                <object name="frameTL" uid="frameTL" />
+                <param name="TOOLBAR" value="subToolbarView" />
+                <param name="addROICenterChannelIn" value="addROICenterChannelIn" />
+                <param name="removeROICenterChannelIn" value="removeROICenterChannelIn" />
+                <param name="cameraStartedChannelOut" value="camera_started_channel" />
+                <param name="cameraPausedChannelOut" value="camera_paused_channel" />
+                <param name="cameraResumePauseChannelOut" value="camera_resume_pause_channel" />
+                <param name="cameraStoppedChannelOut" value="camera_stopped_channel" />
             </service>
 
             <!-- ************************************* Action ************************************ -->
@@ -108,7 +106,7 @@
             </service>
 
             <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::video" auto_connect="true">
-                <in key="image" uid="videoImage" />
+                <data image="${videoImage}" />
             </service>
 
             <service uid="imagePickerSrv" type="sight::module::ui::video::image_picker">
@@ -127,15 +125,15 @@
             </service>
 
             <service uid="frameWriterSrv" type="sight::module::io::video::frame_writer" worker="frameRecordingActWorker">
-                <in key="data" uid="frameTL" auto_connect="true" />
+                <data write="${frameTL}" />
                 <format>.tiff</format>
-                <baseFolder>%BASE_FOLDER%</baseFolder>
+                <path base_folder="%BASE_FOLDER%" />
             </service>
 
             <service uid="videoWriterSrv" type="sight::module::io::video::video_writer" worker="videoRecordingActWorker">
-                <in key="data" uid="frameTL" auto_connect="true" />
-                <baseFolder>%BASE_FOLDER%</baseFolder>
-                <file>video.mp4</file>
+                <data write="${frameTL}" />
+                <path base_folder="%BASE_FOLDER%" />
+                <path file="video.mp4" />
             </service>
 
             <service uid="frameUpdaterSrv" type="sight::module::sync::synchronizer" worker="videoWorker">

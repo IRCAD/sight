@@ -88,8 +88,8 @@ TEST_SUITE("sight::module::filter::image::image_center")
         CHECK(srv);
 
         srv->set_worker(sight::core::thread::get_default_worker());
-        srv->set_input(image, "image");
-        srv->set_inout(transform, "transform");
+        srv->set_input(image, "input.image");
+        srv->set_inout(transform, "output.transform");
         srv->configure();
         srv->start().get();
         srv->update().get();

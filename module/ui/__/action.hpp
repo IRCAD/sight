@@ -42,7 +42,7 @@ namespace sight::module::ui
  * Example of configuration
  * @code{.xml}
     <service uid="..." type="sight::module::ui::action" >
-        <properties checked="false" enabled="false" inverse="true" visible="true" />
+        <state checked="false" enabled="false" inverse="true" visible="true" />
         <sync>true</sync>
         <confirmation message="..." />
         <!-- will send parameterChanged("left", "position") when checked and parameterChanged("center", "position") when

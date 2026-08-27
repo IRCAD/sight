@@ -42,11 +42,11 @@ namespace sight::module::io::video
  *
  * @code{.xml}
    <service type="sight::module::io::video::video_writer">
-       <in key="data" uid="..." />
+       <data write="..." />
    </service>
    @endcode
  * @subsection Input Input
- * - \b data [sight::data::frame_tl]: timeline containing the frame to save.
+ * - \b data.write [sight::data::frame_tl]: timeline containing the frame to save.
  */
 class video_writer : public sight::io::service::writer
 {

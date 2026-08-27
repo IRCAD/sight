@@ -120,7 +120,7 @@ void image_series_writer::updating()
             "The object is not a '"
             + data::image_series::classname()
             + "' or '"
-            + sight::io::service::DATA_KEY
+            + sight::io::service::WRITER_DATA_KEY
             + "' is not correctly set.",
             image_series
         );

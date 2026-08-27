@@ -48,28 +48,25 @@ namespace sight::module::ui::qt::image
  * @section XML XML Configuration
  * @code{.xml}
    <service type="sight::module::ui::qt::image::transfer_function">
-       <in key="image" uid="..." />
-       <inout key="presets" uid="..." />
-       <inout key="tf" uid="..." />
+       <data image="${...}" />
+       <data presets="${...}" />
+       <data tf="${...}" />
        <config useDefaultPath="true" >
            <path>....</path>
            <path>....</path>
            <path>....</path>
        </config>
-       <properties editable="true" />
+       <config editable="true" />
    </service>
    @endcode
  *
  *
- * @subsection Input Input
- * - \b image [sight::data::image](optional): reference image that can be used to generate the default transfer
- * function.
- *
- * @subsection In-Out In-Out
- * - \b current [sight::data::transfer_function]: current transfer function used to change editor
+ * @subsection Data Data
+ * - \b data.tf [sight::data::transfer_function]: current transfer function used to change editor
  * selection. It should be the same as the output.
- * - \b presets [sight::data::map](optional): map of sight::data::transfer_function that should be used as
+ * - \b data.presets [sight::data::map](optional): map of sight::data::transfer_function that should be used as
  * presets, instead of loading it from the specified path(s).
+ * - \b data.image [sight::data::image](optional): reference image used to generate the default transfer function.
  *
  * @subsection Configuration Configuration
  * - \b useDefaultPath (optional, default="true"): if true, load tf files from uiTF module.
@@ -252,14 +249,14 @@ private:
     /// Working copy of the TF presets, can be internal or use the optional "presets" input
     data::map::sptr m_tf_presets;
 
-    static constexpr std::string_view CURRENT_INPUT = "tf";
-    static constexpr std::string_view IMAGE_INPUT   = "image";
-    static constexpr std::string_view PRESETS_INOUT = "presets";
+    static constexpr std::string_view CURRENT_INPUT = "data.tf";
+    static constexpr std::string_view IMAGE_INPUT   = "data.image";
+    static constexpr std::string_view PRESETS_INOUT = "data.presets";
     data::ptr<data::transfer_function, data::access::inout> m_current_tf {this, CURRENT_INPUT};
     data::ptr<data::map, data::access::inout> m_opt_presets {this, PRESETS_INOUT, true};
     data::ptr<data::image, data::access::in> m_image {this, IMAGE_INPUT, true};
 
-    data::property<data::boolean> m_editable {this, "editable", true};
+    data::ptr<data::boolean, data::access::in> m_editable {this, "config.editable", true};
 };
 
 } // namespace sight::module::ui::qt::image.

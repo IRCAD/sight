@@ -96,7 +96,7 @@ void export_with_series_set::updating()
     // Init and execute the service
     service::base::sptr io_selector_srv;
     io_selector_srv = service::add("sight::module::ui::io::selector");
-    io_selector_srv->set_inout(local_series_set, io::service::DATA_KEY);
+    io_selector_srv->set_inout(local_series_set, io::service::READER_DATA_KEY);
 
     io_selector_srv->set_worker(this->worker());
 

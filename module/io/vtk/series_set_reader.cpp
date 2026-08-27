@@ -176,7 +176,7 @@ void series_set_reader::updating()
             "The object is not a '"
             + data::series_set::classname()
             + "' or '"
-            + sight::io::service::DATA_KEY
+            + sight::io::service::READER_DATA_KEY
             + "' is not correctly set.",
             series_set
         );

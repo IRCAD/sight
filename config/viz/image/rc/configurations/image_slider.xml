@@ -2,18 +2,16 @@
 Example:
 
 <service uid="..." type="sight::app::config_launcher">
-    <properties config="sight::config::viz::image::imageSlider2D" />
-    <inout group="object">
-        <key name="image" uid="${image}" />
-        <key name="transferFunction" uid="${transferFunction}" />
-    </inout>
-    <parameter replace="WID_PARENT" by="negatoslider_view" />
-    <parameter replace="sliceIndex" by="axial" />
-    <parameter replace="enableSliceType" by="true" />
+    <config id="sight::config::viz::image::image_slider" />
+    <object name="image" uid="${image}" />
+    <object name="transferFunction" uid="${transferFunction}" />
+    <param name="WID_PARENT" value="negato_slider_view" />
+    <param name="sliceIndex" value="axial" />
+    <param name="enableSliceType" value="true" />
 </service>
 -->
 <extension implements="sight::app::extension::config">
-    <id>sight::config::viz::image::imageSlider</id>
+    <id>sight::config::viz::image::image_slider</id>
     <parameters>
         <object uid="image" type="sight::data::image_series" />
         <object uid="transferFunction" type="sight::data::transfer_function" />
@@ -102,9 +100,8 @@ Example:
         <!-- ************************************* Services *********************************** -->
 
         <service uid="negato_slicer_srv" type="sight::module::ui::qt::image::slice_index_position_editor">
-            <inout key="image" uid="${image}" />
-            <config orientation="${sliceIndex}" label="index" display_axis_selector="true" display_step_buttons="true" />
-            <properties start="${enableSliceSlider}" />
+            <data image="${image}" />
+            <config orientation="${sliceIndex}" label="index" display_axis_selector="true" display_step_buttons="true" start="${enableSliceSlider}" />
         </service>
 
         <service uid="window_level_image" type="sight::module::ui::qt::image::window_level">

@@ -91,7 +91,7 @@ void mesh::starting()
     mesh_cfg.put("config.<xmlattr>.autoresetcamera", true);
     m_mesh_srv = sight::service::add("sight::module::viz::scene3d::adaptor::mesh");
     m_mesh_srv->set_config(mesh_cfg);
-    m_mesh_srv->set_input(std::const_pointer_cast<data::object>(mesh->get_const_sptr()), "mesh", true);
+    m_mesh_srv->set_input(std::const_pointer_cast<data::object>(mesh->get_const_sptr()), "data.mesh", true);
     m_mesh_srv->set_id(this->get_id() + "meshAdaptor");
     m_mesh_srv->configure();
 
@@ -104,8 +104,8 @@ void mesh::starting()
     );
 
     m_camera_srv = sight::service::add("sight::module::viz::scene3d::adaptor::camera");
-    m_camera_srv->set_input(m_camera_transform->get_sptr(), "transform_in", true);
-    m_camera_srv->set_inout(m_camera_transform->get_sptr(), "transform_out", true);
+    m_camera_srv->set_input(m_camera_transform->get_sptr(), "data.transform_in", true);
+    m_camera_srv->set_inout(m_camera_transform->get_sptr(), "data.transform_out", true);
     m_camera_srv->set_id(this->get_id() + "cameraAdaptor");
     m_camera_srv->configure();
 

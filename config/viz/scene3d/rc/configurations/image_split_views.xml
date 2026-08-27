@@ -85,17 +85,15 @@
         <!-- ******************************* Begin 3D scene ******************************* -->
 
         <service uid="main_scene_cfg" type="sight::app::config_launcher">
-            <properties config="sight::config::viz::scene3d::volumeRendering" />
-            <inout group="object">
-                <key name="model_series" uid="${model_series}" optional="true" />
-                <key name="image" uid="${image}" optional="true" />
-                <key name="volume_tf" uid="${volume_tf}" />
-                <key name="extruded_model_series" uid="${extruded_model_series}" />
-                <key name="vr_visibility" uid="${vr_visibility}" />
-                <key name="negato_visibility" uid="${negato_visibility}" />
-                <key name="model_visibility" uid="${model_visibility}" />
-                <key name="axis_visibility" uid="${axis_visibility}" />
-            </inout>
+            <config id="sight::config::viz::scene3d::volumeRendering" />
+            <object name="model_series" uid="${model_series}" optional="true" />
+            <object name="image" uid="${image}" optional="true" />
+            <object name="volume_tf" uid="${volume_tf}" />
+            <object name="extruded_model_series" uid="${extruded_model_series}" />
+            <object name="vr_visibility" uid="${vr_visibility}" />
+            <object name="negato_visibility" uid="${negato_visibility}" />
+            <object name="model_visibility" uid="${model_visibility}" />
+            <object name="axis_visibility" uid="${axis_visibility}" />
             <param name="WID_PARENT" value="main_scene_view" />
             <param name="maximized" value="true" />
             <param name="restored" value="false" />
@@ -127,12 +125,10 @@
         <!-- ************************************* 2D Negato views ************************************ -->
 
         <service uid="axial_negato_cfg" type="sight::app::config_launcher">
-            <properties config="sight::config::viz::scene3d::negato2d" />
-            <inout group="object">
-                <key name="image" uid="${image}" optional="true" />
-                <key name="transfer_function" uid="${volume_tf}" />
-                <key name="fiducial_size" uid="${fiducial_size}" />
-            </inout>
+            <config id="sight::config::viz::scene3d::negato2d" />
+            <object name="image" uid="${image}" optional="true" />
+            <object name="transfer_function" uid="${volume_tf}" />
+            <object name="fiducial_size" uid="${fiducial_size}" />
             <param name="WID_PARENT" value="axial_scene_view" />
             <param name="slice_index" value="axial" />
             <channel name="world_coords_landmarks" uid="world_coords_landmarks" />
@@ -147,12 +143,10 @@
         </service>
 
         <service uid="sagittal_negato_cfg" type="sight::app::config_launcher">
-            <properties config="sight::config::viz::scene3d::negato2d" />
-            <inout group="object">
-                <key name="image" uid="${image}" optional="true" />
-                <key name="transfer_function" uid="${volume_tf}" />
-                <key name="fiducial_size" uid="${fiducial_size}" />
-            </inout>
+            <config id="sight::config::viz::scene3d::negato2d" />
+            <object name="image" uid="${image}" optional="true" />
+            <object name="transfer_function" uid="${volume_tf}" />
+            <object name="fiducial_size" uid="${fiducial_size}" />
             <param name="WID_PARENT" value="sagittal_scene_view" />
             <param name="slice_index" value="sagittal" />
             <channel name="world_coords_landmarks" uid="world_coords_landmarks" />
@@ -167,12 +161,10 @@
         </service>
 
         <service uid="frontal_negato_cfg" type="sight::app::config_launcher">
-            <properties config="sight::config::viz::scene3d::negato2d" />
-            <inout group="object">
-                <key name="image" uid="${image}" optional="true" />
-                <key name="transfer_function" uid="${volume_tf}" />
-                <key name="fiducial_size" uid="${fiducial_size}" />
-            </inout>
+            <config id="sight::config::viz::scene3d::negato2d" />
+            <object name="image" uid="${image}" optional="true" />
+            <object name="transfer_function" uid="${volume_tf}" />
+            <object name="fiducial_size" uid="${fiducial_size}" />
             <param name="WID_PARENT" value="frontal_scene_view" />
             <param name="slice_index" value="frontal" />
             <channel name="world_coords_landmarks" uid="world_coords_landmarks" />

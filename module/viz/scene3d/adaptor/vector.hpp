@@ -53,18 +53,17 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::adaptor::vector">
-        <config transform="..." />
-        <properties transform="..." length="30" color="#FFFFFF" visible="true"/>
+        <config transform="..." transform="..." length="30" color="#FFFFFF" visible="true" />
     </service>
    @endcode
  *
  * @subsection Configuration Configuration:
  * - \b transform (optional, string, default=""): the name of the Ogre transform node where to attach the mesh, as it
  *      was specified in the transform adaptor.
- * @subsection Properties Properties:
- * - \b length (optional, float, default=1.): axis length in mm.
- * - \b color (optional, hexadecimal, default=#FFFFFF): color of the vector.
- * - \b visible (optional, bool, default=true): visibility of the vector.
+ * @subsection Input Input:
+ * - \b config.length [sight::data::real] (optional, default=1.): axis length in mm.
+ * - \b config.color [sight::data::color] (optional, default=#FFFFFF): color of the vector.
+ * - \b config.visible [sight::data::boolean] (optional, default=true): visibility of the vector.
  */
 class vector final :
     public sight::viz::scene3d::adaptor,
@@ -124,8 +123,8 @@ private:
     /// Contains the material used to draw the vector.
     sight::viz::scene3d::material::standard::uptr m_material;
 
-    sight::data::property<sight::data::real> m_length {this, "length", 1.0};
-    sight::data::property<sight::data::color> m_color {this, "color", {1.0, 1.0, 1.0, 1.0}};
+    sight::data::ptr<sight::data::real, sight::data::access::in> m_length {this, "config.length", 1.0};
+    sight::data::ptr<sight::data::color, sight::data::access::in> m_color {this, "config.color", {1.0, 1.0, 1.0, 1.0}};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

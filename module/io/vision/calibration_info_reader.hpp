@@ -39,13 +39,13 @@ namespace sight::module::io::vision
  *
  * @code{.xml}
    <service uid="..." type="sight::module::io::vision::calibration_info_reader">
-        <inout key="data" uid="..." />
+        <data read="..." />
         <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" scale="CHESSBOARD_SCALE" />
    </service>
    @endcode
  *
  * @subsection InOut InOut
- * - \b data [sight::data::calibration_info]: structure to which the loaded data is appended
+ * - \b data.read [sight::data::calibration_info]: structure to which the loaded data is appended
  * @subsection Configuration Configuration:
  * - \b board : preference keys to retrieve the number of squares of the board in width and height as well
  *              as the (optional) scaling factor to be applied to the input image.
@@ -85,13 +85,13 @@ protected:
 private:
 
     /// Width of the chessboard we're looking for.
-    sight::data::property<sight::data::integer> m_width {this, "board_width", 11};
+    sight::data::ptr<sight::data::integer, sight::data::access::inout> m_width {this, "board.width", 11};
 
     /// Height of the chessboard we're looking for.
-    sight::data::property<sight::data::integer> m_height {this, "board_height", 8};
+    sight::data::ptr<sight::data::integer, sight::data::access::inout> m_height {this, "board.height", 8};
 
     /// Scale applied to the images before running the detection algorithm.
-    sight::data::property<sight::data::real> m_scale {this, "board_scale", 1.};
+    sight::data::ptr<sight::data::real, sight::data::access::inout> m_scale {this, "board.scale", 1.};
 };
 
 } // namespace sight::module::io::vision

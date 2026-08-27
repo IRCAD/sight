@@ -41,20 +41,16 @@ namespace sight::module::geometry
  *
  * @code{.xml}
         <service uid="..." type="sight::module::geometry::concatenate_matrices">
-            <in group="matrix">
-                <key uid="..." />
-                <key uid="..." inverse="true"/>
-                <key uid="..." auto_connect="true"/>
-            </in>
-            <inout key="output" uid="..." />
+            <data input="${...}" inverse="true" />
+            <data output="${...}" />
        </service>
    @endcode
  * @subsection Input Input:
- * - \b matrix [sight::data::matrix4]: List of matrix keys to concatenate. For each input matrix, it is
+ * - \b data.input [sight::data::matrix4]: Matrix to concatenate. For each input matrix, it is
  * possible to invert it before multiplying with it by specifying \b inverse="true".
- * The auto_connect is connected to the update slot, thus is will trigger a new concatenation.
+ * The auto_connect is connected to the update slot, thus it will trigger a new concatenation.
  * @subsection In-Out In-Out:
- * - \b output [sight::data::matrix4]: Output matrix.
+ * - \b data.output [sight::data::matrix4]: Output matrix.
  */
 
 class concatenate_matrices : public service::controller
@@ -95,10 +91,10 @@ private:
     /// Vector to specify if matrix must be inverted.
     invert_vector_t m_invert_vector;
 
-    static constexpr std::string_view MATRIX_GROUP_INPUT = "matrix";
-    data::ptr_vector<data::matrix4, sight::data::access::in> m_matrices {this, MATRIX_GROUP_INPUT};
+    static constexpr std::string_view MATRIX_INPUT = "data.input";
+    data::ptr_vector<data::matrix4, sight::data::access::in> m_matrices {this, MATRIX_INPUT};
 
-    static constexpr std::string_view OUTPUT = "output";
+    static constexpr std::string_view OUTPUT = "data.output";
     data::ptr<data::matrix4, sight::data::access::inout> m_output {this, OUTPUT};
 };
 

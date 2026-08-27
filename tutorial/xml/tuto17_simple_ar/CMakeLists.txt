@@ -12,24 +12,22 @@ file(DOWNLOAD https://cloud.ircad.fr/s/74XGSb523SSa6fD/download "${MODULE_PATH}/
 
 add_dependencies(
     tuto17_simple_ar
-    sightrun
+    data
     module_app
-    module_ui
+    module_data
+    module_geometry
+    module_geometry_vision # Contains geometrical functions dedicated to computer vision
+    module_io_matrix
+    module_io_video # Provides the video grabber and video writer functionalities
+    module_io_vision # Contains input/output functions dedicated to computer vision
+    module_io_vtk
+    module_service
+    module_sync # Provides the synchronization between the video and the tracking data
+    module_ui_icons
     module_ui_qt
     module_viz_scene3d
     module_viz_scene3d_qt
-    data
-    module_service
-    module_ui
-    module_ui_icons
-    module_io_matrix
-    module_io_vtk
-    module_io_video
-    module_io_vision
-    module_data
-    module_sync
-    module_geometry
-    module_geometry_vision
+    sightrun
 )
 
 # Main application's configuration to launch

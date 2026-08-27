@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2025 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,18 +21,12 @@
 
 #include "export_set_test.hpp"
 
-#include <core/runtime/runtime.hpp>
-
 #include <data/set.hpp>
 #include <data/string.hpp>
 
 #include <service/op.hpp>
 
 #include <ui/test/dialog/input.hpp>
-
-#include <utest/wait.hpp>
-
-#include <boost/dll.hpp>
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::ui::ut::export_set_test);
 
@@ -65,8 +59,8 @@ void export_set_test::basic_test()
 {
     data::string::sptr hello_world = std::make_shared<data::string>("Hello world!");
     data::set::sptr set            = std::make_shared<data::set>();
-    m_export_set->set_inout(hello_world, "data");
-    m_export_set->set_inout(set, "container");
+    m_export_set->set_inout(hello_world, "data.element");
+    m_export_set->set_inout(set, "data.container");
     CPPUNIT_ASSERT(set->empty());
     CPPUNIT_ASSERT_NO_THROW(m_export_set->configure());
     CPPUNIT_ASSERT_NO_THROW(m_export_set->start().get());

@@ -107,9 +107,9 @@
             <service uid="create_mesh_act" type="sight::module::ui::action" />
 
             <service uid="mesher_srv" type="sight::module::filter::mesh::vtk_mesher">
-                <in key="image_series" uid="image_series" />
-                <inout key="model_series" uid="my_model_series" />
-                <properties percent_reduction="0" value="255" />
+                <data input_image="${image_series}" output_model="${my_model_series}" />
+                <label value="255" />
+                <decimation reduction="0" />
             </service>
 
             <!-- ******************************* Services ***************************************** -->
@@ -124,17 +124,15 @@
                 Visualization, reading and writing service creation.
             -->
             <service uid="image_srv" type="sight::module::viz::sample::image">
-                <in key="image" uid="image_series" />
+                <data image="${image_series}" />
             </service>
 
             <service uid="image_reader_srv" type="sight::module::ui::io::selector">
-                <inout key="data" uid="image_series" />
-                <type mode="reader" />
+                <data read="${image_series}" />
             </service>
 
             <service uid="image_writer_srv" type="sight::module::ui::io::selector">
-                <inout key="data" uid="image_series" />
-                <type mode="writer" />
+                <data write="${image_series}" />
             </service>
 
             <!--
@@ -142,12 +140,11 @@
                 Visualization, reading and writing service creation.
             -->
             <service uid="mesh_render_srv" type="sight::module::viz::sample::mesh">
-                <in key="mesh" uid="my_mesh" />
+                <data mesh="${my_mesh}" />
             </service>
 
             <service uid="mesh_writer_srv" type="sight::module::ui::io::selector">
-                <inout key="data" uid="my_mesh" />
-                <type mode="writer" />
+                <data write="${my_mesh}" />
             </service>
 
             <!-- Extract mesh from ModelSeries-->

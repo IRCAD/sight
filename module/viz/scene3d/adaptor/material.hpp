@@ -27,6 +27,7 @@
 #include <data/image.hpp>
 #include <data/material.hpp>
 #include <data/mesh.hpp>
+#include <data/string.hpp>
 
 #include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/material/generic.hpp>
@@ -58,19 +59,19 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::adaptor::material">
-        <inout key="material" uid="..." />
-        <inout group="uniforms">
-            <key uid="..." name="u_uniform_name" />
-       </inout>
+        <data material="${...}" />
+            <uniform object="${...}" name="..." />
         <config material_template="materialTemplateName" material_name="meshMaterial" texture_name="texName"
                 shading_mode="phong" normalLength="0.1" representation_mode="SURFACE" />
     </service>
    @endcode
  *
- * @subsection In-Out In-Out
- * - \b material [sight::data::material]: adapted material. The material may be modified to comply to the configuration
+ * @subsection Input Input
+ * - \b data.material [sight::data::material]: adapted material. The material may be modified to comply to the
+ * configuration
  *      of the adaptor.
- * - \b uniforms: list of data to bind to material uniforms.
+ * - \b uniform.object [sight::data::object]: data to bind to a material uniform.
+ * - \b uniform.name [sight::data::string]: name of the material uniform associated with the object.
  *
  * @subsection Configuration Configuration:
  * - \b material_template (optional, string, default=""): name of the base Ogre material/
@@ -245,7 +246,8 @@ private:
     sight::data::material::sptr m_internal_material;
 
     data::ptr<data::material, data::access::inout> m_material_data {this, MATERIAL_INOUT, true};
-    data::ptr_vector<data::object, data::access::inout> m_uniforms {this, "uniforms", true};
+    data::ptr_vector<data::object, data::access::inout> m_uniform_objects {this, "uniform.object", true};
+    data::ptr_vector<data::string, data::access::in> m_uniform_names {this, "uniform.name", true};
 };
 
 //------------------------------------------------------------------------------

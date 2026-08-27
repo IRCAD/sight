@@ -54,13 +54,13 @@ namespace sight::module::io::vtk
  *
  * @code{.xml}
    <service type="sight::module::io::vtk::model_series_writer">
-       <in key="data" uid="..." />
-       <folder>...</folder>
+       <data write="..." />
+       <path folder="..." />
        <extension>vtk</extension>
    </service>
    @endcode
  * @subsection Input Input
- * - \b data [sight::data::model_series]: model to save.
+ * - \b data.write [sight::data::model_series]: model to save.
  * @subsection Configuration Configuration
  * - \b folder (optional): path of the folder, if it is not defined, 'open_location_dialog()' should be called to define
  * the path.

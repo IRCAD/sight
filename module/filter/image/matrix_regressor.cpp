@@ -58,7 +58,7 @@ void matrix_regressor::updating()
 
     const auto optimal_matrix = m_optimal_matrix.lock();
 
-    SIGHT_ASSERT("'optimalMatrix' does not exist", optimal_matrix);
+    SIGHT_ASSERT("'output.optimal_matrix' does not exist", optimal_matrix);
 
     std::vector<sight::filter::image::matrix_regressor::point_t> pt_list;
 

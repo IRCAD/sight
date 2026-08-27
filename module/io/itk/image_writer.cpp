@@ -188,7 +188,7 @@ void image_writer::updating()
     {
         const auto data  = m_data.lock();
         const auto image = std::dynamic_pointer_cast<const data::image>(data.get_shared());
-        SIGHT_ASSERT("The input key '" + sight::io::service::DATA_KEY + "' is not correctly set.", image);
+        SIGHT_ASSERT("The input key '" + sight::io::service::WRITER_DATA_KEY + "' is not correctly set.", image);
 
         sight::ui::cursor cursor;
         cursor.set_cursor(ui::cursor_base::busy);

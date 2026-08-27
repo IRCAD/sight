@@ -14,7 +14,7 @@ This example shows some possibilities of material configuration in the 3D scene:
         <id>vtk_srv_cfg</id>
         <desc>VTK</desc>
         <config>
-            <windowTitle>Open VTK file</windowTitle>
+            <config window_title="Open VTK file" />
         </config>
     </extension>
 
@@ -109,15 +109,13 @@ This example shows some possibilities of material configuration in the 3D scene:
             </service>
 
             <service uid="model_series_adp" type="sight::module::viz::scene3d::adaptor::model_series">
-                <in key="model" uid="model_series" />
-                <inout group="uniforms">
-                    <key uid="ghost_material_param" name="u_rim_params" />
-                </inout>
+                <data model="${model_series}" />
+                <uniform object="${ghost_material_param}" name="u_rim_params" />
                 <config material_template="Ghost" />
             </service>
 
             <service uid="snapshot_adp" type="sight::module::viz::scene3d::adaptor::fragments_info">
-                <inout key="image" uid="snapshot" />
+                <data image="${snapshot}" />
             </service>
 
             <!-- ******************************* Actions ****************************************** -->
@@ -130,14 +128,13 @@ This example shows some possibilities of material configuration in the 3D scene:
 
             <!-- model_series reader -->
             <service uid="model_series_reader_srv" type="sight::module::ui::io::selector">
-                <inout key="data" uid="model_series" />
-                <type mode="reader" />
+                <data read="${model_series}" />
                 <config id="vtk_srv_cfg" service="sight::module::io::vtk::model_series_reader" />
             </service>
 
             <!-- Write the snapshot image -->
             <service uid="image_writer_srv" type="sight::module::io::bitmap::writer">
-                <in key="data" uid="snapshot" />
+                <data write="${snapshot}" />
                 <dialog policy="always" />
                 <backends enable="all" mode="best" />
             </service>

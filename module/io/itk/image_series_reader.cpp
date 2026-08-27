@@ -30,6 +30,8 @@
 #include <core/tools/os.hpp>
 #include <core/tools/uuid.hpp>
 
+#include <data/image_series.hpp>
+
 #include <io/__/service/io_types.hpp>
 #include <io/__/service/reader.hpp>
 
@@ -145,7 +147,7 @@ void image_series_reader::updating()
             "The object is not a '"
             + data::image_series::classname()
             + "' or '"
-            + sight::io::service::DATA_KEY
+            + sight::io::service::READER_DATA_KEY
             + "' is not correctly set.",
             image_series
         );

@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include <sight/io/__/config.hpp>
-
 #include <filesystem>
 #include <string>
 #include <vector>
@@ -43,13 +41,17 @@ enum path_type_t : std::uint8_t
 /// List of paths managed by io services
 using locations_t = std::vector<std::filesystem::path>;
 
-inline static const std::string DATA_KEY             = "data";
-inline static const std::string OLD_FILE_KEY         = "file";
-inline static const std::string FILES_KEY            = "files";
-inline static const std::string FOLDER_KEY           = "folder";
-inline static const std::string OLD_RESOURCE_KEY     = "resource";
-inline static const std::string RESOURCES_KEY        = "resources";
-inline static const std::string WINDOW_TITLE_KEY     = "window_title";
-inline static const std::string OLD_WINDOW_TITLE_KEY = "windowTitle";
+inline static const std::string DATA_KEY            = "data";
+inline static const std::string FOLDER_KEY          = "path.folder";
+inline static const std::string FILE_KEY            = "path.file";
+inline static const std::string READER_RESOURCE_KEY = "path.resource";
+inline static const std::string WINDOW_TITLE_KEY    = "config.window_title";
+
+// Hierarchical keys used by sight::io::service::reader.
+inline static const std::string READER_DATA_KEY = "data.read";
+
+// Hierarchical keys used by sight::io::service::writer.
+inline static const std::string WRITER_DATA_KEY        = "data.write";
+inline static const std::string WRITER_BASE_FOLDER_KEY = "path.<xmlattr>.base_folder";
 
 } // namespace sight::io::service

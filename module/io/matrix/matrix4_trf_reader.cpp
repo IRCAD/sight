@@ -130,7 +130,7 @@ void matrix4_trf_reader::updating()
             "The object is not a '"
             + data::matrix4::classname()
             + "' or '"
-            + sight::io::service::DATA_KEY
+            + sight::io::service::READER_DATA_KEY
             + "' is not correctly set.",
             matrix
         );

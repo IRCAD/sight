@@ -52,7 +52,7 @@ namespace sight::module::io::session
  * @section XML XML Configuration
  * @code{.xml}
     <service type="sight::module::io::session::writer">
-        <in key="data" uid="..." />
+        <data write="..." />
         <dialog extension=".sample" description="Sample Sight session file" policy="once"/>
         <password policy="global", encryption=salted/>
         <archive format="optimized"/>
@@ -60,7 +60,7 @@ namespace sight::module::io::session
    @endcode
  *
  * @subsection Input Input
- * - \b data [sight::data::object]: object to write.
+ * - \b data.write [sight::data::object]: object to write.
  *
  * @subsection Configuration Configuration
  * - \b dialog(optional):

@@ -59,20 +59,19 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service type="sight::module::viz::scene3d::adaptor::negato3d">
-        <in key="image" uid="..." />
-        <in key="mask" uid="..." />
-        <inout key="tf" uid="..." />
-        <config orientation="axial" filtering="none" tfAlpha="true" />
-        <properties classification="pre" />
+        <data image="${...}" />
+        <data mask="${...}" />
+        <data tf="${...}" />
+        <config orientation="axial" filtering="none" tfAlpha="true" classification="pre" />
     </service>
    @endcode
  *
  * @subsection Input Input:
- * - \b image [sight::data::image]: image to display.
- * - \b mask [sight::data::image] (optional): mask to apply onto the image. Values < 0.5 are considered masked.
+ * - \b data.image [sight::data::image]: image to display.
+ * - \b data.mask [sight::data::image] (optional): mask to apply onto the image. Values < 0.5 are considered masked.
  *
  * @subsection In-Out In-Out:
- * - \b tf [sight::data::transfer_function]: the current TransferFunction. If it is not defined, we use the
+ * - \b data.tf [sight::data::transfer_function]: the current TransferFunction. If it is not defined, we use the
  *      image's default transferFunction (CT-GreyLevel).
  *
  * @subsection Configuration Configuration:
@@ -86,12 +85,12 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b query_flags (optional, uint32, default=0x40000000): Mask set to planes for picking request.
  * - \b border (optional, bool, default=true): allows to display plane borders.
  *
- * @subsection Properties Properties:
- * - \b classification (optional, pre/post, default=pre): classification of voxels. "pre" means the filtering is applied
+ * - \b config.classification [sight::data::string] (optional, pre/post, default=pre): classification of voxels. "pre"
+ * means the filtering is applied
  * after the sampling of the transfer function, and "post" after. When using labelled images, it is highly recommended
  * to use "pre", otherwise it is likely that class of objects can be confounded.
- * - \b visible (optional, bool, default=true): set the initial visibility of the 3D negato.
- * - \b depth_bias: useful to superimpose multiple negatos on top of each other
+ * - \b config.visible [sight::data::boolean] (optional, default=true): set the initial visibility of the 3D negato.
+ * - \b config.depth_bias [sight::data::real]: useful to superimpose multiple negatos on top of each other
  */
 class negato3d final : public sight::module::viz::scene3d::adaptor::negato
 {

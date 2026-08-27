@@ -57,10 +57,22 @@ namespace sight::io::service
  * - \b set_base_folder(std::string): When connected to a string-emitting signal (or function),
  *   this slot will set the base folder used by writers.
  *
+ * @section XML XML Configuration
+ * @code{.xml}
+    <service uid="..." type="...">
+        <data write="..." />
+        <path file="..." folder="..." base_folder="..." />
+        <config window_title="..." />
+    </service>
+   @endcode
+ *
+ * @subsection Input Input
+ * - \b data.write [sight::data::object]: Generic data to write.
+ *
  * @subsection Configuration Configuration
- * - \b file: @deprecated default file path.
- * - \b folder: @deprecated default folder path.
- * - \b baseFolder: path or preference key specifying the root output path.
+ * - \b path.file: default file path(s).
+ * - \b path.folder: default folder path.
+ * - \b path.base_folder: path or preference key specifying the root output path.
  *      If set, it will override user setting the path via GUI input,
  *      leading to a service that automatically saves data without user queries.
  *      If the output is a file, then the output will be built as follows:
@@ -69,11 +81,9 @@ namespace sight::io::service
  *        <base_folder>(/<prefix>)^{0,1}/<folder>, where folder is the value in the folder tag.
  *
  * @subsection Properties Properties
- * - \b window_title (optional) : The window title that can be used for open_location_dialog. This abstract class
+ * - \b config.window_title (optional) : The window title that can be used for open_location_dialog. This abstract class
  *                   defines a default that can be overriden by calling the appropriate constructor, but the XML
  *                   property definition have the precedence in all cases.
- * - \b files : The file(s) to write. Depending of the path_type_t, it can be a single file or multiple files.
- * - \b folder : The folder to open. Used when the path_type_t is "folder".
  */
 class SIGHT_IO_CLASS_API writer : public sight::service::base,
                                   public sight::core::notification::has_monitors
@@ -267,10 +277,11 @@ protected:
     bool m_write_failed {false};
 
     /// Generic input data
-    data::ptr<data::object, data::access::in> m_data {this, sight::io::service::DATA_KEY};
+    data::ptr<data::object, data::access::in> m_data {this, sight::io::service::WRITER_DATA_KEY};
 
     /// Window title for the file dialog
-    sight::data::property<sight::data::string> m_window_title {this, WINDOW_TITLE_KEY, S_DEFAULT_WINDOW_TITLE};
+    sight::data::ptr<sight::data::string, data::access::in> m_window_title
+    {this, WINDOW_TITLE_KEY, S_DEFAULT_WINDOW_TITLE};
 
     /// NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 
@@ -309,8 +320,8 @@ private:
     /// Base folder
     std::string m_base_folder;
 
-    sight::data::property<sight::data::string> m_files {this, FILES_KEY, std::string()};
-    sight::data::property<sight::data::string> m_folder {this, FOLDER_KEY, std::string()};
+    sight::data::ptr<sight::data::string, data::access::in> m_files {this, FILE_KEY, std::string()};
+    sight::data::ptr<sight::data::string, data::access::in> m_folder {this, FOLDER_KEY, std::string()};
 };
 
 } //namespace sight::io::service

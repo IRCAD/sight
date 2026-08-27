@@ -52,9 +52,9 @@ struct weighted_mean_matrix_tester
     void set_config(float _weight = 0.5F)
     {
         const std::string config = std::format(
-            "<in key='raw' uid='raw' />"
-            "<inout key='damped' uid='damped' />"
-            "<properties weight='{}' enabled='true' />",
+            "<data raw='${{raw}}' />"
+            "<data damped='${{damped}}' />"
+            "<config weight='{}' enabled='true' />",
             _weight
         );
         srv->set_config(config);
@@ -69,8 +69,8 @@ struct weighted_mean_matrix_tester
         input  = std::make_shared<sight::data::matrix4>();
         output = std::make_shared<sight::data::matrix4>();
 
-        srv->set_input(input, "raw", true);
-        srv->set_inout(output, "damped");
+        srv->set_input(input, "data.raw", true);
+        srv->set_inout(output, "data.damped");
     }
 
     //------------------------------------------------------------------------------

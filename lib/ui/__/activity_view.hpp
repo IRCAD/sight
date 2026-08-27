@@ -29,8 +29,6 @@
 #include <activity/extension/activity.hpp>
 #include <activity/launcher.hpp>
 
-#include <core/com/slots.hpp>
-
 #include <data/activity.hpp>
 #include <data/string.hpp>
 

@@ -2,12 +2,12 @@ sight_add_target(tuto12_scene2d TYPE APP)
 
 add_dependencies(
     tuto12_scene2d
-    sightrun
     module_app
-    module_ui_qt
     module_service
     module_ui
-    module_viz_scene2d
+    module_ui_qt
+    module_viz_scene2d # 2D visualization module
+    sightrun
 )
 
 # Allow dark theme via module_ui_qt

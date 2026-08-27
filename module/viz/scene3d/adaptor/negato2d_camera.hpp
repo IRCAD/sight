@@ -48,13 +48,13 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service type="sight::module::viz::scene3d::adaptor::negato2d_camera" >
-        <inout key="image" uid="..." auto_connect="true" />
-        <config priority="0" orientation="sagittal" margin="0.1" block_width_scaling="true"/>
+        <data image="${...}" />
+        <config priority="0" orientation="sagittal" margin="0.1" block_width_scaling="true" />
    </service>
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b image [sight::data::image](mandatory): image viewed in negato mode, used for auto connections only.
+ * - \b data.image [sight::data::image](mandatory): image viewed in negato mode, used for auto connections only.
  *      Modification signals can be used to reset the camera's position and orientation. Useless without
  *      auto_connect="true".
  *
@@ -258,7 +258,7 @@ private:
     /// Handles connection with the layer.
     core::com::helper::sig_slot_connection m_layer_connection;
 
-    static constexpr std::string_view IMAGE_INOUT = "image";
+    static constexpr std::string_view IMAGE_INOUT = "data.image";
     sight::data::ptr<sight::data::image, sight::data::access::inout> m_image {this, IMAGE_INOUT};
 };
 

@@ -71,16 +71,14 @@
             </service>
 
             <service uid="videoToolbarConfig" type="sight::app::config_launcher">
-                <properties config="sight::config::io::video::controls" />
-                <inout group="object">
-                    <key name="camera" uid="camera" />
-                    <key name="frameTL" uid="frameTL" />
-                </inout>
-                <parameter replace="TOOLBAR" by="subToolbarView" />
-                <parameter replace="cameraStartedChannelOut" by="camera_started_channel" />
-                <parameter replace="cameraPausedChannelOut" by="camera_paused_channel" />
-                <parameter replace="cameraResumePauseChannelOut" by="camera_resume_pause_channel" />
-                <parameter replace="cameraStoppedChannelOut" by="camera_stopped_channel" />
+                <config id="sight::config::io::video::controls" />
+                <object name="camera" uid="camera" />
+                <object name="frameTL" uid="frameTL" />
+                <param name="TOOLBAR" value="subToolbarView" />
+                <param name="cameraStartedChannelOut" value="camera_started_channel" />
+                <param name="cameraPausedChannelOut" value="camera_paused_channel" />
+                <param name="cameraResumePauseChannelOut" value="camera_resume_pause_channel" />
+                <param name="cameraStoppedChannelOut" value="camera_stopped_channel" />
             </service>
 
             <service uid="cameraView" type="sight::module::ui::view">
@@ -110,37 +108,34 @@
             </service>
 
             <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::video" auto_connect="true">
-                <in key="image" uid="videoImage" />
+                <data image="${videoImage}" />
             </service>
 
             <!-- ******************************* Services ***************************************** -->
 
             <!-- GUI to handle aruco tracking parameters -->
             <service uid="aruco_parameters_srv" type="sight::module::ui::qt::settings">
-                <inout key="map" uid="${aruco_params}" />
-                <ui>
-                    <item name="Show Marker" key="debug_mode" />
-                    <item name="Corner refinement" key="corner_refinement" />
-                    <item name="adpt. Threshold win size min" key="adaptive_th_win_size_min" widget="slider" min="3" max="100" />
-                    <item name="adpt. Threshold win size max" key="adaptive_th_win_size_max" widget="slider" min="4" max="100" />
-                    <item name="adpt. Threshold win size step" key="adaptive_th_win_size_step" widget="slider" min="1" max="100" />
-                    <item name="adpt. threshold constant" key="adaptive_th_constant" min="0." max="30." />
-                    <item name="Min. Marker Perimeter Rate" key="min_marker_perimeter_rate" min="0.01" max="1.0" />
-                    <item name="Max. Marker Perimeter Rate" key="max_marker_perimeter_rate" min="1." max="10." />
-                    <item name="Polygonal Approx. Accuracy Rate" key="polygonal_approx_accuracy_rate" min="0.01" max="1." />
-                    <item name="Min. Corner Distance Rate" key="min_corner_distance_rate" min="0." max="1." />
-                    <item name="Min. Distance to Border" key="min_distance_to_border" widget="slider" min="0" max="10" />
-                    <item name="Min. Marker Distance Rate" key="min_marker_distance_rate" min="0." max="1." />
-                    <item name="Corner Refinement Win. Size" key="corner_refinement_win_size" widget="slider" min="1" max="100" />
-                    <item name="Corner Refinement Max Iterations" key="corner_refinement_max_iterations" widget="slider" min="1" max="10" />
-                    <item name="Corner Refinement Min. Accuracy" key="corner_refinement_min_accuracy" min="0.01" max="10." />
-                    <item name="Marker Border Bits" key="marker_border_bits" widget="slider" min="1" max="100" />
-                    <item name="Perspective Remove Pixel per Cell" key="perspective_remove_pixel_per_cell" widget="slider" min="1" max="32" />
-                    <item name="Perspective Remove Ignored Margin Per Cell" key="perspective_remove_ignored_margin_per_cell" min="0." max="1." />
-                    <item name="Max. Erroneous Bits In Border Rate" key="max_erroneous_bits_in_border_rate" min="0." max="1." />
-                    <item name="Min. Otsu Std. Dev." key="min_otsu_std_dev" min="0." max="100." />
-                    <item name="Error Correction Rate" key="error_correction_rate" min="0." max="1." />
-                </ui>
+                <item data="${aruco_params}.debug_mode" name="Show Marker" />
+                <item data="${aruco_params}.corner_refinement" name="Corner refinement" />
+                <item data="${aruco_params}.adaptive_th_win_size_min" name="adpt. Threshold win size min" widget="slider" min="3" max="100" />
+                <item data="${aruco_params}.adaptive_th_win_size_max" name="adpt. Threshold win size max" widget="slider" min="4" max="100" />
+                <item data="${aruco_params}.adaptive_th_win_size_step" name="adpt. Threshold win size step" widget="slider" min="1" max="100" />
+                <item data="${aruco_params}.adaptive_th_constant" name="adpt. threshold constant" min="0." max="30." />
+                <item data="${aruco_params}.min_marker_perimeter_rate" name="Min. Marker Perimeter Rate" min="0.01" max="1.0" />
+                <item data="${aruco_params}.max_marker_perimeter_rate" name="Max. Marker Perimeter Rate" min="1." max="10." />
+                <item data="${aruco_params}.polygonal_approx_accuracy_rate" name="Polygonal Approx. Accuracy Rate" min="0.01" max="1." />
+                <item data="${aruco_params}.min_corner_distance_rate" name="Min. Corner Distance Rate" min="0." max="1." />
+                <item data="${aruco_params}.min_distance_to_border" name="Min. Distance to Border" widget="slider" min="0" max="10" />
+                <item data="${aruco_params}.min_marker_distance_rate" name="Min. Marker Distance Rate" min="0." max="1." />
+                <item data="${aruco_params}.corner_refinement_win_size" name="Corner Refinement Win. Size" widget="slider" min="1" max="100" />
+                <item data="${aruco_params}.corner_refinement_max_iterations" name="Corner Refinement Max Iterations" widget="slider" min="1" max="10" />
+                <item data="${aruco_params}.corner_refinement_min_accuracy" name="Corner Refinement Min. Accuracy" min="0.01" max="10." />
+                <item data="${aruco_params}.marker_border_bits" name="Marker Border Bits" widget="slider" min="1" max="100" />
+                <item data="${aruco_params}.perspective_remove_pixel_per_cell" name="Perspective Remove Pixel per Cell" widget="slider" min="1" max="32" />
+                <item data="${aruco_params}.perspective_remove_ignored_margin_per_cell" name="Perspective Remove Ignored Margin Per Cell" min="0." max="1." />
+                <item data="${aruco_params}.max_erroneous_bits_in_border_rate" name="Max. Erroneous Bits In Border Rate" min="0." max="1." />
+                <item data="${aruco_params}.min_otsu_std_dev" name="Min. Otsu Std. Dev." min="0." max="100." />
+                <item data="${aruco_params}.error_correction_rate" name="Error Correction Rate" min="0." max="1." />
             </service>
 
             <service uid="frameUpdaterSrv" type="sight::module::sync::synchronizer" worker="videoWorker">

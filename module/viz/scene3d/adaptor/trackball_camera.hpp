@@ -49,13 +49,15 @@ namespace sight::module::viz::scene3d::adaptor
  * @code{.xml}
     <service type="sight::module::viz::scene3d::adaptor::trackball_camera">
         <config priority="0" />
-        <in key="view_up" uid="..." />
+        <data view_up="${...}" />
    </service>
    @endcode
  *
  * @subsection Input Input:
- * - \b transform (optional): initial transform (registration, tracking, ...) to apply to the adaptor first.
- * - \b view_up (optional): used to extract the up vector of the camera. We only use the Y axis of this transform.
+ * - \b data.transform [sight::data::matrix4] (optional): initial transform (registration, tracking, ...) to apply to
+ * the adaptor first.
+ * - \b data.view_up [sight::data::matrix4] (optional): used to extract the up vector of the camera. We only use the Y
+ * axis of this transform.
  *
  * @subsection Configuration Configuration:
  * - \b priority (optional, int, default=0): interaction priority, higher priority interactions are performed first.
@@ -213,7 +215,7 @@ private:
     int m_priority {0};
 
     /// Matrix used to extract the up vector of the camera. We only use the Y axis of this transform.
-    sight::data::ptr<sight::data::matrix4, sight::data::access::in> m_view_up_matrix {this, "view_up", true};
+    sight::data::ptr<sight::data::matrix4, sight::data::access::in> m_view_up_matrix {this, "data.view_up", true};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor

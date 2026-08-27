@@ -22,13 +22,11 @@
 #include "intrinsic_calibration.hpp"
 
 #include <core/runtime/path.hpp>
-#include <core/runtime/runtime.hpp>
 
 #include <ui/test/helper/button.hpp>
 #include <ui/test/helper/dialog.hpp>
 #include <ui/test/helper/label.hpp>
 #include <ui/test/helper/list_widget.hpp>
-#include <ui/test/helper/preferences_configuration.hpp>
 #include <ui/test/helper/tool_button.hpp>
 #include <ui/test/helper/video_controls.hpp>
 #include <ui/test/tester.hpp>
@@ -37,8 +35,6 @@
 
 #include <QLabel>
 #include <QSpinBox>
-
-#include <array>
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::sight_calibrator::uit::intrinsic_calibration);
 
@@ -77,16 +73,16 @@ void intrinsic_calibration::test()
             helper::dialog::take(_tester, "Chessboard settings");
             QPointer<QWidget> window = _tester.get<QWidget*>();
             _tester.take("Chessboard settings", window);
-            _tester.yields("'Chessboard width' field", "board_width");
+            _tester.yields("'Chessboard width' field", "sight::data::integer_0");
             _tester.get<QSpinBox*>()->setValue(10);
             _tester.take("Chessboard settings", window);
-            _tester.yields("'Chessboard height' field", "board_height");
+            _tester.yields("'Chessboard height' field", "sight::data::integer_1");
             _tester.get<QSpinBox*>()->setValue(8);
             _tester.take("Chessboard settings", window);
-            _tester.yields("'Chessboard square size (mm)' field", "board_square_size");
+            _tester.yields("'Chessboard square size (mm)' field", "sight::data::real_1");
             _tester.get<QDoubleSpinBox*>()->setValue(20);
             _tester.take("Chessboard settings", window);
-            _tester.yields("'Input scaling for chessboard detection' field", "board_scale");
+            _tester.yields("'Input scaling for chessboard detection' field", "sight::data::real_0");
             _tester.get<QDoubleSpinBox*>()->setValue(0.25);
             _tester.take("Chessboard settings", window);
             _tester.do_something_asynchronously<QWidget*>([](QWidget* _window){_window->close();});

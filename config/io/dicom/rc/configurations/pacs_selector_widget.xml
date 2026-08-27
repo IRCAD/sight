@@ -256,13 +256,13 @@
         </service>
 
         <service uid="negato_adp" type="sight::module::viz::scene3d::adaptor::negato2d" auto_connect="true">
-            <in key="image" uid="previewImage" />
-            <inout key="tf" uid="tf" />
+            <data image="${previewImage}" />
+            <data tf="${tf}" />
             <config orientation="axial" filtering="anisotropic" />
         </service>
 
         <service uid="negato_camera_adp" type="sight::module::viz::scene3d::adaptor::negato2d_camera" auto_connect="true">
-            <inout key="image" uid="previewImage" />
+            <data image="${previewImage}" />
             <config priority="0" orientation="axial" />
         </service>
 
@@ -281,8 +281,8 @@
         </service>
 
         <service uid="l_negato_adp" type="sight::module::viz::scene3d::adaptor::negato3d" auto_connect="true">
-            <in key="image" uid="localImageSeries" />
-            <inout key="tf" uid="tf" />
+            <data image="${localImageSeries}" />
+            <data tf="${tf}" />
             <config priority="1" orientation="axial" interactive="true" />
         </service>
 
@@ -297,31 +297,29 @@
         <!-- ******************************* Actions ****************************************** -->
 
         <service uid="dicomweb_cfg" type="sight::app::config_launcher">
-            <properties config="sight::config::io::dicomweb::selector_widget" start="false" />
-            <inout group="object">
-                <key name="previewSeriesSet" uid="${previewSeriesSet}" />
-                <key name="previewDicom" uid="${previewDicom}" optional="true" />
-                <key name="previewImage" uid="${previewImage}" />
-                <key name="previewSelections" uid="${previewSelections}" />
-                <key name="localSeriesSet" uid="${localSeriesSet}" />
-                <key name="host_name" uid="${host_name}" />
-                <key name="port_id" uid="${port_id}" />
-            </inout>
+            <config id="sight::config::io::dicomweb::selector_widget" start="false" />
+
+            <object name="previewSeriesSet" uid="${previewSeriesSet}" />
+            <object name="previewDicom" uid="${previewDicom}" optional="true" />
+            <object name="previewImage" uid="${previewImage}" />
+            <object name="previewSelections" uid="${previewSelections}" />
+            <object name="localSeriesSet" uid="${localSeriesSet}" />
+            <object name="host_name" uid="${host_name}" />
+            <object name="port_id" uid="${port_id}" />
             <param name="WID_QUERY_EDITOR_PARENT" value="query_editor_view" />
             <param name="WID_SLIDER_PREVIEW_PARENT" value="preview_dicom_slider_view" />
             <channel name="pull_progress" uid="pull_progress" />
         </service>
 
         <service uid="dimse_cfg" type="sight::app::config_launcher">
-            <properties config="sight::config::io::dimse::selector_widget" start="false" />
-            <inout group="object">
-                <key name="previewSeriesSet" uid="${previewSeriesSet}" />
-                <key name="previewDicom" uid="${previewDicom}" optional="true" />
-                <key name="previewImage" uid="${previewImage}" />
-                <key name="previewSelections" uid="${previewSelections}" />
-                <key name="localSeriesSet" uid="${localSeriesSet}" />
-                <key name="pacsConfiguration" uid="${pacsConfiguration}" />
-            </inout>
+            <config id="sight::config::io::dimse::selector_widget" start="false" />
+
+            <object name="previewSeriesSet" uid="${previewSeriesSet}" />
+            <object name="previewDicom" uid="${previewDicom}" optional="true" />
+            <object name="previewImage" uid="${previewImage}" />
+            <object name="previewSelections" uid="${previewSelections}" />
+            <object name="localSeriesSet" uid="${localSeriesSet}" />
+            <object name="pacsConfiguration" uid="${pacsConfiguration}" />
             <param name="WID_QUERY_EDITOR_PARENT" value="query_editor_view" />
             <param name="WID_SLIDER_PREVIEW_PARENT" value="preview_dicom_slider_view" />
             <param name="Notified_slider" value="Notified_slider" />
@@ -379,8 +377,7 @@
         </service>
 
         <service uid="reset_preview_srv" type="sight::module::data::copy">
-            <in key="source" uid="previewImageReset" />
-            <inout key="target" uid="previewImage" />
+            <data source="${previewImageReset}" target="${previewImage}" />
             <mode>copyOnUpdate</mode>
         </service>
 
@@ -399,27 +396,16 @@
         </service>
 
         <service uid="connection_type_selector_srv" type="sight::module::ui::qt::settings">
-            <inout group="keys">
-                <key uid="${dimse_or_dicomweb}" />
-            </inout>
-            <ui>
-                <item name="DICOMWeb/DIMSE" widget="switch_button" reset="false" />
-            </ui>
+            <item data="${dimse_or_dicomweb}" name="DICOMWeb/DIMSE" widget="switch_button" reset="false" />
         </service>
 
         <service uid="action_start_cfg" type="sight::module::ui::action">
-            <properties checked="${dimse_or_dicomweb}" />
+            <state checked="${dimse_or_dicomweb}" />
         </service>
 
         <service uid="dicomweb_srv" type="sight::module::ui::qt::settings">
-            <inout group="keys">
-                <key uid="${host_name}" />
-                <key uid="${port_id}" />
-            </inout>
-            <ui>
-                <item name="Hostname Ip." widget="text" reset="false" />
-                <item name="Port." widget="spin" min="80" max="99999" reset="false" />
-            </ui>
+            <item data="${host_name}" name="Hostname Ip." widget="text" reset="false" />
+            <item data="${port_id}" name="Port." widget="spin" min="80" max="99999" reset="false" />
         </service>
 
         <service uid="configure_pacs_editor_srv" type="sight::module::io::dimse::pacs_configuration_editor">
@@ -475,8 +461,7 @@
         </service>
 
         <service uid="export_image_srv" type="sight::module::data::manage">
-            <inout key="object" uid="localImageSeries" />
-            <inout key="container" uid="${output_series_set}" />
+            <data element="${localImageSeries}" container="${output_series_set}" />
         </service>
 
         <service uid="series_pull_progress_srv" type="sight::module::ui::qt::progress_bar">

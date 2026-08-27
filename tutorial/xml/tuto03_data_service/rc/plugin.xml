@@ -100,7 +100,7 @@
                 When the service is chosen, it is updated, so the data is read.
             -->
             <service uid="image_reader_srv" type="sight::module::ui::io::selector">
-                <inout key="data" uid="image" />
+                <data read="${image}" />
             </service>
 
             <!--
@@ -109,7 +109,7 @@
                 the data image. So, when the image is loaded, the visualization will be updated.
             -->
             <service uid="image_render_srv" type="sight::module::viz::sample::image">
-                <in key="image" uid="image" />
+                <data image="${image}" />
             </service>
 
             <connect>

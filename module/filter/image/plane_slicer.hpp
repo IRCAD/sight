@@ -50,10 +50,8 @@ namespace sight::module::filter::image
  *
  * @code{.xml}
    <service type="sight::module::filter::image::plane_slicer" auto_connect="true">
-       <in key="image" uid="..." />
-       <in key="axes" uid="..." />
-       <in key="offset" uid="..." />
-       <inout key="slice" uid="..." />
+       <input image="${...}" axes="${...}" offset="${...}" />
+       <output slice="${...}" />
    </service>
    @endcode
  *
@@ -118,13 +116,15 @@ private:
     /// Vtk reslicing algorithm.
     vtkSmartPointer<vtkImageReslice> m_reslicer;
 
-    sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, "image"};
-    sight::data::ptr<sight::data::matrix4, sight::data::access::in> m_axes {this, "axes"};
-    sight::data::ptr<sight::data::matrix4, sight::data::access::in> m_offset {this, "offset", true};
-    sight::data::ptr<sight::data::image, sight::data::access::inout> m_slice {this, "slice"};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, "input.image"};
+    sight::data::ptr<sight::data::matrix4, sight::data::access::in> m_axes {this, "input.axes"};
+    sight::data::ptr<sight::data::matrix4, sight::data::access::in> m_offset {this, "input.offset", true};
+    sight::data::ptr<sight::data::image, sight::data::access::inout> m_slice {this, "output.slice"};
 
-    sight::data::property<sight::data::boolean> m_center {this, "center", false};
-    sight::data::property<sight::data::string> m_interpolation {this, "interpolation", std::string("LINEAR")};
+    sight::data::ptr<sight::data::boolean, sight::data::access::in> m_center {this, "config.center", false};
+    sight::data::ptr<sight::data::string, sight::data::access::in> m_interpolation {
+        this, "config.interpolation", std::string("LINEAR")
+    };
 };
 
 } //namespace sight::module::filter::image

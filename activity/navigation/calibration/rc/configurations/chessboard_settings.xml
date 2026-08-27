@@ -36,13 +36,10 @@
         <!-- ******************************* Services ***************************************** -->
 
         <service uid="chessboard_settings" type="sight::module::ui::qt::settings">
-            <inout key="map" uid="${board_properties}" />
-            <ui>
-                <item name="Chessboard width" key="board_width" widget="spin" min="3" max="50" />
-                <item name="Chessboard height" key="board_height" widget="spin" min="3" max="50" />
-                <item name="Chessboard square size (mm)" key="board_square_size" widget="spin" min="5" max="100" />
-                <item name="Input scaling for chessboard detection" key="board_scale" widget="spin" min="0." max="10." />
-            </ui>
+            <item data="${board_properties}.board_width" name="Chessboard width" widget="spin" min="3" max="50" />
+            <item data="${board_properties}.board_height" name="Chessboard height" widget="spin" min="3" max="50" />
+            <item data="${board_properties}.board_square_size" name="Chessboard square size (mm)" widget="spin" min="5" max="100" />
+            <item data="${board_properties}.board_scale" name="Input scaling for chessboard detection" widget="spin" min="0." max="10." />
         </service>
 
         <!-- ******************************* Connections ***************************************** -->

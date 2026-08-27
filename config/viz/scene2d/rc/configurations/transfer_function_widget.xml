@@ -50,9 +50,7 @@
         <!-- ******************************* Services ***************************************** -->
 
         <service uid="transfer_function_editor_srv" type="sight::module::ui::qt::image::transfer_function">
-            <in key="image" uid="${image}" />
-            <inout key="tf" uid="${currentTF}" />
-            <inout key="presets" uid="${presets}" />
+            <data image="${image}" tf="${currentTF}" presets="${presets}" />
             <config
                 deleteIcon="sight::module::ui::icons/trash.svg"
                 newIcon="sight::module::ui::icons/file.svg"

@@ -8,7 +8,6 @@
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
     <requirement id="sight::module::viz::scene3d_qt" />
-    <requirement id="sight::module::io::document" />
 
     <extension implements="sight::app::extension::config">
         <id>tuto07_generic_scene</id>
@@ -119,34 +118,32 @@
 
             <!-- Texture adaptor, used by mesh adaptor -->
             <service uid="texture_adp" type="sight::module::viz::scene3d::adaptor::texture" auto_connect="true">
-                <in key="image" uid="texture" />
+                <data image="${texture}" />
                 <config texture_name="ogre_texture" />
             </service>
 
             <!-- Mesh adaptor -->
             <service uid="mesh_adp" type="sight::module::viz::scene3d::adaptor::mesh" auto_connect="true">
-                <in key="mesh" uid="mesh" />
+                <data mesh="${mesh}" />
                 <config texture_name="ogre_texture" />
             </service>
 
             <!-- 3D image negatoscope adaptor -->
             <service uid="negato_adp" type="sight::module::viz::scene3d::adaptor::negato3d" auto_connect="true">
-                <in key="image" uid="image" />
-                <inout key="tf" uid="tf" />
+                <data image="${image}" />
+                <data tf="${tf}" />
                 <config orientation="axial" interactive="true" />
             </service>
 
             <service uid="snapshot_adp" type="sight::module::viz::scene3d::adaptor::fragments_info">
-                <inout key="image" uid="snapshot" />
+                <data image="${snapshot}" />
             </service>
 
             <!-- Status bar used to display the progress bar for reading -->
             <service uid="progress_bar_view" type="sight::module::ui::qt::progress_bar" />
 
             <service uid="pdf_writer" type="sight::module::io::document::pdf_writer">
-                <in group="data">
-                    <key uid="snapshot" />
-                </in>
+                <data image="snapshot" />
                 <container uid="generic_scene_srv" />
             </service>
 
@@ -171,20 +168,17 @@
 
             <!-- Image displayed in the scene -->
             <service uid="image_reader_srv" type="sight::module::ui::io::selector">
-                <inout key="data" uid="image" />
-                <type mode="reader" />
+                <data read="${image}" />
             </service>
 
             <!-- Mesh reader -->
             <service uid="mesh_reader_srv" type="sight::module::ui::io::selector">
-                <inout key="data" uid="mesh" />
-                <type mode="reader" />
+                <data read="${mesh}" />
             </service>
 
             <!-- texture reader -->
             <service uid="texture_reader_srv" type="sight::module::ui::io::selector">
-                <inout key="data" uid="texture" />
-                <type mode="reader" />
+                <data read="${texture}" />
             </service>
 
             <!--
@@ -208,7 +202,7 @@
 
             <!-- Editor representing a slider to navigate into image slices -->
             <service uid="slider_index_editor_srv" type="sight::module::ui::qt::image::slice_index_position_editor" auto_connect="true">
-                <inout key="image" uid="image" />
+                <data image="${image}" />
                 <config orientation="axial" label="index" display_axis_selector="true" display_step_buttons="true" />
             </service>
 
@@ -221,14 +215,13 @@
 
             <!-- Write the snapshot image -->
             <service uid="image_writer_srv" type="sight::module::io::bitmap::writer">
-                <in key="data" uid="snapshot" />
+                <data write="${snapshot}" />
                 <dialog policy="always" />
                 <backends enable="all" mode="best" />
             </service>
 
             <service uid="tfm_srv" type="sight::module::ui::qt::image::transfer_function">
-                <in key="image" uid="image" />
-                <inout key="tf" uid="tf" />
+                <data image="${image}" tf="${tf}" />
             </service>
 
             <!-- ******************************* Connections ***************************************** -->

@@ -2,15 +2,15 @@ sight_add_target(tuto06_filter TYPE APP)
 
 add_dependencies(
     tuto06_filter
-    sightrun
-    module_app
-    module_ui_qt
     data
+    module_app
+    module_filter_image # Provides services to manipulates images, here to perform thresholding
+    module_io_vtk
     module_service
     module_ui
-    module_io_vtk
+    module_ui_qt
     module_viz_sample
-    module_filter_image
+    sightrun
 )
 
 # Allow dark theme via module_ui_qt

@@ -96,14 +96,13 @@
         <!-- ************************************* Action ************************************ -->
 
         <service uid="mesherAct" type="sight::module::filter::mesh::vtk_mesher">
-            <in key="image_series" uid="${imageSeries}" />
-            <inout key="model_series" uid="modelSeries" />
-            <config percent_reduction="0" value="255" />
+            <data input_image="${imageSeries}" output_model="${modelSeries}" />
+            <label value="255" />
+            <decimation reduction="0" />
         </service>
 
         <service uid="exportAct" type="sight::module::ui::series::exporter" auto_connect="true">
-            <inout key="container" uid="${seriesSet}" />
-            <inout key="data" uid="modelSeries" />
+            <data container="${seriesSet}" element="${modelSeries}" />
         </service>
 
         <!-- ******************************* Begin Generic scene ******************************* -->
@@ -121,18 +120,18 @@
         </service>
 
         <service uid="modelSeriesAdp" type="sight::module::viz::scene3d::adaptor::model_series" auto_connect="true">
-            <in key="model" uid="modelSeries" />
+            <data model="${modelSeries}" />
             <config picker="" />
         </service>
 
         <service uid="negatoAdp" type="sight::module::viz::scene3d::adaptor::negato3d">
-            <in key="image" uid="${imageSeries}" />
-            <inout key="tf" uid="tf" />
+            <data image="${imageSeries}" />
+            <data tf="${tf}" />
             <config orientation="axial" />
         </service>
 
         <service uid="snapshotAdp" type="sight::module::viz::scene3d::adaptor::fragments_info">
-            <inout key="image" uid="snapshot" />
+            <data image="${snapshot}" />
         </service>
 
         <!-- ******************************* Services ***************************************** -->
@@ -155,7 +154,7 @@
         </service>
 
         <service uid="sliceIndexEditorSrv" type="sight::module::ui::qt::image::slice_index_position_editor" auto_connect="true">
-            <inout key="image" uid="${imageSeries}" />
+            <data image="${imageSeries}" />
             <config orientation="axial" label="index" display_axis_selector="false" display_step_buttons="false" />
         </service>
 
@@ -180,7 +179,7 @@
 
         <!-- Write the snapshot image -->
         <service uid="imageWriterSrv" type="sight::module::io::bitmap::writer">
-            <in key="data" uid="snapshot" />
+            <data write="${snapshot}" />
             <dialog policy="always" />
             <backends enable="all" mode="best" />
         </service>

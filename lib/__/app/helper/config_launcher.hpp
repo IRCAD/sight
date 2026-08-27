@@ -32,8 +32,6 @@
 
 #include <service/value_parameters.hpp>
 
-#include <core/tools/failed.hpp>
-
 namespace sight::app::helper
 {
 

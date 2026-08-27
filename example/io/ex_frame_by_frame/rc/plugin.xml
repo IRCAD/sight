@@ -75,7 +75,7 @@
             </service>
 
             <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::video" auto_connect="true">
-                <in key="image" uid="videoImage" />
+                <data image="${videoImage}" />
             </service>
 
             <!-- ************************************* Services ************************************ -->

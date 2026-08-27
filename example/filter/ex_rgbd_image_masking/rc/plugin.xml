@@ -176,11 +176,10 @@
             <service uid="organ_manager_act" type="sight::module::ui::action" />
 
             <service uid="organ_manager_cfg" type="sight::app::config_launcher">
-                <properties config="ModelSeriesManagerWindow" start="false" />
-                <inout group="object">
-                    <key name="organ_manager_modelseries" uid="modelSeries" />
-                </inout>
-                <parameter replace="ICON_PATH" by="ex_rgbd_image_masking/app.ico" />
+                <config id="ModelSeriesManagerWindow" start="false" />
+
+                <object name="organ_manager_modelseries" uid="modelSeries" />
+                <param name="ICON_PATH" value="ex_rgbd_image_masking/app.ico" />
             </service>
 
             <service uid="showSettingsAct" type="sight::module::ui::action" />
@@ -207,21 +206,21 @@
             </service>
 
             <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::video" auto_connect="true">
-                <in key="image" uid="videoImage" />
+                <data image="${videoImage}" />
             </service>
 
             <service uid="cameraAdp" type="sight::module::viz::scene3d::adaptor::camera">
-                <inout key="transform" uid="inverseMatrix" auto_connect="true" />
-                <in key="calibration" uid="RGBcamera" />
+                <data transform="${inverseMatrix}" />
+                <data calibration="${RGBcamera}" />
             </service>
 
             <service uid="meshAdp" type="sight::module::viz::scene3d::adaptor::model_series" auto_connect="true">
-                <in key="model" uid="modelSeries" />
+                <data model="${modelSeries}" />
                 <config transform="id" autoresetcamera="false" />
             </service>
 
             <service uid="videoARAdp" type="sight::module::viz::scene3d::adaptor::video" auto_connect="true">
-                <in key="image" uid="foregroundImage" />
+                <data image="${foregroundImage}" />
             </service>
 
             <!-- ******************************* Begin Generic scene ******************************* -->
@@ -240,12 +239,12 @@
             </service>
 
             <service uid="cameraOffscreenAdp" type="sight::module::viz::scene3d::adaptor::camera" auto_connect="true">
-                <inout key="transform" uid="inverseMatrix" auto_connect="true" />
-                <in key="calibration" uid="RGBcamera" />
+                <data transform="${inverseMatrix}" />
+                <data calibration="${RGBcamera}" />
             </service>
 
             <service uid="meshOffscreenAdp" type="sight::module::viz::scene3d::adaptor::mesh" auto_connect="true">
-                <in key="mesh" uid="mesh" shading="ambient" />
+                <data mesh="${mesh}" />
                 <config transform="id" autoresetcamera="false" />
             </service>
 
@@ -294,16 +293,14 @@
             <!-- Matrix (trf format) reader -->
             <!-- This matrix is used to statically register the model onto the video -->
             <service uid="transformReaderSrv" type="sight::module::ui::io::selector">
-                <inout key="data" uid="registrationMatrix" />
-                <!-- mode is optional (by default it is "reader") -->
-                <type mode="reader" />
+                <data read="${registrationMatrix}" />
                 <selection mode="include" />
                 <addSelection service="sight::module::io::matrix::Matrix4ReaderService" />
             </service>
 
             <!-- Reader to open SeriesSet data -->
             <service uid="meshReaderSrv" type="sight::module::ui::io::selector">
-                <inout key="data" uid="seriesSet" />
+                <data read="${seriesSet}" />
             </service>
 
             <!-- Extract the ModelSeries from the loaded SeriesSet -->
@@ -338,11 +335,9 @@
 
             <!-- Use the extrinsic matrix to get back in the RGB space -->
             <service uid="concatenateSrv" type="sight::module::geometry::concatenate_matrices">
-                <in group="matrix">
-                    <key uid="registrationMatrix" auto_connect="true" inverse="true" />
-                    <key uid="extrinsic" auto_connect="true" inverse="true" />
-                </in>
-                <inout key="output" uid="inverseMatrix" />
+                <data input="${registrationMatrix}" inverse="true" />
+                <data input="${extrinsic}" inverse="true" />
+                <data output="${inverseMatrix}" />
             </service>
 
             <!-- To extract the foreground image to display on top of meshes -->

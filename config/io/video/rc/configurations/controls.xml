@@ -49,28 +49,26 @@ channels - in (optional):
 Usage:
 
         <service uid="..." type="sight::app::config_launcher">
-            <properties config="sight::config::io::video::controls" />
-            <inout group="object">
-                <key name="camera" uid="..." />
-                <key name="frameTL" uid="..." />
-            </inout>
-            <parameter replace="TOOLBAR"                        by="..." />
-            <parameter replace="videoSupport"                   by="..." />
-            <parameter replace="playShortCut"                   by="..." />
-            <parameter replace="pauseShortCut"                  by="..." />
-            <parameter replace="stopShortCut"                   by="..." />
-            <parameter replace="notificationChannel"            by="..." />
-            <parameter replace="cameraStartedChannelOut"        by="..." />
-            <parameter replace="cameraPausedChannelOut"         by="..." />
-            <parameter replace="cameraResumePauseChannelOut"    by="..." />
-            <parameter replace="cameraStoppedChannelOut"        by="..." />
-            <parameter replace="loopModeToggleChannelOut"       by="..." />
-            <parameter replace="parameterChannelIn"             by="..." />
-            <parameter replace="parameterChannelOut"            by="..." />
-            <parameter replace="configuredFileOut"              by="..." />
-            <parameter replace="configuredStreamOut"            by="..." />
-            <parameter replace="configuredDeviceOut"            by="..." />
-            <parameter replace="addROICenterChannelIn"          by="..." />
+            <config id="sight::config::io::video::controls" />
+            <object name="camera" uid="..." />
+            <object name="frameTL" uid="..." />
+            <param name="TOOLBAR" value="..." />
+            <param name="videoSupport" value="..." />
+            <param name="playShortCut" value="..." />
+            <param name="pauseShortCut" value="..." />
+            <param name="stopShortCut" value="..." />
+            <param name="notificationChannel" value="..." />
+            <param name="cameraStartedChannelOut" value="..." />
+            <param name="cameraPausedChannelOut" value="..." />
+            <param name="cameraResumePauseChannelOut" value="..." />
+            <param name="cameraStoppedChannelOut" value="..." />
+            <param name="loopModeToggleChannelOut" value="..." />
+            <param name="parameterChannelIn" value="..." />
+            <param name="parameterChannelOut" value="..." />
+            <param name="configuredFileOut" value="..." />
+            <param name="configuredStreamOut" value="..." />
+            <param name="configuredDeviceOut" value="..." />
+            <param name="addROICenterChannelIn" value="..." />
 
         </service>
 -->

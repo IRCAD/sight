@@ -64,28 +64,18 @@ namespace sight::module::ui::qt
  *
  * @code{.xml}
        <service uid="..." type="sight::module::ui::qt::settings" >
-        <inout group="keys">
-            <key uid="..." />
-            <key uid="..." />
-            <key uid="..." />
-            <key uid="..." />
-            <key uid="..." />
-            <key uid="..." />
-            <key uid="..." />
-        </inout>
-        <ui scrollable="true">
-            <item name="label1" key="param1" />
-            <item name="label2" key="param2"  min="1.5" max="42.42" depends="param1" />
-            <item name="label3" key="int" min="0" max="2" depends="param1" depends_reverse="true" />
-            <item name="label4" key="param4"values="p1,p2,p3" />
-            <item name="label5" key="param5" min="0" max="255" depends="param4" depends_value="p2" />
-            <item name="button list:" key="buttonRaw" widget="buttonBar" >
+        <config scrollable="true" />
+        <item data="${...}" name="label1" key="param1" />
+        <item data="${...}" name="label2" key="param2"  min="1.5" max="42.42" depends="param1" />
+        <item data="${...}" name="label3" key="int" min="0" max="2" depends="param1" depends_reverse="true" />
+        <item data="${...}" name="label4" key="param4"values="p1,p2,p3" />
+        <item data="${...}" name="label5" key="param5" min="0" max="255" depends="param4" depends_value="p2" />
+        <item data="${...}" name="button list:" key="buttonRaw" widget="buttonBar" >
                 <item value="button1" label="..." icon="..." uncheckedIcon="..."/>
                 <item value="button2" label="..." icon="..."/>
                 <item value="button3" icon="..."/>
             </item>
-            <item name="label6" key="..." widget="slider" orientation="vertical" .../>
-        </ui>
+        <item data="${...}" name="label6" key="..." widget="slider" orientation="vertical" .../>
        </service>
    @endcode
  *
@@ -114,9 +104,9 @@ namespace sight::module::ui::qt
  * Also, the type is defined by the type of the object key in the properties map.
  *
  * @subsection Configuration Configuration:
- * <properties> tag:
+ * <config> tag (individual objects):
  * - \b scrollable: If true, add a scroll bar if the content doesn't fit on the screen. If false, flatten the content
- * <param> tag:
+ * <item> tag:
  * - \b name: label to display.
  * - \b key: name used in the signal to identify the parameter.
  * - \b min: minimum value, if relevant for the data type.
@@ -513,10 +503,7 @@ private:
     std::vector<QPointer<QWidget> > m_param_boxes;
 
     /// Used when we bind widgets to data
-    data::ptr_vector<data::object, data::access::inout> m_settings {this, "keys"};
-
-    /// Used when we bind widgets to a map of data
-    data::ptr<data::map, data::access::inout> m_settings_map {this, "map"};
+    data::ptr_vector<data::object, data::access::inout> m_settings {this, "item.data"};
 
     using object_modified_t         = core::com::slot<void ()>;
     using settings_slot_container_t = std::map<std::string, sight::sptr<object_modified_t> >;

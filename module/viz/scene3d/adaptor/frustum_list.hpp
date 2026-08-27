@@ -51,20 +51,21 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * @code{.xml}
         <service type="sight::module::viz::scene3d::adaptor::frustum_list">
-            <in key="camera" uid="..." />
+            <data camera="${...}" />
             <config near="0.1" far="300" color="#f8e119" transform="..." />
        </service>
    @endcode
  *
  * @subsection Input Input:
- * - \b camera [sight::data::camera]: data::camera that handles calibration parameters
+ * - \b data.camera [sight::data::camera]: data::camera that handles calibration parameters
+ *
+ * - \b config.visible [sight::data::boolean] (optional, default=true): the visibility of the adaptor.
  *
  * @subsection Configuration Configuration:
  * - \b near (optional, float, default=1.0): near clipping distance of the Ogre::Camera
  * - \b far (optional, float, default=20.0): far clipping distance of the Ogre::Camera
  * - \b color (optional, hexadecimal, default=0x0000FF): frustum's color
  * - \b transform (optional, string, default=""): transform applied to the frustumList's scene node
- * - \b visible (optional, bool, default=true): the visibility of the adaptor.
  */
 class frustum_list final :
     public sight::viz::scene3d::adaptor,
@@ -147,7 +148,7 @@ private:
     /// Contains the Ogre camera used to compute each frustum's corners.
     Ogre::Camera* m_ogre_camera {nullptr};
 
-    sight::data::ptr<sight::data::camera, sight::data::access::in> m_camera {this, "camera"};
+    sight::data::ptr<sight::data::camera, sight::data::access::in> m_camera {this, "data.camera"};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

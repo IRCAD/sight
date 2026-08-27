@@ -58,20 +58,6 @@ namespace sight::app
         </service>
    @endcode
  *
- * The former syntax is still supported:
- *
- * @code{.xml}
-        <service type="sight::app::config_launcher" >
-            <properties config="..." />
-            <inout group="object">
-                <key name="object1" uid="..." />
-                <key name="object2" value="..." />
-                ...
-            </inout>
-            <parameter replace="channel" by="changeValueChannel" />
-            <parameter replace="service" by="serviceUid" />
-        </service>
-   @endcode
  * @subsection Properties Properties:
  * - \b config [sight::data::string]: identifier of the configuration to launch.
  * @subsection In-Out In-Out:
@@ -136,12 +122,6 @@ private:
     /// Name of the channel used to connect stopConfig slot to the config frame closing.
     std::string m_proxy_channel;
 
-    /// Input data to pass to the configuration - DEPRECATED
-    data::ptr_vector<data::object, data::access::inout> m_data {this, app::helper::config_launcher::DATA_GROUP};
-
-    /// Input data to pass to the configuration
-    data::ptr_vector<data::object, data::access::inout> m_object {this, app::helper::config_launcher::OBJECT_GROUP};
-
     /// Names of the objects passed to the configuration, with the hierarchical syntax
     data::ptr_vector<data::string, data::access::in> m_object_names {
         this, app::helper::config_launcher::OBJECT_NAME_GROUP
@@ -156,7 +136,7 @@ private:
     data::property<data::string> m_config_id {this, "config", {}};
 
     /// Identifier of the configuration to launch, with the hierarchical syntax
-    data::property<data::string> m_nested_config_id {this, "config.id", {}};
+    data::ptr<data::string> m_nested_config_id {this, "config.id", {}};
 
     /// Returns the configuration identifier, whatever the syntax used to declare it
     [[nodiscard]] std::string config_id() const;

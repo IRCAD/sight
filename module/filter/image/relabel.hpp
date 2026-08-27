@@ -35,11 +35,11 @@ namespace sight::module::filter::image
  * @section XML XML Configuration
  * @code{.xml}
    <service uid="..." type="sight::module::filter::image::relabel">
-       <in key="dictionary" uid="..." />
-       <inout key="image" uid="..." />
+       <input dictionary="${...}" />
+       <output image="${...}" />
    </service>
    <service uid="..." type="sight::module::filter::image::relabel">
-       <inout key="image" uid="..." />
+       <output image="${...}" />
        <config>
            <map from="0" to="42" />
            <map from="2" to="5" />
@@ -91,8 +91,8 @@ protected:
 
 private:
 
-    sight::data::ptr<sight::data::image, sight::data::access::inout> m_image_inout {this, "image"};
-    sight::data::ptr<sight::data::map, sight::data::access::in> m_dictionary_in {this, "dictionary"};
+    sight::data::ptr<sight::data::image, sight::data::access::inout> m_image_inout {this, "output.image"};
+    sight::data::ptr<sight::data::map, sight::data::access::in> m_dictionary_in {this, "input.dictionary"};
 };
 
 } // namespace sight::module::filter::image

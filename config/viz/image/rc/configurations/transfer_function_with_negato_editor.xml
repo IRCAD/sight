@@ -2,13 +2,11 @@
 Example:
 
 <service uid="..." type="sight::app::config_launcher">
-    <properties config="TransferFunctionWithNegatoEditor" />
-    <inout group="object">
-        <key name="image" uid="..." />
-        <key name="histogram" uid="..." />
-        <key name="transferFunctionOutput" uid="..." />
-    </inout>
-    <parameter replace="WID_PARENT" by="..." />
+    <config id="TransferFunctionWithNegatoEditor" />
+    <object name="image" uid="..." />
+    <object name="histogram" uid="..." />
+    <object name="transferFunctionOutput" uid="..." />
+    <param name="WID_PARENT" value="..." />
 </service>
 -->
 <extension implements="sight::app::extension::config">
@@ -45,8 +43,7 @@ Example:
 
         <!-- This manager adds/removes a field (m_transferFunctionCompositeId) on Image (image) -->
         <service uid="fieldMgr" type="sight::module::data::manage">
-            <inout key="object" uid="TFSet" />
-            <inout key="container" uid="${image}" />
+            <data element="${TFSet}" container="${image}" />
             <field>m_transferFunctionCompositeId</field>
         </service>
 
@@ -73,22 +70,18 @@ Example:
         </service>
 
         <service uid="cfgNegato" type="sight::app::config_launcher">
-            <properties config="2DNegatoWithTF" />
-            <inout group="object">
-                <key name="image" uid="${image}" />
-                <key name="transferFunctionDeferred" uid="${transferFunctionOutput}" optional="true" />
-            </inout>
-            <parameter replace="WID_PARENT" by="negatoView" />
+            <config id="2DNegatoWithTF" />
+            <object name="image" uid="${image}" />
+            <object name="transferFunctionDeferred" uid="${transferFunctionOutput}" optional="true" />
+            <param name="WID_PARENT" value="negatoView" />
         </service>
 
         <service uid="tfWidget" type="sight::app::config_launcher">
-            <properties config="TransferFunctionWidget" />
-            <inout group="object">
-                <key name="image" uid="${image}" />
-                <key name="histogram" uid="${histogram}" />
-                <key name="transferFunction" uid="${transferFunctionOutput}" />
-            </inout>
-            <parameter replace="WID_PARENT" by="tfScene" />
+            <config id="TransferFunctionWidget" />
+            <object name="image" uid="${image}" />
+            <object name="histogram" uid="${histogram}" />
+            <object name="transferFunction" uid="${transferFunctionOutput}" />
+            <param name="WID_PARENT" value="tfScene" />
         </service>
 
         <connect>

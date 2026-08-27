@@ -69,20 +69,16 @@
             <!-- ******************************* Services ***************************************** -->
 
             <service uid="dynamicViewSrv" type="sight::module::ui::qt::activity::dynamic_view">
-                <inout group="data">
-                    <key name="seriesSet" uid="seriesSet" />
-                </inout>
+                <object name="seriesSet" uid="seriesSet" />
                 <mainActivity id="ExDicomSegmentation_Base_Activity" closable="false" />
-                <parameters>
-                    <parameter replace="ICON_PATH" by="ex_dicom_segmentation/tuto.ico" />
-                    <parameter replace="DYNAMICVIEW_SENDER_CHANNEL" by="DYNAMICVIEW_RECIEVER_CHANNEL" />
-                </parameters>
+                <param name="ICON_PATH" value="ex_dicom_segmentation/tuto.ico" />
+                <param name="DYNAMICVIEW_SENDER_CHANNEL" value="dynamicview_receiver_channel" />
                 <config document="false" />
             </service>
 
             <!-- ******************************* Connections ***************************************** -->
 
-            <connect channel="DYNAMICVIEW_RECIEVER_CHANNEL">
+            <connect channel="dynamicview_receiver_channel">
                 <slot>dynamicViewSrv/create_tab</slot>
             </connect>
         </config>

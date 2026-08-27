@@ -194,18 +194,18 @@ Detail of the ToolBar
             </service>
 
             <service uid="N1NegatoAdp" type="sight::module::viz::scene3d::adaptor::negato3d" auto_connect="true">
-                <in key="image" uid="myImage" />
-                <inout key="tf" uid="tf" />
+                <data image="${myImage}" />
+                <data tf="${tf}" />
                 <config orientation="axial" interactive="true" />
             </service>
 
             <service uid="N1MeshAdp" type="sight::module::viz::scene3d::adaptor::mesh" auto_connect="true">
-                <in key="mesh" uid="meshOnNegato1" />
+                <data mesh="${meshOnNegato1}" />
                 <config picker="negato1default" />
             </service>
 
             <service uid="N1PointListAdp" type="sight::module::viz::scene3d::adaptor::point_list" auto_connect="true">
-                <in key="pointList" uid="pointList1" />
+                <data pointList="${pointList1}" />
                 <config color="#619647" radius="1.0" fixedSize="true" texture_name="cross.dds" />
             </service>
 
@@ -232,12 +232,12 @@ Detail of the ToolBar
             </service>
 
             <service uid="N2MeshAdp" type="sight::module::viz::scene3d::adaptor::mesh" auto_connect="true">
-                <in key="mesh" uid="meshOnNegato2" />
+                <data mesh="${meshOnNegato2}" />
                 <config picker="negato2default" />
             </service>
 
             <service uid="N2PointListAdp" type="sight::module::viz::scene3d::adaptor::point_list" auto_connect="true">
-                <in key="pointList" uid="pointList2" />
+                <data pointList="${pointList2}" />
                 <config color="#619647" radius="5.0" />
             </service>
 
@@ -265,22 +265,22 @@ Detail of the ToolBar
             </service>
 
             <service uid="N3Mesh1Adp" type="sight::module::viz::scene3d::adaptor::mesh" auto_connect="true">
-                <in key="mesh" uid="meshOnNegato1" />
+                <data mesh="${meshOnNegato1}" />
             </service>
 
             <service uid="N3Mesh2Adp" type="sight::module::viz::scene3d::adaptor::mesh" auto_connect="true">
-                <in key="mesh" uid="meshOnNegato2" />
+                <data mesh="${meshOnNegato2}" />
                 <config transform="registrationMatrix" />
             </service>
 
             <service uid="N3NegatoAdp" type="sight::module::viz::scene3d::adaptor::negato3d" auto_connect="true">
-                <in key="image" uid="myImage" />
-                <inout key="tf" uid="tf" />
+                <data image="${myImage}" />
+                <data tf="${tf}" />
                 <config orientation="axial" interactive="true" />
             </service>
 
             <service uid="N3TransformAdp" type="sight::module::viz::scene3d::adaptor::transform" auto_connect="true">
-                <inout key="transform" uid="registrationMatrix" />
+                <data transform="${registrationMatrix}" />
                 <config transform="registrationMatrix" />
             </service>
 
@@ -295,24 +295,21 @@ Detail of the ToolBar
             </service>
 
             <service uid="imageReaderSrv" type="sight::module::ui::io::selector">
-                <inout key="data" uid="myImage" />
-                <type mode="reader" />
+                <data read="${myImage}" />
             </service>
 
             <!-- Editors for Negato1 -->
             <service uid="sliderNegatoSrv" type="sight::module::ui::qt::image::slice_index_position_editor" auto_connect="true">
-                <inout key="image" uid="myImage" />
+                <data image="${myImage}" />
                 <config orientation="axial" label="index" display_axis_selector="false" display_step_buttons="false" />
             </service>
 
             <service uid="meshReader1Srv" type="sight::module::ui::io::selector">
-                <inout key="data" uid="meshOnNegato1" />
-                <type mode="reader" />
+                <data read="${meshOnNegato1}" />
             </service>
 
             <service uid="meshReader2Srv" type="sight::module::ui::io::selector">
-                <inout key="data" uid="meshOnNegato2" />
-                <type mode="reader" />
+                <data read="${meshOnNegato2}" />
             </service>
 
             <!-- Services to add a point in the pointlist when the user clicks in the scene -->

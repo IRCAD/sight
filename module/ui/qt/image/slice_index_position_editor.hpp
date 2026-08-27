@@ -65,13 +65,13 @@ enum orientation_t : std::uint8_t
  *
  * @code{.xml}
    <service uid="..." type="sight::module::ui::qt::image::slice_index_position_editor" auto_connect="true">
-      <inout key="image" uid="..."/>
+      <data image="..."/>
       <config orientation="${orientationValue}" label="position" display_axis_selector="true"
  * display_step_buttons="true" />
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b image [sight::data::image]: image on which the slice index/position will be changed.
+ * - \b data.image [sight::data::image]: image on which the slice index/position will be changed.
  *
  * @subsection Configuration Configuration
  * - \b orientation : Axis on which the index/position of slice will be changed, must be "axial", "frontal" or
@@ -178,7 +178,7 @@ private:
      */
 
     sight::ui::qt::slice_selector* m_slice_selector_with_index {};
-    data::ptr<data::image, data::access::inout> m_image {this, "image"};
+    data::ptr<data::image, data::access::inout> m_image {this, "data.image"};
 
     std::int64_t m_axial_index {-1};
     std::int64_t m_frontal_index {-1};

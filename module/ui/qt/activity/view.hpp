@@ -26,8 +26,6 @@
 
 #include <app/config_manager.hpp>
 
-#include <core/tools/failed.hpp>
-
 #include <data/activity.hpp>
 #include <data/object.hpp>
 

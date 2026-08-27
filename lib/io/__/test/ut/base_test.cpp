@@ -149,7 +149,7 @@ TEST_SUITE("sight::io::base")
             // Reader
             {
                 auto test_reader_srv = std::make_shared<test_reader>(sight::io::service::file);
-                test_reader_srv->set_inout(file, sight::io::service::FILES_KEY);
+                test_reader_srv->set_input(file, sight::io::service::FILE_KEY);
 
                 CHECK_NOTHROW(test_reader_srv->configure());
                 CHECK_NOTHROW(test_reader_srv->start().get());
@@ -163,7 +163,7 @@ TEST_SUITE("sight::io::base")
             // Writer
             {
                 auto test_writer_srv = std::make_shared<test_writer>(sight::io::service::file);
-                test_writer_srv->set_inout(file, sight::io::service::FILES_KEY);
+                test_writer_srv->set_input(file, sight::io::service::FILE_KEY);
 
                 CHECK_NOTHROW(test_writer_srv->configure());
                 CHECK_NOTHROW(test_writer_srv->start().get());
@@ -190,7 +190,7 @@ TEST_SUITE("sight::io::base")
             // Reader
             {
                 auto test_reader_srv = std::make_shared<test_reader>(sight::io::service::files);
-                test_reader_srv->set_inout(files, sight::io::service::FILES_KEY);
+                test_reader_srv->set_input(files, sight::io::service::FILE_KEY);
 
                 CHECK_NOTHROW(test_reader_srv->configure());
                 CHECK_NOTHROW(test_reader_srv->start().get());
@@ -211,7 +211,7 @@ TEST_SUITE("sight::io::base")
             // Writer
             {
                 auto test_writer_srv = std::make_shared<test_writer>(sight::io::service::files);
-                test_writer_srv->set_inout(files, sight::io::service::FILES_KEY);
+                test_writer_srv->set_input(files, sight::io::service::FILE_KEY);
 
                 CHECK_NOTHROW(test_writer_srv->configure());
                 CHECK_NOTHROW(test_writer_srv->start().get());
@@ -243,7 +243,7 @@ TEST_SUITE("sight::io::base")
             // Reader
             {
                 auto test_reader_srv = std::make_shared<test_reader>(sight::io::service::folder);
-                test_reader_srv->set_inout(folder, sight::io::service::FOLDER_KEY);
+                test_reader_srv->set_input(folder, sight::io::service::FOLDER_KEY);
 
                 CHECK_NOTHROW(test_reader_srv->configure());
                 CHECK_NOTHROW(test_reader_srv->start().get());
@@ -257,7 +257,7 @@ TEST_SUITE("sight::io::base")
             // Writer
             {
                 auto test_writer_srv = std::make_shared<test_writer>(sight::io::service::folder);
-                test_writer_srv->set_inout(folder, sight::io::service::FOLDER_KEY);
+                test_writer_srv->set_input(folder, sight::io::service::FOLDER_KEY);
 
                 CHECK_NOTHROW(test_writer_srv->configure());
                 CHECK_NOTHROW(test_writer_srv->start().get());
@@ -279,7 +279,7 @@ TEST_SUITE("sight::io::base")
             const std::string expected_resource("sight::module::ui::icons/export.svg");
             auto resource        = std::make_shared<sight::data::string>(expected_resource);
             auto test_reader_srv = std::make_shared<test_reader>(sight::io::service::file);
-            test_reader_srv->set_inout(resource, sight::io::service::RESOURCES_KEY);
+            test_reader_srv->set_input(resource, sight::io::service::READER_RESOURCE_KEY);
 
             CHECK_NOTHROW(test_reader_srv->configure());
             CHECK_NOTHROW(test_reader_srv->start().get());
@@ -299,8 +299,8 @@ TEST_SUITE("sight::io::base")
             // Test that file get precedence over resources
             const std::filesystem::path expected_file("a");
             auto file = std::make_shared<sight::data::string>(expected_file.string());
-            test_reader_srv->set_inout(file, sight::io::service::FILES_KEY);
-            test_reader_srv->set_inout(resource, sight::io::service::RESOURCES_KEY);
+            test_reader_srv->set_input(file, sight::io::service::FILE_KEY);
+            test_reader_srv->set_input(resource, sight::io::service::READER_RESOURCE_KEY);
 
             CHECK_NOTHROW(test_reader_srv->configure());
             CHECK_NOTHROW(test_reader_srv->start().get());
@@ -330,8 +330,8 @@ TEST_SUITE("sight::io::base")
             );
 
             auto test_reader_srv = std::make_shared<test_reader>(sight::io::service::files);
-            test_reader_srv->set_inout(resources, sight::io::service::RESOURCES_KEY);
-            test_reader_srv->set_inout(files, sight::io::service::FILES_KEY);
+            test_reader_srv->set_input(resources, sight::io::service::READER_RESOURCE_KEY);
+            test_reader_srv->set_input(files, sight::io::service::FILE_KEY);
 
             CHECK_NOTHROW(test_reader_srv->configure());
             CHECK_NOTHROW(test_reader_srv->start().get());
@@ -370,7 +370,7 @@ TEST_SUITE("sight::io::base")
             const std::string expected_resource("sight::module::ui::icons/");
             auto resource        = std::make_shared<sight::data::string>(expected_resource);
             auto test_reader_srv = std::make_shared<test_reader>(sight::io::service::folder);
-            test_reader_srv->set_inout(resource, sight::io::service::RESOURCES_KEY);
+            test_reader_srv->set_input(resource, sight::io::service::READER_RESOURCE_KEY);
 
             CHECK_NOTHROW(test_reader_srv->configure());
             CHECK_NOTHROW(test_reader_srv->start().get());
@@ -387,8 +387,8 @@ TEST_SUITE("sight::io::base")
             // Test that folder get precedence over resources
             const std::filesystem::path expected_folder("d");
             auto folder = std::make_shared<sight::data::string>(expected_folder.string());
-            test_reader_srv->set_inout(folder, sight::io::service::FOLDER_KEY);
-            test_reader_srv->set_inout(resource, sight::io::service::RESOURCES_KEY);
+            test_reader_srv->set_input(folder, sight::io::service::FOLDER_KEY);
+            test_reader_srv->set_input(resource, sight::io::service::READER_RESOURCE_KEY);
 
             CHECK_NOTHROW(test_reader_srv->configure());
             CHECK_NOTHROW(test_reader_srv->start().get());
@@ -429,7 +429,7 @@ TEST_SUITE("sight::io::base")
             auto window_title = std::make_shared<sight::data::string>("Custom window title");
 
             auto test_reader_srv = std::make_shared<test_reader>(sight::io::service::file);
-            test_reader_srv->set_inout(window_title, sight::io::service::WINDOW_TITLE_KEY);
+            test_reader_srv->set_input(window_title, sight::io::service::WINDOW_TITLE_KEY);
             CHECK_NOTHROW(test_reader_srv->configure());
             CHECK_NOTHROW(test_reader_srv->start().get());
             CHECK_NOTHROW(test_reader_srv->open_location_dialog());
@@ -438,7 +438,7 @@ TEST_SUITE("sight::io::base")
             CHECK_EQ(window_title->get_value(), test_reader_srv->m_used_window_title);
 
             auto test_writer_srv = std::make_shared<test_writer>(sight::io::service::file);
-            test_writer_srv->set_inout(window_title, sight::io::service::WINDOW_TITLE_KEY);
+            test_writer_srv->set_input(window_title, sight::io::service::WINDOW_TITLE_KEY);
             CHECK_NOTHROW(test_writer_srv->configure());
             CHECK_NOTHROW(test_writer_srv->start().get());
             CHECK_NOTHROW(test_writer_srv->open_location_dialog());

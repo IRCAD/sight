@@ -53,10 +53,10 @@ TEST_SUITE("sight::module::io::vtk::series_set_reader")
         );
 
         sight::service::config_t reader_srv_cfg;
-        reader_srv_cfg.add("file", image_file.string());
-        sight::service::config_t file2_cfg;
-        reader_srv_cfg.add("file", mesh_file.string());
-        reader_srv_cfg.add("file", mesh_file.string());
+        reader_srv_cfg.add(
+            "path.<xmlattr>.file",
+            image_file.string() + ";" + mesh_file.string() + ";" + mesh_file.string()
+        );
 
         auto series_set = std::make_shared<sight::data::series_set>();
 
@@ -64,7 +64,7 @@ TEST_SUITE("sight::module::io::vtk::series_set_reader")
 
         CHECK(srv);
 
-        srv->set_inout(series_set, "data");
+        srv->set_inout(series_set, "data.read");
         srv->set_config(reader_srv_cfg);
         srv->configure();
         srv->start().get();
@@ -132,7 +132,7 @@ TEST_SUITE("sight::module::io::vtk::series_set_reader")
         );
 
         sight::service::config_t reader_srv_cfg;
-        reader_srv_cfg.add("file", image_file.string());
+        reader_srv_cfg.add("path.<xmlattr>.file", image_file.string());
 
         auto image_series = std::make_shared<sight::data::image_series>();
         auto series_set   = std::make_shared<sight::data::series_set>();
@@ -142,7 +142,7 @@ TEST_SUITE("sight::module::io::vtk::series_set_reader")
 
         CHECK(srv);
 
-        srv->set_inout(series_set, "data");
+        srv->set_inout(series_set, "data.read");
         srv->set_config(reader_srv_cfg);
         srv->configure();
         srv->start().get();

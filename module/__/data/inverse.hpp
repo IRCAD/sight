@@ -37,16 +37,16 @@ namespace sight::module::data
  * @section XML XML Configuration
  * @code{.xml}
        <service uid="..." type="sight::module::data::inverse">
-           <in key="source" uid="..." />
-           <inout key="target" uid="..." />
+           <data source="${...}" />
+           <data target="${...}" />
        </service>
    @endcode
  *
  * @subsection Input Input
- * - \b source [sight::data::string_serializable]: define the source object to inverse.
+ * - \b data.source [sight::data::string_serializable]: define the source object to inverse.
  *
  * @subsection In-Out In-Out
- * - \b target [sight::data::string_serializable]: define the target object to update.
+ * - \b data.target [sight::data::string_serializable]: define the target object to update.
  */
 class inverse final : public service::filter
 {
@@ -80,8 +80,8 @@ protected:
 
 private:
 
-    sight::data::ptr<sight::data::string_serializable, sight::data::access::in> m_source {this, "source"};
-    sight::data::ptr<sight::data::string_serializable, sight::data::access::inout> m_target {this, "target"};
+    sight::data::ptr<sight::data::string_serializable, sight::data::access::in> m_source {this, "data.source"};
+    sight::data::ptr<sight::data::string_serializable, sight::data::access::inout> m_target {this, "data.target"};
 };
 
 } // namespace sight::module::data.

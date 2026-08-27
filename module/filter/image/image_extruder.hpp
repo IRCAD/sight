@@ -49,10 +49,8 @@ namespace sight::module::filter::image
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="sight::module::filter::image::image_extruder">
-        <in key="meshes" uid="..." />
-        <in key="image" uid="..." />
-        <in key="transform" uid="..." />
-        <inout key="mask" uid="..." />
+        <input meshes="${...}" image="${...}" transform="${...}" />
+        <output mask="${...}" />
     </service>
    @endcode
  *
@@ -114,10 +112,10 @@ private:
     /// SLOT: called when reconstructions are added to the model series.
     void add_reconstructions(data::model_series::reconstruction_vector_t _reconstructions) const;
 
-    static constexpr std::string_view MESHES_INPUT    = "meshes";
-    static constexpr std::string_view IMAGE_INPUT     = "image";
-    static constexpr std::string_view TRANSFORM_INPUT = "transform";
-    static constexpr std::string_view IMAGE_INOUT     = "mask";
+    static constexpr std::string_view MESHES_INPUT    = "input.meshes";
+    static constexpr std::string_view IMAGE_INPUT     = "input.image";
+    static constexpr std::string_view TRANSFORM_INPUT = "input.transform";
+    static constexpr std::string_view IMAGE_INOUT     = "output.mask";
 
     sight::data::ptr<sight::data::model_series, sight::data::access::in> m_meshes {this, MESHES_INPUT};
     sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, IMAGE_INPUT};

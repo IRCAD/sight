@@ -56,11 +56,12 @@ TEST_SUITE("sight::module::io::itk")
 
         if(_access == sight::data::access::inout)
         {
-            srv->set_inout(_obj, sight::io::service::DATA_KEY);
+            // Readers expose their generic data under the hierarchical key, writers keep the legacy one
+            srv->set_inout(_obj, sight::io::service::READER_DATA_KEY);
         }
         else
         {
-            srv->set_input(_obj, sight::io::service::DATA_KEY);
+            srv->set_input(_obj, sight::io::service::WRITER_DATA_KEY);
         }
 
         srv->set_config(_cfg);
@@ -84,7 +85,7 @@ TEST_SUITE("sight::module::io::itk")
 
         // Create config
         sight::service::config_t srv_cfg;
-        srv_cfg.add("folder", tmp_dir.string());
+        srv_cfg.add("path.<xmlattr>.folder", tmp_dir.string());
 
         // Create and execute service
         execute_service(
@@ -120,7 +121,7 @@ TEST_SUITE("sight::module::io::itk")
 
         // Create config
         sight::service::config_t srv_cfg;
-        srv_cfg.add("file", path.string());
+        srv_cfg.add("path.<xmlattr>.file", path.string());
 
         // Create and execute service
         execute_service(
@@ -170,7 +171,7 @@ TEST_SUITE("sight::module::io::itk")
 
         // Create config
         sight::service::config_t srv_cfg;
-        srv_cfg.add("file", path.string());
+        srv_cfg.add("path.<xmlattr>.file", path.string());
 
         // Create and execute service
         execute_service(
@@ -221,7 +222,7 @@ TEST_SUITE("sight::module::io::itk")
 
         // Create config
         sight::service::config_t srv_cfg;
-        srv_cfg.add("file", path.string());
+        srv_cfg.add("path.<xmlattr>.file", path.string());
 
         // Create and execute service
         execute_service(
@@ -274,7 +275,7 @@ TEST_SUITE("sight::module::io::itk")
 
         // Create config
         sight::service::config_t srv_cfg;
-        srv_cfg.add("file", path.string());
+        srv_cfg.add("path.<xmlattr>.file", path.string());
 
         // Create and execute service
         execute_service(
@@ -337,8 +338,7 @@ TEST_SUITE("sight::module::io::itk")
 
         // Create config
         sight::service::config_t srv_cfg;
-        srv_cfg.add("file", image_file.string());
-        srv_cfg.add("file", skin_file.string());
+        srv_cfg.add("path.<xmlattr>.file", image_file.string() + ";" + skin_file.string());
 
         // load series_set
         auto series_set = std::make_shared<sight::data::series_set>();

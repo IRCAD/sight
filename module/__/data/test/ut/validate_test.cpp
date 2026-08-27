@@ -22,8 +22,6 @@
 #include <data/image.hpp>
 #include <data/string.hpp>
 
-#include <service/op.hpp>
-
 // Include before wait.hpp
 #include <doctest/doctest.h>
 
@@ -70,7 +68,7 @@ TEST_SUITE("sight::module::data::validate")
         m_service->signal("is_invalid")->connect(is_invalid_slot);
 
         m_service->set_config("<config id='sight::data::validator::equals'><value>expected</value></config>");
-        m_service->set_input(string, "data");
+        m_service->set_input(string, "data.input");
         REQUIRE_NOTHROW(m_service->configure());
         REQUIRE_NOTHROW(m_service->start().get());
 
@@ -159,7 +157,7 @@ TEST_SUITE("sight::module::data::validate")
         m_service->signal("is_invalid")->connect(is_invalid_slot);
 
         m_service->set_config("<config id='sight::data::validator::filled' />");
-        m_service->set_input(image, "data");
+        m_service->set_input(image, "data.input");
         REQUIRE_NOTHROW(m_service->configure());
         REQUIRE_NOTHROW(m_service->start().get());
 
@@ -230,8 +228,8 @@ TEST_SUITE("sight::module::data::validate")
         m_service->signal("is_invalid")->connect(is_invalid_slot);
 
         m_service->set_config("<config id='sight::data::validator::equals'><value>expected</value></config>");
-        m_service->set_input(string, "data");
-        m_service->set_inout(on_change, "on_change");
+        m_service->set_input(string, "data.input");
+        m_service->set_inout(on_change, "config.on_change");
         REQUIRE_NOTHROW(m_service->configure());
         REQUIRE_NOTHROW(m_service->start().get());
 
@@ -304,8 +302,8 @@ TEST_SUITE("sight::module::data::validate")
         m_service->signal("is_invalid")->connect(is_invalid_slot);
 
         m_service->set_config("<config id='sight::data::validator::equals'><value>expected</value></config>");
-        m_service->set_input(string, "data");
-        m_service->set_inout(on_change, "on_change");
+        m_service->set_input(string, "data.input");
+        m_service->set_inout(on_change, "config.on_change");
         REQUIRE_NOTHROW(m_service->configure());
         REQUIRE_NOTHROW(m_service->start().get());
 
@@ -353,8 +351,8 @@ TEST_SUITE("sight::module::data::validate")
         valid_prop->signal(sight::data::signals::MODIFIED)->connect(modified_slot);
 
         m_service->set_config("<config id='sight::data::validator::filled' />");
-        m_service->set_input(image, "data");
-        m_service->set_inout(valid_prop, "valid");
+        m_service->set_input(image, "data.input");
+        m_service->set_inout(valid_prop, "result.valid");
         REQUIRE_NOTHROW(m_service->configure());
         REQUIRE_NOTHROW(m_service->start().get());
 
@@ -398,8 +396,8 @@ TEST_SUITE("sight::module::data::validate")
         invalid_prop->signal(sight::data::signals::MODIFIED)->connect(modified_slot);
 
         m_service->set_config("<config id='sight::data::validator::filled' />");
-        m_service->set_input(image, "data");
-        m_service->set_inout(invalid_prop, "invalid");
+        m_service->set_input(image, "data.input");
+        m_service->set_inout(invalid_prop, "result.invalid");
         REQUIRE_NOTHROW(m_service->configure());
         REQUIRE_NOTHROW(m_service->start().get());
 

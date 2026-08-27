@@ -92,12 +92,12 @@ TEST_SUITE("sight::module::filter::image::propagator")
 
         srv->set_worker(sight::core::thread::get_default_worker());
 
-        const std::string config = "<properties value='50'/>";
+        const std::string config = "<config value='50'/>";
         srv->set_config(config);
-        srv->set_input(image, "image_in");
-        srv->set_input(point_list, "seeds");
-        srv->set_inout(mask, "image_out");
-        srv->set_inout(mode, "mode");
+        srv->set_input(image, "input.image");
+        srv->set_input(point_list, "input.seeds");
+        srv->set_inout(mask, "output.image");
+        srv->set_input(mode, "config.mode");
         srv->configure();
         srv->start().get();
         srv->update().get();
@@ -158,9 +158,9 @@ TEST_SUITE("sight::module::filter::image::propagator")
         // One seed in the '2554' region and one seed in the '1200' region, propagation expected in both regions
         point_list->push_back(std::make_shared<sight::data::point>(105., -190., 55.));
         auto samples_out = std::make_shared<sight::data::image>();
-        srv->set_inout(samples_out, "samples_out");
+        srv->set_inout(samples_out, "output.sample");
         auto mask_filled_out = std::make_shared<sight::data::boolean>(false);
-        srv->set_inout(mask_filled_out, "mask_filled_out");
+        srv->set_output(mask_filled_out, "output.mask_filled");
 
         srv->update().get();
         {

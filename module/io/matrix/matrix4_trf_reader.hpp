@@ -36,11 +36,11 @@ namespace sight::module::io::matrix
  *
  * @code{.xml}
    <service type="sight::module::io::matrix::matrix4_trf_reader">
-       <inout key="data" uid="..." />
+       <data read="..." />
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b data [sight::data::matrix4]: matrix to read.
+ * - \b data.read [sight::data::matrix4]: matrix to read.
  */
 class matrix4_trf_reader : public sight::io::service::reader
 {

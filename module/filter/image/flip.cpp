@@ -56,7 +56,7 @@ void flip::updating()
 {
     const auto in_img = m_source.lock();
 
-    SIGHT_ASSERT("No 'imageIn' found !", in_img);
+    SIGHT_ASSERT("No 'input.image' found !", in_img);
     if(in_img)
     {
         data::image::sptr out_img = std::make_shared<data::image>();

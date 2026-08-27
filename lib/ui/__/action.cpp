@@ -66,23 +66,6 @@ void action::initialize()
 
     auto config = this->get_config();
 
-    if(auto properties = config.get_child_optional("properties"); not properties.has_value())
-    {
-        const auto checked = m_checked.lock();
-        *checked = core::ptree::get_value(config, "state.<xmlattr>.checked", false);
-        const auto enabled = m_enabled.lock();
-        *enabled = core::ptree::get_value(config, "state.<xmlattr>.enabled", true);
-
-        const auto inverse = m_inverse.lock();
-        *inverse = core::ptree::get_value(config, "state.<xmlattr>.inverse", false);
-        const auto visible = m_visible.lock();
-        *visible = core::ptree::get_value(config, "state.<xmlattr>.visible", true);
-    }
-    else
-    {
-        SIGHT_ASSERT("Do not mix properties with pure signals", !config.get_child_optional("state").has_value());
-    }
-
     m_confirm_action  = config.get_child_optional("confirmation").has_value();
     m_confirm_message = config.get<std::string>("confirmation.<xmlattr>.message", "");
     m_default_button  =

@@ -331,8 +331,30 @@ app::detail::service_config config::parse_service(
     // Get service configuration
     if(!config.empty())
     {
-        const auto srv_cfg_factory = service::extension::config::get_default();
-        srv_config.m_config = srv_cfg_factory->get_service_config(config, srv_config.m_type);
+        const auto srv_cfg_factory                      = service::extension::config::get_default();
+        boost::property_tree::ptree service_config_tree = srv_cfg_factory->get_service_config(
+            config,
+            srv_config.m_type
+        );
+
+        // Merge the two trees: first add attributes from _srv_elem to
+        for(const auto& attr : _srv_elem.get_child("<xmlattr>"))
+        {
+            service_config_tree.put(attr.first, attr.second.data());
+        }
+
+        // Then recursively add children from _srv_elem that are not already in service_config_tree.
+        for(const auto& child : _srv_elem)
+        {
+            if(child.first != "<xmlattr>")
+            {
+                boost::property_tree::ptree child_tree;
+                child_tree.push_back(child);
+                core::ptree::merge(service_config_tree, child_tree);
+            }
+        }
+
+        srv_config.m_config = service_config_tree;
     }
     else
     {
@@ -366,6 +388,7 @@ app::detail::service_config config::parse_service(
     }
 
     // Parse input/output configurations
+    std::set<std::pair<std::string, std::optional<std::size_t> > > configured_keys;
     for(const auto& cfg : object_cfgs)
     {
         // Access type
@@ -424,6 +447,7 @@ app::detail::service_config config::parse_service(
                 {
                     // The object is built on the fly by the service itself, there is nothing to bind here. The index
                     // is still consumed so that the next keys of the group keep their position.
+                    configured_keys.insert({key, count});
                     ++count;
                     continue;
                 }
@@ -455,18 +479,29 @@ app::detail::service_config config::parse_service(
                 }
 
                 // Assign the current object config in the service config
+                configured_keys.insert({key, count});
                 srv_config.m_objects[{key, count++}] = group_objconfig;
             }
         }
         else
         {
             // Identifier
-            const auto uid = cfg.second.get_optional<std::string>("<xmlattr>.uid");
+            const auto uid   = cfg.second.get_optional<std::string>("<xmlattr>.uid");
+            const auto value = cfg.second.get_optional<std::string>("<xmlattr>.value");
 
             if(!uid.has_value())
             {
                 // Without an object uid, the object is built on the fly by the service itself, either from the
                 // literal value or from the default value declared with the data::ptr. Nothing to bind here.
+                if(value.has_value())
+                {
+                    const auto key = cfg.second.get_optional<std::string>("<xmlattr>.key");
+                    if(key.has_value())
+                    {
+                        configured_keys.insert({*key, std::nullopt});
+                    }
+                }
+
                 continue;
             }
 
@@ -482,6 +517,8 @@ app::detail::service_config config::parse_service(
                 std::string(_err_msg_head) + "Missing object attribute 'key'" + err_msg_tail,
                 !objconfig.m_key.empty()
             );
+
+            configured_keys.insert({objconfig.m_key, std::nullopt});
 
             const auto default_optional_cfg = is_key_optional(srv_config.m_type, objconfig.m_key);
 
@@ -594,19 +631,22 @@ app::detail::service_config config::parse_service(
             continue;
         }
 
-        const data::key_info& info = it_key->second;
+        const data::key_info& info             = it_key->second;
+        const std::optional<std::size_t> index = info.group ? std::optional {entry.index} : std::nullopt;
 
         // A key may be given either an object uid, bound here, or a literal value, built by the service itself
         if(!is_object_property(entry.value) && !_deferred_objects.contains(entry.value))
         {
+            SIGHT_THROW_IF(
+                "Key " << std::quoted(entry.key) << " is configured twice" << err_msg_tail,
+                configured_keys.contains({entry.key, index})
+            );
             continue;
         }
 
-        const std::optional<std::size_t> index = info.group ? std::optional {entry.index} : std::nullopt;
-
         SIGHT_THROW_IF(
             "Key " << std::quoted(entry.key) << " is configured twice" << err_msg_tail,
-            srv_config.m_objects.contains({entry.key, index})
+            configured_keys.contains({entry.key, index})
         );
 
         srv_config.m_objects[{entry.key, index}] = app::detail::object_serviceconfig
@@ -618,6 +658,7 @@ app::detail::service_config config::parse_service(
             .m_optional     = info.access == data::access::out || info.optional
                               || optional_keys.contains(entry.key) || optional_tags.contains(tag_of(entry))
         };
+        configured_keys.insert({entry.key, index});
     }
 
     for(const auto& optional_key : optional_keys)

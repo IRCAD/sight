@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,13 +35,13 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="paramAdaptor" type="sight::module::viz::scene3d::adaptor::shader_parameter">
-        <inout key="parameter" uid="..." />
+        <data parameter="${...}" />
         <config material_name="mat" parameter="u_value" shader_type="fragment" />
     </service>
    @endcode
  *
  * @subsection In-Out In-Out:
- * - \b parameter [sight::data::object]: parameter containing the data to upload.
+ * - \b data.parameter [sight::data::object]: parameter containing the data to upload.
  *
  * @subsection Configuration Configuration:
  * - \b material_name (mandatory, string): the name of the associated Ogre material

@@ -177,7 +177,7 @@ TEST_SUITE("sight::module::my_service")
 
     TEST_CASE_FIXTURE(service_fixture, "test_1")
     {
-        std::string config_string ="<properties prop1='90' prop2='30'/>";
+        std::string config_string ="<config prop1='90' prop2='30'/>";
         service->set_config(config_string);
         service->configure();
         service->start().get();
@@ -188,7 +188,7 @@ TEST_SUITE("sight::module::my_service")
 
     TEST_CASE_FIXTURE(service_fixture, "test_2")
     {
-        std::string config_string ="<properties prop1='90' prop2='30'/>";
+        std::string config_string ="<config prop1='90' prop2='30'/>";
         service->set_config(config_string);
         service->configure();
         service->start().get();

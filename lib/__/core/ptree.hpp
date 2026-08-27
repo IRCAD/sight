@@ -110,4 +110,14 @@ SIGHT_CORE_API std::vector<flat_entry> flatten(
     const boost::property_tree::ptree& _tree,
     const std::set<std::string, std::less<> >& _reserved = {});
 
+//------------------------------------------------------------------------------
+
+/**
+ * @brief Recursively merges the source property tree into the destination tree.
+ *
+ * Existing children are merged by name and children only present in the source
+ * are appended to the destination.
+ */
+SIGHT_CORE_API void merge(boost::property_tree::ptree& _destination, const boost::property_tree::ptree& _source);
+
 } // namespace sight::core::ptree

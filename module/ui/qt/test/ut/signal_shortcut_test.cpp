@@ -282,7 +282,7 @@ public:
             config.put("<xmlattr>.sid", m_child_uid);
 
             config.add_child("config", config);
-            config.put("properties.<xmlattr>.enabled", false);
+            config.put("state.<xmlattr>.enabled", false);
 
             CHECK_NOTHROW(second_signal_shortcut_srv->configure(config));
             CHECK_NOTHROW(second_signal_shortcut_srv->start().get());

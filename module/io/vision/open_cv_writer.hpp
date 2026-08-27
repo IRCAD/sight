@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,12 +33,12 @@ namespace sight::module::io::vision
  * @section XML XML Configuration
  * @code{.xml}
        <service uid="..." type="sight::module::io::vision::open_cv_writer" >
-           <in key="data" uid="..." />
+           <data write="..." />
        </service>
  * @endcode
  *
  * @subsection Input Input
- * - \b data [sight::data::camera_set]: data to save.
+ * - \b data.write [sight::data::camera_set]: data to save.
  *
  * An Example of the xml structure:
  * @code{.xml}

@@ -62,7 +62,7 @@ void weighted_mean_matrix::updating()
 {
     auto current_mat = m_matrix_in.const_lock();
 
-    if(!m_enabled.value())
+    if(!m_enabled.const_lock()->value())
     {
         auto output = m_matrix_out.lock();
         output->deep_copy(current_mat.get_shared());

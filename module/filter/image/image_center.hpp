@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,8 +39,8 @@ namespace sight::module::filter::image
  * @section XML XML Configuration
  * @code{.xml}
    <service type="sight::module::filter::image::image_center">
-       <in key="image" uid="..." />
-       <inout key="transform" uid="..." />
+       <input image="${...}" />
+       <output transform="${...}" />
    </service>
    @endcode
  *
@@ -89,8 +89,8 @@ protected:
 
 private:
 
-    static constexpr std::string_view IMAGE_IN        = "image";
-    static constexpr std::string_view TRANSFORM_INOUT = "transform";
+    static constexpr std::string_view IMAGE_IN        = "input.image";
+    static constexpr std::string_view TRANSFORM_INOUT = "output.transform";
 
     sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, IMAGE_IN};
     sight::data::ptr<sight::data::matrix4, sight::data::access::inout> m_transform {this, TRANSFORM_INOUT};

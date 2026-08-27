@@ -33,17 +33,13 @@ namespace sight::module::geometry
 
 void concatenate_matrices::configuring()
 {
-    const auto config                     = this->get_config();
-    const auto in_cfg                     = config.get_child("in");
-    [[maybe_unused]] const auto group_cfg = in_cfg.get_child_optional("<xmlattr>.group");
-    SIGHT_ASSERT("config must contain one input group named 'matrix'.", group_cfg.has_value());
-    SIGHT_ASSERT("Missing 'in group=\"matrix\"'", group_cfg->get_value<std::string>() == MATRIX_GROUP_INPUT);
-
     m_invert_vector.clear();
-    for(const auto& cfg : boost::make_iterator_range(in_cfg.equal_range("key")))
+    for(const auto& cfg : boost::make_iterator_range(this->get_config().equal_range("data")))
     {
-        const auto inverse = cfg.second.get<bool>("<xmlattr>.inverse", false);
-        m_invert_vector.push_back(inverse);
+        if(auto input = cfg.second.get_optional<std::string>("<xmlattr>.input"); input.has_value() && !input->empty())
+        {
+            m_invert_vector.push_back(cfg.second.get<bool>("<xmlattr>.inverse", false));
+        }
     }
 }
 
@@ -94,7 +90,7 @@ void concatenate_matrices::updating()
 
 service::connections_t concatenate_matrices::auto_connections() const
 {
-    return {{MATRIX_GROUP_INPUT, data::signals::MODIFIED, service::slots::UPDATE}};
+    return {{MATRIX_INPUT, data::signals::MODIFIED, service::slots::UPDATE}};
 }
 
 // ----------------------------------------------------------------------------

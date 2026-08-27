@@ -45,21 +45,22 @@ namespace sight::module::geometry
  * @section XML XML configuration
  * @code{.xml}
    <service uid="..." type="sight::module::geometry::weighted_mean_matrix" >
-        <in key="raw" uid="..." />
-        <inout key="damped" uid="..." />
+        <data raw="${...}" />
+        <data damped="${...}" />
+        <config enabled="true" weight="0.5" />
    </service>
    @endcode
  *
  * @subsection Input Input
- * - \b raw: the current input matrix (auto-connected)
+ * - \b data.raw: the current input matrix (auto-connected)
  *
  * @subsection In-Out In-Out
- * - \b damped: the current weighted output
+ * - \b data.damped: the current weighted output
  *
  * @subsection Properties Properties
- * - \b weight: between 0.1 and 1.0 the weight used to ponderate current matrix (1.0 means no averaging,
+ * - \b config.weight: between 0.1 and 1.0 the weight used to ponderate current matrix (1.0 means no averaging,
  * 0.1 means that we use only 10% of the current matrix).
- * - \b enabled: enable the filter, output = input, equivalent to weight = 1.0.
+ * - \b config.enabled: enable the filter, output = input, equivalent to weight = 1.0.
  *
  */
 class weighted_mean_matrix final : public sight::service::filter
@@ -75,8 +76,8 @@ public:
 
     struct config
     {
-        static inline const std::string WEIGHT  = "weight";
-        static inline const std::string ENABLED = "enabled";
+        static inline const std::string WEIGHT  = "config.weight";
+        static inline const std::string ENABLED = "config.enabled";
     };
 
     /// Defines slots.
@@ -117,14 +118,14 @@ private:
     /// Current weighted translation.
     glm::dvec3 m_current_weighted_translation {};
 
-    sight::data::ptr<sight::data::matrix4, sight::data::access::in> m_matrix_in {this, "raw"};
-    sight::data::ptr<sight::data::matrix4, sight::data::access::inout> m_matrix_out {this, "damped"};
+    sight::data::ptr<sight::data::matrix4, sight::data::access::in> m_matrix_in {this, "data.raw"};
+    sight::data::ptr<sight::data::matrix4, sight::data::access::inout> m_matrix_out {this, "data.damped"};
 
     /// Enabled or passthrough mode
-    sight::data::property<sight::data::boolean> m_enabled {this, "enabled", true};
+    sight::data::ptr<sight::data::boolean, sight::data::access::in> m_enabled {this, "config.enabled", true};
 
     /// Weight, default 0.5
-    sight::data::property<sight::data::real> m_weight {this, "weight", 0.5};
+    sight::data::ptr<sight::data::real, sight::data::access::in> m_weight {this, "config.weight", 0.5};
 };
 
 } // namespace sight::module::geometry

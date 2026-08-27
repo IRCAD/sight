@@ -29,10 +29,8 @@
 #include "service/manager.hpp"
 #include "service/object_parser.hpp"
 
-#include <core/base.hpp>
 #include <core/com/signals.hpp>
 #include <core/com/slots.hpp>
-#include <core/object.hpp>
 #include <core/runtime/types.hpp>
 
 namespace sight::core

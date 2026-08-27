@@ -58,12 +58,6 @@ void adaptor::configure_params()
     const config_t config = this->get_config();
     m_cfg_layer_id = config.get<std::string>("config.<xmlattr>.layer", "");
 
-    if(auto properties = config.get_child_optional("properties"); not properties.has_value())
-    {
-        const auto visible = m_visible.lock();
-        *visible = config.get<bool>("config.<xmlattr>.visible", true);
-    }
-
     SIGHT_WARN_IF(
         "In [" + this->get_id() + "] adaptor, specifying a layer is now deprecated. "
                                   "Please place the adaptor in the layer tag in the render scene configuration.",
@@ -171,10 +165,6 @@ void adaptor::request_render()
 
 void adaptor::update_visibility(bool _visible)
 {
-    {
-        const auto visible = m_visible.lock();
-        *visible = _visible;
-    }
     m_visibility_applied = false;
     this->set_visible(_visible);
 }

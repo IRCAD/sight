@@ -271,7 +271,7 @@
             </service>
 
             <service uid="LVideoAdp" type="sight::module::viz::scene3d::adaptor::video" auto_connect="true">
-                <in key="image" uid="videoImage1" />
+                <data image="${videoImage1}" />
             </service>
 
             <service uid="LAxisAdp" type="sight::module::viz::scene3d::adaptor::axis">
@@ -279,8 +279,8 @@
             </service>
 
             <service uid="LCameraAdp" type="sight::module::viz::scene3d::adaptor::camera" auto_connect="true">
-                <inout key="transform" uid="inverseMat" />
-                <in key="calibration" uid="camera1" />
+                <data transform="${inverseMat}" />
+                <data calibration="${camera1}" />
             </service>
 
             <!-- ******************************* Begin Generic scene ******************************* -->
@@ -301,7 +301,7 @@
             </service>
 
             <service uid="RVideoAdp" type="sight::module::viz::scene3d::adaptor::video" auto_connect="true">
-                <in key="image" uid="videoImage2" />
+                <data image="${videoImage2}" />
             </service>
 
             <service uid="RAxisAdp" type="sight::module::viz::scene3d::adaptor::axis">
@@ -309,15 +309,15 @@
             </service>
 
             <service uid="RCameraAdp" type="sight::module::viz::scene3d::adaptor::camera" auto_connect="true">
-                <inout key="transform" uid="rightMat" />
-                <in key="calibration" uid="camera2" />
+                <data transform="${rightMat}" />
+                <data calibration="${camera2}" />
             </service>
 
             <!-- ******************************* Services ***************************************** -->
 
             <!-- Calibration reader (here OpenCV's XML/YAML) -->
             <service uid="calibrationReaderSrv" type="sight::module::io::vision::open_cv_reader">
-                <inout key="data" uid="camera_set" />
+                <data read="${camera_set}" />
             </service>
 
             <!-- extract a sight::data::camera from the sight::data::camera_set -->
@@ -333,44 +333,38 @@
             </service>
 
             <!-- save poses matrices in a file -->
-            <service uid="matricesWriterSrv" type="sight::module::io::matrix::matrix_writer">
-                <in key="data" uid="matrixTL" auto_connect="false" />
+            <service uid="matricesWriterSrv" type="sight::module::io::matrix::matrix_writer" auto_connect="false">
+                <data write="${matrixTL}" />
             </service>
 
             <!-- GUI to handle aruco tracking parameters -->
             <service uid="aruco_parameters_srv" type="sight::module::ui::qt::settings">
-                <inout key="map" uid="${aruco_params}" />
-                <ui>
-                    <item name="Show Marker" key="debug_mode" />
-                    <item name="Corner refinement" key="corner_refinement" />
-                    <item name="adpt. Threshold win size min" key="adaptive_th_win_size_min" widget="slider" min="3" max="100" />
-                    <item name="adpt. Threshold win size max" key="adaptive_th_win_size_max" widget="slider" min="4" max="100" />
-                    <item name="adpt. Threshold win size step" key="adaptive_th_win_size_step" widget="slider" min="1" max="100" />
-                    <item name="adpt. threshold constant" key="adaptive_th_constant" min="0." max="30." />
-                    <item name="Min. Marker Perimeter Rate" key="min_marker_perimeter_rate" min="0.01" max="1.0" />
-                    <item name="Max. Marker Perimeter Rate" key="max_marker_perimeter_rate" min="1." max="10." />
-                    <item name="Polygonal Approx. Accuracy Rate" key="polygonal_approx_accuracy_rate" min="0.01" max="1." />
-                    <item name="Min. Corner Distance Rate" key="min_corner_distance_rate" min="0." max="1." />
-                    <item name="Min. Distance to Border" key="min_distance_to_border" widget="slider" min="0" max="10" />
-                    <item name="Min. Marker Distance Rate" key="min_marker_distance_rate" min="0." max="1." />
-                    <item name="Corner Refinement Win. Size" key="corner_refinement_win_size" widget="slider" min="1" max="100" />
-                    <item name="Corner Refinement Max Iterations" key="corner_refinement_max_iterations" widget="slider" min="1" max="10" />
-                    <item name="Corner Refinement Min. Accuracy" key="corner_refinement_min_accuracy" min="0.01" max="10." />
-                    <item name="Marker Border Bits" key="marker_border_bits" widget="slider" min="1" max="100" />
-                    <item name="Perspective Remove Pixel per Cell" key="perspective_remove_pixel_per_cell" widget="slider" min="1" max="32" />
-                    <item name="Perspective Remove Ignored Margin Per Cell" key="perspective_remove_ignored_margin_per_cell" min="0." max="1." />
-                    <item name="Max. Erroneous Bits In Border Rate" key="max_erroneous_bits_in_border_rate" min="0." max="1." />
-                    <item name="Min. Otsu Std. Dev." key="min_otsu_std_dev" min="0." max="100." />
-                    <item name="Error Correction Rate" key="error_correction_rate" min="0." max="1." />
-                </ui>
+                <item data="${aruco_params}.debug_mode" name="Show Marker" />
+                <item data="${aruco_params}.corner_refinement" name="Corner refinement" />
+                <item data="${aruco_params}.adaptive_th_win_size_min" name="adpt. Threshold win size min" widget="slider" min="3" max="100" />
+                <item data="${aruco_params}.adaptive_th_win_size_max" name="adpt. Threshold win size max" widget="slider" min="4" max="100" />
+                <item data="${aruco_params}.adaptive_th_win_size_step" name="adpt. Threshold win size step" widget="slider" min="1" max="100" />
+                <item data="${aruco_params}.adaptive_th_constant" name="adpt. threshold constant" min="0." max="30." />
+                <item data="${aruco_params}.min_marker_perimeter_rate" name="Min. Marker Perimeter Rate" min="0.01" max="1.0" />
+                <item data="${aruco_params}.max_marker_perimeter_rate" name="Max. Marker Perimeter Rate" min="1." max="10." />
+                <item data="${aruco_params}.polygonal_approx_accuracy_rate" name="Polygonal Approx. Accuracy Rate" min="0.01" max="1." />
+                <item data="${aruco_params}.min_corner_distance_rate" name="Min. Corner Distance Rate" min="0." max="1." />
+                <item data="${aruco_params}.min_distance_to_border" name="Min. Distance to Border" widget="slider" min="0" max="10" />
+                <item data="${aruco_params}.min_marker_distance_rate" name="Min. Marker Distance Rate" min="0." max="1." />
+                <item data="${aruco_params}.corner_refinement_win_size" name="Corner Refinement Win. Size" widget="slider" min="1" max="100" />
+                <item data="${aruco_params}.corner_refinement_max_iterations" name="Corner Refinement Max Iterations" widget="slider" min="1" max="10" />
+                <item data="${aruco_params}.corner_refinement_min_accuracy" name="Corner Refinement Min. Accuracy" min="0.01" max="10." />
+                <item data="${aruco_params}.marker_border_bits" name="Marker Border Bits" widget="slider" min="1" max="100" />
+                <item data="${aruco_params}.perspective_remove_pixel_per_cell" name="Perspective Remove Pixel per Cell" widget="slider" min="1" max="32" />
+                <item data="${aruco_params}.perspective_remove_ignored_margin_per_cell" name="Perspective Remove Ignored Margin Per Cell" min="0." max="1." />
+                <item data="${aruco_params}.max_erroneous_bits_in_border_rate" name="Max. Erroneous Bits In Border Rate" min="0." max="1." />
+                <item data="${aruco_params}.min_otsu_std_dev" name="Min. Otsu Std. Dev." min="0." max="100." />
+                <item data="${aruco_params}.error_correction_rate" name="Error Correction Rate" min="0." max="1." />
             </service>
 
             <service uid="reprojection_parameters_srv" type="sight::module::ui::qt::settings">
-                <inout key="map" uid="${reprojection_params}" />
-                <ui>
-                    <item name="Show reprojection" key="display" />
-                    <item name="Circle color" key="color" />
-                </ui>
+                <item data="${reprojection_params}.display" name="Show reprojection" />
+                <item data="${reprojection_params}.color" name="Circle color" />
             </service>
 
             <service uid="synchroParamsSrv" type="sight::module::ui::qt::parameters">
@@ -506,19 +500,15 @@
 
             <!-- to multiply matrices (here only used to inverse "matrix" )-->
             <service uid="matrixReverserSrv" type="sight::module::geometry::concatenate_matrices">
-                <in group="matrix">
-                    <key uid="matrix" auto_connect="false" inverse="true" />
-                </in>
-                <inout key="output" uid="inverseMat" />
+                <data input="${matrix}" inverse="true" />
+                <data output="${inverseMat}" />
             </service>
 
             <!-- to multiply matrices -->
             <service uid="concatenateSrv" type="sight::module::geometry::concatenate_matrices">
-                <in group="matrix" auto_connect="false">
-                    <key uid="inverseMat" inverse="false" />
-                    <key uid="extrinsic" inverse="true" />
-                </in>
-                <inout key="output" uid="rightMat" />
+                <data input="${inverseMat}" />
+                <data input="${extrinsic}" inverse="true" />
+                <data output="${rightMat}" />
             </service>
 
             <service uid="hideAxisSrv" type="sight::module::ui::action" />

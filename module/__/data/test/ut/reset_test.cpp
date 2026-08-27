@@ -36,8 +36,9 @@ TEST_SUITE("sight::module::data::reset")
 
         auto reset_srv = sight::service::add("sight::module::data::reset");
         auto string    = std::make_shared<sight::data::string>("Hello world");
-        reset_srv->set_config("<inout key='target'/>");
-        reset_srv->set_inout(string, "target");
+        reset_srv->set_inout(string, "data.target", {}, {}, 0);
+        boost::property_tree::ptree ptree;
+        reset_srv->set_config(ptree);
         CHECK_NOTHROW(reset_srv->configure());
 
         CHECK_NOTHROW(reset_srv->start().get());
@@ -66,8 +67,9 @@ TEST_SUITE("sight::module::data::reset")
         image->set_spacing(spacing);
         image->set_origin(origin);
 
-        reset_srv->set_config("<inout key='target'/>");
-        reset_srv->set_inout(image, "target");
+        reset_srv->set_inout(image, "data.target", {}, {}, 0);
+        boost::property_tree::ptree ptree;
+        reset_srv->set_config(ptree);
         CHECK_NOTHROW(reset_srv->configure());
         CHECK_NOTHROW(reset_srv->start().get());
         CHECK(size == image->size());
@@ -95,15 +97,11 @@ TEST_SUITE("sight::module::data::reset")
         auto string2 = std::make_shared<sight::data::string>("World");
         auto string3 = std::make_shared<sight::data::string>("Test");
 
-        reset_srv->set_inout(string1, "targets", {}, {}, 0);
-        reset_srv->set_inout(string2, "targets", {}, {}, 1);
-        reset_srv->set_inout(string3, "targets", {}, {}, 2);
+        reset_srv->set_inout(string1, "data.target", {}, {}, 0);
+        reset_srv->set_inout(string2, "data.target", {}, {}, 1);
+        reset_srv->set_inout(string3, "data.target", {}, {}, 2);
 
         boost::property_tree::ptree ptree;
-        boost::property_tree::ptree inout_group;
-        inout_group.put("<xmlattr>.group", "targets");
-        ptree.add_child("inout", inout_group);
-
         reset_srv->set_config(ptree);
         CHECK_NOTHROW(reset_srv->configure());
         CHECK_NOTHROW(reset_srv->start().get());
@@ -141,14 +139,10 @@ TEST_SUITE("sight::module::data::reset")
         image2->set_spacing(spacing);
         image2->set_origin(origin);
 
-        reset_srv->set_inout(image1, "targets", {}, {}, 0);
-        reset_srv->set_inout(image2, "targets", {}, {}, 1);
+        reset_srv->set_inout(image1, "data.target", {}, {}, 0);
+        reset_srv->set_inout(image2, "data.target", {}, {}, 1);
 
         boost::property_tree::ptree ptree;
-        boost::property_tree::ptree inout_group;
-        inout_group.put("<xmlattr>.group", "targets");
-        ptree.add_child("inout", inout_group);
-
         reset_srv->set_config(ptree);
         CHECK_NOTHROW(reset_srv->configure());
         CHECK_NOTHROW(reset_srv->start().get());

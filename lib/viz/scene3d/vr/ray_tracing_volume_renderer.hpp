@@ -26,19 +26,14 @@
 #include <sight/viz/scene3d/config.hpp>
 
 #include "viz/scene3d/layer.hpp"
-#include "viz/scene3d/r2vb_renderable.hpp"
 #include "viz/scene3d/vr/grid_proxy_geometry.hpp"
 #include "viz/scene3d/vr/illum_ambient_occlusion_sat.hpp"
 #include "viz/scene3d/vr/ray_entry_compositor.hpp"
 #include "viz/scene3d/vr/volume_renderer.hpp"
 
-#include <OGRE/OgreGpuProgramParams.h>
 #include <OGRE/OgreManualObject.h>
-#include <OGRE/OgreMaterialManager.h>
-#include <OGRE/OgreTechnique.h>
 
 #include <optional>
-#include <vector>
 
 namespace sight::viz::scene3d::vr
 {

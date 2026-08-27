@@ -224,7 +224,7 @@ void camera_config_launcher::on_import_clicked()
 {
     auto vector = std::make_shared<data::vector>();
     auto reader = sight::service::add<io::service::reader>("sight::module::io::session::reader");
-    reader->set_inout(vector, io::service::DATA_KEY);
+    reader->set_inout(vector, io::service::READER_DATA_KEY);
 
     try
     {

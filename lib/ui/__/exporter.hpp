@@ -72,13 +72,11 @@ protected:
 
     void info(std::ostream& _sstream) override;
 
-    static constexpr std::string_view CONTAINER_INOUT = "container";
-
     // NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
-    data::ptr<C, data::access::inout> m_container {this, CONTAINER_INOUT};
+    data::ptr<C, data::access::inout> m_container {this, "data.container"};
 
     using shared_pointer = C::value_type;
-    data::ptr<typename shared_pointer::element_type, data::access::inout> m_data {this, "data"};
+    data::ptr<typename shared_pointer::element_type, data::access::inout> m_data {this, "data.element"};
 // NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 
 private:

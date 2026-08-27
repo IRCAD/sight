@@ -50,8 +50,8 @@ public:
             (*container)["myKey"] = object;
         }
 
-        m_service->set_inout(object, "object");
-        m_service->set_inout(container, "container");
+        m_service->set_inout(object, "data.element");
+        m_service->set_inout(container, "data.container");
         boost::property_tree::ptree ptree;
         ptree.put("mapKey", "myKey");
         m_service->set_config(ptree);
@@ -82,8 +82,8 @@ public:
             container->push_back(object);
         }
 
-        m_service->set_inout(object, "object");
-        m_service->set_inout(container, "container");
+        m_service->set_inout(object, "data.element");
+        m_service->set_inout(container, "data.container");
         CHECK_NOTHROW(m_service->configure());
         CHECK_NOTHROW(m_service->start().get());
 
@@ -127,8 +127,8 @@ public:
             container->push_back(object);
         }
 
-        m_service->set_inout(object, "object");
-        m_service->set_inout(container, "container");
+        m_service->set_inout(object, "data.element");
+        m_service->set_inout(container, "data.container");
         CHECK_NOTHROW(m_service->configure());
         CHECK_NOTHROW(m_service->start().get());
 
@@ -171,8 +171,8 @@ public:
             container->set_field("myField", object);
         }
 
-        m_service->set_inout(object, "object");
-        m_service->set_inout(container, "container");
+        m_service->set_inout(object, "data.element");
+        m_service->set_inout(container, "data.container");
         boost::property_tree::ptree ptree;
         ptree.put("field", "myField");
         m_service->set_config(ptree);
@@ -200,8 +200,8 @@ public:
         auto container = std::make_shared<sight::data::map>();
         (*container)["myKey"] = object;
 
-        m_service->set_inout(object, "object");
-        m_service->set_inout(container, "container");
+        m_service->set_inout(object, "data.element");
+        m_service->set_inout(container, "data.container");
         boost::property_tree::ptree ptree;
         ptree.put("mapKey", "myKey");
         m_service->set_config(ptree);
@@ -221,8 +221,8 @@ public:
         auto container = std::make_shared<sight::data::vector>();
         container->push_back(object);
 
-        m_service->set_inout(object, "object");
-        m_service->set_inout(container, "container");
+        m_service->set_inout(object, "data.element");
+        m_service->set_inout(container, "data.container");
         CHECK_NOTHROW(m_service->configure());
         CHECK_NOTHROW(m_service->start().get());
 
@@ -240,8 +240,8 @@ public:
         auto container = std::make_shared<sight::data::series_set>();
         container->push_back(object);
 
-        m_service->set_inout(object, "object");
-        m_service->set_inout(container, "container");
+        m_service->set_inout(object, "data.element");
+        m_service->set_inout(container, "data.container");
         CHECK_NOTHROW(m_service->configure());
         CHECK_NOTHROW(m_service->start().get());
 
@@ -258,8 +258,8 @@ public:
         auto container = std::make_shared<sight::data::string>();
         container->set_field("myField", object);
 
-        m_service->set_inout(object, "object");
-        m_service->set_inout(container, "container");
+        m_service->set_inout(object, "data.element");
+        m_service->set_inout(container, "data.container");
         boost::property_tree::ptree ptree;
         ptree.put("field", "myField");
         m_service->set_config(ptree);

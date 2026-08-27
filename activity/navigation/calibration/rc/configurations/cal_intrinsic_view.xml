@@ -229,12 +229,12 @@
         </service>
 
         <service uid="calibrationDataWriterSrv" type="sight::module::io::vision::calibration_images_writer">
-            <in key="data" uid="${calibrationInfo}" />
+            <data write="${calibrationInfo}" />
             <format>.tiff</format>
         </service>
 
         <service uid="calibrationDataReaderSrv" type="sight::module::io::vision::calibration_info_reader">
-            <inout key="data" uid="${calibrationInfo}" />
+            <data read="${calibrationInfo}" />
             <properties from="${board_properties}" />
         </service>
 
@@ -306,7 +306,7 @@
         </service>
 
         <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::video">
-            <in key="image" uid="distortedFrame" />
+            <data image="${distortedFrame}" />
         </service>
 
         <!-- ******************************* Connections ***************************************** -->

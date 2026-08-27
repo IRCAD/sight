@@ -26,11 +26,7 @@
 
 #include <activity/builder/data.hpp>
 
-#include <core/object.hpp>
 #include <core/runtime/runtime.hpp>
-
-#include <data/map.hpp>
-#include <data/mt/locked_ptr.hpp>
 
 #include <boost/range/iterator_range_core.hpp>
 

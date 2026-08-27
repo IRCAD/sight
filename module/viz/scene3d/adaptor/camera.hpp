@@ -45,22 +45,23 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * @code{.xml}
     <service uid="cameraAdaptor" type="sight::module::viz::scene3d::adaptor::camera">
-        <in key="transform_in" uid="..." />
-        <inout key="transform_out" uid="..." />
-        <in key="calibration" uid="..." />
-        <in key="camera_set" uid="..." />
+        <data transform_in="${...}" />
+        <data transform_out="${...}" />
+        <data calibration="${...}" />
+        <data camera_set="${...}" />
     </service>
  * @endcode
  *
  * @subsection Input Input
- * - \b calibration [sight::data::camera] (optional): camera containing calibration information.
- * - \b camera_set [sight::data::camera_set] (optional): camera series containing calibration information.
+ * - \b data.calibration [sight::data::camera] (optional): camera containing calibration information.
+ * - \b data.camera_set [sight::data::camera_set] (optional): camera series containing calibration information.
  *
- * @subsection InOut InOut
- * - \b transform_in [sight::data::matrix4] (optional): input transform matrix for the camera.
- * - \b transform_out [sight::data::matrix4] (optional): output transform matrix for the camera, allows to update the
+ * @subsection Input Input
+ * - \b data.transform_in [sight::data::matrix4] (optional): input transform matrix for the camera.
+ * - \b data.transform_out [sight::data::matrix4] (optional): output transform matrix for the camera, allows to update
+ * the
  * camera position from the scene.
- * - \b transform [sight::data::matrix4]: transform matrix for the camera. Deprecated, use transform_in and
+ * - \b data.transform [sight::data::matrix4]: transform matrix for the camera. Deprecated, use transform_in and
  * transform_out instead.
  */
 class camera final : public sight::viz::scene3d::adaptor
@@ -159,11 +160,11 @@ private:
         calibration
     };
 
-    static constexpr std::string_view CALIBRATION_INPUT = "calibration";
-    static constexpr std::string_view CAMERA_SET_INPUT  = "camera_set";
-    static constexpr std::string_view TRANSFORM_INOUT   = "transform";
-    static constexpr std::string_view TRANSFORM_IN      = "transform_in";
-    static constexpr std::string_view TRANSFORM_OUT     = "transform_out";
+    static constexpr std::string_view CALIBRATION_INPUT = "data.calibration";
+    static constexpr std::string_view CAMERA_SET_INPUT  = "data.camera_set";
+    static constexpr std::string_view TRANSFORM_INOUT   = "data.transform";
+    static constexpr std::string_view TRANSFORM_IN      = "data.transform_in";
+    static constexpr std::string_view TRANSFORM_OUT     = "data.transform_out";
 
     data::ptr<data::camera, data::access::in> m_camera_calibration {this, CALIBRATION_INPUT, true};
     data::ptr<data::camera_set, data::access::in> m_camera_set {this, CAMERA_SET_INPUT, true};

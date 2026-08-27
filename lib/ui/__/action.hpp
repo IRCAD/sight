@@ -67,15 +67,7 @@ class action;
  * - \b enable(): make the action interactive.
  * - \b disable(): make the action not interactive.
  *
- * Example of configuration using properties
- * @code{.xml}
-    <service uid="item" type="sight::module::ui::action" >
-        <properties checked="false" enabled="false" inverse="true" visible="true" />
-        <confirmation message="..." />
-    </service>
-   @endcode
- *
- * Example of configuration using signals
+ * Example of configuration:
  * @code{.xml}
     <service uid="item" type="sight::module::ui::action" >
         <state checked="false" enabled="false" inverse="true" visible="true" />
@@ -196,10 +188,10 @@ private:
 
     sight::sptr<ui::detail::registry::action> m_registry;
 
-    sight::data::property<sight::data::boolean> m_checked {this, "checked", false};
-    sight::data::property<sight::data::boolean> m_enabled {this, "enabled", true};
-    sight::data::property<sight::data::boolean> m_visible {this, "visible", true};
-    sight::data::property<sight::data::boolean> m_inverse {this, "inverse", false};
+    sight::data::ptr<sight::data::boolean> m_checked {this, "state.checked", false};
+    sight::data::ptr<sight::data::boolean> m_enabled {this, "state.enabled", true};
+    sight::data::ptr<sight::data::boolean> m_visible {this, "state.visible", true};
+    sight::data::ptr<sight::data::boolean> m_inverse {this, "state.inverse", false};
 
     std::optional<bool> m_prev_checked;
     std::optional<bool> m_prev_enabled;

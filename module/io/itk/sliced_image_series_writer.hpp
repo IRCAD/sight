@@ -38,12 +38,12 @@ namespace sight::module::io::itk
  *
  * @code{.xml}
    <service type="sight::module::io::itk::sliced_image_series_writer">
-       <in key="data" uid="..." />
-       <folder>...</folder>
+       <data write="..." />
+       <path folder="..." />
    </service>
    @endcode
  * @subsection Input Input
- * - \b data [sight::data::image_series]: image series to save.
+ * - \b data.write [sight::data::image_series]: image series to save.
  * @subsection Configuration Configuration
  * - \b folder (optional): path of the folder, if it is not defined, 'open_location_dialog()' should be called to define
  * the path.

@@ -46,8 +46,7 @@
         <!-- ******************************* Actions ****************************************** -->
 
         <service uid="import_act" type="sight::module::ui::io::selector">
-            <inout key="data" uid="${image_series}" />
-            <type mode="reader" />
+            <data read="${image_series}" />
             <selection mode="include" />
             <addSelection service="sight::module::io::vtk::image_reader" />
         </service>
@@ -69,21 +68,19 @@
         </service>
 
         <service uid="volume_render_adp" type="sight::module::viz::scene3d::adaptor::volume_render">
-            <in key="image" uid="${image_series}" />
-            <in key="tf" uid="tf" />
-            <in key="mask" uid="mask" />
+            <data image="${image_series}" />
+            <data tf="${tf}" />
+            <data mask="${mask}" />
             <config widgets="true" preintegration="false" autoresetcamera="true" />
         </service>
 
         <service uid="image_extruder_srv" type="sight::module::filter::image::image_extruder" worker="EXTRUSION">
-            <in key="meshes" uid="extruded_model_series" />
-            <in key="image" uid="${image_series}" />
-            <inout key="mask" uid="mask" />
+            <input meshes="${extruded_model_series}" image="${image_series}" />
+            <output mask="${mask}" />
         </service>
 
         <service uid="tfm" type="sight::module::ui::qt::image::transfer_function">
-            <inout key="tf" uid="tf" />
-            <in key="image" uid="${image_series}" />
+            <data tf="${tf}" image="${image_series}" />
         </service>
 
         <update uid="image_extruder_srv" />

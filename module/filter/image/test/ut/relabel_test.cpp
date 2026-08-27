@@ -43,8 +43,8 @@ TEST_SUITE("sight::module::filter::image::relabel")
         {
             CHECK(m_service != nullptr);
 
-            m_service->set_inout(m_mask, "image", false);
-            m_service->set_input(m_dictionary, "dictionary", false);
+            m_service->set_inout(m_mask, "output.image", false);
+            m_service->set_input(m_dictionary, "input.dictionary", false);
 
             CHECK_NOTHROW(m_service->configure(_config));
             CHECK_NOTHROW(m_service->start().get());

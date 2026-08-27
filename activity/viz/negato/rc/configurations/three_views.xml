@@ -45,30 +45,24 @@
         </service>
 
         <service uid="cfg_negato1" type="sight::app::config_launcher">
-            <properties config="sight::activity::viz::negato::2d" />
-            <inout group="object">
-                <key name="image" uid="${image_series}" />
-            </inout>
-            <parameter replace="WID_PARENT" by="view_negato1" />
-            <parameter replace="orientation" by="axial" />
+            <config id="sight::activity::viz::negato::2d" />
+            <object name="image" uid="${image_series}" />
+            <param name="WID_PARENT" value="view_negato1" />
+            <param name="orientation" value="axial" />
         </service>
 
         <service uid="cfg_negato2" type="sight::app::config_launcher">
-            <properties config="sight::activity::viz::negato::2d" />
-            <inout group="object">
-                <key name="image" uid="${image_series}" />
-            </inout>
-            <parameter replace="WID_PARENT" by="view_negato2" />
-            <parameter replace="orientation" by="frontal" />
+            <config id="sight::activity::viz::negato::2d" />
+            <object name="image" uid="${image_series}" />
+            <param name="WID_PARENT" value="view_negato2" />
+            <param name="orientation" value="frontal" />
         </service>
 
         <service uid="cfg_negato3" type="sight::app::config_launcher">
-            <properties config="sight::activity::viz::negato::2d" />
-            <inout group="object">
-                <key name="image" uid="${image_series}" />
-            </inout>
-            <parameter replace="WID_PARENT" by="view_negato3" />
-            <parameter replace="orientation" by="sagittal" />
+            <config id="sight::activity::viz::negato::2d" />
+            <object name="image" uid="${image_series}" />
+            <param name="WID_PARENT" value="view_negato3" />
+            <param name="orientation" value="sagittal" />
         </service>
 
         <!-- The action "previous" and "next" are visible only if the application use a "sequencer".

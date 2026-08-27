@@ -102,9 +102,9 @@ public:
 
     /**
      * @brief Destroys a light adaptor.
-     * @param _light_manager the light adaptor to unregister.
+     * @param _light_adaptor the light adaptor to unregister.
      */
-    SIGHT_VIZ_SCENE3D_API static void destroy_light_adaptor(light_adaptor::sptr _light_manager);
+    SIGHT_VIZ_SCENE3D_API static void destroy_light_adaptor(light_adaptor::sptr _light_adaptor);
 
     /// Does nothing.
     SIGHT_VIZ_SCENE3D_API light_adaptor();

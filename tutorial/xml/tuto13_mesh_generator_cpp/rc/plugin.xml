@@ -126,7 +126,7 @@
             </service>
 
             <service uid="mesh_adp" type="sight::module::viz::scene3d::adaptor::mesh" auto_connect="true">
-                <in key="mesh" uid="mesh" />
+                <data mesh="${mesh}" />
             </service>
 
             <!-- ******************************* Actions ****************************************** -->
@@ -180,13 +180,11 @@
             <!-- ******************************* Services ***************************************** -->
 
             <service uid="mesh_reader_srv" type="sight::module::ui::io::selector">
-                <inout key="data" uid="mesh" />
-                <type mode="reader" />
+                <data read="${mesh}" />
             </service>
 
             <service uid="mesh_writer_srv" type="sight::module::ui::io::selector">
-                <inout key="data" uid="mesh" />
-                <type mode="writer" />
+                <data write="${mesh}" />
             </service>
 
             <!-- ******************************* Connections ***************************************** -->

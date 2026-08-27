@@ -61,14 +61,6 @@ void selector::configuring()
 {
     const config_t srv_config = this->get_config();
 
-    const std::string mode = srv_config.get<std::string>("type.<xmlattr>.mode", "reader");
-    SIGHT_ASSERT(
-        "The xml attribute <mode> must be 'reader' (to open file) or 'writer' (to write a new file).",
-        mode == "writer" || mode == "reader"
-    );
-    m_mode = (mode == "writer") ? writer_mode : reader_mode;
-    SIGHT_DEBUG("mode => " + mode);
-
     const std::string selection_mode = srv_config.get<std::string>("selection.<xmlattr>.mode", "exclude");
     SIGHT_ASSERT(
         "The xml attribute <mode> must be 'include' (to add the selection to selector list ) or "
@@ -120,15 +112,22 @@ void selector::stopping()
 
 void selector::updating()
 {
+    const auto read      = m_read.lock().get_shared();
+    const auto write     = m_write.lock().get_shared();
+    const bool is_reader = read != nullptr;
+
+    SIGHT_ASSERT(
+        "Exactly one of the keys 'data.read' or 'data.write' must be defined.",
+        is_reader != (write != nullptr)
+    );
+
     std::vector<std::string> available_extensions_id;
     {
-        auto obj_lock          = m_data.lock();
-        data::object::sptr obj = obj_lock.get_shared();
+        const auto& obj = is_reader ? read : write;
 
         // Retrieve implementation of type io::service::reader for this object
-        if(m_mode == reader_mode)
+        if(is_reader)
         {
-            SIGHT_ASSERT("An inout key '" + io::service::DATA_KEY + "' must be defined.", obj);
             const auto classname = obj->get_classname();
 
             available_extensions_id =
@@ -137,10 +136,8 @@ void selector::updating()
                     "sight::io::service::reader"
                 );
         }
-        else // m_mode == WRITER_MODE
+        else
         {
-            SIGHT_ASSERT("The inout key '" + io::service::DATA_KEY + "' is not correctly set.", obj);
-
             available_extensions_id =
                 service::extension::factory::get()->get_implementation_id_from_object_and_type(
                     obj->get_classname(),
@@ -204,7 +201,7 @@ void selector::updating()
         {
             sight::ui::dialog::selector selector;
 
-            if(m_mode != reader_mode)
+            if(!is_reader)
             {
                 selector.set_title("Writer to use");
             }
@@ -262,14 +259,10 @@ void selector::updating()
             }
 
             // Configure and start service
-            if(m_mode == reader_mode)
+            if(is_reader)
             {
                 auto reader = service::add<io::service::reader>(extension_id);
-                {
-                    auto obj = m_data.lock();
-                    reader->set_inout(obj.get_shared(), io::service::DATA_KEY);
-                }
-
+                reader->set_inout(read, io::service::READER_DATA_KEY);
                 reader->set_worker(this->worker());
 
                 if(has_config_for_service)
@@ -317,10 +310,7 @@ void selector::updating()
             else
             {
                 auto writer = service::add<io::service::writer>(extension_id);
-                {
-                    auto obj = m_data.lock();
-                    writer->set_input(obj.get_shared(), io::service::DATA_KEY);
-                }
+                writer->set_input(write, io::service::WRITER_DATA_KEY);
 
                 writer->set_worker(this->worker());
 
@@ -376,7 +366,7 @@ void selector::updating()
     else
     {
         SIGHT_WARN("selector::load : availableExtensions is empty.");
-        if(m_mode == reader_mode)
+        if(is_reader)
         {
             sight::ui::dialog::message message_box;
             message_box.set_title("Reader not found");
@@ -385,7 +375,7 @@ void selector::updating()
             message_box.add_button(sight::ui::dialog::message::ok);
             message_box.show();
         }
-        else // m_mode == WRITER_MODE
+        else
         {
             sight::ui::dialog::message message_box;
             message_box.set_title("Writer not found");
@@ -405,13 +395,6 @@ void selector::info(std::ostream& _sstream)
 {
     // Update message
     _sstream << "selector";
-}
-
-//------------------------------------------------------------------------------
-
-void selector::set_io_mode(io_mode _mode)
-{
-    m_mode = _mode;
 }
 
 //------------------------------------------------------------------------------

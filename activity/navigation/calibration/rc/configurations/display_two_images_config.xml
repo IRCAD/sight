@@ -53,8 +53,8 @@
         </service>
 
         <service uid="video1Adp" type="sight::module::viz::scene3d::adaptor::video" auto_connect="true">
-            <in key="image" uid="${imageId1}" />
-            <in key="pointList" uid="${pointListId1}" />
+            <data image="${imageId1}" />
+            <data pointList="${pointListId1}" />
             <config radius="1.0" color="#00FFFF" fixedSize="true" texture_name="circle.dds" />
         </service>
 
@@ -71,8 +71,8 @@
         </service>
 
         <service uid="video2Adp" type="sight::module::viz::scene3d::adaptor::video" auto_connect="true">
-            <in key="image" uid="${imageId2}" />
-            <in key="pointList" uid="${pointListId2}" />
+            <data image="${imageId2}" />
+            <data pointList="${pointListId2}" />
             <config radius="1.0" color="#00FFFF" fixedSize="true" texture_name="circle.dds" />
         </service>
 

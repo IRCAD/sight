@@ -137,7 +137,7 @@ bool mesh_reader::load_mesh(const std::filesystem::path& _vtk_file)
         "The object is not a '"
         + data::mesh::classname()
         + "' or '"
-        + sight::io::service::DATA_KEY
+        + sight::io::service::READER_DATA_KEY
         + "' is not correctly set.",
         mesh
     );

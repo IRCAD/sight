@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,9 +36,8 @@ namespace sight::module::filter::image
  *
  * @code{.xml}
    <service type="sight::module::filter::image::images_substract">
-       <in key="image1" uid="..." />
-       <in key="image2" uid="..." />
-       <inout key="result" uid="..." />
+       <input image1="${...}" image2="${...}" />
+       <output result="${...}" />
    </service>
    @endcode
  * @subsection In In
@@ -72,9 +71,9 @@ protected:
 
 private:
 
-    sight::data::ptr<sight::data::image, sight::data::access::in> m_image1 {this, "image1"};
-    sight::data::ptr<sight::data::image, sight::data::access::in> m_image2 {this, "image2"};
-    sight::data::ptr<sight::data::image, sight::data::access::inout> m_result {this, "result"};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_image1 {this, "input.image1"};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_image2 {this, "input.image2"};
+    sight::data::ptr<sight::data::image, sight::data::access::inout> m_result {this, "output.result"};
 };
 
 } // namespace sight::module::filter::image

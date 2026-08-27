@@ -2,16 +2,16 @@ sight_add_target(tuto05_mesher TYPE APP)
 
 add_dependencies(
     tuto05_mesher
-    sightrun
-    module_app
-    module_ui_qt
     data
+    module_app
+    module_data # Provides services that performs generic actions on data such as copying or extracting objects.
+    module_filter_mesh # Provides services to manipulates meshes, here to generate a mesh from an image.
+    module_io_vtk
     module_service
     module_ui
-    module_io_vtk
+    module_ui_qt
     module_viz_sample
-    module_filter_mesh
-    module_data
+    sightrun
 )
 
 # Allow dark theme via module_ui_qt

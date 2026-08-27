@@ -36,7 +36,7 @@ namespace sight::module::ui::qt::com
  * @section XML XML configuration
  * @code{.xml}
    <service uid="..." impl="sight::module::ui::qt::com::signal_shortcut" >
-        <properties enabled="false/true/${property_uid}"/>
+        <state enabled="false/true/${property_uid}"/>
         <config shortcut="CTRL+F;d" sid="..." />
    </service>
    @endcode
@@ -46,7 +46,7 @@ namespace sight::module::ui::qt::com
  * - \b sid/wid (exclusive): id of the service/window associated to the gui container
  *   to which the shortcut will be associated
  *
- * @subsection Properties Properties
+ * @subsection In-Out In-Out
  * - \b enabled: enables or disables the shortcut.
  * - \b checked: initial value if you want to use this dual state.
  *
@@ -173,10 +173,10 @@ private:
     /// Enabled property
     /// True: the "activated" signal is triggered when key sequence is detected.
     /// False: the key sequence is ignored.
-    sight::data::property<sight::data::boolean> m_enabled {this, "enabled", true};
+    sight::data::ptr<sight::data::boolean> m_enabled {this, "state.enabled", true};
 
     /// Dual state, on/off
-    sight::data::property<sight::data::boolean> m_checked {this, "checked", false};
+    sight::data::ptr<sight::data::boolean> m_checked {this, "state.checked", false};
 };
 
 } // namespace sight::module::ui::qt::com

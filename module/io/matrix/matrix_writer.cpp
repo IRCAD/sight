@@ -154,7 +154,7 @@ void matrix_writer::write(core::clock::type _timestamp)
         "The object is not a '"
         + data::matrix_tl::classname()
         + "' or '"
-        + sight::io::service::DATA_KEY
+        + sight::io::service::WRITER_DATA_KEY
         + "' is not correctly set.",
         matrix_tl
     );
@@ -314,7 +314,7 @@ void matrix_writer::set_base_folder(std::string _path)
 service::connections_t matrix_writer::auto_connections() const
 {
     service::connections_t connections;
-    connections.push(sight::io::service::DATA_KEY, data::timeline::signals::PUSHED, slots::WRITE);
+    connections.push(sight::io::service::WRITER_DATA_KEY, data::timeline::signals::PUSHED, slots::WRITE);
     return connections;
 }
 

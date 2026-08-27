@@ -100,7 +100,7 @@ public:
     /// Resets the pointer to null
     void reset() noexcept
     {
-        m_data.reset();
+        m_data = nullptr;
     }
 
     /// Convenience function that mimics std::dynamic_pointer_cast()

@@ -62,13 +62,13 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::adaptor::shape_extruder">
-        <inout key="extrudedMeshes" uid="..." />
+        <data extrudedMeshes="${...}" />
         <config priority="2" extrude="true" validation_on_double_click="true" />
     </service>
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b extrudedMeshes [sight::data::model_series]: model series where all extruded meshes are stored.
+ * - \b data.extrudedMeshes [sight::data::model_series]: model series where all extruded meshes are stored.
  *
  * @subsection Configuration Configuration:
  * - \b extrude (optional, bool, true) : sets if the extrusion is done or not (3D or 2D shape).
@@ -390,7 +390,9 @@ private:
     /// Contains the last lasso line, this line is drawn between the last position and the current mouse position.
     Ogre::ManualObject* m_last_lasso_line {nullptr};
 
-    sight::data::ptr<sight::data::model_series, sight::data::access::inout> m_extruded_meshes {this, "extrudedMeshes"};
+    sight::data::ptr<sight::data::model_series, sight::data::access::inout> m_extruded_meshes {this,
+                                                                                               "data.extrudedMeshes"
+    };
 
     bool m_validation_by_double_click {true};
 };

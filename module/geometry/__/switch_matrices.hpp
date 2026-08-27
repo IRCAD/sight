@@ -42,21 +42,17 @@ namespace sight::module::geometry
  *
  * @code{.xml}
         <service uid="..." type="sight::module::geometry::switch_matrices" auto_connect="true">
-            <in group="matrix">
-                <key uid="..." />
-                <key uid="..." />
-            </in>
-            <inout key="output" uid="..." />
-            <properties index="0" />
+            <data input="${...}" />
+            <data input="${...}" />
+            <data output="${...}" />
+            <data index="0" />
        </service>
    @endcode
  * @subsection Input Input:
- * - \b matrix [sight::data::matrix4]: List of two matrices keys to switch.
+ * - \b data.input [sight::data::matrix4]: List of two matrices keys to switch.
  * @subsection In-Out In-Out:
- * - \b output [sight::data::matrix4]: Output matrix.
- *
- * @subsection Properties Properties:
- * - \b index [sight::data::integer]: Index of the matrix to use.
+ * - \b data.output [sight::data::matrix4]: Output matrix.
+ * - \b data.index [sight::data::integer]: Index of the matrix to use.
  */
 class switch_matrices : public service::controller
 {
@@ -93,9 +89,9 @@ protected:
 
 private:
 
-    data::ptr_vector<data::matrix4, data::access::in> m_matrix {this, "matrix"};
-    data::ptr<data::matrix4, data::access::inout> m_output {this, "output"};
-    data::property<data::integer> m_current_index {this, "index", 0};
+    data::ptr_vector<data::matrix4, data::access::in> m_matrix {this, "data.input"};
+    data::ptr<data::matrix4, data::access::inout> m_output {this, "data.output"};
+    data::ptr<data::integer, data::access::inout> m_current_index {this, "data.index", 0};
 };
 
 } //namespace sight::module::geometry

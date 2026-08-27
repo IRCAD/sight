@@ -126,7 +126,7 @@ TEST_SUITE("sight::app::config_update")
     {
         sight::app::ut::test_order_srv::s_order = 1;
         m_app_config_mgr                        =
-            sight::app::ut::launch_app_config_mgr("mutiple_config_sequence_cfg_test");
+            sight::app::ut::launch_app_config_mgr("multiple_config_sequence_cfg_test");
 
         TEST_SERVICE(1);
         TEST_SERVICE(4);

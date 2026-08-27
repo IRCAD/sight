@@ -44,13 +44,13 @@ namespace sight::module::viz::scene3d_qt::adaptor::fiducials
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d_qt::adaptor::fiducials::ruler" auto_connect="true" >
-        <inout key="image" uid="..." />
+        <data image="${...}" />
         <config font_size="16" radius="3" priority="2" />
     </service>
    @endcode
  *
  * @subsection Input Input:
- * - \b image [sight::data::image]: image containing the ruler fiducials.
+ * - \b data.image [sight::data::image]: image containing the ruler fiducials.
  *
  * @subsection Configuration Configuration:
  * - \b font_size (optional, int, default=16): font size in labels, if equals 0 we hide the label instead.
@@ -63,8 +63,8 @@ namespace sight::module::viz::scene3d_qt::adaptor::fiducials
  * - \b always_display_all (optional, bool, default=false): boolean that impacts how rulers will be displayed.
  * If it's true, all rulers will always be displayed, regardless of the current slice.
 
- * @subsection Properties Properties:
- * - \b max_rulers [sight::data::integer]: Maximal number of rulers to be displayed at once..
+ * @subsection Input Input:
+ * - \b config.max_ruler [sight::data::integer] (optional, default=0): Maximal number of rulers to be displayed at once.
  *
  * @section Slots Slots
  * - \b activate_tool(bool): enables or not the ruler tool.
@@ -314,16 +314,16 @@ private:
 
     std::unique_ptr<delete_bin_button_when_focus_out> m_event_filter = nullptr;
 
-    sight::data::ptr<sight::data::image_series, sight::data::access::inout> m_image {this, "image"};
+    sight::data::ptr<sight::data::image_series, sight::data::access::inout> m_image {this, "data.image"};
 
     /// Defines the radius of spheres.
-    sight::data::property<sight::data::real> m_sphere_radius {this, "radius", 10.};
+    sight::data::ptr<sight::data::real, sight::data::access::in> m_sphere_radius {this, "config.radius", 10.};
 
     /// Defines the width of the lines.
-    sight::data::property<sight::data::real> m_line_width {this, "line_width", 4.};
+    sight::data::ptr<sight::data::real, sight::data::access::in> m_line_width {this, "config.line_width", 4.};
 
     /// Defines the maximal number of rulers to be displayed at once.
-    sight::data::property<sight::data::integer> m_max_rulers {this, "max_ruler", 0};
+    sight::data::ptr<sight::data::integer, sight::data::access::in> m_max_rulers {this, "config.max_ruler", 0};
 };
 
 } // namespace sight::module::viz::scene3d_qt::adaptor::fiducials

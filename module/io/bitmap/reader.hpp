@@ -53,14 +53,14 @@ namespace sight::module::io::bitmap
  *
  * @code{.xml}
     <service type="sight::module::io::bitmap::reader">
-        <inout key="data" uid="..." />
-        <file>...</file>
+        <data read="..." />
+        <path file="..." />
         <dialog>...</dialog>
         <gpu_required>true|false</gpu_required>
     </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b data [sight::data::image]: image to read to.
+ * - \b data.read [sight::data::image]: image to read to.
  * @subsection Configuration Configuration
  * - \b file (optional): path of the file to read, if it is not defined, 'open_location_dialog()' should be called to
  *           define the path.

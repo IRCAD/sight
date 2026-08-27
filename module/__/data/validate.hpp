@@ -48,22 +48,20 @@ namespace sight::module::data
  *
  * @code{.xml}
         <service uid="..." type="sight::module::data::validate" >
-           <in key="data" uid="..."/>
+           <data input="${...}" />
            <config id="..." />
         </service>
        @endcode
  * @subsection Input Input
- * - \b data [sight::data::object]: data object to validate.
+ * - \b data.input [sight::data::object]: data object to validate.
  *
  * @subsection Inout Inout
- * - \b valid [sight::data::boolean] (optional): true if valid, false otherwise.
- * - \b invalid [sight::data::boolean] (optional): true if invalid, false otherwise.
+ * - \b result.valid [sight::data::boolean] (optional): true if valid, false otherwise.
+ * - \b result.invalid [sight::data::boolean] (optional): true if invalid, false otherwise.
  *
  * @subsection Configuration Configuration
- * - \b id (string): class identifier of the validator
- *
- * @subsection Properties Properties
- * - \b on_change (sight::data::boolean): if true, signals are only emitted when the validation state changes
+ * - \b config.id (string): class identifier of the validator
+ * - \b config.on_change (sight::data::boolean): if true, signals are only emitted when the validation state changes
  * (default: false).
  */
 class validate final : public service::controller
@@ -109,12 +107,12 @@ protected:
 private:
 
     sight::data::validator::base::sptr m_validator;
-    sight::data::ptr<sight::data::object, sight::data::access::in> m_data {this, "data"};
-    sight::data::property<sight::data::boolean> m_on_change {this, "on_change", false};
+    sight::data::ptr<sight::data::object, sight::data::access::in> m_data {this, "data.input"};
+    sight::data::ptr<sight::data::boolean> m_on_change {this, "config.on_change", false};
 
     /// Store the validation state and track changes
-    sight::data::ptr<sight::data::boolean, sight::data::access::inout> m_valid {this, "valid", std::nullopt};
-    sight::data::ptr<sight::data::boolean, sight::data::access::inout> m_invalid {this, "invalid", std::nullopt};
+    sight::data::ptr<sight::data::boolean, sight::data::access::inout> m_valid {this, "result.valid", std::nullopt};
+    sight::data::ptr<sight::data::boolean, sight::data::access::inout> m_invalid {this, "result.invalid", std::nullopt};
 
     /// Tracks the previous validation result to detect state changes
     std::optional<bool> m_previous_result;

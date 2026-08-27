@@ -55,20 +55,20 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service type="sight::module::viz::scene3d::adaptor::negato2d">
-        <in key="image" uid="..." />
-        <in key="mask" uid="..." />
-        <inout key="tf" uid="..." />
-        <config orientation="axial" filtering="none" tf_alpha="true" />
-        <properties classification="pre" visible="true" />
+        <data image="${...}" />
+        <data mask="${...}" />
+        <data tf="${...}" />
+        <config orientation="axial" filtering="none" tf_alpha="true" classification="pre" visible="true" />
    </service>
    @endcode
  *
  * @subsection Input Input:
- * - \b image [sight::data::image]: image to display.
- * - \b mask [sight::data::image] (optional): mask to apply onto the image. Values < 0.5 are considered masked.
+ * - \b data.image [sight::data::image]: image to display.
+ * - \b data.mask [sight::data::image] (optional): mask to apply onto the image. Values < 0.5 are considered masked.
  *
  * @subsection In-Out In-Out
- * - \b tf [sight::data::transfer_function] (optional): the current TransferFunction. If it is not defined, we use the
+ * - \b data.tf [sight::data::transfer_function] (optional): the current TransferFunction. If it is not defined, we use
+ * the
  *      image's default transferFunction (CT-GreyLevel).
  *
  * @subsection Configuration Configuration:
@@ -81,12 +81,12 @@ namespace sight::module::viz::scene3d::adaptor
  *      was specified in the transform adaptor.
  * - \b interactive (optional, bool, default=false): enables interactions on the negato.
  *
- * @subsection Properties Properties:
- * - \b classification (optional, pre/post, default=pre): classification of voxels. "pre" means the filtering is applied
+ * - \b config.classification [sight::data::string] (optional, pre/post, default=pre): classification of voxels. "pre"
+ * means the filtering is applied
  * after the sampling of the transfer function, and "post" after. When using labelled images, it is highly recommended
  * to use "pre", otherwise it is likely that class of objects can be confounded.
- * - \b visible (optional, bool, default=true): the visibility of the adaptor.
- * - \b depth_bias: useful to superimpose multiple negatos on top of each other
+ * - \b config.visible [sight::data::boolean] (optional, default=true): the visibility of the adaptor.
+ * - \b config.depth_bias [sight::data::real]: useful to superimpose multiple negatos on top of each other
  */
 class negato2d final : public sight::module::viz::scene3d::adaptor::negato
 {

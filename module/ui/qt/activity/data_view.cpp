@@ -25,7 +25,7 @@
 #include <activity/validator/activity.hpp>
 #include <activity/validator/base.hpp>
 
-#include <core/runtime/helper.hpp>
+#include <algorithm>
 
 #include <data/boolean.hpp>
 #include <data/image_series.hpp>
@@ -60,8 +60,7 @@
 #include <QTableWidget>
 #include <QVBoxLayout>
 
-#include <algorithm>
-#include <iomanip>
+#include <utility>
 
 namespace sight::module::ui::qt::activity
 {
@@ -141,7 +140,7 @@ bool data_view::eventFilter(QObject* _obj, QEvent* _event)
 
         // check if the limit number of data is exceeded
         auto nb_child = tree->topLevelItemCount() + item_list.size();
-        if(static_cast<unsigned int>(nb_child) > requirement.max_occurs)
+        if(std::cmp_greater(nb_child, requirement.max_occurs))
         {
             QMessageBox::warning(
                 this,
@@ -156,7 +155,10 @@ bool data_view::eventFilter(QObject* _obj, QEvent* _event)
             for(QTreeWidgetItem* item_to_add : item_list)
             {
                 item_to_add->setFlags(item_to_add->flags() & ~Qt::ItemIsDropEnabled);
-                std::string uid = item_to_add->data(int(column_commun_t::id), UID_ROLE).toString().toStdString();
+                std::string uid = item_to_add->data(
+                    static_cast<int>(column_commun_t::id),
+                    UID_ROLE
+                ).toString().toStdString();
                 if(!uid.empty())
                 {
                     // insert the object if it is in the required type
@@ -416,7 +418,7 @@ void data_view::fill_information(const data::activity::sptr& _activity)
             }
         }
 
-        this->setTabEnabled(int(i), true);
+        this->setTabEnabled(static_cast<int>(i), true);
     }
 }
 
@@ -439,7 +441,7 @@ data::object::sptr data_view::check_data(std::size_t _index, std::string& _error
             QTreeWidgetItem* item = tree->topLevelItem(0);
 
             std::string uid =
-                item->data(int(column_commun_t::id), data_view::UID_ROLE).toString().toStdString();
+                item->data(static_cast<int>(column_commun_t::id), data_view::UID_ROLE).toString().toStdString();
 
             data::object::sptr obj = std::dynamic_pointer_cast<data::object>(core::id::get_object(uid));
             if(obj && obj->is_a(req.type))
@@ -485,9 +487,9 @@ data::object::sptr data_view::check_data(std::size_t _index, std::string& _error
 
                 for(unsigned int i = 0 ; i < nb_obj ; ++i)
                 {
-                    QTreeWidgetItem* item_data = tree->topLevelItem(int(i));
+                    QTreeWidgetItem* item_data = tree->topLevelItem(static_cast<int>(i));
                     std::string uid            =
-                        item_data->data(int(column_commun_t::id), UID_ROLE).toString().toStdString();
+                        item_data->data(static_cast<int>(column_commun_t::id), UID_ROLE).toString().toStdString();
 
                     data::object::sptr obj = std::dynamic_pointer_cast<data::object>(core::id::get_object(uid));
                     if(obj && obj->is_a(req.type))
@@ -512,9 +514,9 @@ data::object::sptr data_view::check_data(std::size_t _index, std::string& _error
 
                 for(unsigned int i = 0 ; i < nb_obj ; ++i)
                 {
-                    QTreeWidgetItem* item_data = tree->topLevelItem(int(i));
+                    QTreeWidgetItem* item_data = tree->topLevelItem(static_cast<int>(i));
                     std::string uid            =
-                        item_data->data(int(column_commun_t::id), UID_ROLE).toString().toStdString();
+                        item_data->data(static_cast<int>(column_commun_t::id), UID_ROLE).toString().toStdString();
 
                     data::object::sptr obj = std::dynamic_pointer_cast<data::object>(core::id::get_object(uid));
                     if(obj && obj->is_a(req.type))
@@ -776,7 +778,7 @@ data::object::sptr data_view::read_object(
         obj = data::factory::make(_classname);
         io_selector_srv->set_config(io_config);
         io_selector_srv->configure();
-        io_selector_srv->set_inout(obj, io::service::DATA_KEY);
+        io_selector_srv->set_inout(obj, io::service::READER_DATA_KEY);
         io_selector_srv->start();
         io_selector_srv->update();
         io_selector_srv->stop();
@@ -807,7 +809,11 @@ void data_view::add_object_item(std::size_t _index, const data::object::csptr& _
 
     auto* const new_item = new QTreeWidgetItem();
     new_item->setFlags(new_item->flags() & ~Qt::ItemIsDropEnabled);
-    new_item->setData(int(column_commun_t::id), UID_ROLE, QVariant(QString::fromStdString(_obj->get_id())));
+    new_item->setData(
+        static_cast<int>(column_commun_t::id),
+        UID_ROLE,
+        QVariant(QString::fromStdString(_obj->get_id()))
+    );
 
     const auto series    = std::dynamic_pointer_cast<const data::series>(_obj);
     const auto str_obj   = std::dynamic_pointer_cast<const data::string>(_obj);
@@ -817,8 +823,8 @@ void data_view::add_object_item(std::size_t _index, const data::object::csptr& _
     const auto trf       = std::dynamic_pointer_cast<const data::matrix4>(_obj);
     if(series)
     {
-        new_item->setText(int(column_series_t::name), QString::fromStdString(series->get_patient_name()));
-        new_item->setText(int(column_series_t::sex), QString::fromStdString(series->get_patient_sex()));
+        new_item->setText(static_cast<int>(column_series_t::name), QString::fromStdString(series->get_patient_name()));
+        new_item->setText(static_cast<int>(column_series_t::sex), QString::fromStdString(series->get_patient_sex()));
         std::string birthdate = series->get_patient_birth_date();
         if(!birthdate.empty() && birthdate != "unknown")
         {
@@ -826,16 +832,19 @@ void data_view::add_object_item(std::size_t _index, const data::object::csptr& _
             birthdate.insert(7, "-");
         }
 
-        new_item->setText(int(column_series_t::birthdate), QString::fromStdString(birthdate));
+        new_item->setText(static_cast<int>(column_series_t::birthdate), QString::fromStdString(birthdate));
 
-        new_item->setText(int(column_series_t::modality), QString::fromStdString(series->get_modality_string()));
         new_item->setText(
-            int(column_series_t::modality_desc),
+            static_cast<int>(column_series_t::modality),
+            QString::fromStdString(series->get_modality_string())
+        );
+        new_item->setText(
+            static_cast<int>(column_series_t::modality_desc),
             QString::fromStdString(series->get_series_description())
         );
 
         new_item->setText(
-            int(column_series_t::study_desc),
+            static_cast<int>(column_series_t::study_desc),
             QString::fromStdString(series->get_study_description())
         );
         std::string date = series->get_series_date();
@@ -845,7 +854,7 @@ void data_view::add_object_item(std::size_t _index, const data::object::csptr& _
             date.insert(7, "/");
         }
 
-        new_item->setText(int(column_series_t::date), QString::fromStdString(date));
+        new_item->setText(static_cast<int>(column_series_t::date), QString::fromStdString(date));
 
         std::string time = series->get_series_time();
         if(!time.empty())
@@ -854,7 +863,7 @@ void data_view::add_object_item(std::size_t _index, const data::object::csptr& _
             time.insert(5, ":");
         }
 
-        new_item->setText(int(column_series_t::time), QString::fromStdString(time.substr(0, 8)));
+        new_item->setText(static_cast<int>(column_series_t::time), QString::fromStdString(time.substr(0, 8)));
 
         std::string patient_age = series->get_patient_age();
         if(!patient_age.empty())
@@ -866,13 +875,13 @@ void data_view::add_object_item(std::size_t _index, const data::object::csptr& _
             }
         }
 
-        new_item->setText(int(column_series_t::patient_age), QString::fromStdString(patient_age));
+        new_item->setText(static_cast<int>(column_series_t::patient_age), QString::fromStdString(patient_age));
 
         const auto image_series = std::dynamic_pointer_cast<const data::image_series>(_obj);
         if(image_series)
         {
             new_item->setText(
-                int(column_image_series_t::body_part_examined),
+                static_cast<int>(column_image_series_t::body_part_examined),
                 QString::fromStdString(image_series->get_body_part_examined())
             );
             std::string patient_position = image_series->get_patient_position();
@@ -880,7 +889,7 @@ void data_view::add_object_item(std::size_t _index, const data::object::csptr& _
             {
                 // Code string can contains leading or trailing spaces, we removed it first.
                 const std::string::const_iterator forward =
-                    std::remove_if(
+                    std::remove_if( // NOLINT(modernize-use-ranges)
                         patient_position.begin(),
                         patient_position.end(),
                         [&](unsigned char _c)
@@ -955,11 +964,11 @@ void data_view::add_object_item(std::size_t _index, const data::object::csptr& _
             }
 
             new_item->setText(
-                int(column_image_series_t::patient_position),
+                static_cast<int>(column_image_series_t::patient_position),
                 QString::fromStdString(patient_position)
             );
             new_item->setText(
-                int(column_image_series_t::contrast_agent),
+                static_cast<int>(column_image_series_t::contrast_agent),
                 QString::fromStdString(image_series->get_contrast_bolus_agent())
             );
             std::string acquisition_time = image_series->get_acquisition_time();
@@ -970,7 +979,7 @@ void data_view::add_object_item(std::size_t _index, const data::object::csptr& _
             }
 
             new_item->setText(
-                int(column_image_series_t::acquisition_time),
+                static_cast<int>(column_image_series_t::acquisition_time),
                 QString::fromStdString(acquisition_time.substr(0, 8))
             );
             std::string contrast_time = image_series->get_contrast_bolus_start_time();
@@ -981,7 +990,7 @@ void data_view::add_object_item(std::size_t _index, const data::object::csptr& _
             }
 
             new_item->setText(
-                int(column_image_series_t::contrast_bolus_start_time),
+                static_cast<int>(column_image_series_t::contrast_bolus_start_time),
                 QString::fromStdString(contrast_time.substr(0, 8))
             );
         }
@@ -994,36 +1003,36 @@ void data_view::add_object_item(std::size_t _index, const data::object::csptr& _
             description = _obj->get_classname();
         }
 
-        new_item->setText(int(column_object_t::desc), QString::fromStdString(description));
+        new_item->setText(static_cast<int>(column_object_t::desc), QString::fromStdString(description));
     }
     else if(int_obj)
     {
-        new_item->setText(int(column_object_t::desc), QString("%1").arg(int_obj->value()));
+        new_item->setText(static_cast<int>(column_object_t::desc), QString("%1").arg(int_obj->value()));
     }
     else if(float_obj)
     {
-        new_item->setText(int(column_object_t::desc), QString("%1").arg(float_obj->value()));
+        new_item->setText(static_cast<int>(column_object_t::desc), QString("%1").arg(float_obj->value()));
     }
     else if(bool_obj)
     {
-        new_item->setText(int(column_object_t::desc), bool_obj->value() ? "true" : "false");
+        new_item->setText(static_cast<int>(column_object_t::desc), bool_obj->value() ? "true" : "false");
     }
     else if(trf)
     {
         std::stringstream str;
         str << *trf;
-        new_item->setText(int(column_object_t::desc), QString::fromStdString(str.str()));
+        new_item->setText(static_cast<int>(column_object_t::desc), QString::fromStdString(str.str()));
     }
     else
     {
-        new_item->setText(int(column_object_t::desc), QString::fromStdString(_obj->get_classname()));
+        new_item->setText(static_cast<int>(column_object_t::desc), QString::fromStdString(_obj->get_classname()));
     }
 
     // set icon
     auto iter = m_object_icons.find(_obj->get_classname());
     if(iter != m_object_icons.end())
     {
-        new_item->setIcon(int(column_commun_t::id), QIcon(QString::fromStdString(iter->second)));
+        new_item->setIcon(static_cast<int>(column_commun_t::id), QIcon(QString::fromStdString(iter->second)));
     }
 
     tree->addTopLevelItem(new_item);
@@ -1039,7 +1048,7 @@ void data_view::on_tree_item_double_clicked(QTreeWidgetItem* _item, int /*unused
 {
     if(_item != nullptr)
     {
-        std::string uid = _item->data(int(column_commun_t::id), UID_ROLE).toString().toStdString();
+        std::string uid = _item->data(static_cast<int>(column_commun_t::id), UID_ROLE).toString().toStdString();
         if(!uid.empty())
         {
             data::object::sptr obj = std::dynamic_pointer_cast<data::object>(core::id::get_object(uid));
@@ -1061,7 +1070,7 @@ void data_view::on_tree_item_double_clicked(QTreeWidgetItem* _item, int /*unused
                     if(is_ok_clicked)
                     {
                         str->value() = value.toStdString();
-                        _item->setText(int(column_object_t::desc), value);
+                        _item->setText(static_cast<int>(column_object_t::desc), value);
                     }
                 }
                 else if(obj->is_a("sight::data::integer"))
@@ -1073,7 +1082,7 @@ void data_view::on_tree_item_double_clicked(QTreeWidgetItem* _item, int /*unused
                         this,
                         "Edition",
                         "Enter the Integer value:",
-                        int(int_obj->value()),
+                        static_cast<int>(int_obj->value()),
                         std::numeric_limits<int>::min(),
                         std::numeric_limits<int>::max(),
                         1,
@@ -1082,7 +1091,7 @@ void data_view::on_tree_item_double_clicked(QTreeWidgetItem* _item, int /*unused
                     if(is_ok_clicked)
                     {
                         int_obj->value() = value;
-                        _item->setText(int(column_object_t::desc), QString("%1").arg(value));
+                        _item->setText(static_cast<int>(column_object_t::desc), QString("%1").arg(value));
                     }
                 }
                 else if(obj->is_a("sight::data::real"))
@@ -1103,7 +1112,7 @@ void data_view::on_tree_item_double_clicked(QTreeWidgetItem* _item, int /*unused
                     if(is_ok_clicked)
                     {
                         float_obj->value() = static_cast<float>(value);
-                        _item->setText(int(column_object_t::desc), QString("%1").arg(value));
+                        _item->setText(static_cast<int>(column_object_t::desc), QString("%1").arg(value));
                     }
                 }
                 else if(obj->is_a("sight::data::boolean"))
@@ -1115,7 +1124,7 @@ void data_view::on_tree_item_double_clicked(QTreeWidgetItem* _item, int /*unused
                         "Defines the Boolean value"
                     );
                     bool_obj->value() = (button == QMessageBox::Yes);
-                    _item->setText(int(column_object_t::desc), bool_obj->value() ? "true" : "false");
+                    _item->setText(static_cast<int>(column_object_t::desc), bool_obj->value() ? "true" : "false");
                 }
                 else if(obj->is_a("sight::data::matrix4"))
                 {
@@ -1140,7 +1149,7 @@ void data_view::on_tree_item_double_clicked(QTreeWidgetItem* _item, int /*unused
                         bool conversion_ok = false;
                         for(int i = 0 ; i < 16 ; ++i)
                         {
-                            coeffs[std::size_t(i)] = coeff_list[i].toDouble(&conversion_ok);
+                            coeffs[static_cast<std::size_t>(i)] = coeff_list[i].toDouble(&conversion_ok);
                             if(!conversion_ok)
                             {
                                 QMessageBox::warning(
@@ -1153,7 +1162,7 @@ void data_view::on_tree_item_double_clicked(QTreeWidgetItem* _item, int /*unused
                         }
 
                         (*trf) = coeffs;
-                        _item->setText(int(column_object_t::desc), value.trimmed());
+                        _item->setText(static_cast<int>(column_object_t::desc), value.trimmed());
                     }
                     else if(is_ok_clicked)
                     {

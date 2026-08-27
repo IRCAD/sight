@@ -43,7 +43,7 @@ namespace sight::module::ui::qt::image
 namespace medical_image = data::helper::medical_image;
 
 const service::base::key_t slice_index_position_editor::IMAGE_INOUT =
-    "image";
+    "data.image";
 
 std::map<slice_index_position_editor::axis_t, std::string> slice_index_position_editor::s_orientation_prefix_map = {
     {slice_index_position_editor::axis_t::axial, "S"},

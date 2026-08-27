@@ -79,7 +79,7 @@ void mesh_list::starting()
         const std::string transform_id = gen_id(transform->get_id());
         service::config_t config;
         config.add("config.<xmlattr>.layer", layer_id());
-        config.add("config.<xmlattr>." + std::string(TRANSFORM_INPUT), transform_id);
+        config.add("config.<xmlattr>.transform", transform_id);
         config.add("config.<xmlattr>.autoresetcamera", "false");
 
         // Create the transform adaptor.
@@ -91,7 +91,7 @@ void mesh_list::starting()
         transform_adaptor->set_layer_id(layer_id());
         transform_adaptor->set_render_service(this->render_service());
 
-        transform_adaptor->set_inout(transform, "transform", true);
+        transform_adaptor->set_inout(transform, "data.transform", true);
 
         transform_adaptor->configure(config);
         transform_adaptor->start();
@@ -109,7 +109,7 @@ void mesh_list::starting()
         texture_adaptor->set_layer_id(layer_id());
         texture_adaptor->set_render_service(this->render_service());
 
-        texture_adaptor->set_input(image, "image", false);
+        texture_adaptor->set_input(image, "data.image", false);
 
         texture_adaptor->configure(texture_config);
         texture_adaptor->start();
@@ -127,7 +127,7 @@ void mesh_list::starting()
 
         {
             const auto mesh = m_mesh.lock();
-            mesh_adaptor->set_input(mesh.get_shared(), "mesh", true);
+            mesh_adaptor->set_input(mesh.get_shared(), "data.mesh", true);
         }
 
         mesh_adaptor->configure(mesh_config);
@@ -148,7 +148,7 @@ void mesh_list::starting()
 service::connections_t mesh_list::auto_connections() const
 {
     service::connections_t connections = adaptor::auto_connections();
-    connections.push(TRANSFORM_INPUT, data::signals::MODIFIED, slots::ADD);
+    connections.push(m_transform, data::signals::MODIFIED, slots::ADD);
     return connections;
 }
 

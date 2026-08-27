@@ -43,13 +43,13 @@ namespace sight::module::io::vtk
  * @section XML Configuration
  * @code{.xml}
     <service uid="..." type="sight::module::io::vtk::image_series_reader">
-        <inout key="data" uid="imageSeries" />
-        <file>@path/to/file</file>
+        <data read="${imageSeries}" />
+        <path file="@path/to/file" />
     </service>
  * @endcode
  *
  * @subsection In-Out In-Out
- * - \b data [sight::data::image_series]: ImageSeries containing read image
+ * - \b data.read [sight::data::image_series]: ImageSeries containing read image
  *
  */
 class image_series_reader : public sight::io::service::reader

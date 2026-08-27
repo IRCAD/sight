@@ -33,11 +33,11 @@ namespace sight::module::io::vision
  * @section XML XML Configuration
  * @code{.xml}
        <service uid="..." type="sight::module::io::vision::open_cv_reader" >
-           <inout key="data" uid="..." />
+           <data read="..." />
        </service>
  * @endcode
  * @subsection In-Out In-Out
- * - \b data [sight::data::camera_set]: object to read
+ * - \b data.read [sight::data::camera_set]: object to read
  */
 class open_cv_reader : public sight::io::service::reader
 {

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -78,4 +78,4 @@ public:
     SIGHT_UI_TEST_API static void loop(tester& _tester, const std::string& _controls_name);
 };
 
-}
+} // namespace sight::ui::test::helper

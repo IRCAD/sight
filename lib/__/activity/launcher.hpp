@@ -27,14 +27,9 @@
 #include "activity/extension/activity.hpp"
 
 #include <data/activity.hpp>
-#include <data/object.hpp>
 
 #include <service/value_parameters.hpp>
 
-#include <boost/property_tree/ptree.hpp>
-
-#include <functional>
-#include <map>
 #include <vector>
 
 namespace sight::activity

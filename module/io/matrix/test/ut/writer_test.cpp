@@ -44,12 +44,12 @@ struct fixture
 {
     fixture()
     {
-        sight::ui::preferences::set_enabled(true);
-        sight::ui::preferences::set_password_policy(sight::core::crypto::password_keeper::password_policy::never);
-
         // Set the profile name
         const std::string& profile_name = sight::core::tools::uuid::generate();
         sight::core::runtime::get_current_profile()->set_name(profile_name);
+
+        sight::ui::preferences::set_enabled(true);
+        sight::ui::preferences::set_password_policy(sight::core::crypto::password_keeper::password_policy::never);
     }
 };
 
@@ -102,11 +102,11 @@ TEST_SUITE("sight::module::io::matrix::writer")
         // Create the service
         auto matrix_writer = sight::service::add("sight::module::io::matrix::matrix_writer");
         CHECK(matrix_writer);
-        matrix_writer->set_input(SOURCE_TL, "data");
+        matrix_writer->set_input(SOURCE_TL, "data.write");
 
         // Create the service configuration
         sight::service::config_t config;
-        config.add("file", "matrices.csv");
+        config.add("path.<xmlattr>.file", "matrices.csv");
 
         boost::property_tree::ptree config_child;
         config_child.put("<xmlattr>.interactive", false);
@@ -152,11 +152,11 @@ TEST_SUITE("sight::module::io::matrix::writer")
         // Create the service
         auto matrix_writer = sight::service::add("sight::module::io::matrix::matrix_writer");
         CHECK(matrix_writer);
-        matrix_writer->set_input(SOURCE_TL, "data");
+        matrix_writer->set_input(SOURCE_TL, "data.write");
 
         // Create the service configuration
         sight::service::config_t config;
-        config.add("file", "matrices.csv");
+        config.add("path.<xmlattr>.file", "matrices.csv");
 
         boost::property_tree::ptree config_child;
         config_child.put("<xmlattr>.interactive", false);
