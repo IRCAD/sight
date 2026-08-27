@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -35,8 +35,8 @@
 #endif
 
 #include "libjpeg_reader.hxx"
-#include "libtiff_reader.hxx"
 #include "libpng_reader.hxx"
+#include "libtiff_reader.hxx"
 #include "openjpeg_reader.hxx"
 
 // cspell:ignore nvjpeg LIBJPEG LIBTIFF LIBPNG
@@ -65,6 +65,7 @@ public:
     ~reader_impl() noexcept = default;
 
     /// Main read function
+    // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
     void read(std::istream& _istream, backend _backend)
     {
         // Get the image pointer
@@ -96,6 +97,7 @@ public:
     }
 
     /// Main read function
+    // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
     void read(
         const std::uint8_t* const _input,
         std::size_t _input_size,
@@ -154,6 +156,7 @@ private:
 
     //------------------------------------------------------------------------------
 
+    // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
     const std::unique_ptr<reader_backend>& get_reader_backend(backend _backend)
     {
         switch(_backend)
@@ -185,7 +188,7 @@ private:
                 }
                 return m_nvjpeg2k;
 #endif
-            case backend::libjpeg:
+            case backend::libjpeg: // NOLINT(bugprone-branch-clone)
                 if(!m_libjpeg)
                 {
                     m_libjpeg = std::make_unique<libjpeg_reader>();
@@ -193,7 +196,7 @@ private:
 
                 return m_libjpeg;
 
-            case backend::libtiff:
+            case backend::libtiff: // NOLINT(bugprone-branch-clone)
                 if(!m_libtiff)
                 {
                     m_libtiff = std::make_unique<libtiff_reader>();
@@ -201,7 +204,7 @@ private:
 
                 return m_libtiff;
 
-            case backend::libpng:
+            case backend::libpng: // NOLINT(bugprone-branch-clone)
                 if(!m_libpng)
                 {
                     m_libpng = std::make_unique<libpng_reader>();
@@ -209,8 +212,8 @@ private:
 
                 return m_libpng;
 
-            case backend::openjpeg:
-            case backend::openjpeg_j2k:
+            case backend::openjpeg:     // NOLINT(bugprone-branch-clone)
+            case backend::openjpeg_j2k: // NOLINT(bugprone-branch-clone)
                 if(!m_openjpeg)
                 {
                     m_openjpeg = std::make_unique<openjpeg_reader>();
@@ -226,7 +229,7 @@ private:
     }
 
     /// Pointer to the public interface
-    reader* const m_reader;
+    reader* const m_reader {};
 
 #ifdef SIGHT_ENABLE_NVJPEG
     std::unique_ptr<reader_backend> m_nvjpeg;

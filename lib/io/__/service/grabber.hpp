@@ -24,14 +24,12 @@
 
 #include <sight/io/__/config.hpp>
 
-#include <core/progress/monitor.hpp>
-
-#include <data/camera.hpp>
 #include <data/frame_tl.hpp>
 #include <data/point.hpp>
 
+#include <core/notification/has_monitors.hpp>
+
 #include <service/base.hpp>
-#include <service/notifier.hpp>
 
 #include <ui/__/parameter.hpp>
 
@@ -49,7 +47,8 @@ namespace sight::io::service
  * - \b camera_stopped(): Emitted when camera is stopped.
  * - \b framePresented(): Emitted when a frame is presented.
  * - \b parameter_changed(): Emitted when a named parameter is changed.
- * - \b monitor_created(sight::core::progress::monitor::sptr): Emitted when a long running task has been launched.
+ * - \b notification_created(sight::core::notification::base::sptr): Emitted when a long running task has been
+ * launched.
  *
  * @section Slots Slots
  * - \b start_camera(): Start playing the camera or the video.
@@ -69,7 +68,7 @@ namespace sight::io::service
  * - \b remove_roi_center(sight::data::point::sptr): Removes a region of interest via its center.
  */
 class SIGHT_IO_CLASS_API grabber : public sight::service::base,
-                                   public sight::service::notifier
+                                   public sight::core::notification::has_monitors
 {
 public:
 
@@ -118,9 +117,6 @@ public:
 
         using parameter_changed_t = core::com::signal<void (ui::parameter_t, std::string)>;
         static inline const signal_key_t PARAMETER_CHANGED = "parameter_changed";
-
-        using monitor_created_t = core::com::signal<void (core::progress::monitor::sptr)>;
-        static inline const signal_key_t MONITOR_CREATED = "monitor_created";
 
         using fps_changed_t = sight::core::com::signal<void (double)>;
         static inline const signal_key_t FPS_CHANGED = "fps_changed";

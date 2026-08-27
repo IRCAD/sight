@@ -22,10 +22,11 @@
 
 #include "io/itk/inr_image_reader.hpp"
 
+#include <core/notification/observer.hpp>
+
 #include "io/itk/helper/progress_itk_to_fw.hpp"
 #include "io/itk/itk.hpp"
 
-#include <core/progress/observer.hpp>
 #include <core/tools/dispatcher.hpp>
 
 #include <data/image.hpp>
@@ -61,13 +62,13 @@ static const core::type& get_image_type(const std::string& _image_file_name)
 
 //------------------------------------------------------------------------------
 
-void inr_image_reader::read(sight::core::progress::observer::sptr _progress)
+void inr_image_reader::read(sight::core::notification::observer::sptr _progress)
 {
     auto do_read =
         []<class PIXEL_TYPE>(
             data::image::sptr _data_image,
             std::string _filename,
-            core::progress::observer::sptr _observer
+            core::notification::observer::sptr _observer
     )
         {
             SIGHT_INFO(

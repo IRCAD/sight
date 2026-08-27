@@ -52,7 +52,7 @@ public:
     SIGHT_IO_API ~matrix4_writer() override = default;
 
     /// Writes the file using the standard iostream API.
-    SIGHT_IO_API void write(sight::sptr<sight::core::progress::observer> _progress) override;
+    SIGHT_IO_API void write(sight::sptr<sight::core::notification::observer> _progress) override;
 
     /// Defines the extensions supported by this writer. Here: ".trf"
     SIGHT_IO_API std::string extension() const override;

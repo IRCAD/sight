@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,191 +19,83 @@
  *
  ***********************************************************************/
 
-#include "sequencer.hpp"
+#include <doctest/doctest.h>
 
 #include "loader.hpp"
 
 #include <activity/extension/activity.hpp>
 
-#include <core/runtime/path.hpp>
 #include <core/runtime/runtime.hpp>
+#include <core/thread/worker.hpp>
 
 #include <data/activity_set.hpp>
 #include <data/integer.hpp>
 #include <data/string.hpp>
 
+#include <service/base.hpp>
 #include <service/op.hpp>
-
-#include <ui/__/registry.hpp>
-#include <ui/qt/container/widget.hpp>
 
 #include <utest/wait.hpp>
 
 #include <QApplication>
 
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::ui::qt::ut::sequencer);
-
-namespace sight::module::ui::qt::ut
+namespace
 {
 
-//------------------------------------------------------------------------------
-
-void sequencer::setUp()
+class sequencer
 {
-    // Set up context before running a test.
-    CPPUNIT_ASSERT(qApp != nullptr);
+public:
 
-    static bool done = false;
-    if(!done)
+    sequencer()
     {
-        CPPUNIT_ASSERT_NO_THROW(core::runtime::load_module("ut_sequencer"));
-        CPPUNIT_ASSERT_NO_THROW(core::runtime::load_module("sight::module::app"));
-        CPPUNIT_ASSERT_NO_THROW(core::runtime::load_module("sight::module::activity"));
-        done = true;
-    }
+        // A prior gui_fixture test may have stopped qApp/the default worker in tear_down().
+        sight::core::runtime::load_module("sight::module::ui::qt");
 
-    // Build container
-    std::tie(m_container, m_child_uuid) = make_container();
+        // Set up context before running a test.
+        CHECK(qApp != nullptr);
 
-    m_worker = sight::core::thread::worker::make();
-}
-
-//------------------------------------------------------------------------------
-
-void sequencer::tearDown()
-{
-    // Destroy container
-    destroy_container(m_container);
-
-    m_worker->stop();
-    m_worker.reset();
-}
-
-//------------------------------------------------------------------------------
-
-void sequencer::reset_requirements_test()
-{
-    // Register the service
-    sight::service::base::sptr sequencer(service::add("sight::module::ui::qt::activity::sequencer", m_child_uuid));
-
-    // Will stop the service and unregister it when destroyed
-    service_cleaner cleaner(sequencer);
-
-    // Set inout
-    auto activity_set = std::make_shared<data::activity_set>();
-    sequencer->set_inout(activity_set, "activitySet", true);
-
-    // Build sequencer configuration
-    service::config_t sequencer_config;
-
-    for(int i = 0 ; i < 3 ; ++i)
-    {
-        auto& activity = sequencer_config.add("activity", "");
-        activity.put("<xmlattr>.id", "id_" + std::to_string(i));
-        activity.put("<xmlattr>.name", "name_" + std::to_string(i));
-    }
-
-    // Configure the service
-    CPPUNIT_ASSERT_NO_THROW(sequencer->configure(sequencer_config));
-
-    CPPUNIT_ASSERT_NO_THROW(sequencer->start().get());
-
-    // This should go to the first activity
-    CPPUNIT_ASSERT_NO_THROW(sequencer->update().get());
-
-    // Add some requirements from "outside"
-    activity_set->at(0)->insert_or_assign("outside_1", std::make_shared<data::integer>(1));
-    activity_set->at(0)->insert_or_assign("outside_2", std::make_shared<data::integer>(2));
-
-    // Go to the last activity, so all requirements are created
-    CPPUNIT_ASSERT_NO_THROW(sequencer->slot("next")->run());
-    CPPUNIT_ASSERT_NO_THROW(sequencer->slot("next")->run());
-
-    // 3 activities should be in the set
-    CPPUNIT_ASSERT_EQUAL(std::size_t(3), activity_set->size());
-
-    // Lambda helper to check the activity set
-    const auto& check_activity =
-        [&activity_set](bool _should_be_empty, bool _modify = false)
+        static bool done = false;
+        if(!done)
         {
-            for(const auto& activity : *activity_set)
-            {
-                // At least one requirement should be present in the current activity
-                CPPUNIT_ASSERT_GREATEREQUAL(std::size_t(1), activity->size());
+            CHECK_NOTHROW(sight::core::runtime::load_module("ut_sequencer"));
+            CHECK_NOTHROW(sight::core::runtime::load_module("sight::module::app"));
+            CHECK_NOTHROW(sight::core::runtime::load_module("sight::module::activity"));
+            done = true;
+        }
 
-                for(const auto& [key, value] : *activity)
-                {
-                    if(key.starts_with("inside_"))
-                    {
-                        if(auto string = std::dynamic_pointer_cast<data::string>(value); string)
-                        {
-                            // The initial value should be empty string
-                            CPPUNIT_ASSERT_EQUAL(_should_be_empty ? std::string() : key, string->value());
+        // Build container
+        std::tie(m_container, m_child_uuid) = sight::module::ui::qt::ut::make_container();
 
-                            if(_modify)
-                            {
-                                // Set a new value
-                                string->set_value(key);
-                            }
-                        }
-                    }
-                    else if(key.starts_with("outside_"))
-                    {
-                        if(auto integer = std::dynamic_pointer_cast<data::integer>(value); integer)
-                        {
-                            if(key.ends_with("1"))
-                            {
-                                CPPUNIT_ASSERT_EQUAL(std::int64_t(1), integer->value());
-                            }
-                            else if(key.ends_with("2"))
-                            {
-                                CPPUNIT_ASSERT_EQUAL(std::int64_t(2), integer->value());
-                            }
-                        }
-                    }
-                }
-            }
-        };
+        m_worker = sight::core::thread::worker::make();
+    }
 
-    // Modify them to simulate user interaction
-    check_activity(true, true);
-
-    // Just to be sure, check that nothing change
-    CPPUNIT_ASSERT_NO_THROW(sequencer->update().get());
-    check_activity(false);
-
-    // Reset the requirements
-    CPPUNIT_ASSERT_NO_THROW(sequencer->slot("reset_requirements")->run());
-
-    // Check that the requirements are reset
-    check_activity(true);
-}
-
-//------------------------------------------------------------------------------
-
-void sequencer::go_to_slot_test()
-{
-    // Register the service
-    sight::service::base::sptr sequencer(service::add("sight::module::ui::qt::activity::sequencer", m_child_uuid));
-    service_cleaner cleaner(sequencer);
-
-    // Set inout
-    auto activity_set = std::make_shared<data::activity_set>();
-    sequencer->set_inout(activity_set, "activitySet", true);
-
-    std::string current_activity_id;
+    ~sequencer()
     {
-        auto activity_slot = sight::core::com::new_slot(
-            [&current_activity_id](data::activity::sptr _activity)
-            {
-                current_activity_id = _activity->get_activity_config_id();
-            });
-        activity_slot->set_worker(m_worker);
-        sequencer->signal<core::com::signal<void(data::activity::sptr)> >("activity_created")->connect(activity_slot);
+        // Destroy container
+        sight::module::ui::qt::ut::destroy_container(m_container);
+
+        m_worker->stop();
+        m_worker.reset();
+    }
+
+    //------------------------------------------------------------------------------
+
+    void reset_requirements_test()
+    {
+        // Register the service
+        sight::service::base::sptr sequencer(
+            sight::service::add("sight::module::ui::qt::activity::sequencer", m_child_uuid));
+
+        // Will stop the service and unregister it when destroyed
+        sight::module::ui::qt::ut::service_cleaner cleaner(sequencer);
+
+        // Set inout
+        auto activity_set = std::make_shared<sight::data::activity_set>();
+        sequencer->set_inout(activity_set, "activitySet", true);
 
         // Build sequencer configuration
-        service::config_t sequencer_config;
+        sight::service::config_t sequencer_config;
+
         for(int i = 0 ; i < 3 ; ++i)
         {
             auto& activity = sequencer_config.add("activity", "");
@@ -211,32 +103,168 @@ void sequencer::go_to_slot_test()
             activity.put("<xmlattr>.name", "name_" + std::to_string(i));
         }
 
-        // Configure and start the service
-        CPPUNIT_ASSERT_NO_THROW(sequencer->configure(sequencer_config));
-        CPPUNIT_ASSERT_NO_THROW(sequencer->start().get());
-        CPPUNIT_ASSERT_NO_THROW(sequencer->update().get());
+        // Configure the service
+        CHECK_NOTHROW(sequencer->configure(sequencer_config));
 
-        activity_set->at(0)->insert_or_assign("outside_1", std::make_shared<data::integer>(1));
-        activity_set->at(0)->insert_or_assign("outside_2", std::make_shared<data::integer>(2));
+        CHECK_NOTHROW(sequencer->start().get());
 
-        CPPUNIT_ASSERT_NO_THROW(sequencer->slot("go_to")->run(std::string("id_1")));
-        SIGHT_TEST_WAIT(current_activity_id == "id_1");
-        CPPUNIT_ASSERT_EQUAL(std::string("id_1"), current_activity_id);
+        // This should go to the first activity
+        CHECK_NOTHROW(sequencer->update().get());
 
-        CPPUNIT_ASSERT_NO_THROW(sequencer->slot("go_to")->run(std::string("id_2")));
-        SIGHT_TEST_WAIT(current_activity_id == "id_2");
-        CPPUNIT_ASSERT_EQUAL(std::string("id_2"), current_activity_id);
+        // Add some requirements from "outside"
+        activity_set->at(0)->insert_or_assign("outside_1", std::make_shared<sight::data::integer>(1));
+        activity_set->at(0)->insert_or_assign("outside_2", std::make_shared<sight::data::integer>(2));
 
-        CPPUNIT_ASSERT_NO_THROW(sequencer->slot("previous")->run());
-        SIGHT_TEST_WAIT(current_activity_id == "id_1");
-        CPPUNIT_ASSERT_EQUAL(std::string("id_1"), current_activity_id);
+        // Go to the last activity, so all requirements are created
+        CHECK_NOTHROW(sequencer->slot("next")->run());
+        CHECK_NOTHROW(sequencer->slot("next")->run());
 
-        CPPUNIT_ASSERT_NO_THROW(sequencer->slot("go_to")->run(std::string("invalid_id")));
-        SIGHT_TEST_WAIT(current_activity_id == "id_1");
-        CPPUNIT_ASSERT_EQUAL(std::string("id_1"), current_activity_id);
+        // 3 activities should be in the set
+        CHECK_EQ(std::size_t(3), activity_set->size());
+
+        // Lambda helper to check the activity set
+        const auto& check_activity =
+            [&activity_set](bool _should_be_empty, bool _modify = false)
+            {
+                for(const auto& activity : *activity_set)
+                {
+                    // At least one requirement should be present in the current activity
+                    CHECK_GE(activity->size(), std::size_t(1));
+
+                    for(const auto& [key, value] : *activity)
+                    {
+                        if(key.starts_with("inside_"))
+                        {
+                            if(auto string = std::dynamic_pointer_cast<sight::data::string>(value); string)
+                            {
+                                // The initial value should be empty string
+                                CHECK_EQ(_should_be_empty ? std::string() : key, string->value());
+
+                                if(_modify)
+                                {
+                                    // Set a new value
+                                    string->set_value(key);
+                                }
+                            }
+                        }
+                        else if(key.starts_with("outside_"))
+                        {
+                            if(auto integer = std::dynamic_pointer_cast<sight::data::integer>(value); integer)
+                            {
+                                if(key.ends_with("1"))
+                                {
+                                    CHECK_EQ(std::int64_t(1), integer->value());
+                                }
+                                else if(key.ends_with("2"))
+                                {
+                                    CHECK_EQ(std::int64_t(2), integer->value());
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+        // Modify them to simulate user interaction
+        check_activity(true, true);
+
+        // Just to be sure, check that nothing change
+        CHECK_NOTHROW(sequencer->update().get());
+        check_activity(false);
+
+        // Reset the requirements
+        CHECK_NOTHROW(sequencer->slot("reset_requirements")->run());
+
+        // Check that the requirements are reset
+        check_activity(true);
+    }
+
+    //------------------------------------------------------------------------------
+
+    void go_to_slot_test()
+    {
+        // Register the service
+        sight::service::base::sptr sequencer(sight::service::add(
+                                                 "sight::module::ui::qt::activity::sequencer",
+                                                 m_child_uuid
+        ));
+        sight::module::ui::qt::ut::service_cleaner cleaner(sequencer);
+
+        // Set inout
+        auto activity_set = std::make_shared<sight::data::activity_set>();
+        sequencer->set_inout(
+            activity_set,
+            "activitySet",
+            true
+        );
+
+        std::string current_activity_id;
+        {
+            auto activity_slot = sight::core::com::new_slot(
+                [&current_activity_id](sight::data::activity::sptr _activity)
+                {
+                    current_activity_id = _activity->get_activity_config_id();
+                });
+            activity_slot->set_worker(m_worker);
+            sequencer->signal<sight::core::com::signal<void(sight::data::activity::sptr)> >(
+                "activity_created"
+            )->connect(
+                activity_slot
+            );
+
+            // Build sequencer configuration
+            sight::service::config_t sequencer_config;
+            for(int i = 0 ; i < 3 ; ++i)
+            {
+                auto& activity = sequencer_config.add("activity", "");
+                activity.put("<xmlattr>.id", "id_" + std::to_string(i));
+                activity.put("<xmlattr>.name", "name_" + std::to_string(i));
+            }
+
+            // Configure and start the service
+            CHECK_NOTHROW(sequencer->configure(sequencer_config));
+            CHECK_NOTHROW(sequencer->start().get());
+            CHECK_NOTHROW(sequencer->update().get());
+
+            activity_set->at(0)->insert_or_assign("outside_1", std::make_shared<sight::data::integer>(1));
+            activity_set->at(0)->insert_or_assign("outside_2", std::make_shared<sight::data::integer>(2));
+
+            CHECK_NOTHROW(sequencer->slot("go_to")->run(std::string("id_1")));
+            SIGHT_TEST_WAIT(current_activity_id == "id_1");
+            CHECK_EQ(std::string("id_1"), current_activity_id);
+
+            CHECK_NOTHROW(sequencer->slot("go_to")->run(std::string("id_2")));
+            SIGHT_TEST_WAIT(current_activity_id == "id_2");
+            CHECK_EQ(std::string("id_2"), current_activity_id);
+
+            CHECK_NOTHROW(sequencer->slot("previous")->run());
+            SIGHT_TEST_WAIT(current_activity_id == "id_1");
+            CHECK_EQ(std::string("id_1"), current_activity_id);
+
+            CHECK_NOTHROW(sequencer->slot("go_to")->run(std::string("invalid_id")));
+            SIGHT_TEST_WAIT(current_activity_id == "id_1");
+            CHECK_EQ(std::string("id_1"), current_activity_id);
+        }
+    }
+
+private:
+
+    sight::service::base::sptr m_container;
+    std::string m_child_uuid;
+    sight::core::thread::worker::sptr m_worker;
+};
+
+} // namespace
+
+TEST_SUITE("sight::module::ui::qt::activity::sequencer")
+{
+    TEST_CASE_FIXTURE(sequencer, "reset_requirements")
+    {
+        reset_requirements_test();
+    }
+
+    TEST_CASE_FIXTURE(sequencer, "go_to_slot")
+    {
+        go_to_slot_test();
     }
 }
-
-//------------------------------------------------------------------------------
-
-} // namespace sight::module::ui::qt::ut

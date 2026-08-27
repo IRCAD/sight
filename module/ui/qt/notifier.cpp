@@ -22,6 +22,11 @@
 
 #include "module/ui/qt/notifier.hpp"
 
+#include <core/notification/error.hpp>
+#include <core/notification/information.hpp>
+#include <core/notification/instruction.hpp>
+#include <core/notification/message.hpp>
+#include <core/notification/warning.hpp>
 #include <core/runtime/path.hpp>
 
 #include <ui/__/registry.hpp>
@@ -42,22 +47,28 @@ static const std::string CLOSABLE_KEY("closable");
 
 static const std::string INFINITE("infinite");
 
-static const std::map<service::notification::type, std::filesystem::path> SOUND_BOARD = {
+static const std::map<sight::ui::dialog::notification_base::type, std::filesystem::path> SOUND_BOARD = {
     {
-        service::notification::type::info,
+        sight::ui::dialog::notification_base::type::info,
         std::filesystem::canonical(
             sight::core::runtime::get_resource_file_path("sight::module::ui::qt/sounds/info_beep.wav")
         )
     }
     ,
     {
-        service::notification::type::success,
+        sight::ui::dialog::notification_base::type::success,
         std::filesystem::canonical(
             sight::core::runtime::get_resource_file_path("sight::module::ui::qt/sounds/success_beep.wav")
         ),
     },
     {
-        service::notification::type::failure,
+        sight::ui::dialog::notification_base::type::warning,
+        std::filesystem::canonical(
+            sight::core::runtime::get_resource_file_path("sight::module::ui::qt/sounds/info_beep.wav")
+        )
+    },
+    {
+        sight::ui::dialog::notification_base::type::failure,
         std::filesystem::canonical(
             sight::core::runtime::get_resource_file_path("sight::module::ui::qt/sounds/failure_beep.wav")
         )
@@ -65,20 +76,20 @@ static const std::map<service::notification::type, std::filesystem::path> SOUND_
 };
 
 static const std::map<const std::string, const sight::ui::dialog::notification::position> POSITION_MAP = {
-    {"TOP_RIGHT", service::notification::position::top_right},
-    {"TOP_LEFT", service::notification::position::top_left},
-    {"CENTERED_TOP", service::notification::position::centered_top},
-    {"CENTERED", service::notification::position::centered},
-    {"BOTTOM_RIGHT", service::notification::position::bottom_right},
-    {"BOTTOM_LEFT", service::notification::position::bottom_left},
-    {"CENTERED_BOTTOM", service::notification::position::centered_bottom}
+    {"TOP_RIGHT", sight::ui::dialog::notification_base::position::top_right},
+    {"TOP_LEFT", sight::ui::dialog::notification_base::position::top_left},
+    {"CENTERED_TOP", sight::ui::dialog::notification_base::position::centered_top},
+    {"CENTERED", sight::ui::dialog::notification_base::position::centered},
+    {"BOTTOM_RIGHT", sight::ui::dialog::notification_base::position::bottom_right},
+    {"BOTTOM_LEFT", sight::ui::dialog::notification_base::position::bottom_left},
+    {"CENTERED_BOTTOM", sight::ui::dialog::notification_base::position::centered_bottom}
 };
 
 //-----------------------------------------------------------------------------
 
 notifier::notifier() noexcept
 {
-    new_slot(slots::POP_NOTIFICATION, &notifier::pop, this);
+    new_slot(slots::ADD_NOTIFICATION, &notifier::add_notification, this);
     new_slot(slots::CLOSE_NOTIFICATION, &notifier::close_notification, this);
     new_slot(slots::SET_ENUM_PARAMETER, &notifier::set_enum_parameter, this);
 }
@@ -298,13 +309,13 @@ void notifier::set_enum_parameter(std::string _val, std::string _key)
 
 //-----------------------------------------------------------------------------
 
-void notifier::pop(service::notification _notification)
+void notifier::display(sight::ui::dialog::notification_base::params _params)
 {
-    const bool channel_configured = m_channels.contains(_notification.m_channel);
+    const bool channel_configured = m_channels.contains(_params.m_channel);
 
     // Get channel configuration (or global configuration if there is no channel)
     const auto& channel_configuration = channel_configured
-                                        ? m_channels[_notification.m_channel]
+                                        ? m_channels[_params.m_channel]
                                         : m_channels[""];
 
     const auto& default_configuration = m_channels[""];
@@ -314,19 +325,19 @@ void notifier::pop(service::notification _notification)
     const auto& position = channel_configured && channel_configuration.position
                            ? *channel_configuration.position
                            : (channel_configured && !channel_configuration.position) || !default_configuration.position
-                           ? _notification.m_position
+                           ? _params.m_position
                            : *default_configuration.position;
 
     const auto& duration = channel_configured && channel_configuration.duration
                            ? channel_configuration.duration
                            : (channel_configured && !channel_configuration.duration) || !default_configuration.duration
-                           ? _notification.m_duration
+                           ? _params.m_duration
                            : default_configuration.duration;
 
     const auto& size = channel_configured && channel_configuration.size
                        ? *channel_configuration.size
                        : (channel_configured && !channel_configuration.size) || !default_configuration.size
-                       ? _notification.m_size
+                       ? _params.m_size
                        : *default_configuration.size;
 
     const auto& max = channel_configuration.max
@@ -338,7 +349,7 @@ void notifier::pop(service::notification _notification)
     const auto& closable = channel_configured && channel_configuration.closable
                            ? channel_configuration.closable
                            : (channel_configured && !channel_configuration.closable) || !default_configuration.closable
-                           ? _notification.m_closable
+                           ? _params.m_closable
                            : default_configuration.closable;
 
     // Get the wanted stack
@@ -365,13 +376,13 @@ void notifier::pop(service::notification _notification)
         [&]
         {
             // If a channel is present, try to retrieve the associated dialog
-            if(!_notification.m_channel.empty())
+            if(!_params.m_channel.empty())
             {
                 for(auto& [old_position, stack] : m_stacks)
                 {
                     for(const auto& popup : stack.popups)
                     {
-                        if(popup->get_channel() == _notification.m_channel)
+                        if(popup->get_channel() == _params.m_channel)
                         {
                             // If the position doesn't match, fix it
                             if(old_position != position)
@@ -403,10 +414,10 @@ void notifier::pop(service::notification _notification)
 
     popup->set_container(m_container_where_to_display_notifs);
 
-    const std::string& message_to_show = _notification.m_message.empty() ? m_default_message : _notification.m_message;
+    const std::string& message_to_show = _params.m_message.empty() ? m_default_message : _params.m_message;
     popup->set_message(message_to_show);
 
-    popup->set_type(_notification.m_type);
+    popup->set_type(_params.m_type);
     popup->set_position(position);
     popup->set_duration(duration);
     popup->set_size(*target_stack.size);
@@ -420,24 +431,79 @@ void notifier::pop(service::notification _notification)
                 notifier->on_notification_closed(popup);
             }
         });
-    popup->set_channel(_notification.m_channel);
+    popup->set_channel(_params.m_channel);
     popup->set_closable(closable);
     popup->show();
 
-    if(_notification.m_sound.has_value() && _notification.m_sound.value())
+    if(_params.m_sound.has_value() && _params.m_sound.value())
     {
         SIGHT_ASSERT(
             "Notification sound requested with a type that isn't registered in the sound board.",
-            SOUND_BOARD.contains(_notification.m_type)
+            SOUND_BOARD.contains(_params.m_type)
         );
 
         m_sound->setSource(
             QUrl::fromLocalFile(
-                QString::fromStdString(SOUND_BOARD.at(_notification.m_type).string())
+                QString::fromStdString(SOUND_BOARD.at(_params.m_type).string())
             )
         );
         m_sound->play();
     }
+}
+
+//------------------------------------------------------------------------------
+
+void notifier::add_notification(sight::core::notification::base::sptr _notification)
+{
+    namespace notification = sight::core::notification;
+
+    const auto& message = std::dynamic_pointer_cast<notification::message>(_notification);
+
+    if(!message)
+    {
+        SIGHT_WARN(
+            "sight::module::ui::qt::notifier::add_notification() only supports textual notifications "
+            "(instruction/information/warning/error), other kinds (e.g. progress monitors) are ignored."
+        );
+        return;
+    }
+
+    const bool is_instruction = std::dynamic_pointer_cast<notification::instruction>(message) != nullptr;
+    const bool is_information = std::dynamic_pointer_cast<notification::information>(message) != nullptr;
+    const bool is_warning     = std::dynamic_pointer_cast<notification::warning>(message) != nullptr;
+    const bool is_error       = std::dynamic_pointer_cast<notification::error>(message) != nullptr;
+
+    sight::ui::dialog::notification_base::params params;
+    params.m_type = is_error
+                    ? sight::ui::dialog::notification_base::type::failure
+                    : is_warning
+                    ? sight::ui::dialog::notification_base::type::warning
+                    : is_information
+                    ? sight::ui::dialog::notification_base::type::success
+                    : sight::ui::dialog::notification_base::type::info;
+    params.m_message = message->text();
+
+    // instruction/error are permanent by default (no timeout), information/warning default to 3 seconds,
+    // unless the message itself overrides the duration.
+    params.m_duration = message->duration()
+                        ? message->duration()
+                        : (is_instruction || is_error)
+                        ? std::nullopt
+                        : std::optional<std::chrono::milliseconds>(std::chrono::seconds(3));
+
+    params.m_channel = message->channel();
+
+    // cancelable() defaults to false for every notification built via instruct()/inform()/warn()/fail(); only treat
+    // it as an explicit override, otherwise leave m_closable unset so the duration-based default applies (closable
+    // if timed, permanent otherwise), matching the behavior every existing consumer already relies on.
+    if(message->cancelable())
+    {
+        params.m_closable = true;
+    }
+
+    params.m_sound = message->sound();
+
+    this->display(params);
 }
 
 //------------------------------------------------------------------------------
@@ -478,7 +544,7 @@ void notifier::on_notification_closed(const sight::ui::dialog::notification::spt
 //------------------------------------------------------------------------------
 
 std::list<sight::ui::dialog::notification::sptr>::iterator notifier::erase_notification(
-    const enum service::notification::position& _position,
+    const enum sight::ui::dialog::notification_base::position& _position,
     const std::list<sight::ui::dialog::notification::sptr>::iterator& _it
 )
 {
@@ -501,7 +567,7 @@ std::list<sight::ui::dialog::notification::sptr>::iterator notifier::erase_notif
 //------------------------------------------------------------------------------
 
 void notifier::clean_notifications(
-    const enum service::notification::position& _position,
+    const enum sight::ui::dialog::notification_base::position& _position,
     std::size_t _max,
     std::array<int, 2> _size,
     bool _skip_permanent

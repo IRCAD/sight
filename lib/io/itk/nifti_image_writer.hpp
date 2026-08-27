@@ -42,7 +42,7 @@ public:
 
     SIGHT_IO_ITK_API ~nifti_image_writer() override = default;
 
-    SIGHT_IO_ITK_API void write(sight::sptr<sight::core::progress::observer> _progress) override;
+    SIGHT_IO_ITK_API void write(sight::sptr<sight::core::notification::observer> _progress) override;
 
     SIGHT_IO_ITK_API std::string extension() const override;
 };

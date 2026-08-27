@@ -25,11 +25,11 @@
 
 #include <data/generic.hpp>
 #include <data/has_data.hpp>
+#include <data/mt/locked_ptr.hpp>
 #include <data/mt/shared_ptr.hpp>
 
 #include <optional>
 #include <string_view>
-#include <system_error>
 #include <utility>
 
 namespace sight::data

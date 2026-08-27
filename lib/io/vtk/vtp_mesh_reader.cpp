@@ -25,8 +25,7 @@
 #include "io/vtk/helper/mesh.hpp"
 #include "io/vtk/helper/vtk_lambda_command.hpp"
 
-#include <core/progress/monitor.hpp>
-#include <core/progress/observer.hpp>
+#include <core/notification/observer.hpp>
 
 #include <vtkPolyData.h>
 #include <vtkSmartPointer.h>
@@ -37,7 +36,7 @@ namespace sight::io::vtk
 
 //------------------------------------------------------------------------------
 
-void vtp_mesh_reader::read(sight::core::progress::observer::sptr _progress)
+void vtp_mesh_reader::read(sight::core::notification::observer::sptr _progress)
 {
     auto object_lock = get_object();
 

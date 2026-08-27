@@ -24,8 +24,8 @@
 
 #include <core/com/signal.hpp>
 #include <core/com/slot.hpp>
-#include <core/progress/has_monitors.hpp>
-#include <core/progress/monitor.hpp>
+#include <core/notification/base.hpp>
+#include <core/notification/has_monitors.hpp>
 
 #include <io/__/service/io_types.hpp>
 
@@ -38,12 +38,13 @@ namespace sight::module::ui::io
  * @brief  This service displays a list of available readers or writers and lets you select one to load or save a data.
  *
  * @section Signals Signals
- * - \b monitor_created(core::progress::monitor::sptr) : emitted when a monitor is created.
+ * - \b notification_created(core::notification::monitor::sptr) : emitted when a monitor is created.
  * - \b failed() : emitted when the reader/writer has been cancelled by the user or has failed.
  * - \b succeeded() : emitted when a reader/writer finishes correctly.
  *
  * @section Slots Slots
- * - \b forward_monitor(core::progress::monitor::sptr ) : slot connected to the reader/writer to forward the signal
+ * - \b forward_notification(core::notification::monitor::sptr ) : slot connected to the reader/writer to forward the
+ * signal
  * 'monitorCreated'
  *
  * @section XML XML Configuration
@@ -75,7 +76,7 @@ namespace sight::module::ui::io
  *      - \b service (mandatory) :  the name of the service.
  */
 class selector : public sight::ui::dialog_editor,
-                 public sight::core::progress::has_monitors
+                 public sight::core::notification::has_monitors
 {
 public:
 
@@ -99,8 +100,8 @@ public:
 
     struct slots
     {
-        using forward_monitor_t = core::com::slot<void (core::progress::monitor::sptr)>;
-        static const inline slot_key_t FORWARD_MONITOR = "forward_monitor";
+        using forward_notification_t = core::com::slot<void (core::notification::base::sptr)>;
+        static const inline slot_key_t FORWARD_NOTIFICATION = "forward_notification";
     };
 
     /**
@@ -145,7 +146,7 @@ protected:
 
 private:
 
-    void forward_monitor(core::progress::monitor::sptr _monitor);
+    void forward_notification(core::notification::base::sptr _notification);
 
     /// Configure the service as writer or reader.
     io_mode m_mode {reader_mode};
@@ -169,7 +170,7 @@ private:
     sight::sptr<signals::failed_t> m_sig_failed;
     sight::sptr<signals::succeeded_t> m_sig_succeeded;
 
-    sight::sptr<slots::forward_monitor_t> m_slot_forward_monitor;
+    sight::sptr<slots::forward_notification_t> m_slot_forward_notification;
 
     data::ptr<data::object, data::access::inout> m_data {this, sight::io::service::DATA_KEY};
 };

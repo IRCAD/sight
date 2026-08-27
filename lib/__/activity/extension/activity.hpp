@@ -27,6 +27,8 @@
 #include <core/base_object.hpp>
 #include <core/mt/types.hpp>
 
+#include <boost/property_tree/ptree.hpp> // NOLINT(misc-include-cleaner): for config_t
+
 #include <map>
 #include <string>
 

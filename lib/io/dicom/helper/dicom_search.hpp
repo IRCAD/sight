@@ -29,12 +29,12 @@
 #include <filesystem>
 #include <vector>
 
-namespace sight::core::progress
+namespace sight::core::notification
 {
 
 class observer;
 
-} // namespace sight::core::progress
+} // namespace sight::core::notification
 
 namespace sight::io::dicom::helper
 {
@@ -58,7 +58,7 @@ public:
         const std::filesystem::path& _dir_path,
         std::vector<std::filesystem::path>& _dicom_files,
         bool _check_is_dicom,
-        const sight::sptr<core::progress::observer>& _file_lookup_observer = nullptr
+        const sight::sptr<core::notification::observer>& _file_lookup_observer = nullptr
     );
 
 protected:
@@ -72,7 +72,7 @@ protected:
     static void check_filename_extension(
         const std::filesystem::path& _dir_path,
         std::vector<std::filesystem::path>& _dicom_files,
-        const sight::sptr<core::progress::observer>& _file_lookup_observer = nullptr
+        const sight::sptr<core::notification::observer>& _file_lookup_observer = nullptr
     );
 };
 

@@ -26,12 +26,12 @@
 
 #include <core/object.hpp>
 
-namespace sight::core::progress
+namespace sight::core::notification
 {
 
 class observer;
 
-} // namespace sight::core::progress
+} // namespace sight::core::notification
 
 namespace sight::io::reader
 {
@@ -59,7 +59,7 @@ public:
      *
      * This method (re)inits the object given in parameter of set_object method.
      */
-    SIGHT_IO_API virtual void read(sight::sptr<sight::core::progress::observer> _progress) = 0;
+    SIGHT_IO_API virtual void read(sight::sptr<sight::core::notification::observer> _progress) = 0;
 
     /**
      * @brief m_object setter.

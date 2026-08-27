@@ -191,8 +191,8 @@
 
             <!-- ******************************* Connections ***************************************** -->
             <connect>
-                <signal>mesh_reader_srv/monitor_created</signal>
-                <signal>mesh_writer_srv/monitor_created</signal>
+                <signal>mesh_reader_srv/notification_created</signal>
+                <signal>mesh_writer_srv/notification_created</signal>
                 <slot>progress_bar/add_monitor</slot>
             </connect>
 

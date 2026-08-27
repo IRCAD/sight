@@ -22,6 +22,7 @@
 #include "core/type.hpp"
 
 #include <array>
+#include <ostream>
 
 namespace sight::core
 {

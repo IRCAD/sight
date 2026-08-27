@@ -363,8 +363,8 @@
         </connect>
 
         <connect>
-            <signal>shape_extruder_adp/notified</signal>
-            <slot>notifier_srv/pop</slot>
+            <signal>shape_extruder_adp/notification_created</signal>
+            <slot>notifier_srv/add_notification</slot>
         </connect>
 
         <!-- Connects double click on landmark to slice moves. -->

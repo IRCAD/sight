@@ -22,10 +22,10 @@
 
 #pragma once
 
-#include <core/macros.hpp>
-#include <core/mt/types.hpp>
 #include <sight/core/config.hpp>
 
+#include "macros.hpp"
+#include "mt/types.hpp"
 #include "string.hpp"
 
 #include <cstdint>

@@ -22,7 +22,6 @@
 #include "module/io/dicom/reader.hpp"
 
 #include <core/location/single_folder.hpp>
-#include <core/progress/observer.hpp>
 
 #include <ui/__/cursor.hpp>
 #include <ui/__/dialog/location.hpp>
@@ -163,9 +162,7 @@ void reader::updating()
         return;
     }
 
-    const auto read_progress = std::make_shared<core::progress::observer>("Reading DICOM series");
-
-    this->async_emit(has_monitors::signals::MONITOR_CREATED, read_progress->get_sptr());
+    const auto read_progress = this->observe("Reading DICOM series");
 
     try
     {

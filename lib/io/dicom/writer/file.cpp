@@ -23,10 +23,12 @@
 
 #include "data/model_series.hpp"
 
-#include <io/bitmap/backend.hpp> // NOLINT(misc-include-cleaner)
-#include <io/dicom/codec/nvjpeg2k.hpp>
+#ifdef SIGHT_ENABLE_NVJPEG2K
+    #include <io/bitmap/backend.hpp>
+    #include <io/dicom/codec/nvjpeg2k.hpp>
+#endif
 
-#include <core/progress/observer.hpp>
+#include <core/notification/observer.hpp>
 
 #include <data/fiducials_series.hpp>
 #include <data/image_series.hpp>
@@ -384,7 +386,10 @@ inline static void write_enhanced_us_volume(
 
     gdcm_image.SetDataElement(pixeldata);
 
+#ifdef SIGHT_ENABLE_NVJPEG2K
     std::unique_ptr<codec::nvjpeg2k> nvjpeg2k_codec;
+#endif
+
     gdcm::ImageChangeTransferSyntax transfer_syntax_changer;
 
     switch(_transfer_syntax)
@@ -629,7 +634,7 @@ public:
     //------------------------------------------------------------------------------
 
     /// Allows to watch for cancellation and report progress.
-    core::progress::observer::sptr m_progress;
+    core::notification::observer::sptr m_progress;
 
     /// True to disable GPU codec
     bool m_force_cpu {false};
@@ -652,7 +657,7 @@ file::~file() noexcept = default;
 
 //------------------------------------------------------------------------------
 
-void file::write(sight::core::progress::observer::sptr _progress)
+void file::write(sight::core::notification::observer::sptr _progress)
 {
     SIGHT_ASSERT("Some work have already be reported.", _progress->get_done_work_units() == 0);
     m_pimpl->m_progress = _progress;

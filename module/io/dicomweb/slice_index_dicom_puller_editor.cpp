@@ -24,7 +24,7 @@
 
 #include "detail/query.hpp"
 
-#include <core/progress/observer.hpp>
+#include <core/notification/observer.hpp>
 #include <core/thread/timer.hpp>
 
 #include <data/helper/medical_image.hpp>
@@ -244,7 +244,7 @@ void slice_index_dicom_puller_editor::read_image(sight::data::series& _series, s
     reader->set_object(reading_series);
     reader->set_files({path.string()});
 
-    auto observer = std::make_shared<sight::core::progress::observer>("Read slice");
+    auto observer = std::make_shared<sight::core::notification::observer>("Read slice");
     reader->read(observer);
 
     //Copy image

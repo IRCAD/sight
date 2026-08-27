@@ -25,6 +25,8 @@
 #include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
 
+#include <core/tools/failed.hpp>
+
 #include <data/mesh.hpp>
 
 #include <io/vtk/mesh_writer.hpp>
@@ -191,8 +193,7 @@ void mesh_writer::updating()
             );
         }
 
-        auto observer = std::make_shared<core::progress::observer>("Write image");
-        this->async_emit(has_monitors::signals::MONITOR_CREATED, observer->get_sptr());
+        auto observer = this->observe("Writing " + file_to_write.string() + " file");
 
         mesh_writer->set_object(mesh);
 

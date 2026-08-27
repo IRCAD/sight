@@ -29,7 +29,7 @@
 #include <core/mt/types.hpp>
 #include <core/runtime/module.hpp>
 
-#include <unordered_map>
+#include <boost/unordered_map.hpp> // NOLINT(misc-include-cleaner)
 
 namespace sight::service
 {

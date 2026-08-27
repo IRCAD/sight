@@ -134,7 +134,7 @@ Ogre::Vector3 shape_extruder::get_cam_direction(const Ogre::Camera* const _cam)
 //-----------------------------------------------------------------------------
 
 shape_extruder::shape_extruder() noexcept :
-    service::notifier(has_signals::signals())
+    has_notifications(has_signals::signals())
 {
     new_slot(slots::ENABLE_TOOL, &shape_extruder::enable_tool, this);
     new_slot(slots::DELETE_LAST_MESH, &shape_extruder::delete_last_mesh, this);
@@ -285,7 +285,7 @@ void shape_extruder::delete_last_mesh()
         extruded_meshes->set_reconstruction_db(reconstructions);
 
         // Send notification
-        this->notifier::info("Last extrusion deleted.");
+        this->inform("Last extrusion deleted.");
 
         // Send the signal.
         extruded_meshes->async_emit(
@@ -295,7 +295,7 @@ void shape_extruder::delete_last_mesh()
     }
     else
     {
-        this->notifier::failure("No extrusion to delete.");
+        this->fail("No extrusion to delete.");
     }
 }
 

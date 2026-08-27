@@ -30,6 +30,9 @@
 #include <fstream>
 #include <utility>
 
+#include <boost/date_time/posix_time/posix_time.hpp> // NOLINT(misc-include-cleaner,unused-includes): needed for
+                                                     // boost::posix_time
+
 namespace sight::io::igtl::detail::archiver
 {
 

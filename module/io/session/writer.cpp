@@ -26,7 +26,6 @@
 #include <core/crypto/secure_string.hpp>
 #include <core/location/single_folder.hpp>
 #include <core/os/temp_path.hpp>
-#include <core/progress/aggregator.hpp>
 #include <core/tools/system.hpp>
 
 #include <io/session/session_writer.hpp>
@@ -190,20 +189,18 @@ void writer::updating()
             return global_password;
         }();
 
-    auto write_progress = std::make_shared<core::progress::observer>("Writing " + temp_file.string() + " file");
+    auto write_progress = this->make_notification<core::notification::observer>(
+        "Writing " + temp_file.string()
+        + " file"
+    );
 
-    auto rename_progress = std::make_shared<core::progress::observer>(
+    auto rename_progress = this->make_notification<core::notification::observer>(
         "Rename file" + temp_file.string() + " to " + filepath.string() + "."
     );
 
-    core::progress::aggregator::sptr progress = std::make_shared<core::progress::aggregator>(
-        filepath.string()
-        + " writer"
-    );
-    progress->add(write_progress);
-    progress->add(rename_progress);
+    auto progress = this->aggregate(filepath.string() + " writer", write_progress, rename_progress);
     progress->set_cancelable(false);
-    this->async_emit(has_monitors::signals::MONITOR_CREATED, progress->get_sptr());
+
     try
     {
         write_progress->done_work(10);

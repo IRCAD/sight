@@ -26,7 +26,7 @@
 
 #include "app/extension/config.hpp"
 #include "app/helper/config.hpp"
-#include <core/progress/has_monitors.hpp>
+#include <core/notification/has_monitors.hpp>
 #include <core/thread/worker.hpp>
 #include <service/extension/factory.hpp>
 #include <service/op.hpp>
@@ -374,6 +374,7 @@ data::object::sptr config_manager::find_object(const std::string& _uid, std::str
 
 // ------------------------------------------------------------------------
 
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 service::base::sptr config_manager::get_new_service(const std::string& _uid, const std::string& _impl_type) const
 {
     auto srv_factory = service::extension::factory::get();
@@ -644,11 +645,14 @@ void config_manager::create_services(const core::runtime::config_t& _cfg_elem)
 service::base::sptr config_manager::create_service(const detail::service_config& _srv_config)
 {
     // Create and bind service
-    service::base::sptr srv = this->get_new_service(_srv_config.m_uid, _srv_config.m_type);
+    service::base::sptr srv = sight::app::detail::config_manager::get_new_service(
+        _srv_config.m_uid,
+        _srv_config.m_type
+    );
     service::register_service(srv);
     m_created_srv.push_back(srv);
 
-    const bool has_monitors = std::dynamic_pointer_cast<sight::core::progress::has_monitors>(srv) != nullptr;
+    const bool has_monitors = std::dynamic_pointer_cast<sight::core::notification::has_monitors>(srv) != nullptr;
 
     if(not _srv_config.m_worker.empty() || has_monitors)
     {
@@ -993,12 +997,13 @@ void config_manager::create_updater_services()
 
 // ------------------------------------------------------------------------
 
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 void config_manager::destroy_proxy(
     const std::string& _channel,
     const proxy_connections_t& _proxy_cfg,
     const std::string& _key,
     data::object::csptr _hint_obj
-)
+) const
 {
     core::com::proxy::sptr proxy = core::com::proxy::get();
 
@@ -1067,7 +1072,7 @@ void config_manager::destroy_proxies()
         {
             for(const auto& it_proxy : it_deferred_obj.second.m_proxy_cnt)
             {
-                this->destroy_proxy(
+                sight::app::detail::config_manager::destroy_proxy(
                     it_proxy.first,
                     it_proxy.second,
                     it_deferred_obj.first,
@@ -1082,7 +1087,7 @@ void config_manager::destroy_proxies()
     // Remove local proxies from all created objects
     for(const auto& it_proxy : m_created_objects_proxies)
     {
-        this->destroy_proxy(it_proxy.first, it_proxy.second);
+        sight::app::detail::config_manager::destroy_proxy(it_proxy.first, it_proxy.second);
     }
 
     m_created_objects_proxies.clear();
@@ -1330,7 +1335,12 @@ void config_manager::remove_objects(data::object::sptr _obj, const std::string& 
     {
         for(const auto& it_proxy : it_deferred_obj->second.m_proxy_cnt)
         {
-            this->destroy_proxy(it_proxy.first, it_proxy.second, _id, it_deferred_obj->second.m_object);
+            sight::app::detail::config_manager::destroy_proxy(
+                it_proxy.first,
+                it_proxy.second,
+                _id,
+                it_deferred_obj->second.m_object
+            );
         }
 
         it_deferred_obj->second.m_object.reset();

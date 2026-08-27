@@ -4,4 +4,6 @@ target_link_libraries(ui_test PUBLIC Qt6::Widgets Qt6::Test)
 set_target_properties(ui_test PROPERTIES AUTOMOC TRUE)
 target_compile_definitions(ui_test PUBLIC "QT_NO_KEYWORDS")
 
-target_link_libraries(ui_test PUBLIC core utest utest_data ui CppUnit)
+target_link_libraries(ui_test PRIVATE CppUnit)
+
+target_link_libraries(ui_test PUBLIC core service utest utest_data ui)

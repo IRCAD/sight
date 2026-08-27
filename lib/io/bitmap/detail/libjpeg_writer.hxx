@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,18 +21,12 @@
 
 #pragma once
 
-#include "data/image.hpp"
-
-#include "writer_impl.hxx"
+#include "common.hxx"
+#include "io/bitmap/writer.hpp"
 
 #include <jpeglib.h>
 
-#include <array>
-#include <ostream>
-
 // cspell:ignore nvjpeg JDIMENSION jerr JSAMPROW JSAMPLE scanline scanlines JMSG hicpp
-
-// NOLINTBEGIN(google-runtime-int)
 
 namespace sight::io::bitmap::detail
 {
@@ -96,7 +90,7 @@ public:
         //  JCS_EXT_RGBA is not yet fully supported by libjpeg-turbo, at least for writing
         const auto& pixel_format = _image.pixel_format();
         SIGHT_THROW_IF(
-            NAME << " - Unsupported image pixel format: " << pixel_format,
+            NAME << " - Unsupported image pixel format: " << static_cast<unsigned int>(pixel_format),
             pixel_format == data::image::pixel_format_t::rg
             || pixel_format == data::image::pixel_format_t::rgba
             || pixel_format == data::image::pixel_format_t::bgra
@@ -119,6 +113,7 @@ public:
 
             // m_output_buffer_size will be adjusted to the size of JPEG data.
             // We need to keep the original allocated size
+            // NOLINTNEXTLINE(google-runtime-int)
             m_output_buffer_size = static_cast<unsigned long>(image_byte_size);
         }
 
@@ -126,10 +121,10 @@ public:
 
         // Configure libJPEG
         const auto& sizes = _image.size();
-        m_cinfo.image_width  = JDIMENSION(sizes[0]);
-        m_cinfo.image_height = JDIMENSION(sizes[1]);
+        m_cinfo.image_width  = static_cast<JDIMENSION>(sizes[0]);
+        m_cinfo.image_height = static_cast<JDIMENSION>(sizes[1]);
 
-        m_cinfo.input_components = int(_image.num_components());
+        m_cinfo.input_components = static_cast<int>(_image.num_components());
         m_cinfo.in_color_space   =
             [pixel_format]
             {
@@ -191,10 +186,11 @@ public:
             // libjpeg API is old -> const_cast
 
             row_pointer[0] = reinterpret_cast<unsigned char*>(
-                // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
+                // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast,bugprone-casting-through-void)
                 const_cast<void*>(
                     _image.get_pixel(
-                        data::image::index_t(m_cinfo.next_scanline) * data::image::index_t(m_cinfo.image_width)
+                        static_cast<data::image::index_t>(m_cinfo.next_scanline)
+                        * static_cast<data::image::index_t>(m_cinfo.image_width)
                     )
                 )
             );
@@ -211,7 +207,7 @@ public:
         // Write to stream or buffer...
         if constexpr(std::is_base_of_v<std::ostream, O>)
         {
-            _output.write(reinterpret_cast<char*>(m_output_buffer), std::streamsize(m_output_buffer_size));
+            _output.write(reinterpret_cast<char*>(m_output_buffer), static_cast<std::streamsize>(m_output_buffer_size));
         }
         else if constexpr(std::is_same_v<std::uint8_t**, O>)
         {
@@ -301,6 +297,7 @@ private:
     struct jpeg_compress_struct m_cinfo {};
 
     unsigned char* m_output_buffer {nullptr};
+    // NOLINTNEXTLINE(google-runtime-int)
     unsigned long m_output_buffer_size {0};
     std::size_t m_output_initial_buffer_size {0};
 
@@ -324,7 +321,5 @@ public:
         return NAME;
     }
 };
-
-// NOLINTEND(google-runtime-int)
 
 } // namespace sight::io::bitmap::detail

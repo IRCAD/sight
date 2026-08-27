@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,22 +26,14 @@
 
 #include <core/location/multiple_files.hpp>
 #include <core/location/single_folder.hpp>
-#include <core/progress/observer.hpp>
 #include <core/tools/date_and_time.hpp>
 #include <core/tools/uuid.hpp>
 
-#include <data/image.hpp>
 #include <data/image_series.hpp>
 #include <data/series_set.hpp>
 
-#include <service/macros.hpp>
-
 #include <ui/__/cursor.hpp>
 #include <ui/__/dialog/location.hpp>
-#include <ui/__/dialog/message.hpp>
-#include <ui/__/dialog/progress.hpp>
-
-#include <boost/date_time/posix_time/posix_time.hpp>
 
 namespace sight::module::io::itk
 {
@@ -124,8 +116,7 @@ void series_set_reader::updating()
             auto img_series = std::make_shared<data::image_series>();
             series_set_reader::init_series(img_series, instance_uid);
 
-            auto read_observer = std::make_shared<sight::core::progress::observer>("Loading images... ");
-            this->async_emit(has_monitors::signals::MONITOR_CREATED, read_observer->get_sptr());
+            auto read_observer = this->observe("Loading images... ");
 
             if(!image_reader::load_image(path, img_series, read_observer))
             {

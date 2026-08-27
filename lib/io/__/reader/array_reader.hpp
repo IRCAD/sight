@@ -50,7 +50,7 @@ public:
     SIGHT_IO_API ~array_reader() override = default;
 
     /// Reads the file with zlib API.
-    SIGHT_IO_API void read(sight::sptr<sight::core::progress::observer> _progress) override;
+    SIGHT_IO_API void read(sight::sptr<sight::core::notification::observer> _progress) override;
 
     /// Defines extension supported by this reader ".raw"
     SIGHT_IO_API std::string extension() const override;

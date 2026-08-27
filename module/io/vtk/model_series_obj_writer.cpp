@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,18 +23,14 @@
 #include "module/io/vtk/model_series_obj_writer.hpp"
 
 #include <core/location/single_folder.hpp>
-#include <core/tools/uuid.hpp>
 
-#include <data/mesh.hpp>
 #include <data/model_series.hpp>
-#include <data/reconstruction.hpp>
 
 #include <io/vtk/model_series_obj_writer.hpp>
 
 #include <ui/__/cursor.hpp>
 #include <ui/__/dialog/location.hpp>
 #include <ui/__/dialog/message.hpp>
-#include <ui/__/dialog/progress.hpp>
 
 #include <filesystem>
 
@@ -155,8 +151,10 @@ void model_series_obj_writer::updating()
         sight::ui::cursor cursor;
         cursor.set_cursor(ui::cursor_base::busy);
 
-        auto observer = std::make_shared<core::progress::observer>("Writing models in " + this->get_folder().string());
-        this->async_emit(has_monitors::signals::MONITOR_CREATED, observer->get_sptr());
+        auto observer = this->observe(
+            "Writing models in "
+            + this->get_folder().string()
+        );
 
         try
         {

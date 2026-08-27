@@ -21,8 +21,7 @@
  ***********************************************************************/
 
 #include "db_merger.hpp"
-
-#include <core/progress/monitor.hpp>
+#include "core/notification/has_notifications.hpp"
 
 #include <data/series_set.hpp>
 
@@ -39,7 +38,7 @@ namespace sight::module::ui::series
 db_merger::db_merger() noexcept :
     has_monitors(has_signals::signals()),
     m_io_selector_srv_config("IOSelectorServiceConfigVRRenderReader"),
-    m_slot_forward_monitor(new_slot(slots::FORWARD_MONITOR, &db_merger::forward_monitor, this))
+    m_slot_forward_notification(new_slot(slots::FORWARD_NOTIFICATION, &db_merger::forward_notification, this))
 {
 }
 
@@ -89,10 +88,9 @@ void db_merger::updating()
     io_selector_srv->set_inout(local_series_set, io::service::DATA_KEY);
     io_selector_srv->set_worker(this->worker());
 
-    auto monitor_created_signal_t = io_selector_srv->signal("monitor_created");
-    if(monitor_created_signal_t)
+    if(const auto signal = io_selector_srv->signal(has_notifications::signals::NOTIFICATION_CREATED); signal)
     {
-        monitor_created_signal_t->connect(m_slot_forward_monitor);
+        signal->connect(m_slot_forward_notification);
     }
 
     io_selector_srv->set_config(io_cfg);
@@ -126,9 +124,9 @@ void db_merger::stopping()
 
 //------------------------------------------------------------------------------
 
-void db_merger::forward_monitor(core::progress::monitor::sptr _monitor)
+void db_merger::forward_notification(core::notification::base::sptr _notification)
 {
-    this->async_emit(has_monitors::signals::MONITOR_CREATED, _monitor->get_sptr());
+    this->async_emit(has_notifications::signals::NOTIFICATION_CREATED, _notification);
 }
 
 //------------------------------------------------------------------------------

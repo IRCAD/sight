@@ -23,8 +23,8 @@
 // cspell:ignore NOLINT
 
 #include "object.hpp"
+#include "spy_log.hpp"
 
-#include <core/spy_log.hpp>
 #include <core/tools/uuid.hpp>
 
 #include <map>

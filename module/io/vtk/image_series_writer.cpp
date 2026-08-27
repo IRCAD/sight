@@ -30,8 +30,6 @@
 #include <data/image_series.hpp>
 
 #include <io/__/service/writer.hpp>
-#include <io/vtk/image_writer.hpp>
-#include <io/vtk/meta_image_writer.hpp>
 
 #include <ui/__/cursor.hpp>
 #include <ui/__/dialog/location.hpp>
@@ -130,8 +128,7 @@ void image_series_writer::updating()
         sight::ui::busy_cursor cursor;
 
         const auto& file = this->get_file();
-        auto observer    = std::make_shared<core::progress::observer>("Writing " + file.string() + " file");
-        this->async_emit(has_monitors::signals::MONITOR_CREATED, observer->get_sptr());
+        auto observer    = this->observe("Writing " + file.string() + " file");
 
         image_writer::save_image(file, image_series, observer);
         m_write_failed = false;

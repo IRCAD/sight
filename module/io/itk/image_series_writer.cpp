@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,15 +27,12 @@
 #include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
 
-#include <data/image.hpp>
 #include <data/image_series.hpp>
 
 #include <io/__/service/writer.hpp>
 
 #include <ui/__/cursor.hpp>
 #include <ui/__/dialog/location.hpp>
-#include <ui/__/dialog/message.hpp>
-#include <ui/__/dialog/progress.hpp>
 
 namespace sight::module::io::itk
 {
@@ -121,7 +118,7 @@ void image_series_writer::updating()
 
         sight::ui::busy_cursor cursor;
 
-        auto write_observer = std::make_shared<sight::core::progress::observer>("Saving images... ");
+        auto write_observer = this->make_notification<sight::core::notification::observer>("Saving images... ");
         image_writer::save_image(this->get_file(), image_series, write_observer);
         m_write_failed = false;
     }

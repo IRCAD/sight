@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,10 +22,8 @@
 
 #include "io/dicom/helper/dicom_search.hpp"
 
-#include <core/base.hpp>
-#include <core/progress/observer.hpp>
-
-#include <boost/algorithm/string.hpp>
+#include <algorithm>
+#include <core/notification/observer.hpp>
 
 #include <array>
 #include <fstream>
@@ -55,7 +53,7 @@ void dicom_search::search_recursively(
     const std::filesystem::path& _dir_path,
     std::vector<std::filesystem::path>& _dicom_files,
     bool _check_is_dicom,
-    const core::progress::observer::sptr& _reader_observer
+    const core::notification::observer::sptr& _reader_observer
 )
 {
     std::vector<std::filesystem::path> file_vect;
@@ -103,7 +101,7 @@ void dicom_search::search_recursively(
 void dicom_search::check_filename_extension(
     const std::filesystem::path& _dir_path,
     std::vector<std::filesystem::path>& _dicom_files,
-    const core::progress::observer::sptr& _file_lookup_observer
+    const core::notification::observer::sptr& _file_lookup_observer
 )
 {
     _dicom_files.clear();
@@ -126,11 +124,15 @@ void dicom_search::check_filename_extension(
         if(!std::filesystem::is_directory(*it))
         {
             auto path       = it->path();
-            std::string ext = boost::to_lower_copy(path.extension().string());
+            std::string ext = path.extension().string();
+            // Convert to lowercase
+            std::ranges::transform(ext, ext.begin(), [](unsigned char _c){return std::tolower(_c);});
 
             if(!extensions.contains(ext))
             {
-                std::string stem = boost::to_lower_copy(path.stem().string());
+                std::string stem = path.stem().string();
+                // Convert to lowercase
+                std::ranges::transform(stem, stem.begin(), [](unsigned char _c){return std::tolower(_c);});
 
                 if(stem != "dicomdir")
                 {

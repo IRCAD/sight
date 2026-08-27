@@ -50,7 +50,7 @@ public:
     SIGHT_DECLARE_CLASS(obj_mesh_writer, io::writer::generic_object_writer<data::mesh>)
 
     /// @brief Reading operator.
-    SIGHT_IO_VTK_API void write(sight::sptr<sight::core::progress::observer> _progress) override;
+    SIGHT_IO_VTK_API void write(sight::sptr<sight::core::notification::observer> _progress) override;
 
     /// @return ".obj"
     SIGHT_IO_VTK_API std::string extension() const override;

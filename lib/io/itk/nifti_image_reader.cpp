@@ -21,12 +21,13 @@
 
 #include "io/itk/nifti_image_reader.hpp"
 
-#include "core/exceptionmacros.hpp"
+#include <core/exceptionmacros.hpp>
+
+#include <core/notification/observer.hpp>
 
 #include "io/itk/helper/progress_itk_to_fw.hpp"
 #include "io/itk/itk.hpp"
 
-#include <core/progress/observer.hpp>
 #include <core/tools/dispatcher.hpp>
 
 #include <data/image.hpp>
@@ -53,12 +54,12 @@ static const core::type& get_image_type(const std::string& _image_file_name)
 
 //------------------------------------------------------------------------------
 
-void nifti_image_reader::read(sight::core::progress::observer::sptr _progress)
+void nifti_image_reader::read(sight::core::notification::observer::sptr _progress)
 {
     auto do_read =
         []<class PIXELTYPE>(data::image::sptr _image,
                             const std::string& _filename,
-                            core::progress::observer::sptr _progress)
+                            core::notification::observer::sptr _progress)
         {
             SIGHT_INFO(
                 "::io::itk::NiftiImageReader::NiftiLoaderFunctor with PIXELTYPE "

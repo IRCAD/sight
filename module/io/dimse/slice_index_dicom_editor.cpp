@@ -22,7 +22,7 @@
 
 #include "slice_index_dicom_editor.hpp"
 
-#include "core/progress/observer.hpp"
+#include "core/notification/observer.hpp"
 
 #include <data/helper/medical_image.hpp>
 #include <data/image_series.hpp>
@@ -49,7 +49,7 @@ static const std::string DELAY_CONFIG = "delay";
 //------------------------------------------------------------------------------
 
 slice_index_dicom_editor::slice_index_dicom_editor() noexcept :
-    sight::service::notifier(has_signals::signals())
+    has_notifications(has_signals::signals())
 {
 }
 
@@ -222,7 +222,7 @@ void slice_index_dicom_editor::pull_slice(std::size_t _selected_slice_index) con
     catch(const sight::io::dimse::exceptions::base& e)
     {
         SIGHT_ERROR("Unable to establish a connection with the PACS: " + std::string(e.what()));
-        this->notifier::failure("Unable to connect to PACS");
+        this->fail("Unable to connect to PACS");
     }
 
     const auto dicom_series = m_series.lock();
@@ -263,13 +263,13 @@ void slice_index_dicom_editor::pull_slice(std::size_t _selected_slice_index) con
         }
         else
         {
-            this->notifier::failure("No instance found");
+            this->fail("No instance found");
         }
     }
     catch(const sight::io::dimse::exceptions::base& e)
     {
         SIGHT_ERROR("Unable to execute query to the PACS: " + std::string(e.what()));
-        this->notifier::failure("Unable to execute query");
+        this->fail("Unable to execute query");
     }
     catch(const std::filesystem::filesystem_error& e)
     {
@@ -299,7 +299,7 @@ void slice_index_dicom_editor::read_slice(
     const auto type = _dicom_series.get_dicom_type();
     if(type == data::series::dicom_t::image)
     {
-        this->notifier::info("Unable to read the modality '" + _dicom_series.get_modality_string() + "'");
+        this->inform("Unable to read the modality '" + _dicom_series.get_modality_string() + "'");
         return;
     }
 
@@ -309,7 +309,7 @@ void slice_index_dicom_editor::read_slice(
     reader->set_object(reading_series);
     reader->set_files({path.string()});
 
-    auto observer = std::make_shared<sight::core::progress::observer>("Read slice");
+    auto observer = std::make_shared<sight::core::notification::observer>("Read slice");
     reader->read(observer);
 
     if(!reading_series->empty())
@@ -348,7 +348,7 @@ void slice_index_dicom_editor::read_slice(
     else
     {
         SIGHT_ERROR("Unable to read the image");
-        this->notifier::failure("Unable to read the image");
+        this->fail("Unable to read the image");
     }
 }
 

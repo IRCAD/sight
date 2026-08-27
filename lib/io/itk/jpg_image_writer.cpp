@@ -35,7 +35,6 @@
 #include <itkJPEGImageIOFactory.h>
 #include <itkNumericSeriesFileNames.h>
 
-#include <cmath>
 #include <filesystem>
 
 namespace sight::io::itk
@@ -61,14 +60,14 @@ itk_jpeg_registry_initializer global_itk_jpeg_registry_initializer;
 
 //------------------------------------------------------------------------------
 
-void jpg_image_writer::write(sight::core::progress::observer::sptr _progress)
+void jpg_image_writer::write(sight::core::notification::observer::sptr _progress)
 {
     auto object_lock = get_object();
 
     auto do_read =
         []<class PIXELTYPE>( const data::image::csptr _image,
                              const std::filesystem::path& _directory_path,
-                             sight::core::progress::observer::sptr _progress)
+                             sight::core::notification::observer::sptr _progress)
         {
             SIGHT_DEBUG("itk::image_series_writer with PIXELTYPE " << core::type::get<PIXELTYPE>().name());
 

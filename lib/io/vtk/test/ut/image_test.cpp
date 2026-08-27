@@ -157,7 +157,7 @@ static void writer(const sight::core::type _imagetype, const std::string& _filen
     typename W::sptr writer = std::make_shared<W>();
     writer->set_object(image);
     writer->set_file(test_file);
-    auto write_observer = std::make_shared<sight::core::progress::observer>("Test write");
+    auto write_observer = std::make_shared<sight::core::notification::observer>("Test write");
     writer->write(write_observer);
 
     CHECK_MESSAGE(
@@ -173,7 +173,7 @@ static void writer(const sight::core::type _imagetype, const std::string& _filen
     typename R::sptr reader         = std::make_shared<R>();
     reader->set_object(image2);
     reader->set_file(test_file);
-    auto read_observer = std::make_shared<sight::core::progress::observer>("Test read");
+    auto read_observer = std::make_shared<sight::core::notification::observer>("Test read");
     reader->read(read_observer);
 
     CHECK_MESSAGE(
@@ -258,7 +258,7 @@ static void test_vtk_reader(sight::core::type _imagetype)
 
     sight::data::image::sptr image = std::make_shared<sight::data::image>();
 
-    auto observer                             = std::make_shared<sight::core::progress::observer>("Test read");
+    auto observer                             = std::make_shared<sight::core::notification::observer>("Test read");
     sight::io::vtk::image_reader::sptr reader = std::make_shared<sight::io::vtk::image_reader>();
     reader->set_object(image);
     reader->set_file(test_file);
@@ -474,7 +474,7 @@ TEST_SUITE("sight::io::vtk::image")
         sight::io::vtk::meta_image_reader::sptr reader = std::make_shared<sight::io::vtk::meta_image_reader>();
         reader->set_object(image);
         reader->set_file(image_path);
-        auto observer = std::make_shared<sight::core::progress::observer>("Test read");
+        auto observer = std::make_shared<sight::core::notification::observer>("Test read");
         reader->read(observer);
 
         compare_image_attributes(
@@ -524,13 +524,13 @@ TEST_SUITE("sight::io::vtk::image")
         auto reader = std::make_shared<sight::io::vtk::meta_image_reader>();
         reader->set_object(image);
         reader->set_file(image_path);
-        auto read_observer = std::make_shared<sight::core::progress::observer>("Test read");
+        auto read_observer = std::make_shared<sight::core::notification::observer>("Test read");
         reader->read(read_observer);
 
         auto writer = std::make_shared<sight::io::vtk::meta_image_writer>();
         writer->set_object(image);
         writer->set_file(test_file);
-        auto write_observer = std::make_shared<sight::core::progress::observer>("Test read");
+        auto write_observer = std::make_shared<sight::core::notification::observer>("Test read");
         writer->write(write_observer);
 
         CHECK(std::filesystem::exists(test_file));
@@ -585,7 +585,7 @@ TEST_SUITE("sight::io::vtk::image")
 
         reader->set_object(image);
         reader->set_file(image_path);
-        auto read_observer = std::make_shared<sight::core::progress::observer>("Test read");
+        auto read_observer = std::make_shared<sight::core::notification::observer>("Test read");
         reader->read(read_observer);
 
         compare_image_attributes(
@@ -653,7 +653,7 @@ TEST_SUITE("sight::io::vtk::image")
 
         reader->set_object(image);
         reader->set_file(image_path);
-        auto read_observer = std::make_shared<sight::core::progress::observer>("Test read");
+        auto read_observer = std::make_shared<sight::core::notification::observer>("Test read");
         reader->read(read_observer);
 
         sight::data::image::size_t vtk_size {{230, 170, 58}};

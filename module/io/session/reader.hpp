@@ -27,8 +27,6 @@
 #include <io/__/service/reader.hpp>
 #include <io/zip/archive.hpp>
 
-#include <service/notifier.hpp>
-
 namespace sight::module::io::session
 {
 
@@ -47,7 +45,8 @@ namespace sight::module::io::session
  * The compression level is set individually, depending of the type of data to serialize.
  *
  * @section Signals Signals
- * - \b monitor_created(sight::sptr<core::progress::monitor>): emitted to display a progress bar while the image is
+ * - \b notification_created(core::notification::base::sptr): emitted to display a progress bar while the
+ * image is
  * written,
  * it should be connected to a progress bar
  *
@@ -98,8 +97,7 @@ namespace sight::module::io::session
  * @see sight::io::session::session_reader
  */
 
-class reader final : public sight::io::service::reader,
-                     public sight::service::notifier
+class reader final : public sight::io::service::reader
 {
 public:
 
@@ -107,8 +105,7 @@ public:
 
     struct signals
     {
-        using monitor_created_t = sight::core::com::signal<void (sight::core::progress::monitor::sptr)>;
-        using session_path_t    = core::com::signal<void (std::filesystem::path)>;
+        using session_path_t = core::com::signal<void (std::filesystem::path)>;
 
         inline static const signal_key_t SESSION_LOADED         = "session_loaded";
         inline static const signal_key_t SESSION_LOADING_FAILED = "session_loading_failed";

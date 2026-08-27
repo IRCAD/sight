@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2025 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -131,7 +131,7 @@ std::optional<std::chrono::milliseconds> notification_base::get_duration() const
 
 //------------------------------------------------------------------------------
 
-void notification_base::set_notification(service::notification _notification)
+void notification_base::set_notification(params _notification)
 {
     m_notification = std::move(_notification);
 }

@@ -295,22 +295,22 @@ private:
         switch(_whence)
         {
             case SEEK_SET:
-                data->istream.seekg(data->start_pos + std::ios::off_type(_off), std::ios::beg);
+                data->istream.seekg(data->start_pos + static_cast<std::ios::off_type>(_off), std::ios::beg);
                 break;
 
             case SEEK_CUR:
-                data->istream.seekg(std::streamoff(_off), std::ios::cur);
+                data->istream.seekg(static_cast<std::streamoff>(_off), std::ios::cur);
                 break;
 
             case SEEK_END:
-                data->istream.seekg(std::streamoff(_off), std::ios::end);
+                data->istream.seekg(static_cast<std::streamoff>(_off), std::ios::end);
                 break;
 
             default:
-                return toff_t(-1);
+                return static_cast<toff_t>(-1);
         }
 
-        return toff_t(data->istream.tellg() - data->start_pos);
+        return static_cast<toff_t>(data->istream.tellg() - data->start_pos);
     }
 
     //------------------------------------------------------------------------------
@@ -334,7 +334,7 @@ private:
         const auto size = data->istream.tellg();
         data->istream.seekg(initial_pos);
 
-        return toff_t(size);
+        return static_cast<toff_t>(size);
     }
 
     /// @}

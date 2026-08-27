@@ -27,7 +27,6 @@
 
 #include <boost/asio/deadline_timer.hpp>
 #include <boost/asio/io_context.hpp>
-#include <boost/asio/placeholders.hpp>
 #include <boost/asio/post.hpp>
 
 #include <thread>
@@ -344,8 +343,11 @@ void timer_asio::rearm_no_lock(time_duration_t _duration)
     boost::posix_time::time_duration d =
         boost::posix_time::microseconds(std::chrono::duration_cast<std::chrono::microseconds>(_duration).count());
     m_timer.expires_from_now(d);
-    // NOLINTNEXTLINE(modernize-avoid-bind)
-    m_timer.async_wait(boost::bind(timer_callback::call, boost::asio::placeholders::error, this->get_sptr()));
+    m_timer.async_wait(
+        [shared_this = this->get_sptr()](const boost::system::error_code& _ec)
+        {
+            timer_callback::call(_ec, shared_this);
+        });
 }
 
 //------------------------------------------------------------------------------

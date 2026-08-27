@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,9 +26,7 @@
 #include "io/vtk/helper/vtk_lambda_command.hpp"
 #include "io/vtk/vtk.hpp"
 
-#include <core/memory/buffer_object.hpp>
-#include <core/memory/stream/in/factory.hpp>
-#include <core/progress/observer.hpp>
+#include <core/notification/observer.hpp>
 #include <core/tools/date_and_time.hpp>
 #include <core/tools/uuid.hpp>
 
@@ -40,7 +38,6 @@
 
 #include <boost/algorithm/string/join.hpp>
 
-#include <vtkDataSetAttributes.h>
 #include <vtkGenericDataObjectReader.h>
 #include <vtkImageData.h>
 #include <vtkInformation.h>
@@ -48,18 +45,12 @@
 #include <vtkOBJReader.h>
 #include <vtkPLYReader.h>
 #include <vtkPolyData.h>
-#include <vtkSmartPointer.h>
 #include <vtkSTLReader.h>
-#include <vtkStreamingDemandDrivenPipeline.h>
-#include <vtkStructuredPoints.h>
-#include <vtkStructuredPointsReader.h>
+#include <vtkSmartPointer.h>
 #include <vtkXMLGenericDataObjectReader.h>
 #include <vtkXMLImageDataReader.h>
 
-#include <algorithm>
 #include <filesystem>
-#include <iosfwd>
-#include <numeric>
 
 namespace sight::io::vtk
 {
@@ -82,14 +73,11 @@ static void init_series(data::series::sptr _series, const std::string& _instance
 
 //------------------------------------------------------------------------------
 
-series_set_reader::series_set_reader() :
-    m_lazy_mode(true)
-{
-}
+series_set_reader::series_set_reader() = default;
 
 //------------------------------------------------------------------------------
 template<typename T, typename FILE>
-static vtkSmartPointer<vtkDataObject> get_obj(FILE& _file, const core::progress::observer::sptr& _progress)
+static vtkSmartPointer<vtkDataObject> get_obj(FILE& _file, const core::notification::observer::sptr& _progress)
 {
     vtkSmartPointer<T> reader = vtkSmartPointer<T>::New();
     reader->SetFileName(_file.string().c_str());
@@ -175,7 +163,7 @@ static data::object::sptr get_data_object(
 
 //------------------------------------------------------------------------------
 
-void series_set_reader::read(sight::core::progress::observer::sptr _progress)
+void series_set_reader::read(sight::core::notification::observer::sptr _progress)
 {
     auto series_set = get_concrete_object();
 
@@ -189,7 +177,7 @@ void series_set_reader::read(sight::core::progress::observer::sptr _progress)
     std::uint64_t current_file_index = 0;
     for(const auto& file : files)
     {
-        const auto progress_observer = std::make_shared<core::progress::observer>(file.string());
+        const auto progress_observer = std::make_shared<core::notification::observer>(file.string());
 
         vtkSmartPointer<vtkDataObject> obj;
         data::image::sptr img;

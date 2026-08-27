@@ -24,7 +24,8 @@
 
 #include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
-#include <core/progress/observer.hpp>
+#include <core/notification/observer.hpp>
+#include <core/tools/failed.hpp>
 
 #include <data/image.hpp>
 
@@ -117,7 +118,7 @@ void image_reader::updating()
 
         try
         {
-            auto read_observer = std::make_shared<sight::core::progress::observer>("Loading image... ");
+            auto read_observer = this->make_notification<sight::core::notification::observer>("Loading image... ");
             if(sight::module::io::itk::image_reader::load_image(this->get_file(), image, read_observer))
             {
                 m_read_failed = false;
@@ -142,7 +143,7 @@ void image_reader::updating()
 bool image_reader::load_image(
     const std::filesystem::path& _img_file,
     const data::image::sptr& _img,
-    const core::progress::observer::sptr& _read_observer
+    const core::notification::observer::sptr& _read_observer
 )
 {
     bool ok = true;

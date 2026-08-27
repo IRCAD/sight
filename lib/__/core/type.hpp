@@ -24,12 +24,7 @@
 #include <sight/core/config.hpp>
 
 #include <cstdint>
-#include <limits>
-#include <map>
 #include <string>
-#include <type_traits>
-#include <typeinfo>
-
 namespace sight::core
 {
 

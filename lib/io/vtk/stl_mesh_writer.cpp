@@ -25,8 +25,7 @@
 #include "io/vtk/helper/mesh.hpp"
 #include "io/vtk/helper/vtk_lambda_command.hpp"
 
-#include <core/progress/monitor.hpp>
-#include <core/progress/observer.hpp>
+#include <core/notification/observer.hpp>
 
 #include <vtkPolyData.h>
 #include <vtkSTLWriter.h>
@@ -37,7 +36,7 @@ namespace sight::io::vtk
 
 //------------------------------------------------------------------------------
 
-void stl_mesh_writer::write(sight::core::progress::observer::sptr _progress)
+void stl_mesh_writer::write(sight::core::notification::observer::sptr _progress)
 {
     using helper::vtk_lambda_command;
 

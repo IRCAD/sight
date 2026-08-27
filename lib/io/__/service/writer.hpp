@@ -27,8 +27,7 @@
 #include "io/__/service/io_types.hpp"
 
 #include <core/com/signal.hpp>
-#include <core/progress/has_monitors.hpp>
-#include <core/tools/failed.hpp>
+#include <core/notification/has_monitors.hpp>
 
 #include <data/string.hpp>
 
@@ -77,7 +76,7 @@ namespace sight::io::service
  * - \b folder : The folder to open. Used when the path_type_t is "folder".
  */
 class SIGHT_IO_CLASS_API writer : public sight::service::base,
-                                  public sight::core::progress::has_monitors
+                                  public sight::core::notification::has_monitors
 {
 public:
 

@@ -62,11 +62,11 @@ public:
     /// @brief get/set point coordinates
     /// @{
     [[deprecated("Use operator[] instead")]] point_coord_array_t get_coord();
-    [[deprecated("Use operator[] instead")]] point_coord_array_t get_coord() const;
+    [[nodiscard]] [[deprecated("Use operator[] instead")]] point_coord_array_t get_coord() const;
     [[deprecated("Use operator[] instead")]] void set_coord(const point_coord_array_t& _v_coord);
     /// @}
 
-    SIGHT_DATA_API std::string get_label() const;
+    [[nodiscard]] SIGHT_DATA_API std::string get_label() const;
     SIGHT_DATA_API void set_label(const std::string& _label);
 
     /// Assignment operator

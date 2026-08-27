@@ -22,8 +22,12 @@
 
 #include "type.hpp"
 
-#include "core/spy_log.hpp"
+#include <core/spy_log.hpp>
+
+#include <array>
 #include <opencv2/core/hal/interface.h>
+
+#include <map>
 
 namespace sight::io::opencv
 {

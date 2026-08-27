@@ -26,8 +26,7 @@
 
 #include "io/__/service/io_types.hpp"
 
-#include <core/progress/has_monitors.hpp>
-#include <core/tools/failed.hpp>
+#include <core/notification/has_monitors.hpp>
 
 #include <data/string.hpp>
 
@@ -62,7 +61,7 @@ namespace sight::io::service
  */
 
 class SIGHT_IO_CLASS_API reader : public sight::service::base,
-                                  public sight::core::progress::has_monitors
+                                  public sight::core::notification::has_monitors
 {
 public:
 

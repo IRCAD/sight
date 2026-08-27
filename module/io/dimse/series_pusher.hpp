@@ -22,12 +22,11 @@
 
 #pragma once
 
-#include "core/progress/has_monitors.hpp"
+#include "core/notification/has_monitors.hpp"
 
 #include <data/vector.hpp>
 
 #include <io/dimse/data/pacs_configuration.hpp>
-#include <io/dimse/series_enquirer.hpp>
 
 #include <service/controller.hpp>
 
@@ -63,7 +62,7 @@ namespace sight::module::io::dimse
  * - \b selectedSeries [sight::data::vector]: List of DICOM series to push to the PACS.
  */
 class series_pusher : public service::controller,
-                      public core::progress::has_monitors
+                      public core::notification::has_monitors
 {
 public:
 

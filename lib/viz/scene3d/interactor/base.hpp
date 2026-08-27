@@ -26,7 +26,7 @@
 
 #include <viz/scene3d/factory/new.hpp>
 
-#include <OgreVector3.h>
+#include <Ogre.h> // NOLINT(misc-include-cleaner): real header is deprecated and Ogre suggests <Ogre.h> instead.
 
 #include <memory>
 

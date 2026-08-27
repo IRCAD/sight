@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include <core/progress/has_monitors.hpp>
+#include <core/notification/base.hpp>
+#include <core/notification/has_monitors.hpp>
 
 #include <data/series.hpp>
 
@@ -39,14 +40,15 @@ namespace sight::module::ui::series
  * on the created series_set with the given configuration.
  *
  * @section Signal Signal
- * - \b monitor_created(sight::sptr<core::progress::monitor>) : This signal is emitted by the slot 'forwardmonitor' to
+ * - \b notification_created(sight::sptr<core::notification::base>) : This signal is emitted by the slot
+ * 'forward_notification' to
  * forward
  * monitor
  * process
  *   between selector service (monitorCreated signal) and other services.
  *
  * @section Slot Slot
- * - \b forwardmonitor(sight::sptr<core::progress::monitor>) : This slot allows to forward monitor process between
+ * - \b forward_notification(core::notification::base::sptr) : This slot allows to forward monitor process between
  * selector
  * service
  *   and other services. It is connected to selector 'monitorCreated' signal.
@@ -82,7 +84,7 @@ namespace sight::module::ui::series
     @endcode
  */
 class export_with_series_set : public sight::ui::action,
-                               public sight::core::progress::has_monitors
+                               public sight::core::notification::has_monitors
 {
 public:
 
@@ -90,8 +92,8 @@ public:
 
     struct slots
     {
-        using forward_monitor_t = core::com::slot<void (std::shared_ptr<core::progress::monitor>)>;
-        static inline const std::string FORWARD_MONITOR = "forwardmonitor";
+        using forward_notification_t = core::com::slot<void (std::shared_ptr<core::notification::base>)>;
+        static inline const std::string FORWARD_NOTIFICATION = "forward_notification";
     };
 
     export_with_series_set() noexcept;
@@ -119,11 +121,12 @@ protected:
 private:
 
     /// SLOT: Allows to forward monitor process between io selector service and other services.
-    void forward_monitor(sight::sptr<core::progress::monitor> _monitor);
+    void forward_notification(core::notification::base::sptr _notification);
 
     std::string m_io_selector_srv_config; ///< Configuration used for launched selector service
 
-    sight::sptr<slots::forward_monitor_t> m_slot_forward_monitor; ///< slot used to forward selector monitor process
+    sight::sptr<slots::forward_notification_t> m_slot_forward_notification; ///< slot used to forward selector monitor
+                                                                            ///< process
 
     data::ptr<data::series, data::access::inout> m_series {this, "series"};
 };

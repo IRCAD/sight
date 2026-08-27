@@ -1,0 +1,183 @@
+<!-- Minimal example application to exercise the notification zone -->
+<plugin id="ex_notification_zone" library="true">
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::ui" />
+    <requirement id="sight::module::ui::qt" />
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::service::base</type>
+        <service>ex_notification_zone::long_job</service>
+        <desc>Create a generic long job</desc>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::service::controller</type>
+        <service>ex_notification_zone::notification_sender</service>
+        <desc>Create a generic notification sender</desc>
+    </extension>
+
+    <extension implements="sight::app::extension::config">
+        <id>ex_notification_zone_app_cfg</id>
+        <config>
+            <!-- Main frame service -->
+            <service uid="main_frame" type="sight::module::ui::frame">
+                <gui>
+                    <frame>
+                        <name>ex_notification_zone</name>
+                        <icon>ex_notification_zone/app.ico</icon>
+                        <screen index="0" />
+                        <style mode="DEFAULT" />
+                    </frame>
+                </gui>
+                <registry>
+                    <view sid="main_view" />
+                </registry>
+            </service>
+
+            <!-- Main view registered in the frame -->
+            <service uid="main_view" type="sight::module::ui::view">
+                <gui>
+                    <layout type="sight::ui::layout::line">
+                        <orientation value="vertical" />
+                        <view proportion="0" />
+                    </layout>
+                    <toolbar align="top" />
+                </gui>
+                <registry>
+                    <toolbar sid="toolbar_view" />
+                    <view sid="errors_view" />
+                </registry>
+            </service>
+
+            <!-- Nested view carrying close_errors_toolbar_view, so it stays enabled independently from
+                 toolbar_view. -->
+            <service uid="errors_view" type="sight::module::ui::view">
+                <gui>
+                    <layout type="sight::ui::layout::line">
+                        <orientation value="vertical" />
+                        <view proportion="0" />
+                    </layout>
+                    <toolbar align="top" />
+                </gui>
+                <registry>
+                    <toolbar sid="close_errors_toolbar_view" />
+                    <view sid="notification_zone_srv" />
+                </registry>
+            </service>
+
+            <!-- Toolbar and actions to exercise the notification zone -->
+            <service uid="toolbar_view" type="sight::module::ui::toolbar">
+                <gui>
+                    <layout style="ToolButtonTextBesideIcon">
+                        <menuItem name="Instruction" />
+                        <menuItem name="Information" />
+                        <menuItem name="Warning" />
+                        <menuItem name="Error" />
+                        <menuItem name="Progress" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="instruction_act" />
+                    <menuItem sid="information_act" />
+                    <menuItem sid="warning_act" />
+                    <menuItem sid="error_act" />
+                    <menuItem sid="progress_act" />
+                </registry>
+            </service>
+
+            <!-- Separate toolbar (own view, always enabled) to close error notifications from the service
+                 side via close_errors_act, independent from toolbar_view which is disabled while an error
+                 is displayed (see notification_zone_srv/error -> toolbar_view/disable below). -->
+            <service uid="close_errors_toolbar_view" type="sight::module::ui::toolbar">
+                <gui>
+                    <layout style="ToolButtonTextBesideIcon">
+                        <menuItem name="Close errors" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="close_errors_act" />
+                </registry>
+            </service>
+
+            <service uid="instruction_act" type="sight::module::ui::action" />
+            <service uid="information_act" type="sight::module::ui::action" />
+            <service uid="warning_act" type="sight::module::ui::action" />
+            <service uid="error_act" type="sight::module::ui::action" />
+            <service uid="close_errors_act" type="sight::module::ui::action" />
+            <service uid="progress_act" type="sight::module::ui::action">
+                <properties enabled="false" />
+            </service>
+
+            <service uid="notification_zone_srv" type="sight::module::ui::qt::notification_zone" />
+
+            <service uid="notification_sender" type="ex_notification_zone::notification_sender" />
+
+            <service uid="long_job_srv" type="ex_notification_zone::long_job" worker="long_job_worker" />
+
+            <connect>
+                <signal>long_job_srv/started</signal>
+                <slot>progress_act/enable</slot>
+            </connect>
+
+            <connect>
+                <signal>instruction_act/clicked</signal>
+                <slot>notification_sender/instruction</slot>
+            </connect>
+
+            <connect>
+                <signal>information_act/clicked</signal>
+                <slot>notification_sender/information</slot>
+            </connect>
+
+            <connect>
+                <signal>warning_act/clicked</signal>
+                <slot>notification_sender/warning</slot>
+            </connect>
+
+            <connect>
+                <signal>error_act/clicked</signal>
+                <slot>notification_sender/error</slot>
+            </connect>
+
+            <connect>
+                <signal>close_errors_act/clicked</signal>
+                <slot>notification_sender/close_errors</slot>
+            </connect>
+
+            <connect>
+                <signal>notification_sender/notification_created</signal>
+                <slot>notification_zone_srv/add_notification</slot>
+            </connect>
+
+            <connect>
+                <signal>notification_zone_srv/error</signal>
+                <slot>toolbar_view/disable</slot>
+            </connect>
+
+            <connect>
+                <signal>notification_zone_srv/error_acknowledged</signal>
+                <slot>toolbar_view/enable</slot>
+            </connect>
+
+            <connect>
+                <signal>progress_act/clicked</signal>
+                <slot>long_job_srv/update</slot>
+            </connect>
+
+            <connect>
+                <signal>long_job_srv/notification_created</signal>
+                <slot>notification_zone_srv/add_notification</slot>
+            </connect>
+
+            <connect>
+                <signal>notification_zone_srv/progress</signal>
+                <slot>progress_act/disable</slot>
+            </connect>
+
+            <connect>
+                <signal>notification_zone_srv/progress_acknowledged</signal>
+                <slot>progress_act/enable</slot>
+            </connect>
+        </config>
+    </extension>
+</plugin>

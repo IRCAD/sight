@@ -22,9 +22,7 @@
 
 #pragma once
 
-#include <sight/io/__/config.hpp>
-
-#include "io/__/writer/object_writer.hpp"
+#include "object_writer.hpp"
 
 namespace sight::io::writer
 {
@@ -65,6 +63,8 @@ public:
             << "' is not a '" << typeid(data_t()).name() << "'",
             std::dynamic_pointer_cast<const data_t>(_obj)
         );
+
+        // NOLINTNEXTLINE(readability-identifier-naming)
         object_writer::set_object(_obj);
     }
 

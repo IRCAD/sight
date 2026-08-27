@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,13 +21,10 @@
 
 #pragma once
 
-#include "writer_impl.hxx"
+#include "common.hxx"
+#include "io/bitmap/writer.hpp"
 
-#include <cuda.h>
-#include <nppi.h>
 #include <nvjpeg.h>
-
-#include <ostream>
 
 // cspell:ignore nvjpeg BGRI RGBI NOLINTNEXTLINE
 
@@ -121,7 +118,7 @@ public:
     {
         const auto pixel_format = _image.pixel_format();
         SIGHT_THROW_IF(
-            NAME << " - Unsupported image pixel format: " << pixel_format,
+            NAME << " - Unsupported image pixel format: " << static_cast<unsigned int>(pixel_format),
             pixel_format != data::image::pixel_format_t::rgb && pixel_format != data::image::pixel_format_t::bgr
         );
 
@@ -225,7 +222,7 @@ public:
             CHECK_CUDA(cudaStreamSynchronize(m_stream), cudaSuccess);
 
             // Write to disk...
-            _output.write(reinterpret_cast<char*>(m_output_buffer.data()), std::streamsize(encoded_size));
+            _output.write(reinterpret_cast<char*>(m_output_buffer.data()), static_cast<std::streamsize>(encoded_size));
         }
         else if constexpr(std::is_same_v<std::uint8_t**, O>)
         {

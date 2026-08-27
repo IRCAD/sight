@@ -21,8 +21,6 @@
 
 #include "module/filter/image/propagator.hpp"
 
-#include <core/progress/observer.hpp>
-
 #include <data/helper/medical_image.hpp>
 
 #include <filter/image/image_diff.hpp>
@@ -85,12 +83,7 @@ void propagator::updating()
 
 void propagator::propagate()
 {
-    const auto progress = std::make_shared<sight::core::progress::observer>("Propagation");
-
-    progress->set_cancelable(false);
-    progress->set_total_work_units(10);
-
-    this->async_emit(has_monitors::signals::MONITOR_CREATED, progress->get_sptr());
+    const auto progress = this->observe("Propagation", false, nullptr, 10);
 
     // Convert point list into seeds
     sight::filter::image::min_max_propagation::seeds_t seeds;

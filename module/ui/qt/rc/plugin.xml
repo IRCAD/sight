@@ -30,6 +30,12 @@
     </extension>
 
     <extension implements="sight::service::extension::factory">
+        <type>sight::service::editor</type>
+        <service>sight::module::ui::qt::notification_zone</service>
+        <desc>Displays a notification/message area.</desc>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
         <type>sight::ui::editor</type>
         <service>sight::module::ui::qt::parameters</service>
         <desc>Generic editor to interact with parameters.</desc>

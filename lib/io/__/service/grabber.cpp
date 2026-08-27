@@ -28,7 +28,7 @@ namespace sight::io::service
 //------------------------------------------------------------------------------
 
 grabber::grabber() noexcept :
-    notifier(has_signals::signals())
+    has_monitors(has_signals::signals())
 {
     //Declare all signals
     new_signal<signals::position_modified_t>(signals::POSITION_MODIFIED);
@@ -39,7 +39,6 @@ grabber::grabber() noexcept :
     new_signal<signals::frame_presented_t>(signals::FRAME_PRESENTED);
 
     new_signal<signals::parameter_changed_t>(signals::PARAMETER_CHANGED);
-    new_signal<signals::monitor_created_t>(signals::MONITOR_CREATED);
     new_signal<signals::fps_changed_t>(signals::FPS_CHANGED);
 
     new_slot(slots::START_CAMERA, &grabber::start_camera, this);

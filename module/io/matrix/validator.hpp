@@ -21,14 +21,11 @@
 
 #pragma once
 
-#include <core/com/signals.hpp>
+#include <core/notification/has_notifications.hpp>
 
 #include <data/matrix4.hpp>
 
 #include <service/controller.hpp>
-#include <service/notifier.hpp>
-
-#include <filesystem>
 
 namespace sight::module::io::matrix
 {
@@ -55,7 +52,7 @@ namespace sight::module::io::matrix
  * - \b update : Checks input matrix.
  */
 class validator final : public sight::service::controller,
-                        public sight::service::notifier
+                        public sight::core::notification::has_notifications
 {
 public:
 

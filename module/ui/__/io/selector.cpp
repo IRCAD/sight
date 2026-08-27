@@ -51,7 +51,7 @@ selector::selector() :
     has_monitors(has_signals::signals()),
     m_sig_failed(new_signal<signals::failed_t>(signals::FAILED)),
     m_sig_succeeded(new_signal<signals::succeeded_t>(signals::SUCCEEDED)),
-    m_slot_forward_monitor(new_slot(slots::FORWARD_MONITOR, &selector::forward_monitor, this))
+    m_slot_forward_notification(new_slot(slots::FORWARD_NOTIFICATION, &selector::forward_notification, this))
 {
 }
 
@@ -107,7 +107,7 @@ void selector::configuring()
 void selector::starting()
 {
     // Move the forward slot on the default worker otherwise it can't be triggered until the reader/writer finishes
-    m_slot_forward_monitor->set_worker(sight::core::thread::get_default_worker());
+    m_slot_forward_notification->set_worker(sight::core::thread::get_default_worker());
 }
 
 //------------------------------------------------------------------------------
@@ -279,10 +279,11 @@ void selector::updating()
 
                 reader->configure();
 
-                auto monitor_created_signal = reader->signal(core::progress::has_monitors::signals::MONITOR_CREATED);
-                if(monitor_created_signal)
+                auto notification_created_signal =
+                    reader->signal(core::notification::has_notifications::signals::NOTIFICATION_CREATED);
+                if(notification_created_signal)
                 {
-                    monitor_created_signal->connect(m_slot_forward_monitor);
+                    notification_created_signal->connect(m_slot_forward_notification);
                 }
 
                 try
@@ -330,10 +331,11 @@ void selector::updating()
 
                 writer->configure();
 
-                auto monitor_created_signal = writer->signal(core::progress::has_monitors::signals::MONITOR_CREATED);
-                if(monitor_created_signal)
+                auto notification_created_signal =
+                    writer->signal(core::notification::has_notifications::signals::NOTIFICATION_CREATED);
+                if(notification_created_signal)
                 {
-                    monitor_created_signal->connect(m_slot_forward_monitor);
+                    notification_created_signal->connect(m_slot_forward_notification);
                 }
 
                 try
@@ -414,9 +416,9 @@ void selector::set_io_mode(io_mode _mode)
 
 //------------------------------------------------------------------------------
 
-void selector::forward_monitor(core::progress::monitor::sptr _monitor)
+void selector::forward_notification(core::notification::base::sptr _notification)
 {
-    this->async_emit(core::progress::has_monitors::signals::MONITOR_CREATED, _monitor);
+    this->async_emit(core::notification::has_notifications::signals::NOTIFICATION_CREATED, _notification);
 }
 
 //------------------------------------------------------------------------------

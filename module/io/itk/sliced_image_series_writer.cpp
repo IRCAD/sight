@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,20 +24,15 @@
 
 #include "module/io/itk/image_writer.hpp"
 
-#include <core/base.hpp>
 #include <core/location/single_folder.hpp>
 
-#include <data/image.hpp>
 #include <data/image_series.hpp>
 
 #include <io/__/service/writer.hpp>
 
-#include <service/macros.hpp>
-
 #include <ui/__/cursor.hpp>
 #include <ui/__/dialog/location.hpp>
 #include <ui/__/dialog/message.hpp>
-#include <ui/__/dialog/progress.hpp>
 
 namespace sight::module::io::itk
 {
@@ -138,7 +133,7 @@ void sliced_image_series_writer::updating()
         SIGHT_ASSERT("The input key '" + sight::io::service::DATA_KEY + "' is not correctly set.", image_series);
 
         sight::ui::busy_cursor cursor;
-        auto progress = std::make_shared<sight::core::progress::observer>("Saving image series");
+        auto progress = this->make_notification<sight::core::notification::observer>("Saving image series");
         image_writer::save_image(this->get_folder(), image_series, progress);
         m_write_failed = false;
     }

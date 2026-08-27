@@ -27,7 +27,6 @@
 #include <io/__/service/grabber.hpp>
 
 #include <service/has_services.hpp>
-#include <service/notifier.hpp>
 
 namespace sight::data
 {
@@ -127,7 +126,6 @@ public:
 
         static inline const key_t FWD_START_CAMERA   = "forward_start_camera";
         static inline const key_t FWD_STOP_CAMERA    = "forward_stop_camera";
-        static inline const key_t FWD_NOTIFY         = "forward_notify";
         static inline const key_t FWD_SET_PARAMETER  = "forward_set_parameter";
         static inline const key_t FWD_PRESENT_FRAME  = "forward_present_frame";
         static inline const key_t FWD_CREATE_MONITOR = "forward_create_monitor";
@@ -235,10 +233,7 @@ private:
     void fwd_set_parameter(ui::parameter_t _value, std::string _key);
 
     /// A monitor has been created in the proxied service.
-    void fwd_create_monitor(sight::core::progress::monitor::sptr _monitor);
-
-    // Forwards notifications
-    void fwd_notify(service::notification _notification);
+    void fwd_create_monitor(sight::core::notification::monitor::sptr _monitor);
     /** @} */
 
     /// Camera type (RGB, RGBD,...)

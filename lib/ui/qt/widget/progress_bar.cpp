@@ -138,9 +138,6 @@ progress_bar::progress_bar(
 
 progress_bar::~progress_bar()
 {
-    std::scoped_lock m_lock(m_mutex);
-    m_progress_monitors.clear();
-
     if(!m_progress_bar.isNull())
     {
         m_progress_bar->deleteLater();
@@ -168,28 +165,15 @@ progress_bar::~progress_bar()
 
 //------------------------------------------------------------------------------
 
-void progress_bar::add_monitor(core::progress::monitor::sptr _monitor)
+void progress_bar::add_monitor(core::notification::monitor::sptr _monitor)
 {
-    {
-        std::scoped_lock m_lock(m_mutex);
-
-        // Add the monitor to the list.
-        if(std::ranges::find_if(
-               m_progress_monitors,
-               [&_monitor](const auto& _other_monitor)
-            {
-                return _other_monitor.lock() == _monitor;
-            }) == m_progress_monitors.cend())
-        {
-            m_progress_monitors.push_back(_monitor);
-        }
-    }
-
     // Use a "weak" this to avoid ownership to be passed to the lambdas which can be executed in different threads.
     const auto weak_this = this->weak_from_this();
 
+    this->watch(_monitor, /*_own=*/ false, weak_this);
+
     _monitor->add_done_work_hook(
-        [weak_this](core::progress::monitor&, std::uint64_t)
+        [weak_this](core::notification::monitor&, std::uint64_t)
         {
             core::thread::get_default_worker()->post_task<void>(
                 [weak_this]
@@ -201,37 +185,10 @@ void progress_bar::add_monitor(core::progress::monitor::sptr _monitor)
             });
         });
 
-    const core::progress::monitor::wptr weak_monitor = _monitor;
-    _monitor->add_state_hook(
-        [weak_this, weak_monitor](core::progress::monitor::state _state)
-        {
-            if(auto shared_this = dynamic_pointer_cast<progress_bar>(weak_this.lock()); shared_this)
-            {
-                if(_state == core::progress::monitor::canceled || _state == core::progress::monitor::finished)
-                {
-                    core::thread::get_default_worker()->post_task<void>(
-                        [weak_this, weak_monitor]
-                    {
-                        if(auto shared_this = dynamic_pointer_cast<progress_bar>(weak_this.lock()); shared_this)
-                        {
-                            { // Some cleanup to remove expired monitors.
-                                std::scoped_lock m_lock(shared_this->m_mutex);
-                                std::erase_if(
-                                    shared_this->m_progress_monitors,
-                                    [weak_monitor](const auto& _weak_monitor)
-                                {
-                                    return _weak_monitor.expired() || (_weak_monitor.lock() == weak_monitor.lock());
-                                });
-                            }
-                            shared_this->update_widgets();
-                        }
-                    });
-                }
-            }
-        });
-
     if(!m_cancel_button.isNull())
     {
+        const core::notification::monitor::wptr weak_monitor = _monitor;
+
         QObject::connect(
             m_cancel_button,
             &QAbstractButton::clicked,
@@ -259,27 +216,24 @@ void progress_bar::add_monitor(core::progress::monitor::sptr _monitor)
 
 void progress_bar::update_widgets()
 {
-    std::scoped_lock m_lock(m_mutex);
+    // tracked_notifications() already returns a safe snapshot (locked, expired entries pruned) of the
+    // monitors currently being watched, so it is safe to iterate without holding any lock ourselves.
+    const auto safe_monitors_list = this->tracked_notifications();
 
     // Update visibility of the widgets.
-    const bool visible = !m_progress_monitors.empty();
+    const bool visible = !safe_monitors_list.empty();
 
     if(!m_container.isNull() && m_container->isVisible() != visible)
     {
         m_container->setVisible(visible);
     }
 
-    // Iterate over a copy of monitors, because they can be removed in add_monitor state hook while iterating over them,
-    // in the rare case where we release the last reference in "if(const auto& monitor = weak_monitor.lock();"
-    // We have the weak/shared mechanism to protect each pointer, but we also require the iterator to be safe
-    const auto safe_monitors_list = m_progress_monitors;
-
     // Update the widgets value.
-    for(const auto& weak_monitor : safe_monitors_list)
+    for(const auto& notification : safe_monitors_list)
     {
         // Get the current monitor as shared pointer.
-        if(const auto& monitor = weak_monitor.lock();
-           monitor && monitor->get_state() == core::progress::monitor::state::running)
+        if(const auto& monitor = std::dynamic_pointer_cast<core::notification::monitor>(notification);
+           monitor && monitor->state() == core::notification::monitor::running)
         {
             const auto name       = monitor->name();
             const std::string msg = (monitor->get_logs().empty()) ? "" : monitor->get_logs().back();
@@ -319,7 +273,7 @@ void progress_bar::update_widgets()
 
             if(!m_cancel_button.isNull())
             {
-                const bool cancelable = monitor->is_cancelable();
+                const bool cancelable = monitor->cancelable();
 
                 if(m_cancel_button->isVisible() != cancelable)
                 {
@@ -333,10 +287,21 @@ void progress_bar::update_widgets()
     }
 
     // Allow others to do something when all monitors are finished
-    if(m_finished_callback && is_finished())
+    if(is_finished())
     {
-        m_finished_callback();
+        const auto lock = std::scoped_lock(m_finished_callback_mutex);
+        if(m_finished_callback)
+        {
+            m_finished_callback();
+        }
     }
+}
+
+//------------------------------------------------------------------------------
+
+void progress_bar::on_notification_finished(const notification_t::wptr& /*_notification*/)
+{
+    this->update_widgets();
 }
 
 } //namespace sight::ui::qt::widget

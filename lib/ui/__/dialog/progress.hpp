@@ -26,8 +26,6 @@
 
 #include "ui/__/dialog/progress_base.hpp"
 
-#include <core/base.hpp>
-
 namespace sight::ui::dialog
 {
 
@@ -55,7 +53,7 @@ public:
     /// action called by core::tools::progress_adviser
     SIGHT_UI_API void operator()(float _percent, std::string _msg) override;
 
-    SIGHT_UI_API void set_cancel_callback(core::progress::cancel_callback_t _callback) override;
+    SIGHT_UI_API void set_cancel_callback(core::notification::cancel_callback_t _callback) override;
 
     SIGHT_UI_API void hide_cancel_button() override;
 

@@ -27,7 +27,7 @@
 
 #include <core/type.hpp>
 
-#include <glm/common.hpp> // NOLINT(misc-include-cleaner)
+#include <glm/common.hpp> // NOLINT(misc-include-cleaner): needed for glm::mix
 
 SIGHT_REGISTER_DATA(sight::data::transfer_function)
 

@@ -22,8 +22,6 @@
 
 #include "module/filter/mesh/vtk_mesher.hpp"
 
-#include "core/progress/observer.hpp"
-
 #include <core/profiling.hpp>
 
 #include <data/helper/field.hpp>
@@ -105,7 +103,6 @@ private:
 
 vtk_mesher::vtk_mesher() noexcept :
     filter(has_signals::signals()),
-    notifier(has_signals::signals()),
     has_monitors(has_signals::signals())
 {
 }
@@ -145,9 +142,7 @@ void vtk_mesher::stopping()
 
 void vtk_mesher::updating()
 {
-    const auto progress = std::make_shared<sight::core::progress::observer>("Meshing segmentation");
-    progress->set_cancelable(false);
-    this->async_emit(has_monitors::signals::MONITOR_CREATED, progress->get_sptr());
+    const auto progress = this->observe("Meshing segmentation");
 
     {
         SIGHT_PROFILE("mesh");
@@ -159,7 +154,7 @@ void vtk_mesher::updating()
         {
             std::string msg = "Invalid input/output data for model series reconstruction.";
             SIGHT_ERROR(msg);
-            this->notifier::failure(msg);
+            this->fail(msg);
 
             this->async_emit(filter::signals::FAILED);
             progress->done();
@@ -418,7 +413,6 @@ vtkSmartPointer<vtkPolyData> vtk_mesher::reconstruct(vtkSmartPointer<vtkImageDat
     if(auto error = error_obs->get_error(); error.has_value())
     {
         SIGHT_DEBUG(*error);
-        this->notifier::failure(*error);
         this->async_emit(filter::signals::FAILED);
 
         return nullptr;

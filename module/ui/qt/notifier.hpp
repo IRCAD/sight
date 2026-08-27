@@ -22,8 +22,9 @@
 
 #pragma once
 
+#include <core/notification/base.hpp>
+
 #include <service/controller.hpp>
-#include <service/notifier.hpp>
 
 #include <ui/__/dialog/notification.hpp>
 
@@ -34,10 +35,13 @@ namespace sight::module::ui::qt
 
 /**
  * @brief notifier is a general service used to display notification in a centralized way.
- * notifier needs to be connected to [Success/Failure/Info]Notified signals implemented in base.
+ * notifier needs to be connected to the notification_created signal of sight::core::notification::has_notifications.
  *
  * @section Slots Slots
- * - \b pop(): Adds a popup in the queue & display it.
+ * - \b add_notification(core::notification::base::sptr): Adds a popup from a sight::core::notification object
+ *   (instruction/information/warning/error). This is the only entry point; other kinds (e.g. progress monitors)
+ *   are not supported and are ignored with a warning. Prefer sight::module::ui::qt::notification_zone for new code
+ *   that does not need per-channel positioning/sound.
  * - \b close_notification(std::string channel): Close the popup associated with the given channel.
  * - \b set_enum_parameter(std::string value, std::string key): Changes the position of notifications (key "position"),
  * accepted values are the same than the "position" tag in the XML configuration.
@@ -104,7 +108,7 @@ public:
 
     struct slots
     {
-        static inline const slot_key_t POP_NOTIFICATION   = "pop";
+        static inline const slot_key_t ADD_NOTIFICATION   = "add_notification";
         static inline const slot_key_t CLOSE_NOTIFICATION = "close_notification";
         static inline const slot_key_t SET_ENUM_PARAMETER = "set_enum_parameter";
     };
@@ -118,9 +122,10 @@ public:
     /// Slot: This method is used to set an enum parameter.
     void set_enum_parameter(std::string _val, std::string _key);
 
-    /// Slot: pops a notification.
-    /// @param _notification notification.
-    void pop(service::notification _notification);
+    /// Slot: pops a notification built from a sight::core::notification object.
+    /// @param _notification notification (instruction/information/warning/error). Other kinds (e.g. progress
+    /// monitors) are not supported and are ignored with a warning.
+    void add_notification(sight::core::notification::base::sptr _notification);
 
     /// Slot: close a notification identified by the channel name.
     /// @param _channel notification channel.
@@ -152,6 +157,10 @@ protected:
 
 private:
 
+    /// Displays a notification, creating or reusing a popup depending on its channel.
+    /// @param _params notification display parameters.
+    void display(sight::ui::dialog::notification_base::params _params);
+
     /// Called when a notification is closed
     void on_notification_closed(const sight::ui::dialog::notification::sptr& _notif);
 
@@ -159,7 +168,7 @@ private:
     /// @param _position The stack where we need to erase a notification
     /// @param _it the iterator pointing on the element to erase
     std::list<sight::ui::dialog::notification::sptr>::iterator erase_notification(
-        const enum service::notification::position& _position,
+        const enum sight::ui::dialog::notification_base::position& _position,
         const std::list<sight::ui::dialog::notification::sptr>::iterator& _it
     );
 
@@ -168,7 +177,7 @@ private:
     /// @param _max The maximum number of element
     /// @param _skip_permanent if true, only non permanent notifications are counted
     void clean_notifications(
-        const enum service::notification::position& _position,
+        const enum sight::ui::dialog::notification_base::position& _position,
         std::size_t _max,
         std::array<int, 2> _size,
         bool _skip_permanent = true
@@ -181,7 +190,7 @@ private:
 
     struct configuration final
     {
-        std::optional<enum service::notification::position> position {std::nullopt};
+        std::optional<enum sight::ui::dialog::notification_base::position> position {std::nullopt};
         std::optional<std::chrono::milliseconds> duration {std::nullopt};
         std::optional<std::array<int, 2> > size {std::nullopt};
         std::optional<std::size_t> max {std::nullopt};
@@ -199,14 +208,14 @@ private:
     };
 
     /// Map of displayed Stack
-    std::map<enum service::notification::position, stack> m_stacks {
-        {service::notification::position::top_right, {}},
-        {service::notification::position::top_left, {}},
-        {service::notification::position::bottom_right, {}},
-        {service::notification::position::bottom_left, {}},
-        {service::notification::position::centered, {}},
-        {service::notification::position::centered_top, {}},
-        {service::notification::position::centered_bottom, {}},
+    std::map<enum sight::ui::dialog::notification_base::position, stack> m_stacks {
+        {sight::ui::dialog::notification_base::position::top_right, {}},
+        {sight::ui::dialog::notification_base::position::top_left, {}},
+        {sight::ui::dialog::notification_base::position::bottom_right, {}},
+        {sight::ui::dialog::notification_base::position::bottom_left, {}},
+        {sight::ui::dialog::notification_base::position::centered, {}},
+        {sight::ui::dialog::notification_base::position::centered_top, {}},
+        {sight::ui::dialog::notification_base::position::centered_bottom, {}},
     };
 
     /// widget where notifications will be displayed in, nullptr by default.

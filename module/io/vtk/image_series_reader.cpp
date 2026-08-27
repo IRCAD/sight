@@ -176,8 +176,7 @@ void image_series_reader::updating()
 
         const auto& file = this->get_file();
 
-        auto observer = std::make_shared<core::progress::observer>("Reading " + file.string() + " file");
-        this->async_emit(has_monitors::signals::MONITOR_CREATED, observer->get_sptr());
+        auto observer = this->observe("Reading " + file.string() + " file");
 
         if(image_reader::load_image(file, image_series, observer))
         {

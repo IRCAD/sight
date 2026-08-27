@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,12 +20,9 @@
  *
  ***********************************************************************/
 
-#include "ui/qt/dialog/logger.hpp"
+#include "logger.hpp"
 
-#include <core/base.hpp>
 #include <core/runtime/path.hpp>
-
-#include <ui/__/macros.hpp>
 
 #include <QApplication>
 #include <QCheckBox>
@@ -90,12 +87,12 @@ bool logger::show()
 
     // Create icon
     auto* icon_label = new QLabel();
-    if(m_logger->count(core::log::log::critical) > 0)
+    if(m_logger->count(core::log::log::level_t::critical) > 0)
     {
         const auto path = core::runtime::get_library_resource_file_path("sight::ui::qt/critical.png");
         icon_label->setPixmap(QIcon(QString::fromStdString(path.string())).pixmap(48, 48));
     }
-    else if(m_logger->count(core::log::log::warning) > 0)
+    else if(m_logger->count(core::log::log::level_t::warning) > 0)
     {
         const auto path = core::runtime::get_library_resource_file_path("sight::ui::qt/warning.png");
         icon_label->setPixmap(QIcon(QString::fromStdString(path.string())).pixmap(48, 48));
@@ -111,9 +108,9 @@ bool logger::show()
     // Create message
     std::stringstream ss;
     ss << m_message
-    << "<br><br>" << "<b>Log report :</b> " << m_logger->count(core::log::log::critical) << " critical, "
-    << m_logger->count(core::log::log::warning) << " warning and "
-    << m_logger->count(core::log::log::information) << " information messages.";
+    << m_logger->count(core::log::log::level_t::critical) << " critical, "
+    << m_logger->count(core::log::log::level_t::warning) << " warning and "
+    << m_logger->count(core::log::log::level_t::information) << " information messages.";
 
     auto* message_label = new QLabel(ss.str().c_str());
     message_layout->addWidget(message_label);
@@ -163,19 +160,19 @@ bool logger::show()
         std::string level_string = "Unknown";
         QIcon level_icon;
         core::log::log::level_t level = it->get_level();
-        if(level == core::log::log::information)
+        if(level == core::log::log::level_t::information)
         {
             level_string = "Information";
             const auto path = core::runtime::get_library_resource_file_path("sight::ui::qt/information.png");
             level_icon = QIcon(QString::fromStdString(path.string()));
         }
-        else if(level == core::log::log::warning)
+        else if(level == core::log::log::level_t::warning)
         {
             level_string = "Warning";
             const auto path = core::runtime::get_library_resource_file_path("sight::ui::qt/warning.png");
             level_icon = QIcon(QString::fromStdString(path.string()));
         }
-        else if(level == core::log::log::critical)
+        else if(level == core::log::log::level_t::critical)
         {
             level_string = "Critical";
             const auto path = core::runtime::get_library_resource_file_path("sight::ui::qt/critical.png");

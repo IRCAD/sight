@@ -24,7 +24,8 @@
 
 #include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
-#include <core/progress/observer.hpp>
+
+#include <core/tools/failed.hpp>
 
 #include <io/vtk/mesh_reader.hpp>
 #include <io/vtk/obj_mesh_reader.hpp>
@@ -174,8 +175,7 @@ bool mesh_reader::load_mesh(const std::filesystem::path& _vtk_file)
         );
     }
 
-    auto observer = std::make_shared<core::progress::observer>("Reading " + _vtk_file.string() + " file");
-    this->async_emit(has_monitors::signals::MONITOR_CREATED, observer->get_sptr());
+    auto observer = this->observe("Reading " + _vtk_file.string() + " file");
 
     mesh_reader->set_object(mesh);
 

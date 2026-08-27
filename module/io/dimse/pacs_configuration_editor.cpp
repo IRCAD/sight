@@ -23,6 +23,7 @@
 #include "pacs_configuration_editor.hpp"
 
 #include <io/dimse/exceptions/base.hpp>
+#include <io/dimse/series_enquirer.hpp>
 
 #include <ui/__/dialog/message.hpp>
 #include <ui/qt/container/widget.hpp>
@@ -40,7 +41,7 @@ static const service::base::key_t SHOW_DIALOG_CONFIG = "showDialog";
 //------------------------------------------------------------------------------
 
 pacs_configuration_editor::pacs_configuration_editor() noexcept :
-    sight::service::notifier(has_signals::signals())
+    has_notifications(has_signals::signals())
 {
     m_slot_show_dialog = this->new_slot(slots::SHOW_DIALOG, &pacs_configuration_editor::show_dialog);
 }
@@ -292,12 +293,12 @@ void pacs_configuration_editor::ping_pacs()
 
             if(success)
             {
-                this->notifier::info("Ping succeeded!");
+                this->inform("Ping succeeded!");
                 SIGHT_INFO("Ping succeeded")
             }
             else
             {
-                this->notifier::failure("Ping failed!");
+                this->fail("Ping failed!");
                 SIGHT_INFO("Ping failed")
             }
         });

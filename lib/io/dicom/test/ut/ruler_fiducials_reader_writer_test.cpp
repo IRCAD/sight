@@ -21,15 +21,13 @@
 
 #include "helper.hpp"
 
+#include <core/notification/observer.hpp>
 #include <core/os/temp_path.hpp>
-#include <core/progress/observer.hpp>
 
 #include <data/image_series.hpp>
 
 #include <io/dicom/reader/file.hpp>
 #include <io/dicom/writer/file.hpp>
-
-#include <utest_data/data.hpp>
 
 #include <doctest/doctest.h>
 
@@ -99,7 +97,7 @@ TEST_SUITE("sight::io::dicom::ruler_fiducials_reader_writer")
 
         const core::os::temp_dir folder;
         writer->set_folder(folder);
-        auto write_observer = std::make_shared<core::progress::observer>("Test write");
+        auto write_observer = std::make_shared<core::notification::observer>("Test write");
         CHECK_NOTHROW(writer->write(write_observer));
 
         auto actual = std::make_shared<data::series_set>();
@@ -107,7 +105,7 @@ TEST_SUITE("sight::io::dicom::ruler_fiducials_reader_writer")
         reader->set_object(actual);
         reader->set_folder(folder);
         {
-            auto read_observer = std::make_shared<core::progress::observer>("Test read");
+            auto read_observer = std::make_shared<core::notification::observer>("Test read");
             CHECK_NOTHROW(reader->read(read_observer));
         }
         CHECK_EQ(std::size_t(1), actual->size());

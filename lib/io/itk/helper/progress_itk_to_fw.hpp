@@ -23,7 +23,7 @@
 #pragma once
 
 #include <core/macros.hpp>
-#include <core/progress/observer.hpp>
+#include <core/notification/observer.hpp>
 #include <memory>
 
 #include <itkCommand.h>
@@ -50,7 +50,7 @@ class progress_itk_to_fw : public progressor_base
 {
 public:
 
-    progress_itk_to_fw(OBSERVEE _observee, sight::sptr<core::progress::observer> _observer);
+    progress_itk_to_fw(OBSERVEE _observee, sight::sptr<core::notification::observer> _observer);
     virtual ~progress_itk_to_fw();
 
 private:
@@ -69,7 +69,7 @@ public:
     using sptr = std::shared_ptr<progressor>;
 
     template<typename OBS>
-    progressor(OBS _filter, sight::sptr<core::progress::observer> _observer) :
+    progressor(OBS _filter, sight::sptr<core::notification::observer> _observer) :
         m_progressor(std::make_shared<progress_itk_to_fw<OBS> >(_filter, _observer))
     {
     }
@@ -82,7 +82,7 @@ public:
 template<typename OBSERVEE>
 progress_itk_to_fw<OBSERVEE>::progress_itk_to_fw(
     OBSERVEE _observee,
-    sight::sptr<core::progress::observer> _observer
+    sight::sptr<core::notification::observer> _observer
 ) :
     m_observee(std::move(_observee)),
     m_obs_tag(std::numeric_limits<std::uint64_t>::max())
@@ -115,7 +115,7 @@ progress_itk_to_fw<OBSERVEE>::progress_itk_to_fw(
             Execute(const_caller, _event);
         }
 
-        sight::sptr<core::progress::observer> m_observer {};
+        sight::sptr<core::notification::observer> m_observer;
     };
 
     typename local_command::Pointer itk_call_back;

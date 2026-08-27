@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <core/progress/has_monitors.hpp>
+#include <core/notification/has_monitors.hpp>
 
 #include <data/boolean.hpp>
 #include <data/image_series.hpp>
@@ -31,7 +31,6 @@
 #include <data/real.hpp>
 
 #include <service/filter.hpp>
-#include <service/notifier.hpp>
 
 #include <vtkImageData.h>
 #include <vtkPolyData.h>
@@ -107,8 +106,7 @@ namespace sight::module::filter::mesh
  */
 
 class vtk_mesher : public service::filter,
-                   public sight::service::notifier,
-                   public sight::core::progress::has_monitors
+                   public sight::core::notification::has_monitors
 {
 public:
 

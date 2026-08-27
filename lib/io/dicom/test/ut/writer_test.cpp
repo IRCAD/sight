@@ -27,12 +27,9 @@
 #include <io/dicom/reader/file.hpp>
 #include <io/dicom/writer/file.hpp>
 
-#include <utest/filter.hpp>
 #include <utest/profiling.hpp>
 
 #include <doctest/doctest.h>
-
-#include <glm/glm.hpp>
 
 // cspell: ignore orthogonalize
 
@@ -58,7 +55,7 @@ TEST_SUITE("sight::io::dicom::writer")
                 writer->set_object(series_set);
                 writer->set_folder(tmp_dir);
 
-                auto write_observer = std::make_shared<core::progress::observer>("Test write");
+                auto write_observer = std::make_shared<core::notification::observer>("Test write");
                 CHECK_NOTHROW(writer->write(write_observer));
             }
 
@@ -69,7 +66,7 @@ TEST_SUITE("sight::io::dicom::writer")
                 reader->set_object(series_set);
                 reader->set_folder(tmp_dir);
 
-                auto read_observer = std::make_shared<core::progress::observer>("Test read");
+                auto read_observer = std::make_shared<core::notification::observer>("Test read");
                 CHECK_NOTHROW(reader->read(read_observer));
                 CHECK_EQ(std::size_t(1), series_set->size());
 
@@ -94,7 +91,7 @@ TEST_SUITE("sight::io::dicom::writer")
                 writer->set_object(series_set);
                 writer->set_folder(tmp_dir);
 
-                auto write_observer = std::make_shared<core::progress::observer>("Test write");
+                auto write_observer = std::make_shared<core::notification::observer>("Test write");
                 CHECK_NOTHROW(writer->write(write_observer));
             }
 
@@ -105,7 +102,7 @@ TEST_SUITE("sight::io::dicom::writer")
                 reader->set_object(series_set);
                 reader->set_folder(tmp_dir);
 
-                auto read_observer = std::make_shared<core::progress::observer>("Test read");
+                auto read_observer = std::make_shared<core::notification::observer>("Test read");
                 CHECK_NOTHROW(reader->read(read_observer));
                 CHECK_EQ(std::size_t(1), series_set->size());
 
@@ -135,7 +132,7 @@ TEST_SUITE("sight::io::dicom::writer")
                 writer->set_object(series_set);
                 writer->set_folder(tmp_dir);
 
-                auto write_observer = std::make_shared<core::progress::observer>("Test write");
+                auto write_observer = std::make_shared<core::notification::observer>("Test write");
                 CHECK_NOTHROW(writer->write(write_observer));
             }
 
@@ -146,7 +143,7 @@ TEST_SUITE("sight::io::dicom::writer")
                 reader->set_object(series_set);
                 reader->set_folder(tmp_dir);
 
-                auto read_observer = std::make_shared<core::progress::observer>("Test read");
+                auto read_observer = std::make_shared<core::notification::observer>("Test read");
                 CHECK_NOTHROW(reader->read(read_observer));
                 CHECK_EQ(std::size_t(1), series_set->size());
 
@@ -172,7 +169,7 @@ TEST_SUITE("sight::io::dicom::writer")
                 writer->set_folder(tmp_dir);
                 writer->set_file("custom_filename.dcm");
 
-                auto write_observer = std::make_shared<core::progress::observer>("Test write");
+                auto write_observer = std::make_shared<core::notification::observer>("Test write");
                 CHECK_NOTHROW(writer->write(write_observer));
                 CHECK(std::filesystem::exists(tmp_dir / "custom_filename.dcm"));
             }
@@ -184,7 +181,7 @@ TEST_SUITE("sight::io::dicom::writer")
                 reader->set_object(series_set);
                 reader->set_folder(tmp_dir);
 
-                auto read_observer = std::make_shared<core::progress::observer>("Test read");
+                auto read_observer = std::make_shared<core::notification::observer>("Test read");
                 CHECK_NOTHROW(reader->read(read_observer));
                 CHECK_EQ(std::size_t(1), series_set->size());
 
@@ -214,7 +211,7 @@ TEST_SUITE("sight::io::dicom::writer")
                 writer->set_folder(tmp_dir);
                 writer->set_file("custom_filename.dcm");
 
-                auto write_observer = std::make_shared<core::progress::observer>("Test write");
+                auto write_observer = std::make_shared<core::notification::observer>("Test write");
                 CHECK_NOTHROW(writer->write(write_observer));
                 CHECK(std::filesystem::exists(tmp_dir / "000-custom_filename.dcm"));
                 CHECK(std::filesystem::exists(tmp_dir / "001-custom_filename.dcm"));
@@ -252,7 +249,7 @@ TEST_SUITE("sight::io::dicom::writer")
                 writer->set_folder(tmp_dir);
                 writer->set_file("custom_filename.dcm");
 
-                auto write_observer = std::make_shared<core::progress::observer>("Test write");
+                auto write_observer = std::make_shared<core::notification::observer>("Test write");
                 CHECK_NOTHROW(writer->write(write_observer));
                 CHECK(std::filesystem::exists(tmp_dir / "custom_filename.dcm"));
             }
@@ -264,7 +261,7 @@ TEST_SUITE("sight::io::dicom::writer")
                 reader->set_object(series_set);
                 reader->set_folder(tmp_dir);
 
-                auto read_observer = std::make_shared<core::progress::observer>("Test read");
+                auto read_observer = std::make_shared<core::notification::observer>("Test read");
                 CHECK_NOTHROW(reader->read(read_observer));
                 CHECK_EQ(std::size_t(1), series_set->size());
 
@@ -297,21 +294,21 @@ TEST_SUITE("sight::io::dicom::writer")
 
             if(io::bitmap::nvjpeg2k())
             {
-                auto write_observer = std::make_shared<core::progress::observer>("Test write");
+                auto write_observer = std::make_shared<core::notification::observer>("Test write");
                 CHECK_NOTHROW(writer->write(write_observer));
             }
 
 #ifdef SIGHT_ENABLE_NVJPEG2K
             else
             {
-                auto write_observer = std::make_shared<core::progress::observer>("Test write");
+                auto write_observer = std::make_shared<core::notification::observer>("Test write");
                 CHECK_THROWS(writer->write(write_observer));
             }
 #endif
 
             writer->force_cpu(true);
 
-            auto write_observer = std::make_shared<core::progress::observer>("Test write");
+            auto write_observer = std::make_shared<core::notification::observer>("Test write");
             CHECK_NOTHROW(writer->write(write_observer));
         }
     }
@@ -339,7 +336,7 @@ TEST_SUITE("sight::io::dicom::writer")
                     SIGHT_PROFILE_FUNC(
                         [&](std::size_t)
                     {
-                        auto write_observer = std::make_shared<core::progress::observer>("Test write");
+                        auto write_observer = std::make_shared<core::notification::observer>("Test write");
                         CHECK_NOTHROW(writer->write(write_observer));
                     },
                         3,
@@ -362,7 +359,7 @@ TEST_SUITE("sight::io::dicom::writer")
                     SIGHT_PROFILE_FUNC(
                         [&](std::size_t)
                     {
-                        auto read_observer = std::make_shared<core::progress::observer>("Test read");
+                        auto read_observer = std::make_shared<core::notification::observer>("Test read");
                         CHECK_NOTHROW(reader->read(read_observer));
                     },
                         3,
@@ -399,7 +396,7 @@ TEST_SUITE("sight::io::dicom::writer")
                     }
                 }
 
-                return std::size_t(0);
+                return static_cast<std::size_t>(0);
             };
 
         // First the biggest file size

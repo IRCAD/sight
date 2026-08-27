@@ -123,8 +123,8 @@ void matrix4_trf_writer::updating()
             matrix
         );
 
-        auto observer = std::make_shared<core::progress::observer>("Writing matrix4 TRF file");
-        this->async_emit(has_monitors::signals::MONITOR_CREATED, observer->get_sptr());
+        auto observer = this->make_notification<core::notification::observer>("Writing matrix4 TRF file");
+        this->emit_notification_created(observer);
 
         const auto writer = std::make_shared<sight::io::writer::matrix4_writer>();
         writer->set_object(matrix);

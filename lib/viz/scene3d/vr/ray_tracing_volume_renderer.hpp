@@ -1,14 +1,4 @@
 /************************************************************************
- * Copyright (C) 2026 IRCAD France - All rights reserved.
- *
- * This file is part of Disrumpere.
- *
- * Disrumpere can not be copied, modified and/or distributed without
- * the express permission of IRCAD France.
- *
- ***********************************************************************/
-
-/************************************************************************
  *
  * Copyright (C) 2016-2026 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
@@ -29,6 +19,7 @@
  * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************/
+
 // cspell:ignore NOLINT hicpp
 #pragma once
 

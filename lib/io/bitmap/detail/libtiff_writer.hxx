@@ -21,8 +21,9 @@
 
 #pragma once
 
+#include "common.hxx"
+#include "io/bitmap/writer.hpp"
 #include "libtiff_common.hxx"
-#include "writer_impl.hxx"
 
 // cspell:ignore nvjpeg NOLINTNEXTLINE TIFFTAG IMAGEWIDTH IMAGELENGTH BITSPERSAMPLE SAMPLESPERPIXEL MINISBLACK
 // cspell:ignore PLANARCONFIG TOPLEFT ROWSPERSTRIP Scanline XRESOLUTION YRESOLUTION thandle SAMPLEFORMAT
@@ -31,7 +32,7 @@
 namespace sight::io::bitmap::detail
 {
 
-// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage,cppcoreguidelines-pro-type-vararg,hicpp-vararg)
 #define CHECK_TIFF(func) SIGHT_THROW_IF("The function " #func " failed.", (func) == 0)
 
 class libtiff_writer final
@@ -66,7 +67,7 @@ public:
     {
         const auto pixel_format = _image.pixel_format();
         SIGHT_THROW_IF(
-            NAME << " - Unsupported image pixel format: " << pixel_format,
+            NAME << " - Unsupported image pixel format: " << static_cast<unsigned int>(pixel_format),
             pixel_format != data::image::pixel_format_t::rgb
             && pixel_format != data::image::pixel_format_t::rgba
             && pixel_format != data::image::pixel_format_t::gray_scale
@@ -115,6 +116,7 @@ public:
         const auto& sizes        = _image.size();
         const auto& image_width  = sizes[0];
         const auto& image_height = sizes[1];
+
         CHECK_TIFF(TIFFSetField(keeper.m_tiff, TIFFTAG_IMAGEWIDTH, image_width));
         CHECK_TIFF(TIFFSetField(keeper.m_tiff, TIFFTAG_IMAGELENGTH, image_height));
         CHECK_TIFF(TIFFSetField(keeper.m_tiff, TIFFTAG_BITSPERSAMPLE, pixel_type.size() * 8));
@@ -143,8 +145,11 @@ public:
 
                 // ZSTD support is not yet standard for Adobe... :(
                 // This settings produce 10% smaller file than COMPRESSION_LZW as same speed than COMPRESSION_PACKBITS
+
                 CHECK_TIFF(TIFFSetField(keeper.m_tiff, TIFFTAG_COMPRESSION, COMPRESSION_ZSTD));
+
                 CHECK_TIFF(TIFFSetField(keeper.m_tiff, TIFFTAG_PREDICTOR, PREDICTOR_HORIZONTAL));
+
                 CHECK_TIFF(TIFFSetField(keeper.m_tiff, TIFFTAG_ZSTD_LEVEL, 1));
                 break;
             }
@@ -152,13 +157,16 @@ public:
             default:
             {
                 // COMPRESSION_PACKBITS (RLE) is the fastest
+                // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
                 TIFFSetField(keeper.m_tiff, TIFFTAG_COMPRESSION, COMPRESSION_PACKBITS);
                 break;
             }
         }
 
         const auto& num_components = _image.num_components();
+
         CHECK_TIFF(TIFFSetField(keeper.m_tiff, TIFFTAG_SAMPLESPERPIXEL, num_components));
+
         CHECK_TIFF(
             TIFFSetField(
                 keeper.m_tiff,
@@ -170,7 +178,7 @@ public:
         // Manage alpha channel, if present
         if(num_components > 3)
         {
-            const auto extra_samples = std::uint16_t(num_components - 3);
+            const auto extra_samples = static_cast<std::uint16_t>(num_components - 3);
             std::vector<std::uint16_t> sample_info(extra_samples);
 
             sample_info[0] = EXTRASAMPLE_ASSOCALPHA;
@@ -195,7 +203,8 @@ public:
         }
 
         // length in memory of one row of pixel in the image.
-        const auto strip_size = std::uint32_t(image_width * num_components * pixel_type.size());
+        const auto strip_size = static_cast<std::uint32_t>(image_width * num_components * pixel_type.size());
+
         CHECK_TIFF(TIFFSetField(keeper.m_tiff, TIFFTAG_ROWSPERSTRIP, TIFFDefaultStripSize(keeper.m_tiff, strip_size)));
 
         // Allocate a row buffer. LibTIFF modify source buffer !
@@ -312,14 +321,14 @@ private:
 
         // Verify that type does not overflow.
         std::streamsize request_size = _size;
-        if(tmsize_t(request_size) != _size)
+        if(static_cast<tmsize_t>(request_size) != _size)
         {
             return -1;
         }
 
         data->ostream.write(reinterpret_cast<const char*>(_buf), request_size);
 
-        return tmsize_t(data->ostream.tellp() - pos);
+        return static_cast<tmsize_t>(data->ostream.tellp() - pos);
     }
 
     //------------------------------------------------------------------------------
@@ -331,7 +340,7 @@ private:
         // if the stream has already failed, don't do anything
         if(data->ostream.fail())
         {
-            return toff_t(-1);
+            return static_cast<toff_t>(-1);
         }
 
         switch(_whence)
@@ -339,13 +348,13 @@ private:
             case SEEK_SET:
             {
                 // Compute 64-bit offset
-                const std::uint64_t new_offset = std::uint64_t(data->start_pos) + _off;
+                const std::uint64_t new_offset = static_cast<std::uint64_t>(data->start_pos) + _off;
 
                 // Verify that value does not overflow
-                const auto offset = std::ios::off_type(new_offset);
-                if(std::uint64_t(offset) != new_offset)
+                const auto offset = static_cast<std::ios::off_type>(new_offset);
+                if(std::cmp_not_equal(offset, new_offset))
                 {
-                    return toff_t(-1);
+                    return static_cast<toff_t>(-1);
                 }
 
                 data->ostream.seekp(offset, std::ios::beg);
@@ -355,10 +364,10 @@ private:
             case SEEK_CUR:
             {
                 // Verify that value does not overflow
-                const auto offset = std::ios::off_type(_off);
-                if(std::uint64_t(offset) != _off)
+                const auto offset = static_cast<std::ios::off_type>(_off);
+                if(std::cmp_not_equal(offset, _off))
                 {
-                    return toff_t(-1);
+                    return static_cast<toff_t>(-1);
                 }
 
                 data->ostream.seekp(offset, std::ios::cur);
@@ -368,10 +377,10 @@ private:
             case SEEK_END:
             {
                 // Verify that value does not overflow
-                const auto offset = std::ios::off_type(_off);
-                if(std::uint64_t(offset) != _off)
+                const auto offset = static_cast<std::ios::off_type>(_off);
+                if(std::cmp_not_equal(offset, _off))
                 {
-                    return toff_t(-1);
+                    return static_cast<toff_t>(-1);
                 }
 
                 data->ostream.seekp(offset, std::ios::end);
@@ -379,7 +388,7 @@ private:
             }
 
             default:
-                return toff_t(-1);
+                return static_cast<toff_t>(-1);
         }
 
         // Attempt to workaround problems with seeking past the end of the
@@ -414,28 +423,28 @@ private:
             // restore original stream state
             data->ostream.clear(old_state);
 
-            const std::uint64_t new_offset = std::uint64_t(origin) + _off;
+            const std::uint64_t new_offset = static_cast<std::uint64_t>(origin) + _off;
 
             // only do something if desired seek position is valid
-            if(new_offset > std::uint64_t(data->start_pos))
+            if(std::cmp_greater(new_offset, static_cast<std::uint64_t>(data->start_pos)))
             {
                 // clear the fail bit
                 data->ostream.clear(data->ostream.rdstate() & ~std::ios::failbit);
 
                 // extend the stream to the expected size
                 data->ostream.seekp(0, std::ios::end);
-                const std::uint64_t num_fill = new_offset - std::uint64_t(data->ostream.tellp());
+                const std::uint64_t num_fill = new_offset - static_cast<std::uint64_t>(data->ostream.tellp());
                 for(std::uint64_t i = 0 ; i < num_fill ; ++i)
                 {
                     data->ostream.put('\0');
                 }
 
                 // retry the seek
-                data->ostream.seekp(std::ios::off_type(new_offset), std::ios::beg);
+                data->ostream.seekp(static_cast<std::ios::off_type>(new_offset), std::ios::beg);
             }
         }
 
-        return toff_t(data->ostream.tellp());
+        return static_cast<toff_t>(data->ostream.tellp());
     }
 
     //------------------------------------------------------------------------------
@@ -458,7 +467,7 @@ private:
         const auto size = data->ostream.tellp();
         data->ostream.seekp(initial_pos);
 
-        return toff_t(size);
+        return static_cast<toff_t>(size);
     }
 
     /// @}

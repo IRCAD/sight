@@ -25,8 +25,7 @@
 #include "io/vtk/helper/vtk_lambda_command.hpp"
 #include "io/vtk/vtk.hpp"
 
-#include <core/progress/monitor.hpp>
-#include <core/progress/observer.hpp>
+#include <core/notification/observer.hpp>
 
 #include <vtkImageData.h>
 #include <vtkSmartPointer.h>
@@ -38,7 +37,7 @@ namespace sight::io::vtk
 
 //------------------------------------------------------------------------------
 
-void vti_image_writer::write(sight::core::progress::observer::sptr _progress)
+void vti_image_writer::write(sight::core::notification::observer::sptr _progress)
 {
     using helper::vtk_lambda_command;
 

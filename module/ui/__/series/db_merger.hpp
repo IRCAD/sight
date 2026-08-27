@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include <core/progress/has_monitors.hpp>
+#include <core/notification/base.hpp>
+#include <core/notification/has_monitors.hpp>
 
 #include <data/series_set.hpp>
 
@@ -35,10 +36,10 @@ namespace sight::module::ui::series
  * @brief This action allows to load a new series_set and merge it with the current series_set
  *
  * @section Slots Slots
- * - \b forward_monitor(core::progress::monitor::sptr) : Called to forward a monbitor.
+ * - \b forward_notification(core::notification::base::sptr) : Called to forward a monbitor.
  *
  * @section Signals Signals
- * - \b monitor_created(core::progress::monitor::sptr) : This signal is emitted when a monbitor is created
+ * - \b notification_created(core::notification::monitor::sptr) : This signal is emitted when a monbitor is created
  *
  * The available reader can be configured
  * @section XML XML Configuration
@@ -68,7 +69,7 @@ namespace sight::module::ui::series
  * - \b seriesSet [sight::data::series_set]: the series_set to merge.
  */
 class db_merger : public sight::ui::action,
-                  public sight::core::progress::has_monitors
+                  public sight::core::notification::has_monitors
 {
 public:
 
@@ -76,8 +77,8 @@ public:
 
     struct slots
     {
-        using forward_monitor_t = core::com::slot<void (std::shared_ptr<core::progress::monitor>)>;
-        static inline const std::string FORWARD_MONITOR = "forwardmonitor";
+        using forward_notification_t = core::com::slot<void (std::shared_ptr<core::notification::base>)>;
+        static inline const std::string FORWARD_NOTIFICATION = "forward_notification";
     };
 
     db_merger() noexcept;
@@ -109,11 +110,11 @@ protected:
 
 private:
 
-    void forward_monitor(sight::sptr<core::progress::monitor> _monitor);
+    void forward_notification(core::notification::base::sptr _notification);
 
     std::string m_io_selector_srv_config;
 
-    sight::sptr<slots::forward_monitor_t> m_slot_forward_monitor;
+    sight::sptr<slots::forward_notification_t> m_slot_forward_notification;
     static constexpr std::string_view SERIES_SET = "seriesSet";
 
     data::ptr<data::series_set, data::access::inout> m_series_set {this, SERIES_SET};

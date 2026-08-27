@@ -23,6 +23,7 @@
 #include <core/thread/timer.hpp>
 #include <core/thread/worker.hpp>
 
+#include <iostream>
 #include <ui/qt/app.hpp>
 #include <ui/qt/worker_qt.hpp>
 

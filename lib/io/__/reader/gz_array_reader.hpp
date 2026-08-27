@@ -50,7 +50,7 @@ public:
     SIGHT_IO_API ~gz_array_reader() override = default;
 
     /// Reads the file using the zlib API.
-    SIGHT_IO_API void read(sight::sptr<sight::core::progress::observer> _progress) override;
+    SIGHT_IO_API void read(sight::sptr<sight::core::notification::observer> _progress) override;
 
     /// Defines extensions supported by this reader. Here: ".raw.gz"
     SIGHT_IO_API std::string extension() const override;

@@ -32,6 +32,8 @@
 #include <io/__/writer/object_writer.hpp>
 #include <io/zip/archive_writer.hpp>
 
+#include <boost/property_tree/ptree.hpp> // NOLINT(misc-include-cleaner)
+
 namespace sight::io::session
 {
 
@@ -75,7 +77,7 @@ public:
     SIGHT_IO_SESSION_API session_writer();
 
     /// Write the file
-    SIGHT_IO_SESSION_API void write(sight::sptr<sight::core::progress::observer> _progress) override;
+    SIGHT_IO_SESSION_API void write(sight::sptr<sight::core::notification::observer> _progress) override;
 
     /// Defines extension supported by this writer ".zip"
     SIGHT_IO_SESSION_API std::string extension() const override;

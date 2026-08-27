@@ -38,7 +38,7 @@ namespace sight::io::itk
 
 //------------------------------------------------------------------------------
 
-void inr_image_writer::write(sight::core::progress::observer::sptr _progress)
+void inr_image_writer::write(sight::core::notification::observer::sptr _progress)
 {
     auto object_lock = get_object();
 
@@ -46,7 +46,7 @@ void inr_image_writer::write(sight::core::progress::observer::sptr _progress)
         []<class PIXEL_TYPE>(
             data::image::csptr _data_image,
             const std::string& _filename,
-            core::progress::observer::sptr _progress
+            core::notification::observer::sptr _progress
     )
         {
             SIGHT_DEBUG("itk::ImageFileWriter with PIXEL_TYPE " << core::type::get<PIXEL_TYPE>().name());

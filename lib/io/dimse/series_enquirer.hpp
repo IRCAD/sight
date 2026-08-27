@@ -26,7 +26,7 @@
 
 #include <core/base_object.hpp>
 #include <core/com/slots.hpp>
-#include <core/progress/observer.hpp>
+#include <core/notification/observer.hpp>
 
 #include <dcmtk/dcmnet/scu.h>
 
@@ -100,8 +100,8 @@ public:
         const std::string& _peer_host_name,
         std::uint16_t _peer_port,
         const std::string& _peer_application_title,
-        const std::string& _move_application_title = "",
-        core::progress::observer::sptr _progress   = nullptr
+        const std::string& _move_application_title   = "",
+        core::notification::observer::sptr _progress = nullptr
     );
 
     /// Initializes the network and negotiates association.
@@ -301,7 +301,7 @@ private:
     std::string m_move_application_title;
 
     /// Contains the progress callback slot.
-    core::progress::observer::sptr m_progress;
+    core::notification::observer::sptr m_progress;
 
     /// Sets the dowloaded instance index.
     unsigned int m_instance_index {0};

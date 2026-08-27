@@ -24,16 +24,14 @@
 
 #include <sight/core/config.hpp>
 
+#include "core/base_object.hpp"
 #include "core/com/exception/bad_call.hpp"
+#include "core/exceptionmacros.hpp"
+#include "core/mt/types.hpp"
+#include "core/spy_log.hpp"
 #include "core/thread/worker.hpp"
 
-#include <core/base_object.hpp>
-#include <core/exceptionmacros.hpp>
-#include <core/mt/types.hpp>
-#include <core/spy_log.hpp>
-
 #include <format>
-
 #include <future>
 #include <set>
 

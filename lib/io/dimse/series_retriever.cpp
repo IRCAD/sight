@@ -50,7 +50,7 @@ void series_retriever::initialize(
     const std::string& _application_title,
     std::uint16_t _applicationport,
     int _timeout,
-    core::progress::observer::sptr _progress
+    core::notification::observer::sptr _progress
 )
 {
     //Callback

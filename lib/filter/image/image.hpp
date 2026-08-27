@@ -24,9 +24,7 @@
 
 #include <sight/filter/image/config.hpp>
 
-#include <core/base.hpp>
-#include <core/type.hpp>
-
+#include <core/compare.hpp>
 #include <data/image.hpp>
 
 // Contains helper to generate and compare images.

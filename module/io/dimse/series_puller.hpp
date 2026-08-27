@@ -22,18 +22,15 @@
 
 #pragma once
 
-#include <core/progress/has_monitors.hpp>
+#include <core/notification/has_monitors.hpp>
 
 #include <data/series_set.hpp>
 #include <data/vector.hpp>
 
-#include <io/__/service/reader.hpp>
 #include <io/dimse/data/pacs_configuration.hpp>
-#include <io/dimse/series_retriever.hpp>
 
 #include <service/controller.hpp>
 #include <service/has_services.hpp>
-#include <service/notifier.hpp>
 
 namespace sight::module::io::dimse
 {
@@ -63,8 +60,7 @@ namespace sight::module::io::dimse
  */
 class series_puller final : public service::controller,
                             public service::has_services,
-                            private service::notifier,
-                            public core::progress::has_monitors
+                            public core::notification::has_monitors
 {
 public:
 

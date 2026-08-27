@@ -20,10 +20,10 @@
  *
  ***********************************************************************/
 
-#include "core/logic_stamp.hpp"
+#include "logic_stamp.hpp"
 
-#include "core/mt/types.hpp"
-#include <core/spy_log.hpp>
+#include "mt/types.hpp"
+#include "spy_log.hpp"
 
 namespace sight::core
 {

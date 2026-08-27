@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <sight/filter/image//config.hpp>
+#include <sight/filter/image/config.hpp>
 
 #include <data/helper/medical_image.hpp>
 #include <data/image.hpp>

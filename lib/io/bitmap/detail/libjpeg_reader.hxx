@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -81,7 +81,7 @@ public:
         SIGHT_THROW_IF("The stream cannot be read.", stream_size <= 0);
 
         // Allocate input buffer
-        const auto input_buffer_size = std::size_t(stream_size);
+        const auto input_buffer_size = static_cast<std::size_t>(stream_size);
         if(m_input_buffer.size() < input_buffer_size)
         {
             m_input_buffer.resize(input_buffer_size);
@@ -207,8 +207,8 @@ public:
             // jpeg_read_scanlines expects an array of pointers to scanlines.
             row_pointer[0] = reinterpret_cast<unsigned char*>(
                 _image.get_pixel(
-                    sight::data::image::index_t(m_cinfo.output_scanline)
-                    * sight::data::image::index_t(m_cinfo.image_width)
+                    static_cast<sight::data::image::index_t>(m_cinfo.output_scanline)
+                    * static_cast<sight::data::image::index_t>(m_cinfo.image_width)
                 )
             );
 

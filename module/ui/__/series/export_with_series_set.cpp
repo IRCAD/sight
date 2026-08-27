@@ -22,8 +22,6 @@
 
 #include "export_with_series_set.hpp"
 
-#include <core/progress/monitor.hpp>
-
 #include <data/series_set.hpp>
 
 #include <io/__/service/io_types.hpp>
@@ -40,7 +38,11 @@ export_with_series_set::export_with_series_set() noexcept :
     has_monitors(has_signals::signals()),
     m_io_selector_srv_config("IOSelectorServiceConfigVRRenderReader")
 {
-    m_slot_forward_monitor = new_slot(slots::FORWARD_MONITOR, &export_with_series_set::forward_monitor, this);
+    m_slot_forward_notification = new_slot(
+        slots::FORWARD_NOTIFICATION,
+        &export_with_series_set::forward_notification,
+        this
+    );
 }
 
 //------------------------------------------------------------------------------
@@ -98,11 +100,9 @@ void export_with_series_set::updating()
 
     io_selector_srv->set_worker(this->worker());
 
-    const auto monitor_signal =
-        this->signal<has_monitors::signals::monitor_created_t>(has_monitors::signals::MONITOR_CREATED);
-    if(monitor_signal)
+    if(const auto signal = this->signal(has_notifications::signals::NOTIFICATION_CREATED); signal)
     {
-        monitor_signal->connect(m_slot_forward_monitor);
+        signal->connect(m_slot_forward_notification);
     }
 
     io_selector_srv->set_config(io_cfg);
@@ -132,9 +132,9 @@ void export_with_series_set::stopping()
 
 //------------------------------------------------------------------------------
 
-void export_with_series_set::forward_monitor(core::progress::monitor::sptr _monitor)
+void export_with_series_set::forward_notification(core::notification::base::sptr _notification)
 {
-    this->emit(has_monitors::signals::MONITOR_CREATED, _monitor);
+    this->emit(has_notifications::signals::NOTIFICATION_CREATED, _notification);
 }
 
 } // namespace sight::module::ui::series

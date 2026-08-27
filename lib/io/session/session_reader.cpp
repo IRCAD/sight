@@ -24,7 +24,7 @@
 #include "io/session/detail/core/session_deserializer.hpp"
 
 #include <core/crypto/password_keeper.hpp>
-#include <core/progress/observer.hpp>
+#include <core/notification/observer.hpp>
 
 namespace sight::io::session
 {
@@ -57,7 +57,7 @@ public:
     ~session_reader_impl() = default;
 
     /// Read the session from archive.
-    void read(sight::core::progress::observer::sptr _progress)
+    void read(sight::core::notification::observer::sptr _progress)
     {
         // Deserialize the root object
         m_object = m_session_deserializer.deserialize(
@@ -98,7 +98,7 @@ session_reader::~session_reader() = default;
 
 //------------------------------------------------------------------------------
 
-void session_reader::read(sight::core::progress::observer::sptr _progress)
+void session_reader::read(sight::core::notification::observer::sptr _progress)
 {
     m_pimpl->read(_progress);
 

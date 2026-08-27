@@ -47,7 +47,7 @@ public:
     SIGHT_IO_DICOM_API ~file() noexcept override;
 
     /// Reads DICOM data
-    SIGHT_IO_DICOM_API void read(sight::sptr<sight::core::progress::observer> _progress) override;
+    SIGHT_IO_DICOM_API void read(sight::sptr<sight::core::notification::observer> _progress) override;
 
     inline std::string extension() const override;
 

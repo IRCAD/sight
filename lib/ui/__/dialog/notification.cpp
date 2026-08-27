@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,7 +31,7 @@ namespace sight::ui::dialog
 
 //-----------------------------------------------------------------------------
 
-void notification::show(service::notification _notification)
+void notification::show(notification_base::params _notification)
 {
     ui::dialog::notification notif(std::move(_notification));
     notif.show();
@@ -51,7 +51,7 @@ notification::notification()
 
 //-----------------------------------------------------------------------------
 
-notification::notification(service::notification _notification)
+notification::notification(notification_base::params _notification)
 {
     core::thread::get_default_worker()->post_task<void>(
         [&]
@@ -192,15 +192,14 @@ std::optional<std::chrono::milliseconds> notification::get_duration() const
 
 void notification::set_channel(std::string _channel)
 {
-    std::string channel(_channel);
     core::thread::get_default_worker()->post_task<void>(
-        [&]
+        [channel = _channel, this]
         {
             if(m_implementation)
             {
-                m_implementation->set_channel(std::move(_channel));
+                m_implementation->set_channel(channel);
             }
-        }).wait();
+        }).get();
 }
 
 //------------------------------------------------------------------------------

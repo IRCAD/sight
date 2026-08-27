@@ -22,12 +22,14 @@
 
 // cspell:ignore HRESULT PWSTR
 
-#include "core/thread/worker.hpp"
+#include "worker.hpp"
 
+#include "core/exceptionmacros.hpp"
 #include "core/lazy_instantiator.hpp"
 #include "core/mt/types.hpp"
 #include "core/spy_log.hpp"
-#include <core/exceptionmacros.hpp>
+
+#include <boost/algorithm/string.hpp> // NOLINT(misc-include-cleaner)
 
 #include <map>
 

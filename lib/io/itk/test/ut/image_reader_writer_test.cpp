@@ -47,14 +47,14 @@ static void inr_read_write_check(sight::data::image::sptr _image)
     auto my_writer                   = std::make_shared<sight::io::itk::inr_image_writer>();
     my_writer->set_object(_image);
     my_writer->set_file(path);
-    auto write_observer = std::make_shared<sight::core::progress::observer>("Test write");
+    auto write_observer = std::make_shared<sight::core::notification::observer>("Test write");
     my_writer->write(write_observer);
 
     auto image2    = std::make_shared<sight::data::image>();
     auto my_reader = std::make_shared<sight::io::itk::inr_image_reader>();
     my_reader->set_object(image2);
     my_reader->set_file(path);
-    auto read_observer = std::make_shared<sight::core::progress::observer>("Test read");
+    auto read_observer = std::make_shared<sight::core::notification::observer>("Test read");
     my_reader->read(read_observer);
 
     sight::io::itk::ut::helper::round_spacing(image2);
@@ -263,7 +263,7 @@ TEST_SUITE("sight::io::itk::image_reader_writer")
         auto my_writer = std::make_shared<sight::io::itk::jpg_image_writer>();
         my_writer->set_object(image);
         my_writer->set_folder(tmp_dir);
-        auto write_observer = std::make_shared<sight::core::progress::observer>("Test write");
+        auto write_observer = std::make_shared<sight::core::notification::observer>("Test write");
         CHECK_NOTHROW(my_writer->write(write_observer));
     }
 
@@ -282,14 +282,14 @@ TEST_SUITE("sight::io::itk::image_reader_writer")
         sight::io::itk::inr_image_reader::sptr my_reader = std::make_shared<sight::io::itk::inr_image_reader>();
         my_reader->set_object(image);
         my_reader->set_file(path_inr);
-        auto read_observer = std::make_shared<sight::core::progress::observer>("Test read");
+        auto read_observer = std::make_shared<sight::core::notification::observer>("Test read");
         my_reader->read(read_observer);
 
         sight::core::os::temp_dir tmp_dir;
         auto my_writer = std::make_shared<sight::io::itk::jpg_image_writer>();
         my_writer->set_object(image);
         my_writer->set_folder(tmp_dir);
-        auto write_observer = std::make_shared<sight::core::progress::observer>("Test write");
+        auto write_observer = std::make_shared<sight::core::notification::observer>("Test write");
         my_writer->write(write_observer);
     }
 } // TEST_SUITE

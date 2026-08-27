@@ -21,8 +21,6 @@
 
 #pragma once
 
-#include <sight/io/session/config.hpp>
-
 #include "io/session/detail/session.hpp"
 #include "io/session/session_writer.hpp"
 
@@ -30,7 +28,7 @@
 
 #include <io/zip/archive.hpp>
 
-#include <filesystem>
+#include <boost/property_tree/ptree.hpp> // NOLINT(misc-include-cleaner)
 
 namespace sight::io::session::detail
 {
@@ -91,7 +89,7 @@ private:
 
     /// Return a serializer from a data object class name
     /// @param _class_name the name of the object to find a serializer
-    serializer_t find_serializer(const std::string& _class_name) const;
+    [[nodiscard]] serializer_t find_serializer(const std::string& _class_name) const;
 
     /// Serializes recursively a data::object to an opened archive using an initialized property tree
     /// @param _cache ptree cache

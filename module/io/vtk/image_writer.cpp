@@ -114,7 +114,7 @@ void image_writer::info(std::ostream& _sstream)
 bool image_writer::save_image(
     const std::filesystem::path& _img_file,
     const sight::csptr<data::image>& _image,
-    sight::sptr<core::progress::observer> _progress
+    sight::sptr<core::notification::observer> _progress
 )
 {
     bool b_value = true;
@@ -199,8 +199,8 @@ void image_writer::updating()
         sight::ui::cursor cursor;
         cursor.set_cursor(ui::cursor_base::busy);
 
-        auto observer = std::make_shared<core::progress::observer>("Saving image");
-        this->async_emit(has_monitors::signals::MONITOR_CREATED, observer->get_sptr());
+        auto observer = this->observe("Saving image");
+
         try
         {
             image_writer::save_image(this->get_file(), p_image, observer);

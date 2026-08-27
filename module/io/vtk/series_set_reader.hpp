@@ -43,7 +43,8 @@ namespace sight::module::io::vtk
  * Accepted extensions: *.vtk *.vtp *.vti *.mhd *.vtu *.obj *.ply *.stl
  *
  * @section Signals Signals
- * - \b monitor_created(sight::sptr<core::progress::monitor>): emitted to display a progress bar while the image is
+ * - \b notification_created(core::notification::base::sptr): emitted to display a progress bar while the
+ * image is
  * loading,
  * it should be connected to a progress bar
  *

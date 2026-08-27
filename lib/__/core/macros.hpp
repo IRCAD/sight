@@ -26,7 +26,7 @@
 
 #pragma once
 
-#include "core/demangler.hpp" // NOLINT(misc-include-cleaner)
+#include "demangler.hpp" // NOLINT(misc-include-cleaner)
 
 #include <boost/preprocessor/facilities/overload.hpp>
 

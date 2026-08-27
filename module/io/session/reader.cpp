@@ -26,7 +26,7 @@
 #include <core/crypto/password_keeper.hpp>
 #include <core/crypto/secure_string.hpp>
 #include <core/location/single_folder.hpp>
-#include <core/progress/observer.hpp>
+#include <core/notification/observer.hpp>
 
 #include <io/session/session_reader.hpp>
 #include <io/zip/exception/read.hpp>
@@ -44,8 +44,7 @@ using core::crypto::secure_string;
 using sight::io::zip::archive;
 
 reader::reader() noexcept :
-    sight::io::service::reader("Choose a session file"),
-    notifier(has_signals::signals())
+    sight::io::service::reader("Choose a session file")
 {
     new_signal<signals::session_path_t>(signals::SESSION_LOADED);
     new_signal<signals::session_path_t>(signals::SESSION_LOADING_FAILED);
@@ -193,8 +192,8 @@ void reader::updating()
 
     try
     {
-        auto observer = std::make_shared<core::progress::observer>("Reading " + filepath.string() + " file");
-        this->async_emit(has_monitors::signals::MONITOR_CREATED, observer->get_sptr());
+        auto observer = this->make_notification<core::notification::observer>("Reading " + filepath.string() + " file");
+        this->emit_notification_created(observer);
 
         observer->done_work(10);
 
@@ -263,7 +262,7 @@ void reader::updating()
         //     sight::ui::dialog::message::critical
         // );
 
-        this->notifier::failure(e.what());
+        this->fail(e.what());
 
         // Signal that we failed to read this file
         this->async_emit(signals::SESSION_LOADING_FAILED, filepath);
@@ -272,7 +271,7 @@ void reader::updating()
     {
         // Handle the error.
         SIGHT_ERROR("Reading process aborted");
-        this->notifier::failure("Reading process aborted");
+        this->fail("Reading process aborted");
         // FIXME: due to modal message popups, eventLoop may by flushed and introduced race-conditions.
         // sight::ui::dialog::message::show(
         //     "Session reader aborted",

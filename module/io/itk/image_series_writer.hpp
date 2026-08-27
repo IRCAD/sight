@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,9 +23,6 @@
 #pragma once
 
 #include <io/__/service/writer.hpp>
-
-#include <filesystem>
-#include <string>
 
 namespace sight::module::io::itk
 {
@@ -58,6 +55,12 @@ public:
 
     ~image_series_writer() noexcept override = default;
 
+    /// Configure using GUI.
+    void open_location_dialog() override;
+
+    /// Return managed file type, here FILE
+    sight::io::service::path_type_t get_path_type() const override;
+
 protected:
 
     /// Override
@@ -74,12 +77,6 @@ protected:
 
     /// Override
     void info(std::ostream& _sstream) override;
-
-    /// Configure using GUI.
-    void open_location_dialog() override;
-
-    /// Return managed file type, here FILE
-    sight::io::service::path_type_t get_path_type() const override;
 };
 
 } // namespace sight::module::io::itk

@@ -22,7 +22,6 @@
 #pragma once
 
 #include <io/__/service/reader.hpp>
-
 #include <io/bitmap/backend.hpp>
 
 #include <set>
@@ -47,7 +46,8 @@ namespace sight::module::io::bitmap
  * @copydoc sight::io::bitmap::reader
  *
  * @section Signals Signals
- * - \b monitor_created(sight::sptr<core::progress::monitor>): emitted to display a progress bar while the image is read
+ * - \b notification_created(core::notification::base::sptr): emitted to display a progress bar while the
+ * image is read
  *
  * @section XML XML Configuration
  *

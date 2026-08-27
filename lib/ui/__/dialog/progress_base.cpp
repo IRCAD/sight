@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #include "ui/__/dialog/progress_base.hpp"
 
-#include <core/base.hpp>
-
 namespace sight::ui::dialog
 {
 
@@ -31,7 +29,7 @@ const progress_base::factory_registry_key_t progress_base::REGISTRY_KEY = "sight
 
 //-----------------------------------------------------------------------------
 
-void progress_base::set_cancel_callback(core::progress::cancel_callback_t _callback)
+void progress_base::set_cancel_callback(core::notification::cancel_callback_t _callback)
 {
     m_cancel_callback = _callback;
 }

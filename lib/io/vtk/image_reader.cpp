@@ -25,7 +25,7 @@
 #include "io/vtk/helper/vtk_lambda_command.hpp"
 #include "io/vtk/vtk.hpp"
 
-#include <core/progress/observer.hpp>
+#include <core/notification/observer.hpp>
 
 #include <vtkGenericDataObjectReader.h>
 #include <vtkImageData.h>
@@ -36,7 +36,7 @@ namespace sight::io::vtk
 
 //------------------------------------------------------------------------------
 
-void image_reader::read(sight::core::progress::observer::sptr _progress)
+void image_reader::read(sight::core::notification::observer::sptr _progress)
 {
     using helper::vtk_lambda_command;
 

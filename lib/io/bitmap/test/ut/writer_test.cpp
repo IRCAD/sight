@@ -21,8 +21,8 @@
 
 #include "helper.hxx"
 
+#include <core/notification/observer.hpp>
 #include <core/os/temp_path.hpp>
-#include <core/progress/observer.hpp>
 
 #include <io/bitmap/writer.hpp>
 #include <io/dicom/reader/file.hpp>
@@ -53,7 +53,7 @@ inline static std::vector<data::image::sptr> read_dicom_images(std::size_t _coun
             // Read a DICOM image "us/Ultrasound Image Storage/GE, lossy JPEG"
             reader->set_folder(utest_data::dir() / "us/Ultrasound Image Storage/GE, lossy JPEG");
             {
-                auto observer = std::make_shared<core::progress::observer>("Reading DICOM images");
+                auto observer = std::make_shared<core::notification::observer>("Reading DICOM images");
                 reader->read(observer);
             }
 
@@ -82,7 +82,7 @@ inline static std::vector<data::image::sptr> read_dicom_images(std::size_t _coun
             // Read next image "us/Ultrasound Image Storage/Siemens Acuson 500"
             reader->set_folder(utest_data::dir() / "us/Ultrasound Image Storage/Siemens Acuson 500");
             {
-                auto observer = std::make_shared<core::progress::observer>("Reading DICOM images");
+                auto observer = std::make_shared<core::notification::observer>("Reading DICOM images");
                 reader->read(observer);
             }
 
@@ -111,7 +111,7 @@ inline static std::vector<data::image::sptr> read_dicom_images(std::size_t _coun
             // Read next image "us/Ultrasound Multi-frame Image Storage/Siemens Acuson 500"
             reader->set_folder(utest_data::dir() / "us/Ultrasound Multi-frame Image Storage/Siemens Acuson 500");
             {
-                auto observer = std::make_shared<core::progress::observer>("Reading DICOM images");
+                auto observer = std::make_shared<core::notification::observer>("Reading DICOM images");
                 reader->read(observer);
             }
 
@@ -575,7 +575,7 @@ TEST_SUITE("sight::io::bitmap::writer")
         {
             const auto& tmp_path = tmp_dir / ("empty" + ext);
             CHECK_NOTHROW(writer->set_file(tmp_path));
-            auto observer = std::make_shared<core::progress::observer>("Writing empty image... ");
+            auto observer = std::make_shared<core::notification::observer>("Writing empty image... ");
             CHECK_THROWS(writer->write(observer));
             CHECK_MESSAGE(!std::filesystem::exists(tmp_path), (tmp_path.string() + " exists."));
         }
@@ -600,7 +600,7 @@ TEST_SUITE("sight::io::bitmap::writer")
         {
             const auto& tmp_path = tmp_folder / ("wrong_path" + ext);
             CHECK_NOTHROW(writer->set_file(tmp_path));
-            auto observer = std::make_shared<core::progress::observer>("Writing wrong path image... ");
+            auto observer = std::make_shared<core::notification::observer>("Writing wrong path image... ");
             CHECK_NOTHROW(writer->write(observer));
             CHECK_MESSAGE(std::filesystem::exists(tmp_path), (tmp_path.string() + " doesn't exist."));
         }
@@ -634,7 +634,7 @@ TEST_SUITE("sight::io::bitmap::writer")
             {
                 const auto& tmp_path = tmp_dir / (std::to_string(_i) + "_from_dicom" + _ext);
                 CHECK_NOTHROW(writer->set_file(tmp_path));
-                auto observer = std::make_shared<core::progress::observer>("Writing from DICOM image... ");
+                auto observer = std::make_shared<core::notification::observer>("Writing from DICOM image... ");
                 CHECK_NOTHROW(writer->write(observer));
                 CHECK(std::filesystem::exists(tmp_path));
 

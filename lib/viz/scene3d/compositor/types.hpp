@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <cstdint>
 namespace sight::viz::scene3d::compositor
 {
 

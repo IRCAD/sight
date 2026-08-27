@@ -22,7 +22,7 @@
 #include "file.hpp"
 
 #include <core/compare.hpp>
-#include <core/progress/observer.hpp>
+#include <core/notification/observer.hpp>
 
 #include <data/dicom/sop.hpp>
 #include <data/helper/medical_image.hpp>
@@ -599,7 +599,7 @@ inline static data::image::spacing_t compute_spacing(
 
 inline static data::image_series::sptr new_image_series(
     const data::series& _source,
-    const core::progress::observer::sptr& _progress,
+    const core::notification::observer::sptr& _progress,
     const gdcm::Image& _gdcm_image,
     const std::unique_ptr<gdcm::Rescaler>& _gdcm_rescaler,
     const std::string& _filename
@@ -725,7 +725,7 @@ inline static const char* read_gdcm_buffer(
 //------------------------------------------------------------------------------
 
 inline static bool read_buffer(
-    const core::progress::observer::sptr& _progress,
+    const core::notification::observer::sptr& _progress,
     const gdcm::Image& _gdcm_image,
     const std::unique_ptr<gdcm::Rescaler>& _gdcm_rescaler,
     std::unique_ptr<std::vector<char> >& _gdcm_instance_buffer,
@@ -1041,7 +1041,7 @@ inline static data::matrix4 compute_image_transform(
 
 inline static data::series_set::sptr read_image_instance(
     const data::series& _source,
-    const core::progress::observer::sptr& _progress,
+    const core::notification::observer::sptr& _progress,
     std::unique_ptr<std::vector<char> >& _gdcm_instance_buffer,
     std::size_t _instance                   = 0,
     data::series_set::sptr _splitted_series = nullptr
@@ -1159,12 +1159,6 @@ inline static data::series_set::sptr read_image_instance(
             image_series->data::image::set_origin(transform.position());
             image_series->data::image::set_orientation(transform.orientation());
 
-            ///@todo remove that once we remove field 'direction' from image_series
-            data::helper::medical_image::set_direction(
-                *image_series,
-                std::make_shared<data::matrix4>(transform.values())
-            );
-
             // Add the series to a new dataset
             if(!_splitted_series)
             {
@@ -1223,7 +1217,7 @@ inline static data::series_set::sptr read_image_instance(
 
 inline static data::series_set::sptr read_image(
     const data::series& _source,
-    const core::progress::observer::sptr& _progress
+    const core::notification::observer::sptr& _progress
 )
 {
     if(_progress && _progress->cancel_requested())
@@ -1273,7 +1267,7 @@ inline static data::series_set::sptr read_image(
 
 inline static data::series_set::sptr read_model(
     const data::series& /*unused*/,
-    const core::progress::observer::sptr& /*unused*/
+    const core::notification::observer::sptr& /*unused*/
 )
 {
     data::series_set::sptr splitted_series;
@@ -1606,7 +1600,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void read(sight::sptr<sight::core::progress::observer> _progress)
+    void read(sight::sptr<sight::core::notification::observer> _progress)
     {
         m_progress = _progress;
 
@@ -1777,7 +1771,7 @@ public:
     data::series_set::sptr m_read;
 
     /// Allows to watch for cancellation and report progress.
-    core::progress::observer::sptr m_progress;
+    core::notification::observer::sptr m_progress;
 };
 
 file::file() :
@@ -1869,7 +1863,7 @@ data::series_set::sptr file::sort()
 
 //------------------------------------------------------------------------------
 
-void file::read(sight::core::progress::observer::sptr _progress)
+void file::read(sight::core::notification::observer::sptr _progress)
 {
     if(!m_pimpl->m_sorted || m_pimpl->m_sorted->empty())
     {

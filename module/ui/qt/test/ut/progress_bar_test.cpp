@@ -19,14 +19,14 @@
  *
  ***********************************************************************/
 
-#include "progress_bar_test.hpp"
+#include <doctest/doctest.h>
 
-#include "core/progress/observer.hpp"
+#include "core/notification/information.hpp"
+#include "core/notification/observer.hpp"
 
 #include "loader.hpp"
 
-#include <core/progress/monitor.hpp>
-
+#include <service/base.hpp>
 #include <service/op.hpp>
 
 #include <QLabel>
@@ -36,293 +36,360 @@
 #include <QWidget>
 #include <qprogressbar.h>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::ui::qt::ut::progress_bar_test);
-
 namespace sight::module::ui::qt::ut
 {
 
-//------------------------------------------------------------------------------
-
-void progress_bar_test::setUp()
+namespace
 {
-    // Build container.
-    std::tie(m_container, m_child_uuid) = make_container();
-}
 
-//------------------------------------------------------------------------------
-
-void progress_bar_test::tearDown()
+class progress_bar_test
 {
-    // Destroy container.
-    destroy_container(m_container);
-}
+public:
 
-//------------------------------------------------------------------------------
-
-void progress_bar_test::basic_test()
-{
-    // Title and cancel button are shown.
-    launch_test(true, true, false);
-
-    // Destroy the container and recreate it.
-    tearDown();
-    setUp();
-
-    // Cancel button is shown.
-    launch_test(false, true, false);
-
-    tearDown();
-    setUp();
-
-    // Title is shown.
-    launch_test(true, false, false);
-}
-
-//------------------------------------------------------------------------------
-
-void progress_bar_test::pulse_test()
-{
-    // Display a pulse progress bar.
-    launch_test(true, true, true);
-}
-
-//------------------------------------------------------------------------------
-
-void progress_bar_test::svg_test()
-{
-    // Display a pulse waiting icon.
-    launch_test(true, true, true, "sight::module::ui::icons/wait.svg");
-}
-
-//------------------------------------------------------------------------------
-
-void progress_bar_test::launch_test(
-    bool _show_title,
-    bool _show_cancel,
-    bool _pulse,
-    const std::string& _svg
-)
-{
-    // Build configuration
-    service::config_t config;
-    config.put("<xmlattr>.show_title", _show_title);
-    config.put("<xmlattr>.show_cancel", _show_cancel);
-    config.put("<xmlattr>.pulse", _pulse);
-
-    if(!_svg.empty())
+    progress_bar_test()
     {
-        config.put("<xmlattr>.svg", _svg);
-        config.put("<xmlattr>.svg_size", "48");
+        // Build container.
+        std::tie(m_container, m_child_uuid) = make_container();
     }
 
-    config.add_child("config", config);
-
-    // Register the service.
-    sight::service::base::sptr progress_bar(
-        service::add("sight::module::ui::qt::progress_bar", m_child_uuid)
-    );
-
-    // Will stop the service and unregister it when destroyed.
-    service_cleaner cleaner(progress_bar);
-
-    CPPUNIT_ASSERT_NO_THROW(progress_bar->configure(config));
-    CPPUNIT_ASSERT_NO_THROW(progress_bar->start().get());
-
-    // Check that progress_bar is not visible before add_monitor().
-    const auto check_visibility = wait_for_widget(
-        [_show_title, _show_cancel, _svg, this](QWidget* _widget)
-        {
-            const QString root_object_name = QString::fromStdString(m_child_uuid) + "/progress_bar";
-
-            if(_widget != nullptr && _widget->objectName().startsWith(root_object_name))
-            {
-                auto check_progress_widget = false;
-
-                if(_svg.empty())
-                {
-                    if(auto* progress_bar_widget = _widget->findChild<QProgressBar*>(
-                           root_object_name
-                           + "/QProgressBar"
-                    );
-                       progress_bar_widget != nullptr)
-                    {
-                        CPPUNIT_ASSERT_EQUAL_MESSAGE(
-                            "The progress_bar widget should not be visible before add_monitor().",
-                            false,
-                            progress_bar_widget->isVisible()
-                        );
-                        check_progress_widget = true;
-                    }
-                }
-                else
-                {
-                    if(auto* svg_widget = _widget->findChild<QSvgWidget*>(root_object_name + "/QSvgWidget");
-                       svg_widget != nullptr)
-                    {
-                        CPPUNIT_ASSERT_EQUAL_MESSAGE(
-                            "The progress_bar widget should not be visible before add_monitor().",
-                            false,
-                            svg_widget->isVisible()
-                        );
-                        check_progress_widget = true;
-                    }
-                }
-
-                // While we are in svg mode we do not show a title.
-                auto check_title = !_show_title || !_svg.empty();
-                if(auto* progress_bar = _widget->findChild<QProgressBar*>(root_object_name + "/QProgressBar");
-                   progress_bar != nullptr)
-                {
-                    CPPUNIT_ASSERT_EQUAL_MESSAGE(
-                        "The title should not be visible before add_monitor().",
-                        false,
-                        progress_bar->isTextVisible()
-                    );
-                    check_title = true;
-                }
-
-                auto check_button = !_show_cancel;
-                if(auto* button = _widget->findChild<QToolButton*>(root_object_name + "/QToolButton");
-                   button != nullptr)
-                {
-                    CPPUNIT_ASSERT_EQUAL_MESSAGE(
-                        "The cancel button should not be visible before add_monitor().",
-                        false,
-                        button->isVisible()
-                    );
-                    check_button = true;
-                }
-
-                return check_progress_widget && check_title && check_button;
-            }
-
-            return false;
-        });
-
-    // Wait for the script thread to finish.
-    CPPUNIT_ASSERT_EQUAL(
-        std::future_status::ready,
-        check_visibility.wait_for(std::chrono::seconds(5))
-    );
-
-    // Should be true.
-    CPPUNIT_ASSERT(check_visibility.get());
-
-    // Create monitor and slot.
-    static const std::string s_TASK_NAME = "Your Dream Job";
-    static int task_count                = 0;
-    const std::string task_name          = s_TASK_NAME + std::to_string(task_count++);
-    auto monitor                         = std::make_shared<sight::core::progress::observer>(task_name);
-
-    // Create a slot and connect it to finished signal.
-    std::atomic_bool callback_called = false;
-
-    const auto finished_callback = core::com::new_slot(
-        [&callback_called]()
-        {
-            callback_called = true;
-        });
-
-    const auto slot_worker = core::thread::worker::make();
-    finished_callback->set_worker(slot_worker);
-
-    const auto connection = progress_bar->signal("finished")->connect(finished_callback);
-
-    // Show the monitor in the progress bar.
-    progress_bar->slot("add_monitor")->run(std::static_pointer_cast<core::progress::monitor>(monitor));
-
-    // Check that progress_bar is set with correct information.
-    for(int i = 1 ; i <= 100 ; i++)
+    ~progress_bar_test()
     {
-        monitor->done_work(static_cast<std::uint64_t>(i));
+        // Destroy container.
+        destroy_container(m_container);
+    }
 
-        const auto check_progress_info = wait_for_widget(
-            [_show_title, _pulse, _svg, i, monitor, task_name, this](QWidget* _widget)
-            {
-                const QString root_object_name = QString::fromStdString(m_child_uuid) + "/progress_bar";
+    //------------------------------------------------------------------------------
 
-                if(_widget != nullptr && _widget->objectName().startsWith(root_object_name))
+    void title_cancel_test()
+    {
+        // Title and cancel button are shown.
+        launch_test(true, true, false);
+    }
+
+    //------------------------------------------------------------------------------
+
+    void cancel_test()
+    {
+        // Cancel button is shown.
+        launch_test(false, true, false);
+    }
+
+    //------------------------------------------------------------------------------
+
+    void title_test()
+    {
+        // Title is shown.
+        launch_test(true, false, false);
+    }
+
+    //------------------------------------------------------------------------------
+
+    void pulse_test()
+    {
+        // Display a pulse progress bar.
+        launch_test(true, true, true);
+    }
+
+    //------------------------------------------------------------------------------
+
+    void svg_test()
+    {
+        // Display a pulse waiting icon.
+        launch_test(true, true, true, "sight::module::ui::icons/wait.svg");
+    }
+
+private:
+
+    //------------------------------------------------------------------------------
+
+    void launch_test(
+        bool _show_title,
+        bool _show_cancel,
+        bool _pulse,
+        const std::string& _svg = std::string()
+)
+    {
+// Build configuration
+        service::config_t config;
+        config.put("<xmlattr>.show_title", _show_title);
+        config.put("<xmlattr>.show_cancel", _show_cancel);
+        config.put("<xmlattr>.pulse", _pulse);
+
+        if(!_svg.empty())
+        {
+            config.put("<xmlattr>.svg", _svg);
+            config.put("<xmlattr>.svg_size", "48");
+        }
+
+        config.add_child("config", config);
+
+        // Register the service.
+        sight::service::base::sptr progress_bar(
+            service::add("sight::module::ui::qt::progress_bar", m_child_uuid)
+        );
+
+        // Will stop the service and unregister it when destroyed.
+        service_cleaner cleaner(progress_bar);
+
+        CHECK_NOTHROW(progress_bar->configure(config));
+        CHECK_NOTHROW(progress_bar->start().get());
+
+        // Check that progress_bar is not visible before add_monitor().
+        const auto check_visibility = wait_for_widget(
+            [_show_title, _show_cancel, _svg, this](QWidget* _widget)
                 {
-                    auto correct_title           = !_show_title || !_svg.empty();
-                    auto correct_done_work_units = false;
+                    const QString root_object_name = QString::fromStdString(m_child_uuid) + "/progress_bar";
 
-                    if(_svg.empty())
+                    if(_widget != nullptr && _widget->objectName().startsWith(root_object_name))
                     {
-                        if(auto* progress_bar_widget =
-                               _widget->findChild<QProgressBar*>(root_object_name + "/QProgressBar");
-                           progress_bar_widget != nullptr)
+                        auto check_progress_widget = false;
+
+                        if(_svg.empty())
                         {
-                            // In pulse mode, the value is irrelevant
-                            if(!_pulse)
+                            if(auto* progress_bar_widget = _widget->findChild<QProgressBar*>(
+                                   root_object_name
+                                   + "/QProgressBar"
+                            );
+                               progress_bar_widget != nullptr)
                             {
-                                // Do the same operation that the progress_bar does.
-                                int value = static_cast<int>(static_cast<float>(i)
-                                                             / static_cast<float>(monitor->get_total_work_units())
-                                                             * 100);
-                                CPPUNIT_ASSERT_EQUAL_MESSAGE(
-                                    "The value of progress_bar should be equal to done work units.",
-                                    value,
-                                    progress_bar_widget->value()
+                                CHECK_MESSAGE(
+                                    ((false) == (progress_bar_widget->isVisible()
+                                     )),
+                                    "The progress_bar widget should not be visible before add_monitor()."
                                 );
+                                check_progress_widget = true;
                             }
-
-                            if(_show_title)
-                            {
-                                auto title = progress_bar_widget->format().toStdString();
-
-                                auto expected_title = task_name.empty() ? "%p%" : QString::fromStdString(
-                                    task_name + " - %p%"
-                                ).toStdString();
-
-                                CPPUNIT_ASSERT_EQUAL_MESSAGE(
-                                    "The title of progress_bar is incorrect.",
-                                    title,
-                                    expected_title
-                                );
-                                correct_title = true;
-                            }
-
-                            correct_done_work_units = true;
                         }
-                    }
-                    else
-                    {
-                        if(auto* progress_bar_widget =
-                               _widget->findChild<QSvgWidget*>(root_object_name + "/QSvgWidget");
-                           progress_bar_widget != nullptr)
+                        else
                         {
-                            // In pulse mode, the value is irrelevant
-                            correct_done_work_units = true;
+                            if(auto* svg_widget = _widget->findChild<QSvgWidget*>(root_object_name + "/QSvgWidget");
+                               svg_widget != nullptr)
+                            {
+                                CHECK_MESSAGE(
+                                    ((false) == (svg_widget->isVisible()
+                                     )),
+                                    "The progress_bar widget should not be visible before add_monitor()."
+                                );
+                                check_progress_widget = true;
+                            }
                         }
+
+                        // While we are in svg mode we do not show a title.
+                        auto check_title = !_show_title || !_svg.empty();
+                        if(auto* progress_bar = _widget->findChild<QProgressBar*>(root_object_name + "/QProgressBar");
+                           progress_bar != nullptr)
+                        {
+                            CHECK_MESSAGE(
+                                ((false) == (progress_bar->isTextVisible()
+                                 )),
+                                "The title should not be visible before add_monitor()."
+                            );
+                            check_title = true;
+                        }
+
+                        auto check_button = !_show_cancel;
+                        if(auto* button = _widget->findChild<QToolButton*>(root_object_name + "/QToolButton");
+                           button != nullptr)
+                        {
+                            CHECK_MESSAGE(
+                                ((false) == (button->isVisible()
+                                 )),
+                                "The cancel button should not be visible before add_monitor()."
+                            );
+                            check_button = true;
+                        }
+
+                        return check_progress_widget && check_title && check_button;
                     }
 
-                    return correct_title && correct_done_work_units;
-                }
-
-                return false;
-            });
+                    return false;
+                });
 
         // Wait for the script thread to finish.
-        CPPUNIT_ASSERT_EQUAL(
+        CHECK_EQ(
             std::future_status::ready,
-            check_progress_info.wait_for(std::chrono::seconds(10))
+            check_visibility.wait_for(std::chrono::seconds(5))
         );
 
         // Should be true.
-        CPPUNIT_ASSERT(check_progress_info.get());
+        CHECK(check_visibility.get());
+
+        // Create monitor and slot.
+        static const std::string s_TASK_NAME = "Your Dream Job";
+        static int task_count                = 0;
+        const std::string task_name          = s_TASK_NAME + std::to_string(task_count++);
+        auto monitor                         = std::make_shared<sight::core::notification::observer>(task_name);
+
+        // Create a slot and connect it to finished signal.
+        std::atomic_bool callback_called = false;
+
+        const auto finished_callback = core::com::new_slot(
+            [&callback_called]()
+                {
+                    callback_called = true;
+                });
+
+        const auto slot_worker = core::thread::worker::make();
+        finished_callback->set_worker(slot_worker);
+
+        const auto connection = progress_bar->signal("finished")->connect(finished_callback);
+
+        // Show the monitor in the progress bar.
+        progress_bar->slot("add_monitor")->run(std::static_pointer_cast<core::notification::base>(monitor));
+
+        // Check that progress_bar is set with correct information.
+        for(int i = 1 ; i <= 100 ; i++)
+        {
+            monitor->done_work(static_cast<std::uint64_t>(i));
+
+            const auto check_progress_info = wait_for_widget(
+                [_show_title, _pulse, _svg, i, monitor, task_name, this](QWidget* _widget)
+                    {
+                        const QString root_object_name = QString::fromStdString(m_child_uuid) + "/progress_bar";
+
+                        if(_widget != nullptr && _widget->objectName().startsWith(root_object_name))
+                        {
+                            auto correct_title           = !_show_title || !_svg.empty();
+                            auto correct_done_work_units = false;
+
+                            if(_svg.empty())
+                            {
+                                if(auto* progress_bar_widget =
+                                       _widget->findChild<QProgressBar*>(root_object_name + "/QProgressBar");
+                                   progress_bar_widget != nullptr)
+                                {
+                                    // In pulse mode, the value is irrelevant
+                                    if(!_pulse)
+                                    {
+                                        // Do the same operation that the progress_bar does.
+                                        int value = static_cast<int>(static_cast<float>(i)
+                                                                     / static_cast<float>(monitor->get_total_work_units())
+                                                                     * 100);
+                                        CHECK_MESSAGE(
+                                            ((value) == (progress_bar_widget->value()
+                                             )),
+                                            "The value of progress_bar should be equal to done work units."
+                                        );
+                                    }
+
+                                    if(_show_title)
+                                    {
+                                        auto title = progress_bar_widget->format().toStdString();
+
+                                        auto expected_title = task_name.empty() ? "%p%" : QString::fromStdString(
+                                            task_name + " - %p%"
+                                        ).toStdString();
+
+                                        CHECK_MESSAGE(
+                                            ((title) == (expected_title
+                                             )),
+                                            "The title of progress_bar is incorrect."
+                                        );
+                                        correct_title = true;
+                                    }
+
+                                    correct_done_work_units = true;
+                                }
+                            }
+                            else
+                            {
+                                if(auto* progress_bar_widget =
+                                       _widget->findChild<QSvgWidget*>(root_object_name + "/QSvgWidget");
+                                   progress_bar_widget != nullptr)
+                                {
+                                    // In pulse mode, the value is irrelevant
+                                    correct_done_work_units = true;
+                                }
+                            }
+
+                            return correct_title && correct_done_work_units;
+                        }
+
+                        return false;
+                    });
+
+            // Wait for the script thread to finish.
+            CHECK_EQ(
+                std::future_status::ready,
+                check_progress_info.wait_for(std::chrono::seconds(10))
+            );
+
+            // Should be true.
+            CHECK(check_progress_info.get());
+        }
+
+        // Finish the monitor and destroy it to get the callback called.
+        monitor->done();
+        monitor.reset();
+
+        // Cleanup
+        CHECK_NOTHROW(progress_bar->stop().get());
+
+        slot_worker->stop();
+        CHECK(callback_called);
     }
 
-    // Finish the monitor and destroy it to get the callback called.
-    monitor->done();
-    monitor.reset();
+    sight::service::base::sptr m_container;
+    std::string m_child_uuid;
+};
 
-    // Cleanup
-    CPPUNIT_ASSERT_NO_THROW(progress_bar->stop().get());
-
-    slot_worker->stop();
-    CPPUNIT_ASSERT(callback_called);
-}
+} // namespace
 
 //------------------------------------------------------------------------------
 
 } // namespace sight::module::ui::qt::ut
+
+TEST_SUITE("sight::module::ui::qt::progress_bar")
+{
+    TEST_CASE_FIXTURE(sight::module::ui::qt::ut::progress_bar_test, "title_cancel")
+    {
+        title_cancel_test();
+    }
+
+    TEST_CASE_FIXTURE(sight::module::ui::qt::ut::progress_bar_test, "cancel")
+    {
+        cancel_test();
+    }
+
+    TEST_CASE_FIXTURE(sight::module::ui::qt::ut::progress_bar_test, "title")
+    {
+        title_test();
+    }
+
+    TEST_CASE_FIXTURE(sight::module::ui::qt::ut::progress_bar_test, "pulse")
+    {
+        pulse_test();
+    }
+
+    TEST_CASE_FIXTURE(sight::module::ui::qt::ut::progress_bar_test, "svg")
+    {
+        svg_test();
+    }
+
+    TEST_CASE("add_monitor_ignores_non_monitor_and_warns")
+    {
+        auto [container, child_uuid] = sight::module::ui::qt::ut::make_container();
+        sight::module::ui::qt::ut::service_cleaner container_cleaner(container);
+
+        sight::service::base::sptr progress_bar(
+            sight::service::add("sight::module::ui::qt::progress_bar", child_uuid)
+        );
+        sight::module::ui::qt::ut::service_cleaner cleaner(progress_bar);
+
+        sight::service::config_t config;
+        config.add_child("config", config);
+
+        CHECK_NOTHROW(progress_bar->configure(config));
+        CHECK_NOTHROW(progress_bar->start().get());
+
+        CHECK_NOTHROW(
+            progress_bar->slot("add_monitor")->run(
+                std::static_pointer_cast<sight::core::notification::base>(
+                    std::make_shared<sight::core::notification::information>("", "not a monitor")
+                )
+            )
+        );
+
+        CHECK_NOTHROW(progress_bar->stop().get());
+    }
+}

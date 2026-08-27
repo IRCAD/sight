@@ -102,6 +102,8 @@ public:
 
         //NOLINTBEGIN(google-explicit-constructor,hicpp-explicit-conversions)
         lock_base() = default;
+
+        // NOLINTNEXTLINE(modernize-use-equals-default,hicpp-use-equals-default)
         ~lock_base()
         {
             // Resetting the counter in the destructor **BEFORE** resetting buffer_object shared pointer is required !

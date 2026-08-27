@@ -23,6 +23,7 @@
 #include "module/io/vtk/model_series_writer.hpp"
 
 #include <core/location/single_folder.hpp>
+#include <core/tools/failed.hpp>
 
 #include <data/mesh.hpp>
 #include <data/model_series.hpp>
@@ -225,8 +226,11 @@ void model_series_writer::write_mesh(const std::filesystem::path& _filename, con
         );
     }
 
-    auto observer = std::make_shared<core::progress::observer>("Writing models in " + this->get_folder().string());
-    this->async_emit(has_monitors::signals::MONITOR_CREATED, observer->get_sptr());
+    auto observer = this->make_notification<core::notification::observer>(
+        "Writing models in "
+        + this->get_folder().string()
+    );
+    this->emit_notification_created(observer);
 
     mesh_writer->set_object(_mesh);
     mesh_writer->write(observer);

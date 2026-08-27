@@ -24,7 +24,7 @@
 
 #include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
-#include <core/progress/observer.hpp>
+#include <core/notification/observer.hpp>
 
 #include <data/matrix4.hpp>
 
@@ -42,8 +42,7 @@ namespace sight::module::io::matrix
 //-----------------------------------------------------------------------------
 
 matrix4_trf_reader::matrix4_trf_reader() noexcept :
-    reader("Choose a file to load a transformation matrix"),
-    notifier(has_signals::signals())
+    reader("Choose a file to load a transformation matrix")
 {
 }
 
@@ -138,8 +137,8 @@ void matrix4_trf_reader::updating()
 
         try
         {
-            auto observer = std::make_shared<core::progress::observer>("Reading matrix4 TRF file");
-            this->async_emit(has_monitors::signals::MONITOR_CREATED, observer->get_sptr());
+            auto observer = this->make_notification<core::notification::observer>("Reading matrix4 TRF file");
+            this->emit_notification_created(observer);
 
             const auto reader = std::make_shared<sight::io::reader::matrix4_reader>();
             reader->set_object(matrix);
@@ -155,7 +154,7 @@ void matrix4_trf_reader::updating()
         {
             // Handle the error.
             SIGHT_ERROR(e.what());
-            this->notifier::failure(e.what());
+            this->fail(e.what());
             this->async_emit(reader::signals::FAILED);
         }
     }

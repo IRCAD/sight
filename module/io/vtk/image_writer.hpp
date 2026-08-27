@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <core/progress/observer.hpp>
+#include <core/notification/observer.hpp>
 
 #include <io/__/service/writer.hpp>
 
@@ -44,7 +44,8 @@ namespace sight::module::io::vtk
  * Service writing a VTK Image using the fwVtkIO lib.
  *
  * @section Signals Signals
- * - \b monitor_created(sight::sptr<core::progress::monitor>): emitted to display a progress bar while the image is
+ * - \b notification_created(core::notification::base::sptr): emitted to display a progress bar while the
+ * image is
  * written,
  * it should be connected to a progress bar
  *
@@ -86,7 +87,7 @@ public:
      * @brief Save a VTK image.
      * @param[in] _img_file std::filesystem::path.
      * @param[in] _image std::shared_ptr< data::image >.
-     * @param[in] _sig_monitor_created signal emitted when the image is saved.
+     * @param[in] _sig_notification_created signal emitted when the image is saved.
      * @return bool.
      *
      * This method is used to save an image using the file path.
@@ -95,7 +96,7 @@ public:
     static bool save_image(
         const std::filesystem::path& _img_file,
         const sight::csptr<data::image>& _image,
-        sight::sptr<core::progress::observer> _progress
+        sight::sptr<core::notification::observer> _progress
     );
 
     sight::io::service::path_type_t get_path_type() const override;

@@ -21,9 +21,6 @@
 
 #pragma once
 
-#include <core/com/signal.hpp>
-#include <core/progress/monitor.hpp>
-
 #include <data/series_set.hpp>
 
 #include <io/__/service/reader.hpp>
@@ -41,7 +38,8 @@ namespace sight::module::io::dicom
  *          typeFilter configuration parameters.
  *
  * @section Signals Signals
- * - \b monitor_created(sight::sptr<core::progress::monitor>): emitted to display a progress bar while the image is
+ * - \b notification_created(core::notification::base::sptr): emitted to display a progress bar while the
+ * image is
  * read,
  * it should be connected to a progress bar
  *
@@ -79,8 +77,6 @@ class reader final : public sight::io::service::reader
 public:
 
     SIGHT_DECLARE_SERVICE(reader, sight::io::service::reader);
-
-    using monitor_created_t = core::com::signal<void (core::progress::monitor::sptr)>;
 
     reader() noexcept;
 

@@ -342,8 +342,7 @@ void writer::updating()
 
     SIGHT_THROW_IF("The file '" << file_path << "' is an existing folder.", std::filesystem::is_directory(file_path));
 
-    const auto write_progress = std::make_shared<core::progress::observer>("Writing '" + file_path.string() + "' file");
-    this->async_emit(has_monitors::signals::MONITOR_CREATED, write_progress->get_sptr());
+    const auto write_progress = this->observe("Writing '" + file_path.string() + "' file");
 
     try
     {

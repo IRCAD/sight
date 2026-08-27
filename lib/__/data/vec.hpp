@@ -23,12 +23,13 @@
 
 #include <sight/data/config.hpp>
 
-#include "data/exception.hpp"
-#include "data/generic.hpp"
+#include "exception.hpp"
+#include "generic.hpp"
 
-#include <core/compound_types.hpp>
+#include <core/compound_types.hpp> // NOLINT(misc-include-cleaner): needed for subclasses
 
-#include <boost/algorithm/string.hpp>
+#include <boost/algorithm/string.hpp> // NOLINT(misc-include-cleaner)
+#include <boost/lexical_cast.hpp>
 
 namespace sight::data
 {

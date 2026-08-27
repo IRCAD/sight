@@ -25,8 +25,7 @@
 #include "io/vtk/helper/vtk_lambda_command.hpp"
 #include "io/vtk/vtk.hpp"
 
-#include <core/progress/monitor.hpp>
-#include <core/progress/observer.hpp>
+#include <core/notification/observer.hpp>
 
 #include <vtkImageData.h>
 #include <vtkMetaImageReader.h>
@@ -37,7 +36,7 @@ namespace sight::io::vtk
 
 //------------------------------------------------------------------------------
 
-void meta_image_reader::read(sight::core::progress::observer::sptr _progress)
+void meta_image_reader::read(sight::core::notification::observer::sptr _progress)
 {
     using helper::vtk_lambda_command;
     auto object_lock = get_object();

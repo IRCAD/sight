@@ -22,7 +22,7 @@
 
 #include "series_pusher.hpp"
 
-#include <core/progress/observer.hpp>
+#include <core/notification/observer.hpp>
 
 #include <data/series.hpp>
 
@@ -30,6 +30,7 @@
 #include <io/dicom/writer/file.hpp>
 #include <io/dimse/exceptions/base.hpp>
 #include <io/dimse/helper/series.hpp>
+#include <io/dimse/series_enquirer.hpp>
 
 #include <ui/__/dialog/message.hpp>
 
@@ -253,7 +254,7 @@ void series_pusher::push_series()
             writer->set_object(writing_series);
             writer->set_folder({path.string()});
 
-            auto observer = std::make_shared<sight::core::progress::observer>("Write");
+            auto observer = this->make_notification<sight::core::notification::observer>("Write");
             writer->write(observer);
         }
 
@@ -265,11 +266,7 @@ void series_pusher::push_series()
 
         const auto pacs_configuration = m_config.lock();
 
-        auto progress = std::make_shared<core::progress::observer>(
-            "Push DICOM Series",
-            m_instance_count
-        );
-        this->async_emit(core::progress::has_monitors::signals::MONITOR_CREATED, progress->get_sptr());
+        auto progress = this->observe("Push DICOM Series", false, nullptr, m_instance_count);
 
         // Initialize enquirer
         series_enquirer->initialize(
@@ -280,6 +277,7 @@ void series_pusher::push_series()
             pacs_configuration->get_move_application_title(),
             progress
         );
+
         // Connect from PACS
         series_enquirer->connect();
         this->async_emit(signals::STARTED_PROGRESS);

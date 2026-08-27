@@ -22,9 +22,7 @@
 
 #pragma once
 
-#include <sight/io/__/config.hpp>
-
-#include "io/__/reader/object_reader.hpp"
+#include "object_reader.hpp"
 
 namespace sight::io::reader
 {
@@ -53,7 +51,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    std::string extension() const override
+    [[nodiscard]] std::string extension() const override
     {
         return "";
     }
@@ -67,6 +65,7 @@ public:
     void set_object(core::object::sptr _obj) override
     {
         assert(std::dynamic_pointer_cast<data_t>(_obj));
+        // NOLINTNEXTLINE(readability-identifier-naming)
         io::reader::object_reader::set_object(_obj);
     }
 

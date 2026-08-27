@@ -22,10 +22,10 @@
 
 #pragma once
 
-#include "core/runtime/executable.hpp"
-#include <core/runtime/utils/generic_executable_factory_registry.hpp> // NOLINT(misc-include-cleaner)
+#include "executable.hpp"
+#include "utils/generic_executable_factory_registry.hpp" // NOLINT(misc-include-cleaner)
 
-#include "sight/core/config.hpp"
+#include <sight/core/config.hpp>
 
 namespace sight::core::runtime
 {

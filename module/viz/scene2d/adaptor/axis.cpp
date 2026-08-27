@@ -26,8 +26,9 @@
 
 #include <QGraphicsItemGroup>
 
+#include <glm/common.hpp> // NOLINT(misc-include-cleaner): needed for glm::abs
+
 #include <cmath>
-#include <glm/common.hpp> // NOLINT(misc-include-cleaner)
 
 namespace sight::module::viz::scene2d::adaptor
 {

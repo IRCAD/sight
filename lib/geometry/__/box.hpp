@@ -23,9 +23,10 @@
 
 #include <sight/geometry/__/config.hpp>
 
-#include <glm/geometric.hpp>
-#include <glm/mat3x3.hpp>
-#include <glm/vec3.hpp>
+#include <glm/ext/matrix_double3x3.hpp>
+#include <glm/ext/vector_double3.hpp>
+
+#include <algorithm>
 
 namespace sight::geometry
 {
@@ -38,9 +39,9 @@ namespace sight::geometry
  */
 struct oriented_box_t
 {
-    glm::dvec3 center;
-    glm::dvec3 extent; ///< distance from the center to the edge in each direction, always positive
-    glm::dmat3 orientation;
+    glm::dvec3 center {};
+    glm::dvec3 extent {}; ///< distance from the center to the edge in each direction, always positive
+    glm::dmat3 orientation {};
 
     /// Returns true if all extents are positive and orientation is orthonormal
     [[nodiscard]] bool is_valid() const

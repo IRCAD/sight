@@ -26,6 +26,7 @@
 
 #include <doctest/doctest.h>
 
+#include <array>
 #include <cmath>
 
 TEST_SUITE("sight::io::vtk::transfer_function")

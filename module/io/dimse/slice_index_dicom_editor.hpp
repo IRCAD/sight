@@ -22,17 +22,16 @@
 
 #pragma once
 
+#include <core/notification/has_notifications.hpp>
 #include <core/thread/timer.hpp>
 #include <core/thread/worker.hpp>
 
 #include <data/image.hpp>
 #include <data/series_set.hpp>
 
-#include <io/__/service/reader.hpp>
 #include <io/dimse/data/pacs_configuration.hpp>
 
 #include <service/has_services.hpp>
-#include <service/notifier.hpp>
 
 #include <ui/__/editor.hpp>
 
@@ -74,7 +73,7 @@ class slice_index_dicom_editor final :
     public QObject,
     public sight::ui::editor,
     public sight::service::has_services,
-    private sight::service::notifier
+    public sight::core::notification::has_notifications
 {
 Q_OBJECT;
 

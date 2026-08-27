@@ -29,6 +29,8 @@
 
 #include <core/com/signals.hpp>
 
+#include <boost/property_tree/ptree.hpp> // NOLINT(misc-include-cleaner)
+
 namespace sight::data
 {
 

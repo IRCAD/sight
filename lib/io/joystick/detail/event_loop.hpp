@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "../interactor.hpp"
+#include "io/joystick/interactor.hpp"
 
 #include <SDL_joystick.h>
 #include <core/thread/timer.hpp>

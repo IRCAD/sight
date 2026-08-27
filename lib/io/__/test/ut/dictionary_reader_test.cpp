@@ -20,12 +20,11 @@
  *
  ***********************************************************************/
 
+#include <core/notification/observer.hpp>
 #include <core/os/temp_path.hpp>
-#include <core/progress/observer.hpp>
 
 #include <data/structure_traits.hpp>
 #include <data/structure_traits_dictionary.hpp>
-#include <data/structure_traits_helper.hpp>
 
 #include <io/__/reader/dictionary_reader.hpp>
 #include <io/__/reader/object_reader.hpp>
@@ -35,12 +34,9 @@
 #include <fstream>
 #include <iostream>
 
-namespace
-{
-
 //------------------------------------------------------------------------------
 
-void generate_dictionary_file(std::filesystem::path _dictionary_file)
+static void generate_dictionary_file(std::filesystem::path _dictionary_file)
 {
     std::fstream file;
     file.open(_dictionary_file.string().c_str(), std::fstream::out);
@@ -53,7 +49,7 @@ void generate_dictionary_file(std::filesystem::path _dictionary_file)
 
 //------------------------------------------------------------------------------
 
-void generate_dictionary_file_with_missing_semi_colon(std::filesystem::path _dictionary_file)
+static void generate_dictionary_file_with_missing_semi_colon(std::filesystem::path _dictionary_file)
 {
     std::fstream file;
     file.open(_dictionary_file.string().c_str(), std::fstream::out);
@@ -65,7 +61,7 @@ void generate_dictionary_file_with_missing_semi_colon(std::filesystem::path _dic
 
 //------------------------------------------------------------------------------
 
-void generate_dictionary_file_with_wrong_category(std::filesystem::path _dictionary_file)
+static void generate_dictionary_file_with_wrong_category(std::filesystem::path _dictionary_file)
 {
     std::fstream file;
     file.open(_dictionary_file.string().c_str(), std::fstream::out);
@@ -76,7 +72,7 @@ void generate_dictionary_file_with_wrong_category(std::filesystem::path _diction
 
 //------------------------------------------------------------------------------
 
-void generate_dictionary_file_with_wrong_class(std::filesystem::path _dictionary_file)
+static void generate_dictionary_file_with_wrong_class(std::filesystem::path _dictionary_file)
 {
     //cspell: ignore Enironment Anat
     std::fstream file;
@@ -85,6 +81,11 @@ void generate_dictionary_file_with_wrong_class(std::filesystem::path _dictionary
     file << "Skin;(255,179,140,100);Body;Enironment;;;;Entire_Body;Anat_Struct;Entire_Body" << std::endl;
     file.close();
 }
+
+//------------------------------------------------------------------------------
+
+namespace
+{
 
 struct fixture
 {
@@ -139,7 +140,7 @@ TEST_SUITE("sight::io::dictionary_reader")
         dictionary_reader->set_object(struct_dico);
         dictionary_reader->set_file(m_tmp_dictionary_file_path);
 
-        auto observer = std::make_shared<sight::core::progress::observer>("Test read");
+        auto observer = std::make_shared<sight::core::notification::observer>("Test read");
         dictionary_reader->read(observer);
 
         auto struct1 = struct_dico->get_structure("Skin");
@@ -174,7 +175,7 @@ TEST_SUITE("sight::io::dictionary_reader")
         dictionary_reader->set_object(struct_dico);
         dictionary_reader->set_file(m_tmp_dictionary_file_path);
 
-        auto observer = std::make_shared<sight::core::progress::observer>("Test read");
+        auto observer = std::make_shared<sight::core::notification::observer>("Test read");
         CHECK_THROWS_AS(dictionary_reader->read(observer), sight::core::exception);
     }
 
@@ -188,7 +189,7 @@ TEST_SUITE("sight::io::dictionary_reader")
         dictionary_reader->set_object(struct_dico);
         dictionary_reader->set_file(m_tmp_dictionary_file_path);
 
-        auto observer = std::make_shared<sight::core::progress::observer>("Test read");
+        auto observer = std::make_shared<sight::core::notification::observer>("Test read");
         CHECK_THROWS_AS(dictionary_reader->read(observer), sight::core::exception);
     }
 
@@ -203,7 +204,7 @@ TEST_SUITE("sight::io::dictionary_reader")
         dictionary_reader->set_object(struct_dico);
         dictionary_reader->set_file(m_tmp_dictionary_file_path);
 
-        auto observer = std::make_shared<sight::core::progress::observer>("Test read");
+        auto observer = std::make_shared<sight::core::notification::observer>("Test read");
         CHECK_THROWS_AS(dictionary_reader->read(observer), sight::core::exception);
     }
 
@@ -218,7 +219,7 @@ TEST_SUITE("sight::io::dictionary_reader")
         dictionary_reader->set_object(struct_dico);
         dictionary_reader->set_file(m_tmp_dictionary_file_path);
 
-        auto observer = std::make_shared<sight::core::progress::observer>("Test read");
+        auto observer = std::make_shared<sight::core::notification::observer>("Test read");
         CHECK_THROWS_AS(dictionary_reader->read(observer), sight::core::exception);
     }
 }

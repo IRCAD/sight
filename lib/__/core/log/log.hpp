@@ -24,6 +24,7 @@
 
 #include <sight/core/config.hpp>
 
+#include <cstdint>
 #include <string>
 
 namespace sight::core::log
@@ -37,7 +38,7 @@ class SIGHT_CORE_CLASS_API log final
 {
 public:
 
-    enum level_t : std::uint8_t
+    enum class level_t : std::uint8_t
     {
         information = 0,
         warning     = 5,
@@ -81,6 +82,6 @@ private:
 
     /// Log message
     std::string m_message;
-}; // class logger
+};
 
 } // namespace sight::core::log

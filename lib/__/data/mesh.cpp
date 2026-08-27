@@ -19,11 +19,12 @@
  * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************/
+#include <core/compare.hpp>
 
-#include "data/mesh.hpp"
+#include "mesh.hpp"
 
-#include "data/exception.hpp"
-#include "data/registry/macros.hpp"
+#include "exception.hpp"
+#include "registry/macros.hpp"
 
 #include <array>
 #include <cstdlib>

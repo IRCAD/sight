@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2025 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,6 @@
 
 #include "ui/qt/container/widget.hpp"
 #include "ui/qt/widget/slide_bar.hpp"
-
-#include <ui/__/macros.hpp>
 
 #include <QApplication>
 #include <QBoxLayout>
@@ -198,7 +196,7 @@ inline static bool check_message_length(
 {
     const auto& bounding = _metrics.boundingRect(
         _available,
-        int(Qt::TextWordWrap) | Qt::AlignHCenter | Qt::AlignVCenter,
+        static_cast<int>(Qt::TextWordWrap) | Qt::AlignHCenter | Qt::AlignVCenter,
         _message + (_is_truncated ? "..." : "")
     );
 
@@ -218,6 +216,7 @@ void notification::update()
     static constexpr auto s_SUCCESS_NAME {"NotificationDialog_Success"};
     static constexpr auto s_FAILURE_NAME {"NotificationDialog_Failure"};
     static constexpr auto s_INFO_NAME {"NotificationDialog_Info"};
+    static constexpr auto s_WARNING_NAME {"NotificationDialog_Warning"};
 
     // Set object names
     switch(m_notification.m_type)
@@ -230,6 +229,11 @@ void notification::update()
         case notification_base::type::failure:
             m_sub_widget->setObjectName(s_FAILURE_NAME);
             m_msg_box->setObjectName(s_FAILURE_NAME);
+            break;
+
+        case notification_base::type::warning:
+            m_sub_widget->setObjectName(s_WARNING_NAME);
+            m_msg_box->setObjectName(s_WARNING_NAME);
             break;
 
         default:
@@ -260,6 +264,10 @@ void notification::update()
                 "background-color:#5DADE2;color:white;font-weight: bold;font-size: 16px;border-radius: 10px"
             };
 
+            static constexpr auto s_WARNING_STYLE {
+                "background-color:#D9A400;color:white;font-weight: bold;font-size: 16px;border-radius: 10px"
+            };
+
             switch(m_notification.m_type)
             {
                 case notification_base::type::success:
@@ -270,6 +278,11 @@ void notification::update()
                 case notification_base::type::failure:
                     m_sub_widget->setStyleSheet(s_FAILURE_STYLE);
                     m_msg_box->setStyleSheet(s_FAILURE_STYLE);
+                    break;
+
+                case notification_base::type::warning:
+                    m_sub_widget->setStyleSheet(s_WARNING_STYLE);
+                    m_msg_box->setStyleSheet(s_WARNING_STYLE);
                     break;
 
                 default:
@@ -293,8 +306,8 @@ void notification::update()
             const QRect available(
                 0,
                 0,
-                int(m_notification.m_size[0] - 0.1 * m_notification.m_size[0]),
-                int(m_notification.m_size[1] - 0.1 * m_notification.m_size[1])
+                static_cast<int>(m_notification.m_size[0] - 0.1 * m_notification.m_size[0]),
+                static_cast<int>(m_notification.m_size[1] - 0.1 * m_notification.m_size[1])
             );
 
             const QFontMetrics metrics(m_msg_box->font());
@@ -351,6 +364,10 @@ void notification::update()
         if(m_notification.m_type == notification_base::type::failure)
         {
             icon = QMessageBox::Critical;
+        }
+        else if(m_notification.m_type == notification_base::type::warning)
+        {
+            icon = QMessageBox::Warning;
         }
         else if(m_notification.m_type == notification_base::type::info)
         {

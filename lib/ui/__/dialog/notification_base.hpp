@@ -27,9 +27,10 @@
 #include "ui/__/container/widget.hpp"
 #include "ui/__/object.hpp"
 
-#include <service/notifier.hpp>
-
 #include <array>
+#include <chrono>
+#include <cstdint>
+#include <optional>
 #include <string>
 
 namespace sight::ui::dialog
@@ -45,10 +46,38 @@ public:
     SIGHT_DECLARE_CLASS(notification_base, ui::object);
 
     /// Notification Type (changes Qss style).
-    using type = sight::service::notification::type;
+    enum class type : std::uint8_t
+    {
+        info = 0,
+        warning,
+        success,
+        failure
+    };
 
     /// Where to display notifications.
-    using position = sight::service::notification::position;
+    enum class position : std::uint8_t
+    {
+        top_right = 0,
+        top_left,
+        bottom_right,
+        bottom_left,
+        centered,
+        centered_top,
+        centered_bottom
+    };
+
+    /// Notification display parameters, in one bundle.
+    struct params final
+    {
+        type m_type {type::info};
+        position m_position {position::top_right};
+        std::string m_message {};
+        std::optional<std::chrono::milliseconds> m_duration {std::chrono::seconds(3)};
+        std::string m_channel {};
+        std::optional<bool> m_closable {std::nullopt};
+        std::array<int, 2> m_size {200, 60};
+        std::optional<bool> m_sound {std::nullopt};
+    };
 
     /// Constructor. Does nothing.
     SIGHT_UI_API notification_base();
@@ -108,7 +137,7 @@ public:
 
     /// Set the notification attributes (type, message, duration...) in one step.
     /// @param _notification notification attributes.
-    SIGHT_UI_API virtual void set_notification(sight::service::notification _notification);
+    SIGHT_UI_API virtual void set_notification(params _notification);
 
     /// Shows the message box and return the clicked button.
     SIGHT_UI_API virtual void show() = 0;
@@ -142,7 +171,7 @@ protected:
     // NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
 
     /// Notification attributes (message, position, type, ...).
-    sight::service::notification m_notification {};
+    params m_notification;
 
     /// Position of the notification, used to avoid overlapping
     /// when several notifications are shown. (0 = first, 1 = second, ...)

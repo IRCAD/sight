@@ -22,12 +22,10 @@
 
 #pragma once
 
+#include <core/notification/has_notifications.hpp>
 #include <core/thread/worker.hpp>
 
 #include <io/dimse/data/pacs_configuration.hpp>
-#include <io/dimse/series_enquirer.hpp>
-
-#include <service/notifier.hpp>
 
 #include <ui/__/editor.hpp>
 
@@ -36,8 +34,6 @@
 #include <QPointer>
 #include <QPushButton>
 #include <QSpinBox>
-
-#include <filesystem>
 
 namespace sight::module::io::dimse
 {
@@ -62,7 +58,7 @@ namespace sight::module::io::dimse
  */
 class pacs_configuration_editor : public QObject,
                                   public sight::ui::editor,
-                                  private sight::service::notifier
+                                  public sight::core::notification::has_notifications
 {
 Q_OBJECT;
 

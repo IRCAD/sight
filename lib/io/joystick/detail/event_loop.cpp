@@ -21,14 +21,14 @@
 
 #include "event_loop.hpp"
 
-#include <SDL.h>
-#include <SDL_events.h>
-#include <SDL_timer.h>
-#include <algorithm>
 #include <core/exceptionmacros.hpp>
 #include <core/thread/worker.hpp>
 
-// cspell:ignore disrumpere interactor interactors jaxis jball jhat jbutton jdevice xrel yrel
+#include <SDL.h>
+
+#include <algorithm>
+
+// cspell:ignore interactor interactors jaxis jball jhat jbutton jdevice xrel yrel
 // cspell:ignore JOYBUTTONDOWN JOYBUTTONUP JOYAXISMOTION JOYHATMOTION JOYBALLMOTION JOYDEVICEADDED JOYDEVICEREMOVED
 // cspell:ignore WILLENTERBACKGROUND WILLENTERFOREGROUND DIDENTERBACKGROUND SYSWMEVENT JOYBATTERYUPDATED
 // cspell:ignore DIDENTERFOREGROUND MOUSEMOTION CONTROLLERAXISMOTION CONTROLLERBUTTONDOWN CONTROLLERBUTTONUP
@@ -1048,14 +1048,8 @@ void event_loop::remove_interactor(const interactor* const  _interactor, [[maybe
     // Remove the interactor from the list
     [[maybe_unused]] const auto result = std::erase(m_interactors, _interactor);
 
-    if(_finalize)
-    {
-        SIGHT_ASSERT("Interactor still registered", result == 0);
-    }
-    else
-    {
-        SIGHT_ASSERT("Interactor not found in the list of interactors", result != 0);
-    }
+    SIGHT_ASSERT("Interactor still registered", !_finalize || result == 0);
+    SIGHT_ASSERT("Interactor not found in the list of interactors", _finalize || result != 0);
 }
 
 //------------------------------------------------------------------------------

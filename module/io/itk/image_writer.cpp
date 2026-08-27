@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,9 @@
 
 #include "image_writer.hpp"
 
-#include <core/base.hpp>
 #include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
+#include <core/tools/failed.hpp>
 
 #include <data/image.hpp>
 
@@ -33,13 +33,9 @@
 #include <io/itk/jpg_image_writer.hpp>
 #include <io/itk/nifti_image_writer.hpp>
 
-#include <service/macros.hpp>
-
 #include <ui/__/cursor.hpp>
 #include <ui/__/dialog/location.hpp>
 #include <ui/__/dialog/message.hpp>
-
-#include <boost/algorithm/string.hpp>
 
 namespace sight::module::io::itk
 {
@@ -119,7 +115,7 @@ void image_writer::info(std::ostream& _sstream)
 bool image_writer::save_image(
     const std::filesystem::path& _img_save_path,
     const data::image::csptr& _image,
-    const core::progress::observer::sptr& _progress
+    const core::notification::observer::sptr& _progress
 )
 {
     sight::io::writer::object_writer::sptr my_writer;
@@ -198,7 +194,7 @@ void image_writer::updating()
         cursor.set_cursor(ui::cursor_base::busy);
         try
         {
-            auto write_observer = std::make_shared<sight::core::progress::observer>("Saving images... ");
+            auto write_observer = this->make_notification<sight::core::notification::observer>("Saving images... ");
             save_image(this->get_file(), image, write_observer);
             m_write_failed = false;
         }

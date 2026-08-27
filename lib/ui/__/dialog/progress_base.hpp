@@ -26,11 +26,8 @@
 
 #include "ui/__/object.hpp"
 
-#include <core/progress/function.hpp>
+#include <core/notification/function.hpp>
 
-#include <boost/signals2.hpp>
-
-#include <functional>
 #include <string>
 
 namespace sight::ui::dialog
@@ -65,7 +62,7 @@ public:
     /// action called by core::tools::progress_adviser
     SIGHT_UI_API virtual void operator()(float _percent, std::string _msg) = 0;
 
-    SIGHT_UI_API virtual void set_cancel_callback(core::progress::cancel_callback_t _callback);
+    SIGHT_UI_API virtual void set_cancel_callback(core::notification::cancel_callback_t _callback);
 
     //------------------------------------------------------------------------------
 
@@ -119,7 +116,7 @@ protected:
 
 private:
 
-    core::progress::cancel_callback_t m_cancel_callback;
+    core::notification::cancel_callback_t m_cancel_callback;
     bool m_canceled {false};
     bool m_raise {true};
     bool m_process_user_events {true};

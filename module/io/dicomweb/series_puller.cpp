@@ -24,8 +24,6 @@
 
 #include "detail/query.hpp"
 
-#include <core/progress/observer.hpp>
-
 #include <io/dicom/helper/series.hpp>
 #include <io/dicom/reader/file.hpp>
 #include <io/http/exceptions/base.hpp>
@@ -33,8 +31,6 @@
 #include <io/http/request.hpp>
 
 #include <ui/__/dialog/message.hpp>
-
-#include <qdebug.h>
 
 #include <algorithm>
 #include <filesystem>
@@ -161,8 +157,7 @@ void series_puller::pull_series()
         // Pull series
         if(!pull_series_vector.empty())
         {
-            auto progress = std::make_shared<core::progress::observer>("Pull series", instance_count);
-            this->async_emit(core::progress::has_monitors::signals::MONITOR_CREATED, progress->get_sptr());
+            auto progress = this->observe("Pull series", false, nullptr, instance_count);
 
             std::size_t done = 0;
             /// GET
@@ -312,8 +307,7 @@ void series_puller::read_local_series(dicom_series_container_t _selected_series)
             reader->set_object(dest_series_set.get_shared());
             reader->set_folder({path.string()});
 
-            auto observer = std::make_shared<sight::core::progress::observer>("Read image series");
-            this->async_emit(core::progress::has_monitors::signals::MONITOR_CREATED, observer->get_sptr());
+            auto observer = this->observe("Read image series");
             reader->read(observer);
 
             // Merge series

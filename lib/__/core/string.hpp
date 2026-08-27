@@ -23,7 +23,6 @@
 
 #include <sight/core/config.hpp>
 
-#include <iostream>
 #include <sstream>
 #include <string>
 

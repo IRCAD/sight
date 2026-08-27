@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include <sight/app/config.hpp>
-
 #include "app/config_manager.hpp"
 #include "app/helper/config.hpp"
 
@@ -32,9 +30,6 @@
 #include "service/base.hpp"
 
 #include <core/com/has_slots.hpp>
-#include <core/com/helper/sig_slot_connection.hpp>
-
-#include <boost/property_tree/ptree.hpp>
 
 #include <string>
 #include <unordered_map>
@@ -200,7 +195,7 @@ private:
         const proxy_connections_t& _proxy_cfg,
         const std::string& _key       = "",
         data::object::csptr _hint_obj = nullptr
-    );
+    ) const;
 
     void destroy_proxies();
 

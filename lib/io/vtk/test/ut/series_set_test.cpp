@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,16 +20,10 @@
  *
  ***********************************************************************/
 
-#include <core/memory/buffer_manager.hpp>
-#include <core/memory/buffer_object.hpp>
-#include <core/progress/observer.hpp>
+#include <core/notification/observer.hpp>
 
-#include <data/array.hpp>
-#include <data/image.hpp>
 #include <data/image_series.hpp>
 #include <data/model_series.hpp>
-#include <data/reconstruction.hpp>
-#include <data/series.hpp>
 
 #include <io/vtk/series_set_reader.hpp>
 
@@ -57,7 +51,7 @@ TEST_SUITE("sight::io::vtk::series_set")
         auto reader = std::make_shared<sight::io::vtk::series_set_reader>();
         reader->set_object(series_set);
         reader->set_files(paths);
-        auto read_observer = std::make_shared<sight::core::progress::observer>("Test read");
+        auto read_observer = std::make_shared<sight::core::notification::observer>("Test read");
         reader->read(read_observer);
 
         CHECK_EQ(series_set->size(), std::size_t(2));

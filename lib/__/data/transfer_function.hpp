@@ -24,9 +24,11 @@
 
 #include <sight/data/config.hpp>
 
-#include "data/container.hpp"
+#include "container.hpp"
 
 #include <core/type.hpp>
+
+#include <glm/ext/vector_double4.hpp>
 
 namespace sight::data
 {

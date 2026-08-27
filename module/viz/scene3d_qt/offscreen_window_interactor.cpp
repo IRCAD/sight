@@ -20,9 +20,9 @@
  *
  ***********************************************************************/
 
-#include "module/viz/scene3d_qt/offscreen_window_interactor.hpp"
+#include "offscreen_window_interactor.hpp"
 
-#include <module/viz/scene3d_qt/init.hpp>
+#include "init.hpp"
 
 #include <viz/scene3d/ogre.hpp>
 #include <viz/scene3d/registry/macros.hpp>

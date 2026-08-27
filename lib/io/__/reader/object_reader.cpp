@@ -20,7 +20,8 @@
  *
  ***********************************************************************/
 
-#include "io/__/reader/object_reader.hpp"
+#include "object_reader.hpp"
+
 #include <core/spy_log.hpp>
 
 namespace sight::io::reader

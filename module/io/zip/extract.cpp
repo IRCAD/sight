@@ -29,7 +29,7 @@
 #include <core/crypto/secure_string.hpp>
 #include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
-#include <core/progress/observer.hpp>
+#include <core/notification/observer.hpp>
 
 #include <io/zip/exception/read.hpp>
 
@@ -208,8 +208,11 @@ void extract::updating()
             }
         };
 
-    const auto observer = std::make_shared<core::progress::observer>("Reading " + filepath.string() + " file");
-    this->async_emit(has_monitors::signals::MONITOR_CREATED, observer->get_sptr());
+    const auto observer = this->make_notification<core::notification::observer>(
+        "Reading " + filepath.string()
+        + " file"
+    );
+    this->emit_notification_created(observer);
 
     try
     {

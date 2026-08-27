@@ -32,8 +32,9 @@
 
 #include <data/boolean.hpp>
 #include <data/map.hpp>
-#include <data/mt/locked_ptr.hpp> // NOLINT(misc-include-cleaner)
 #include <data/ptr.hpp>
+
+#include <boost/property_tree/ptree.hpp> // NOLINT(misc-include-cleaner): for config_t
 
 namespace sight::core::thread
 {

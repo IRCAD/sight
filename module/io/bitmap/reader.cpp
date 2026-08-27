@@ -23,7 +23,6 @@
 
 #include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
-#include <core/progress/observer.hpp>
 
 #include <io/bitmap/reader.hpp>
 
@@ -324,8 +323,7 @@ void reader::updating()
 
     SIGHT_THROW_IF("The file '" << file_path << "' is an existing folder.", std::filesystem::is_directory(file_path));
 
-    const auto read_progress = std::make_shared<core::progress::observer>("Reading '" + file_path.string() + "' file");
-    this->async_emit(has_monitors::signals::MONITOR_CREATED, read_progress->get_sptr());
+    const auto read_progress = this->observe("Reading '" + file_path.string() + "' file");
 
     try
     {

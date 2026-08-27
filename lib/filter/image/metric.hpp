@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <cstdint>
 namespace sight::filter::image
 {
 
@@ -39,6 +40,7 @@ namespace sight::filter::image
  * are available and when intensity values are close
  * - Mutual Information : The most generic metric, can be used to match images with different modalities.
  */
+
 enum metric_t : std::uint8_t
 {
     mean_squares,

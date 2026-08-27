@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <core/base_object.hpp>
+#include "base_object.hpp"
 
 namespace sight::core
 {

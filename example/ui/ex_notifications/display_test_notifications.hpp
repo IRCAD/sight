@@ -24,10 +24,10 @@
 
 #include <sight/ex_notifications/config.hpp>
 
-#include <service/notifier.hpp>
+#include <core/notification/has_notifications.hpp>
 
 #include <ui/__/action.hpp>
-#include <ui/__/dialog/notification.hpp>
+#include <ui/__/dialog/notification_base.hpp>
 
 /**
  * Do not mark `ex_notifications` as incorrect.
@@ -45,16 +45,25 @@ namespace ex_notifications
  * the type of displayed notification( accepted _key are 'position' & 'type').
  *   - Values for 'position' key : ALL, TOP_LEFT, TOP_RIGHT, CENTERED_TOP, CENTERED, BOTTOM_LEFT, BOTTOM_RIGHT,
  * CENTERED_BOTTOM.
- *   - Values for 'type' key : INFO, SUCCESS, FAILURE.
+ *   - Values for 'type' key : INSTRUCTION, INFORMATION, WARNING, ERROR.
  * - \b set_bool_parameterbool _val, std::string _key): call this slot when changing "m_usenotifier" behavior.
+ *
+ * @section Signals Signals
+ * - \b notification_closed(std::string): emitted with a channel name when close_channel1() is triggered.
  */
 class SIGHT_EX_NOTIFICATIONS_CLASS_API display_test_notifications final :
     public sight::ui::action,
-    public sight::service::notifier
+    public sight::core::notification::has_notifications
 {
 public:
 
     SIGHT_DECLARE_SERVICE(display_test_notifications, sight::ui::action);
+
+    struct signals
+    {
+        using notification_closed_t = sight::core::com::signal<void (std::string)>;
+        static inline const signal_key_t NOTIFICATION_CLOSED = "notification_closed";
+    };
 
     struct slots
     {
@@ -99,7 +108,7 @@ protected:
 private:
 
     /// Notification position, type, duration
-    sight::service::notification m_notification;
+    sight::ui::dialog::notification_base::params m_notification;
 
     /// Display notification at all position, default true.
     bool m_display_all {false};

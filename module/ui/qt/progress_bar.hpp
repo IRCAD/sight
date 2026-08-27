@@ -22,8 +22,7 @@
 #pragma once
 
 #include <core/com/signal.hpp>
-#include <core/com/slots.hpp>
-#include <core/progress/monitor.hpp>
+#include <core/notification/base.hpp>
 
 #include <ui/__/editor.hpp>
 #include <ui/qt/widget/progress_bar.hpp>
@@ -35,7 +34,7 @@ namespace sight::module::ui::qt
  * @brief Service displaying a progress bar.
  *
  * @section Slots Slots
- * - \b add_monitor(core::progress::monitor::sptr _monitor): visualize the progression of tasks.
+ * - \b add_monitor(core::notification::monitor::sptr _monitor): visualize the progression of tasks.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -103,7 +102,7 @@ protected:
     /**
      * @brief add_monitor slot's method.
      */
-    void add_monitor(core::progress::monitor::sptr _monitor);
+    void add_monitor(core::notification::base::sptr _notification);
 
 private:
 

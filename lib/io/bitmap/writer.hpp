@@ -90,7 +90,7 @@ public:
     SIGHT_IO_BITMAP_API ~writer() final;
 
     /// Main writing method from generic_object_writer
-    SIGHT_IO_BITMAP_API void write(sight::sptr<sight::core::progress::observer> _progress) final;
+    SIGHT_IO_BITMAP_API void write(sight::sptr<sight::core::notification::observer> _progress) final;
 
     /// Specialized writing method that allows to specify the backend and the mode (Fast or Best compression)
     /// @arg backend: the backend to use. Can be LIBJPEG, LIBTIFF, LIBPNG, OPENJPEG or, if available, NVJPEG and

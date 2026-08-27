@@ -266,8 +266,8 @@ inline data::mt::weak_ptr<DATATYPE> has_data::output(std::string_view _key, std:
 
 inline auto has_data::find_object(std::string_view _key, data::object::csptr _obj) const
 {
-    auto data     = m_data_container.find({_key, {}});
-    const auto id = _obj ? " and id '" + _obj->get_id() + "'" : "";
+    auto data                      = m_data_container.find({_key, {}});
+    [[maybe_unused]] const auto id = _obj ? " and id '" + _obj->get_id() + "'" : "";
     SIGHT_ASSERT("Can not find any declared data::ptr with key '" << _key << "'" << id, data != m_data_container.end());
     return data;
 }

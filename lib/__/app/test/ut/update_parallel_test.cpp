@@ -22,6 +22,7 @@
 #include <core/runtime/path.hpp>
 #include <core/runtime/runtime.hpp>
 
+#include <ranges>
 #include <service/macros.hpp>
 #include <service/op.hpp>
 

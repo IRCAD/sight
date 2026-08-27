@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <core/progress/observer.hpp>
+#include <core/notification/observer.hpp>
 
 #include <io/__/service/writer.hpp>
 
@@ -68,7 +68,7 @@ public:
     static bool save_image(
         const std::filesystem::path& _img_save_path,
         const sight::csptr<data::image>& _image,
-        const sight::sptr<core::progress::observer>& _progress
+        const sight::sptr<core::notification::observer>& _progress
     );
 
     /// configure using GUI.

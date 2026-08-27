@@ -32,6 +32,8 @@
 #include <io/__/reader/object_reader.hpp>
 #include <io/zip/archive_reader.hpp>
 
+#include <boost/property_tree/ptree.hpp> // NOLINT(misc-include-cleaner,unused-includes)
+
 namespace sight::io::session
 {
 
@@ -77,7 +79,7 @@ public:
     SIGHT_IO_SESSION_API ~session_reader() override;
 
     /// Read the session from archive.
-    SIGHT_IO_SESSION_API void read(sight::sptr<sight::core::progress::observer> _progress) override;
+    SIGHT_IO_SESSION_API void read(sight::sptr<sight::core::notification::observer> _progress) override;
 
     /// Defines extension supported by this reader ".zip"
     SIGHT_IO_SESSION_API std::string extension() const override;

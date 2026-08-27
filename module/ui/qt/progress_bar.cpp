@@ -115,11 +115,19 @@ void progress_bar::configuring()
 
 //-----------------------------------------------------------------------------
 
-void progress_bar::add_monitor(core::progress::monitor::sptr _monitor)
+void progress_bar::add_monitor(core::notification::base::sptr _notification)
 {
+    const auto monitor = std::dynamic_pointer_cast<core::notification::monitor>(_notification);
+
+    if(!monitor)
+    {
+        SIGHT_WARN("Ignoring non-monitor notification passed to add_monitor slot.");
+        return;
+    }
+
     if(m_progress_bar_widget)
     {
-        m_progress_bar_widget->add_monitor(_monitor);
+        m_progress_bar_widget->add_monitor(monitor);
     }
 }
 

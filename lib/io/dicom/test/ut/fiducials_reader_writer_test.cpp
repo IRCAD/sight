@@ -106,7 +106,7 @@ TEST_SUITE("sight::io::dicom::fiducials_reader_writer")
         const core::os::temp_dir folder;
         writer->set_folder(folder);
         {
-            const auto observer = std::make_shared<core::progress::observer>("FIDUCIALS Writer Test");
+            const auto observer = std::make_shared<core::notification::observer>("FIDUCIALS Writer Test");
             CHECK_NOTHROW(writer->write(observer));
         }
 
@@ -116,7 +116,7 @@ TEST_SUITE("sight::io::dicom::fiducials_reader_writer")
         reader->set_folder(folder);
 
         {
-            const auto observer = std::make_shared<core::progress::observer>("FIDUCIALS Reader Test");
+            const auto observer = std::make_shared<core::notification::observer>("FIDUCIALS Reader Test");
             CHECK_NOTHROW(reader->read(observer));
         }
         CHECK_EQ(std::size_t(1), actual->size());
@@ -166,7 +166,7 @@ TEST_SUITE("sight::io::dicom::fiducials_reader_writer")
         writer->set_file(image_filename);
 
         {
-            const auto observer = std::make_shared<core::progress::observer>("FIDUCIALS Writer Test");
+            const auto observer = std::make_shared<core::notification::observer>("FIDUCIALS Writer Test");
             CHECK_NOTHROW(writer->write(observer));
         }
 
@@ -175,7 +175,7 @@ TEST_SUITE("sight::io::dicom::fiducials_reader_writer")
         image_series->get_fiducials()->set_fiducial_sets({});
 
         {
-            const auto observer = std::make_shared<core::progress::observer>("FIDUCIALS Writer Test");
+            const auto observer = std::make_shared<core::notification::observer>("FIDUCIALS Writer Test");
             CHECK_NOTHROW(writer->write(observer));
         }
 
@@ -201,7 +201,7 @@ TEST_SUITE("sight::io::dicom::fiducials_reader_writer")
         writer->set_file(image_filename);
 
         {
-            const auto observer = std::make_shared<core::progress::observer>("FIDUCIALS Writer Test");
+            const auto observer = std::make_shared<core::notification::observer>("FIDUCIALS Writer Test");
             CHECK_NOTHROW(writer->write(observer));
         }
 
@@ -223,7 +223,7 @@ TEST_SUITE("sight::io::dicom::fiducials_reader_writer")
         writer->image_dcm_override(false);
 
         {
-            const auto observer = std::make_shared<core::progress::observer>("FIDUCIALS Writer Test");
+            const auto observer = std::make_shared<core::notification::observer>("FIDUCIALS Writer Test");
             CHECK_NOTHROW(writer->write(observer));
         }
 
@@ -241,7 +241,7 @@ TEST_SUITE("sight::io::dicom::fiducials_reader_writer")
         image_series->get_fiducials()->set_fiducial_sets({});
 
         {
-            const auto observer = std::make_shared<core::progress::observer>("FIDUCIALS Writer Test");
+            const auto observer = std::make_shared<core::notification::observer>("FIDUCIALS Writer Test");
             CHECK_NOTHROW(writer->write(observer));
         }
 

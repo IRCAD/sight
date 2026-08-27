@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2024 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,6 +36,7 @@
 #include <QPropertyAnimation>
 #include <QTimerEvent>
 #include <QToolButton>
+#include <utility>
 
 namespace sight::ui::qt::dialog
 {
@@ -54,7 +55,7 @@ public:
      */
     explicit widget(std::function<QPoint(QWidget*)> _position, QWidget* _parent) :
         QWidget(_parent),
-        m_position(_position)
+        m_position(std::move(_position))
     {
         this->move(m_position(this->parentWidget()));
     }
@@ -144,7 +145,8 @@ public Q_SLOTS:
             m_timer_id = 0;
         }
 
-        QWidget* const parent_to_kill = !m_root.isNull() ? m_root : this->parentWidget() ? this->parentWidget() : this;
+        QWidget* const parent_to_kill = !m_root.isNull() ? m_root : (this->parentWidget()
+                                                                     != nullptr) ? this->parentWidget() : this;
 
         auto* const effect = new QGraphicsOpacityEffect();
         auto* a            = new QPropertyAnimation(effect, "opacity");
@@ -256,6 +258,14 @@ private:
         font-weight: bold;
         font-size: 16px;
     }
+
+ #NotificationDialog_Warning
+    {
+        background-color:#D9A400;
+        color:white;
+        font-weight: bold;
+        font-size: 16px;
+    }
    @endcode
  *
  */
@@ -305,4 +315,4 @@ private:
     QPointer<QToolButton> m_show_more_button {nullptr};
 };
 
-} // namespace sight::ui::qt.
+} // namespace sight::ui::qt::dialog

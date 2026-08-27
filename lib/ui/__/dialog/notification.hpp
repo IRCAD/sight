@@ -26,8 +26,6 @@
 
 #include "ui/__/dialog/notification_base.hpp"
 
-#include <core/base.hpp>
-
 namespace sight::ui::dialog
 {
 
@@ -48,10 +46,10 @@ public:
     /// @{
     inline static void show(
         std::string _message,
-        sight::service::notification::type _type    = sight::service::notification::type::info,
-        sight::service::notification::position _pos = sight::service::notification::position::top_right
+        notification_base::type _type    = notification_base::type::info,
+        notification_base::position _pos = notification_base::position::top_right
     );
-    SIGHT_UI_API static void show(sight::service::notification _notification);
+    SIGHT_UI_API static void show(notification_base::params _notification);
     /// @}
 
     /// Constructor. Create the implementation of the specific message box
@@ -64,14 +62,14 @@ public:
     /// @{
     explicit notification(
         std::string _message,
-        sight::service::notification::type _type    = sight::service::notification::type::info,
-        sight::service::notification::position _pos = sight::service::notification::position::top_right
+        notification_base::type _type    = notification_base::type::info,
+        notification_base::position _pos = notification_base::position::top_right
     ) :
         notification({.m_type = _type, .m_position = _pos, .m_message = std::move(_message)})
     {
     }
 
-    SIGHT_UI_API explicit notification(sight::service::notification _notification);
+    SIGHT_UI_API explicit notification(notification_base::params _notification);
     /// @}
 
     /// Destructor. Does nothing
@@ -139,8 +137,8 @@ private:
 
 inline void notification::show(
     std::string _message,
-    sight::service::notification::type _type,
-    sight::service::notification::position _pos
+    notification_base::type _type,
+    notification_base::position _pos
 )
 {
     show({.m_type = _type, .m_position = _pos, .m_message = std::move(_message)});

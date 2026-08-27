@@ -24,7 +24,7 @@
 
 #include <core/location/multiple_files.hpp>
 #include <core/location/single_folder.hpp>
-#include <core/progress/observer.hpp>
+#include <core/tools/failed.hpp>
 
 #include <data/mesh.hpp>
 #include <data/model_series.hpp>
@@ -214,8 +214,7 @@ void model_series_reader::load_mesh(const std::filesystem::path& _file, data::me
         );
     }
 
-    auto observer = std::make_shared<core::progress::observer>("Reading mesh from " + _file.string());
-    this->async_emit(has_monitors::signals::MONITOR_CREATED, observer->get_sptr());
+    auto observer = this->observe("Reading mesh from " + _file.string());
 
     mesh_reader->set_object(_mesh);
 

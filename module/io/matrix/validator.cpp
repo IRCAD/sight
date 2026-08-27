@@ -29,7 +29,7 @@ namespace sight::module::io::matrix
 //-----------------------------------------------------------------------------
 
 validator::validator() :
-    notifier(has_signals::signals())
+    has_notifications(has_signals::signals())
 {
     new_signal<signals::void_t>(signals::VALID);
     new_signal<signals::void_t>(signals::INVALID);
@@ -63,7 +63,7 @@ void validator::updating()
     if(!matrix)
     {
         this->async_emit(signals::INVALID);
-        this->notify(sight::service::notification::type::failure, "matrix is empty");
+        this->fail("matrix is empty");
         return;
     }
 
@@ -71,7 +71,7 @@ void validator::updating()
 
     if(!is_ortho)
     {
-        this->notify(sight::service::notification::type::failure, "matrix is not orthogonal");
+        this->fail("matrix is not orthogonal");
         this->async_emit(signals::INVALID);
         return;
     }
@@ -80,7 +80,7 @@ void validator::updating()
 
     if(!is_homogeneous)
     {
-        this->notify(sight::service::notification::type::failure, "matrix is not homogeneous");
+        this->fail("matrix is not homogeneous");
         this->async_emit(signals::INVALID);
         return;
     }

@@ -64,11 +64,10 @@
 #endif
 //NOLINTEND(cppcoreguidelines-macro-usage)
 
+#include "log/spy_logger.hpp" // NOLINT(misc-include-cleaner,unused-includes): needed for the "log" macro
+
 #include <cassert>
 #include <cstring>
-#include <sstream>
-
-# include <core/log/spy_logger.hpp>
 
 // -----------------------------------------------------------------------------
 constexpr static const char* strip_source_path(const char* const _path)
@@ -284,12 +283,14 @@ constexpr static const char* strip_source_path(const char* const _path)
  * @name Special macros
  * @{ */
 
+//NOLINTBEGIN(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
 /** @brief work like 'assert' from 'cassert', with in addition a message logged by
  * spylog (with FATAL loglevel)  */
 # define SIGHT_ASSERT(message, cond) \
         SL_ASSERT(SPYLOG_SPYLOGGER, message, cond)
 # define OSIGHT_ASSERT(message, cond) \
         SL_ASSERT(SPYLOG_SPYLOGGER, message, cond)
+//NOLINTEND(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
 
 // -----------------------------------------------------------------------------
 

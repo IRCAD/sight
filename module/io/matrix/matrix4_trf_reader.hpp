@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,6 @@
 
 #include <io/__/service/reader.hpp>
 
-#include <service/notifier.hpp>
-
 namespace sight::module::io::matrix
 {
 
@@ -44,8 +42,7 @@ namespace sight::module::io::matrix
  * @subsection In-Out In-Out
  * - \b data [sight::data::matrix4]: matrix to read.
  */
-class matrix4_trf_reader : public sight::io::service::reader,
-                           public sight::service::notifier
+class matrix4_trf_reader : public sight::io::service::reader
 {
 public:
 

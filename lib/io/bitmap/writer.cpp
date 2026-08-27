@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -60,7 +60,7 @@ std::string writer::extension() const
 
 //------------------------------------------------------------------------------
 
-void writer::write(sight::core::progress::observer::sptr _progress)
+void writer::write(sight::core::notification::observer::sptr _progress)
 {
     write(backend::any, mode::fast);
     _progress->done();

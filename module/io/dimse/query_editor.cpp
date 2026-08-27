@@ -28,6 +28,7 @@
 
 #include <io/dimse/exceptions/base.hpp>
 #include <io/dimse/helper/series.hpp>
+#include <io/dimse/series_enquirer.hpp>
 
 #include <ui/qt/container/widget.hpp>
 
@@ -53,7 +54,7 @@ static const std::string ICON_HEIGHT_CONFIG = "height";
 //------------------------------------------------------------------------------
 
 query_editor::query_editor() noexcept :
-    sight::service::notifier(has_signals::signals())
+    has_notifications(has_signals::signals())
 {
 }
 
@@ -270,7 +271,7 @@ void query_editor::execute_query_async()
     }
     else
     {
-        this->notifier::info("Already querying");
+        this->inform("Already querying");
         return;
     }
 }
@@ -299,7 +300,7 @@ void query_editor::execute_query()
     catch(const sight::io::dimse::exceptions::base& e)
     {
         SIGHT_ERROR("Can't establish a connection with the PACS: " + std::string(e.what()));
-        this->notifier::failure("Can't connect to the PACS");
+        this->fail("Can't connect to the PACS");
         m_is_querying = false;
         return;
     }
@@ -512,7 +513,7 @@ void query_editor::execute_query()
     catch(const sight::io::dimse::exceptions::base& e)
     {
         SIGHT_ERROR("Can't execute query to the PACS: " + std::string(e.what()));
-        this->notifier::failure("Can't execute query");
+        this->fail("Can't execute query");
     }
 
     if(series_enquirer->is_connected_to_pacs())

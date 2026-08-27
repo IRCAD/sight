@@ -23,6 +23,7 @@
 #include "module/io/vtk/image_reader.hpp"
 
 #include <core/location/single_folder.hpp>
+#include <core/tools/failed.hpp>
 
 #include <data/image.hpp>
 
@@ -150,8 +151,7 @@ void image_reader::updating()
 
         sight::ui::cursor cursor;
         cursor.set_cursor(ui::cursor_base::busy);
-        auto observer = std::make_shared<core::progress::observer>("Reading image");
-        this->async_emit(has_monitors::signals::MONITOR_CREATED, observer->get_sptr());
+        auto observer = this->observe("Reading image");
 
         try
         {
@@ -187,7 +187,7 @@ static READER::sptr configure_reader(const std::filesystem::path& _img_file)
 bool image_reader::load_image(
     const std::filesystem::path& _vtk_file,
     std::shared_ptr<data::image> _image,
-    core::progress::observer::sptr _progress
+    core::notification::observer::sptr _progress
 )
 {
     bool ok = true;

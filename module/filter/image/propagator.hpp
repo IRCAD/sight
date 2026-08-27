@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include <core/progress/has_monitors.hpp>
+#include <core/notification/has_monitors.hpp>
 
 #include <data/boolean.hpp>
 #include <data/image.hpp>
@@ -76,7 +76,7 @@ namespace sight::module::filter::image
  *  'stddev' stands for standar deviation, in this case the min is set to mean - stddev and mex to mean + stddev.
  */
 class propagator : public service::filter,
-                   public sight::core::progress::has_monitors
+                   public sight::core::notification::has_monitors
 {
 public:
 

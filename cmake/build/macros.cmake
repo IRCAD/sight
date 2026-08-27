@@ -1181,7 +1181,11 @@ macro(sight_configure_warnings PROJECT)
                 "$<$<AND:$<CXX_COMPILER_ID:GNU,Clang>,$<COMPILE_LANGUAGE:CUDA>>:"
                 "--Werror;all-warnings;-Xcompiler=-Werror,-Wno-error=deprecated-declarations>"
                 "$<$<AND:$<CXX_COMPILER_ID:MSVC>,$<COMPILE_LANGUAGE:C,CXX>>:/WX;/wd4996>"
-                "$<$<AND:$<CXX_COMPILER_ID:MSVC>,$<COMPILE_LANGUAGE:CUDA>>:-Xcompiler=/WX;-Xcompiler=/wd4996>"
+                # /wd4211: nvcc generates host-side registration stubs for __global__ kernels defined in an
+                # anonymous namespace that redeclare them with a different linkage, triggering a false positive
+                # MSVC warning in the nvcc-generated code itself (not in our sources).
+                "$<$<AND:$<CXX_COMPILER_ID:MSVC>,$<COMPILE_LANGUAGE:CUDA>>:-Xcompiler=/WX;-Xcompiler=/wd4996;"
+                "-Xcompiler=/wd4211>"
     )
 
     if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")

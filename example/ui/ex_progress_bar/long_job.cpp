@@ -21,8 +21,6 @@
 
 #include "long_job.hpp"
 
-#include <core/progress/observer.hpp>
-
 #include <atomic>
 
 namespace ex_progress_bar
@@ -60,11 +58,11 @@ void long_job::updating()
 {
     std::atomic_bool cancelled {false};
 
-    const auto real_long_job = std::make_shared<sight::core::progress::observer>(
+    const auto real_long_job = this->observe(
         "Long job "
-        + std::to_string(job_id.fetch_add(1))
+        + std::to_string(job_id.fetch_add(1)),
+        m_cancelable
     );
-    real_long_job->set_cancelable(m_cancelable);
 
     // Manage the cancellation.
     if(m_cancelable)
@@ -75,9 +73,6 @@ void long_job::updating()
                 cancelled.store(true);
             });
     }
-
-    // Emit signal to notify the job creation.
-    this->async_emit(has_monitors::signals::MONITOR_CREATED, real_long_job->get_sptr());
 
     for(std::uint64_t i = 1 ; i <= 100 ; ++i)
     {

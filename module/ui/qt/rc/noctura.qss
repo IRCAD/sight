@@ -1525,6 +1525,63 @@ QProgressBar::chunk
     border-radius: 4px;
 }
 
+#NotificationDialog_Warning
+{
+    background-color: #D98C22;
+    color: rgb(255, 255, 255);
+    font-weight: bold;
+    font-size: 20px;
+    border-radius: 4px;
+}
+
+/************************************************************************/
+/************************ Notification zone *****************************/
+/************************************************************************/
+
+#notification_label_instruction
+{
+    background-color: #56608B;
+    color: rgb(255, 255, 255);
+    font-weight: bold;
+    font-size: 30px;
+    border-radius: 12px;
+    border: 2px solid white;
+    qproperty-alignment: AlignCenter;
+}
+
+#notification_label_information
+{
+    background-color: #51566b;
+    color: rgb(255, 255, 255);
+    font-weight: bold;
+    font-size: 30px;
+    border-radius: 12px;
+    border: 2px solid white;
+    qproperty-alignment: AlignCenter;
+}
+
+#notification_label_warning
+{
+    background-color: #D98C22;
+    color: rgb(255, 255, 255);
+    font-weight: bold;
+    font-size: 30px;
+    border-radius: 12px;
+    border: 2px solid white;
+    qproperty-alignment: AlignCenter;
+}
+
+#notification_label_error
+{
+    background-color: #BA292A;
+    color: rgb(255, 255, 255);
+    font-weight: bold;
+    font-size: 30px;
+    border-radius: 12px;
+    border: 2px solid white;
+    qproperty-alignment: AlignCenter;
+}
+
 
 /************************************************************************/
 /****************************** tickmarks_slider ************************/

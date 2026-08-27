@@ -46,7 +46,7 @@ public:
     SIGHT_DECLARE_CLASS(vti_image_reader, io::reader::generic_object_reader<data::image>);
 
     //! @brief Reading operator.
-    SIGHT_IO_VTK_API void read(sight::sptr<sight::core::progress::observer> _progress) override;
+    SIGHT_IO_VTK_API void read(sight::sptr<sight::core::notification::observer> _progress) override;
 
     /// @return ".vtk"
     SIGHT_IO_VTK_API std::string extension() const override;

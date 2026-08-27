@@ -532,7 +532,7 @@
         <!-- connection from base notify signals to the notifier,you can add as many services as you need -->
 
         <connect channel="Notified_slider">
-            <signal>configure_pacs_editor_srv/notified</signal>
+            <signal>configure_pacs_editor_srv/notification_created</signal>
         </connect>
 
         <connect>

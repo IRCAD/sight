@@ -20,10 +20,7 @@
  *
  ***********************************************************************/
 
-#include "module/viz/scene2d/adaptor/transfer_function.hpp"
-
-#include <algorithm>
-#include <glm/common.hpp> // NOLINT(misc-include-cleaner)
+#include "transfer_function.hpp"
 
 #include <viz/scene2d/data/init_qt_pen.hpp>
 #include <viz/scene2d/graphics_view.hpp>
@@ -34,6 +31,10 @@
 #include <QGraphicsRectItem>
 #include <QMenu>
 #include <QTimer>
+
+#include <glm/common.hpp> // NOLINT(misc-include-cleaner): needed for glm::clamp
+
+#include <algorithm>
 
 namespace sight::module::viz::scene2d::adaptor
 {

@@ -227,7 +227,7 @@ static inline void test(const bool _encrypt, const bool _raw, const bool _empty_
         }
 
         // Write the session
-        auto observer = std::make_shared<sight::core::progress::observer>("Writing session... ");
+        auto observer = std::make_shared<sight::core::notification::observer>("Writing session... ");
         CHECK_NOTHROW(session_writer->write(observer));
 
         CHECK(std::filesystem::exists(test_path));
@@ -251,7 +251,7 @@ static inline void test(const bool _encrypt, const bool _raw, const bool _empty_
         }
 
         // Read the session
-        auto observer = std::make_shared<sight::core::progress::observer>("Reading session... ");
+        auto observer = std::make_shared<sight::core::notification::observer>("Reading session... ");
         CHECK_NOTHROW(session_reader->read(observer));
 
         // Test value
@@ -1793,7 +1793,7 @@ TEST_SUITE("sight::io::session")
             session_writer->set_custom_serializer(sight::data::string::classname(), custom_serialize);
 
             // Write the new session
-            const auto observer = std::make_shared<sight::core::progress::observer>("Session Writer Test");
+            const auto observer = std::make_shared<sight::core::notification::observer>("Session Writer Test");
             CHECK_NOTHROW(session_writer->write(observer));
 
             CHECK(std::filesystem::exists(test_path));
@@ -1808,7 +1808,7 @@ TEST_SUITE("sight::io::session")
             session_reader->set_file(test_path);
 
             // Read the session: it should fail since the serializer has been modified by a custom one
-            const auto observer = std::make_shared<sight::core::progress::observer>("Session Reader Test");
+            const auto observer = std::make_shared<sight::core::notification::observer>("Session Reader Test");
             CHECK_THROWS_AS(session_reader->read(observer), sight::core::exception);
 
             // Test deserializer getter

@@ -24,6 +24,8 @@
 
 #include <doctest/doctest.h>
 
+#include <map>
+
 TEST_SUITE("sight::core::tools::type")
 {
 //------------------------------------------------------------------------------

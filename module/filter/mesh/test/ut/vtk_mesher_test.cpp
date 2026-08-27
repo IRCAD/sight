@@ -20,8 +20,6 @@
  ***********************************************************************/
 
 #include <core/os/temp_path.hpp>
-#include <core/runtime/runtime.hpp>
-#include <core/tools/random/generator.hpp>
 
 #include <data/image.hpp>
 #include <data/image_series.hpp>
@@ -40,6 +38,9 @@
 
 TEST_SUITE("sight::module::filter::mesh::vtk_mesher")
 {
+    namespace
+    {
+
     class mesher_fixture
     {
     public:
@@ -96,7 +97,7 @@ TEST_SUITE("sight::module::filter::mesh::vtk_mesher")
             auto my_writer = std::make_shared<sight::io::vtk::image_writer>();
             my_writer->set_object(image_series);
             my_writer->set_file(temp_file);
-            auto write_observer = std::make_shared<sight::core::progress::observer>("Test write");
+            auto write_observer = std::make_shared<sight::core::notification::observer>("Test write");
             CHECK_NOTHROW(my_writer->write(write_observer));
 
             model_series = std::make_shared<sight::data::model_series>();
@@ -116,6 +117,7 @@ TEST_SUITE("sight::module::filter::mesh::vtk_mesher")
         sight::data::image_series::sptr image_series;
     };
 
+    } // namespace
     TEST_CASE_FIXTURE(mesher_fixture, "generate_mesh")
     {
         const std::string config =

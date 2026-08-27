@@ -21,8 +21,6 @@
 
 #pragma once
 
-#include <sight/io/session/config.hpp>
-
 #include "io/session/detail/session.hpp"
 #include "io/session/session_reader.hpp"
 
@@ -32,7 +30,7 @@
 
 #include <io/zip/archive.hpp>
 
-#include <filesystem>
+#include <boost/property_tree/ptree.hpp> // NOLINT(misc-include-cleaner)
 
 namespace sight::io::session::detail
 {
@@ -61,7 +59,7 @@ public:
     /// @param _archive_format how files are stored in the archive. @see sight::io::zip::archive::archiveFormat
     /// @param _password password to use for optional decryption. Empty password means no decryption
     /// @param _encryption_policy the encryption policy: @see sight::io::session::password_keeper::encryption_policy
-    sight::data::object::sptr deserialize(
+    [[nodiscard]] sight::data::object::sptr deserialize(
         const std::filesystem::path& _archive_path,
         io::zip::archive::archive_format _archive_format                    = io::zip::archive::archive_format::standard,
         const core::crypto::secure_string& _password                        = "",
@@ -91,7 +89,7 @@ private:
 
     /// Return a deserializer from a data object class name
     /// @param _class_name the name of the object to find a deserializer
-    deserializer_t find_deserializer(const std::string& _class_name) const;
+    [[nodiscard]] deserializer_t find_deserializer(const std::string& _class_name) const;
 
     /// Deserializes recursively an initialized archive to a data::object using an opened property tree
     /// @param _cache object cache

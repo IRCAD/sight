@@ -24,9 +24,7 @@
 
 #include <sight/core/config.hpp>
 
-#include <core/base_object.hpp>
-#include <core/compare.hpp> // NOLINT(misc-include-cleaner)
-
+#include "base_object.hpp"
 #include "id.hpp"
 
 namespace sight::core

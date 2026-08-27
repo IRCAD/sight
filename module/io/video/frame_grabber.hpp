@@ -22,11 +22,11 @@
 
 #pragma once
 
-#include <core/com/slot.hpp>
 #include <core/com/slots.hpp>
 #include <core/mt/types.hpp>
 #include <core/thread/timer.hpp>
-#include <core/tools/failed.hpp>
+
+#include <data/camera.hpp>
 
 #include <io/__/service/grabber.hpp>
 

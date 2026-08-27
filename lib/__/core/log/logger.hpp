@@ -24,9 +24,8 @@
 
 #include <sight/core/config.hpp>
 
-#include "core/log/log.hpp"
-
-#include <core/object.hpp>
+#include "core/object.hpp"
+#include "log.hpp"
 
 #include <string>
 
@@ -159,7 +158,7 @@ public:
         return m_log_container.rend();
     }
 
-protected:
+private:
 
     /**
      * @brief Function used to sort logs

@@ -43,12 +43,12 @@ TEST_SUITE("sight::io::gz_array")
         array_in->resize({16}, sight::core::type::UINT8);
         {
             auto array_lock = array_in->dump_lock();
-            std::iota(array_in->begin<std::uint8_t>(), array_in->end<std::uint8_t>(), std::uint8_t(0));
+            std::iota(array_in->begin<std::uint8_t>(), array_in->end<std::uint8_t>(), static_cast<std::uint8_t>(0));
         }
         gz_array_writer->set_object(array_in);
         std::filesystem::remove(filepath);
         gz_array_writer->set_file(filepath);
-        const auto observer = std::make_shared<sight::core::progress::observer>("GZ Array Writer Test");
+        const auto observer = std::make_shared<sight::core::notification::observer>("GZ Array Writer Test");
         CHECK_NOTHROW(gz_array_writer->write(observer));
         std::array<std::uint8_t, 16> array {};
         gzFile out = gzopen(filepath.string().c_str(), "rb");

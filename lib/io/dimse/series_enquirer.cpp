@@ -56,7 +56,7 @@ void series_enquirer::initialize(
     std::uint16_t _peer_port,
     const std::string& _peer_application_title,
     const std::string& _move_application_title,
-    core::progress::observer::sptr _progress
+    core::notification::observer::sptr _progress
 )
 {
     // Save move application title for move requests.

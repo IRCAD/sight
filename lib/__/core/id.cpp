@@ -23,10 +23,9 @@
 // cspell:ignore NOLINTNEXTLINE
 
 #include "id.hpp"
-
-#include <core/object.hpp>
-#include <core/spy_log.hpp>
-#include <core/tools/failed.hpp>
+#include "object.hpp"
+#include "spy_log.hpp"
+#include "tools/failed.hpp"
 
 namespace sight::core
 {

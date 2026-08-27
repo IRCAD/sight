@@ -22,9 +22,9 @@
 
 #pragma once
 
-#include <data/model_series.hpp>
+#include <core/notification/has_notifications.hpp>
 
-#include <service/notifier.hpp>
+#include <data/model_series.hpp>
 
 #include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/interactor/base.hpp>
@@ -80,7 +80,7 @@ namespace sight::module::viz::scene3d::adaptor
 class shape_extruder final :
     public sight::viz::scene3d::adaptor,
     public sight::viz::scene3d::interactor::base,
-    private service::notifier
+    public core::notification::has_notifications
 {
 public:
 

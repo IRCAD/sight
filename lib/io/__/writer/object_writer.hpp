@@ -24,16 +24,16 @@
 
 #include <sight/io/__/config.hpp>
 
-#include "core/progress/observer.hpp"
+#include "core/notification/observer.hpp"
 
 #include <core/object.hpp>
 
-namespace sight::core::progress
+namespace sight::core::notification
 {
 
 class observer;
 
-} // namespace sight::core::progress
+} // namespace sight::core::notification
 
 namespace sight::io::writer
 {
@@ -62,7 +62,7 @@ public:
      *
      * This method write the object given in parameter of set_object method.
      */
-    SIGHT_IO_API virtual void write(sight::sptr<sight::core::progress::observer> _progress) = 0;
+    SIGHT_IO_API virtual void write(sight::sptr<sight::core::notification::observer> _progress) = 0;
 
     /**
      * @brief m_object setter.

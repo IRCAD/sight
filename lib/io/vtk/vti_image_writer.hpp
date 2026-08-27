@@ -46,7 +46,7 @@ public:
     SIGHT_DECLARE_CLASS(vti_image_writer, io::writer::generic_object_writer<data::image>);
 
     //! @brief Writing operator.
-    SIGHT_IO_VTK_API void write(sight::sptr<sight::core::progress::observer> _progress) override;
+    SIGHT_IO_VTK_API void write(sight::sptr<sight::core::notification::observer> _progress) override;
 
     /// @return ".vti"
     SIGHT_IO_VTK_API std::string extension() const override;

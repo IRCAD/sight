@@ -54,8 +54,7 @@ struct SIGHT_CORE_CLASS_API connection
             slot_connection_base::blocker_sptr_type m_blocker;
     };
 
-    connection()
-    = default;
+    connection() = default;
 
     explicit connection(const slot_connection_base::sptr& _connection) :
         m_connection_base(_connection)

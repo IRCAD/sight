@@ -55,7 +55,7 @@ public:
     ~session_writer_impl() = default;
 
     /// Read the session from archive.
-    void write(sight::core::progress::observer::sptr _progress)
+    void write(sight::core::notification::observer::sptr _progress)
     {
         // Retrieve the root object
         auto root_object = std::dynamic_pointer_cast<const data::object>(m_session_writer->get_object());
@@ -98,7 +98,7 @@ session_writer::~session_writer() = default;
 
 //------------------------------------------------------------------------------
 
-void session_writer::write(sight::core::progress::observer::sptr _progress)
+void session_writer::write(sight::core::notification::observer::sptr _progress)
 {
     m_pimpl->write(_progress);
 }

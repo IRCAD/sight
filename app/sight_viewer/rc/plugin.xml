@@ -562,7 +562,7 @@
             <!-- ******************************* Connections ***************************************** -->
 
             <connect>
-                <signal>open_series_set_srv/monitor_created</signal>
+                <signal>open_series_set_srv/notification_created</signal>
                 <slot>progress_bar_srv/add_monitor</slot>
             </connect>
 

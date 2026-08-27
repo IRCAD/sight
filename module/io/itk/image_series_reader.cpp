@@ -155,7 +155,7 @@ void image_series_reader::updating()
 
         try
         {
-            auto read_observer = std::make_shared<sight::core::progress::observer>("Loading image... ");
+            auto read_observer = this->make_notification<sight::core::notification::observer>("Loading image... ");
             if(image_reader::load_image(this->get_file(), image_series, read_observer))
             {
                 init_series(image_series);

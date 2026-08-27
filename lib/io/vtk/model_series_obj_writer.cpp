@@ -25,7 +25,7 @@
 #include "io/vtk/helper/mesh.hpp"
 #include "io/vtk/vtk.hpp"
 
-#include <core/progress/observer.hpp>
+#include <core/notification/observer.hpp>
 
 #include <data/material.hpp>
 #include <data/model_series.hpp>
@@ -79,7 +79,7 @@ static vtkSmartPointer<vtkActor> create_actor(const data::reconstruction::sptr& 
 
 //------------------------------------------------------------------------------
 
-void model_series_obj_writer::write(sight::core::progress::observer::sptr _progress)
+void model_series_obj_writer::write(sight::core::notification::observer::sptr _progress)
 {
     auto object_lock = get_object();
 

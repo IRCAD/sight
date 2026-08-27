@@ -23,7 +23,7 @@
 #pragma once
 
 #include <core/macros.hpp>
-#include <core/progress/observer.hpp>
+#include <core/notification/observer.hpp>
 
 #include <io/__/service/reader.hpp>
 
@@ -69,7 +69,7 @@ public:
     static bool load_image(
         const std::filesystem::path& _img_file,
         const sight::sptr<data::image>& _img,
-        const sight::sptr<core::progress::observer>& _read_observer
+        const sight::sptr<core::notification::observer>& _read_observer
     );
 
     /// Return managed file type, here FILE

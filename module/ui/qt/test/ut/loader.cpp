@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -26,8 +26,6 @@
 
 #include <service/op.hpp>
 
-#include <cppunit/extensions/HelperMacros.h>
-
 #include <QAbstractButton>
 #include <QApplication>
 #include <QPointer>
@@ -37,32 +35,38 @@
 namespace sight::module::ui::qt::ut
 {
 
-inline static const struct loader final
+namespace
+{
+
+struct loader final
 {
     loader()
     {
-        CPPUNIT_ASSERT_NO_THROW(
-            core::runtime::add_modules(
-                core::runtime::get_resource_file_path(
-                    "module_ui_qt_ut"
-                )
+        core::runtime::add_modules(
+            core::runtime::get_resource_file_path(
+                "module_ui_qt_ut"
             )
         );
 
         sight::core::runtime::init();
     }
-} LOADER;
+} loader;
+
+} // namespace
 
 //------------------------------------------------------------------------------
 
 std::tuple<service::base::sptr, std::string> make_container(const std::string& _child_uuid)
 {
+    // A prior gui_fixture test may have stopped the qt module (and its default worker) in tear_down().
+    core::runtime::load_module("sight::module::ui::qt");
+
     auto uuid = _child_uuid;
 
     if(uuid.empty())
     {
         uuid = core::tools::uuid::generate();
-        uuid.erase(std::remove(uuid.begin(), uuid.end(), '-'), uuid.end());
+        std::erase(uuid, '-');
     }
 
     const service::base::sptr container(service::add("sight::module::ui::frame"));

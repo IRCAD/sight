@@ -203,13 +203,12 @@ template<typename R, typename ... A>
 void signal<R(A ...)>::emit(A ... _a) const
 {
     core::mt::read_lock lock(m_connections_mutex);
-    typename slot_container_t::const_iterator iter;
-    auto end = m_slots.end();
-    for(iter = m_slots.begin() ; iter != end ; ++iter)
+
+    for(const auto& slot : m_slots)
     {
-        if((*iter)->first)
+        if(slot->first)
         {
-            (*iter)->second.lock()->run(_a ...);
+            slot->second.lock()->run(_a ...);
         }
     }
 }
@@ -226,15 +225,14 @@ void signal<R(A ...)>::async_emit(A ... _a) const
     std::vector<sight::sptr<slot_run_type> > keep_slots_alive;
     {
         core::mt::read_lock lock(m_connections_mutex);
-        typename slot_container_t::const_iterator iter;
-        auto end = m_slots.end();
-        for(iter = m_slots.begin() ; iter != end ; ++iter)
+
+        for(const auto& slot : m_slots)
         {
-            if((*iter)->first)
+            if(slot->first)
             {
-                auto slot = (*iter)->second.lock();
-                keep_slots_alive.push_back(slot);
-                slot->async_run(_a ...);
+                auto slot_ptr = slot->second.lock();
+                keep_slots_alive.push_back(slot_ptr);
+                slot_ptr->async_run(_a ...);
             }
         }
     }

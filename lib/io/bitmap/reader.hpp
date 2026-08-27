@@ -71,7 +71,7 @@ public:
     SIGHT_IO_BITMAP_API ~reader() final;
 
     /// Main writing method from generic_object_reader
-    SIGHT_IO_BITMAP_API void read(sight::sptr<sight::core::progress::observer> _progress) final;
+    SIGHT_IO_BITMAP_API void read(sight::sptr<sight::core::notification::observer> _progress) final;
 
     /// Specialized reading method that allows to specify the backend
     /// @arg _backend: the backend to use. Can be LIBJPEG, LIBTIFF, LIBPNG, OPENJPEG or, if available, NVJPEG and

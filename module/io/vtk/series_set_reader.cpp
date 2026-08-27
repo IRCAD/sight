@@ -23,7 +23,6 @@
 #include "module/io/vtk/series_set_reader.hpp"
 
 #include <core/location/single_folder.hpp>
-#include <core/progress/observer.hpp>
 
 #include <data/series_set.hpp>
 
@@ -131,8 +130,7 @@ void series_set_reader::load_series_set(
     reader->set_object(_series_set);
     reader->set_files(_vtk_files);
 
-    auto observer = std::make_shared<core::progress::observer>("Reading series set from vtk files");
-    this->async_emit(has_monitors::signals::MONITOR_CREATED, observer->get_sptr());
+    auto observer = this->observe("Reading series set from vtk files");
 
     try
     {
