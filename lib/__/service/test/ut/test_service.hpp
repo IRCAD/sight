@@ -28,6 +28,7 @@
 #include <data/image.hpp>
 #include <data/integer.hpp>
 #include <data/ptr.hpp>
+#include <data/string.hpp>
 
 #include <service/base.hpp>
 
@@ -348,6 +349,28 @@ public:
     SIGHT_DECLARE_SERVICE(test1_property, service::ut::test_srv);
 
     data::property<data::integer> m_prop1 {this, "prop1", 12};
+};
+
+class test1_value : public test_srv
+{
+public:
+
+    SIGHT_DECLARE_SERVICE(test1_value, service::ut::test_srv);
+
+private:
+
+    data::ptr<data::integer, data::access::in> m_value {this, "value"};
+};
+
+class test1_path_property : public test_srv
+{
+public:
+
+    SIGHT_DECLARE_SERVICE(test1_path_property, service::ut::test_srv);
+
+private:
+
+    data::property<data::string> m_path {this, "path.file", std::string()};
 };
 
 class test_service_with_data : public service::base

@@ -68,7 +68,8 @@ protected:
     /// Parses the configuration
     SIGHT_ACTIVITY_API virtual void parse_configuration(
         const configuration_t& _config,
-        const in_out_map_t& _inouts = in_out_map_t()
+        const in_out_map_t& _inouts         = in_out_map_t(),
+        const in_out_map_t& _bound_data_ids = in_out_map_t()
     );
 
     /// Create the activity given in 'mainActivity' configuration

@@ -27,12 +27,27 @@
 #include <data/object.hpp>
 #include <data/ptr_access.hpp>
 
+#include <map>
 #include <optional>
+#include <string>
 
 namespace sight::data
 {
 
 class base_ptr;
+
+/// Describes a data key declared with a data::ptr, a data::ptr_vector or a data::property.
+struct key_info
+{
+    data::access access {data::access::in};
+    bool optional {false};
+    /// True when the key was declared with a data::ptr_vector.
+    bool group {false};
+    /// True when the key was declared with a data::property.
+    bool property {false};
+};
+
+using key_info_map_t = std::map<std::string, key_info, std::less<> >;
 
 //------------------------------------------------------------------------------
 
@@ -133,6 +148,9 @@ public:
         data::object::sptr _object,
         std::string_view _key,
         std::optional<std::size_t> _index = {});
+
+    /// Returns the description of all the data keys declared by this owner.
+    [[nodiscard]] SIGHT_DATA_API key_info_map_t keys() const;
 
 protected:
 

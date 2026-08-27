@@ -32,6 +32,7 @@
 #include <core/com/slots.hpp>
 
 #include <data/activity.hpp>
+#include <data/string.hpp>
 
 namespace sight::ui
 {
@@ -46,6 +47,19 @@ namespace sight::ui
  * @code{.xml}
    <service type="sight::module::ui::qt::activity::dynamic_view" auto_connect="true" >
      <mainActivity id="SDBActivity" />
+     <object name="SERIES_SET" uid="${medical_data}" />
+     <object name="MODEL" uid="${model}" optional="true" />
+     <object name="ACTIVITY_NAME" value="my activity" />
+     <param name="ICON_PATH" value="sight::module::ui::icons/app.ico" />
+     <channel name="..." uid="..." />
+   </service>
+   @endcode
+ *
+ * The former syntax is still supported:
+ *
+ * @code{.xml}
+   <service type="sight::module::ui::qt::activity::dynamic_view" auto_connect="true" >
+     <mainActivity id="SDBActivity" />
      <parameters>
          <parameter replace="SERIES_SET" by="medicalData"  />
          <parameter replace="ICON_PATH" by="sight::module::ui::icons/app.ico"  />
@@ -55,6 +69,9 @@ namespace sight::ui
  * - \b mainActivity (optional): information about the main activity (first tab). The activity will be generated.
  *   This activity must not have requirement.
  *   - \b id : identifier of the activity
+ * - \b data (optional): object passed to the activity. \b name is the name of the parameter in the activity
+ *   configuration, and \b uid the object to pass, or \b value a literal value whose type is resolved from the
+ *   activity configuration. \b optional allows the service to start before a deferred object is available.
  * - \b parameters (optional) : additional parameters used to launch the activities
  *    - \b parameter: defines a parameter
  *        - \b replace: name of the parameter as defined in the config
@@ -116,6 +133,12 @@ private:
 
     /// Input data to pass to the configuration
     data::ptr_vector<data::object, data::access::inout> m_data {this, "data"};
+
+    /// Names of the objects passed to the configuration, with the hierarchical syntax
+    data::ptr_vector<data::string, data::access::in> m_data_names {this, "data.name"};
+
+    /// Objects passed to the configuration, with the hierarchical syntax. They may be deferred.
+    data::ptr_vector<data::object, data::access::inout> m_data_uids {this, "data.uid"};
 };
 
 } // namespace sight::ui

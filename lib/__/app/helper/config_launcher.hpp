@@ -48,6 +48,10 @@ public:
     static constexpr std::string_view DATA_GROUP   = "data";
     static constexpr std::string_view OBJECT_GROUP = "object";
 
+    /// Groups used by the hierarchical syntax, i.e. <object name="..." uid="..." />
+    static constexpr std::string_view OBJECT_NAME_GROUP = "object.name";
+    static constexpr std::string_view OBJECT_UID_GROUP  = "object.uid";
+
     /**
      * @brief Parses a configuration.
      * @param _config The config to parse.

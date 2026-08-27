@@ -27,6 +27,10 @@
 
 #include <boost/property_tree/ptree.hpp>
 
+#include <set>
+#include <string>
+#include <vector>
+
 namespace sight::core::ptree
 {
 
@@ -82,5 +86,28 @@ template<class T>
 }
 
 SIGHT_CORE_API std::string to_string(const boost::property_tree::ptree& _pt);
+
+/// A single attribute of a flattened property tree, see flatten().
+struct flat_entry
+{
+    /// Dotted path built from the tag names and the attribute name, e.g. "config.tracker.ip"
+    std::string key;
+    std::string value;
+    /// Rank of the innermost tag among its homonym siblings, used to resolve groups
+    std::size_t index {0};
+};
+
+/**
+ * @brief Flattens the attributes of a property tree into a list of dotted keys.
+ *
+ * `<config threshold="1"><tracker ip="a"/><tracker ip="b"/></config>` yields
+ * `{"config.threshold", "1", 0}`, `{"config.tracker.ip", "a", 0}` and `{"config.tracker.ip", "b", 1}`.
+ *
+ * @param _tree tree to flatten
+ * @param _reserved tag names to skip, only considered at the first level
+ */
+SIGHT_CORE_API std::vector<flat_entry> flatten(
+    const boost::property_tree::ptree& _tree,
+    const std::set<std::string, std::less<> >& _reserved = {});
 
 } // namespace sight::core::ptree

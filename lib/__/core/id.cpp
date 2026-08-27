@@ -138,7 +138,7 @@ id::type id::generate() const
     do
     {
         core::mt::scoped_lock lock(s_mutex_counter);
-        new_id = prefix + "-" + std::to_string(s_categorized_counter[prefix]++);
+        new_id = prefix + "_" + std::to_string(s_categorized_counter[prefix]++);
     }
     while(exist(new_id));
 

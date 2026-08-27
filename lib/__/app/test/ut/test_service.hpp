@@ -689,4 +689,51 @@ public:
     // NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 };
 
+/// Declares hierarchical keys, so that the XML configuration can mirror their structure.
+class test_service_with_nested_keys : public service::base
+{
+public:
+
+    SIGHT_DECLARE_SERVICE(test_service_with_nested_keys, service::base);
+    test_service_with_nested_keys() noexcept = default;
+    ~test_service_with_nested_keys() noexcept override = default;
+
+protected:
+
+    //------------------------------------------------------------------------------
+
+    void configuring() override
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void starting() override
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void stopping() override
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void updating() override
+    {
+    }
+
+public:
+
+    // NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
+    data::ptr<data::object, data::access::in> m_source {this, "image.source"};
+    data::ptr<data::object, data::access::inout> m_target {this, "image.target", true};
+    data::property<data::integer> m_threshold {this, "config.threshold", 5};
+    data::property<data::string> m_label {this, "config.label", {"default_label"}};
+    data::ptr_vector<data::string, data::access::in> m_tracker_ip {this, "config.tracker.ip"};
+    data::ptr_vector<data::integer, data::access::in> m_tracker_port {this, "config.tracker.port"};
+    // NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
+};
+
 } // namespace sight::app::ut

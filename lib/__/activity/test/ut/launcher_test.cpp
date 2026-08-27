@@ -96,4 +96,43 @@ TEST_SUITE("sight::activity::launcher")
         CHECK_EQ(std::size_t(1), test_launcher.value_parameters().size());
         CHECK_EQ(std::string("9;8;7"), test_launcher.value_parameters().at("position"));
     }
+
+    TEST_CASE("nested_data_parsing")
+    {
+        launcher_test test_launcher;
+
+        sight::activity::launcher::configuration_t config;
+
+        sight::activity::launcher::configuration_t bound;
+        bound.put("<xmlattr>.name", "activity_set");
+        bound.put("<xmlattr>.uid", "activity_set_uid");
+        config.add_child("object", bound);
+
+        sight::activity::launcher::configuration_t literal;
+        literal.put("<xmlattr>.name", "position");
+        literal.put("<xmlattr>.value", "9;8;7");
+        config.add_child("object", literal);
+
+        sight::activity::launcher::configuration_t deferred;
+        deferred.put("<xmlattr>.name", "deferred_obj");
+        deferred.put("<xmlattr>.uid", "deferred_obj_uid");
+        config.add_child("object", deferred);
+
+        // The second entry declares a literal value, and the third one is not bound yet
+        test_launcher.parse_configuration(config, {}, {"runtime_activity_set_uid", "", ""});
+
+        std::map<std::string, std::string> parameters_map;
+        for(const auto& parameter : test_launcher.parameters())
+        {
+            parameters_map[parameter.replace] = parameter.by;
+        }
+
+        CHECK_EQ(std::size_t(3), parameters_map.size());
+        CHECK_EQ(std::string("runtime_activity_set_uid"), parameters_map.at("activity_set"));
+        CHECK_EQ(std::string("9;8;7"), parameters_map.at("position"));
+        CHECK_EQ(std::string("deferred_obj_uid"), parameters_map.at("deferred_obj"));
+
+        CHECK_EQ(std::size_t(1), test_launcher.value_parameters().size());
+        CHECK_EQ(std::string("9;8;7"), test_launcher.value_parameters().at("position"));
+    }
 } // end TEST_SUITE

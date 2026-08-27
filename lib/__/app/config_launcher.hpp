@@ -49,6 +49,19 @@ namespace sight::app
  *
  * @code{.xml}
         <service type="sight::app::config_launcher" >
+            <config id="..." />
+            <object name="object1" uid="..." />
+            <object name="object2" uid="..." optional="true" />
+            <object name="object3" value="..." />
+            <param name="WID_PARENT" value="..." />
+            <channel name="channel1" uid="..." />
+        </service>
+   @endcode
+ *
+ * The former syntax is still supported:
+ *
+ * @code{.xml}
+        <service type="sight::app::config_launcher" >
             <properties config="..." />
             <inout group="object">
                 <key name="object1" uid="..." />
@@ -129,8 +142,24 @@ private:
     /// Input data to pass to the configuration
     data::ptr_vector<data::object, data::access::inout> m_object {this, app::helper::config_launcher::OBJECT_GROUP};
 
+    /// Names of the objects passed to the configuration, with the hierarchical syntax
+    data::ptr_vector<data::string, data::access::in> m_object_names {
+        this, app::helper::config_launcher::OBJECT_NAME_GROUP
+    };
+
+    /// Objects passed to the configuration, with the hierarchical syntax. They may be deferred.
+    data::ptr_vector<data::object, data::access::inout> m_object_uids {
+        this, app::helper::config_launcher::OBJECT_UID_GROUP
+    };
+
     /// Input data to pass to the configuration
     data::property<data::string> m_config_id {this, "config", {}};
+
+    /// Identifier of the configuration to launch, with the hierarchical syntax
+    data::property<data::string> m_nested_config_id {this, "config.id", {}};
+
+    /// Returns the configuration identifier, whatever the syntax used to declare it
+    [[nodiscard]] std::string config_id() const;
 };
 
 } // namespace sight::app

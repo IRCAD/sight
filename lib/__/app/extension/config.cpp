@@ -190,10 +190,7 @@ void config::add_app_info(
     core::mt::write_lock lock(m_registry_mutex);
 
     SIGHT_DEBUG("New app config registering : configId = " + _config_id);
-    SIGHT_ASSERT(
-        "The app config with the id = " << _config_id << " already exist.",
-        m_reg.find(_config_id) == m_reg.end()
-    );
+    SIGHT_ASSERT("The app config with the id = " << _config_id << " already exist.", not m_reg.contains(_config_id));
 
     app_info::sptr info = std::make_shared<app_info>();
     info->group       = _group;

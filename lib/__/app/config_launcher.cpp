@@ -42,8 +42,17 @@ config_launcher::config_launcher() noexcept :
 service::connections_t config_launcher::auto_connections() const
 {
     return {
-        {m_config_id, sight::data::signals::MODIFIED, slots::UPDATE}
+        {m_config_id, sight::data::signals::MODIFIED, slots::UPDATE},
+        {m_nested_config_id, sight::data::signals::MODIFIED, slots::UPDATE}
     };
+}
+
+//------------------------------------------------------------------------------
+
+std::string config_launcher::config_id() const
+{
+    const auto nested = *m_nested_config_id;
+    return nested.empty() ? *m_config_id : nested;
 }
 
 //------------------------------------------------------------------------------
@@ -77,7 +86,7 @@ std::optional<std::string> config_launcher::resolve_object_type(
 
 void config_launcher::starting()
 {
-    const auto config = *m_config_id;
+    const auto config = this->config_id();
     if(not config.empty())
     {
         m_config_launcher->set_config(config);
@@ -102,7 +111,7 @@ void config_launcher::updating()
 {
     bool start = !m_config_launcher->config_is_running();
 
-    const auto new_config = *m_config_id;
+    const auto new_config = this->config_id();
 
     // If the configuration is different from the current one
     if(m_config_launcher->config() != new_config)

@@ -39,7 +39,11 @@ namespace sight::activity
 
 //------------------------------------------------------------------------------
 
-void launcher::parse_configuration(const configuration_t& _config, const in_out_map_t& _inouts)
+void launcher::parse_configuration(
+    const configuration_t& _config,
+    const in_out_map_t& _inouts,
+    const in_out_map_t& _bound_data_ids
+)
 {
     m_parameters.clear();
     m_value_parameters.clear();
@@ -99,6 +103,40 @@ void launcher::parse_configuration(const configuration_t& _config, const in_out_
                 m_parameters.push_back(param);
             }
         }
+    }
+
+    // Hierarchical syntax, i.e. <object name="..." uid="..." /> as a direct child of the service
+    std::size_t data_index = 0;
+    for(const auto& it_cfg : boost::make_iterator_range(_config.equal_range("object")))
+    {
+        const auto key = it_cfg.second.get<std::string>("<xmlattr>.name", "");
+        SIGHT_ASSERT("Missing 'name' attribute in <object>.", !key.empty());
+
+        const auto uid   = it_cfg.second.get_optional<std::string>("<xmlattr>.uid");
+        const auto value = it_cfg.second.get_optional<std::string>("<xmlattr>.value");
+
+        SIGHT_ASSERT(
+            "Exactly one of 'uid' or 'value' is required in <object>.",
+            uid.has_value() != value.has_value()
+        );
+
+        parameter_t param;
+        param.replace = key;
+
+        if(uid.has_value())
+        {
+            // A deferred object is not bound yet, the uid declared in the configuration is then the only reference
+            const bool bound = data_index < _bound_data_ids.size() && !_bound_data_ids[data_index].empty();
+            param.by = bound ? _bound_data_ids[data_index] : *uid;
+        }
+        else
+        {
+            param.by                = *value;
+            m_value_parameters[key] = *value;
+        }
+
+        m_parameters.push_back(param);
+        ++data_index;
     }
 
     if(const auto config_params = _config.get_child_optional("parameters"); config_params.has_value())

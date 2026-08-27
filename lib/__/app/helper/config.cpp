@@ -34,6 +34,7 @@
 #include <data/object.hpp>
 
 #include <regex>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -294,7 +295,8 @@ data::object::sptr config::get_object(config_attribute_t _type, const std::strin
 app::detail::service_config config::parse_service(
     const boost::property_tree::ptree& _srv_elem,
     const std::string& _err_msg_head,
-    const objects_set_t& _objects
+    const objects_set_t& _objects,
+    const std::set<std::string>& _deferred_objects
 )
 {
 #ifndef _DEBUG
@@ -554,29 +556,111 @@ app::detail::service_config config::parse_service(
         }
     }
 
+    // Parse the hierarchical syntax, where the XML structure mirrors the structure of the service keys.
+    // Any tag or attribute that does not match a key declared by the service is left untouched in the service
+    // configuration, so that the service can parse it itself.
+    const auto declared_keys = config::service_keys(srv_config.m_type);
+
+    // <optional key="..."/> overrides the optional flag declared by the service, typically for deferred objects
+    std::set<std::string, std::less<> > optional_keys;
+    for(const auto& opt_cfg : boost::make_iterator_range(srv_config.m_config.equal_range("optional")))
+    {
+        optional_keys.insert(opt_cfg.second.get<std::string>("<xmlattr>.key"));
+    }
+
+    const auto entries = core::ptree::flatten(srv_config.m_config, RESERVED_TAGS);
+
+    // The reserved 'optional' attribute applies to the keys carried by the same tag occurrence, which gives a
+    // per-element granularity for the groups, i.e. <object name="image" uid="${image}" optional="true" />
+    const auto tag_of = [](const core::ptree::flat_entry& _e)
+                        {
+                            return std::pair {_e.key.substr(0, _e.key.rfind('.')), _e.index};
+                        };
+
+    std::set<std::pair<std::string, std::size_t> > optional_tags;
+    for(const auto& entry : entries)
+    {
+        if(entry.key.ends_with(".optional") && entry.value == "true")
+        {
+            optional_tags.insert(tag_of(entry));
+        }
+    }
+
+    for(const auto& entry : entries)
+    {
+        const auto it_key = declared_keys.find(entry.key);
+        if(it_key == declared_keys.end())
+        {
+            continue;
+        }
+
+        const data::key_info& info = it_key->second;
+
+        // A key may be given either an object uid, bound here, or a literal value, built by the service itself
+        if(!is_object_property(entry.value) && !_deferred_objects.contains(entry.value))
+        {
+            continue;
+        }
+
+        const std::optional<std::size_t> index = info.group ? std::optional {entry.index} : std::nullopt;
+
+        SIGHT_THROW_IF(
+            "Key " << std::quoted(entry.key) << " is configured twice" << err_msg_tail,
+            srv_config.m_objects.contains({entry.key, index})
+        );
+
+        srv_config.m_objects[{entry.key, index}] = app::detail::object_serviceconfig
+        {
+            .m_key          = entry.key,
+            .m_uid          = entry.value,
+            .m_access       = info.access,
+            .m_auto_connect = boost::none,
+            .m_optional     = info.access == data::access::out || info.optional
+                              || optional_keys.contains(entry.key) || optional_tags.contains(tag_of(entry))
+        };
+    }
+
+    for(const auto& optional_key : optional_keys)
+    {
+        SIGHT_THROW_IF(
+            "Unknown key " << std::quoted(optional_key) << " declared optional" << err_msg_tail,
+            !declared_keys.contains(optional_key)
+        );
+    }
+
     return srv_config;
+}
+
+//------------------------------------------------------------------------------
+
+/// Returns a cached prototype of the given service type, used to introspect the data keys it declares.
+static service::base::sptr service_prototype(const std::string& _service_type)
+{
+    std::scoped_lock guard(s_services_props_mutex);
+
+    auto it = s_services_props.find(_service_type);
+    if(it == s_services_props.end())
+    {
+        auto srv = service::extension::factory::get()->create(_service_type);
+        s_services_props[_service_type] = srv;
+        return srv;
+    }
+
+    return it->second;
 }
 
 //------------------------------------------------------------------------------
 
 bool config::is_key_optional(const std::string& _service_type, const std::string& _key)
 {
-    std::scoped_lock guard(s_services_props_mutex);
+    return service::manager::is_key_optional(service_prototype(_service_type), _key);
+}
 
-    service::base::sptr srv;
-    auto it = s_services_props.find(_service_type);
-    if(it == s_services_props.end())
-    {
-        auto srv_factory = service::extension::factory::get();
-        srv                             = srv_factory->create(_service_type);
-        s_services_props[_service_type] = srv;
-    }
-    else
-    {
-        srv = it->second;
-    }
+//------------------------------------------------------------------------------
 
-    return service::manager::is_key_optional(srv, _key);
+data::key_info_map_t config::service_keys(const std::string& _service_type)
+{
+    return service_prototype(_service_type)->keys();
 }
 
 // ----------------------------------------------------------------------------

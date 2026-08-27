@@ -25,8 +25,10 @@
 
 #include <core/ptree.hpp>
 
+#include <service/manager.hpp>
 #include <service/value_parameters.hpp>
 
+#include <algorithm>
 #include <ranges>
 #include <set>
 
@@ -115,6 +117,13 @@ void service::configure()
                             properties_cfgs[first_element.first] = first_element.second.get_value<std::string>();
                         }
                     }
+                }
+
+                // Literal values given with the hierarchical syntax, i.e. <config value="10"/> for "config.value".
+                // Entries that do not match a declared property are simply never looked up.
+                for(const auto& entry : core::ptree::flatten(m_configuration, sight::service::manager::RESERVED_TAGS))
+                {
+                    properties_cfgs.emplace(entry.key, entry.value);
                 }
 
                 const auto properties_obj = m_service.m_properties_map.lock();
@@ -297,6 +306,37 @@ void service::create_value_objects()
 
     const auto& container = m_service.container();
 
+    // Same thing with the hierarchical syntax, i.e. <config threshold="1.5"/> for the key "config.threshold". Here
+    // there is no explicit distinction between a uid and a literal value, so a key already bound to an object by the
+    // application configuration is left alone. Objects previously created by this service are updated instead.
+    for(const auto& entry : core::ptree::flatten(m_configuration, sight::service::manager::RESERVED_TAGS))
+    {
+        const auto declaration = container.find({entry.key, {}});
+        if(declaration == container.end())
+        {
+            continue;
+        }
+
+        declared_keys.insert(entry.key);
+
+        const std::optional<std::size_t> index = declaration->second->is_group()
+                                                 ? std::optional {entry.index} : std::nullopt;
+
+        if(const auto bound = container.find({entry.key, index}); bound != container.end())
+        {
+            const auto current_obj        = std::const_pointer_cast<data::object>(bound->second->get());
+            const bool created_by_service = current_obj
+                                            && std::ranges::find(m_created_objects, current_obj)
+                                            != m_created_objects.end();
+            if(!created_by_service && (current_obj || !bound->second->deferred_id().empty()))
+            {
+                continue;
+            }
+        }
+
+        value_cfgs[{entry.key, index}] = entry.value;
+    }
+
     // Keys that are not mentioned at all in the configuration, but that declare a default value, are built as well.
     for(const auto& [id, ptr] : container)
     {
@@ -324,7 +364,21 @@ void service::create_value_objects()
             ptr->access() == data::access::out
         );
 
-        if(!value.has_value() && ptr->get() != nullptr)
+        const auto current_obj = std::const_pointer_cast<data::object>(ptr->get());
+        if(value.has_value()
+           && current_obj
+           && std::ranges::find(m_created_objects, current_obj) != m_created_objects.end())
+        {
+            // Reuse an object previously created from a literal value. This keeps its identity stable while applying
+            // the new configuration, and avoids retaining an obsolete object in m_created_objects.
+            const auto serializable = std::dynamic_pointer_cast<data::string_serializable>(current_obj);
+            SIGHT_ASSERT("Object created from a literal value is not string serializable", serializable);
+            serializable->from_string(*value);
+            serializable->set_default_value();
+            continue;
+        }
+
+        if(!value.has_value() && current_obj)
         {
             // Already assigned, typically set programmatically before the service was configured.
             continue;

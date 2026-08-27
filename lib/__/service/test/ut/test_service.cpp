@@ -35,6 +35,8 @@ SIGHT_REGISTER_SERVICE(sight::service::ut::test_srv, sight::service::ut::test1_i
 SIGHT_REGISTER_SERVICE(sight::service::ut::test_srv, sight::service::ut::test3_inouts_v2);
 SIGHT_REGISTER_SERVICE(sight::service::base, sight::service::ut::test_service_with_data);
 SIGHT_REGISTER_SERVICE(sight::service::base, sight::service::ut::test1_property);
+SIGHT_REGISTER_SERVICE(sight::service::base, sight::service::ut::test1_value);
+SIGHT_REGISTER_SERVICE(sight::service::base, sight::service::ut::test1_path_property);
 
 namespace sight::service::ut
 {

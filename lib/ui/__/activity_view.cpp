@@ -24,6 +24,8 @@
 
 #include "ui/__/dialog/message.hpp"
 
+#include <boost/range/iterator_range_core.hpp>
+
 #include <algorithm>
 
 namespace sight::ui
@@ -56,7 +58,17 @@ void activity_view::configuring()
                 inout_map.push_back(obj->get_id());
             }
         });
-    this->parse_configuration(config, inout_map);
+
+    // Objects declared with the hierarchical syntax keep their position, unbound ones leave an empty slot
+    sight::activity::launcher::in_out_map_t bound_data_ids;
+    std::size_t data_index = 0;
+    for([[maybe_unused]] const auto& _ : boost::make_iterator_range(config.equal_range("data")))
+    {
+        const auto obj = this->inout(m_data_uids.key(), data_index++).lock();
+        bound_data_ids.emplace_back(obj != nullptr ? obj->get_id() : std::string());
+    }
+
+    this->parse_configuration(config, inout_map, bound_data_ids);
 }
 
 //------------------------------------------------------------------------------

@@ -1635,6 +1635,34 @@ TEST_SUITE("sight::app::config")
 
 //------------------------------------------------------------------------------
 
+    TEST_CASE_FIXTURE(fixture, "nested_config_launcher_test")
+    {
+        m_app_config_mgr = sight::app::ut::launch_app_config_mgr("nested_config_launcher_test", true);
+
+        sight::core::object::sptr receiver_obj;
+        int j = 0;
+        while(receiver_obj == nullptr && j++ < 200)
+        {
+            receiver_obj = sight::core::id::get_object("value_inout_optional_mixed_sub_config", j, "receiver");
+        }
+
+        auto receiver = std::dynamic_pointer_cast<sight::app::ut::test_service>(receiver_obj);
+        REQUIRE(receiver != nullptr);
+        CHECK(receiver->started());
+
+        auto position_opt =
+            std::dynamic_pointer_cast<const sight::data::dvec3>(receiver->input("data1").lock().get_shared());
+        REQUIRE(position_opt != nullptr);
+        CHECK_EQ(sight::vec3d_t({9., 8., 7.}), position_opt->value());
+
+        auto position_uid =
+            std::dynamic_pointer_cast<const sight::data::dvec3>(receiver->input("data2").lock().get_shared());
+        REQUIRE(position_uid != nullptr);
+        CHECK_EQ(sight::vec3d_t({-5., 0., 4.}), position_uid->value());
+    }
+
+//------------------------------------------------------------------------------
+
     TEST_CASE_FIXTURE(fixture, "value_simple_key_test")
     {
         m_app_config_mgr = sight::app::ut::launch_app_config_mgr("value_simple_key_test");
@@ -1686,6 +1714,91 @@ TEST_SUITE("sight::app::config")
             CHECK(from_uid != nullptr);
             CHECK_EQ(std::int64_t(7), from_uid->value());
         }
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE_FIXTURE(fixture, "nested_keys_test")
+    {
+        m_app_config_mgr = sight::app::ut::launch_app_config_mgr("nested_keys_test");
+
+        {
+            auto srv = std::dynamic_pointer_cast<sight::app::ut::test_service_with_nested_keys>(
+                sight::core::id::get_object("nested_srv")
+            );
+            REQUIRE(srv != nullptr);
+            CHECK_EQ(sight::service::base::configuration_status::configured, srv->config_status());
+            CHECK(srv->started());
+
+            // Objects bound from their uid, declared in two separate <image> tags
+            const auto source = std::dynamic_pointer_cast<const sight::data::string>(
+                srv->m_source.const_lock().get_shared()
+            );
+            REQUIRE(source != nullptr);
+            CHECK_EQ(std::string("source"), source->value());
+
+            const auto target = std::dynamic_pointer_cast<const sight::data::string>(
+                srv->m_target.const_lock().get_shared()
+            );
+            REQUIRE(target != nullptr);
+            CHECK_EQ(std::string("target"), target->value());
+
+            // Properties given a literal value
+            CHECK_EQ(std::int64_t(10), *srv->m_threshold);
+            CHECK_EQ(std::string("hello"), *srv->m_label);
+
+            // Groups, indexed by the rank of the repeated <tracker> tag
+            REQUIRE_EQ(std::size_t(2), srv->m_tracker_ip.size());
+            CHECK_EQ(std::string("127.0.0.1"), srv->m_tracker_ip[0].const_lock()->value());
+            CHECK_EQ(std::string("192.168.0.1"), srv->m_tracker_ip[1].const_lock()->value());
+
+            REQUIRE_EQ(std::size_t(2), srv->m_tracker_port.size());
+            CHECK_EQ(std::int64_t(3000), srv->m_tracker_port[0].const_lock()->value());
+            // The second port is an object uid, not a literal value
+            CHECK_EQ(std::int64_t(4242), srv->m_tracker_port[1].const_lock()->value());
+        }
+
+        // Keys omitted in the configuration fall back on the default value declared with the pointer
+        {
+            auto srv = std::dynamic_pointer_cast<sight::app::ut::test_service_with_nested_keys>(
+                sight::core::id::get_object("nested_default_srv")
+            );
+            REQUIRE(srv != nullptr);
+            CHECK(srv->started());
+
+            CHECK_EQ(std::int64_t(5), *srv->m_threshold);
+            CHECK_EQ(std::string("default_label"), *srv->m_label);
+            CHECK_EQ(std::size_t(0), srv->m_tracker_ip.size());
+        }
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE_FIXTURE(fixture, "nested_keys_deferred_test")
+    {
+        m_app_config_mgr = sight::app::ut::launch_app_config_mgr("nested_keys_deferred_test");
+
+        // The deferred object is never produced, so the service waits for it
+        CHECK(sight::core::id::get_object("nested_deferred_srv") == nullptr);
+
+        // <optional> lets the service start without the deferred object
+        auto srv = std::dynamic_pointer_cast<sight::app::ut::test_service_with_nested_keys>(
+            sight::core::id::get_object("nested_optional_srv")
+        );
+        REQUIRE(srv != nullptr);
+        CHECK(srv->started());
+        CHECK(srv->m_source.const_lock() == nullptr);
+
+        // The reserved 'optional' attribute only applies to the element of the group that carries it
+        auto group_srv = std::dynamic_pointer_cast<sight::app::ut::test_service_with_nested_keys>(
+            sight::core::id::get_object("nested_group_optional_srv")
+        );
+        REQUIRE(group_srv != nullptr);
+        CHECK(group_srv->started());
+        CHECK_EQ(std::string("127.0.0.1"), group_srv->m_tracker_ip[1].const_lock()->value());
+
+        // Without it, the service waits for the deferred object
+        CHECK(sight::core::id::get_object("nested_group_deferred_srv") == nullptr);
     }
 
 //------------------------------------------------------------------------------

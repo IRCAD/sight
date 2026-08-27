@@ -877,6 +877,54 @@ TEST_SUITE("sight::service::service")
 
 //------------------------------------------------------------------------------
 
+    TEST_CASE("reconfiguration_with_literal_value")
+    {
+        auto service = sight::service::add<sight::service::ut::test1_value>("sight::service::ut::test1_value");
+        sight::service::config_t config;
+        config.put("in.<xmlattr>.key", "value");
+        config.put("in.<xmlattr>.value", "1234");
+
+        service->set_config(config);
+        service->configure();
+        const auto value = service->input<sight::data::integer>("value").lock().get_shared();
+        CHECK_EQ(std::int64_t(1234), value->value());
+
+        sight::service::config_t reconfigured;
+        reconfigured.put("in.<xmlattr>.key", "value");
+        reconfigured.put("in.<xmlattr>.value", "5678");
+
+        service->set_config(reconfigured);
+        service->configure();
+        CHECK(value == service->input<sight::data::integer>("value").lock().get_shared());
+        CHECK_EQ(std::int64_t(5678), value->value());
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("reconfiguration_with_hierarchical_property_value")
+    {
+        auto service = sight::service::add<sight::service::ut::test1_path_property>(
+            "sight::service::ut::test1_path_property"
+        );
+        sight::service::config_t config;
+        config.put("path.<xmlattr>.file", "first.tf");
+
+        service->set_config(config);
+        service->configure();
+        const auto value = service->inout<sight::data::string>("path.file").lock().get_shared();
+        CHECK_EQ("first.tf", value->value());
+
+        sight::service::config_t reconfigured;
+        reconfigured.put("path.<xmlattr>.file", "second.tf");
+
+        service->set_config(reconfigured);
+        service->configure();
+        CHECK(value == service->inout<sight::data::string>("path.file").lock().get_shared());
+        CHECK_EQ("second.tf", value->value());
+    }
+
+//------------------------------------------------------------------------------
+
     TEST_CASE_FIXTURE(fixture, "test_auto_connections")
     {
         const std::string data_key1     = "data1";

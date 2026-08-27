@@ -156,10 +156,13 @@ public:
     SIGHT_APP_API static app::detail::service_config parse_service(
         const boost::property_tree::ptree& _srv_elem,
         const std::string& _err_msg_head,
-        const objects_set_t& _objects
-    );
+        const objects_set_t& _objects,
+        const std::set<std::string>& _deferred_objects = {});
 
     SIGHT_APP_API static bool is_key_optional(const std::string& _service_type, const std::string& _key);
+
+    /// Returns the description of all the data keys declared by the given service type
+    SIGHT_APP_API static data::key_info_map_t service_keys(const std::string& _service_type);
 
     SIGHT_APP_API static void clear_props();
 };

@@ -567,10 +567,21 @@ void config_manager::create_objects(const core::runtime::config_t& _cfg_elem)
 
 void config_manager::create_services(const core::runtime::config_t& _cfg_elem)
 {
+    std::set<std::string> deferred_uids;
+    std::ranges::transform(
+        m_deferred_objects,
+        std::inserter(deferred_uids, deferred_uids.begin()),
+        [](const auto& _o){return _o.first;});
+
     for(const auto& service_cfg : boost::make_iterator_range(_cfg_elem.equal_range("service")))
     {
         // Parse the service configuration
-        auto srv_config = app::helper::config::parse_service(service_cfg.second, this->msg_head(), m_created_objects);
+        auto srv_config = app::helper::config::parse_service(
+            service_cfg.second,
+            this->msg_head(),
+            m_created_objects,
+            deferred_uids
+        );
 
         // Check if we can start the service now or if we must deferred its creation
         bool create_service = true;

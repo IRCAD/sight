@@ -46,6 +46,7 @@ SIGHT_REGISTER_SERVICE(sight::app::ut::test_srv, sight::app::ut::test_out);
 SIGHT_REGISTER_SERVICE(sight::service::base, sight::app::ut::test_service_with_data);
 SIGHT_REGISTER_SERVICE(sight::service::base, sight::app::ut::test_service_with_typed_data);
 SIGHT_REGISTER_SERVICE(sight::service::base, sight::app::ut::test_service_with_properties);
+SIGHT_REGISTER_SERVICE(sight::service::base, sight::app::ut::test_service_with_nested_keys);
 
 namespace sight::app::ut
 {

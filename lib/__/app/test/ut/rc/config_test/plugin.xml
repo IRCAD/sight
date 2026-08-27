@@ -500,6 +500,20 @@
     </extension>
 
     <extension implements="sight::app::extension::config">
+        <id>nested_config_launcher_test</id>
+        <desc>Test configuration for the hierarchical syntax of config_launcher</desc>
+        <config>
+            <object uid="position_uid_ref" type="sight::data::dvec3" value="-5;0;4" />
+
+            <service uid="nested_launcher" type="sight::app::config_launcher">
+                <config id="value_inout_optional_mixed_sub_config" />
+                <object name="position_opt" value="9;8;7" />
+                <object name="position_uid" uid="position_uid_ref" />
+            </service>
+        </config>
+    </extension>
+
+    <extension implements="sight::app::extension::config">
         <id>default_object_id_test_sub_config</id>
         <parameters>
             <object uid="data1" type="sight::data::string" optional="true" value="default_value" />
@@ -585,6 +599,72 @@
                     <key value="11" />
                     <key uid="int_ref" />
                 </inout>
+            </service>
+        </config>
+    </extension>
+
+    <extension implements="sight::app::extension::config">
+        <id>nested_keys_test</id>
+        <desc>Test configuration for the hierarchical key syntax</desc>
+        <config>
+            <object uid="source_string" type="sight::data::string" value="source" />
+            <object uid="target_string" type="sight::data::string" value="target" />
+            <object uid="port_ref" type="sight::data::integer" value="4242" />
+
+            <service uid="nested_srv" type="sight::app::ut::test_service_with_nested_keys">
+                <image source="${source_string}" />
+                <image target="${target_string}" />
+                <config threshold="10" label="hello">
+                    <tracker ip="127.0.0.1" port="3000" />
+                    <tracker ip="192.168.0.1" port="${port_ref}" />
+                </config>
+                <!-- Not a declared key, left untouched for the service itself -->
+                <unrelated foo="bar" />
+            </service>
+
+            <service uid="nested_default_srv" type="sight::app::ut::test_service_with_nested_keys">
+                <image source="${source_string}" />
+            </service>
+        </config>
+    </extension>
+
+    <extension implements="sight::app::extension::config">
+        <id>nested_keys_deferred_test</id>
+        <desc>Test configuration for the &lt;optional&gt; tag of the hierarchical key syntax</desc>
+        <config>
+            <object uid="source_string" type="sight::data::string" value="source" />
+            <object uid="deferred_string" type="sight::data::string" deferred="true" />
+
+            <!-- Declares the deferred object but never produces it -->
+            <service uid="producer_srv" type="sight::app::ut::test_out">
+                <out key="out" uid="deferred_string" />
+            </service>
+
+            <!-- Mandatory key bound to a deferred object, the service creation is deferred as well -->
+            <service uid="nested_deferred_srv" type="sight::app::ut::test_service_with_nested_keys">
+                <image source="${deferred_string}" />
+            </service>
+
+            <!-- Same, but the key is declared optional, so the service is created right away -->
+            <service uid="nested_optional_srv" type="sight::app::ut::test_service_with_nested_keys">
+                <image source="${deferred_string}" />
+                <optional key="image.source" />
+            </service>
+
+            <!-- The reserved 'optional' attribute gives a per-element granularity inside a group -->
+            <service uid="nested_group_optional_srv" type="sight::app::ut::test_service_with_nested_keys">
+                <image source="${source_string}" />
+                <config>
+                    <tracker ip="deferred_string" optional="true" />
+                    <tracker ip="127.0.0.1" />
+                </config>
+            </service>
+
+            <service uid="nested_group_deferred_srv" type="sight::app::ut::test_service_with_nested_keys">
+                <image source="${source_string}" />
+                <config>
+                    <tracker ip="deferred_string" />
+                </config>
             </service>
         </config>
     </extension>

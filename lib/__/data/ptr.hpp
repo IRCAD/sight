@@ -71,6 +71,12 @@ public:
     [[nodiscard]] bool optional() const;
     [[nodiscard]] enum access access () const;
 
+    /// True for data::ptr_vector, i.e. when the key designates a group of objects instead of a single one.
+    [[nodiscard]] virtual bool is_group() const;
+
+    /// Non-empty when the key is bound to an object that is created at runtime, and thus not available yet.
+    [[nodiscard]] virtual std::string deferred_id() const;
+
     // Returns key()
     [[nodiscard]] operator std::string_view() const; //NOLINT(google-explicit-constructor,hicpp-explicit-conversions)
 
@@ -154,6 +160,20 @@ inline enum access base_ptr::access() const
 
 //------------------------------------------------------------------------------
 
+inline bool base_ptr::is_group() const
+{
+    return false;
+}
+
+//------------------------------------------------------------------------------
+
+inline std::string base_ptr::deferred_id() const
+{
+    return {};
+}
+
+//------------------------------------------------------------------------------
+
 inline base_ptr::operator std::string_view() const
 {
     return m_key;
@@ -215,7 +235,7 @@ public:
      */
     template<class T>
     requires serializable<DATATYPE>&& (ACCESS != data::access::out)
-    && (!std::same_as<std::remove_cvref_t<T>, bool>) && std::constructible_from<DATATYPE, T>
+    && std::constructible_from<DATATYPE, T>
     ptr(has_data* _holder, std::string_view _key, T&& _default_value) noexcept :
         base_ptr(_holder, _key, true, ACCESS),
         m_default_factory(
@@ -283,7 +303,7 @@ public:
     }
     //------------------------------------------------------------------------------
 
-    const typename T::value_t& value() const
+    const T::value_t& value() const
     {
         const auto obj = this->const_lock();
         return obj->value();
@@ -296,9 +316,16 @@ public:
     }
     //------------------------------------------------------------------------------
 
-    const typename T::value_t& operator*() const
+    const T::value_t& operator*() const
     {
         return this->value();
+    }
+
+    //------------------------------------------------------------------------------
+
+    [[nodiscard]] std::string deferred_id() const final
+    {
+        return m_deferred_id;
     }
 
 protected:
@@ -444,6 +471,13 @@ public:
     ptr_vector(ptr_vector&&)                 = delete;
     ptr_vector& operator=(const ptr_vector&) = delete;
     ptr_vector& operator=(ptr_vector&&)      = delete;
+
+    //------------------------------------------------------------------------------
+
+    [[nodiscard]] bool is_group() const final
+    {
+        return true;
+    }
 
     /// Accessor for individual weak pointers
     /// This method is only available if it is an output

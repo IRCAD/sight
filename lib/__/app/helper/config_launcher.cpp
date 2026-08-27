@@ -159,6 +159,46 @@ service::config_t config_launcher::init_config(
         }
     }
 
+    // Hierarchical syntax, i.e. <object name="..." uid="..." /> as a direct child of the service
+    std::size_t object_index = 0;
+    for(const auto& it_cfg : boost::make_iterator_range(_old_config.equal_range("object")))
+    {
+        const auto name = it_cfg.second.get<std::string>("<xmlattr>.name", "");
+        SIGHT_ASSERT("[" + _service->get_id() + "] Missing 'name' attribute in <object>.", !name.empty());
+
+        const auto uid   = it_cfg.second.get_optional<std::string>("<xmlattr>.uid");
+        const auto value = it_cfg.second.get_optional<std::string>("<xmlattr>.value");
+
+        SIGHT_ASSERT(
+            "[" + _service->get_id() + "] Exactly one of 'uid' or 'value' is required in <object>.",
+            uid.has_value() != value.has_value()
+        );
+
+        if(uid.has_value())
+        {
+            service::config_t parameter_cfg;
+            parameter_cfg.add("<xmlattr>.replace", name);
+
+            // A deferred object is not bound yet, the uid declared in the configuration is then the only reference
+            const auto obj = _service->inout(OBJECT_UID_GROUP, object_index).lock();
+            parameter_cfg.add("<xmlattr>.by", obj ? obj->get_id() : *uid);
+
+            if(!obj)
+            {
+                m_optional_inputs[name] = {*uid, object_index};
+            }
+
+            srv_cfg.add_child("parameters.parameter", parameter_cfg);
+        }
+        else
+        {
+            // The type of the object is declared by the sub-configuration, which may only be known at runtime.
+            m_value_inputs[name] = *value;
+        }
+
+        ++object_index;
+    }
+
     bool deprecated = false;
     for(const auto& it_cfg : boost::make_iterator_range(_old_config.equal_range("parameter")))
     {
@@ -257,6 +297,11 @@ void config_launcher::start_config(
     for(const auto& [key, value] : m_optional_inputs)
     {
         auto obj = _service->inout(OBJECT_GROUP, value.second).lock();
+        if(obj == nullptr)
+        {
+            obj = _service->inout(OBJECT_UID_GROUP, value.second).lock();
+        }
+
         if(obj == nullptr)
         {
             // Backwards compatibility

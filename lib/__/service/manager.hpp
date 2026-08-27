@@ -27,6 +27,8 @@
 
 #include "service/base.hpp"
 
+#include <set>
+
 namespace sight::service
 {
 
@@ -37,6 +39,11 @@ namespace sight::service
 class SIGHT_SERVICE_CLASS_API manager
 {
 public:
+
+    /// Tags that the framework parses itself in a service configuration, and thus can not be used as data keys
+    static inline const std::set<std::string, std::less<> > RESERVED_TAGS {
+        "in", "inout", "out", "properties", "optional"
+    };
 
     /**
      * @brief Set a registered object for a service

@@ -56,6 +56,7 @@ cosinus
 cpack
 cppunit
 crange
+ctest
 ctmr
 cuda
 cumul
