@@ -111,6 +111,7 @@ fwservice
 fwtest
 gbuffer
 gdcm
+glab
 glsl
 gouraud
 gregs
