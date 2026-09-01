@@ -26,7 +26,6 @@
 
 #include <core/mt/types.hpp>
 #include <core/runtime/extension.hpp>
-
 #include <data/map.hpp>
 
 #include <map>

@@ -62,7 +62,7 @@ void landmarks_interaction::test()
         {
             open_file(
                 _tester,
-                "Inr (.inr.gz) (*.inr.gz)",
+                "Inr (.inr) (*.inr *.inr.gz)",
                 utest_data::dir() / "sight/image/inr/image.inr.gz"
             );
             {

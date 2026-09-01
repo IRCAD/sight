@@ -73,7 +73,7 @@ void test::open_file(
     // Ensure the image loading is started, otherwise it will hang the test.
     QTest::qWait(1000);
 
-    if(_format == "Inr (.inr.gz) (*.inr.gz)" || _format == "NIfTI (.nii) (*.nii *.nii.gz)")
+    if(_format == "Inr (.inr) (*.inr *.inr.gz)" || _format == "NIfTI (.nii) (*.nii *.nii.gz)")
     {
         helper::button::wait_for_clickability(
             _tester,

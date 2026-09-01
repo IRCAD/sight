@@ -53,23 +53,35 @@ void select_dialog::updating()
     SIGHT_THROW_IF("Missing input database series", !series_set);
     SIGHT_THROW_IF("The series set is empty, nothing can be extracted.", series_set->empty());
 
-    // TODO: Prompt later to select the element to extract, now just take the first element
-    SIGHT_INFO(
-        "[select_dialog] Extracting the first element of the seriesBD, future development will prompt"
-        " the user to pick a series"
-    );
+    bool image_selected = false;
+    bool model_selected = false;
 
-    auto first_element = series_set->front();
+    for(const auto& series : *series_set)
+    {
+        if(!image_selected)
+        {
+            if(const auto image_series = std::dynamic_pointer_cast<sight::data::image_series>(series); image_series)
+            {
+                m_image = image_series;
+                this->async_emit(signals::IMAGE_SELECTED);
+                image_selected = true;
+            }
+        }
 
-    if(auto model_series = std::dynamic_pointer_cast<sight::data::model_series>(first_element); model_series)
-    {
-        m_model_series = model_series;
-        this->async_emit(signals::MODEL_SELECTED);
-    }
-    else if(auto image_series = std::dynamic_pointer_cast<sight::data::image_series>(first_element); image_series)
-    {
-        m_image = image_series;
-        this->async_emit(signals::IMAGE_SELECTED);
+        if(!model_selected)
+        {
+            if(const auto model_series = std::dynamic_pointer_cast<sight::data::model_series>(series); model_series)
+            {
+                m_model_series = model_series;
+                this->async_emit(signals::MODEL_SELECTED);
+                model_selected = true;
+            }
+        }
+
+        if(image_selected && model_selected)
+        {
+            break;
+        }
     }
 }
 

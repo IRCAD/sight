@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=Sight Viewer
+GenericName=Medical image viewer
+Comment=Open medical images with Sight Viewer
+Exec=sight_viewer_desktop %F
+Icon=sight_viewer
+Terminal=false
+StartupNotify=true
+Categories=Graphics;MedicalSoftware;Viewer;
+MimeType=application/x-dicom;application/x-nifti;application/x-inr;application/x-vtk;application/x-metaimage;application/x-ply;model/obj;model/stl;

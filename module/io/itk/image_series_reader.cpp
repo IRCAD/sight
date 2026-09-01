@@ -65,7 +65,7 @@ void image_series_reader::open_location_dialog()
     dialog_file.set_title(*m_window_title);
     dialog_file.set_default_location(default_directory);
     dialog_file.add_filter("NIfTI (.nii)", "*.nii *.nii.gz");
-    dialog_file.add_filter("Inr (.inr.gz)", "*.inr.gz");
+    dialog_file.add_filter("Inr (.inr)", "*.inr *.inr.gz");
     dialog_file.set_option(ui::dialog::location::read);
     dialog_file.set_option(ui::dialog::location::file_must_exist);
 

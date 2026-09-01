@@ -44,39 +44,190 @@ bool read_paths(
 {
     SIGHT_ASSERT("The data object is not initialized.", _data);
 
-    const std::string object_classname = _data->get_classname();
-
     const auto available_services =
         sight::service::extension::factory::get()
         ->get_implementation_id_from_object_and_type(
-            object_classname,
+            _data->get_classname(),
             "sight::io::service::reader"
         );
 
+    return read_paths(_paths, _data, _notification_slot, available_services);
+}
+
+//-----------------------------------------------------------------------------
+
+bool read_paths(
+    const std::vector<std::filesystem::path>& _paths,
+    const sight::data::object::sptr& _data,
+    const sight::core::com::slot_base::sptr& _notification_slot,
+    const std::vector<std::string>& _available_services
+)
+{
+    SIGHT_ASSERT("The data object is not initialized.", _data);
+
     bool success = true;
+
+    const auto supports_path = [](const sight::io::service::reader::sptr& _reader,
+                                  const std::filesystem::path& _path)
+                               {
+                                   if(!std::filesystem::is_regular_file(_path))
+                                   {
+                                       return false;
+                                   }
+
+                                   const auto extensions = _reader->get_supported_extensions();
+                                   const auto filename   = _path.filename().string();
+
+                                   return std::ranges::any_of(
+                                       extensions,
+                                       [&filename](const std::pair<std::string, std::string>& _extension)
+            {
+                std::istringstream wildcard_stream(_extension.second);
+                std::string wildcard;
+
+                while(wildcard_stream >> wildcard)
+                {
+                    std::erase(wildcard, '*');
+
+                    if(!wildcard.empty() && filename.ends_with(wildcard))
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            });
+                               };
+
+    const auto run_reader = [&_notification_slot](
+        const sight::io::service::reader::sptr& _reader,
+        const sight::core::thread::worker::sptr& _worker,
+        const std::filesystem::path& _path
+                             )
+                            {
+                                if(_notification_slot != nullptr)
+                                {
+                                    if(const auto signal = _reader->signal(
+                                           sight::core::notification::has_monitors::signals::NOTIFICATION_CREATED
+                                    ); signal)
+                                    {
+                                        signal->connect(_notification_slot);
+                                    }
+                                }
+
+                                bool reader_success = true;
+
+                                try
+                                {
+                                    _reader->start().get();
+                                    _reader->update().get();
+
+                                    if(_reader->has_failed())
+                                    {
+                                        SIGHT_WARN("Failed to read path: " << _path);
+                                        reader_success = false;
+                                    }
+
+                                    _reader->stop().get();
+                                }
+                                catch(const std::exception& e)
+                                {
+                                    SIGHT_ERROR(
+                                        "Failed to read path '" << _path << "': " << e.what()
+                                    );
+
+                                    reader_success = false;
+
+                                    if(!_reader->stopped())
+                                    {
+                                        _reader->stop().get();
+                                    }
+                                }
+
+                                sight::service::unregister_service(_reader);
+                                _worker->stop();
+
+                                return reader_success;
+                            };
+
+    if(_paths.size() > 1)
+    {
+        for(const auto& service_id : _available_services)
+        {
+            auto worker = sight::core::thread::worker::make();
+            sight::io::service::reader::sptr reader;
+
+            try
+            {
+                reader = sight::service::add<sight::io::service::reader>(service_id);
+                reader->set_worker(worker);
+                reader->set_inout(_data, sight::io::service::READER_DATA_KEY);
+                reader->configure();
+            }
+            catch(const std::exception& e)
+            {
+                SIGHT_WARN("Unable to configure reader '" << service_id << "': " << e.what());
+                if(reader)
+                {
+                    sight::service::unregister_service(reader);
+                }
+
+                worker->stop();
+                continue;
+            }
+
+            if((reader->get_path_type() & sight::io::service::files) != 0
+               && std::ranges::all_of(
+                   _paths,
+                   [&supports_path, &reader](const std::filesystem::path& _path)
+                {
+                    return supports_path(reader, _path);
+                }))
+            {
+                reader->set_files(_paths);
+                return run_reader(reader, worker, _paths.front());
+            }
+
+            sight::service::unregister_service(reader);
+            worker->stop();
+        }
+    }
 
     for(const auto& path : _paths)
     {
         sight::io::service::reader::sptr selected_reader;
         sight::core::thread::worker::sptr selected_worker;
 
-        for(const auto& service_id : available_services)
+        for(const auto& service_id : _available_services)
         {
             auto worker = sight::core::thread::worker::make();
 
-            auto reader =
-                sight::service::add<sight::io::service::reader>(service_id);
+            sight::io::service::reader::sptr reader;
 
-            reader->set_worker(worker);
-            reader->set_inout(_data, sight::io::service::READER_DATA_KEY);
-            reader->configure();
+            try
+            {
+                reader = sight::service::add<sight::io::service::reader>(service_id);
+                reader->set_worker(worker);
+                reader->set_inout(_data, sight::io::service::READER_DATA_KEY);
+                reader->configure();
+            }
+            catch(const std::exception& e)
+            {
+                SIGHT_WARN("Unable to configure reader '" << service_id << "': " << e.what());
+                if(reader)
+                {
+                    sight::service::unregister_service(reader);
+                }
+
+                worker->stop();
+                continue;
+            }
 
             const auto path_type = reader->get_path_type();
 
             bool supported = false;
 
-            if(std::filesystem::is_directory(path)
-               && (path_type& sight::io::service::folder) != 0)
+            if(std::filesystem::is_directory(path) && (path_type& sight::io::service::folder) != 0)
             {
                 reader->set_folder(path);
                 supported = true;
@@ -85,28 +236,7 @@ bool read_paths(
                     && ((path_type& sight::io::service::file) != 0
                         || (path_type& sight::io::service::files) != 0))
             {
-                const auto extensions = reader->get_supported_extensions();
-                const auto filename   = path.filename().string();
-
-                supported = std::ranges::any_of(
-                    extensions,
-                    [&filename](const std::pair<std::string, std::string>& _extension)
-                    {
-                        std::istringstream wildcard_stream(_extension.second);
-                        std::string wildcard;
-
-                        while(wildcard_stream >> wildcard)
-                        {
-                            std::erase(wildcard, '*');
-
-                            if(!wildcard.empty() && filename.ends_with(wildcard))
-                            {
-                                return true;
-                            }
-                        }
-
-                        return false;
-                    });
+                supported = supports_path(reader, path);
 
                 if(supported)
                 {
@@ -139,46 +269,7 @@ bool read_paths(
             continue;
         }
 
-        if(_notification_slot != nullptr)
-        {
-            if(const auto signal = selected_reader->signal(
-                   sight::core::notification::has_monitors::signals::NOTIFICATION_CREATED
-            ); signal)
-            {
-                signal->connect(_notification_slot);
-            }
-        }
-
-        try
-        {
-            selected_reader->start().get();
-            selected_reader->update().get();
-
-            if(selected_reader->has_failed())
-            {
-                SIGHT_WARN("Failed to read path: " << path);
-                success = false;
-            }
-
-            selected_reader->stop().get();
-        }
-        catch(const std::exception& e)
-        {
-            SIGHT_ERROR(
-                "Failed to read path '" << path << "': " << e.what()
-            );
-
-            success = false;
-
-            if(!selected_reader->stopped())
-            {
-                selected_reader->stop().get();
-            }
-        }
-
-        sight::service::unregister_service(selected_reader);
-
-        selected_worker->stop();
+        success = run_reader(selected_reader, selected_worker, path) && success;
     }
 
     return success;

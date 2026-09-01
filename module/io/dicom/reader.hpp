@@ -84,11 +84,11 @@ public:
     /// Propose to read a session data file
     void open_location_dialog() final;
 
-    /// Returns managed path type, here service manages only single file
-    sight::io::service::path_type_t get_path_type() const final
-    {
-        return sight::io::service::folder;
-    }
+    /// Returns the supported DICOM file extension.
+    std::vector<std::pair<std::string, std::string> > get_supported_extensions() final;
+
+    /// Returns the supported path types: DICOM files and folders.
+    sight::io::service::path_type_t get_path_type() const final;
 
 protected:
 

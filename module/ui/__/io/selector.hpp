@@ -31,6 +31,9 @@
 #include <io/__/service/writer.hpp>
 
 #include <ui/__/dialog_editor.hpp>
+
+#include <data/string.hpp>
+
 namespace sight::module::ui::io
 {
 
@@ -70,6 +73,10 @@ namespace sight::module::ui::io
  * - \b config (optional)
  *      - \b id (mandatory): identifier of the configuration to use.
  *      - \b service (mandatory): name of the associated service.
+ * - \b path (optional, reader only)
+ *      - \b file: file paths supplied non-interactively to the selector, separated by ';'.
+ *      - \b folder: folder paths supplied non-interactively to the selector, separated by ';'.
+ *      - If both are empty, updating does nothing.
  */
 class selector : public sight::ui::dialog_editor,
                  public sight::core::notification::has_monitors
@@ -193,6 +200,11 @@ private:
 
     data::ptr<data::object, data::access::inout> m_read {this, "data.read"};
     data::ptr<data::object, data::access::in> m_write {this, "data.write"};
+
+    /// Optional paths used for non-interactive reading from the command line.
+    bool m_has_path_config {false};
+    data::ptr<data::string, data::access::in> m_file {this, "path.file", std::string()};
+    data::ptr<data::string, data::access::in> m_folder {this, "path.folder", std::string()};
 };
 
 } // namespace sight::module::ui::io

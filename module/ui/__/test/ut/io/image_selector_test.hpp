@@ -29,6 +29,8 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+#include <filesystem>
+
 namespace sight::module::ui::io::ut
 {
 
@@ -44,6 +46,8 @@ CPPUNIT_TEST(reader_failure_test);
 CPPUNIT_TEST(reader_exception_test);
 CPPUNIT_TEST(reader_without_file_support_test);
 CPPUNIT_TEST(reader_cancel_test);
+CPPUNIT_TEST(single_file_folder_reader_test);
+CPPUNIT_TEST(file_folder_reader_with_file_readers_test);
 CPPUNIT_TEST(multiple_folder_readers_test);
 CPPUNIT_TEST(folder_reader_cancel_test);
 CPPUNIT_TEST(folder_reader_failure_test);
@@ -63,7 +67,13 @@ CPPUNIT_TEST(dialog_writer_exception_test);
 CPPUNIT_TEST(no_available_service_test);
 CPPUNIT_TEST(unknown_folder_reader_selection_test);
 CPPUNIT_TEST(unknown_dialog_writer_selection_test);
+CPPUNIT_TEST(reader_with_config_test);
 CPPUNIT_TEST(writer_with_config_test);
+CPPUNIT_TEST(command_line_file_reader_test);
+CPPUNIT_TEST(command_line_empty_path_test);
+CPPUNIT_TEST(command_line_multiple_file_reader_test);
+CPPUNIT_TEST(command_line_selected_folder_reader_test);
+CPPUNIT_TEST(command_line_reader_failure_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -80,6 +90,8 @@ public:
     void reader_exception_test();
     void reader_without_file_support_test();
     void reader_cancel_test();
+    void single_file_folder_reader_test();
+    void file_folder_reader_with_file_readers_test();
     void multiple_folder_readers_test();
     void folder_reader_cancel_test();
     void folder_reader_failure_test();
@@ -99,13 +111,22 @@ public:
     void no_available_service_test();
     void unknown_folder_reader_selection_test();
     void unknown_dialog_writer_selection_test();
+    void reader_with_config_test();
     void writer_with_config_test();
+    void command_line_file_reader_test();
+    void command_line_empty_path_test();
+    void command_line_multiple_file_reader_test();
+    void command_line_selected_folder_reader_test();
+    void command_line_reader_failure_test();
 
 private:
 
     void configure_selector(
         const std::string& _data_key,
-        const std::vector<std::string>& _service_ids
+        const std::vector<std::string>& _service_ids,
+        const std::filesystem::path& _file   = {},
+        const std::filesystem::path& _folder = {},
+        bool _non_interactive                = false
     );
     void update_selector(bool _expect_success);
 

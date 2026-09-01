@@ -41,6 +41,7 @@
 #include <array>
 #include <cstdint>
 #include <filesystem>
+#include <fstream>
 #include <stdexcept>
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::ui::io::ut::image_selector_test);
@@ -58,6 +59,7 @@ struct test_io_state
     std::filesystem::path file;
     std::filesystem::path dialog_file;
     std::size_t dialog_count {0};
+    std::size_t read_count {0};
     bool should_fail {false};
     bool should_throw {false};
     bool should_drop_file_support {false};
@@ -76,6 +78,7 @@ enum class test_service : std::uint8_t
     nifti_reader,
     vtk_reader,
     raw_reader,
+    file_folder_reader,
     folder_reader_a,
     folder_reader_b,
     nifti_writer,
@@ -298,7 +301,8 @@ protected:
             throw std::runtime_error("Reader update failure");
         }
 
-        m_state.file  = (m_path_type& sight::io::service::folder) != 0 ? get_folder() : get_file();
+        m_state.file = (m_path_type& sight::io::service::folder) != 0 ? get_folder() : get_file();
+        ++m_state.read_count;
         m_read_failed = m_state.should_fail;
     }
 
@@ -364,6 +368,26 @@ public:
             {},
             get_state(test_service::folder_reader_a),
             sight::io::service::folder
+        )
+    {
+    }
+};
+
+class test_file_folder_reader final : public test_reader_base
+{
+public:
+
+    SIGHT_DECLARE_SERVICE(test_file_folder_reader, sight::io::service::reader);
+
+    test_file_folder_reader() :
+        test_reader_base(
+            "File/folder reader",
+            {".dcm"},
+            {{"DICOM files", "*.dcm"}},
+            get_state(test_service::file_folder_reader),
+            static_cast<sight::io::service::path_type_t>(
+                sight::io::service::files | sight::io::service::folder
+            )
         )
     {
     }
@@ -569,6 +593,11 @@ SIGHT_REGISTER_SERVICE(
 );
 SIGHT_REGISTER_SERVICE(
     sight::io::service::reader,
+    sight::module::ui::io::ut::test_file_folder_reader,
+    sight::data::string
+);
+SIGHT_REGISTER_SERVICE(
+    sight::io::service::reader,
     sight::module::ui::io::ut::test_folder_reader_a,
     sight::data::string
 );
@@ -607,17 +636,18 @@ SIGHT_REGISTER_SERVICE(
 
 void image_selector_test::setUp()
 {
-    get_state(test_service::nifti_reader)    = {};
-    get_state(test_service::vtk_reader)      = {};
-    get_state(test_service::raw_reader)      = {};
-    get_state(test_service::folder_reader_a) = {};
-    get_state(test_service::folder_reader_b) = {};
-    get_state(test_service::nifti_writer)    = {};
-    get_state(test_service::vtk_writer)      = {};
-    get_state(test_service::raw_writer)      = {};
-    get_state(test_service::dialog_writer_a) = {};
-    get_state(test_service::dialog_writer_b) = {};
-    get_selector_state()                     = {};
+    get_state(test_service::nifti_reader)       = {};
+    get_state(test_service::vtk_reader)         = {};
+    get_state(test_service::raw_reader)         = {};
+    get_state(test_service::file_folder_reader) = {};
+    get_state(test_service::folder_reader_a)    = {};
+    get_state(test_service::folder_reader_b)    = {};
+    get_state(test_service::nifti_writer)       = {};
+    get_state(test_service::vtk_writer)         = {};
+    get_state(test_service::raw_writer)         = {};
+    get_state(test_service::dialog_writer_a)    = {};
+    get_state(test_service::dialog_writer_b)    = {};
+    get_selector_state()                        = {};
 
     CPPUNIT_ASSERT(sight::ui::test::dialog::location::clear());
 
@@ -651,7 +681,10 @@ void image_selector_test::tearDown()
 
 void image_selector_test::configure_selector(
     const std::string& _data_key,
-    const std::vector<std::string>& _service_ids
+    const std::vector<std::string>& _service_ids,
+    const std::filesystem::path& _file,
+    const std::filesystem::path& _folder,
+    bool _non_interactive
 )
 {
     m_data = std::make_shared<sight::data::string>();
@@ -677,6 +710,16 @@ void image_selector_test::configure_selector(
         boost::property_tree::ptree selection;
         selection.put("<xmlattr>.service", service_id);
         config.add_child("addSelection", selection);
+    }
+
+    if(_non_interactive || !_file.empty())
+    {
+        config.put("path.<xmlattr>.file", _file.string());
+    }
+
+    if(_non_interactive || !_folder.empty())
+    {
+        config.put("path.<xmlattr>.folder", _folder.string());
     }
 
     m_selector->set_config(config);
@@ -728,6 +771,126 @@ void image_selector_test::file_reader_test()
     update_selector(true);
 
     CPPUNIT_ASSERT_EQUAL(selected_file, get_state(test_service::nifti_reader).file);
+}
+
+//------------------------------------------------------------------------------
+
+void image_selector_test::command_line_file_reader_test()
+{
+    const auto selected_file = std::filesystem::temp_directory_path()
+                               / ("sight_selector_cli_" + std::to_string(reinterpret_cast<std::uintptr_t>(this))
+                                  + ".nii");
+    std::ofstream file(selected_file);
+    CPPUNIT_ASSERT(file.good());
+    file.close();
+
+    configure_selector(
+        sight::io::service::READER_DATA_KEY,
+        {"sight::module::ui::io::ut::test_nifti_reader"},
+        selected_file
+    );
+
+    update_selector(true);
+
+    CPPUNIT_ASSERT_EQUAL(selected_file, get_state(test_service::nifti_reader).file);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(0), get_state(test_service::nifti_reader).dialog_count);
+    CPPUNIT_ASSERT(std::filesystem::remove(selected_file));
+}
+
+//------------------------------------------------------------------------------
+
+void image_selector_test::command_line_empty_path_test()
+{
+    configure_selector(
+        sight::io::service::READER_DATA_KEY,
+        {"sight::module::ui::io::ut::test_nifti_reader"},
+        {},
+        {},
+        true
+    );
+
+    CPPUNIT_ASSERT_NO_THROW(m_selector->update().get());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(0), get_state(test_service::nifti_reader).read_count);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(0), get_state(test_service::nifti_reader).dialog_count);
+}
+
+//------------------------------------------------------------------------------
+
+void image_selector_test::command_line_multiple_file_reader_test()
+{
+    const auto first_file = std::filesystem::temp_directory_path()
+                            / ("sight_selector_cli_"
+                               + std::to_string(reinterpret_cast<std::uintptr_t>(this)) + "_first.nii");
+    const auto second_file = std::filesystem::temp_directory_path()
+                             / ("sight_selector_cli_"
+                                + std::to_string(reinterpret_cast<std::uintptr_t>(this)) + "_second.nii");
+
+    std::ofstream first(first_file);
+    std::ofstream second(second_file);
+    CPPUNIT_ASSERT(first.good());
+    CPPUNIT_ASSERT(second.good());
+    first.close();
+    second.close();
+
+    configure_selector(
+        sight::io::service::READER_DATA_KEY,
+        {"sight::module::ui::io::ut::test_nifti_reader"},
+        first_file.string() + ";" + second_file.string()
+    );
+
+    update_selector(true);
+
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), get_state(test_service::nifti_reader).read_count);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(0), get_state(test_service::nifti_reader).dialog_count);
+    CPPUNIT_ASSERT(std::filesystem::remove(first_file));
+    CPPUNIT_ASSERT(std::filesystem::remove(second_file));
+}
+
+//------------------------------------------------------------------------------
+
+void image_selector_test::command_line_selected_folder_reader_test()
+{
+    const auto selected_folder = std::filesystem::temp_directory_path()
+                                 / ("sight_selector_cli_" + std::to_string(reinterpret_cast<std::uintptr_t>(this)));
+    CPPUNIT_ASSERT(std::filesystem::create_directory(selected_folder));
+
+    configure_selector(
+        sight::io::service::READER_DATA_KEY,
+        {"sight::module::ui::io::ut::test_folder_reader_b"},
+        {},
+        selected_folder
+    );
+
+    update_selector(true);
+
+    CPPUNIT_ASSERT_EQUAL(selected_folder, get_state(test_service::folder_reader_b).file);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(0), get_state(test_service::folder_reader_a).read_count);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(0), get_state(test_service::file_folder_reader).read_count);
+    CPPUNIT_ASSERT(std::filesystem::remove(selected_folder));
+}
+
+//------------------------------------------------------------------------------
+
+void image_selector_test::command_line_reader_failure_test()
+{
+    const auto selected_file = std::filesystem::temp_directory_path()
+                               / ("sight_selector_cli_" + std::to_string(reinterpret_cast<std::uintptr_t>(this))
+                                  + ".nii");
+    std::ofstream file(selected_file);
+    CPPUNIT_ASSERT(file.good());
+    file.close();
+
+    get_state(test_service::nifti_reader).should_fail = true;
+    configure_selector(
+        sight::io::service::READER_DATA_KEY,
+        {"sight::module::ui::io::ut::test_nifti_reader"},
+        selected_file
+    );
+
+    update_selector(false);
+
+    CPPUNIT_ASSERT_EQUAL(std::size_t(0), get_state(test_service::nifti_reader).dialog_count);
+    CPPUNIT_ASSERT(std::filesystem::remove(selected_file));
 }
 
 //------------------------------------------------------------------------------
@@ -884,6 +1047,56 @@ void image_selector_test::reader_cancel_test()
     update_selector(false);
 
     CPPUNIT_ASSERT(get_state(test_service::nifti_reader).file.empty());
+}
+
+//------------------------------------------------------------------------------
+
+void image_selector_test::single_file_folder_reader_test()
+{
+    configure_selector(
+        sight::io::service::READER_DATA_KEY,
+        {"sight::module::ui::io::ut::test_file_folder_reader"
+        });
+
+    const std::filesystem::path selected_folder = std::filesystem::temp_directory_path() / "dicom";
+    auto& state                                 = get_state(test_service::file_folder_reader);
+    state.dialog_file = selected_folder;
+
+    update_selector(true);
+
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), state.dialog_count);
+    CPPUNIT_ASSERT_EQUAL(selected_folder, state.file);
+    CPPUNIT_ASSERT(sight::ui::test::dialog::location::get_filters().empty());
+}
+
+//------------------------------------------------------------------------------
+
+void image_selector_test::file_folder_reader_with_file_readers_test()
+{
+    configure_selector(
+        sight::io::service::READER_DATA_KEY,
+        {
+            "sight::module::ui::io::ut::test_file_folder_reader",
+            "sight::module::ui::io::ut::test_vtk_reader"
+        });
+
+    const filter_t selected_filter {"DICOM files", "*.dcm"};
+    sight::ui::test::dialog::location::set_current_filter(selected_filter);
+
+    const std::filesystem::path selected_file = std::filesystem::temp_directory_path() / "image.dcm";
+    sight::ui::test::dialog::location::set_paths({selected_file});
+
+    update_selector(true);
+
+    const std::vector<filter_t> expected_filters {
+        {"All supported files", "*.dcm *.vtk"},
+        selected_filter,
+        {"VTK image", "*.vtk"}
+    };
+    CPPUNIT_ASSERT(expected_filters == sight::ui::test::dialog::location::get_filters());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(0), get_state(test_service::file_folder_reader).dialog_count);
+    CPPUNIT_ASSERT_EQUAL(selected_file, get_state(test_service::file_folder_reader).file);
+    CPPUNIT_ASSERT(get_state(test_service::vtk_reader).file.empty());
 }
 
 //------------------------------------------------------------------------------
@@ -1215,6 +1428,52 @@ void image_selector_test::unknown_dialog_writer_selection_test()
 
     CPPUNIT_ASSERT_EQUAL(std::size_t(0), get_state(test_service::dialog_writer_a).dialog_count);
     CPPUNIT_ASSERT_EQUAL(std::size_t(0), get_state(test_service::dialog_writer_b).dialog_count);
+}
+
+//------------------------------------------------------------------------------
+
+void image_selector_test::reader_with_config_test()
+{
+    const std::string reader_id = "sight::module::ui::io::ut::test_nifti_reader";
+    const std::string config_id = "image_selector_test_reader_config";
+
+    service::config_t reader_config;
+    reader_config.put("dummy", "value");
+
+    service::extension::config::get_default()->add_service_config_info(
+        config_id,
+        reader_id,
+        "Test reader config",
+        reader_config
+    );
+
+    m_data = std::make_shared<sight::data::string>();
+    m_selector->set_inout(m_data, sight::io::service::READER_DATA_KEY);
+
+    service::config_t config;
+    config.put("selection.<xmlattr>.mode", "include");
+
+    boost::property_tree::ptree selection;
+    selection.put("<xmlattr>.service", reader_id);
+    selection.put("<xmlattr>.config", config_id);
+    config.add_child("addSelection", selection);
+
+    m_selector->set_config(config);
+
+    CPPUNIT_ASSERT_NO_THROW(m_selector->configure());
+    CPPUNIT_ASSERT_NO_THROW(m_selector->start().get());
+
+    const std::filesystem::path selected_file =
+        std::filesystem::temp_directory_path() / "image.nii";
+
+    sight::ui::test::dialog::location::set_paths({selected_file});
+
+    update_selector(true);
+
+    CPPUNIT_ASSERT_EQUAL(
+        selected_file,
+        get_state(test_service::nifti_reader).file
+    );
 }
 
 //------------------------------------------------------------------------------

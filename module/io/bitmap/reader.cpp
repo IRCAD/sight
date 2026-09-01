@@ -64,6 +64,8 @@ std::vector<std::pair<std::string, std::string> > reader::get_supported_extensio
     return result;
 }
 
+//----------------------------------------------------------------------------------
+
 // Retrieve the backend from the extension
 sight::io::bitmap::backend reader::find_backend(const std::string& _extension) const
 {

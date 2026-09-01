@@ -29,6 +29,7 @@
 #include <data/object.hpp>
 
 #include <filesystem>
+#include <string>
 #include <vector>
 
 namespace sight::io::reader
@@ -48,6 +49,14 @@ namespace sight::io::reader
     const std::vector<std::filesystem::path>& _paths,
     const sight::data::object::sptr& _data,
     const sight::core::com::slot_base::sptr& _notification_slot
+);
+
+/** @brief Reads paths using only the specified reader service implementations. */
+[[nodiscard]] SIGHT_IO_API bool read_paths(
+    const std::vector<std::filesystem::path>& _paths,
+    const sight::data::object::sptr& _data,
+    const sight::core::com::slot_base::sptr& _notification_slot,
+    const std::vector<std::string>& _available_services
 );
 
 } // namespace sight::io::reader

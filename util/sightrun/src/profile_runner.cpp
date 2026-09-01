@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,9 +28,8 @@
 
 #include <core/runtime/runtime.hpp>
 
-#include <core/crypto/password_keeper.hpp>
-#include <core/runtime/profile/profile.hpp>
 #include <core/os/temp_path.hpp>
+#include <core/runtime/profile/profile.hpp>
 #include <core/tools/os.hpp>
 #include <core/tools/system.hpp>
 
@@ -38,8 +37,8 @@
 #include <boost/program_options/parsers.hpp>
 #include <boost/program_options/positional_options.hpp>
 #include <boost/program_options/variables_map.hpp>
-#include <boost/property_tree/xml_parser.hpp>
 #include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/xml_parser.hpp>
 
 #include <csignal>
 #include <filesystem>
@@ -74,10 +73,10 @@ inline static std::filesystem::path absolute(const std::filesystem::path& _path)
 
 //-----------------------------------------------------------------------------
 
-volatile sig_atomic_t g_signal_status = 0;
+static volatile sig_atomic_t g_signal_status = 0;
 //------------------------------------------------------------------------------
 
-void signal_handler(int _signal)
+static void signal_handler(int _signal)
 {
     g_signal_status = _signal;
 
@@ -191,7 +190,7 @@ int main(int argc, char* argv[])
 
     using spy_logger = sight::core::log::spy_logger;
     using level_t    = spy_logger::level_t;
-    auto log_level = std::underlying_type_t<level_t>(level_t::warning);
+    auto log_level = static_cast<std::underlying_type_t<level_t> >(level_t::warning);
 
     po::options_description log_options("Log options");
     log_options.add_options()
@@ -232,32 +231,38 @@ int main(int argc, char* argv[])
     )
     (
         "log-trace",
-        po::value(&log_level)->implicit_value(std::underlying_type_t<level_t>(level_t::trace))->zero_tokens(),
+        po::value(&log_level)->implicit_value(static_cast<std::underlying_type_t<level_t> >(level_t::trace))->
+        zero_tokens(),
         "Set log_level to trace"
     )
     (
         "log-debug",
-        po::value(&log_level)->implicit_value(std::underlying_type_t<level_t>(level_t::debug))->zero_tokens(),
+        po::value(&log_level)->implicit_value(static_cast<std::underlying_type_t<level_t> >(level_t::debug))->
+        zero_tokens(),
         "Set log_level to debug"
     )
     (
         "log-info",
-        po::value(&log_level)->implicit_value(std::underlying_type_t<level_t>(level_t::info))->zero_tokens(),
+        po::value(&log_level)->implicit_value(static_cast<std::underlying_type_t<level_t> >(level_t::info))->zero_tokens
+        (),
         "Set log_level to info"
     )
     (
         "log-warn",
-        po::value(&log_level)->implicit_value(std::underlying_type_t<level_t>(level_t::warning))->zero_tokens(),
+        po::value(&log_level)->implicit_value(static_cast<std::underlying_type_t<level_t> >(level_t::warning))->
+        zero_tokens(),
         "Set log_level to warn"
     )
     (
         "log-error",
-        po::value(&log_level)->implicit_value(std::underlying_type_t<level_t>(level_t::error))->zero_tokens(),
+        po::value(&log_level)->implicit_value(static_cast<std::underlying_type_t<level_t> >(level_t::error))->
+        zero_tokens(),
         "Set log_level to error"
     )
     (
         "log-fatal",
-        po::value(&log_level)->implicit_value(std::underlying_type_t<level_t>(level_t::fatal))->zero_tokens(),
+        po::value(&log_level)->implicit_value(static_cast<std::underlying_type_t<level_t> >(level_t::fatal))->
+        zero_tokens(),
         "Set log_level to fatal"
     );
 
@@ -288,19 +293,41 @@ int main(int argc, char* argv[])
 
     // Get options
     po::variables_map vm;
+    // NOLINTNEXTLINE(readability-container-contains)
+    const auto has_option = [&vm](const char* _option)
+                            {
+                                // NOLINTNEXTLINE(readability-container-contains)
+                                return vm.find(_option) != vm.end();
+                            };
 
     try
     {
-        po::store(
-            po::command_line_parser(argc, argv)
-            .options(cmdline_options)
-            .positional(p)
-            .run(),
-            vm
-        );
+        const auto parsed = po::command_line_parser(argc, argv)
+                            .options(cmdline_options)
+                            .positional(p)
+                            .allow_unregistered()
+                            .run();
+        po::store(parsed, vm);
         po::notify(vm);
 
-        if(vm.count("flog") > 0 && vm.count("clog") > 0)
+        profile_args.clear();
+        for(const auto& option : parsed.options)
+        {
+            if(option.unregistered)
+            {
+                profile_args.insert(
+                    profile_args.end(),
+                    option.original_tokens.begin(),
+                    option.original_tokens.end()
+                );
+            }
+            else if(option.string_key == "profile-args")
+            {
+                profile_args.insert(profile_args.end(), option.value.begin(), option.value.end());
+            }
+        }
+
+        if(has_option("flog") && has_option("clog"))
         {
             throw po::error("Cannot enable both file and console log");
             return 1;
@@ -313,7 +340,8 @@ int main(int argc, char* argv[])
     }
 
     // If help
-    if(vm.count("help") != 0U)
+    // NOLINTNEXTLINE(readability-container-contains)
+    if(vm.find("help") != vm.end())
     {
         std::cout << "usage: " << argv[0] << " [options] [profile(=profile.xml)] [profile-args ...]" << std::endl;
         std::cout << "  use '--' to stop processing args for sightrun" << std::endl << std::endl;
@@ -340,8 +368,8 @@ int main(int argc, char* argv[])
     }
 #endif
 
-    SIGHT_INFO_IF("Profile path: " << profile_file << " => " << ::absolute(profile_file), vm.count("profile"));
-    SIGHT_INFO_IF("Profile-args: " << profile_args, vm.count("profile-args"));
+    SIGHT_INFO_IF("Profile path: " << profile_file << " => " << ::absolute(profile_file), has_option("profile"));
+    SIGHT_INFO_IF("Profile-args: " << profile_args, has_option("profile-args"));
 
     // Check if profile path exist
     profile_file = ::absolute(profile_file);
@@ -449,7 +477,7 @@ int main(int argc, char* argv[])
     {
         SIGHT_INFO_IF(
             "Module paths are: " << modulePath.string() << " => " << ::absolute(modulePath),
-            vm.count("module-path")
+            has_option("module-path")
         );
     }
 #endif

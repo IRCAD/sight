@@ -12,3 +12,7 @@ target_link_libraries(
            ui_qt
            service
 )
+
+if(SIGHT_BUILD_TESTS)
+    add_subdirectory(test/ut)
+endif()

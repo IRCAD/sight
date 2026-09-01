@@ -80,6 +80,5 @@ void folder_selector::stopping()
 }
 
 //------------------------------------------------------------------------------
-//
 
 } // namespace sight::module::ui::io

@@ -58,7 +58,7 @@ std::vector<std::pair<std::string, std::string> > image_reader::get_supported_ex
 {
     return {
         {"NIfTI (.nii)", "*.nii *.nii.gz"},
-        {"Inr (.inr.gz)", "*.inr.gz"}
+        {"Inr (.inr)", "*.inr *.inr.gz"}
     };
 }
 
@@ -72,7 +72,7 @@ void image_reader::open_location_dialog()
     dialog_file.set_title(*m_window_title);
     dialog_file.set_default_location(default_directory);
     dialog_file.add_filter("NIfTI (.nii)", "*.nii *.nii.gz");
-    dialog_file.add_filter("Inr (.inr.gz)", "*.inr.gz");
+    dialog_file.add_filter("Inr (.inr)", "*.inr *.inr.gz");
     dialog_file.set_option(ui::dialog::location::read);
     dialog_file.set_option(ui::dialog::location::file_must_exist);
 
@@ -162,7 +162,7 @@ bool image_reader::load_image(
     boost::algorithm::to_lower(ext);
 
     sight::io::reader::object_reader::sptr image_reader;
-    if(boost::algorithm::ends_with(_img_file.string(), ".inr.gz"))
+    if(ext == ".inr" || boost::algorithm::ends_with(_img_file.string(), ".inr.gz"))
     {
         auto inr_reader = std::make_shared<sight::io::itk::inr_image_reader>();
         inr_reader->set_file(_img_file);
@@ -178,7 +178,7 @@ bool image_reader::load_image(
     {
         std::stringstream ss;
         ss << "The file extension " << ext
-        << " is not supported by the image reader. Please choose either *.inr.gz, *.nii or *.nii.gz files";
+        << " is not supported by the image reader. Please choose *.inr, *.inr.gz, *.nii or *.nii.gz files";
         sight::ui::dialog::message::show(
             "Error",
             ss.str(),

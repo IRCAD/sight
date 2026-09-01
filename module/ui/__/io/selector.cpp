@@ -27,6 +27,7 @@
 #include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
 
+#include <io/__/reader/reader_helper.hpp>
 #include <io/__/service/reader.hpp>
 #include <io/__/service/writer.hpp>
 
@@ -52,6 +53,26 @@ namespace sight::module::ui::io
 {
 
 namespace io = sight::io;
+
+//-----------------------------------------------------------------------------
+
+static std::vector<std::filesystem::path> split_paths(const std::string& _value)
+{
+    std::vector<std::filesystem::path> paths;
+    std::stringstream stream(_value);
+    std::string path;
+
+    while(std::getline(stream, path, ';'))
+    {
+        if(!path.empty())
+        {
+            paths.emplace_back(path);
+        }
+    }
+
+    return paths;
+}
+
 //------------------------------------------------------------------------------
 
 static  void append_extensions(
@@ -102,6 +123,7 @@ selector::selector() :
 void selector::configuring()
 {
     const config_t srv_config = this->get_config();
+    m_has_path_config = srv_config.get_child_optional("path").has_value();
 
     const std::string selection_mode = srv_config.get<std::string>("selection.<xmlattr>.mode", "exclude");
     SIGHT_ASSERT(
@@ -564,7 +586,8 @@ void selector::update_reader(const std::vector<std::pair<std::string, std::strin
         return;
     }
 
-    bool has_file_reader = false;
+    bool has_file_reader   = false;
+    bool has_folder_reader = false;
 
     for(const auto& service : _available_services)
     {
@@ -579,15 +602,19 @@ void selector::update_reader(const std::vector<std::pair<std::string, std::strin
             has_file_reader = true;
         }
 
-        service::unregister_service(reader);
-
-        if(has_file_reader)
+        if((path_type& io::service::folder) != 0)
         {
-            break;
+            has_folder_reader = true;
         }
+
+        service::unregister_service(reader);
     }
 
-    if(has_file_reader)
+    // A selector dedicated to one folder-capable reader delegates location selection to that reader. When several
+    // readers are exposed together, their extensions are instead combined in the shared file dialog.
+    const bool single_reader_supports_folder = _available_services.size() == 1 && has_folder_reader;
+
+    if(has_file_reader && !single_reader_supports_folder)
     {
         select_file_reader(_available_services);
     }
@@ -674,8 +701,6 @@ void selector::update_writer(
 
         auto selected_file = result->get_file();
 
-        // If the user omitted the suffix, use the first extension from the
-        // selected filter, as the former writer-specific dialogs did.
         if(!std::ranges::any_of(
                selected_extensions,
                [&selected_file](const std::string& _extension)
@@ -836,6 +861,53 @@ void selector::updating()
         is_reader != (write != nullptr)
     );
 
+    const auto service_is_available = [this](const std::string& _service_id)
+                                      {
+                                          const bool selected = std::ranges::find(m_selected_services, _service_id)
+                                                                != m_selected_services.end();
+                                          return m_services_are_excluded != selected;
+                                      };
+
+    if(is_reader && m_has_path_config)
+    {
+        std::vector<std::filesystem::path> paths;
+        for(const auto& path : split_paths(*m_file))
+        {
+            if(std::ranges::find(paths, path) == paths.end())
+            {
+                paths.push_back(path);
+            }
+        }
+
+        for(const auto& path : split_paths(*m_folder))
+        {
+            if(std::ranges::find(paths, path) == paths.end())
+            {
+                paths.push_back(path);
+            }
+        }
+
+        if(paths.empty())
+        {
+            return;
+        }
+
+        auto reader_ids = service::extension::factory::get()->get_implementation_id_from_object_and_type(
+            read->get_classname(),
+            "sight::io::service::reader"
+        );
+        std::erase_if(
+            reader_ids,
+            [&service_is_available](const std::string& _id)
+            {
+                return !service_is_available(_id);
+            });
+
+        const bool success = sight::io::reader::read_paths(paths, read, m_slot_forward_notification, reader_ids);
+        success ? m_sig_succeeded->async_emit() : m_sig_failed->async_emit();
+        return;
+    }
+
     {
         const auto& obj = is_reader ? read : write;
 
@@ -863,11 +935,7 @@ void selector::updating()
 
     for(const std::string& service_id : available_services_id)
     {
-        const bool service_is_selected =
-            std::ranges::find(m_selected_services, service_id) != m_selected_services.end();
-
-        if((m_services_are_excluded && !service_is_selected)
-           || (!m_services_are_excluded && service_is_selected))
+        if(service_is_available(service_id))
         {
             std::string description = service::extension::factory::get()->get_service_description(service_id);
 
