@@ -316,6 +316,22 @@
 
     <extension implements="sight::service::extension::factory">
         <type>sight::ui::editor</type>
+        <service>sight::module::ui::qt::series::image_manager_widget</service>
+        <object>sight::data::series_set</object>
+        <object>sight::data::model_series</object>
+        <desc>Displays image-series thumbnails and images associated with mesh reconstructions.</desc>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::ui::editor</type>
+        <service>sight::module::ui::qt::image::thumbnail_widget</service>
+        <object key="image_series">sight::data::image_series</object>
+        <object key="model_series">sight::data::model_series</object>
+        <desc>Displays image-series frames or model-series reconstructions as thumbnails.</desc>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::ui::editor</type>
         <service>sight::module::ui::qt::video::camera</service>
         <desc>This editor allows to select the device to use. It updates the data camera identifier.</desc>
     </extension>

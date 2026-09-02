@@ -32,6 +32,8 @@
 #include <data/image_series.hpp>
 #include <data/series_set.hpp>
 
+#include <io/__/reader/reader_helper.hpp>
+
 #include <ui/__/cursor.hpp>
 #include <ui/__/dialog/location.hpp>
 
@@ -55,6 +57,11 @@ sight::io::service::path_type_t series_set_reader::get_path_type() const
 void series_set_reader::configuring()
 {
     sight::io::service::reader::configuring();
+
+    if(const auto config = this->get_config().get_child_optional("config.<xmlattr>"); config)
+    {
+        m_append = config->get("append", false);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -124,6 +131,8 @@ void series_set_reader::updating()
         {
             auto img_series = std::make_shared<data::image_series>();
             series_set_reader::init_series(img_series, instance_uid);
+            img_series->set_series_description(path.filename().string());
+            img_series->set_file(path);
 
             auto read_observer = this->observe("Loading images... ");
 
@@ -138,8 +147,23 @@ void series_set_reader::updating()
         if(!local_set->empty())
         {
             const auto scoped_emitter = series_set->scoped_emit();
-            series_set->clear();
-            series_set->insert(series_set->begin(), local_set->cbegin(), local_set->cend());
+            if(!m_append)
+            {
+                series_set->clear();
+                series_set->insert(series_set->cend(), local_set->cbegin(), local_set->cend());
+            }
+            else
+            {
+                const std::size_t duplicate_count = sight::io::reader::append_unique(*series_set, *local_set);
+                if(duplicate_count > 0)
+                {
+                    this->warn(
+                        duplicate_count == 1
+                        ? "This image is already loaded."
+                        : std::to_string(duplicate_count) + " images are already loaded."
+                    );
+                }
+            }
         }
 
         m_read_failed = read_failed;

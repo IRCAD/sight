@@ -27,6 +27,7 @@
 #include <core/thread/worker.hpp>
 
 #include <data/object.hpp>
+#include <data/series_set.hpp>
 
 #include <filesystem>
 #include <string>
@@ -42,21 +43,25 @@ namespace sight::io::reader
  * @param _data data object to populate.
  * @param _notification_slot (optional) slot receiving notifications emitted by
  *                           the selected readers.
+ * @param _available_services (optional) reader services to use. If empty, all
+ *                            readers matching the data object are used.
+ * @param _append (optional) append loaded series to an existing series set.
  * @return true if all paths were read successfully, false otherwise.
  */
 
 [[nodiscard]] SIGHT_IO_API bool read_paths(
     const std::vector<std::filesystem::path>& _paths,
     const sight::data::object::sptr& _data,
-    const sight::core::com::slot_base::sptr& _notification_slot
+    const sight::core::com::slot_base::sptr& _notification_slot,
+    const std::vector<std::string>& _available_services = {},
+    bool _append                                        = false
 );
 
-/** @brief Reads paths using only the specified reader service implementations. */
-[[nodiscard]] SIGHT_IO_API bool read_paths(
-    const std::vector<std::filesystem::path>& _paths,
-    const sight::data::object::sptr& _data,
-    const sight::core::com::slot_base::sptr& _notification_slot,
-    const std::vector<std::string>& _available_services
+/// Appends series that are not already present in the destination set.
+/// @return The number of series skipped because they were already loaded.
+SIGHT_IO_API std::size_t append_unique(
+    sight::data::series_set& _destination,
+    const sight::data::series_set& _source
 );
 
 } // namespace sight::io::reader

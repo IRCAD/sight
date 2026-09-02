@@ -22,6 +22,8 @@
 
 #include <core/notification/has_notifications.hpp>
 
+#include <data/series_set.hpp>
+
 #include <io/__/service/reader.hpp>
 
 #include <service/extension/factory.hpp>
@@ -36,22 +38,55 @@ namespace sight::io::reader
 
 //-----------------------------------------------------------------------------
 
-bool read_paths(
-    const std::vector<std::filesystem::path>& _paths,
-    const sight::data::object::sptr& _data,
-    const sight::core::com::slot_base::sptr& _notification_slot
+std::size_t append_unique(
+    sight::data::series_set& _destination,
+    const sight::data::series_set& _source
 )
 {
-    SIGHT_ASSERT("The data object is not initialized.", _data);
+    std::size_t duplicate_count = 0;
 
-    const auto available_services =
-        sight::service::extension::factory::get()
-        ->get_implementation_id_from_object_and_type(
-            _data->get_classname(),
-            "sight::io::service::reader"
-        );
+    for(const auto& candidate : _source)
+    {
+        if(!candidate || candidate->num_instances() == 0)
+        {
+            _destination.push_back(candidate);
+            continue;
+        }
 
-    return read_paths(_paths, _data, _notification_slot, available_services);
+        const bool already_loaded = std::ranges::any_of(
+            _destination,
+            [&candidate](const sight::data::series::sptr& _loaded)
+            {
+                if(!_loaded
+                   || _loaded->get_classname() != candidate->get_classname()
+                   || _loaded->num_instances() != candidate->num_instances()
+                   || _loaded->num_instances() == 0)
+                {
+                    return false;
+                }
+
+                for(std::size_t instance = 0 ; instance < candidate->num_instances() ; ++instance)
+                {
+                    if(_loaded->get_file(instance) != candidate->get_file(instance))
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            });
+
+        if(!already_loaded)
+        {
+            _destination.push_back(candidate);
+        }
+        else
+        {
+            ++duplicate_count;
+        }
+    }
+
+    return duplicate_count;
 }
 
 //-----------------------------------------------------------------------------
@@ -60,10 +95,20 @@ bool read_paths(
     const std::vector<std::filesystem::path>& _paths,
     const sight::data::object::sptr& _data,
     const sight::core::com::slot_base::sptr& _notification_slot,
-    const std::vector<std::string>& _available_services
+    const std::vector<std::string>& _available_services,
+    bool _append
 )
 {
     SIGHT_ASSERT("The data object is not initialized.", _data);
+
+    const auto services = _available_services.empty()
+                          ? sight::service::extension::factory::get()
+                          ->get_implementation_id_from_object_and_type(
+        _data->get_classname(),
+        "sight::io::service::reader"
+                          )
+                          : _available_services;
+    const bool append_paths = _append || _paths.size() > 1;
 
     bool success = true;
 
@@ -152,7 +197,7 @@ bool read_paths(
 
     if(_paths.size() > 1)
     {
-        for(const auto& service_id : _available_services)
+        for(const auto& service_id : services)
         {
             auto worker = sight::core::thread::worker::make();
             sight::io::service::reader::sptr reader;
@@ -162,6 +207,14 @@ bool read_paths(
                 reader = sight::service::add<sight::io::service::reader>(service_id);
                 reader->set_worker(worker);
                 reader->set_inout(_data, sight::io::service::READER_DATA_KEY);
+
+                if(append_paths && std::dynamic_pointer_cast<sight::data::series_set>(_data))
+                {
+                    sight::service::config_t config;
+                    config.put("config.<xmlattr>.append", true);
+                    reader->set_config(config);
+                }
+
                 reader->configure();
             }
             catch(const std::exception& e)
@@ -198,10 +251,9 @@ bool read_paths(
         sight::io::service::reader::sptr selected_reader;
         sight::core::thread::worker::sptr selected_worker;
 
-        for(const auto& service_id : _available_services)
+        for(const auto& service_id : services)
         {
             auto worker = sight::core::thread::worker::make();
-
             sight::io::service::reader::sptr reader;
 
             try
@@ -209,6 +261,14 @@ bool read_paths(
                 reader = sight::service::add<sight::io::service::reader>(service_id);
                 reader->set_worker(worker);
                 reader->set_inout(_data, sight::io::service::READER_DATA_KEY);
+
+                if(append_paths && std::dynamic_pointer_cast<sight::data::series_set>(_data))
+                {
+                    sight::service::config_t config;
+                    config.put("config.<xmlattr>.append", true);
+                    reader->set_config(config);
+                }
+
                 reader->configure();
             }
             catch(const std::exception& e)

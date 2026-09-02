@@ -359,6 +359,7 @@ TEST_SUITE("sight::module::io::itk")
             std::dynamic_pointer_cast<sight::data::image_series>(series_set->at(0));
         CHECK(img_series);
         CHECK_EQ(sight::data::dicom::modality_t::ot, img_series->get_modality());
+        CHECK_EQ(std::string("image.inr.gz"), img_series->get_series_description());
 
         CHECK_EQ(std::string("int16"), img_series->type().name());
         CHECK(size == img_series->size());
@@ -369,6 +370,7 @@ TEST_SUITE("sight::module::io::itk")
         img_series = std::dynamic_pointer_cast<sight::data::image_series>(series_set->at(1));
         CHECK(img_series);
         CHECK_EQ(sight::data::dicom::modality_t::ot, img_series->get_modality());
+        CHECK_EQ(std::string("skin.inr.gz"), img_series->get_series_description());
 
         CHECK_EQ(std::string("uint8"), img_series->type().name());
         CHECK(size == img_series->size());

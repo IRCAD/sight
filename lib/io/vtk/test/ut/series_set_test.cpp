@@ -58,6 +58,7 @@ TEST_SUITE("sight::io::vtk::series_set")
 
         auto img_series = std::dynamic_pointer_cast<sight::data::image_series>(series_set->at(0));
         CHECK_MESSAGE(img_series, "ImageSeries dynamicCast failed");
+        CHECK_EQ(img_series->get_series_description(), std::string("img.vtk"));
 
         auto model_series = std::dynamic_pointer_cast<sight::data::model_series>(series_set->at(1));
         CHECK_MESSAGE(model_series, "ModelSeries dynamicCast failed");
@@ -68,8 +69,8 @@ TEST_SUITE("sight::io::vtk::series_set")
         const auto& rec1 = rec_vect.at(0);
         const auto& rec2 = rec_vect.at(1);
 
-        CHECK_EQ(rec1->get_organ_name(), std::string("sphere"));
-        CHECK_EQ(rec2->get_organ_name(), std::string("sphere"));
+        CHECK_EQ(rec1->get_organ_name(), std::string("sphere.vtk"));
+        CHECK_EQ(rec2->get_organ_name(), std::string("sphere.vtk"));
 
         auto mesh1 = rec1->get_mesh();
         auto mesh2 = rec2->get_mesh();

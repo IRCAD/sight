@@ -178,7 +178,9 @@ bool drag_and_drop::eventFilter(QObject* _obj, QEvent* _event)
                         const bool success = sight::io::reader::read_paths(
                             paths,
                             data,
-                            m_slot_forward_notification
+                            m_slot_forward_notification,
+                            {},
+                            true
                         );
 
                         if(!success)

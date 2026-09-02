@@ -154,7 +154,7 @@ void model_series_reader::updating()
             data::reconstruction::sptr rec = std::make_shared<data::reconstruction>();
             rec->set_mesh(mesh);
             rec->set_is_visible(true);
-            rec->set_organ_name(file.stem().string());
+            rec->set_organ_name(file.filename().string());
             rec_db.push_back(rec);
             added_recs.push_back(rec);
         }

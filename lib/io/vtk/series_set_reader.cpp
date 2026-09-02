@@ -129,7 +129,7 @@ static data::object::sptr get_data_object(
 
         data::reconstruction::sptr rec = std::make_shared<data::reconstruction>();
         rec->set_mesh(mesh_obj);
-        rec->set_organ_name(_file.stem().string());
+        rec->set_organ_name(_file.filename().string());
         rec->set_is_visible(true);
         data_obj = rec;
     }
@@ -140,7 +140,7 @@ static data::object::sptr get_data_object(
         io::vtk::helper::mesh::from_vtk_mesh(mesh, mesh_obj);
         data::reconstruction::sptr rec = std::make_shared<data::reconstruction>();
         rec->set_mesh(mesh_obj);
-        rec->set_organ_name(_file.stem().string());
+        rec->set_organ_name(_file.filename().string());
         rec->set_is_visible(true);
         data_obj = rec;
     }
@@ -171,6 +171,7 @@ void series_set_reader::read(sight::core::notification::observer::sptr _progress
     const std::string instance_uid                  = core::tools::uuid::generate();
 
     data::model_series::reconstruction_vector_t recs;
+    std::vector<std::filesystem::path> model_files;
     std::vector<std::string> error_files;
     const std::size_t file_count = files.size();
     _progress->set_total_work_units(static_cast<std::uint64_t>(file_count));
@@ -229,12 +230,15 @@ void series_set_reader::read(sight::core::notification::observer::sptr _progress
         {
             auto img_series = std::make_shared<data::image_series>();
             init_series(img_series, instance_uid);
+            img_series->set_series_description(file.filename().string());
+            img_series->set_file(file);
             img_series->image::shallow_copy(img);
             series_set->push_back(img_series);
         }
         else if(rec)
         {
             recs.push_back(rec);
+            model_files.push_back(file);
         }
         else
         {
@@ -255,6 +259,11 @@ void series_set_reader::read(sight::core::notification::observer::sptr _progress
     {
         data::model_series::sptr model_series = std::make_shared<data::model_series>();
         init_series(model_series, instance_uid);
+        for(std::size_t index = 0 ; index < model_files.size() ; ++index)
+        {
+            model_series->set_file(model_files[index], index);
+        }
+
         model_series->set_reconstruction_db(recs);
         series_set->push_back(model_series);
     }

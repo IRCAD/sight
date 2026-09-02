@@ -95,6 +95,8 @@ void test::open_folder(
     const std::filesystem::path& _path
 )
 {
+    CPPUNIT_ASSERT_MESSAGE("The DICOM test directory does not exist", std::filesystem::is_directory(_path));
+
     helper::button::push(
         _tester,
         "data_tools_row_1/Load DICOM Folders"
@@ -107,10 +109,11 @@ void test::open_folder(
 
     QTest::qWait(1000);
 
+    // Loading the 512x512x404 DICOM volume can exceed 50 seconds on a busy CI runner.
     helper::button::wait_for_clickability(
         _tester,
         helper::selector("top_toolbar_left/volume").with_timeout(
-            sight::ui::test::tester::DEFAULT_TIMEOUT * 5
+            sight::ui::test::tester::DEFAULT_TIMEOUT * 18
         )
     );
 }

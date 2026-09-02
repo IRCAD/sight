@@ -54,7 +54,8 @@ public:
     constexpr matrix4() noexcept;
     inline matrix4(std::initializer_list<value_type> _init_list);
 
-    template<typename T, std::enable_if_t<core::is_container<T>::value>* = nullptr>
+    template<typename T>
+    requires core::is_container<T>::value
     inline matrix4(const T& _data); //NOLINT(google-explicit-constructor,hicpp-explicit-conversions)
     /// @}
 
@@ -179,7 +180,8 @@ inline matrix4& matrix4::operator=(std::initializer_list<value_type> _init_list)
 
 //------------------------------------------------------------------------------
 
-template<typename T, std::enable_if_t<core::is_container<T>::value>*>
+template<typename T>
+requires core::is_container<T>::value
 inline matrix4::matrix4(const T& _data)
 {
     ///@todo make this functions constexpr once we support C++23 which will support SIGHT_ASSERT

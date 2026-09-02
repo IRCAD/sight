@@ -32,6 +32,8 @@
 #include <ui/__/dialog/location.hpp>
 #include <ui/__/dialog/message.hpp>
 
+#include <io/__/reader/reader_helper.hpp>
+
 #include <filesystem>
 
 namespace sight::module::io::vtk
@@ -123,6 +125,11 @@ void series_set_reader::stopping()
 void series_set_reader::configuring()
 {
     sight::io::service::reader::configuring();
+
+    if(const auto config = this->get_config().get_child_optional("config.<xmlattr>"); config)
+    {
+        m_append = config->get("append", false);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -206,8 +213,22 @@ void series_set_reader::updating()
         {
             const auto scoped_emitter = series_set->scoped_emit();
 
-            series_set->clear();
-            series_set->shallow_copy(local_series_set);
+            if(m_append)
+            {
+                const std::size_t duplicate_count = sight::io::reader::append_unique(*series_set, *local_series_set);
+                if(duplicate_count > 0)
+                {
+                    this->warn(
+                        duplicate_count == 1
+                        ? "This mesh or image is already loaded."
+                        : std::to_string(duplicate_count) + " meshes or images are already loaded."
+                    );
+                }
+            }
+            else
+            {
+                series_set->shallow_copy(local_series_set);
+            }
         }
     }
 }

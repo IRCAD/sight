@@ -27,6 +27,8 @@
 
 #include <service/controller.hpp>
 
+#include <string>
+
 namespace sight::module::ui::qt::series
 {
 
@@ -71,6 +73,14 @@ public:
         static inline const signal_key_t MODEL_SELECTED = "model_selected";
     };
 
+    struct slots
+    {
+        static inline const slot_key_t SELECT_IMAGE = "select_image";
+        static inline const slot_key_t SELECT_MODEL = "select_model";
+        static inline const slot_key_t REMOVE_IMAGE = "remove_image";
+        static inline const slot_key_t REMOVE_MODEL = "remove_model";
+    };
+
     /// Constructor
     select_dialog();
 
@@ -93,7 +103,12 @@ protected:
 
 private:
 
-    sight::data::ptr<sight::data::series_set, sight::data::access::in> m_series_set {this, "series_set"};
+    void select_image(std::string _id);
+    void select_model(std::string _id, bool _visible);
+    void remove_image(std::string _id);
+    void remove_model(std::string _id);
+
+    sight::data::ptr<sight::data::series_set, sight::data::access::inout> m_series_set {this, "series_set"};
     sight::data::ptr<sight::data::model_series, sight::data::access::out> m_model_series {this, "model_series"};
     sight::data::ptr<sight::data::image, sight::data::access::out> m_image {this, "image"};
 };

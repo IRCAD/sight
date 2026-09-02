@@ -79,8 +79,8 @@ namespace sight::module::ui::qt::metrics
  * point to the landmarks
  *
  *  @subsection In-Out In-Out
- * - \b imageSeries [sight::data::image_series]: the imageSeries structure on which this editor is working.
- *  Either landmarks or imageSeries parameter must be set.
+ * - \b image_series [sight::data::image_series]: the image_series structure on which this editor is working.
+ *  Either landmarks or image_series parameter must be set.
  * - \b currentLandmark [sight::data::point]: (optional) the coordinates of the currently selected landmark.
  *  It is updated when a new landmark is created, or when a double click is made on an existing landmark.
  *
@@ -353,7 +353,7 @@ private:
     /// Sets the text displayed at the top of this editor.
     std::string m_text;
 
-    static constexpr std::string_view IMAGE_SERIES_INOUT     = "imageSeries";
+    static constexpr std::string_view IMAGE_SERIES_INOUT     = "image_series";
     static constexpr std::string_view MATRIX_IN              = "matrix";
     static constexpr std::string_view CURRENT_LANDMARK_INOUT = "currentLandmark";
     data::ptr<data::matrix4, sight::data::access::in> m_matrix {this, MATRIX_IN, true};

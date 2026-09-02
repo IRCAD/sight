@@ -1151,6 +1151,10 @@ inline static data::series_set::sptr read_image_instance(
         {
             // Add the dataset to allow access to all DICOM attributes (not only the ones we have converted)
             image_series->set_data_set(gdcm_dataset);
+            if(image_series->get_series_description().empty())
+            {
+                image_series->set_series_description(std::filesystem::path(filename).filename().string());
+            }
 
             // Also save the file path. It could be useful to keep a link to the original file.
             image_series->set_file(filename);

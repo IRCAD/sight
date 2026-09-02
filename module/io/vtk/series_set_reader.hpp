@@ -63,6 +63,7 @@ namespace sight::module::io::vtk
  * @subsection Configuration Configuration
  * - \b file (optional): path of the files to load, if it is not defined, 'open_location_dialog()' should be called to
  * define the path.
+ * - \b config.append (optional, default=false): appends data instead of replacing the current series set.
  */
 class series_set_reader : public sight::io::service::reader
 {
@@ -140,6 +141,8 @@ private:
         const std::vector<std::filesystem::path>& _vtk_files,
         const sight::sptr<data::series_set>& _series_set
     );
+
+    bool m_append {false};
 };
 
 } // namespace sight::module::io::vtk

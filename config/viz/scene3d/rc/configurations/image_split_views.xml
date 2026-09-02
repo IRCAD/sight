@@ -3,6 +3,7 @@
     <parameters>
         <object uid="model_series" type="sight::data::model_series" deferred="true" />
         <object uid="image" type="sight::data::image_series" deferred="true" />
+        <object uid="series_set" type="sight::data::series_set" />
         <object uid="volume_tf" type="sight::data::transfer_function" />
         <object uid="extruded_model_series" type="sight::data::model_series" />
 
@@ -26,6 +27,7 @@
         <channel name="negato_3d_transparency" />
         <channel name="mesh_activation" optional="true" />
         <channel name="volume_activation" optional="true" />
+        <channel name="image_visibility" />
         <channel name="ruler_activation" />
         <channel name="ruler_deactivation" />
         <channel name="landmarks_edit_mode" />
@@ -88,6 +90,7 @@
             <config id="sight::config::viz::scene3d::volumeRendering" />
             <object name="model_series" uid="${model_series}" optional="true" />
             <object name="image" uid="${image}" optional="true" />
+            <object name="series_set" uid="${series_set}" />
             <object name="volume_tf" uid="${volume_tf}" />
             <object name="extruded_model_series" uid="${extruded_model_series}" />
             <object name="vr_visibility" uid="${vr_visibility}" />
@@ -112,6 +115,7 @@
             <channel name="negato_3d_transparency" uid="${negato_3d_transparency}" />
             <channel name="mesh_activation" uid="${mesh_activation}" />
             <channel name="volume_activation" uid="${volume_activation}" />
+            <channel name="image_visibility" uid="${image_visibility}" />
             <channel name="ruler_activation" uid="${ruler_activation}" />
             <channel name="ruler_deactivation" uid="${ruler_deactivation}" />
             <channel name="landmarks_edit_mode" uid="${landmarks_edit_mode}" />
@@ -127,12 +131,14 @@
         <service uid="axial_negato_cfg" type="sight::app::config_launcher">
             <config id="sight::config::viz::scene3d::negato2d" />
             <object name="image" uid="${image}" optional="true" />
+            <object name="series_set" uid="${series_set}" />
             <object name="transfer_function" uid="${volume_tf}" />
             <object name="fiducial_size" uid="${fiducial_size}" />
             <param name="WID_PARENT" value="axial_scene_view" />
             <param name="slice_index" value="axial" />
             <channel name="world_coords_landmarks" uid="world_coords_landmarks" />
             <channel name="toggle_view_visibility" uid="toggle_axial_visibility" />
+            <channel name="image_visibility" uid="${image_visibility}" />
             <channel name="ruler_activation" uid="${ruler_activation}" />
             <channel name="ruler_deactivation" uid="${ruler_deactivation}" />
             <channel name="visibility_rulers" uid="${visibility_rulers}" />
@@ -145,12 +151,14 @@
         <service uid="sagittal_negato_cfg" type="sight::app::config_launcher">
             <config id="sight::config::viz::scene3d::negato2d" />
             <object name="image" uid="${image}" optional="true" />
+            <object name="series_set" uid="${series_set}" />
             <object name="transfer_function" uid="${volume_tf}" />
             <object name="fiducial_size" uid="${fiducial_size}" />
             <param name="WID_PARENT" value="sagittal_scene_view" />
             <param name="slice_index" value="sagittal" />
             <channel name="world_coords_landmarks" uid="world_coords_landmarks" />
             <channel name="toggle_view_visibility" uid="toggle_sagittal_visibility" />
+            <channel name="image_visibility" uid="${image_visibility}" />
             <channel name="ruler_activation" uid="${ruler_activation}" />
             <channel name="ruler_deactivation" uid="${ruler_deactivation}" />
             <channel name="visibility_rulers" uid="${visibility_rulers}" />
@@ -163,12 +171,14 @@
         <service uid="frontal_negato_cfg" type="sight::app::config_launcher">
             <config id="sight::config::viz::scene3d::negato2d" />
             <object name="image" uid="${image}" optional="true" />
+            <object name="series_set" uid="${series_set}" />
             <object name="transfer_function" uid="${volume_tf}" />
             <object name="fiducial_size" uid="${fiducial_size}" />
             <param name="WID_PARENT" value="frontal_scene_view" />
             <param name="slice_index" value="frontal" />
             <channel name="world_coords_landmarks" uid="world_coords_landmarks" />
             <channel name="toggle_view_visibility" uid="toggle_frontal_visibility" />
+            <channel name="image_visibility" uid="${image_visibility}" />
             <channel name="ruler_activation" uid="${ruler_activation}" />
             <channel name="ruler_deactivation" uid="${ruler_deactivation}" />
             <channel name="visibility_rulers" uid="${visibility_rulers}" />

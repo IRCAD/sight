@@ -12,6 +12,34 @@
         </cli>
     </extension>
 
+    <extension implements="sight::service::extension::config">
+        <id>SightViewer_dicom_SrvCfg</id>
+        <desc>DICOM</desc>
+        <config>
+            <windowTitle>Open DICOM directory</windowTitle>
+            <dialog filter="image" />
+            <config append="true" />
+        </config>
+    </extension>
+
+    <extension implements="sight::service::extension::config">
+        <id>SightViewer_itk_series_set_reader_SrvCfg</id>
+        <service>sight::module::io::itk::series_set_reader</service>
+        <desc>Load and append ITK image series</desc>
+        <config>
+            <config append="true" />
+        </config>
+    </extension>
+
+    <extension implements="sight::service::extension::config">
+        <id>SightViewer_vtk_series_set_reader_SrvCfg</id>
+        <service>sight::module::io::vtk::series_set_reader</service>
+        <desc>Load and append VTK series</desc>
+        <config>
+            <config append="true" />
+        </config>
+    </extension>
+
     <!-- Service config used for writing Snapshot -->
     <extension implements="sight::service::extension::config">
         <id>SightViewer_snapshot_SrvCfg</id>
@@ -196,6 +224,7 @@
                 <gui>
                     <layout type="sight::ui::layout::line">
                         <orientation value="vertical" />
+                        <view proportion="1" />
                         <view proportion="0" />
                         <spacer />
                     </layout>
@@ -207,13 +236,15 @@
 
             <service uid="data_tools_row_1_container" type="sight::module::ui::view">
                 <gui>
-                    <toolbar align="bottom" />
+                    <toolbar />
                     <layout type="sight::ui::layout::line">
                         <orientation value="vertical" />
+                        <view />
                     </layout>
                 </gui>
                 <registry>
                     <toolbar sid="data_tools_row_1" />
+                    <view sid="image_manager_widget_srv" />
                 </registry>
             </service>
 
@@ -361,9 +392,7 @@
                 <data read="${series_set}" />
                 <selection mode="include" />
                 <addSelection service="sight::module::io::dicom::reader" />
-                <selection mode="exclude" />
-                <addSelection service="sight::module::io::dicom::series_set_reader" />
-                <addSelection service="sight::module::io::dicom::dicom_series_set_reader" />
+                <config id="SightViewer_dicom_SrvCfg" service="sight::module::io::dicom::reader" />
             </service>
 
             <service uid="image_drop_srv" type="sight::module::ui::qt::io::drag_and_drop">
@@ -377,6 +406,9 @@
                 <addSelection service="sight::module::io::dicom::reader" />
                 <addSelection service="sight::module::io::itk::series_set_reader" />
                 <addSelection service="sight::module::io::vtk::series_set_reader" />
+                <config id="SightViewer_dicom_SrvCfg" service="sight::module::io::dicom::reader" />
+                <config id="SightViewer_itk_series_set_reader_SrvCfg" service="sight::module::io::itk::series_set_reader" />
+                <config id="SightViewer_vtk_series_set_reader_SrvCfg" service="sight::module::io::vtk::series_set_reader" />
             </service>
 
             <service uid="command_line_srv" type="sight::module::ui::io::selector">
@@ -489,6 +521,7 @@
                 <config id="sight::config::viz::scene3d::image_split_views" />
                 <object name="model_series" uid="model_series" optional="true" />
                 <object name="image" uid="image" optional="true" />
+                <object name="series_set" uid="series_set" />
                 <object name="volume_tf" uid="volume_tf" />
                 <object name="extruded_model_series" uid="extruded_model_series" />
                 <object name="vr_visibility" uid="${vr_visibility}" />
@@ -511,6 +544,7 @@
                 <channel name="ruler_deactivation" uid="ruler_deactivation" />
                 <channel name="mesh_activation" uid="mesh_activation" />
                 <channel name="volume_activation" uid="volume_activation" />
+                <channel name="image_visibility" uid="image_visibility" />
                 <channel name="landmarks_edit_mode" uid="landmarks_edit_mode" />
                 <channel name="landmarks_group_selected" uid="landmarks_group_selected" />
                 <channel name="remove_all_landmarks" uid="remove_all_landmarks" />
@@ -544,15 +578,21 @@
 
             <!-- ******************************* Services ***************************************** -->
 
+            <service uid="image_manager_widget_srv" type="sight::module::ui::qt::series::image_manager_widget">
+                <in key="series_set" uid="series_set" />
+                <in key="model_series" uid="model_series" />
+                <config thumbnail_width="130" thumbnail_height="96" thumbnail_color="#00000000" />
+            </service>
+
             <!-- Extract the model or the image from the series -->
             <service uid="extract_series_srv" type="sight::module::ui::qt::series::select_dialog">
-                <in key="series_set" uid="series_set" />
+                <inout key="series_set" uid="series_set" />
                 <out key="model_series" uid="model_series" />
                 <out key="image" uid="image" />
             </service>
 
             <service uid="extract_pacs_image_srv" type="sight::module::ui::qt::series::select_dialog">
-                <in key="series_set" uid="pacs_series_set" />
+                <inout key="series_set" uid="pacs_series_set" />
                 <out key="image" uid="image" />
             </service>
 
@@ -574,7 +614,7 @@
 
             <!-- Parameters for landmarks -->
             <service uid="annotation_srv" type="sight::module::ui::qt::metrics::landmarks" auto_connect="true">
-                <inout key="imageSeries" uid="image" />
+                <inout key="image_series" uid="image" />
                 <advanced>true</advanced>
             </service>
 
@@ -597,6 +637,30 @@
             </service>
 
             <!-- ******************************* Connections ***************************************** -->
+
+            <connect>
+                <signal>image_manager_widget_srv/image_removed</signal>
+                <slot>extract_series_srv/remove_image</slot>
+            </connect>
+
+            <connect>
+                <signal>image_manager_widget_srv/image_selected</signal>
+                <slot>extract_series_srv/select_image</slot>
+            </connect>
+
+            <connect channel="image_visibility">
+                <signal>image_manager_widget_srv/image_visibility_changed</signal>
+            </connect>
+
+            <connect>
+                <signal>image_manager_widget_srv/model_removed</signal>
+                <slot>extract_series_srv/remove_model</slot>
+            </connect>
+
+            <connect>
+                <signal>image_manager_widget_srv/model_selected</signal>
+                <slot>extract_series_srv/select_model</slot>
+            </connect>
 
             <connect>
                 <signal>open_folder_srv/notification_created</signal>

@@ -3,6 +3,7 @@
     <parameters>
         <object uid="model_series" type="sight::data::model_series" deferred="true" />
         <object uid="image" type="sight::data::image_series" deferred="true" />
+        <object uid="series_set" type="sight::data::series_set" />
         <object uid="volume_tf" type="sight::data::transfer_function" />
         <object uid="extruded_model_series" type="sight::data::model_series" />
 
@@ -30,6 +31,7 @@
         <channel name="ruler_deactivation" optional="true" />
         <channel name="mesh_activation" optional="true" />
         <channel name="volume_activation" optional="true" />
+        <channel name="image_visibility" />
         <channel name="landmarks_edit_mode" />
         <channel name="world_coords_landmarks" />
         <channel name="landmarks_group_selected" />
@@ -151,8 +153,8 @@
                     <adaptor uid="trackball_interactor_adp" />
                     <adaptor uid="picker_interactor_adp" />
                     <adaptor uid="model_series_adp" />
-                    <adaptor uid="3d_negato_adp" />
-                    <adaptor uid="volume_adp" />
+                    <adaptor uid="image_negato3d_adp" />
+                    <adaptor uid="image_volume_adp" />
                     <adaptor uid="landmarks_adp" />
                     <adaptor uid="ruler_fiducial_adp" />
                     <adaptor uid="axis_adp" />
@@ -186,18 +188,16 @@
             <config query_flags="0x40000000" autoresetcamera="true" visible="${model_visibility}" />
         </service>
 
-        <service uid="volume_adp" type="sight::module::viz::scene3d::adaptor::volume_render">
-            <data image="${image}" />
-            <data mask="${mask}" />
+        <service uid="image_volume_adp" type="sight::module::viz::scene3d::adaptor::image_series" auto_connect="true">
+            <data series="${series_set}" />
             <data tf="${volume_tf}" />
-            <data clippingMatrix="${clipping_matrix}" />
-            <config widgets="false" preintegration="false" autoresetcamera="true" samples="1200" visible="${vr_visibility}" />
+            <config representation="volume" widgets="false" preintegration="false" autoresetcamera="true" samples="1200" visible="${vr_visibility}" />
         </service>
 
-        <service uid="3d_negato_adp" type="sight::module::viz::scene3d::adaptor::negato3d">
-            <data image="${image}" />
+        <service uid="image_negato3d_adp" type="sight::module::viz::scene3d::adaptor::image_series" auto_connect="true">
+            <data series="${series_set}" />
             <data tf="${volume_tf}" />
-            <config query_flags="0x40000000" interactive="true" priority="2" visible="${negato_visibility}" />
+            <config representation="negato3d" query_flags="0x40000000" interactive="true" priority="2" visible="${negato_visibility}" depth_bias="0.000001" />
         </service>
 
         <service uid="landmarks_adp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::point" auto_connect="true">
@@ -309,25 +309,30 @@
 
         <!-- Volume rendering parameters -->
         <connect channel="${vr_bool_param}">
-            <slot>volume_adp/set_bool_parameter</slot>
+            <slot>image_volume_adp/set_bool_parameter</slot>
         </connect>
 
         <connect channel="${vr_int_param}">
-            <slot>volume_adp/set_int_parameter</slot>
+            <slot>image_volume_adp/set_int_parameter</slot>
         </connect>
 
         <connect channel="${vr_double_param}">
-            <slot>volume_adp/set_double_parameter</slot>
+            <slot>image_volume_adp/set_double_parameter</slot>
+        </connect>
+
+        <connect channel="${image_visibility}">
+            <slot>image_volume_adp/set_image_visibility</slot>
+            <slot>image_negato3d_adp/set_image_visibility</slot>
         </connect>
 
         <!-- Adaptors visibility -->
         <connect channel="${box_widget_visibility}">
-            <slot>volume_adp/toggle_widgets</slot>
+            <slot>image_volume_adp/toggle_widgets</slot>
         </connect>
 
         <connect channel="${box_widget_reset}">
             <slot>clipping_box_reset_srv/update</slot>
-            <slot>volume_adp/update_clipping_box</slot>
+            <slot>image_volume_adp/update_clipping_box</slot>
         </connect>
 
         <connect channel="${shape_extruder_enable_tool}">
@@ -347,11 +352,11 @@
         </connect>
 
         <connect channel="${world_coords_landmarks}">
-            <slot>3d_negato_adp/update_slices_from_world</slot>
+            <slot>image_negato3d_adp/update_slices_from_world</slot>
         </connect>
 
         <connect channel="${negato_3d_transparency}">
-            <slot>3d_negato_adp/set_transparency</slot>
+            <slot>image_negato3d_adp/set_transparency</slot>
         </connect>
 
         <connect channel="${landmarks_edit_mode}">
@@ -411,7 +416,7 @@
 
         <!-- Display the picked voxel information -->
         <connect>
-            <signal>3d_negato_adp/picked_voxel</signal>
+            <signal>image_negato3d_adp/picked_voxel</signal>
             <slot>picked_voxel_text_adp/set_text</slot>
         </connect>
 
@@ -423,7 +428,7 @@
         <!-- Connects double click on landmark to slice moves. -->
         <connect>
             <signal>landmarks_adp/send_world_coord</signal>
-            <slot>3d_negato_adp/update_slices_from_world</slot>
+            <slot>image_negato3d_adp/update_slices_from_world</slot>
         </connect>
 
         <connect>

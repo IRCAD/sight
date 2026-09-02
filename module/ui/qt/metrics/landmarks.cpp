@@ -277,7 +277,7 @@ void landmarks::starting()
 
     this->updating();
 
-    SIGHT_ASSERT("'imageSeries' parameter must be set.", m_image_series.const_lock() != nullptr);
+    SIGHT_ASSERT("'image_series' parameter must be set.", m_image_series.const_lock() != nullptr);
     if(auto image_series = m_image_series.lock())
     {
         image_series->get_fiducials()->set_group_names_for_point_fiducials();

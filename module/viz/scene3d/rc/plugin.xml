@@ -100,6 +100,14 @@
 
     <extension implements="sight::service::extension::factory">
         <type>sight::viz::scene3d::adaptor</type>
+        <service>sight::module::viz::scene3d::adaptor::image_series</service>
+        <object key="series">sight::data::series_set</object>
+        <object key="tf">sight::data::transfer_function</object>
+        <desc>This adaptor displays image series with independent visibility.</desc>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::viz::scene3d::adaptor</type>
         <service>sight::module::viz::scene3d::adaptor::negato2d</service>
         <object key="image">sight::data::image</object>
         <object key="tf">sight::data::transfer_function</object>

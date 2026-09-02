@@ -57,6 +57,7 @@ namespace sight::module::io::dicom
  *
  * @subsection Configuration Configuration
  * - \b config.window_title (optional): allows overriding the default title of the modal file selection window.
+ * - \b config.append (optional, default=false): appends the loaded series instead of replacing the current set.
  * - \b dialog(optional):
  *      \b sopFilter: The SOP class uids to filter. If empty, and if typeFilter is also empty, the default type filter
  *                    "image", "model", "report" is used.
@@ -115,6 +116,9 @@ private:
 
     /// Dialog policy to use for dialogs. By default, always show dialog
     dialog_policy m_dialog_policy {dialog_policy::always};
+
+    /// Keep the series already present in the destination when loading new data.
+    bool m_append {false};
 
     /// Default filters to use when scanning for DICOM files
     sight::data::series::sop_keywords_t m_filters {

@@ -29,6 +29,7 @@
 
 #include <utest_data/data.hpp>
 
+#include <QPushButton>
 #include <QTreeWidget>
 #include <qnamespace.h>
 
@@ -242,8 +243,25 @@ void landmarks_interaction::test()
             save_snapshot(_tester, first_snapshot_path);
             compare_images(first_snapshot_path, first_reference_path);
 
-            const auto landmark_bin_button =
-                selector::from_parent("top_scenes_view/1", "landmarks_adp/binButton");
+            const auto push_landmark_bin_button = [&_tester]
+                                                  {
+                                                      _tester.take("top_scenes_view/1", "top_scenes_view/1");
+                                                      _tester.yields(
+                                                          "Visible landmark bin button",
+                                                          [](QObject* _parent) -> QObject*
+                {
+                    for(auto* button : _parent->findChildren<QPushButton*>("landmarks_adp/binButton"))
+                    {
+                        if(button->isVisible())
+                        {
+                            return button;
+                        }
+                    }
+
+                    return nullptr;
+                });
+                                                      helper::button::push(_tester, selector::current());
+                                                  };
 
             {
                 auto bt = _tester.add_in_backtrace("Remove three landmarks from the first group");
@@ -257,7 +275,7 @@ void landmarks_interaction::test()
                         )
                     )
                 );
-                helper::button::push(_tester, landmark_bin_button);
+                push_landmark_bin_button();
                 selector::from_parent("top_scenes_view/1", "scene_srv").select(_tester);
                 _tester.interact(
                     std::make_unique<sight::ui::test::mouse_click>(
@@ -269,7 +287,7 @@ void landmarks_interaction::test()
                         + QPoint(-150, -150)
                     )
                 );
-                helper::button::push(_tester, landmark_bin_button);
+                push_landmark_bin_button();
                 selector::from_parent("top_scenes_view/1", "scene_srv").select(_tester);
                 _tester.interact(
                     std::make_unique<sight::ui::test::mouse_click>(
@@ -281,7 +299,7 @@ void landmarks_interaction::test()
                         + QPoint(0, -150)
                     )
                 );
-                helper::button::push(_tester, landmark_bin_button);
+                push_landmark_bin_button();
                 _tester.take("Landmarks tree widget", "annotation_srv/treeWidget");
                 _tester.doubt<QTreeWidget*>(
                     "There must be no landmarks in the first group",
@@ -304,7 +322,7 @@ void landmarks_interaction::test()
                         + QPoint(150, 0)
                     )
                 );
-                helper::button::push(_tester, landmark_bin_button);
+                push_landmark_bin_button();
                 selector::from_parent("top_scenes_view/1", "scene_srv").select(_tester);
                 _tester.interact(
                     std::make_unique<sight::ui::test::mouse_click>(
@@ -316,7 +334,7 @@ void landmarks_interaction::test()
                         + QPoint(-150, 0)
                     )
                 );
-                helper::button::push(_tester, landmark_bin_button);
+                push_landmark_bin_button();
                 _tester.take("Landmarks tree widget", "annotation_srv/treeWidget");
                 _tester.doubt<QTreeWidget*>(
                     "There must be one landmark in the second group",
@@ -339,7 +357,7 @@ void landmarks_interaction::test()
                         + QPoint(150, 150)
                     )
                 );
-                helper::button::push(_tester, landmark_bin_button);
+                push_landmark_bin_button();
                 _tester.take("Landmarks tree widget", "annotation_srv/treeWidget");
                 _tester.doubt<QTreeWidget*>(
                     "There must be two landmarks in the third group",

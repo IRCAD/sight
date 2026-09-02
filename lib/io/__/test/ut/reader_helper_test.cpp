@@ -21,6 +21,7 @@
 
 #include <core/os/temp_path.hpp>
 
+#include <data/image_series.hpp>
 #include <data/string.hpp>
 
 #include <io/__/reader/reader_helper.hpp>
@@ -109,137 +110,6 @@ SIGHT_REGISTER_SERVICE(
     sight::data::string
 )
 
-class test_files_reader final : public sight::io::service::reader
-{
-public:
-
-    SIGHT_DECLARE_SERVICE(test_files_reader, sight::io::service::reader);
-
-    test_files_reader() noexcept :
-        reader("Files reader helper test")
-    {
-    }
-
-    //-----------------------------------------------------------------------------
-
-    static void reset()
-    {
-        s_read_file_groups.clear();
-    }
-
-    inline static std::vector<std::vector<std::filesystem::path> > s_read_file_groups;
-
-    //-----------------------------------------------------------------------------
-
-    void open_location_dialog() override
-    {
-    }
-
-    //-----------------------------------------------------------------------------
-
-    std::vector<std::pair<std::string, std::string> > get_supported_extensions() override
-    {
-        return {{"Batch test", ".batch"}};
-    }
-
-    //-----------------------------------------------------------------------------
-
-    sight::io::service::path_type_t get_path_type() const override
-    {
-        return sight::io::service::files;
-    }
-
-protected:
-
-    //-----------------------------------------------------------------------------
-
-    void starting() override
-    {
-    }
-
-    //-----------------------------------------------------------------------------
-
-    void updating() override
-    {
-        s_read_file_groups.emplace_back(this->get_files().begin(), this->get_files().end());
-        m_read_failed = false;
-    }
-
-    //-----------------------------------------------------------------------------
-
-    void stopping() override
-    {
-    }
-};
-
-SIGHT_REGISTER_SERVICE(
-    sight::io::service::reader,
-    sight::io::reader::ut::test_files_reader,
-    sight::data::string
-)
-
-class test_folder_reader final : public sight::io::service::reader
-{
-public:
-
-    SIGHT_DECLARE_SERVICE(test_folder_reader, sight::io::service::reader);
-
-    test_folder_reader() noexcept :
-        reader("Folder reader helper test")
-    {
-    }
-
-    //-----------------------------------------------------------------------------
-
-    static void reset()
-    {
-        s_read_folders.clear();
-    }
-
-    inline static std::vector<std::filesystem::path> s_read_folders;
-
-    //-----------------------------------------------------------------------------
-
-    void open_location_dialog() override
-    {
-    }
-
-    //-----------------------------------------------------------------------------
-
-    sight::io::service::path_type_t get_path_type() const override
-    {
-        return sight::io::service::folder;
-    }
-
-protected:
-
-    //-----------------------------------------------------------------------------
-
-    void starting() override
-    {
-    }
-
-    //-----------------------------------------------------------------------------
-
-    void updating() override
-    {
-        s_read_folders.push_back(this->get_folder());
-        m_read_failed = false;
-    }
-
-    //-----------------------------------------------------------------------------
-
-    void stopping() override
-    {
-    }
-};
-
-SIGHT_REGISTER_SERVICE(
-    sight::io::service::reader,
-    sight::io::reader::ut::test_folder_reader,
-    sight::data::string
-)
-
 struct fixture
 {
     //------------------------------------------------------------------------------
@@ -293,19 +163,6 @@ TEST_SUITE("sight::io::reader::reader_helper")
         CHECK_EQ(test_reader::s_read_paths, paths);
     }
 
-    TEST_CASE_FIXTURE(sight::io::reader::ut::fixture, "read_multiple_files_with_files_reader")
-    {
-        using test_files_reader = sight::io::reader::ut::test_files_reader;
-
-        test_files_reader::reset();
-        const std::vector paths {make_file("first.batch"), make_file("second.batch")};
-        const auto data = std::make_shared<sight::data::string>();
-
-        CHECK(sight::io::reader::read_paths(paths, data, nullptr));
-        REQUIRE(test_files_reader::s_read_file_groups.size() == std::size_t(1));
-        CHECK_EQ(test_files_reader::s_read_file_groups.front(), paths);
-    }
-
     TEST_CASE_FIXTURE(sight::io::reader::ut::fixture, "reject_unsupported_file")
     {
         using test_reader = sight::io::reader::ut::test_reader;
@@ -330,46 +187,29 @@ TEST_SUITE("sight::io::reader::reader_helper")
         CHECK(test_reader::s_read_paths.empty());
     }
 
-    TEST_CASE_FIXTURE(sight::io::reader::ut::fixture, "read_selected_folder_reader")
+    TEST_CASE_FIXTURE(sight::io::reader::ut::fixture, "append_unique_series")
     {
-        using test_folder_reader = sight::io::reader::ut::test_folder_reader;
+        const auto first_path  = make_file("first.vtk");
+        const auto second_path = make_file("second.vtk");
 
-        test_folder_reader::reset();
-        const auto path = m_directory.path() / "input_folder";
-        REQUIRE(std::filesystem::create_directory(path));
-        const auto data = std::make_shared<sight::data::string>();
+        auto destination = std::make_shared<sight::data::series_set>();
+        auto first       = std::make_shared<sight::data::image_series>();
+        first->set_file(first_path);
+        destination->push_back(first);
 
-        CHECK_FALSE(sight::io::reader::read_paths({path}, data, nullptr, {}));
-        CHECK(test_folder_reader::s_read_folders.empty());
+        auto source    = std::make_shared<sight::data::series_set>();
+        auto duplicate = std::make_shared<sight::data::image_series>();
+        duplicate->set_file(first_path);
+        source->push_back(duplicate);
 
-        CHECK(
-            sight::io::reader::read_paths(
-                {path},
-                data,
-                nullptr,
-                {"sight::io::reader::ut::test_folder_reader"
-                })
-        );
-        REQUIRE(test_folder_reader::s_read_folders.size() == std::size_t(1));
-        CHECK_EQ(test_folder_reader::s_read_folders.front(), path);
-    }
+        auto second = std::make_shared<sight::data::image_series>();
+        second->set_file(second_path);
+        source->push_back(second);
 
-    TEST_CASE_FIXTURE(sight::io::reader::ut::fixture, "reject_missing_folder")
-    {
-        using test_folder_reader = sight::io::reader::ut::test_folder_reader;
+        CHECK_EQ(sight::io::reader::append_unique(*destination, *source), std::size_t(1));
 
-        test_folder_reader::reset();
-        const auto path = missing_file("missing_folder");
-        const auto data = std::make_shared<sight::data::string>();
-
-        CHECK_FALSE(
-            sight::io::reader::read_paths(
-                {path},
-                data,
-                nullptr,
-                {"sight::io::reader::ut::test_folder_reader"
-                })
-        );
-        CHECK(test_folder_reader::s_read_folders.empty());
+        CHECK_EQ(destination->size(), std::size_t(2));
+        CHECK_EQ(destination->front()->get_file(), first_path);
+        CHECK_EQ(destination->back()->get_file(), second_path);
     }
 }

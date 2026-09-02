@@ -22,6 +22,8 @@
 
 #include "load_dicom.hpp"
 
+#include <core/os/temp_path.hpp>
+
 #include <ui/test/helper/button.hpp>
 
 #include <utest_data/data.hpp>
@@ -43,14 +45,33 @@ void load_dicom::test()
     std::filesystem::remove(snapshot_path);
 
     const std::filesystem::path reference_path(utest_data::dir() / "sight/ui/sight_viewer" / image_name);
+    const auto source_folder = utest_data::dir() / "sight/Patient/Dicom/JMSGenou";
+
+    CPPUNIT_ASSERT_MESSAGE("The DICOM test directory does not exist", std::filesystem::is_directory(source_folder));
+
+    std::filesystem::path source_file;
+    for(const auto& entry : std::filesystem::recursive_directory_iterator(source_folder))
+    {
+        if(entry.is_regular_file())
+        {
+            source_file = entry.path();
+            break;
+        }
+    }
+
+    CPPUNIT_ASSERT_MESSAGE("The DICOM test directory is empty", !source_file.empty());
+
+    const sight::core::os::temp_dir single_image_directory;
+    const auto single_image = single_image_directory.path() / "image.dcm";
+    CPPUNIT_ASSERT(std::filesystem::copy_file(source_file, single_image));
 
     start(
         test_name,
-        [&snapshot_path, &reference_path](sight::ui::test::tester& _tester)
+        [&snapshot_path, &reference_path, &single_image_directory](sight::ui::test::tester& _tester)
         {
             open_folder(
                 _tester,
-                utest_data::dir() / "sight/Patient/Dicom/JMSGenou"
+                single_image_directory.path()
             );
 
             helper::button::push(_tester, "top_toolbar_left/volume");

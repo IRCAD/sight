@@ -64,6 +64,7 @@ namespace sight::module::io::itk
  * @subsection Configuration Configuration
  * - \b file (optional): path of the images to load, if it not defined, 'open_location_dialog()' should be called to
  * define the path.
+ * - \b config.append (optional, default=false): appends images instead of replacing the current series set.
  */
 class series_set_reader : public sight::io::service::reader
 {
@@ -107,6 +108,8 @@ private:
 
     /// Initializes Series with dummy values and Study with specified instanceUID.
     static void init_series(sight::sptr<data::series> _series, const std::string& _instance_uid);
+
+    bool m_append {false};
 };
 
 } // namespace sight::module::io::itk

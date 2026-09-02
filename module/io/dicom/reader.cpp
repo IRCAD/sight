@@ -28,6 +28,8 @@
 #include <ui/__/dialog/message.hpp>
 #include <ui/qt/series/selector_dialog.hpp>
 
+#include <io/__/reader/reader_helper.hpp>
+
 #include <filesystem>
 
 namespace sight::module::io::dicom
@@ -144,6 +146,8 @@ void reader::configuring()
     const auto& config = tree.get_child_optional("config.<xmlattr>");
     if(config.is_initialized())
     {
+        m_append = config->get("append", false);
+
         if(std::string displayed_columns = config->get("displayedColumns", ""); !displayed_columns.empty())
         {
             m_displayed_columns = displayed_columns;
@@ -227,11 +231,25 @@ void reader::updating()
             const auto output = std::dynamic_pointer_cast<data::series_set>(data.get_shared());
             SIGHT_ASSERT("Output series_set not instantiated", output);
 
-            // Clear series_set and add new series
+            // Add the loaded series, optionally preserving the ones already opened.
             const auto scoped_emitter = output->scoped_emit();
 
-            output->clear();
-            output->shallow_copy(read);
+            if(m_append)
+            {
+                const std::size_t duplicate_count = sight::io::reader::append_unique(*output, *read);
+                if(duplicate_count > 0)
+                {
+                    this->warn(
+                        duplicate_count == 1
+                        ? "This DICOM series is already loaded."
+                        : std::to_string(duplicate_count) + " DICOM series are already loaded."
+                    );
+                }
+            }
+            else
+            {
+                output->shallow_copy(read);
+            }
         }
 
         m_read_failed = false;

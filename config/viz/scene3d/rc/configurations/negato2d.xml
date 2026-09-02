@@ -2,6 +2,7 @@
     <id>sight::config::viz::scene3d::negato2d</id>
     <parameters>
         <object uid="image" type="sight::data::image_series" deferred="true" />
+        <object uid="series_set" type="sight::data::series_set" />
         <object uid="transfer_function" type="sight::data::transfer_function" />
         <object uid="fiducial_size" type="sight::data::real" optional="true" value="1.5" />
 
@@ -13,6 +14,7 @@
 
         <channel name="world_coords_landmarks" optional="true" />
         <channel name="toggle_view_visibility" optional="true" />
+        <channel name="image_visibility" />
         <channel name="ruler_activation" optional="true" />
         <channel name="ruler_deactivation" optional="true" />
         <channel name="landmarks_edit_mode" optional="true" />
@@ -91,7 +93,7 @@
                 <background color="#303A65" />
 
                 <layer id="negatoLayer">
-                    <adaptor uid="negato_adp" />
+                    <adaptor uid="image_series_adp" />
                     <adaptor uid="ruler_fiducial_adp" />
                     <adaptor uid="negato_camera_adp" />
                     <adaptor uid="picker_interactor_adp" />
@@ -102,10 +104,10 @@
             </scene>
         </service>
 
-        <service uid="negato_adp" type="sight::module::viz::scene3d::adaptor::negato2d">
-            <data image="${image}" />
+        <service uid="image_series_adp" type="sight::module::viz::scene3d::adaptor::image_series" auto_connect="true">
+            <data series="${series_set}" />
             <data tf="${transfer_function}" />
-            <config orientation="${slice_index}" filtering="${filtering}" classification="${classification}" />
+            <config representation="negato2d" orientation="${slice_index}" filtering="${filtering}" classification="${classification}" />
         </service>
 
         <service uid="ruler_fiducial_adp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::ruler" auto_connect="true">
@@ -150,8 +152,12 @@
 
         <!-- Display the picked voxel information -->
         <connect>
-            <signal>negato_adp/picked_voxel</signal>
+            <signal>image_series_adp/picked_voxel</signal>
             <slot>picked_voxel_text_adp/set_text</slot>
+        </connect>
+
+        <connect channel="${image_visibility}">
+            <slot>image_series_adp/set_image_visibility</slot>
         </connect>
 
         <!-- distance channels -->
