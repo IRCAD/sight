@@ -175,14 +175,6 @@ public:
     /// Toggles ambient occlusion.
     SIGHT_VIZ_SCENE3D_API virtual void toggle_ambient_occlusion(bool _enable);
 
-    /**
-     * @brief Enables the ambient occlusion and soft shadows SAT.
-     */
-    SIGHT_VIZ_SCENE3D_API virtual void enable_ambient_occlusion();
-
-    /// Disables ambient occlusion.
-    SIGHT_VIZ_SCENE3D_API virtual void disable_ambient_occlusion();
-
     /// Sets pre-integrated mode.
     SIGHT_VIZ_SCENE3D_API void set_pre_integrated_rendering(bool _pre_integrated_rendering) override;
 
@@ -209,7 +201,7 @@ public:
      * @brief Sets the SAT size ratio.
      * @param _ratio value of the SAT size ratio.
      */
-    SIGHT_VIZ_SCENE3D_API void update_sat_size_ratio(float _ratio);
+    SIGHT_VIZ_SCENE3D_API void update_sat_size_ratio(unsigned int _ratio);
 
     /**
      * @brief Sets the SAT shells number.
@@ -237,6 +229,11 @@ public:
 
     /// Updates the SAT with the current 3D texture, transfer function and sampling rate.
     SIGHT_VIZ_SCENE3D_API virtual void update_sat();
+
+    /**
+     * @brief Generates the material used to render the volume.
+     */
+    SIGHT_VIZ_SCENE3D_API virtual void update_ray_tracing_material();
 
 protected:
 
@@ -316,11 +313,6 @@ protected:
 
     /// Sets all texture units needed by the material during the ray casting pass.
     SIGHT_VIZ_SCENE3D_API virtual void set_ray_casting_pass_texture_units(Ogre::Pass* _ray_casting_pass) const;
-
-    /**
-     * @brief Generates the material used to render the volume.
-     */
-    SIGHT_VIZ_SCENE3D_API virtual void update_ray_tracing_material();
 
     /// Updates the current compositor name according to VR effects flags.
     SIGHT_VIZ_SCENE3D_API virtual void update_options();

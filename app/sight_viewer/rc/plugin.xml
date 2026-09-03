@@ -69,6 +69,22 @@
             <object uid="negato_visibility" type="sight::data::boolean" value="false" />
             <object uid="model_visibility" type="sight::data::boolean" value="true" />
             <object uid="axis_visibility" type="sight::data::boolean" value="false" />
+            <object uid="volume_parameters" type="sight::data::map">
+                <item key="sampling" type="sight::data::integer" value="1200" />
+                <item key="opacity_correction" type="sight::data::integer" value="200" />
+                <item key="pre_integration" type="sight::data::boolean" value="false" />
+                <item key="ambient_occlusion" type="sight::data::boolean" value="false" />
+                <item key="color_bleeding" type="sight::data::boolean" value="false" />
+                <item key="shadows" type="sight::data::boolean" value="false" />
+                <item key="widgets" type="sight::data::boolean" value="false" />
+                <item key="color_bleeding_factor" type="sight::data::real" value="1." />
+                <item key="ao_factor" type="sight::data::real" value="2." />
+                <item key="sat_size_ratio" type="sight::data::integer" value="2" />
+                <item key="sat_shells_number" type="sight::data::integer" value="4" />
+                <item key="sat_shell_radius" type="sight::data::integer" value="4" />
+                <item key="sat_cone_angle" type="sight::data::real" value="0.1" />
+                <item key="sat_cone_samples" type="sight::data::integer" value="50" />
+            </object>
 
             <!-- ******************************* UI declaration *********************************** -->
 
@@ -491,7 +507,7 @@
             </service>
 
             <service uid="box_widget_visibility_act" type="sight::module::ui::action">
-                <state enabled="false" />
+                <state enabled="false" checked="${volume_parameters}.widgets" />
             </service>
 
             <service uid="box_widget_reset_act" type="sight::module::ui::action">
@@ -528,11 +544,8 @@
                 <object name="negato_visibility" uid="${negato_visibility}" />
                 <object name="model_visibility" uid="${model_visibility}" />
                 <object name="axis_visibility" uid="${axis_visibility}" />
+                <object name="volume_parameters" uid="${volume_parameters}" />
                 <param name="WID_PARENT" value="scene_view" />
-                <channel name="vr_bool_param" uid="volume_bool" />
-                <channel name="vr_int_param" uid="volume_int" />
-                <channel name="vr_double_param" uid="volume_double" />
-                <channel name="box_widget_visibility" uid="box_widget_visibility" />
                 <channel name="box_widget_reset" uid="box_widget_reset" />
                 <channel name="shape_extruder_enable_tool" uid="shape_extruder_enable_tool" />
                 <channel name="shape_extruder_tool_disabled" uid="shape_extruder_tool_disabled" />
@@ -597,19 +610,17 @@
             </service>
 
             <!-- Parameters for the volume rendering -->
-            <service uid="volume_parameter_srv" type="sight::module::ui::qt::parameters">
-                <parameters>
-                    <param type="int" name="Samples" key="sampling" defaultValue="1200" min="128" max="8192" reset="false" />
-                    <param type="int" name="Opacity correction" key="opacityCorrection" defaultValue="200" min="0" max="200" reset="false" />
-                    <param type="bool" name="Pre-integration" key="preIntegration" defaultValue="false" reset="false" />
-                    <param type="bool" name="Ambient occlusion" key="ambientOcclusion" defaultValue="false" reset="false" />
-                    <param type="bool" name="Color bleeding" key="colorBleeding" defaultValue="false" reset="false" />
-                    <param type="double" name="Color bleeding factor" key="colorBleedingFactor" defaultValue="1.0" min="0.1" max="10.0" reset="false" depends="colorBleeding" />
-                    <param type="int" name="SAT size ratio" key="satSizeRatio" defaultValue="1" min="1" max="4" reset="false" emitOnRelease="true" />
-                    <param type="double" name="AO factor" key="aoFactor" defaultValue="1.0" min="0.1" max="10.0" reset="false" depends="ambientOcclusion" />
-                    <param type="int" name="AO shells number" key="satShellsNumber" defaultValue="4" min="1" max="10" reset="false" depends="ambientOcclusion" emitOnRelease="true" />
-                    <param type="int" name="AO shell radius" key="satShellRadius" defaultValue="4" min="1" max="10" reset="false" depends="ambientOcclusion" emitOnRelease="true" />
-                </parameters>
+            <service uid="volume_parameter_srv" type="sight::module::ui::qt::settings">
+                <item data="${volume_parameters}.sampling" name="Samples" key="sampling" min="128" max="4096" reset="false" widget="slider" />
+                <item data="${volume_parameters}.opacity_correction" name="Opacity correction" key="opacity_correction" min="0" max="200" reset="false" widget="slider" />
+                <item data="${volume_parameters}.pre_integration" name="Pre-integration" key="pre_integration" reset="false" />
+                <item data="${volume_parameters}.ambient_occlusion" name="Ambient occlusion" key="ambient_occlusion" reset="false" />
+                <item data="${volume_parameters}.color_bleeding" name="Color bleeding" key="color_bleeding" reset="false" />
+                <item data="${volume_parameters}.color_bleeding_factor" name="Color bleeding factor" key="color_bleeding_factor" min="0.1" max="4.0" reset="false" widget="slider" depends="color_bleeding" />
+                <item data="${volume_parameters}.sat_size_ratio" name="SAT size ratio" key="sat_size_ratio" min="1" max="4" reset="false" widget="slider" emit_on_release="true" />
+                <item data="${volume_parameters}.ao_factor" name="AO factor" key="ao_factor" min="0.1" max="4.0" reset="false" widget="slider" decimals="0.1" depends="ambient_occlusion" />
+                <item data="${volume_parameters}.sat_shells_number" name="AO shells number" key="sat_shells_number" min="1" max="10" reset="false" depends="ambient_occlusion" emit_on_release="true" widget="slider" />
+                <item data="${volume_parameters}.sat_shell_radius" name="AO shell radius" key="sat_shell_radius" min="1" max="10" reset="false" depends="ambient_occlusion" emit_on_release="true" widget="slider" />
             </service>
 
             <!-- Parameters for landmarks -->
@@ -681,10 +692,6 @@
                 <signal>image_drop_srv/notification_created</signal>
                 <slot>progress_bar_srv/add_monitor</slot>
                 <slot>image_drop_notifier_srv/add_notification</slot>
-            </connect>
-
-            <connect channel="box_widget_visibility">
-                <signal>box_widget_visibility_act/is_checked</signal>
             </connect>
 
             <connect channel="box_widget_reset">
@@ -781,18 +788,6 @@
                 <slot>add_ruler_act/enable</slot>
                 <slot>remove_all_rulers_act/enable</slot>
                 <slot>show_ruler_act/enable</slot>
-            </connect>
-
-            <connect channel="volume_bool">
-                <signal>volume_parameter_srv/bool_changed</signal>
-            </connect>
-
-            <connect channel="volume_int">
-                <signal>volume_parameter_srv/int_changed</signal>
-            </connect>
-
-            <connect channel="volume_double">
-                <signal>volume_parameter_srv/double_changed</signal>
             </connect>
 
             <!-- Allow to check button in the toolbar -->

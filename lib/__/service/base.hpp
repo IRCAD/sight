@@ -149,6 +149,12 @@ public:
     using slots         = service::slots;
     using signals       = service::signals;
 
+    template<typename T>
+    using ptr_in = sight::data::ptr<T, sight::data::access::in>;
+    template<typename T>
+    using ptr_out = sight::data::ptr<T, sight::data::access::out>;
+    template<typename T>
+    using ptr_inout = sight::data::ptr<T, sight::data::access::inout>;
     /**
      * @name Definition of service status
      */

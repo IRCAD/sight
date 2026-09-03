@@ -25,6 +25,7 @@
 #include "viz/scene3d/vr/volume_renderer.hpp"
 
 #include "viz/scene3d/layer.hpp"
+#include "viz/scene3d/utils.hpp"
 
 #include <boost/algorithm/clamp.hpp>
 

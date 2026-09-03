@@ -102,6 +102,12 @@ public:
         return this->get()->getDepth();
     }
 
+    /// Gets the size of this texture
+    [[nodiscard]] std::array<std::size_t, 3> size() const
+    {
+        return {width(), height(), depth()};
+    }
+
     /// Gets the name of this texture
     [[nodiscard]] std::string name() const
     {

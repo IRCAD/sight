@@ -11,13 +11,10 @@
         <object uid="negato_visibility" type="sight::data::boolean" />
         <object uid="model_visibility" type="sight::data::boolean" />
         <object uid="axis_visibility" type="sight::data::boolean" />
+        <object uid="volume_parameters" type="sight::data::map" />
 
         <param name="WID_PARENT" />
 
-        <channel name="vr_bool_param" />
-        <channel name="vr_int_param" />
-        <channel name="vr_double_param" />
-        <channel name="box_widget_visibility" />
         <channel name="box_widget_reset" />
         <channel name="shape_extruder_enable_tool" />
         <channel name="shape_extruder_tool_disabled" />
@@ -97,15 +94,12 @@
             <object name="negato_visibility" uid="${negato_visibility}" />
             <object name="model_visibility" uid="${model_visibility}" />
             <object name="axis_visibility" uid="${axis_visibility}" />
+            <object name="volume_parameters" uid="${volume_parameters}" />
             <param name="WID_PARENT" value="main_scene_view" />
             <param name="maximized" value="true" />
             <param name="restored" value="false" />
 
             <channel name="toggle_view_visibility" uid="toggle_scene_3d_visibility" />
-            <channel name="vr_bool_param" uid="${vr_bool_param}" />
-            <channel name="vr_int_param" uid="${vr_int_param}" />
-            <channel name="vr_double_param" uid="${vr_double_param}" />
-            <channel name="box_widget_visibility" uid="${box_widget_visibility}" />
             <channel name="box_widget_reset" uid="${box_widget_reset}" />
             <channel name="shape_extruder_enable_tool" uid="${shape_extruder_enable_tool}" />
             <channel name="shape_extruder_tool_disabled" uid="${shape_extruder_tool_disabled}" />

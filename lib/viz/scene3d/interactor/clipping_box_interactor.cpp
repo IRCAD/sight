@@ -23,6 +23,7 @@
 #include "viz/scene3d/interactor/clipping_box_interactor.hpp"
 
 #include "viz/scene3d/layer.hpp"
+#include "viz/scene3d/utils.hpp"
 
 namespace sight::viz::scene3d::interactor
 {

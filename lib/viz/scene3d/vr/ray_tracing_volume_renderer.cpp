@@ -149,8 +149,8 @@ ray_tracing_volume_renderer::ray_tracing_volume_renderer(
     m_shader(_shader.value_or("RayTracedVolume_FP.glsl")),
     m_sat(m_parent_id,
           m_scene_manager,
-          (m_shadows.parameters.ao.enabled || m_shadows.parameters.colour_bleeding.enabled),
-          m_shadows.parameters.ao.enabled || m_shadows.parameters.colour_bleeding.enabled,
+          m_shadows.parameters.ao.enabled,
+          m_shadows.parameters.colour_bleeding.enabled,
           _sat.value_or(illum_ambient_occlusion_sat::sat_parameters_t {}))
 {
     //Listeners
@@ -213,13 +213,13 @@ ray_tracing_volume_renderer::ray_tracing_volume_renderer(
         m_rtv_shared_parameters->addConstantDefinition("u_window", Ogre::GCT_FLOAT2);
         m_rtv_shared_parameters->setNamedConstant("u_fOpacityCorrectionFactor", m_opacity_correction_factor);
     }
+    init_entry_points(); //Does nothing after the first call
 }
 
 //-----------------------------------------------------------------------------
 
 void ray_tracing_volume_renderer::update(const data::transfer_function::csptr& _tf)
 {
-    init_entry_points(); //Does nothing after the first call
     update_ray_tracing_material();
     set_sampling(m_nb_slices, _tf);
 }
@@ -341,11 +341,11 @@ void ray_tracing_volume_renderer::update_clipping_box(const data::image::csptr _
 
 //-----------------------------------------------------------------------------
 
-void ray_tracing_volume_renderer::update_sat_size_ratio(float _ratio)
+void ray_tracing_volume_renderer::update_sat_size_ratio(unsigned int _ratio)
 {
     if(m_shadows.parameters.enabled())
     {
-        m_sat.update_sat_from_ratio(_ratio);
+        m_sat.set_size_ratio(_ratio);
         update_sat();
     }
 }
@@ -398,7 +398,28 @@ void ray_tracing_volume_renderer::update_sat_cone_samples(unsigned _samples)
 
 void ray_tracing_volume_renderer::update_sat()
 {
-    m_sat.sat_update(m_3d_ogre_texture, m_gpu_volume_tf, m_sample_distance);
+    if((m_shadows.parameters.ao.enabled || m_shadows.parameters.colour_bleeding.enabled))
+    {
+        m_sat.compute(m_3d_ogre_texture, m_gpu_volume_tf, m_sample_distance);
+
+        const auto material = Ogre::MaterialManager::getSingleton().getByName(m_current_mtl_name, RESOURCE_GROUP);
+
+        if(material != nullptr && material->getNumTechniques() > 0)
+        {
+            Ogre::Technique* const technique = material->getTechnique(0);
+
+            if(technique->getNumPasses() > 0)
+            {
+                Ogre::Pass* const pass                       = technique->getPass(0);
+                Ogre::TextureUnitState* const tex_unit_state = pass->getTextureUnitState("illuminationVolume");
+
+                if(tex_unit_state != nullptr)
+                {
+                    tex_unit_state->setTexture(m_sat.get_illumination_volume());
+                }
+            }
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -536,44 +557,11 @@ bool ray_tracing_volume_renderer::set_color_bleeding_factor(const Ogre::Vector3&
 
 void ray_tracing_volume_renderer::toggle_ambient_occlusion(bool _enable)
 {
-    if(_enable)
-    {
-        enable_ambient_occlusion();
-    }
-    else
-    {
-        disable_ambient_occlusion();
-    }
-}
+    m_shadows.parameters.ao.enabled = _enable;
+    m_sat.set_ao(_enable);
 
-//-----------------------------------------------------------------------------
-
-void ray_tracing_volume_renderer::enable_ambient_occlusion()
-{
-    if(!m_shadows.parameters.ao.enabled)
-    {
-        m_shadows.parameters.ao.enabled = true;
-        m_sat.set_ao(true);
-
-        this->update_sat();
-        this->update_ray_tracing_material();
-        this->update_volume_illumination_material();
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void ray_tracing_volume_renderer::disable_ambient_occlusion()
-{
-    if(m_shadows.parameters.ao.enabled) //Don't reallocate the material if it makes no sense
-    {
-        m_shadows.parameters.ao.enabled = false;
-        m_sat.set_ao(false);
-
-        this->update_ray_tracing_material();
-        this->update_volume_illumination_material();
-        this->update_sat();
-    }
+    this->update_ray_tracing_material();
+    this->update_sat();
 }
 
 //-----------------------------------------------------------------------------
@@ -583,6 +571,7 @@ void ray_tracing_volume_renderer::set_pre_integrated_rendering(bool _pre_integra
     m_preintegration = _pre_integrated_rendering;
 
     this->update_ray_tracing_material();
+    this->update_sat();
 }
 
 //-----------------------------------------------------------------------------
@@ -592,7 +581,7 @@ void ray_tracing_volume_renderer::toggle_color_bleeding(bool _enable)
     m_shadows.parameters.colour_bleeding.enabled = _enable;
 
     this->update_ray_tracing_material();
-    this->update_volume_illumination_material();
+    this->update_sat();
 }
 
 //-----------------------------------------------------------------------------
@@ -602,9 +591,8 @@ void ray_tracing_volume_renderer::toggle_shadows(bool _enable)
     m_shadows.parameters.soft_shadows = _enable;
     m_sat.set_shadows(_enable);
 
-    this->update_sat();
     this->update_ray_tracing_material();
-    this->update_volume_illumination_material();
+    this->update_sat();
 }
 
 //-----------------------------------------------------------------------------
@@ -711,9 +699,10 @@ void ray_tracing_volume_renderer::set_ray_casting_pass_texture_units(Ogre::Pass*
     if(m_options.fragment.find(defines::AO) != std::string::npos) //i.e. ambient occlusion is enabled
     {
         Ogre::TextureUnitState* const tex_unit_state = _ray_casting_pass->createTextureUnitState();
+        tex_unit_state->setName("illuminationVolume");
         tex_unit_state->setTextureFiltering(Ogre::TFO_BILINEAR);
         tex_unit_state->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
-        tex_unit_state->setTexture(m_sat.get_illumination_volume());
+        // The call to setTexture is done later when the volume is created in update_sat()
 
         // Update the shader parameter
         fp_params->setNamedConstant("u_s3IlluminationVolume", num_tex_unit++);
@@ -1015,6 +1004,14 @@ void ray_tracing_volume_renderer::update_ray_tracing_material()
     {
         m_entry_point_geometry->setMaterialName(0, m_current_mtl_name, RESOURCE_GROUP);
     }
+
+    std::string vol_illum_mtl = "VolIllum";
+
+    vol_illum_mtl += m_shadows.parameters.ao.enabled || m_shadows.parameters.colour_bleeding.enabled ? "_AO" : "";
+    vol_illum_mtl += m_shadows.parameters.soft_shadows ? "_Shadows" : "";
+
+    SIGHT_ASSERT("Camera listener not instantiated", m_camera_listener);
+    m_camera_listener->set_current_mtl_name(vol_illum_mtl);
 }
 
 //------------------------------------------------------------------------------
@@ -1129,19 +1126,6 @@ void ray_tracing_volume_renderer::compute_real_focal_length()
     const float real_focal_length = m_camera->getRealPosition().distance(focus_point);
 
     m_camera->setFocalLength(real_focal_length);
-}
-
-//-----------------------------------------------------------------------------
-
-void ray_tracing_volume_renderer::update_volume_illumination_material()
-{
-    std::string vol_illum_mtl = "VolIllum";
-
-    vol_illum_mtl += m_shadows.parameters.ao.enabled || m_shadows.parameters.colour_bleeding.enabled ? "_AO" : "";
-    vol_illum_mtl += m_shadows.parameters.soft_shadows ? "_Shadows" : "";
-
-    SIGHT_ASSERT("Camera listener not instantiated", m_camera_listener);
-    m_camera_listener->set_current_mtl_name(vol_illum_mtl);
 }
 
 //-----------------------------------------------------------------------------

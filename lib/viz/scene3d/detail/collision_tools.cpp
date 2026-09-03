@@ -148,7 +148,6 @@ std::optional<pick_result_t> collision_tools::raycast(
     const Ogre::uint32 _query_mask
 ) const
 {
-    Ogre::Vector3 result {0.0, 0.0, 0.0};
     Ogre::MovableObject* target = nullptr;
     float closest_distance      = NAN;
 
@@ -179,7 +178,7 @@ std::optional<pick_result_t> collision_tools::raycast(
     closest_distance = -1.0F;
     std::size_t closest_index = 0;
     Ogre::Vector3 closest_result;
-    for(auto& qr_idx : m_ray_scene_query->getLastResults())
+    for(const auto& qr_idx : m_ray_scene_query->getLastResults())
     {
         // Stop checking if we have found a raycast hit that is closer
         // than all remaining entities.

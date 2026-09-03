@@ -27,13 +27,13 @@
 #include <viz/scene3d/interactor/clipping_box_interactor.hpp>
 #include <viz/scene3d/transformable.hpp>
 #include <viz/scene3d/vr/illum_ambient_occlusion_sat.hpp>
-#include <viz/scene3d/vr/pre_integration_table.hpp>
 #include <viz/scene3d/vr/ray_tracing_volume_renderer.hpp>
 
-#include <OGRE/OgreTexture.h>
-
-#include <array>
-#include <vector>
+#include <data/boolean.hpp>
+#include <data/image.hpp>
+#include <data/integer.hpp>
+#include <data/matrix4.hpp>
+#include <data/real.hpp>
 
 namespace sight::module::viz::scene3d::adaptor
 {
@@ -45,7 +45,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b new_image(): called when a new image is loaded.
  * - \b update_image(): called when the image is updated.
  * - \b toggle_widgets(bool): toggles widget visibility.
- * - \b bufferImage(): called when the image buffer is modified, copies it into the texture buffer.
+ * - \b buffer_image(): called when the image buffer is modified, copies it into the texture buffer.
  * - \b update_visibility(bool): shows or hides the volume.
  * - \b toggle_visibility(): toggle whether the volume is shown or not.
  * - \b show(): shows the volume.
@@ -58,10 +58,15 @@ namespace sight::module::viz::scene3d::adaptor
         <data image="${...}" />
         <data mask="${...}" />
         <data tf="${...}" />
-        <data clippingMatrix="${...}" />
-        <config samples="1024" preintegration="true" dynamic="false" ao="false" colorBleeding="false" shadows="false"
-                satSizeRatio="0.25" satShells="3" satShellRadius="7" satConeAngle="0.1" satConeSamples="50"
-                aoFactor="0.5" colorBleedingFactor="0.5" autoresetcamera="true" transform="..."/>
+        <data clipping_matrix="${...}" />
+        <volume_rendering>
+            <config pre_integration="${...}" ambient_occlusion="${...}" color_bleeding="${...}" shadows="${...}"
+                    widgets="${...}" sampling="${...}" opacity_correction="${...}" sat_shells_number="${...}"
+                    sat_shell_radius="${...}" sat_cone_samples="${...}"
+                    color_bleeding_factor="${...}" ao_factor="${...}"
+                    sat_cone_angle="${...}" sat_size_ratio="${...}" />
+        </volume_rendering>
+        <config dynamic="false" auto_reset_camera="true" transform="..."/>
     </service>
    @endcode
  *
@@ -73,29 +78,16 @@ namespace sight::module::viz::scene3d::adaptor
  *      image's default transferFunction (CT-GreyLevel).
  *
  * @subsection In-Out In-Out
- * - \b data.clippingMatrix [sight::data::matrix4]: matrix used to clip the volume.
+ * - \b data.clipping_matrix [sight::data::matrix4]: matrix used to clip the volume.
  *
  * - \b config.visible [sight::data::boolean] (optional, default=true): the visibility of the adaptor.
  *
  * @subsection Configuration Configuration
  * - \b samples (optional, unsigned int, default=512): maximum number of samples per ray or number of slices.
- * - \b preintegration (optional, true/false, default=false): use pre-integration.
  * - \b dynamic (optional, bool, default=false): enables background buffering for dynamic images.
- * - \b widgets (optional, true/false, default=true): display VR widgets.
  * - \b priority (optional, int, default=2): interaction priority of the widget.
- * - \b ao (optional, bool, default=false): ambient occlusion usage.
- * - \b colorBleeding (optional, bool, default=false): color bleeding usage.
- * - \b shadows (optional, bool, default=false): soft shadows usage.
- * - \b satSizeRatio (optional, float, default=0.25): ratio used to determine the size of the SAT regarding of the
- *      associated image size.
- * - \b satShells (optional, int, default=3): number of shells used to compute the volume illumination from the SAT.
- * - \b satShellRadius (optional, int, default=7): radius of the shells used to compute the volume illumination
- *      from the SAT.
- * - \b satConeAngle (optional, float, default=0.1): angle used to define the soft shadows cones.
- * - \b satConeSamples (optional, float, default=50): number of samples along the soft shadows cones.
- * - \b aoFactor (optional, double, default=1.0): factor used to weight the ambient occlusion.
- * - \b colorBleedingFactor (optional, double, default=1.0): factor used to weight the color bleeding.
- * - \b autoresetcamera (optional, true/false, default=true): reset the camera at image update to view the whole volume.
+ * - \b auto_reset_camera (optional, true/false, default=true): reset the camera at image update to view the whole
+ * volume.
  * - \b transform (optional, string, default=""): transform applied to the adaptor's scene node.
  */
 class volume_render final :
@@ -109,16 +101,26 @@ public:
 
     struct slots
     {
-        static inline const slot_key_t NEW_IMAGE            = "new_image";
-        static inline const slot_key_t BUFFER_IMAGE         = "bufferImage";
-        static inline const slot_key_t UPDATE_IMAGE         = "update_image";
-        static inline const slot_key_t TOGGLE_WIDGETS       = "toggle_widgets";
-        static inline const slot_key_t SET_BOOL_PARAMETER   = "set_bool_parameter";
-        static inline const slot_key_t SET_INT_PARAMETER    = "set_int_parameter";
-        static inline const slot_key_t SET_DOUBLE_PARAMETER = "set_double_parameter";
-        static inline const slot_key_t UPDATE_CLIPPING_BOX  = "update_clipping_box";
-        static inline const slot_key_t UPDATE_TF            = "update_tf";
-        static inline const slot_key_t UPDATE_MASK          = "update_mask";
+        static inline const slot_key_t NEW_IMAGE                    = "new_image";
+        static inline const slot_key_t BUFFER_IMAGE                 = "buffer_image";
+        static inline const slot_key_t UPDATE_IMAGE                 = "update_image";
+        static inline const slot_key_t TOGGLE_PREINTEGRATION        = "toggle_preintegration";
+        static inline const slot_key_t TOGGLE_AMBIENT_OCCLUSION     = "toggle_ambient_occlusion";
+        static inline const slot_key_t TOGGLE_COLOR_BLEEDING        = "toggle_color_bleeding";
+        static inline const slot_key_t TOGGLE_SHADOWS               = "toggle_shadows";
+        static inline const slot_key_t TOGGLE_WIDGETS               = "toggle_widgets";
+        static inline const slot_key_t UPDATE_SAMPLING              = "update_sampling";
+        static inline const slot_key_t UPDATE_OPACITY_CORRECTION    = "update_opacity_correction";
+        static inline const slot_key_t UPDATE_SAT_SHELLS_NUMBER     = "update_sat_shells_number";
+        static inline const slot_key_t UPDATE_SAT_SHELL_RADIUS      = "update_sat_shell_radius";
+        static inline const slot_key_t UPDATE_SAT_CONE_SAMPLES      = "update_sat_cone_samples";
+        static inline const slot_key_t UPDATE_COLOR_BLEEDING_FACTOR = "update_color_bleeding_factor";
+        static inline const slot_key_t UPDATE_AO_FACTOR             = "update_ao_factor";
+        static inline const slot_key_t UPDATE_SAT_CONE_ANGLE        = "update_sat_cone_angle";
+        static inline const slot_key_t UPDATE_SAT_SIZE_RATIO        = "update_sat_size_ratio";
+        static inline const slot_key_t UPDATE_CLIPPING_BOX          = "update_clipping_box";
+        static inline const slot_key_t UPDATE_TF                    = "update_tf";
+        static inline const slot_key_t UPDATE_MASK                  = "update_mask";
     };
 
     /// Creates slots.
@@ -138,22 +140,9 @@ protected:
     ///@brief Internal wrapper holding config defines.
     struct config
     {
-        static inline const std::string AUTORESET_CAMERA      = CONFIG + "autoresetcamera";
-        static inline const std::string PREINTEGRATION        = CONFIG + "preintegration";
-        static inline const std::string DYNAMIC               = CONFIG + "dynamic";
-        static inline const std::string WIDGETS               = CONFIG + "widgets";
-        static inline const std::string PRIORITY              = CONFIG + "priority";
-        static inline const std::string SAMPLES               = CONFIG + "samples";
-        static inline const std::string SAT_SIZE_RATIO        = CONFIG + "satSizeRatio";
-        static inline const std::string SAT_SHELLS            = CONFIG + "satShells";
-        static inline const std::string SAT_SHELL_RADIUS      = CONFIG + "satShellRadius";
-        static inline const std::string SAT_CONE_ANGLE        = CONFIG + "satConeAngle";
-        static inline const std::string SAT_CONE_SAMPLES      = CONFIG + "satConeSamples";
-        static inline const std::string AO_FACTOR             = CONFIG + "aoFactor";
-        static inline const std::string COLOR_BLEEDING_FACTOR = CONFIG + "colorBleedingFactor";
-        static inline const std::string AO                    = CONFIG + "ao";
-        static inline const std::string COLOR_BLEEDING        = CONFIG + "colorBleeding";
-        static inline const std::string SHADOWS               = CONFIG + "shadows";
+        static inline const std::string AUTORESET_CAMERA = CONFIG + "auto_reset_camera";
+        static inline const std::string DYNAMIC          = CONFIG + "dynamic";
+        static inline const std::string PRIORITY         = CONFIG + "priority";
     };
 
     /// Internal wrapper holding the inital config
@@ -165,26 +154,11 @@ protected:
         /// Enables whether the camera must be auto reset when a mesh is updated or not.
         bool camera_autoreset {false};
 
-        /// Enables preintegration.
-        bool preintegration {false};
-
         /// Enables dynamic buffering.
         bool dynamic {false};
 
-        /// Sets the node visible or not.
-        bool visible {false};
-
         /// Interactor priority.
         int priority {2};
-
-        /// Sampling rate.
-        std::uint16_t samples {512};
-
-        /// SAT parameters.
-        sat_parameters_t sat {};
-
-        ///Shadows parameters
-        shadows_parameters_t shadows;
     };
 
     /// Internal wrapper holding object keys
@@ -193,7 +167,7 @@ protected:
         static constexpr std::string_view IMAGE_IN              = "data.image";
         static constexpr std::string_view MASK_IN               = "data.mask";
         static constexpr std::string_view VOLUME_TF_IN          = "data.tf";
-        static constexpr std::string_view CLIPPING_MATRIX_INOUT = "data.clippingMatrix";
+        static constexpr std::string_view CLIPPING_MATRIX_INOUT = "data.clipping_matrix";
     };
 
     /// Configures the service.
@@ -272,7 +246,7 @@ private:
      * @brief Sets the SAT size ratio.
      * @param _size_ratio value of the SAT size ratio.
      */
-    void update_sat_size_ratio(float _size_ratio);
+    void update_sat_size_ratio(unsigned int _size_ratio);
 
     /**
      * @brief Sets the SAT shells number.
@@ -334,59 +308,6 @@ private:
      */
     void set_focal_distance(int _focal_distance);
 
-    /**
-     * @brief Updates a bool parameter.
-     * @param _val new value of the parameter.
-     * @param _key the key of the parameter. Following keys are accepted:
-     *  - preIntegration: toggles the pre-integration.
-     *  - ambientOcclusion: toggles the ambient occlusion.
-     *  - colorBleeding: toggles the color bleeding.
-     *  - shadows: toggles soft shadows.
-     *  - widgets: toggles the clipping box widget's visibility.
-     *
-     * @see togglePreintegration(bool)
-     * @see toggleAmbientOcclusion(bool)
-     * @see toggleColorBleeding(bool)
-     * @see toggleShadows(bool)
-     * @see toggleWidgets(bool)
-     */
-    void set_bool_parameter(bool _val, std::string _key);
-
-    /**
-     * @brief Updates a int parameter.
-     * @param _val New value of the parameter.
-     * @param _key the key of the parameter. Following keys are accepted:
-     *  - sampling: Sets the number of volume samples used by the renderer. More samples yield more details but slow
-     *    down rendering.
-     *  - opacityCorrection: sets the volume opacity correction factor.
-     *  - satSizeRatio: sets the SAT ratio and computes it again with the new corresponding size.
-     *  - satShellsNumber: sets the number of SAT shells and compute the SA.
-     *  - satShellRadius: sets the SAT shell radius and computes the SAT.
-     *  - satConeAngle: sets the SAT cone angle and computes the SAT.
-     *  - satConeSamples: sets the SAT cone samples number and computes the SAT.
-     *
-     * @see updateSampling(int)
-     * @see updateOpacityCorrection(int)
-     * @see updateSatSizeRatio(int)
-     * @see updateSatShellsNumber(int)
-     * @see updateSatShellRadius(int)
-     * @see updateSatConeAngle(int)
-     * @see updateSatConeSamples(int)
-     */
-    void set_int_parameter(int _val, std::string _key);
-
-    /**
-     * @brief Updates a double parameter.
-     * @param _val the new value of the parameter.
-     * @param _key the key of the parameter. Following keys are accepted:
-     *  - aoFactor: sets the ambient occlusion factor and computes the SAT.
-     *  - colorBleedingFactor: sets the color bleeding factor and computes the SAT.
-     *
-     * @see updateAOFactor(double)
-     * @see updateColorBleedingFactor(double)
-     */
-    void set_double_parameter(double _val, std::string _key);
-
     /// Creates widgets and connects its slots to interactor signals.
     void create_widget();
 
@@ -433,12 +354,27 @@ private:
     /// Stores the widgets used for clipping.
     std::shared_ptr<sight::viz::scene3d::interactor::clipping_box_interactor> m_widget;
 
-    data::ptr<sight::data::image, sight::data::access::in> m_image {this, objects::IMAGE_IN};
-    data::ptr<sight::data::image, sight::data::access::in> m_mask {this, objects::MASK_IN};
-    data::ptr<sight::data::transfer_function, sight::data::access::in> m_tf {this, objects::VOLUME_TF_IN};
-    data::ptr<sight::data::matrix4, sight::data::access::inout> m_clipping_matrix {this, objects::CLIPPING_MATRIX_INOUT,
-                                                                                   true
-    };
+private:
+
+    ptr_in<sight::data::image> m_image {this, objects::IMAGE_IN};
+    ptr_in<sight::data::image> m_mask {this, objects::MASK_IN};
+    ptr_in<sight::data::transfer_function> m_tf {this, objects::VOLUME_TF_IN};
+    ptr_inout<sight::data::matrix4> m_clipping_matrix {this, objects::CLIPPING_MATRIX_INOUT, true};
+
+    ptr_in<data::boolean> m_preintegration {this, "volume_rendering.config.pre_integration", false};
+    ptr_in<data::boolean> m_ambient_occlusion {this, "volume_rendering.config.ambient_occlusion", false};
+    ptr_in<data::boolean> m_color_bleeding {this, "volume_rendering.config.color_bleeding", false};
+    ptr_in<data::boolean> m_shadows {this, "volume_rendering.config.shadows", false};
+    ptr_in<data::boolean> m_widgets {this, "volume_rendering.config.widgets", true};
+    ptr_in<data::integer> m_sampling {this, "volume_rendering.config.sampling", 512};
+    ptr_in<data::integer> m_opacity_correction {this, "volume_rendering.config.opacity_correction", 0};
+    ptr_in<data::integer> m_sat_shells_number {this, "volume_rendering.config.sat_shells_number", 4};
+    ptr_in<data::integer> m_sat_shell_radius {this, "volume_rendering.config.sat_shell_radius", 4};
+    ptr_in<data::integer> m_sat_cone_samples {this, "volume_rendering.config.sat_cone_samples", 50};
+    ptr_in<data::real> m_color_bleeding_factor {this, "volume_rendering.config.color_bleeding_factor", 1.};
+    ptr_in<data::real> m_ao_factor {this, "volume_rendering.config.ao_factor", 1.};
+    ptr_in<data::real> m_sat_cone_angle {this, "volume_rendering.config.sat_cone_angle", 0.1};
+    ptr_in<data::integer> m_sat_size_ratio {this, "volume_rendering.config.sat_size_ratio", 2};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

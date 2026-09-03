@@ -11,16 +11,13 @@
         <object uid="negato_visibility" type="sight::data::boolean" />
         <object uid="model_visibility" type="sight::data::boolean" />
         <object uid="axis_visibility" type="sight::data::boolean" />
+        <object uid="volume_parameters" type="sight::data::map" />
 
         <param name="WID_PARENT" />
         <param name="maximized" default="false" />
         <param name="restored" default="true" />
 
         <channel name="toggle_view_visibility" />
-        <channel name="vr_bool_param" />
-        <channel name="vr_int_param" />
-        <channel name="vr_double_param" />
-        <channel name="box_widget_visibility" />
         <channel name="box_widget_reset" />
         <channel name="shape_extruder_enable_tool" />
         <channel name="shape_extruder_tool_disabled" />
@@ -183,29 +180,45 @@
             <config queryMask="0x40000000" priority="1" />
         </service>
 
-        <service uid="model_series_adp" type="sight::module::viz::scene3d::adaptor::model_series" auto_connect="true">
+        <service uid="model_series_adp" type="sight::module::viz::scene3d::adaptor::model_series">
             <data model="${model_series}" />
             <config query_flags="0x40000000" autoresetcamera="true" visible="${model_visibility}" />
         </service>
 
-        <service uid="image_volume_adp" type="sight::module::viz::scene3d::adaptor::image_series" auto_connect="true">
+        <service uid="image_volume_adp" type="sight::module::viz::scene3d::adaptor::image_series">
             <data series="${series_set}" />
             <data tf="${volume_tf}" />
-            <config representation="volume" widgets="false" preintegration="false" autoresetcamera="true" samples="1200" visible="${vr_visibility}" />
+            <volume_rendering>
+                <config pre_integration="${volume_parameters}.pre_integration" />
+                <config ambient_occlusion="${volume_parameters}.ambient_occlusion" />
+                <config color_bleeding="${volume_parameters}.color_bleeding" />
+                <config shadows="${volume_parameters}.shadows" />
+                <config widgets="${volume_parameters}.widgets" />
+                <config sampling="${volume_parameters}.sampling" />
+                <config opacity_correction="${volume_parameters}.opacity_correction" />
+                <config sat_shells_number="${volume_parameters}.sat_shells_number" />
+                <config sat_shell_radius="${volume_parameters}.sat_shell_radius" />
+                <config sat_cone_samples="${volume_parameters}.sat_cone_samples" />
+                <config color_bleeding_factor="${volume_parameters}.color_bleeding_factor" />
+                <config ao_factor="${volume_parameters}.ao_factor" />
+                <config sat_cone_angle="${volume_parameters}.sat_cone_angle" />
+                <config sat_size_ratio="${volume_parameters}.sat_size_ratio" />
+            </volume_rendering>
+            <config autoresetcamera="true" />
         </service>
 
-        <service uid="image_negato3d_adp" type="sight::module::viz::scene3d::adaptor::image_series" auto_connect="true">
+        <service uid="image_negato3d_adp" type="sight::module::viz::scene3d::adaptor::image_series">
             <data series="${series_set}" />
             <data tf="${volume_tf}" />
             <config representation="negato3d" query_flags="0x40000000" interactive="true" priority="2" visible="${negato_visibility}" depth_bias="0.000001" />
         </service>
 
-        <service uid="landmarks_adp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::point" auto_connect="true">
+        <service uid="landmarks_adp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::point">
             <data imageSeries="${image}" />
             <config fontSize="16" priority="4" initialGroup="Group_0" initialSize="10.0" viewDistance="allSlices" />
         </service>
 
-        <service uid="ruler_fiducial_adp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::ruler" auto_connect="true">
+        <service uid="ruler_fiducial_adp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::ruler">
             <data image="${image}" />
             <config font_size="16" query_flags="0x40000000" always_display_all="true" priority="3" radius="1.5" />
         </service>
@@ -232,7 +245,7 @@
             <event type="buttonDoublePress" buttons="left" modifiers="none" />
         </service>
 
-        <service uid="orientation_marker_adp" type="sight::module::viz::scene3d::adaptor::orientation_marker" auto_connect="true">
+        <service uid="orientation_marker_adp" type="sight::module::viz::scene3d::adaptor::orientation_marker">
             <data matrix="${global_camera}" />
         </service>
 
@@ -307,29 +320,12 @@
 
         <!-- ******************************* Connections ***************************************** -->
 
-        <!-- Volume rendering parameters -->
-        <connect channel="${vr_bool_param}">
-            <slot>image_volume_adp/set_bool_parameter</slot>
-        </connect>
-
-        <connect channel="${vr_int_param}">
-            <slot>image_volume_adp/set_int_parameter</slot>
-        </connect>
-
-        <connect channel="${vr_double_param}">
-            <slot>image_volume_adp/set_double_parameter</slot>
-        </connect>
-
         <connect channel="${image_visibility}">
             <slot>image_volume_adp/set_image_visibility</slot>
             <slot>image_negato3d_adp/set_image_visibility</slot>
         </connect>
 
         <!-- Adaptors visibility -->
-        <connect channel="${box_widget_visibility}">
-            <slot>image_volume_adp/toggle_widgets</slot>
-        </connect>
-
         <connect channel="${box_widget_reset}">
             <slot>clipping_box_reset_srv/update</slot>
             <slot>image_volume_adp/update_clipping_box</slot>
@@ -460,7 +456,9 @@
             <signal>ruler_fiducial_adp/tool_deactivated</signal>
         </connect>
 
-        <update uid="image_extruder_srv" />
-        <update uid="shape_extruder_adp" />
+        <update>
+            <service uid="image_extruder_srv" />
+            <service uid="shape_extruder_adp" />
+        </update>
     </config>
 </extension>

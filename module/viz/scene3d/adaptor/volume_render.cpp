@@ -22,8 +22,9 @@
 
 #include "module/viz/scene3d/adaptor/volume_render.hpp"
 
+#include <core/spy_log.hpp>
 #include <data/helper/medical_image.hpp>
-#include <data/image.hpp>
+#include <viz/scene3d/utils.hpp>
 
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreSceneNode.h>
@@ -35,6 +36,13 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
+namespace
+{
+
+//-----------------------------------------------------------------------------
+
+} // namespace
+
 volume_render::volume_render() noexcept
 {
     // Auto-connected slots
@@ -44,11 +52,50 @@ volume_render::volume_render() noexcept
     new_slot(slots::UPDATE_TF, [this](){lazy_update(update_flags::tf);});
     new_slot(slots::UPDATE_CLIPPING_BOX, [this](){lazy_update(update_flags::clipping_box);});
 
-    // Interaction slots
-    new_slot(slots::TOGGLE_WIDGETS, &volume_render::toggle_widgets, this);
-    new_slot(slots::SET_BOOL_PARAMETER, &volume_render::set_bool_parameter, this);
-    new_slot(slots::SET_INT_PARAMETER, &volume_render::set_int_parameter, this);
-    new_slot(slots::SET_DOUBLE_PARAMETER, &volume_render::set_double_parameter, this);
+    new_slot(slots::TOGGLE_PREINTEGRATION, [this](){toggle_preintegration(*m_preintegration);});
+    new_slot(slots::TOGGLE_AMBIENT_OCCLUSION, [this](){toggle_ambient_occlusion(*m_ambient_occlusion);});
+    new_slot(slots::TOGGLE_COLOR_BLEEDING, [this](){toggle_color_bleeding(*m_color_bleeding);});
+    new_slot(slots::TOGGLE_SHADOWS, [this](){toggle_shadows(*m_shadows);});
+    new_slot(slots::TOGGLE_WIDGETS, [this](){toggle_widgets(*m_widgets);});
+    new_slot(slots::UPDATE_SAMPLING, [this](){update_sampling(static_cast<unsigned>(*m_sampling));});
+    new_slot(
+        slots::UPDATE_OPACITY_CORRECTION,
+        [this]()
+        {
+            update_opacity_correction(static_cast<unsigned>(*m_opacity_correction));
+        });
+    new_slot(
+        slots::UPDATE_SAT_SHELLS_NUMBER,
+        [this]()
+        {
+            update_sat_shells_number(static_cast<unsigned>(*m_sat_shells_number));
+        });
+    new_slot(
+        slots::UPDATE_SAT_SHELL_RADIUS,
+        [this]()
+        {
+            update_sat_shell_radius(static_cast<unsigned>(*m_sat_shell_radius));
+        });
+    new_slot(
+        slots::UPDATE_SAT_CONE_SAMPLES,
+        [this]()
+        {
+            update_sat_cone_samples(static_cast<unsigned>(*m_sat_cone_samples));
+        });
+    new_slot(
+        slots::UPDATE_COLOR_BLEEDING_FACTOR,
+        [this]()
+        {
+            update_color_bleeding_factor(static_cast<float>(*m_color_bleeding_factor));
+        });
+    new_slot(slots::UPDATE_AO_FACTOR, [this](){update_ao_factor(static_cast<float>(*m_ao_factor));});
+    new_slot(slots::UPDATE_SAT_CONE_ANGLE, [this](){update_sat_cone_angle(static_cast<float>(*m_sat_cone_angle));});
+    new_slot(
+        slots::UPDATE_SAT_SIZE_RATIO,
+        [this]()
+        {
+            update_sat_size_ratio(static_cast<unsigned int>(*m_sat_size_ratio));
+        });
 
     // Slot for async update
     new_slot(slots::UPDATE_IMAGE, &volume_render::update_image, this);
@@ -67,6 +114,20 @@ service::connections_t volume_render::auto_connections() const
         {objects::VOLUME_TF_IN, data::signals::MODIFIED, slots::UPDATE_TF},
         {objects::VOLUME_TF_IN, data::transfer_function::signals::POINTS_MODIFIED, slots::UPDATE_TF},
         {objects::VOLUME_TF_IN, data::transfer_function::signals::WINDOWING_MODIFIED, slots::UPDATE_TF},
+        {m_preintegration, data::signals::MODIFIED, slots::TOGGLE_PREINTEGRATION},
+        {m_ambient_occlusion, data::signals::MODIFIED, slots::TOGGLE_AMBIENT_OCCLUSION},
+        {m_color_bleeding, data::signals::MODIFIED, slots::TOGGLE_COLOR_BLEEDING},
+        {m_shadows, data::signals::MODIFIED, slots::TOGGLE_SHADOWS},
+        {m_widgets, data::signals::MODIFIED, slots::TOGGLE_WIDGETS},
+        {m_sampling, data::signals::MODIFIED, slots::UPDATE_SAMPLING},
+        {m_opacity_correction, data::signals::MODIFIED, slots::UPDATE_OPACITY_CORRECTION},
+        {m_sat_shells_number, data::signals::MODIFIED, slots::UPDATE_SAT_SHELLS_NUMBER},
+        {m_sat_shell_radius, data::signals::MODIFIED, slots::UPDATE_SAT_SHELL_RADIUS},
+        {m_sat_cone_samples, data::signals::MODIFIED, slots::UPDATE_SAT_CONE_SAMPLES},
+        {m_color_bleeding_factor, data::signals::MODIFIED, slots::UPDATE_COLOR_BLEEDING_FACTOR},
+        {m_ao_factor, data::signals::MODIFIED, slots::UPDATE_AO_FACTOR},
+        {m_sat_cone_angle, data::signals::MODIFIED, slots::UPDATE_SAT_CONE_ANGLE},
+        {m_sat_size_ratio, data::signals::MODIFIED, slots::UPDATE_SAT_SIZE_RATIO},
     };
 
     return connections + adaptor::auto_connections();
@@ -78,48 +139,9 @@ void volume_render::configuring(const config_t& _config)
 {
     this->configure_params();
 
-    //TODO: When MSVC finally supports designated initialization, use it.
-    {
-        //Global parameters
-        {
-            m_config.camera_autoreset = _config.get<bool>(config::AUTORESET_CAMERA, true);
-            m_config.preintegration   = _config.get<bool>(config::PREINTEGRATION, false);
-            m_config.dynamic          = _config.get<bool>(config::DYNAMIC, false);
-            m_config.visible          = _config.get<bool>(config::WIDGETS, true);
-            m_config.priority         = _config.get<int>(config::PRIORITY, 2);
-            m_config.samples          = _config.get<std::uint16_t>(config::SAMPLES, 512);
-        }
-
-        //SAT
-        {
-            m_config.sat.size_ratio = _config.get<float>(config::SAT_SIZE_RATIO, 0.25F);
-            m_config.sat.shells     = static_cast<unsigned>(_config.get<int>(config::SAT_SHELLS, 4));
-            m_config.sat.radius     = static_cast<unsigned>(_config.get<int>(config::SAT_SHELL_RADIUS, 4));
-            m_config.sat.angle      = _config.get<float>(config::SAT_CONE_ANGLE, 0.1F);
-            m_config.sat.samples    = static_cast<unsigned>(_config.get<int>(config::SAT_CONE_SAMPLES, 50));
-        }
-
-        //Shadows
-        {
-            m_config.shadows.soft_shadows = _config.get<bool>(config::SHADOWS, false);
-
-            //AO
-            {
-                m_config.shadows.ao.enabled = _config.get<bool>(config::AO, false),
-                m_config.shadows.ao.factor  = static_cast<float>(_config.get<double>(config::AO_FACTOR, 1.));
-            }
-
-            //Colour bleeding
-            {
-                const double color_bleeding_factor = _config.get<double>(config::COLOR_BLEEDING_FACTOR, 1.);
-
-                m_config.shadows.colour_bleeding.enabled = _config.get<bool>(config::COLOR_BLEEDING, false);
-                m_config.shadows.colour_bleeding.r       = static_cast<float>(color_bleeding_factor);
-                m_config.shadows.colour_bleeding.g       = static_cast<float>(color_bleeding_factor);
-                m_config.shadows.colour_bleeding.b       = static_cast<float>(color_bleeding_factor);
-            }
-        }
-    }
+    m_config.camera_autoreset = _config.get<bool>(config::AUTORESET_CAMERA, true);
+    m_config.dynamic          = _config.get<bool>(config::DYNAMIC, false);
+    m_config.priority         = _config.get<int>(config::PRIORITY, 2);
 
     this->set_transform_id(
         _config.get<std::string>(
@@ -137,6 +159,24 @@ void volume_render::starting()
 
     auto render_service = this->render_service();
     render_service->make_current();
+
+    config_data_t::sat_parameters_t sat {};
+    sat.size_ratio = static_cast<unsigned int>(*m_sat_size_ratio);
+    sat.shells     = static_cast<unsigned>(*m_sat_shells_number);
+    sat.radius     = static_cast<unsigned>(*m_sat_shell_radius);
+    sat.angle      = static_cast<float>(*m_sat_cone_angle);
+    sat.samples    = static_cast<unsigned>(*m_sat_cone_samples);
+
+    config_data_t::shadows_parameters_t shadows {};
+    shadows.soft_shadows = *m_shadows;
+    shadows.ao.enabled   = *m_ambient_occlusion;
+    shadows.ao.factor    = static_cast<float>(*m_ao_factor);
+
+    const auto color_bleeding_factor = static_cast<float>(*m_color_bleeding_factor);
+    shadows.colour_bleeding.enabled = *m_color_bleeding;
+    shadows.colour_bleeding.r       = color_bleeding_factor;
+    shadows.colour_bleeding.g       = color_bleeding_factor;
+    shadows.colour_bleeding.b       = color_bleeding_factor;
 
     //scene (node, manager)
     {
@@ -161,13 +201,12 @@ void volume_render::starting()
             image.get_shared(),
             mask.get_shared(),
             tf.get_shared(),
-            m_config.samples,
+            static_cast<std::uint16_t>(*m_sampling),
             m_config.dynamic,
-            m_config.preintegration,
-            m_config.shadows,
-            m_config.sat
+            *m_preintegration,
+            shadows,
+            sat
         );
-        m_volume_renderer->update(tf.get_shared());
     }
 
     m_volume_scene_node->setVisible(visible());
@@ -182,9 +221,17 @@ void volume_render::starting()
         is_valid = data::helper::medical_image::check_image_validity(image.get_shared());
     }
 
+    m_volume_renderer->update_ray_tracing_material();
+
     if(is_valid)
     {
         this->new_image();
+    }
+
+    {
+        const auto tf = m_tf.lock();
+        // Will also update the SAT
+        m_volume_renderer->set_sampling(static_cast<std::uint16_t>(*m_sampling), tf.get_shared());
     }
 
     this->request_render();
@@ -275,9 +322,18 @@ void volume_render::new_image()
         const auto image = m_image.lock();
         const auto mask  = m_mask.lock();
 
+        if(not data::helper::medical_image::check_image_validity(image.get_shared()))
+        {
+            return;
+        }
+
+        render_service->make_current();
+        // Lazy update, necessary to ensure the image is loaded and its size known for the SAT computation
+        m_volume_renderer->load_image();
+
         // Ignore this update to avoid flickering when loading a new image
         // We will be signaled later when either the image or the mask will be updated
-        if(image->size() != mask->size() || !data::helper::medical_image::check_image_validity(image.get_shared()))
+        if(image->size() != mask->size())
         {
             return;
         }
@@ -292,11 +348,6 @@ void volume_render::new_image()
             m_buffering_worker = std::unique_ptr<sight::viz::scene3d::graphics_worker>(new_worker);
         }
 
-        render_service->make_current();
-        {
-            const auto image = m_image.lock();
-            m_volume_renderer->load_image();
-        }
         this->update_mask();
         this->update_volume_tf();
     }
@@ -391,6 +442,7 @@ void volume_render::update_mask()
 
 void volume_render::update_sampling(unsigned _nb_samples)
 {
+    std::scoped_lock swap_lock(m_mutex);
     this->render_service()->make_current();
 
     SIGHT_ASSERT("Sampling rate must fit in a 16 bit uint.", _nb_samples < 65536);
@@ -405,6 +457,8 @@ void volume_render::update_sampling(unsigned _nb_samples)
 
 void volume_render::update_opacity_correction(unsigned _opacity_correction)
 {
+    std::scoped_lock swap_lock(m_mutex);
+    this->render_service()->make_current();
     m_volume_renderer->set_opacity_correction(static_cast<int>(_opacity_correction));
     this->request_render();
 }
@@ -413,6 +467,9 @@ void volume_render::update_opacity_correction(unsigned _opacity_correction)
 
 void volume_render::update_ao_factor(float _ao_factor)
 {
+    std::scoped_lock swap_lock(m_mutex);
+    this->render_service()->make_current();
+
     if(m_volume_renderer->set_ao_factor(_ao_factor))
     {
         this->request_render(); //Only request new render when AO was enabled, i.e. the call had an effect
@@ -423,6 +480,9 @@ void volume_render::update_ao_factor(float _ao_factor)
 
 void volume_render::update_color_bleeding_factor(float _color_bleeding_factor)
 {
+    std::scoped_lock swap_lock(m_mutex);
+    this->render_service()->make_current();
+
     if(m_volume_renderer->set_color_bleeding_factor(_color_bleeding_factor))
     {
         this->request_render(); //Only request new render when AO was enabled, i.e. the call had an effect
@@ -431,8 +491,9 @@ void volume_render::update_color_bleeding_factor(float _color_bleeding_factor)
 
 //-----------------------------------------------------------------------------
 
-void volume_render::update_sat_size_ratio(float _size_ratio)
+void volume_render::update_sat_size_ratio(unsigned int _size_ratio)
 {
+    std::scoped_lock swap_lock(m_mutex);
     if(m_volume_renderer->shadows().parameters.enabled())
     {
         this->render_service()->make_current();
@@ -447,6 +508,7 @@ void volume_render::update_sat_size_ratio(float _size_ratio)
 
 void volume_render::update_sat_shells_number(unsigned _shells_number)
 {
+    std::scoped_lock swap_lock(m_mutex);
     if(m_volume_renderer->shadows().parameters.enabled())
     {
         this->render_service()->make_current();
@@ -461,6 +523,7 @@ void volume_render::update_sat_shells_number(unsigned _shells_number)
 
 void volume_render::update_sat_shell_radius(unsigned _shell_radius)
 {
+    std::scoped_lock swap_lock(m_mutex);
     if(m_volume_renderer->shadows().parameters.enabled())
     {
         this->render_service()->make_current();
@@ -475,6 +538,7 @@ void volume_render::update_sat_shell_radius(unsigned _shell_radius)
 
 void volume_render::update_sat_cone_angle(float _cone_angle)
 {
+    std::scoped_lock swap_lock(m_mutex);
     if(m_volume_renderer->shadows().parameters.enabled())
     {
         this->render_service()->make_current();
@@ -489,6 +553,7 @@ void volume_render::update_sat_cone_angle(float _cone_angle)
 
 void volume_render::update_sat_cone_samples(unsigned _nb_cone_samples)
 {
+    std::scoped_lock swap_lock(m_mutex);
     if(m_volume_renderer->shadows().parameters.enabled())
     {
         this->render_service()->make_current();
@@ -503,6 +568,7 @@ void volume_render::update_sat_cone_samples(unsigned _nb_cone_samples)
 
 void volume_render::toggle_preintegration(bool _preintegration)
 {
+    std::scoped_lock swap_lock(m_mutex);
     this->render_service()->make_current();
 
     m_volume_renderer->set_pre_integrated_rendering(_preintegration);
@@ -522,6 +588,7 @@ void volume_render::toggle_preintegration(bool _preintegration)
 
 void volume_render::toggle_ambient_occlusion(bool _ambient_occlusion)
 {
+    std::scoped_lock swap_lock(m_mutex);
     this->toggle_vr_effect(vr_effect_type::vr_ambient_occlusion, _ambient_occlusion);
 }
 
@@ -529,6 +596,7 @@ void volume_render::toggle_ambient_occlusion(bool _ambient_occlusion)
 
 void volume_render::toggle_color_bleeding(bool _color_bleeding)
 {
+    std::scoped_lock swap_lock(m_mutex);
     this->toggle_vr_effect(vr_effect_type::vr_color_bleeding, _color_bleeding);
 }
 
@@ -536,6 +604,7 @@ void volume_render::toggle_color_bleeding(bool _color_bleeding)
 
 void volume_render::toggle_shadows(bool _shadows)
 {
+    std::scoped_lock swap_lock(m_mutex);
     this->toggle_vr_effect(vr_effect_type::vr_shadows, _shadows);
 }
 
@@ -543,11 +612,11 @@ void volume_render::toggle_shadows(bool _shadows)
 
 void volume_render::toggle_widgets(bool _visible)
 {
-    m_config.visible = _visible;
+    std::scoped_lock swap_lock(m_mutex);
 
     if(m_widget)
     {
-        m_widget->set_box_visibility(m_config.visible && m_volume_renderer->is_visible());
+        m_widget->set_box_visibility(_visible && m_volume_renderer->is_visible());
 
         this->request_render();
     }
@@ -562,127 +631,6 @@ void volume_render::set_focal_distance(int _focal_distance)
     {
         m_volume_renderer->set_focal_length(static_cast<float>(_focal_distance) / 100);
     }
-}
-
-//-----------------------------------------------------------------------------
-
-void volume_render::set_bool_parameter(bool _val, std::string _key)
-{
-    SIGHT_ASSERT(
-        "Invalid slot key " + _key,
-        _key == "preIntegration"
-        || _key == "ambientOcclusion"
-        || _key == "colorBleeding"
-        || _key == "shadows"
-        || _key == "widgets"
-    );
-
-    this->render_service()->make_current();
-    std::scoped_lock swap_lock(m_mutex);
-
-    if(_key == "preIntegration")
-    {
-        this->toggle_preintegration(_val);
-    }
-    else if(_key == "ambientOcclusion")
-    {
-        this->toggle_ambient_occlusion(_val);
-    }
-    else if(_key == "colorBleeding")
-    {
-        this->toggle_color_bleeding(_val);
-    }
-    else if(_key == "shadows")
-    {
-        this->toggle_shadows(_val);
-    }
-    else if(_key == "widgets")
-    {
-        this->toggle_widgets(_val);
-    }
-
-    this->request_render();
-}
-
-//-----------------------------------------------------------------------------
-
-void volume_render::set_int_parameter(int _val, std::string _key)
-{
-    SIGHT_ASSERT(
-        "Invalid slot key " + _key,
-        _key == "sampling"
-        || _key == "opacityCorrection"
-        || _key == "satShellsNumber"
-        || _key == "satShellRadius"
-        || _key == "satConeSamples"
-    );
-
-    SIGHT_ASSERT("Int parameter cannot be negative in this context.", _val >= 0);
-
-    this->render_service()->make_current();
-    std::scoped_lock swap_lock(m_mutex);
-
-    const auto param = static_cast<unsigned>(_val);
-
-    if(_key == "sampling")
-    {
-        this->update_sampling(param);
-    }
-    else if(_key == "opacityCorrection")
-    {
-        this->update_opacity_correction(param);
-    }
-    else if(_key == "satShellsNumber")
-    {
-        this->update_sat_shells_number(param);
-    }
-    else if(_key == "satShellRadius")
-    {
-        this->update_sat_shell_radius(param);
-    }
-    else if(_key == "satConeSamples")
-    {
-        this->update_sat_cone_samples(param);
-    }
-
-    this->request_render();
-}
-
-//-----------------------------------------------------------------------------
-
-void volume_render::set_double_parameter(double _val, std::string _key)
-{
-    SIGHT_ASSERT(
-        "Invalid slot key " + _key,
-        _key == "colorBleedingFactor"
-        || _key == "aoFactor"
-        || _key == "satConeAngle"
-        || _key == "satSizeRatio"
-    );
-
-    this->render_service()->make_current();
-    std::scoped_lock swap_lock(m_mutex);
-
-    const auto param = static_cast<float>(_val);
-
-    if(_key == "colorBleedingFactor")
-    {
-        this->update_color_bleeding_factor(param);
-    }
-    else if(_key == "aoFactor")
-    {
-        this->update_ao_factor(param);
-    }
-    else if(_key == "satConeAngle")
-    {
-        this->update_sat_cone_angle(param);
-    }
-    else if(_key == "satSizeRatio")
-    {
-        this->update_sat_size_ratio(param);
-    }
-
-    this->request_render();
 }
 
 //-----------------------------------------------------------------------------
@@ -716,7 +664,7 @@ void volume_render::create_widget()
 
     m_volume_renderer->clip_image(m_widget->get_clipping_box());
 
-    m_widget->set_box_visibility(m_config.visible && m_volume_renderer->is_visible());
+    m_widget->set_box_visibility(*m_widgets && m_volume_renderer->is_visible());
 }
 
 //-----------------------------------------------------------------------------
@@ -841,7 +789,7 @@ void volume_render::set_visible(bool _visible)
 
         if(m_widget)
         {
-            m_widget->set_box_visibility(_visible && m_config.visible);
+            m_widget->set_box_visibility(_visible && *m_widgets);
         }
 
         if(m_config.camera_autoreset)

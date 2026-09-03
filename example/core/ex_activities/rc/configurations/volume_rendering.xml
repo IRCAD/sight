@@ -11,6 +11,22 @@
         <object uid="tf" type="sight::data::transfer_function" />
         <object uid="mask" type="sight::data::image" />
         <object uid="extruded_model_series" type="sight::data::model_series" />
+        <object uid="volume_parameters" type="sight::data::map">
+            <item key="pre_integration" type="sight::data::boolean" value="false" />
+            <item key="ambient_occlusion" type="sight::data::boolean" value="false" />
+            <item key="color_bleeding" type="sight::data::boolean" value="false" />
+            <item key="shadows" type="sight::data::boolean" value="false" />
+            <item key="widgets" type="sight::data::boolean" value="true" />
+            <item key="sampling" type="sight::data::integer" value="512" />
+            <item key="opacity_correction" type="sight::data::integer" value="0" />
+            <item key="sat_shells_number" type="sight::data::integer" value="4" />
+            <item key="sat_shell_radius" type="sight::data::integer" value="4" />
+            <item key="sat_cone_samples" type="sight::data::integer" value="50" />
+            <item key="color_bleeding_factor" type="sight::data::real" value="1." />
+            <item key="ao_factor" type="sight::data::real" value="1." />
+            <item key="sat_cone_angle" type="sight::data::real" value="0.1" />
+            <item key="sat_size_ratio" type="sight::data::real" value="2" />
+        </object>
 
         <!-- ******************************* UI declaration *********************************** -->
 
@@ -71,7 +87,23 @@
             <data image="${image_series}" />
             <data tf="${tf}" />
             <data mask="${mask}" />
-            <config widgets="true" preintegration="false" autoresetcamera="true" />
+            <volume_rendering>
+                <config pre_integration="${volume_parameters}.pre_integration" />
+                <config ambient_occlusion="${volume_parameters}.ambient_occlusion" />
+                <config color_bleeding="${volume_parameters}.color_bleeding" />
+                <config shadows="${volume_parameters}.shadows" />
+                <config widgets="${volume_parameters}.widgets" />
+                <config sampling="${volume_parameters}.sampling" />
+                <config opacity_correction="${volume_parameters}.opacity_correction" />
+                <config sat_shells_number="${volume_parameters}.sat_shells_number" />
+                <config sat_shell_radius="${volume_parameters}.sat_shell_radius" />
+                <config sat_cone_samples="${volume_parameters}.sat_cone_samples" />
+                <config color_bleeding_factor="${volume_parameters}.color_bleeding_factor" />
+                <config ao_factor="${volume_parameters}.ao_factor" />
+                <config sat_cone_angle="${volume_parameters}.sat_cone_angle" />
+                <config sat_size_ratio="${volume_parameters}.sat_size_ratio" />
+            </volume_rendering>
+            <config auto_reset_camera="true" />
         </service>
 
         <service uid="image_extruder_srv" type="sight::module::filter::image::image_extruder" worker="EXTRUSION">

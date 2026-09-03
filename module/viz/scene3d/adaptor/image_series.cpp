@@ -40,10 +40,6 @@ image_series::image_series() noexcept
     new_signal<signals::picked_voxel_t>(signals::PICKED_VOXEL);
 
     new_slot(slots::SET_IMAGE_VISIBILITY, &image_series::set_image_visibility, this);
-    new_slot(slots::TOGGLE_WIDGETS, &image_series::toggle_widgets, this);
-    new_slot(slots::SET_BOOL_PARAMETER, &image_series::set_bool_parameter, this);
-    new_slot(slots::SET_INT_PARAMETER, &image_series::set_int_parameter, this);
-    new_slot(slots::SET_DOUBLE_PARAMETER, &image_series::set_double_parameter, this);
     new_slot(slots::UPDATE_CLIPPING_BOX, &image_series::update_clipping_box, this);
     new_slot(slots::UPDATE_SLICES_FROM_WORLD, &image_series::update_slices_from_world, this);
     new_slot(slots::SET_SLICE_INDEX, &image_series::set_slice_index, this);
@@ -236,6 +232,37 @@ void image_series::updating()
 
         if(is_volume)
         {
+            child->set_input(m_preintegration.lock().get_shared(), "volume_rendering.config.pre_integration", true);
+            child->set_input(
+                m_ambient_occlusion.lock().get_shared(),
+                "volume_rendering.config.ambient_occlusion",
+                true
+            );
+            child->set_input(m_color_bleeding.lock().get_shared(), "volume_rendering.config.color_bleeding", true);
+            child->set_input(m_shadows.lock().get_shared(), "volume_rendering.config.shadows", true);
+            child->set_input(m_widgets.lock().get_shared(), "volume_rendering.config.widgets", true);
+            child->set_input(m_sampling.lock().get_shared(), "volume_rendering.config.sampling", true);
+            child->set_input(
+                m_opacity_correction.lock().get_shared(),
+                "volume_rendering.config.opacity_correction",
+                true
+            );
+            child->set_input(
+                m_sat_shells_number.lock().get_shared(),
+                "volume_rendering.config.sat_shells_number",
+                true
+            );
+            child->set_input(m_sat_shell_radius.lock().get_shared(), "volume_rendering.config.sat_shell_radius", true);
+            child->set_input(m_sat_cone_samples.lock().get_shared(), "volume_rendering.config.sat_cone_samples", true);
+            child->set_input(
+                m_color_bleeding_factor.lock().get_shared(),
+                "volume_rendering.config.color_bleeding_factor",
+                true
+            );
+            child->set_input(m_ao_factor.lock().get_shared(), "volume_rendering.config.ao_factor", true);
+            child->set_input(m_sat_cone_angle.lock().get_shared(), "volume_rendering.config.sat_cone_angle", true);
+            child->set_input(m_sat_size_ratio.lock().get_shared(), "volume_rendering.config.sat_size_ratio", true);
+
             if(const auto tf = m_tf.lock(); tf)
             {
                 child->set_input(tf.get_shared(), "data.tf", true);
@@ -367,46 +394,6 @@ void image_series::forward_to_children(const std::string& _slot, const Args& ...
         {
             child->slot(_slot)->run(_args ...);
         }
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void image_series::toggle_widgets(bool _visible)
-{
-    if(m_representation == representation_t::volume)
-    {
-        this->forward_to_children(slots::TOGGLE_WIDGETS, _visible);
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void image_series::set_bool_parameter(bool _value, std::string _key)
-{
-    if(m_representation == representation_t::volume)
-    {
-        this->forward_to_children(slots::SET_BOOL_PARAMETER, _value, _key);
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void image_series::set_int_parameter(int _value, std::string _key)
-{
-    if(m_representation == representation_t::volume)
-    {
-        this->forward_to_children(slots::SET_INT_PARAMETER, _value, _key);
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void image_series::set_double_parameter(double _value, std::string _key)
-{
-    if(m_representation == representation_t::volume)
-    {
-        this->forward_to_children(slots::SET_DOUBLE_PARAMETER, _value, _key);
     }
 }
 

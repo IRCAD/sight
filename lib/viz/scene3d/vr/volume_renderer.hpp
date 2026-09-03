@@ -27,21 +27,15 @@
 #include "data/image.hpp"
 #include "data/transfer_function.hpp"
 
-#include "viz/scene3d/ogre.hpp"
 #include "viz/scene3d/transfer_function.hpp"
-#include "viz/scene3d/utils.hpp"
 #include "viz/scene3d/vr/pre_integration_table.hpp"
 
 #include <viz/scene3d/texture.hpp>
 
-#include <OGRE/Ogre.h>
 #include <OGRE/OgreAxisAlignedBox.h>
 #include <OGRE/OgreCamera.h>
-#include <OGRE/OgreGpuProgramParams.h>
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreSceneNode.h>
-
-#include <optional>
 
 namespace sight::viz::scene3d::vr
 {
