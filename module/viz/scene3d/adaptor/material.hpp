@@ -247,7 +247,7 @@ private:
 
     data::ptr<data::material, data::access::inout> m_material_data {this, MATERIAL_INOUT, true};
     data::ptr_vector<data::object, data::access::inout> m_uniform_objects {this, "uniform.object", true};
-    data::ptr_vector<data::string, data::access::in> m_uniform_names {this, "uniform.name", true};
+    data::ptr_vector<data::string, data::access::in> m_uniform_names {this, "uniform.name", std::nullopt};
 };
 
 //------------------------------------------------------------------------------

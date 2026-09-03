@@ -819,6 +819,52 @@ TEST_SUITE("sight::service::service")
 
 //------------------------------------------------------------------------------
 
+    TEST_CASE("parallel_optional_groups")
+    {
+        auto service = sight::service::add<sight::service::ut::test_parallel_groups>(
+            "sight::service::ut::test_parallel_groups"
+        );
+        sight::service::config_t config;
+        sight::service::config_t first_item;
+        first_item.put("<xmlattr>.object1", "required");
+        first_item.put("<xmlattr>.object2", "explicit");
+        first_item.put("<xmlattr>.object3", "explicit-default");
+        config.add_child("item", first_item);
+
+        sight::service::config_t second_item;
+        second_item.put("<xmlattr>.object1", "required-2");
+        config.add_child("item", second_item);
+
+        service->set_config(config);
+        service->configure();
+
+        CHECK_EQ(service->m_object1[0].lock()->value(), "required");
+        CHECK_EQ(service->m_object2[0].lock()->value(), "explicit");
+        CHECK_EQ(service->m_object3[0].lock()->value(), "explicit-default");
+        CHECK_EQ(service->m_object1[1].lock()->value(), "required-2");
+        CHECK(service->m_object2[1].lock() == nullptr);
+        CHECK_EQ(service->m_object3[1].lock()->value(), "default");
+
+        sight::service::unregister_service(service);
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("standalone_optional_group")
+    {
+        auto service = sight::service::add<sight::service::ut::test_optional_group>(
+            "sight::service::ut::test_optional_group"
+        );
+        service->set_config(sight::service::config_t {});
+
+        CHECK_NOTHROW(service->configure());
+        CHECK_EQ(service->m_optional.size(), 0U);
+
+        sight::service::unregister_service(service);
+    }
+
+//------------------------------------------------------------------------------
+
     TEST_CASE("properties")
     {
         {

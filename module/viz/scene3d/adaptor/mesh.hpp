@@ -330,7 +330,7 @@ private:
     static constexpr std::string_view MESH_IN = "data.mesh";
     data::ptr<data::mesh, data::access::in> m_mesh {this, MESH_IN};
     data::ptr_vector<data::object, data::access::inout> m_uniform_objects {this, "uniform.object", true};
-    data::ptr_vector<data::string, data::access::in> m_uniform_names {this, "uniform.name", true};
+    data::ptr_vector<data::string, data::access::in> m_uniform_names {this, "uniform.name", std::nullopt};
 
     /// Diffuse color of the mesh, used if no material is provided.
     sight::data::ptr<sight::data::color, sight::data::access::in> m_color {this, "config.color", {1.0F, 1.0F, 1.0F, 1.0F

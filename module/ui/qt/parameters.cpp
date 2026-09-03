@@ -106,7 +106,6 @@ parameters::parameters() noexcept
     new_slot(slots::SET_INT3_PARAMETER, &parameters::set_int3_parameter, this);
     new_slot(slots::SET_ENUM_PARAMETER, &parameters::set_enum_parameter, this);
     new_slot(slots::SET_ENUM_INDEX_PARAMETER, &parameters::set_enum_index_parameter, this);
-    new_slot(slots::UPDATE_ENUM_RANGE, &parameters::update_enum_range, this);
     new_slot(slots::UPDATE_INT_MIN_PARAMETER, &parameters::update_int_min_parameter, this);
     new_slot(slots::UPDATE_INT_MAX_PARAMETER, &parameters::update_int_max_parameter, this);
     new_slot(slots::UPDATE_DOUBLE_MIN_PARAMETER, &parameters::update_double_min_parameter, this);
@@ -2457,44 +2456,6 @@ void parameters::set_enum_index_parameter(int _val, std::string _key)
 }
 
 //------------------------------------------------------------------------------
-
-void parameters::update_enum_range(std::string _options, std::string _key)
-{
-    this->blockSignals(true);
-
-    QObject* widget = this->get_param_widget(_key);
-
-    auto* combobox = qobject_cast<QComboBox*>(widget);
-
-    if(combobox != nullptr)
-    {
-        combobox->clear();
-
-        std::vector<std::string> values;
-        std::vector<std::string> data;
-
-        sight::module::ui::qt::parameters::parse_enum_string(_options, values, data);
-
-        int idx = 0;
-        for(const auto& value : values)
-        {
-            combobox->insertItem(idx, QString::fromStdString(value));
-            ++idx;
-        }
-
-        // Add optional data
-        idx = 0;
-        for(const auto& choice : data)
-        {
-            combobox->setItemData(idx, QString::fromStdString(choice));
-            ++idx;
-        }
-    }
-
-    this->blockSignals(false);
-}
-
-//-----------------------------------------------------------------------------
 
 void parameters::emit_color_signal(const QColor _color, const std::string& _key) const
 {

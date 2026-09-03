@@ -33,6 +33,7 @@
 #include <string_view>
 #include <type_traits>
 #include <utility>
+#include <vector>
 
 namespace sight::data
 {
@@ -76,6 +77,12 @@ public:
 
     /// Non-empty when the key is bound to an object that is created at runtime, and thus not available yet.
     [[nodiscard]] virtual std::string deferred_id() const;
+
+    /// Indices currently materialized for a data group. Empty for a singular pointer.
+    [[nodiscard]] virtual std::vector<std::size_t> indices() const;
+
+    /// Materializes an addressable null group element at the given index.
+    virtual void materialize(std::size_t _index);
 
     // Returns key()
     [[nodiscard]] operator std::string_view() const; //NOLINT(google-explicit-constructor,hicpp-explicit-conversions)
@@ -170,6 +177,19 @@ inline bool base_ptr::is_group() const
 inline std::string base_ptr::deferred_id() const
 {
     return {};
+}
+
+//------------------------------------------------------------------------------
+
+inline std::vector<std::size_t> base_ptr::indices() const
+{
+    return {};
+}
+
+//------------------------------------------------------------------------------
+
+inline void base_ptr::materialize(std::size_t /*_index*/)
+{
 }
 
 //------------------------------------------------------------------------------
@@ -460,12 +480,48 @@ public:
     using container_ptr_t = std::map<std::size_t, ptr_t*>;
 
     /// Constructor that registers the pointer into the owner, i.e. a service instance.
+    template<class T = bool>
+    requires(!serializable<DATATYPE>) && std::same_as<T, bool>
     ptr_vector(
         has_data* _holder,
         std::string_view _key,
-        bool _optional = access_type_traits<DATATYPE, ACCESS>::OPTIONAL_DEFAULT //NOLINT(modernize-avoid-c-style-cast)
+        T _optional = access_type_traits<DATATYPE, ACCESS>::OPTIONAL_DEFAULT //NOLINT(modernize-avoid-c-style-cast)
     ) noexcept :
         base_ptr(_holder, _key, _optional, ACCESS, {})
+    {
+    }
+
+    /// Constructor that registers a mandatory group into the owner.
+    ptr_vector(has_data* _holder, std::string_view _key) noexcept
+    requires serializable<DATATYPE>:
+        base_ptr(_holder, _key, access_type_traits<DATATYPE, ACCESS>::OPTIONAL_DEFAULT, ACCESS, {})
+    {
+    }
+
+    /// Constructor that registers an optional group whose missing elements are left unassigned.
+    ptr_vector(has_data* _holder, std::string_view _key, std::nullopt_t /*no default value*/) noexcept
+    requires serializable<DATATYPE>:
+        base_ptr(_holder, _key, true, ACCESS, {})
+    {
+    }
+
+    /// Constructor that registers an optional group whose missing elements use the given default value.
+    ptr_vector(has_data* _holder, std::string_view _key, DATATYPE _default_value) noexcept
+    requires serializable<DATATYPE>&& (ACCESS != data::access::out) :
+        base_ptr(_holder, _key, true, ACCESS, {}),
+        m_default_factory(
+            [value = std::move(_default_value)]{return std::make_shared<DATATYPE>(value);})
+    {
+    }
+
+    template<class T>
+    requires serializable<DATATYPE>&& (ACCESS != data::access::out)
+    && std::constructible_from<DATATYPE, T>
+    // NOLINTNEXTLINE(cppcoreguidelines-missing-std-forward)
+    ptr_vector(has_data* _holder, std::string_view _key, T&& _default_value) noexcept :
+        base_ptr(_holder, _key, true, ACCESS, {}),
+        m_default_factory(
+            [value = DATATYPE(std::forward<T>(_default_value))]{return std::make_shared<DATATYPE>(value);})
     {
     }
 
@@ -486,6 +542,31 @@ public:
     [[nodiscard]] bool is_group() const final
     {
         return true;
+    }
+
+    //------------------------------------------------------------------------------
+
+    [[nodiscard]] std::vector<std::size_t> indices() const final
+    {
+        std::vector<std::size_t> indices;
+        indices.reserve(m_ptrs.size());
+        for(const auto& [index, ptr] : m_ptrs)
+        {
+            SIGHT_NOT_USED(ptr);
+            indices.push_back(index);
+        }
+
+        return indices;
+    }
+
+    //------------------------------------------------------------------------------
+
+    void materialize(std::size_t _index) final
+    {
+        if(!m_ptrs.contains(_index))
+        {
+            m_ptrs.emplace(std::make_pair(_index, new ptr_t(m_holder, m_key, this->optional(), _index, {})));
+        }
     }
 
     /// Accessor for individual weak pointers
@@ -573,8 +654,7 @@ public:
 
     [[nodiscard]] sight::data::object::sptr make_default_object() const final
     {
-        // A default value makes no sense for a group, an element only exists when it is declared in the configuration.
-        return nullptr;
+        return m_default_factory ? m_default_factory() : nullptr;
     }
 
 protected:
@@ -588,17 +668,17 @@ protected:
         bool _signal                      = false
     ) final
     {
-        SIGHT_ASSERT(
-            "Index parameter must be set for '" + _obj->get_classname() + "'",
-            _index.has_value()
-        );
+        SIGHT_ASSERT("Index parameter must be set for a data group", _index.has_value());
 
         auto index = _index.value();
         if(_obj == nullptr)
         {
-            m_ptrs[index]->set(nullptr, {}, {}, _signal);
-            delete m_ptrs[index];
-            m_ptrs.erase(index);
+            if(const auto it = m_ptrs.find(index); it != m_ptrs.end())
+            {
+                it->second->set(nullptr, {}, {}, _signal);
+                delete it->second;
+                m_ptrs.erase(it);
+            }
         }
         else
         {
@@ -646,6 +726,9 @@ private:
 
     /// Collection of data, indexed by key
     container_ptr_t m_ptrs;
+
+    /// Builds a missing group element from its declared default value.
+    std::function<sight::data::object::sptr()> m_default_factory;
 };
 
 //------------------------------------------------------------------------------

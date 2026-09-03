@@ -169,7 +169,7 @@ private:
     static constexpr std::string_view RECONSTRUCTION_INPUT = "data.reconstruction";
     data::ptr<data::reconstruction, data::access::in> m_reconstruction {this, RECONSTRUCTION_INPUT};
     data::ptr_vector<data::object, data::access::inout> m_uniform_objects {this, "uniform.object", true};
-    data::ptr_vector<data::string, data::access::in> m_uniform_names {this, "uniform.name", true};
+    data::ptr_vector<data::string, data::access::in> m_uniform_names {this, "uniform.name", std::nullopt};
 };
 
 //------------------------------------------------------------------------------

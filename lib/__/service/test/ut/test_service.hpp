@@ -437,4 +437,76 @@ private:
     data::ptr<data::object, data::access::inout> m_inout3 {this, "data3"};
 };
 
+class test_parallel_groups : public service::base
+{
+public:
+
+    SIGHT_DECLARE_SERVICE(test_parallel_groups, service::base);
+
+    data::ptr_vector<data::string, data::access::in> m_object1 {this, "item.object1"};
+    data::ptr_vector<data::string, data::access::in> m_object2 {this, "item.object2", std::nullopt};
+    data::ptr_vector<data::string, data::access::in> m_object3 {this, "item.object3", std::string("default")};
+
+protected:
+
+    //------------------------------------------------------------------------------
+
+    void configuring() override
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void starting() override
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void stopping() override
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void updating() override
+    {
+    }
+};
+
+class test_optional_group : public service::base
+{
+public:
+
+    SIGHT_DECLARE_SERVICE(test_optional_group, service::base);
+
+    data::ptr_vector<data::string, data::access::in> m_optional {this, "item.optional", std::nullopt};
+
+protected:
+
+    //------------------------------------------------------------------------------
+
+    void configuring() override
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void starting() override
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void stopping() override
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void updating() override
+    {
+    }
+};
+
 } // namespace sight::service::ut

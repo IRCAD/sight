@@ -161,7 +161,7 @@ private:
     static constexpr std::string_view MODEL_INPUT = "data.model";
     data::ptr<data::model_series, data::access::in> m_model {this, MODEL_INPUT};
     data::ptr_vector<data::object, data::access::inout> m_uniform_objects {this, "uniform.object", true};
-    data::ptr_vector<data::string, data::access::in> m_uniform_names {this, "uniform.name", true};
+    data::ptr_vector<data::string, data::access::in> m_uniform_names {this, "uniform.name", std::nullopt};
 };
 
 //------------------------------------------------------------------------------

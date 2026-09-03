@@ -34,6 +34,8 @@ SIGHT_REGISTER_SERVICE(sight::service::ut::test_srv, sight::service::ut::test2_i
 SIGHT_REGISTER_SERVICE(sight::service::ut::test_srv, sight::service::ut::test1_input1_opt_input1_opt_in_out);
 SIGHT_REGISTER_SERVICE(sight::service::ut::test_srv, sight::service::ut::test3_inouts_v2);
 SIGHT_REGISTER_SERVICE(sight::service::base, sight::service::ut::test_service_with_data);
+SIGHT_REGISTER_SERVICE(sight::service::base, sight::service::ut::test_parallel_groups);
+SIGHT_REGISTER_SERVICE(sight::service::base, sight::service::ut::test_optional_group);
 SIGHT_REGISTER_SERVICE(sight::service::base, sight::service::ut::test1_property);
 SIGHT_REGISTER_SERVICE(sight::service::base, sight::service::ut::test1_value);
 SIGHT_REGISTER_SERVICE(sight::service::base, sight::service::ut::test1_path_property);

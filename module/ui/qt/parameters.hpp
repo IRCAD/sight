@@ -75,8 +75,6 @@ namespace sight::module::ui::qt
  * - \b set_int3_parameter(int, int, int, std::string): set three int parameters.
  * - \b set_enum_parameter(std::string, std::string): set an enum parameter.
  * - \b set_enum_index_parameter(int, std::string): set an enum parameter using the index of the enum.
- * - \b updateEnumRange(std::string, std::string): update range of an existing enum (value can contains a tokenized list
- * such as value1;value2;value3=test;...)
  * - \b update_int_min_parameter(int, std::string): set the minimum value of an integer parameter (int, int2, int3)
  * - \b update_int_max_parameter(int, std::string): set the maximum value of an integer parameter (int, int2, int3)
  * - \b update_double_min_parameter(double, std::string): set the minimum value of a double parameter (double, double2,
@@ -202,7 +200,6 @@ public:
         inline static const slot_key_t SET_INT3_PARAMETER          = "set_int3_parameter";
         inline static const slot_key_t SET_ENUM_PARAMETER          = "set_enum_parameter";
         inline static const slot_key_t SET_ENUM_INDEX_PARAMETER    = "set_enum_index_parameter";
-        inline static const slot_key_t UPDATE_ENUM_RANGE           = "updateEnumRange";
         inline static const slot_key_t UPDATE_INT_MIN_PARAMETER    = "update_int_min_parameter";
         inline static const slot_key_t UPDATE_INT_MAX_PARAMETER    = "update_int_max_parameter";
         inline static const slot_key_t UPDATE_DOUBLE_MIN_PARAMETER = "update_double_min_parameter";
@@ -468,9 +465,6 @@ private:
 
     /// SLOT: This method sets an enum parameter using the index of the enum
     void set_enum_index_parameter(int /*val*/, std::string _key);
-
-    /// SLOT: This method updates the all enum values using a tokenized string ("value1;value2")
-    void update_enum_range(std::string _options, std::string _key);
 
     /// Slot: Updates the minimum value of an integer parameter (int, int2, int3)
     void update_int_min_parameter(int _min, std::string _key);

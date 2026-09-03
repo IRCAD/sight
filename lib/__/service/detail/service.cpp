@@ -337,6 +337,81 @@ void service::create_value_objects()
         value_cfgs[{entry.key, index}] = entry.value;
     }
 
+    // Optional/defaulted groups are aligned with the other groups declared on the same XML element. For example,
+    // "item.data" and "item.values" share the "item" prefix and therefore their nth elements describe the same
+    // item. A missing optional sibling is materialized as nullptr or from its declared default value.
+    const auto prefix_of = [](std::string_view _key)
+                           {
+                               const auto separator = _key.rfind('.');
+                               return separator == std::string_view::npos ? std::string {} : std::string(
+                                   _key.substr(
+                                       0,
+                                       separator
+                                   )
+                               );
+                           };
+
+    using group_t = std::pair<std::string, data::base_ptr*>;
+    std::map<std::string, std::vector<group_t> > groups;
+    for(const auto& [id, ptr] : container)
+    {
+        const auto& [key, index] = id;
+        if(!index.has_value() && ptr->is_group())
+        {
+            groups[prefix_of(key)].emplace_back(std::string(key), ptr);
+        }
+    }
+
+    for(const auto& group : groups)
+    {
+        const auto& siblings = group.second;
+        const auto is_optional_sibling = [](const data::base_ptr* _ptr)
+                                         {
+                                             return _ptr->access() != data::access::out && _ptr->optional();
+                                         };
+
+        for(const auto& [optional_key, optional_ptr] : siblings)
+        {
+            if(!is_optional_sibling(optional_ptr))
+            {
+                continue;
+            }
+
+            for(const auto& [sibling_key, sibling_ptr] : siblings)
+            {
+                if(sibling_ptr == optional_ptr)
+                {
+                    continue;
+                }
+
+                for(const auto index : sibling_ptr->indices())
+                {
+                    const auto id = std::make_pair(optional_key, std::optional {index});
+                    if(const auto indices = optional_ptr->indices();
+                       std::ranges::find(indices, index) == indices.end() && !value_cfgs.contains(id))
+                    {
+                        value_cfgs.emplace(id, std::nullopt);
+                    }
+                }
+
+                for(const auto& [id, value] : value_cfgs)
+                {
+                    SIGHT_NOT_USED(value);
+                    if(id.first == sibling_key && id.second.has_value())
+                    {
+                        const auto optional_id = std::make_pair(optional_key, id.second);
+                        if(const auto indices = optional_ptr->indices();
+                           std::ranges::find(indices, *id.second) == indices.end()
+                           && !value_cfgs.contains(optional_id))
+                        {
+                            value_cfgs.emplace(optional_id, std::nullopt);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     // Keys that are not mentioned at all in the configuration, but that declare a default value, are built as well.
     for(const auto& [id, ptr] : container)
     {
@@ -421,6 +496,12 @@ void service::create_value_objects()
             new_obj = ptr->make_default_object();
             if(!new_obj)
             {
+                // Keep an addressable null element for an optional group aligned with one of its siblings.
+                if(index.has_value() && ptr->is_group() && ptr->optional())
+                {
+                    ptr->materialize(*index);
+                }
+
                 continue;
             }
         }
