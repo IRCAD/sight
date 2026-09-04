@@ -231,14 +231,18 @@
 
         <!-- Extracts images for the detection algorithm. -->
         <service uid="frameSynchronizerSrv" type="sight::module::sync::synchronizer" auto_connect="false">
-            <in group="frame_tl">
-                <key uid="frame1TL" />
-                <key uid="frame2TL" />
-            </in>
-            <inout group="frames">
-                <key uid="frame1" tl="0" />
-                <key uid="frame2" tl="1" />
-            </inout>
+            <input>
+                <frames>
+                    <item timeline="${frame1TL}" />
+                    <item timeline="${frame2TL}" />
+                </frames>
+            </input>
+            <output>
+                <frames>
+                    <item image="${frame1}" timeline="0" />
+                    <item image="${frame2}" timeline="1" />
+                </frames>
+            </output>
         </service>
 
         <service uid="extrinsicExporterSrv" type="sight::module::ui::io::selector">
@@ -272,17 +276,15 @@
         </service>
 
         <service uid="videoGrabber1Srv" type="sight::module::io::video::grabber_proxy">
-            <in key="camera" uid="${camera1}" />
-            <inout key="frame_tl" uid="frame1TL" />
-            <config>
+            <timeline image="${frame1TL}" />
+            <config camera="${camera1}">
                 <gui title="Please select the first camera grabber" />
             </config>
         </service>
 
         <service uid="videoGrabber2Srv" type="sight::module::io::video::grabber_proxy">
-            <in key="camera" uid="${camera2}" />
-            <inout key="frame_tl" uid="frame2TL" />
-            <config>
+            <timeline image="${frame2TL}" />
+            <config camera="${camera2}">
                 <gui title="Please select the second camera grabber" />
             </config>
         </service>

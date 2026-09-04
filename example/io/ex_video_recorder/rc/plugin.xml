@@ -110,9 +110,8 @@
             </service>
 
             <service uid="imagePickerSrv" type="sight::module::ui::video::image_picker">
-                <in key="camera" uid="camera" />
-                <inout key="pointList" uid="2dPoints" />
-                <inout key="pixelPointList" uid="2dPixels" />
+                <input camera="${camera}" />
+                <output world_points="${2dPoints}" screen_points="${2dPixels}" />
                 <config videoReference="top_left" useCtrlModifier="false" singlePointMode="true" />
             </service>
 
@@ -136,13 +135,17 @@
                 <path file="video.mp4" />
             </service>
 
-            <service uid="frameUpdaterSrv" type="sight::module::sync::synchronizer" worker="videoWorker">
-                <in group="frame_tl" auto_connect="false">
-                    <key uid="frameTL" />
-                </in>
-                <inout group="frames">
-                    <key uid="videoImage" />
-                </inout>
+            <service uid="frameUpdaterSrv" type="sight::module::sync::synchronizer" worker="videoWorker" auto_connect="false">
+                <input>
+                    <frames>
+                        <item timeline="${frameTL}" />
+                    </frames>
+                </input>
+                <output>
+                    <frames>
+                        <item image="${videoImage}" />
+                    </frames>
+                </output>
             </service>
 
             <!-- ******************************* Connections ***************************************** -->

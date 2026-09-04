@@ -42,34 +42,15 @@ pose_from2d::pose_from2d() noexcept
 
 void pose_from2d::configuring()
 {
-    service::config_t config = this->get_config();
-    m_pattern_width = config.get<double>("pattern_width", m_pattern_width);
-    SIGHT_ASSERT("pattern_width setting is set to " << m_pattern_width << " but should be > 0.", m_pattern_width > 0);
-
-    auto inout_cfg = config.equal_range("inout");
-    for(auto it_cfg = inout_cfg.first ; it_cfg != inout_cfg.second ; ++it_cfg)
-    {
-        const auto group = it_cfg->second.get<std::string>("<xmlattr>.group");
-        if(group == MATRIX_INOUT)
-        {
-            auto key_cfg = it_cfg->second.equal_range("key");
-            for(auto it_key_cfg = key_cfg.first ; it_key_cfg != key_cfg.second ; ++it_key_cfg)
-            {
-                const auto key = it_key_cfg->second.get<std::string>("<xmlattr>.id");
-                m_matrices_tag.push_back(key);
-            }
-
-            break;
-        }
-    }
 }
 
 //-----------------------------------------------------------------------------
 
 void pose_from2d::starting()
 {
+    SIGHT_ASSERT("pattern_width setting is set to " << *m_pattern_width << " but should be > 0.", *m_pattern_width > 0);
     //3D Points
-    const float half_width = static_cast<float>(m_pattern_width) * .5F;
+    const float half_width = static_cast<float>(*m_pattern_width) * .5F;
 
     m_3d_model.emplace_back(-half_width, half_width, 0.F);
     m_3d_model.emplace_back(half_width, half_width, 0.F);
@@ -130,8 +111,9 @@ void pose_from2d::compute_registration(core::clock::type /*timestamp*/)
     {
         // For each marker
         unsigned int marker_index = 0;
-        for(const auto& marker_key : m_matrices_tag)
+        for(const auto& matrix_id : m_matrix_id)
         {
+            const auto marker_key = matrix_id.second->lock()->value();
             std::vector<marker> markers;
 
             // For each camera timeline

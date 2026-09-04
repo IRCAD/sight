@@ -144,11 +144,9 @@
         </service>
 
         <service uid="extractCamerasSrv" type="sight::module::data::get_camera">
-            <inout key="camera_set" uid="newCameraSet" />
-            <out group="camera">
-                <key index="0" uid="camera0" />
-                <key index="1" uid="camera1" />
-            </out>
+            <input camera_set="${newCameraSet}" />
+            <output camera="${camera0}" index="0" />
+            <output camera="${camera1}" index="1" />
         </service>
 
         <service uid="cameraSetInfoSrv" type="sight::module::ui::qt::calibration::camera_set_editor">

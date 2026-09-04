@@ -25,6 +25,38 @@
     </extension>
 
     <extension implements="sight::app::extension::config">
+        <id>sequence_worker_cfg_test</id>
+        <desc>Test configuration for an update sequence worker</desc>
+        <config>
+            <update>
+                <sequence uid="updater" start="false" worker="sequence_worker" />
+            </update>
+        </config>
+    </extension>
+
+    <extension implements="sight::app::extension::config">
+        <id>shutdown_order_cfg_test</id>
+        <desc>Test configuration shutdown order with an updater on a dedicated worker</desc>
+        <config>
+            <service uid="service" type="sight::app::ut::test_shutdown_service" worker="service_worker" />
+            <service uid="updater" type="sight::app::ut::test_shutdown_updater" worker="updater_worker" />
+        </config>
+    </extension>
+
+    <extension implements="sight::app::extension::config">
+        <id>interrupt_update_wait_cfg_test</id>
+        <desc>Test that an updater stop interrupts its wait for another worker</desc>
+        <config>
+            <service uid="blocking_service" type="sight::app::ut::test_blocking_update_service" worker="blocking_worker" />
+            <update>
+                <sequence uid="updater" worker="updater_worker">
+                    <service uid="blocking_service" />
+                </sequence>
+            </update>
+        </config>
+    </extension>
+
+    <extension implements="sight::app::extension::config">
         <id>imbricated_sequence_cfg_test</id>
         <desc>Test configuration for imbricated sequences</desc>
         <config>

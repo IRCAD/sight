@@ -47,7 +47,7 @@ namespace sight::module::filter::vision
  *
  * @code{.xml}
      <service uid="..." type="sight::module::filter::vision::optical_flow" worker="ofWorker  >
-        <in key="timeline" uid="..." auto_connect="true" />
+        <data timeline="${...}" />
         <config latency="333" scaleFactor="3.6" />
      </service>
    @endcode
@@ -131,9 +131,7 @@ private:
     /// Stores last processed frame timestamp.
     core::clock::type m_last_timestamp {0};
 
-    static constexpr std::string_view FRAME_TIMELINE_INPUT = "timeline";
-
-    sight::data::ptr<sight::data::frame_tl, sight::data::access::in> m_timeline {this, FRAME_TIMELINE_INPUT};
+    sight::data::ptr<sight::data::frame_tl, sight::data::access::in> m_timeline {this, "data.timeline"};
 };
 
 } //namespace sight::module::filter::vision

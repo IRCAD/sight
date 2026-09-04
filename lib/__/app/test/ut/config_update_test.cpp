@@ -25,6 +25,7 @@
 
 #include <core/runtime/path.hpp>
 #include <core/runtime/runtime.hpp>
+#include <core/thread/worker.hpp>
 #include <core/time_stamp.hpp>
 
 #include <service/extension/config.hpp>
@@ -34,7 +35,9 @@
 #include <doctest/doctest.h>
 
 #include <filesystem>
+#include <future>
 #include <ranges>
+#include <thread>
 
 namespace
 {
@@ -105,6 +108,78 @@ TEST_SUITE("sight::app::config_update")
         {
             TEST_SERVICE(i);
         }
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE_FIXTURE(fixture, "sequence_worker")
+    {
+        m_app_config_mgr = sight::app::ut::launch_app_config_mgr("sequence_worker_cfg_test");
+
+        auto updater = std::dynamic_pointer_cast<sight::service::base>(
+            sight::core::id::get_object("updater")
+        );
+        REQUIRE(updater != nullptr);
+        CHECK_NE(updater->worker(), sight::core::thread::get_default_worker());
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE_FIXTURE(fixture, "shutdown_updater_before_services")
+    {
+        sight::app::ut::test_shutdown_updater::reset();
+        sight::app::ut::test_shutdown_service::reset();
+        m_app_config_mgr = sight::app::ut::launch_app_config_mgr("shutdown_order_cfg_test");
+
+        auto stop_future = std::async(
+            std::launch::async,
+            [this](){m_app_config_mgr->stop_and_destroy();});
+
+        SIGHT_TEST_WAIT(sight::app::ut::test_shutdown_updater::is_stopping());
+        CHECK(sight::app::ut::test_shutdown_updater::is_stopping());
+        CHECK_FALSE(sight::app::ut::test_shutdown_service::is_stopping());
+
+        sight::app::ut::test_shutdown_updater::release();
+        CHECK_EQ(stop_future.wait_for(std::chrono::seconds(2)), std::future_status::ready);
+        stop_future.get();
+        m_app_config_mgr.reset();
+
+        CHECK(sight::app::ut::test_shutdown_service::stopped_after_updater());
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE_FIXTURE(fixture, "interrupt_update_wait_on_stop_request")
+    {
+        sight::app::ut::test_blocking_update_service::reset();
+        m_app_config_mgr = sight::app::ut::launch_app_config_mgr("interrupt_update_wait_cfg_test");
+
+        const auto updater = std::dynamic_pointer_cast<sight::app::updater>(
+            sight::core::id::get_object("updater")
+        );
+        REQUIRE(updater != nullptr);
+
+        const auto update_future = updater->update();
+        SIGHT_TEST_WAIT(sight::app::ut::test_blocking_update_service::is_updating());
+
+        auto stop_future = std::async(
+            std::launch::async,
+            [this](){m_app_config_mgr->stop_and_destroy();});
+
+        const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(2);
+        while(!updater->stopped() && std::chrono::steady_clock::now() < deadline)
+        {
+            std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        }
+
+        CHECK(updater->stopped());
+
+        sight::app::ut::test_blocking_update_service::release();
+        CHECK_EQ(update_future.wait_for(std::chrono::seconds(2)), std::future_status::ready);
+        update_future.get();
+        CHECK_EQ(stop_future.wait_for(std::chrono::seconds(2)), std::future_status::ready);
+        stop_future.get();
+        m_app_config_mgr.reset();
     }
 
 //------------------------------------------------------------------------------

@@ -45,20 +45,17 @@ namespace sight::module::geometry
  * @section XML XML Configuration
  * @code{.xml}
         <service uid="..." type="sight::module::geometry::manage_point_list">
-            <in key="transform" uid="..." />
-            <inout key="point_list" uid="..." />
+            <input position="${position}" />
+            <output point_list="${point_list}" />
             <config max="0" removable="true" label="false" tolerance="10.0" modifier="CTRL"/>
        </service>
    @endcode
  *
  * @subsection Input Input:
- * - \b position [sight::data::matrix4](optional): source transform to listen.
+ * - \b input.position [sight::data::matrix4](optional): source transform to listen.
  *
  * @subsection In-Out In-Out:
- * - \b point_list [sight::data::point_list]: Target point list.
- *
- * @subsection Input Input:
- * - \b transform [sight::data::matrix4](optional): Transformation applied to picked positions.
+ * - \b output.point_list [sight::data::point_list]: Target point list.
  *
  * @subsection Configuration Configuration:
  * - \b max (optional, std::size_t, default=0): set the maximum number of points contained in the point list, if it's 0,
@@ -140,9 +137,8 @@ private:
     /// Key modifier when picking a point
     data::tools::picking_info::modifier m_modifier {data::tools::picking_info::modifier::none};
 
-    data::ptr<data::matrix4, sight::data::access::in> m_position {this, "position"};
-    data::ptr<data::matrix4, sight::data::access::in> m_transform {this, "transform", true};
-    data::ptr<data::point_list, sight::data::access::inout> m_point_list {this, "point_list"};
+    data::ptr<data::matrix4, sight::data::access::in> m_position {this, "input.position"};
+    data::ptr<data::point_list, sight::data::access::inout> m_point_list {this, "output.point_list"};
 };
 
 } // namespace sight::module::geometry

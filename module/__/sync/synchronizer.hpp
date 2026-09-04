@@ -23,8 +23,10 @@
 
 #include <core/thread/timer.hpp>
 
+#include <data/boolean.hpp>
 #include <data/frame_tl.hpp>
 #include <data/image.hpp>
+#include <data/integer.hpp>
 #include <data/matrix4.hpp>
 #include <data/matrix_tl.hpp>
 
@@ -45,12 +47,13 @@ namespace sight::module::sync
  * @section Signals Signals
  * - \b synchronization_done(core::clock::type): Emitted when a synchronization has been done, and forward
  * the synchronization timestamp.
- * - \b frameSynchronized(int): Emitted when a frame with sendStatus at true is synchronized while it wasn't previously.
- * - \b frameUnsynchronized(int): Emitted when a frame with sendStatus at true is unsynchronized while it wasn't
+ * - \b frameSynchronized(int): Emitted when a frame with send_status at true is synchronized while it wasn't
  * previously.
- * - \b matrix_synchronized(int): Emitted when a matrix with sendStatus at true is synchronized while it wasn't
+ * - \b frameUnsynchronized(int): Emitted when a frame with send_status at true is unsynchronized while it wasn't
  * previously.
- * - \b matrix_unsynchronized(int): Emitted when a matrix with sendStatus at true is unsynchronized while it wasn't
+ * - \b matrix_synchronized(int): Emitted when a matrix with send_status at true is synchronized while it wasn't
+ * previously.
+ * - \b matrix_unsynchronized(int): Emitted when a matrix with send_status at true is unsynchronized while it wasn't
  * previously.
  *
  * @section Slots Slots
@@ -73,61 +76,66 @@ namespace sight::module::sync
  *
  * @code{.xml}
     <service type="sight::module::sync::synchronizer" auto_connect="true">
-        <in group="frame_tl">
-            <key uid="frame_tl1" />
-            <key uid="frame_tl4" delay="${my_frame_delay_property}" />
-            <key uid="frame_tl6" />
-        </in>
-        <inout group="frames">
-            <key uid="frame1" sendStatus="true" />
-            <key uid="frame6" tl="2" />
-            <key uid="frame4" tl="1" sendStatus="false"/>
-            <key uid="frame11" tl="0"  sendStatus="true" />
-        </inout>
-        <in group="matrix_tl">
-            <key uid="matrixTL1" />
-            <key uid="matrixTL2" delay="56" />
-        </in>
-        <inout group="matrix">
-            <key uid="matrix0" index="1" sendStatus="true" >
-            <key uid="matrix1" />
-            <key uid="matrix2" tl="1" index="0" sendStatus="false"/>
-            <key uid="matrix3" tl="1" index="1"/>
-            <key uid="matrix4" tl="0" index2"/>
-        </inout>
-        <tolerance>500</tolerance>
+        <input>
+            <frames>
+                <item timeline="${frame_tl1}" />
+                <item timeline="${frame_tl4}" delay="${my_frame_delay_property}" />
+                <item timeline="${frame_tl6}" />
+            </frames>
+            <matrices>
+                <item timeline="${matrix_tl1}" />
+                <item timeline="${matrix_tl2}" delay="56" />
+            </matrices>
+        </input>
+        <output>
+            <frames>
+                <item image="${frame1}" send_status="true" />
+                <item image="${frame6}" timeline="2" />
+                <item image="${frame4}" timeline="1" send_status="false" />
+                <item image="${frame11}" timeline="0" send_status="true" />
+            </frames>
+            <matrices>
+                <item matrix="${matrix0}" index="1" send_status="true" />
+                <item matrix="${matrix1}" />
+                <item matrix="${matrix2}" timeline="1" index="0" send_status="false" />
+                <item matrix="${matrix3}" timeline="1" index="1" />
+                <item matrix="${matrix4}" timeline="0" index="2" />
+            </matrices>
+        </output>
+        <config tolerance="500" />
     </service>
    @endcode
  *
  * For more configurations samples, please have a look at synchronizerTest.
  *
  * @subsection Input Input
- * - \b frame_tl [sight::data::frame_tl]: defines the frame_tl to synchronize.
- *  each frame_tl can have an optional attribute, which is the delay to apply to the timeline. The delay can be passed
- *  using a string_serializable object.
- * - \b matrix_tl [sight::data::matrix_tl]: defines the frame_tl to synchronize.
- *  each matrixTL can have an optional attribute, which is the delay to apply to the timeline. The delay can be passed
- *  using a string_serializable object.
+ * - \b input.frames.item.timeline [sight::data::frame_tl]: defines a frame timeline to synchronize.
+ * - \b input.frames.item.delay [sight::data::integer]: optionally defines the delay to apply to the corresponding
+ *  frame timeline.
+ * - \b input.matrices.item.timeline [sight::data::matrix_tl]: defines a matrix timeline to synchronize.
+ * - \b input.matrices.item.delay [sight::data::integer]: optionally defines the delay to apply to the corresponding
+ *  matrix timeline.
  *
  * @subsection In-Out In-Out
- * - \b frames [sight::data::image]: defines the images where to extract the image.
- *  each frame can have an optional attribute:
- *    - tl : the index of the tl from which the data are taken to populate the frame variable (default: 0).
- *    - index: the element index, in the tl, from which the data are taken to populate the frame variable (default: 0).
- *    - sendStatus: a boolean to specify if a signal should be send when the variable synchronization state changes
- *(default: false).
- * - \b matrix [sight::data::matrix4]: defines the matrix where to extract the image.
- *  each frame can have an optional attribute:
- *    - tl : the index of the tl from which the data are taken to populate the frame variable (default: 0).
- *    - index: the element index, in the tl, from which the data are taken to populate the frame variable (default: 0).
- *    - sendStatus: a boolean to specify if a signal should be sent when the variable synchronization state changes
- *(default: false).
+ * - \b output.frames.item.image [sight::data::image]: defines an image where to extract a frame.
+ * - \b output.frames.item.timeline [sight::data::integer]: optionally defines the source timeline index (default: 0).
+ * - \b output.frames.item.index [sight::data::integer]: optionally defines the element index in the timeline
+ *  (default: 0).
+ * - \b output.frames.item.send_status [sight::data::boolean]: optionally enables synchronization state signals
+ *  (default: false).
+ * - \b output.matrices.item.matrix [sight::data::matrix4]: defines a matrix where to extract a matrix.
+ * - \b output.matrices.item.timeline [sight::data::integer]: optionally defines the source timeline index
+ *  (default: 0).
+ * - \b output.matrices.item.index [sight::data::integer]: optionally defines the element index in the timeline
+ *  (default: 0).
+ * - \b output.matrices.item.send_status [sight::data::boolean]: optionally enables synchronization state signals
+ *  (default: false).
  *
  * @subsection Configuration Configuration
- * - \b legacyAutoSync : defines if the service should run the synchronization automatically (every 15 ms) or if it is
- * handled through slots. This option is only to support previous configurations, and
+ * - \b config.legacy_auto_sync : defines if the service should run the synchronization automatically (every 15 ms)
+ * or be handled through slots. This option is only to support previous configurations, and
  * should not be set to "true" in new configurations (default: false).
- * - \b tolerance : defines the maximum distance between two frames (default: 500).
+ * - \b config.tolerance : defines the maximum distance between two frames (default: 500).
  *      If a timeline exceeds this tolerance it will not be synchronized (default: true).
  */
 class synchronizer final : public service::synchronizer
@@ -166,19 +174,22 @@ public:
     /// Internal wrapper holding configuration keys.
     struct config_key
     {
-        static inline const std::string OUTVAR_TL_INDEX      = "<xmlattr>.tl";
-        static inline const std::string OUTVAR_ELEMENT_INDEX = "<xmlattr>.index";
-        static inline const std::string OUTVAR_SEND_STATUS   = "<xmlattr>.sendStatus";
-        static inline const std::string TL_DELAY             = "<xmlattr>.delay";
-        static inline const std::string GROUP                = "<xmlattr>.group";
-        static inline const std::string KEY                  = "key";
+        static inline const std::string FRAME_TIMELINES  = "input.frames.item.timeline";
+        static inline const std::string FRAME_DELAYS     = "input.frames.item.delay";
+        static inline const std::string MATRIX_TIMELINES = "input.matrices.item.timeline";
+        static inline const std::string MATRIX_DELAYS    = "input.matrices.item.delay";
 
-        static inline const std::string FRAMETL_INPUT     = "frame_tl";
-        static inline const std::string FRAME_INOUT       = "frames";
-        static inline const std::string MATRIXTL_INPUT    = "matrix_tl";
-        static inline const std::string MATRIX_INOUT      = "matrix";
-        static inline const std::string TOLERANCE         = "tolerance";
-        static inline const std::string LEGACY_AUTO_SYNCH = "legacyAutoSync";
+        static inline const std::string FRAMES             = "output.frames.item.image";
+        static inline const std::string FRAME_TIMELINE     = "output.frames.item.timeline";
+        static inline const std::string FRAME_INDEX        = "output.frames.item.index";
+        static inline const std::string FRAME_SEND_STATUS  = "output.frames.item.send_status";
+        static inline const std::string MATRICES           = "output.matrices.item.matrix";
+        static inline const std::string MATRIX_TIMELINE    = "output.matrices.item.timeline";
+        static inline const std::string MATRIX_INDEX       = "output.matrices.item.index";
+        static inline const std::string MATRIX_SEND_STATUS = "output.matrices.item.send_status";
+
+        static inline const std::string TOLERANCE         = "config.<xmlattr>.tolerance";
+        static inline const std::string LEGACY_AUTO_SYNCH = "config.<xmlattr>.legacy_auto_sync";
     };
 
     /// Internal wrapper used for out variable association with TLs
@@ -189,7 +200,6 @@ public:
         unsigned int tl_element_index {0};
         bool is_synchronized {false};
         bool signal_synchronization {false};
-        int delay {0};
     };
 
     /**
@@ -211,6 +221,12 @@ protected:
      * Connect data::timeline::signals::CLEARED to RESET_TIMELINE
      */
     service::connections_t auto_connections() const final;
+
+    /// Defers unresolved timeline, image and matrix bindings, and creates scalar configuration values.
+    std::optional<std::string> resolve_object_type(
+        std::string_view _key,
+        std::optional<std::size_t> _index
+    ) const final;
 
     /**
      * @brief This method is used to configure the service.
@@ -349,10 +365,6 @@ private:
     std::vector<out_var_parameter> m_frame_out_var_parameters {};
     std::vector<out_var_parameter> m_matrix_out_var_parameters {};
 
-    /// @brief vector which store the delay to apply to each timeline
-    std::vector<int> m_matrix_tl_delay;
-    std::vector<int> m_frame_tl_delay;
-
     ///Synchronisation timing mechanism has two possible behaviour differentiated through m_legacyAutoSync
     // => m_legacyAutoSync = true
     //    The synchronisation is expected to be called automatically.
@@ -393,16 +405,51 @@ private:
     bool m_locked {false};
 
     /// Contains the input video timelines.
-    data::ptr_vector<data::frame_tl, data::access::in> m_frame_tls {this, config_key::FRAMETL_INPUT};
+    data::ptr_vector<data::frame_tl, data::access::in> m_frame_tls {this, config_key::FRAME_TIMELINES};
+
+    /// Optional delays associated with input frame timelines.
+    data::ptr_vector<data::integer, data::access::inout> m_frame_tl_delays {this, config_key::FRAME_DELAYS, 0};
 
     /// Contains the output images.
-    data::ptr_vector<data::image, data::access::inout> m_frames {this, config_key::FRAME_INOUT};
+    data::ptr_vector<data::image, data::access::inout> m_frames {this, config_key::FRAMES};
+
+    /// Optional source timeline indices associated with output frames.
+    data::ptr_vector<data::integer, data::access::in> m_frame_timelines {this, config_key::FRAME_TIMELINE,
+                                                                         std::nullopt
+    };
+
+    /// Optional timeline element indices associated with output frames.
+    data::ptr_vector<data::integer, data::access::in> m_frame_indices {this, config_key::FRAME_INDEX, std::nullopt};
+
+    /// Optional synchronization status flags associated with output frames.
+    data::ptr_vector<data::boolean, data::access::in> m_frame_send_status {this,
+                                                                           config_key::FRAME_SEND_STATUS,
+                                                                           std::nullopt
+    };
 
     /// Contains the input matrix timelines.
-    data::ptr_vector<data::matrix_tl, data::access::in> m_matrix_tl_s {this, config_key::MATRIXTL_INPUT};
+    data::ptr_vector<data::matrix_tl, data::access::in> m_matrix_tls {this, config_key::MATRIX_TIMELINES};
+
+    /// Optional delays associated with input matrix timelines.
+    data::ptr_vector<data::integer, data::access::inout> m_matrix_tl_delays {this, config_key::MATRIX_DELAYS, 0};
 
     /// Contains the output matrices.
-    data::ptr_vector<data::matrix4, data::access::inout> m_matrix {this, config_key::MATRIX_INOUT};
+    data::ptr_vector<data::matrix4, data::access::inout> m_matrices {this, config_key::MATRICES};
+
+    /// Optional source timeline indices associated with output matrices.
+    data::ptr_vector<data::integer, data::access::in> m_matrix_timelines {this,
+                                                                          config_key::MATRIX_TIMELINE,
+                                                                          std::nullopt
+    };
+
+    /// Optional timeline element indices associated with output matrices.
+    data::ptr_vector<data::integer, data::access::in> m_matrix_indices {this, config_key::MATRIX_INDEX, std::nullopt};
+
+    /// Optional synchronization status flags associated with output matrices.
+    data::ptr_vector<data::boolean, data::access::in> m_matrix_send_status {this,
+                                                                            config_key::MATRIX_SEND_STATUS,
+                                                                            std::nullopt
+    };
 };
 
 } // namespace sight::module::sync

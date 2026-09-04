@@ -265,29 +265,33 @@
             </service>
 
             <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::camera">
-                <inout key="camera_set" uid="RGBDepthCameraSet" />
+                <data camera_set="${RGBDepthCameraSet}" />
                 <createCameraNumber>2</createCameraNumber>
                 <videoSupport>true</videoSupport>
             </service>
 
             <!-- To get frames from the RealSense camera -->
             <service uid="videoGrabberSrv" type="sight::module::io::realsense::scan" worker="grabber">
-                <inout key="camera_set" uid="RGBDepthCameraSet" />
-                <inout key="depth_tl" uid="frameTLDepth" />
-                <inout key="frame_tl" uid="frameTLVideo" />
+                <config camera_set="${RGBDepthCameraSet}" />
+                <timeline depth="${frameTLDepth}" />
+                <timeline image="${frameTLVideo}" />
                 <config fps="30" colorW="1280" colorH="720" depthW="1280" depthH="720" preset="Hand" alignTo="Color" />
             </service>
 
             <!-- To synchronize matrix, frame and detection -->
-            <service uid="frameUpdaterSrv" type="sight::module::sync::synchronizer" worker="videoWorker">
-                <in group="frame_tl" auto_connect="false">
-                    <key uid="frameTLVideo" />
-                    <key uid="frameTLDepth" />
-                </in>
-                <inout group="frames">
-                    <key uid="videoImage" tl="0" />
-                    <key uid="depthImage" tl="1" />
-                </inout>
+            <service uid="frameUpdaterSrv" type="sight::module::sync::synchronizer" worker="videoWorker" auto_connect="false">
+                <input>
+                    <frames>
+                        <item timeline="${frameTLVideo}" />
+                        <item timeline="${frameTLDepth}" />
+                    </frames>
+                </input>
+                <output>
+                    <frames>
+                        <item image="${videoImage}" timeline="0" />
+                        <item image="${depthImage}" timeline="1" />
+                    </frames>
+                </output>
             </service>
 
             <!-- Matrix (trf format) reader -->
@@ -322,15 +326,11 @@
             <!-- Extract RGB intrinsic Depth intrinsic and Extrinsic matrices from a sight::data::camera_set -->
             <service uid="extractCameraSrv" type="sight::module::data::get_camera">
                 <!-- Source -->
-                <inout key="camera_set" uid="RGBDepthCameraSet" />
+                <input camera_set="${RGBDepthCameraSet}" />
                 <!-- Destination -->
-                <out group="camera">
-                    <key index="0" uid="DepthCamera" />
-                    <key index="1" uid="RGBcamera" />
-                </out>
-                <out group="extrinsic">
-                    <key index="1" uid="extrinsic" />
-                </out>
+                <output camera="${DepthCamera}" index="0" />
+                <output camera="${RGBcamera}" index="1" />
+                <output extrinsic="${extrinsic}" index="1" />
             </service>
 
             <!-- Use the extrinsic matrix to get back in the RGB space -->

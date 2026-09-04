@@ -13,7 +13,7 @@
 
         <object uid="frameTL" type="sight::data::frame_tl" />
         <object uid="videoFrame" type="sight::data::image" />
-        <object uid="distortedFrame" type="sight::data::image" />
+        <object uid="distorted_frame" type="sight::data::image" />
 
         <object uid="detectedChessboard" type="sight::data::point_list" />
         <object uid="chessboardModel" type="sight::data::point_list" />
@@ -213,10 +213,8 @@
         </service>
 
         <service uid="computeCameraPoseSrv" type="sight::module::geometry::vision::solve_pnp" auto_connect="false">
-            <in key="pointList2d" uid="detectedChessboard" />
-            <in key="pointList3d" uid="chessboardModel" />
-            <in key="calibration" uid="${camera}" />
-            <inout key="matrix" uid="cameraPoseMx" />
+            <input point_list_2d="${detectedChessboard}" point_list_3d="${chessboardModel}" calibration="${camera}" />
+            <output matrix="${cameraPoseMx}" />
             <config inverse="false" />
         </service>
 
@@ -239,30 +237,33 @@
         </service>
 
         <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::camera">
-            <inout key="camera" uid="${camera}" />
+            <data camera="${camera}" />
             <videoSupport>true</videoSupport>
             <label />
         </service>
 
         <service uid="videoGrabberSrv" type="sight::module::io::video::grabber_proxy">
-            <in key="camera" uid="${camera}" />
-            <inout key="frame_tl" uid="frameTL" />
+            <config camera="${camera}" />
+            <timeline image="${frameTL}" />
         </service>
 
         <service uid="frameSynchronizerSrv" type="sight::module::sync::synchronizer" auto_connect="false">
-            <in group="frame_tl">
-                <key uid="frameTL" />
-            </in>
-            <inout group="frames">
-                <key uid="videoFrame" />
-            </inout>
-            <tolerance>200</tolerance>
+            <input>
+                <frames>
+                    <item timeline="${frameTL}" />
+                </frames>
+            </input>
+            <output>
+                <frames>
+                    <item image="${videoFrame}" />
+                </frames>
+            </output>
+            <config tolerance="200" />
         </service>
 
         <service uid="distorterSrv" type="sight::module::geometry::vision::distortion" auto_connect="false">
-            <in key="camera" uid="${camera}" />
-            <in key="input" uid="videoFrame" />
-            <inout key="output" uid="distortedFrame" />
+            <input camera="${camera}" image="${videoFrame}" />
+            <output image="${distorted_frame}" />
             <mode>undistort</mode>
         </service>
 
@@ -284,7 +285,7 @@
             <in key="camera" uid="${camera}" />
             <in key="detectedChessboard" uid="detectedChessboard" />
             <in key="chessboard_model" uid="chessboardModel" />
-            <inout key="videoImage" uid="distortedFrame" />
+            <inout key="videoImage" uid="${distorted_frame}" />
             <config drawDetected="true" drawReprojection="true" distortReprojection="true" />
         </service>
 
@@ -306,7 +307,7 @@
         </service>
 
         <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::video">
-            <data image="${distortedFrame}" />
+            <data image="${distorted_frame}" />
         </service>
 
         <!-- ******************************* Connections ***************************************** -->

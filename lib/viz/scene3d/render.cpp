@@ -62,8 +62,7 @@ render::render() noexcept :
     new_slot(slots::RENDER, &render::render_now, this);
     new_slot(slots::DISABLE_FULLSCREEN, &render::disable_fullscreen, this);
     new_slot(slots::ENABLE_FULLSCREEN, &render::enable_fullscreen, this);
-    new_slot(slots::SET_MANUAL_MODE, [this](){this->set_render_mode(true);});
-    new_slot(slots::SET_AUTO_MODE, [this](){this->set_render_mode(false);});
+    new_slot(slots::UPDATE_RENDER_MODE, &render::update_render_mode, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -103,25 +102,7 @@ void render::configuring()
 
     m_fullscreen = scene_cfg.get<bool>("<xmlattr>.fullscreen", false);
 
-    const auto render_mode = core::ptree::get_and_deprecate<std::string>(
-        scene_cfg,
-        "<xmlattr>.render_mode",
-        "<xmlattr>.renderMode",
-        "26.0",
-        "auto"
-    );
-    if(render_mode == "auto")
-    {
-        m_render_mode = render_mode::automatic;
-    }
-    else if(render_mode == "manual")
-    {
-        m_render_mode = render_mode::manual;
-    }
-    else
-    {
-        SIGHT_ERROR("Unknown rendering mode '" + render_mode + "', use the default 'auto'.");
-    }
+    this->update_render_mode();
 
     auto& adaptor_registry = viz::scene3d::registry::get_adaptor_registry();
 
@@ -486,7 +467,7 @@ layer::viewport_config_t render::configure_layer_viewport(const service::config_
 
 void render::render_now()
 {
-    if(m_render_mode == render_mode::manual)
+    if(m_render_mode_enum == render_mode::manual)
     {
         m_interactor_manager->render_now();
 
@@ -498,7 +479,7 @@ void render::render_now()
 
 void render::request_render()
 {
-    if(m_render_mode == render_mode::manual)
+    if(m_render_mode_enum == render_mode::manual)
     {
         return;
     }
@@ -561,7 +542,7 @@ void render::register_adaptor(const viz::scene3d::adaptor::sptr& _adaptor)
         m_adaptors.push_back(_adaptor);
     }
 
-    _adaptor->set_lazy(m_render_mode == render::render_mode::manual);
+    _adaptor->set_lazy(m_render_mode_enum == render::render_mode::manual);
 }
 
 //-----------------------------------------------------------------------------
@@ -573,13 +554,38 @@ void render::unregister_adaptor(const viz::scene3d::adaptor::sptr& _adaptor)
 
 //------------------------------------------------------------------------------
 
-inline void render::set_render_mode(bool _manual) const
+service::connections_t render::auto_connections() const
 {
+    return {{m_render_mode, data::signals::MODIFIED, slots::UPDATE_RENDER_MODE}};
+}
+
+//-----------------------------------------------------------------------------
+
+void render::update_render_mode()
+{
+    const auto mode   = m_render_mode.lock();
+    const auto& value = mode->value();
+
+    if(value == "auto")
+    {
+        m_render_mode_enum = render_mode::automatic;
+    }
+    else if(value == "manual")
+    {
+        m_render_mode_enum = render_mode::manual;
+    }
+    else
+    {
+        SIGHT_ERROR("Unknown rendering mode '" + value + "', use the default 'auto'.");
+        m_render_mode_enum = render_mode::automatic;
+    }
+
+    const bool manual = (m_render_mode_enum == render_mode::manual);
     for(const auto& adaptor : m_adaptors)
     {
         if(adaptor)
         {
-            adaptor->set_lazy(_manual);
+            adaptor->set_lazy(manual);
         }
     }
 }

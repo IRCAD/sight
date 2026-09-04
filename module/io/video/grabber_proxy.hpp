@@ -72,10 +72,8 @@ namespace sight::module::io::video
  *
  * @code{.xml}
         <service uid="..." type="sight::module::io::video::grabber_proxy">
-            <in key="camera" uid="..." />
-            <inout key="frame_tl" uid="..." />
-            <inout key="depth_tl" uid="..." />
-            <config>
+            <timeline image="..." depth="..." />
+            <config camera="...">
                 <camera type="RGBD" />
                 <match id="Webcam" service="sight::module::io::video::frame_grabber" />
                 <selection mode="include" />
@@ -86,10 +84,10 @@ namespace sight::module::io::video
         </service>
    @endcode
  * @subsection Input Input
- * - \b camera [sight::data::camera]: camera used to display video.
+ * - \b config.camera [sight::data::camera]: camera used to display video.
  * @subsection In-Out In-Out
- * - \b frame_tl [sight::data::frame_tl]: timeline where to extract the video frames.
- * - \b depth_tl [sight::data::frame_tl] (optional): timeline where to extract the depth frames.
+ * - \b timeline.image [sight::data::frame_tl]: timeline where to extract the video frames.
+ * - \b timeline.depth [sight::data::frame_tl] (optional): timeline where to extract the depth frames.
  * @subsection Configuration Configuration
  *  - \b type (optional, default="RGB"): allows to filter for RGB or RGBD grabbers
  *  - \b selection
@@ -233,7 +231,7 @@ private:
     void fwd_set_parameter(ui::parameter_t _value, std::string _key);
 
     /// A monitor has been created in the proxied service.
-    void fwd_create_monitor(sight::core::notification::monitor::sptr _monitor);
+    void fwd_create_monitor(sight::core::notification::base::sptr _monitor);
     /** @} */
 
     /// Camera type (RGB, RGBD,...)

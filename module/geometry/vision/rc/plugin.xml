@@ -66,10 +66,10 @@
     <extension implements="sight::service::extension::factory">
         <type>sight::service::registerer</type>
         <service>sight::module::geometry::vision::solve_pnp</service>
-        <object key="pointList2d">sight::data::point_list</object>
-        <object key="pointList3d">sight::data::point_list</object>
-        <object key="calibration">sight::data::camera</object>
-        <object key="matrix">sight::data::matrix4</object>
+        <object key="input.point_list_2d">sight::data::point_list</object>
+        <object key="input.point_list_3d">sight::data::point_list</object>
+        <object key="input.calibration">sight::data::camera</object>
+        <object key="output.matrix">sight::data::matrix4</object>
         <desc>This service estimates the object pose given a set of object points, their corresponding image projections,</desc>
     </extension>
 

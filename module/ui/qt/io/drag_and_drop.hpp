@@ -64,9 +64,9 @@ namespace sight::module::ui::qt::io
  *   from dropped files or folders.
  */
 
-class drag_and_drop : public QObject,
-                      public service::controller,
-                      public core::notification::has_monitors
+class drag_and_drop final : public QObject,
+                            public service::controller,
+                            public core::notification::has_monitors
 {
 Q_OBJECT
 
@@ -86,9 +86,9 @@ public:
     drag_and_drop() noexcept;
 
     /// Cleans ressources.
-    ~drag_and_drop() noexcept override = default;
+    ~drag_and_drop() noexcept final = default;
 
-    bool eventFilter(QObject* _obj, QEvent* _event) override;
+    bool eventFilter(QObject* _obj, QEvent* _event) final;
 
 protected:
 

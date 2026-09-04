@@ -345,7 +345,7 @@ void base<T>::track(sight::core::clock::type _timestamp)
 template<typename T>
 sight::service::connections_t base<T>::auto_connections() const
 {
-    return {{m_timeline, sight::data::timeline::signals::PUSHED, slots::TRACK}};
+    return {};
 }
 
 //-----------------------------------------------------------------------------

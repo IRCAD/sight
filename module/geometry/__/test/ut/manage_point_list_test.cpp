@@ -41,7 +41,7 @@ public:
         CHECK(srv->is_a("sight::module::geometry::manage_point_list"));
 
         point_list = std::make_shared<sight::data::point_list>();
-        srv->set_inout(point_list, "point_list");
+        srv->set_inout(point_list, "output.point_list");
     }
 
     //------------------------------------------------------------------------------
@@ -77,7 +77,7 @@ TEST_SUITE("sight::module::geometry::manage_point_list")
     TEST_CASE_FIXTURE(context, "update_test")
     {
         auto input_point = std::make_shared<sight::data::matrix4>();
-        srv->set_input(input_point, "position");
+        srv->set_input(input_point, "input.position");
 
         set_config("");
 

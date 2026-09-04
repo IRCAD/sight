@@ -44,20 +44,6 @@ aruco_tracker::aruco_tracker() noexcept
     new_signal<signals::detection_done_t>(signals::DETECTION_DONE);
     new_signal<signals::marker_detected_t>(signals::MARKER_DETECTED);
 
-    // Initialize detector parameters
-    m_detector_params = cv::makePtr<cv::aruco::DetectorParameters>();
-
-    // We need to tweak some parameters to adjust detection in our cases.
-    //minimum distance of any corner to the image border for detected markers (in pixels) (default 3)
-    m_detector_params->minDistanceToBorder = 1;
-
-    // minimum mean distance beetween two marker corners to be considered
-    // similar, so that the smaller one is removed.
-    // The rate is relative to the smaller perimeter of the two markers (default 0.05).
-    m_detector_params->minMarkerDistanceRate = 0.01;
-
-    m_detector_params->cornerRefinementMethod = cv::aruco::CornerRefineMethod::CORNER_REFINE_SUBPIX;
-
     // For now only original aruco markers are used
     m_dictionary =
         cv::makePtr<cv::aruco::Dictionary>(cv::aruco::getPredefinedDictionary(cv::aruco::DICT_ARUCO_ORIGINAL));
@@ -65,16 +51,9 @@ aruco_tracker::aruco_tracker() noexcept
 
 //-----------------------------------------------------------------------------
 
-aruco_tracker::~aruco_tracker() noexcept =
-    default;
-
-//-----------------------------------------------------------------------------
-
 service::connections_t aruco_tracker::auto_connections() const
 {
     return {
-        {FRAME_INOUT, data::signals::MODIFIED, service::slots::UPDATE},
-        {FRAME_INOUT, data::image::signals::BUFFER_MODIFIED, service::slots::UPDATE}
     };
 }
 
@@ -101,11 +80,6 @@ void aruco_tracker::configuring(const config_t& _config)
 
         m_markers.push_back(markers_id);
     }
-
-    // Do corner refinement ?
-    m_detector_params->cornerRefinementMethod = (*m_corner_refinement
-                                                 ? cv::aruco::CornerRefineMethod::CORNER_REFINE_NONE
-                                                 : cv::aruco::CornerRefineMethod::CORNER_REFINE_SUBPIX);
 }
 
 //-----------------------------------------------------------------------------
@@ -161,8 +135,6 @@ void aruco_tracker::tracking(core::clock::type& _timestamp)
         const auto nb_of_components = in_image.channels();
 
         cv::Mat grey;
-        cv::Mat bgr;
-
         if(nb_of_components == 4) // RGBA or BGRA.
         {
             cv::cvtColor(in_image, grey, cv::COLOR_BGRA2GRAY);
@@ -180,7 +152,7 @@ void aruco_tracker::tracking(core::clock::type& _timestamp)
         {
             SIGHT_ERROR(
                 "Invalid number of components ( " + std::to_string(nb_of_components) + " ) for : '"
-                << FRAME_INOUT << "' (accepted values are 1, 3 or 4). "
+                << FRAME_INPUT << "' (accepted values are 1, 3 or 4). "
             );
 
             return;
@@ -203,32 +175,46 @@ void aruco_tracker::tracking(core::clock::type& _timestamp)
             }
         }
 
+        const auto detector_params = this->make_detector_parameters();
+
         // Ok, let's detect
         cv::aruco::detectMarkers(
             undistort_grey,
             m_dictionary,
             detected_markers,
             detected_markers_ids,
-            m_detector_params,
+            detector_params,
             cv::noArray()
         );
 
-        //Note: This draws all detected markers
-        if(*m_debug_mode)
+        auto debug_frame = m_debug_frame.lock();
+        if(debug_frame)
         {
-            if(nb_of_components == 4) // RGBA or BGRA.
+            debug_frame->resize(frame->size(), core::type::UINT8, data::image::rgba);
+            cv::Mat debug_image = io::opencv::image::move_to_cv(debug_frame.get_shared());
+
+            if(*m_debug_mode)
             {
-                // since drawDetectedMarkers does not handle 4 channels cv::mat
-                cv::cvtColor(in_image, bgr, cv::COLOR_BGRA2BGR);
-                cv::aruco::drawDetectedMarkers(bgr, detected_markers, detected_markers_ids);
-                cv::cvtColor(bgr, in_image, cv::COLOR_BGR2BGRA);
+                // Since drawDetectedMarkers does not handle four-channel cv::Mat, draw into a separate BGR image.
+                cv::Mat annotations(debug_image.rows, debug_image.cols, CV_8UC3, cv::Scalar::all(0));
+                cv::aruco::drawDetectedMarkers(annotations, detected_markers, detected_markers_ids);
+                cv::cvtColor(annotations, debug_image, cv::COLOR_BGR2BGRA);
+
+                // Keep the background transparent so the annotations can be superimposed on the source image.
+                cv::Mat alpha;
+                cv::cvtColor(annotations, alpha, cv::COLOR_BGR2GRAY);
+                cv::threshold(alpha, alpha, 0, 255, cv::THRESH_BINARY);
+                std::vector<cv::Mat> channels;
+                cv::split(debug_image, channels);
+                channels[3] = alpha;
+                cv::merge(channels, debug_image);
             }
-            // If nbOfComponents == 1 or == 3 it's ok.
-            // It is useless to test other values since "wrong" number of components has previously been discarded.
             else
             {
-                cv::aruco::drawDetectedMarkers(in_image, detected_markers, detected_markers_ids);
+                debug_image.setTo(cv::Scalar::all(0));
             }
+
+            debug_frame->async_emit(data::signals::MODIFIED);
         }
 
         std::size_t tag_tl_index = 0;
@@ -276,137 +262,65 @@ void aruco_tracker::tracking(core::clock::type& _timestamp)
 
 //-----------------------------------------------------------------------------
 
-void aruco_tracker::on_property_set(std::string_view _key)
+cv::Ptr<cv::aruco::DetectorParameters> aruco_tracker::make_detector_parameters() const
 {
-    if(_key == "adaptive_th_win_size_min")
-    {
-        static const int s_ADAPTIVE_THRESH_WIN_SIZE_MIN_VALUE = 3;
-        int val                                               = static_cast<int>(*m_adaptive_th_win_size_min);
-        if(m_detector_params->adaptiveThreshWinSizeMin < s_ADAPTIVE_THRESH_WIN_SIZE_MIN_VALUE)
-        {
-            SIGHT_ERROR("Tried to set adaptive_thresh_win_size_min < 3, let it set to 3");
-            val = s_ADAPTIVE_THRESH_WIN_SIZE_MIN_VALUE;
-        }
+    auto detector_params = cv::makePtr<cv::aruco::DetectorParameters>();
 
-        if(val >= m_detector_params->adaptiveThreshWinSizeMax)
-        {
-            val = m_detector_params->adaptiveThreshWinSizeMax - 1;
-            SIGHT_ERROR("Tried to set adaptive_thresh_win_size_min > adaptive_th_win_size_max, let it set to " << val);
-        }
+    int max_iterations = static_cast<int>(*m_corner_refinement_max_iterations);
+    if(max_iterations <= 0)
+    {
+        max_iterations = 1;
+        SIGHT_ERROR("Tried to set cornerRefinementMaxIterations <=0, let it set to " << max_iterations);
+    }
 
-        m_detector_params->adaptiveThreshWinSizeMin = val;
-    }
-    else if(_key == "adaptive_th_win_size_max")
-    {
-        int val = static_cast<int>(*m_adaptive_th_win_size_max);
-        if(m_detector_params->adaptiveThreshWinSizeMin >= val)
-        {
-            val = m_detector_params->adaptiveThreshWinSizeMin + 1;
-            SIGHT_ERROR(
-                "Tried to set adaptive_th_win_size_max < adaptive_thresh_win_size_min, let it set to "
-                << val
-            );
-        }
+    detector_params->cornerRefinementMaxIterations = max_iterations;
 
-        m_detector_params->adaptiveThreshWinSizeMax = val;
-    }
-    else if(_key == "adaptive_th_win_size_step")
+    double min_accuracy = *m_corner_refinement_min_accuracy;
+    if(min_accuracy <= 0.)
     {
-        m_detector_params->adaptiveThreshWinSizeStep = static_cast<int>(*m_adaptive_th_win_size_step);
+        min_accuracy = 0.01;
+        SIGHT_ERROR("Tried to set cornerRefinementMinAccuracy <=0, let it set to " << min_accuracy);
     }
-    else if(_key == "min_distance_to_border")
-    {
-        m_detector_params->minDistanceToBorder = static_cast<int>(*m_min_distance_to_border);
-    }
-    else if(_key == "corner_refinement_win_size")
-    {
-        m_detector_params->cornerRefinementWinSize = static_cast<int>(*m_corner_refinement_win_size);
-    }
-    else if(_key == "corner_refinement_max_iterations")
-    {
-        int val = static_cast<int>(*m_corner_refinement_max_iterations);
-        if(val <= 0)
-        {
-            val = 1;
-            SIGHT_ERROR("Tried to set cornerRefinementMaxIterations <=0, let it set to " << val);
-        }
 
-        m_detector_params->cornerRefinementMaxIterations = val;
-    }
-    else if(_key == "marker_border_bits")
+    detector_params->cornerRefinementMinAccuracy = min_accuracy;
+    detector_params->cornerRefinementWinSize     = static_cast<int>(*m_corner_refinement_win_size);
+    detector_params->cornerRefinementMethod      = *m_corner_refinement
+                                                   ? cv::aruco::CornerRefineMethod::CORNER_REFINE_SUBPIX
+                                                   : cv::aruco::CornerRefineMethod::CORNER_REFINE_NONE;
+    int min_size = static_cast<int>(*m_adaptive_th_win_size_min);
+    int max_size = static_cast<int>(*m_adaptive_th_win_size_max);
+    if(min_size < 3)
     {
-        m_detector_params->markerBorderBits = static_cast<int>(*m_marker_border_bits);
+        min_size = 3;
+        SIGHT_ERROR("Tried to set adaptive_thresh_win_size_min < 3, let it set to 3");
     }
-    else if(_key == "perspective_remove_pixel_per_cell")
-    {
-        m_detector_params->perspectiveRemovePixelPerCell = static_cast<int>(*m_perspective_remove_pixel_per_cell);
-    }
-    else if(_key == "adaptive_th_constant")
-    {
-        m_detector_params->adaptiveThreshConstant = *m_adaptive_th_constant;
-    }
-    else if(_key == "min_marker_perimeter_rate")
-    {
-        m_detector_params->minMarkerPerimeterRate = *m_min_marker_perimeter_rate;
-    }
-    else if(_key == "max_marker_perimeter_rate")
-    {
-        m_detector_params->maxMarkerPerimeterRate = *m_max_marker_perimeter_rate;
-    }
-    else if(_key == "polygonal_approx_accuracy_rate")
-    {
-        m_detector_params->polygonalApproxAccuracyRate = *m_polygonal_approx_accuracy_rate;
-    }
-    else if(_key == "min_corner_distance_rate")
-    {
-        m_detector_params->minCornerDistanceRate = *m_min_corner_distance_rate;
-    }
-    else if(_key == "min_marker_distance_rate")
-    {
-        m_detector_params->minMarkerDistanceRate = *m_min_marker_distance_rate;
-    }
-    else if(_key == "corner_refinement_min_accuracy")
-    {
-        double val = *m_corner_refinement_min_accuracy;
-        if(val <= 0.)
-        {
-            val = 0.01;
-            SIGHT_ERROR("Tried to set cornerRefinementMinAccuracy <=0, let it set to " << val);
-        }
 
-        m_detector_params->cornerRefinementMinAccuracy = val;
-    }
-    else if(_key == "perspective_remove_ignored_margin_per_cell")
+    if(max_size <= min_size)
     {
-        m_detector_params->perspectiveRemoveIgnoredMarginPerCell = *m_perspective_remove_ignored_margin_per_cell;
+        max_size = min_size + 1;
+        SIGHT_ERROR(
+            "Tried to set adaptive_thresh_win_size_max <= adaptive_thresh_win_size_min, let it set to " << max_size
+        );
     }
-    else if(_key == "max_erroneous_bits_in_border_rate")
-    {
-        m_detector_params->maxErroneousBitsInBorderRate = *m_max_erroneous_bits_in_border_rate;
-    }
-    else if(_key == "min_otsu_std_dev")
-    {
-        m_detector_params->minOtsuStdDev = *m_min_otsu_std_dev;
-    }
-    else if(_key == "error_correction_rate")
-    {
-        m_detector_params->errorCorrectionRate = *m_error_correction_rate;
-    }
-    else if(_key == "corner_refinement")
-    {
-        if(*m_corner_refinement)
-        {
-            m_detector_params->cornerRefinementMethod = cv::aruco::CornerRefineMethod::CORNER_REFINE_SUBPIX;
-        }
-        else
-        {
-            m_detector_params->cornerRefinementMethod = cv::aruco::CornerRefineMethod::CORNER_REFINE_NONE;
-        }
-    }
-    else if(_key != "debug_mode")
-    {
-        SIGHT_ERROR("The slot key : '" << _key << "' is not handled");
-    }
+
+    detector_params->adaptiveThreshWinSizeMin              = min_size;
+    detector_params->adaptiveThreshWinSizeMax              = max_size;
+    detector_params->adaptiveThreshWinSizeStep             = static_cast<int>(*m_adaptive_th_win_size_step);
+    detector_params->adaptiveThreshConstant                = *m_adaptive_th_constant;
+    detector_params->minMarkerPerimeterRate                = *m_min_marker_perimeter_rate;
+    detector_params->maxMarkerPerimeterRate                = *m_max_marker_perimeter_rate;
+    detector_params->polygonalApproxAccuracyRate           = *m_polygonal_approx_accuracy_rate;
+    detector_params->minCornerDistanceRate                 = *m_min_corner_distance_rate;
+    detector_params->minDistanceToBorder                   = static_cast<int>(*m_min_distance_to_border);
+    detector_params->minMarkerDistanceRate                 = *m_min_marker_distance_rate;
+    detector_params->markerBorderBits                      = static_cast<int>(*m_marker_border_bits);
+    detector_params->perspectiveRemovePixelPerCell         = static_cast<int>(*m_perspective_remove_pixel_per_cell);
+    detector_params->perspectiveRemoveIgnoredMarginPerCell = *m_perspective_remove_ignored_margin_per_cell;
+    detector_params->maxErroneousBitsInBorderRate          = *m_max_erroneous_bits_in_border_rate;
+    detector_params->minOtsuStdDev                         = *m_min_otsu_std_dev;
+    detector_params->errorCorrectionRate                   = *m_error_correction_rate;
+
+    return detector_params;
 }
 
 //-----------------------------------------------------------------------------

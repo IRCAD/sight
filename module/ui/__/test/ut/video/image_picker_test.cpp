@@ -63,9 +63,9 @@ void image_picker_test::basic_test()
     auto point_list       = std::make_shared<data::point_list>();
     auto pixel_point_list = std::make_shared<data::point_list>();
 
-    m_image_picker->set_input(camera, "camera");
-    m_image_picker->set_inout(point_list, "pointList");
-    m_image_picker->set_inout(pixel_point_list, "pixelPointList");
+    m_image_picker->set_input(camera, "input.camera");
+    m_image_picker->set_inout(point_list, "output.world_points");
+    m_image_picker->set_inout(pixel_point_list, "output.screen_points");
     CPPUNIT_ASSERT_NO_THROW(m_image_picker->configure());
     CPPUNIT_ASSERT_NO_THROW(m_image_picker->start().get());
 
@@ -107,9 +107,9 @@ void image_picker_test::click_without_control_test()
     auto point_list       = std::make_shared<data::point_list>();
     auto pixel_point_list = std::make_shared<data::point_list>();
 
-    m_image_picker->set_input(camera, "camera");
-    m_image_picker->set_inout(point_list, "pointList");
-    m_image_picker->set_inout(pixel_point_list, "pixelPointList");
+    m_image_picker->set_input(camera, "input.camera");
+    m_image_picker->set_inout(point_list, "output.world_points");
+    m_image_picker->set_inout(pixel_point_list, "output.screen_points");
     CPPUNIT_ASSERT_NO_THROW(m_image_picker->configure());
     CPPUNIT_ASSERT_NO_THROW(m_image_picker->start().get());
 
@@ -136,9 +136,9 @@ void image_picker_test::top_left_ref_test()
     auto point_list       = std::make_shared<data::point_list>();
     auto pixel_point_list = std::make_shared<data::point_list>();
 
-    m_image_picker->set_input(camera, "camera");
-    m_image_picker->set_inout(point_list, "pointList");
-    m_image_picker->set_inout(pixel_point_list, "pixelPointList");
+    m_image_picker->set_input(camera, "input.camera");
+    m_image_picker->set_inout(point_list, "output.world_points");
+    m_image_picker->set_inout(pixel_point_list, "output.screen_points");
     boost::property_tree::ptree ptree;
     ptree.put("config.<xmlattr>.videoReference", "top_left");
     m_image_picker->set_config(ptree);
@@ -176,9 +176,9 @@ void image_picker_test::single_point_mode_test()
     auto point_list       = std::make_shared<data::point_list>();
     auto pixel_point_list = std::make_shared<data::point_list>();
 
-    m_image_picker->set_input(camera, "camera");
-    m_image_picker->set_inout(point_list, "pointList");
-    m_image_picker->set_inout(pixel_point_list, "pixelPointList");
+    m_image_picker->set_input(camera, "input.camera");
+    m_image_picker->set_inout(point_list, "output.world_points");
+    m_image_picker->set_inout(pixel_point_list, "output.screen_points");
     boost::property_tree::ptree ptree;
     ptree.put("config.<xmlattr>.singlePointMode", "true");
     m_image_picker->set_config(ptree);
@@ -223,9 +223,9 @@ void image_picker_test::no_ctrl_modifier_test()
     auto point_list       = std::make_shared<data::point_list>();
     auto pixel_point_list = std::make_shared<data::point_list>();
 
-    m_image_picker->set_input(camera, "camera");
-    m_image_picker->set_inout(point_list, "pointList");
-    m_image_picker->set_inout(pixel_point_list, "pixelPointList");
+    m_image_picker->set_input(camera, "input.camera");
+    m_image_picker->set_inout(point_list, "output.world_points");
+    m_image_picker->set_inout(pixel_point_list, "output.screen_points");
     boost::property_tree::ptree ptree;
     ptree.put("config.<xmlattr>.useCtrlModifier", "false");
     m_image_picker->set_config(ptree);

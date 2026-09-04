@@ -459,7 +459,7 @@ void point_list::update_material_adaptor(const std::string& _mesh_id)
             m_material_adaptor = this->register_service<module::viz::scene3d::adaptor::material>(
                 "sight::module::viz::scene3d::adaptor::material"
             );
-            m_material_adaptor->set_inout(m_material, "material", true);
+            m_material_adaptor->set_inout(m_material, "data.material", true);
 
             SIGHT_ASSERT("Template name empty", !m_material_template_name.empty());
 

@@ -60,7 +60,7 @@ struct fixture
                 srv->stop().get();
             }
 
-            sight::service::unregister_service(srv);
+            sight::service::remove(srv);
         }
 
         m_worker->stop();
@@ -180,8 +180,8 @@ TEST_SUITE("sight::service::service")
         CHECK_EQ(option_2, srv2->get_option());
 
         // Test erasing service
-        sight::service::unregister_service(srv);
-        sight::service::unregister_service(srv2);
+        sight::service::remove(srv);
+        sight::service::remove(srv2);
     }
 
 //------------------------------------------------------------------------------
@@ -364,7 +364,7 @@ TEST_SUITE("sight::service::service")
         CHECK(!service->started());
 
         // Erase Service
-        sight::service::unregister_service(service);
+        sight::service::remove(service);
     }
 
 //------------------------------------------------------------------------------
@@ -464,7 +464,7 @@ TEST_SUITE("sight::service::service")
             CHECK(service->stopped());
 
             // Erase Service
-            sight::service::unregister_service(service);
+            sight::service::remove(service);
         }
         // Test on a different worker
         {
@@ -561,7 +561,7 @@ TEST_SUITE("sight::service::service")
             CHECK(service->stopped());
 
             // Erase Service
-            sight::service::unregister_service(service);
+            sight::service::remove(service);
             worker->stop();
         }
     }
@@ -722,8 +722,8 @@ TEST_SUITE("sight::service::service")
 
         com_helper.disconnect();
 
-        sight::service::unregister_service(service1);
-        sight::service::unregister_service(service2);
+        sight::service::remove(service1);
+        sight::service::remove(service2);
     }
 
 //------------------------------------------------------------------------------
@@ -814,16 +814,17 @@ TEST_SUITE("sight::service::service")
             )
         );
 
-        sight::service::unregister_service(service);
+        sight::service::remove(service);
     }
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("parallel_optional_groups")
+    TEST_CASE("parallel_optional_groups_1")
     {
-        auto service = sight::service::add<sight::service::ut::test_parallel_groups>(
-            "sight::service::ut::test_parallel_groups"
+        auto service = sight::service::add<sight::service::ut::test_parallel_groups_1>(
+            "sight::service::ut::test_parallel_groups_1"
         );
+
         sight::service::config_t config;
         sight::service::config_t first_item;
         first_item.put("<xmlattr>.object1", "required");
@@ -845,7 +846,33 @@ TEST_SUITE("sight::service::service")
         CHECK(service->m_object2[1].lock() == nullptr);
         CHECK_EQ(service->m_object3[1].lock()->value(), "default");
 
-        sight::service::unregister_service(service);
+        sight::service::remove(service);
+    }
+
+    TEST_CASE("parallel_optional_groups_2")
+    {
+        auto service = sight::service::add<sight::service::ut::test_parallel_groups_2>(
+            "sight::service::ut::test_parallel_groups_2"
+        );
+
+        sight::service::config_t config;
+        sight::service::config_t first_item;
+        first_item.put("<xmlattr>.object1", "required");
+        config.add_child("item", first_item);
+
+        sight::service::config_t second_item;
+        second_item.put("<xmlattr>.object1", "required-2");
+        config.add_child("item", second_item);
+
+        service->set_config(config);
+        service->configure();
+
+        CHECK_EQ(*service->m_object1[0], "required");
+        CHECK_EQ(*service->m_object2[0], 0);
+        CHECK_EQ(*service->m_object1[1], "required-2");
+        CHECK_EQ(*service->m_object2[1], 0);
+
+        sight::service::remove(service);
     }
 
 //------------------------------------------------------------------------------
@@ -860,7 +887,7 @@ TEST_SUITE("sight::service::service")
         CHECK_NOTHROW(service->configure());
         CHECK_EQ(service->m_optional.size(), 0U);
 
-        sight::service::unregister_service(service);
+        sight::service::remove(service);
     }
 
 //------------------------------------------------------------------------------
@@ -917,7 +944,7 @@ TEST_SUITE("sight::service::service")
             service->update().get();
             CHECK_EQ(i1->value(), *service->m_prop1);
             service->stop().get();
-            sight::service::unregister_service(service);
+            sight::service::remove(service);
         }
     }
 
@@ -1036,7 +1063,7 @@ TEST_SUITE("sight::service::service")
 
         srv->stop().get();
 
-        sight::service::unregister_service(srv);
+        sight::service::remove(srv);
     }
 
 //------------------------------------------------------------------------------

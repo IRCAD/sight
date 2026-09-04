@@ -23,17 +23,16 @@
 #pragma once
 
 #include <core/clock.hpp>
-#include <core/mt/types.hpp>
 
 #include <data/camera.hpp>
 #include <data/marker_map.hpp>
 #include <data/matrix4.hpp>
 #include <data/point_list.hpp>
+#include <data/real.hpp>
 #include <data/string.hpp>
 
+#include <opencv2/core/mat.hpp>
 #include <service/registerer.hpp>
-
-#include <opencv2/core.hpp>
 
 namespace sight::module::geometry::vision
 {
@@ -48,34 +47,35 @@ namespace sight::module::geometry::vision
  *
  * @code{.xml}
      <service uid="..." type="sight::module::geometry::vision::pose_from2d">
-         <in group="marker_map" auto_connect="true">
-             <key uid="..." />
-             <key uid="..." />
-         </in>
-         <in group="camera">
-             <key uid="..." />
-             <key uid="..." />
-         </in>
-         <in key="extrinsic" uid="..." />
-         <in group="matrix">
-             <key uid="..." id="101"/>
-             <key uid="..." id="102"/>
-             <key uid="..." id="103"/>
-             <key uid="..." id="104"/>
-         </in>
-         <pattern_width>80</pattern_width>
+         <input extrinsic="${extrinsic}">
+             <markers>
+                 <item data="${marker_map1}" />
+                 <item data="${marker_map2}" />
+             </markers>
+             <cameras>
+                 <item data="${camera1}" />
+                 <item data="${camera2}" />
+             </cameras>
+         </input>
+         <output point_list="${point_list}">
+             <matrix data="${matrix1}" id="101" />
+             <matrix data="${matrix2}" id="102" />
+             <matrix data="${matrix3}" id="103" />
+             <matrix data="${matrix4}" id="104" />
+         </output>
+         <config pattern_width="80" />
      </service>
    @endcode
  * @subsection Input Input
- * - \b marker_map [sight::data::marker_map]: markers map list.
- * - \b camera [sight::data::camera]: calibrated cameras.
- * - \b extrinsic [sight::data::matrix4]: extrinsic matrix, only used if you have two cameras configured.
+ * - \b input.markers.item.data [sight::data::marker_map]: markers map list.
+ * - \b input.cameras.item.data [sight::data::camera]: calibrated cameras.
+ * - \b input.extrinsic [sight::data::matrix4]: extrinsic matrix, only used if you have two cameras configured.
  * @subsection In-Out In-Out
- * - \b matrix [sight::data::matrix4]: list of matrices related to the markers. The marker's id must be
+ * - \b output.matrix.data [sight::data::matrix4]: list of matrices related to the markers. The marker's id must be
  * specified using the \b id tag to be found in the marker map.
- * - \b pointList [sight::data::point_list] (optional): list of points corresponding to the model.
+ * - \b output.point_list [sight::data::point_list] (optional): list of points corresponding to the model.
  * @subsection Configuration Configuration
- * - \b pattern_width : width of the tag.
+ * - \b config.pattern_width : width of the tag.
  */
 class pose_from2d : public service::registerer
 {
@@ -170,9 +170,6 @@ private:
     /// Last timestamp
     core::clock::type m_last_timestamp {0};
 
-    /// Marker pattern width.
-    double m_pattern_width {80};
-
     /// 3d model
     std::vector<cv::Point3f> m_3d_model;
 
@@ -182,20 +179,20 @@ private:
     /// Extrinsic matrix
     extrinsic m_extrinsic_mat;
 
-    /// List of tags associated with each inout matrix
-    std::vector<data::marker_map::key_t> m_matrices_tag;
-
-    static constexpr std::string_view MARKER_MAP_INPUT = "marker_map";
-    static constexpr std::string_view CAMERA_INPUT     = "camera";
-    static constexpr std::string_view EXTRINSIC_INPUT  = "extrinsic";
-    static constexpr std::string_view MATRIX_INOUT     = "matrix";
-    static constexpr std::string_view POINTLIST_INOUT  = "pointList";
+    static constexpr std::string_view MARKER_MAP_INPUT = "input.markers.item.data";
+    static constexpr std::string_view CAMERA_INPUT     = "input.cameras.item.data";
+    static constexpr std::string_view EXTRINSIC_INPUT  = "input.extrinsic";
+    static constexpr std::string_view MATRIX_INOUT     = "output.matrix.data";
+    static constexpr std::string_view MATRIX_ID_INPUT  = "output.matrix.id";
+    static constexpr std::string_view POINTLIST_INOUT  = "output.point_list";
 
     data::ptr_vector<data::marker_map, data::access::in> m_marker_map {this, MARKER_MAP_INPUT};
     data::ptr_vector<data::camera, data::access::in> m_camera {this, CAMERA_INPUT};
     data::ptr<data::matrix4, data::access::in> m_extrinsic {this, EXTRINSIC_INPUT};
     data::ptr_vector<data::matrix4, data::access::inout> m_matrix {this, MATRIX_INOUT};
+    data::ptr_vector<data::string, data::access::in> m_matrix_id {this, MATRIX_ID_INPUT};
     data::ptr<data::point_list, data::access::inout> m_point_list {this, POINTLIST_INOUT, true};
+    data::ptr<data::real> m_pattern_width {this, "config.pattern_width", 80.};
 };
 
 } // namespace sight::module::geometry::vision

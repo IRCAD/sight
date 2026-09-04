@@ -128,7 +128,7 @@ void shader_parameter_editor::update_gui_info()
     sight::viz::scene3d::adaptor::sptr mat_service;
     for(const auto& srv : srv_vec)
     {
-        if(srv->inout("material").lock()->get_id() == reconstruction->get_material()->get_id())
+        if(srv->inout("data.material").lock()->get_id() == reconstruction->get_material()->get_id())
         {
             mat_service = std::dynamic_pointer_cast<sight::viz::scene3d::adaptor>(srv);
             break;

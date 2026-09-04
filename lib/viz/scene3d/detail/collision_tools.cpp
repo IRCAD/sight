@@ -56,6 +56,7 @@
 #include "viz/scene3d/layer.hpp"
 #include "viz/scene3d/r2vb_renderable.hpp"
 
+#include <array>
 #include <cmath>
 
 namespace sight::viz::scene3d::detail
@@ -469,6 +470,76 @@ std::optional<pick_result_t> collision_tools::raycast(
                         }
 
                         break;
+
+                    // Quads and tetrahedrons are submitted as line lists with adjacency information to the R2VB
+                    // geometry shader. The triangles below must match the order emitted by RenderScene_GP.glsl.
+                    case Ogre::RenderOperation::OT_LINE_LIST_ADJ:
+                    {
+                        if(!is_r2vb)
+                        {
+                            SIGHT_ERROR("Line list adjacency is only supported for R2VB renderables");
+                            break;
+                        }
+
+                        const auto primitive_type = static_cast<viz::scene3d::r2vb_renderable*>(entity)
+                                                    ->get_input_primitive_type();
+                        std::array<std::array<std::size_t, 3>, 4> triangles {};
+                        std::size_t triangle_count = 0;
+                        if(primitive_type == data::mesh::cell_type_t::quad)
+                        {
+                            triangles      = {{{0, 1, 3}, {1, 3, 2}, {0, 0, 0}, {0, 0, 0}}};
+                            triangle_count = 2;
+                        }
+                        else if(primitive_type == data::mesh::cell_type_t::tetra)
+                        {
+                            triangles      = {{{0, 1, 2}, {1, 2, 3}, {2, 3, 0}, {3, 0, 1}}};
+                            triangle_count = 4;
+                        }
+                        else
+                        {
+                            SIGHT_ERROR("Unsupported R2VB primitive type for line list adjacency");
+                            break;
+                        }
+
+                        const auto check_triangle = [&](std::size_t _primitive_offset, std::size_t _triangle_offset)
+                                                    {
+                                                        const auto& triangle = triangles[_triangle_offset];
+                                                        const auto vertex = [&](std::size_t _index)
+                                                                            {
+                                                                                const std::size_t index =
+                                                                                    _primitive_offset + _index;
+                                                                                return indices.empty()
+                                                                                       ? vertices[index]
+                                                                                       : vertices[indices[index]];
+                                                                            };
+                                                        const auto hit = intersect(
+                                                            _ray,
+                                                            vertex(triangle[0]),
+                                                            vertex(triangle[1]),
+                                                            vertex(triangle[2]),
+                                                            closest_distance,
+                                                            positive_side,
+                                                            negative_side
+                                                        );
+                                                        if(hit.first)
+                                                        {
+                                                            new_closest_found = true;
+                                                            closest_distance  = hit.second;
+                                                            closest_index     = _primitive_offset;
+                                                        }
+                                                    };
+
+                        const std::size_t primitive_vertex_count = indices.empty() ? vertices.size() : indices.size();
+                        for(std::size_t i = 0 ; i + 3 < primitive_vertex_count ; i += 4)
+                        {
+                            for(std::size_t triangle = 0 ; triangle < triangle_count ; ++triangle)
+                            {
+                                check_triangle(i, triangle);
+                            }
+                        }
+
+                        break;
+                    }
 
                     // Triangles list is simply a list of triangles.
                     case Ogre::RenderOperation::OT_TRIANGLE_LIST:

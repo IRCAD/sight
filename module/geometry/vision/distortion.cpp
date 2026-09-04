@@ -51,10 +51,10 @@ distortion::distortion() noexcept :
 service::connections_t distortion::auto_connections() const
 {
     service::connections_t connections;
-    connections.push(CAMERA_INPUT, data::signals::MODIFIED, slots::CALIBRATE);
-    connections.push(CAMERA_INPUT, data::camera::signals::INTRINSIC_CALIBRATED, slots::CALIBRATE);
-    connections.push(IMAGE_INPUT, data::signals::MODIFIED, service::slots::UPDATE);
-    connections.push(IMAGE_INPUT, data::image::signals::BUFFER_MODIFIED, service::slots::UPDATE);
+    connections.push(m_camera, data::signals::MODIFIED, slots::CALIBRATE);
+    connections.push(m_camera, data::camera::signals::INTRINSIC_CALIBRATED, slots::CALIBRATE);
+    connections.push(m_image, data::signals::MODIFIED, service::slots::UPDATE);
+    connections.push(m_image, data::image::signals::BUFFER_MODIFIED, service::slots::UPDATE);
 
     return connections;
 }
@@ -96,7 +96,7 @@ void distortion::stopping()
 void distortion::updating()
 {
     const auto input_image = m_image.lock();
-    SIGHT_ASSERT("No '" << IMAGE_INPUT << "' found.", input_image);
+    SIGHT_ASSERT("No '" << m_image.key() << "' found.", input_image);
 
     if(input_image && m_calibration_mismatch)
     {
@@ -112,7 +112,7 @@ void distortion::updating()
     if(m_is_enabled)
     {
         const auto camera = m_camera.lock();
-        SIGHT_ASSERT("No '" << CAMERA_INPUT << "' found.", camera);
+        SIGHT_ASSERT("No '" << m_camera.key() << "' found.", camera);
 
         if(camera->get_is_calibrated())
         {
@@ -129,7 +129,7 @@ void distortion::updating()
 
         auto output_image = m_output.lock();
 
-        SIGHT_ASSERT("No '" << IMAGE_INOUT << "' found.", output_image);
+        SIGHT_ASSERT("No '" << m_output.key() << "' found.", output_image);
 
         if(input_image && output_image)
         {
@@ -159,9 +159,9 @@ void distortion::updating()
 void distortion::remap()
 {
     const auto input_image = m_image.lock();
-    SIGHT_ASSERT("No '" << IMAGE_INPUT << "' found.", input_image);
+    SIGHT_ASSERT("No '" << m_image.key() << "' found.", input_image);
     auto output_image = m_output.lock();
-    SIGHT_ASSERT("No '" << IMAGE_INOUT << "' found.", output_image);
+    SIGHT_ASSERT("No '" << m_output.key() << "' found.", output_image);
 
     if(!input_image || !output_image || m_calibration_mismatch)
     {
@@ -184,7 +184,7 @@ void distortion::remap()
     }
 
     const auto camera = m_camera.lock();
-    SIGHT_ASSERT("No '" << CAMERA_INPUT << "' found.", camera);
+    SIGHT_ASSERT("No '" << m_camera.key() << "' found.", camera);
 
     if(input_size[0] != camera->get_width() || input_size[1] != camera->get_height())
     {

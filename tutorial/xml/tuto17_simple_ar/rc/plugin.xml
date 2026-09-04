@@ -33,6 +33,8 @@
             <object uid="frame_tl" type="sight::data::frame_tl" />
             <!-- Video frame that is used for the current iteration -->
             <object uid="source_frame" type="sight::data::image" />
+            <!-- Video frame displayed with debugging overlays -->
+            <object uid="debug_frame" type="sight::data::image" />
             <!-- Map containing all detected markers in the current frame -->
             <object uid="marker_map" type="sight::data::marker_map" />
             <!-- Marker matrix in the camera world -->
@@ -45,43 +47,45 @@
             <object uid="cube_mesh" type="sight::data::mesh" />
             <object uid="undistort_map" type="sight::data::image" />
             <object uid="distort_map" type="sight::data::image" />
-            <object uid="cube_material" type="sight::data::material" />
+            <object uid="cube_material" type="sight::data::material">
+                <diffuse>#00FFFFAA</diffuse>
+            </object>
 
             <!-- Aruco tracker parameters -->
             <object uid="aruco_params" type="sight::data::map">
                 <item key="debug_mode" type="sight::data::boolean" value="true" />
-                <item key="corner_refinement" type="sight::data::boolean" value="true" />
-                <item key="adaptive_th_win_size_min" type="sight::data::integer" value="3" />
-                <item key="adaptive_th_win_size_max" type="sight::data::integer" value="23" />
-                <item key="adaptive_th_win_size_step" type="sight::data::integer" value="10" />
-                <item key="adaptive_th_constant" type="sight::data::real" value="7." />
-                <item key="min_marker_perimeter_rate" type="sight::data::real" value="0.03" />
-                <item key="max_marker_perimeter_rate" type="sight::data::real" value="4.0" />
-                <item key="polygonal_approx_accuracy_rate" type="sight::data::real" value="0.03" />
-                <item key="min_corner_distance_rate" type="sight::data::real" value="0.01" />
-                <item key="min_distance_to_border" type="sight::data::integer" value="1" />
-                <item key="min_marker_distance_rate" type="sight::data::real" value="0.0" />
-                <item key="corner_refinement_win_size" type="sight::data::integer" value="5" />
-                <item key="corner_refinement_max_iterations" type="sight::data::integer" value="30" />
-                <item key="corner_refinement_min_accuracy" type="sight::data::real" value="0.1" />
-                <item key="marker_border_bits" type="sight::data::integer" value="1" />
-                <item key="perspective_remove_pixel_per_cell" type="sight::data::integer" value="8" />
-                <item key="perspective_remove_ignored_margin_per_cell" type="sight::data::real" value="0.1" />
-                <item key="max_erroneous_bits_in_border_rate" type="sight::data::real" value="0.3" />
-                <item key="min_otsu_std_dev" type="sight::data::real" value="5.0" />
-                <item key="error_correction_rate" type="sight::data::real" value="0.6" />
+                <item key="corner_refinement:enabled" type="sight::data::boolean" value="true" />
+                <item key="adaptive_threshold:win_size_min" type="sight::data::integer" value="3" />
+                <item key="adaptive_threshold:win_size_max" type="sight::data::integer" value="23" />
+                <item key="adaptive_threshold:win_size_step" type="sight::data::integer" value="10" />
+                <item key="adaptive_threshold:constant" type="sight::data::real" value="7." />
+                <item key="marker_detection:min_perimeter_rate" type="sight::data::real" value="0.03" />
+                <item key="marker_detection:max_perimeter_rate" type="sight::data::real" value="4.0" />
+                <item key="marker_detection:polygonal_approx_accuracy_rate" type="sight::data::real" value="0.03" />
+                <item key="marker_detection:min_corner_distance_rate" type="sight::data::real" value="0.01" />
+                <item key="marker_detection:min_distance_to_border" type="sight::data::integer" value="1" />
+                <item key="marker_detection:min_marker_distance_rate" type="sight::data::real" value="0.05" />
+                <item key="corner_refinement:win_size" type="sight::data::integer" value="5" />
+                <item key="corner_refinement:max_iterations" type="sight::data::integer" value="30" />
+                <item key="corner_refinement:min_accuracy" type="sight::data::real" value="0.1" />
+                <item key="marker:border_bits" type="sight::data::integer" value="1" />
+                <item key="perspective_removal:pixel_per_cell" type="sight::data::integer" value="8" />
+                <item key="perspective_removal:ignored_margin_per_cell" type="sight::data::real" value="0.1" />
+                <item key="error_correction:max_erroneous_bits_in_border_rate" type="sight::data::real" value="0.3" />
+                <item key="error_correction:min_otsu_std_dev" type="sight::data::real" value="5.0" />
+                <item key="error_correction:rate" type="sight::data::real" value="0.6" />
             </object>
 
             <!-- Damping parameters -->
             <object uid="damping_params" type="sight::data::map">
-                <item key="enabled" type="sight::data::boolean" value="false" />
+                <item key="enabled" type="sight::data::boolean" value="true" />
                 <item key="weight" type="sight::data::real" value="0.6" />
             </object>
 
             <!-- Reprojection parameters -->
             <object uid="reprojection_params" type="sight::data::map">
-                <item key="display" type="sight::data::boolean" value="true" />
-                <item key="color" type="sight::data::color" value="#ffffff" />
+                <item key="display" type="sight::data::boolean" value="false" />
+                <item key="color" type="sight::data::color" value="#ddbb22" />
             </object>
 
             <!-- ******************************* UI declaration *********************************** -->
@@ -242,7 +246,6 @@
             </service>
 
             <service uid="start_undistort_act" type="sight::module::ui::action" />
-
             <service uid="start_distort_act" type="sight::module::ui::action" />
 
             <service uid="show_mesh_act" type="sight::module::ui::action">
@@ -264,6 +267,10 @@
                         <adaptor uid="undistort_adp" />
                     </layer>
 
+                    <layer id="overlay">
+                        <adaptor uid="debug_video_adp" />
+                    </layer>
+
                     <layer id="default" compositors="Remap">
                         <adaptor uid="axis_adp" />
                         <adaptor uid="camera_adp" />
@@ -278,7 +285,11 @@
                 <data image="${source_frame}" />
             </service>
 
-            <service uid="undistort_adp" type="sight::module::viz::scene3d::adaptor::compositor_parameter" auto_connect="true">
+            <service uid="debug_video_adp" type="sight::module::viz::scene3d::adaptor::video">
+                <data image="${debug_frame}" />
+            </service>
+
+            <service uid="undistort_adp" type="sight::module::viz::scene3d::adaptor::compositor_parameter">
                 <data parameter="${undistort_map}" />
                 <config compositor_name="Remap" parameter="u_map" shader_type="fragment" visible="false" />
             </service>
@@ -293,18 +304,18 @@
                 <data calibration="${camera}" />
             </service>
 
-            <service uid="material_adp" type="sight::module::viz::scene3d::adaptor::material" auto_connect="true">
+            <service uid="material_adp" type="sight::module::viz::scene3d::adaptor::material">
                 <data material="${cube_material}" />
                 <config material_name="cube" />
             </service>
 
             <!-- Cube displayed on top of the marker plane -->
-            <service uid="cube_adp" type="sight::module::viz::scene3d::adaptor::mesh" auto_connect="true">
+            <service uid="cube_adp" type="sight::module::viz::scene3d::adaptor::mesh">
                 <data mesh="${cube_mesh}" />
                 <config autoresetcamera="false" material_name="cube" />
             </service>
 
-            <service uid="distort_adp" type="sight::module::viz::scene3d::adaptor::compositor_parameter" auto_connect="true">
+            <service uid="distort_adp" type="sight::module::viz::scene3d::adaptor::compositor_parameter">
                 <data parameter="${distort_map}" />
                 <config compositor_name="Remap" parameter="u_map" shader_type="fragment" visible="false" />
             </service>
@@ -326,35 +337,33 @@
 
             <!-- extract the first sight::data::camera from the sight::data::camera_set -->
             <service uid="extract_camera_srv" type="sight::module::data::get_camera">
-                <inout key="camera_set" uid="camera_set" />
-                <out group="camera">
-                    <key index="0" uid="camera" />
-                </out>
+                <input camera_set="${camera_set}" />
+                <output camera="${camera}" index="0" />
             </service>
 
             <!-- GUI to handle aruco tracking parameters -->
             <service uid="aruco_parameters_srv" type="sight::module::ui::qt::settings">
                 <item data="${aruco_params}.debug_mode" name="Show Marker" />
-                <item data="${aruco_params}.corner_refinement" name="Corner refinement" />
-                <item data="${aruco_params}.adaptive_th_win_size_min" name="adpt. Threshold win size min" widget="slider" min="3" max="100" />
-                <item data="${aruco_params}.adaptive_th_win_size_max" name="adpt. Threshold win size max" widget="slider" min="4" max="100" />
-                <item data="${aruco_params}.adaptive_th_win_size_step" name="adpt. Threshold win size step" widget="slider" min="1" max="100" />
-                <item data="${aruco_params}.adaptive_th_constant" name="adpt. threshold constant" min="0." max="30." />
-                <item data="${aruco_params}.min_marker_perimeter_rate" name="Min. Marker Perimeter Rate" min="0.01" max="1.0" />
-                <item data="${aruco_params}.max_marker_perimeter_rate" name="Max. Marker Perimeter Rate" min="1." max="10." />
-                <item data="${aruco_params}.polygonal_approx_accuracy_rate" name="Polygonal Approx. Accuracy Rate" min="0.01" max="1." />
-                <item data="${aruco_params}.min_corner_distance_rate" name="Min. Corner Distance Rate" min="0." max="1." />
-                <item data="${aruco_params}.min_distance_to_border" name="Min. Distance to Border" widget="slider" min="0" max="10" />
-                <item data="${aruco_params}.min_marker_distance_rate" name="Min. Marker Distance Rate" min="0." max="1." />
-                <item data="${aruco_params}.corner_refinement_win_size" name="Corner Refinement Win. Size" widget="slider" min="1" max="100" />
-                <item data="${aruco_params}.corner_refinement_max_iterations" name="Corner Refinement Max Iterations" widget="slider" min="1" max="10" />
-                <item data="${aruco_params}.corner_refinement_min_accuracy" name="Corner Refinement Min. Accuracy" min="0.01" max="10." />
-                <item data="${aruco_params}.marker_border_bits" name="Marker Border Bits" widget="slider" min="1" max="100" />
-                <item data="${aruco_params}.perspective_remove_pixel_per_cell" name="Perspective Remove Pixel per Cell" widget="slider" min="1" max="32" />
-                <item data="${aruco_params}.perspective_remove_ignored_margin_per_cell" name="Perspective Remove Ignored Margin Per Cell" min="0." max="1." />
-                <item data="${aruco_params}.max_erroneous_bits_in_border_rate" name="Max. Erroneous Bits In Border Rate" min="0." max="1." />
-                <item data="${aruco_params}.min_otsu_std_dev" name="Min. Otsu Std. Dev." min="0." max="100." />
-                <item data="${aruco_params}.error_correction_rate" name="Error Correction Rate" min="0." max="1." />
+                <item data="${aruco_params}.corner_refinement:enabled" name="Corner refinement" />
+                <item data="${aruco_params}.adaptive_threshold:win_size_min" name="adpt. Threshold win size min" widget="slider" min="3" max="100" />
+                <item data="${aruco_params}.adaptive_threshold:win_size_max" name="adpt. Threshold win size max" widget="slider" min="4" max="100" />
+                <item data="${aruco_params}.adaptive_threshold:win_size_step" name="adpt. Threshold win size step" widget="slider" min="1" max="100" />
+                <item data="${aruco_params}.adaptive_threshold:constant" name="adpt. threshold constant" min="0." max="30." />
+                <item data="${aruco_params}.marker_detection:min_perimeter_rate" name="Min. Marker Perimeter Rate" min="0.01" max="1.0" />
+                <item data="${aruco_params}.marker_detection:max_perimeter_rate" name="Max. Marker Perimeter Rate" min="1." max="10." />
+                <item data="${aruco_params}.marker_detection:polygonal_approx_accuracy_rate" name="Polygonal Approx. Accuracy Rate" min="0.01" max="1." />
+                <item data="${aruco_params}.marker_detection:min_corner_distance_rate" name="Min. Corner Distance Rate" min="0." max="1." />
+                <item data="${aruco_params}.marker_detection:min_distance_to_border" name="Min. Distance to Border" widget="slider" min="0" max="10" />
+                <item data="${aruco_params}.marker_detection:min_marker_distance_rate" name="Min. Marker Distance Rate" min="0." max="1." />
+                <item data="${aruco_params}.corner_refinement:win_size" name="Corner Refinement Win. Size" widget="slider" min="1" max="100" />
+                <item data="${aruco_params}.corner_refinement:max_iterations" name="Corner Refinement Max Iterations" widget="slider" min="1" max="10" />
+                <item data="${aruco_params}.corner_refinement:min_accuracy" name="Corner Refinement Min. Accuracy" min="0.01" max="10." />
+                <item data="${aruco_params}.marker:border_bits" name="Marker Border Bits" widget="slider" min="1" max="100" />
+                <item data="${aruco_params}.perspective_removal:pixel_per_cell" name="Perspective Remove Pixel per Cell" widget="slider" min="1" max="32" />
+                <item data="${aruco_params}.perspective_removal:ignored_margin_per_cell" name="Perspective Remove Ignored Margin Per Cell" min="0." max="1." />
+                <item data="${aruco_params}.error_correction:max_erroneous_bits_in_border_rate" name="Max. Erroneous Bits In Border Rate" min="0." max="1." />
+                <item data="${aruco_params}.error_correction:min_otsu_std_dev" name="Min. Otsu Std. Dev." min="0." max="100." />
+                <item data="${aruco_params}.error_correction:rate" name="Error Correction Rate" min="0." max="1." />
             </service>
 
             <service uid="reprojection_parameters_srv" type="sight::module::ui::qt::settings">
@@ -377,95 +386,129 @@
 
             <!-- GUI to select camera (device, file, or stream) -->
             <service uid="video_selector_srv" type="sight::module::ui::qt::video::camera">
-                <inout key="camera" uid="camera" />
+                <data camera="${camera}" />
                 <video_support>true</video_support>
             </service>
 
             <!-- Grab image from camera device and fill a frame timeline -->
             <service uid="video_grabber_srv" type="sight::module::io::video::frame_grabber">
-                <in key="camera" uid="camera" />
-                <inout key="frame_tl" uid="frame_tl" />
+                <config camera="${camera}" />
+                <timeline image="${frame_tl}" />
             </service>
 
             <!-- Consumes a frame in the timeline, picks the latest one to be processed -->
             <!-- It is overkill in this sample, but mandatory when we use multiple grabbers to synchronize them. -->
             <service uid="frame_updater_srv" type="sight::module::sync::synchronizer" auto_connect="false">
-                <in group="frame_tl">
-                    <key uid="frame_tl" />
-                </in>
-                <inout group="frames">
-                    <key uid="source_frame" />
-                </inout>
-                <tolerance>100</tolerance>
+                <input>
+                    <frames>
+                        <item timeline="${frame_tl}" />
+                    </frames>
+                </input>
+                <output>
+                    <frames>
+                        <item image="${source_frame}" />
+                    </frames>
+                </output>
             </service>
 
             <!-- Aruco tracker service -->
             <service uid="tracker_srv" type="sight::module::geometry::vision::aruco_tracker" worker="tracking" auto_connect="false">
-                <in key="camera" uid="camera" />
-                <inout key="frame" uid="source_frame" />
-                <inout group="marker_map">
-                    <!-- timeline of detected tag(s) -->
-                    <key uid="marker_map" />
-                </inout>
+                <input camera="${camera}" frame="${source_frame}" />
+                <output debug_frame="${debug_frame}">
+                    <marker_map>
+                        <!-- timeline of detected tag(s) -->
+                        <item data="${marker_map}" />
+                    </marker_map>
+                </output>
                 <track>
                     <!-- list of tag's id -->
                     <marker id="101" />
                 </track>
-                <properties from="${aruco_params}" />
+                <config debug_mode="${aruco_params}.debug_mode">
+                    <corner_refinement
+                        enabled="${aruco_params}.corner_refinement:enabled"
+                        win_size="${aruco_params}.corner_refinement:win_size"
+                        max_iterations="${aruco_params}.corner_refinement:max_iterations"
+                        min_accuracy="${aruco_params}.corner_refinement:min_accuracy"
+                    />
+                    <adaptive_threshold
+                        win_size_min="${aruco_params}.adaptive_threshold:win_size_min"
+                        win_size_max="${aruco_params}.adaptive_threshold:win_size_max"
+                        win_size_step="${aruco_params}.adaptive_threshold:win_size_step"
+                        constant="${aruco_params}.adaptive_threshold:constant"
+                    />
+                    <marker_detection
+                        min_perimeter_rate="${aruco_params}.marker_detection:min_perimeter_rate"
+                        max_perimeter_rate="${aruco_params}.marker_detection:max_perimeter_rate"
+                        polygonal_approx_accuracy_rate="${aruco_params}.marker_detection:polygonal_approx_accuracy_rate"
+                        min_corner_distance_rate="${aruco_params}.marker_detection:min_corner_distance_rate"
+                        min_distance_to_border="${aruco_params}.marker_detection:min_distance_to_border"
+                        min_marker_distance_rate="${aruco_params}.marker_detection:min_marker_distance_rate"
+                    />
+                    <marker border_bits="${aruco_params}.marker:border_bits" />
+                    <perspective_removal pixel_per_cell="${aruco_params}.perspective_removal:pixel_per_cell" ignored_margin_per_cell="${aruco_params}.perspective_removal:ignored_margin_per_cell" />
+                    <error_correction
+                        max_erroneous_bits_in_border_rate="${aruco_params}.error_correction:max_erroneous_bits_in_border_rate"
+                        min_otsu_std_dev="${aruco_params}.error_correction:min_otsu_std_dev"
+                        rate="${aruco_params}.error_correction:rate"
+                    />
+                </config>
             </service>
 
             <!-- Computes the pose of the camera with tag(s) detected by aruco -->
             <service uid="registration_srv" type="sight::module::geometry::vision::pose_from2d" worker="tracking" auto_connect="false">
-                <in group="marker_map">
-                    <key uid="marker_map" />
-                </in>
-                <in group="camera">
-                    <key uid="camera" />
-                </in>
-                <inout group="matrix">
-                    <key uid="marker_to_camera" id="101" />
-                </inout>
-                <pattern_width>60</pattern_width>
+                <input>
+                    <markers>
+                        <item data="${marker_map}" />
+                    </markers>
+                    <cameras>
+                        <item data="${camera}" />
+                    </cameras>
+                </input>
+                <output>
+                    <matrix data="${marker_to_camera}" id="101" />
+                </output>
+                <config pattern_width="60" />
             </service>
 
             <!-- Computes the reprojection error -->
             <service uid="error_srv" type="sight::module::geometry::vision::reprojection_error" worker="error" auto_connect="false">
-                <in group="matrix">
-                    <key uid="marker_to_camera" id="101" />
-                </in>
-                <in key="marker_map" uid="marker_map" />
-                <in key="camera" uid="camera" />
-                <inout key="frame" uid="source_frame" />
-                <properties from="${reprojection_params}" pattern_width="60" />
+                <input camera="${camera}" marker_map="${marker_map}">
+                    <matrix>
+                        <item data="${marker_to_camera}" id="101" />
+                    </matrix>
+                </input>
+                <output frame="${debug_frame}" />
+                <config pattern_width="60" display="${reprojection_params}.display" color="${reprojection_params}.color" />
             </service>
 
             <!-- Multiply matrices (here only used to inverse "marker_to_camera") -->
-            <service uid="matrix_reverser_srv" type="sight::module::geometry::concatenate_matrices">
+            <service uid="matrix_reverser_srv" type="sight::module::geometry::concatenate_matrices" auto_connect="false">
                 <data input="${marker_to_camera}" inverse="true" />
                 <data output="${camera_to_marker}" />
             </service>
 
             <service uid="undistort_srv" type="sight::module::geometry::vision::distortion">
-                <in key="camera" uid="camera" auto_connect="true" />
-                <inout key="map" uid="undistort_map" />
+                <input camera="${camera}" />
+                <output map="${undistort_map}" />
                 <mode>undistort</mode>
             </service>
 
             <service uid="distorter_srv" type="sight::module::geometry::vision::distortion">
-                <in key="camera" uid="camera" auto_connect="true" />
-                <inout key="map" uid="distort_map" />
+                <input camera="${camera}" />
+                <output map="${distort_map}" />
                 <mode>distort</mode>
             </service>
 
             <service uid="material_opacity_editor" type="sight::module::ui::qt::material_opacity_editor">
-                <inout key="material" uid="cube_material" />
+                <data material="${cube_material}" />
                 <label>Cube opacity</label>
             </service>
 
             <service uid="damp_matrix_srv" type="sight::module::geometry::weighted_mean_matrix" auto_connect="false">
                 <data raw="${camera_to_marker}" />
                 <data damped="${camera_to_marker_damped}" />
-                <properties from="${damping_params}" />
+                <config enabled="${damping_params}.enabled" weight="${damping_params}.weight" />
             </service>
 
             <!-- ******************************* Connections ***************************************** -->
@@ -602,7 +645,7 @@
                 <service uid="hide_axis_srv" />
                 <service uid="load_mesh_srv" />
 
-                <sequence uid="updater" loop="true" start="false">
+                <sequence uid="updater" loop="true" start="false" worker="tracking">
                     <service uid="frame_updater_srv" />
                     <service uid="tracker_srv" />
                     <service uid="registration_srv" />

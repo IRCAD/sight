@@ -10,13 +10,13 @@
         <config>
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <object uid="frameTL" type="sight::data::frame_tl" />
-            <object uid="videoImage" type="sight::data::image" />
+            <object uid="frame_tl" type="sight::data::frame_tl" />
+            <object uid="video_image" type="sight::data::image" />
             <object uid="camera" type="sight::data::camera" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="sight::module::ui::frame">
+            <service uid="main_frame" type="sight::module::ui::frame">
                 <gui>
                     <menubar />
                     <toolbar />
@@ -26,48 +26,12 @@
                     </frame>
                 </gui>
                 <registry>
-                    <menubar sid="menuBarView" />
-                    <toolbar sid="toolbarView" />
-                    <view sid="genericSceneSrv" />
+                    <toolbar sid="toolbar_view" />
+                    <view sid="generic_scene_srv" />
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="sight::module::ui::menubar">
-                <gui>
-                    <layout>
-                        <menu name="File" />
-                        <menu name="Preferences" />
-                    </layout>
-                </gui>
-                <registry>
-                    <menu sid="menuFileView" />
-                    <menu sid="menuPreferencesView" />
-                </registry>
-            </service>
-
-            <service uid="menuFileView" type="sight::module::ui::menu">
-                <gui>
-                    <layout>
-                        <menuItem name="Quit" special_action="QUIT" shortcut="Ctrl+Q" />
-                    </layout>
-                </gui>
-                <registry>
-                    <menuItem sid="quitAct" />
-                </registry>
-            </service>
-
-            <service uid="menuPreferencesView" type="sight::module::ui::menu">
-                <gui>
-                    <layout>
-                        <menuItem name="Video directory" />
-                    </layout>
-                </gui>
-                <registry>
-                    <menuItem sid="videoDirAct" />
-                </registry>
-            </service>
-
-            <service uid="toolbarView" type="sight::module::ui::toolbar">
+            <service uid="toolbar_view" type="sight::module::ui::toolbar">
                 <gui>
                     <layout>
                         <editor />
@@ -81,76 +45,63 @@
                     </layout>
                 </gui>
                 <registry>
-                    <editor sid="videoSelectorSrv" />
-                    <menuItem sid="startVideoAct" />
-                    <menuItem sid="pauseVideoAct" />
-                    <menuItem sid="resumeVideoAct" />
-                    <menuItem sid="stopVideoAct" />
-                    <menuItem sid="loopVideoAct" />
-                    <editor sid="motionStatusSrv" />
+                    <editor sid="video_selector_srv" />
+                    <menuItem sid="start_video_act" />
+                    <menuItem sid="pause_video_act" />
+                    <menuItem sid="resume_video_act" />
+                    <menuItem sid="stop_video_act" />
+                    <menuItem sid="loop_video_act" />
+                    <editor sid="motion_status_srv" />
                 </registry>
             </service>
 
             <!-- ************************************* Action ************************************ -->
 
-            <!-- declaration of actions/slot callers -->
-            <service uid="quitAct" type="sight::module::ui::quit" />
-
             <!-- Start the frame grabber -->
-            <service uid="startVideoAct" type="sight::module::ui::action">
+            <service uid="start_video_act" type="sight::module::ui::action">
                 <state enabled="false" />
             </service>
 
             <!-- Pause the frame grabber -->
-            <service uid="pauseVideoAct" type="sight::module::ui::action">
+            <service uid="pause_video_act" type="sight::module::ui::action">
                 <state visible="false" />
             </service>
 
             <!-- Resume the frame grabber -->
-            <service uid="resumeVideoAct" type="sight::module::ui::action">
+            <service uid="resume_video_act" type="sight::module::ui::action">
                 <state visible="false" />
             </service>
 
             <!-- Stop the frame grabber -->
-            <service uid="stopVideoAct" type="sight::module::ui::action">
+            <service uid="stop_video_act" type="sight::module::ui::action">
                 <state enabled="false" />
             </service>
 
             <!-- Loop the frame grabber -->
-            <service uid="loopVideoAct" type="sight::module::ui::action">
+            <service uid="loop_video_act" type="sight::module::ui::action">
                 <state enabled="false" />
-            </service>
-
-            <!-- preference save the video directory and re-open the same directory at next launch of the app -->
-            <service uid="videoDirAct" type="sight::module::ui::qt::preferences_configuration">
-                <preference>
-                    <type>path</type>
-                    <name>Video directory</name>
-                    <key>VIDEO_DIR_PREF</key>
-                    <default_value>...</default_value>
-                </preference>
             </service>
 
             <!-- ******************************* Begin Generic scene ******************************* -->
 
             <!-- scene in which the video will be rendered -->
-            <service uid="genericSceneSrv" type="sight::viz::scene3d::render">
+            <service uid="generic_scene_srv" type="sight::viz::scene3d::render">
                 <scene render_mode="manual">
                     <background topColor="#36393E" bottomColor="#36393E" />
 
                     <layer id="default">
-                        <adaptor uid="videoAdp" />
+                        <adaptor uid="video_adp" />
                     </layer>
                 </scene>
             </service>
 
-            <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::video" auto_connect="true">
-                <data image="${videoImage}" />
+            <service uid="video_adp" type="sight::module::viz::scene3d::adaptor::video" auto_connect="true">
+                <data image="${video_image}" />
             </service>
 
             <!-- ************************************* Services ************************************ -->
 
-            <service uid="motionStatusSrv" type="sight::module::ui::qt::status">
+            <service uid="motion_status_srv" type="sight::module::ui::qt::status">
                 <labels display="beside">
                     <name>Motion</name>
                 </labels>
@@ -159,114 +110,118 @@
                 <orange>Computing...</orange>
             </service>
 
-            <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::camera">
-                <inout key="camera" uid="camera" />
+            <service uid="video_selector_srv" type="sight::module::ui::qt::video::camera">
+                <data camera="${camera}" />
                 <videoSupport>true</videoSupport>
             </service>
 
             <!-- Grab image from camera device and fill a frame timeline -->
-            <service uid="videoGrabberSrv" type="sight::module::io::video::frame_grabber">
-                <in key="camera" uid="camera" />
-                <inout key="frame_tl" uid="frameTL" />
+            <service uid="video_grabber_srv" type="sight::module::io::video::frame_grabber">
+                <config camera="${camera}" />
+                <timeline image="${frame_tl}" />
             </service>
 
-            <service uid="frameUpdaterSrv" type="sight::module::sync::synchronizer" auto_connect="false">
-                <in group="frame_tl">
-                    <key uid="frameTL" />
-                </in>
-                <inout group="frames">
-                    <key uid="videoImage" />
-                </inout>
+            <service uid="frame_updater_srv" type="sight::module::sync::synchronizer" auto_connect="false">
+                <input>
+                    <frames>
+                        <item timeline="${frame_tl}" />
+                    </frames>
+                </input>
+                <output>
+                    <frames>
+                        <item image="${video_image}" />
+                    </frames>
+                </output>
             </service>
 
-            <service uid="opticalFlowSrv" type="sight::module::filter::vision::optical_flow">
-                <in key="timeline" uid="frameTL" auto_connect="false" />
+            <service uid="optical_flow_srv" type="sight::module::filter::vision::optical_flow" auto_connect="false">
+                <data timeline="${frame_tl}" />
                 <config scaleFactor="3.6" />
             </service>
 
             <!-- ******************************* Connections ***************************************** -->
 
             <connect>
-                <signal>startVideoAct/clicked</signal>
-                <slot>videoGrabberSrv/start_camera</slot>
+                <signal>start_video_act/clicked</signal>
+                <slot>video_grabber_srv/start_camera</slot>
                 <slot>updater/start</slot>
             </connect>
 
             <connect>
-                <signal>pauseVideoAct/clicked</signal>
-                <slot>videoGrabberSrv/pause_camera</slot>
-                <slot>resumeVideoAct/show</slot>
-                <slot>pauseVideoAct/hide</slot>
+                <signal>pause_video_act/clicked</signal>
+                <slot>video_grabber_srv/pause_camera</slot>
+                <slot>resume_video_act/show</slot>
+                <slot>pause_video_act/hide</slot>
                 <slot>updater/stop</slot>
             </connect>
 
             <connect>
-                <signal>resumeVideoAct/clicked</signal>
-                <slot>videoGrabberSrv/pause_camera</slot>
-                <slot>resumeVideoAct/hide</slot>
-                <slot>pauseVideoAct/show</slot>
+                <signal>resume_video_act/clicked</signal>
+                <slot>video_grabber_srv/pause_camera</slot>
+                <slot>resume_video_act/hide</slot>
+                <slot>pause_video_act/show</slot>
                 <slot>updater/start</slot>
             </connect>
 
             <connect>
-                <signal>loopVideoAct/clicked</signal>
-                <slot>videoGrabberSrv/loop_video</slot>
+                <signal>loop_video_act/clicked</signal>
+                <slot>video_grabber_srv/loop_video</slot>
             </connect>
 
             <connect>
-                <signal>stopVideoAct/clicked</signal>
-                <slot>videoGrabberSrv/stop_camera</slot>
-                <slot>startVideoAct/show</slot>
-                <slot>resumeVideoAct/hide</slot>
-                <slot>pauseVideoAct/hide</slot>
-                <slot>stopVideoAct/disable</slot>
-                <slot>loopVideoAct/disable</slot>
-                <slot>loopVideoAct/uncheck</slot>
+                <signal>stop_video_act/clicked</signal>
+                <slot>video_grabber_srv/stop_camera</slot>
+                <slot>start_video_act/show</slot>
+                <slot>resume_video_act/hide</slot>
+                <slot>pause_video_act/hide</slot>
+                <slot>stop_video_act/disable</slot>
+                <slot>loop_video_act/disable</slot>
+                <slot>loop_video_act/uncheck</slot>
                 <slot>updater/stop</slot>
             </connect>
 
             <connect>
-                <signal>videoSelectorSrv/configured_file</signal>
-                <signal>videoSelectorSrv/configured_stream</signal>
-                <signal>videoSelectorSrv/configured_device</signal>
-                <slot>startVideoAct/update</slot>
+                <signal>video_selector_srv/configured_file</signal>
+                <signal>video_selector_srv/configured_stream</signal>
+                <signal>video_selector_srv/configured_device</signal>
+                <slot>start_video_act/update</slot>
             </connect>
 
             <connect>
-                <signal>videoGrabberSrv/camera_started</signal>
-                <slot>pauseVideoAct/show</slot>
-                <slot>startVideoAct/hide</slot>
-                <slot>stopVideoAct/enable</slot>
-                <slot>loopVideoAct/enable</slot>
+                <signal>video_grabber_srv/camera_started</signal>
+                <slot>pause_video_act/show</slot>
+                <slot>start_video_act/hide</slot>
+                <slot>stop_video_act/enable</slot>
+                <slot>loop_video_act/enable</slot>
             </connect>
 
             <connect>
                 <signal>camera/id_modified</signal>
-                <slot>videoGrabberSrv/stop_camera</slot>
+                <slot>video_grabber_srv/stop_camera</slot>
                 <slot>updater/stop</slot>
             </connect>
 
             <connect>
                 <signal>camera/modified</signal>
-                <slot>startVideoAct/enable</slot>
-                <slot>stopVideoAct/update</slot>
+                <slot>start_video_act/enable</slot>
+                <slot>stop_video_act/update</slot>
             </connect>
 
             <connect>
-                <signal>opticalFlowSrv/camera_moved</signal>
-                <slot>motionStatusSrv/change_to_green</slot>
+                <signal>optical_flow_srv/camera_moved</signal>
+                <slot>motion_status_srv/change_to_green</slot>
             </connect>
 
             <connect>
-                <signal>opticalFlowSrv/camera_remained</signal>
-                <slot>motionStatusSrv/change_to_red</slot>
+                <signal>optical_flow_srv/camera_remained</signal>
+                <slot>motion_status_srv/change_to_red</slot>
             </connect>
 
             <update>
                 <sequence uid="updater" loop="true" start="false">
-                    <service uid="frameUpdaterSrv" />
-                    <service uid="opticalFlowSrv" />
-                    <service uid="genericSceneSrv" />
+                    <service uid="frame_updater_srv" />
+                    <service uid="optical_flow_srv" />
+                    <service uid="generic_scene_srv" />
                 </sequence>
             </update>
         </config>

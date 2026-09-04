@@ -45,19 +45,17 @@ namespace sight::module::geometry::vision
  * @section XML XML Configuration
  * @code{.xml}
         <service type="sight::module::geometry::vision::solve_pnp">
-            <in key="pointList2d" uid="..." />
-            <in key="pointList3d" uid="..." />
-            <in key="calibration" uid="..." />
-            <inout key="matrix" uid="..." />
+            <input point_list_2d="${...}" point_list_3d="${...}" calibration="${...}" />
+            <output matrix="${...}" />
             <config  inverse="false" shift="false"/>
        </service>
    @endcode
  * @subsection Input Input:
- * - \b pointList2d [sight::data::point_list]: list of 2d points clicked on image
- * - \b pointList3d [sight::data::point_list]: list of corresponding 3d points clicked on 3d model
- * - \b calibration [sight::data::camera]: camera parameters (intrinsic & distorison coefficients)
+ * - \b input.point_list_2d [sight::data::point_list]: list of 2d points clicked on image
+ * - \b input.point_list_3d [sight::data::point_list]: list of corresponding 3d points clicked on 3d model
+ * - \b input.calibration [sight::data::camera]: camera parameters (intrinsic & distorison coefficients)
  * @subsection In-Out In-Out:
- * - \b matrix [sight::data::matrix4]: output registration matrix
+ * - \b output.matrix [sight::data::matrix4]: output registration matrix
  * (updated when calling 'computeRegistration' slot), in-out is used since matrix is not created in this service.
  * @subsection Configuration Configuration:
  * - \b inverse (optional): reverse output matrix. If 'inverse' is "true" then the camera pose is computed,
@@ -120,10 +118,10 @@ private:
     /// Shift back points using cx/cy
     bool m_shift_points = {false};
 
-    data::ptr<data::camera, data::access::in> m_calibration {this, "calibration"};
-    data::ptr<data::point_list, data::access::in> m_point_list2d {this, "pointList2d"};
-    data::ptr<data::point_list, data::access::in> m_point_list3d {this, "pointList3d"};
-    data::ptr<data::matrix4, data::access::inout> m_matrix {this, "matrix"};
+    data::ptr<data::camera, data::access::in> m_calibration {this, "input.calibration"};
+    data::ptr<data::point_list, data::access::in> m_point_list2d {this, "input.point_list_2d"};
+    data::ptr<data::point_list, data::access::in> m_point_list3d {this, "input.point_list_3d"};
+    data::ptr<data::matrix4, data::access::inout> m_matrix {this, "output.matrix"};
 };
 
 } // namespace sight::module::geometry::vision

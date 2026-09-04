@@ -73,24 +73,27 @@
         <!-- ************************************* Services ************************************ -->
 
         <service uid="videoGrabberSrv" type="sight::module::io::video::grabber_proxy">
-            <in key="camera" uid="${camera}" />
-            <inout key="frame_tl" uid="timeLine" />
-            <config>
+            <timeline image="${timeLine}" />
+            <config camera="${camera}">
                 <gui title="${grabberProxyGuiTitle}" />
             </config>
         </service>
 
         <service uid="frameSynchronizerSrv" type="sight::module::sync::synchronizer">
-            <in group="frame_tl">
-                <key uid="timeLine" />
-            </in>
-            <inout group="frames">
-                <key uid="frame" />
-            </inout>
+            <input>
+                <frames>
+                    <item timeline="${timeLine}" />
+                </frames>
+            </input>
+            <output>
+                <frames>
+                    <item image="${frame}" />
+                </frames>
+            </output>
         </service>
 
         <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::camera">
-            <inout key="camera" uid="${camera}" />
+            <data camera="${camera}" />
             <videoSupport>true</videoSupport>
             <label />
         </service>

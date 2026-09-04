@@ -23,7 +23,6 @@
 #pragma once
 
 #include <core/com/signal.hpp>
-#include <core/tools/failed.hpp>
 
 #include <data/camera.hpp>
 #include <data/camera_set.hpp>
@@ -57,7 +56,7 @@ namespace sight::module::ui::qt::video
  *
  * @code{.xml}
     <service uid="..." type="sight::module::ui::qt::video::camera" >
-        <inout key="camera" uid="..."/>
+        <data camera="..." />
         <video_support>true</video_support>
         <label>Video source: </label>
     </service>
@@ -69,7 +68,7 @@ namespace sight::module::ui::qt::video
  *
  * @code{.xml}
     <service uid="..." type="sight::module::ui::qt::video::camera" >
-        <inout key="camera_set" uid="..."/>
+        <data camera_set="..." />
         <createCameraNumber>2</createCameraNumber>
         <video_support>true</video_support>
         <useAbsolutePath>false</useAbsolutePath>
@@ -79,8 +78,8 @@ namespace sight::module::ui::qt::video
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b camera [sight::data::camera]: camera data.
- * - \b camera_set [sight::data::camera_set]: camera series thus containing several camera.
+ * - \b data.camera [sight::data::camera]: camera data.
+ * - \b data.camera_set [sight::data::camera_set]: camera series thus containing several camera.
  *
  * @subsection Configuration Configuration
  * - \b video_support (optional, default="false"): if we can open a video file in addition with cameras.
@@ -206,8 +205,8 @@ private:
 
     bool m_preference_mode {false};
 
-    static constexpr std::string_view CAMERA     = "camera";
-    static constexpr std::string_view CAMERA_SET = "camera_set";
+    static constexpr std::string_view CAMERA     = "data.camera";
+    static constexpr std::string_view CAMERA_SET = "data.camera_set";
 
     data::ptr<data::camera, data::access::inout> m_camera {this, CAMERA, true};
     data::ptr<data::camera_set, data::access::inout> m_camera_set {this, CAMERA_SET, true};

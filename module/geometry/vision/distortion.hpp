@@ -49,17 +49,17 @@ namespace sight::module::geometry::vision
  *
  * @code{.xml}
     <service type="sight::module::geometry::vision::distortion">
-        <in key="camera" uid="..." />
-        <in key="input" uid="..." />
-        <inout key="output" uid="..." />
+        <input camera="..." />
+        <input image="..." />
+        <output image="..." />
         <mode>distort</mode>
     </service>
    @endcode
  * Or
  * @code{.xml}
     <service type="sight::module::geometry::vision::distortion">
-        <in key="camera" uid="..." />
-        <inout key="map" uid="..." />
+        <input camera="..." />
+        <output image="..." />
         <mode>distort</mode>
     </service>
    @endcode
@@ -142,15 +142,10 @@ private:
     cv::Mat m_map_y;
 #endif // OPENCV_CUDA_SUPPORT
 
-    static constexpr std::string_view CAMERA_INPUT = "camera";
-    static constexpr std::string_view IMAGE_INPUT  = "input";
-    static constexpr std::string_view IMAGE_INOUT  = "output";
-    static constexpr std::string_view MAP_INOUT    = "map";
-
-    sight::data::ptr<sight::data::camera, sight::data::access::in> m_camera {this, CAMERA_INPUT};
-    sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, IMAGE_INPUT};
-    sight::data::ptr<sight::data::image, sight::data::access::inout> m_output {this, IMAGE_INOUT};
-    sight::data::ptr<sight::data::image, sight::data::access::inout> m_map {this, MAP_INOUT};
+    sight::data::ptr<sight::data::camera, sight::data::access::in> m_camera {this, "input.camera"};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, "input.image"};
+    sight::data::ptr<sight::data::image, sight::data::access::inout> m_output {this, "output.image"};
+    sight::data::ptr<sight::data::image, sight::data::access::inout> m_map {this, "output.map"};
 };
 
 } // namespace sight::module::geometry::vision

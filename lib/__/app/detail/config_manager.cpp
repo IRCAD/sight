@@ -26,6 +26,7 @@
 
 #include "app/extension/config.hpp"
 #include "app/helper/config.hpp"
+#include "app/updater.hpp"
 #include <core/notification/has_monitors.hpp>
 #include <core/thread/worker.hpp>
 #include <service/extension/factory.hpp>
@@ -238,41 +239,67 @@ void config_manager::stop()
     m_add_object_connection.disconnect();
     m_remove_object_connection.disconnect();
 
-    std::vector<service::base::shared_future_t> futures;
     std::vector<core::com::connection::blocker> blockers;
+    const auto stop_services =
+        [this, &blockers](bool _updaters)
+        {
+            std::vector<service::base::shared_future_t> futures;
+            {
+                core::mt::scoped_lock lock(m_mutex);
+                for(auto& w_srv : std::views::reverse(m_started_srv))
+                {
+                    const service::base::sptr srv = w_srv.lock();
+                    SIGHT_ASSERT(
+                        "Service expired.",
+                        srv
+                    );
+
+                    if((std::dynamic_pointer_cast<app::updater>(srv) != nullptr) != _updaters)
+                    {
+                        continue;
+                    }
+
+                    // The service can have been stopped just before...
+                    // This is a rare case, but nothing can really prevent that. So we just warn the developer, because
+                    // if it was not expected, at least he has a notice in the log.
+                    if(srv->stopped())
+                    {
+                        SIGHT_WARN("Service " << srv->get_id() << " already stopped.");
+                    }
+                    else
+                    {
+                        if(const auto updater = std::dynamic_pointer_cast<app::updater>(srv); updater)
+                        {
+                            updater->request_stop();
+                        }
+
+                        auto sig = srv->signal(service::signals::STOPPED);
+                        blockers.emplace_back(sig->get_connection(slot(slots::REMOVE_STARTED_SRV)));
+                        futures.emplace_back(srv->stop());
+                    }
+                }
+            }
+
+            std::ranges::for_each(futures, std::mem_fn(&std::shared_future<void>::wait));
+        };
+
     {
         core::mt::scoped_lock lock(m_mutex);
 
         // Disconnect configuration connections
         this->destroy_proxies();
+    }
 
-        for(auto& w_srv : std::views::reverse(m_started_srv))
-        {
-            const service::base::sptr srv = w_srv.lock();
-            SIGHT_ASSERT(
-                "Service expired.",
-                srv
-            );
+    // An updater may still be executing a sequence when shutdown starts. Wait for it before stopping the services it
+    // drives, otherwise it can update a service that has already been stopped.
+    stop_services(true);
+    stop_services(false);
 
-            // The service can have been stopped just before...
-            // This is a rare case, but nothing can really prevent that. So we just warn the developer, because if it
-            // was not expected, at least he has a notice in the log
-            if(srv->stopped())
-            {
-                SIGHT_WARN("Service " << srv->get_id() << " already stopped.");
-            }
-            else
-            {
-                auto sig = srv->signal(service::signals::STOPPED);
-                blockers.emplace_back(sig->get_connection(slot(slots::REMOVE_STARTED_SRV)));
-                futures.emplace_back(srv->stop());
-            }
-        }
-
+    {
+        core::mt::scoped_lock lock(m_mutex);
         m_started_srv.clear();
         set_state(state_stopped);
     }
-    std::ranges::for_each(futures, std::mem_fn(&std::shared_future<void>::wait));
 
     app::helper::config::clear_props();
 }
@@ -932,6 +959,11 @@ void config_manager::create_updater_services()
 
             config_t service_cfg;
             service_cfg.put("<xmlattr>.uid", uid);
+            if(const auto worker = _elem.get_optional<std::string>("<xmlattr>.worker"); worker.has_value())
+            {
+                service_cfg.put("<xmlattr>.worker", *worker);
+            }
+
             if(_sequence)
             {
                 service_cfg.put("<xmlattr>.type", "sight::app::update_sequence");

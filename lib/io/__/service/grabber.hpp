@@ -126,8 +126,8 @@ public:
      * @name Data API
      * @{
      */
-    static constexpr std::string_view CAMERA_INPUT  = "camera";
-    static constexpr std::string_view FRAMETL_INOUT = "frame_tl";
+    static constexpr std::string_view CAMERA_INPUT  = "config.camera";
+    static constexpr std::string_view FRAMETL_INOUT = "timeline.image";
     /** @} */
     /**
      * @brief Constructor.

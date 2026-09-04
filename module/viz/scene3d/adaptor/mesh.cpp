@@ -478,7 +478,7 @@ void mesh::update_new_material_adaptor(data::mesh::csptr _mesh)
             m_material_adaptor = this->register_service<module::viz::scene3d::adaptor::material>(
                 "sight::module::viz::scene3d::adaptor::material"
             );
-            m_material_adaptor->set_inout(m_material, "material", true);
+            m_material_adaptor->set_inout(m_material, "data.material", true);
 
             config_t material_adp_config;
             material_adp_config.put("config.<xmlattr>.material_template", m_material_template_name);

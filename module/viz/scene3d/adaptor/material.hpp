@@ -24,20 +24,13 @@
 
 #include "module/viz/scene3d/adaptor/texture.hpp"
 
-#include <data/image.hpp>
 #include <data/material.hpp>
-#include <data/mesh.hpp>
 #include <data/string.hpp>
 
 #include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/material/generic.hpp>
 #include <viz/scene3d/material/standard.hpp>
-#include <viz/scene3d/mesh.hpp>
 #include <viz/scene3d/ogre.hpp>
-#include <viz/scene3d/r2vb_renderable.hpp>
-
-#include <OGRE/OgreGpuProgramParams.h>
-#include <OGRE/OgreMaterial.h>
 
 namespace sight::module::viz::scene3d::adaptor
 {
@@ -106,7 +99,7 @@ public:
         static const inline slot_key_t REMOVE_TEXTURE = "remove_texture";
     };
 
-    static const inline std::string MATERIAL_INOUT = "material";
+    static const inline std::string MATERIAL_INOUT = "data.material";
 
     /// Initializes slots.
     material() noexcept;

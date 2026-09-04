@@ -295,20 +295,16 @@
             <service uid="transformReaderSrv" type="sight::module::ui::io::selector">
                 <data read="${matrix}" />
                 <selection mode="include" />
-                <addSelection service="sight::module::io::matrix::Matrix4ReaderService" />
+                <addSelection service="sight::module::io::matrix::matrix4_trf_reader" />
             </service>
 
             <!-- extract RGB intrinsic Depth intrinsic and Extrinsic matrices from a sight::data::camera_set -->
             <service uid="cameraExtractorSrv" type="sight::module::data::get_camera">
-                <inout key="camera_set" uid="camera_set" />
+                <input camera_set="${camera_set}" />
                 <!-- destination -->
-                <out group="camera">
-                    <key index="0" uid="cameraDepth" />
-                    <key index="1" uid="cameraRGB" />
-                </out>
-                <out group="extrinsic">
-                    <key index="1" uid="extrinsic" />
-                </out>
+                <output camera="${cameraDepth}" index="0" />
+                <output camera="${cameraRGB}" index="1" />
+                <output extrinsic="${extrinsic}" index="1" />
             </service>
 
             <service uid="thresholdSliderSrv" type="sight::module::ui::qt::parameters">
@@ -337,14 +333,14 @@
 
             <!-- GUI to select camera (device, file, or stream) -->
             <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::camera">
-                <inout key="camera" uid="cameraRGB" />
+                <data camera="${cameraRGB}" />
                 <videoSupport>true</videoSupport>
             </service>
 
             <!-- Grab image from camera device and fill a frame timeline -->
             <service uid="videoGrabberSrv" type="sight::module::io::video::frame_grabber">
-                <in key="camera" uid="cameraRGB" />
-                <inout key="frame_tl" uid="frameTL" />
+                <config camera="${cameraRGB}" />
+                <timeline image="${frameTL}" />
             </service>
 
             <!-- Use the extrinsic matrix to get back in the RGB space -->
@@ -355,16 +351,20 @@
             </service>
 
             <!-- To synchronize matrix, frame and detection -->
-            <service uid="frameUpdaterSrv" type="sight::module::sync::synchronizer" worker="videoWorker">
-                <in group="frame_tl" auto_connect="false">
-                    <key uid="frameTL" />
-                    <key uid="maskTL" />
-                </in>
-                <inout group="frames">
-                    <key uid="videoImage" tl="0" />
-                    <key uid="foregroundMask" tl="1" />
-                </inout>
-                <tolerance>200</tolerance>
+            <service uid="frameUpdaterSrv" type="sight::module::sync::synchronizer" worker="videoWorker" auto_connect="false">
+                <input>
+                    <frames>
+                        <item timeline="${frameTL}" />
+                        <item timeline="${maskTL}" />
+                    </frames>
+                </input>
+                <output>
+                    <frames>
+                        <item image="${videoImage}" timeline="0" />
+                        <item image="${foregroundMask}" timeline="1" />
+                    </frames>
+                </output>
+                <config tolerance="200" />
             </service>
 
             <!-- Extract model called "Skin" in the model series -->

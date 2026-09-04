@@ -43,7 +43,7 @@ namespace sight::module::ui::qt
  *
  * @code{.xml}
    <service type="sight::module::ui::qt::material_opacity_editor">
-       <inout key="material" uid="..." />
+       <data material="..." />
        <label>Object's opacity: </label>
    </service>
    @endcode
@@ -89,7 +89,7 @@ private:
     /// Name that appears next to the slider.
     std::string m_label {"Material opacity : "};
 
-    data::ptr<data::material, data::access::inout> m_material {this, "material"};
+    data::ptr<data::material, data::access::inout> m_material {this, "data.material"};
 
 private Q_SLOTS:
 

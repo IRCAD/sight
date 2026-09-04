@@ -103,22 +103,22 @@ namespace sight::module::io::realsense
  * @section XML XML Configuration
  * @code{.xml}
    <service uid="videoGrabber" type ="sight::module::io::realsense::scan" auto_connect="false">
-        <inout key="depth_tl" uid="..." />
-        <inout key="frame_tl" uid="..." />
-        <out key="pointcloud" uid="..." />
-        <inout key="camera_set" uid="..." />
+        <timeline depth="..." />
+        <timeline image="..." />
+        <output pointcloud="..." />
+        <config camera_set="..." />
         <config fps="30" colorW="1280" colorH="720" depthW="1280" depthH="720" switchToIR="true/false" preset="..."
  * alignTo="Color"/>
         <recordFile>/path/to/the/file.bag</recordFile>
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b depth_tl [sight::data::frame_tl]: Frame timeline of the depth video.
- * - \b frame_tl [sight::data::frame_tl]: Frame timeline of the color video.
- * - \b camera_set [sight::data::camera_set]: Camera series that will contain device camera information.
+ * - \b timeline.depth [sight::data::frame_tl]: Frame timeline of the depth video.
+ * - \b timeline.image [sight::data::frame_tl]: Frame timeline of the color video.
+ * - \b config.camera_set [sight::data::camera_set]: Camera series that will contain device camera information.
  *
  * @subsection Output Output
- * - \b pointcloud [sight::data::mesh]: pointcloud computed from depth map. (optional)
+ * - \b output.pointcloud [sight::data::mesh]: pointcloud computed from depth map. (optional)
  *
  * @subsection Configuration Configuration
  * - \b fps: desired framerate (value can be [6-15-25-30-60-90]), note that fps is correlated to resolution (default
@@ -475,10 +475,10 @@ private:
 
     data::ptr<data::camera, data::access::in> m_camera {this, s_CAMERA_INPUT, true};
 
-    static constexpr std::string_view s_CAMERA_SET_INOUT = "camera_set";
+    static constexpr std::string_view s_CAMERA_SET_INOUT = "config.camera_set";
     data::ptr<data::camera_set, data::access::inout> m_camera_set {this, s_CAMERA_SET_INOUT, true};
 
-    static constexpr std::string_view s_POINTCLOUD_OUTPUT = "pointcloud";
+    static constexpr std::string_view s_POINTCLOUD_OUTPUT = "output.pointcloud";
     data::ptr<data::mesh, data::access::out> m_pointCloudOutput {this, s_POINTCLOUD_OUTPUT, true};
     data::mesh::sptr m_pointCloud;
 };

@@ -254,18 +254,20 @@ void grabber_proxy::start_camera()
                     // NOLINTEND(modernize-use-ranges,llvm-use-ranges)
 
                     std::size_t num_tl = 0;
-                    auto inouts_cfg    = config.equal_range("inout");
-                    for(auto it_cfg = inouts_cfg.first ; it_cfg != inouts_cfg.second ; ++it_cfg)
+                    auto timelines_cfg = config.equal_range("timeline");
+                    for(auto it_cfg = timelines_cfg.first ; it_cfg != timelines_cfg.second ; ++it_cfg)
                     {
-                        service::config_t parameter_cfg;
-
-                        const auto key = it_cfg->second.get<std::string>("<xmlattr>.key");
-                        SIGHT_DEBUG("Evaluating if key '" + key + "' is suitable...");
-                        const auto obj = this->inout(key).lock();
-                        SIGHT_ASSERT("Object key '" + key + "' not found", obj);
-                        if(obj->get_classname() == "data::frame_tl")
+                        for(const auto& attribute : it_cfg->second.get_child("<xmlattr>"))
                         {
-                            ++num_tl;
+                            const auto& key_suffix = attribute.first;
+                            const auto key         = "timeline." + key_suffix;
+                            SIGHT_DEBUG("Evaluating if key '" + key + "' is suitable...");
+                            const auto obj = this->inout(key).lock();
+                            SIGHT_ASSERT("Object key '" + key + "' not found", obj);
+                            if(obj->get_classname() == "data::frame_tl")
+                            {
+                                ++num_tl;
+                            }
                         }
                     }
 
@@ -465,16 +467,15 @@ void grabber_proxy::start_camera()
 
                 std::size_t input_tl_count = 0;
                 const auto proxy_config    = this->get_config();
-                auto inouts_cfg            = proxy_config.equal_range("inout");
-                for(auto it_cfg = inouts_cfg.first ; it_cfg != inouts_cfg.second ; ++it_cfg)
+                auto timelines_cfg         = proxy_config.equal_range("timeline");
+                for(auto it_cfg = timelines_cfg.first ; it_cfg != timelines_cfg.second ; ++it_cfg)
                 {
-                    const auto key = it_cfg->second.get<std::string>("<xmlattr>.key");
-                    SIGHT_ASSERT("Missing 'key' tag.", !key.empty());
-
-                    auto inout = this->inout(key).lock();
-                    if(inout)
+                    for(const auto& attribute : it_cfg->second.get_child("<xmlattr>"))
                     {
-                        if(key == grabber::FRAMETL_INOUT)
+                        const auto& key_suffix = attribute.first;
+                        const auto key         = "timeline." + key_suffix;
+                        auto inout             = this->inout(key).lock();
+                        if(inout && key == grabber::FRAMETL_INOUT)
                         {
                             auto frame_tl = std::dynamic_pointer_cast<data::frame_tl>(inout.get_shared());
                             if(m_services.size() > 1)
@@ -782,7 +783,7 @@ void grabber_proxy::fwd_set_parameter(ui::parameter_t _value, std::string _key)
 
 //------------------------------------------------------------------------------
 
-void grabber_proxy::fwd_create_monitor(sight::core::notification::monitor::sptr _monitor)
+void grabber_proxy::fwd_create_monitor(sight::core::notification::base::sptr _monitor)
 {
     this->emit_notification_created(_monitor);
 }

@@ -83,9 +83,9 @@ public:
         m_matrix_tl_1 = std::make_shared<sight::data::matrix_tl>();
         m_matrix_tl_1->init_pool_size(4);
 
-        srv->set_input(m_frame_tl_1, "frame_tl", true, false, 0);
-        srv->set_input(m_frame_tl_2, "frame_tl", true, false, 1);
-        srv->set_input(m_matrix_tl_1, "matrix_tl", true, false, 0);
+        srv->set_input(m_frame_tl_1, "input.frames.item.timeline", true, false, 0);
+        srv->set_input(m_frame_tl_2, "input.frames.item.timeline", true, false, 1);
+        srv->set_input(m_matrix_tl_1, "input.matrices.item.timeline", true, false, 0);
 
         // create and set the inout which will be filled in the synchronization process
         m_frame1 = std::make_shared<sight::data::image>();
@@ -113,9 +113,9 @@ public:
         m_matrix1          = std::make_shared<sight::data::matrix4>();
         (*m_matrix1)(0, 0) = 0.; // init the first value a 0. This will be filled with the timestamp in the tests.
 
-        srv->set_inout(m_frame1, "frames", false, false, 0);
-        srv->set_inout(m_frame2, "frames", false, false, 1);
-        srv->set_inout(m_matrix1, "matrix", false, false, 0);
+        srv->set_inout(m_frame1, "output.frames.item.image", false, false, 0);
+        srv->set_inout(m_frame2, "output.frames.item.image", false, false, 1);
+        srv->set_inout(m_matrix1, "output.matrices.item.matrix", false, false, 0);
     }
 
     //------------------------------------------------------------------------------
@@ -257,21 +257,21 @@ public:
         init_standard_in_out();
 
         const std::string config_string =
-            "<in group='frame_tl'>"
-            "    <key uid='frameTL1' />"
-            "    <key uid='frameTL2' />"
-            "</in>"
-            "<inout group='frames'>"
-            "    <key uid='frame1' tl='0'/>"
-            "    <key uid='frame2' tl='1' />"
-            "</inout>"
-            "<in group='matrix_tl'>"
-            "    <key uid='matrixTL1' />"
-            "</in>"
-            "<inout group='matrix'>"
-            "    <key uid='matrix1' tl='0'/>"
-            "</inout>"
-            "<tolerance>5</tolerance>";
+            "<input><frames>"
+            "    <item timeline='frameTL1' />"
+            "    <item timeline='frameTL2' />"
+            "</frames>"
+            "<matrices>"
+            "    <item timeline='matrixTL1' />"
+            "</matrices></input>"
+            "<output><frames>"
+            "    <item image='frame1' timeline='0' />"
+            "    <item image='frame2' timeline='1' />"
+            "</frames>"
+            "<matrices>"
+            "    <item matrix='matrix1' timeline='0' />"
+            "</matrices></output>"
+            "<config tolerance='5' />";
         srv->set_config(config_string);
 
         srv->configure();
@@ -781,14 +781,14 @@ TEST_SUITE("sight::module::sync::synchronizer")
     TEST_CASE_FIXTURE(fixture, "single_matrix_tl_config")
     {
         const std::string config_string =
-            "<in group='matrix_tl'>"
-            "   <key uid='matrixTL1' />"
-            "</in>"
-            "<inout group='matrix'>"
-            "   <key uid='matrix0' tl='0' index='1' sendStatus='true' />"
-            "   <key uid='matrix1' tl='0' index='0' />"
-            "</inout>"
-            "<legacyAutoSync>true</legacyAutoSync>";
+            "<input><matrices>"
+            "   <item timeline='matrixTL1' />"
+            "</matrices></input>"
+            "<output><matrices>"
+            "   <item matrix='matrix0' timeline='0' index='1' send_status='true' />"
+            "   <item matrix='matrix1' timeline='0' index='0' />"
+            "</matrices></output>"
+            "<config legacy_auto_sync='true' />";
 
         srv->set_config(config_string);
         srv->configure();
@@ -796,15 +796,15 @@ TEST_SUITE("sight::module::sync::synchronizer")
         // create input TLs
         sight::data::matrix_tl::sptr matrix_tl_1 = std::make_shared<sight::data::matrix_tl>();
         matrix_tl_1->init_pool_size(4);
-        srv->set_input(matrix_tl_1, "matrix_tl", true, false, 0);
+        srv->set_input(matrix_tl_1, "input.matrices.item.timeline", true, false, 0);
 
         // create output vars
         auto matrix0 = std::make_shared<sight::data::matrix4>();
         auto matrix1 = std::make_shared<sight::data::matrix4>();
         (*matrix0)(0, 0) = 0.; // init the first value a 0. This will be filled with the timestamp in the tests.
         (*matrix1)(0, 0) = 0.; // init the first value a 0. This will be filled with the timestamp in the tests.
-        srv->set_inout(matrix0, "matrix", false, false, 0);
-        srv->set_inout(matrix1, "matrix", false, false, 1);
+        srv->set_inout(matrix0, "output.matrices.item.matrix", false, false, 0);
+        srv->set_inout(matrix1, "output.matrices.item.matrix", false, false, 1);
 
         //start
         srv->start().get();
@@ -840,18 +840,18 @@ TEST_SUITE("sight::module::sync::synchronizer")
     TEST_CASE_FIXTURE(fixture, "mixt_matrix_tl_config")
     {
         const std::string config_string =
-            "<in group='matrix_tl'>"
-            "   <key uid='matrixTL1' />"
-            "   <key uid='matrixTL2' />"
-            "</in>"
-            "<inout group='matrix'>"
-            "    <key uid='matrix0' index='1'/>"
-            "    <key uid='matrix1' tl='0' index='0'/>"
-            "    <key uid='matrix2' tl='1' index='0'/>"
-            "    <key uid='matrix3' tl='1' index='1'/>"
-            "    <key uid='matrix4' tl='0' index='2'/>"
-            "</inout>"
-            "<legacyAutoSync>true</legacyAutoSync>";
+            "<input><matrices>"
+            "   <item timeline='matrixTL1' />"
+            "   <item timeline='matrixTL2' />"
+            "</matrices></input>"
+            "<output><matrices>"
+            "    <item matrix='matrix0' index='1' />"
+            "    <item matrix='matrix1' timeline='0' index='0' />"
+            "    <item matrix='matrix2' timeline='1' index='0' />"
+            "    <item matrix='matrix3' timeline='1' index='1' />"
+            "    <item matrix='matrix4' timeline='0' index='2' />"
+            "</matrices></output>"
+            "<config legacy_auto_sync='true' />";
 
         srv->set_config(config_string);
         srv->configure();
@@ -861,8 +861,8 @@ TEST_SUITE("sight::module::sync::synchronizer")
         sight::data::matrix_tl::sptr matrix_tl_2 = std::make_shared<sight::data::matrix_tl>();
         matrix_tl_1->init_pool_size(4);
         matrix_tl_2->init_pool_size(4);
-        srv->set_input(matrix_tl_1, "matrix_tl", true, false, 0);
-        srv->set_input(matrix_tl_2, "matrix_tl", true, false, 1);
+        srv->set_input(matrix_tl_1, "input.matrices.item.timeline", true, false, 0);
+        srv->set_input(matrix_tl_2, "input.matrices.item.timeline", true, false, 1);
 
         // create output vars
         auto matrix0 = std::make_shared<sight::data::matrix4>();
@@ -875,11 +875,11 @@ TEST_SUITE("sight::module::sync::synchronizer")
         (*matrix2)(0, 0) = 0.;
         (*matrix3)(0, 0) = 0.;
         (*matrix4)(0, 0) = 0.;
-        srv->set_inout(matrix0, "matrix", false, false, 0);
-        srv->set_inout(matrix1, "matrix", false, false, 1);
-        srv->set_inout(matrix2, "matrix", false, false, 2);
-        srv->set_inout(matrix3, "matrix", false, false, 3);
-        srv->set_inout(matrix4, "matrix", false, false, 4);
+        srv->set_inout(matrix0, "output.matrices.item.matrix", false, false, 0);
+        srv->set_inout(matrix1, "output.matrices.item.matrix", false, false, 1);
+        srv->set_inout(matrix2, "output.matrices.item.matrix", false, false, 2);
+        srv->set_inout(matrix3, "output.matrices.item.matrix", false, false, 3);
+        srv->set_inout(matrix4, "output.matrices.item.matrix", false, false, 4);
         //start
         srv->start().get();
         srv->update().get();
@@ -915,13 +915,13 @@ TEST_SUITE("sight::module::sync::synchronizer")
     TEST_CASE_FIXTURE(fixture, "single_frame_tl_config")
     {
         const std::string config_string =
-            "<in group='frame_tl'>"
-            "    <key uid='frameTL' />"
-            "</in>"
-            "<inout group='frames'>"
-            "    <key uid='frame' sendStatus='true' />"
-            "</inout>"
-            "<legacyAutoSync>true</legacyAutoSync>";
+            "<input><frames>"
+            "    <item timeline='frameTL' />"
+            "</frames></input>"
+            "<output><frames>"
+            "    <item image='frame' send_status='true' />"
+            "</frames></output>"
+            "<config legacy_auto_sync='true' />";
 
         srv->set_config(config_string);
         srv->configure();
@@ -935,7 +935,7 @@ TEST_SUITE("sight::module::sync::synchronizer")
             sight::data::frame_tl::pixel_format::gray_scale
         );
 
-        srv->set_input(frame_tl, "frame_tl", true, false, 0);
+        srv->set_input(frame_tl, "input.frames.item.timeline", true, false, 0);
 
         // create output vars
         auto frame = std::make_shared<sight::data::image>();
@@ -949,7 +949,7 @@ TEST_SUITE("sight::module::sync::synchronizer")
             std::fill(frame->begin<std::uint8_t>(), frame->end<std::uint8_t>(), static_cast<std::uint8_t>(0));
         }
 
-        srv->set_inout(frame, "frames", false, false, 0);
+        srv->set_inout(frame, "output.frames.item.image", false, false, 0);
 
         srv->start().get();
         srv->update().get();
@@ -984,18 +984,18 @@ TEST_SUITE("sight::module::sync::synchronizer")
     TEST_CASE_FIXTURE(fixture, "mixt_frame_tl_config")
     {
         const std::string config_string =
-            "<in group='frame_tl'>"
-            "    <key uid='frameTL1' />"
-            "    <key uid='frameTL4' />"
-            "    <key uid='frameTL6' />"
-            "</in>"
-            "<inout group='frames'>"
-            "    <key uid='frame1' sendStatus='true' />"
-            "    <key uid='frame6' tl='2' />"
-            "    <key uid='frame4' tl='1' sendStatus='false'/>"
-            "    <key uid='frame11' tl='0'  sendStatus='true' />"
-            "</inout>"
-            "<legacyAutoSync>true</legacyAutoSync>";
+            "<input><frames>"
+            "    <item timeline='frameTL1' />"
+            "    <item timeline='frameTL4' />"
+            "    <item timeline='frameTL6' />"
+            "</frames></input>"
+            "<output><frames>"
+            "    <item image='frame1' send_status='true' />"
+            "    <item image='frame6' timeline='2' />"
+            "    <item image='frame4' timeline='1' send_status='false' />"
+            "    <item image='frame11' timeline='0' send_status='true' />"
+            "</frames></output>"
+            "<config legacy_auto_sync='true' />";
 
         srv->set_config(config_string);
         srv->configure();
@@ -1025,9 +1025,9 @@ TEST_SUITE("sight::module::sync::synchronizer")
             sight::data::frame_tl::pixel_format::gray_scale
         );
 
-        srv->set_input(frame_tl_1, "frame_tl", true, false, 0);
-        srv->set_input(frame_tl_4, "frame_tl", true, false, 1);
-        srv->set_input(frame_tl_6, "frame_tl", true, false, 2);
+        srv->set_input(frame_tl_1, "input.frames.item.timeline", true, false, 0);
+        srv->set_input(frame_tl_4, "input.frames.item.timeline", true, false, 1);
+        srv->set_input(frame_tl_6, "input.frames.item.timeline", true, false, 2);
 
         // create output vars
         auto frame1 = std::make_shared<sight::data::image>();
@@ -1071,10 +1071,10 @@ TEST_SUITE("sight::module::sync::synchronizer")
             std::fill(frame11->begin<std::uint8_t>(), frame11->end<std::uint8_t>(), static_cast<std::uint8_t>(0));
         }
 
-        srv->set_inout(frame1, "frames", false, false, 0);
-        srv->set_inout(frame6, "frames", false, false, 1);
-        srv->set_inout(frame4, "frames", false, false, 2);
-        srv->set_inout(frame11, "frames", false, false, 3);
+        srv->set_inout(frame1, "output.frames.item.image", false, false, 0);
+        srv->set_inout(frame6, "output.frames.item.image", false, false, 1);
+        srv->set_inout(frame4, "output.frames.item.image", false, false, 2);
+        srv->set_inout(frame11, "output.frames.item.image", false, false, 3);
 
         srv->start().get();
         srv->update().get();
@@ -1111,30 +1111,29 @@ TEST_SUITE("sight::module::sync::synchronizer")
     TEST_CASE_FIXTURE(fixture, "full_config")
     {
         const std::string config_string =
-            "<in group='frame_tl'>"
-            "    <key uid='frameTL1' />"
-            "    <key uid='frameTL4' />"
-            "    <key uid='frameTL6' />"
-            "</in>"
-            "<inout group='frames'>"
-            "    <key uid='frame1' sendStatus='true' />"
-            "    <key uid='frame6' tl='2' />"
-            "    <key uid='frame4' tl='1' sendStatus='false'/>"
-            "    <key uid='frame11' tl='0'  sendStatus='true' />"
-            "</inout>"
-            "<in group='matrix_tl'>"
-            "    <key uid='matrixTL1' />"
-            "    <key uid='matrixTL2' />"
-            "</in>"
-            "<inout group='matrix'>"
-            "    <key uid='matrix0' index='1' />"
-            "    <key uid='matrix1' tl='0' index='0' />"
-            "    <key uid='matrix2' tl='1' index='0' sendStatus='false'/>"
-            "    <key uid='matrix3' tl='1' index='1'/>"
-            "    <key uid='matrix4' tl='0' index='2'/>"
-            "</inout>"
-            "<tolerance>500</tolerance>"
-            "<legacyAutoSync>true</legacyAutoSync>";
+            "<input><frames>"
+            "    <item timeline='frameTL1' />"
+            "    <item timeline='frameTL4' />"
+            "    <item timeline='frameTL6' />"
+            "</frames></input>"
+            "<output><frames>"
+            "    <item image='frame1' send_status='true' />"
+            "    <item image='frame6' timeline='2' />"
+            "    <item image='frame4' timeline='1' send_status='false' />"
+            "    <item image='frame11' timeline='0' send_status='true' />"
+            "</frames></output>"
+            "<input><matrices>"
+            "    <item timeline='matrixTL1' />"
+            "    <item timeline='matrixTL2' />"
+            "</matrices></input>"
+            "<output><matrices>"
+            "    <item matrix='matrix0' index='1' />"
+            "    <item matrix='matrix1' timeline='0' index='0' />"
+            "    <item matrix='matrix2' timeline='1' index='0' send_status='false' />"
+            "    <item matrix='matrix3' timeline='1' index='1' />"
+            "    <item matrix='matrix4' timeline='0' index='2' />"
+            "</matrices></output>"
+            "<config tolerance='500' legacy_auto_sync='true' />";
 
         srv->set_config(config_string);
         srv->configure();
@@ -1163,16 +1162,16 @@ TEST_SUITE("sight::module::sync::synchronizer")
             sight::data::frame_tl::pixel_format::gray_scale
         );
 
-        srv->set_input(frame_tl_1, "frame_tl", true, false, 0);
-        srv->set_input(frame_tl_4, "frame_tl", true, false, 1);
-        srv->set_input(frame_tl_6, "frame_tl", true, false, 2);
+        srv->set_input(frame_tl_1, "input.frames.item.timeline", true, false, 0);
+        srv->set_input(frame_tl_4, "input.frames.item.timeline", true, false, 1);
+        srv->set_input(frame_tl_6, "input.frames.item.timeline", true, false, 2);
 
         sight::data::matrix_tl::sptr matrix_tl_1 = std::make_shared<sight::data::matrix_tl>();
         sight::data::matrix_tl::sptr matrix_tl_2 = std::make_shared<sight::data::matrix_tl>();
         matrix_tl_1->init_pool_size(4);
         matrix_tl_2->init_pool_size(4);
-        srv->set_input(matrix_tl_1, "matrix_tl", true, false, 0);
-        srv->set_input(matrix_tl_2, "matrix_tl", true, false, 1);
+        srv->set_input(matrix_tl_1, "input.matrices.item.timeline", true, false, 0);
+        srv->set_input(matrix_tl_2, "input.matrices.item.timeline", true, false, 1);
 
         // create output vars
         auto frame1 = std::make_shared<sight::data::image>();
@@ -1216,10 +1215,10 @@ TEST_SUITE("sight::module::sync::synchronizer")
             std::fill(frame11->begin<std::uint8_t>(), frame11->end<std::uint8_t>(), static_cast<std::uint8_t>(0));
         }
 
-        srv->set_inout(frame1, "frames", false, false, 0);
-        srv->set_inout(frame6, "frames", false, false, 1);
-        srv->set_inout(frame4, "frames", false, false, 2);
-        srv->set_inout(frame11, "frames", false, false, 3);
+        srv->set_inout(frame1, "output.frames.item.image", false, false, 0);
+        srv->set_inout(frame6, "output.frames.item.image", false, false, 1);
+        srv->set_inout(frame4, "output.frames.item.image", false, false, 2);
+        srv->set_inout(frame11, "output.frames.item.image", false, false, 3);
 
         auto matrix0 = std::make_shared<sight::data::matrix4>();
         auto matrix1 = std::make_shared<sight::data::matrix4>();
@@ -1231,11 +1230,11 @@ TEST_SUITE("sight::module::sync::synchronizer")
         (*matrix2)(0, 0) = 0.;
         (*matrix3)(0, 0) = 0.;
         (*matrix4)(0, 0) = 0.;
-        srv->set_inout(matrix0, "matrix", false, false, 0);
-        srv->set_inout(matrix1, "matrix", false, false, 1);
-        srv->set_inout(matrix2, "matrix", false, false, 2);
-        srv->set_inout(matrix3, "matrix", false, false, 3);
-        srv->set_inout(matrix4, "matrix", false, false, 4);
+        srv->set_inout(matrix0, "output.matrices.item.matrix", false, false, 0);
+        srv->set_inout(matrix1, "output.matrices.item.matrix", false, false, 1);
+        srv->set_inout(matrix2, "output.matrices.item.matrix", false, false, 2);
+        srv->set_inout(matrix3, "output.matrices.item.matrix", false, false, 3);
+        srv->set_inout(matrix4, "output.matrices.item.matrix", false, false, 4);
 
         srv->start().get();
         srv->update().get();
@@ -1387,21 +1386,21 @@ TEST_SUITE("sight::module::sync::synchronizer")
     TEST_CASE_FIXTURE(fixture, "send_status")
     {
         const std::string config_string =
-            "<in group='frame_tl'>"
-            "    <key uid='frameTL1'  />"
-            "    <key uid='frameTL2' />"
-            "</in>"
-            "<inout group='frames'>"
-            "    <key uid='frame1' sendStatus='true' />"
-            "    <key uid='frame2' tl='1' />"
-            "</inout>"
-            "<in group='matrix_tl'>"
-            "    <key uid='matrixTL' />"
-            "</in>"
-            "<inout group='matrix'>"
-            "    <key uid='matrix0' sendStatus='true' />"
-            "</inout>"
-            "<tolerance>5</tolerance>";
+            "<input><frames>"
+            "    <item timeline='frameTL1' />"
+            "    <item timeline='frameTL2' />"
+            "</frames></input>"
+            "<output><frames>"
+            "    <item image='frame1' send_status='true' />"
+            "    <item image='frame2' timeline='1' />"
+            "</frames></output>"
+            "<input><matrices>"
+            "    <item timeline='matrixTL' />"
+            "</matrices></input>"
+            "<output><matrices>"
+            "    <item matrix='matrix0' send_status='true' />"
+            "</matrices></output>"
+            "<config tolerance='5' />";
 
         srv->set_config(config_string);
         srv->configure();
@@ -1565,22 +1564,21 @@ TEST_SUITE("sight::module::sync::synchronizer")
     TEST_CASE_FIXTURE(fixture, "delay")
     {
         const std::string config_string =
-            "<in group='frame_tl'>"
-            "    <key uid='frameTL1' delay='2' />"
-            "    <key uid='frameTL2' />"
-            "</in>"
-            "<inout group='frames'>"
-            "    <key uid='frame1' />"
-            "    <key uid='frame2' tl='1' />"
-            "</inout>"
-            "<in group='matrix_tl'>"
-            "    <key uid='matrixTL' delay='3'/>"
-            "</in>"
-            "<inout group='matrix'>"
-            "    <key uid='matrix0' />"
-            "</inout>"
-            "<tolerance>5</tolerance>"
-            "<legacyAutoSync>true</legacyAutoSync>";
+            "<input><frames>"
+            "    <item timeline='frameTL1' delay='2' />"
+            "    <item timeline='frameTL2' />"
+            "</frames></input>"
+            "<output><frames>"
+            "    <item image='frame1' />"
+            "    <item image='frame2' timeline='1' />"
+            "</frames></output>"
+            "<input><matrices>"
+            "    <item timeline='matrixTL' delay='3' />"
+            "</matrices></input>"
+            "<output><matrices>"
+            "    <item matrix='matrix0' />"
+            "</matrices></output>"
+            "<config tolerance='5' legacy_auto_sync='true' />";
 
         srv->set_config(config_string);
         srv->configure();
@@ -1742,18 +1740,15 @@ TEST_SUITE("sight::module::sync::synchronizer")
         const sight::data::image::size_t frame_size {2, 2, 1};
 
         const std::string config_string =
-            "<in group='frame_tl'>"
-            "    <key uid='frameTL1' />"
-            "</in>"
-            "<inout group='frames'>"
-            "    <key uid='frame1' />"
-            "</inout>";
+            "<input><frames>"
+            "    <item timeline='frameTL1' />"
+            "</frames></input>"
+            "<output><frames>"
+            "    <item image='frame1' />"
+            "</frames></output>";
 
         srv->set_config(config_string);
         srv->configure();
-
-        srv->start().get();
-        srv->update().get();
 
         // create and set the input TL
         sight::data::frame_tl::sptr frame_tl_1 = std::make_shared<sight::data::frame_tl>();
@@ -1764,7 +1759,7 @@ TEST_SUITE("sight::module::sync::synchronizer")
             sight::data::frame_tl::pixel_format::gray_scale
         );
 
-        srv->set_input(frame_tl_1, "frame_tl", true, false, 0);
+        srv->set_input(frame_tl_1, "input.frames.item.timeline", true, false, 0);
 
         // create and set the inout which will be filled in the synchronization process
         sight::data::image_series::sptr frame1 = std::make_shared<sight::data::image_series>();
@@ -1780,7 +1775,10 @@ TEST_SUITE("sight::module::sync::synchronizer")
             std::fill(frame1->begin<std::uint8_t>(), frame1->end<std::uint8_t>(), static_cast<std::uint8_t>(0));
         }
 
-        srv->set_inout(frame1, "frames", false, false, 0);
+        srv->set_inout(frame1, "output.frames.item.image", false, false, 0);
+
+        srv->start().get();
+        srv->update().get();
 
         sight::core::clock::type last_timestamp_synch = 0;
         auto slot_synchronization_done                =
@@ -1824,27 +1822,24 @@ TEST_SUITE("sight::module::sync::synchronizer")
 
         /// Service setup
         const std::string config_string =
-            "<in group='frame_tl'>"
-            "    <key uid='frameTL1' />"
-            "    <key uid='frameTL2' />"
-            "</in>"
-            "<inout group='frames'>"
-            "    <key uid='frame1' tl='0'/>"
-            "    <key uid='frame2' tl='1' />"
-            "</inout>"
-            "<in group='matrix_tl'>"
-            "    <key uid='matrixTL1' />"
-            "</in>"
-            "<inout group='matrix'>"
-            "    <key uid='matrix1' tl='0'/>"
-            "</inout>"
-            "<tolerance>5</tolerance>";
+            "<input><frames>"
+            "    <item timeline='frameTL1' />"
+            "    <item timeline='frameTL2' />"
+            "</frames></input>"
+            "<output><frames>"
+            "    <item image='frame1' timeline='0' />"
+            "    <item image='frame2' timeline='1' />"
+            "</frames></output>"
+            "<input><matrices>"
+            "    <item timeline='matrixTL1' />"
+            "</matrices></input>"
+            "<output><matrices>"
+            "    <item matrix='matrix1' timeline='0' />"
+            "</matrices></output>"
+            "<config tolerance='5' />";
 
         srv->set_config(config_string);
         srv->configure();
-
-        srv->start().get();
-        srv->update().get();
 
         /// Input/output setup
         // create and set the input TL
@@ -1866,9 +1861,9 @@ TEST_SUITE("sight::module::sync::synchronizer")
         sight::data::matrix_tl::sptr matrix_tl_1 = std::make_shared<sight::data::matrix_tl>();
         matrix_tl_1->init_pool_size(4);
 
-        srv->set_input(frame_tl_1, "frame_tl", true, false, 0);
-        srv->set_input(frame_tl_2, "frame_tl", true, false, 1);
-        srv->set_input(matrix_tl_1, "matrix_tl", true, false, 0);
+        srv->set_input(frame_tl_1, "input.frames.item.timeline", true, false, 0);
+        srv->set_input(frame_tl_2, "input.frames.item.timeline", true, false, 1);
+        srv->set_input(matrix_tl_1, "input.matrices.item.timeline", true, false, 0);
 
         // create and set the inout which will be filled in the synchronization process
         sight::data::image_series::sptr frame1 = std::make_shared<sight::data::image_series>();
@@ -1899,9 +1894,12 @@ TEST_SUITE("sight::module::sync::synchronizer")
         sight::data::matrix4::sptr matrix1 = std::make_shared<sight::data::matrix4>();
         (*matrix1)(0, 0) = 0.; // init the first value a 0. This will be filled with the timestamp in the tests.
 
-        srv->set_inout(frame1, "frames", false, false, 0);
-        srv->set_inout(frame2, "frames", false, false, 1);
-        srv->set_inout(matrix1, "matrix", false, false, 0);
+        srv->set_inout(frame1, "output.frames.item.image", false, false, 0);
+        srv->set_inout(frame2, "output.frames.item.image", false, false, 1);
+        srv->set_inout(matrix1, "output.matrices.item.matrix", false, false, 0);
+
+        srv->start().get();
+        srv->update().get();
 
         sight::core::clock::type last_timestamp_synch = 0;
         auto slot_synchronization_done                =

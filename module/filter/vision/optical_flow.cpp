@@ -77,7 +77,7 @@ void optical_flow::updating()
     // Scope to lock frameTL
     {
         const auto frame_tl = m_timeline.lock();
-        SIGHT_ASSERT(" Input " << FRAME_TIMELINE_INPUT << " cannot be null", frame_tl);
+        SIGHT_ASSERT(" Input " << m_timeline.key() << " cannot be null", frame_tl);
         core::clock::type timestamp = frame_tl->get_newer_timestamp();
         if(timestamp < m_last_timestamp + m_latency)
         {
@@ -219,11 +219,9 @@ void optical_flow::stopping()
 
 service::connections_t optical_flow::auto_connections() const
 {
-    connections_t connections;
-
-    connections.push(FRAME_TIMELINE_INPUT, data::timeline::signals::PUSHED, service::slots::UPDATE);
-
-    return connections;
+    return {
+        {m_timeline, data::timeline::signals::PUSHED, service::slots::UPDATE}
+    };
 }
 
 } //namespace sight::module::filter::vision

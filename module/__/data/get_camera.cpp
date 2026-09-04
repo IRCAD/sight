@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -29,29 +29,21 @@ namespace sight::module::data
 void get_camera::configuring()
 {
     service::config_t config = this->get_config();
-    const auto config_out    = config.equal_range("out");
-    for(auto it = config_out.first ; it != config_out.second ; ++it)
+    const auto config_output = config.equal_range("output");
+    for(auto it = config_output.first ; it != config_output.second ; ++it)
     {
-        const service::config_t& attr = it->second.get_child("<xmlattr>.group");
+        const auto camera = it->second.get_child_optional("<xmlattr>.index");
+        const auto index  = camera ? camera->get_value<size_t>() : 0;
+        const auto kind   = it->second.get_optional<std::string>("<xmlattr>.kind");
 
-        if(attr.get_value<std::string>() == "camera")
+        if(it->second.get_child_optional("<xmlattr>.camera") || (kind && *kind == "camera"))
         {
-            const auto key_range = it->second.equal_range("key");
-            for(auto it_key = key_range.first ; it_key != key_range.second ; ++it_key)
-            {
-                auto index = it_key->second.get<size_t>("<xmlattr>.index", 0);
-
-                m_camera_index_numbers.push_back(index);
-            }
+            m_camera_index_numbers.push_back(index);
         }
-        else if(attr.get_value<std::string>() == "extrinsic")
+
+        if(it->second.get_child_optional("<xmlattr>.extrinsic") || (kind && *kind == "extrinsic"))
         {
-            const auto key_range = it->second.equal_range("key");
-            for(auto it_key = key_range.first ; it_key != key_range.second ; ++it_key)
-            {
-                auto index = it_key->second.get<size_t>("<xmlattr>.index", 0);
-                m_extrinsic_index_numbers.push_back(index);
-            }
+            m_extrinsic_index_numbers.push_back(index);
         }
     }
 }
@@ -82,7 +74,6 @@ void get_camera::updating()
 
     if(!m_extrinsic_index_numbers.empty())
     {
-        size_t j = 0;
         for(auto& index : m_extrinsic_index_numbers)
         {
             if(camera_set->get_extrinsic_matrix(index) == nullptr)
@@ -90,8 +81,7 @@ void get_camera::updating()
                 SIGHT_THROW_EXCEPTION(sight::data::exception("Cameras does not have extrinsic Matrix"));
             }
 
-            m_extrinsic[j] = camera_set->get_extrinsic_matrix(index);
-            j++;
+            m_extrinsic[index] = camera_set->get_extrinsic_matrix(index);
         }
     }
 }

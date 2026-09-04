@@ -21,15 +21,14 @@
  ***********************************************************************/
 
 #include "test_services.hpp"
+#include <service/macros.hpp>
 
-SIGHT_REGISTER_SERVICE(
-    sight::app::ut::TestConfigService,
-    sight::app::ut::test1_image,
-    sight::data::image
-);
-
+SIGHT_REGISTER_SERVICE(sight::app::ut::test_config_service, sight::app::ut::test1_image, sight::data::image);
 SIGHT_REGISTER_SERVICE(sight::service::base, sight::app::ut::test_order_srv);
 SIGHT_REGISTER_SERVICE(sight::service::base, sight::app::ut::test_reset_order_srv);
+SIGHT_REGISTER_SERVICE(sight::app::updater, sight::app::ut::test_shutdown_updater);
+SIGHT_REGISTER_SERVICE(sight::service::base, sight::app::ut::test_shutdown_service);
+SIGHT_REGISTER_SERVICE(sight::service::base, sight::app::ut::test_blocking_update_service);
 
 namespace sight::app::ut
 {

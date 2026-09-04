@@ -51,11 +51,41 @@ synchronizer::synchronizer()
 service::connections_t synchronizer::auto_connections() const
 {
     return {
-        {config_key::FRAMETL_INPUT, data::timeline::signals::CLEARED, slots::RESET_TIMELINE},
-        {config_key::MATRIXTL_INPUT, data::timeline::signals::CLEARED, slots::RESET_TIMELINE},
-        {config_key::FRAMETL_INPUT, data::timeline::signals::PUSHED, slots::TRY_SYNC},
-        {config_key::MATRIXTL_INPUT, data::timeline::signals::PUSHED, slots::TRY_SYNC}
+        {config_key::FRAME_TIMELINES, data::timeline::signals::CLEARED, slots::RESET_TIMELINE},
+        {config_key::MATRIX_TIMELINES, data::timeline::signals::CLEARED, slots::RESET_TIMELINE},
+        {config_key::FRAME_TIMELINES, data::timeline::signals::PUSHED, slots::TRY_SYNC},
+        {config_key::MATRIX_TIMELINES, data::timeline::signals::PUSHED, slots::TRY_SYNC}
     };
+}
+
+// ----------------------------------------------------------------------------
+
+std::optional<std::string> synchronizer::resolve_object_type(
+    std::string_view _key,
+    std::optional<std::size_t> _index
+) const
+{
+    if(_index.has_value()
+       && (_key == config_key::FRAME_TIMELINES || _key == config_key::MATRIX_TIMELINES
+           || _key == config_key::FRAMES || _key == config_key::MATRICES))
+    {
+        return std::nullopt;
+    }
+
+    if(_index.has_value()
+       && (_key == config_key::FRAME_DELAYS || _key == config_key::MATRIX_DELAYS
+           || _key == config_key::FRAME_TIMELINE || _key == config_key::FRAME_INDEX
+           || _key == config_key::MATRIX_TIMELINE || _key == config_key::MATRIX_INDEX))
+    {
+        return data::integer::classname();
+    }
+
+    if(_index.has_value() && (_key == config_key::FRAME_SEND_STATUS || _key == config_key::MATRIX_SEND_STATUS))
+    {
+        return data::boolean::classname();
+    }
+
+    return service::synchronizer::resolve_object_type(_key, _index);
 }
 
 // ----------------------------------------------------------------------------
@@ -73,140 +103,45 @@ void synchronizer::configuring()
 
 void synchronizer::starting()
 {
-    const config_t& configuration = this->get_config();
+    const auto make_out_var_parameter = [](std::size_t _out_var_index, const auto& _timeline, const auto& _index,
+                                           const auto& _send_status)
+                                        {
+                                            const auto timeline    = _timeline.lock();
+                                            const auto index       = _index.lock();
+                                            const auto send_status = _send_status.lock();
 
-    // Iterates on all "in"
-    for(const auto& in_config : boost::make_iterator_range(configuration.equal_range("in")))
+                                            return out_var_parameter {
+                                                .out_var_index = _out_var_index,
+                                                .tl_index      =
+                                                    timeline ? static_cast<std::size_t>(timeline->value()) : 0,
+                                                .tl_element_index =
+                                                    index ? static_cast<unsigned int>(index->value()) : 0,
+                                                .is_synchronized        = false,
+                                                .signal_synchronization = send_status && send_status->value()
+                                            };
+                                        };
+
+    m_frame_out_var_parameters.clear();
+    m_frame_out_var_parameters.reserve(m_frames.size());
+    for(std::size_t index = 0 ; index < m_frames.size() ; ++index)
     {
-        if(const auto optional_group = in_config.second.get_optional<std::string>(config_key::GROUP);
-           optional_group
-           && (*optional_group == config_key::FRAMETL_INPUT || *optional_group == config_key::MATRIXTL_INPUT))
-        {
-            const auto& group = *optional_group;
-
-            // Iterates on all "key" in the "in"
-            for(const auto& key_config : boost::make_iterator_range(in_config.second.equal_range(config_key::KEY)))
-            {
-                int delay = 0;
-
-                // Get the delay, if any
-                if(const auto optional_delay = key_config.second.get_optional<std::string>(config_key::TL_DELAY);
-                   optional_delay)
-                {
-                    auto string_delay = *optional_delay;
-
-                    // Try to convert it to a string serializable object
-                    // This allows to handle the case where the delay is defined with a property
-                    /// @note This may need to be improved in the future to handle all attributes as properties
-                    if(const auto object =
-                           std::dynamic_pointer_cast<data::string_serializable>(core::id::get_object(string_delay));
-                       object)
-                    {
-                        string_delay = object->to_string();
-                    }
-
-                    // Parse the string to an integer
-                    try
-                    {
-                        delay = std::stoi(string_delay);
-                    }
-                    catch(...)
-                    {
-                        SIGHT_ERROR(string_delay << " cannot be converted to an integer. 0 will be used as delay.");
-                    }
-
-                    if(delay < 0)
-                    {
-                        SIGHT_ERROR("Synchronization delay should be positive. 0 will be used as delay.");
-                        delay = 0;
-                    }
-                }
-
-                if(group == config_key::FRAMETL_INPUT)
-                {
-                    m_frame_tl_delay.push_back(delay);
-                }
-                else if(group == config_key::MATRIXTL_INPUT)
-                {
-                    m_matrix_tl_delay.push_back(delay);
-                }
-            }
-        }
+        m_frame_out_var_parameters.push_back(
+            make_out_var_parameter(index, m_frame_timelines[index], m_frame_indices[index], m_frame_send_status[index])
+        );
     }
 
-    const auto inouts_config = configuration.equal_range("inout");
-    for(auto it_config = inouts_config.first ; it_config != inouts_config.second ; ++it_config)
+    m_matrix_out_var_parameters.clear();
+    m_matrix_out_var_parameters.reserve(m_matrices.size());
+    for(std::size_t index = 0 ; index < m_matrices.size() ; ++index)
     {
-        const std::string group = it_config->second.get<std::string>("<xmlattr>.group", "");
-
-        if(group == config_key::FRAME_INOUT)
-        {
-            std::size_t frame_index = 0;
-            const auto key_config   = it_config->second.equal_range(config_key::KEY);
-            for(auto frame_out_var_config = key_config.first ;
-                frame_out_var_config != key_config.second ;
-                ++frame_out_var_config, ++frame_index)
-            {
-                const std::size_t tl_index = frame_out_var_config->second.get<std::size_t>(
-                    config_key::OUTVAR_TL_INDEX,
-                    0
-                );
-                const unsigned int element_index = frame_out_var_config->second.get<unsigned int>(
-                    config_key::OUTVAR_ELEMENT_INDEX,
-                    0
-                );
-                const bool send_status = frame_out_var_config->second.get<bool>(
-                    config_key::OUTVAR_SEND_STATUS,
-                    false
-                );
-
-                m_frame_out_var_parameters.emplace_back(
-                    out_var_parameter(
-                    {
-                        .out_var_index          = frame_index,
-                        .tl_index               = tl_index,
-                        .tl_element_index       = element_index,
-                        .is_synchronized        = false,
-                        .signal_synchronization = send_status,
-                        .delay                  = 0
-                    })
-                );
-            }
-        }
-        else if(group == config_key::MATRIX_INOUT)
-        {
-            std::size_t matrix_index = 0;
-            const auto key_config    = it_config->second.equal_range(config_key::KEY);
-            for(auto matrix_out_var_config = key_config.first ;
-                matrix_out_var_config != key_config.second ;
-                ++matrix_out_var_config, ++matrix_index)
-            {
-                const std::size_t tl_index = matrix_out_var_config->second.get<std::size_t>(
-                    config_key::OUTVAR_TL_INDEX,
-                    0
-                );
-                const unsigned int element_index = matrix_out_var_config->second.get<unsigned int>(
-                    config_key::OUTVAR_ELEMENT_INDEX,
-                    0
-                );
-                const bool send_status = matrix_out_var_config->second.get<bool>(
-                    config_key::OUTVAR_SEND_STATUS,
-                    false
-                );
-
-                m_matrix_out_var_parameters.emplace_back(
-                    out_var_parameter(
-                    {
-                        .out_var_index          = matrix_index,
-                        .tl_index               = tl_index,
-                        .tl_element_index       = element_index,
-                        .is_synchronized        = false,
-                        .signal_synchronization = send_status,
-                        .delay                  = 0
-                    })
-                );
-            }
-        }
+        m_matrix_out_var_parameters.push_back(
+            make_out_var_parameter(
+                index,
+                m_matrix_timelines[index],
+                m_matrix_indices[index],
+                m_matrix_send_status[index]
+            )
+        );
     }
 
     SIGHT_ASSERT("No valid worker for timer.", this->worker());
@@ -271,9 +206,9 @@ void synchronizer::synchronize()
     std::vector<std::size_t> matrix_tl_populated_index;
     std::vector<core::clock::type> matrix_tl_populated_timestamp;
 
-    for(std::size_t i = 0 ; i != m_matrix_tl_s.size() ; ++i)
+    for(std::size_t i = 0 ; i != m_matrix_tls.size() ; ++i)
     {
-        const auto tl = m_matrix_tl_s[i].lock();
+        const auto tl = m_matrix_tls[i].lock();
         if(tl)
         {
             // get the tl new timestamp
@@ -412,9 +347,9 @@ void synchronizer::copy_frame_from_tl_to_output(
     core::clock::type _synchronization_timestamp
 )
 {
-    const auto frame_tl                           = m_frame_tls[_frame_tl_index].lock();
-    sight::csptr<data::frame_tl::buffer_t> buffer =
-        frame_tl->get_closest_buffer(_synchronization_timestamp - m_frame_tl_delay[_frame_tl_index]);
+    const auto frame_tl = m_frame_tls[_frame_tl_index].lock();
+    const auto delay    = static_cast<core::clock::type>(*m_frame_tl_delays[_frame_tl_index]);
+    const auto buffer   = frame_tl->get_closest_buffer(_synchronization_timestamp - delay);
 
     data::image::size_t frame_tl_size = {frame_tl->get_width(), frame_tl->get_height(), 0};
 
@@ -528,9 +463,9 @@ void synchronizer::copy_matrix_from_tl_to_output(
     core::clock::type _synchronization_timestamp
 )
 {
-    const auto matrix_tl                           = m_matrix_tl_s[_matrix_tl_index].lock();
-    sight::csptr<data::matrix_tl::buffer_t> buffer =
-        matrix_tl->get_closest_buffer(_synchronization_timestamp - m_matrix_tl_delay[_matrix_tl_index]);
+    const auto matrix_tl = m_matrix_tls[_matrix_tl_index].lock();
+    const auto delay     = static_cast<core::clock::type>(*m_matrix_tl_delays[_matrix_tl_index]);
+    const auto buffer    = matrix_tl->get_closest_buffer(_synchronization_timestamp - delay);
 
     if(buffer)
     {
@@ -541,7 +476,7 @@ void synchronizer::copy_matrix_from_tl_to_output(
 
             if(buffer->is_present(matrix_tl_element_index))
             {
-                auto matrix = m_matrix[matrix_out_index].lock();
+                auto matrix = m_matrices[matrix_out_index].lock();
                 SIGHT_ASSERT("Matrix with indices '" << matrix_out_index << "' does not exist", matrix);
                 const auto& values = buffer->get_element(matrix_tl_element_index);
                 for(std::uint8_t i = 0 ; i < 4 ; ++i)
@@ -703,9 +638,10 @@ void synchronizer::set_delay(int _val, std::string _key)
             static constexpr size_t s_FRAME_DELAY_KEY_SIZE = std::size(slots::FRAME_DELAY_PREFIX);
             const size_t frame_tl_index                    =
                 static_cast<size_t>(std::stoul(_key.substr(s_FRAME_DELAY_KEY_SIZE)));
-            if(frame_tl_index < m_frame_tl_delay.size())
+            if(frame_tl_index < m_frame_tl_delays.size())
             {
-                m_frame_tl_delay[frame_tl_index] = _val;
+                auto delay = m_frame_tl_delays[frame_tl_index].lock();
+                delay->set_value(_val);
             }
             else
             {
@@ -727,9 +663,10 @@ void synchronizer::set_delay(int _val, std::string _key)
             static constexpr size_t s_MATRIX_DELAY_KEY_SIZE = std::size(slots::MATRIX_DELAY_PREFIX);
             const size_t matrix_tl_index                    =
                 static_cast<size_t>(std::stoul(_key.substr(s_MATRIX_DELAY_KEY_SIZE)));
-            if(matrix_tl_index < m_matrix_tl_delay.size())
+            if(matrix_tl_index < m_matrix_tl_delays.size())
             {
-                m_matrix_tl_delay[matrix_tl_index] = _val;
+                auto delay = m_matrix_tl_delays[matrix_tl_index].lock();
+                delay->set_value(_val);
             }
             else
             {

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024 IRCAD France
+ * Copyright (C) 2024-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -33,7 +33,7 @@ namespace sight::app
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service uid="..." type="sight::app::update_sequence">
+        <service uid="..." type="sight::app::update_sequence" worker="...">
             <config loop="true">
                 <service uid="..." />
                 <service uid="..." />
@@ -44,6 +44,7 @@ namespace sight::app
  * @subsection Configuration Configuration
  *  - \b loop: call the update sequence in loop when the service starts and until it stops.
  *  - \b parent: uid of the parent updater slot, as specified by the parent service in an <updater> element.
+ *  - \b worker: optional worker on which the update sequence runs.
  *  - \b service: uid of the service
  *  - \b updater: uid of another updater, identified by a registration id. In this case, the updater
  * must use this id in the "parent" attribute.
@@ -57,7 +58,7 @@ public:
     /// Destructor
     SIGHT_APP_API ~update_sequence() final = default;
 
-private:
+protected:
 
     /// Does nothing
     SIGHT_APP_API void starting() final;

@@ -25,7 +25,6 @@
 #include <core/com/has_slots.hpp>
 #include <core/com/signal.hpp>
 
-#include <data/image.hpp>
 #include <data/integer.hpp>
 #include <data/ptr.hpp>
 #include <data/string.hpp>
@@ -437,15 +436,51 @@ private:
     data::ptr<data::object, data::access::inout> m_inout3 {this, "data3"};
 };
 
-class test_parallel_groups : public service::base
+class test_parallel_groups_1 : public service::base
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(test_parallel_groups, service::base);
+    SIGHT_DECLARE_SERVICE(test_parallel_groups_1, service::base);
 
     data::ptr_vector<data::string, data::access::in> m_object1 {this, "item.object1"};
     data::ptr_vector<data::string, data::access::in> m_object2 {this, "item.object2", std::nullopt};
     data::ptr_vector<data::string, data::access::in> m_object3 {this, "item.object3", std::string("default")};
+
+protected:
+
+    //------------------------------------------------------------------------------
+
+    void configuring() override
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void starting() override
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void stopping() override
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void updating() override
+    {
+    }
+};
+
+class test_parallel_groups_2 : public service::base
+{
+public:
+
+    SIGHT_DECLARE_SERVICE(test_parallel_groups_2, service::base);
+
+    data::ptr_vector<data::string, data::access::in> m_object1 {this, "item.object1"};
+    data::ptr_vector<data::integer, data::access::in> m_object2 {this, "item.object2", 0};
 
 protected:
 

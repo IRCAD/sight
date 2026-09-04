@@ -23,6 +23,7 @@ add_dependencies(
     module_io_vtk
     module_service
     module_sync # Provides the synchronization between the video and the tracking data
+    module_ui
     module_ui_icons
     module_ui_qt
     module_viz_scene3d

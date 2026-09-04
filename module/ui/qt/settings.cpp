@@ -390,12 +390,10 @@ void settings::starting()
 
             if(widget_type == "combobox")
             {
-                SIGHT_ASSERT(get_id() << ": Missing values for " << std::quoted(widget.name), !enum_labels.empty());
                 this->create_enum_combobox_widget(param_box_layout, widget, enum_labels, enum_keys);
             }
             else if(widget_type == "comboslider")
             {
-                SIGHT_ASSERT(get_id() << ": Missing values for " << std::quoted(widget.name), !enum_labels.empty());
                 const bool on_release = cfg.get<bool>("<xmlattr>.emit_on_release", false);
 
                 this->create_enum_slider_widget(param_box_layout, widget, enum_labels, orientation, on_release);
@@ -476,7 +474,7 @@ void settings::starting()
         sight::data::object::sptr obj;
         lock = m_settings[data_index].lock();
         obj  = lock.get_shared();
-        key  = cfg.get<std::string>("<xmlattr>.key", obj->base_id());
+        key  = cfg.get<std::string>("<xmlattr>.key", obj->get_id());
 
         const std::string depends       = cfg.get<std::string>("<xmlattr>.depends", "");
         const std::string depends_value = cfg.get<std::string>("<xmlattr>.depends_value", "");

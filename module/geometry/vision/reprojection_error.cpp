@@ -46,21 +46,12 @@ reprojection_error::reprojection_error()
 
 void reprojection_error::configuring(const config_t& _config)
 {
-    auto in_cfg = _config.equal_range("in");
-    for(auto it_cfg = in_cfg.first ; it_cfg != in_cfg.second ; ++it_cfg)
+    const auto& matrix_cfg  = _config.get_child("input.matrix");
+    const auto matrix_items = matrix_cfg.equal_range("item");
+    for(auto it_item_cfg = matrix_items.first ; it_item_cfg != matrix_items.second ; ++it_item_cfg)
     {
-        const auto group = it_cfg->second.get<std::string>("<xmlattr>.group", "");
-        if(group == MATRIX_INPUT)
-        {
-            auto key_cfg = it_cfg->second.equal_range("key");
-            for(auto it_key_cfg = key_cfg.first ; it_key_cfg != key_cfg.second ; ++it_key_cfg)
-            {
-                const auto key = it_key_cfg->second.get<std::string>("<xmlattr>.id");
-                m_matrices_tag.push_back(key);
-            }
-
-            break;
-        }
+        const auto key = it_item_cfg->second.get<std::string>("<xmlattr>.id");
+        m_matrices_tag.push_back(key);
     }
 }
 
@@ -188,7 +179,7 @@ void reprojection_error::compute(core::clock::type _timestamp)
             for(const auto& err : errors)
             {
                 auto frame = m_frame.lock();
-                SIGHT_ASSERT("The input " << FRAME_INOUT << " is not valid.", frame);
+                SIGHT_ASSERT("The data " << m_frame.key() << " is not valid.", frame);
 
                 if(frame->size_in_bytes() > 0)
                 {
@@ -228,7 +219,7 @@ void reprojection_error::updating()
 service::connections_t reprojection_error::auto_connections() const
 {
     return {
-        {MATRIX_INPUT, data::signals::MODIFIED, service::slots::UPDATE}
+        {m_matrix, data::signals::MODIFIED, service::slots::UPDATE}
     };
 }
 

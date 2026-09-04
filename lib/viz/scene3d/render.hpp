@@ -28,6 +28,7 @@
 #include "viz/scene3d/window_interactor.hpp"
 
 #include <data/image.hpp>
+#include <data/string.hpp>
 
 #include <viz/__/render.hpp>
 
@@ -58,11 +59,12 @@ class layer;
  * - \b enable_fullscreen(int): switches fullscreen rendering on the given screen.
  * - \b set_manual_mode(): switches to manual mode, the scene is rendered whenever the request_render() slot is called.
  * - \b set_auto_mode(): switches to auto mode, the scene is rendered whenever an adaptor decides it.
+ * - \b update_render_mode(): updates the rendering mode from the scene.render_mode data.
  *
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="sight::viz::scene3d::render" auto_connect="true">
-        <scene renderMode="auto">
+        <scene render_mode="auto">
             <background topColor="#000000" bottomColor="#FFFFFF" topScale="0.7" bottomScale="1.0"/>
 
             <layer id="...">
@@ -82,7 +84,7 @@ class layer;
  *
  * @subsection Configuration Configuration
  *  - \b scene (mandatory)
- *      - \b renderMode (optional, auto/manual, default=auto): 'auto' (when any of the adaptor calls "request_render",
+ *      - \b render_mode (optional, auto/manual, default=auto): 'auto' (when any of the adaptor calls "request_render",
  *           i.e. when its data has changed), or 'manual' (only when the slot "request_render" is called). This can also
  *           be changed at runtime with setManualMode and setAutoMode slots.
  *      - \b width (optional, int, default=1280): width for off-screen rendering.
@@ -94,7 +96,7 @@ class layer;
  *      - \b bottomColor (optional, hexadecimal, default=#000000): top color of the background.
  *      - \b topScale (optional, float, default=0): top background scale.
  *      - \b bottomScale (optional, float, default=1): bottom background scale.
- *      - \b material (optional): overrides the default gradient material. Provide the name of the Ogre material.
+ *      - \b material (optional): finals the default gradient material. Provide the name of the Ogre material.
  *  - \b layer (mandatory): defines the scene's layer.
  *      - \b viewport (optional):
  *          - \b hAlign (optional, left|center|right, default=left): defines the horizontal origin of the viewport.
@@ -155,8 +157,7 @@ public:
         static inline const slot_key_t RENDER              = "render";
         static inline const slot_key_t DISABLE_FULLSCREEN  = "disable_fullscreen";
         static inline const slot_key_t ENABLE_FULLSCREEN   = "enable_fullscreen";
-        static inline const slot_key_t SET_MANUAL_MODE     = "set_manual_mode";
-        static inline const slot_key_t SET_AUTO_MODE       = "set_auto_mode";
+        static inline const slot_key_t UPDATE_RENDER_MODE  = "update_render_mode";
     };
 
     /// Defines the type of adaptors ID.
@@ -181,7 +182,7 @@ public:
     SIGHT_VIZ_SCENE3D_API render() noexcept;
 
     /// Destroys the service.
-    SIGHT_VIZ_SCENE3D_API ~render() noexcept override;
+    SIGHT_VIZ_SCENE3D_API ~render() noexcept final;
 
     /// Sets this render service as the current OpenGL context.
     SIGHT_VIZ_SCENE3D_API void make_current();
@@ -219,25 +220,28 @@ public:
     /// Unregisters the adaptor
     void unregister_adaptor(const sight::sptr<viz::scene3d::adaptor>& _adaptor);
 
-    /// Sets the rendering mode
-    void set_render_mode(bool _manual) const;
-
     /// Returns the rendering mode
     render_mode get_render_mode() const;
 
 protected:
 
+    /// Connects the rendering mode data to its update slot.
+    SIGHT_VIZ_SCENE3D_API service::connections_t auto_connections() const final;
+
     /// Configures adaptors and connections.
-    SIGHT_VIZ_SCENE3D_API void starting() override;
+    SIGHT_VIZ_SCENE3D_API void starting() final;
 
     /// Stops all adaptors
-    SIGHT_VIZ_SCENE3D_API void stopping() override;
+    SIGHT_VIZ_SCENE3D_API void stopping() final;
 
     /// Configures the adaptor.
-    SIGHT_VIZ_SCENE3D_API void configuring() override;
+    SIGHT_VIZ_SCENE3D_API void configuring() final;
 
     /// Does nothing.
-    SIGHT_VIZ_SCENE3D_API void updating() override;
+    SIGHT_VIZ_SCENE3D_API void updating() final;
+
+    /// Updates the rendering mode from the scene.render_mode data.
+    void update_render_mode();
 
 private:
 
@@ -272,7 +276,10 @@ private:
     Ogre::Root* m_ogre_root {nullptr};
 
     /// Defines how the rendering is triggered.
-    render_mode m_render_mode {render_mode::automatic};
+    render_mode m_render_mode_enum {render_mode::automatic};
+
+    /// Data defining how the rendering is triggered.
+    sight::data::ptr<sight::data::string> m_render_mode {this, "scene.render_mode", std::string("auto")};
 
     /// Defines if the render window is in fullscreen.
     bool m_fullscreen {false};
@@ -328,7 +335,7 @@ std::vector<sight::sptr<T> > render::get_adaptors() const
 
 inline render::render_mode render::get_render_mode() const
 {
-    return m_render_mode;
+    return m_render_mode_enum;
 }
 
 //-----------------------------------------------------------------------------

@@ -32,9 +32,7 @@
 
 #include <service/controller.hpp>
 
-#include <ui/__/parameter.hpp>
-
-#include <opencv2/core.hpp>
+#include <opencv2/core/mat.hpp>
 
 namespace sight::module::geometry::vision
 {
@@ -50,31 +48,29 @@ namespace sight::module::geometry::vision
  *
  * @code{.xml}
      <service uid="..." type="sight::module::geometry::vision::reprojection_error">
-         <in group="matrix">
-             <key uid="..." />
-             <key uid="..." />
-             <key uid="..." />
-             <key uid="..." />
-         </in>
-         <in key="marker_map" uid="..." />
-         <in key="camera" uid="..."/>
-         <in key="extrinsic" uid="..." />
-         <inout key="frame" uid="..." />
-         <pattern_width>80</pattern_width>
+         <input marker_map="..." camera="..." extrinsic="...">
+             <matrix>
+                 <item data="..." id="..." />
+             </matrix>
+         </input>
+         <output frame="..." />
+         <config pattern_width="80" />
      </service>
    @endcode
  * @subsection Input Input
- * - \b marker_map [sight::data::marker_map]: markers map list.
- * - \b camera [sight::data::camera]: calibrated cameras.
- * - \b extrinsic [sight::data::matrix4]: extrinsic matrix, only used if you have two cameras configured.
- * - \b matrix [sight::data::matrix4]: list of matrices related to the markers. The marker's id must be
+ * - \b input.camera [sight::data::camera]: calibrated cameras.
+ * - \b input.extrinsic [sight::data::matrix4]: extrinsic matrix, only used if you have two cameras configured.
+ * - \b input.matrix.item.data [sight::data::matrix4]: list of matrices related to the markers. The marker's id must be
  * specified using the \b id tag to be found in the marker map.
- * @subsection InOut InOut
- * - \b frame [sight::data::image]: video frame.
+ * - \b input.marker_map [sight::data::marker_map]: markers map list.
+ * @subsection In-Out In-Out
+ * - \b output.frame [sight::data::image]: video frame.
  * @subsection Output Output
  * - \b error [sight::data::real] : computed error
  * @subsection Configuration Configuration
- * - \b pattern_width : width of the tag.
+ * - \b config.display : enables drawing of the reprojected points.
+ * - \b config.color : color used to draw the reprojected points.
+ * - \b config.pattern_width : width of the tag.
  */
 class reprojection_error : public service::controller
 {
@@ -141,21 +137,15 @@ private:
     /// List of tags associated with each input matrix
     std::vector<data::marker_map::key_t> m_matrices_tag;
 
-    static constexpr std::string_view MATRIX_INPUT     = "matrix";
-    static constexpr std::string_view MARKER_MAP_INPUT = "marker_map";
-    static constexpr std::string_view CAMERA_INPUT     = "camera";
-    static constexpr std::string_view EXTRINSIC_INPUT  = "extrinsic";
-    static constexpr std::string_view FRAME_INOUT      = "frame";
+    data::ptr_vector<data::matrix4, data::access::in> m_matrix {this, "input.matrix.item.data"};
+    data::ptr<data::marker_map, data::access::in> m_marker_map {this, "input.marker_map"};
+    data::ptr<data::camera, data::access::in> m_camera {this, "input.camera"};
+    data::ptr<data::matrix4, data::access::in> m_extrinsic {this, "input.extrinsic"};
+    data::ptr<data::image, data::access::inout> m_frame {this, "output.frame"};
 
-    data::ptr_vector<data::matrix4, data::access::in> m_matrix {this, MATRIX_INPUT};
-    data::ptr<data::marker_map, data::access::in> m_marker_map {this, MARKER_MAP_INPUT};
-    data::ptr<data::camera, data::access::in> m_camera {this, CAMERA_INPUT};
-    data::ptr<data::matrix4, data::access::in> m_extrinsic {this, EXTRINSIC_INPUT};
-    data::ptr<data::image, data::access::inout> m_frame {this, FRAME_INOUT};
-
-    data::property<data::boolean> m_display {this, "display", true};
-    data::property<data::color> m_color {this, "color", {1.0, 1.0, 1.0, 1.0}};
-    data::property<data::real> m_pattern_width {this, "pattern_width", 80.};
+    data::ptr<data::boolean> m_display {this, "config.display", true};
+    data::ptr<data::color> m_color {this, "config.color", {1.0, 1.0, 1.0, 1.0}};
+    data::ptr<data::real> m_pattern_width {this, "config.pattern_width", 80.};
 };
 
 } //namespace sight::module::geometry::vision

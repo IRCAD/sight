@@ -19,9 +19,13 @@
  *
  ***********************************************************************/
 
+#include <data/boolean.hpp>
 #include <data/camera.hpp>
 #include <data/image.hpp>
+#include <data/integer.hpp>
+#include <data/map.hpp>
 #include <data/marker_map.hpp>
+#include <data/real.hpp>
 
 #include <service/op.hpp>
 
@@ -35,11 +39,25 @@ TEST_SUITE("sight::module::geometry::vision")
 
         sight::data::camera::sptr camera         = std::make_shared<sight::data::camera>();
         sight::data::image::sptr frame           = std::make_shared<sight::data::image>();
+        sight::data::image::sptr debug_frame     = std::make_shared<sight::data::image>();
         sight::data::marker_map::sptr marker_map = std::make_shared<sight::data::marker_map>();
+        sight::data::map::sptr config_data       = std::make_shared<sight::data::map>();
 
-        srv->set_input(camera, "camera");
-        srv->set_inout(frame, "frame");
-        srv->set_inout(marker_map, "marker_map", true, true, 0);
+        (*config_data)["corner_refinement.enabled"]        = std::make_shared<sight::data::boolean>(true);
+        (*config_data)["adaptive_threshold.win_size_min"]  = std::make_shared<sight::data::integer>(3);
+        (*config_data)["adaptive_threshold.win_size_max"]  = std::make_shared<sight::data::integer>(23);
+        (*config_data)["corner_refinement.max_iterations"] = std::make_shared<sight::data::integer>(30);
+        (*config_data)["corner_refinement.min_accuracy"]   = std::make_shared<sight::data::real>(0.1);
+        srv->set_input((*config_data)["corner_refinement.enabled"], "config.corner_refinement.enabled");
+        srv->set_input((*config_data)["adaptive_threshold.win_size_min"], "config.adaptive_threshold.win_size_min");
+        srv->set_input((*config_data)["adaptive_threshold.win_size_max"], "config.adaptive_threshold.win_size_max");
+        srv->set_input((*config_data)["corner_refinement.max_iterations"], "config.corner_refinement.max_iterations");
+        srv->set_input((*config_data)["corner_refinement.min_accuracy"], "config.corner_refinement.min_accuracy");
+
+        srv->set_input(camera, "input.camera");
+        srv->set_input(frame, "input.frame");
+        srv->set_inout(debug_frame, "output.debug_frame");
+        srv->set_inout(marker_map, "output.marker_map.item.data", true, true, 0);
 
         const std::string config =
             "<track>"

@@ -77,8 +77,8 @@ namespace sight::module::io::video
  *
  * @code{.xml}
         <service type="sight::module::io::video::frame_grabber">
-            <in key="camera" uid="..." />
-            <inout key="frame_tl" uid="..." />
+            <config camera="..." />
+            <timeline image="..." />
             <fps>30</fps>
             <oneShot>false</oneShot>
             <createTimestamp>false</createTimestamp>
@@ -88,9 +88,9 @@ namespace sight::module::io::video
         </service>
    @endcode
  * @subsection Input Input
- * - \b camera [sight::data::camera]: camera used to display video.
+ * - \b config.camera [sight::data::camera]: camera used to display video.
  * @subsection In-Out In-Out
- * - \b frame_tl [sight::data::frame_tl]: timeline where to extract the video frames.
+ * - \b timeline.image [sight::data::frame_tl]: timeline where to extract the video frames.
  * @subsection Configuration Configuration
  * - \b fps (optional) : target playback frame rate when playing an image sequence (default: 30).
  * - \b useTimelapse (optional): if true, the difference between two image's timestamps will be use as timer duration,

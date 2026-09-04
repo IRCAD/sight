@@ -476,44 +476,47 @@
 
             <!-- GUI to select camera (device, file, or stream) -->
             <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::camera">
-                <inout key="camera_set" uid="RGBDCameraSet" />
+                <data camera_set="${RGBDCameraSet}" />
                 <createCameraNumber>1</createCameraNumber>
                 <videoSupport>true</videoSupport>
             </service>
 
             <!-- Manages Sense camera configuration -->
             <service uid="videoGrabberSrv" type="sight::module::io::realsense::scan">
-                <inout key="camera_set" uid="RGBDCameraSet" />
-                <inout key="depth_tl" uid="frameTLDepth" />
-                <inout key="frame_tl" uid="frameTLVideo" />
-                <out key="pointcloud" uid="pointcloud" />
+                <config camera_set="${RGBDCameraSet}" />
+                <timeline depth="${frameTLDepth}" />
+                <timeline image="${frameTLVideo}" />
+                <output pointcloud="${pointcloud}" />
             </service>
 
             <service uid="frameUpdaterSrv" type="sight::module::sync::synchronizer">
-                <in group="frame_tl">
-                    <key uid="frameTLVideo" />
-                    <key uid="frameTLDepth" />
-                </in>
-                <inout group="frames">
-                    <key uid="videoImage" tl="0" />
-                    <key uid="imageDepth" tl="1" />
-                </inout>
-                <tolerance>50</tolerance>
+                <input>
+                    <frames>
+                        <item timeline="${frameTLVideo}" />
+                        <item timeline="${frameTLDepth}" />
+                    </frames>
+                </input>
+                <output>
+                    <frames>
+                        <item image="${videoImage}" timeline="0" />
+                        <item image="${imageDepth}" timeline="1" />
+                    </frames>
+                </output>
+                <config tolerance="50" />
             </service>
 
             <!-- extract a sight::data::camera from the sight::data::camera_set -->
             <service uid="extractCameraSrv" type="sight::module::data::get_camera">
-                <inout key="camera_set" uid="RGBDCameraSet" auto_connect="true" />
-                <out group="camera">
+                <input camera_set="${RGBDCameraSet}" />
+                <output camera="${DCamera}" index="0">
                     <!-- Depth/Infrared1 Camera -->
-                    <key index="0" uid="DCamera" />
+                </output>
+                <output camera="${RGBCamera}" index="1">
                     <!-- Color Camera -->
-                    <key index="1" uid="RGBCamera" />
-                </out>
-                <out group="extrinsic">
+                </output>
+                <output extrinsic="${depth_to_color}" index="0">
                     <!-- Infrared1 to Color coordinate frame -->
-                    <key index="0" uid="depth_to_color" />
-                </out>
+                </output>
             </service>
 
             <!-- ******************************* Begin Generic scene ******************************* -->
