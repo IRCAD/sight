@@ -1392,7 +1392,7 @@ QProgressBar::chunk
 /********************** Notification Popups *****************************/
 /************************************************************************/
 
-#NotificationDialog_Success
+#NotificationDialog_Instruction
 {
     background-color: rgb(119, 183, 103);
     color: rgb(255, 255, 255);
@@ -1401,7 +1401,7 @@ QProgressBar::chunk
     border-radius: 4px;
 }
 
-#NotificationDialog_Failure
+#NotificationDialog_Error
 {
     background-color: rgb(255, 107, 104);
     color: rgb(255, 255, 255);
@@ -1410,7 +1410,7 @@ QProgressBar::chunk
     border-radius: 4px;
 }
 
-#NotificationDialog_Info
+#NotificationDialog_Information
 {
     background-color: rgb(104, 151, 187);
     color: rgb(255, 255, 255);

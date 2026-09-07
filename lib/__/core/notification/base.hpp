@@ -33,6 +33,7 @@
 #include <cstdint>
 #include <functional>
 #include <optional>
+#include <string>
 
 namespace sight::core::notification
 {
@@ -117,6 +118,16 @@ public:
 
     /// Getter on the current State. @see State
     SIGHT_CORE_API state_t state() const;
+
+    /**
+     * @brief Getter on the identifier used by the notification's consumer (e.g.
+     * sight::module::ui::notification_merger) to recognize the notification. Empty unless explicitly set.
+     */
+    [[nodiscard]] SIGHT_CORE_API const std::string& id() const noexcept;
+
+    /// Setter on the identifier, called by has_notifications when it resolves the key of a notification it
+    /// emits. Must be called before the notification is emitted. @see id()
+    SIGHT_CORE_API void set_id(std::string _id);
 
     /**
      * @brief Returns whether the notification is finished.
@@ -212,6 +223,9 @@ private:
 
     /// notification's state
     state_t m_state {waiting};
+
+    /// Identifier used by the notification's consumer to recognize it. @see id()
+    std::string m_id;
 
     /// Mutex to protect object access.
     mutable core::mt::read_write_mutex m_mutex;

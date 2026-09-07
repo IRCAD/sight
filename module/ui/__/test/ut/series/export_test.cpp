@@ -19,58 +19,67 @@
  *
  ***********************************************************************/
 
-#include "export_test.hpp"
-
 #include <data/series.hpp>
 #include <data/series_set.hpp>
 
+#include <service/base.hpp>
 #include <service/op.hpp>
 
 #include <ui/test/dialog/input.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::ui::series::ut::export_test);
+#include <doctest/doctest.h>
 
-namespace sight::module::ui::series::ut
+#include <memory>
+
+namespace
 {
 
-//------------------------------------------------------------------------------
-
-void export_test::setUp()
+struct series_export_fixture
 {
-    m_export = service::add("sight::module::ui::series::exporter");
-    CPPUNIT_ASSERT_MESSAGE("Failed to create service 'sight::module::ui::series::exporter'", m_export);
-}
-
-//------------------------------------------------------------------------------
-
-void export_test::tearDown()
-{
-    if(!m_export->stopped())
+    series_export_fixture()
     {
-        CPPUNIT_ASSERT_NO_THROW(m_export->stop().get());
+        m_export = sight::service::add("sight::module::ui::series::exporter");
+        REQUIRE_MESSAGE(m_export, "Failed to create service 'sight::module::ui::series::exporter'");
     }
 
-    service::remove(m_export);
-}
+    ~series_export_fixture()
+    {
+        if(!m_export->stopped())
+        {
+            CHECK_NOTHROW(m_export->stop().get());
+        }
 
-//------------------------------------------------------------------------------
+        sight::service::remove(m_export);
+    }
 
-void export_test::basic_test()
+    series_export_fixture(const series_export_fixture&)            = delete;
+    series_export_fixture& operator=(const series_export_fixture&) = delete;
+    series_export_fixture(series_export_fixture&&)                 = delete;
+    series_export_fixture& operator=(series_export_fixture&&)      = delete;
+
+    sight::service::base::sptr m_export;
+};
+
+} // namespace
+
+TEST_SUITE("sight::module::ui::series::exporter")
 {
-    auto data = std::make_shared<data::series>();
-    m_export->set_inout(data, "data.element");
-    auto container = std::make_shared<data::series_set>();
-    m_export->set_inout(container, "data.container");
-    CPPUNIT_ASSERT(container->empty());
-    CPPUNIT_ASSERT_NO_THROW(m_export->configure());
-    CPPUNIT_ASSERT_NO_THROW(m_export->start().get());
-    sight::ui::test::dialog::input::push_input("I don't care");
-    CPPUNIT_ASSERT_NO_THROW(m_export->update().get());
-    CPPUNIT_ASSERT_NO_THROW(m_export->stop().get());
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), container->size());
-    CPPUNIT_ASSERT((*container)[0] == data);
+    TEST_CASE_FIXTURE(series_export_fixture, "basic")
+    {
+        auto data      = std::make_shared<sight::data::series>();
+        auto container = std::make_shared<sight::data::series_set>();
+
+        m_export->set_inout(data, "data.element");
+        m_export->set_inout(container, "data.container");
+        CHECK(container->empty());
+
+        CHECK_NOTHROW(m_export->configure());
+        CHECK_NOTHROW(m_export->start().get());
+        sight::ui::test::dialog::input::push_input("I don't care");
+        CHECK_NOTHROW(m_export->update().get());
+        CHECK_NOTHROW(m_export->stop().get());
+
+        CHECK_EQ(std::size_t(1), container->size());
+        CHECK((*container)[0] == data);
+    }
 }
-
-//------------------------------------------------------------------------------
-
-} // namespace sight::module::ui::series::ut

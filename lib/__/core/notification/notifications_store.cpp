@@ -25,7 +25,7 @@
 
 #include <algorithm>
 
-namespace sight::ui::qt::widget
+namespace sight::core::notification
 {
 
 //------------------------------------------------------------------------------
@@ -44,19 +44,29 @@ void notifications_store::watch(
     {
         std::scoped_lock lock(m_mutex);
 
-        const bool already_tracked = std::ranges::any_of(
-            m_entries,
-            [&_notification](const auto& _entry)
-            {
-                return _entry.m_notification.lock() == _notification;
-            });
-
-        if(already_tracked)
+        if(this->is_tracked(_notification))
         {
             return;
         }
 
         m_entries.push_back({.m_owned = _own ? _notification : nullptr, .m_notification = _notification});
+
+        std::erase_if(m_hooked, [](const auto& _hooked){return _hooked.expired();});
+
+        const bool already_hooked = std::ranges::any_of(
+            m_hooked,
+            [&_notification](const auto& _hooked)
+            {
+                return _hooked.lock() == _notification;
+            });
+
+        if(already_hooked)
+        {
+            // Hooks stay on forgotten notifications; do not install them twice when one is watched again.
+            return;
+        }
+
+        m_hooked.push_back(_notification);
     }
 
     const notification_t::wptr weak_notification = _notification;
@@ -72,23 +82,28 @@ void notifications_store::watch(
             core::thread::get_default_worker()->post_task<void>(
                 [this, _self, weak_notification]
             {
-                // Only guard on the store's own liveness. The notification itself may already be
-                // expired: e.g. a weakly-tracked monitor whose destructor calls finish() after the
-                // caller dropped its last owning sptr - the state hook still fires (synchronously, as
-                // part of that same destructor), but by the time this posted task runs the weak_ptr may
-                // no longer lock. on_notification_finished() must tolerate that.
+                // The notification may expire before this task runs, especially for weakly tracked monitors.
                 if(const auto self = _self.lock(); self)
                 {
+                    // Ignore notifications forgotten before the callback; expired ones are handled by the
+                    // derived store.
+                    if(const auto notification = weak_notification.lock();
+                       notification && !this->is_tracked(notification))
+                    {
+                        return;
+                    }
+
                     this->on_notification_finished(weak_notification);
                 }
             });
         });
 
-    if(const auto message = std::dynamic_pointer_cast<message_t>(_notification); message)
+    // Use msg to avoid colliding with the message type name.
+    if(const auto msg = std::dynamic_pointer_cast<message_t>(_notification); msg)
     {
-        const message_t::wptr weak_message = message;
+        const message_t::wptr weak_message = msg;
 
-        message->add_change_hook(
+        msg->add_change_hook(
             [this, _self, weak_message]
             {
                 core::thread::get_default_worker()->post_task<void>(
@@ -96,11 +111,29 @@ void notifications_store::watch(
                 {
                     if(const auto self = _self.lock(); self)
                     {
-                        this->on_notification_changed(weak_message);
+                        // Changes are ignored while the notification is forgotten.
+                        if(const auto message = weak_message.lock(); message && this->is_tracked(message))
+                        {
+                            this->on_notification_changed(weak_message);
+                        }
                     }
                 });
             });
     }
+}
+
+//------------------------------------------------------------------------------
+
+bool notifications_store::is_tracked(const notification_t::sptr& _notification) const
+{
+    std::scoped_lock lock(m_mutex);
+
+    return std::ranges::any_of(
+        m_entries,
+        [&_notification](const auto& _entry)
+        {
+            return _entry.m_notification.lock() == _notification;
+        });
 }
 
 //------------------------------------------------------------------------------
@@ -162,4 +195,4 @@ void notifications_store::on_notification_changed(const message_t::wptr& /*_noti
 {
 }
 
-} // namespace sight::ui::qt::widget
+} // namespace sight::core::notification

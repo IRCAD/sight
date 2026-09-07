@@ -34,6 +34,7 @@
 #include <future>
 #include <optional>
 #include <string>
+#include <type_traits>
 
 // cspell:ignore qobject
 
@@ -125,23 +126,37 @@ public:
 
     //------------------------------------------------------------------------------
 
-    template<class W = QWidget>
-    static std::optional<std::string> get_widget_text(const std::string& _name)
+    /**
+     * @brief Find a widget by name and type, then extract a value from it, in the UI thread.
+     *
+     * The extraction runs in the worker holding the Qt event loop, so the widget is never touched from the test
+     * thread, where it may be destroyed concurrently (a notification popup fading out, for instance). Only the
+     * extracted value crosses the thread boundary, which lets the caller assert on it safely.
+     *
+     * @param _name name of the widget to look for.
+     * @param _extractor callable taking the found widget and returning the value to test.
+     * @return the extracted value, std::nullopt if the widget could not be found.
+     */
+    template<class W = QWidget, class F>
+    static auto query_widget(const std::string& _name, F _extractor)
+    -> std::optional<std::invoke_result_t<F, W*> >
     {
+        using result_t = std::invoke_result_t<F, W*>;
+
         for(const auto start = std::chrono::steady_clock::now() ;
             std::chrono::steady_clock::now() - start < SECONDS_TO_WAIT ; )
         {
             const auto& widget = find_widget<W>(_name);
 
-            auto posted_task = sight::core::thread::get_default_worker()->post_task<std::optional<std::string> >(
-                [widget]
+            auto posted_task = sight::core::thread::get_default_worker()->post_task<std::optional<result_t> >(
+                [widget, _extractor]
                 {
                     if(!widget.isNull())
                     {
-                        return std::make_optional(widget->text().toStdString());
+                        return std::make_optional(_extractor(widget.data()));
                     }
 
-                    return std::optional<std::string>();
+                    return std::optional<result_t>();
                 });
 
             if(posted_task.wait_for(SECONDS_TO_WAIT) != std::future_status::ready)
@@ -149,15 +164,28 @@ public:
                 return std::nullopt;
             }
 
-            if(auto text = posted_task.get(); text)
+            if(auto result = posted_task.get(); result)
             {
-                return text;
+                return result;
             }
 
             std::this_thread::sleep_for(MILLISECONDS_TO_SLEEP);
         }
 
         return std::nullopt;
+    }
+
+    //------------------------------------------------------------------------------
+
+    template<class W = QWidget>
+    static std::optional<std::string> get_widget_text(const std::string& _name)
+    {
+        return query_widget<W>(
+            _name,
+            [](W* _widget)
+            {
+                return _widget->text().toStdString();
+            });
     }
 
     /// Click on a button with the given text.

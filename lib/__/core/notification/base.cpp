@@ -67,6 +67,21 @@ base::state_t base::state() const
 
 //------------------------------------------------------------------------------
 
+const std::string& base::id() const noexcept
+{
+    // No lock, like message::channel(): the id is set before the notification is emitted and shared.
+    return m_id;
+}
+
+//------------------------------------------------------------------------------
+
+void base::set_id(std::string _id)
+{
+    m_id = std::move(_id);
+}
+
+//------------------------------------------------------------------------------
+
 bool base::is_finished() const
 {
     const auto lock = core::mt::read_lock(m_mutex);

@@ -23,9 +23,8 @@
 
 #include <sight/ui/qt/config.hpp>
 
-#include "notifications_store.hpp"
-
 #include <core/notification/monitor.hpp>
+#include <core/notification/notifications_store.hpp>
 
 #include <QLabel>
 #include <QLayout>
@@ -45,7 +44,7 @@ namespace sight::ui::qt::widget
  * When all tasks are finished, an optional callback can be invoked.
  */
 class SIGHT_UI_QT_CLASS_API_QT progress_bar final : public std::enable_shared_from_this<progress_bar>,
-                                                    public notifications_store
+                                                    public sight::core::notification::notifications_store
 {
 public:
 

@@ -25,10 +25,11 @@
 #include <core/notification/instruction.hpp>
 #include <core/notification/message.hpp>
 #include <core/notification/monitor.hpp>
+#include <core/notification/notifications_store.hpp>
 #include <data/integer.hpp>
 #include <data/string.hpp>
 #include <ui/__/editor.hpp>
-#include <ui/qt/widget/notifications_store.hpp>
+#include <ui/qt/widget/notification_label.hpp>
 #include <ui/qt/widget/progress_bar.hpp>
 
 #include <QLabel>
@@ -56,12 +57,18 @@ class acknowledger;
  * - sight::core::notification::warning: normal priority, stacks with itself, default timeout (configurable).
  * - sight::core::notification::error: highest priority, stacks with itself, no timeout, must be acknowledged.
  *
+ * A notification already displayed keeps its page rather than stacking a second copy of itself: updating it,
+ * i.e. calling set_title()/set_text() on it, refreshes its label and restarts its display delay, so that a
+ * message that keeps changing stays readable. Only its appearance plays its sound, not its updates. A
+ * notification that timed out is displayed again by its next update, as long as its emitter keeps it. A
+ * notification carrying a duration of 0 has no timeout at all: it lasts until it is finished or canceled.
+ *
  * @section XML XML configuration
  * @code{.xml}
    <service uid="..." type="sight::module::ui::qt::notification_zone" >
-       <properties information_duration="5000" warning_duration="5000" maximal_height="100"
+       <properties information_duration="5000" warning_duration="5000"
  * show_progress_title="true" show_progress_cancel="true" progress_pulse="false" progress_expand="true"
- * progress_svg_path="icons/progress.svg" progress_svg_size="16" />
+ * progress_svg_path="icons/progress.svg" progress_svg_size="16" notification_icon_size="0" />
    </service>
    @endcode
  *
@@ -81,7 +88,6 @@ class acknowledger;
  * - \b m_information_duration [sight::data::integer]: duration in milliseconds to display information
  *   notifications.
  * - \b m_warning_duration [sight::data::integer]: duration in milliseconds to display warning notifications.
- * - \b m_maximal_height [sight::data::integer]: maximal height of the notification zone in pixels.
  * - \b m_show_progress_title [sight::data::boolean]: if true, show the title of progress notifications.
  * - \b m_show_progress_cancel [sight::data::boolean]: if true, show the cancel button of progress notifications.
  * - \b m_progress_pulse [sight::data::boolean]: if true, the progress bar is in pulse mode.
@@ -89,9 +95,11 @@ class acknowledger;
  * notification zone.
  * - \b m_progress_svg_path [sight::data::string]: path to the SVG icon used in progress notifications.
  * - \b m_progress_svg_size [sight::data::integer]: size of the SVG icon used in progress notifications.
+ * - \b m_notification_icon_size [sight::data::integer]: side, in pixels, message and instruction icons
+ *   are drawn at. 0, the default, follows the text height.
  */
 class notification_zone final : public sight::ui::editor,
-                                public sight::ui::qt::widget::notifications_store
+                                public sight::core::notification::notifications_store
 {
 public:
 
@@ -152,7 +160,8 @@ protected:
     /// notifications_store: close the page of a message that reached the canceled/finished state.
     void on_notification_finished(const sight::core::notification::base::wptr& _notification) final;
 
-    /// notifications_store: refresh the label of a message page whose content was updated.
+    /// notifications_store: display again a notification whose content was updated, which refreshes its
+    /// label and restarts its display delay.
     void on_notification_changed(const sight::core::notification::message::wptr& _notification) final;
 
 private:
@@ -165,7 +174,7 @@ private:
     struct page final
     {
         QPointer<QWidget> m_widget {nullptr};
-        QPointer<QLabel> m_label {nullptr};
+        QPointer<sight::ui::qt::widget::notification_label> m_label {nullptr};
         QPointer<QTimer> m_timer {nullptr};
 
         /// Set (owning) for message/instruction pages only. Monitors must stay unowned or they can never
@@ -185,8 +194,11 @@ private:
     /// Recompute and apply top-most page (message, type property, visibility) and emit signal
     void refresh_top();
 
-    /// Create a new page for the given notification
-    notification_zone::page& create_page(const sight::core::notification::base::sptr& _notification);
+    /// Draw the notification's icon on its page, or none when it carries no icon.
+    void show_icon(page& _page, const sight::core::notification::message::csptr& _message) const;
+
+    /// Create a new page for the given notification, and return its entry in m_pages.
+    std::map<QWidget*, page>::iterator create_page(const sight::core::notification::base::sptr& _notification);
 
     /// Remove a page: takes it off the stack, stops/deletes its timer, forgets its notification, erases the
     /// map entry, emits ERROR_ACKNOWLEDGED/PROGRESS_ACKNOWLEDGED when applicable, then refreshes the top page.
@@ -209,7 +221,6 @@ private:
 
     sight::data::property<sight::data::integer> m_information_duration {this, "information_duration", 3000};
     sight::data::property<sight::data::integer> m_warning_duration {this, "warning_duration", 3000};
-    sight::data::property<sight::data::integer> m_maximal_height {this, "maximal_height", 100};
 
     sight::data::property<sight::data::boolean> m_show_progress_title {this, "show_progress_title", true};
     sight::data::property<sight::data::boolean> m_show_progress_cancel {this, "show_progress_cancel", true};
@@ -217,6 +228,7 @@ private:
     sight::data::property<sight::data::boolean> m_progress_expand {this, "progress_expand", false};
     sight::data::property<sight::data::string> m_progress_svg_path {this, "progress_svg_path", std::string()};
     sight::data::property<sight::data::integer> m_progress_svg_size {this, "progress_svg_size", 10};
+    sight::data::property<sight::data::integer> m_notification_icon_size {this, "notification_icon_size", 0};
 };
 
 } // namespace sight::module::ui::qt

@@ -26,6 +26,7 @@
 #include <core/notification/information.hpp>
 #include <core/notification/instruction.hpp>
 #include <core/notification/warning.hpp>
+#include <core/runtime/path.hpp>
 
 #include <ui/__/dialog/notification.hpp>
 
@@ -93,11 +94,11 @@ void display_test_notifications::set_enum_parameter(std::string _val, std::strin
     {
         if(_val == "INFORMATION")
         {
-            m_notification.m_type = dial::notification::type::success;
+            m_notification.m_type = dial::notification::type::information;
         }
         else if(_val == "INSTRUCTION")
         {
-            m_notification.m_type = dial::notification::type::info;
+            m_notification.m_type = dial::notification::type::instruction;
         }
         else if(_val == "WARNING")
         {
@@ -105,7 +106,7 @@ void display_test_notifications::set_enum_parameter(std::string _val, std::strin
         }
         else if(_val == "ERROR")
         {
-            m_notification.m_type = dial::notification::type::failure;
+            m_notification.m_type = dial::notification::type::error;
         }
         else
         {
@@ -242,6 +243,16 @@ void display_test_notifications::updating()
 
     std::string message = "[" + channel + duration + closable + "] " + std::to_string(count);
 
+    const auto icon = sight::core::runtime::get_resource_file_path(
+        m_notification.m_type == dial::notification::type::error
+        ? "sight::module::ui::icons/critical.svg"
+        : m_notification.m_type == dial::notification::type::warning
+        ? "sight::module::ui::icons/warning.svg"
+        : m_notification.m_type == dial::notification::type::instruction
+        ? "sight::module::ui::icons/question.svg"
+        : "sight::module::ui::icons/information.svg"
+    );
+
     if(m_usenotifier)
     {
         // Mode 1: You use the notifier service that will display for you the notifications, you need to emit the
@@ -270,56 +281,45 @@ void display_test_notifications::updating()
 
         switch(m_notification.m_type)
         {
-            case dial::notification::type::success:
-                this->notify<notification::information>(
-                    std::string(),
-                    message,
-                    std::filesystem::path(),
-                    m_notification.m_channel,
-                    false,
-                    nullptr,
-                    m_notification.m_duration,
-                    m_notification.m_sound
-                );
+            case dial::notification::type::instruction:
+                this->notify<notification::instruction>(
+                    notification::message::params {
+                    .text     = message,
+                    .icon     = icon,
+                    .channel  = m_notification.m_channel,
+                    .duration = m_notification.m_duration,
+                    .sound    = m_notification.m_sound
+                });
                 break;
 
             case dial::notification::type::warning:
                 this->notify<notification::warning>(
-                    std::string(),
-                    message,
-                    std::filesystem::path(),
-                    m_notification.m_channel,
-                    false,
-                    nullptr,
-                    m_notification.m_duration,
-                    m_notification.m_sound
-                );
+                    notification::message::params {
+                    .text     = message,
+                    .channel  = m_notification.m_channel,
+                    .duration = m_notification.m_duration,
+                    .sound    = m_notification.m_sound
+                });
                 break;
 
-            case dial::notification::type::failure:
+            case dial::notification::type::error:
                 this->notify<notification::error>(
-                    std::string(),
-                    message,
-                    std::filesystem::path(),
-                    m_notification.m_channel,
-                    false,
-                    nullptr,
-                    m_notification.m_duration,
-                    m_notification.m_sound
-                );
+                    notification::message::params {
+                    .text     = message,
+                    .channel  = m_notification.m_channel,
+                    .duration = m_notification.m_duration,
+                    .sound    = m_notification.m_sound
+                });
                 break;
 
             default:
-                this->notify<notification::instruction>(
-                    std::string(),
-                    message,
-                    std::filesystem::path(),
-                    m_notification.m_channel,
-                    false,
-                    nullptr,
-                    m_notification.m_duration,
-                    m_notification.m_sound
-                );
+                this->notify<notification::information>(
+                    notification::message::params {
+                    .text     = message,
+                    .channel  = m_notification.m_channel,
+                    .duration = m_notification.m_duration,
+                    .sound    = m_notification.m_sound
+                });
                 break;
         }
     }
@@ -346,6 +346,7 @@ void display_test_notifications::updating()
                         .m_type     = m_notification.m_type,
                         .m_position = position,
                         .m_message  = message,
+                        .m_icon     = icon,
                         .m_duration = m_notification.m_duration,
                         .m_channel  = m_notification.m_channel,
                         .m_closable = m_notification.m_closable
@@ -360,6 +361,7 @@ void display_test_notifications::updating()
                     .m_type     = m_notification.m_type,
                     .m_position = m_notification.m_position,
                     .m_message  = message,
+                    .m_icon     = icon,
                     .m_duration = m_notification.m_duration,
                     .m_channel  = m_notification.m_channel,
                     .m_closable = m_notification.m_closable

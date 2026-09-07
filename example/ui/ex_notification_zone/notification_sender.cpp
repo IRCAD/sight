@@ -50,7 +50,13 @@ void notification_sender::information()
 {
     static std::atomic_int count = 0;
 
-    this->inform("<html><h2>Information <b>#" + std::to_string(++count) + "</b></h2></html>");
+    // We can specify a specific icon and HTML-formatted message for the information notification.
+    // Default (nullopt) means use the default, while an empty string means no icon.
+    this->inform(
+        sight::core::notification::message::params {
+            .text = "<html><h2>Information <b>#" + std::to_string(++count) + "</b></h2></html>",
+            .icon = "sight::module::ui::icons/robot.svg"
+        });
 }
 
 //------------------------------------------------------------------------------

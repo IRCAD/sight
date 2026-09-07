@@ -46,30 +46,55 @@ public:
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
     /**
-     * @brief Builds a textual notification.
-     *
-     * @param _title Notification title.
-     * @param _text Notification text.
-     * @param _icon Notification icon path.
-     * @param _channel Channel used by the notification's consumer (e.g. sight::module::ui::qt::notifier) to group,
-     *        replace-in-place, and close related notifications. Uses the title when left empty.
-     * @param _cancelable Whether the notification can be canceled.
-     * @param _cancel_hook Callback to be called on cancel request.
-     * @param _duration Overrides the display duration used by the notification's consumer (e.g.
-     *        sight::module::ui::qt::notification_zone). Left empty to use the consumer's default for this type.
-     * @param _sound Overrides whether a sound is played by the notification's consumer. Left empty to use the
-     *        consumer's default for this type.
+     * @brief Everything a textual notification can be built with, meant to be filled with designated
+     * initializers so that only the relevant fields have to be named:
+     * @code{.cpp}
+       this->warn({.text = "Left sensor out of range", .id = "left_sensor_out_of_range"});
+       @endcode
      */
-    SIGHT_CORE_API explicit message(
-        std::string _title                                 = {},
-        std::string _text                                  = {},
-        std::filesystem::path _icon                        = {},
-        std::string _channel                               = {},
-        bool _cancelable                                   = false,
-        cancel_hook _cancel_hook                           = nullptr,
-        std::optional<std::chrono::milliseconds> _duration = std::nullopt,
-        std::optional<bool> _sound                         = std::nullopt
-    );
+    struct params final
+    {
+        // Every field has a default member initializer, so that a designated initializer list can name only
+        // the relevant ones without warning.
+
+        /// Notification title. Defaults to the notification's type when built through has_notifications.
+        std::string title {};
+
+        /// Notification text.
+        std::string text {};
+
+        /// Key this service knows the notification by, resolved into an id by has_notifications' helpers,
+        /// @see has_notifications::configure_notifications(), @see base::id().
+        std::string key {};
+
+        /// Notification icon path. Empty means no icon, while nullopt selects the notification type's default icon.
+        std::optional<std::filesystem::path> icon {std::nullopt};
+
+        /// Channel used by the notification's consumer (e.g. sight::module::ui::qt::notifier) to group,
+        /// replace-in-place, and close related notifications. Uses the title when left empty.
+        std::string channel {};
+
+        /// Whether the notification can be canceled.
+        bool cancelable {false};
+
+        /// Callback to be called on cancel request. Not named cancel_hook, which is the type's own name here.
+        cancel_callback_t cancel_callback {nullptr};
+
+        /// Overrides the display duration used by the notification's consumer (e.g.
+        /// sight::module::ui::qt::notification_zone), 0 meaning no timeout at all. Left empty to use the
+        /// consumer's default for this type.
+        std::optional<std::chrono::milliseconds> duration {};
+
+        /// Overrides whether a sound is played by the notification's consumer. Left empty to use the
+        /// consumer's default for this type.
+        std::optional<bool> sound {};
+    };
+
+    /// Builds a textual notification with only a title and a text. @see message(params) for the other fields.
+    SIGHT_CORE_API explicit message(std::string _title = {}, std::string _text = {});
+
+    /// Builds a fully specified textual notification. @see params
+    SIGHT_CORE_API explicit message(params _params);
 
     SIGHT_CORE_API ~message() override = default;
 
@@ -84,7 +109,7 @@ public:
     /// Change callback sequence type.
     using change_hook_seq = std::vector<change_hook>;
 
-    [[nodiscard]] SIGHT_CORE_API const std::filesystem::path& icon() const noexcept;
+    [[nodiscard]] SIGHT_CORE_API const std::optional<std::filesystem::path>& icon() const noexcept;
     [[nodiscard]] SIGHT_CORE_API const std::string& title() const;
     [[nodiscard]] SIGHT_CORE_API const std::string& text() const;
     [[nodiscard]] SIGHT_CORE_API const std::string& channel() const noexcept;
@@ -110,12 +135,20 @@ public:
      */
     SIGHT_CORE_API void add_change_hook(change_hook _callback);
 
+protected:
+
+    /// Returns the parameters with the notification type's default icon, unless the caller named one.
+    [[nodiscard]] SIGHT_CORE_API static params with_default_icon(params _params, std::filesystem::path _icon);
+
 private:
+
+    /// Resolve a notification icon once while constructing the notification.
+    static std::optional<std::filesystem::path> resolve_icon(std::optional<std::filesystem::path> _icon);
 
     /// Call every registered change hook. Must not be called while holding the mutex.
     void notify_change() const;
 
-    std::filesystem::path m_icon;
+    std::optional<std::filesystem::path> m_icon;
     std::string m_title;
     std::string m_text;
     std::string m_channel;

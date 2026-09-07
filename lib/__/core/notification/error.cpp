@@ -26,24 +26,15 @@
 namespace sight::core::notification
 {
 
-error::error(
-    std::string _title,
-    std::string _text,
-    std::filesystem::path _icon,
-    std::string _channel,
-    bool _cancelable,
-    cancel_hook _cancel_hook,
-    std::optional<std::chrono::milliseconds> _duration,
-    std::optional<bool> _sound
-) :
-    message(std::move(_title),
-            std::move(_text),
-            std::move(_icon),
-            std::move(_channel),
-            _cancelable,
-            std::move(_cancel_hook),
-            _duration,
-            _sound)
+error::error(std::string _title, std::string _text) :
+    error(params {.title = std::move(_title), .text = std::move(_text)})
+{
+}
+
+//------------------------------------------------------------------------------
+
+error::error(params _params) :
+    message(with_default_icon(std::move(_params), "sight::module::ui::icons/critical.svg"))
 {
 }
 

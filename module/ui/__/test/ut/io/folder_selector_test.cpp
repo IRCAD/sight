@@ -19,66 +19,84 @@
  *
  ***********************************************************************/
 
-#include "folder_selector_test.hpp"
+#include <core/com/slot.hpp>
+#include <core/thread/worker.hpp>
 
+#include <service/base.hpp>
 #include <service/op.hpp>
 
 #include <ui/test/dialog/location.hpp>
 
 #include <utest/wait.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::ui::io::ut::folder_selector_test);
+#include <doctest/doctest.h>
 
-namespace sight::module::ui::io::ut
+#include <filesystem>
+
+namespace
 {
 
-//------------------------------------------------------------------------------
-
-void folder_selector_test::setUp()
+struct folder_selector_fixture
 {
-    m_folder_selector = service::add("sight::module::ui::io::folder_selector");
-    CPPUNIT_ASSERT_MESSAGE("Failed to create service 'sight::module::ui::io::folder_selector'", m_folder_selector);
-}
-
-//------------------------------------------------------------------------------
-
-void folder_selector_test::tearDown()
-{
-    m_worker->stop();
-    if(!m_folder_selector->stopped())
+    folder_selector_fixture()
     {
-        CPPUNIT_ASSERT_NO_THROW(m_folder_selector->stop().get());
+        m_folder_selector = sight::service::add("sight::module::ui::io::folder_selector");
+        REQUIRE_MESSAGE(
+            m_folder_selector,
+            "Failed to create service 'sight::module::ui::io::folder_selector'"
+        );
     }
 
-    service::remove(m_folder_selector);
-}
+    ~folder_selector_fixture()
+    {
+        if(m_worker)
+        {
+            m_worker->stop();
+        }
 
-//------------------------------------------------------------------------------
+        if(!m_folder_selector->stopped())
+        {
+            CHECK_NOTHROW(m_folder_selector->stop().get());
+        }
 
-void folder_selector_test::basic_test()
+        sight::service::remove(m_folder_selector);
+    }
+
+    folder_selector_fixture(const folder_selector_fixture&)            = delete;
+    folder_selector_fixture& operator=(const folder_selector_fixture&) = delete;
+    folder_selector_fixture(folder_selector_fixture&&)                 = delete;
+    folder_selector_fixture& operator=(folder_selector_fixture&&)      = delete;
+
+    sight::service::base::sptr m_folder_selector;
+    sight::core::thread::worker::sptr m_worker;
+};
+
+} // namespace
+
+TEST_SUITE("sight::module::ui::io::folder_selector")
 {
-    CPPUNIT_ASSERT_NO_THROW(m_folder_selector->configure());
-    CPPUNIT_ASSERT_NO_THROW(m_folder_selector->start().get());
+    TEST_CASE_FIXTURE(folder_selector_fixture, "basic")
+    {
+        CHECK_NOTHROW(m_folder_selector->configure());
+        CHECK_NOTHROW(m_folder_selector->start().get());
 
-    std::filesystem::path path;
-    auto folder_selected_slot = core::com::new_slot(
-        [&path](std::filesystem::path _path)
+        std::filesystem::path path;
+        auto folder_selected_slot = sight::core::com::new_slot(
+            [&path](std::filesystem::path _path)
         {
             path = _path;
         });
-    m_worker = core::thread::worker::make();
-    folder_selected_slot->set_worker(m_worker);
-    m_folder_selector->signal("folderSelected")->connect(folder_selected_slot);
 
-    sight::ui::test::dialog::location::set_paths({std::filesystem::temp_directory_path()});
+        m_worker = sight::core::thread::worker::make();
+        folder_selected_slot->set_worker(m_worker);
+        m_folder_selector->signal("folderSelected")->connect(folder_selected_slot);
 
-    CPPUNIT_ASSERT_NO_THROW(m_folder_selector->update().get());
-    SIGHT_TEST_WAIT(std::filesystem::temp_directory_path() == path);
-    CPPUNIT_ASSERT_EQUAL(std::filesystem::temp_directory_path(), path);
+        sight::ui::test::dialog::location::set_paths({std::filesystem::temp_directory_path()});
 
-    CPPUNIT_ASSERT(sight::ui::test::dialog::location::clear());
+        CHECK_NOTHROW(m_folder_selector->update().get());
+        SIGHT_TEST_WAIT(std::filesystem::temp_directory_path() == path);
+        CHECK_EQ(std::filesystem::temp_directory_path(), path);
+
+        CHECK(sight::ui::test::dialog::location::clear());
+    }
 }
-
-//------------------------------------------------------------------------------
-
-} // namespace sight::module::ui::io::ut

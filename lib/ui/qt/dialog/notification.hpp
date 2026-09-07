@@ -27,6 +27,7 @@
 #include <core/macros.hpp>
 
 #include <ui/__/dialog/notification_base.hpp>
+#include <ui/qt/widget/notification_label.hpp>
 
 #include <QGraphicsOpacityEffect>
 #include <QLabel>
@@ -34,6 +35,7 @@
 #include <QMouseEvent>
 #include <QPointer>
 #include <QPropertyAnimation>
+#include <QTimer>
 #include <QTimerEvent>
 #include <QToolButton>
 #include <utility>
@@ -112,7 +114,7 @@ private:
 };
 
 /// Creates a clickable QLabel.
-class SIGHT_UI_QT_CLASS_API_QT clickable_q_label : public QLabel
+class SIGHT_UI_QT_CLASS_API_QT clickable_q_label : public sight::ui::qt::widget::notification_label
 {
 Q_OBJECT
 
@@ -120,7 +122,7 @@ public:
 
     /// Creates a clickable QLabel.
     explicit clickable_q_label(widget* _root, QWidget* _parent = nullptr, Qt::WindowFlags _f = Qt::WindowFlags()) :
-        QLabel(_parent, _f),
+        notification_label(_parent, _f),
         m_root(_root)
     {
     }
@@ -157,19 +159,29 @@ public Q_SLOTS:
         a->start(QPropertyAnimation::DeleteWhenStopped);
         parent_to_kill->setGraphicsEffect(effect);
 
-        // When the animation is finished, we kill the parent since it must be the Container (the main widget).
-        QObject::connect(a, &QPropertyAnimation::finished, this, &clickable_q_label::faded);
-        QObject::connect(a, &QPropertyAnimation::finished, parent_to_kill, &QWidget::deleteLater);
+        // The parent is killed on a timer rather than at the end of the animation, since it must be the
+        // Container (the main widget). The fade out is only cosmetic, and hanging the lifetime of the popup on
+        // it leaves the popup alive for good whenever the animation is not driven.
+        QTimer::singleShot(
+            a->duration(),
+            this,
+            [this, parent_to_kill]
+            {
+                Q_EMIT faded();
+                parent_to_kill->deleteLater();
+            });
     }
 
     //------------------------------------------------------------------------------
 
     void timed_fadeout(std::optional<std::chrono::milliseconds> _duration)
     {
-        // Kill the timer if already started or null duration
-        if(m_timer_id != 0 || !_duration || _duration->count() == 0)
+        // Kill the running timer, if any, and forget its id, so that the destructor does not kill it a second
+        // time. Killing the timer id 0 of a popup that never had one is an error Qt complains about.
+        if(m_timer_id != 0)
         {
             killTimer(m_timer_id);
+            m_timer_id = 0;
         }
 
         if(_duration && _duration->count() > 0)
@@ -235,7 +247,7 @@ private:
  * Example of how to customize the style of the popups (You need to refers to their names):
  *
  * @code{.qss}
- #NotificationDialog_Success
+ #NotificationDialog_Instruction
     {
         background-color:#58D68D;
         color:white;
@@ -243,7 +255,7 @@ private:
         font-size: 16px;
     }
 
- #NotificationDialog_Failure
+ #NotificationDialog_Error
     {
         background-color:#E74C3C;
         color:white;
@@ -251,7 +263,7 @@ private:
         font-size: 16px;
     }
 
- #NotificationDialog_Info
+ #NotificationDialog_Information
     {
         background-color:#5DADE2;
         color:white;
@@ -295,6 +307,12 @@ public:
 
     /// Resize the dialog
     SIGHT_UI_QT_API void set_size(std::array<int, 2> _size) override;
+
+    /// Sets the icon and refreshes the popup if it is already displayed.
+    SIGHT_UI_QT_API void set_icon(std::optional<std::filesystem::path> _icon) override;
+
+    /// Sets the icon size and refreshes the popup if it is already displayed.
+    SIGHT_UI_QT_API void set_icon_size(int _size) override;
 
 private:
 

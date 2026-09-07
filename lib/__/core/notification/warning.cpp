@@ -26,24 +26,15 @@
 namespace sight::core::notification
 {
 
-warning::warning(
-    std::string _title,
-    std::string _text,
-    std::filesystem::path _icon,
-    std::string _channel,
-    bool _cancelable,
-    cancel_hook _cancel_hook,
-    std::optional<std::chrono::milliseconds> _duration,
-    std::optional<bool> _sound
-) :
-    message(std::move(_title),
-            std::move(_text),
-            std::move(_icon),
-            std::move(_channel),
-            _cancelable,
-            std::move(_cancel_hook),
-            _duration,
-            _sound)
+warning::warning(std::string _title, std::string _text) :
+    warning(params {.title = std::move(_title), .text = std::move(_text)})
+{
+}
+
+//------------------------------------------------------------------------------
+
+warning::warning(params _params) :
+    message(with_default_icon(std::move(_params), "sight::module::ui::icons/warning.svg"))
 {
 }
 

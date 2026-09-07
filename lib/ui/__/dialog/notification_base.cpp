@@ -61,6 +61,25 @@ void notification_base::set_position(notification_base::position _position)
 
 //-----------------------------------------------------------------------------
 
+void notification_base::set_icon(std::optional<std::filesystem::path> _icon)
+{
+    m_notification.m_icon = std::move(_icon);
+}
+
+//-----------------------------------------------------------------------------
+
+void notification_base::set_icon_size(int _size)
+{
+    SIGHT_ASSERT("Notification icon size must be non-negative", _size >= 0);
+
+    if(_size >= 0)
+    {
+        m_notification.m_icon_size = _size;
+    }
+}
+
+//-----------------------------------------------------------------------------
+
 void notification_base::set_type(notification_base::type _type)
 {
     m_notification.m_type = _type;
@@ -133,7 +152,13 @@ std::optional<std::chrono::milliseconds> notification_base::get_duration() const
 
 void notification_base::set_notification(params _notification)
 {
-    m_notification = std::move(_notification);
+    const int icon_size = _notification.m_icon_size;
+
+    // Keep the current size while assigning, then let set_icon_size() apply the new one under its own guard.
+    _notification.m_icon_size = m_notification.m_icon_size;
+    m_notification            = std::move(_notification);
+
+    this->set_icon_size(icon_size);
 }
 
 //-----------------------------------------------------------------------------

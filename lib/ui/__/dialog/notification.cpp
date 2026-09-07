@@ -110,6 +110,34 @@ void notification::set_type(notification_base::type _type)
 
 //-----------------------------------------------------------------------------
 
+void notification::set_icon(std::optional<std::filesystem::path> _icon)
+{
+    core::thread::get_default_worker()->post_task<void>(
+        [&]
+        {
+            if(m_implementation)
+            {
+                m_implementation->set_icon(std::move(_icon));
+            }
+        }).wait();
+}
+
+//-----------------------------------------------------------------------------
+
+void notification::set_icon_size(int _size)
+{
+    core::thread::get_default_worker()->post_task<void>(
+        [&]
+        {
+            if(m_implementation)
+            {
+                m_implementation->set_icon_size(_size);
+            }
+        }).wait();
+}
+
+//-----------------------------------------------------------------------------
+
 void notification::set_position(notification_base::position _position)
 {
     core::thread::get_default_worker()->post_task<void>(

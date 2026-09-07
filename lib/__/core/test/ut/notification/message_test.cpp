@@ -24,6 +24,7 @@
 #include <core/notification/instruction.hpp>
 #include <core/notification/message.hpp>
 #include <core/notification/warning.hpp>
+#include <core/runtime/path.hpp>
 
 #include <doctest/doctest.h>
 
@@ -35,13 +36,17 @@ TEST_SUITE("sight::core::notification")
 {
     TEST_CASE("message_metadata_and_state")
     {
-        const auto icon = std::filesystem::path("icons/message.svg");
+        const auto icon = sight::core::runtime::get_resource_file_path(
+            "sight::module::ui::icons/information.svg"
+        );
 
-        sight::core::notification::message message("Title", "Body", icon, "message_channel");
+        sight::core::notification::message message(
+            {.title = "Title", .text = "Body", .icon = icon, .channel = "message_channel"});
 
         CHECK_EQ(message.title(), std::string("Title"));
         CHECK_EQ(message.text(), std::string("Body"));
-        CHECK_EQ(message.icon(), icon);
+        REQUIRE(message.icon().has_value());
+        CHECK_EQ(*message.icon(), icon);
         CHECK_EQ(message.channel(), std::string("message_channel"));
         CHECK_EQ(message.state(), sight::core::notification::base::waiting);
         CHECK_FALSE(message.is_finished());
@@ -67,10 +72,11 @@ TEST_SUITE("sight::core::notification")
     TEST_CASE("derived_messages_keep_message_contract")
     {
         const auto info = std::make_shared<sight::core::notification::information>(
-            "Info",
-            "Information body",
-            std::filesystem::path("icons/info.svg")
-        );
+            sight::core::notification::message::params {
+            .title = "Info",
+            .text  = "Information body",
+            .icon  = std::filesystem::path("sight::module::ui::icons/information.svg")
+        });
         const auto instruction = std::make_shared<sight::core::notification::instruction>(
             "Instruction",
             "Instruction body"
@@ -88,6 +94,15 @@ TEST_SUITE("sight::core::notification")
         CHECK_EQ(warning->state(), sight::core::notification::base::waiting);
         CHECK_EQ(error->title(), std::string("Error"));
         CHECK_EQ(error->channel(), std::string("Error"));
+        CHECK(info->icon().has_value());
+        CHECK(instruction->icon().has_value());
+        CHECK(warning->icon().has_value());
+        CHECK(error->icon().has_value());
+
+        sight::core::notification::message no_icon(
+            {.icon = std::filesystem::path()});
+        REQUIRE(no_icon.icon().has_value());
+        CHECK(no_icon.icon()->empty());
     }
 
 //------------------------------------------------------------------------------

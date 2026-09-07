@@ -42,6 +42,7 @@ namespace sight::module::ui::qt
 static const std::string POSITION_KEY("position");
 static const std::string DURATION_KEY("duration");
 static const std::string SIZE_KEY("size");
+static const std::string ICON_SIZE_KEY("icon_size");
 static const std::string MAX_KEY("max");
 static const std::string CLOSABLE_KEY("closable");
 
@@ -49,14 +50,14 @@ static const std::string INFINITE("infinite");
 
 static const std::map<sight::ui::dialog::notification_base::type, std::filesystem::path> SOUND_BOARD = {
     {
-        sight::ui::dialog::notification_base::type::info,
+        sight::ui::dialog::notification_base::type::information,
         std::filesystem::canonical(
             sight::core::runtime::get_resource_file_path("sight::module::ui::qt/sounds/info_beep.wav")
         )
     }
     ,
     {
-        sight::ui::dialog::notification_base::type::success,
+        sight::ui::dialog::notification_base::type::instruction,
         std::filesystem::canonical(
             sight::core::runtime::get_resource_file_path("sight::module::ui::qt/sounds/success_beep.wav")
         ),
@@ -68,7 +69,7 @@ static const std::map<sight::ui::dialog::notification_base::type, std::filesyste
         )
     },
     {
-        sight::ui::dialog::notification_base::type::failure,
+        sight::ui::dialog::notification_base::type::error,
         std::filesystem::canonical(
             sight::core::runtime::get_resource_file_path("sight::module::ui::qt/sounds/failure_beep.wav")
         )
@@ -194,6 +195,30 @@ void notifier::configuring()
                     SIGHT_ERROR(
                         "Maximum '"
                         + *max
+                        + "' is not valid. Accepted values are positive numbers."
+                    )
+                }
+            }
+
+            // Icon size
+            if(const auto& icon_size = channel.second.get_optional<std::string>("<xmlattr>." + ICON_SIZE_KEY);
+               icon_size)
+            {
+                try
+                {
+                    const int size = std::stoi(*icon_size);
+                    SIGHT_ASSERT("Icon size must be non-negative", size >= 0);
+
+                    if(size >= 0)
+                    {
+                        channel_config.icon_size = size;
+                    }
+                }
+                catch(...)
+                {
+                    SIGHT_ERROR(
+                        "Icon size '"
+                        + *icon_size
                         + "' is not valid. Accepted values are positive numbers."
                     )
                 }
@@ -340,11 +365,18 @@ void notifier::display(sight::ui::dialog::notification_base::params _params)
                        ? _params.m_size
                        : *default_configuration.size;
 
+    const auto& icon_size = channel_configured && channel_configuration.icon_size
+                            ? *channel_configuration.icon_size
+                            : (channel_configured && !channel_configuration.icon_size)
+                            || !default_configuration.icon_size
+                            ? _params.m_icon_size
+                            : *default_configuration.icon_size;
+
     const auto& max = channel_configuration.max
                       ? *channel_configuration.max
                       : default_configuration.max
                       ? *default_configuration.max
-                      : 0;
+                      : DEFAULT_MAX;
 
     const auto& closable = channel_configured && channel_configuration.closable
                            ? channel_configuration.closable
@@ -418,17 +450,30 @@ void notifier::display(sight::ui::dialog::notification_base::params _params)
     popup->set_message(message_to_show);
 
     popup->set_type(_params.m_type);
+    popup->set_icon(_params.m_icon);
+    popup->set_icon_size(icon_size);
     popup->set_position(position);
     popup->set_duration(duration);
     popup->set_size(*target_stack.size);
     std::weak_ptr<sight::core::base_object> weak_notifier = this->shared_from_this();
+
+    // The popup is captured weakly: this callback is stored in the popup itself, so owning it here would make
+    // it own itself, and no popup would ever be released.
+    std::weak_ptr<sight::ui::dialog::notification> weak_popup = popup;
+
     popup->set_closed_callback(
-        [weak_notifier, popup](auto&& ...)
+        [weak_notifier, weak_popup](auto&& ...)
         {
+            const auto& closed_popup = weak_popup.lock();
+            if(!closed_popup)
+            {
+                return;
+            }
+
             if(auto notifier = std::dynamic_pointer_cast<sight::module::ui::qt::notifier>(weak_notifier.lock());
                notifier)
             {
-                notifier->on_notification_closed(popup);
+                notifier->on_notification_closed(closed_popup);
             }
         });
     popup->set_channel(_params.m_channel);
@@ -475,13 +520,14 @@ void notifier::add_notification(sight::core::notification::base::sptr _notificat
 
     sight::ui::dialog::notification_base::params params;
     params.m_type = is_error
-                    ? sight::ui::dialog::notification_base::type::failure
+                    ? sight::ui::dialog::notification_base::type::error
                     : is_warning
                     ? sight::ui::dialog::notification_base::type::warning
                     : is_information
-                    ? sight::ui::dialog::notification_base::type::success
-                    : sight::ui::dialog::notification_base::type::info;
+                    ? sight::ui::dialog::notification_base::type::information
+                    : sight::ui::dialog::notification_base::type::instruction;
     params.m_message = message->text();
+    params.m_icon    = message->icon();
 
     // instruction/error are permanent by default (no timeout), information/warning default to 3 seconds,
     // unless the message itself overrides the duration.
@@ -587,19 +633,24 @@ void notifier::clean_notifications(
         }
     }
 
-    for(auto it = stack.popups.begin() ; removable_popups >= _max && it != stack.popups.end() ; )
+    // A maximum of 0 means no limit. Without this, the unsigned comparison below would hold whatever the
+    // stack holds, and every removable popup would be closed each time a notification is displayed.
+    if(_max > 0)
     {
-        // If the popup is removable
-        if(const auto& duration = (*it)->get_duration(); !_skip_permanent || (duration && duration->count() > 0))
+        for(auto it = stack.popups.begin() ; removable_popups >= _max && it != stack.popups.end() ; )
         {
-            // Remove it
-            (*it)->close();
-            it = erase_notification(_position, it);
-            --removable_popups;
-        }
-        else
-        {
-            ++it;
+            // If the popup is removable
+            if(const auto& duration = (*it)->get_duration(); !_skip_permanent || (duration && duration->count() > 0))
+            {
+                // Remove it
+                (*it)->close();
+                it = erase_notification(_position, it);
+                --removable_popups;
+            }
+            else
+            {
+                ++it;
+            }
         }
     }
 

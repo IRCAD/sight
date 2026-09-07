@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2026 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,58 +19,67 @@
  *
  ***********************************************************************/
 
-#include "export_set_test.hpp"
-
 #include <data/set.hpp>
 #include <data/string.hpp>
 
+#include <service/base.hpp>
 #include <service/op.hpp>
 
 #include <ui/test/dialog/input.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::ui::ut::export_set_test);
+#include <doctest/doctest.h>
 
-namespace sight::module::ui::ut
+#include <memory>
+
+namespace
 {
 
-//------------------------------------------------------------------------------
-
-void export_set_test::setUp()
+struct export_set_fixture
 {
-    m_export_set = service::add("sight::module::ui::export_set");
-    CPPUNIT_ASSERT_MESSAGE("Failed to create service 'sight::module::ui::export_set'", m_export_set);
-}
-
-//------------------------------------------------------------------------------
-
-void export_set_test::tearDown()
-{
-    if(!m_export_set->stopped())
+    export_set_fixture()
     {
-        CPPUNIT_ASSERT_NO_THROW(m_export_set->stop().get());
+        m_export_set = sight::service::add("sight::module::ui::export_set");
+        REQUIRE_MESSAGE(m_export_set, "Failed to create service 'sight::module::ui::export_set'");
     }
 
-    service::remove(m_export_set);
-}
+    ~export_set_fixture()
+    {
+        if(!m_export_set->stopped())
+        {
+            CHECK_NOTHROW(m_export_set->stop().get());
+        }
 
-//------------------------------------------------------------------------------
+        sight::service::remove(m_export_set);
+    }
 
-void export_set_test::basic_test()
+    export_set_fixture(const export_set_fixture&)            = delete;
+    export_set_fixture& operator=(const export_set_fixture&) = delete;
+    export_set_fixture(export_set_fixture&&)                 = delete;
+    export_set_fixture& operator=(export_set_fixture&&)      = delete;
+
+    sight::service::base::sptr m_export_set;
+};
+
+} // namespace
+
+TEST_SUITE("sight::module::ui::export_set")
 {
-    data::string::sptr hello_world = std::make_shared<data::string>("Hello world!");
-    data::set::sptr set            = std::make_shared<data::set>();
-    m_export_set->set_inout(hello_world, "data.element");
-    m_export_set->set_inout(set, "data.container");
-    CPPUNIT_ASSERT(set->empty());
-    CPPUNIT_ASSERT_NO_THROW(m_export_set->configure());
-    CPPUNIT_ASSERT_NO_THROW(m_export_set->start().get());
-    sight::ui::test::dialog::input::push_input("I don't care");
-    CPPUNIT_ASSERT_NO_THROW(m_export_set->update().get());
-    CPPUNIT_ASSERT_NO_THROW(m_export_set->stop().get());
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), set->size());
-    CPPUNIT_ASSERT((*set)[0] == hello_world);
+    TEST_CASE_FIXTURE(export_set_fixture, "basic")
+    {
+        auto hello_world = std::make_shared<sight::data::string>("Hello world!");
+        auto set         = std::make_shared<sight::data::set>();
+
+        m_export_set->set_inout(hello_world, "data.element");
+        m_export_set->set_inout(set, "data.container");
+        CHECK(set->empty());
+
+        CHECK_NOTHROW(m_export_set->configure());
+        CHECK_NOTHROW(m_export_set->start().get());
+        sight::ui::test::dialog::input::push_input("I don't care");
+        CHECK_NOTHROW(m_export_set->update().get());
+        CHECK_NOTHROW(m_export_set->stop().get());
+
+        CHECK_EQ(std::size_t(1), set->size());
+        CHECK((*set)[0] == hello_world);
+    }
 }
-
-//------------------------------------------------------------------------------
-
-} // namespace sight::module::ui::ut

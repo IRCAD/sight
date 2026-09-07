@@ -25,9 +25,6 @@
 
 #include "message.hpp"
 
-#include <chrono>
-#include <filesystem>
-#include <optional>
 #include <string>
 
 namespace sight::core::notification
@@ -43,16 +40,11 @@ public:
     SIGHT_DECLARE_CLASS(warning, message);
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
-    SIGHT_CORE_API explicit warning(
-        std::string _title                                 = {},
-        std::string _text                                  = {},
-        std::filesystem::path _icon                        = {},
-        std::string _channel                               = {},
-        bool _cancelable                                   = false,
-        cancel_hook _cancel_hook                           = nullptr,
-        std::optional<std::chrono::milliseconds> _duration = std::nullopt,
-        std::optional<bool> _sound                         = std::nullopt
-    );
+    /// @see message::message(std::string, std::string)
+    SIGHT_CORE_API explicit warning(std::string _title = {}, std::string _text = {});
+
+    /// @see message::message(params)
+    SIGHT_CORE_API explicit warning(params _params);
 
     SIGHT_CORE_API ~warning() override = default;
 };

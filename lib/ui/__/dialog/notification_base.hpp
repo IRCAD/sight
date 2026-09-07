@@ -30,6 +30,7 @@
 #include <array>
 #include <chrono>
 #include <cstdint>
+#include <filesystem>
 #include <optional>
 #include <string>
 
@@ -48,10 +49,10 @@ public:
     /// Notification Type (changes Qss style).
     enum class type : std::uint8_t
     {
-        info = 0,
+        information = 0,
         warning,
-        success,
-        failure
+        instruction,
+        error
     };
 
     /// Where to display notifications.
@@ -69,9 +70,14 @@ public:
     /// Notification display parameters, in one bundle.
     struct params final
     {
-        type m_type {type::info};
+        type m_type {type::information};
         position m_position {position::top_right};
         std::string m_message {};
+        /// Absolute path of the icon, empty or unset for no icon at all.
+        std::optional<std::filesystem::path> m_icon {};
+
+        /// Side, in pixels, the icon is drawn at. 0 follows the text height.
+        int m_icon_size {0};
         std::optional<std::chrono::milliseconds> m_duration {std::chrono::seconds(3)};
         std::string m_channel {};
         std::optional<bool> m_closable {std::nullopt};
@@ -110,6 +116,15 @@ public:
      */
     SIGHT_UI_API virtual void set_size(std::array<int, 2> _size);
     SIGHT_UI_API virtual std::array<int, 2> size() const;
+
+    /**
+     * @brief Sets the icon displayed next to the message.
+     * @param _icon absolute path of the icon, empty or unset for no icon at all.
+     */
+    SIGHT_UI_API virtual void set_icon(std::optional<std::filesystem::path> _icon);
+
+    /// Sets the side, in pixels, the icon is drawn at. 0 follows the text height.
+    SIGHT_UI_API virtual void set_icon_size(int _size);
 
     /**
      * @brief Sets the queue index of the notification (when notifications are queued).

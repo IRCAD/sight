@@ -21,36 +21,76 @@
 
 #include "core/notification/message.hpp"
 
+#include <core/runtime/path.hpp>
+#include <core/spy_log.hpp>
+
+#include <filesystem>
 #include <utility>
 
 namespace sight::core::notification
 {
 
-message::message(
-    std::string _title,
-    std::string _text,
-    std::filesystem::path _icon,
-    std::string _channel,
-    bool _cancelable,
-    cancel_hook _cancel_hook,
-    std::optional<std::chrono::milliseconds> _duration,
-    std::optional<bool> _sound
-) :
-    base(_cancelable, std::move(_cancel_hook)),
-    m_icon(std::move(_icon)),
-    m_title(std::move(_title)),
-    m_text(std::move(_text)),
-    m_channel(_channel.empty() ? m_title : std::move(_channel)),
-    m_duration(_duration),
-    m_sound(_sound)
+message::message(std::string _title, std::string _text) :
+    message(params {.title = std::move(_title), .text = std::move(_text)})
 {
 }
 
 //------------------------------------------------------------------------------
 
-const std::filesystem::path& message::icon() const noexcept
+message::message(params _params) :
+    base(_params.cancelable, std::move(_params.cancel_callback)),
+    m_icon(resolve_icon(std::move(_params.icon))),
+    m_title(std::move(_params.title)),
+    m_text(std::move(_params.text)),
+    m_channel(_params.channel.empty() ? m_title : std::move(_params.channel)),
+    m_duration(_params.duration),
+    m_sound(_params.sound)
+{
+}
+
+//------------------------------------------------------------------------------
+
+const std::optional<std::filesystem::path>& message::icon() const noexcept
 {
     return m_icon;
+}
+
+//------------------------------------------------------------------------------
+
+message::params message::with_default_icon(params _params, std::filesystem::path _icon)
+{
+    if(!_params.icon.has_value())
+    {
+        _params.icon = std::move(_icon);
+    }
+
+    return _params;
+}
+
+//------------------------------------------------------------------------------
+
+std::optional<std::filesystem::path> message::resolve_icon(std::optional<std::filesystem::path> _icon)
+{
+    if(!_icon.has_value() || _icon->empty())
+    {
+        return _icon;
+    }
+
+    // Asserts rather than throws: icon paths come from XML, which is written and run in debug, and no longer
+    // changes in a packaged application.
+    if(_icon->is_absolute())
+    {
+        SIGHT_ASSERT("Notification icon was not found: " << *_icon, std::filesystem::exists(*_icon));
+        return _icon;
+    }
+
+    // Same module relative form as toolbar, menu and progress bar icons: "<module id>/<resource path>".
+    SIGHT_ASSERT("Notification icon path must name a module and a resource: " << *_icon, _icon->has_parent_path());
+
+    auto path = core::runtime::get_module_resource_file_path(*_icon);
+
+    SIGHT_ASSERT("Notification icon was not found: " << *_icon, !path.empty() && std::filesystem::exists(path));
+    return path;
 }
 
 //------------------------------------------------------------------------------

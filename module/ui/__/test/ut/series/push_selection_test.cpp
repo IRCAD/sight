@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,60 +19,71 @@
  *
  ***********************************************************************/
 
-#include "push_selection_test.hpp"
-
+#include <data/series.hpp>
 #include <data/series_set.hpp>
 #include <data/vector.hpp>
 
+#include <service/base.hpp>
 #include <service/op.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::ui::series::ut::push_selection_test);
+#include <doctest/doctest.h>
 
-namespace sight::module::ui::series::ut
+#include <memory>
+
+namespace
 {
 
-//------------------------------------------------------------------------------
-
-void push_selection_test::setUp()
+struct push_selection_fixture
 {
-    m_push_selection = service::add("sight::module::ui::series::push_selection");
-    CPPUNIT_ASSERT_MESSAGE(
-        "Failed to create service 'sight::module::ui::series::push_selection'",
-        m_push_selection
-    );
-}
-
-//------------------------------------------------------------------------------
-
-void push_selection_test::tearDown()
-{
-    if(!m_push_selection->stopped())
+    push_selection_fixture()
     {
-        CPPUNIT_ASSERT_NO_THROW(m_push_selection->stop().get());
+        m_push_selection = sight::service::add("sight::module::ui::series::push_selection");
+        REQUIRE_MESSAGE(
+            m_push_selection,
+            "Failed to create service 'sight::module::ui::series::push_selection'"
+        );
     }
 
-    service::remove(m_push_selection);
-}
+    ~push_selection_fixture()
+    {
+        if(!m_push_selection->stopped())
+        {
+            CHECK_NOTHROW(m_push_selection->stop().get());
+        }
 
-//------------------------------------------------------------------------------
+        sight::service::remove(m_push_selection);
+    }
 
-void push_selection_test::basic_test()
+    push_selection_fixture(const push_selection_fixture&)            = delete;
+    push_selection_fixture& operator=(const push_selection_fixture&) = delete;
+    push_selection_fixture(push_selection_fixture&&)                 = delete;
+    push_selection_fixture& operator=(push_selection_fixture&&)      = delete;
+
+    sight::service::base::sptr m_push_selection;
+};
+
+} // namespace
+
+TEST_SUITE("sight::module::ui::series::push_selection")
 {
-    auto selected_series = std::make_shared<data::vector>();
-    auto series          = std::make_shared<data::series>();
-    selected_series->push_back(series);
-    m_push_selection->set_input(selected_series, "selectedSeries");
-    auto series_set = std::make_shared<data::series_set>();
-    m_push_selection->set_inout(series_set, "seriesSet");
-    CPPUNIT_ASSERT(series_set->empty());
-    CPPUNIT_ASSERT_NO_THROW(m_push_selection->configure());
-    CPPUNIT_ASSERT_NO_THROW(m_push_selection->start().get());
-    CPPUNIT_ASSERT_NO_THROW(m_push_selection->update().get());
-    CPPUNIT_ASSERT_NO_THROW(m_push_selection->stop().get());
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
-    CPPUNIT_ASSERT((*series_set)[0] == series);
+    TEST_CASE_FIXTURE(push_selection_fixture, "basic")
+    {
+        auto selected_series = std::make_shared<sight::data::vector>();
+        auto series          = std::make_shared<sight::data::series>();
+        selected_series->push_back(series);
+
+        auto series_set = std::make_shared<sight::data::series_set>();
+
+        m_push_selection->set_input(selected_series, "selectedSeries");
+        m_push_selection->set_inout(series_set, "seriesSet");
+        CHECK(series_set->empty());
+
+        CHECK_NOTHROW(m_push_selection->configure());
+        CHECK_NOTHROW(m_push_selection->start().get());
+        CHECK_NOTHROW(m_push_selection->update().get());
+        CHECK_NOTHROW(m_push_selection->stop().get());
+
+        CHECK_EQ(std::size_t(1), series_set->size());
+        CHECK((*series_set)[0] == series);
+    }
 }
-
-//------------------------------------------------------------------------------
-
-} // namespace sight::module::ui::series::ut

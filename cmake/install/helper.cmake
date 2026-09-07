@@ -5,7 +5,7 @@ function(findLibsAndModules SEARCH_PATH SUFFIX LIBS_DIRECTORIES EXCLUDE_PATTERN)
         file(GLOB_RECURSE LIBS ${Sight_LIBRARY_DIR}/*${SUFFIX}*)
     endif()
 
-    if(${EXCLUDE_PATTERN})
+    if(EXCLUDE_PATTERN)
         list(FILTER LIBS EXCLUDE REGEX ${EXCLUDE_PATTERN})
     endif()
     list(REMOVE_DUPLICATES LIBS)

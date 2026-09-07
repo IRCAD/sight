@@ -41,12 +41,12 @@ public:
 
     /// Opens a default message box with the specified title, text and icon.
     /// @param _message Message of the notification box
-    /// @param _type type of the notification box (SUCCESS, FAILURE or INFO)
+    /// @param _type type of the notification box (INFORMATION, INSTRUCTION, WARNING or ERROR)
     /// @param _pos position where notification is displayed (TOP_LEFT, TOP_RIGHT, ...)
     /// @{
     inline static void show(
         std::string _message,
-        notification_base::type _type    = notification_base::type::info,
+        notification_base::type _type    = notification_base::type::information,
         notification_base::position _pos = notification_base::position::top_right
     );
     SIGHT_UI_API static void show(notification_base::params _notification);
@@ -57,12 +57,12 @@ public:
 
     /// Constructor. Creates a notification box with the specified text and type.
     /// @param _message message of the notification box
-    /// @param _type type of the notification box (SUCCESS, FAILURE or INFO)
+    /// @param _type type of the notification box (INFORMATION, INSTRUCTION, WARNING or ERROR)
     /// @param _pos position where notification is displayed (TOP_LEFT, TOP_RIGHT, ...)
     /// @{
     explicit notification(
         std::string _message,
-        notification_base::type _type    = notification_base::type::info,
+        notification_base::type _type    = notification_base::type::information,
         notification_base::position _pos = notification_base::position::top_right
     ) :
         notification({.m_type = _type, .m_position = _pos, .m_message = std::move(_message)})
@@ -83,6 +83,12 @@ public:
 
     /// Sets the notification type.
     SIGHT_UI_API void set_type(type _type) override;
+
+    /// Sets the icon displayed next to the message.
+    SIGHT_UI_API void set_icon(std::optional<std::filesystem::path> _icon) override;
+
+    /// Sets the side, in pixels, the icon is drawn at.
+    SIGHT_UI_API void set_icon_size(int _size) override;
 
     /// Sets the position.
     SIGHT_UI_API void set_position(position _position) override;

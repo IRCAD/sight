@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2026 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,86 +19,103 @@
  *
  ***********************************************************************/
 
-#include "cross_type_action_test.hpp"
+#include <core/com/slot.hpp>
+#include <core/thread/worker.hpp>
 
+#include <service/base.hpp>
 #include <service/op.hpp>
 
 #include <utest/wait.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::ui::viz::ut::cross_type_action_test);
+#include <doctest/doctest.h>
 
-namespace sight::module::ui::viz::ut
+#include <string>
+
+namespace
 {
 
-//------------------------------------------------------------------------------
-
-void cross_type_action_test::setUp()
+struct cross_type_action_fixture
 {
-    m_cross_type_action = service::add("sight::module::ui::viz::cross_type_action");
-    CPPUNIT_ASSERT_MESSAGE(
-        "Failed to create service 'sight::module::ui::viz::cross_type_action'",
-        m_cross_type_action
-    );
-}
-
-//------------------------------------------------------------------------------
-
-void cross_type_action_test::tearDown()
-{
-    m_worker->stop();
-    if(!m_cross_type_action->stopped())
+    cross_type_action_fixture()
     {
-        CPPUNIT_ASSERT_NO_THROW(m_cross_type_action->stop().get());
+        m_cross_type_action = sight::service::add("sight::module::ui::viz::cross_type_action");
+        REQUIRE_MESSAGE(
+            m_cross_type_action,
+            "Failed to create service 'sight::module::ui::viz::cross_type_action'"
+        );
     }
 
-    service::remove(m_cross_type_action);
-}
-
-//------------------------------------------------------------------------------
-
-void cross_type_action_test::test(const std::string& _cross_type, double _expected_scale)
-{
-    boost::property_tree::ptree ptree;
-    ptree.put("crossType", _cross_type);
-    m_cross_type_action->set_config(ptree);
-    double scale                  = -1;
-    auto cross_type_modified_slot = core::com::new_slot(
-        [&scale](double _scale)
+    ~cross_type_action_fixture()
+    {
+        if(m_worker)
         {
-            scale = _scale;
-        });
-    m_worker = core::thread::worker::make();
-    cross_type_modified_slot->set_worker(m_worker);
-    m_cross_type_action->signal("crossTypeModified")->connect(cross_type_modified_slot);
-    CPPUNIT_ASSERT_NO_THROW(m_cross_type_action->configure());
-    CPPUNIT_ASSERT_NO_THROW(m_cross_type_action->start().get());
+            m_worker->stop();
+        }
 
-    CPPUNIT_ASSERT_NO_THROW(m_cross_type_action->update().get());
-    SIGHT_TEST_WAIT(_expected_scale == scale);
-    CPPUNIT_ASSERT_EQUAL(_expected_scale, scale);
-}
+        if(!m_cross_type_action->stopped())
+        {
+            CHECK_NOTHROW(m_cross_type_action->stop().get());
+        }
 
-//------------------------------------------------------------------------------
+        sight::service::remove(m_cross_type_action);
+    }
 
-void cross_type_action_test::full_test()
+    cross_type_action_fixture(const cross_type_action_fixture&)            = delete;
+    cross_type_action_fixture& operator=(const cross_type_action_fixture&) = delete;
+    cross_type_action_fixture(cross_type_action_fixture&&)                 = delete;
+    cross_type_action_fixture& operator=(cross_type_action_fixture&&)      = delete;
+
+    //------------------------------------------------------------------------------
+
+    void test(const std::string& _cross_type, double _expected_scale)
+    {
+        boost::property_tree::ptree ptree;
+        ptree.put("crossType", _cross_type);
+        m_cross_type_action->set_config(ptree);
+
+        double scale                  = -1;
+        auto cross_type_modified_slot = sight::core::com::new_slot(
+            [&scale](double _scale)
+            {
+                scale = _scale;
+            });
+
+        m_worker = sight::core::thread::worker::make();
+        cross_type_modified_slot->set_worker(m_worker);
+        m_cross_type_action->signal("crossTypeModified")->connect(cross_type_modified_slot);
+
+        CHECK_NOTHROW(m_cross_type_action->configure());
+        CHECK_NOTHROW(m_cross_type_action->start().get());
+        CHECK_NOTHROW(m_cross_type_action->update().get());
+
+        SIGHT_TEST_WAIT(_expected_scale == scale);
+        CHECK_EQ(_expected_scale, scale);
+    }
+
+    sight::service::base::sptr m_cross_type_action;
+    sight::core::thread::worker::sptr m_worker;
+};
+
+} // namespace
+
+TEST_SUITE("sight::module::ui::viz::cross_type_action")
 {
-    test("full", 1);
-}
+    TEST_CASE_FIXTURE(cross_type_action_fixture, "full")
+    {
+        test("full", 1);
+    }
 
 //------------------------------------------------------------------------------
 
-void cross_type_action_test::half_test()
-{
-    test("half", 0.5);
-}
+    TEST_CASE_FIXTURE(cross_type_action_fixture, "half")
+    {
+        test("half", 0.5);
+    }
 
 //------------------------------------------------------------------------------
 
-void cross_type_action_test::hide_test()
-{
-    test("hide", 0);
+    TEST_CASE_FIXTURE(cross_type_action_fixture, "hide")
+    {
+        test("hide", 0);
+    }
 }
-
-//------------------------------------------------------------------------------
-
-} // namespace sight::module::ui::viz::ut

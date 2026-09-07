@@ -33,6 +33,7 @@
 #include <QAudioOutput>
 #include <QEvent>
 #include <QHBoxLayout>
+#include <QIcon>
 
 #include <utility>
 
@@ -330,8 +331,7 @@ void notification_zone::handle_monitor(const sight::core::notification::monitor:
                     shared_this->close_page(found_page);
                 }
 
-                auto& page = shared_this->create_page(_job);
-                page.m_progress->add_monitor(_job);
+                shared_this->create_page(_job)->second.m_progress->add_monitor(_job);
             }
 
             shared_this->refresh_top();
@@ -371,17 +371,25 @@ void notification_zone::handle_instruction(const sight::core::notification::inst
                     return;
                 }
 
-                // The instruction being replaced is discarded: forget it and start watching the new one,
-                // otherwise a later finish()/set_text() call on it would have no effect on the display.
-                shared_this->forget(found_page->second.m_notification);
-                found_page->second.m_notification = _instruction;
-                shared_this->watch(_instruction, /*_own=*/ true, shared_this->weak_from_this());
+                if(found_page->second.m_notification != _instruction)
+                {
+                    // The instruction being replaced is discarded: forget it and start watching the new one,
+                    // otherwise a later finish()/set_text() call on it would have no effect on the display.
+                    // The one already watched is left alone: forgetting it here would only add a second set
+                    // of hooks to it, one more with every update.
+                    shared_this->forget(found_page->second.m_notification);
+                    found_page->second.m_notification = _instruction;
+                    shared_this->watch(_instruction, /*_own=*/ true, shared_this->weak_from_this());
+                }
 
                 if(auto* const label = found_page->first->findChild<QLabel*>(NOTIFICATION_LABEL_INSTRUCTION);
                    label != nullptr)
                 {
                     label->setText(QString::fromStdString(_instruction->text()));
                 }
+
+                // The instruction replacing the displayed one brings its own icon.
+                shared_this->show_icon(found_page->second, _instruction);
             }
             else if(!_instruction->text().empty())
             {
@@ -407,48 +415,71 @@ void notification_zone::handle_message(const sight::core::notification::message:
                 return;
             }
 
-            auto& page = shared_this->create_page(_message);
-
-            const int duration = shared_this->resolve_duration_ms(_message);
-
-            if(duration > 0)
+            auto page_it = std::ranges::find_if(
+                shared_this->m_pages,
+                [&_message](const auto& _page)
             {
-                auto* const timer = new QTimer(shared_this->m_stack);
-                timer->setSingleShot(true);
-                timer->setInterval(duration);
+                return _page.second.m_notification == _message;
+            });
 
-                QObject::connect(
-                    timer,
-                    &QTimer::timeout,
-                    shared_this->m_stack,
-                    [weak_this, widget = page.m_widget]()
+            // Update an existing page instead of stacking another one. This also handles content changes.
+            const bool created = page_it == shared_this->m_pages.end();
+
+            if(created)
+            {
+                page_it = shared_this->create_page(_message);
+            }
+            else if(!page_it->second.m_label.isNull())
+            {
+                page_it->second.m_label->setText(QString::fromStdString(_message->text()));
+            }
+
+            // Restart the timeout after each update.
+            if(const int duration = shared_this->resolve_duration_ms(_message); duration > 0)
+            {
+                if(page_it->second.m_timer.isNull())
                 {
-                    const auto shared_this = dynamic_pointer_cast<notification_zone>(weak_this.lock());
-                    if(!shared_this)
-                    {
-                        return;
-                    }
+                    auto* const timer = new QTimer(shared_this->m_stack);
+                    timer->setSingleShot(true);
 
-                    if(!widget.isNull())
+                    QObject::connect(
+                        timer,
+                        &QTimer::timeout,
+                        shared_this->m_stack,
+                        [weak_this, widget = page_it->second.m_widget]()
                     {
-                        if(const auto found_page = shared_this->m_pages.find(widget);
-                           found_page != shared_this->m_pages.end())
+                        const auto shared_this = dynamic_pointer_cast<notification_zone>(weak_this.lock());
+                        if(!shared_this)
                         {
-                            shared_this->close_page(found_page);
+                            return;
                         }
-                    }
-                });
 
-                const auto it_timer = shared_this->m_pages.find(page.m_widget);
-                if(it_timer != shared_this->m_pages.end())
-                {
-                    it_timer->second.m_timer = timer;
+                        if(!widget.isNull())
+                        {
+                            if(const auto found_page = shared_this->m_pages.find(widget);
+                               found_page != shared_this->m_pages.end())
+                            {
+                                const auto notification = found_page->second.m_notification;
+                                shared_this->close_page(found_page);
+
+                                // Keep listening to it without owning it: an update from its emitter, e.g. a
+                                // new contribution to a composed notification, displays it again.
+                                shared_this->watch(notification, /*_own=*/ false, shared_this->weak_from_this());
+                            }
+                        }
+                    });
+
+                    page_it->second.m_timer = timer;
                 }
+
+                page_it->second.m_timer->setInterval(duration);
+                page_it->second.m_timer->start();
             }
 
             shared_this->refresh_top();
 
-            if(_message->sound().value_or(false))
+            // Do not beep again when an existing page is updated.
+            if(created && _message->sound().value_or(false))
             {
                 shared_this->play_sound(_message);
             }
@@ -569,22 +600,35 @@ void notification_zone::on_notification_changed(const sight::core::notification:
         return;
     }
 
-    const auto found_page = std::ranges::find_if(
-        m_pages,
-        [&notification](const auto& _page)
-        {
-            return _page.second.m_notification == notification;
-        });
-
-    if(found_page != m_pages.end() && !found_page->second.m_label.isNull())
-    {
-        found_page->second.m_label->setText(QString::fromStdString(notification->text()));
-    }
+    // Dispatch the change like a new notification. A timed-out page is recreated when announced again.
+    this->add_notification(notification);
 }
 
 //------------------------------------------------------------------------------
 
-notification_zone::page& notification_zone::create_page(const sight::core::notification::base::sptr& _notification)
+void notification_zone::show_icon(page& _page, const sight::core::notification::message::csptr& _message) const
+{
+    if(_page.m_label.isNull())
+    {
+        return;
+    }
+
+    const int size = static_cast<int>(*m_notification_icon_size);
+    SIGHT_ASSERT("Notification icon size must be non-negative", size >= 0);
+
+    _page.m_label->set_icon_size(size);
+    _page.m_label->set_icon(
+        _message && _message->icon() && !_message->icon()->empty()
+        ? QIcon(QString::fromStdString(_message->icon()->string()))
+        : QIcon()
+    );
+}
+
+//------------------------------------------------------------------------------
+
+std::map<QWidget*, notification_zone::page>::iterator notification_zone::create_page(
+    const sight::core::notification::base::sptr& _notification
+)
 {
     notification_zone::page page;
 
@@ -656,7 +700,7 @@ notification_zone::page& notification_zone::create_page(const sight::core::notif
 
         auto* const box = new QHBoxLayout(page.m_widget);
         box->setContentsMargins(0, 0, 0, 0);
-        page.m_label = new QLabel(page.m_widget);
+        page.m_label = new sight::ui::qt::widget::notification_label(page.m_widget);
         page.m_label->setWordWrap(true);
 
         const auto message = std::dynamic_pointer_cast<sight::core::notification::message>(_notification);
@@ -688,6 +732,8 @@ notification_zone::page& notification_zone::create_page(const sight::core::notif
             );
         }
 
+        this->show_icon(page, message);
+
         box->addWidget(page.m_label);
         page.m_widget->setLayout(box);
 
@@ -699,10 +745,9 @@ notification_zone::page& notification_zone::create_page(const sight::core::notif
 
     m_stack->addWidget(page.m_widget);
 
-    const auto widget = page.m_widget;
-    m_pages.emplace(widget, std::move(page));
+    QWidget* const widget = page.m_widget;
 
-    return m_pages[widget];
+    return m_pages.emplace(widget, std::move(page)).first;
 }
 
 //------------------------------------------------------------------------------

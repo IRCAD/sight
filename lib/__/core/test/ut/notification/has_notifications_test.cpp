@@ -27,17 +27,23 @@
 #include <core/notification/has_monitors.hpp>
 #include <core/notification/has_notifications.hpp>
 #include <core/notification/information.hpp>
+#include <core/notification/message.hpp>
 #include <core/notification/monitor.hpp>
 #include <core/notification/observer.hpp>
+#include <core/notification/warning.hpp>
+#include <core/runtime/types.hpp>
 #include <core/thread/worker.hpp>
 
 #include <utest/wait.hpp>
+
+#include <boost/property_tree/xml_parser.hpp>
 
 #include <doctest/doctest.h>
 
 #include <chrono>
 #include <functional>
 #include <memory>
+#include <sstream>
 #include <string>
 #include <thread>
 #include <vector>
@@ -81,6 +87,7 @@ struct notification_emitter final : public sight::core::com::has_signals,
     using has_notifications::inform;
     using has_notifications::warn;
     using has_notifications::fail;
+    using has_notifications::configure_notifications;
 };
 
 struct monitor_emitter final : public sight::core::com::has_signals,
@@ -263,14 +270,11 @@ TEST_SUITE("sight::core::notification")
         emitter.inform("Information text");
         emitter.warn("Warning text");
         emitter.fail(
-            "Error text",
-            std::filesystem::path {},
-            std::string {},
-            false,
-            nullptr,
-            std::chrono::milliseconds(0),
-            true
-        );
+            sight::core::notification::message::params {
+            .text     = "Error text",
+            .duration = std::chrono::milliseconds(0),
+            .sound    = true
+        });
 
         SIGHT_TEST_WAIT(created_notifications.size() == 4);
         CHECK_EQ(created_notifications.size(), std::size_t(4));
@@ -301,6 +305,103 @@ TEST_SUITE("sight::core::notification")
         CHECK_EQ(error->duration()->count(), std::int64_t(0));
         REQUIRE(error->sound().has_value());
         CHECK_EQ(error->sound().value(), true);
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("notification_id_defaults_to_empty_and_can_be_set")
+    {
+        const auto notification = std::make_shared<sight::core::notification::warning>("Warning", "Body");
+        CHECK(notification->id().empty());
+
+        notification->set_id("left_sensor_out_of_range");
+        CHECK_EQ(notification->id(), std::string("left_sensor_out_of_range"));
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("params_resolve_the_key_and_keep_the_default_title")
+    {
+        notification_emitter emitter;
+        std::vector<sight::core::notification::base::sptr> created_notifications;
+
+        const auto signal = emitter.signal<sight::core::notification::has_notifications::signals::notification_created_t>(
+            sight::core::notification::has_notifications::signals::NOTIFICATION_CREATED
+        );
+        REQUIRE(signal);
+
+        const auto slot = sight::core::com::new_slot(
+            [&created_notifications](sight::core::notification::base::sptr _notification)
+        {
+            created_notifications.push_back(std::move(_notification));
+        });
+        slot->set_worker(sight::core::thread::get_default_worker());
+        signal->connect(slot);
+
+        // Only the relevant fields are named, the title is left to its default. This emitter has no
+        // configuration, so the key resolves to no id at all.
+        emitter.warn(
+            sight::core::notification::message::params {
+            .text = "Left sensor out of range",
+            .key  = "out_of_range"
+        });
+
+        // An explicit title wins over the default one.
+        emitter.inform(
+            sight::core::notification::message::params {
+            .title   = "Custom",
+            .text    = "Body",
+            .channel = "channel"
+        });
+
+        SIGHT_TEST_WAIT(created_notifications.size() == 2);
+        REQUIRE_EQ(created_notifications.size(), std::size_t(2));
+
+        const auto warning = std::dynamic_pointer_cast<sight::core::notification::warning>(
+            created_notifications.at(0)
+        );
+        REQUIRE(warning);
+        CHECK_EQ(warning->title(), std::string("Warning"));
+        CHECK_EQ(warning->text(), std::string("Left sensor out of range"));
+        CHECK(warning->id().empty());
+
+        const auto information = std::dynamic_pointer_cast<sight::core::notification::information>(
+            created_notifications.at(1)
+        );
+        REQUIRE(information);
+        CHECK_EQ(information->title(), std::string("Custom"));
+        CHECK_EQ(information->channel(), std::string("channel"));
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("configure_notifications_maps_keys_to_ids")
+    {
+        notification_emitter emitter;
+
+        std::stringstream xml;
+        xml << "<service>"
+               "<notification key=\"out_of_range\" id=\"left_sensor_out_of_range\"/>"
+               "<notification key=\"disconnected\" id=\"left_sensor_disconnected\"/>"
+        // Incomplete elements and other elements are ignored.
+               "<notification key=\"no_id\"/>"
+               "<notification id=\"no_key\"/>"
+               "<properties foo=\"bar\"/>"
+               "</service>";
+
+        sight::core::runtime::config_t config;
+        boost::property_tree::read_xml(xml, config);
+
+        emitter.configure_notifications(config.get_child("service"));
+
+        // The key is resolved when emitting, so that services never handle the id themselves.
+        CHECK_EQ(emitter.warn({.text = "Body", .key = "out_of_range"})->id(), std::string("left_sensor_out_of_range"));
+        CHECK_EQ(emitter.fail({.text = "Body", .key = "disconnected"})->id(), std::string("left_sensor_disconnected"));
+
+        // An unmapped key simply yields an empty id: the notification stays unidentified.
+        CHECK(emitter.inform({.text   = "Body", .key = "no_id"})->id().empty());
+        CHECK(emitter.instruct({.text = "Body", .key = "unknown_key"})->id().empty());
+        CHECK(emitter.warn("Body")->id().empty());
     }
 
 //------------------------------------------------------------------------------

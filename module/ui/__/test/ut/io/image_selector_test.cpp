@@ -19,12 +19,13 @@
  *
  ***********************************************************************/
 
-#include "image_selector_test.hpp"
-
 #include <algorithm>
+#include <core/com/slot.hpp>
+#include <core/thread/worker.hpp>
 #include <data/string.hpp>
 #include <io/__/service/reader.hpp>
 #include <io/__/service/writer.hpp>
+#include <service/base.hpp>
 #include <service/extension/config.hpp>
 #include <service/macros.hpp>
 #include <service/op.hpp>
@@ -36,6 +37,8 @@
 
 #include <utest/wait.hpp>
 
+#include <doctest/doctest.h>
+
 #include <boost/property_tree/ptree.hpp>
 
 #include <array>
@@ -43,8 +46,6 @@
 #include <filesystem>
 #include <fstream>
 #include <stdexcept>
-
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::ui::io::ut::image_selector_test);
 
 namespace sight::module::ui::io::ut
 {
@@ -634,902 +635,867 @@ SIGHT_REGISTER_SERVICE(
 
 //------------------------------------------------------------------------------
 
-void image_selector_test::setUp()
+namespace
 {
-    get_state(test_service::nifti_reader)       = {};
-    get_state(test_service::vtk_reader)         = {};
-    get_state(test_service::raw_reader)         = {};
-    get_state(test_service::file_folder_reader) = {};
-    get_state(test_service::folder_reader_a)    = {};
-    get_state(test_service::folder_reader_b)    = {};
-    get_state(test_service::nifti_writer)       = {};
-    get_state(test_service::vtk_writer)         = {};
-    get_state(test_service::raw_writer)         = {};
-    get_state(test_service::dialog_writer_a)    = {};
-    get_state(test_service::dialog_writer_b)    = {};
-    get_selector_state()                        = {};
 
-    CPPUNIT_ASSERT(sight::ui::test::dialog::location::clear());
-
-    m_selector = service::add("sight::module::ui::io::selector");
-    CPPUNIT_ASSERT_MESSAGE("Failed to create service 'sight::module::ui::io::selector'", m_selector);
-}
-
-//------------------------------------------------------------------------------
-
-void image_selector_test::tearDown()
+struct image_selector_fixture
 {
-    if(m_worker)
+    image_selector_fixture()
     {
-        m_worker->stop();
-        m_worker.reset();
+        get_state(test_service::nifti_reader)       = {};
+        get_state(test_service::vtk_reader)         = {};
+        get_state(test_service::raw_reader)         = {};
+        get_state(test_service::file_folder_reader) = {};
+        get_state(test_service::folder_reader_a)    = {};
+        get_state(test_service::folder_reader_b)    = {};
+        get_state(test_service::nifti_writer)       = {};
+        get_state(test_service::vtk_writer)         = {};
+        get_state(test_service::raw_writer)         = {};
+        get_state(test_service::dialog_writer_a)    = {};
+        get_state(test_service::dialog_writer_b)    = {};
+        get_selector_state()                        = {};
+
+        CHECK(sight::ui::test::dialog::location::clear());
+
+        m_selector = service::add("sight::module::ui::io::selector");
+        CHECK_MESSAGE(m_selector, "Failed to create service 'sight::module::ui::io::selector'");
     }
 
-    if(!m_selector->stopped())
+    ~image_selector_fixture()
     {
-        CPPUNIT_ASSERT_NO_THROW(m_selector->stop().get());
+        if(m_worker)
+        {
+            m_worker->stop();
+            m_worker.reset();
+        }
+
+        if(!m_selector->stopped())
+        {
+            CHECK_NOTHROW(m_selector->stop().get());
+        }
+
+        service::remove(m_selector);
+        m_selector.reset();
+        m_data = nullptr;
+
+        CHECK(sight::ui::test::dialog::location::clear());
     }
 
-    service::remove(m_selector);
-    m_selector.reset();
-    m_data = nullptr;
+    image_selector_fixture(const image_selector_fixture&)            = delete;
+    image_selector_fixture& operator=(const image_selector_fixture&) = delete;
+    image_selector_fixture(image_selector_fixture&&)                 = delete;
+    image_selector_fixture& operator=(image_selector_fixture&&)      = delete;
 
-    CPPUNIT_ASSERT(sight::ui::test::dialog::location::clear());
-}
+    //------------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
-
-void image_selector_test::configure_selector(
-    const std::string& _data_key,
-    const std::vector<std::string>& _service_ids,
-    const std::filesystem::path& _file,
-    const std::filesystem::path& _folder,
-    bool _non_interactive
+    void configure_selector(
+        const std::string& _data_key,
+        const std::vector<std::string>& _service_ids,
+        const std::filesystem::path& _file   = {},
+        const std::filesystem::path& _folder = {},
+        bool _non_interactive                = false
 )
-{
-    m_data = std::make_shared<sight::data::string>();
+    {
+        m_data = std::make_shared<sight::data::string>();
 
-    if(_data_key == sight::io::service::READER_DATA_KEY)
-    {
-        m_selector->set_inout(m_data, sight::io::service::READER_DATA_KEY);
+        if(_data_key == sight::io::service::READER_DATA_KEY)
+        {
+            m_selector->set_inout(m_data, sight::io::service::READER_DATA_KEY);
+        }
+        else if(_data_key == sight::io::service::WRITER_DATA_KEY)
+        {
+            m_selector->set_input(m_data, sight::io::service::WRITER_DATA_KEY);
+        }
+        else
+        {
+            FAIL("Unknown selector data key");
+        }
+
+        service::config_t config;
+        config.put("selection.<xmlattr>.mode", "include");
+
+        for(const auto& service_id : _service_ids)
+        {
+            boost::property_tree::ptree selection;
+            selection.put("<xmlattr>.service", service_id);
+            config.add_child("addSelection", selection);
+        }
+
+        if(_non_interactive || !_file.empty())
+        {
+            config.put("path.<xmlattr>.file", _file.string());
+        }
+
+        if(_non_interactive || !_folder.empty())
+        {
+            config.put("path.<xmlattr>.folder", _folder.string());
+        }
+
+        m_selector->set_config(config);
+        CHECK_NOTHROW(m_selector->configure());
+        CHECK_NOTHROW(m_selector->start().get());
     }
-    else if(_data_key == sight::io::service::WRITER_DATA_KEY)
+
+    //------------------------------------------------------------------------------
+
+    void update_selector(bool _expect_success)
     {
+        bool succeeded = false;
+        bool failed    = false;
+
+        const auto succeeded_slot = core::com::new_slot(
+            [&succeeded]
+                {
+                    succeeded = true;
+                });
+        const auto failed_slot = core::com::new_slot(
+            [&failed]
+                {
+                    failed = true;
+                });
+
+        m_worker = core::thread::worker::make();
+        succeeded_slot->set_worker(m_worker);
+        failed_slot->set_worker(m_worker);
+        m_selector->signal("succeeded")->connect(succeeded_slot);
+        m_selector->signal("failed")->connect(failed_slot);
+
+        CHECK_NOTHROW(m_selector->update().get());
+
+        SIGHT_TEST_WAIT(succeeded || failed);
+        CHECK_EQ(_expect_success, succeeded);
+        CHECK_EQ(!_expect_success, failed);
+    }
+
+    service::base::sptr m_selector;
+    core::thread::worker::sptr m_worker;
+    data::string::sptr m_data;
+};
+
+} // namespace
+
+//------------------------------------------------------------------------------
+
+TEST_SUITE("sight::module::ui::io::image_selector")
+{
+    TEST_CASE_FIXTURE(image_selector_fixture, "file_reader_test")
+    {
+        configure_selector(sight::io::service::READER_DATA_KEY, {"sight::module::ui::io::ut::test_nifti_reader"});
+
+        // The selected filter determines the reader. The reader remains responsible for interpreting the filename.
+        const std::filesystem::path selected_file = std::filesystem::temp_directory_path() / "image.data";
+        sight::ui::test::dialog::location::set_paths({selected_file});
+
+        update_selector(true);
+
+        CHECK_EQ(selected_file, get_state(test_service::nifti_reader).file);
+    }
+
+    TEST_CASE_FIXTURE(image_selector_fixture, "multiple_file_readers_test")
+    {
+        configure_selector(
+            sight::io::service::READER_DATA_KEY,
+            {
+                "sight::module::ui::io::ut::test_nifti_reader",
+                "sight::module::ui::io::ut::test_vtk_reader"
+            });
+
+        const filter_t selected_filter {"VTK image", "*.vtk"};
+        sight::ui::test::dialog::location::set_current_filter(selected_filter);
+
+        const std::filesystem::path selected_file = std::filesystem::temp_directory_path() / "image.data";
+        sight::ui::test::dialog::location::set_paths({selected_file});
+
+        update_selector(true);
+
+        const std::vector<filter_t> expected_filters {
+            {"All supported files", "*.nii *.nii.gz *.vtk"},
+            {"NIfTI image", "*.nii *.nii.gz"},
+            selected_filter
+        };
+        CHECK(expected_filters == sight::ui::test::dialog::location::get_filters());
+        CHECK(get_state(test_service::nifti_reader).file.empty());
+        CHECK_EQ(selected_file, get_state(test_service::vtk_reader).file);
+    }
+
+    TEST_CASE_FIXTURE(image_selector_fixture, "all_supported_file_readers_test")
+    {
+        configure_selector(
+            sight::io::service::READER_DATA_KEY,
+            {
+                "sight::module::ui::io::ut::test_nifti_reader",
+                "sight::module::ui::io::ut::test_vtk_reader"
+            });
+
+        const filter_t selected_filter {"All supported files", "*.nii *.nii.gz *.vtk"};
+        sight::ui::test::dialog::location::set_current_filter(selected_filter);
+
+        const std::filesystem::path selected_file = std::filesystem::temp_directory_path() / "image.nii";
+        sight::ui::test::dialog::location::set_paths({selected_file});
+
+        update_selector(true);
+
+        const std::vector<filter_t> expected_filters {
+            selected_filter,
+            {"NIfTI image", "*.nii *.nii.gz"},
+            {"VTK image", "*.vtk"}
+        };
+
+        CHECK(expected_filters == sight::ui::test::dialog::location::get_filters());
+        CHECK_EQ(selected_file, get_state(test_service::nifti_reader).file);
+        CHECK(get_state(test_service::vtk_reader).file.empty());
+    }
+
+    TEST_CASE_FIXTURE(image_selector_fixture, "reader_without_filter_test")
+    {
+        configure_selector(sight::io::service::READER_DATA_KEY, {"sight::module::ui::io::ut::test_raw_reader"});
+
+        const std::filesystem::path selected_file = std::filesystem::temp_directory_path() / "image.data";
+        sight::ui::test::dialog::location::set_paths({selected_file});
+
+        update_selector(true);
+
+        const std::vector<filter_t> expected_filters {
+            {".raw", "*.raw"},
+            {"All supported files", "*.raw"}
+        };
+        CHECK(expected_filters == sight::ui::test::dialog::location::get_filters());
+        CHECK_EQ(selected_file, get_state(test_service::raw_reader).file);
+    }
+
+    TEST_CASE_FIXTURE(image_selector_fixture, "unsupported_reader_filter_test")
+    {
+        configure_selector(sight::io::service::READER_DATA_KEY, {"sight::module::ui::io::ut::test_nifti_reader"});
+
+        sight::ui::test::dialog::location::set_current_filter({"Unsupported", "*.unsupported"});
+        sight::ui::test::dialog::location::set_paths({std::filesystem::temp_directory_path() / "image.data"});
+
+        update_selector(false);
+
+        CHECK(get_state(test_service::nifti_reader).file.empty());
+    }
+
+    TEST_CASE_FIXTURE(image_selector_fixture, "reader_failure_test")
+    {
+        configure_selector(sight::io::service::READER_DATA_KEY, {"sight::module::ui::io::ut::test_nifti_reader"});
+
+        get_state(test_service::nifti_reader).should_fail = true;
+        const std::filesystem::path selected_file = std::filesystem::temp_directory_path() / "image.nii";
+        sight::ui::test::dialog::location::set_paths({selected_file});
+
+        update_selector(false);
+
+        CHECK_EQ(selected_file, get_state(test_service::nifti_reader).file);
+    }
+
+    TEST_CASE_FIXTURE(image_selector_fixture, "reader_exception_test")
+    {
+        configure_selector(sight::io::service::READER_DATA_KEY, {"sight::module::ui::io::ut::test_nifti_reader"});
+
+        auto& state = get_state(test_service::nifti_reader);
+        state.should_throw = true;
+
+        sight::ui::test::dialog::location::set_paths(
+            {std::filesystem::temp_directory_path() / "image.nii"
+            });
+
+        update_selector(false);
+
+        CHECK(state.file.empty());
+    }
+
+    TEST_CASE_FIXTURE(image_selector_fixture, "reader_without_file_support_test")
+    {
+        configure_selector(sight::io::service::READER_DATA_KEY, {"sight::module::ui::io::ut::test_nifti_reader"});
+
+        auto& state = get_state(test_service::nifti_reader);
+        state.should_drop_file_support = true;
+
+        sight::ui::test::dialog::location::set_paths(
+            {std::filesystem::temp_directory_path() / "image.nii"
+            });
+
+        update_selector(false);
+
+        CHECK(state.file.empty());
+        CHECK(state.file_support_dropped);
+    }
+
+    TEST_CASE_FIXTURE(image_selector_fixture, "reader_cancel_test")
+    {
+        configure_selector(sight::io::service::READER_DATA_KEY, {"sight::module::ui::io::ut::test_nifti_reader"});
+        sight::ui::test::dialog::location::set_paths({});
+
+        update_selector(false);
+
+        CHECK(get_state(test_service::nifti_reader).file.empty());
+    }
+
+    TEST_CASE_FIXTURE(image_selector_fixture, "multiple_folder_readers_test")
+    {
+        const std::string reader_a_id = "sight::module::ui::io::ut::test_folder_reader_a";
+        const std::string reader_b_id = "sight::module::ui::io::ut::test_folder_reader_b";
+        configure_selector(sight::io::service::READER_DATA_KEY, {reader_a_id, reader_b_id});
+
+        get_selector_state().selections = {reader_b_id};
+        const std::filesystem::path selected_folder = std::filesystem::temp_directory_path() / "dicom";
+        get_state(test_service::folder_reader_b).dialog_file = selected_folder;
+
+        update_selector(true);
+
+        const sight::ui::dialog::selector_base::choices_preset_t expected_choices {
+            {reader_a_id, false},
+            {reader_b_id, false}
+        };
+
+        auto actual   = get_selector_state().choices;
+        auto expected = expected_choices;
+
+        std::ranges::sort(actual);
+        std::ranges::sort(expected);
+
+        CHECK(expected == actual);
+        CHECK_EQ(std::string("Reader to use"), get_selector_state().title);
+        CHECK_EQ(std::size_t(0), get_state(test_service::folder_reader_a).dialog_count);
+        CHECK_EQ(std::size_t(1), get_state(test_service::folder_reader_b).dialog_count);
+        CHECK_EQ(selected_folder, get_state(test_service::folder_reader_b).file);
+    }
+
+    TEST_CASE_FIXTURE(image_selector_fixture, "folder_reader_cancel_test")
+    {
+        configure_selector(
+            sight::io::service::READER_DATA_KEY,
+            {
+                "sight::module::ui::io::ut::test_folder_reader_a",
+                "sight::module::ui::io::ut::test_folder_reader_b"
+            });
+
+        update_selector(false);
+
+        CHECK_EQ(std::size_t(0), get_state(test_service::folder_reader_a).dialog_count);
+        CHECK_EQ(std::size_t(0), get_state(test_service::folder_reader_b).dialog_count);
+    }
+
+    TEST_CASE_FIXTURE(image_selector_fixture, "folder_reader_failure_test")
+    {
+        configure_selector(sight::io::service::READER_DATA_KEY, {"sight::module::ui::io::ut::test_folder_reader_a"});
+
+        auto& state = get_state(test_service::folder_reader_a);
+        state.dialog_file = std::filesystem::temp_directory_path() / "dicom";
+        state.should_fail = true;
+
+        update_selector(false);
+
+        CHECK_EQ(std::size_t(1), state.dialog_count);
+        CHECK_EQ(state.dialog_file, state.file);
+    }
+
+    TEST_CASE_FIXTURE(image_selector_fixture, "folder_reader_exception_test")
+    {
+        configure_selector(sight::io::service::READER_DATA_KEY, {"sight::module::ui::io::ut::test_folder_reader_a"});
+
+        auto& state = get_state(test_service::folder_reader_a);
+        state.dialog_file  = std::filesystem::temp_directory_path() / "dicom";
+        state.should_throw = true;
+
+        update_selector(false);
+
+        CHECK_EQ(std::size_t(1), state.dialog_count);
+        CHECK(state.file.empty());
+    }
+
+    TEST_CASE_FIXTURE(image_selector_fixture, "multiple_file_writers_test")
+    {
+        configure_selector(
+            sight::io::service::WRITER_DATA_KEY,
+            {
+                "sight::module::ui::io::ut::test_nifti_writer",
+                "sight::module::ui::io::ut::test_vtk_writer"
+            });
+
+        const filter_t selected_filter {"VTK image", "*.vtk"};
+        sight::ui::test::dialog::location::set_current_filter(selected_filter);
+
+        const std::filesystem::path selected_file = std::filesystem::temp_directory_path() / "image.vtk";
+        sight::ui::test::dialog::location::set_paths({selected_file});
+
+        update_selector(true);
+
+        const std::vector<filter_t> expected_filters {
+            {"NIfTI image", "*.nii *.nii.gz"},
+            selected_filter
+        };
+        CHECK(expected_filters == sight::ui::test::dialog::location::get_filters());
+        CHECK(get_state(test_service::nifti_writer).file.empty());
+        CHECK_EQ(selected_file, get_state(test_service::vtk_writer).file);
+    }
+
+    TEST_CASE_FIXTURE(image_selector_fixture, "writer_extension_test")
+    {
+        configure_selector(sight::io::service::WRITER_DATA_KEY, {"sight::module::ui::io::ut::test_nifti_writer"});
+
+        const std::filesystem::path selected_file = std::filesystem::temp_directory_path() / "image";
+        sight::ui::test::dialog::location::set_paths({selected_file});
+
+        update_selector(true);
+
+        CHECK_EQ(
+            std::filesystem::path(selected_file.string() + ".nii"),
+            get_state(test_service::nifti_writer).file
+        );
+    }
+
+    TEST_CASE_FIXTURE(image_selector_fixture, "writer_compound_extension_test")
+    {
+        configure_selector(sight::io::service::WRITER_DATA_KEY, {"sight::module::ui::io::ut::test_nifti_writer"});
+
+        const std::filesystem::path selected_file = std::filesystem::temp_directory_path() / "image.nii.gz";
+        sight::ui::test::dialog::location::set_paths({selected_file});
+
+        update_selector(true);
+
+        CHECK_EQ(selected_file, get_state(test_service::nifti_writer).file);
+    }
+
+    TEST_CASE_FIXTURE(image_selector_fixture, "writer_without_filter_test")
+    {
+        configure_selector(sight::io::service::WRITER_DATA_KEY, {"sight::module::ui::io::ut::test_raw_writer"});
+
+        const std::filesystem::path selected_file = std::filesystem::temp_directory_path() / "image";
+        sight::ui::test::dialog::location::set_paths({selected_file});
+
+        update_selector(true);
+
+        const std::vector<filter_t> expected_filters {{".raw", "*.raw"}};
+        CHECK(expected_filters == sight::ui::test::dialog::location::get_filters());
+        CHECK_EQ(
+            std::filesystem::path(selected_file.string() + ".raw"),
+            get_state(test_service::raw_writer).file
+        );
+    }
+
+    TEST_CASE_FIXTURE(image_selector_fixture, "unsupported_writer_filter_test")
+    {
+        configure_selector(sight::io::service::WRITER_DATA_KEY, {"sight::module::ui::io::ut::test_nifti_writer"});
+
+        sight::ui::test::dialog::location::set_current_filter({"Unsupported", "*.unsupported"});
+        sight::ui::test::dialog::location::set_paths({std::filesystem::temp_directory_path() / "image"});
+
+        update_selector(false);
+
+        CHECK(get_state(test_service::nifti_writer).file.empty());
+    }
+
+    TEST_CASE_FIXTURE(image_selector_fixture, "writer_failure_test")
+    {
+        configure_selector(sight::io::service::WRITER_DATA_KEY, {"sight::module::ui::io::ut::test_nifti_writer"});
+
+        get_state(test_service::nifti_writer).should_fail = true;
+        const std::filesystem::path selected_file = std::filesystem::temp_directory_path() / "image.nii";
+        sight::ui::test::dialog::location::set_paths({selected_file});
+
+        update_selector(false);
+
+        CHECK_EQ(selected_file, get_state(test_service::nifti_writer).file);
+    }
+
+    TEST_CASE_FIXTURE(image_selector_fixture, "writer_exception_test")
+    {
+        configure_selector(sight::io::service::WRITER_DATA_KEY, {"sight::module::ui::io::ut::test_nifti_writer"});
+
+        auto& state = get_state(test_service::nifti_writer);
+        state.should_throw = true;
+
+        sight::ui::test::dialog::location::set_paths(
+            {std::filesystem::temp_directory_path() / "image.nii"
+            });
+
+        update_selector(false);
+
+        CHECK(state.file.empty());
+    }
+
+    TEST_CASE_FIXTURE(image_selector_fixture, "writer_cancel_test")
+    {
+        configure_selector(sight::io::service::WRITER_DATA_KEY, {"sight::module::ui::io::ut::test_nifti_writer"});
+        sight::ui::test::dialog::location::set_paths({});
+
+        update_selector(false);
+
+        CHECK(get_state(test_service::nifti_writer).file.empty());
+    }
+
+    TEST_CASE_FIXTURE(image_selector_fixture, "multiple_dialog_writers_test")
+    {
+        const std::string writer_a_id = "sight::module::ui::io::ut::test_dialog_writer_a";
+        const std::string writer_b_id = "sight::module::ui::io::ut::test_dialog_writer_b";
+        configure_selector(sight::io::service::WRITER_DATA_KEY, {writer_a_id, writer_b_id});
+
+        get_selector_state().selections = {writer_b_id};
+        const std::filesystem::path selected_file = std::filesystem::temp_directory_path() / "image.custom";
+        get_state(test_service::dialog_writer_b).dialog_file = selected_file;
+
+        update_selector(true);
+
+        const sight::ui::dialog::selector_base::choices_preset_t expected_choices {
+            {writer_a_id, false},
+            {writer_b_id, false}
+        };
+        auto actual   = get_selector_state().choices;
+        auto expected = expected_choices;
+
+        std::ranges::sort(actual);
+        std::ranges::sort(expected);
+
+        CHECK(expected == actual);
+
+        CHECK_EQ(std::string("Writer to use"), get_selector_state().title);
+        CHECK_EQ(std::size_t(0), get_state(test_service::dialog_writer_a).dialog_count);
+        CHECK_EQ(std::size_t(1), get_state(test_service::dialog_writer_b).dialog_count);
+        CHECK_EQ(selected_file, get_state(test_service::dialog_writer_b).file);
+    }
+
+    TEST_CASE_FIXTURE(image_selector_fixture, "dialog_writer_cancel_test")
+    {
+        configure_selector(
+            sight::io::service::WRITER_DATA_KEY,
+            {
+                "sight::module::ui::io::ut::test_dialog_writer_a",
+                "sight::module::ui::io::ut::test_dialog_writer_b"
+            });
+
+        update_selector(false);
+
+        CHECK_EQ(std::size_t(0), get_state(test_service::dialog_writer_a).dialog_count);
+        CHECK_EQ(std::size_t(0), get_state(test_service::dialog_writer_b).dialog_count);
+    }
+
+    TEST_CASE_FIXTURE(image_selector_fixture, "dialog_writer_failure_test")
+    {
+        configure_selector(sight::io::service::WRITER_DATA_KEY, {"sight::module::ui::io::ut::test_dialog_writer_a"});
+
+        auto& state = get_state(test_service::dialog_writer_a);
+        state.dialog_file = std::filesystem::temp_directory_path() / "image.custom";
+        state.should_fail = true;
+
+        update_selector(false);
+
+        CHECK_EQ(std::size_t(1), state.dialog_count);
+        CHECK_EQ(state.dialog_file, state.file);
+    }
+
+    TEST_CASE_FIXTURE(image_selector_fixture, "dialog_writer_exception_test")
+    {
+        configure_selector(sight::io::service::WRITER_DATA_KEY, {"sight::module::ui::io::ut::test_dialog_writer_a"});
+
+        auto& state = get_state(test_service::dialog_writer_a);
+        state.dialog_file  = std::filesystem::temp_directory_path() / "image.custom";
+        state.should_throw = true;
+
+        update_selector(false);
+
+        CHECK_EQ(std::size_t(1), state.dialog_count);
+        CHECK(state.file.empty());
+    }
+
+    TEST_CASE_FIXTURE(image_selector_fixture, "unknown_folder_reader_selection_test")
+    {
+        const std::string reader_a_id = "sight::module::ui::io::ut::test_folder_reader_a";
+        const std::string reader_b_id = "sight::module::ui::io::ut::test_folder_reader_b";
+
+        configure_selector(sight::io::service::READER_DATA_KEY, {reader_a_id, reader_b_id});
+
+        get_selector_state().selections = {"unknown_reader"};
+
+        update_selector(false);
+
+        CHECK_EQ(std::size_t(0), get_state(test_service::folder_reader_a).dialog_count);
+        CHECK_EQ(std::size_t(0), get_state(test_service::folder_reader_b).dialog_count);
+    }
+
+    TEST_CASE_FIXTURE(image_selector_fixture, "unknown_dialog_writer_selection_test")
+    {
+        const std::string writer_a_id = "sight::module::ui::io::ut::test_dialog_writer_a";
+        const std::string writer_b_id = "sight::module::ui::io::ut::test_dialog_writer_b";
+
+        configure_selector(sight::io::service::WRITER_DATA_KEY, {writer_a_id, writer_b_id});
+
+        get_selector_state().selections = {"unknown_writer"};
+
+        update_selector(false);
+
+        CHECK_EQ(std::size_t(0), get_state(test_service::dialog_writer_a).dialog_count);
+        CHECK_EQ(std::size_t(0), get_state(test_service::dialog_writer_b).dialog_count);
+    }
+
+    TEST_CASE_FIXTURE(image_selector_fixture, "writer_with_config_test")
+    {
+        const std::string writer_id = "sight::module::ui::io::ut::test_vtk_writer";
+        const std::string config_id = "image_selector_test_writer_config";
+
+        service::config_t writer_config;
+        writer_config.put("dummy", "value");
+
+        service::extension::config::get_default()->add_service_config_info(
+            config_id,
+            writer_id,
+            "Test writer config",
+            writer_config
+        );
+
+        m_data = std::make_shared<sight::data::string>();
         m_selector->set_input(m_data, sight::io::service::WRITER_DATA_KEY);
-    }
-    else
-    {
-        CPPUNIT_FAIL("Unknown selector data key");
-    }
 
-    service::config_t config;
-    config.put("selection.<xmlattr>.mode", "include");
+        service::config_t config;
+        config.put("selection.<xmlattr>.mode", "include");
 
-    for(const auto& service_id : _service_ids)
-    {
         boost::property_tree::ptree selection;
-        selection.put("<xmlattr>.service", service_id);
+        selection.put("<xmlattr>.service", writer_id);
+        selection.put("<xmlattr>.config", config_id);
         config.add_child("addSelection", selection);
+
+        m_selector->set_config(config);
+
+        CHECK_NOTHROW(m_selector->configure());
+        CHECK_NOTHROW(m_selector->start().get());
+
+        const std::filesystem::path selected_file =
+            std::filesystem::temp_directory_path() / "image.vtk";
+
+        sight::ui::test::dialog::location::set_paths({selected_file});
+
+        update_selector(true);
+
+        CHECK_EQ(
+            selected_file,
+            get_state(test_service::vtk_writer).file
+        );
     }
 
-    if(_non_interactive || !_file.empty())
+    //------------------------------------------------------------------------------
+
+    TEST_CASE_FIXTURE(image_selector_fixture, "reader_with_config_test")
     {
-        config.put("path.<xmlattr>.file", _file.string());
+        const std::string reader_id = "sight::module::ui::io::ut::test_nifti_reader";
+        const std::string config_id = "image_selector_test_reader_config";
+
+        service::config_t reader_config;
+        reader_config.put("dummy", "value");
+
+        service::extension::config::get_default()->add_service_config_info(
+            config_id,
+            reader_id,
+            "Test reader config",
+            reader_config
+        );
+
+        m_data = std::make_shared<sight::data::string>();
+        m_selector->set_inout(m_data, sight::io::service::READER_DATA_KEY);
+
+        service::config_t config;
+        config.put("selection.<xmlattr>.mode", "include");
+
+        boost::property_tree::ptree selection;
+        selection.put("<xmlattr>.service", reader_id);
+        selection.put("<xmlattr>.config", config_id);
+        config.add_child("addSelection", selection);
+
+        m_selector->set_config(config);
+
+        CHECK_NOTHROW(m_selector->configure());
+        CHECK_NOTHROW(m_selector->start().get());
+
+        const std::filesystem::path selected_file =
+            std::filesystem::temp_directory_path() / "image.nii";
+
+        sight::ui::test::dialog::location::set_paths({selected_file});
+
+        update_selector(true);
+
+        CHECK_EQ(
+            selected_file,
+            get_state(test_service::nifti_reader).file
+        );
     }
 
-    if(_non_interactive || !_folder.empty())
+    //------------------------------------------------------------------------------
+
+    TEST_CASE_FIXTURE(image_selector_fixture, "single_file_folder_reader_test")
     {
-        config.put("path.<xmlattr>.folder", _folder.string());
+        configure_selector(
+            sight::io::service::READER_DATA_KEY,
+            {"sight::module::ui::io::ut::test_file_folder_reader"
+            });
+
+        const std::filesystem::path selected_folder = std::filesystem::temp_directory_path() / "dicom";
+        auto& state                                 = get_state(test_service::file_folder_reader);
+        state.dialog_file = selected_folder;
+
+        update_selector(true);
+
+        CHECK_EQ(std::size_t(1), state.dialog_count);
+        CHECK_EQ(selected_folder, state.file);
+        CHECK(sight::ui::test::dialog::location::get_filters().empty());
     }
 
-    m_selector->set_config(config);
-    CPPUNIT_ASSERT_NO_THROW(m_selector->configure());
-    CPPUNIT_ASSERT_NO_THROW(m_selector->start().get());
+    //------------------------------------------------------------------------------
+
+    TEST_CASE_FIXTURE(image_selector_fixture, "file_folder_reader_with_file_readers_test")
+    {
+        configure_selector(
+            sight::io::service::READER_DATA_KEY,
+            {
+                "sight::module::ui::io::ut::test_file_folder_reader",
+                "sight::module::ui::io::ut::test_vtk_reader"
+            });
+
+        const filter_t selected_filter {"DICOM files", "*.dcm"};
+        sight::ui::test::dialog::location::set_current_filter(selected_filter);
+
+        const std::filesystem::path selected_file = std::filesystem::temp_directory_path() / "image.dcm";
+        sight::ui::test::dialog::location::set_paths({selected_file});
+
+        update_selector(true);
+
+        const std::vector<filter_t> expected_filters {
+            {"All supported files", "*.dcm *.vtk"},
+            selected_filter,
+            {"VTK image", "*.vtk"}
+        };
+        CHECK(expected_filters == sight::ui::test::dialog::location::get_filters());
+        CHECK_EQ(std::size_t(0), get_state(test_service::file_folder_reader).dialog_count);
+        CHECK_EQ(selected_file, get_state(test_service::file_folder_reader).file);
+        CHECK(get_state(test_service::vtk_reader).file.empty());
+    }
+
+    //------------------------------------------------------------------------------
+
+    TEST_CASE_FIXTURE(image_selector_fixture, "command_line_file_reader_test")
+    {
+        const auto selected_file = std::filesystem::temp_directory_path()
+                                   / ("sight_selector_cli_" + std::to_string(reinterpret_cast<std::uintptr_t>(this))
+                                      + ".nii");
+        std::ofstream file(selected_file);
+        CHECK(file.good());
+        file.close();
+
+        configure_selector(
+            sight::io::service::READER_DATA_KEY,
+            {"sight::module::ui::io::ut::test_nifti_reader"},
+            selected_file
+        );
+
+        update_selector(true);
+
+        CHECK_EQ(selected_file, get_state(test_service::nifti_reader).file);
+        CHECK_EQ(std::size_t(0), get_state(test_service::nifti_reader).dialog_count);
+        CHECK(std::filesystem::remove(selected_file));
+    }
+
+    //------------------------------------------------------------------------------
+
+    TEST_CASE_FIXTURE(image_selector_fixture, "command_line_empty_path_test")
+    {
+        configure_selector(
+            sight::io::service::READER_DATA_KEY,
+            {"sight::module::ui::io::ut::test_nifti_reader"},
+            {},
+            {},
+            true
+        );
+
+        CHECK_NOTHROW(m_selector->update().get());
+        CHECK_EQ(std::size_t(0), get_state(test_service::nifti_reader).read_count);
+        CHECK_EQ(std::size_t(0), get_state(test_service::nifti_reader).dialog_count);
+    }
+
+    //------------------------------------------------------------------------------
+
+    TEST_CASE_FIXTURE(image_selector_fixture, "command_line_multiple_file_reader_test")
+    {
+        const auto first_file = std::filesystem::temp_directory_path()
+                                / ("sight_selector_cli_"
+                                   + std::to_string(reinterpret_cast<std::uintptr_t>(this)) + "_first.nii");
+        const auto second_file = std::filesystem::temp_directory_path()
+                                 / ("sight_selector_cli_"
+                                    + std::to_string(reinterpret_cast<std::uintptr_t>(this)) + "_second.nii");
+
+        std::ofstream first(first_file);
+        std::ofstream second(second_file);
+        CHECK(first.good());
+        CHECK(second.good());
+        first.close();
+        second.close();
+
+        configure_selector(
+            sight::io::service::READER_DATA_KEY,
+            {"sight::module::ui::io::ut::test_nifti_reader"},
+            first_file.string() + ";" + second_file.string()
+        );
+
+        update_selector(true);
+
+        CHECK_EQ(std::size_t(2), get_state(test_service::nifti_reader).read_count);
+        CHECK_EQ(std::size_t(0), get_state(test_service::nifti_reader).dialog_count);
+        CHECK(std::filesystem::remove(first_file));
+        CHECK(std::filesystem::remove(second_file));
+    }
+
+    //------------------------------------------------------------------------------
+
+    TEST_CASE_FIXTURE(image_selector_fixture, "command_line_selected_folder_reader_test")
+    {
+        const auto selected_folder = std::filesystem::temp_directory_path()
+                                     / ("sight_selector_cli_" + std::to_string(reinterpret_cast<std::uintptr_t>(this)));
+        CHECK(std::filesystem::create_directory(selected_folder));
+
+        configure_selector(
+            sight::io::service::READER_DATA_KEY,
+            {"sight::module::ui::io::ut::test_folder_reader_b"},
+            {},
+            selected_folder
+        );
+
+        update_selector(true);
+
+        CHECK_EQ(selected_folder, get_state(test_service::folder_reader_b).file);
+        CHECK_EQ(std::size_t(0), get_state(test_service::folder_reader_a).read_count);
+        CHECK_EQ(std::size_t(0), get_state(test_service::file_folder_reader).read_count);
+        CHECK(std::filesystem::remove(selected_folder));
+    }
+
+    //------------------------------------------------------------------------------
+
+    TEST_CASE_FIXTURE(image_selector_fixture, "command_line_reader_failure_test")
+    {
+        const auto selected_file = std::filesystem::temp_directory_path()
+                                   / ("sight_selector_cli_" + std::to_string(reinterpret_cast<std::uintptr_t>(this))
+                                      + ".nii");
+        std::ofstream file(selected_file);
+        CHECK(file.good());
+        file.close();
+
+        get_state(test_service::nifti_reader).should_fail = true;
+        configure_selector(
+            sight::io::service::READER_DATA_KEY,
+            {"sight::module::ui::io::ut::test_nifti_reader"},
+            selected_file
+        );
+
+        update_selector(false);
+
+        CHECK_EQ(std::size_t(0), get_state(test_service::nifti_reader).dialog_count);
+        CHECK(std::filesystem::remove(selected_file));
+    }
+
+    //------------------------------------------------------------------------------
+
+    TEST_CASE_FIXTURE(image_selector_fixture, "no_available_service_test")
+    {
+        configure_selector(sight::io::service::READER_DATA_KEY, {"sight::module::ui::io::ut::unknown_reader"});
+
+        update_selector(false);
+    }
 }
-
-//------------------------------------------------------------------------------
-
-void image_selector_test::update_selector(bool _expect_success)
-{
-    bool succeeded = false;
-    bool failed    = false;
-
-    const auto succeeded_slot = core::com::new_slot(
-        [&succeeded]
-        {
-            succeeded = true;
-        });
-    const auto failed_slot = core::com::new_slot(
-        [&failed]
-        {
-            failed = true;
-        });
-
-    m_worker = core::thread::worker::make();
-    succeeded_slot->set_worker(m_worker);
-    failed_slot->set_worker(m_worker);
-    m_selector->signal("succeeded")->connect(succeeded_slot);
-    m_selector->signal("failed")->connect(failed_slot);
-
-    CPPUNIT_ASSERT_NO_THROW(m_selector->update().get());
-
-    SIGHT_TEST_WAIT(succeeded || failed);
-    CPPUNIT_ASSERT_EQUAL(_expect_success, succeeded);
-    CPPUNIT_ASSERT_EQUAL(!_expect_success, failed);
-}
-
-//------------------------------------------------------------------------------
-
-void image_selector_test::file_reader_test()
-{
-    configure_selector(sight::io::service::READER_DATA_KEY, {"sight::module::ui::io::ut::test_nifti_reader"});
-
-    // The selected filter determines the reader. The reader remains responsible for interpreting the filename.
-    const std::filesystem::path selected_file = std::filesystem::temp_directory_path() / "image.data";
-    sight::ui::test::dialog::location::set_paths({selected_file});
-
-    update_selector(true);
-
-    CPPUNIT_ASSERT_EQUAL(selected_file, get_state(test_service::nifti_reader).file);
-}
-
-//------------------------------------------------------------------------------
-
-void image_selector_test::command_line_file_reader_test()
-{
-    const auto selected_file = std::filesystem::temp_directory_path()
-                               / ("sight_selector_cli_" + std::to_string(reinterpret_cast<std::uintptr_t>(this))
-                                  + ".nii");
-    std::ofstream file(selected_file);
-    CPPUNIT_ASSERT(file.good());
-    file.close();
-
-    configure_selector(
-        sight::io::service::READER_DATA_KEY,
-        {"sight::module::ui::io::ut::test_nifti_reader"},
-        selected_file
-    );
-
-    update_selector(true);
-
-    CPPUNIT_ASSERT_EQUAL(selected_file, get_state(test_service::nifti_reader).file);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(0), get_state(test_service::nifti_reader).dialog_count);
-    CPPUNIT_ASSERT(std::filesystem::remove(selected_file));
-}
-
-//------------------------------------------------------------------------------
-
-void image_selector_test::command_line_empty_path_test()
-{
-    configure_selector(
-        sight::io::service::READER_DATA_KEY,
-        {"sight::module::ui::io::ut::test_nifti_reader"},
-        {},
-        {},
-        true
-    );
-
-    CPPUNIT_ASSERT_NO_THROW(m_selector->update().get());
-    CPPUNIT_ASSERT_EQUAL(std::size_t(0), get_state(test_service::nifti_reader).read_count);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(0), get_state(test_service::nifti_reader).dialog_count);
-}
-
-//------------------------------------------------------------------------------
-
-void image_selector_test::command_line_multiple_file_reader_test()
-{
-    const auto first_file = std::filesystem::temp_directory_path()
-                            / ("sight_selector_cli_"
-                               + std::to_string(reinterpret_cast<std::uintptr_t>(this)) + "_first.nii");
-    const auto second_file = std::filesystem::temp_directory_path()
-                             / ("sight_selector_cli_"
-                                + std::to_string(reinterpret_cast<std::uintptr_t>(this)) + "_second.nii");
-
-    std::ofstream first(first_file);
-    std::ofstream second(second_file);
-    CPPUNIT_ASSERT(first.good());
-    CPPUNIT_ASSERT(second.good());
-    first.close();
-    second.close();
-
-    configure_selector(
-        sight::io::service::READER_DATA_KEY,
-        {"sight::module::ui::io::ut::test_nifti_reader"},
-        first_file.string() + ";" + second_file.string()
-    );
-
-    update_selector(true);
-
-    CPPUNIT_ASSERT_EQUAL(std::size_t(2), get_state(test_service::nifti_reader).read_count);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(0), get_state(test_service::nifti_reader).dialog_count);
-    CPPUNIT_ASSERT(std::filesystem::remove(first_file));
-    CPPUNIT_ASSERT(std::filesystem::remove(second_file));
-}
-
-//------------------------------------------------------------------------------
-
-void image_selector_test::command_line_selected_folder_reader_test()
-{
-    const auto selected_folder = std::filesystem::temp_directory_path()
-                                 / ("sight_selector_cli_" + std::to_string(reinterpret_cast<std::uintptr_t>(this)));
-    CPPUNIT_ASSERT(std::filesystem::create_directory(selected_folder));
-
-    configure_selector(
-        sight::io::service::READER_DATA_KEY,
-        {"sight::module::ui::io::ut::test_folder_reader_b"},
-        {},
-        selected_folder
-    );
-
-    update_selector(true);
-
-    CPPUNIT_ASSERT_EQUAL(selected_folder, get_state(test_service::folder_reader_b).file);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(0), get_state(test_service::folder_reader_a).read_count);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(0), get_state(test_service::file_folder_reader).read_count);
-    CPPUNIT_ASSERT(std::filesystem::remove(selected_folder));
-}
-
-//------------------------------------------------------------------------------
-
-void image_selector_test::command_line_reader_failure_test()
-{
-    const auto selected_file = std::filesystem::temp_directory_path()
-                               / ("sight_selector_cli_" + std::to_string(reinterpret_cast<std::uintptr_t>(this))
-                                  + ".nii");
-    std::ofstream file(selected_file);
-    CPPUNIT_ASSERT(file.good());
-    file.close();
-
-    get_state(test_service::nifti_reader).should_fail = true;
-    configure_selector(
-        sight::io::service::READER_DATA_KEY,
-        {"sight::module::ui::io::ut::test_nifti_reader"},
-        selected_file
-    );
-
-    update_selector(false);
-
-    CPPUNIT_ASSERT_EQUAL(std::size_t(0), get_state(test_service::nifti_reader).dialog_count);
-    CPPUNIT_ASSERT(std::filesystem::remove(selected_file));
-}
-
-//------------------------------------------------------------------------------
-
-void image_selector_test::multiple_file_readers_test()
-{
-    configure_selector(
-        sight::io::service::READER_DATA_KEY,
-        {
-            "sight::module::ui::io::ut::test_nifti_reader",
-            "sight::module::ui::io::ut::test_vtk_reader"
-        });
-
-    const filter_t selected_filter {"VTK image", "*.vtk"};
-    sight::ui::test::dialog::location::set_current_filter(selected_filter);
-
-    const std::filesystem::path selected_file = std::filesystem::temp_directory_path() / "image.data";
-    sight::ui::test::dialog::location::set_paths({selected_file});
-
-    update_selector(true);
-
-    const std::vector<filter_t> expected_filters {
-        {"All supported files", "*.nii *.nii.gz *.vtk"},
-        {"NIfTI image", "*.nii *.nii.gz"},
-        selected_filter
-    };
-    CPPUNIT_ASSERT(expected_filters == sight::ui::test::dialog::location::get_filters());
-    CPPUNIT_ASSERT(get_state(test_service::nifti_reader).file.empty());
-    CPPUNIT_ASSERT_EQUAL(selected_file, get_state(test_service::vtk_reader).file);
-}
-
-//------------------------------------------------------------------------------
-
-void image_selector_test::all_supported_file_readers_test()
-{
-    configure_selector(
-        sight::io::service::READER_DATA_KEY,
-        {
-            "sight::module::ui::io::ut::test_nifti_reader",
-            "sight::module::ui::io::ut::test_vtk_reader"
-        });
-
-    const filter_t selected_filter {"All supported files", "*.nii *.nii.gz *.vtk"};
-    sight::ui::test::dialog::location::set_current_filter(selected_filter);
-
-    const std::filesystem::path selected_file = std::filesystem::temp_directory_path() / "image.nii";
-    sight::ui::test::dialog::location::set_paths({selected_file});
-
-    update_selector(true);
-
-    const std::vector<filter_t> expected_filters {
-        selected_filter,
-        {"NIfTI image", "*.nii *.nii.gz"},
-        {"VTK image", "*.vtk"}
-    };
-
-    CPPUNIT_ASSERT(expected_filters == sight::ui::test::dialog::location::get_filters());
-    CPPUNIT_ASSERT_EQUAL(selected_file, get_state(test_service::nifti_reader).file);
-    CPPUNIT_ASSERT(get_state(test_service::vtk_reader).file.empty());
-}
-
-//------------------------------------------------------------------------------
-
-void image_selector_test::reader_without_filter_test()
-{
-    configure_selector(sight::io::service::READER_DATA_KEY, {"sight::module::ui::io::ut::test_raw_reader"});
-
-    const std::filesystem::path selected_file = std::filesystem::temp_directory_path() / "image.data";
-    sight::ui::test::dialog::location::set_paths({selected_file});
-
-    update_selector(true);
-
-    const std::vector<filter_t> expected_filters {
-        {".raw", "*.raw"},
-        {"All supported files", "*.raw"}
-    };
-    CPPUNIT_ASSERT(expected_filters == sight::ui::test::dialog::location::get_filters());
-    CPPUNIT_ASSERT_EQUAL(selected_file, get_state(test_service::raw_reader).file);
-}
-
-//------------------------------------------------------------------------------
-
-void image_selector_test::unsupported_reader_filter_test()
-{
-    configure_selector(sight::io::service::READER_DATA_KEY, {"sight::module::ui::io::ut::test_nifti_reader"});
-
-    sight::ui::test::dialog::location::set_current_filter({"Unsupported", "*.unsupported"});
-    sight::ui::test::dialog::location::set_paths({std::filesystem::temp_directory_path() / "image.data"});
-
-    update_selector(false);
-
-    CPPUNIT_ASSERT(get_state(test_service::nifti_reader).file.empty());
-}
-
-//------------------------------------------------------------------------------
-
-void image_selector_test::reader_failure_test()
-{
-    configure_selector(sight::io::service::READER_DATA_KEY, {"sight::module::ui::io::ut::test_nifti_reader"});
-
-    get_state(test_service::nifti_reader).should_fail = true;
-    const std::filesystem::path selected_file = std::filesystem::temp_directory_path() / "image.nii";
-    sight::ui::test::dialog::location::set_paths({selected_file});
-
-    update_selector(false);
-
-    CPPUNIT_ASSERT_EQUAL(selected_file, get_state(test_service::nifti_reader).file);
-}
-
-//------------------------------------------------------------------------------
-
-void image_selector_test::reader_exception_test()
-{
-    configure_selector(sight::io::service::READER_DATA_KEY, {"sight::module::ui::io::ut::test_nifti_reader"});
-
-    auto& state = get_state(test_service::nifti_reader);
-    state.should_throw = true;
-
-    sight::ui::test::dialog::location::set_paths(
-        {std::filesystem::temp_directory_path() / "image.nii"
-        });
-
-    update_selector(false);
-
-    CPPUNIT_ASSERT(state.file.empty());
-}
-
-//------------------------------------------------------------------------------
-
-void image_selector_test::reader_without_file_support_test()
-{
-    configure_selector(sight::io::service::READER_DATA_KEY, {"sight::module::ui::io::ut::test_nifti_reader"});
-
-    auto& state = get_state(test_service::nifti_reader);
-    state.should_drop_file_support = true;
-
-    sight::ui::test::dialog::location::set_paths(
-        {std::filesystem::temp_directory_path() / "image.nii"
-        });
-
-    update_selector(false);
-
-    CPPUNIT_ASSERT(state.file.empty());
-    CPPUNIT_ASSERT(state.file_support_dropped);
-}
-
-//------------------------------------------------------------------------------
-
-void image_selector_test::reader_cancel_test()
-{
-    configure_selector(sight::io::service::READER_DATA_KEY, {"sight::module::ui::io::ut::test_nifti_reader"});
-    sight::ui::test::dialog::location::set_paths({});
-
-    update_selector(false);
-
-    CPPUNIT_ASSERT(get_state(test_service::nifti_reader).file.empty());
-}
-
-//------------------------------------------------------------------------------
-
-void image_selector_test::single_file_folder_reader_test()
-{
-    configure_selector(
-        sight::io::service::READER_DATA_KEY,
-        {"sight::module::ui::io::ut::test_file_folder_reader"
-        });
-
-    const std::filesystem::path selected_folder = std::filesystem::temp_directory_path() / "dicom";
-    auto& state                                 = get_state(test_service::file_folder_reader);
-    state.dialog_file = selected_folder;
-
-    update_selector(true);
-
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), state.dialog_count);
-    CPPUNIT_ASSERT_EQUAL(selected_folder, state.file);
-    CPPUNIT_ASSERT(sight::ui::test::dialog::location::get_filters().empty());
-}
-
-//------------------------------------------------------------------------------
-
-void image_selector_test::file_folder_reader_with_file_readers_test()
-{
-    configure_selector(
-        sight::io::service::READER_DATA_KEY,
-        {
-            "sight::module::ui::io::ut::test_file_folder_reader",
-            "sight::module::ui::io::ut::test_vtk_reader"
-        });
-
-    const filter_t selected_filter {"DICOM files", "*.dcm"};
-    sight::ui::test::dialog::location::set_current_filter(selected_filter);
-
-    const std::filesystem::path selected_file = std::filesystem::temp_directory_path() / "image.dcm";
-    sight::ui::test::dialog::location::set_paths({selected_file});
-
-    update_selector(true);
-
-    const std::vector<filter_t> expected_filters {
-        {"All supported files", "*.dcm *.vtk"},
-        selected_filter,
-        {"VTK image", "*.vtk"}
-    };
-    CPPUNIT_ASSERT(expected_filters == sight::ui::test::dialog::location::get_filters());
-    CPPUNIT_ASSERT_EQUAL(std::size_t(0), get_state(test_service::file_folder_reader).dialog_count);
-    CPPUNIT_ASSERT_EQUAL(selected_file, get_state(test_service::file_folder_reader).file);
-    CPPUNIT_ASSERT(get_state(test_service::vtk_reader).file.empty());
-}
-
-//------------------------------------------------------------------------------
-
-void image_selector_test::multiple_folder_readers_test()
-{
-    const std::string reader_a_id = "sight::module::ui::io::ut::test_folder_reader_a";
-    const std::string reader_b_id = "sight::module::ui::io::ut::test_folder_reader_b";
-    configure_selector(sight::io::service::READER_DATA_KEY, {reader_a_id, reader_b_id});
-
-    get_selector_state().selections = {reader_b_id};
-    const std::filesystem::path selected_folder = std::filesystem::temp_directory_path() / "dicom";
-    get_state(test_service::folder_reader_b).dialog_file = selected_folder;
-
-    update_selector(true);
-
-    const sight::ui::dialog::selector_base::choices_preset_t expected_choices {
-        {reader_a_id, false},
-        {reader_b_id, false}
-    };
-
-    auto actual   = get_selector_state().choices;
-    auto expected = expected_choices;
-
-    std::ranges::sort(actual);
-    std::ranges::sort(expected);
-
-    CPPUNIT_ASSERT(expected == actual);
-    CPPUNIT_ASSERT_EQUAL(std::string("Reader to use"), get_selector_state().title);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(0), get_state(test_service::folder_reader_a).dialog_count);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), get_state(test_service::folder_reader_b).dialog_count);
-    CPPUNIT_ASSERT_EQUAL(selected_folder, get_state(test_service::folder_reader_b).file);
-}
-
-//------------------------------------------------------------------------------
-
-void image_selector_test::folder_reader_cancel_test()
-{
-    configure_selector(
-        sight::io::service::READER_DATA_KEY,
-        {
-            "sight::module::ui::io::ut::test_folder_reader_a",
-            "sight::module::ui::io::ut::test_folder_reader_b"
-        });
-
-    update_selector(false);
-
-    CPPUNIT_ASSERT_EQUAL(std::size_t(0), get_state(test_service::folder_reader_a).dialog_count);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(0), get_state(test_service::folder_reader_b).dialog_count);
-}
-
-//------------------------------------------------------------------------------
-
-void image_selector_test::folder_reader_failure_test()
-{
-    configure_selector(sight::io::service::READER_DATA_KEY, {"sight::module::ui::io::ut::test_folder_reader_a"});
-
-    auto& state = get_state(test_service::folder_reader_a);
-    state.dialog_file = std::filesystem::temp_directory_path() / "dicom";
-    state.should_fail = true;
-
-    update_selector(false);
-
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), state.dialog_count);
-    CPPUNIT_ASSERT_EQUAL(state.dialog_file, state.file);
-}
-
-//------------------------------------------------------------------------------
-
-void image_selector_test::folder_reader_exception_test()
-{
-    configure_selector(sight::io::service::READER_DATA_KEY, {"sight::module::ui::io::ut::test_folder_reader_a"});
-
-    auto& state = get_state(test_service::folder_reader_a);
-    state.dialog_file  = std::filesystem::temp_directory_path() / "dicom";
-    state.should_throw = true;
-
-    update_selector(false);
-
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), state.dialog_count);
-    CPPUNIT_ASSERT(state.file.empty());
-}
-
-//------------------------------------------------------------------------------
-
-void image_selector_test::multiple_file_writers_test()
-{
-    configure_selector(
-        sight::io::service::WRITER_DATA_KEY,
-        {
-            "sight::module::ui::io::ut::test_nifti_writer",
-            "sight::module::ui::io::ut::test_vtk_writer"
-        });
-
-    const filter_t selected_filter {"VTK image", "*.vtk"};
-    sight::ui::test::dialog::location::set_current_filter(selected_filter);
-
-    const std::filesystem::path selected_file = std::filesystem::temp_directory_path() / "image.vtk";
-    sight::ui::test::dialog::location::set_paths({selected_file});
-
-    update_selector(true);
-
-    const std::vector<filter_t> expected_filters {
-        {"NIfTI image", "*.nii *.nii.gz"},
-        selected_filter
-    };
-    CPPUNIT_ASSERT(expected_filters == sight::ui::test::dialog::location::get_filters());
-    CPPUNIT_ASSERT(get_state(test_service::nifti_writer).file.empty());
-    CPPUNIT_ASSERT_EQUAL(selected_file, get_state(test_service::vtk_writer).file);
-}
-
-//------------------------------------------------------------------------------
-
-void image_selector_test::writer_extension_test()
-{
-    configure_selector(sight::io::service::WRITER_DATA_KEY, {"sight::module::ui::io::ut::test_nifti_writer"});
-
-    const std::filesystem::path selected_file = std::filesystem::temp_directory_path() / "image";
-    sight::ui::test::dialog::location::set_paths({selected_file});
-
-    update_selector(true);
-
-    CPPUNIT_ASSERT_EQUAL(
-        std::filesystem::path(selected_file.string() + ".nii"),
-        get_state(test_service::nifti_writer).file
-    );
-}
-
-//------------------------------------------------------------------------------
-
-void image_selector_test::writer_compound_extension_test()
-{
-    configure_selector(sight::io::service::WRITER_DATA_KEY, {"sight::module::ui::io::ut::test_nifti_writer"});
-
-    const std::filesystem::path selected_file = std::filesystem::temp_directory_path() / "image.nii.gz";
-    sight::ui::test::dialog::location::set_paths({selected_file});
-
-    update_selector(true);
-
-    CPPUNIT_ASSERT_EQUAL(selected_file, get_state(test_service::nifti_writer).file);
-}
-
-//------------------------------------------------------------------------------
-
-void image_selector_test::writer_without_filter_test()
-{
-    configure_selector(sight::io::service::WRITER_DATA_KEY, {"sight::module::ui::io::ut::test_raw_writer"});
-
-    const std::filesystem::path selected_file = std::filesystem::temp_directory_path() / "image";
-    sight::ui::test::dialog::location::set_paths({selected_file});
-
-    update_selector(true);
-
-    const std::vector<filter_t> expected_filters {{".raw", "*.raw"}};
-    CPPUNIT_ASSERT(expected_filters == sight::ui::test::dialog::location::get_filters());
-    CPPUNIT_ASSERT_EQUAL(
-        std::filesystem::path(selected_file.string() + ".raw"),
-        get_state(test_service::raw_writer).file
-    );
-}
-
-//------------------------------------------------------------------------------
-
-void image_selector_test::unsupported_writer_filter_test()
-{
-    configure_selector(sight::io::service::WRITER_DATA_KEY, {"sight::module::ui::io::ut::test_nifti_writer"});
-
-    sight::ui::test::dialog::location::set_current_filter({"Unsupported", "*.unsupported"});
-    sight::ui::test::dialog::location::set_paths({std::filesystem::temp_directory_path() / "image"});
-
-    update_selector(false);
-
-    CPPUNIT_ASSERT(get_state(test_service::nifti_writer).file.empty());
-}
-
-//------------------------------------------------------------------------------
-
-void image_selector_test::writer_failure_test()
-{
-    configure_selector(sight::io::service::WRITER_DATA_KEY, {"sight::module::ui::io::ut::test_nifti_writer"});
-
-    get_state(test_service::nifti_writer).should_fail = true;
-    const std::filesystem::path selected_file = std::filesystem::temp_directory_path() / "image.nii";
-    sight::ui::test::dialog::location::set_paths({selected_file});
-
-    update_selector(false);
-
-    CPPUNIT_ASSERT_EQUAL(selected_file, get_state(test_service::nifti_writer).file);
-}
-
-//------------------------------------------------------------------------------
-
-void image_selector_test::writer_exception_test()
-{
-    configure_selector(sight::io::service::WRITER_DATA_KEY, {"sight::module::ui::io::ut::test_nifti_writer"});
-
-    auto& state = get_state(test_service::nifti_writer);
-    state.should_throw = true;
-
-    sight::ui::test::dialog::location::set_paths(
-        {std::filesystem::temp_directory_path() / "image.nii"
-        });
-
-    update_selector(false);
-
-    CPPUNIT_ASSERT(state.file.empty());
-}
-
-//------------------------------------------------------------------------------
-
-void image_selector_test::writer_cancel_test()
-{
-    configure_selector(sight::io::service::WRITER_DATA_KEY, {"sight::module::ui::io::ut::test_nifti_writer"});
-    sight::ui::test::dialog::location::set_paths({});
-
-    update_selector(false);
-
-    CPPUNIT_ASSERT(get_state(test_service::nifti_writer).file.empty());
-}
-
-//------------------------------------------------------------------------------
-
-void image_selector_test::multiple_dialog_writers_test()
-{
-    const std::string writer_a_id = "sight::module::ui::io::ut::test_dialog_writer_a";
-    const std::string writer_b_id = "sight::module::ui::io::ut::test_dialog_writer_b";
-    configure_selector(sight::io::service::WRITER_DATA_KEY, {writer_a_id, writer_b_id});
-
-    get_selector_state().selections = {writer_b_id};
-    const std::filesystem::path selected_file = std::filesystem::temp_directory_path() / "image.custom";
-    get_state(test_service::dialog_writer_b).dialog_file = selected_file;
-
-    update_selector(true);
-
-    const sight::ui::dialog::selector_base::choices_preset_t expected_choices {
-        {writer_a_id, false},
-        {writer_b_id, false}
-    };
-    auto actual   = get_selector_state().choices;
-    auto expected = expected_choices;
-
-    std::ranges::sort(actual);
-    std::ranges::sort(expected);
-
-    CPPUNIT_ASSERT(expected == actual);
-
-    CPPUNIT_ASSERT_EQUAL(std::string("Writer to use"), get_selector_state().title);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(0), get_state(test_service::dialog_writer_a).dialog_count);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), get_state(test_service::dialog_writer_b).dialog_count);
-    CPPUNIT_ASSERT_EQUAL(selected_file, get_state(test_service::dialog_writer_b).file);
-}
-
-//------------------------------------------------------------------------------
-
-void image_selector_test::dialog_writer_cancel_test()
-{
-    configure_selector(
-        sight::io::service::WRITER_DATA_KEY,
-        {
-            "sight::module::ui::io::ut::test_dialog_writer_a",
-            "sight::module::ui::io::ut::test_dialog_writer_b"
-        });
-
-    update_selector(false);
-
-    CPPUNIT_ASSERT_EQUAL(std::size_t(0), get_state(test_service::dialog_writer_a).dialog_count);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(0), get_state(test_service::dialog_writer_b).dialog_count);
-}
-
-//------------------------------------------------------------------------------
-
-void image_selector_test::dialog_writer_failure_test()
-{
-    configure_selector(sight::io::service::WRITER_DATA_KEY, {"sight::module::ui::io::ut::test_dialog_writer_a"});
-
-    auto& state = get_state(test_service::dialog_writer_a);
-    state.dialog_file = std::filesystem::temp_directory_path() / "image.custom";
-    state.should_fail = true;
-
-    update_selector(false);
-
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), state.dialog_count);
-    CPPUNIT_ASSERT_EQUAL(state.dialog_file, state.file);
-}
-
-//------------------------------------------------------------------------------
-
-void image_selector_test::dialog_writer_exception_test()
-{
-    configure_selector(sight::io::service::WRITER_DATA_KEY, {"sight::module::ui::io::ut::test_dialog_writer_a"});
-
-    auto& state = get_state(test_service::dialog_writer_a);
-    state.dialog_file  = std::filesystem::temp_directory_path() / "image.custom";
-    state.should_throw = true;
-
-    update_selector(false);
-
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), state.dialog_count);
-    CPPUNIT_ASSERT(state.file.empty());
-}
-
-//------------------------------------------------------------------------------
-void image_selector_test::unknown_folder_reader_selection_test()
-{
-    const std::string reader_a_id = "sight::module::ui::io::ut::test_folder_reader_a";
-    const std::string reader_b_id = "sight::module::ui::io::ut::test_folder_reader_b";
-
-    configure_selector(sight::io::service::READER_DATA_KEY, {reader_a_id, reader_b_id});
-
-    get_selector_state().selections = {"unknown_reader"};
-
-    update_selector(false);
-
-    CPPUNIT_ASSERT_EQUAL(std::size_t(0), get_state(test_service::folder_reader_a).dialog_count);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(0), get_state(test_service::folder_reader_b).dialog_count);
-}
-
-//------------------------------------------------------------------------------
-void image_selector_test::unknown_dialog_writer_selection_test()
-{
-    const std::string writer_a_id = "sight::module::ui::io::ut::test_dialog_writer_a";
-    const std::string writer_b_id = "sight::module::ui::io::ut::test_dialog_writer_b";
-
-    configure_selector(sight::io::service::WRITER_DATA_KEY, {writer_a_id, writer_b_id});
-
-    get_selector_state().selections = {"unknown_writer"};
-
-    update_selector(false);
-
-    CPPUNIT_ASSERT_EQUAL(std::size_t(0), get_state(test_service::dialog_writer_a).dialog_count);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(0), get_state(test_service::dialog_writer_b).dialog_count);
-}
-
-//------------------------------------------------------------------------------
-
-void image_selector_test::reader_with_config_test()
-{
-    const std::string reader_id = "sight::module::ui::io::ut::test_nifti_reader";
-    const std::string config_id = "image_selector_test_reader_config";
-
-    service::config_t reader_config;
-    reader_config.put("dummy", "value");
-
-    service::extension::config::get_default()->add_service_config_info(
-        config_id,
-        reader_id,
-        "Test reader config",
-        reader_config
-    );
-
-    m_data = std::make_shared<sight::data::string>();
-    m_selector->set_inout(m_data, sight::io::service::READER_DATA_KEY);
-
-    service::config_t config;
-    config.put("selection.<xmlattr>.mode", "include");
-
-    boost::property_tree::ptree selection;
-    selection.put("<xmlattr>.service", reader_id);
-    selection.put("<xmlattr>.config", config_id);
-    config.add_child("addSelection", selection);
-
-    m_selector->set_config(config);
-
-    CPPUNIT_ASSERT_NO_THROW(m_selector->configure());
-    CPPUNIT_ASSERT_NO_THROW(m_selector->start().get());
-
-    const std::filesystem::path selected_file =
-        std::filesystem::temp_directory_path() / "image.nii";
-
-    sight::ui::test::dialog::location::set_paths({selected_file});
-
-    update_selector(true);
-
-    CPPUNIT_ASSERT_EQUAL(
-        selected_file,
-        get_state(test_service::nifti_reader).file
-    );
-}
-
-//------------------------------------------------------------------------------
-
-void image_selector_test::writer_with_config_test()
-{
-    const std::string writer_id = "sight::module::ui::io::ut::test_vtk_writer";
-    const std::string config_id = "image_selector_test_writer_config";
-
-    service::config_t writer_config;
-    writer_config.put("dummy", "value");
-
-    service::extension::config::get_default()->add_service_config_info(
-        config_id,
-        writer_id,
-        "Test writer config",
-        writer_config
-    );
-
-    m_data = std::make_shared<sight::data::string>();
-    m_selector->set_input(m_data, sight::io::service::WRITER_DATA_KEY);
-
-    service::config_t config;
-    config.put("selection.<xmlattr>.mode", "include");
-
-    boost::property_tree::ptree selection;
-    selection.put("<xmlattr>.service", writer_id);
-    selection.put("<xmlattr>.config", config_id);
-    config.add_child("addSelection", selection);
-
-    m_selector->set_config(config);
-
-    CPPUNIT_ASSERT_NO_THROW(m_selector->configure());
-    CPPUNIT_ASSERT_NO_THROW(m_selector->start().get());
-
-    const std::filesystem::path selected_file =
-        std::filesystem::temp_directory_path() / "image.vtk";
-
-    sight::ui::test::dialog::location::set_paths({selected_file});
-
-    update_selector(true);
-
-    CPPUNIT_ASSERT_EQUAL(
-        selected_file,
-        get_state(test_service::vtk_writer).file
-    );
-}
-
-//------------------------------------------------------------------------------
-void image_selector_test::no_available_service_test()
-{
-    configure_selector(sight::io::service::READER_DATA_KEY, {"sight::module::ui::io::ut::unknown_reader"});
-
-    update_selector(false);
-}
-
-//------------------------------------------------------------------------------
 
 } // namespace sight::module::ui::io::ut

@@ -24,9 +24,13 @@
 #include <doctest/doctest.h>
 
 #include <QApplication>
+#include <QFontMetrics>
+#include <QIcon>
 #include <QLabel>
 #include <QMouseEvent>
 #include <QStackedWidget>
+
+#include <ui/qt/widget/notification_label.hpp>
 
 #include <core/com/slot.hpp>
 #include <core/notification/error.hpp>
@@ -38,6 +42,34 @@
 #include <utest/wait.hpp>
 
 #include <atomic>
+#include <chrono>
+#include <filesystem>
+#include <thread>
+
+//------------------------------------------------------------------------------
+
+/**
+ * @brief Build a notification that stays displayed until the test closes it.
+ *
+ * An information or a warning is displayed for the zone's information_duration / warning_duration, three
+ * seconds by default, after which a timer closes its page. A test asserting on such a page would then race
+ * against that timer: the widget may already be gone by the time the assertion runs, on a machine that is
+ * loaded or stepped through in a debugger. A duration of zero means "no timeout at all", which takes the wall
+ * clock out of the picture for everything but the tests that check the auto-dismissal itself.
+ */
+template<class N>
+static std::shared_ptr<N> make_permanent(
+    const std::string& _text,
+    std::optional<std::filesystem::path> _icon = std::nullopt
+)
+{
+    return std::make_shared<N>(
+        sight::core::notification::message::params {
+        .text     = _text,
+        .icon     = std::move(_icon),
+        .duration = std::chrono::milliseconds::zero()
+    });
+}
 
 //------------------------------------------------------------------------------
 
@@ -55,6 +87,16 @@ static void send_mouse_release(QWidget* _widget)
     qApp->sendEvent(_widget, &mouse_event);
     qApp->processEvents();
 }
+
+/// The icon a notification label paints inside its own frame, null when it has none.
+static QIcon icon_of(const QPointer<QLabel>& _label)
+{
+    const auto* const label = qobject_cast<sight::ui::qt::widget::notification_label*>(_label.data());
+
+    return label != nullptr ? label->icon() : QIcon();
+}
+
+//------------------------------------------------------------------------------
 
 namespace
 {
@@ -160,7 +202,7 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
             {
                 _service->slot("add_notification")->run(
                     std::static_pointer_cast<sight::core::notification::base>(
-                        std::make_shared<sight::core::notification::information>("", "information text")
+                        make_permanent<sight::core::notification::information>("information text")
                     )
                 );
             }).get();
@@ -168,6 +210,8 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
             const auto information_label =
                 sight::ui::test::gui_fixture::find_widget<QLabel>("notification_label_information");
             CHECK(!information_label.isNull());
+
+            CHECK(!icon_of(information_label).isNull());
 
             sight::core::thread::get_default_worker()->post_task<void>(
                 [stacked_widget, information_label]
@@ -192,7 +236,7 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
             {
                 _service->slot("add_notification")->run(
                     std::static_pointer_cast<sight::core::notification::base>(
-                        std::make_shared<sight::core::notification::warning>("", "warning text")
+                        make_permanent<sight::core::notification::warning>("warning text")
                     )
                 );
             }).get();
@@ -371,7 +415,7 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
             {
                 _service->slot("add_notification")->run(
                     std::static_pointer_cast<sight::core::notification::base>(
-                        std::make_shared<sight::core::notification::information>("", "information text")
+                        make_permanent<sight::core::notification::information>("information text")
                     )
                 );
             }).get();
@@ -606,9 +650,9 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
             CHECK(_service->started());
 
             // The emitter keeps the sptr, like observe()/aggregate() callers already do for monitors, and
-            // uses it later to close its own notification's widget - the default information_duration
-            // (3000ms) is far longer than this test, so the page can only be closed by finish() below.
-            const auto information = std::make_shared<sight::core::notification::information>("", "long lived");
+            // uses it later to close its own notification's widget. The notification is permanent, so the page
+            // can only be closed by finish() below, however long this test happens to take.
+            const auto information = make_permanent<sight::core::notification::information>("long lived");
 
             sight::core::thread::get_default_worker()->post_task<void>(
                 [_service, information]
@@ -647,7 +691,7 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
 
             CHECK(_service->started());
 
-            const auto information = std::make_shared<sight::core::notification::information>("", "before");
+            const auto information = make_permanent<sight::core::notification::information>("before");
 
             sight::core::thread::get_default_worker()->post_task<void>(
                 [_service, information]
@@ -871,14 +915,10 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
             // Explicit duration on the notification itself overrides the type's default duration
             // (resolve_duration_ms()) and drives the QTimer-based auto-dismiss in handle_message().
             const auto information = std::make_shared<sight::core::notification::information>(
-                "",
-                "short lived",
-                std::filesystem::path {},
-                "",
-                false,
-                nullptr,
-                std::chrono::milliseconds(50)
-            );
+                sight::core::notification::message::params {
+                .text     = "short lived",
+                .duration = std::chrono::milliseconds(50)
+            });
 
             sight::core::thread::get_default_worker()->post_task<void>(
                 [_service, information]
@@ -895,6 +935,118 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
             SIGHT_TEST_FAIL_WAIT(information_label.isNull());
         });
     }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE_FIXTURE(sight::ui::test::gui_fixture, "add_notification_message_reappears_after_timeout")
+    {
+        test_service(
+            "sight::module::ui::qt::notification_zone",
+            [](const sight::service::base::sptr& _service)
+        {
+            sight::core::thread::get_default_worker()->post_task<void>(
+                [_service]
+            {
+                sight::service::config_t config;
+
+                _service->set_config(config);
+                _service->configure();
+                _service->start().wait();
+            }).get();
+
+            CHECK(_service->started());
+
+            const auto information = std::make_shared<sight::core::notification::information>(
+                sight::core::notification::message::params {
+                .text     = "reappearing",
+                .duration = std::chrono::milliseconds(50)
+            });
+
+            const auto add_notification = [_service, information]
+                                          {
+                                              _service->slot("add_notification")->run(
+                                                  std::static_pointer_cast<sight::core::notification::base>(information)
+                                              );
+                                          };
+
+            sight::core::thread::get_default_worker()->post_task<void>(add_notification).get();
+
+            auto information_label = sight::ui::test::gui_fixture::find_widget<QLabel>(
+                "notification_label_information"
+            );
+            CHECK(!information_label.isNull());
+
+            SIGHT_TEST_FAIL_WAIT(information_label.isNull());
+
+            // A later announcement recreates the page after its previous timeout.
+            sight::core::thread::get_default_worker()->post_task<void>(add_notification).get();
+
+            information_label = sight::ui::test::gui_fixture::find_widget<QLabel>(
+                "notification_label_information"
+            );
+            CHECK(!information_label.isNull());
+            CHECK_EQ(information_label->text().toStdString(), "reappearing");
+        });
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE_FIXTURE(sight::ui::test::gui_fixture, "add_notification_message_reappears_when_updated_after_timeout")
+    {
+        test_service(
+            "sight::module::ui::qt::notification_zone",
+            [](const sight::service::base::sptr& _service)
+        {
+            sight::core::thread::get_default_worker()->post_task<void>(
+                [_service]
+            {
+                sight::service::config_t config;
+
+                _service->set_config(config);
+                _service->configure();
+                _service->start().wait();
+            }).get();
+
+            CHECK(_service->started());
+
+            // As notification_composer does with a merged notification: announced once, then only updated.
+            const auto information = std::make_shared<sight::core::notification::information>(
+                sight::core::notification::message::params {
+                .text     = "first contribution",
+                .duration = std::chrono::milliseconds(50)
+            });
+
+            sight::core::thread::get_default_worker()->post_task<void>(
+                [_service, information]
+            {
+                _service->slot("add_notification")->run(
+                    std::static_pointer_cast<sight::core::notification::base>(information)
+                );
+            }).get();
+
+            auto information_label = sight::ui::test::gui_fixture::find_widget<QLabel>(
+                "notification_label_information"
+            );
+            CHECK(!information_label.isNull());
+
+            SIGHT_TEST_FAIL_WAIT(information_label.isNull());
+
+            // The update alone displays it again, with its delay restarted.
+            information->set_text("second contribution");
+
+            SIGHT_TEST_FAIL_WAIT(
+                !sight::ui::test::gui_fixture::find_widget<QLabel>("notification_label_information").isNull()
+            );
+
+            information_label = sight::ui::test::gui_fixture::find_widget<QLabel>("notification_label_information");
+            REQUIRE(!information_label.isNull());
+            CHECK_EQ(information_label->text().toStdString(), "second contribution");
+
+            SIGHT_TEST_FAIL_WAIT(information_label.isNull());
+        });
+    }
+
+//------------------------------------------------------------------------------
 
     TEST_CASE_FIXTURE(sight::ui::test::gui_fixture, "add_notification_with_sound_does_not_throw")
     {
@@ -914,16 +1066,9 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
 
             CHECK(_service->started());
 
-            const auto error = std::make_shared<sight::core::notification::error>(
-                "",
-                "with sound",
-                std::filesystem::path {},
-                "",
-                false,
-                nullptr,
-                std::nullopt,
-                true
-            );
+            const auto error                                      = std::make_shared<sight::core::notification::error>(
+                sight::core::notification::message::params {.text = "with sound", .sound = true
+                });
 
             sight::core::thread::get_default_worker()->post_task<void>(
                 [_service, error]
@@ -937,6 +1082,324 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
 
             const auto error_label = sight::ui::test::gui_fixture::find_widget<QLabel>("notification_label_error");
             CHECK(!error_label.isNull());
+        });
+    }
+
+    TEST_CASE_FIXTURE(sight::ui::test::gui_fixture, "add_notification_message_without_icon_hides_the_icon_label")
+    {
+        test_service(
+            "sight::module::ui::qt::notification_zone",
+            [](const sight::service::base::sptr& _service)
+        {
+            sight::core::thread::get_default_worker()->post_task<void>(
+                [_service]
+            {
+                sight::service::config_t config;
+
+                _service->set_config(config);
+                _service->configure();
+                _service->start().wait();
+            }).get();
+
+            CHECK(_service->started());
+
+            // An empty path means "no icon", as opposed to an unset one which takes the type's default.
+            const auto information = make_permanent<sight::core::notification::information>(
+                "no icon",
+                std::filesystem::path()
+            );
+
+            sight::core::thread::get_default_worker()->post_task<void>(
+                [_service, information]
+            {
+                _service->slot("add_notification")->run(
+                    std::static_pointer_cast<sight::core::notification::base>(information)
+                );
+            }).get();
+
+            const auto information_label =
+                sight::ui::test::gui_fixture::find_widget<QLabel>("notification_label_information");
+            CHECK(!information_label.isNull());
+
+            CHECK(icon_of(information_label).isNull());
+        });
+    }
+
+    TEST_CASE_FIXTURE(sight::ui::test::gui_fixture, "add_notification_message_with_a_zero_icon_size_follows_the_text")
+    {
+        test_service(
+            "sight::module::ui::qt::notification_zone",
+            [](const sight::service::base::sptr& _service)
+        {
+            sight::core::thread::get_default_worker()->post_task<void>(
+                [_service]
+            {
+                sight::service::config_t config;
+
+                // A size of 0 draws the icons a text line high, which is also the default.
+                config.add("properties.<xmlattr>.notification_icon_size", "0");
+
+                _service->set_config(config);
+                _service->configure();
+                _service->start().wait();
+            }).get();
+
+            CHECK(_service->started());
+
+            sight::core::thread::get_default_worker()->post_task<void>(
+                [_service]
+            {
+                _service->slot("add_notification")->run(
+                    std::static_pointer_cast<sight::core::notification::base>(
+                        make_permanent<sight::core::notification::information>("zero sized icon")
+                    )
+                );
+            }).get();
+
+            const auto information_label =
+                sight::ui::test::gui_fixture::find_widget<QLabel>("notification_label_information");
+            REQUIRE(!information_label.isNull());
+            CHECK(!icon_of(information_label).isNull());
+
+            sight::core::thread::get_default_worker()->post_task<void>(
+                [information_label]
+            {
+                const auto* const label =
+                    qobject_cast<sight::ui::qt::widget::notification_label*>(information_label.data());
+                REQUIRE(label != nullptr);
+                CHECK_EQ(label->icon_side(), QFontMetrics(label->font()).height());
+            }).get();
+        });
+    }
+
+    TEST_CASE_FIXTURE(sight::ui::test::gui_fixture, "add_notification_message_updates_its_page_instead_of_stacking")
+    {
+        test_service(
+            "sight::module::ui::qt::notification_zone",
+            [](const sight::service::base::sptr& _service)
+        {
+            sight::core::thread::get_default_worker()->post_task<void>(
+                [_service]
+            {
+                sight::service::config_t config;
+
+                _service->set_config(config);
+                _service->configure();
+                _service->start().wait();
+            }).get();
+
+            CHECK(_service->started());
+
+            const auto information = make_permanent<sight::core::notification::information>("before");
+
+            sight::core::thread::get_default_worker()->post_task<void>(
+                [_service, information]
+            {
+                _service->slot("add_notification")->run(
+                    std::static_pointer_cast<sight::core::notification::base>(information)
+                );
+            }).get();
+
+            const auto stacked_widget =
+                sight::ui::test::gui_fixture::find_widget<QStackedWidget>("notification_stack");
+            CHECK(!stacked_widget.isNull());
+
+            const auto information_label =
+                sight::ui::test::gui_fixture::find_widget<QLabel>("notification_label_information");
+            CHECK(!information_label.isNull());
+
+            sight::core::thread::get_default_worker()->post_task<void>(
+                [stacked_widget]
+            {
+                CHECK_EQ(stacked_widget->count(), 1);
+            }).get();
+
+            // The very same notification handed over a second time, as a service re-announcing the state it
+            // just updated would: it takes the page it already has, rather than a second one.
+            information->set_text("after");
+
+            sight::core::thread::get_default_worker()->post_task<void>(
+                [_service, information]
+            {
+                _service->slot("add_notification")->run(
+                    std::static_pointer_cast<sight::core::notification::base>(information)
+                );
+            }).get();
+
+            SIGHT_TEST_FAIL_WAIT(information_label->text().toStdString() == std::string("after"));
+
+            sight::core::thread::get_default_worker()->post_task<void>(
+                [stacked_widget]
+            {
+                CHECK_EQ(stacked_widget->count(), 1);
+            }).get();
+        });
+    }
+
+    TEST_CASE_FIXTURE(sight::ui::test::gui_fixture, "add_notification_instruction_set_text_updates_label")
+    {
+        test_service(
+            "sight::module::ui::qt::notification_zone",
+            [](const sight::service::base::sptr& _service)
+        {
+            sight::core::thread::get_default_worker()->post_task<void>(
+                [_service]
+            {
+                sight::service::config_t config;
+
+                _service->set_config(config);
+                _service->configure();
+                _service->start().wait();
+            }).get();
+
+            CHECK(_service->started());
+
+            const auto instruction = std::make_shared<sight::core::notification::instruction>("", "before");
+
+            sight::core::thread::get_default_worker()->post_task<void>(
+                [_service, instruction]
+            {
+                _service->slot("add_notification")->run(
+                    std::static_pointer_cast<sight::core::notification::base>(instruction)
+                );
+            }).get();
+
+            const auto instruction_label =
+                sight::ui::test::gui_fixture::find_widget<QLabel>("notification_label_instruction");
+            CHECK(!instruction_label.isNull());
+
+            // An update is dispatched by type too: the instruction keeps its singleton page, it does not get
+            // a message page of its own.
+            instruction->set_text("after");
+
+            SIGHT_TEST_FAIL_WAIT(instruction_label->text().toStdString() == std::string("after"));
+
+            const auto stacked_widget =
+                sight::ui::test::gui_fixture::find_widget<QStackedWidget>("notification_stack");
+
+            sight::core::thread::get_default_worker()->post_task<void>(
+                [stacked_widget]
+            {
+                CHECK_EQ(stacked_widget->count(), 1);
+            }).get();
+        });
+    }
+
+    TEST_CASE_FIXTURE(sight::ui::test::gui_fixture, "add_notification_message_update_restarts_the_duration")
+    {
+        test_service(
+            "sight::module::ui::qt::notification_zone",
+            [](const sight::service::base::sptr& _service)
+        {
+            sight::core::thread::get_default_worker()->post_task<void>(
+                [_service]
+            {
+                sight::service::config_t config;
+
+                _service->set_config(config);
+                _service->configure();
+                _service->start().wait();
+            }).get();
+
+            CHECK(_service->started());
+
+            const auto information = std::make_shared<sight::core::notification::information>(
+                sight::core::notification::message::params {
+                .text     = "tick 0",
+                .duration = std::chrono::milliseconds(1000)
+            });
+
+            sight::core::thread::get_default_worker()->post_task<void>(
+                [_service, information]
+            {
+                _service->slot("add_notification")->run(
+                    std::static_pointer_cast<sight::core::notification::base>(information)
+                );
+            }).get();
+
+            const auto information_label =
+                sight::ui::test::gui_fixture::find_widget<QLabel>("notification_label_information");
+            CHECK(!information_label.isNull());
+
+            // Updated every 400ms, it outlives its own 1000ms delay: each update starts it over.
+            for(int tick = 1 ; tick <= 3 ; ++tick)
+            {
+                std::this_thread::sleep_for(std::chrono::milliseconds(400));
+
+                information->set_text("tick " + std::to_string(tick));
+
+                SIGHT_TEST_FAIL_WAIT(information_label->text().toStdString() == "tick " + std::to_string(tick));
+            }
+
+            // Left alone, it closes on the delay restarted by the last update.
+            SIGHT_TEST_FAIL_WAIT(information_label.isNull());
+        });
+    }
+
+    TEST_CASE_FIXTURE(sight::ui::test::gui_fixture, "add_notification_message_with_a_zero_duration_never_closes")
+    {
+        test_service(
+            "sight::module::ui::qt::notification_zone",
+            [](const sight::service::base::sptr& _service)
+        {
+            sight::core::thread::get_default_worker()->post_task<void>(
+                [_service]
+            {
+                sight::service::config_t config;
+
+                // Shortened so that the control notification below closes without slowing the test down.
+                config.add("properties.<xmlattr>.information_duration", "50");
+
+                _service->set_config(config);
+                _service->configure();
+                _service->start().wait();
+            }).get();
+
+            CHECK(_service->started());
+
+            const auto transient = std::make_shared<sight::core::notification::information>("", "transient");
+
+            sight::core::thread::get_default_worker()->post_task<void>(
+                [_service, transient]
+            {
+                _service->slot("add_notification")->run(
+                    std::static_pointer_cast<sight::core::notification::base>(transient)
+                );
+            }).get();
+
+            // Without a duration of its own, it is dismissed on the zone's, shortened above.
+            const auto transient_label =
+                sight::ui::test::gui_fixture::find_widget<QLabel>("notification_label_information");
+            CHECK(!transient_label.isNull());
+            SIGHT_TEST_FAIL_WAIT(transient_label.isNull());
+
+            // A duration of 0, as a merged notification of sight::module::ui::notification_composer carries,
+            // opts out of that timeout: only finish()/cancel() closes it.
+            const auto pinned = std::make_shared<sight::core::notification::information>(
+                sight::core::notification::message::params {
+                .text     = "pinned",
+                .duration = std::chrono::milliseconds::zero()
+            });
+
+            sight::core::thread::get_default_worker()->post_task<void>(
+                [_service, pinned]
+            {
+                _service->slot("add_notification")->run(
+                    std::static_pointer_cast<sight::core::notification::base>(pinned)
+                );
+            }).get();
+
+            const auto pinned_label =
+                sight::ui::test::gui_fixture::find_widget<QLabel>("notification_label_information");
+            CHECK(!pinned_label.isNull());
+
+            std::this_thread::sleep_for(std::chrono::milliseconds(300));
+
+            CHECK(!pinned_label.isNull());
+
+            pinned->finish();
+
+            SIGHT_TEST_FAIL_WAIT(pinned_label.isNull());
         });
     }
 }

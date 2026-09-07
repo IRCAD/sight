@@ -91,10 +91,13 @@ namespace sight::module::ui::qt
  *
  *     - \b duration (optional): Override duration in ms (+ 1 sec for fade-in & fade-out effects).
  *
- *     - \b max (optional): maximum number of notifications in the same position.
- *              Permanent notification are not counted.
+ *     - \b max (optional): maximum number of notifications in the same position, three by default, 0 meaning
+ *              no limit at all. Permanent notification are not counted.
  *
  *     - \b size (optional): size of notifications in the same position.
+ *
+ *     - \b icon_size (optional): side, in pixels, the notification icon is drawn at. 0 follows the text
+ *                   height.
  *
  *     - \b closable (optional): override default which is closable for timed notification. This is mostly useful to
  *                   allow closing of permanent notification
@@ -193,11 +196,17 @@ private:
         std::optional<enum sight::ui::dialog::notification_base::position> position {std::nullopt};
         std::optional<std::chrono::milliseconds> duration {std::nullopt};
         std::optional<std::array<int, 2> > size {std::nullopt};
+        std::optional<int> icon_size {std::nullopt};
         std::optional<std::size_t> max {std::nullopt};
         std::optional<bool> closable {std::nullopt};
     };
 
-    std::map<std::string, configuration> m_channels {{"", {.max = {3}}}};
+    /// Maximum number of timed notifications a stack holds, when no channel configures one.
+    static constexpr std::size_t DEFAULT_MAX {3};
+
+    /// Channel configurations, by uid. The entry of the empty uid holds the defaults, which a <channel>
+    /// without a uid overrides as a whole: display() falls back to DEFAULT_MAX for whatever it leaves out.
+    std::map<std::string, configuration> m_channels {{"", {.max = {DEFAULT_MAX}}}};
 
     /// A stack of notification
     struct stack final

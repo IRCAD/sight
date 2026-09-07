@@ -57,6 +57,12 @@
     </extension>
 
     <extension implements="sight::service::extension::factory">
+        <type>sight::service::controller</type>
+        <service>sight::module::ui::notification_composer</service>
+        <desc>Merges several notifications into a single one, whose content is defined in XML.</desc>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
         <type>sight::ui::action</type>
         <service>sight::module::ui::com::timestamp_slot_caller</service>
         <object>sight::data::object</object>
