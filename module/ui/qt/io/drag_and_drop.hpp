@@ -21,12 +21,7 @@
 
 #pragma once
 
-#include <core/com/slot.hpp>
-#include <core/notification/base.hpp>
-#include <core/notification/has_monitors.hpp>
-#include <core/thread/worker.hpp>
-
-#include <data/series_set.hpp>
+#include <data/string.hpp>
 
 #include <service/controller.hpp>
 
@@ -35,7 +30,10 @@
 #include <QPointer>
 #include <QWidget>
 
+#include <deque>
+#include <filesystem>
 #include <mutex>
+#include <vector>
 
 namespace sight::module::ui::qt::io
 {
@@ -43,30 +41,25 @@ namespace sight::module::ui::qt::io
 /**
  * @brief Enables loading files and folders by drag and drop on a Qt widget.
  *
- * @section Signals Signals
- * - \b notification_created(core::notification::base::sptr): forwards progress
- *   notifications emitted by the reader selected for a dropped path.
- *
  * @section XML XML configuration
  * @code{.xml}
  * <service uid="..." type="sight::module::ui::qt::io::drag_and_drop">
+ *     <inout key="path" uid="input_path" />
  *     <config wid="..." />
- *     <inout key="data_image" uid="..." />
  * </service>
  * @endcode
+ *
+ * @subsection In-Out In-Out
+ * - \b path [sight::data::string]: receives each exact local path from a drop.
  *
  * @subsection Configuration Configuration
  * - \b wid (mandatory, string): WID of the Qt widget on which drag and drop is
  *   enabled.
  *
- * @subsection InOut In-Out
- * - \b data_image (mandatory, sight::data::series_set): series set populated
- *   from dropped files or folders.
  */
 
-class drag_and_drop final : public QObject,
-                            public service::controller,
-                            public core::notification::has_monitors
+class drag_and_drop : public QObject,
+                      public service::controller
 {
 Q_OBJECT
 
@@ -77,16 +70,14 @@ public:
 
     struct slots
     {
-        using forward_notification_t = core::com::slot<void (core::notification::base::sptr)>;
-
-        static inline const std::string FORWARD_NOTIFICATION = "forward_notification";
+        static inline const slot_key_t NEXT_PATH = "next_path";
     };
 
     /// Initializes the slot and signals.
     drag_and_drop() noexcept;
 
     /// Cleans ressources.
-    ~drag_and_drop() noexcept final = default;
+    ~drag_and_drop() noexcept override = default;
 
     bool eventFilter(QObject* _obj, QEvent* _event) final;
 
@@ -106,15 +97,16 @@ protected:
 
 private:
 
-    /// Forwards notifications created by the selected reader.
-    void forward_notification(core::notification::base::sptr _notification);
+    /**
+     * @brief Sends the next path from the pending paths queue to the connected slot.
+     */
+    void send_next_path();
 
-    sight::sptr<slots::forward_notification_t> m_slot_forward_notification;
-    core::thread::worker::sptr m_read_worker;
+    data::ptr<data::string, data::access::inout> m_path {this, "path"};
     QPointer<QWidget> m_widget;
     std::string m_wid;
-    sight::data::ptr<sight::data::series_set, data::access::inout> m_data {this, "data_image"};
-    std::mutex m_mutex;
+    std::deque<std::filesystem::path> m_pending_paths;
+    bool m_path_in_progress {false};
 };
 
 } // namespace sight::module::ui::qt::io

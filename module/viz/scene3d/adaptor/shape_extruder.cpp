@@ -272,10 +272,30 @@ void shape_extruder::enable_tool(bool _enable)
 
 //-----------------------------------------------------------------------------
 
+data::model_series::sptr shape_extruder::get_extruded_meshes() const
+{
+    const auto image = m_image.const_lock();
+    if(const auto meshes_by_image = m_extruded_meshes_by_image.lock(); meshes_by_image&& image)
+    {
+        auto meshes = meshes_by_image->get<data::model_series>(image->get_id());
+        if(!meshes)
+        {
+            meshes                              = std::make_shared<data::model_series>();
+            (*meshes_by_image)[image->get_id()] = meshes;
+        }
+
+        return meshes;
+    }
+
+    return m_extruded_meshes.lock().get_shared();
+}
+
+//-----------------------------------------------------------------------------
+
 void shape_extruder::delete_last_mesh()
 {
     // Get the reconstruction list.
-    const auto extruded_meshes = m_extruded_meshes.lock();
+    const data::mt::locked_ptr extruded_meshes(this->get_extruded_meshes());
 
     data::model_series::reconstruction_vector_t reconstructions = extruded_meshes->get_reconstruction_db();
 
@@ -325,7 +345,7 @@ void shape_extruder::undo()
 void shape_extruder::reset()
 {
     // Get the reconstruction list.
-    const auto extruded_meshes = m_extruded_meshes.lock();
+    const data::mt::locked_ptr extruded_meshes(this->get_extruded_meshes());
 
     data::model_series::reconstruction_vector_t reconstructions = extruded_meshes->get_reconstruction_db();
 
@@ -827,7 +847,7 @@ void shape_extruder::generate_extruded_mesh(const std::vector<triangle3_d>& _tri
     }
 
     // Get the reconstruction list.
-    const auto extruded_meshes = m_extruded_meshes.lock();
+    const data::mt::locked_ptr extruded_meshes(this->get_extruded_meshes());
 
     data::model_series::reconstruction_vector_t reconstructions = extruded_meshes->get_reconstruction_db();
 

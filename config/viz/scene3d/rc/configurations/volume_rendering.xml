@@ -4,8 +4,10 @@
         <object uid="model_series" type="sight::data::model_series" deferred="true" />
         <object uid="image" type="sight::data::image_series" deferred="true" />
         <object uid="series_set" type="sight::data::series_set" />
-        <object uid="volume_tf" type="sight::data::transfer_function" />
-        <object uid="extruded_model_series" type="sight::data::model_series" />
+        <object uid="volume_tf" type="sight::data::transfer_function" deferred="true" />
+        <object uid="image_transfer_functions" type="sight::data::map" optional="true" />
+        <object uid="extruded_meshes" type="sight::data::model_series" />
+        <object uid="extruded_meshes_by_image" type="sight::data::map" optional="true" />
 
         <object uid="vr_visibility" type="sight::data::boolean" />
         <object uid="negato_visibility" type="sight::data::boolean" />
@@ -40,9 +42,6 @@
     <config>
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="mask" type="sight::data::image" />
-        <object uid="clipping_matrix" type="sight::data::matrix4" />
-        <object uid="identity_matrix" type="sight::data::matrix4" />
         <object uid="snapshot" type="sight::data::image" />
         <object uid="global_camera" type="sight::data::matrix4" />
 
@@ -188,6 +187,9 @@
         <service uid="image_volume_adp" type="sight::module::viz::scene3d::adaptor::image_series">
             <data series="${series_set}" />
             <data tf="${volume_tf}" />
+            <data transfer_functions="${image_transfer_functions}" />
+            <data extrudedMeshes="${extruded_meshes}" />
+            <data extruded_meshes_by_image="${extruded_meshes_by_image}" />
             <volume_rendering>
                 <config pre_integration="${volume_parameters}.pre_integration" />
                 <config ambient_occlusion="${volume_parameters}.ambient_occlusion" />
@@ -204,12 +206,19 @@
                 <config sat_cone_angle="${volume_parameters}.sat_cone_angle" />
                 <config sat_size_ratio="${volume_parameters}.sat_size_ratio" />
             </volume_rendering>
+            <landmarks>
+                <config fontSize="16" priority="4" initialGroup="Group_0" initialSize="10.0" viewDistance="allSlices" />
+            </landmarks>
+            <ruler>
+                <config font_size="16" query_flags="0x40000000" always_display_all="true" priority="3" radius="1.5" />
+            </ruler>
             <config autoresetcamera="true" />
         </service>
 
         <service uid="image_negato3d_adp" type="sight::module::viz::scene3d::adaptor::image_series">
             <data series="${series_set}" />
             <data tf="${volume_tf}" />
+            <data transfer_functions="${image_transfer_functions}" />
             <config representation="negato3d" query_flags="0x40000000" interactive="true" priority="2" visible="${negato_visibility}" depth_bias="0.000001" />
         </service>
 
@@ -233,7 +242,8 @@
         </service>
 
         <service uid="shape_extruder_adp" type="sight::module::viz::scene3d::adaptor::shape_extruder">
-            <data extrudedMeshes="${extruded_model_series}" />
+            <data extrudedMeshes="${extruded_meshes}" />
+            <data image="${image}" extruded_meshes_by_image="${extruded_meshes_by_image}" />
             <config lineColor="#FFC66D" edgeColor="#D35151" />
         </service>
 
@@ -251,16 +261,6 @@
 
         <service uid="grid_adp" type="sight::module::viz::scene3d::adaptor::grid">
             <config size="5000" step="50" color="#505050" elevation="400" dashLength="10" />
-        </service>
-
-        <!-- Reset the clipping box matrix -->
-        <service uid="clipping_box_reset_srv" type="sight::module::data::copy">
-            <data source="${identity_matrix}" target="${clipping_matrix}" />
-        </service>
-
-        <service uid="image_extruder_srv" type="sight::module::filter::image::image_extruder" worker="EXTRUSION">
-            <input meshes="${extruded_model_series}" image="${image}" />
-            <output mask="${mask}" />
         </service>
 
         <service uid="notifier_srv" type="sight::module::ui::qt::notifier">
@@ -320,15 +320,21 @@
 
         <!-- ******************************* Connections ***************************************** -->
 
+        <connect>
+            <signal>volume_visibility_act/is_checked</signal>
+            <slot>image_volume_adp/update_visibility</slot>
+        </connect>
+
         <connect channel="${image_visibility}">
             <slot>image_volume_adp/set_image_visibility</slot>
             <slot>image_negato3d_adp/set_image_visibility</slot>
+            <slot>landmarks_adp/set_image_visibility</slot>
+            <slot>ruler_fiducial_adp/set_image_visibility</slot>
         </connect>
 
         <!-- Adaptors visibility -->
         <connect channel="${box_widget_reset}">
-            <slot>clipping_box_reset_srv/update</slot>
-            <slot>image_volume_adp/update_clipping_box</slot>
+            <slot>image_volume_adp/reset_clipping_box</slot>
         </connect>
 
         <connect channel="${shape_extruder_enable_tool}">
@@ -372,7 +378,7 @@
         </connect>
 
         <connect channel="${visibility_rulers}">
-            <slot>ruler_fiducial_adp/toggle_visibility</slot>
+            <slot>ruler_fiducial_adp/update_visibility</slot>
         </connect>
 
         <connect channel="${landmarks_edit_mode_changed}">
@@ -456,9 +462,6 @@
             <signal>ruler_fiducial_adp/tool_deactivated</signal>
         </connect>
 
-        <update>
-            <service uid="image_extruder_srv" />
-            <service uid="shape_extruder_adp" />
-        </update>
+        <update uid="shape_extruder_adp" />
     </config>
 </extension>

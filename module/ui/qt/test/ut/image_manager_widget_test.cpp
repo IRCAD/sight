@@ -30,6 +30,7 @@
 #include <utest/wait.hpp>
 
 #include <QCheckBox>
+#include <QPushButton>
 
 #include <atomic>
 
@@ -152,6 +153,36 @@ TEST_SUITE("sight::module::ui::qt::series::image_manager_widget")
             SIGHT_TEST_WAIT(first_reselected.load());
             CHECK(first_checkbox->isChecked());
             CHECK_FALSE(second_checkbox->isChecked());
+
+            first_reselected = false;
+            second_selected  = false;
+            sight::core::thread::get_default_worker()->post_task<void>(
+                [second_checkbox]
+            {
+                second_checkbox->setChecked(true);
+            }).get();
+            SIGHT_TEST_WAIT(second_selected.load());
+
+            const auto second_card = sight::ui::test::gui_fixture::find_widget(
+                "image_card_" + second->get_id()
+            );
+            REQUIRE(!second_card.isNull());
+
+            const bool closed = sight::core::thread::get_default_worker()->post_task<bool>(
+                [second_card]
+            {
+                if(auto* button = second_card->findChild<QPushButton*>(); button != nullptr)
+                {
+                    button->click();
+                    return true;
+                }
+
+                return false;
+            }).get();
+            REQUIRE(closed);
+
+            SIGHT_TEST_WAIT(first_reselected.load());
+            CHECK(first_checkbox->isChecked());
         });
     }
 

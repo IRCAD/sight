@@ -28,19 +28,20 @@ QFrame
     background: transparent;
 }
 
-QFrame[sightCardType="image_card"]
+QFrame[sight_card_type="image_card"]
 {
     border: 1px solid rgba(255, 255, 255, 10%);
     border-radius: 4px;
     background: rgba(255, 255, 255, 10%);
 }
 
-QLineEdit[sightCardField="true"],
-QFrame[sightCardField="true"]
+QLineEdit[sight_card_field="true"],
+QFrame[sight_card_field="true"]
 {
     border-radius: 15px;
     background: rgba(255, 255, 255, 10%);
     padding: 3px;
+
 }
 
 QDialog

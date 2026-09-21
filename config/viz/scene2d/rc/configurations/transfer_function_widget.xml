@@ -7,6 +7,7 @@
 
         <param name="WID_PARENT" />
         <param name="USE_DEFAULT_TF" default="true" />
+        <param name="PRESERVE_CURRENT_TF" default="false" />
         <param name="ADDITIONAL_TF_PATH" default="" />
     </parameters>
     <config>
@@ -62,6 +63,7 @@
                 iconWidth="24"
                 iconHeight="24"
                 useDefaultPath="${USE_DEFAULT_TF}"
+                preserve_current_tf="${PRESERVE_CURRENT_TF}"
             >
                 <path>${ADDITIONAL_TF_PATH}</path>
             </config>

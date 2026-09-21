@@ -21,8 +21,6 @@
 
 #include "drag_and_drop.hpp"
 
-#include <io/__/reader/reader_helper.hpp>
-
 #include <ui/__/registry.hpp>
 #include <ui/qt/container/widget.hpp>
 
@@ -30,17 +28,15 @@
 #include <QDragEnterEvent>
 #include <QDropEvent>
 #include <QMimeData>
-#include <QThread>
 
 namespace sight::module::ui::qt::io
 {
 
 //------------------------------------------------------------------------------
 
-drag_and_drop::drag_and_drop() noexcept :
-    has_monitors(has_signals::signals()),
-    m_slot_forward_notification(new_slot(slots::FORWARD_NOTIFICATION, &drag_and_drop::forward_notification, this))
+drag_and_drop::drag_and_drop() noexcept
 {
+    new_slot(slots::NEXT_PATH, &drag_and_drop::send_next_path, this);
 }
 
 //------------------------------------------------------------------------------
@@ -55,29 +51,15 @@ void drag_and_drop::configuring()
 
 void drag_and_drop::starting()
 {
-    const std::scoped_lock lock(m_mutex);
-
-    const auto container = sight::ui::registry::get_wid_container(m_wid);
-
-    const auto qt_container =
-        std::dynamic_pointer_cast<sight::ui::qt::container::widget>(container);
+    const auto container    = sight::ui::registry::get_wid_container(m_wid);
+    const auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(container);
 
     SIGHT_ASSERT("Unable to find Qt container: " << m_wid, qt_container);
 
     m_widget = qt_container->get_qt_container();
-    auto start_drop = [this]()
-                      {
-                          m_widget->setAcceptDrops(true);
-                          qApp->installEventFilter(this);
-                      };
 
-    QMetaObject::invokeMethod(
-        m_widget,
-        start_drop,
-        Qt::QueuedConnection
-    );
-
-    m_read_worker = core::thread::worker::make();
+    m_widget->setAcceptDrops(true);
+    qApp->installEventFilter(this);
 
     SIGHT_INFO("Drop enabled on WID '" << m_wid << "'");
 }
@@ -91,45 +73,21 @@ void drag_and_drop::updating()
 //------------------------------------------------------------------------------
 void drag_and_drop::stopping()
 {
-    const std::scoped_lock lock(m_mutex);
+    m_pending_paths.clear();
+    m_path_in_progress = false;
 
-    if(!m_widget.isNull())
-    {
-        const QPointer<QWidget> widget = m_widget;
+    SIGHT_ASSERT("Widget should not be null", !m_widget.isNull());
 
-        auto stop_drop = [this, widget]()
-                         {
-                             qApp->removeEventFilter(this);
+    qApp->removeEventFilter(this);
+    m_widget->setAcceptDrops(false);
 
-                             if(!widget.isNull())
-                             {
-                                 widget->setAcceptDrops(false);
-                             }
-                         };
-
-        QMetaObject::invokeMethod(
-            widget,
-            stop_drop,
-            Qt::QueuedConnection
-        );
-
-        m_widget.clear();
-    }
-
-    if(m_read_worker)
-    {
-        m_read_worker->stop();
-        m_read_worker.reset();
-    }
+    m_widget.clear();
 }
 
 //-------------------------------------------------------------------------------
 
 bool drag_and_drop::eventFilter(QObject* _obj, QEvent* _event)
 {
-    // execute on the main thread
-    const std::scoped_lock lock(m_mutex);
-
     auto* const target = qobject_cast<QWidget*>(_obj);
 
     if(m_widget.isNull()
@@ -159,38 +117,24 @@ bool drag_and_drop::eventFilter(QObject* _obj, QEvent* _event)
             std::vector<std::filesystem::path> paths;
             for(const QUrl& url : drop->mimeData()->urls())
             {
+                if(!url.isLocalFile())
+                {
+                    continue;
+                }
+
                 paths.emplace_back(url.toLocalFile().toStdString());
             }
 
             if(!paths.empty())
             {
                 drop->acceptProposedAction();
+                m_pending_paths.insert(m_pending_paths.end(), paths.begin(), paths.end());
 
-                m_read_worker->post(
-                    [this, paths = std::move(paths)]() mutable
-                    {
-                        const auto data = [&]
-                                          {
-                                              const auto data_lock = m_data.lock();
-                                              return data_lock.get_shared();
-                                          }();
-
-                        const bool success = sight::io::reader::read_paths(
-                            paths,
-                            data,
-                            m_slot_forward_notification,
-                            {},
-                            true
-                        );
-
-                        if(!success)
-                        {
-                            const std::string message = "Loading failed.";
-
-                            SIGHT_ERROR(message);
-                            this->fail(message);
-                        }
-                    });
+                if(!m_path_in_progress)
+                {
+                    m_path_in_progress = true;
+                    QMetaObject::invokeMethod(this, [this]{send_next_path();}, Qt::QueuedConnection);
+                }
 
                 return true;
             }
@@ -202,9 +146,27 @@ bool drag_and_drop::eventFilter(QObject* _obj, QEvent* _event)
 
 //------------------------------------------------------------------------------
 
-void drag_and_drop::forward_notification(core::notification::base::sptr _notification)
+void drag_and_drop::send_next_path()
 {
-    this->async_emit(core::notification::has_notifications::signals::NOTIFICATION_CREATED, _notification);
+    std::filesystem::path path;
+    {
+        if(!this->started() || m_pending_paths.empty())
+        {
+            m_pending_paths.clear();
+            m_path_in_progress = false;
+            return;
+        }
+
+        path = std::move(m_pending_paths.front());
+        m_pending_paths.pop_front();
+    }
+
+    const auto data = m_path.lock();
+    SIGHT_ASSERT("The path data is not initialized.", data);
+    *data = path.string();
+    data->async_emit(data::signals::MODIFIED);
 }
+
+//------------------------------------------------------------------------------
 
 } // namespace sight::module::ui::qt::io

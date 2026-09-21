@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2024 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,6 +20,8 @@
  ***********************************************************************/
 
 #pragma once
+
+#include <cstddef>
 
 #include "data/container.hpp"
 #include "data/series.hpp"
@@ -48,6 +50,10 @@ public:
     SIGHT_DATA_API bool operator==(const series_set& _other) const noexcept;
     SIGHT_DATA_API bool operator!=(const series_set& _other) const noexcept;
     /// @}
+
+    /// Appends series that are not already present in this set.
+    /// @return The number of series skipped because they were already present.
+    SIGHT_DATA_API std::size_t append_unique(const series_set& _source);
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy

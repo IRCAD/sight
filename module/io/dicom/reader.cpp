@@ -28,8 +28,6 @@
 #include <ui/__/dialog/message.hpp>
 #include <ui/qt/series/selector_dialog.hpp>
 
-#include <io/__/reader/reader_helper.hpp>
-
 #include <filesystem>
 
 namespace sight::module::io::dicom
@@ -161,14 +159,11 @@ void reader::updating()
 {
     // Set to failed until successful
     m_read_failed = true;
-
-    // When a folder is supplied directly (for example by the command line or drag and drop),
-    // there is no location dialog to perform the initial DICOM scan.
     if(!m_reader && this->has_location_defined())
     {
         try
         {
-            if(!this->scan())
+            if(!this->scan() || !show_selection())
             {
                 clear();
                 return;
@@ -233,10 +228,9 @@ void reader::updating()
 
             // Add the loaded series, optionally preserving the ones already opened.
             const auto scoped_emitter = output->scoped_emit();
-
             if(m_append)
             {
-                const std::size_t duplicate_count = sight::io::reader::append_unique(*output, *read);
+                const std::size_t duplicate_count = output->append_unique(*read);
                 if(duplicate_count > 0)
                 {
                     this->warn(
@@ -340,8 +334,8 @@ void reader::clear()
         sight::ui::dialog::location location_dialog;
         location_dialog.set_title(*m_window_title);
         location_dialog.set_default_location(default_location);
-        location_dialog.set_option(ui::dialog::location::read);
-        location_dialog.set_type(ui::dialog::location::folder);
+        location_dialog.set_option(sight::ui::dialog::location::read);
+        location_dialog.set_type(sight::ui::dialog::location::folder);
 
         // Show the dialog
         const auto& selected_location = std::dynamic_pointer_cast<core::location::single_folder>(

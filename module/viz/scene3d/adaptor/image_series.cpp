@@ -44,8 +44,9 @@ image_series::image_series() noexcept
     new_slot(slots::UPDATE_SLICES_FROM_WORLD, &image_series::update_slices_from_world, this);
     new_slot(slots::SET_SLICE_INDEX, &image_series::set_slice_index, this);
     new_slot(slots::SET_SLICE_TYPE, &image_series::set_slice_type, this);
-    new_slot(slots::SET_TRANSPARENCY, &image_series::set_transparency, this);
     new_slot(slots::FORWARD_PICKED_VOXEL, &image_series::forward_picked_voxel, this);
+    new_slot(slots::SET_TRANSPARENCY, &image_series::set_transparency, this);
+    new_slot(slots::RESET_CLIPPING_BOX, &image_series::reset_clipping_box, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -95,6 +96,11 @@ void image_series::stopping()
     this->unregister_services();
     m_children.clear();
     m_masks.clear();
+    m_extruders.clear();
+    m_clipping_matrices.clear();
+    m_child_visibility.clear();
+    m_landmarks.clear();
+    m_rulers.clear();
     this->deinit();
 }
 
@@ -123,6 +129,13 @@ void image_series::updating()
         m_children.clear();
         m_masks.clear();
 
+        m_extruders.clear();
+        m_clipping_matrices.clear();
+        m_child_visibility.clear();
+        m_image_visibility.clear();
+        m_landmarks.clear();
+        m_rulers.clear();
+        m_selection_initialized = false;
         this->update_done();
         return;
     }
@@ -138,10 +151,32 @@ void image_series::updating()
         }
     }
 
+    if(const auto meshes_by_image = m_extruded_meshes_by_image.lock(); meshes_by_image)
+    {
+        for(auto it = meshes_by_image->begin() ; it != meshes_by_image->end() ; )
+        {
+            if(!active_images.contains(it->first))
+            {
+                it = meshes_by_image->erase(it);
+            }
+            else
+            {
+                ++it;
+            }
+        }
+    }
+
     for(auto it = m_image_visibility.begin() ; it != m_image_visibility.end() ; )
     {
         if(!active_images.contains(it->first))
         {
+            if(const auto transfer_functions = m_image_transfer_functions.lock(); transfer_functions)
+            {
+                transfer_functions->erase(it->first);
+            }
+
+            m_clipping_matrices.erase(it->first);
+            m_child_visibility.erase(it->first);
             it = m_image_visibility.erase(it);
         }
         else
@@ -156,6 +191,9 @@ void image_series::updating()
         this->unregister_services();
         m_children.clear();
         m_masks.clear();
+        m_extruders.clear();
+        m_clipping_matrices.clear();
+        m_child_visibility.clear();
 
         m_selection_initialized = false;
         this->update_done();
@@ -174,14 +212,7 @@ void image_series::updating()
 
     if(!topology_changed)
     {
-        for(const auto& [id, child] : m_children)
-        {
-            const auto visibility = m_image_visibility.find(id);
-            if(visibility != m_image_visibility.end())
-            {
-                child->update_visibility(this->visible() && visibility->second);
-            }
-        }
+        this->set_visible(this->visible());
 
         this->update_done();
         this->request_render();
@@ -189,9 +220,41 @@ void image_series::updating()
     }
 
     m_child_connections.disconnect();
-    this->unregister_services();
-    m_children.clear();
-    m_masks.clear();
+
+    for(auto it = m_children.begin() ; it != m_children.end() ; )
+    {
+        const std::string id = it->first;
+        if(active_images.contains(id))
+        {
+            ++it;
+            continue;
+        }
+
+        this->unregister_service(it->second);
+        it = m_children.erase(it);
+
+        if(const auto extruder = m_extruders.find(id); extruder != m_extruders.end())
+        {
+            this->unregister_service(extruder->second);
+            m_extruders.erase(extruder);
+        }
+
+        if(const auto landmark = m_landmarks.find(id); landmark != m_landmarks.end())
+        {
+            this->unregister_service(landmark->second);
+            m_landmarks.erase(landmark);
+        }
+
+        if(const auto ruler = m_rulers.find(id); ruler != m_rulers.end())
+        {
+            this->unregister_service(ruler->second);
+            m_rulers.erase(ruler);
+        }
+
+        m_masks.erase(id);
+        m_clipping_matrices.erase(id);
+        m_child_visibility.erase(id);
+    }
 
     bool first_image         = true;
     bool reset_camera        = true;
@@ -209,6 +272,13 @@ void image_series::updating()
         const bool default_visibility = !m_selection_initialized && first_image;
         const bool image_visible      = m_image_visibility.try_emplace(id, default_visibility).first->second;
         first_image = false;
+
+        if(m_children.contains(id))
+        {
+            reset_camera = reset_camera && !image_visible;
+            ++negato_index;
+            continue;
+        }
 
         std::string service_type;
         switch(m_representation)
@@ -229,6 +299,29 @@ void image_series::updating()
         const bool is_volume = m_representation == representation_t::volume;
         auto child           = this->register_service<sight::viz::scene3d::adaptor>(service_type);
         child->set_input(image, "data.image", true);
+        auto visibility = std::make_shared<data::boolean>(this->visible() && image_visible);
+        child->set_input(visibility, "config.visible", true);
+        m_child_visibility.emplace(id, std::move(visibility));
+
+        data::transfer_function::sptr tf;
+        if(const auto transfer_functions = m_image_transfer_functions.lock(); transfer_functions)
+        {
+            tf = transfer_functions->get<data::transfer_function>(id);
+            if(!tf)
+            {
+                tf                        = data::transfer_function::create_default_tf(image->type());
+                (*transfer_functions)[id] = tf;
+            }
+        }
+        else if(const auto default_tf = m_tf.lock(); default_tf)
+        {
+            tf = std::make_shared<data::transfer_function>();
+            tf->deep_copy(default_tf.get_shared());
+        }
+        else
+        {
+            tf = data::transfer_function::create_default_tf(image->type());
+        }
 
         if(is_volume)
         {
@@ -263,25 +356,61 @@ void image_series::updating()
             child->set_input(m_sat_cone_angle.lock().get_shared(), "volume_rendering.config.sat_cone_angle", true);
             child->set_input(m_sat_size_ratio.lock().get_shared(), "volume_rendering.config.sat_size_ratio", true);
 
-            if(const auto tf = m_tf.lock(); tf)
-            {
-                child->set_input(tf.get_shared(), "data.tf", true);
-            }
+            child->set_input(tf, "data.tf", true);
+
+            auto clipping_it = m_clipping_matrices.try_emplace(
+                id,
+                std::make_shared<data::matrix4>(data::matrix4::identity())
+            ).first;
+            child->set_inout(clipping_it->second, "data.clipping_matrix", true);
 
             auto mask = std::make_shared<data::image>();
             mask->resize(image->size(), core::type::UINT8, data::image::pixel_format_t::gray_scale);
-            const auto dump_lock = mask->dump_lock();
-            std::memset(mask->buffer(), 0xFF, mask->size_in_bytes());
+            mask->set_spacing(image->spacing());
+            mask->set_origin(image->origin());
+            mask->set_orientation(image->orientation());
+            {
+                const auto dump_lock = mask->dump_lock();
+                std::memset(mask->buffer(), 0xFF, mask->size_in_bytes());
+            }
             m_masks.emplace(id, mask);
+
+            auto extruded_meshes = m_extruded_meshes.lock().get_shared();
+            if(const auto meshes_by_image = m_extruded_meshes_by_image.lock(); meshes_by_image)
+            {
+                auto meshes = meshes_by_image->get<data::model_series>(id);
+                if(!meshes)
+                {
+                    meshes                 = std::make_shared<data::model_series>();
+                    (*meshes_by_image)[id] = meshes;
+                }
+
+                extruded_meshes = meshes;
+            }
+
+            if(extruded_meshes)
+            {
+                auto extruder = this->register_service(
+                    "sight::module::filter::image::image_extruder",
+                    this->gen_id("image_extruder_" + id)
+                );
+                extruder->set_input(extruded_meshes, "input.meshes", true);
+                extruder->set_input(image, "input.image", true);
+                extruder->set_inout(mask, "output.mask", true);
+                extruder->configure(service::config_t {});
+                extruder->start().wait();
+                extruder->update().wait();
+                m_extruders.emplace(id, extruder);
+            }
+
             child->set_input(mask, "data.mask", true);
         }
-        else if(const auto tf = m_tf.lock(); tf)
+        else
         {
-            child->set_inout(tf.get_shared(), "data.tf", true);
+            child->set_inout(tf, "data.tf", true);
         }
 
         service::config_t child_config = this->get_config();
-        child_config.put("config.<xmlattr>.visible", this->visible() && image_visible);
         if(m_representation == representation_t::negato2d)
         {
             child_config.put("config.<xmlattr>.orientation", m_orientation);
@@ -308,28 +437,49 @@ void image_series::updating()
 
         child->start().wait();
 
-        if(m_representation != representation_t::volume)
+        if(is_volume)
         {
-            m_child_connections.connect(
-                child,
-                negato::signals::PICKED_VOXEL,
-                this->get_sptr(),
-                slots::FORWARD_PICKED_VOXEL
+            auto landmarks = this->register_service<sight::viz::scene3d::adaptor>(
+                "sight::module::viz::scene3d_qt::adaptor::fiducials::point",
+                this->gen_id("landmarks_" + id)
             );
 
-            m_child_connections.connect(
-                image,
-                data::image::signals::SLICE_INDEX_MODIFIED,
-                this->get_sptr(),
-                slots::SET_SLICE_INDEX
+            landmarks->set_inout(image, "data.imageSeries", true);
+
+            service::config_t landmark_config;
+            if(const auto config = this->get_config().get_child_optional("landmarks"); config)
+            {
+                landmark_config = *config;
+            }
+
+            landmarks->configure(landmark_config);
+            landmarks->set_render_service(this->render_service());
+            landmarks->set_layer_id(this->layer_id());
+            landmarks->start().wait();
+            landmarks->slot("set_image_visibility")->run(id, image_visible);
+
+            m_landmarks.emplace(id, landmarks);
+
+            auto ruler = this->register_service<sight::viz::scene3d::adaptor>(
+                "sight::module::viz::scene3d_qt::adaptor::fiducials::ruler",
+                this->gen_id("ruler_" + id)
             );
 
-            m_child_connections.connect(
-                image,
-                data::image::signals::SLICE_TYPE_MODIFIED,
-                this->get_sptr(),
-                slots::SET_SLICE_TYPE
-            );
+            ruler->set_inout(image, "data.image", true);
+
+            service::config_t ruler_config;
+            if(const auto config = this->get_config().get_child_optional("ruler"); config)
+            {
+                ruler_config = *config;
+            }
+
+            ruler->configure(ruler_config);
+            ruler->set_render_service(this->render_service());
+            ruler->set_layer_id(this->layer_id());
+            ruler->start().wait();
+            ruler->slot("set_image_visibility")->run(id, image_visible);
+
+            m_rulers.emplace(id, ruler);
         }
 
         if(image_visible)
@@ -337,6 +487,45 @@ void image_series::updating()
             reset_camera = false;
         }
     }
+
+    if(m_representation != representation_t::volume)
+    {
+        for(const auto& object : *series)
+        {
+            const auto image = std::dynamic_pointer_cast<data::image_series>(object);
+            if(!image || image->get_id().empty())
+            {
+                continue;
+            }
+
+            const auto child = m_children.find(image->get_id());
+            if(child == m_children.end())
+            {
+                continue;
+            }
+
+            m_child_connections.connect(
+                child->second,
+                negato::signals::PICKED_VOXEL,
+                this->get_sptr(),
+                slots::FORWARD_PICKED_VOXEL
+            );
+            m_child_connections.connect(
+                image,
+                data::image::signals::SLICE_INDEX_MODIFIED,
+                this->get_sptr(),
+                slots::SET_SLICE_INDEX
+            );
+            m_child_connections.connect(
+                image,
+                data::image::signals::SLICE_TYPE_MODIFIED,
+                this->get_sptr(),
+                slots::SET_SLICE_TYPE
+            );
+        }
+    }
+
+    this->set_visible(this->visible());
 
     m_selection_initialized = true;
     this->update_done();
@@ -347,17 +536,29 @@ void image_series::updating()
 
 void image_series::set_visible(bool _visible)
 {
-    for(const auto& [id, child] : m_children)
+    for(const auto& [id, visible] : m_image_visibility)
     {
-        child->update_visibility(_visible && m_image_visibility.at(id));
+        this->set_child_visibility(id, _visible && visible);
+    }
+}
+
+//-----------------------------------------------------------------------------
+void image_series::set_child_visibility(const std::string& _image_id, bool _visible)
+{
+    if(const auto it = m_child_visibility.find(_image_id);
+       it != m_child_visibility.end() && it->second->value() != _visible)
+    {
+        it->second->value() = _visible;
+        if(const auto child = m_children.find(_image_id); child != m_children.end())
+        {
+            child->second->update_visibility(_visible);
+        }
     }
 }
 
 //-----------------------------------------------------------------------------
 void image_series::set_image_visibility(std::string _image_id, bool _visible)
 {
-    const auto selected = m_children.find(_image_id);
-
     if(m_representation == representation_t::negato2d && _visible)
     {
         m_image_visibility[_image_id] = true;
@@ -366,18 +567,22 @@ void image_series::set_image_visibility(std::string _image_id, bool _visible)
             visible = id == _image_id;
         }
 
-        for(auto& [id, child] : m_children)
-        {
-            child->update_visibility(this->visible() && id == _image_id);
-        }
+        this->set_visible(this->visible());
     }
     else
     {
         m_image_visibility[_image_id] = _visible;
-        if(selected != m_children.end())
-        {
-            selected->second->update_visibility(this->visible() && _visible);
-        }
+        this->set_visible(this->visible());
+    }
+
+    if(const auto landmarks = m_landmarks.find(_image_id); landmarks != m_landmarks.end())
+    {
+        landmarks->second->slot("set_image_visibility")->run(_image_id, _visible);
+    }
+
+    if(const auto rulers = m_rulers.find(_image_id); rulers != m_rulers.end())
+    {
+        rulers->second->slot("set_image_visibility")->run(_image_id, _visible);
     }
 
     this->request_render();
@@ -390,9 +595,26 @@ void image_series::forward_to_children(const std::string& _slot, const Args& ...
 {
     for(const auto& [id, child] : m_children)
     {
-        if(m_image_visibility.at(id))
+        const auto visibility = m_image_visibility.find(id);
+        const auto child_slot = child->slot(_slot);
+
+        if(visibility != m_image_visibility.end() && visibility->second && child_slot)
         {
-            child->slot(_slot)->run(_args ...);
+            child_slot->run(_args ...);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void image_series::reset_clipping_box()
+{
+    if(m_representation == representation_t::volume)
+    {
+        for(const auto& entry : m_clipping_matrices)
+        {
+            *entry.second = data::matrix4::identity();
+            entry.second->async_emit(data::signals::MODIFIED);
         }
     }
 }

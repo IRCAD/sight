@@ -22,6 +22,8 @@
 #include "select_dialog.hpp"
 
 #include <algorithm>
+#include <memory>
+#include <unordered_set>
 
 namespace sight::module::ui::qt::series
 {
@@ -42,6 +44,7 @@ select_dialog::select_dialog()
 
 void select_dialog::configuring()
 {
+    m_display_all_models = this->get_config().get<bool>("config.<xmlattr>.display_all_models", false);
 }
 
 //------------------------------------------------------------------------------
@@ -58,9 +61,39 @@ void select_dialog::updating()
 
     SIGHT_THROW_IF("Missing input database series", !series_set);
 
+    if(const auto transfer_functions = m_transfer_functions.lock(); transfer_functions)
+    {
+        std::unordered_set<std::string> image_ids;
+        for(const auto& series : *series_set)
+        {
+            if(const auto image = std::dynamic_pointer_cast<data::image_series>(series); image)
+            {
+                image_ids.insert(image->get_id());
+            }
+        }
+
+        for(auto it = transfer_functions->begin() ; it != transfer_functions->end() ; )
+        {
+            if(!image_ids.contains(it->first))
+            {
+                it = transfer_functions->erase(it);
+            }
+            else
+            {
+                ++it;
+            }
+        }
+    }
+
+    if(m_display_all_models)
+    {
+        update_display_models(*series_set);
+    }
+
     if(series_set->empty())
     {
         m_image.reset();
+        m_transfer_function.reset();
         m_model_series.reset();
         return;
     }
@@ -93,9 +126,8 @@ void select_dialog::updating()
         {
             if(const auto image_series = std::dynamic_pointer_cast<data::image_series>(series); image_series)
             {
-                m_image           = image_series;
+                this->publish_image(image_series);
                 has_current_image = true;
-                this->async_emit(signals::IMAGE_SELECTED);
             }
         }
 
@@ -108,6 +140,79 @@ void select_dialog::updating()
                 this->async_emit(signals::MODEL_SELECTED);
             }
         }
+    }
+
+    if(!has_current_image)
+    {
+        m_image.reset();
+        m_transfer_function.reset();
+    }
+
+    if(!has_current_model)
+    {
+        m_model_series.reset();
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void select_dialog::publish_image(const data::image_series::sptr& _image)
+{
+    data::transfer_function::sptr tf;
+    if(const auto transfer_functions = m_transfer_functions.lock(); transfer_functions)
+    {
+        tf = transfer_functions->get<data::transfer_function>(_image->get_id());
+        if(!tf)
+        {
+            tf                                      = data::transfer_function::create_default_tf(_image->type());
+            (*transfer_functions)[_image->get_id()] = tf;
+        }
+    }
+
+    if(tf && m_transfer_function.lock().get_shared() != tf)
+    {
+        m_transfer_function = tf;
+    }
+
+    if(m_image.const_lock().get_shared() != _image)
+    {
+        m_image = _image;
+        this->async_emit(signals::IMAGE_SELECTED);
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void select_dialog::update_display_models(const data::series_set& _series_set)
+{
+    data::model_series::reconstruction_vector_t reconstructions;
+
+    for(const auto& series : _series_set)
+    {
+        if(const auto model = std::dynamic_pointer_cast<data::model_series>(series); model)
+        {
+            const auto& source = model->get_reconstruction_db();
+            reconstructions.insert(reconstructions.end(), source.begin(), source.end());
+        }
+    }
+
+    if(reconstructions.empty())
+    {
+        m_display_models.reset();
+        return;
+    }
+
+    const auto display = m_display_models.lock().get_shared();
+    if(!display)
+    {
+        auto combined = std::make_shared<data::model_series>();
+        combined->set_reconstruction_db(reconstructions);
+        m_display_models = combined;
+    }
+    else if(display->get_reconstruction_db() != reconstructions)
+    {
+        display->set_reconstruction_db(reconstructions);
+        display->async_emit(data::signals::MODIFIED);
     }
 }
 
@@ -131,8 +236,7 @@ void select_dialog::select_image(std::string _id)
 
     if(selected != series_set->cend())
     {
-        m_image = std::dynamic_pointer_cast<data::image_series>(*selected);
-        this->async_emit(signals::IMAGE_SELECTED);
+        this->publish_image(std::dynamic_pointer_cast<data::image_series>(*selected));
     }
 }
 
@@ -167,8 +271,13 @@ void select_dialog::select_model(std::string _id, bool _visible)
             continue;
         }
 
-        if(const auto current_model = m_model_series.const_lock();
-           !current_model || current_model->get_id() != model_series->get_id())
+        bool is_current_model = false;
+        {
+            const auto current_model = m_model_series.const_lock();
+            is_current_model = current_model && current_model->get_id() == model_series->get_id();
+        }
+
+        if(!is_current_model)
         {
             m_model_series = model_series;
             this->async_emit(signals::MODEL_SELECTED);
@@ -219,42 +328,73 @@ void select_dialog::remove_image(std::string _id)
     if(reset_image)
     {
         m_image.reset();
+        m_transfer_function.reset();
     }
+
+    this->updating();
 }
 
 //-----------------------------------------------------------------------------
 
 void select_dialog::remove_model(std::string _id)
 {
-    const auto model = m_model_series.lock();
-    if(!model)
+    bool removed = false;
     {
-        return;
-    }
-
-    auto reconstructions = model->get_reconstruction_db();
-    const auto it        = std::ranges::find_if(
-        reconstructions,
-        [&_id](const data::reconstruction::sptr& _reconstruction)
+        const auto series_set = m_series_set.lock();
+        if(!series_set)
         {
-            return _reconstruction && _reconstruction->get_id() == _id;
-        });
+            return;
+        }
 
-    if(it == reconstructions.end())
-    {
-        return;
+        for(const auto& series : *series_set)
+        {
+            const auto model = std::dynamic_pointer_cast<data::model_series>(series);
+            if(!model)
+            {
+                continue;
+            }
+
+            auto reconstructions = model->get_reconstruction_db();
+            const auto it        = std::ranges::find_if(
+                reconstructions,
+                [&_id](const data::reconstruction::sptr& _reconstruction)
+                {
+                    return _reconstruction && _reconstruction->get_id() == _id;
+                });
+
+            if(it == reconstructions.end())
+            {
+                continue;
+            }
+
+            const data::model_series::reconstruction_vector_t removed_reconstructions {*it};
+            reconstructions.erase(it);
+            model->set_reconstruction_db(reconstructions);
+            model->async_emit(data::model_series::signals::RECONSTRUCTIONS_REMOVED, removed_reconstructions);
+
+            if(reconstructions.empty())
+            {
+                const auto scoped_emitter = series_set->scoped_emit();
+                series_set->remove(series);
+            }
+
+            removed = true;
+            break;
+        }
     }
 
-    const data::model_series::reconstruction_vector_t removed {*it};
-    reconstructions.erase(it);
-    model->set_reconstruction_db(reconstructions);
-    model->async_emit(data::model_series::signals::RECONSTRUCTIONS_REMOVED, removed);
+    if(removed)
+    {
+        this->updating();
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 void select_dialog::stopping()
 {
+    m_display_models.reset();
+    m_transfer_function.reset();
 }
 
 //-----------------------------------------------------------------------------

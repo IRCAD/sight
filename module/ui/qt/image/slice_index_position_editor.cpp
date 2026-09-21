@@ -226,6 +226,16 @@ void slice_index_position_editor::updating()
     this->update_slider_fiducial();
 }
 
+//------------------------------------------------------------------------------
+
+void slice_index_position_editor::swapping(std::string_view _key)
+{
+    if(_key == IMAGE_INOUT)
+    {
+        this->updating();
+    }
+}
+
 //----------------------------------------------------------------------------
 void slice_index_position_editor::stopping()
 {
@@ -428,16 +438,8 @@ void slice_index_position_editor::update_slice_type(int _from, int _to)
         m_axis = static_cast<axis_t>(_to);
     }
 
-    if(m_label_option == label_option_t::index)
-    {
-        m_slice_selector_with_index->clear_slider_index();
-    }
-    else if(m_label_option == label_option_t::position)
-    {
-        m_slice_selector_with_index->clear_slider_position();
-    }
-
     this->update_slice_type_from_img(m_axis);
+    this->update_slider_fiducial();
 }
 
 //--------------------------------------------------------------------------
@@ -463,20 +465,20 @@ void slice_index_position_editor::update_slice_type_from_img(const axis_t& _type
 //------------------------------------------------------------------------------
 void slice_index_position_editor::update_slider_fiducial()
 {
+    if(m_label_option == label_option_t::index)
+    {
+        m_slice_selector_with_index->clear_slider_index();
+    }
+    else
+    {
+        m_slice_selector_with_index->clear_slider_position();
+    }
+
     const auto image        = m_image.lock();
     const auto image_series = std::dynamic_pointer_cast<const sight::data::image_series>(image.get_shared());
 
     if(image_series)
     {
-        if(m_label_option == label_option_t::index)
-        {
-            m_slice_selector_with_index->clear_slider_index();
-        }
-        else
-        {
-            m_slice_selector_with_index->clear_slider_position();
-        }
-
         const auto fiducials_series = image_series->get_fiducials();
         const auto sets             = fiducials_series->get_fiducial_sets();
 
@@ -587,6 +589,8 @@ void slice_index_position_editor::slice_type_notification(int _type)
 
         this->update_slice_index_from_img(*image);
     }
+
+    this->update_slider_fiducial();
 }
 
 //------------------------------------------------------------------------------

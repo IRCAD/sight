@@ -148,6 +148,7 @@ point::point() noexcept
 
     new_slot(slots::REMOVE_FIDUCIALS, &point::remove_fiducials, this);
     new_slot(slots::REMOVE_VISIBLE_FIDUCIALS, &point::remove_visible_fiducials, this);
+    new_slot(slots::SET_IMAGE_VISIBILITY, &point::set_image_visibility, this);
     new_slot(slots::SET_CURRENT_GROUP, &point::set_current_group, this);
     new_slot(slots::CONFIGURE_FIDUCIALS, &point::configure_fiducials, this);
     new_slot(slots::ENABLE_EDIT_MODE, &point::enable_edit_mode, this);
@@ -580,13 +581,13 @@ void point::remove_fiducials()
     // Then we remove all fiducials from the image series.
     auto locked_image = m_image_series.lock();
     auto fiducials    = locked_image->get_fiducials();
+
     const auto& [remove_results, removed_fiducial_sets] = fiducials->remove_fiducials(
         fiducial_query_predicate,
         data::fiducials_series::shape::point
     );
 
     emit_removed_signals(remove_results, removed_fiducial_sets, *locked_image, true);
-
     if(!remove_results.empty())
     {
         request_render();
@@ -1695,7 +1696,8 @@ bool point::check_fiducial_visibility(
     const float size     = _query.m_size.value_or(m_current_size);
 
     // Check if the fiducial is visible.
-    return _base_visibility.value_or(visible())
+    return m_image_visible
+           && _base_visibility.value_or(visible())
            && _query.m_visible.value_or(true)
            && check_fiducial_visibility(position, size, _image_series);
 }
@@ -1745,6 +1747,18 @@ void point::set_visible(bool _visible)
     if(need_render)
     {
         request_render();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void point::set_image_visibility(std::string _image_id, bool _visible)
+{
+    const auto image = m_image_series.const_lock();
+    if(image && image->get_id() == _image_id)
+    {
+        m_image_visible = _visible;
+        this->apply_visibility();
     }
 }
 
@@ -2150,5 +2164,7 @@ void point::set_cursor(const std::optional<Qt::CursorShape>& _cursor)
         }
     }
 }
+
+//-----------------------------------------------------------------------------
 
 } // namespace sight::module::viz::scene3d_qt::adaptor::fiducials.

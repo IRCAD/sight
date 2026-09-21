@@ -53,6 +53,7 @@ namespace sight::module::viz::scene3d_qt::adaptor::fiducials
  * - \b enable_move_mode(): enables the move mode.
  * - \b disable_move_mode(): disables the move mode.
  * - \b update_visibility(bool): shows or hides the fiducials.
+ * - \b set_image_visibility(string, bool): follows the visibility of the input image.
  * - \b toggle_visibility(): toggles whether the fiducials are shown or not.
  * - \b show(): shows the fiducials.
  * - \b hide(): hides the fiducials.
@@ -130,6 +131,7 @@ public:
     {
         inline static const slot_key_t REMOVE_FIDUCIALS         = "remove_all";
         inline static const slot_key_t REMOVE_VISIBLE_FIDUCIALS = "remove_landmarks";
+        inline static const slot_key_t SET_IMAGE_VISIBILITY     = "set_image_visibility";
         inline static const slot_key_t SET_CURRENT_GROUP        = "set_current_group";
         inline static const slot_key_t CONFIGURE_FIDUCIALS      = "configure_landmarks";
 
@@ -191,6 +193,9 @@ public:
      * @param _visible If false, it will hide all fiducials. If true, it will show them if possible.
      */
     void set_visible(bool _visible) final;
+
+    /// SLOT: Changes the visibility when the input image visibility changes.
+    void set_image_visibility(std::string _image_id, bool _visible);
 
     struct signals final
     {
@@ -661,6 +666,9 @@ private:
 
     /// True if the fiducials can be renamed by the user
     bool m_renaming_allowed {true};
+
+    /// Indicates whether the image associated with this adaptor is visible.
+    bool m_image_visible {true};
 
     /// True if we must show the contextual menu. It must be shown if the fiducial already existed and wasn't moved.
     bool m_must_show_contextual_menu {false};

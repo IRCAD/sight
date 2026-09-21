@@ -82,7 +82,8 @@ void transfer_function::configuring()
     this->initialize();
 
     const config_t tree = this->get_config();
-    const auto config   = tree.get_child_optional("config");
+    m_preserve_current_tf = tree.get<bool>("config.<xmlattr>.preserve_current_tf", false);
+    const auto config = tree.get_child_optional("config");
 
     bool use_default_path = true;
     if(config)
@@ -435,6 +436,15 @@ void transfer_function::initialize_presets(const std::string& _current_preset_na
             }
         }
 
+        if(m_preserve_current_tf)
+        {
+            const auto current_tf = m_current_tf.const_lock();
+            if(current_tf && !current_tf->pieces().empty())
+            {
+                presets[current_tf->name()] = data::object::copy(current_tf.get_shared());
+            }
+        }
+
         // Update all presets in the editor.
         m_preset_combo_box->clear();
 
@@ -465,7 +475,7 @@ void transfer_function::initialize_presets(const std::string& _current_preset_na
     }
 
     int index = m_preset_combo_box->findText(QString::fromStdString(current_preset_name));
-    if(index == 1)
+    if(index < 0)
     {
         // Fallback if the previously selected TF no longer exists
         index = m_preset_combo_box->findText(QString::fromStdString(data::transfer_function::DEFAULT_TF_NAME));
@@ -525,9 +535,12 @@ void transfer_function::update_default_preset()
 
         (*m_tf_presets)[default_tf_name] = default_tf;
 
-        const auto current_tf = m_current_tf.lock();
-        current_tf->deep_copy(default_tf);
-        current_tf->async_emit(data::signals::MODIFIED);
+        if(!m_preserve_current_tf)
+        {
+            const auto current_tf = m_current_tf.lock();
+            current_tf->deep_copy(default_tf);
+            current_tf->async_emit(data::signals::MODIFIED);
+        }
     }
 }
 

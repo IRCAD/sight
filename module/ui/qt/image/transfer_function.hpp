@@ -70,6 +70,7 @@ namespace sight::module::ui::qt::image
  *
  * @subsection Configuration Configuration
  * - \b useDefaultPath (optional, default="true"): if true, load tf files from uiTF module.
+ * - \b preserve_current_tf (optional, default="false"): preserve an image-owned TF on startup and image updates.
  * - \b path (optional): path to a directory containing tf files.
  * - \b deleteIcon (optional): path of the delete button icon.
  * - \b newIcon (optional): path of the new button icon.
@@ -248,6 +249,7 @@ private:
 
     /// Working copy of the TF presets, can be internal or use the optional "presets" input
     data::map::sptr m_tf_presets;
+    bool m_preserve_current_tf {false};
 
     static constexpr std::string_view CURRENT_INPUT = "data.tf";
     static constexpr std::string_view IMAGE_INPUT   = "data.image";

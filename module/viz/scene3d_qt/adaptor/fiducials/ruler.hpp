@@ -68,6 +68,7 @@ namespace sight::module::viz::scene3d_qt::adaptor::fiducials
  *
  * @section Slots Slots
  * - \b activate_tool(bool): enables or not the ruler tool.
+ * - \b set_image_visibility(string, bool): follows the visibility of the input image.
  * - \b remove_all(): removes all rulers.
  * - \b remove_from_current_slice(): removes rulers contained in the current slice.
  *
@@ -98,12 +99,16 @@ public:
     struct slots final
     {
         inline static const slot_key_t ACTIVATE_TOOL             = "activate_tool";
+        inline static const slot_key_t SET_IMAGE_VISIBILITY      = "set_image_visibility";
         inline static const slot_key_t REMOVE_ALL                = "remove_all";
         inline static const slot_key_t REMOVE_FROM_CURRENT_SLICE = "remove_from_current_slice";
     };
 
     /// Changes visibility of rulers.
     void set_visible(bool _visible) final;
+
+    /// SLOT: Changes the visibility when the input image visibility changes.
+    void set_image_visibility(std::string _image_id, bool _visible);
 
     /**
      * @brief Retrieves the picked ruler and stores the result in m_picked_ruler.
@@ -138,6 +143,9 @@ protected:
 
     /// Creates or recreates m_ruler_ogre_sets from the fiducials.
     void updating() final;
+
+    /// Rebuilds the rulers when the input image changes.
+    void swapping(std::string_view _key) final;
 
     /// Removes the interactor, reset materials and m_ruler_ogre_sets.
     void stopping() final;
@@ -244,7 +252,6 @@ private:
 
     /// Returns true if the given ruler is on current slice
     bool is_visible_on_current_slice(std::array<double, 3> _begin, std::array<double, 3> _end);
-
     using axis_t = sight::data::helper::medical_image::axis_t;
 
     axis_t m_axis {
@@ -259,6 +266,9 @@ private:
 
     /// Defines whether the rulers are actually visible or not.
     bool m_visible {true};
+
+    /// Indicates whether the image associated with this adaptor is visible.
+    bool m_image_visible {true};
 
     /// Defines the priority of the interactor.
     int m_priority {2};

@@ -304,6 +304,8 @@
         <object>sight::data::series_set</object>
         <object>sight::data::model_series</object>
         <object>sight::data::image_series</object>
+        <object>sight::data::map</object>
+        <object>sight::data::transfer_function</object>
         <desc>This editor shows information about the medical data. It allows to manipulate (select, erase, ...)</desc>
     </extension>
 

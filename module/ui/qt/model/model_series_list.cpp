@@ -345,6 +345,12 @@ void model_series_list::on_show_reconstructions(int _state)
         data::helper::field helper(model_series.get_shared());
         helper.add_or_swap("ShowReconstructions", std::make_shared<data::boolean>(_state == Qt::Unchecked));
     }
+
+    if(auto display_models = m_display_models.lock(); display_models)
+    {
+        data::helper::field helper(display_models.get_shared());
+        helper.add_or_swap("ShowReconstructions", std::make_shared<data::boolean>(_state == Qt::Unchecked));
+    }
 }
 
 //------------------------------------------------------------------------------

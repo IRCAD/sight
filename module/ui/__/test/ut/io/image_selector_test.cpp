@@ -59,6 +59,7 @@ struct test_io_state
 {
     std::filesystem::path file;
     std::filesystem::path dialog_file;
+    std::string config_value;
     std::size_t dialog_count {0};
     std::size_t read_count {0};
     bool should_fail {false};
@@ -82,6 +83,7 @@ enum class test_service : std::uint8_t
     file_folder_reader,
     folder_reader_a,
     folder_reader_b,
+    selection_dialog_reader,
     nifti_writer,
     vtk_writer,
     raw_writer,
@@ -283,6 +285,13 @@ protected:
 
     //------------------------------------------------------------------------------
 
+    void configuring() override
+    {
+        m_state.config_value = get_config().get("dummy", "");
+    }
+
+    //------------------------------------------------------------------------------
+
     void starting() override
     {
     }
@@ -409,6 +418,41 @@ public:
             sight::io::service::folder
         )
     {
+    }
+};
+
+class test_selection_dialog_reader final : public test_reader_base
+{
+public:
+
+    SIGHT_DECLARE_SERVICE(test_selection_dialog_reader, sight::io::service::reader);
+
+    test_selection_dialog_reader() :
+        test_reader_base(
+            "Selection dialog reader",
+            {},
+            {},
+            get_state(test_service::selection_dialog_reader),
+            sight::io::service::folder
+        )
+    {
+    }
+
+protected:
+
+    //------------------------------------------------------------------------------
+
+    void updating() override
+    {
+        // Reproduce the DICOM reader's multi-series selection: the reader runs on its own worker and waits for a
+        // dialog executed by the default/GUI worker.
+        core::thread::get_default_worker()->post_task<void>(
+            []
+                {
+                    ++get_state(test_service::selection_dialog_reader).dialog_count;
+                }).get();
+
+        test_reader_base::updating();
     }
 };
 
@@ -608,6 +652,11 @@ SIGHT_REGISTER_SERVICE(
     sight::data::string
 );
 SIGHT_REGISTER_SERVICE(
+    sight::io::service::reader,
+    sight::module::ui::io::ut::test_selection_dialog_reader,
+    sight::data::string
+);
+SIGHT_REGISTER_SERVICE(
     sight::io::service::writer,
     sight::module::ui::io::ut::test_nifti_writer,
     sight::data::string
@@ -642,33 +691,30 @@ struct image_selector_fixture
 {
     image_selector_fixture()
     {
-        get_state(test_service::nifti_reader)       = {};
-        get_state(test_service::vtk_reader)         = {};
-        get_state(test_service::raw_reader)         = {};
-        get_state(test_service::file_folder_reader) = {};
-        get_state(test_service::folder_reader_a)    = {};
-        get_state(test_service::folder_reader_b)    = {};
-        get_state(test_service::nifti_writer)       = {};
-        get_state(test_service::vtk_writer)         = {};
-        get_state(test_service::raw_writer)         = {};
-        get_state(test_service::dialog_writer_a)    = {};
-        get_state(test_service::dialog_writer_b)    = {};
-        get_selector_state()                        = {};
+        get_state(test_service::nifti_reader)            = {};
+        get_state(test_service::vtk_reader)              = {};
+        get_state(test_service::raw_reader)              = {};
+        get_state(test_service::file_folder_reader)      = {};
+        get_state(test_service::folder_reader_a)         = {};
+        get_state(test_service::folder_reader_b)         = {};
+        get_state(test_service::selection_dialog_reader) = {};
+        get_state(test_service::nifti_writer)            = {};
+        get_state(test_service::vtk_writer)              = {};
+        get_state(test_service::raw_writer)              = {};
+        get_state(test_service::dialog_writer_a)         = {};
+        get_state(test_service::dialog_writer_b)         = {};
+        get_selector_state()                             = {};
 
         CHECK(sight::ui::test::dialog::location::clear());
 
         m_selector = service::add("sight::module::ui::io::selector");
         CHECK_MESSAGE(m_selector, "Failed to create service 'sight::module::ui::io::selector'");
+        m_selector_worker = core::thread::worker::make();
+        m_selector->set_worker(m_selector_worker);
     }
 
     ~image_selector_fixture()
     {
-        if(m_worker)
-        {
-            m_worker->stop();
-            m_worker.reset();
-        }
-
         if(!m_selector->stopped())
         {
             CHECK_NOTHROW(m_selector->stop().get());
@@ -676,6 +722,19 @@ struct image_selector_fixture
 
         service::remove(m_selector);
         m_selector.reset();
+
+        if(m_worker)
+        {
+            m_worker->stop();
+            m_worker.reset();
+        }
+
+        if(m_selector_worker)
+        {
+            m_selector_worker->stop();
+            m_selector_worker.reset();
+        }
+
         m_data = nullptr;
 
         CHECK(sight::ui::test::dialog::location::clear());
@@ -768,6 +827,7 @@ struct image_selector_fixture
     }
 
     service::base::sptr m_selector;
+    core::thread::worker::sptr m_selector_worker;
     core::thread::worker::sptr m_worker;
     data::string::sptr m_data;
 };
@@ -778,6 +838,50 @@ struct image_selector_fixture
 
 TEST_SUITE("sight::module::ui::io::image_selector")
 {
+    TEST_CASE_FIXTURE(image_selector_fixture, "configured_paths_with_spaces_test")
+    {
+        const auto first_path  = std::filesystem::temp_directory_path() / "selector first image.nii";
+        const auto second_path = std::filesystem::temp_directory_path() / "selector second image.nii";
+        std::ofstream(first_path).close();
+        std::ofstream(second_path).close();
+
+        const auto input_path = std::make_shared<data::string>();
+        m_selector->set_input(input_path, "path.file");
+        configure_selector(
+            sight::io::service::READER_DATA_KEY,
+            {"sight::module::ui::io::ut::test_nifti_reader"
+            },
+            {},
+            {},
+            true
+        );
+        core::thread::get_default_worker()->post_task<void>([]{}).get();
+        m_selector_worker->post_task<void>([]{}).get();
+
+        *input_path = first_path.string();
+        m_selector->update().get();
+
+        const auto& state = get_state(test_service::nifti_reader);
+        SIGHT_TEST_WAIT(state.read_count == 1);
+        CHECK_EQ(state.read_count, 1);
+        CHECK_EQ(state.file, first_path);
+
+        const std::string paths = "; \t" + first_path.string() + " ; ; " + second_path.string() + "\t ;";
+        *input_path = paths;
+        m_selector->update().get();
+
+        SIGHT_TEST_WAIT(state.read_count == 3);
+        CHECK_EQ(state.read_count, 3);
+        CHECK_EQ(state.file, second_path);
+
+        *input_path = "; \t; ;";
+        m_selector->update().get();
+        CHECK_EQ(state.read_count, 3);
+
+        std::filesystem::remove(first_path);
+        std::filesystem::remove(second_path);
+    }
+
     TEST_CASE_FIXTURE(image_selector_fixture, "file_reader_test")
     {
         configure_selector(sight::io::service::READER_DATA_KEY, {"sight::module::ui::io::ut::test_nifti_reader"});
@@ -1312,10 +1416,70 @@ TEST_SUITE("sight::module::ui::io::image_selector")
 
         update_selector(true);
 
+        const auto& state = get_state(test_service::nifti_reader);
         CHECK_EQ(
             selected_file,
-            get_state(test_service::nifti_reader).file
+            state.file
         );
+        CHECK_EQ(std::string("value"), state.config_value);
+    }
+
+    //------------------------------------------------------------------------------
+
+    TEST_CASE_FIXTURE(image_selector_fixture, "supplied_path_reader_with_config_test")
+    {
+        const std::string reader_id = "sight::module::ui::io::ut::test_nifti_reader";
+        const std::string config_id = "image_selector_test_supplied_path_reader_config";
+
+        service::config_t reader_config;
+        reader_config.put("dummy", "supplied_path_value");
+
+        service::extension::config::get_default()->add_service_config_info(
+            config_id,
+            reader_id,
+            "Test supplied path reader config",
+            reader_config
+        );
+
+        m_data = std::make_shared<sight::data::string>();
+        m_selector->set_inout(m_data, sight::io::service::READER_DATA_KEY);
+
+        const auto input_path = std::make_shared<data::string>();
+        m_selector->set_input(input_path, "path.file");
+
+        service::config_t config;
+        config.put("selection.<xmlattr>.mode", "include");
+        config.put("path.<xmlattr>.file", "");
+
+        boost::property_tree::ptree selection;
+        selection.put("<xmlattr>.service", reader_id);
+        config.add_child("addSelection", selection);
+
+        boost::property_tree::ptree reader_config_info;
+        reader_config_info.put("<xmlattr>.id", config_id);
+        reader_config_info.put("<xmlattr>.service", reader_id);
+        config.add_child("config", reader_config_info);
+
+        m_selector->set_config(config);
+
+        CHECK_NOTHROW(m_selector->configure());
+        CHECK_NOTHROW(m_selector->start().get());
+        core::thread::get_default_worker()->post_task<void>([]{}).get();
+
+        const auto selected_file = std::filesystem::temp_directory_path()
+                                   / ("sight_selector_config_"
+                                      + std::to_string(reinterpret_cast<std::uintptr_t>(this)) + ".nii");
+        std::ofstream file(selected_file);
+        CHECK(file.good());
+        file.close();
+
+        *input_path = selected_file.string();
+        update_selector(true);
+
+        const auto& state = get_state(test_service::nifti_reader);
+        CHECK_EQ(selected_file, state.file);
+        CHECK_EQ(std::string("supplied_path_value"), state.config_value);
+        CHECK(std::filesystem::remove(selected_file));
     }
 
     //------------------------------------------------------------------------------
@@ -1407,38 +1571,6 @@ TEST_SUITE("sight::module::ui::io::image_selector")
         CHECK_NOTHROW(m_selector->update().get());
         CHECK_EQ(std::size_t(0), get_state(test_service::nifti_reader).read_count);
         CHECK_EQ(std::size_t(0), get_state(test_service::nifti_reader).dialog_count);
-    }
-
-    //------------------------------------------------------------------------------
-
-    TEST_CASE_FIXTURE(image_selector_fixture, "command_line_multiple_file_reader_test")
-    {
-        const auto first_file = std::filesystem::temp_directory_path()
-                                / ("sight_selector_cli_"
-                                   + std::to_string(reinterpret_cast<std::uintptr_t>(this)) + "_first.nii");
-        const auto second_file = std::filesystem::temp_directory_path()
-                                 / ("sight_selector_cli_"
-                                    + std::to_string(reinterpret_cast<std::uintptr_t>(this)) + "_second.nii");
-
-        std::ofstream first(first_file);
-        std::ofstream second(second_file);
-        CHECK(first.good());
-        CHECK(second.good());
-        first.close();
-        second.close();
-
-        configure_selector(
-            sight::io::service::READER_DATA_KEY,
-            {"sight::module::ui::io::ut::test_nifti_reader"},
-            first_file.string() + ";" + second_file.string()
-        );
-
-        update_selector(true);
-
-        CHECK_EQ(std::size_t(2), get_state(test_service::nifti_reader).read_count);
-        CHECK_EQ(std::size_t(0), get_state(test_service::nifti_reader).dialog_count);
-        CHECK(std::filesystem::remove(first_file));
-        CHECK(std::filesystem::remove(second_file));
     }
 
     //------------------------------------------------------------------------------

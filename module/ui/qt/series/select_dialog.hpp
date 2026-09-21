@@ -22,8 +22,10 @@
 #pragma once
 
 #include <data/image_series.hpp>
+#include <data/map.hpp>
 #include <data/model_series.hpp>
 #include <data/series_set.hpp>
+#include <data/transfer_function.hpp>
 
 #include <service/controller.hpp>
 
@@ -41,7 +43,7 @@ namespace sight::module::ui::qt::series
  * The output objects must be marked as "deferred" in the XML configuration.
  *
  * @section Signals Signals
- * - \b image_selected(): Emitted when an image is selected.
+ * - \b image_selected(): Emitted when the selected image changes.
  * - \b model_selected(): Emitted when a model is selected.
  *
  * @section XML XML Configuration
@@ -55,10 +57,16 @@ namespace sight::module::ui::qt::series
        @endcode
  * @subsection Input Input
  * - \b series_set [sight::data::series_set]: database series from which the series extracted.
+ * - \b transfer_functions [sight::data::map] (optional): TF objects indexed by image ID, shared by the views.
  *
  * @subsection Output Output
  * - \b modelSeries [sight::data::model_series]: output model series extracted from the database series.
+ * - \b display_models [sight::data::model_series] (optional): reconstructions from all model series for rendering.
  * - \b image [sight::data::image]: output image extracted from the database series.
+ * - \b transfer_function [sight::data::transfer_function] (optional): TF object of the selected image.
+ *
+ * @subsection Configuration Configuration
+ * - \b config.display_all_models (optional, default false): populate display_models with all reconstructions.
  */
 class select_dialog : public service::controller
 {
@@ -103,6 +111,8 @@ protected:
 
 private:
 
+    void update_display_models(const data::series_set& _series_set);
+    void publish_image(const data::image_series::sptr& _image);
     void select_image(std::string _id);
     void select_model(std::string _id, bool _visible);
     void remove_image(std::string _id);
@@ -110,7 +120,14 @@ private:
 
     sight::data::ptr<sight::data::series_set, sight::data::access::inout> m_series_set {this, "series_set"};
     sight::data::ptr<sight::data::model_series, sight::data::access::out> m_model_series {this, "model_series"};
+    sight::data::ptr<sight::data::model_series, sight::data::access::out> m_display_models {this,
+                                                                                            "display_models",
+                                                                                            true
+    };
     sight::data::ptr<sight::data::image, sight::data::access::out> m_image {this, "image"};
+    data::ptr<data::map, data::access::inout> m_transfer_functions {this, "transfer_functions", true};
+    data::ptr<data::transfer_function, data::access::out> m_transfer_function {this, "transfer_function", true};
+    bool m_display_all_models {false};
 };
 
 } // namespace sight::module::ui::qt::series

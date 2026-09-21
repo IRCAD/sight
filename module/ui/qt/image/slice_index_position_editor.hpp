@@ -122,6 +122,9 @@ protected:
     /// Update editor information from the image
     void updating() override;
 
+    /// Refresh the range and fiducial marks when the input image is replaced.
+    void swapping(std::string_view _key) override;
+
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection

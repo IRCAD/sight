@@ -49,6 +49,7 @@ static constexpr std::uint8_t RULER_RQ_GROUP_ID = sight::viz::scene3d::rq::SURFA
 ruler::ruler() noexcept
 {
     new_slot(slots::REMOVE_ALL, &ruler::remove_all, this);
+    new_slot(slots::SET_IMAGE_VISIBILITY, &ruler::set_image_visibility, this);
     new_slot(slots::ACTIVATE_TOOL, &ruler::activate_tool, this);
     new_slot(slots::REMOVE_FROM_CURRENT_SLICE, &ruler::remove_from_current_slice, this);
     new_slot(private_slots::UPDATE_MODIFIED_RULER, &ruler::update_modified_ruler, this);
@@ -148,6 +149,7 @@ void ruler::configuring()
 void ruler::starting()
 {
     adaptor::init();
+    m_image_visible = true;
 
     this->render_service()->make_current();
 
@@ -217,6 +219,20 @@ void ruler::starting()
 
     auto interactor = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::base>(this->get_sptr());
     layer->add_interactor(interactor, m_priority);
+
+    this->apply_visibility();
+}
+
+//------------------------------------------------------------------------------
+
+void ruler::swapping(std::string_view _key)
+{
+    if(_key == "data.image")
+    {
+        m_image_visible = true;
+        m_creation_mode = false;
+        this->apply_visibility();
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -669,7 +685,7 @@ void ruler::activate_tool(const bool _activate)
 
 void ruler::set_visible(bool _visible)
 {
-    m_visible = _visible;
+    m_visible = _visible && m_image_visible;
     if(!m_tool_activated)
     {
         this->activate_tool(false);
@@ -681,6 +697,17 @@ void ruler::set_visible(bool _visible)
     else
     {
         this->updating();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void ruler::set_image_visibility(std::string _image_id, bool _visible)
+{
+    if(const auto image = m_image.const_lock(); image&& image->get_id() == _image_id)
+    {
+        m_image_visible = _visible;
+        this->apply_visibility();
     }
 }
 

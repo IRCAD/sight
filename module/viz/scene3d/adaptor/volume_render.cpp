@@ -303,7 +303,6 @@ void volume_render::update_volume_tf()
 {
     this->render_service()->make_current();
     std::scoped_lock swap_lock(m_mutex);
-
     {
         const auto tf = m_tf.lock();
         m_volume_renderer->update_volume_tf(tf.get_shared());
@@ -757,6 +756,7 @@ void volume_render::update_clipping_box()
 
             std::scoped_lock swap_lock(m_mutex);
             m_volume_renderer->clip_image(m_widget->get_clipping_box());
+
             this->request_render();
         }
     }

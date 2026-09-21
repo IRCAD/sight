@@ -3,7 +3,8 @@
     <parameters>
         <object uid="image" type="sight::data::image_series" deferred="true" />
         <object uid="series_set" type="sight::data::series_set" />
-        <object uid="transfer_function" type="sight::data::transfer_function" />
+        <object uid="transfer_function" type="sight::data::transfer_function" deferred="true" />
+        <object uid="image_transfer_functions" type="sight::data::map" optional="true" />
         <object uid="fiducial_size" type="sight::data::real" optional="true" value="1.5" />
 
         <param name="WID_PARENT" />
@@ -19,6 +20,7 @@
         <channel name="ruler_deactivation" optional="true" />
         <channel name="landmarks_edit_mode" optional="true" />
         <channel name="landmarks_group_selected" optional="true" />
+        <channel name="remove_all_landmarks" optional="true" />
         <channel name="landmarks_edit_mode_changed" optional="true" />
         <channel name="visibility_rulers" />
     </parameters>
@@ -107,6 +109,7 @@
         <service uid="image_series_adp" type="sight::module::viz::scene3d::adaptor::image_series" auto_connect="true">
             <data series="${series_set}" />
             <data tf="${transfer_function}" />
+            <data transfer_functions="${image_transfer_functions}" />
             <config representation="negato2d" orientation="${slice_index}" filtering="${filtering}" classification="${classification}" />
         </service>
 
@@ -158,6 +161,8 @@
 
         <connect channel="${image_visibility}">
             <slot>image_series_adp/set_image_visibility</slot>
+            <slot>landmarks_adp/set_image_visibility</slot>
+            <slot>ruler_fiducial_adp/set_image_visibility</slot>
         </connect>
 
         <!-- distance channels -->
@@ -170,7 +175,7 @@
         </connect>
 
         <connect channel="${visibility_rulers}">
-            <slot>ruler_fiducial_adp/toggle_visibility</slot>
+            <slot>ruler_fiducial_adp/update_visibility</slot>
         </connect>
 
         <connect channel="${landmarks_edit_mode}">

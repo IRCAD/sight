@@ -79,6 +79,7 @@ namespace sight::module::ui::qt::model
  *
  * @subsection In-Out In-Out
  * - \b model_series [sight::data::model_series]: model series containing the organs to list
+ * - \b display_models [sight::data::model_series] (optional): combined model series used for rendering.
  *
  * @subsection Configuration Configuration
  * - \b enable_hide_all (optional, bool, default=true): if 'true', allows to hide all models through a single checkbox
@@ -236,6 +237,7 @@ private:
 
     static constexpr std::string_view MODEL_SERIES = "model_series";
     data::ptr<data::model_series, data::access::inout> m_model_series {this, "model_series"};
+    data::ptr<data::model_series, data::access::inout> m_display_models {this, "display_models", true};
 };
 
 } // namespace sight::module::ui::qt::model

@@ -700,6 +700,7 @@ void slice_selector::set_type_selection(int _type)
 {
     if(!m_slice_type.isNull())
     {
+        const QSignalBlocker blocker(m_slice_type);
         this->m_slice_type->setCurrentIndex(_type);
     }
 }

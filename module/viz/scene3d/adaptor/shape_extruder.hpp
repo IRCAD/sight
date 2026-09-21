@@ -24,6 +24,8 @@
 
 #include <core/notification/has_notifications.hpp>
 
+#include <data/image.hpp>
+#include <data/map.hpp>
 #include <data/model_series.hpp>
 
 #include <viz/scene3d/adaptor.hpp>
@@ -69,6 +71,10 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * @subsection In-Out In-Out
  * - \b data.extrudedMeshes [sight::data::model_series]: model series where all extruded meshes are stored.
+ * - \b data.extruded_meshes_by_image [sight::data::map] (optional): meshes indexed by image ID.
+ *
+ * @subsection Input Input
+ * - \b data.image [sight::data::image] (optional): selected image for per-image cropping.
  *
  * @subsection Configuration Configuration:
  * - \b extrude (optional, bool, true) : sets if the extrusion is done or not (3D or 2D shape).
@@ -163,6 +169,8 @@ protected:
     void stopping() final;
 
 private:
+
+    data::model_series::sptr get_extruded_meshes() const;
 
     /// Represents a 2D triangle by three points, a barycenter, and a center/radius of the circumscribed circle.
     class triangle2_d
@@ -393,6 +401,8 @@ private:
     sight::data::ptr<sight::data::model_series, sight::data::access::inout> m_extruded_meshes {this,
                                                                                                "data.extrudedMeshes"
     };
+    ptr_inout<data::map> m_extruded_meshes_by_image {this, "data.extruded_meshes_by_image", true};
+    ptr_in<data::image> m_image {this, "data.image", true};
 
     bool m_validation_by_double_click {true};
 };

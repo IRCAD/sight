@@ -26,13 +26,18 @@
 #include <core/com/slot.hpp>
 #include <core/notification/base.hpp>
 #include <core/notification/has_monitors.hpp>
+#include <data/string.hpp>
 
 #include <io/__/service/reader.hpp>
 #include <io/__/service/writer.hpp>
 
 #include <ui/__/dialog_editor.hpp>
 
-#include <data/string.hpp>
+#include <filesystem>
+#include <functional>
+#include <string>
+#include <utility>
+#include <vector>
 
 namespace sight::module::ui::io
 {
@@ -65,6 +70,8 @@ namespace sight::module::ui::io
  * - \b data.read [sight::data::object]: the object to read.
  * @subsection Input Input
  * - \b data.write [sight::data::object]: the object to save.
+ * - \b path.file [sight::data::string]: optional semicolon-separated file paths.
+ * - \b path.folder [sight::data::string]: optional semicolon-separated folder paths.
  * @subsection Configuration Configuration
  * - \b selection
  *      - \b mode (optional, default "exclude"): includes or excludes the services listed with addSelection.
@@ -76,7 +83,7 @@ namespace sight::module::ui::io
  * - \b path (optional, reader only)
  *      - \b file: file paths supplied non-interactively to the selector, separated by ';'.
  *      - \b folder: folder paths supplied non-interactively to the selector, separated by ';'.
- *      - If both are empty, updating does nothing.
+ *      - When present, the selector queues an initial read after startup.
  */
 class selector : public sight::ui::dialog_editor,
                  public sight::core::notification::has_monitors
@@ -112,10 +119,10 @@ public:
 
 protected:
 
-    /// Moves the notification forwarding slot to the default worker.
+    /// Queues the initial non-interactive read when paths are configured.
     void starting() override;
 
-    /// Stops the service. Do nothing.
+    /// Stops the service.
     void stopping() override;
 
     /**
@@ -155,9 +162,21 @@ private:
     /**
      * @brief Creates, binds and configures a reader service.
      * @param[in] _service_id reader implementation identifier.
+     * @param[in] _data optional object; defaults to the selector's read data.
+     * @param[in] _append enables append mode for series sets while preserving the configured reader options.
      * @return The configured reader service.
      */
-    sight::io::service::reader::sptr create_and_configure_reader(const std::string& _service_id);
+    sight::io::service::reader::sptr create_and_configure_reader(
+        const std::string& _service_id,
+        const sight::data::object::sptr& _data = nullptr,
+        bool _append                           = false
+    );
+
+    /// Runs and unregisters a reader
+    bool run_reader(
+        const sight::io::service::reader::sptr& _reader,
+        std::function<void()> _before_update = {},
+        const std::filesystem::path& _path   = {});
 
     /**
      * @brief Creates, binds and configures a writer service.
@@ -165,6 +184,11 @@ private:
      * @return The configured writer service.
      */
     sight::io::service::writer::sptr create_and_configure_writer(const std::string& _service_id);
+
+    /// Runs and unregisters a writer, optionally opening its own location dialog first.
+    bool run_writer(
+        const sight::io::service::writer::sptr& _writer,
+        std::function<void()> _before_update = {});
 
     /**
      * @brief Builds a shared file dialog from reader extensions and executes the reader matching the selected file.
@@ -179,6 +203,32 @@ private:
     void select_folder_reader(const std::vector<std::pair<std::string, std::string> >& _available_services);
 
     void forward_notification(core::notification::base::sptr _notification);
+
+    /**
+     * @brief Creates a reader for non-interactive paths, or returns null if its configuration fails.
+     * @param[in] _service_id reader implementation identifier.
+     * @param[in] _data The data object to populate.
+     * @param[in] _append Whether to append to the existing data.
+     * @return The configured reader service, or null if configuration fails.
+     */
+    sight::io::service::reader::sptr create_path_reader(
+        const std::string& _service_id,
+        const sight::data::object::sptr& _data,
+        bool _append
+    );
+
+    /// @brief Reads the specified paths using the available reader services.
+    /// @param _paths The paths to read.
+    /// @param _data The data object to populate.
+    /// @param _available_services The available reader services.
+    /// @param _append Whether to append to the existing data.
+    /// @return True if the paths were successfully read, false otherwise.
+    bool read_paths(
+        const std::vector<std::filesystem::path>& _paths,
+        const sight::data::object::sptr& _data,
+        const std::vector<std::string>& _available_services,
+        bool _append
+    );
 
     /// Configure if selected services are included or excluded.
     bool m_services_are_excluded {true};
@@ -201,8 +251,6 @@ private:
     data::ptr<data::object, data::access::inout> m_read {this, "data.read"};
     data::ptr<data::object, data::access::in> m_write {this, "data.write"};
 
-    /// Optional paths used for non-interactive reading from the command line.
-    bool m_has_path_config {false};
     data::ptr<data::string, data::access::in> m_file {this, "path.file", std::string()};
     data::ptr<data::string, data::access::in> m_folder {this, "path.folder", std::string()};
 };

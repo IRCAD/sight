@@ -104,13 +104,13 @@ public:
         using image_selected_t = core::com::signal<void (std::string)>;
         static inline const signal_key_t IMAGE_SELECTED = "image_selected";
 
-        /// Emitted when image visibility changes.
-        using image_visibility_changed_t = core::com::signal<void (std::string, bool)>;
-        static inline const signal_key_t IMAGE_VISIBILITY_CHANGED = "image_visibility_changed";
-
         /// Emitted when model visibility changes.
         using model_selected_t = core::com::signal<void (std::string, bool)>;
         static inline const signal_key_t MODEL_SELECTED = "model_selected";
+
+        /// Emitted when image visibility changes.
+        using image_visibility_changed_t = core::com::signal<void (std::string, bool)>;
+        static inline const signal_key_t IMAGE_VISIBILITY_CHANGED = "image_visibility_changed";
     };
 
     SIGHT_DECLARE_SERVICE(image_manager_widget, sight::ui::editor);
@@ -162,10 +162,8 @@ private:
 
     std::string m_selected_image_id;
 
-    /// Runtime states indexed by the internal Sight ID.
     std::unordered_map<std::string, series_state> m_series_states;
 
-    /// Qt cards indexed by the internal Sight ID.
     std::unordered_map<std::string, image_card> m_image_cards;
 
     std::size_t m_thumbnail_width {128};

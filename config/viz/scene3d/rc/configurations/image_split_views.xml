@@ -4,8 +4,10 @@
         <object uid="model_series" type="sight::data::model_series" deferred="true" />
         <object uid="image" type="sight::data::image_series" deferred="true" />
         <object uid="series_set" type="sight::data::series_set" />
-        <object uid="volume_tf" type="sight::data::transfer_function" />
-        <object uid="extruded_model_series" type="sight::data::model_series" />
+        <object uid="volume_tf" type="sight::data::transfer_function" deferred="true" />
+        <object uid="image_transfer_functions" type="sight::data::map" optional="true" />
+        <object uid="extruded_meshes" type="sight::data::model_series" />
+        <object uid="extruded_meshes_by_image" type="sight::data::map" optional="true" />
 
         <object uid="vr_visibility" type="sight::data::boolean" />
         <object uid="negato_visibility" type="sight::data::boolean" />
@@ -88,8 +90,10 @@
             <object name="model_series" uid="${model_series}" optional="true" />
             <object name="image" uid="${image}" optional="true" />
             <object name="series_set" uid="${series_set}" />
-            <object name="volume_tf" uid="${volume_tf}" />
-            <object name="extruded_model_series" uid="${extruded_model_series}" />
+            <object name="volume_tf" uid="${volume_tf}" optional="true" />
+            <object name="image_transfer_functions" uid="${image_transfer_functions}" optional="true" />
+            <object name="extruded_meshes" uid="${extruded_meshes}" />
+            <object name="extruded_meshes_by_image" uid="${extruded_meshes_by_image}" optional="true" />
             <object name="vr_visibility" uid="${vr_visibility}" />
             <object name="negato_visibility" uid="${negato_visibility}" />
             <object name="model_visibility" uid="${model_visibility}" />
@@ -126,7 +130,8 @@
             <config id="sight::config::viz::scene3d::negato2d" />
             <object name="image" uid="${image}" optional="true" />
             <object name="series_set" uid="${series_set}" />
-            <object name="transfer_function" uid="${volume_tf}" />
+            <object name="transfer_function" uid="${volume_tf}" optional="true" />
+            <object name="image_transfer_functions" uid="${image_transfer_functions}" optional="true" />
             <object name="fiducial_size" uid="${fiducial_size}" />
             <param name="WID_PARENT" value="axial_scene_view" />
             <param name="slice_index" value="axial" />
@@ -146,7 +151,8 @@
             <config id="sight::config::viz::scene3d::negato2d" />
             <object name="image" uid="${image}" optional="true" />
             <object name="series_set" uid="${series_set}" />
-            <object name="transfer_function" uid="${volume_tf}" />
+            <object name="transfer_function" uid="${volume_tf}" optional="true" />
+            <object name="image_transfer_functions" uid="${image_transfer_functions}" optional="true" />
             <object name="fiducial_size" uid="${fiducial_size}" />
             <param name="WID_PARENT" value="sagittal_scene_view" />
             <param name="slice_index" value="sagittal" />
@@ -166,7 +172,8 @@
             <config id="sight::config::viz::scene3d::negato2d" />
             <object name="image" uid="${image}" optional="true" />
             <object name="series_set" uid="${series_set}" />
-            <object name="transfer_function" uid="${volume_tf}" />
+            <object name="transfer_function" uid="${volume_tf}" optional="true" />
+            <object name="image_transfer_functions" uid="${image_transfer_functions}" optional="true" />
             <object name="fiducial_size" uid="${fiducial_size}" />
             <param name="WID_PARENT" value="frontal_scene_view" />
             <param name="slice_index" value="frontal" />

@@ -32,8 +32,6 @@
 #include <ui/__/dialog/location.hpp>
 #include <ui/__/dialog/message.hpp>
 
-#include <io/__/reader/reader_helper.hpp>
-
 #include <filesystem>
 
 namespace sight::module::io::vtk
@@ -191,31 +189,30 @@ void series_set_reader::updating()
     if(this->has_location_defined())
     {
         // Retrieve dataStruct associated with this service
-        const auto locked     = m_data.lock();
-        const auto series_set = std::dynamic_pointer_cast<data::series_set>(locked.get_shared());
-
-        SIGHT_ASSERT(
-            "The object is not a '"
-            + data::series_set::classname()
-            + "' or '"
-            + sight::io::service::READER_DATA_KEY
-            + "' is not correctly set.",
-            series_set
-        );
+        const auto locked = m_data.lock();
 
         auto local_series_set = std::make_shared<data::series_set>();
 
         sight::ui::busy_cursor cursor;
-
         this->load_series_set(this->get_files(), local_series_set);
 
         if(!m_read_failed)
         {
+            const auto series_set = std::dynamic_pointer_cast<data::series_set>(locked.get_shared());
+
+            SIGHT_ASSERT(
+                "The object is not a '"
+                + data::series_set::classname()
+                + "' or '"
+                + sight::io::service::READER_DATA_KEY
+                + "' is not correctly set.",
+                series_set
+            );
             const auto scoped_emitter = series_set->scoped_emit();
 
             if(m_append)
             {
-                const std::size_t duplicate_count = sight::io::reader::append_unique(*series_set, *local_series_set);
+                const std::size_t duplicate_count = series_set->append_unique(*local_series_set);
                 if(duplicate_count > 0)
                 {
                     this->warn(

@@ -40,6 +40,7 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QScrollArea>
+#include <QSignalBlocker>
 #include <QSizePolicy>
 #include <QVBoxLayout>
 
@@ -57,11 +58,11 @@ image_manager_widget::image_manager_widget()
     new_signal<signals::image_removed_t>(signals::IMAGE_REMOVED);
     new_signal<signals::model_removed_t>(signals::MODEL_REMOVED);
     new_signal<signals::image_selected_t>(signals::IMAGE_SELECTED);
-    new_signal<signals::image_visibility_changed_t>(signals::IMAGE_VISIBILITY_CHANGED);
     new_signal<signals::model_selected_t>(signals::MODEL_SELECTED);
+    new_signal<signals::image_visibility_changed_t>(signals::IMAGE_VISIBILITY_CHANGED);
 }
 
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------
 
 void image_manager_widget::configuring()
 {
@@ -246,6 +247,7 @@ void image_manager_widget::update_image_widgets()
                                if(select_image)
                                {
                                    this->async_emit(signals::IMAGE_SELECTED, id);
+                                   this->async_emit(signals::IMAGE_VISIBILITY_CHANGED, id, true);
                                }
                            };
 
@@ -346,7 +348,7 @@ void image_manager_widget::add_card(
 {
     auto* card_widget = new QFrame(m_cards_container);
     card_widget->setObjectName(QString("image_card_%1").arg(QString::fromStdString(_id)));
-    card_widget->setProperty("sightCardType", QStringLiteral("image_card"));
+    card_widget->setProperty("sight_card_type", QStringLiteral("image_card"));
     card_widget->setMinimumHeight(180);
     card_widget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     card_widget->setFrameShape(QFrame::StyledPanel);
@@ -471,19 +473,7 @@ void image_manager_widget::add_card(
                 {
                     m_selected_image_id = _id;
                     this->async_emit(signals::IMAGE_SELECTED, _id);
-
-                    QMetaObject::invokeMethod(
-                        this,
-                        [this, _id]()
-                    {
-                        this->async_emit(
-                            signals::IMAGE_VISIBILITY_CHANGED,
-                            _id,
-                            true
-                        );
-                    },
-                        Qt::QueuedConnection
-                    );
+                    this->async_emit(signals::IMAGE_VISIBILITY_CHANGED, _id, true);
                 }
                 else
                 {
@@ -546,7 +536,7 @@ void image_manager_widget::add_card(
 
     auto* alias = new QLineEdit(QString::fromStdString(_label), card_widget);
     alias->setObjectName(QString("image_alias_%1").arg(QString::fromStdString(_id)));
-    alias->setProperty("sightCardField", QStringLiteral("true"));
+    alias->setProperty("sight_card_field", QStringLiteral("true"));
     alias->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
     alias->setCursorPosition(0);
     alias->setToolTip(QString("Rename this item"));
@@ -570,17 +560,18 @@ void image_manager_widget::add_card(
     const auto add_label = [card_widget, details_layout, card_layout, field_height](const std::string& _text)
                            {
                                auto* field = new QFrame(card_widget);
-                               field->setProperty("sightCardField", QStringLiteral("true"));
+                               field->setProperty("sight_card_field", QStringLiteral("true"));
                                field->setFrameShape(QFrame::NoFrame);
                                field->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
                                field->setFixedHeight(field_height);
 
                                auto* field_layout = new QHBoxLayout(field);
-                               field_layout->setContentsMargins(3, 3, 3, 3);
+                               field_layout->setContentsMargins(0, 0, 0, 0);
 
                                auto* label = new QLabel(QString::fromStdString(_text), field);
+                               label->setStyleSheet("QLabel { padding: 0px; }");
                                label->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-                               label->setWordWrap(true);
+                               label->setWordWrap(false);
                                label->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
                                field_layout->addWidget(label);
 
@@ -648,6 +639,8 @@ void image_manager_widget::add_card(
         [this, _id, is_image = _image_series != nullptr, is_model_series = _model_series != nullptr]
         {
             m_series_states.at(_id).closed = true;
+            std::string next_image_id;
+
             if(is_image && m_selected_image_id == _id)
             {
                 m_selected_image_id.clear();
@@ -662,7 +655,10 @@ void image_manager_widget::add_card(
                         );
                         if(auto* checkbox = other_card.widget->findChild<QCheckBox*>(object_name); checkbox != nullptr)
                         {
+                            const QSignalBlocker blocker(checkbox);
                             checkbox->setChecked(true);
+                            next_image_id       = other_id;
+                            m_selected_image_id = other_id;
                             break;
                         }
                     }
@@ -674,6 +670,11 @@ void image_manager_widget::add_card(
             if(is_image)
             {
                 this->async_emit(signals::IMAGE_REMOVED, _id);
+                if(!next_image_id.empty())
+                {
+                    this->async_emit(signals::IMAGE_SELECTED, next_image_id);
+                    this->async_emit(signals::IMAGE_VISIBILITY_CHANGED, next_image_id, true);
+                }
             }
             else if(is_model_series)
             {

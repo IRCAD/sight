@@ -103,6 +103,9 @@
         <service>sight::module::viz::scene3d::adaptor::image_series</service>
         <object key="series">sight::data::series_set</object>
         <object key="tf">sight::data::transfer_function</object>
+        <object key="transfer_functions">sight::data::map</object>
+        <object key="extrudedMeshes">sight::data::model_series</object>
+        <object key="extruded_meshes_by_image">sight::data::map</object>
         <desc>This adaptor displays image series with independent visibility.</desc>
     </extension>
 
@@ -181,6 +184,8 @@
         <type>sight::viz::scene3d::adaptor</type>
         <service>sight::module::viz::scene3d::adaptor::shape_extruder</service>
         <object key="extrudedMeshes">sight::data::model_series</object>
+        <object key="extruded_meshes_by_image">sight::data::map</object>
+        <object key="image">sight::data::image</object>
         <desc>This adaptor allows to draw a 2D shape with a lasso tool, and create an extruded mesh from it.</desc>
     </extension>
 

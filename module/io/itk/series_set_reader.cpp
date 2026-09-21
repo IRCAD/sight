@@ -32,8 +32,6 @@
 #include <data/image_series.hpp>
 #include <data/series_set.hpp>
 
-#include <io/__/reader/reader_helper.hpp>
-
 #include <ui/__/cursor.hpp>
 #include <ui/__/dialog/location.hpp>
 
@@ -154,7 +152,7 @@ void series_set_reader::updating()
             }
             else
             {
-                const std::size_t duplicate_count = sight::io::reader::append_unique(*series_set, *local_set);
+                const std::size_t duplicate_count = series_set->append_unique(*local_set);
                 if(duplicate_count > 0)
                 {
                     this->warn(
