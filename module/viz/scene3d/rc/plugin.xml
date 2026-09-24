@@ -246,4 +246,24 @@
         <service>sight::module::viz::scene3d::adaptor::predefined_camera</service>
         <desc>This adaptor forbid mouse action to move camera.</desc>
     </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::viz::scene3d::adaptor</type>
+        <service>sight::module::viz::scene3d::adaptor::stroke</service>
+        <object>sight::data::point_list</object>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::viz::scene3d::adaptor</type>
+        <service>sight::module::viz::scene3d::adaptor::unproject_depth_map</service>
+        <object key="depthMapIn">sight::data::image</object>
+        <object key="depthMapOut">sight::data::image</object>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::viz::scene3d::adaptor</type>
+        <service>sight::module::viz::scene3d::adaptor::unproject_points</service>
+        <object key="pointListIn">sight::data::point_list</object>
+        <object key="pointListOut">sight::data::point_list</object>
+    </extension>
 </plugin>

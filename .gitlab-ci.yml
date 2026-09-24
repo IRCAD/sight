@@ -7,10 +7,10 @@ stages:
 
 include:
     - project: "sight/sight-gitlab"
-      ref: 0489ca56315f230b023029c1b69565280d904b8c
+      ref: d58fd42f9575db5b8ebb713b798bb7e6196cb183
       file: "/.templates/deploy.yml"
     - project: "sight/sight-gitlab"
-      ref: 0489ca56315f230b023029c1b69565280d904b8c
+      ref: d58fd42f9575db5b8ebb713b798bb7e6196cb183
       file: "/.templates/build.yml"
 
 lint:ubuntu-24.04:
