@@ -35,6 +35,7 @@
 #include <viz/scene3d/ogre.hpp>
 #include <viz/scene3d/utils.hpp>
 
+#include <module/viz/scene3d_qt/screen_position.hpp>
 #include <module/viz/scene3d_qt/window_interactor.hpp>
 
 #include <QHBoxLayout>
@@ -1924,29 +1925,14 @@ void point::button_release_event(mouse_button _button, modifier /*_mods*/, int /
         // If we are in edit mode, we show the bin button to remove it.
         if((m_edit_mode& edit_mode::edit) == edit_mode::edit && m_must_show_contextual_menu)
         {
-            std::pair<Ogre::Vector2,
-                      Ogre::Vector2> screen_pos = sight::viz::scene3d::helper::scene::compute_bounding_rect(
+            const screen_rect_t screen_pos = sight::viz::scene3d::helper::scene::compute_bounding_rect(
                 *layer()->get_default_camera(),
                 m_picked_data->m_node
-                      );
-            const auto ratio    = m_contextual_menu->devicePixelRatioF();
+            );
             auto interactor     = layer()->render_service()->get_interactor_manager();
             auto qt_interactor  = std::dynamic_pointer_cast<window_interactor>(interactor);
             auto* parent_widget = qt_interactor->get_qt_widget();
-            const int x         = std::clamp(
-                static_cast<int>(((screen_pos.first.x + screen_pos.second.x) / 2) / ratio),
-                0,
-                parent_widget->width() - m_contextual_menu->width()
-            );
-
-            int y = static_cast<int>((screen_pos.first.y / ratio) - m_contextual_menu->height());
-            if(y < 0)
-            {
-                // If there isn't enough place upward the fiducial, place the menu downward.
-                y = static_cast<int>(screen_pos.second.y / ratio);
-            }
-
-            m_contextual_menu->move(x, y);
+            const bool placed   = place_near(*m_contextual_menu, *parent_widget, screen_pos);
             m_contextual_menu->raise();
             const QString service_id = QString::fromStdString(base_id());
             auto* bin_button         = m_contextual_menu->findChild<QPushButton*>(service_id + "/binButton");
@@ -2012,7 +1998,7 @@ void point::button_release_event(mouse_button _button, modifier /*_mods*/, int /
                     });
             }
 
-            m_contextual_menu->show();
+            m_contextual_menu->setVisible(placed);
         }
 
         m_picked_data = nullptr;

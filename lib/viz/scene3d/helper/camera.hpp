@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -93,7 +93,8 @@ public:
      * @brief Converts from world space (x, y, z) to screen space (u, v, w).
      * @param _camera ogre camera.
      * @param _world_pos world position (x, y, z).
-     * @return screen space coordinates in pixels (x, y).
+     * @return screen space coordinates in pixels (x, y), non-finite if the point can't be projected (on or behind the
+     * camera plane, or too far).
      */
     static SIGHT_VIZ_SCENE3D_API Ogre::Vector2 convert_world_space_to_screen_space(
         const Ogre::Camera& _camera,

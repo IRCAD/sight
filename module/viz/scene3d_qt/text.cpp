@@ -27,11 +27,15 @@
 #include <viz/scene3d/helper/scene.hpp>
 #include <viz/scene3d/registry/macros.hpp>
 
+#include <module/viz/scene3d_qt/screen_position.hpp>
 #include <module/viz/scene3d_qt/window_interactor.hpp>
 
 #include <OGRE/OgreNode.h>
 
 #include <QStyle>
+#include <QTimer>
+
+#include <algorithm>
 
 //-----------------------------------------------------------------------------
 
@@ -254,6 +258,9 @@ void text::detach_from_node()
     {
         s_camera_listeners.erase(camera);
     }
+
+    m_projectable = true;
+    this->update_visibility();
 }
 
 //------------------------------------------------------------------------------
@@ -323,13 +330,20 @@ void text::set_text_color(const std::string& _color)
 
 void text::set_visible(bool _visible)
 {
-    if(_visible)
+    m_visible = _visible;
+    this->update_visibility();
+}
+
+//------------------------------------------------------------------------------
+
+void text::update_visibility()
+{
+    const bool visible = m_visible && m_projectable;
+    if(m_text->isVisibleTo(m_text->parentWidget()) != visible)
     {
-        m_text->show();
-    }
-    else
-    {
-        m_text->hide();
+        m_text->setVisible(visible);
+        auto* window = m_text->window();
+        QTimer::singleShot(0, window, [window]{window->update();});
     }
 }
 
@@ -397,6 +411,18 @@ void text::adjust_size()
     QPoint origin;
     if(m_node_listener != nullptr)
     {
+        const bool projectable = is_projectable(m_position);
+        if(projectable != m_projectable)
+        {
+            m_projectable = projectable;
+            this->update_visibility();
+        }
+
+        if(!m_projectable)
+        {
+            return;
+        }
+
         QRectF position_rect = {QPointF(m_position.first.x, m_position.first.y), QPointF(
                                     m_position.second.x,
                                     m_position.second.y
@@ -405,14 +431,14 @@ void text::adjust_size()
         int x {};
         if(m_horizontal_alignment == "center")
         {
-            x = static_cast<int>(position_rect.center().x() - static_cast<float>(m_text->width()) / 2.F);
+            x = to_widget_coord(position_rect.center().x() - m_text->width() / 2.);
         }
         else
         {
-            x = static_cast<int>(position_rect.bottomRight().x());
+            x = to_widget_coord(position_rect.bottomRight().x());
         }
 
-        origin = QPoint(x, static_cast<int>(position_rect.bottom())) / m_text->devicePixelRatioF();
+        origin = QPoint(x, to_widget_coord(position_rect.bottom())) / m_text->devicePixelRatioF();
     }
     else
     {

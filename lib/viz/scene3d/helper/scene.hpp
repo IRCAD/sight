@@ -61,7 +61,8 @@ public:
      * @param _camera The camera used for the projection
      * @param _root_scene_node The node whose bounding box is to be computed
      * @return The projection of the bounding box in screen space as a pair, with the first element being the minimum
-     * (top left) and the second element the maximum (bottom right).
+     * (top left) and the second element the maximum (bottom right). Both are NaN if the bounding box is not entirely
+     * in front of the camera.
      */
     SIGHT_VIZ_SCENE3D_API static std::pair<Ogre::Vector2, Ogre::Vector2> compute_bounding_rect(
         const Ogre::Camera& _camera,

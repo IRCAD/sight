@@ -96,6 +96,9 @@ private:
     /// Set the style according to the object properties
     void adjust_style();
 
+    /// Shows the text only if it is requested visible and its node can be projected on screen.
+    void update_visibility();
+
     /// Contains the displayed stats in the overlay.
     QPointer<QLineEdit> m_text;
     // QPointer<QLabel> m_text;
@@ -123,6 +126,12 @@ private:
 
     /// To update the text position according to a scene node
     node_listener* m_node_listener {};
+
+    /// Visibility requested with set_visible().
+    bool m_visible {true};
+
+    /// False when the attached node lies on or behind the camera plane.
+    bool m_projectable {true};
 
     using resize_layer_slot_t = core::com::slot<void (int, int)>;
     resize_layer_slot_t::sptr m_resize_slot;

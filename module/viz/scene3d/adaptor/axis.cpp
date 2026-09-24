@@ -340,14 +340,6 @@ void axis::stopping()
 
     Ogre::SceneManager* const scene_mgr = this->get_scene_manager();
 
-    if(m_scene_node != nullptr)
-    {
-        if(m_axis_visibility)
-        {
-            m_scene_node->removeAndDestroyAllChildren();
-        }
-    }
-
     if(m_enable_label)
     {
         for(auto& label : m_axis_labels)
@@ -362,6 +354,15 @@ void axis::stopping()
     {
         m_axis_name_txt->detach_from_node();
         m_axis_name_txt.reset();
+    }
+
+    // Labels are attached to child nodes, detach them before destroying these nodes.
+    if(m_scene_node != nullptr)
+    {
+        if(m_axis_visibility)
+        {
+            m_scene_node->removeAndDestroyAllChildren();
+        }
     }
 
     if(m_origin_visibility)

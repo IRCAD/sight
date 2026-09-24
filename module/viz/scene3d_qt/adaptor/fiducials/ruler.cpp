@@ -36,6 +36,7 @@
 #include <viz/scene3d/ogre.hpp>
 #include <viz/scene3d/utils.hpp>
 
+#include <module/viz/scene3d_qt/screen_position.hpp>
 #include <module/viz/scene3d_qt/window_interactor.hpp>
 
 namespace sight::module::viz::scene3d_qt::adaptor::fiducials
@@ -1207,26 +1208,11 @@ void ruler::button_release_event(mouse_button _button, modifier /*_mods*/, int /
                     m_bin_button->raise();
                     Ogre::SceneNode* node =
                         m_picked_ruler.m_first ? m_picked_ruler.m_data->node1 : m_picked_ruler.m_data->node2;
-                    std::pair<Ogre::Vector2,
-                              Ogre::Vector2> screen_pos = sight::viz::scene3d::helper::scene::compute_bounding_rect(
+                    const screen_rect_t screen_pos = sight::viz::scene3d::helper::scene::compute_bounding_rect(
                         *layer()->get_default_camera(),
                         node
-                              );
-                    double ratio = m_bin_button->devicePixelRatioF();
-                    const int x  = std::clamp(
-                        static_cast<int>(((screen_pos.first.x + screen_pos.second.x) / 2) / ratio),
-                        0,
-                        parent_widget->width() - m_bin_button->width()
                     );
-                    int y = static_cast<int>((screen_pos.first.y / ratio) - m_bin_button->height());
-                    if(y < 0)
-                    {
-                        // If there isn't enough place upward the landmark, place the menu downward.
-                        y = static_cast<int>(screen_pos.second.y / ratio);
-                    }
-
-                    m_bin_button->move(x, y);
-                    m_bin_button->show();
+                    m_bin_button->setVisible(place_near(*m_bin_button, *parent_widget, screen_pos));
                     QObject::connect(
                         m_bin_button,
                         &QPushButton::clicked,
