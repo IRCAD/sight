@@ -159,6 +159,8 @@ ray_tracing_volume_renderer::ray_tracing_volume_renderer(
         Ogre::MaterialManager::getSingleton().addListener(exit_depth_listener);
     }
 
+    m_current_mtl_name = "RTV_Mat_" + m_parent_id;
+
     //Compositor parameters
     const std::uint8_t num_view_points   = m_layer.lock()->num_cameras();
     const auto stereo_mode               = _layer->get_stereo_mode();
@@ -732,8 +734,6 @@ void ray_tracing_volume_renderer::update_ray_tracing_material()
 {
     //Update the current options
     update_options();
-
-    m_current_mtl_name = "RTV_Mat_" + m_parent_id;
 
     Ogre::MaterialManager& material_manager = Ogre::MaterialManager::getSingleton();
 

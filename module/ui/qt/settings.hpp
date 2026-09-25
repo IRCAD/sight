@@ -102,7 +102,8 @@ namespace sight::module::ui::qt
  * - \b decimals (optional, default=2): number of decimals settable using a double slider.
  * - \b reset (optional, default=true): display the reset button.
  * - \b depends (optional, string): key of the dependency.
- * - \b depends_value (optional, string): value of the dependency in case of enum.
+ * - \b depends_value (optional, string): displayed value of an enum dependency; several accepted values can be
+ *   separated with ";".
  * - \b depends_reverse (optional, bool, default=false): reverse the dependency status checking.
  * - \b emit_on_release (optional, default = false): sliders only, if true send value when slider is released,
  * send value when value changed otherwise.

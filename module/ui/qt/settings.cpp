@@ -55,6 +55,7 @@
 #include <QSpinBox>
 #include <QString>
 #include <QStyle>
+#include <QTimer>
 #include <QToolButton>
 
 #include <string>
@@ -501,6 +502,11 @@ void settings::starting()
             if(auto* const widget = qobject_cast<QWidget*>((*widget_container_it)))
             {
                 widget->installEventFilter(this);
+                if(depends_widget != nullptr)
+                {
+                    depends_widget->installEventFilter(this);
+                }
+
                 auto* check_box     = qobject_cast<QCheckBox*>(depends_widget);
                 auto* switch_button = qobject_cast<sight::ui::qt::widget::switch_button*>(depends_widget);
                 if(check_box != nullptr)
@@ -704,13 +710,19 @@ void settings::on_depends_changed(QComboBox* _combo_box, QWidget* _widget, const
     {
         _widget->setDisabled(true);
     }
-    else if(_reverse)
-    {
-        _widget->setDisabled(_combo_box->currentText().toStdString() == _value);
-    }
     else
     {
-        _widget->setEnabled(_combo_box->currentText().toStdString() == _value);
+        const std::string current = _combo_box->currentText().toStdString();
+        std::vector<std::string> accepted;
+        boost::split(accepted, _value, boost::is_any_of(";"));
+        const bool matches = std::ranges::any_of(
+            accepted,
+            [&current](std::string _value)
+            {
+                boost::trim(_value);
+                return _value == current;
+            });
+        _widget->setEnabled(matches != _reverse);
     }
 }
 
@@ -2360,8 +2372,14 @@ void settings::update_range(const std::string& _options, const std::string& _key
 
         if(const auto string_obj = settings::data<sight::data::string>(combobox); string_obj)
         {
-            const auto init_value = string_obj->value();
-            combobox->setCurrentText(QString::fromStdString(init_value));
+            const auto stored_value = QString::fromStdString(string_obj->value());
+            const auto data_index   = combobox->findData(stored_value);
+            const auto text_index   = combobox->findText(stored_value);
+            const auto index        = data_index >= 0 ? data_index : text_index;
+            if(index >= 0)
+            {
+                combobox->setCurrentIndex(index);
+            }
         }
         else if(const auto integer_obj = settings::data<sight::data::integer>(combobox); integer_obj)
         {
@@ -2376,6 +2394,15 @@ void settings::update_range(const std::string& _options, const std::string& _key
                 combobox->setCurrentText(QString::number(current_value));
             }
         }
+
+        // The choices can change without a data value change; refresh dependent widgets after rebuilding the list.
+        QTimer::singleShot(
+            0,
+            combobox,
+            [combobox]
+            {
+                combobox->currentIndexChanged(combobox->currentIndex());
+            });
     }
     else if(auto* const non_linear_slider = qobject_cast<sight::ui::qt::widget::non_linear_slider*>(widget);
             non_linear_slider != nullptr)
