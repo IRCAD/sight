@@ -23,15 +23,120 @@
 
 #include <sight/utest_data/config.hpp>
 
+#include <core/type.hpp>
 #include <data/image.hpp>
 
+#include <cmath>
 #include <map>
-#include <string>
+#include <stdexcept>
+#include <type_traits>
 
 namespace sight::utest_data::image
 {
 
 static bool sight_utest_data_image_debug = false;
+
+struct comparison_metrics
+{
+    double mean_intensity_difference {0.};
+    std::size_t changed_voxels {0};
+    double reference_total_variation {0.};
+    double compared_total_variation {0.};
+};
+
+//------------------------------------------------------------------------------
+
+/**
+ * Compares the intensity mean, changed voxels, and total spatial variation of two scalar images.
+ * @tparam pixel_type Scalar pixel type stored in both images.
+ * @param _reference Reference image.
+ * @param _compared Image to compare with the reference.
+ * @throws std::invalid_argument if the images have different sizes or are not scalar images of pixel_type.
+ */
+template<typename pixel_type>
+comparison_metrics compare(const sight::data::image& _reference, const sight::data::image& _compared)
+{
+    static_assert(std::is_arithmetic_v<pixel_type>);
+
+    if(_reference.size() != _compared.size())
+    {
+        throw std::invalid_argument("Cannot compare images with different sizes.");
+    }
+
+    if(_reference.type() != sight::core::type::get<pixel_type>()
+       or _compared.type() != sight::core::type::get<pixel_type>()
+       or _reference.num_components() != 1
+       or _compared.num_components() != 1)
+    {
+        throw std::invalid_argument("Cannot compare images with different or non-scalar pixel types.");
+    }
+
+    const auto& size = _reference.size();
+    const auto depth = size[2] == 0 ? std::size_t {1} : size[2];
+    if(size[0] == 0 or size[1] == 0)
+    {
+        throw std::invalid_argument("Cannot compare empty images.");
+    }
+
+    [[maybe_unused]] const auto reference_lock = _reference.dump_lock();
+    [[maybe_unused]] const auto compared_lock  =
+        &_reference == &_compared ? decltype(reference_lock) {} : _compared.dump_lock();
+
+    const auto reference = _reference.cbegin<pixel_type>();
+    const auto compared  = _compared.cbegin<pixel_type>();
+
+    comparison_metrics metrics;
+    double reference_sum = 0.;
+    double compared_sum  = 0.;
+
+    for(std::size_t z = 0 ; z < depth ; ++z)
+    {
+        for(std::size_t y = 0 ; y < size[1] ; ++y)
+        {
+            for(std::size_t x = 0 ; x < size[0] ; ++x)
+            {
+                const auto index           = x + y * size[0] + z * size[0] * size[1];
+                const auto reference_value = static_cast<double>(reference[index]);
+                const auto compared_value  = static_cast<double>(compared[index]);
+
+                reference_sum          += reference_value;
+                compared_sum           += compared_value;
+                metrics.changed_voxels += reference_value != compared_value ? 1 : 0;
+
+                const auto accumulate_variation = [&](std::size_t _neighbour_index)
+                                                  {
+                                                      metrics.reference_total_variation += std::abs(
+                                                          reference_value
+                                                          - static_cast<double>(reference[_neighbour_index])
+                                                      );
+                                                      metrics.compared_total_variation += std::abs(
+                                                          compared_value
+                                                          - static_cast<double>(compared[_neighbour_index])
+                                                      );
+                                                  };
+
+                if(x + 1 < size[0])
+                {
+                    accumulate_variation(index + 1);
+                }
+
+                if(y + 1 < size[1])
+                {
+                    accumulate_variation(index + size[0]);
+                }
+
+                if(z + 1 < depth)
+                {
+                    accumulate_variation(index + size[0] * size[1]);
+                }
+            }
+        }
+    }
+
+    const auto voxel_count = static_cast<double>(size[0] * size[1] * depth);
+    metrics.mean_intensity_difference = std::abs(reference_sum - compared_sum) / voxel_count;
+    return metrics;
+}
 
 //------------------------------------------------------------------------------
 

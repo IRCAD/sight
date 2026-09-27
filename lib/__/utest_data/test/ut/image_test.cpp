@@ -25,8 +25,12 @@
 #include <data/image.hpp>
 
 #include <utest_data/generator/image.hpp>
+#include <utest_data/image.hpp>
 
 #include <doctest/doctest.h>
+
+#include <cstdint>
+#include <stdexcept>
 
 //------------------------------------------------------------------------------
 
@@ -92,6 +96,53 @@ TEST_SUITE("sight::utest_data::image")
         CHECK(image->spacing() == spacing);
         CHECK(image->origin() == origin);
         CHECK_EQ(type, image->type());
+    }
+
+    TEST_CASE("comparison_metrics")
+    {
+        auto reference = std::make_shared<sight::data::image>();
+        auto compared  = std::make_shared<sight::data::image>();
+
+        reference->resize({2, 2, 1}, sight::core::type::UINT8, sight::data::image::pixel_format_t::gray_scale);
+        compared->resize({2, 2, 1}, sight::core::type::UINT8, sight::data::image::pixel_format_t::gray_scale);
+
+        {
+            const auto dump_lock = reference->dump_lock();
+            auto values          = reference->begin<std::uint8_t>();
+            values[0] = 0;
+            values[1] = 10;
+            values[2] = 20;
+            values[3] = 30;
+        }
+
+        {
+            const auto dump_lock = compared->dump_lock();
+            auto values          = compared->begin<std::uint8_t>();
+            values[0] = 6;
+            values[1] = 10;
+            values[2] = 20;
+            values[3] = 25;
+        }
+
+        const auto metrics = sight::utest_data::image::compare<std::uint8_t>(*reference, *compared);
+
+        CHECK_EQ(metrics.mean_intensity_difference, 0.25);
+        CHECK_EQ(metrics.changed_voxels, 2);
+        CHECK_EQ(metrics.reference_total_variation, 60.);
+        CHECK_EQ(metrics.compared_total_variation, 38.);
+    }
+
+    TEST_CASE("comparison_metrics_rejects_mismatched_sizes")
+    {
+        auto reference = std::make_shared<sight::data::image>();
+        auto compared  = std::make_shared<sight::data::image>();
+        reference->resize({2, 2, 1}, sight::core::type::UINT8, sight::data::image::pixel_format_t::gray_scale);
+        compared->resize({3, 2, 1}, sight::core::type::UINT8, sight::data::image::pixel_format_t::gray_scale);
+
+        CHECK_THROWS_AS(
+            sight::utest_data::image::compare<std::uint8_t>(*reference, *compared),
+            std::invalid_argument
+        );
     }
 
     TEST_CASE("deep_copy")
