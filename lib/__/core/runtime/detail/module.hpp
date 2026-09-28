@@ -389,7 +389,7 @@ public:
 
 private:
 
-    using requirement_container = std::set<std::string>; ///< Defines the requirement container
+    using requirement_container = std::vector<std::string>; ///< Defines the requirement container
     // type.
     using parameter_container = std::map<std::string, std::string>; ///< defines the parameter container type
 

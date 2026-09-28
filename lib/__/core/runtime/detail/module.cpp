@@ -247,7 +247,7 @@ void module::set_library(sight::sptr<dl::library> _library)
 
 void module::add_requirement(const std::string& _requirement)
 {
-    m_requirements.insert(_requirement);
+    m_requirements.push_back(_requirement);
 }
 
 //------------------------------------------------------------------------------
@@ -345,7 +345,6 @@ void module::load_requirements()
     try
     {
         runtime& runtime = runtime::get();
-        requirement_container::const_iterator iter;
         for(const auto& requirement : m_requirements)
         {
             auto module = std::dynamic_pointer_cast<detail::module>(runtime.find_module(requirement));

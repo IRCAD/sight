@@ -118,7 +118,7 @@ enum class notification_kind : std::uint8_t
  * - \b cancel: cancel every notification of this service, contributions included.
  * - \b next, \b restart and \b show_current: @deprecated walk the regular notifications as a sequence, in
  *   declaration order. Showing one by name moves the cursor to it, so both ways of driving the sequence stay
- *   consistent. Only there to port night's workflow_guide, prefer addressing a notification by its id.
+ *   consistent.
  * - \b show_<id> and \b cancel_<id>, deduced from the id of each configured notification and contribution.
  */
 class notification_composer final : public sight::service::controller,
@@ -136,7 +136,7 @@ public:
     {
         static inline const slot_key_t ADD_NOTIFICATION = "add_notification";
         static inline const slot_key_t CANCEL           = "cancel";
-        /// @deprecated The sequence exists to port night's workflow_guide, address notifications by id instead.
+        /// @deprecated Address notifications by id instead.
         static inline const slot_key_t NEXT         = "next";
         static inline const slot_key_t RESTART      = "restart";
         static inline const slot_key_t SHOW_CURRENT = "show_current";
@@ -155,9 +155,7 @@ public:
     /**
      * @brief SLOT: show the notification following the current one, in declaration order.
      *
-     * @deprecated Only there so that the configurations of night's workflow_guide could be ported as they
-     * were. A step reached this way depends on an invisible cursor, which the XML does not show: prefer
-     * addressing a notification by its own show slot. @see show_current
+     * @deprecated Prefer addressing a notification by its own show slot. @see show_current
      */
     void next();
 
