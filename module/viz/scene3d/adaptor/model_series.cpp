@@ -83,7 +83,7 @@ void model_series::configuring()
         m_query_flags = static_cast<std::uint32_t>(std::stoul(hexa_mask, nullptr, 16));
     }
 
-    if(config.get_optional<bool>(CONFIG + "visible") || config.get_optional<bool>("properties.<xmlattr>.visible"))
+    if(config.get_optional<bool>(CONFIG + "visible"))
     {
         m_is_visible_tag = true;
     }

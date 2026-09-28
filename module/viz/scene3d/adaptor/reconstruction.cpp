@@ -144,14 +144,14 @@ void reconstruction::create_mesh_service()
         mesh_adaptor->set_input(mesh, "data.mesh", true);
 
         config_t mesh_adaptor_config;
-        mesh_adaptor_config.put("properties.<xmlattr>.visible", visible() && reconstruction->get_is_visible());
+        mesh_adaptor_config.put(CONFIG + "visible", visible() && reconstruction->get_is_visible());
         if(not m_material_name.empty())
         {
-            mesh_adaptor_config.put("config.<xmlattr>.material_name", m_material_name);
+            mesh_adaptor_config.put(CONFIG + "material_name", m_material_name);
         }
         else
         {
-            mesh_adaptor_config.put("config.<xmlattr>.material_template", m_material_template_name);
+            mesh_adaptor_config.put(CONFIG + "material_template", m_material_template_name);
         }
 
         if(!m_uniform_objects.empty())
