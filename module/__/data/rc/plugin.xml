@@ -63,6 +63,13 @@
 
     <extension implements="sight::service::extension::factory">
         <type>sight::service::controller</type>
+        <service>sight::module::data::remove_mesh</service>
+        <object key="data.model">sight::data::model_series</object>
+        <desc>This service removes reconstructions from a model series</desc>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::service::controller</type>
         <service>sight::module::data::get_point</service>
         <object key="image">sight::data::image_series</object>
         <object key="points">sight::data::point</object>

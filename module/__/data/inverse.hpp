@@ -37,8 +37,7 @@ namespace sight::module::data
  * @section XML XML Configuration
  * @code{.xml}
        <service uid="..." type="sight::module::data::inverse">
-           <data source="${...}" />
-           <data target="${...}" />
+           <data source="${...}" target="${...}" />
        </service>
    @endcode
  *
