@@ -22,6 +22,7 @@
 
 #include "macro_saver.hpp"
 
+#include <core/runtime/path.hpp>
 #include <core/runtime/profile.hpp>
 #include <core/spy_log.hpp>
 
@@ -561,26 +562,26 @@ static QString select_to_code(const sight::ui::test::helper::selector& _select)
             return QString("\"%1\"").arg(std::get<std::string>(_select.data()).c_str());
 
         case sight::ui::test::helper::selector::type::from_dialog:
-            return QString("selector::fromDialog(\"%1\")").arg(std::get<std::string>(_select.data()).c_str());
+            return QString("selector::from_dialog(\"%1\")").arg(std::get<std::string>(_select.data()).c_str());
 
         case sight::ui::test::helper::selector::type::from_parent:
         {
             auto [parentName, childName] = std::get<std::pair<std::string, std::string> >(_select.data());
-            return QString(R"(selector::fromParent("%1", "%2"))").arg(parentName.c_str()).arg(childName.c_str());
+            return QString(R"(selector::from_parent("%1", "%2"))").arg(parentName.c_str()).arg(childName.c_str());
         }
 
         case sight::ui::test::helper::selector::type::from_current:
-            return QString("selector::fromCurrent(\"%1\")").arg(std::get<std::string>(_select.data()).c_str());
+            return QString("selector::from_current(\"%1\")").arg(std::get<std::string>(_select.data()).c_str());
 
         case sight::ui::test::helper::selector::type::current:
-            return "Select::current()";
+            return "selector::current()";
 
         case sight::ui::test::helper::selector::type::dialog:
-            return "Select::dialog()";
+            return "selector::dialog()";
     }
 
     SIGHT_ASSERT(
-        "Invalid Select type",
+        "Invalid selector type",
         0
     );
     return "";
@@ -840,7 +841,7 @@ void macro_saver::save()
                        nullptr;
                    post_interactions.back()->type == helper_api
                    && (iha = static_cast<interaction_helper_api*>(post_interactions.back().get()))->method_name
-                   == "PreferencesConfiguration::fill")
+                   == "preferences_configuration::fill")
                 {
                     iha->args[0] += "}";
                 }
@@ -873,7 +874,7 @@ void macro_saver::save()
                     std::make_unique<interaction_helper_api>(
                         pre_post_interactions[i]->receiver_id,
                         how_to_find_receiver,
-                        "Button::push",
+                        "button::push",
                         select
                     )
                 );
@@ -887,7 +888,7 @@ void macro_saver::save()
                 std::make_unique<interaction_helper_api>(
                     pre_post_interactions[i]->receiver_id,
                     howToFindReceiver,
-                    "CheckBox::toggle",
+                    "check_box::toggle",
                     select
                 )
             );
@@ -903,7 +904,7 @@ void macro_saver::save()
                    nullptr;
                post_interactions.back()->type == helper_api
                && (iha = static_cast<interaction_helper_api*>(post_interactions.back().get()))->method_name
-               == "PreferencesConfiguration::fill")
+               == "preferences_configuration::fill")
             {
                 if(!iha->args[0].contains(
                        QString("\"%1\"").arg(
@@ -920,7 +921,7 @@ void macro_saver::save()
                     std::make_unique<interaction_helper_api>(
                         pre_post_interactions[i]->receiver_id,
                         QVector<find_strategy> {},
-                        "PreferencesConfiguration::fill",
+                        "preferences_configuration::fill",
                         std::nullopt,
                         QStringList {"{" + arg
                         })
@@ -954,7 +955,7 @@ void macro_saver::save()
                 std::make_unique<interaction_helper_api>(
                     imvs.receiver_id,
                     howToFindReceiver,
-                    "ComboBox::select",
+                    "combo_box::select",
                     select,
                     QStringList {QString("\"%1\"").arg(imvs.name)
                     })
@@ -998,7 +999,7 @@ void macro_saver::save()
                         std::make_unique<interaction_helper_api>(
                             ik.receiver_id,
                             QVector<find_strategy> {},
-                            "FileDialog::fill",
+                            "file_dialog::fill",
                             std::nullopt,
                             QStringList {QString("\"%1\"").arg(sequence)
                             })
@@ -1010,7 +1011,7 @@ void macro_saver::save()
                        == Qt::Key::Key_Return)
                     {
                         // Ignore the Enter key press to confirm the file dialog, as it is already handled by
-                        // helper::FieldDialog::fill
+                        // helper::file_dialog::fill
                         i++;
                     }
                 }
@@ -1024,7 +1025,7 @@ void macro_saver::save()
                            nullptr;
                        post_interactions.back()->type == helper_api
                        && (iha = static_cast<interaction_helper_api*>(post_interactions.back().get()))->method_name
-                       == "PreferencesConfiguration::fill")
+                       == "preferences_configuration::fill")
                     {
                         if(!iha->args[0].contains(
                                QString("\"%1\"").arg(
@@ -1043,7 +1044,7 @@ void macro_saver::save()
                                 pre_post_interactions[i]->
                                 receiver_id,
                                 QVector<find_strategy> {},
-                                "PreferencesConfiguration::fill",
+                                "preferences_configuration::fill",
                                 std::nullopt,
                                 QStringList {"{" + arg
                                 })
@@ -1074,7 +1075,7 @@ void macro_saver::save()
             {
                 if(post_interactions.back()->type == helper_api
                    && static_cast<interaction_helper_api&>(*post_interactions.back()).method_name
-                   == "selector::select"
+                   == "selector_dialog::select"
                    && post_interactions.back()->receiver_id == pre_post_interactions[i]->receiver_id)
                 {
                     // The user selected an item then selected another one; take only the last choice
@@ -1085,7 +1086,7 @@ void macro_saver::save()
                     std::make_unique<interaction_helper_api>(
                         ilwc.receiver_id,
                         QVector<find_strategy> {},
-                        "selector::select",
+                        "selector_dialog::select",
                         std::nullopt,
                         QStringList {QString("\"%1\"").arg(ilwc.name)
                         })
@@ -1114,7 +1115,7 @@ void macro_saver::save()
                     std::make_unique<interaction_helper_api>(
                         ilwc.receiver_id,
                         howToFindReceiver,
-                        "ListWidget::setCurrentText",
+                        "list_widget::set_current_text",
                         select,
                         QStringList {QString("\"%1\"").arg(ilwc.name)
                         })
@@ -1155,7 +1156,7 @@ void macro_saver::save()
                     std::make_unique<interaction_helper_api>(
                         nim.receiver_id,
                         how_to_find_receiver,
-                        "Slider::set",
+                        "slider::set",
                         select,
                         QStringList {QString::number(nim.modif_number)
                         })
@@ -1179,7 +1180,7 @@ void macro_saver::save()
                    && post_interactions.back()->receiver_id == nim.receiver_id
                    && (previous_interaction =
                            static_cast<interaction_helper_api*>(post_interactions.back().get()))->method_name
-                   == "Slider::move"
+                   == "slider::move"
                    && previous_interaction->args[0] == position)
                 {
                     // If the previous interaction is the same, we compress it with the current one
@@ -1198,7 +1199,7 @@ void macro_saver::save()
                         std::make_unique<interaction_helper_api>(
                             nim.receiver_id,
                             how_to_find_receiver,
-                            "Slider::move",
+                            "slider::move",
                             select,
                             QStringList {position
                             })
@@ -1232,11 +1233,11 @@ void macro_saver::save()
                 QString method_name;
                 if(nim.modif_type == modification_t::decrement)
                 {
-                    method_name = "SpinBox::decrement";
+                    method_name = "spin_box::decrement";
                 }
                 else if(nim.modif_type == modification_t::increment)
                 {
-                    method_name = "SpinBox::increment";
+                    method_name = "spin_box::increment";
                 }
 
                 if(interaction_helper_api* previous_interaction =
@@ -1297,7 +1298,7 @@ void macro_saver::save()
                    nullptr;
                post_interactions.back()->type == helper_api
                && (iha = static_cast<interaction_helper_api*>(post_interactions.back().get()))->method_name
-               == "Button::push")
+               == "button::push")
             {
                 // helper::ColorParameter::select already clicks on the Color button
                 how_to_find_receiver = iha->how_to_find_receiver;
@@ -1314,7 +1315,7 @@ void macro_saver::save()
                 std::make_unique<interaction_helper_api>(
                     pre_post_interactions[i]->receiver_id,
                     how_to_find_receiver,
-                    "ColorParameter::select",
+                    "color_parameter::select",
                     select,
                     QStringList {QString("\"%1\"").arg(
                                      static_cast<post_interaction_model_view_select&>(*pre_post_interactions
@@ -1379,7 +1380,12 @@ void macro_saver::save()
                 use_select_constructor = true;
             }
 
-            dependencies.append(QString("ui/test/helper/%1.hpp").arg(iha.method_name.split("::")[0]));
+            // "selector" is the one helper class whose header isn't named after it (it lives in
+            // select.hpp, not selector.hpp) - every other helper class's file is named after it.
+            const QString class_name = iha.method_name.split("::")[0];
+            dependencies.append(
+                QString("ui/test/helper/%1.hpp").arg(class_name == "selector" ? "select" : class_name)
+            );
         }
     }
 
@@ -1399,18 +1405,17 @@ void macro_saver::save()
                                         }
                                     };
 
+    // A single .cpp file, no .hpp: the fixture is a small anonymous-namespace struct, exactly
+    // like every hand-written GUI test fixture.
     QFile cpp("gui_test.cpp");
     if(!cpp.open(QIODevice::WriteOnly))
     {
         throw std::runtime_error("Couldn't open the file.");
     }
 
-    s_WRITE(cpp, 0, "#include \"gui_test.hpp\"");
-    s_WRITE(cpp, 0, "");
     s_WRITE(cpp, 0, "#include <core/runtime/path.hpp>");
+    s_WRITE(cpp, 0, "#include <ui/test/test.hpp>");
     s_WRITE(cpp, 0, "#include <ui/test/tester.hpp>");
-    s_WRITE(cpp, 0, "");
-    s_WRITE(cpp, 0, "#include <boost/dll.hpp>");
     s_WRITE(cpp, 0, "");
     for(const QString& dependency : dependencies)
     {
@@ -1418,38 +1423,61 @@ void macro_saver::save()
     }
 
     s_WRITE(cpp, 0, "");
-    s_WRITE(cpp, 0, "CPPUNIT_TEST_SUITE_REGISTRATION(gui_test);");
+    s_WRITE(cpp, 0, "#include <doctest/doctest.h>");
+    s_WRITE(cpp, 0, "");
+    s_WRITE(cpp, 0, "namespace");
+    s_WRITE(cpp, 0, "{");
+    s_WRITE(cpp, 0, "");
+    s_WRITE(cpp, 0, "struct gui_test_fixture : sight::ui::test::base");
+    s_WRITE(cpp, 0, "{");
+    s_WRITE(cpp, 4, "gui_test_fixture() :");
+    std::filesystem::path absolute_profile_path(sight::core::runtime::get_current_profile()->file_path());
+
+    // Relative to working_path(), the same base the generated fixture joins it against at test-run
+    // time - not to this process' current directory, which need not be the same location and would
+    // silently produce a wrong path if this tool isn't launched from exactly the right one.
+    QString profile_path(
+        QString::fromStdString(
+            std::filesystem::relative(
+                absolute_profile_path,
+                sight::core::runtime::working_path()
+            ).string()
+        )
+    );
+    s_WRITE(
+        cpp,
+        8,
+        QString("sight::ui::test::base(sight::core::runtime::working_path() / \"%1\")").arg(profile_path)
+    );
+    s_WRITE(cpp, 4, "{");
+    s_WRITE(cpp, 4, "}");
+    s_WRITE(cpp, 0, "};");
+    s_WRITE(cpp, 0, "");
+    s_WRITE(cpp, 0, "} // namespace");
+    s_WRITE(cpp, 0, "");
+    s_WRITE(cpp, 0, "TEST_SUITE(\"gui_test::uit\")");
+    s_WRITE(cpp, 0, "{");
     s_WRITE(cpp, 0, "");
     s_WRITE(cpp, 0, "//------------------------------------------------------------------------------");
     s_WRITE(cpp, 0, "");
-    s_WRITE(cpp, 0, "std::filesystem::path gui_test::getProfilePath()");
+    s_WRITE(cpp, 0, "TEST_CASE_FIXTURE(gui_test_fixture, \"recorded_scenario\")");
     s_WRITE(cpp, 0, "{");
-    s_WRITE(cpp, 4, "const std::filesystem::path cwd = std::filesystem::path(");
-    s_WRITE(cpp, 8, "boost::dll::this_line_location().parent_path().parent_path().string()");
-    s_WRITE(cpp, 4, ");");
-    std::filesystem::path absolute_profile_path(sight::core::runtime::get_current_profile()->file_path());
-    QString profile_path(QString::fromStdString(std::filesystem::relative(absolute_profile_path).string()));
-    s_WRITE(cpp, 4, QString("return cwd / \"%1\";").arg(profile_path).toLatin1());
-    s_WRITE(cpp, 0, "}");
-    s_WRITE(cpp, 0, "");
-
-    s_WRITE(cpp, 0, "void gui_test::test()");
-    s_WRITE(cpp, 0, "{");
-    s_WRITE(cpp, 4, "start(\"gui_test\",");
-    s_WRITE(cpp, 8, "[](sight::ui::testCore::Tester& tester)");
-    s_WRITE(cpp, 4, "{");
 
     if(use_helpers)
     {
-        s_WRITE(cpp, 8, "namespace helper = sight::ui::testCore::helper;");
+        s_WRITE(cpp, 4, "namespace helper = sight::ui::test::helper;");
     }
 
     if(use_select_constructor)
     {
-        s_WRITE(cpp, 8, "using Select     = helper::Select;");
+        s_WRITE(cpp, 4, "using selector   = helper::selector;");
     }
 
     s_WRITE(cpp, 0, "");
+    s_WRITE(cpp, 4, "const std::string failure_message = start(");
+    s_WRITE(cpp, 8, "\"recorded_scenario\",");
+    s_WRITE(cpp, 8, "[](sight::ui::test::tester& _tester)");
+    s_WRITE(cpp, 4, "{");
 
     intptr_t current_item_id = 0;
     for(const std::unique_ptr<post_interaction>& interaction : post_interactions)
@@ -1465,7 +1493,7 @@ void macro_saver::save()
                 s_WRITE(
                     cpp,
                     8,
-                    QString(R"(tester.take("%1", "%1");)").arg(
+                    QString(R"(_tester.take("%1", "%1");)").arg(
                         interaction->how_to_find_receiver[interaction->
                                                           how_to_find_receiver
                                                           .size() - 2].string
@@ -1480,19 +1508,19 @@ void macro_saver::save()
                 find_strategy strat = interaction->how_to_find_receiver[i];
                 if(strat.type == find_strategy_t::root)
                 {
-                    s_WRITE(cpp, 8, "tester.take(\"main window\", tester.getMainWindow());");
+                    s_WRITE(cpp, 8, "_tester.take(\"main window\", _tester.get_main_window());");
                 }
                 else if(strat.type == find_strategy_t::active_modal_widget)
                 {
                     s_WRITE(
                         cpp,
                         8,
-                        QString("helper::Dialog::take<%1*>(tester, \"%2\");").arg(strat.class_name).arg(strat.string)
+                        QString("helper::dialog::take<%1*>(_tester, \"%2\");").arg(strat.class_name).arg(strat.string)
                     );
                 }
                 else if(strat.type == find_strategy_t::object_name)
                 {
-                    s_WRITE(cpp, 8, "tester.yields(");
+                    s_WRITE(cpp, 8, "_tester.yields(");
                     s_WRITE(cpp, 12, QString("\"%1\",").arg(strat.string));
                     s_WRITE(
                         cpp,
@@ -1504,34 +1532,34 @@ void macro_saver::save()
                 }
                 else if(strat.type == find_strategy_t::global_type)
                 {
-                    s_WRITE(cpp, 8, QString("tester.take%1(").arg(strat.string.isEmpty() ? "" : "<QWidget*>"));
+                    s_WRITE(cpp, 8, QString("_tester.take%1(").arg(strat.string.isEmpty() ? "" : "<QWidget*>"));
                     s_WRITE(cpp, 12, QString("\"%1\",").arg(strat.class_name));
-                    s_WRITE(cpp, 12, "[&tester]() -> QObject*");
+                    s_WRITE(cpp, 12, "[&_tester]() -> QObject*");
                     s_WRITE(cpp, 8, "{");
                     s_WRITE(
                         cpp,
                         12,
-                        QString("return tester.getMainWindow()->findChild<%1*>();")
+                        QString("return _tester.get_main_window()->findChild<%1*>();")
                         .arg(strat.class_name)
                     );
                     s_WRITE(cpp, 8, "});");
                 }
                 else if(strat.type == find_strategy_t::action)
                 {
-                    s_WRITE(cpp, 8, "tester.yields(");
+                    s_WRITE(cpp, 8, "_tester.yields(");
                     s_WRITE(cpp, 12, QString("\"%1\",").arg(strat.class_name));
                     s_WRITE(cpp, 12, "[](QObject* old) -> QObject*");
                     s_WRITE(cpp, 8, "{");
                     s_WRITE(
                         cpp,
                         12,
-                        "return sight::ui::testCore::Tester::getWidgetFromAction(qobject_cast<QAction*>(old));"
+                        "return sight::ui::test::tester::get_widget_from_action(qobject_cast<QAction*>(old));"
                     );
                     s_WRITE(cpp, 8, "});");
                 }
                 else if(strat.type == find_strategy_t::local_type)
                 {
-                    s_WRITE(cpp, 8, "tester.yields(");
+                    s_WRITE(cpp, 8, "_tester.yields(");
                     s_WRITE(cpp, 12, QString("\"%1\",").arg(strat.class_name));
                     s_WRITE(cpp, 12, "[](QObject* old) -> QObject*");
                     s_WRITE(cpp, 8, "{");
@@ -1540,7 +1568,7 @@ void macro_saver::save()
                 }
                 else if(strat.type == find_strategy_t::nth_child)
                 {
-                    s_WRITE(cpp, 8, "tester.yields(");
+                    s_WRITE(cpp, 8, "_tester.yields(");
                     s_WRITE(cpp, 12, QString("\"%1\",").arg(strat.class_name));
                     s_WRITE(cpp, 12, "[](QObject* old) -> QObject*");
                     s_WRITE(cpp, 8, "{");
@@ -1570,7 +1598,7 @@ void macro_saver::save()
                 cpp,
                 8,
                 QString(
-                    "tester.interact(std::make_unique<sight::ui::testCore::MouseClick>(Qt::MouseButton::%1, %2, %3));"
+                    "_tester.interact(std::make_unique<sight::ui::test::mouse_click>(Qt::MouseButton::%1, %2, %3));"
                 )
                 .arg(s_MOUSE_BUTTON.valueToKey(static_cast<int>(im.button))).arg(modifiers_to_string(im.modifiers))
                 .arg(QTest::toString(im.from))
@@ -1583,7 +1611,7 @@ void macro_saver::save()
                 cpp,
                 8,
                 QString(
-                    "tester.interact(std::make_unique<sight::ui::testCore::MouseDoubleClick>(Qt::MouseButton::%1, %2, %3));"
+                    "_tester.interact(std::make_unique<sight::ui::test::mouse_double_click>(Qt::MouseButton::%1, %2, %3));"
                 )
                 .arg(s_MOUSE_BUTTON.valueToKey(static_cast<int>(im.button))).arg(modifiers_to_string(im.modifiers))
                 .arg(QTest::toString(im.from))
@@ -1596,7 +1624,7 @@ void macro_saver::save()
                 cpp,
                 8,
                 QString(
-                    "tester.interact(std::make_unique<sight::ui::testCore::MouseDrag>(%1, %2, Qt::MouseButton::%3, %4));"
+                    "_tester.interact(std::make_unique<sight::ui::test::mouse_drag>(%1, %2, Qt::MouseButton::%3, %4));"
                 )
                 .arg(QTest::toString(im.from)).arg(QTest::toString(im.to))
                 .arg(s_MOUSE_BUTTON.valueToKey(static_cast<int>(im.button))).arg(modifiers_to_string(im.modifiers))
@@ -1609,7 +1637,7 @@ void macro_saver::save()
                 cpp,
                 8,
                 QString(
-                    "tester.interact(std::make_unique<sight::ui::testCore::MouseWheel>(%1, %2, %3));"
+                    "_tester.interact(std::make_unique<sight::ui::test::mouse_wheel>(%1, %2, %3));"
                 )
                 .arg(QTest::toString(im.angle_delta)).arg(modifiers_to_string(im.modifiers)).arg(
                     QTest::toString(
@@ -1624,7 +1652,7 @@ void macro_saver::save()
             s_WRITE(
                 cpp,
                 8,
-                QString("tester.interact(std::make_unique<sight::ui::testCore::KeyboardClick>(Qt::Key::%1, %2));")
+                QString("_tester.interact(std::make_unique<sight::ui::test::keyboard_click>(Qt::Key::%1, %2));")
                 .arg(s_KEY.valueToKey(static_cast<int>(ik.key))).arg(modifiers_to_string(ik.modifiers))
             );
         }
@@ -1634,14 +1662,14 @@ void macro_saver::save()
             s_WRITE(
                 cpp,
                 8,
-                QString("tester.interact(std::make_unique<sight::ui::testCore::KeyboardSequence>(\"%1\", %2));")
+                QString("_tester.interact(std::make_unique<sight::ui::test::keyboard_sequence>(\"%1\", %2));")
                 .arg(ik.sequence).arg(modifiers_to_string(ik.modifiers))
             );
         }
         else if(interaction->type == model_view_select)
         {
             const auto& ilwc = static_cast<post_interaction_model_view_select&>(*interaction);
-            s_WRITE(cpp, 8, "tester.do_something_asynchronously<QListWidget*>(");
+            s_WRITE(cpp, 8, "_tester.do_something_asynchronously<QListWidget*>(");
             s_WRITE(cpp, 12, "[](QListWidget* obj)");
             s_WRITE(cpp, 8, "{");
             s_WRITE(
@@ -1662,7 +1690,7 @@ void macro_saver::save()
             s_WRITE(
                 cpp,
                 8,
-                QString("helper::%1(tester%2%3);").arg(ha.method_name).arg(
+                QString("helper::%1(_tester%2%3);").arg(ha.method_name).arg(
                     ha.select ? ", "
                     + select_to_code(*ha.select) : ""
                 ).arg(
@@ -1674,34 +1702,14 @@ void macro_saver::save()
     }
 
     s_WRITE(cpp, 4, "});");
+    s_WRITE(cpp, 0, "");
+    s_WRITE(cpp, 4, "// Runs on the main thread, after start() has returned: the only doctest assertion for");
+    s_WRITE(cpp, 4, "// this scenario. See the class-level comment on sight::ui::test::base in test.hpp.");
+    s_WRITE(cpp, 4, "INFO(failure_message);");
+    s_WRITE(cpp, 4, "REQUIRE(failure_message.empty());");
     s_WRITE(cpp, 0, "}");
-
-    QFile hpp("gui_test.hpp");
-    if(!hpp.open(QIODevice::WriteOnly))
-    {
-        throw std::runtime_error("Couldn't open the file.");
-    }
-
-    s_WRITE(hpp, 0, "#pragma once");
-    s_WRITE(hpp, 0, "");
-    s_WRITE(hpp, 0, "#include <ui/test/test.hpp>");
-    s_WRITE(hpp, 0, "");
-    s_WRITE(hpp, 0, "#include <core/runtime/profile/profile.hpp>");
-    s_WRITE(hpp, 0, "");
-    s_WRITE(hpp, 0, "#include <cppunit/extensions/HelperMacros.h>");
-    s_WRITE(hpp, 0, "");
-    s_WRITE(hpp, 0, "class gui_test : public sight::ui::testCore::test");
-    s_WRITE(hpp, 0, "{");
-    s_WRITE(hpp, 0, "CPPUNIT_TEST_SUITE(gui_test);");
-    s_WRITE(hpp, 0, "CPPUNIT_TEST(test);");
-    s_WRITE(hpp, 0, "CPPUNIT_TEST_SUITE_END();");
-    s_WRITE(hpp, 0, "");
-    s_WRITE(hpp, 0, "public:");
-    s_WRITE(hpp, 0, "");
-    s_WRITE(hpp, 4, "std::filesystem::path getProfilePath() override;");
-    s_WRITE(hpp, 0, "");
-    s_WRITE(hpp, 4, "void test();");
-    s_WRITE(hpp, 0, "};");
+    s_WRITE(cpp, 0, "");
+    s_WRITE(cpp, 0, "} // TEST_SUITE");
 }
 
 //------------------------------------------------------------------------------

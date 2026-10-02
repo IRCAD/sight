@@ -219,8 +219,8 @@ public:
      * @param _second_finger_pos the starting position and ending position of the second finger
      */
     SIGHT_UI_TEST_API pinch_gesture(
-        std::pair<QPoint, QPoint> _first_finger_pos,
-        std::pair<QPoint, QPoint> _second_finger_pos
+        const std::pair<QPoint, QPoint>& _first_finger_pos,
+        const std::pair<QPoint, QPoint>& _second_finger_pos
     );
 
     void interact_with(QWidget* _widget) const override;
@@ -229,8 +229,8 @@ public:
 
 private:
 
-    template<typename T>
-    void interact_with(T _thing) const;
+    /// Sends the whole touch sequence to @p _window, positions in its coordinates. GUI thread only.
+    void send(QWindow* _window) const;
 
     std::pair<QPoint, QPoint> m_first_finger_pos;
     std::pair<QPoint, QPoint> m_second_finger_pos;

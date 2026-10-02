@@ -1,4 +1,4 @@
-sight_add_target(activity_ut TYPE DOCTEST)
+sight_add_target(activity_ut TYPE TEST)
 
 target_link_libraries(activity_ut PUBLIC core data activity utest_data)
 

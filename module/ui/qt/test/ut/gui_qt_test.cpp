@@ -23,7 +23,6 @@
 
 #include <doctest/doctest.h>
 
-#include <QApplication>
 #include <QMainWindow>
 
 #include <core/thread/worker.hpp>
@@ -49,11 +48,7 @@ TEST_SUITE("sight::module::ui::qt::gui_qt_test")
                 _service->start().wait();
             }).get();
 
-            auto* window = sight::core::thread::get_default_worker()->post_task<QMainWindow*>(
-                []
-            {
-                return qobject_cast<QMainWindow*>(qApp->activeWindow());
-            }).get();
+            const auto window = sight::ui::test::gui_fixture::find_widget<QMainWindow>("guiQtUnitTest");
 
             CHECK(window != nullptr);
             CHECK_EQ(std::string("guiQtUnitTest"), window->windowTitle().toStdString());
@@ -85,11 +80,9 @@ TEST_SUITE("sight::module::ui::qt::gui_qt_test")
                 _service->start().wait();
             }).get();
 
-            auto* window = sight::core::thread::get_default_worker()->post_task<QMainWindow*>(
-                []
-            {
-                return qobject_cast<QMainWindow*>(qApp->activeWindow());
-            }).get();
+            const auto window = sight::ui::test::gui_fixture::find_widget<QMainWindow>(
+                "gui_qt_test_test_fullscreen_frame"
+            );
 
             CHECK(window != nullptr);
             CHECK_EQ(std::string("gui_qt_test_test_fullscreen_frame"), window->windowTitle().toStdString());

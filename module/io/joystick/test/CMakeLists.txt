@@ -1,4 +1,4 @@
-sight_add_target(module_io_joystick_ut TYPE DOCTEST)
+sight_add_target(module_io_joystick_ut TYPE TEST)
 
 add_dependencies(${SIGHT_TARGET} module_io_joystick)
 

@@ -172,16 +172,11 @@ macro(init_project PRJ_NAME PRJ_TYPE)
          "${PRJ_SOURCE_DIR}/*.cu"
     )
 
-    if(NOT "${PRJ_TYPE}" STREQUAL "TEST" AND NOT "${PRJ_TYPE}" STREQUAL "DOCTEST" AND NOT "${PRJ_TYPE}" STREQUAL
-                                                                                      "GUI_TEST"
-    )
-        list(FILTER SOURCES EXCLUDE REGEX "/test/api")
+    if(NOT "${PRJ_TYPE}" STREQUAL "TEST" AND NOT "${PRJ_TYPE}" STREQUAL "GUI_TEST")
         list(FILTER SOURCES EXCLUDE REGEX "/test/detail")
         list(FILTER SOURCES EXCLUDE REGEX "/test/mut")
-        list(FILTER SOURCES EXCLUDE REGEX "/test/ui")
         list(FILTER SOURCES EXCLUDE REGEX "/test/uit")
         list(FILTER SOURCES EXCLUDE REGEX "/test/ut")
-        list(FILTER SOURCES EXCLUDE REGEX "/test/tu") # Normally obsolete
     endif()
 
     list(APPEND ${SIGHT_TARGET}_HEADERS ${HEADERS})
@@ -369,12 +364,20 @@ macro(fw_exec SIGHT_TARGET)
     set_target_properties(${SIGHT_TARGET} PROPERTIES FOLDER "exec")
 endmacro()
 
-# Generic operations for a test based on the CppUnit framework
+# Generic operations shared by sight_test() and sight_gui_test(), both based on doctest
 macro(sight_generic_test SIGHT_TARGET)
     set(options)
-    set(oneValueArgs REQUIRE_X DOCTEST)
+    set(oneValueArgs REQUIRE_X GUI)
     set(multiValueArgs)
-    cmake_parse_arguments(FWCPPUNITTEST "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+    cmake_parse_arguments(SIGHT_GENERIC_TEST_ARG "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
+    # Substituted into doctest_main.cpp.in: enables the self-supervision code path (re-executing
+    # the binary once per test case when more than one is selected) for GUI tests only.
+    if(SIGHT_GENERIC_TEST_ARG_GUI)
+        set(SIGHT_GUI_TEST 1)
+    else()
+        set(SIGHT_GUI_TEST 0)
+    endif()
 
     if(SIGHT_ENABLE_PCH AND MSVC AND NOT ${SIGHT_TARGET}_DISABLE_PCH)
         set(${SIGHT_TARGET}_PCH_LIB $<TARGET_OBJECTS:${${SIGHT_TARGET}_PCH_TARGET}>)
@@ -387,7 +390,7 @@ macro(sight_generic_test SIGHT_TARGET)
         if("${TARGET_TYPE}" STREQUAL "MODULE")
             string(REPLACE "_" "::" BASE_MODULE ${BASE_TARGET})
 
-            # This variable is used in cppunit_main.cpp to automatically load the module of the test
+            # This variable is used in doctest_main.cpp to automatically load the module of the test
             set(TESTED_MODULE "${PROJECT_NAME}::${BASE_MODULE}")
             set(TESTED_MODULE_PATH "${SIGHT_MODULE_RC_PREFIX}")
         endif()
@@ -405,34 +408,16 @@ macro(sight_generic_test SIGHT_TARGET)
         endif()
     endif()
 
-    if(FWCPPUNITTEST_DOCTEST)
-        configure_file(
-            "${FWCMAKE_RESOURCE_PATH}/build/doctest_main.cpp.in" "${CMAKE_CURRENT_BINARY_DIR}/src/doctest_main.cpp"
-            IMMEDIATE @ONLY
-        )
+    configure_file(
+        "${FWCMAKE_RESOURCE_PATH}/build/doctest_main.cpp.in" "${CMAKE_CURRENT_BINARY_DIR}/src/doctest_main.cpp"
+        IMMEDIATE @ONLY
+    )
 
-        add_executable(
-            ${SIGHT_TARGET}
-            ${${SIGHT_TARGET}_HEADERS} ${${SIGHT_TARGET}_SOURCES} ${CMAKE_CURRENT_BINARY_DIR}/src/doctest_main.cpp
-            ${${SIGHT_TARGET}_RC_FILES} ${${SIGHT_TARGET}_CMAKE_FILES} ${${SIGHT_TARGET}_PCH_LIB}
-        )
-    else()
-        configure_file(
-            "${FWCMAKE_RESOURCE_PATH}/build/cppunit_main.cpp.in" "${CMAKE_CURRENT_BINARY_DIR}/src/cppunit_main.cpp"
-            IMMEDIATE @ONLY
-        )
-
-        add_executable(
-            ${SIGHT_TARGET}
-            ${FWCPPUNITTEST_UNPARSED_ARGUMENTS}
-            ${${SIGHT_TARGET}_HEADERS}
-            ${${SIGHT_TARGET}_SOURCES}
-            ${CMAKE_CURRENT_BINARY_DIR}/src/cppunit_main.cpp
-            ${${SIGHT_TARGET}_RC_FILES}
-            ${${SIGHT_TARGET}_CMAKE_FILES}
-            ${${SIGHT_TARGET}_PCH_LIB}
-        )
-    endif()
+    add_executable(
+        ${SIGHT_TARGET}
+        ${${SIGHT_TARGET}_HEADERS} ${${SIGHT_TARGET}_SOURCES} ${CMAKE_CURRENT_BINARY_DIR}/src/doctest_main.cpp
+        ${${SIGHT_TARGET}_RC_FILES} ${${SIGHT_TARGET}_CMAKE_FILES} ${${SIGHT_TARGET}_PCH_LIB}
+    )
 
     # Do it here because add ".bin" suffix change the ${SIGHT_TARGET} (!!!)
     if(UNIX)
@@ -508,99 +493,31 @@ macro(sight_generic_test SIGHT_TARGET)
     endif()
 endmacro()
 
-# Create a GUI test
+# Create a GUI test.
+# Identical to sight_test(), except that it requires a graphical environment and tags its tests
+# with the "gui" CTest label. One CTest entry is generated per doctest test case, so each GUI
+# scenario runs in its own process.
 macro(sight_gui_test SIGHT_TARGET)
-    sight_generic_test(${SIGHT_TARGET} REQUIRE_X ON)
+    sight_generic_test(${SIGHT_TARGET} REQUIRE_X ON GUI ON)
 
-    target_link_libraries(${SIGHT_TARGET} PRIVATE CppUnit)
+    target_link_libraries(${SIGHT_TARGET} PRIVATE doctest::doctest)
 
-    # Set test command
-    if(UNIX)
-        set(SCRIPT_SUFFIX "sh")
-    else()
-        set(SCRIPT_SUFFIX "bat")
-    endif()
-    add_test(NAME "${SIGHT_TEST_SCRIPT}" COMMAND ${CMAKE_BINARY_DIR}/bin/exec_gui_tests.${SCRIPT_SUFFIX}
-                                                 ${SIGHT_TEST_SCRIPT} WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+    # Mandatory for VSCode to trace the test location and debug it from the IDE.
+    sight_doctest_discover_tests(
+        ${SIGHT_TARGET}
+        TEST_SCRIPT
+        ${CMAKE_BINARY_DIR}/bin/${SIGHT_TEST_SCRIPT}
+        WORKING_DIRECTORY
+        ${CMAKE_BINARY_DIR}/bin
+        TEST_ENV
+        "${SIGHT_VCPKG_RUNTIME_DIR}"
+        "${FW_SIGHT_EXTERNAL_LIBRARIES_DIR}"
+        ADD_LABELS
+        gui
+        PROPERTIES
+        TIMEOUT
+        300
     )
-
-    if(WIN32)
-        # Set path to avoid using a launcher
-        set(TEST_ENV "${SIGHT_VCPKG_RUNTIME_DIR};${FW_SIGHT_EXTERNAL_LIBRARIES_DIR}")
-        foreach(PATH ${TEST_ENV})
-            set(EXECUTION_ENV "${EXECUTION_ENV}" PATH=path_list_prepend:${PATH})
-        endforeach()
-        # DEF_SOURCE_LINE mandatory for VSCode to trace the test location and debug it from the IDE
-        set_tests_properties(
-            "${SIGHT_TEST_SCRIPT}" PROPERTIES DEF_SOURCE_LINE "${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt:1"
-                                              ENVIRONMENT_MODIFICATION "${EXECUTION_ENV}"
-        )
-    else()
-        # DEF_SOURCE_LINE mandatory for VSCode to trace the test location and debug it from the IDE
-        set_tests_properties(
-            "${SIGHT_TEST_SCRIPT}" PROPERTIES DEF_SOURCE_LINE "${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt:1"
-        )
-    endif()
-    unset(SCRIPT_SUFFIX)
-    unset(SIGHT_TEST_SCRIPT)
-endmacro()
-
-# Create a unit test
-macro(fw_test SIGHT_TARGET)
-    set(options)
-    set(oneValueArgs
-        TYPE
-        PCH
-        START
-        PRIORITY
-        CONSOLE
-        OBJECT_LIBRARY
-        WARNINGS_AS_ERRORS
-        UNIQUE
-        FAST_DEBUG
-        REQUIRE_X
-    )
-    set(multiValueArgs)
-    cmake_parse_arguments(SIGHT_CPPUNIT "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
-
-    if(EXISTS "${${SIGHT_TARGET}_DIR}/ui")
-        list(FILTER ${SIGHT_TARGET}_HEADERS EXCLUDE REGEX "/ui/")
-        list(FILTER ${SIGHT_TARGET}_SOURCES EXCLUDE REGEX "/ui/")
-    endif()
-
-    sight_generic_test(${SIGHT_TARGET} REQUIRE_X ${SIGHT_CPPUNIT_REQUIRE_X})
-
-    target_link_libraries(${SIGHT_TARGET} PRIVATE CppUnit)
-
-    # Set test command
-    if(TESTS_XML_OUTPUT)
-        add_test(NAME "${SIGHT_TEST_SCRIPT}" COMMAND "${CMAKE_BINARY_DIR}/bin/${SIGHT_TEST_SCRIPT} --xml"
-                 WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
-        )
-    else()
-        add_test(NAME "${SIGHT_TEST_SCRIPT}" COMMAND "${CMAKE_BINARY_DIR}/bin/${SIGHT_TEST_SCRIPT}"
-                 WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
-        )
-    endif()
-
-    if(WIN32)
-        # Set path to avoid using a launcher
-        set(TEST_ENV "${SIGHT_VCPKG_RUNTIME_DIR};${FW_SIGHT_EXTERNAL_LIBRARIES_DIR}")
-        foreach(PATH ${TEST_ENV})
-            set(EXECUTION_ENV "${EXECUTION_ENV}" PATH=path_list_prepend:${PATH})
-        endforeach()
-        # DEF_SOURCE_LINE mandatory for VSCode to trace the test location and debug it from the IDE
-        set_tests_properties(
-            "${SIGHT_TEST_SCRIPT}" PROPERTIES DEF_SOURCE_LINE "${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt:1"
-                                              ENVIRONMENT_MODIFICATION "${EXECUTION_ENV}"
-        )
-    else()
-        # DEF_SOURCE_LINE mandatory for VSCode to trace the test location and debug it from the IDE
-        set_tests_properties(
-            "${SIGHT_TEST_SCRIPT}" PROPERTIES DEF_SOURCE_LINE "${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt:1"
-        )
-    endif()
-    unset(SIGHT_TEST_SCRIPT)
 endmacro()
 
 # Create a unit test
@@ -619,16 +536,28 @@ macro(sight_test SIGHT_TARGET)
         REQUIRE_X
     )
     set(multiValueArgs)
-    cmake_parse_arguments(SIGHT_CPPUNIT "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+    cmake_parse_arguments(SIGHT_TEST_ARG "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
     if(EXISTS "${${SIGHT_TARGET}_DIR}/ui")
         list(FILTER ${SIGHT_TARGET}_HEADERS EXCLUDE REGEX "/ui/")
         list(FILTER ${SIGHT_TARGET}_SOURCES EXCLUDE REGEX "/ui/")
     endif()
 
-    sight_generic_test(${SIGHT_TARGET} REQUIRE_X ${SIGHT_CPPUNIT_REQUIRE_X} DOCTEST ON)
+    sight_generic_test(${SIGHT_TARGET} REQUIRE_X ${SIGHT_TEST_ARG_REQUIRE_X})
 
     target_link_libraries(${SIGHT_TARGET} PRIVATE doctest::doctest)
+
+    # Labels let CI select tests by target, since test names no longer contain the target name
+    set(SIGHT_TEST_LABELS)
+    if(${SIGHT_TARGET} MATCHES "_mut$")
+        list(APPEND SIGHT_TEST_LABELS manual)
+    endif()
+    if(${SIGHT_TARGET} MATCHES "dicom")
+        list(APPEND SIGHT_TEST_LABELS dicom)
+    endif()
+    if(SIGHT_TEST_LABELS)
+        set(SIGHT_TEST_LABELS ADD_LABELS ${SIGHT_TEST_LABELS})
+    endif()
 
     # Mandatory for VSCode to trace the test location and debug it from the IDE
     sight_doctest_discover_tests(
@@ -640,6 +569,7 @@ macro(sight_test SIGHT_TARGET)
         TEST_ENV
         "${SIGHT_VCPKG_RUNTIME_DIR}"
         "${FW_SIGHT_EXTERNAL_LIBRARIES_DIR}"
+        ${SIGHT_TEST_LABELS}
     )
 endmacro()
 
@@ -1102,8 +1032,6 @@ macro(sight_add_target)
     elseif("${SIGHT_TARGET_TYPE}" STREQUAL "MODULE")
         fw_module(${SIGHT_TARGET} ${SIGHT_TARGET_TYPE} OFF)
     elseif("${SIGHT_TARGET_TYPE}" STREQUAL "TEST")
-        fw_test(${SIGHT_TARGET} REQUIRE_X ${SIGHT_TARGET_REQUIRE_X} "${OPTIONS}")
-    elseif("${SIGHT_TARGET_TYPE}" STREQUAL "DOCTEST")
         sight_test(${SIGHT_TARGET} REQUIRE_X ${SIGHT_TARGET_REQUIRE_X} "${OPTIONS}")
     elseif("${SIGHT_TARGET_TYPE}" STREQUAL "GUI_TEST")
         sight_gui_test(${SIGHT_TARGET} "${OPTIONS}")

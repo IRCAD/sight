@@ -1,4 +1,4 @@
-sight_add_target(io_bitmap_ut TYPE DOCTEST)
+sight_add_target(io_bitmap_ut TYPE TEST)
 
 find_package(OpenCV QUIET REQUIRED COMPONENTS opencv_core opencv_imgcodecs opencv_imgproc)
 target_link_libraries(io_bitmap_ut PRIVATE opencv_core opencv_imgcodecs opencv_imgproc)

@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2023 IRCAD France
- * Copyright (C) 2016-2020 IHU Strasbourg
+ * Copyright (C) 2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,30 +21,20 @@
 
 #pragma once
 
-#include <cppunit/extensions/HelperMacros.h>
+#include <core/runtime/path.hpp>
 
-namespace sight::ui::ut
+#include <ui/test/test.hpp>
+
+namespace sight::example::ui::ex_material::uit
 {
 
-/**
- * @brief preferences unit test.
- */
-class action_test : public CPPUNIT_NS::TestFixture
+/// The doctest fixture shared by all ex_material GUI scenarios.
+struct fixture : sight::ui::test::base
 {
-CPPUNIT_TEST_SUITE(action_test);
-CPPUNIT_TEST(configuring_test);
-CPPUNIT_TEST(properties_test);
-CPPUNIT_TEST_SUITE_END();
-
-public:
-
-    // interface
-    void setUp();
-    void tearDown();
-
-    static void configuring_test();
-    static void properties_test();
-    void cleanup();
+    fixture() :
+        sight::ui::test::base(sight::core::runtime::working_path() / "share/sight/ex_material/profile.xml")
+    {
+    }
 };
 
-} // namespace sight::ui::ut
+} // namespace sight::example::ui::ex_material::uit

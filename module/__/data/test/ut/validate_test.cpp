@@ -22,7 +22,6 @@
 #include <data/image.hpp>
 #include <data/string.hpp>
 
-// Include before wait.hpp
 #include <doctest/doctest.h>
 
 #include <utest/service_fixture.hpp>

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,20 +21,20 @@
 
 #pragma once
 
-#include "test.hpp"
+#include <core/runtime/path.hpp>
 
-namespace sight::sight_viewer::uit
+#include <ui/test/test.hpp>
+
+namespace sight::example::ui::ex_collapsible_section::uit
 {
 
-class frontal_negato : public test
+/// The doctest fixture shared by all ex_collapsible_section GUI scenarios.
+struct fixture : sight::ui::test::base
 {
-CPPUNIT_TEST_SUITE(frontal_negato);
-CPPUNIT_TEST(test);
-CPPUNIT_TEST_SUITE_END();
-
-public:
-
-    void test();
+    fixture() :
+        sight::ui::test::base(sight::core::runtime::working_path() / "share/sight/ex_collapsible_section/profile.xml")
+    {
+    }
 };
 
-} // namespace sight::sight_viewer::uit
+} // namespace sight::example::ui::ex_collapsible_section::uit

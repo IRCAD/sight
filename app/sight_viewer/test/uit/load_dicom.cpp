@@ -20,7 +20,7 @@
  ***********************************************************************/
 // cspell:ignore Genou
 
-#include "load_dicom.hpp"
+#include "test.hpp"
 
 #include <core/os/temp_path.hpp>
 
@@ -28,60 +28,69 @@
 
 #include <utest_data/data.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::sight_viewer::uit::load_dicom);
+#include <doctest/doctest.h>
 
 namespace sight::sight_viewer::uit
 {
 
+TEST_SUITE("sight_viewer")
+{
 //------------------------------------------------------------------------------
 
-void load_dicom::test()
-{
-    namespace helper = sight::ui::test::helper;
-
-    const std::string test_name               = "sightViewerLoadDicomTest";
-    const std::string image_name              = test_name + ".png";
-    const std::filesystem::path snapshot_path = sight::ui::test::tester::get_image_output_path() / image_name;
-    std::filesystem::remove(snapshot_path);
-
-    const std::filesystem::path reference_path(utest_data::dir() / "sight/ui/sight_viewer" / image_name);
-    const auto source_folder = utest_data::dir() / "sight/Patient/Dicom/JMSGenou";
-
-    CPPUNIT_ASSERT_MESSAGE("The DICOM test directory does not exist", std::filesystem::is_directory(source_folder));
-
-    std::filesystem::path source_file;
-    for(const auto& entry : std::filesystem::recursive_directory_iterator(source_folder))
+    TEST_CASE_FIXTURE(test, "load_dicom")
     {
-        if(entry.is_regular_file())
+        namespace helper = sight::ui::test::helper;
+
+        const std::string test_name               = "sightViewerLoadDicomTest";
+        const std::string image_name              = test_name + ".png";
+        const std::filesystem::path snapshot_path = sight::ui::test::tester::get_image_output_path(test_name)
+                                                    / image_name;
+        std::filesystem::remove(snapshot_path);
+
+        const std::filesystem::path reference_path(utest_data::dir() / "sight/ui/sight_viewer" / image_name);
+        const auto source_folder = utest_data::dir() / "sight/Patient/Dicom/JMSGenou";
+
+        REQUIRE_MESSAGE(std::filesystem::is_directory(source_folder), "The DICOM test directory does not exist");
+
+        std::filesystem::path source_file;
+        for(const auto& entry : std::filesystem::recursive_directory_iterator(source_folder))
         {
-            source_file = entry.path();
-            break;
+            if(entry.is_regular_file())
+            {
+                source_file = entry.path();
+                break;
+            }
         }
+
+        REQUIRE_MESSAGE(!source_file.empty(), "The DICOM test directory is empty");
+
+        const sight::core::os::temp_dir single_image_directory;
+        const auto single_image = single_image_directory.path() / "image.dcm";
+        REQUIRE(std::filesystem::copy_file(source_file, single_image));
+
+        const std::string failure_message = start(
+            test_name,
+            [&snapshot_path, &reference_path, &single_image_directory](sight::ui::test::tester& _tester)
+            {
+                open_folder(
+                    _tester,
+                    single_image_directory.path()
+                );
+
+                helper::button::push(_tester, "top_toolbar_left/volume");
+
+                save_snapshot(_tester, snapshot_path);
+
+                compare_images(snapshot_path, reference_path);
+            },
+            true
+        );
+
+        // Runs on the main thread, after start() has returned: the only doctest assertion for
+        // this scenario. See sight::ui::test::base::start().
+        INFO(failure_message);
+        REQUIRE(failure_message.empty());
     }
-
-    CPPUNIT_ASSERT_MESSAGE("The DICOM test directory is empty", !source_file.empty());
-
-    const sight::core::os::temp_dir single_image_directory;
-    const auto single_image = single_image_directory.path() / "image.dcm";
-    CPPUNIT_ASSERT(std::filesystem::copy_file(source_file, single_image));
-
-    start(
-        test_name,
-        [&snapshot_path, &reference_path, &single_image_directory](sight::ui::test::tester& _tester)
-        {
-            open_folder(
-                _tester,
-                single_image_directory.path()
-            );
-
-            helper::button::push(_tester, "top_toolbar_left/volume");
-
-            save_snapshot(_tester, snapshot_path);
-
-            compare_images(snapshot_path, reference_path);
-        },
-        true
-    );
-}
+} // TEST_SUITE
 
 } // namespace sight::sight_viewer::uit

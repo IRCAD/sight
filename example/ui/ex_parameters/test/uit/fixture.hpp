@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,20 +20,21 @@
  ***********************************************************************/
 
 #pragma once
-#include "test.hpp"
 
-namespace sight::sight_viewer::uit
+#include <core/runtime/path.hpp>
+
+#include <ui/test/test.hpp>
+
+namespace sight::example::ui::ex_parameters::uit
 {
 
-class add_distance : public test
+/// The doctest fixture shared by all ex_parameters GUI scenarios.
+struct fixture : sight::ui::test::base
 {
-CPPUNIT_TEST_SUITE(add_distance);
-CPPUNIT_TEST(test);
-CPPUNIT_TEST_SUITE_END();
-
-public:
-
-    void test();
+    fixture() :
+        sight::ui::test::base(sight::core::runtime::working_path() / "share/sight/ex_parameters/profile.xml")
+    {
+    }
 };
 
-} // namespace sight::sight_viewer::uit
+} // namespace sight::example::ui::ex_parameters::uit

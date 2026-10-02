@@ -1,4 +1,4 @@
-sight_add_target(module_ui_qt_ut TYPE DOCTEST)
+sight_add_target(module_ui_qt_ut TYPE TEST)
 
 find_package(Qt6 QUIET COMPONENTS Widgets SvgWidgets Test REQUIRED)
 target_link_libraries(${SIGHT_TARGET} PRIVATE Qt6::Widgets Qt6::SvgWidgets Qt6::Test)

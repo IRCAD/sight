@@ -1,4 +1,4 @@
-sight_add_target(module_io_bitmap_ut TYPE DOCTEST)
+sight_add_target(module_io_bitmap_ut TYPE TEST)
 
 add_dependencies(module_io_bitmap_ut module_io_bitmap)
 

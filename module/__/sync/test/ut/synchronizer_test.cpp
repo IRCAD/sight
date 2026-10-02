@@ -31,7 +31,6 @@
 
 #include <service/op.hpp>
 
-// Need to be included before wait.hpp until we remove cppunit
 #include <doctest/doctest.h>
 #include <utest/wait.hpp>
 

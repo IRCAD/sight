@@ -1,4 +1,4 @@
-sight_add_target(io_dicom_ut TYPE DOCTEST)
+sight_add_target(io_dicom_ut TYPE TEST)
 
 find_package(GDCM QUIET REQUIRED COMPONENTS gdcmCommon gdcmMSFF)
 target_link_libraries(io_dicom_ut PRIVATE gdcmCommon gdcmMSFF)

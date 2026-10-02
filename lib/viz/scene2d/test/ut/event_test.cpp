@@ -23,32 +23,35 @@
 
 #include <doctest/doctest.h>
 
-TEST_CASE("event_getters_setters")
+TEST_SUITE("sight::viz::scene2d::data::event")
 {
-    sight::viz::scene2d::data::event event;
+    TEST_CASE("getters_setters")
+    {
+        sight::viz::scene2d::data::event event;
 
-    // Accepted
-    CHECK_FALSE(event.is_accepted());
-    event.set_accepted(true);
-    CHECK(event.is_accepted());
+        // Accepted
+        CHECK_FALSE(event.is_accepted());
+        event.set_accepted(true);
+        CHECK(event.is_accepted());
 
-    // Coord
-    event.set_coord({10., 20.});
-    const auto& coord = event.get_coord();
-    CHECK(coord.x == 10.);
-    CHECK(coord.y == 20.);
+        // Coord
+        event.set_coord({10., 20.});
+        const auto& coord = event.get_coord();
+        CHECK(coord.x == 10.);
+        CHECK(coord.y == 20.);
 
-    // Old size
-    event.set_old_size({640., 480.});
-    CHECK(event.get_old_size().x == 640.);
-    CHECK(event.get_old_size().y == 480.);
+        // Old size
+        event.set_old_size({640., 480.});
+        CHECK(event.get_old_size().x == 640.);
+        CHECK(event.get_old_size().y == 480.);
 
-    // Size
-    event.set_size({800., 600.});
-    CHECK(event.size().x == 800.);
-    CHECK(event.size().y == 600.);
+        // Size
+        event.set_size({800., 600.});
+        CHECK(event.size().x == 800.);
+        CHECK(event.size().y == 600.);
 
-    // Type
-    event.set_type(sight::viz::scene2d::data::event::resize);
-    CHECK(event.type() == sight::viz::scene2d::data::event::resize);
-}
+        // Type
+        event.set_type(sight::viz::scene2d::data::event::resize);
+        CHECK(event.type() == sight::viz::scene2d::data::event::resize);
+    }
+} // TEST_SUITE

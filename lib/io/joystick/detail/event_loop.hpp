@@ -88,7 +88,7 @@ public:
     /**
      * @brief Stop the event loop and close all the connected controllers, in the current thread
      *
-     * @warning This function is only used for a specific case (unexpected exception/abort in CPPUnit). This is mostly
+     * @warning This function is only used for a specific case (unexpected exception/abort in a test). This is mostly
      *          to avoid locking of hardware resources. It is not recommended to use this function in normal operation.
      *
      */

@@ -1,7 +1,6 @@
 /************************************************************************
  *
  * Copyright (C) 2026 IRCAD France
-
  *
  * This file is part of Sight.
  *
@@ -19,11 +18,10 @@
  * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************/
-#include "toolbar_test.hpp"
 
 #include <ui/__/builder/toolbar.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::ui::ut::toolbar_test);
+#include <doctest/doctest.h>
 
 namespace sight::ui::ut
 {
@@ -57,41 +55,31 @@ public:
 
 } // namespace
 
+TEST_SUITE("sight::ui::ut::toolbar")
+{
 //------------------------------------------------------------------------------
 
-void toolbar_test::setUp()
-{
-}
+    TEST_CASE("initialize_test")
+    {
+        test_toolbar toolbar;
+        ui::config_t config;
 
-//------------------------------------------------------------------------------
+        config.put("<xmlattr>.align", "top");
+        toolbar.initialize(config);
+        CHECK(toolbar.get_alignment() == ui::builder::toolbar::top);
 
-void toolbar_test::tearDown()
-{
-}
+        config.put("<xmlattr>.align", "bottom");
+        toolbar.initialize(config);
+        CHECK(toolbar.get_alignment() == ui::builder::toolbar::bottom);
 
-//------------------------------------------------------------------------------
+        config.put("<xmlattr>.align", "right");
+        toolbar.initialize(config);
+        CHECK(toolbar.get_alignment() == ui::builder::toolbar::right);
 
-// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
-void toolbar_test::initialize_test()
-{
-    test_toolbar toolbar;
-    ui::config_t config;
-
-    config.put("<xmlattr>.align", "top");
-    toolbar.initialize(config);
-    CPPUNIT_ASSERT(toolbar.get_alignment() == ui::builder::toolbar::top);
-
-    config.put("<xmlattr>.align", "bottom");
-    toolbar.initialize(config);
-    CPPUNIT_ASSERT(toolbar.get_alignment() == ui::builder::toolbar::bottom);
-
-    config.put("<xmlattr>.align", "right");
-    toolbar.initialize(config);
-    CPPUNIT_ASSERT(toolbar.get_alignment() == ui::builder::toolbar::right);
-
-    config.put("<xmlattr>.align", "left");
-    toolbar.initialize(config);
-    CPPUNIT_ASSERT(toolbar.get_alignment() == ui::builder::toolbar::left);
-}
+        config.put("<xmlattr>.align", "left");
+        toolbar.initialize(config);
+        CHECK(toolbar.get_alignment() == ui::builder::toolbar::left);
+    }
+} // TEST_SUITE
 
 } // namespace sight::ui::ut

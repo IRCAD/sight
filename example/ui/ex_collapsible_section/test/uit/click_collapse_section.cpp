@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,171 +19,189 @@
  *
  ***********************************************************************/
 
-#include "click_collapse_section.hpp"
+#include "fixture.hpp"
 
-#include <core/runtime/path.hpp>
-
-#include <ui/test/helper/button.hpp>
 #include <ui/test/tester.hpp>
 
 #include <QLabel>
 #include <QPushButton>
+#include <QSignalSpy>
 #include <QToolButton>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::example::ui::ex_collapsible_section::uit::click_collapse_section);
+#include <doctest/doctest.h>
 
 namespace sight::example::ui::ex_collapsible_section::uit
 {
 
+TEST_SUITE("ex_collapsible_section")
+{
 //------------------------------------------------------------------------------
 
-std::filesystem::path click_collapse_section::get_profile_path()
-{
-    const std::filesystem::path cwd = sight::core::runtime::working_path();
-    return cwd / "share/sight/ex_collapsible_section/profile.xml";
-}
-
-//------------------------------------------------------------------------------
-
-void click_collapse_section::test()
-{
-    start(
-        "click_collapse_section",
-        [](sight::ui::test::tester& _tester)
-        {
-            int pos_y_before_unfold = 0;
-
-            // Get the pos y of under_section_label before to unfold collapsible section.
-            _tester.take(
-                "QToolButton for unfold collapsible section",
-                [&_tester, &pos_y_before_unfold]() -> QObject*
+    TEST_CASE_FIXTURE(fixture, "click_collapse_section")
+    {
+        const std::string failure_message = start(
+            "click_collapse_section",
+            [](sight::ui::test::tester& _tester)
             {
-                auto* label = _tester.get_main_window()->findChild<QLabel*>("under_section_label");
+                int pos_y_before_unfold = 0;
 
-                if(label != nullptr)
+                _tester.take(
+                    "collapsible section",
+                    "collapsible_section"
+                );
+                auto* section = _tester.get<QObject*>();
+                QSignalSpy animation_finished(section, SIGNAL(animation_finished()));
+
+                const auto wait_for_animation = [&animation_finished]()
+                                                {
+                                                    if(!animation_finished.wait(
+                                                           sight::ui::test::tester::DEFAULT_TIMEOUT
+                                                    ))
+                                                    {
+                                                        sight::ui::test::tester::fail(
+                                                            "The collapsible section animation did not finish"
+                                                        );
+                                                    }
+                                                };
+
+                // Get the pos y of under_section_label before to unfold collapsible section.
+                _tester.take(
+                    "QToolButton for unfold collapsible section",
+                    [&_tester, &pos_y_before_unfold]() -> QObject*
                 {
-                    pos_y_before_unfold = label->y();
+                    auto* label = _tester.get_main_window()->findChild<QLabel*>("under_section_label");
+
+                    if(label != nullptr)
+                    {
+                        pos_y_before_unfold = label->y();
+                    }
+
+                    return label;
+                });
+
+                _tester.take(
+                    "QToolButton for unfold collapsible section",
+                    [&_tester]() -> QObject*
+                {
+                    return _tester.get_main_window()->findChild<QToolButton*>();
+                });
+
+                // Unfold the collapsible section
+                _tester.interact(std::make_unique<sight::ui::test::mouse_click>());
+                wait_for_animation();
+
+                _tester.doubt<QToolButton*>(
+                    "After click, the QToolButton of collapsible section should set at true",
+                    [](QToolButton* _obj)
+                {
+                    return _obj->isChecked();
+                });
+
+                int pos_y_after_unfold = 0;
+
+                _tester.take(
+                    "QToolButton for unfold collapsible section",
+                    [&_tester, &pos_y_after_unfold]() -> QObject*
+                {
+                    auto* label = _tester.get_main_window()->findChild<QLabel*>("under_section_label");
+
+                    if(label != nullptr)
+                    {
+                        pos_y_after_unfold = label->y();
+                    }
+
+                    return label;
+                });
+
+                // Called from the scenario thread: report through tester::fail(), never a doctest assertion.
+                if(pos_y_after_unfold <= pos_y_before_unfold)
+                {
+                    sight::ui::test::tester::fail(
+                        "The position y of under_label should be bigger after unfolded the collapsible section"
+                    );
                 }
 
-                return label;
-            });
-
-            _tester.take(
-                "QToolButton for unfold collapsible section",
-                [&_tester]() -> QObject*
-            {
-                return _tester.get_main_window()->findChild<QToolButton*>();
-            });
-
-            // Unfold the collapsible section
-            _tester.interact(std::make_unique<sight::ui::test::mouse_click>());
-
-            // Wait for the unfold collapsible section animation ends.
-            // This time is passed when we instatiate section collapsible widget.
-            QTest::qWait(1000);
-
-            _tester.doubt<QToolButton*>(
-                "After click, the QToolButton of collapsible section should set at true",
-                [](QToolButton* _obj)
-            {
-                return _obj->isChecked();
-            });
-
-            int pos_y_after_unfold = 0;
-
-            _tester.take(
-                "QToolButton for unfold collapsible section",
-                [&_tester, &pos_y_after_unfold]() -> QObject*
-            {
-                auto* label = _tester.get_main_window()->findChild<QLabel*>("under_section_label");
-
-                if(label != nullptr)
+                _tester.take(
+                    "QPushButton for add a new label inside collapsible section",
+                    [&_tester]() -> QObject*
                 {
-                    pos_y_after_unfold = label->y();
+                    return _tester.get_main_window()->findChild<QPushButton*>("add_label_button");
+                });
+
+                // Add a new label dynamically inside the unfolded collapsible section.
+                // The content height updates after reaching a certain limit, so we add 2 QLabel.
+                _tester.interact(std::make_unique<sight::ui::test::mouse_click>());
+                wait_for_animation();
+                _tester.interact(std::make_unique<sight::ui::test::mouse_click>());
+                wait_for_animation();
+
+                int pos_y_after_add = 0;
+
+                _tester.take(
+                    "QToolButton for unfold collapsible section",
+                    [&_tester, &pos_y_after_add]() -> QObject*
+                {
+                    auto* label = _tester.get_main_window()->findChild<QLabel*>("under_section_label");
+
+                    if(label != nullptr)
+                    {
+                        pos_y_after_add = label->y();
+                    }
+
+                    return label;
+                });
+
+                if(pos_y_after_add <= pos_y_after_unfold)
+                {
+                    sight::ui::test::tester::fail(
+                        "The position y of under_label should be bigger after add a new QLabel in the collapsible section"
+                    );
                 }
 
-                return label;
-            });
-
-            CPPUNIT_ASSERT_EQUAL_MESSAGE(
-                "The position y of under_label should be bigger after unfolded the collapsible section",
-                true,
-                pos_y_after_unfold > pos_y_before_unfold
-            );
-
-            _tester.take(
-                "QPushButton for add a new label inside collapsible section",
-                [&_tester]() -> QObject*
-            {
-                return _tester.get_main_window()->findChild<QPushButton*>("add_label_button");
-            });
-
-            // Add a new label dynamically inside the unfolded collapsible section.
-            // The content height updates after reaching a certain limit, so we add 2 QLabel.
-            _tester.interact(std::make_unique<sight::ui::test::mouse_click>());
-            QTest::qWait(1000);
-            _tester.interact(std::make_unique<sight::ui::test::mouse_click>());
-            QTest::qWait(1000);
-
-            int pos_y_after_add = 0;
-
-            _tester.take(
-                "QToolButton for unfold collapsible section",
-                [&_tester, &pos_y_after_add]() -> QObject*
-            {
-                auto* label = _tester.get_main_window()->findChild<QLabel*>("under_section_label");
-
-                if(label != nullptr)
+                _tester.take(
+                    "QPushButton for remove a label from collapsible section",
+                    [&_tester]() -> QObject*
                 {
-                    pos_y_after_add = label->y();
-                }
+                    return _tester.get_main_window()->findChild<QPushButton*>("remove_label_button");
+                });
 
-                return label;
-            });
+                // Remove the previously added QLabel from collapsible section.
+                _tester.interact(std::make_unique<sight::ui::test::mouse_click>());
+                wait_for_animation();
+                _tester.interact(std::make_unique<sight::ui::test::mouse_click>());
+                wait_for_animation();
 
-            CPPUNIT_ASSERT_EQUAL_MESSAGE(
-                "The position y of under_label should be bigger after add a new QLabel in the collapsible section",
-                true,
-                pos_y_after_add > pos_y_after_unfold
-            );
+                int pos_y_after_remove = 0;
 
-            _tester.take(
-                "QPushButton for remove a label from collapsible section",
-                [&_tester]() -> QObject*
-            {
-                return _tester.get_main_window()->findChild<QPushButton*>("remove_label_button");
-            });
-
-            // Remove the previously added QLabel from collapsible section.
-            _tester.interact(std::make_unique<sight::ui::test::mouse_click>());
-            QTest::qWait(1000);
-            _tester.interact(std::make_unique<sight::ui::test::mouse_click>());
-            QTest::qWait(1000);
-
-            int pos_y_after_remove = 0;
-
-            _tester.take(
-                "QToolButton for unfold collapsible section",
-                [&_tester, &pos_y_after_remove]() -> QObject*
-            {
-                auto* label = _tester.get_main_window()->findChild<QLabel*>("under_section_label");
-
-                if(label != nullptr)
+                _tester.take(
+                    "QToolButton for unfold collapsible section",
+                    [&_tester, &pos_y_after_remove]() -> QObject*
                 {
-                    pos_y_after_remove = label->y();
+                    auto* label = _tester.get_main_window()->findChild<QLabel*>("under_section_label");
+
+                    if(label != nullptr)
+                    {
+                        pos_y_after_remove = label->y();
+                    }
+
+                    return label;
+                });
+
+                if(pos_y_after_remove >= pos_y_after_add)
+                {
+                    sight::ui::test::tester::fail(
+                        "The position y of under_label should be smaller after remove from collapsible section"
+                    );
                 }
+            },
+            true
+        );
 
-                return label;
-            });
+        // Runs on the main thread, after start() has returned: the only doctest assertion for
+        // this scenario. See sight::ui::test::base::start().
+        INFO(failure_message);
+        REQUIRE(failure_message.empty());
+    }
+} // TEST_SUITE
 
-            CPPUNIT_ASSERT_EQUAL_MESSAGE(
-                "The position y of under_label should be smaller after remove from collapsible section",
-                true,
-                pos_y_after_remove < pos_y_after_add
-            );
-        },
-        true
-    );
-}
-
-} // namespace sight::example::ui::ex_collapsible_section::uit.
+} // namespace sight::example::ui::ex_collapsible_section::uit

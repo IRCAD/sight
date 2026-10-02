@@ -135,217 +135,220 @@ struct view_port_fixture : public sight::utest::service_fixture
 
 } // namespace
 
-TEST_CASE_FIXTURE(view_port_fixture, "viewport_range_selector_process_interaction")
+TEST_SUITE("sight::module::viz::scene2d::adaptor::viewport_range_selector")
 {
-    auto render =
-        std::dynamic_pointer_cast<sight::viz::scene2d::render>(m_render);
+    TEST_CASE_FIXTURE(view_port_fixture, "process_interaction")
+    {
+        auto render =
+            std::dynamic_pointer_cast<sight::viz::scene2d::render>(m_render);
 
-    auto selector =
-        std::dynamic_pointer_cast<sight::viz::scene2d::adaptor>(m_service);
+        auto selector =
+            std::dynamic_pointer_cast<sight::viz::scene2d::adaptor>(m_service);
 
-    REQUIRE(render != nullptr);
-    REQUIRE(selector != nullptr);
+        REQUIRE(render != nullptr);
+        REQUIRE(selector != nullptr);
 
-    const auto mapped_scene_x =
-        [&](double _x)
+        const auto mapped_scene_x =
+            [&](double _x)
+            {
+                const QPoint point =
+                    render->get_view()->mapFromScene(QPointF(_x, 0.5));
+
+                return render->map_to_scene(
+            {
+                static_cast<double>(point.x()),
+                static_cast<double>(point.y())
+            }).x;
+            };
+
+        const auto make_event =
+            [&](auto _type, double _x)
+            {
+                const QPoint point =
+                    render->get_view()->mapFromScene(QPointF(_x, 0.5));
+
+                sight::viz::scene2d::data::event event;
+                event.set_type(_type);
+                event.set_coord(
+            {
+                static_cast<double>(point.x()),
+                static_cast<double>(point.y())
+            });
+
+                return event;
+            };
+
+        // Middle hover
         {
-            const QPoint point =
-                render->get_view()->mapFromScene(QPointF(_x, 0.5));
+            auto event = make_event(
+                sight::viz::scene2d::data::event::mouse_move,
+                100.
+            );
 
-            return render->map_to_scene(
+            selector->process_interaction(event);
+
+            CHECK(
+                render->get_view()->cursor().shape()
+                == Qt::OpenHandCursor
+            );
+        }
+
+        // Middle press
         {
-            static_cast<double>(point.x()),
-            static_cast<double>(point.y())
-        }).x;
-        };
+            auto event = make_event(
+                sight::viz::scene2d::data::event::mouse_button_press,
+                100.
+            );
 
-    const auto make_event =
-        [&](auto _type, double _x)
+            selector->process_interaction(event);
+
+            CHECK(
+                render->get_view()->cursor().shape()
+                == Qt::ClosedHandCursor
+            );
+        }
+
+        // Middle drag
         {
-            const QPoint point =
-                render->get_view()->mapFromScene(QPointF(_x, 0.5));
+            auto event = make_event(
+                sight::viz::scene2d::data::event::mouse_move,
+                110.
+            );
 
-            sight::viz::scene2d::data::event event;
-            event.set_type(_type);
-            event.set_coord(
+            selector->process_interaction(event);
+
+            const double expected_x = 50. + mapped_scene_x(110.) - mapped_scene_x(100.);
+            CHECK(m_selected_viewport->x() == doctest::Approx(expected_x));
+        }
+
+        // Middle release
         {
-            static_cast<double>(point.x()),
-            static_cast<double>(point.y())
-        });
+            auto event = make_event(
+                sight::viz::scene2d::data::event::mouse_button_release,
+                110.
+            );
 
-            return event;
-        };
+            selector->process_interaction(event);
 
-    // Middle hover
-    {
-        auto event = make_event(
-            sight::viz::scene2d::data::event::mouse_move,
-            100.
-        );
+            CHECK(
+                render->get_view()->cursor().shape()
+                == Qt::OpenHandCursor
+            );
+        }
+        // Left border hover
+        {
+            auto event = make_event(
+                sight::viz::scene2d::data::event::mouse_move,
+                60.
+            );
 
-        selector->process_interaction(event);
+            selector->process_interaction(event);
 
-        CHECK(
-            render->get_view()->cursor().shape()
-            == Qt::OpenHandCursor
-        );
+            CHECK(
+                render->get_view()->cursor().shape()
+                == Qt::SizeHorCursor
+            );
+        }
+
+        // Right border hover
+        {
+            auto event = make_event(
+                sight::viz::scene2d::data::event::mouse_move,
+                160.
+            );
+
+            selector->process_interaction(event);
+
+            CHECK(
+                render->get_view()->cursor().shape()
+                == Qt::SizeHorCursor
+            );
+        }
+        // Left border
+        {
+            auto press = make_event(
+                sight::viz::scene2d::data::event::mouse_button_press,
+                60.
+            );
+
+            selector->process_interaction(press);
+
+            auto move = make_event(
+                sight::viz::scene2d::data::event::mouse_move,
+                55.
+            );
+
+            selector->process_interaction(move);
+
+            CHECK(m_selected_viewport->x() == doctest::Approx(mapped_scene_x(55.)));
+
+            auto release = make_event(
+                sight::viz::scene2d::data::event::mouse_button_release,
+                55.
+            );
+
+            selector->process_interaction(release);
+        }
+
+        // Right border
+        {
+            auto press = make_event(
+                sight::viz::scene2d::data::event::mouse_button_press,
+                160.
+            );
+
+            selector->process_interaction(press);
+
+            auto move = make_event(
+                sight::viz::scene2d::data::event::mouse_move,
+                170.
+            );
+
+            selector->process_interaction(move);
+
+            const double expected_width = mapped_scene_x(170.) - mapped_scene_x(55.);
+            CHECK(m_selected_viewport->width() == doctest::Approx(expected_width));
+
+            auto release = make_event(
+                sight::viz::scene2d::data::event::mouse_button_release,
+                170.
+            );
+
+            selector->process_interaction(release);
+        }
+
+        // Outside shutter
+        {
+            auto event = make_event(
+                sight::viz::scene2d::data::event::mouse_move,
+                10.
+            );
+
+            selector->process_interaction(event);
+
+            CHECK(
+                render->get_view()->cursor().shape()
+                == Qt::ArrowCursor
+            );
+        }
+        // Press outside shutter
+        {
+            auto hover = make_event(
+                sight::viz::scene2d::data::event::mouse_move,
+                10.
+            );
+            selector->process_interaction(hover);
+
+            auto press = make_event(
+                sight::viz::scene2d::data::event::mouse_button_press,
+                10.
+            );
+            selector->process_interaction(press);
+
+            CHECK(
+                render->get_view()->cursor().shape()
+                == Qt::ArrowCursor
+            );
+        }
     }
-
-    // Middle press
-    {
-        auto event = make_event(
-            sight::viz::scene2d::data::event::mouse_button_press,
-            100.
-        );
-
-        selector->process_interaction(event);
-
-        CHECK(
-            render->get_view()->cursor().shape()
-            == Qt::ClosedHandCursor
-        );
-    }
-
-    // Middle drag
-    {
-        auto event = make_event(
-            sight::viz::scene2d::data::event::mouse_move,
-            110.
-        );
-
-        selector->process_interaction(event);
-
-        const double expected_x = 50. + mapped_scene_x(110.) - mapped_scene_x(100.);
-        CHECK(m_selected_viewport->x() == doctest::Approx(expected_x));
-    }
-
-    // Middle release
-    {
-        auto event = make_event(
-            sight::viz::scene2d::data::event::mouse_button_release,
-            110.
-        );
-
-        selector->process_interaction(event);
-
-        CHECK(
-            render->get_view()->cursor().shape()
-            == Qt::OpenHandCursor
-        );
-    }
-    // Left border hover
-    {
-        auto event = make_event(
-            sight::viz::scene2d::data::event::mouse_move,
-            60.
-        );
-
-        selector->process_interaction(event);
-
-        CHECK(
-            render->get_view()->cursor().shape()
-            == Qt::SizeHorCursor
-        );
-    }
-
-    // Right border hover
-    {
-        auto event = make_event(
-            sight::viz::scene2d::data::event::mouse_move,
-            160.
-        );
-
-        selector->process_interaction(event);
-
-        CHECK(
-            render->get_view()->cursor().shape()
-            == Qt::SizeHorCursor
-        );
-    }
-    // Left border
-    {
-        auto press = make_event(
-            sight::viz::scene2d::data::event::mouse_button_press,
-            60.
-        );
-
-        selector->process_interaction(press);
-
-        auto move = make_event(
-            sight::viz::scene2d::data::event::mouse_move,
-            55.
-        );
-
-        selector->process_interaction(move);
-
-        CHECK(m_selected_viewport->x() == doctest::Approx(mapped_scene_x(55.)));
-
-        auto release = make_event(
-            sight::viz::scene2d::data::event::mouse_button_release,
-            55.
-        );
-
-        selector->process_interaction(release);
-    }
-
-    // Right border
-    {
-        auto press = make_event(
-            sight::viz::scene2d::data::event::mouse_button_press,
-            160.
-        );
-
-        selector->process_interaction(press);
-
-        auto move = make_event(
-            sight::viz::scene2d::data::event::mouse_move,
-            170.
-        );
-
-        selector->process_interaction(move);
-
-        const double expected_width = mapped_scene_x(170.) - mapped_scene_x(55.);
-        CHECK(m_selected_viewport->width() == doctest::Approx(expected_width));
-
-        auto release = make_event(
-            sight::viz::scene2d::data::event::mouse_button_release,
-            170.
-        );
-
-        selector->process_interaction(release);
-    }
-
-    // Outside shutter
-    {
-        auto event = make_event(
-            sight::viz::scene2d::data::event::mouse_move,
-            10.
-        );
-
-        selector->process_interaction(event);
-
-        CHECK(
-            render->get_view()->cursor().shape()
-            == Qt::ArrowCursor
-        );
-    }
-    // Press outside shutter
-    {
-        auto hover = make_event(
-            sight::viz::scene2d::data::event::mouse_move,
-            10.
-        );
-        selector->process_interaction(hover);
-
-        auto press = make_event(
-            sight::viz::scene2d::data::event::mouse_button_press,
-            10.
-        );
-        selector->process_interaction(press);
-
-        CHECK(
-            render->get_view()->cursor().shape()
-            == Qt::ArrowCursor
-        );
-    }
-}
+} // TEST_SUITE

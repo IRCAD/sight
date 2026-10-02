@@ -22,15 +22,15 @@
 
 #pragma once
 
-#include <core/time_stamp.hpp>
+#include <core/time_stamp.hpp> // NOLINT(misc-include-cleaner): used inside the macros below
 
 #include <boost/preprocessor/cat.hpp>
 #include <boost/preprocessor/facilities/is_empty_variadic.hpp>
-#include <boost/preprocessor/if.hpp>
+#include <boost/preprocessor/if.hpp> // NOLINT(misc-include-cleaner): used inside the macros below
 #include <boost/preprocessor/variadic/elem.hpp>
 
-#include <chrono>
-#include <thread>
+#include <chrono> // NOLINT(misc-include-cleaner): used inside the macros below
+#include <thread> // NOLINT(misc-include-cleaner): used inside the macros below
 
 // NOLINTBEGIN(cppcoreguidelines-macro-usage)
 
@@ -53,11 +53,7 @@
             std::this_thread::sleep_for(std::chrono::milliseconds(10)); \
         }
 
-#ifdef DOCTEST_LIBRARY_INCLUDED
-    #define SIGHT_TEST_CHECK CHECK
-#else
-    #define SIGHT_TEST_CHECK CPPUNIT_ASSERT
-#endif
+#define SIGHT_TEST_CHECK CHECK
 
 #define SIGHT_TEST_FAIL_WAIT(cond, ...) \
         sight::core::time_stamp BOOST_PP_CAT(timeStamp, __LINE__); \

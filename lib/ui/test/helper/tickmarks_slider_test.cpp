@@ -154,7 +154,11 @@ void tickmarks_slider_test::mouse_drag_test(tester& _tester, const selector& _sl
     _slider.select(_tester);
     auto* widget    = _tester.get<QWidget*>();
     auto* animation = widget->findChild<QPropertyAnimation*>();
-    CPPUNIT_ASSERT(animation != nullptr);
+    if(animation == nullptr)
+    {
+        tester::fail("No QPropertyAnimation found on \"" + _slider.get_description(_tester) + "\"");
+        return;
+    }
 
     QSignalSpy animation_finished(animation, &QPropertyAnimation::finished);
 
@@ -170,7 +174,10 @@ void tickmarks_slider_test::mouse_drag_test(tester& _tester, const selector& _sl
         })
     );
 
-    CPPUNIT_ASSERT(animation_finished.wait(1000));
+    if(!animation_finished.wait(1000))
+    {
+        tester::fail("The slider animation did not finish within 1000 ms");
+    }
 }
 
 //------------------------------------------------------------------------------

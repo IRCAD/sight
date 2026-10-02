@@ -1,4 +1,4 @@
-sight_add_target(module_viz_scene2d_ut TYPE DOCTEST)
+sight_add_target(module_viz_scene2d_ut TYPE TEST)
 
 add_dependencies(module_viz_scene2d_ut module_viz_scene2d)
 

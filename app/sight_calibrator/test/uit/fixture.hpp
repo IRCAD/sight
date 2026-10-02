@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025-2026 IRCAD France
+ * Copyright (C) 2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,28 +21,20 @@
 
 #pragma once
 
-#include <core/runtime/profile/profile.hpp>
+#include <core/runtime/path.hpp>
 
 #include <ui/test/test.hpp>
 
-#include <cppunit/extensions/HelperMacros.h>
-
-namespace sight::example::ui::ex_material::uit
+namespace sight::sight_calibrator::uit
 {
 
-class material_uniform : public sight::ui::test::base
+/// The doctest fixture shared by all sight_calibrator GUI scenarios.
+struct fixture : sight::ui::test::base
 {
-CPPUNIT_TEST_SUITE(material_uniform);
-CPPUNIT_TEST(test);
-CPPUNIT_TEST_SUITE_END();
-
-public:
-
-    void test();
-
-protected:
-
-    std::filesystem::path get_profile_path() override;
+    fixture() :
+        sight::ui::test::base(sight::core::runtime::working_path() / "share/sight/sight_calibrator/profile.xml")
+    {
+    }
 };
 
-} // namespace sight::example::ui::ex_material::uit
+} // namespace sight::sight_calibrator::uit

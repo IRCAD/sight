@@ -25,23 +25,26 @@
 
 #include <doctest/doctest.h>
 
-TEST_CASE("dispatch_interaction")
+TEST_SUITE("sight::viz::scene2d::render")
 {
-    auto renderer = std::make_shared<sight::viz::scene2d::render>();
+    TEST_CASE("dispatch_interaction")
+    {
+        auto renderer = std::make_shared<sight::viz::scene2d::render>();
 
-    auto& registry =
-        sight::viz::scene2d::registry::get_adaptor_registry();
+        auto& registry =
+            sight::viz::scene2d::registry::get_adaptor_registry();
 
-    const auto saved_registry = registry;
-    registry.clear();
+        const auto saved_registry = registry;
+        registry.clear();
 
-    sight::viz::scene2d::data::event event;
+        sight::viz::scene2d::data::event event;
 
-    CHECK_FALSE(event.is_accepted());
+        CHECK_FALSE(event.is_accepted());
 
-    renderer->dispatch_interaction(event);
+        renderer->dispatch_interaction(event);
 
-    CHECK_FALSE(event.is_accepted());
+        CHECK_FALSE(event.is_accepted());
 
-    registry = saved_registry;
-}
+        registry = saved_registry;
+    }
+} // TEST_SUITE

@@ -27,8 +27,6 @@
 
 #include <ui/test/tester.hpp>
 
-#include <cppunit/extensions/HelperMacros.h>
-
 #include <QApplication>
 #include <QLabel>
 #include <QSlider>

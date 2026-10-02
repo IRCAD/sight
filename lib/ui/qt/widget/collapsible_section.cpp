@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,6 @@
  ***********************************************************************/
 
 #include "collapsible_section.hpp"
-
-#include "core/spy_log.hpp"
 
 #include <QPropertyAnimation>
 
@@ -63,6 +61,7 @@ collapsible_section::collapsible_section(const QString& _title, const int _anima
     setLayout(m_main_layout);
 
     connect(m_toggle_button, &QToolButton::toggled, this, &collapsible_section::toggle);
+    connect(m_toggle_animation, &QAbstractAnimation::finished, this, &collapsible_section::animation_finished);
 }
 
 //------------------------------------------------------------------------------

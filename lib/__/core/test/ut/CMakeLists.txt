@@ -1,4 +1,4 @@
-sight_add_target(core_ut TYPE DOCTEST)
+sight_add_target(core_ut TYPE TEST)
 
 # We need this one to test the location
 target_compile_definitions(${SIGHT_TARGET} PRIVATE MODULE_BIN_PREFIX="${CMAKE_INSTALL_BINDIR}")

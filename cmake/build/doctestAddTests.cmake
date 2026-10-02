@@ -88,6 +88,14 @@ foreach(line ${output})
     string(REPLACE "," "\\," test_name ${test})
     # ...and add to script
     add_command(add_test "${prefix}${test}${suffix}" "${TEST_EXECUTABLE}" "--test-case=${test_name}" "--test-suite=${suite}" ${extra_args})
+
+    # LABELS must be built as a single "LABELS;value1;value2" fragment so it can be spliced into
+    # the PROPERTIES list below regardless of whether ADD_LABELS was requested.
+    set(labels)
+    if(add_labels)
+        set(labels LABELS ${add_labels})
+    endif()
+
     if(WIN32)
         add_command(
             set_tests_properties
@@ -98,6 +106,8 @@ foreach(line ${output})
             DEF_SOURCE_LINE
             "${FILENAME}:${LINE_NUMBER}"
             "${EXECUTION_ENV}"
+            ${properties}
+            ${labels}
         )
     else()
         add_command(
@@ -108,11 +118,15 @@ foreach(line ${output})
             "${TEST_WORKING_DIR}"
             DEF_SOURCE_LINE
             "${FILENAME}:${LINE_NUMBER}"
+            ${properties}
+            ${labels}
         )
     endif()
+
+    # Append before clearing prefix: prefix is part of the test name we just registered.
+    list(APPEND tests "${prefix}${test}${suffix}")
     unset(labels)
     unset(prefix)
-    list(APPEND tests "${prefix}${test}${suffix}")
 endforeach()
 
 # Create a list of all discovered tests, which users may use to e.g. set

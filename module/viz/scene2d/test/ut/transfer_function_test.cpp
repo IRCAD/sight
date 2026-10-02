@@ -186,175 +186,176 @@ struct transfer_function_fixture : public sight::utest::service_fixture
 };
 
 } // namespace
-TEST_CASE_FIXTURE(
-    transfer_function_fixture,
-    "transfer_function_process_interaction"
-)
+
+TEST_SUITE("sight::module::viz::scene2d::adaptor::transfer_function")
 {
-    auto render =
-        std::dynamic_pointer_cast<sight::viz::scene2d::render>(m_render);
+    TEST_CASE_FIXTURE(transfer_function_fixture, "process_interaction")
+    {
+        auto render =
+            std::dynamic_pointer_cast<sight::viz::scene2d::render>(m_render);
 
-    auto adaptor =
-        std::dynamic_pointer_cast<sight::viz::scene2d::adaptor>(m_service);
+        auto adaptor =
+            std::dynamic_pointer_cast<sight::viz::scene2d::adaptor>(m_service);
 
-    REQUIRE(render != nullptr);
-    REQUIRE(adaptor != nullptr);
+        REQUIRE(render != nullptr);
+        REQUIRE(adaptor != nullptr);
 
-    const auto make_event =
-        [&](auto _type,
-            double _x,
-            double _y,
-            decltype(sight::viz::scene2d::data::event::no_button) _button =
-                sight::viz::scene2d::data::event::no_button)
+        const auto make_event =
+            [&](auto _type,
+                double _x,
+                double _y,
+                decltype(sight::viz::scene2d::data::event::no_button) _button =
+                    sight::viz::scene2d::data::event::no_button)
+            {
+                const QPoint point =
+                    render->get_view()->mapFromScene(QPointF(_x, _y));
+
+                sight::viz::scene2d::data::event event;
+                event.set_type(_type);
+                event.set_button(_button);
+
+                event.set_coord(
+            {
+                static_cast<double>(point.x()),
+                static_cast<double>(point.y())
+            });
+
+                return event;
+            };
+        // Resize
         {
-            const QPoint point =
-                render->get_view()->mapFromScene(QPointF(_x, _y));
+            auto event = make_event(
+                sight::viz::scene2d::data::event::resize,
+                0.,
+                0.
+            );
 
-            sight::viz::scene2d::data::event event;
-            event.set_type(_type);
-            event.set_button(_button);
+            adaptor->process_interaction(event);
 
-            event.set_coord(
+            CHECK(event.is_accepted());
+        }
+
+        // Double click -> add TF point
         {
-            static_cast<double>(point.x()),
-            static_cast<double>(point.y())
-        });
+            const auto size_before = m_piece->size();
 
-            return event;
-        };
-    // Resize
-    {
-        auto event = make_event(
-            sight::viz::scene2d::data::event::resize,
-            0.,
-            0.
-        );
+            auto event = make_event(
+                sight::viz::scene2d::data::event::mouse_button_double_click,
+                25.,
+                -0.4,
+                sight::viz::scene2d::data::event::left_button
+            );
 
-        adaptor->process_interaction(event);
+            adaptor->process_interaction(event);
 
-        CHECK(event.is_accepted());
+            CHECK(event.is_accepted());
+            CHECK(m_piece->size() == size_before + 1);
+        }
+
+        // Capture a point
+        {
+            auto event = make_event(
+                sight::viz::scene2d::data::event::mouse_button_press,
+                50.,
+                -0.5,
+                sight::viz::scene2d::data::event::left_button
+            );
+
+            adaptor->process_interaction(event);
+
+            CHECK(event.is_accepted());
+        }
+
+        // Move captured point
+        {
+            auto event = make_event(
+                sight::viz::scene2d::data::event::mouse_move,
+                60.,
+                -0.7
+            );
+
+            adaptor->process_interaction(event);
+
+            CHECK(event.is_accepted());
+        }
+
+        // Release captured point
+        {
+            auto event = make_event(
+                sight::viz::scene2d::data::event::mouse_button_release,
+                60.,
+                -0.7,
+                sight::viz::scene2d::data::event::left_button
+            );
+
+            adaptor->process_interaction(event);
+
+            CHECK(event.is_accepted());
+        }
+
+        // Middle press
+        {
+            auto event = make_event(
+                sight::viz::scene2d::data::event::mouse_button_press,
+                50.,
+                -0.5,
+                sight::viz::scene2d::data::event::mid_button
+            );
+
+            adaptor->process_interaction(event);
+
+            CHECK(event.is_accepted());
+        }
+
+        // Move whole TF
+        {
+            const double old_level = m_piece->level();
+
+            auto event = make_event(
+                sight::viz::scene2d::data::event::mouse_move,
+                60.,
+                -0.5
+            );
+
+            adaptor->process_interaction(event);
+
+            CHECK(event.is_accepted());
+            CHECK(m_piece->level() != doctest::Approx(old_level));
+        }
+
+        // Middle release
+        {
+            auto event = make_event(
+                sight::viz::scene2d::data::event::mouse_button_release,
+                80.,
+                -0.1,
+                sight::viz::scene2d::data::event::mid_button
+            );
+
+            adaptor->process_interaction(event);
+
+            CHECK(event.is_accepted());
+
+            CHECK(
+                render->get_view()->cursor().shape()
+                == Qt::ArrowCursor
+            );
+        }
+
+        // Wheel over TF
+        {
+            const double old_alpha = m_piece->begin()->second.a;
+
+            auto event = make_event(
+                sight::viz::scene2d::data::event::mouse_wheel_up,
+                75.,
+                -0.1
+            );
+
+            adaptor->process_interaction(event);
+
+            CHECK(event.is_accepted());
+            CHECK(m_piece->begin()->second.a > old_alpha);
+        }
     }
-
-    // Double click -> add TF point
-    {
-        const auto size_before = m_piece->size();
-
-        auto event = make_event(
-            sight::viz::scene2d::data::event::mouse_button_double_click,
-            25.,
-            -0.4,
-            sight::viz::scene2d::data::event::left_button
-        );
-
-        adaptor->process_interaction(event);
-
-        CHECK(event.is_accepted());
-        CHECK(m_piece->size() == size_before + 1);
-    }
-
-    // Capture a point
-    {
-        auto event = make_event(
-            sight::viz::scene2d::data::event::mouse_button_press,
-            50.,
-            -0.5,
-            sight::viz::scene2d::data::event::left_button
-        );
-
-        adaptor->process_interaction(event);
-
-        CHECK(event.is_accepted());
-    }
-
-    // Move captured point
-    {
-        auto event = make_event(
-            sight::viz::scene2d::data::event::mouse_move,
-            60.,
-            -0.7
-        );
-
-        adaptor->process_interaction(event);
-
-        CHECK(event.is_accepted());
-    }
-
-    // Release captured point
-    {
-        auto event = make_event(
-            sight::viz::scene2d::data::event::mouse_button_release,
-            60.,
-            -0.7,
-            sight::viz::scene2d::data::event::left_button
-        );
-
-        adaptor->process_interaction(event);
-
-        CHECK(event.is_accepted());
-    }
-
-    // Middle press
-    {
-        auto event = make_event(
-            sight::viz::scene2d::data::event::mouse_button_press,
-            50.,
-            -0.5,
-            sight::viz::scene2d::data::event::mid_button
-        );
-
-        adaptor->process_interaction(event);
-
-        CHECK(event.is_accepted());
-    }
-
-// Move whole TF
-    {
-        const double old_level = m_piece->level();
-
-        auto event = make_event(
-            sight::viz::scene2d::data::event::mouse_move,
-            60.,
-            -0.5
-        );
-
-        adaptor->process_interaction(event);
-
-        CHECK(event.is_accepted());
-        CHECK(m_piece->level() != doctest::Approx(old_level));
-    }
-
-    // Middle release
-    {
-        auto event = make_event(
-            sight::viz::scene2d::data::event::mouse_button_release,
-            80.,
-            -0.1,
-            sight::viz::scene2d::data::event::mid_button
-        );
-
-        adaptor->process_interaction(event);
-
-        CHECK(event.is_accepted());
-
-        CHECK(
-            render->get_view()->cursor().shape()
-            == Qt::ArrowCursor
-        );
-    }
-
-    // Wheel over TF
-    {
-        const double old_alpha = m_piece->begin()->second.a;
-
-        auto event = make_event(
-            sight::viz::scene2d::data::event::mouse_wheel_up,
-            75.,
-            -0.1
-        );
-
-        adaptor->process_interaction(event);
-
-        CHECK(event.is_accepted());
-        CHECK(m_piece->begin()->second.a > old_alpha);
-    }
-}
+} // TEST_SUITE

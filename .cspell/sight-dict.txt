@@ -54,7 +54,6 @@ coeffs
 coefs
 cosinus
 cpack
-cppunit
 crange
 ctest
 ctmr

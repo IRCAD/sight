@@ -1,4 +1,4 @@
-sight_add_target(module_ui_ut TYPE DOCTEST)
+sight_add_target(module_ui_ut TYPE TEST)
 
 add_dependencies(module_ui_ut module_ui)
 

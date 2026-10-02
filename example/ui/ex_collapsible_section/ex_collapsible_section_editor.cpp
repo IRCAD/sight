@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -52,6 +52,7 @@ void ex_collapsible_section_editor::starting()
         200,
         layout->widget()
     );
+    section->setObjectName("collapsible_section");
 
     // Create the container to add inside the collapsible section.
     auto* box_section = new QVBoxLayout();

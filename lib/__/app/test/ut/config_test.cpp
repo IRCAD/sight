@@ -121,7 +121,7 @@ struct fixture
         {
             // If everything went well, the manager should have been destroyed
             // This means a test failed, thus we need to clean everything properly, otherwise
-            // We will get an assert from the destructor and we will not get the cppunit report in the console
+            // we will get an assert from the destructor and we will not get the doctest report in the console
             m_app_config_mgr->stop_and_destroy();
             m_app_config_mgr = nullptr;
         }

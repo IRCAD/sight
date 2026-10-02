@@ -26,6 +26,299 @@
 #include <boost/dll/runtime_symbol_info.hpp>
 #include <doctest/doctest.h>
 
+// Substituted by the sight_gui_test() CMake macro: enables the self-supervision code path below
+// for GUI tests only (REQUIRE_X ON, one QApplication/profile per scenario). Regular doctest unit
+// tests run several TEST_CASEs in a single process and never need this.
+#define SIGHT_GUI_TEST @SIGHT_GUI_TEST@
+
+#if SIGHT_GUI_TEST
+#include <QProcess>
+#include <QStringList>
+
+#include <iostream>
+#include <optional>
+#include <string>
+#include <vector>
+#endif
+
+//------------------------------------------------------------------------------
+
+#if SIGHT_GUI_TEST
+
+namespace
+{
+
+struct test_case_id
+{
+    std::string suite;
+    std::string name;
+};
+
+//------------------------------------------------------------------------------
+
+std::vector<test_case_id>& enumerated_cases()
+{
+    static std::vector<test_case_id> s_cases;
+    return s_cases;
+}
+
+/// A reporter that captures the filtered test case list instead of printing it. Registered below
+/// under the name "sight_enumerate" and selected explicitly by supervise() - it is never picked
+/// up by a normal test run, which always uses the "console" default (or whatever --reporters
+/// requests). See https://github.com/doctest/doctest for the IReporter interface.
+struct enumerating_reporter final : public doctest::IReporter
+{
+    explicit enumerating_reporter(const doctest::ContextOptions& /*unused*/)
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void report_query(const doctest::QueryData& _data) override
+    {
+        auto& cases = enumerated_cases();
+        cases.clear();
+        cases.reserve(_data.num_data);
+
+        for(unsigned i = 0 ; i < _data.num_data ; ++i)
+        {
+            const auto* const test_case = _data.data[i];
+            cases.push_back(
+                {
+                    test_case->m_test_suite != nullptr ? test_case->m_test_suite : "",
+                    test_case->m_name != nullptr ? test_case->m_name : ""
+                });
+        }
+    }
+
+    // The remaining IReporter methods are pure virtual and must all be defined, even empty: this
+    // reporter is only ever used for report_query(), through --list-test-cases.
+    void test_run_start() override
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void test_run_end(const doctest::TestRunStats& /*unused*/) override
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void test_case_start(const doctest::TestCaseData& /*unused*/) override
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void test_case_reenter(const doctest::TestCaseData& /*unused*/) override
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void test_case_end(const doctest::CurrentTestCaseStats& /*unused*/) override
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void test_case_exception(const doctest::TestCaseException& /*unused*/) override
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void subcase_start(const doctest::SubcaseSignature& /*unused*/) override
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void subcase_end() override
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void log_assert(const doctest::AssertData& /*unused*/) override
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void log_message(const doctest::MessageData& /*unused*/) override
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void test_case_skipped(const doctest::TestCaseData& /*unused*/) override
+    {
+    }
+};
+
+} // namespace
+
+DOCTEST_REGISTER_REPORTER("sight_enumerate", 0, enumerating_reporter);
+
+namespace
+{
+
+/// True for the well-known doctest command-line flag names that select which test case(s) to
+/// run - the ones sight_doctest_discover_tests() (see cmake/build/doctestAddTests.cmake) passes
+/// as "--test-case=..." "--test-suite=...". A re-exec for one specific scenario must drop these
+/// from the parent's arguments before appending its own, or the child would still see the
+/// parent's (probably absent, i.e. "run everything") filters instead.
+bool is_test_filter_argument(const std::string& _arg)
+{
+    static const std::vector<std::string> s_prefixes = {
+        "--test-case=", "-tc=",
+        "--test-case-exclude=", "-tce=",
+        "--test-suite=", "-ts=",
+        "--test-suite-exclude=", "-tse="
+    };
+
+    for(const auto& prefix : s_prefixes)
+    {
+        if(_arg.compare(0, prefix.size(), prefix) == 0)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+//------------------------------------------------------------------------------
+
+/// Returns argv[1..argc) as a QStringList, with every test-case/test-suite filter removed. All
+/// other arguments (reporters, verbosity, Sight-specific options forwarded by the launcher
+/// script, ...) are preserved so that a supervised child behaves exactly like the parent would
+/// have for that one scenario.
+QStringList forwarded_arguments_without_test_filters(int _argc, char** _argv)
+{
+    QStringList args;
+
+    for(int i = 1 ; i < _argc ; ++i)
+    {
+        const std::string arg(_argv[i]);
+
+        if(!is_test_filter_argument(arg))
+        {
+            args << QString::fromStdString(arg);
+        }
+    }
+
+    return args;
+}
+
+//------------------------------------------------------------------------------
+
+/// Re-executes this binary once per test case matching the command-line filters, and aggregates
+/// the results. This is what lets a bare "./some_uit" (no filter, i.e. every scenario) work at
+/// all: a GUI scenario owns a QApplication and a Sight profile lifecycle, and two of those in a
+/// single process crash, so more than one scenario per process is not possible here.
+/// @return the process exit code, or std::nullopt when supervision does not apply (0 or 1
+///         matching test case) and the caller must run doctest in-process as usual - this is
+///         always the path taken under CTest, since sight_doctest_discover_tests() always passes
+///         an exact "--test-case=X --test-suite=Y" pair.
+std::optional<int> supervise(int _argc, char** _argv)
+{
+    // A child re-executed by this very function already runs exactly one test case: never
+    // recurse. SIGHT_GUI_TEST_NO_SUPERVISOR is the escape hatch for running a single scenario
+    // under a debugger without the supervisor getting in the way (it never needs to, since a
+    // single explicit --test-case already disables supervision below, but this makes the intent
+    // explicit and future-proof).
+    if(qEnvironmentVariableIsSet("SIGHT_GUI_TEST_CHILD") || qEnvironmentVariableIsSet("SIGHT_GUI_TEST_NO_SUPERVISOR"))
+    {
+        return std::nullopt;
+    }
+
+    // Ask doctest which test cases match the command-line filters, without running any of them.
+    //
+    // This must be built as a real argv array and parsed through applyCommandLine(), exactly as
+    // if it had been typed on a command line: Context::setOption("list-test-cases", true)
+    // synthesizes "-list-test-cases=true", which doctest's flag matcher rejects (it requires an
+    // exact match, with nothing after the flag name) - list_test_cases then silently stays false,
+    // and this "enumeration" pass actually **runs** the scenario for real instead of just listing
+    // it, immediately followed by the real run below: two application lifecycles in one process,
+    // which crashes. The original arguments are
+    // forwarded so a user-provided filter (e.g. "--test-case=load_*") is honored by the
+    // enumeration too; --list-test-cases, --reporters and --no-intro are appended last since
+    // doctest resolves a repeated option from the last occurrence backwards.
+    {
+        std::vector<std::string> enumeration_args_storage(_argv, _argv + _argc);
+        enumeration_args_storage.emplace_back("--list-test-cases");
+        enumeration_args_storage.emplace_back("--reporters=sight_enumerate");
+        enumeration_args_storage.emplace_back("--no-intro");
+
+        std::vector<char*> enumeration_argv;
+        enumeration_argv.reserve(enumeration_args_storage.size());
+        for(auto& arg : enumeration_args_storage)
+        {
+            enumeration_argv.push_back(arg.data());
+        }
+
+        doctest::Context enumeration;
+        enumeration.applyCommandLine(static_cast<int>(enumeration_argv.size()), enumeration_argv.data());
+        enumeration.run();
+    }
+
+    const auto cases = enumerated_cases();
+
+    // Zero or one matching case: nothing to supervise, the normal in-process path below handles
+    // it (including doctest's own "no tests matched" diagnostics for the zero case). This is
+    // always what CTest hits, since it always passes an exact suite/case pair.
+    if(cases.size() <= 1)
+    {
+        return std::nullopt;
+    }
+
+    // program_location() resolves to the real executable (the .bin on Linux, the .exe on
+    // Windows), not the launcher script: children inherit the DISPLAY (or, on Windows, the PATH)
+    // that the parent's own launcher already set up, instead of each starting a redundant one.
+    const auto self = QString::fromStdString(boost::dll::program_location().string());
+
+    const QStringList base_args = forwarded_arguments_without_test_filters(_argc, _argv);
+
+    // Children must not supervise in turn.
+    qputenv("SIGHT_GUI_TEST_CHILD", "1");
+
+    std::size_t failed = 0;
+
+    for(const auto& test_case : cases)
+    {
+        QStringList args = base_args;
+        args << QString::fromStdString("--test-case=" + test_case.name);
+
+        if(!test_case.suite.empty())
+        {
+            args << QString::fromStdString("--test-suite=" + test_case.suite);
+        }
+
+        std::cout << "[sight] running " << test_case.suite << "::" << test_case.name << std::endl;
+
+        const int code = QProcess::execute(self, args);
+
+        if(code != 0)
+        {
+            ++failed;
+            std::cerr << "[sight] FAILED " << test_case.suite << "::" << test_case.name
+                      << " (exit code " << code << ")" << std::endl;
+        }
+    }
+
+    std::cout << "[sight] " << (cases.size() - failed) << '/' << cases.size()
+              << " GUI scenarios passed" << std::endl;
+
+    return failed == 0 ? 0 : 1;
+}
+
+} // namespace
+
+#endif // SIGHT_GUI_TEST
+
 //------------------------------------------------------------------------------
 
 static void init_runtime()
@@ -74,6 +367,19 @@ int main(int argc, char** argv)
 
             return false;
         }();
+
+#if SIGHT_GUI_TEST
+    // Must run before any runtime/profile/QApplication setup: a supervised run re-executes this
+    // same binary once per matching test case and never touches any of that itself. It also must
+    // never trigger during --list-test-cases, which the CMake-time test discovery relies on.
+    if(!should_list_tests)
+    {
+        if(const auto supervised = supervise(argc, argv); supervised.has_value())
+        {
+            return *supervised;
+        }
+    }
+#endif
 
     doctest::Context context;
     context.applyCommandLine(argc, argv);

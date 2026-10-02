@@ -174,281 +174,282 @@ struct histogram_fixture : public sight::utest::service_fixture
 };
 
 } // namespace
-TEST_CASE_FIXTURE(
-    histogram_fixture,
-    "histogram_process_interaction"
-)
+
+TEST_SUITE("sight::module::viz::scene2d::adaptor::histogram")
 {
-    using event_t = sight::viz::scene2d::data::event;
+    TEST_CASE_FIXTURE(histogram_fixture, "process_interaction")
+    {
+        using event_t = sight::viz::scene2d::data::event;
 
-    auto render =
-        std::dynamic_pointer_cast<sight::viz::scene2d::render>(m_render);
+        auto render =
+            std::dynamic_pointer_cast<sight::viz::scene2d::render>(m_render);
 
-    auto histogram =
-        std::dynamic_pointer_cast<sight::viz::scene2d::adaptor>(m_service);
+        auto histogram =
+            std::dynamic_pointer_cast<sight::viz::scene2d::adaptor>(m_service);
 
-    REQUIRE(render != nullptr);
-    REQUIRE(histogram != nullptr);
+        REQUIRE(render != nullptr);
+        REQUIRE(histogram != nullptr);
 
-    const auto make_event =
-        [&](auto _type,
-            double _x,
-            double _y,
-            event_t::modifier _modifier = event_t::no_modifier)
+        const auto make_event =
+            [&](auto _type,
+                double _x,
+                double _y,
+                event_t::modifier _modifier = event_t::no_modifier)
+            {
+                const QPoint point =
+                    render->get_view()->mapFromScene(QPointF(_x, _y));
+
+                event_t event;
+                event.set_type(_type);
+                event.set_modifier(_modifier);
+
+                event.set_coord(
+            {
+                static_cast<double>(point.x()),
+                static_cast<double>(point.y())
+            });
+
+                return event;
+            };
+
+        const auto cursor_visible =
+            [&]()
+            {
+                const auto items = render->get_scene()->items();
+
+                return std::ranges::any_of(
+                    items,
+                    [](QGraphicsItem* _item)
+            {
+                const auto* ellipse =
+                    dynamic_cast<QGraphicsEllipseItem*>(_item);
+
+                return ellipse != nullptr && ellipse->isVisible();
+            });
+            };
+
+        const auto label_visible =
+            [&]()
+            {
+                const auto items = render->get_scene()->items();
+
+                return std::ranges::any_of(
+                    items,
+                    [](QGraphicsItem* _item)
+            {
+                const auto* label =
+                    dynamic_cast<QGraphicsSimpleTextItem*>(_item);
+
+                return label != nullptr && label->isVisible();
+            });
+            };
+        // vertical scaling
         {
-            const QPoint point =
-                render->get_view()->mapFromScene(QPointF(_x, _y));
+            auto event = make_event(
+                event_t::mouse_wheel_up,
+                128.,
+                0.
+            );
 
-            event_t event;
-            event.set_type(_type);
-            event.set_modifier(_modifier);
+            histogram->process_interaction(event);
 
-            event.set_coord(
+            CHECK(event.is_accepted());
+        }
+
+        // Normal wheel down
         {
-            static_cast<double>(point.x()),
-            static_cast<double>(point.y())
-        });
+            auto event = make_event(
+                event_t::mouse_wheel_down,
+                128.,
+                0.
+            );
 
-            return event;
-        };
+            histogram->process_interaction(event);
 
-    const auto cursor_visible =
-        [&]()
+            CHECK(event.is_accepted());
+        }
+
+        // fast vertical scaling
         {
-            const auto items = render->get_scene()->items();
+            auto event = make_event(
+                event_t::mouse_wheel_up,
+                128.,
+                0.,
+                event_t::shift_modifier
+            );
 
-            return std::ranges::any_of(
-                items,
-                [](QGraphicsItem* _item)
+            histogram->process_interaction(event);
+
+            CHECK(event.is_accepted());
+        }
+
+        // Shift + wheel down
         {
-            const auto* ellipse =
-                dynamic_cast<QGraphicsEllipseItem*>(_item);
+            auto event = make_event(
+                event_t::mouse_wheel_down,
+                128.,
+                0.,
+                event_t::shift_modifier
+            );
 
-            return ellipse != nullptr && ellipse->isVisible();
-        });
-        };
+            histogram->process_interaction(event);
 
-    const auto label_visible =
-        [&]()
+            CHECK(event.is_accepted());
+        }
+
+        // increase histogram bin width
         {
-            const auto items = render->get_scene()->items();
+            auto event = make_event(
+                event_t::mouse_wheel_up,
+                128.,
+                0.,
+                event_t::control_modifier
+            );
 
-            return std::ranges::any_of(
-                items,
-                [](QGraphicsItem* _item)
+            histogram->process_interaction(event);
+
+            // This branch intentionally doesn't accept the event.
+            CHECK_FALSE(event.is_accepted());
+        }
+
+        // decrease histogram bin width
         {
-            const auto* label =
-                dynamic_cast<QGraphicsSimpleTextItem*>(_item);
+            auto event = make_event(
+                event_t::mouse_wheel_down,
+                128.,
+                0.,
+                event_t::control_modifier
+            );
 
-            return label != nullptr && label->isVisible();
-        });
-        };
-    // vertical scaling
-    {
-        auto event = make_event(
-            event_t::mouse_wheel_up,
-            128.,
-            0.
-        );
+            histogram->process_interaction(event);
 
-        histogram->process_interaction(event);
+            CHECK_FALSE(event.is_accepted());
+        }
 
-        CHECK(event.is_accepted());
+        // Enter histogram
+        {
+            auto event = make_event(
+                event_t::enter_event,
+                128.,
+                0.
+            );
+
+            histogram->process_interaction(event);
+
+            CHECK(cursor_visible());
+            CHECK_FALSE(label_visible());
+        }
+
+        // Mouse move while inside
+        {
+            auto event = make_event(
+                event_t::mouse_move,
+                100.,
+                0.
+            );
+
+            histogram->process_interaction(event);
+
+            CHECK(cursor_visible());
+            CHECK_FALSE(label_visible());
+        }
+
+        // Mouse press
+        {
+            auto event = make_event(
+                event_t::mouse_button_press,
+                100.,
+                0.
+            );
+
+            histogram->process_interaction(event);
+
+            CHECK(cursor_visible());
+            CHECK(label_visible());
+        }
+
+        // Mouse move while interacting
+        {
+            auto event = make_event(
+                event_t::mouse_move,
+                150.,
+                0.
+            );
+
+            histogram->process_interaction(event);
+
+            CHECK(cursor_visible());
+            CHECK(label_visible());
+        }
+
+        // Release
+        {
+            auto event = make_event(
+                event_t::mouse_button_release,
+                150.,
+                0.
+            );
+
+            histogram->process_interaction(event);
+
+            CHECK(cursor_visible());
+            CHECK_FALSE(label_visible());
+        }
+
+        // Move outside histogram range
+        {
+            auto event = make_event(
+                event_t::mouse_move,
+                -10.,
+                0.
+            );
+
+            histogram->process_interaction(event);
+
+            CHECK_FALSE(cursor_visible());
+            CHECK_FALSE(label_visible());
+        }
+
+        // Enter again
+        {
+            auto event = make_event(
+                event_t::enter_event,
+                128.,
+                0.
+            );
+
+            histogram->process_interaction(event);
+
+            CHECK(cursor_visible());
+        }
+
+        // Leave
+        {
+            auto event = make_event(
+                event_t::leave_event,
+                128.,
+                0.
+            );
+
+            histogram->process_interaction(event);
+
+            CHECK_FALSE(cursor_visible());
+            CHECK_FALSE(label_visible());
+        }
+
+        // Stopped service
+        {
+            m_service->stop().get();
+
+            auto event = make_event(
+                event_t::mouse_wheel_up,
+                128.,
+                0.
+            );
+
+            histogram->process_interaction(event);
+
+            CHECK_FALSE(event.is_accepted());
+        }
     }
-
-    // Normal wheel down
-    {
-        auto event = make_event(
-            event_t::mouse_wheel_down,
-            128.,
-            0.
-        );
-
-        histogram->process_interaction(event);
-
-        CHECK(event.is_accepted());
-    }
-
-    // fast vertical scaling
-    {
-        auto event = make_event(
-            event_t::mouse_wheel_up,
-            128.,
-            0.,
-            event_t::shift_modifier
-        );
-
-        histogram->process_interaction(event);
-
-        CHECK(event.is_accepted());
-    }
-
-    // Shift + wheel down
-    {
-        auto event = make_event(
-            event_t::mouse_wheel_down,
-            128.,
-            0.,
-            event_t::shift_modifier
-        );
-
-        histogram->process_interaction(event);
-
-        CHECK(event.is_accepted());
-    }
-
-    // increase histogram bin width
-    {
-        auto event = make_event(
-            event_t::mouse_wheel_up,
-            128.,
-            0.,
-            event_t::control_modifier
-        );
-
-        histogram->process_interaction(event);
-
-        // This branch intentionally doesn't accept the event.
-        CHECK_FALSE(event.is_accepted());
-    }
-
-    // decrease histogram bin width
-    {
-        auto event = make_event(
-            event_t::mouse_wheel_down,
-            128.,
-            0.,
-            event_t::control_modifier
-        );
-
-        histogram->process_interaction(event);
-
-        CHECK_FALSE(event.is_accepted());
-    }
-
-    // Enter histogram
-    {
-        auto event = make_event(
-            event_t::enter_event,
-            128.,
-            0.
-        );
-
-        histogram->process_interaction(event);
-
-        CHECK(cursor_visible());
-        CHECK_FALSE(label_visible());
-    }
-
-    // Mouse move while inside
-    {
-        auto event = make_event(
-            event_t::mouse_move,
-            100.,
-            0.
-        );
-
-        histogram->process_interaction(event);
-
-        CHECK(cursor_visible());
-        CHECK_FALSE(label_visible());
-    }
-
-    // Mouse press
-    {
-        auto event = make_event(
-            event_t::mouse_button_press,
-            100.,
-            0.
-        );
-
-        histogram->process_interaction(event);
-
-        CHECK(cursor_visible());
-        CHECK(label_visible());
-    }
-
-    // Mouse move while interacting
-    {
-        auto event = make_event(
-            event_t::mouse_move,
-            150.,
-            0.
-        );
-
-        histogram->process_interaction(event);
-
-        CHECK(cursor_visible());
-        CHECK(label_visible());
-    }
-
-    // Release
-    {
-        auto event = make_event(
-            event_t::mouse_button_release,
-            150.,
-            0.
-        );
-
-        histogram->process_interaction(event);
-
-        CHECK(cursor_visible());
-        CHECK_FALSE(label_visible());
-    }
-
-    // Move outside histogram range
-    {
-        auto event = make_event(
-            event_t::mouse_move,
-            -10.,
-            0.
-        );
-
-        histogram->process_interaction(event);
-
-        CHECK_FALSE(cursor_visible());
-        CHECK_FALSE(label_visible());
-    }
-
-    // Enter again
-    {
-        auto event = make_event(
-            event_t::enter_event,
-            128.,
-            0.
-        );
-
-        histogram->process_interaction(event);
-
-        CHECK(cursor_visible());
-    }
-
-    // Leave
-    {
-        auto event = make_event(
-            event_t::leave_event,
-            128.,
-            0.
-        );
-
-        histogram->process_interaction(event);
-
-        CHECK_FALSE(cursor_visible());
-        CHECK_FALSE(label_visible());
-    }
-
-    // Stopped service
-    {
-        m_service->stop().get();
-
-        auto event = make_event(
-            event_t::mouse_wheel_up,
-            128.,
-            0.
-        );
-
-        histogram->process_interaction(event);
-
-        CHECK_FALSE(event.is_accepted());
-    }
-}
+} // TEST_SUITE

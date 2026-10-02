@@ -7,10 +7,10 @@ stages:
 
 include:
     - project: "sight/sight-gitlab"
-      ref: d58fd42f9575db5b8ebb713b798bb7e6196cb183
+      ref: ae6f1a32cc2247c75d3aaafa299c0d80e0767e31
       file: "/.templates/deploy.yml"
     - project: "sight/sight-gitlab"
-      ref: d58fd42f9575db5b8ebb713b798bb7e6196cb183
+      ref: ae6f1a32cc2247c75d3aaafa299c0d80e0767e31
       file: "/.templates/build.yml"
 
 lint:ubuntu-24.04:
@@ -79,8 +79,8 @@ lint:ubuntu-24.04:
             else
               TIMEOUT="600"
             fi
-        - ctest -E "(uit)" --timeout $TIMEOUT --output-on-failure -O ctest1.log -j ${LINUX_PARALLEL_TESTS} --output-junit junit1.xml --repeat until-pass:2
-        - ctest -R "(uit)" --timeout $TIMEOUT --output-on-failure -O ctest2.log -j ${LINUX_PARALLEL_GUI_TESTS} --output-junit junit2.xml --repeat until-pass:2
+        - ctest -LE gui --timeout $TIMEOUT --output-on-failure -O ctest1.log -j ${LINUX_PARALLEL_TESTS} --output-junit junit1.xml --repeat until-pass:2
+        - ctest -L gui --timeout $TIMEOUT --output-on-failure -O ctest2.log -j ${LINUX_PARALLEL_GUI_TESTS} --output-junit junit2.xml --repeat until-pass:2
         # Build documentation if needed
         - >
             if [ "${SIGHT_BUILD_DOC}" == "ON" ]; then
@@ -299,8 +299,8 @@ deploy:apps-linux-release:
               $TIMEOUT="600"
             }
         # Launch tests
-        - ctest -E "(uit)" --timeout $TIMEOUT --output-on-failure -O ctest1.log -j ${WINDOWS_PARALLEL_TESTS} --output-junit junit1.xml --repeat until-pass:2
-        - ctest -R "(uit)" --timeout $TIMEOUT --output-on-failure -O ctest2.log -j ${WINDOWS_PARALLEL_GUI_TESTS} --output-junit junit2.xml --repeat until-pass:2
+        - ctest -LE gui --timeout $TIMEOUT --output-on-failure -O ctest1.log -j ${WINDOWS_PARALLEL_TESTS} --output-junit junit1.xml --repeat until-pass:2
+        - ctest -L gui --timeout $TIMEOUT --output-on-failure -O ctest2.log -j ${WINDOWS_PARALLEL_GUI_TESTS} --output-junit junit2.xml --repeat until-pass:2
         - |
             if ("${SIGHT_BUILD_PACKAGES}" -eq "ON") {
               ninja -j ${WINDOWS_PARALLEL_BUILDS} sight_viewer_package

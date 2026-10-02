@@ -26,9 +26,12 @@
 namespace sight::sight_viewer::uit
 {
 
+/// The doctest fixture shared by all sight_viewer GUI scenarios.
 class test : public sight::ui::test::base
 {
 public:
+
+    test();
 
     static void open_file(
         sight::ui::test::tester& _tester,
@@ -41,10 +44,6 @@ public:
     );
     static void save_snapshot(sight::ui::test::tester& _tester, const std::filesystem::path& _path);
     static void reset_negatos(sight::ui::test::tester& _tester);
-
-protected:
-
-    std::filesystem::path get_profile_path() override;
 };
 
 } // namespace sight::sight_viewer::uit

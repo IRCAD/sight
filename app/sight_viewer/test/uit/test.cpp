@@ -38,10 +38,9 @@ namespace helper = sight::ui::test::helper;
 
 //------------------------------------------------------------------------------
 
-std::filesystem::path test::get_profile_path()
+test::test() :
+    sight::ui::test::base(sight::core::runtime::working_path() / "share/sight/sight_viewer/profile.xml")
 {
-    const std::filesystem::path cwd = sight::core::runtime::working_path();
-    return cwd / "share/sight/sight_viewer/profile.xml";
 }
 
 //------------------------------------------------------------------------------
@@ -70,9 +69,6 @@ void test::open_file(
     // Fill the file dialog.
     helper::file_dialog::fill(_tester, _path);
 
-    // Ensure the image loading is started, otherwise it will hang the test.
-    QTest::qWait(1000);
-
     if(_format == "Inr (.inr) (*.inr *.inr.gz)" || _format == "NIfTI (.nii) (*.nii *.nii.gz)")
     {
         helper::button::wait_for_clickability(
@@ -95,7 +91,12 @@ void test::open_folder(
     const std::filesystem::path& _path
 )
 {
-    CPPUNIT_ASSERT_MESSAGE("The DICOM test directory does not exist", std::filesystem::is_directory(_path));
+    // sight::ui::test::tester::fail() throws tester_assertion_failed, which base::start() catches on the
+    // scenario thread. A doctest assertion must not be used here, since open_folder() runs on that thread.
+    if(!std::filesystem::is_directory(_path))
+    {
+        sight::ui::test::tester::fail("The DICOM test directory does not exist");
+    }
 
     helper::button::push(
         _tester,
@@ -106,8 +107,6 @@ void test::open_folder(
         _tester,
         _path
     );
-
-    QTest::qWait(1000);
 
     // Loading the 512x512x404 DICOM volume can exceed 50 seconds on a busy CI runner.
     helper::button::wait_for_clickability(
@@ -135,8 +134,17 @@ void test::save_snapshot(sight::ui::test::tester& _tester, const std::filesystem
         sight::ui::test::tester::DEFAULT_TIMEOUT*2
     );
     // ...and the image should be valid.
-    bool ok = QTest::qWaitFor([&_path]() -> bool {return !QImage(QString::fromStdString(_path.string())).isNull();});
-    CPPUNIT_ASSERT_MESSAGE("The writer didn't finish writing", ok);
+    bool ok = QTest::qWaitFor(
+        [&_path]() -> bool
+        {
+            return !QImage(QString::fromStdString(_path.string())).isNull();
+        },
+        sight::ui::test::tester::DEFAULT_TIMEOUT* 2
+    );
+    if(!ok)
+    {
+        sight::ui::test::tester::fail("The writer didn't finish writing");
+    }
 }
 
 //------------------------------------------------------------------------------

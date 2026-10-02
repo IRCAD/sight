@@ -48,13 +48,11 @@ constexpr static auto ENCRYPTED_LOG_FILE = "sight.log.aes";
 /**
  * @brief Implements the spy_logger log system. The spy_logger class is a wrapper around the boost logging system.
  *
- * The global logging is setup from `profile_launcher` and `cppunit_main` for unit tests.
- * `profile_launcher` can use the static `add_global_console_log()` which sets up a simple global console sink or the
- * more advanced `start()` on the global spy_logger instance `sight::core::log::g_logger` which allows log file
- * compression (ZSTD) and encryption (AES256) with a non empty password. Setting up a sink, makes the log macros
- * (SIGHT_DEBUG, SIGHT_ERROR, ...) to output log messages on console or file.
- * `cppunit_main` only uses the static `add_global_file_log()` to setup a simple global `FWTest.log` file sink, which
- * is useful for debugging.
+ * The global logging is setup from `profile_launcher`, which can use the static
+ * `add_global_console_log()` which sets up a simple global console sink or the more advanced `start()` on the
+ * global spy_logger instance `sight::core::log::g_logger` which allows log file compression (ZSTD) and encryption
+ * (AES256) with a non empty password. Setting up a sink, makes the log macros (SIGHT_DEBUG, SIGHT_ERROR, ...) to
+ * output log messages on console or file.
  *
  * It is also possible to setup a local private spy_logger with the static `make()` function. This is useful to bypass
  * the global logging system and to have a private log file. Of course, log macros cannot be used, and direct calls to

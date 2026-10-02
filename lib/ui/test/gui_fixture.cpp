@@ -59,68 +59,144 @@ struct service_keeper final
         sight::core::thread::get_default_worker()->post_task<void>(
             [this, _names]
                 {
-                    m_frame = sight::service::add(FRAME_SERVICE);
-                    if(!m_frame || !m_frame->is_a(FRAME_SERVICE))
+                    try
                     {
-                        throw std::runtime_error("Failed to create frame service");
+                        create(_names);
                     }
-
-                    sight::service::config_t frame_config;
-                    frame_config.put("gui.frame.name", _names.front());
-                    frame_config.put("gui.frame.min_size.<xmlattr>.width", "640");
-                    frame_config.put("gui.frame.min_size.<xmlattr>.height", "480");
-                    frame_config.put("registry.view.<xmlattr>.sid", m_view_uuid);
-
-                    m_frame->configure(frame_config);
-                    m_frame->start().get();
-
-                    m_view = sight::service::add(VIEW_SERVICE, m_view_uuid);
-                    if(!m_view || !m_view->is_a(VIEW_SERVICE))
+                    catch(...)
                     {
-                        throw std::runtime_error("Failed to create view service");
-                    }
-
-                    sight::service::config_t view_config;
-                    view_config.put("gui.layout.<xmlattr>.type", "sight::ui::layout::line");
-                    view_config.put("gui.layout.orientation.<xmlattr>.value", "vertical");
-
-                    std::map<std::string, std::string> uuids;
-                    std::ranges::for_each(
-                        _names,
-                        [&](const auto& _name)
-                    {
-                        auto uuid = sight::core::tools::uuid::generate();
-                        std::erase(uuid, '-');
-                        uuids[_name] = uuid;
-                    });
-
-                    for(const auto& [name, uuid] : uuids)
-                    {
-                        sight::service::config_t view_proportion;
-                        view_proportion.add("<xmlattr>.proportion", "0");
-                        view_config.add_child("gui.layout.view", view_proportion);
-
-                        sight::service::config_t view_sid;
-                        view_sid.add("<xmlattr>.sid", uuid);
-                        view_config.add_child("registry.view", view_sid);
-                    }
-
-                    m_view->configure(view_config);
-                    m_view->start().get();
-
-                    m_services.reserve(uuids.size());
-
-                    for(const auto& [name, uuid] : uuids)
-                    {
-                        const auto service = sight::service::add(name, uuid);
-                        if(!service || !service->is_a(name))
-                        {
-                            throw std::runtime_error("Failed to create service: " + name);
-                        }
-
-                        m_services.emplace_back(service);
+                        // The destructor never runs for an object whose constructor threw: whatever
+                        // was registered before the failure has to be unwound here, or it stays in
+                        // the service registry for the rest of the process.
+                        stop_and_remove_all();
+                        throw;
                     }
                 }).get();
+    }
+
+    /// Creates, configures and starts the frame, the view and the requested services. Runs in the
+    /// worker thread, and throws on the first failure, leaving the unwinding to the caller.
+    void create(const std::vector<std::string>& _names)
+    {
+        m_frame = sight::service::add(FRAME_SERVICE);
+        if(!m_frame || !m_frame->is_a(FRAME_SERVICE))
+        {
+            throw std::runtime_error("Failed to create frame service");
+        }
+
+        sight::service::config_t frame_config;
+        frame_config.put("gui.frame.name", _names.front());
+        frame_config.put("gui.frame.min_size.<xmlattr>.width", "640");
+        frame_config.put("gui.frame.min_size.<xmlattr>.height", "480");
+        frame_config.put("registry.view.<xmlattr>.sid", m_view_uuid);
+
+        m_frame->configure(frame_config);
+        m_frame->start().get();
+
+        m_view = sight::service::add(VIEW_SERVICE, m_view_uuid);
+        if(!m_view || !m_view->is_a(VIEW_SERVICE))
+        {
+            throw std::runtime_error("Failed to create view service");
+        }
+
+        sight::service::config_t view_config;
+        view_config.put("gui.layout.<xmlattr>.type", "sight::ui::layout::line");
+        view_config.put("gui.layout.orientation.<xmlattr>.value", "vertical");
+
+        std::map<std::string, std::string> uuids;
+        std::ranges::for_each(
+            _names,
+            [&](const auto& _name)
+                {
+                    auto uuid = sight::core::tools::uuid::generate();
+                    std::erase(uuid, '-');
+                    uuids[_name] = uuid;
+                });
+
+        for(const auto& [name, uuid] : uuids)
+        {
+            sight::service::config_t view_proportion;
+            view_proportion.add("<xmlattr>.proportion", "0");
+            view_config.add_child("gui.layout.view", view_proportion);
+
+            sight::service::config_t view_sid;
+            view_sid.add("<xmlattr>.sid", uuid);
+            view_config.add_child("registry.view", view_sid);
+        }
+
+        m_view->configure(view_config);
+        m_view->start().get();
+
+        m_services.reserve(uuids.size());
+
+        for(const auto& [name, uuid] : uuids)
+        {
+            const auto service = sight::service::add(name, uuid);
+            if(!service || !service->is_a(name))
+            {
+                throw std::runtime_error("Failed to create service: " + name);
+            }
+
+            m_services.emplace_back(service);
+        }
+    }
+
+    /// Stops and unregisters everything create() registered. Runs in the worker thread, and never
+    /// throws: it is called from the destructor, where an exception would terminate the process, and
+    /// from the constructor's failure path, where it would mask the error that triggered it.
+    void stop_and_remove_all() noexcept
+    {
+        const auto discard =
+            [](const sight::service::base::sptr& _service)
+            {
+                try
+                {
+                    if(_service->started())
+                    {
+                        _service->stop().get();
+                    }
+                }
+                catch(...)
+                {
+                    // A service that refuses to stop must still leave the registry, just below.
+                }
+
+                try
+                {
+                    sight::service::remove(_service);
+                }
+                catch(...)
+                {
+                    // Nothing left to attempt, and this function must not throw.
+                }
+            };
+
+        for(const auto& service : m_services)
+        {
+            if(service)
+            {
+                discard(service);
+            }
+        }
+
+        if(m_view)
+        {
+            discard(m_view);
+        }
+
+        if(m_frame)
+        {
+            discard(m_frame);
+        }
+
+        m_services.clear();
+        m_view.reset();
+        m_frame.reset();
+
+        if(qApp)
+        {
+            qApp->processEvents();
+        }
     }
 
     ~service_keeper()
@@ -142,47 +218,7 @@ struct service_keeper final
         sight::core::thread::get_default_worker()->post_task<void>(
             [this]
                 {
-                    for(const auto& service : m_services)
-                    {
-                        if(service)
-                        {
-                            if(service->started())
-                            {
-                                service->stop().get();
-                            }
-
-                            sight::service::remove(service);
-                        }
-                    }
-
-                    if(m_view)
-                    {
-                        if(m_view->started())
-                        {
-                            m_view->stop().get();
-                        }
-
-                        sight::service::remove(m_view);
-                    }
-
-                    if(m_frame)
-                    {
-                        if(m_frame->started())
-                        {
-                            m_frame->stop().get();
-                        }
-
-                        sight::service::remove(m_frame);
-                    }
-
-                    m_services.clear();
-                    m_view.reset();
-                    m_frame.reset();
-
-                    if(qApp)
-                    {
-                        qApp->processEvents();
-                    }
+                    stop_and_remove_all();
                 }).get();
     }
 
@@ -418,9 +454,12 @@ bool gui_fixture::interact_with_widget(const std::string& _name, QEvent::Type _t
 
                     if(_type == QEvent::Gesture)
                     {
-                        auto* pinch = new QPinchGesture();
-                        pinch->setScaleFactor(_interaction_ratio.y() / 100.0);
-                        QGestureEvent gesture(QList<QGesture*>() << pinch);
+                        // QGestureEvent does not take ownership of the gestures it is given (they
+                        // normally belong to the QGestureManager), so the gesture must outlive the
+                        // event without being deleted by it: both live on the stack.
+                        QPinchGesture pinch;
+                        pinch.setScaleFactor(_interaction_ratio.y() / 100.0);
+                        QGestureEvent gesture(QList<QGesture*>() << &pinch);
 
                         return QApplication::sendEvent(widget, &gesture);
                     }

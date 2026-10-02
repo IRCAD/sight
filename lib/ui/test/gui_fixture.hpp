@@ -194,7 +194,20 @@ public:
         const std::string& _text = std::string()
     );
 
-    /// Interact with a widget by sending an event.
+    /**
+     * @brief Interact with a widget by sending it a synthetic event.
+     *
+     * @param _name name of the widget to interact with.
+     * @param _type MouseButtonPress, MouseMove, Wheel or Gesture (pinch); anything else does nothing.
+     * @param _interaction_ratio its meaning depends on @p _type, and is only a ratio for the mouse:
+     *        - mouse: position of the event, in percent of the widget width and height, (50, 50) being
+     *          its center;
+     *        - Wheel: forwarded as-is as the Qt angleDelta, in eighths of a degree - around 120 per
+     *          notch of a standard wheel, not a percentage;
+     *        - Gesture: y() is the pinch scale factor in percent, 100 leaving the scale unchanged;
+     *          x() is unused.
+     * @return true if the widget accepted the event.
+     */
     SIGHT_UI_TEST_API static bool interact_with_widget(
         const std::string& _name,
         QEvent::Type _type,
