@@ -44,9 +44,9 @@ public:
 
     using factory_registry_key_t = std::string;
 
-    using Stuff = std::function<void ()>;
+    using stuff = std::function<void ()>;
 
-    using MilliSecond = std::uint64_t;
+    using millisecond = std::uint64_t;
 
     /// this *unique* key should  be used *for all* factory for specific location(qt,wx,...)
     SIGHT_UI_API static const factory_registry_key_t REGISTRY_KEY;
@@ -61,10 +61,10 @@ public:
     SIGHT_UI_API virtual void set_message(const std::string& _msg) = 0;
 
     ///set the stuff
-    SIGHT_UI_API virtual void set_stuff(Stuff _stuff);
+    SIGHT_UI_API virtual void set_stuff(stuff _stuff);
 
     ///set the frequency
-    SIGHT_UI_API virtual void set_frequency(MilliSecond _frequency);
+    SIGHT_UI_API virtual void set_frequency(millisecond _frequency);
 
     ///allow to cancel the dialog
     SIGHT_UI_API virtual void set_cancellable(bool _cancellable);
@@ -74,11 +74,11 @@ public:
 
 protected:
 
-    Stuff m_stuff; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
+    stuff m_stuff; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
 
 private:
 
-    MilliSecond m_frequency {1};
+    millisecond m_frequency {1};
     bool m_cancellable {true};
 };
 

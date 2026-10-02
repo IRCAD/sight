@@ -44,7 +44,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    static sptr make(const std::string& _title, const ui::dialog::pulse_progress_base::Stuff& _stuff)
+    static sptr make(const std::string& _title, const ui::dialog::pulse_progress_base::stuff& _stuff)
     {
         return std::make_shared<pulse_progress>(_title, _stuff);
     }
@@ -52,9 +52,9 @@ public:
     /// will instantiate the concrete implementation
     SIGHT_UI_API pulse_progress(
         const std::string& _title,
-        Stuff _stuff,
+        stuff _stuff,
         const std::string& _msg                                         = std::string(),
-        ui::dialog::pulse_progress_base::MilliSecond _frequency_refresh = 100,
+        ui::dialog::pulse_progress_base::millisecond _frequency_refresh = 100,
         bool _cancellable                                               = true
     );
 
@@ -62,7 +62,7 @@ public:
     SIGHT_UI_API void set_title(const std::string& _title) override;
 
     ///set the message for the dialog
-    SIGHT_UI_API void set_message(const std::string& _message) override;
+    SIGHT_UI_API void set_message(const std::string& _msg) override;
 
     ///allow to cancel the dialog
     SIGHT_UI_API void set_cancellable(bool _cancellable) override;

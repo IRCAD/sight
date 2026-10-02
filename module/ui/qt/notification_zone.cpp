@@ -29,11 +29,12 @@
 
 #include <ui/qt/container/widget.hpp>
 
-#include <QApplication>
+#include <QAudioDevice>
 #include <QAudioOutput>
 #include <QEvent>
 #include <QHBoxLayout>
 #include <QIcon>
+#include <QMediaDevices>
 
 #include <utility>
 
@@ -192,9 +193,16 @@ void notification_zone::starting()
 
     main_layout->addWidget(m_stack);
 
-    m_sound = std::make_unique<QMediaPlayer>(qApp);
-    auto* audio_output = new QAudioOutput(qApp);
-    m_sound->setAudioOutput(audio_output);
+    if(!QMediaDevices::audioOutputs().isEmpty())
+    {
+        m_sound = std::make_unique<QMediaPlayer>();
+        auto* audio_output = new QAudioOutput(m_sound.get());
+        m_sound->setAudioOutput(audio_output);
+    }
+    else
+    {
+        SIGHT_WARN("No audio outputs available");
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -207,6 +215,12 @@ void notification_zone::updating()
 
 void notification_zone::stopping()
 {
+    if(m_sound)
+    {
+        m_sound->stop();
+        m_sound.reset();
+    }
+
     this->clear();
 
     if(m_stack != nullptr)
@@ -515,6 +529,11 @@ int notification_zone::resolve_duration_ms(const sight::core::notification::mess
 
 void notification_zone::play_sound(const sight::core::notification::base::sptr& _notification) const
 {
+    if(!m_sound)
+    {
+        return;
+    }
+
     static const auto s_INFO_SOUND = std::filesystem::canonical(
         sight::core::runtime::get_resource_file_path("sight::module::ui::qt/sounds/info_beep.wav")
     );

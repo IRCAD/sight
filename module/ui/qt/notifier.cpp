@@ -33,8 +33,9 @@
 
 #include <boost/range/iterator_range_core.hpp>
 
-#include <QApplication>
+#include <QAudioDevice>
 #include <QAudioOutput>
+#include <QMediaDevices>
 
 namespace sight::module::ui::qt
 {
@@ -235,11 +236,6 @@ void notifier::configuring()
         }
     }
 
-    // Lastly, initialize sound strutures.
-    m_sound = std::make_unique<QMediaPlayer>(qApp);
-    auto* audio_output = new QAudioOutput(qApp);
-    m_sound->setAudioOutput(audio_output);
-
     m_default_message     = config.get<std::string>("message", m_default_message);
     m_parent_container_id = config.get<std::string>("parent.<xmlattr>.uid", m_parent_container_id);
 }
@@ -248,6 +244,17 @@ void notifier::configuring()
 
 void notifier::starting()
 {
+    if(!QMediaDevices::audioOutputs().isEmpty())
+    {
+        m_sound = std::make_unique<QMediaPlayer>();
+        auto* audio_output = new QAudioOutput(m_sound.get());
+        m_sound->setAudioOutput(audio_output);
+    }
+    else
+    {
+        SIGHT_WARN("No audio outputs available");
+    }
+
     if(!m_parent_container_id.empty())
     {
         auto container = sight::ui::registry::get_sid_container(m_parent_container_id);
@@ -269,6 +276,12 @@ void notifier::starting()
 
 void notifier::stopping()
 {
+    if(m_sound)
+    {
+        m_sound->stop();
+        m_sound.reset();
+    }
+
     for(const auto& [position, stack] : m_stacks)
     {
         for(const auto& popup : stack.popups)
@@ -487,12 +500,15 @@ void notifier::display(sight::ui::dialog::notification_base::params _params)
             SOUND_BOARD.contains(_params.m_type)
         );
 
-        m_sound->setSource(
-            QUrl::fromLocalFile(
-                QString::fromStdString(SOUND_BOARD.at(_params.m_type).string())
-            )
-        );
-        m_sound->play();
+        if(m_sound)
+        {
+            m_sound->setSource(
+                QUrl::fromLocalFile(
+                    QString::fromStdString(SOUND_BOARD.at(_params.m_type).string())
+                )
+            );
+            m_sound->play();
+        }
     }
 }
 

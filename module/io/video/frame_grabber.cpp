@@ -224,6 +224,7 @@ void frame_grabber::read_video(const std::filesystem::path& _file)
     core::mt::scoped_lock lock(m_mutex);
 
     m_video_capture.open(_file.string());
+    SIGHT_INFO("OpenCV video backend: " << m_video_capture.getBackendName());
 
     if(m_video_capture.isOpened())
     {
@@ -310,6 +311,8 @@ void frame_grabber::read_device(const data::camera& _camera)
     }
 #endif
 
+    SIGHT_INFO("OpenCV device backend: " << m_video_capture.getBackendName());
+
     if(m_video_capture.isOpened())
     {
         m_timer = m_worker->create_timer();
@@ -350,6 +353,7 @@ void frame_grabber::read_stream(const data::camera& _camera)
     core::mt::scoped_lock lock(m_mutex);
 
     m_video_capture.open(_camera.get_stream_url());
+    SIGHT_INFO("OpenCV stream backend: " << m_video_capture.getBackendName());
 
     if(m_video_capture.isOpened())
     {

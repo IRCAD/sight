@@ -70,6 +70,7 @@ public:
 
 protected:
 
+    //NOLINTBEGIN (misc-non-private-member-variables-in-classes)
     /// Dialog title
     std::string m_title;
 
@@ -81,6 +82,7 @@ protected:
 
     /// Echo mode
     input::echo_mode m_echo_mode {input::echo_mode::normal};
+    //NOLINTEND (misc-non-private-member-variables-in-classes)
 };
 
 } // namespace sight::ui::qt::dialog
