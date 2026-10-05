@@ -196,11 +196,11 @@ void shader_parameter_editor::update_gui_info()
             auto param_config  = module::ui::viz::helper::parameter_editor::create_config(param_adaptor);
 
             const auto obj = param_adaptor->inout(sight::viz::scene3d::parameter_adaptor::PARAMETER_INOUT).lock();
-            editor_service->set_inout(obj.get_shared(), "keys", true, false, i++);
+            editor_service->set_inout(obj.get_shared(), "item.data", true, false, i++);
 
             if(!param_config.empty())
             {
-                editor_config.add_child("ui.item", param_config);
+                editor_config.add_child("item", param_config);
             }
         }
     }

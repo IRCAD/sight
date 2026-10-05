@@ -158,7 +158,7 @@ void compositor_parameter_editor::update_compositor(
 
                 if(!param_config.empty())
                 {
-                    editor_config.add_child("ui.item", param_config);
+                    editor_config.add_child("item", param_config);
                 }
             }
         }
