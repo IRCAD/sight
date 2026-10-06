@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2026 IRCAD France
- * Copyright (C) 2012-2020 IHU Strasbourg
+ * Copyright (C) 2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,47 +19,61 @@
  *
  ***********************************************************************/
 
-#include "module/filter/image/threshold.hpp"
+#include "module/filter/image/over.hpp"
 
-#include <data/image.hpp>
-#include <data/image_series.hpp>
+#include <filter/image/over.hpp>
 
-#include <filter/image/threshold.hpp>
+#include <algorithm>
 
 namespace sight::module::filter::image
 {
 
 //-----------------------------------------------------------------------------
 
-threshold::threshold() noexcept :
+over::over() noexcept :
     filter(has_signals::signals())
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void threshold::starting()
+void over::starting()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void threshold::stopping()
+void over::stopping()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void threshold::updating()
+void over::updating()
 {
-    // retrieve the input object
-    auto input  = m_source.lock();
-    auto output = m_target.lock();
+    std::vector<data::image::csptr> images;
+    std::vector<data::mt::locked_ptr<const data::image> > locked_images;
+    images.reserve(m_images.size());
+    locked_images.reserve(m_images.size());
 
-    SIGHT_THROW_IF("Invalid input image", !input);
-    SIGHT_THROW_IF("Invalid output image", !output);
+    for(const auto& [index, image_ptr] : m_images)
+    {
+        SIGHT_NOT_USED(index);
+        auto image = image_ptr->lock();
+        SIGHT_THROW_IF("An input image is not set.", !image);
+        images.push_back(image.get_shared());
+        locked_images.push_back(std::move(image));
+    }
 
-    if(input->num_elements() == 0)
+    auto output = m_output.lock();
+    SIGHT_THROW_IF("The output image is not set.", !output);
+
+    if(std::ranges::any_of(
+           images,
+           [](const auto& _image)
+        {
+            return _image->num_elements() == 0;
+        }))
     {
         output->shallow_copy(data::factory::make(output->get_classname()));
         output->async_emit(data::signals::MODIFIED);
@@ -68,12 +81,12 @@ void threshold::updating()
         return;
     }
 
-    if(output->size() != input->size())
+    if(output->size() != images.front()->size())
     {
-        output->resize(input->size(), input->type(), input->pixel_format());
+        output->resize(images.front()->size(), images.front()->type(), images.front()->pixel_format());
     }
 
-    sight::filter::image::threshold(*input, *m_lower_threshold, *m_upper_threshold, *output, *m_binary);
+    sight::filter::image::over(images, *output);
     output->async_emit(data::signals::MODIFIED);
     this->async_emit(signals::SUCCEEDED);
 }

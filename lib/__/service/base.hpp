@@ -155,6 +155,12 @@ public:
     using ptr_out = sight::data::ptr<T, sight::data::access::out>;
     template<typename T>
     using ptr_inout = sight::data::ptr<T, sight::data::access::inout>;
+    template<typename T>
+    using ptr_vector_in = sight::data::ptr_vector<T, sight::data::access::in>;
+    template<typename T>
+    using ptr_vector_out = sight::data::ptr_vector<T, sight::data::access::out>;
+    template<typename T>
+    using ptr_vector_inout = sight::data::ptr_vector<T, sight::data::access::inout>;
     /**
      * @name Definition of service status
      */

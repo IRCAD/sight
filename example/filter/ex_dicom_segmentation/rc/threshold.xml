@@ -49,9 +49,7 @@
         <service uid="thresholdAct" type="sight::module::filter::image::threshold">
             <input image="${image_series}" />
             <output image="${image_series_mask}" />
-            <config>
-                <threshold>50</threshold>
-            </config>
+            <config lower="50" upper="255" />
         </service>
 
         <service uid="exportAct" type="sight::module::ui::series::exporter" auto_connect="true">

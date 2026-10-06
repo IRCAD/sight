@@ -9,9 +9,8 @@
 
             <!-- This is the source image for the filtering. -->
             <object uid="image1" type="sight::data::image" />
-            <!-- This is the output image for the filtering. "deferred" defines that the image is not created at the
-                 beginning, but will be created by a service. -->
-            <object uid="image2" type="sight::data::image" deferred="true" />
+            <!-- This is the output image for the filtering. -->
+            <object uid="image2" type="sight::data::image" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
@@ -116,9 +115,7 @@
             <service uid="image_filter_srv" type="sight::module::filter::image::threshold">
                 <input image="${image1}" />
                 <output image="${image2}" />
-                <config>
-                    <threshold>50</threshold>
-                </config>
+                <config lower="50" upper="255" />
             </service>
 
             <!--

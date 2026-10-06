@@ -54,30 +54,34 @@ void flip::starting()
 
 void flip::updating()
 {
-    const auto in_img = m_source.lock();
+    auto input  = m_source.lock();
+    auto output = m_target.lock();
 
-    SIGHT_ASSERT("No 'input.image' found !", in_img);
-    if(in_img)
+    SIGHT_THROW_IF("Invalid input image", !input);
+    SIGHT_THROW_IF("Invalid output image", !output);
+
+    if(input->num_elements() == 0)
     {
-        data::image::sptr out_img = std::make_shared<data::image>();
-
-        sight::filter::image::flipper::flip(in_img.get_shared(), out_img, m_flip_axes);
-
-        m_target = out_img;
-
+        output->shallow_copy(data::factory::make(output->get_classname()));
+        output->async_emit(data::signals::MODIFIED);
         this->async_emit(signals::SUCCEEDED);
+        return;
     }
-    else
+
+    if(output->size() != input->size())
     {
-        SIGHT_ERROR("An update was triggered with an empty image as input. No output image was created.");
+        output->resize(input->size(), input->type(), input->pixel_format());
     }
+
+    sight::filter::image::flipper::flip(input.get_shared(), output.get_shared(), m_flip_axes);
+    output->async_emit(data::signals::MODIFIED);
+    this->async_emit(signals::SUCCEEDED);
 }
 
 //------------------------------------------------------------------------------
 
 void flip::stopping()
 {
-    m_target.reset();
 }
 
 //------------------------------------------------------------------------------
@@ -109,8 +113,8 @@ void flip::flip_axis_z()
 service::connections_t flip::auto_connections() const
 {
     return {
-        {IMAGE_IN, data::signals::MODIFIED, service::slots::UPDATE},
-        {IMAGE_IN, data::image::signals::BUFFER_MODIFIED, service::slots::UPDATE}
+        {"input.image", data::signals::MODIFIED, service::slots::UPDATE},
+        {"input.image", data::image::signals::BUFFER_MODIFIED, service::slots::UPDATE}
     };
 }
 

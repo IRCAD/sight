@@ -125,9 +125,20 @@
 
     <extension implements="sight::service::extension::factory">
         <type>sight::service::filter</type>
+        <service>sight::module::filter::image::over</service>
+        <object key="input.image">sight::data::image</object>
+        <object key="output.image">sight::data::image</object>
+        <desc>Overlays ordered images, with zero-valued pixels treated as transparent.</desc>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::service::filter</type>
         <service>sight::module::filter::image::threshold</service>
         <object key="input.image">sight::data::object</object>
         <object key="output.image">sight::data::object</object>
+        <object key="config.lower">sight::data::integer</object>
+        <object key="config.upper">sight::data::integer</object>
+        <object key="config.binary">sight::data::boolean</object>
         <desc>Apply a threshold on an image.</desc>
     </extension>
 </plugin>

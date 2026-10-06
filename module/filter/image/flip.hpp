@@ -47,10 +47,10 @@ namespace sight::module::filter::image
    @endcode
  * @subsection Input Input
  * - \b input.image [sight::data::image]: image to flip.
- * @subsection Output Output:
+ * @subsection In-Out In-Out:
  * - \b output.image [sight::data::image]: New flipped image.
  */
-class flip : public service::filter
+class flip final : public service::filter
 {
 public:
 
@@ -67,21 +67,21 @@ public:
     flip();
 
     /// Destructor, does nothing.
-    ~flip() override = default;
+    ~flip() final = default;
 
 protected:
 
     /// Configures the service.
-    void configuring() override;
+    void configuring() final;
 
     /// Does nothing.
-    void starting() override;
+    void starting() final;
 
     /// Does nothing.
-    void stopping() override;
+    void stopping() final;
 
     /// Apply the flip operator.
-    void updating() override;
+    void updating() final;
 
     /**
      * @brief Signal-slot auto-connection proposals
@@ -89,7 +89,7 @@ protected:
      * Connect data::signals::MODIFIED to this::service::slots::UPDATE
      * Connect image::signals::BUFFER_MODIFIED to this::service::slots::UPDATE
      */
-    connections_t auto_connections() const override;
+    connections_t auto_connections() const final;
 
 private:
 
@@ -105,11 +105,8 @@ private:
     // Store whether to flip or not one of the 3 axis
     std::array<bool, 3> m_flip_axes {{false, false, false}};
 
-    static constexpr std::string_view IMAGE_IN  = "input.image";
-    static constexpr std::string_view IMAGE_OUT = "output.image";
-
-    sight::data::ptr<sight::data::image, sight::data::access::in> m_source {this, IMAGE_IN};
-    sight::data::ptr<sight::data::image, sight::data::access::out> m_target {this, IMAGE_OUT};
+    ptr_in<sight::data::image> m_source {this, "input.image"};
+    ptr_inout<sight::data::image> m_target {this, "output.image"};
 };
 
 } // namespace sight::module::filter::image
