@@ -25,6 +25,11 @@ macro(win_package PRJ_NAME)
 
     set(CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL ON)
 
+    # lz4 is much faster than lzma but produces bigger installers
+    set(SIGHT_NSIS_COMPRESSOR "lzma" CACHE STRING "NSIS compressor")
+    set_property(CACHE SIGHT_NSIS_COMPRESSOR PROPERTY STRINGS lzma lz4 zlib bzip2)
+    set(CPACK_NSIS_COMPRESSOR "${SIGHT_NSIS_COMPRESSOR}")
+
     set(CPACK_NSIS_URL_INFO_ABOUT "https://github.com/IRCAD/sight")
     set(CPACK_NSIS_CONTACT "https://gitter.im/IRCAD-IHU/sight-support")
 

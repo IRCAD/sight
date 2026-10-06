@@ -682,7 +682,12 @@ macro(fw_lib SIGHT_TARGET OBJECT_LIBRARY)
         )
 
         if(WIN32)
-            install(FILES $<TARGET_PDB_FILE:${SIGHT_TARGET}> DESTINATION ${CMAKE_INSTALL_BINDIR} OPTIONAL)
+            install(
+                FILES $<TARGET_PDB_FILE:${SIGHT_TARGET}>
+                DESTINATION ${CMAKE_INSTALL_BINDIR}
+                CONFIGURATIONS Debug RelWithDebInfo
+                OPTIONAL
+            )
         endif()
 
         # Add all targets to the build-tree export set
@@ -1286,7 +1291,6 @@ function(sight_create_package_targets SIGHT_COMPONENTS SIGHT_IMPORTED_COMPONENTS
                 ${APP}_install_plugins
                 ${CMAKE_COMMAND}
                 -DDEPENDS="${DEPENDS}"
-                -DBUILD_TYPE=${CMAKE_BUILD_TYPE}
                 -DQT_PLUGINS_SOURCE_DIR="${Qt6_DIR}/../..$<$<CONFIG:Debug>:/debug>/Qt6/plugins"
                 -DPLUGINS_DESTINATION="${CMAKE_INSTALL_BINDIR}/.."
                 -DOGRE_PLUGINS_SOURCE_DIR="${OGRE_PLUGIN_DIR}/../..$<$<CONFIG:Debug>:/debug>/plugins"
@@ -1302,7 +1306,6 @@ function(sight_create_package_targets SIGHT_COMPONENTS SIGHT_IMPORTED_COMPONENTS
                 set(SIGHT_VCPKG_ROOT_DIR "${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/debug")
             else()
                 set(SIGHT_VCPKG_ROOT_DIR "${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}")
-                set(EXCLUDE_PATTERN ".*/debug/.*")
             endif()
             set(LAUNCHER_PATH "${CMAKE_INSTALL_BINDIR}/sightrun.exe")
 
@@ -1311,7 +1314,10 @@ function(sight_create_package_targets SIGHT_COMPONENTS SIGHT_IMPORTED_COMPONENTS
                 @ONLY
             )
             add_custom_target(
-                ${APP}_fixup ${CMAKE_COMMAND} -P ${CMAKE_BINARY_DIR}/windows_fixup.cmake
+                ${APP}_fixup
+                ${CMAKE_COMMAND}
+                -DSIGHT_RUNTIME_DEPENDENCIES_MANIFEST=${CMAKE_BINARY_DIR}/${APP}-runtime-dependencies.tsv -P
+                ${CMAKE_BINARY_DIR}/windows_fixup.cmake
                 COMMENT "Fixup before packaging..."
             )
             add_dependencies(${APP}_fixup ${APP}_install ${APP}_install_plugins)
