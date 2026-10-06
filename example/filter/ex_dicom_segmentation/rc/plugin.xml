@@ -2,6 +2,7 @@
     <requirement id="sight::module::activity" />
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
+    <requirement id="sight::module::data" />
     <requirement id="sight::module::viz::scene3d" />
     <requirement id="sight::module::viz::scene3d_qt" />
     <requirement id="sight::module::ui" />
@@ -16,7 +17,7 @@
         <desc>Mesher activity using VTK</desc>
         <icon>sight::module::ui::icons/image_series.svg</icon>
         <requirements>
-            <requirement name="imageSeries" type="sight::data::image_series" minOccurs="1" maxOccurs="1" />
+            <requirement name="image_series" type="sight::data::image_series" minOccurs="1" maxOccurs="1" />
         </requirements>
         <builder>sight::activity::builder::Activity</builder>
         <appConfig id="ExDicomSegmentation_VTKMesher_AppCfg" />
@@ -28,7 +29,7 @@
         <desc>Simple threshold activity</desc>
         <icon>sight::module::ui::icons/image_series.svg</icon>
         <requirements>
-            <requirement name="imageSeries" type="sight::data::image_series" minOccurs="1" maxOccurs="1" />
+            <requirement name="image_series" type="sight::data::image_series" minOccurs="1" maxOccurs="1" />
         </requirements>
         <builder>sight::activity::builder::Activity</builder>
         <appConfig id="ExDicomSegmentation_Threshold_AppCfg" />
@@ -50,7 +51,7 @@
         <config>
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <object uid="seriesSet" type="sight::data::series_set" />
+            <object uid="series_set" type="sight::data::series_set" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
@@ -69,7 +70,7 @@
             <!-- ******************************* Services ***************************************** -->
 
             <service uid="dynamicViewSrv" type="sight::module::ui::qt::activity::dynamic_view">
-                <object name="seriesSet" uid="seriesSet" />
+                <object name="series_set" uid="series_set" />
                 <mainActivity id="ExDicomSegmentation_Base_Activity" closable="false" />
                 <param name="ICON_PATH" value="ex_dicom_segmentation/tuto.ico" />
                 <param name="DYNAMICVIEW_SENDER_CHANNEL" value="dynamicview_receiver_channel" />

@@ -412,9 +412,25 @@ void manage::internal_add(bool _copy)
         else if(const auto series_set = std::dynamic_pointer_cast<sight::data::series_set>(container.get_shared());
                 series_set)
         {
-            auto series               = std::dynamic_pointer_cast<sight::data::series>(obj);
             const auto scoped_emitter = series_set->scoped_emit();
-            series_set->push_back(series);
+
+            if(const auto source_series_set = std::dynamic_pointer_cast<sight::data::series_set>(obj);
+               source_series_set)
+            {
+                for(const auto& series : *source_series_set)
+                {
+                    series_set->push_back(series);
+                }
+            }
+            else if(const auto series = std::dynamic_pointer_cast<sight::data::series>(obj); series)
+            {
+                series_set->push_back(series);
+            }
+            else
+            {
+                this->async_emit(signals::FAILED);
+                SIGHT_WARN("The object to add to a series_set must be a series or a series_set.");
+            }
         }
         else
         {

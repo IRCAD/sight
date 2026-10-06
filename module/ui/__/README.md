@@ -37,8 +37,6 @@ and are, therefore, contained in sub-folders according to their specificity.
 * **SAddDistance**: adds distances on an image field.
 
 ### series
-* **db_merger**: allows to load a new series_set and merge it with the current series_set.
-
 * **export**: allows to export the series specified in config to the series_set.
 
 * **export_with_series_set**: allows to export the current series using a temporary series_set.

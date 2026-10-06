@@ -1,5 +1,6 @@
 <plugin id="ex_dump">
     <requirement id="sight::module::service" />
+    <requirement id="sight::module::data" />
     <requirement id="sight::module::io::session" />
     <requirement id="sight::module::ui" />
     <requirement id="sight::module::memory" />
@@ -12,6 +13,7 @@
             <!-- ******************************* Objects declaration ****************************** -->
 
             <object uid="seriesSet" type="sight::data::series_set" />
+            <object uid="importSeriesSet" type="sight::data::series_set" />
             <object uid="selections" type="sight::data::vector" />
 
             <!-- ******************************* UI declaration *********************************** -->
@@ -134,10 +136,7 @@
 
             <service uid="quitAct" type="sight::module::ui::quit" />
 
-            <service uid="openAct" type="sight::module::ui::series::db_merger">
-                <inout key="seriesSet" uid="seriesSet" />
-                <IOSelectorSrvConfig name="FullSDBReaderIOSelectorConfig" />
-            </service>
+            <service uid="openAct" type="sight::module::ui::action" />
 
             <service uid="saveAct" type="sight::module::ui::action" />
 
@@ -159,6 +158,15 @@
 
             <service uid="dumpAllAct" type="sight::module::debug::action::dump_all" />
 
+            <service uid="openSelectorSrv" type="sight::module::ui::io::selector" config="FullSDBReaderIOSelectorConfig">
+                <data read="${importSeriesSet}" />
+            </service>
+
+            <service uid="mergeImportedSeriesSrv" type="sight::module::data::manage">
+                <data element="${importSeriesSet}" />
+                <data container="${seriesSet}" />
+            </service>
+
             <!-- ******************************* Services ***************************************** -->
 
             <service uid="SDBWriterSrv" type="sight::module::ui::io::selector" config="SDBSessionWriterIOSelectorConfig">
@@ -166,7 +174,7 @@
             </service>
 
             <service uid="selectorSrv" type="sight::module::ui::qt::series::selector" auto_connect="true">
-                <inout key="seriesSet" uid="seriesSet" />
+                <inout key="series_set" uid="seriesSet" />
                 <inout key="selection" uid="selections" />
             </service>
 
@@ -186,6 +194,16 @@
             <connect>
                 <signal>saveAct/clicked</signal>
                 <slot>SDBWriterSrv/update</slot>
+            </connect>
+
+            <connect>
+                <signal>openAct/clicked</signal>
+                <slot>openSelectorSrv/update</slot>
+            </connect>
+
+            <connect>
+                <signal>openSelectorSrv/succeeded</signal>
+                <slot>mergeImportedSeriesSrv/add</slot>
             </connect>
         </config>
     </extension>

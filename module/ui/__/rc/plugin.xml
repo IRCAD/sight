@@ -85,13 +85,6 @@
 
     <extension implements="sight::service::extension::factory">
         <type>sight::ui::action</type>
-        <service>sight::module::ui::series::db_merger</service>
-        <object>sight::data::series_set</object>
-        <desc>This action allows to load a new SeriesSet and merge it with the current SeriesSet</desc>
-    </extension>
-
-    <extension implements="sight::service::extension::factory">
-        <type>sight::ui::action</type>
         <service>sight::module::ui::series::exporter</service>
         <object>sight::data::series_set</object>
         <desc>This action allows to export the series specified in config to the SeriesSet.</desc>

@@ -10,11 +10,11 @@
     <config>
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="image_series_mask" type="sight::data::image_series" deferred="true" />
+        <object uid="image_series_mask" type="sight::data::image_series" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="sight::module::ui::view">
+        <service uid="main_view" type="sight::module::ui::view">
             <gui>
                 <layout type="sight::ui::layout::line">
                     <orientation value="horizontal" />
@@ -25,13 +25,13 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <toolbar sid="toolBarView" />
-                <view wid="negato1View" />
-                <view wid="negato2View" />
+                <toolbar sid="tool_bar_view" />
+                <view wid="negato1_view" />
+                <view wid="negato2_view" />
             </registry>
         </service>
 
-        <service uid="toolBarView" type="sight::module::ui::toolbar">
+        <service uid="tool_bar_view" type="sight::module::ui::toolbar">
             <gui>
                 <layout>
                     <menuItem name="Threshold" icon="sight::module::ui::icons/menu.svg" />
@@ -39,37 +39,44 @@
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="thresholdAct" />
-                <menuItem sid="exportAct" />
+                <menuItem sid="threshold_act" />
+                <menuItem sid="export_act" />
             </registry>
         </service>
 
         <!-- ************************************* Action ************************************ -->
 
-        <service uid="thresholdAct" type="sight::module::filter::image::threshold">
+        <service uid="threshold_act" type="sight::module::ui::action" />
+
+        <service uid="threshold_srv" type="sight::module::filter::image::threshold">
             <input image="${image_series}" />
             <output image="${image_series_mask}" />
             <config lower="50" upper="255" />
         </service>
 
-        <service uid="exportAct" type="sight::module::ui::series::exporter" auto_connect="true">
+        <service uid="export_act" type="sight::module::ui::series::exporter" auto_connect="true">
             <data container="${series_set}" element="${image_series_mask}" />
         </service>
 
         <!-- ******************************* Services ***************************************** -->
 
-        <service uid="negato1Srv" type="sight::app::config_launcher">
+        <service uid="negato1_srv" type="sight::app::config_launcher">
             <config id="sight::activity::viz::negato::2d" />
             <object name="image" uid="${image_series}" />
-            <param name="WID_PARENT" value="negato1View" />
+            <param name="WID_PARENT" value="negato1_view" />
             <param name="patient_name" value="Source Image" />
         </service>
 
-        <service uid="negato2Srv" type="sight::app::config_launcher">
+        <service uid="negato2_srv" type="sight::app::config_launcher">
             <config id="sight::activity::viz::negato::2d" />
             <object name="image" uid="${image_series_mask}" />
-            <param name="WID_PARENT" value="negato2View" />
+            <param name="WID_PARENT" value="negato2_view" />
             <param name="patient_name" value="Mask Image" />
         </service>
+
+        <connect>
+            <signal>threshold_act/clicked</signal>
+            <slot>threshold_srv/update</slot>
+        </connect>
     </config>
 </extension>

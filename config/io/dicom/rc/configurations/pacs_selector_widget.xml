@@ -420,7 +420,7 @@
         </service>
 
         <service uid="preview_selector_srv" type="sight::module::ui::qt::series::selector" auto_connect="true">
-            <inout key="seriesSet" uid="previewSeriesSet" />
+            <inout key="series_set" uid="previewSeriesSet" />
             <inout key="selection" uid="previewSelections" />
             <icons>
                 <icon series="sight::data::series" icon="sight::module::ui::icons/image_series.svg" />
@@ -445,7 +445,7 @@
 
         <!--LOCAL-->
         <service uid="local_selector_srv" type="sight::module::ui::qt::series::selector" auto_connect="true">
-            <inout key="seriesSet" uid="localSeriesSet" />
+            <inout key="series_set" uid="localSeriesSet" />
             <inout key="selection" uid="localSelections" />
             <icons>
                 <icon series="sight::data::image_series" icon="sight::module::ui::icons/volume.svg" />

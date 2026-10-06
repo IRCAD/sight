@@ -82,6 +82,8 @@ namespace sight::module::data
       <data container="..." />
    </service>
    @endcode
+ * When the element is a series, it is added to the target series_set. When both the element and container are
+ * series_sets, the element's series are merged into the target. The \c add_copy slot deep-copies the source first.
  *
  * For data::object:
  * @code{.xml}

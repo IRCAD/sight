@@ -1,7 +1,7 @@
 <extension implements="sight::app::extension::config">
     <id>ExDicomSegmentation_Base_AppCfg</id>
     <parameters>
-        <object uid="seriesSet" type="sight::data::series_set" />
+        <object uid="series_set" type="sight::data::series_set" />
 
         <param name="WID_PARENT" />
         <param name="DYNAMICVIEW_SENDER_CHANNEL" default="channel" />
@@ -10,6 +10,7 @@
         <!-- ******************************* Objects declaration ****************************** -->
 
         <object uid="selection" type="sight::data::vector" />
+        <object uid="importseries_set" type="sight::data::series_set" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
@@ -62,12 +63,9 @@
 
         <!-- ************************************* Action ************************************ -->
 
-        <service uid="importAct" type="sight::module::ui::series::db_merger">
-            <inout key="seriesSet" uid="${seriesSet}" />
-            <IOSelectorSrvConfig name="SDBReaderIOSelectorConfig" />
-        </service>
+        <service uid="importAct" type="sight::module::ui::action" />
 
-        <service uid="exportAct" type="sight::module::ui::qt::activity::launcher" auto_connect="true">
+        <service uid="exportAct" type="sight::module::ui::qt::activity::launcher">
             <in key="series" uid="selection" />
             <config>
                 <mode>immediate</mode>
@@ -81,11 +79,11 @@
             </config>
         </service>
 
-        <service uid="mesherAct" type="sight::module::ui::qt::activity::launcher" auto_connect="true">
+        <service uid="mesherAct" type="sight::module::ui::qt::activity::launcher">
             <in key="series" uid="selection" />
             <config>
                 <parameters>
-                    <parameter replace="seriesSet" by="${seriesSet}" />
+                    <parameter replace="series_set" by="${series_set}" />
                 </parameters>
                 <filter>
                     <mode>include</mode>
@@ -94,11 +92,11 @@
             </config>
         </service>
 
-        <service uid="thresholdAct" type="sight::module::ui::qt::activity::launcher" auto_connect="true">
+        <service uid="thresholdAct" type="sight::module::ui::qt::activity::launcher">
             <in key="series" uid="selection" />
             <config>
                 <parameters>
-                    <parameter replace="seriesSet" by="${seriesSet}" />
+                    <parameter replace="series_set" by="${series_set}" />
                 </parameters>
                 <filter>
                     <mode>include</mode>
@@ -109,12 +107,21 @@
 
         <!-- ******************************* Services ***************************************** -->
 
-        <service uid="selectorSrv" type="sight::module::ui::qt::series::selector" auto_connect="true">
-            <inout key="seriesSet" uid="${seriesSet}" />
+        <service uid="importSelectorSrv" type="sight::module::ui::io::selector" config="SDBReaderIOSelectorConfig">
+            <data read="${importseries_set}" />
+        </service>
+
+        <service uid="mergeImportedSeriesSrv" type="sight::module::data::manage">
+            <data element="${importseries_set}" />
+            <data container="${series_set}" />
+        </service>
+
+        <service uid="selectorSrv" type="sight::module::ui::qt::series::selector">
+            <inout key="series_set" uid="${series_set}" />
             <inout key="selection" uid="selection" />
         </service>
 
-        <service uid="seriesViewerSrv" type="sight::module::ui::qt::series::viewer" auto_connect="true">
+        <service uid="seriesViewerSrv" type="sight::module::ui::qt::series::viewer">
             <in key="series" uid="selection" />
             <parentView wid="previewView" />
             <configs>
@@ -124,6 +131,16 @@
         </service>
 
         <!-- ******************************* Connections ***************************************** -->
+
+        <connect>
+            <signal>importAct/clicked</signal>
+            <slot>importSelectorSrv/update</slot>
+        </connect>
+
+        <connect>
+            <signal>importSelectorSrv/succeeded</signal>
+            <slot>mergeImportedSeriesSrv/add</slot>
+        </connect>
 
         <connect channel="${DYNAMICVIEW_SENDER_CHANNEL}">
             <signal>thresholdAct/activity_launched</signal>

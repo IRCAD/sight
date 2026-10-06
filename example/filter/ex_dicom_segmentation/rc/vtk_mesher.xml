@@ -1,8 +1,8 @@
 <extension implements="sight::app::extension::config">
     <id>ExDicomSegmentation_VTKMesher_AppCfg</id>
     <parameters>
-        <object uid="seriesSet" type="sight::data::series_set" />
-        <object uid="imageSeries" type="sight::data::image_series" />
+        <object uid="series_set" type="sight::data::series_set" />
+        <object uid="image_series" type="sight::data::image_series" />
 
         <param name="WID_PARENT" />
         <param name="GENERIC_UID" />
@@ -11,13 +11,13 @@
         <!-- ******************************* Objects declaration ****************************** -->
 
         <object uid="tf" type="sight::data::transfer_function" />
-        <object uid="modelSeries" type="sight::data::model_series" />
-        <object uid="reconstructionUID" type="sight::data::reconstruction" deferred="true" />
+        <object uid="model_series" type="sight::data::model_series" />
+        <object uid="reconstruction" type="sight::data::reconstruction" deferred="true" />
         <object uid="snapshot" type="sight::data::image" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="sight::module::ui::view">
+        <service uid="main_view" type="sight::module::ui::view">
             <gui>
                 <layout type="sight::ui::layout::line">
                     <orientation value="horizontal" />
@@ -28,22 +28,22 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <toolbar sid="toolBarView" />
+                <toolbar sid="tool_bar_view" />
                 <view sid="containerView" />
-                <view sid="materialView" />
+                <view sid="material_view" />
             </registry>
         </service>
 
-        <service uid="toolBarView" type="sight::module::ui::toolbar">
+        <service uid="tool_bar_view" type="sight::module::ui::toolbar">
             <gui>
                 <layout>
                     <menuItem name="VTK Mesher" icon="sight::module::ui::icons/menu.svg" />
-                    <menuItem name="Export ModelSeries" icon="sight::module::ui::icons/save.svg" />
+                    <menuItem name="Export model_series" icon="sight::module::ui::icons/save.svg" />
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="mesherAct" />
-                <menuItem sid="exportAct" />
+                <menuItem sid="mesher_act" />
+                <menuItem sid="export_act" />
             </registry>
         </service>
 
@@ -56,12 +56,12 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="genericSceneSrv" />
-                <view sid="parametersView" />
+                <view sid="generic_scene_srv" />
+                <view sid="parameters_view" />
             </registry>
         </service>
 
-        <service uid="parametersView" type="sight::module::ui::view">
+        <service uid="parameters_view" type="sight::module::ui::view">
             <gui>
                 <layout type="sight::ui::layout::line">
                     <orientation value="horizontal" />
@@ -71,13 +71,13 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="showHideNegatoSrv" />
-                <view sid="sliceIndexEditorSrv" />
-                <view sid="snapshotSrv" />
+                <view sid="show_hide_negato_srv" />
+                <view sid="slice_index_editor_srv" />
+                <view sid="snapshot_srv" />
             </registry>
         </service>
 
-        <service uid="materialView" type="sight::module::ui::view">
+        <service uid="material_view" type="sight::module::ui::view">
             <gui>
                 <layout type="sight::ui::layout::toolbox">
                     <orientation value="vertical" />
@@ -87,56 +87,58 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="modelSeriesListSrv" />
-                <view sid="materialEditorSrv" />
-                <view sid="representationSrv" />
+                <view sid="model_series_list_srv" />
+                <view sid="material_editor_srv" />
+                <view sid="representation_srv" />
             </registry>
         </service>
 
         <!-- ************************************* Action ************************************ -->
 
-        <service uid="mesherAct" type="sight::module::filter::mesh::vtk_mesher">
-            <data input_image="${imageSeries}" output_model="${modelSeries}" />
+        <service uid="mesher_act" type="sight::module::ui::action" />
+
+        <service uid="mesher_srv" type="sight::module::filter::mesh::vtk_mesher">
+            <data input_image="${image_series}" output_model="${model_series}" />
             <label value="255" />
             <decimation reduction="0" />
         </service>
 
-        <service uid="exportAct" type="sight::module::ui::series::exporter" auto_connect="true">
-            <data container="${seriesSet}" element="${modelSeries}" />
+        <service uid="export_act" type="sight::module::ui::series::exporter">
+            <data container="${series_set}" element="${model_series}" />
         </service>
 
         <!-- ******************************* Begin Generic scene ******************************* -->
 
-        <service uid="genericSceneSrv" type="sight::viz::scene3d::render">
+        <service uid="generic_scene_srv" type="sight::viz::scene3d::render">
             <scene>
                 <background topColor="#36393E" bottomColor="#36393E" />
 
                 <layer id="default">
-                    <adaptor uid="modelSeriesAdp" />
-                    <adaptor uid="negatoAdp" />
-                    <adaptor uid="snapshotAdp" />
+                    <adaptor uid="model_series_adp" />
+                    <adaptor uid="negato_adp" />
+                    <adaptor uid="snapshot_adp" />
                 </layer>
             </scene>
         </service>
 
-        <service uid="modelSeriesAdp" type="sight::module::viz::scene3d::adaptor::model_series" auto_connect="true">
-            <data model="${modelSeries}" />
+        <service uid="model_series_adp" type="sight::module::viz::scene3d::adaptor::model_series">
+            <data model="${model_series}" />
             <config picker="" />
         </service>
 
-        <service uid="negatoAdp" type="sight::module::viz::scene3d::adaptor::negato3d">
-            <data image="${imageSeries}" />
+        <service uid="negato_adp" type="sight::module::viz::scene3d::adaptor::negato3d">
+            <data image="${image_series}" />
             <data tf="${tf}" />
             <config orientation="axial" />
         </service>
 
-        <service uid="snapshotAdp" type="sight::module::viz::scene3d::adaptor::fragments_info">
+        <service uid="snapshot_adp" type="sight::module::viz::scene3d::adaptor::fragments_info">
             <data image="${snapshot}" />
         </service>
 
         <!-- ******************************* Services ***************************************** -->
 
-        <service uid="showHideNegatoSrv" type="sight::module::ui::qt::com::signal_button">
+        <service uid="show_hide_negato_srv" type="sight::module::ui::qt::com::signal_button">
             <config>
                 <checkable>true</checkable>
                 <icon>sight::module::ui::icons/layers.svg</icon>
@@ -146,39 +148,39 @@
             </config>
         </service>
 
-        <service uid="snapshotSrv" type="sight::module::ui::qt::com::signal_button">
+        <service uid="snapshot_srv" type="sight::module::ui::qt::com::signal_button">
             <config>
                 <checkable>false</checkable>
                 <icon>sight::module::ui::icons/frame.svg</icon>
             </config>
         </service>
 
-        <service uid="sliceIndexEditorSrv" type="sight::module::ui::qt::image::slice_index_position_editor" auto_connect="true">
-            <data image="${imageSeries}" />
+        <service uid="slice_index_editor_srv" type="sight::module::ui::qt::image::slice_index_position_editor">
+            <data image="${image_series}" />
             <config orientation="axial" label="index" display_axis_selector="false" display_step_buttons="false" />
         </service>
 
-        <service uid="modelSeriesListSrv" type="sight::module::ui::qt::model::model_series_list" auto_connect="true">
-            <inout key="model_series" uid="modelSeries" />
+        <service uid="model_series_list_srv" type="sight::module::ui::qt::model::model_series_list">
+            <inout key="model_series" uid="model_series" />
             <columns>
                 <organ_name />
             </columns>
         </service>
 
-        <service uid="selectReconstructionSrv" type="sight::module::data::select_object">
-            <out key="object" uid="reconstructionUID" />
+        <service uid="select_reconstruction_srv" type="sight::module::data::select_object">
+            <out key="object" uid="reconstruction" />
         </service>
 
-        <service uid="materialEditorSrv" type="sight::module::ui::qt::reconstruction::organ_material_editor" auto_connect="true">
-            <inout key="reconstruction" uid="reconstructionUID" />
+        <service uid="material_editor_srv" type="sight::module::ui::qt::reconstruction::organ_material_editor">
+            <inout key="reconstruction" uid="reconstruction" />
         </service>
 
-        <service uid="representationSrv" type="sight::module::ui::qt::reconstruction::representation_editor" auto_connect="true">
-            <inout key="reconstruction" uid="reconstructionUID" />
+        <service uid="representation_srv" type="sight::module::ui::qt::reconstruction::representation_editor">
+            <inout key="reconstruction" uid="reconstruction" />
         </service>
 
         <!-- Write the snapshot image -->
-        <service uid="imageWriterSrv" type="sight::module::io::bitmap::writer">
+        <service uid="image_writer_srv" type="sight::module::io::bitmap::writer">
             <data write="${snapshot}" />
             <dialog policy="always" />
             <backends enable="all" mode="best" />
@@ -187,18 +189,23 @@
         <!-- ******************************* Connections ***************************************** -->
 
         <connect>
-            <signal>modelSeriesListSrv/reconstruction_selected</signal>
-            <slot>selectReconstructionSrv/add</slot>
+            <signal>model_series_list_srv/reconstruction_selected</signal>
+            <slot>select_reconstruction_srv/add</slot>
         </connect>
 
         <connect>
-            <signal>showHideNegatoSrv/toggled</signal>
-            <slot>negatoAdp/update_visibility</slot>
+            <signal>show_hide_negato_srv/toggled</signal>
+            <slot>negato_adp/update_visibility</slot>
         </connect>
 
         <connect>
-            <signal>snapshotSrv/clicked</signal>
-            <slot>imageWriterSrv/update</slot>
+            <signal>snapshot_srv/clicked</signal>
+            <slot>image_writer_srv/update</slot>
+        </connect>
+
+        <connect>
+            <signal>mesher_act/clicked</signal>
+            <slot>mesher_srv/update</slot>
         </connect>
     </config>
 </extension>

@@ -46,7 +46,7 @@ namespace sight::module::ui::qt::series
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="sight::module::ui::qt::series::selector">
-        <inout key="seriesSet" uid="..." />
+        <inout key="series_set" uid="..." />
         <inout key="selection" uid="..." />
         <icons>
             <icon series="..." icon="..." />
@@ -196,7 +196,7 @@ private:
     std::string m_displayed_columns =
         "PatientName/SeriesInstanceUID,PatientSex,PatientBirthDate/Icon,Modality,StudyDescription/SeriesDescription,StudyDate/SeriesDate,StudyTime/SeriesTime,PatientAge,BodyPartExamined,PatientPositionString,ContrastBolusAgent,AcquisitionTime,ContrastBolusStartTime";
 
-    static constexpr std::string_view SERIES_SET = "seriesSet";
+    static constexpr std::string_view SERIES_SET = "series_set";
     static constexpr std::string_view SELECTION  = "selection";
 
     data::ptr<data::series_set, data::access::inout> m_series_set {this, SERIES_SET};

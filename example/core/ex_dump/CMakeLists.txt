@@ -7,6 +7,7 @@ add_dependencies(
     module_ui
     module_ui_qt
     data
+    module_data
     module_service
     module_ui
     module_ui_icons

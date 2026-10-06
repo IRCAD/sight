@@ -162,6 +162,45 @@ public:
 
 //------------------------------------------------------------------------------
 
+    void add_series_set_to_series_set_test(const std::string& _slot_name, bool _copy)
+    {
+        auto existing_series = std::make_shared<sight::data::series>();
+        auto shared_series   = std::make_shared<sight::data::series>();
+        auto new_series      = std::make_shared<sight::data::series>();
+
+        auto source = std::make_shared<sight::data::series_set>();
+        source->push_back(shared_series);
+        source->push_back(new_series);
+
+        auto container = std::make_shared<sight::data::series_set>();
+        container->push_back(existing_series);
+        container->push_back(shared_series);
+
+        m_service->set_inout(source, "data.element");
+        m_service->set_inout(container, "data.container");
+        CHECK_NOTHROW(m_service->configure());
+        CHECK_NOTHROW(m_service->start().get());
+
+        m_service->slot(_slot_name)->run();
+
+        REQUIRE_EQ(_copy ? std::size_t(4) : std::size_t(3), container->size());
+        CHECK_EQ(existing_series, (*container)[0]);
+        CHECK_EQ(shared_series, (*container)[1]);
+        if(_copy)
+        {
+            CHECK_NE(shared_series, (*container)[2]);
+            CHECK_NE(new_series, (*container)[3]);
+        }
+        else
+        {
+            CHECK_EQ(new_series, (*container)[2]);
+        }
+
+        CHECK_EQ(std::size_t(2), source->size());
+    }
+
+//------------------------------------------------------------------------------
+
     void generic_add_in_field_test(const std::string& _slot_name, bool _already_present = false)
     {
         auto object    = std::make_shared<sight::data::string>("Hello world");
@@ -288,6 +327,16 @@ TEST_SUITE("sight::module::data::manage")
     TEST_CASE_FIXTURE(service_fixture, "add_in_series_set")
     {
         generic_add_in_series_set_test("add");
+    }
+
+    TEST_CASE_FIXTURE(service_fixture, "add_series_set_to_series_set")
+    {
+        add_series_set_to_series_set_test("add", false);
+    }
+
+    TEST_CASE_FIXTURE(service_fixture, "add_copy_series_set_to_series_set")
+    {
+        add_series_set_to_series_set_test("add_copy", true);
     }
 
     TEST_CASE_FIXTURE(service_fixture, "add_in_field")
