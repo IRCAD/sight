@@ -20,9 +20,6 @@
  ***********************************************************************/
 #include <module/io/dicom/reader.hpp>
 
-#include <QApplication>
-#include <array>
-
 #include <core/os/temp_path.hpp>
 
 #include <data/series_set.hpp>
@@ -33,22 +30,38 @@
 #include <io/__/service/io_types.hpp>
 #include <memory>
 
+#include <ui/__/cursor_base.hpp>
+#include <ui/__/macros.hpp>
 #include <ui/test/dialog/message.hpp>
 
 #include <utest_data/data.hpp>
 
-//------------------------------------------------------------------------------
-static void ensure_qt_application()
+namespace
 {
-    static int argc      = 1;
-    static auto app_name = std::to_array("module_io_dicom_ut");
 
-    static std::array<char*, 2> argv = {
-        app_name.data(),
-        nullptr
-    };
-    static QApplication application(argc, argv.data());
-}
+// Replaces the Qt cursor registered by ui_qt, which needs a QApplication
+class cursor final : public sight::ui::cursor_base
+{
+public:
+
+    SIGHT_DECLARE_CLASS(cursor, sight::ui::cursor_base, sight::ui::factory::make<cursor>);
+
+    //------------------------------------------------------------------------------
+
+    void set_cursor(state_t /*_cursor*/, bool /*_set_overriden_as_default*/) final
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void set_default_cursor() final
+    {
+    }
+};
+
+SIGHT_REGISTER_GUI(cursor, sight::ui::cursor_base::REGISTRY_KEY);
+
+} // namespace
 
 //-----------------------------------------------------------------------------
 static std::filesystem::path first_dicom_file(const std::filesystem::path& _folder)
@@ -75,8 +88,6 @@ static sight::data::series_set::sptr read_location(
     const bool _is_folder,
     const std::string& _compat_filter = {})
 {
-    ensure_qt_application();
-
     auto reader = std::make_shared<sight::module::io::dicom::reader>();
 
     auto output = std::make_shared<sight::data::series_set>();
