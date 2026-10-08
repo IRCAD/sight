@@ -1,3 +1,396 @@
+# sight 26.1.0
+
+## Bug fixes:
+
+### build
+
+*Correctly apply warning-as-error options to CUDA targets.*
+
+The previous logic for managing warnings as errors did not correctly apply to CUDA compilation units, potentially leading to an invalid generator expression or inconsistent warning policy.
+
+This change use robust CMake generator expressions that explicitly handle C, C++, and CUDA languages across GNU, Clang, and MSVC compilers. It ensures that compiler-specific
+options like `/WX` and `-Werror` are correctly passed to host compilers, including via `nvcc`'s `-Xcompiler` for CUDA targets, maintaining a consistent warning-as-error policy throughout the build.
+
+*Use path_list_prepend instead of path_list_append for test environment PATH.*
+
+Improved test execution reliability by reducing the risk of loading incompatible DLL versions and producing misleading failures. Specifically:
+* Adjusted test environment setup so that configured runtime paths are prepended to PATH instead of appended.
+* Updated DLL resolution priority so that project, vcpkg, and build-output directories are searched before system-installed locations.
+
+### ci
+
+*Use correct msvc version string.*
+
+### io
+
+*Rework hash method for crosssystem consistency in series writer.*
+
+* add a fnv1a hash rework for UID type fields in the series file_path parser
+* add a force fiducial mechanism in dicom writer in order to avoid image .dcm overwriting.
+* add truncate for matrix view
+
+### test
+
+*Replace the Qt cursor in the DICOM reader test.*
+
+busy_cursor posts its calls to the default worker, which nobody waits for in this test: when the read is fast, they could run after the static QApplication was destroyed and abort the test at exit. A no-op cursor now replaces the one registered by ui_qt, so the test no longer needs a QApplication.
+
+### ui
+
+*Fiducial graphic coordinates data index were badly computed.*
+
+- Use the actual GraphicCoordinatesDataSequence entry for each fiducial instead of reusing the group shape index, preventing empty intermediate sequence items and missing referenced frame numbers.
+- included: fixes and hardening of  slice_selector and slice_index_position_editor:
+
+### viz
+
+*Compositor and shader parameter editors.*
+
+*Qt assertion when moving a text label in an ogre scene.*
+
+A label whose node lies on or behind the camera plane was projected to an infinite or mirrored screen position, and a very distant one overflowed Qt geometry arithmetic, which Qt 6.11 asserts on in debug.
+
+convert_world_space_to_screen_space() and compute_bounding_rect() now return NaN when a point can't be projected, including when w overflows. Text labels hide until their node can be projected again, repainting their window so they do not linger, and labels, fiducial menus and ruler bin buttons go through a shared screen_position helper that clamps coordinates and keeps popups inside their parent, in release too. axis also detaches its labels before destroying their nodes. screen_position is unit tested.
+
+*Correct XML attribute path for visibility in model_series and reconstruction.*
+
+*Ambient occlusion in volume rendering.*
+
+Several issues were present:
+- the SAT size ratio was inverted
+- the `u_window` uniform was not passed to the SAT shader
+- the updates of the SAT and illumination buffers were messy. They were reorganized.
+
+*Crash when resizing windows with Ogre 14.4.*
+
+*Several fixes to the frustum list adaptor.*
+
+* Corrects frustum bounding-box computation by using all frustum corners
+* Prevents an infinite update loop when adding a new frustum.
+* Changes frustum creation to be triggered explicitly through an add_frustum slot that receives a matrix.
+* Removes the previous automatic behavior where transform modifications directly caused new frustums to be added.
+* Ensures the render context is current before manipulating rendering resources.
+* Fixes cleanup by destroying scene nodes and temporary cameras, reducing resource leaks.
+
+## Refactor:
+
+### core
+
+*Change requirement container from set to vector.*
+
+We have always assumed they were sorted by the declaration order, surprisingly it was not the case.
+
+*Migrate some services to hierarchical data syntax.*
+
+Migrate the affected service declarations, factories, tests, examples,
+tutorials, and XML configurations to hierarchical data keys.
+
+The migration uses data/config paths, updates config_launcher to config.id,
+object.name, and object.uid, and preserves special cases such as map-backed
+properties. Developers using data`::ptr`must include complete pointed-to data
+types because forward declarations are no longer sufficient.
+
+*Generalize property concept to sight::data::ptr.*
+
+Generalize the `data`::ptr``declaration so it can replace `data`::property``for
+serializable configuration values while preserving explicit pointer semantics.
+
+For serializable types such as integer, real, string, boolean, `dvec3`, and
+color, the default argument distinguishes three cases:
+
+- No default: the data is required.
+- `std`::nullopt`:`the data is optional and may remain null when absent.
+- A concrete value: the data is optional and the service creates a
+  service-owned object with that default when no UID or literal value is
+  configured.
+
+A default value is forbidden for `data`::access::out``at compile time because
+an output has no input value to initialize. Non-serializable data types such
+as image, mesh, model series, and transfer function keep their existing
+`data`::ptr``behavior.
+
+`data::property<T>` remains source-compatible and keeps its existing callback
+semantics. Replacing a property with a defaulted ptr is therefore only safe
+when the service does not rely on `on_property_set(key)` or a
+property-specific slot.
+
+Examples:
+
+```cpp
+data::ptr<data::integer, data::access::in> m_required {this, "threshold"};
+data::ptr<data::integer, data::access::in> m_optional {this, "limit", std::nullopt};
+data::ptr<data::integer, data::access::in> m_defaulted {this, "count", 42};
+```
+
+```cpp
+// A default is not valid for an output:
+data::ptr<data::integer, data::access::out> m_output {this, "result"};
+```
+
+*Remove *PTR macros in favor of sight::*ptr.*
+
+*Migrate data and services to use new signals/slots conventions.*
+
+Deprecated legacy signal constants and updates signal usage patterns were replaced across the codebase.
+
+Main changes:
+
+* Replace legacy constants with the new conventions, for example `object`::MODIFIED_SIG``to `signals`::MODIFIED``and related constants.
+* Generalize the use of dedicated `signals` structures in data classes.
+* Enforce a single emission style: use `has_signals::emit/async_emit()` systematically instead of manually retrieving a signal instance and calling `emit/async_emit()`.
+* Remove obsolete `.hxx` files previously used only for signal and slot declarations/wiring.
+
+### filter
+
+*Port all services used in tuto17 to hierarchical syntax.*
+
+- Removed direct initialization of detector parameters in aruco_tracker constructor.
+- Introduced make_detector_parameters() method to encapsulate detector parameter creation.
+- Updated configuration handling to use a structured approach for corner refinement and adaptive threshold parameters.
+- Added debug_frame input for visualizing detected markers with overlays.
+- Adjusted XML configuration to reflect new parameter structure and added debug_frame support.
+- Updated unit tests to accommodate changes in parameter handling and added debug_frame input.
+
+### io
+
+*Change read-path and correcting some bugs.*
+
+### test
+
+*Migrate GUI functional tests from cppunit to doctest.*
+
+GUI tests run on doctest, one CTest entry and one process per scenario, labelled gui; a _uit binary given several scenarios re-launches itself once per scenario. The exec_gui_tests launcher and all cppunit support are removed, and the DOCTEST target type takes back the name TEST: projects must replace TYPE DOCTEST with TYPE TEST. Tests are also labelled manual (*_mut targets) and dicom, so that CI selects them by label now that test names no longer contain the target. GUI test suites are named after their application, without uit, and the last tests without a suite get one.
+
+Scenarios no longer depend on timing nor on other GUI processes, so they are not serialized:
+- fixed waits are replaced by waits on observable state, except where the delay is the assertion, before the zoom_out_gesture snapshot and the QTBUG-5232 workarounds;
+- the scenario thread no longer touches widgets, and wait_for_asynchronously() no longer shares stack objects with the event it posts, which aborted scenarios under load;
+- the failure screenshot is taken on the GUI thread and grabs the test window rather than the whole screen;
+- Qt delivers a synthetic touch or gesture to the window found under it on the desktop, where another application may sit: pinch_gesture targets the top-level window and keeps it on top while delivering, and zoom_out_gesture pinches again until the mesh shrinks, checking the direction of the change instead of a reference image.
+
+Also: gui_fixture cleans up its services when its construction fails and no longer leaks the pinch gesture, and the config_update sequence tests launch their configuration on the default worker like an application does, which avoids a deadlock under load.
+
+### ui
+
+*Series merge in examples.*
+
+- Removed deprecated `db_merger` service and its associated files, replaced by a simple `ui`::io::selector``and a `data`::manage``services.
+- Enhanced `manage` module to support merging series from one series set into another.
+- Updated README files to reflect changes in functionality and service descriptions.
+- Updated XML configurations to use consistent naming conventions for series sets (changed `seriesSet` to `series_set`).
+
+### viz
+
+*Split camera adaptor transform into explicit input and output.*
+
+The `camera` adaptor's single `transform` inout key was ambiguous regarding data flow. This change introduces `transform_in` for explicitly receiving camera pose information and `transform_out` for publishing the camera's updated pose.
+
+The original `transform` key is now deprecated, guiding users towards clearer separation of concerns.
+
+## New features:
+
+### build
+
+*Compiler, CUDA and VCPKG update.*
+
+Includes a fix for io/zip: reopening a session archive entry (rewind,
+needed by GDCM's tellg()/seekg()) after a partial zstd read closed
+with MZ_CRC_ERROR, thrown from a destructor and terminating the
+process. Destructors now log instead of throwing, rewind() tolerates
+MZ_CRC_ERROR, and archive_writer gained an explicit close(). Added
+regression test sight::io::zip::archive::partial_read.
+
+### core
+
+*Add regex-based reconstruction visibility service.*
+
+Add show_mesh to toggle visibility for model series reconstructions selected by organ type and name filters. Combine criteria within each rule with AND and repeated rules with OR, and react to changes to the visible input.
+
+*Add service to remove reconstructions from model series.*
+
+*Support hierarchical data key syntax for services.*
+
+Add hierarchical service data keys derived from nested XML structure.
+
+Keys such as config.threshold map to nested XML elements, with support for
+nested groups, optional elements, UID-or-literal resolution, and arbitrary
+depth. Legacy in/inout/out/properties syntax remains compatible on distinct
+keys. Per-data auto_connect is removed from the new syntax, and duplicate
+legacy/hierarchical keys are rejected.
+
+Example XML:
+
+```xml
+<service uid="..." type="...">
+    <image source="${image}" target="${result_image}" />
+    <config threshold="${threshold}" value="10">
+        <tracker ip="${ip1}" port="${port1}" />
+        <tracker ip="${ip2}" port="${port2}" />
+    </config>
+</service>
+```
+
+Example C++:
+
+```cpp
+data::ptr<data::image, data::access::in> m_source {this, "image.source"};
+data::ptr<data::image, data::access::inout> m_target {this, "image.target"};
+data::property<data::real> m_threshold {this, "config.threshold", 10.};
+data::ptr_vector<data::string, data::access::in> m_ip {this, "config.tracker.ip"};
+```
+
+*Allow config_launcher inout parameters to accept literal values.*
+
+Allow config_launcher parameters to be provided by UID or literal value.
+
+The object type is resolved from the selected sub-configuration at
+start_config() time, so configurations selected or changed at runtime can
+still receive typed literal parameters. Created objects are owned by the
+launcher and are materialized through the shared service::value_parameters
+implementation. Literal values require string_serializable data types, and
+optional and value are mutually exclusive.
+
+Example:
+
+```xml
+<service uid="my_launcher" type="sight::app::config_launcher">
+    <config id="${my_config}" />
+    <object name="image" uid="image" optional="true" />
+    <object name="threshold" value="42" />
+</service>
+```
+
+### doc
+
+*Add skills and prompts for GitLab issue and merge request management.*
+
+### filter
+
+*Implement overlay image filter and modernize threshold.*
+
+- Enhanced the threshold filter that applies inclusive thresholds to 3D integer images, with options for binary output.
+- Introduced an overlay filter that composites multiple 3D images, treating zero-valued pixels as transparent.
+
+*Add service to relabel an image.*
+
+### io
+
+*Create the image visualization widget.*
+
+### test
+
+*Add comparison_metrics struct and comparison function for image analysis.*
+
+### ui
+
+*Enhance dependency handling with multi-value support.*
+
+*Add blur effect to container widgets and streamline boolean slots.*
+
+Introduce the ability to visually blur and unblur UI container widgets via new `set_blurred`, `blur`, and `unblur` slots.
+
+Simplify the `set_enabled` and `set_visible` APIs by removing `_by_parameter` slots, which are now redundant for direct boolean input.
+
+### viz
+
+*Add stroke, unproject_depth_map, and unproject_points adaptors.*
+
+## Enhancement:
+
+### build
+
+*Faster Windows packaging, no plugin .pdb/.lib in packages, update vcpkg.*
+
+The Windows fixup uses `file(GET_RUNTIME_DEPENDENCIES)` instead of `fixup_bundle`: each file is analysed once and DLLs are resolved from explicit directories, never from `PATH` (12-16 s per application instead of 86-222 s). Unresolved dependencies and conflicting copies fail the packaging, and each application writes its copied DLLs to `<app>-runtime-dependencies.tsv`.
+
+Qt and Ogre plugins are installed without `*.pdb` and `*.lib`, the unused Qt plugin categories (`qmllint`, `qmlls`, `qmltooling`, `sqldrivers`) are skipped, and target PDBs are installed in Debug and RelWithDebInfo only.
+
+The NSIS compressor is set by the `SIGHT_NSIS_COMPRESSOR` cache variable (default `lzma`). The vcpkg archive is updated to `a8e22c88`: Ceres without CUDA, no `sm75` TensorRT builder resource, no CppUnit.
+
+### ci
+
+*Enable clang-tidy on C++ header files.*
+
+### core
+
+*Use get() instead of wait() in unit tests for futures.*
+
+### io
+
+*Allow opening images from CLI.*
+
+*Allow drag and drop the image on the scene.*
+
+*Change the filter of opening images.*
+
+*Modernize opencv conversion functions, add type display function.*
+
+### ui
+
+*Set FFmpeg as the default Qt Multimedia backend.*
+- handle missing audio outputs in notifications
+- clang-tidy on ui::qt
+
+*Compose notifications declared in xml, merging several into one.*
+
+When several services emit the same kind of notification, an out-of-range warning typically, they overwrite each other in the notification zone and a shared clear slot hides a message that is still relevant. sight`::module::ui::notification_composer`composes them instead: each contribution fills a `${id}` placeholder of a merged notification, created on the first contribution and updated in place. Canceling one contribution leaves the others displayed.
+
+A merged notification shows a state, not an event: it carries no display timeout by default, so it stays until its last contribution is gone rather than fading out while what it reports still holds. Any notification can declare a duration of its own, 0 meaning no timeout at all. The notification zone follows suit: a notification it already displays keeps its page, an update refreshing its label and restarting its delay rather than stacking a second copy of it, and only its appearance plays its sound.
+
+Notifications also carry an icon at last. The field had always been there and no consumer read it, so the zone, the notifier and the popup now display it. Its path is resolved once, when the notification is built, and each type brings a default icon that an explicit path overrides and an empty one turns off, the path alone deciding whether there is an icon at all. Its size follows the text height unless the XML pins one, 0 meaning that automatic size, the way a layout reads it. It is drawn inside the label rather than beside it: a sibling widget would sit outside the frame a style sheet paints, so sight`::ui::qt::widget::notification_label`holds the icon and paints it over its own frame, at whatever size it is asked for.
+
+So that a consumer can tell the contributions apart, a notification now carries an id. The emitting service never spells it out: it names a key of its own, and the application configuration maps that key to an id, resolved when emitting. The parameters of the notification constructors, already eight of them and duplicated across five classes, become a designated-initializer aggregate in the process, so a call site names only what it needs.
+
+Along the way: notifications_store moves out of lib/ui/qt, having never used a Qt type, so the composer can inherit it; its hooks, which cannot be uninstalled once set, are now installed once and only once per notification and stay inert while it is forgotten, instead of piling up one set per watch/forget cycle; module_ui_ut is migrated from CppUnit to doctest; the notification zone drops its maximal_height property, declared and documented but never read; and two lifetime defects of the notifier popups are fixed, a self-reference that leaked every popup and a destruction tied to a fade out animation that does not always complete.
+
+Also: notification_composer built each notification through a std`::function`factory closure, capturing the duration and icon resolved at configuring() to defer construction until the text was known. Replaced with a notification_kind enum and a plain build_notification(kind, text, duration, icon), so merged/declaration carry their type and display parameters as ordinary fields instead of an opaque callable: easier to follow and to inspect in a debugger, for no behavioral change.
+
+*Support runtime ranges for Qt settings items.*
+
+This merge request allows `sight`::module::ui::qt::settings``to associate a
+runtime-provided range with each settings item, including comboboxes and other
+widgets that require a range.
+
+An optional `item.range` data group can be associated with the matching
+`item.data` occurrence. When the range changes at runtime, the corresponding
+widget is updated automatically.
+
+To support optional ranges, `sight`::data::ptr_vector``now supports optional
+serializable groups. Missing elements can remain unassigned or be created from
+a declared default value. Parallel groups are aligned by their XML item
+occurrence.
+
+Here are some usage examples:
+
+```cpp
+data::ptr_vector<data::string, data::access::in> m_required { this, "item.required"};
+data::ptr_vector<data::string, data::access::in> m_optional { this, "item.optional", std::nullopt};
+data::ptr_vector<data::string, data::access::in> m_defaulted { this, "item.defaulted", "default"};
+```
+
+They can be configured with parallel XML items. Optional attributes may be
+omitted:
+
+```xml
+<item required="value-1" optional="optional-1" defaulted="explicit-1"/>
+<item required="value-2" defaulted="default-2"/>
+```
+
+In the second item, `optional[1]` remains unassigned and`defaulted[1]` receives its configured value.
+A required group must also be provided for every configured item:
+
+```xml
+<!-- Invalid: the 'required' attribute is missing. -->
+<item optional="optional-1"/>
+```
+
+*Cleaning the actual design of sight viewer.*
+
+*Richer notification framework with a notification zone widget.*
+
+Replace the legacy core::progress/service`::notifier`duo with a unified core`::notification`framework: dedicated message types (information, warning, error, instruction) built on a common base, plus has_notifications/has_monitors mixins that any service can compose directly. All readers/writers/grabbers that used to derive from service`::notifier`or emit core`::progress::monitor`are migrated to the new API.
+On the UI side, module`::ui::qt`gains a notification_zone widget/service that stacks notifications and progress monitors with a history view, replacing the separate notifier/progress_bar pair. A standalone ex_notification_zone sample demonstrates it, and ex_notifications/ex_progress_bar are updated to the renamed signals/slots. Test fixtures for module`::ui::qt`were consolidated into a shared gui_fixture helper, and notification/notifier/progress_bar test coverage was extended accordingly.
+
+
 # sight 26.0.0
 
 ## Bug fixes:
