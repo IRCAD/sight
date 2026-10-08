@@ -50,12 +50,12 @@ Example with `sight::geometry::vision::cal_intrinsic_view` & `sight::geometry::v
         <inout key="activity" uid="${AS_UID}" />
         <config>
             <intrinsic>
-                <properties config="sight::geometry::vision::cal_intrinsic_view" />
+                <config id="sight::geometry::vision::cal_intrinsic_view" />
                 <parameter replace="WID_PARENT" by="calibrationView" />
                 <parameter replace="preferencesModifiedProxy" by="preferencesModifiedProxy" />
             </intrinsic>
             <extrinsic>
-                <properties config="sight::geometry::vision::cal_extrinsic_view" />
+                <config id="sight::geometry::vision::cal_extrinsic_view" />
                 <inout key="camera_set" uid="${camera_set}" />
                 <parameter replace="WID_PARENT" by="calibrationView" />
                 <parameter replace="preferencesModifiedProxy" by="preferencesModifiedProxy" />

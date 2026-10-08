@@ -2,7 +2,9 @@
     <id>sight::config::viz::scene3d::negato2d</id>
     <parameters>
         <object uid="image" type="sight::data::image_series" deferred="true" />
-        <object uid="transfer_function" type="sight::data::transfer_function" />
+        <object uid="series_set" type="sight::data::series_set" />
+        <object uid="transfer_function" type="sight::data::transfer_function" deferred="true" />
+        <object uid="image_transfer_functions" type="sight::data::map" optional="true" />
         <object uid="fiducial_size" type="sight::data::real" optional="true" value="1.5" />
 
         <param name="WID_PARENT" />
@@ -13,10 +15,12 @@
 
         <channel name="world_coords_landmarks" optional="true" />
         <channel name="toggle_view_visibility" optional="true" />
+        <channel name="image_visibility" />
         <channel name="ruler_activation" optional="true" />
         <channel name="ruler_deactivation" optional="true" />
         <channel name="landmarks_edit_mode" optional="true" />
         <channel name="landmarks_group_selected" optional="true" />
+        <channel name="remove_all_landmarks" optional="true" />
         <channel name="landmarks_edit_mode_changed" optional="true" />
         <channel name="visibility_rulers" />
     </parameters>
@@ -28,7 +32,7 @@
             <gui>
                 <layout type="sight::ui::layout::overlay">
                     <view />
-                    <view x="0" y="0" />
+                    <view x="-1" y="0" />
                 </layout>
             </gui>
             <registry>
@@ -91,7 +95,7 @@
                 <background color="#303A65" />
 
                 <layer id="negatoLayer">
-                    <adaptor uid="negato_adp" />
+                    <adaptor uid="image_series_adp" />
                     <adaptor uid="ruler_fiducial_adp" />
                     <adaptor uid="negato_camera_adp" />
                     <adaptor uid="picker_interactor_adp" />
@@ -102,21 +106,20 @@
             </scene>
         </service>
 
-        <service uid="negato_adp" type="sight::module::viz::scene3d::adaptor::negato2d">
-            <in key="image" uid="${image}" />
-            <inout key="tf" uid="${transfer_function}" />
-            <config orientation="${slice_index}" filtering="${filtering}" />
-            <properties classification="${classification}" />
+        <service uid="image_series_adp" type="sight::module::viz::scene3d::adaptor::image_series" auto_connect="true">
+            <data series="${series_set}" />
+            <data tf="${transfer_function}" />
+            <data transfer_functions="${image_transfer_functions}" />
+            <config representation="negato2d" orientation="${slice_index}" filtering="${filtering}" classification="${classification}" />
         </service>
 
         <service uid="ruler_fiducial_adp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::ruler" auto_connect="true">
-            <inout key="image" uid="${image}" />
-            <config font_size="16" query_flags="0x40000000" orientation="${slice_index}" />
-            <properties radius="${fiducial_size}" />
+            <data image="${image}" />
+            <config font_size="16" query_flags="0x40000000" orientation="${slice_index}" radius="${fiducial_size}" />
         </service>
 
         <service uid="negato_camera_adp" type="sight::module::viz::scene3d::adaptor::negato2d_camera">
-            <inout key="image" uid="${image}" />
+            <data image="${image}" />
             <config priority="0" orientation="${slice_index}" />
         </service>
 
@@ -125,7 +128,7 @@
         </service>
 
         <service uid="landmarks_adp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::point" auto_connect="true">
-            <inout key="imageSeries" uid="${image}" />
+            <data imageSeries="${image}" />
             <config label="false" orientation="${slice_index}" priority="4" initialGroup="Group_0" initialSize="10.0" />
         </service>
 
@@ -140,22 +143,26 @@
         <!-- ************************************* Services ************************************ -->
 
         <service uid="negato_slider_cfg" type="sight::app::config_launcher">
-            <properties config="sight::config::viz::image::imageSlider" />
-            <parameter replace="WID_PARENT" by="negato_slider_view" />
-            <parameter replace="sliceIndex" by="${slice_index}" />
-            <parameter replace="enableSliceType" by="${enable_slice_type}" />
-            <inout group="object">
-                <key name="image" uid="${image}" />
-                <key name="transferFunction" uid="${transfer_function}" />
-            </inout>
+            <config id="sight::config::viz::image::image_slider" />
+            <object name="image" uid="${image}" />
+            <object name="transferFunction" uid="${transfer_function}" />
+            <param name="sliceIndex" value="${slice_index}" />
+            <param name="enableSliceType" value="${enable_slice_type}" />
+            <param name="WID_PARENT" value="negato_slider_view" />
         </service>
 
         <!-- ******************************* Connections ***************************************** -->
 
         <!-- Display the picked voxel information -->
         <connect>
-            <signal>negato_adp/picked_voxel</signal>
+            <signal>image_series_adp/picked_voxel</signal>
             <slot>picked_voxel_text_adp/set_text</slot>
+        </connect>
+
+        <connect channel="${image_visibility}">
+            <slot>image_series_adp/set_image_visibility</slot>
+            <slot>landmarks_adp/set_image_visibility</slot>
+            <slot>ruler_fiducial_adp/set_image_visibility</slot>
         </connect>
 
         <!-- distance channels -->
@@ -168,7 +175,7 @@
         </connect>
 
         <connect channel="${visibility_rulers}">
-            <slot>ruler_fiducial_adp/toggle_visibility</slot>
+            <slot>ruler_fiducial_adp/update_visibility</slot>
         </connect>
 
         <connect channel="${landmarks_edit_mode}">

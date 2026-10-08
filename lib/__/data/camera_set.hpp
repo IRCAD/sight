@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2024 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -56,14 +56,17 @@ public:
 
     /// Signals
     /// @{
-    using added_camera_signal_t = core::com::signal<void (camera::sptr)>;
-    SIGHT_DATA_API inline static const core::com::signals::key_t ADDED_CAMERA_SIG = "added_camera";
+    struct signals
+    {
+        using added_camera_t = core::com::signal<void (camera::sptr)>;
+        SIGHT_DATA_API inline static const signal_key_t ADDED_CAMERA = "added_camera";
 
-    using removed_camera_signal_t = core::com::signal<void (camera::sptr)>;
-    SIGHT_DATA_API inline static const core::com::signals::key_t REMOVED_CAMERA_SIG = "removedCamera";
+        using removed_camera_t = core::com::signal<void (camera::sptr)>;
+        SIGHT_DATA_API inline static const signal_key_t REMOVED_CAMERA = "removedCamera";
 
-    using extrinsic_calibrated_signal_t = core::com::signal<void ()>;
-    SIGHT_DATA_API inline static const core::com::signals::key_t EXTRINSIC_CALIBRATED_SIG = "extrinsicCalibrated";
+        using extrinsic_calibrated_t = core::com::signal<void ()>;
+        SIGHT_DATA_API inline static const signal_key_t EXTRINSIC_CALIBRATED = "extrinsicCalibrated";
+    };
     /// @}
 
     /// Adds a camera
@@ -76,7 +79,7 @@ public:
     /// @param[in] _index the index of the camera to return
     /// @return the camera at the index
     /// @{
-    SIGHT_DATA_API camera::csptr get_camera(std::size_t _index) const;
+    [[nodiscard]] SIGHT_DATA_API camera::csptr get_camera(std::size_t _index) const;
     SIGHT_DATA_API camera::sptr get_camera(std::size_t _index);
     /// @}
 
@@ -100,7 +103,7 @@ public:
     ///
     /// @note By default, the first matrix (index=0) is initialized to identity, the other are nullptr.
     /// @{
-    SIGHT_DATA_API matrix4::csptr get_extrinsic_matrix(std::size_t _index) const;
+    [[nodiscard]] SIGHT_DATA_API matrix4::csptr get_extrinsic_matrix(std::size_t _index) const;
     SIGHT_DATA_API matrix4::sptr get_extrinsic_matrix(std::size_t _index);
     /// @}
 
@@ -127,7 +130,7 @@ public:
      * @brief get the calibration error of the stereo calibration
      * @return the calibration error in double.
      */
-    double calibration_error() const;
+    [[nodiscard]] double calibration_error() const;
 
 private:
 

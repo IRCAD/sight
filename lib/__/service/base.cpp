@@ -25,10 +25,6 @@
 #include "service/detail/service.hpp"
 #include "service/manager.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slot.hxx>
-#include <core/com/slots.hxx>
-#include <core/runtime/helper.hpp>
 #include <core/thread/worker.hpp>
 
 #include <boost/property_tree/xml_parser.hpp>
@@ -151,7 +147,7 @@ base::~base() = default;
 void base::set_worker(core::thread::worker::sptr _worker)
 {
     m_pimpl->m_worker = _worker;
-    core::com::has_slots::m_slots.set_worker(m_pimpl->m_worker);
+    core::com::has_slots::slots().set_worker(m_pimpl->m_worker);
 }
 
 //-----------------------------------------------------------------------------
@@ -303,6 +299,19 @@ connections_t base::auto_connections() const
 
 void base::on_property_set(std::string_view /*unused*/)
 {
+}
+
+//------------------------------------------------------------------------------
+
+std::optional<std::string> base::resolve_object_type(std::string_view _key, std::optional<std::size_t>/*_index*/) const
+{
+    const auto& container = this->container();
+    if(const auto it = container.find({_key, {}}); it != container.end())
+    {
+        return it->second->default_object_type();
+    }
+
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,14 +27,9 @@
 #include "viz/scene2d/adaptor.hpp"
 #include "viz/scene2d/registry/adaptor.hpp"
 
-#include <core/com/slot.hpp>
-#include <core/com/slot.hxx>
-#include <core/com/slots.hpp>
-#include <core/com/slots.hxx>
+#include <algorithm>
 
 #include <data/tools/color.hpp>
-
-#include <service/macros.hpp>
 
 #include <ui/qt/container/widget.hpp>
 
@@ -110,9 +105,9 @@ void render::dispatch_interaction(scene2d::data::event& _event)
         }
 
         // Sort adaptors by z value.
-        std::sort(
-            ordered_adaptors.begin(),
-            ordered_adaptors.end(),
+        std::ranges::sort(
+            ordered_adaptors,
+
             [&](viz::scene2d::adaptor::sptr _a1, viz::scene2d::adaptor::sptr _a2)
             {
                 return _a1->get_z_value() > _a2->get_z_value();

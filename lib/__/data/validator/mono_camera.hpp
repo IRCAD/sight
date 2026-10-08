@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2025 IRCAD France
+ * Copyright (C) 2016-2026 IRCAD France
  * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,7 +47,7 @@ public:
      * @brief Checks if the current camera_set contains one and only one Camera and is calibrated.
      * @see data::validator::base::validate
      */
-    sight::data::validator::return_t validate(const CSPTR(data::object)& _current_data) const
+    sight::data::validator::return_t validate(const sight::csptr<data::object>& _current_data) const
     override;
 };
 

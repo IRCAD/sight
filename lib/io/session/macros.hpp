@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2024 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -26,6 +26,8 @@
 
 namespace sight::io::session
 {
+
+//NOLINTBEGIN(cppcoreguidelines-macro-usage)
 
 template<typename T>
 struct serializer_register
@@ -58,5 +60,7 @@ struct serializer_register_deprecated
             __LINE__ \
         )(_deprecated_class_name, \
           deserializer);
+
+//NOLINTEND(cppcoreguidelines-macro-usage)
 
 } // namespace sight::io::session

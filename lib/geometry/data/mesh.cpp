@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,20 +26,13 @@
 
 #include "geometry/data/matrix4.hpp"
 
-#include <core/com/signal.hxx>
 #include <core/tools/random/generator.hpp>
 
-#include <boost/multi_array/multi_array_ref.hpp>
-
 #include <glm/gtc/type_ptr.hpp>
-#include <glm/mat4x4.hpp>
-#include <glm/vec3.hpp>
-#include <glm/vec4.hpp>
 
 #include <algorithm>
 #include <cstdlib>
 #include <ctime>
-#include <functional>
 
 namespace sight::geometry::data
 {
@@ -48,15 +41,20 @@ using core::tools::random::safe_rand;
 namespace point = sight::data::iterator::point;
 namespace cell  = sight::data::iterator::cell;
 
+namespace
+{
+
 struct rand_float
 {
     //------------------------------------------------------------------------------
 
     float operator()()
     {
-        return ((static_cast<float>(safe_rand() % 101) - 50.F)) / 500.F;
+        return (static_cast<float>(safe_rand() % 101) - 50.F) / 500.F;
     }
 };
+
+} // namespace
 
 //------------------------------------------------------------------------------
 
@@ -91,8 +89,8 @@ static void generate_region_cell_normals(
             const auto point_begin = _mesh->cbegin<point::xyz>();
 
             auto cell_range     = _mesh->zip_range<cell::triangle, cell::nxyz>();
-            auto cell_begin     = cell_range.begin() + std::int64_t(_region_min);
-            const auto cell_end = cell_range.begin() + std::int64_t(_region_max);
+            auto cell_begin     = cell_range.begin() + static_cast<std::int64_t>(_region_min);
+            const auto cell_end = cell_range.begin() + static_cast<std::int64_t>(_region_max);
 
             int i = 0;
             std::for_each(
@@ -123,8 +121,8 @@ static void generate_region_cell_normals(
             const auto point_begin = _mesh->cbegin<point::xyz>();
 
             auto cell_range     = _mesh->zip_range<cell::quad, cell::nxyz>();
-            auto cell_begin     = cell_range.begin() + std::int64_t(_region_min);
-            const auto cell_end = cell_range.begin() + std::int64_t(_region_max);
+            auto cell_begin     = cell_range.begin() + static_cast<std::int64_t>(_region_min);
+            const auto cell_end = cell_range.begin() + static_cast<std::int64_t>(_region_max);
 
             std::for_each(
                 cell_begin,
@@ -206,7 +204,7 @@ void mesh::generate_cell_normals(sight::data::mesh::sptr _mesh)
         rt(
             [_mesh](std::size_t _p_h1, std::ptrdiff_t _p_h2, auto&& ...)
             {
-                generate_region_cell_normals(_mesh, _p_h1, std::size_t(_p_h2));
+                generate_region_cell_normals(_mesh, _p_h1, static_cast<std::size_t>(_p_h2));
             },
             number_of_cells
         );
@@ -230,13 +228,13 @@ static void generate_region_cell_normals_by_points(
     float_vectors_t::value_type& normals_results = _normals_data[_data_id];
 
     const sight::data::mesh::size_t nb_of_points = _mesh->num_points();
-    normals_results.resize(std::size_t(3) * nb_of_points, 0.F);
+    normals_results.resize(static_cast<std::size_t>(3) * nb_of_points, 0.F);
 
     auto accum_normal = [&](const auto& _cell, const auto& _normal)
                         {
-                            _normals_data[_data_id][std::size_t(3) * _cell]     += _normal.nx;
-                            _normals_data[_data_id][std::size_t(3) * _cell + 1] += _normal.ny;
-                            _normals_data[_data_id][std::size_t(3) * _cell + 2] += _normal.nz;
+                            _normals_data[_data_id][static_cast<std::size_t>(3) * _cell]     += _normal.nx;
+                            _normals_data[_data_id][static_cast<std::size_t>(3) * _cell + 1] += _normal.ny;
+                            _normals_data[_data_id][static_cast<std::size_t>(3) * _cell + 2] += _normal.nz;
                         };
 
     switch(_mesh->cell_type())
@@ -247,8 +245,8 @@ static void generate_region_cell_normals_by_points(
         case sight::data::mesh::cell_type_t::line:
         {
             const auto range = _mesh->czip_range<cell::line, cell::nxyz>();
-            auto begin       = range.begin() + std::int64_t(_region_min);
-            const auto end   = range.begin() + std::int64_t(_region_max);
+            auto begin       = range.begin() + static_cast<std::int64_t>(_region_min);
+            const auto end   = range.begin() + static_cast<std::int64_t>(_region_max);
             std::for_each(
                 begin,
                 end,
@@ -264,8 +262,8 @@ static void generate_region_cell_normals_by_points(
         case sight::data::mesh::cell_type_t::triangle:
         {
             const auto range = _mesh->czip_range<cell::triangle, cell::nxyz>();
-            auto begin       = range.begin() + std::int64_t(_region_min);
-            const auto end   = range.begin() + std::int64_t(_region_max);
+            auto begin       = range.begin() + static_cast<std::int64_t>(_region_min);
+            const auto end   = range.begin() + static_cast<std::int64_t>(_region_max);
             std::for_each(
                 begin,
                 end,
@@ -283,8 +281,8 @@ static void generate_region_cell_normals_by_points(
         case sight::data::mesh::cell_type_t::tetra:
         {
             const auto range = _mesh->czip_range<cell::quad, cell::nxyz>();
-            auto begin       = range.begin() + std::int64_t(_region_min);
-            const auto end   = range.begin() + std::int64_t(_region_max);
+            auto begin       = range.begin() + static_cast<std::int64_t>(_region_min);
+            const auto end   = range.begin() + static_cast<std::int64_t>(_region_max);
             std::for_each(
                 begin,
                 end,
@@ -315,7 +313,7 @@ static void normalize_region_cell_normals_by_points(
 {
     float* normal_sum = reinterpret_cast<float*>(&(*_normals_data.begin()));
 
-    auto point_itr = _mesh->begin<point::nxyz>() + std::int64_t(_region_min);
+    auto point_itr = _mesh->begin<point::nxyz>() + static_cast<std::int64_t>(_region_min);
 
     for(size_t i = _region_min ; i < _region_max ; i++, ++point_itr)
     {
@@ -367,7 +365,7 @@ void mesh::generate_point_normals(sight::data::mesh::sptr _mesh)
                     _p_h3,
                     _mesh,
                     _p_h1,
-                    std::size_t(_p_h2)
+                    static_cast<std::size_t>(_p_h2)
                 );
             },
             number_of_cells
@@ -379,10 +377,10 @@ void mesh::generate_point_normals(sight::data::mesh::sptr _mesh)
                 vector_sum<float_vectors_t::value_type::value_type>(
                     normals_data,
                     _p_h1,
-                    std::size_t(_p_h2)
+                    static_cast<std::size_t>(_p_h2)
                 );
             },
-            nb_of_points * std::ptrdiff_t(3)
+            nb_of_points * static_cast<std::ptrdiff_t>(3)
         );
 
         rt(
@@ -392,7 +390,7 @@ void mesh::generate_point_normals(sight::data::mesh::sptr _mesh)
                     capture0,
                     _mesh,
                     _p_h1,
-                    std::size_t(_p_h2)
+                    static_cast<std::size_t>(_p_h2)
                 );
             },
             nb_of_points
@@ -409,8 +407,8 @@ static void region_shake_normals(T _normals, const std::size_t _region_min, cons
     for(std::size_t i = _region_min ; i < _region_max ; ++i)
     {
         glm::vec3 v(rand_float(), rand_float(), rand_float());
-        _normals[std::int64_t(i)] += v;
-        _normals[std::int64_t(i)]  = glm::normalize(_normals[std::int64_t(i)]);
+        _normals[static_cast<std::int64_t>(i)] += v;
+        _normals[static_cast<std::int64_t>(i)]  = glm::normalize(_normals[static_cast<std::int64_t>(i)]);
     }
 }
 
@@ -611,8 +609,7 @@ void mesh::colorize_mesh_points(
         c.a = _color_a;
     }
 
-    auto sig = _mesh->signal<sight::data::mesh::signal_t>(sight::data::mesh::POINT_COLORS_MODIFIED_SIG);
-    sig->async_emit();
+    _mesh->async_emit(sight::data::mesh::signals::POINT_COLORS_MODIFIED);
 }
 
 //-----------------------------------------------------------------------------
@@ -659,8 +656,7 @@ void mesh::colorize_mesh_points(
         point3->a = _color_a;
     }
 
-    auto sig = _mesh->signal<sight::data::mesh::signal_t>(sight::data::mesh::POINT_COLORS_MODIFIED_SIG);
-    sig->async_emit();
+    _mesh->async_emit(sight::data::mesh::signals::POINT_COLORS_MODIFIED);
 }
 
 //-----------------------------------------------------------------------------
@@ -685,8 +681,7 @@ void mesh::colorize_mesh_cells(
         c.a = _color_a;
     }
 
-    auto sig = _mesh->signal<sight::data::mesh::signal_t>(sight::data::mesh::CELL_COLORS_MODIFIED_SIG);
-    sig->async_emit();
+    _mesh->async_emit(sight::data::mesh::signals::CELL_COLORS_MODIFIED);
 }
 
 //------------------------------------------------------------------------------
@@ -714,8 +709,7 @@ void mesh::colorize_mesh_cells(
         cell->a = _color_a;
     }
 
-    auto sig = _mesh->signal<sight::data::mesh::signal_t>(sight::data::mesh::CELL_COLORS_MODIFIED_SIG);
-    sig->async_emit();
+    _mesh->async_emit(sight::data::mesh::signals::CELL_COLORS_MODIFIED);
 }
 
 //-----------------------------------------------------------------------------

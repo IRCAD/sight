@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2024 IRCAD France
+ * Copyright (C) 2016-2026 IRCAD France
  * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,39 +21,27 @@
  ***********************************************************************/
 
 #include "has_parameters.hpp"
-
-#include <core/com/slots.hxx>
+#include "core/com/slot.hpp"
 
 namespace sight::ui
 {
 
 //-----------------------------------------------------------------------------
 
-const core::com::slots::key_t has_parameters::SET_PARAMETER_SLOT         = "set_parameter";
-const core::com::slots::key_t has_parameters::SET_BOOL_PARAMETER_SLOT    = "set_bool_parameter";
-const core::com::slots::key_t has_parameters::SET_COLOR_PARAMETER_SLOT   = "set_color_parameter";
-const core::com::slots::key_t has_parameters::SET_DOUBLE_PARAMETER_SLOT  = "set_double_parameter";
-const core::com::slots::key_t has_parameters::SET_DOUBLE2_PARAMETER_SLOT = "set_double2_parameter";
-const core::com::slots::key_t has_parameters::SET_DOUBLE3_PARAMETER_SLOT = "set_double3_parameter";
-const core::com::slots::key_t has_parameters::SET_INT_PARAMETER_SLOT     = "set_int_parameter";
-const core::com::slots::key_t has_parameters::SET_INT2_PARAMETER_SLOT    = "set_int2_parameter";
-const core::com::slots::key_t has_parameters::SET_INT3_PARAMETER_SLOT    = "set_int3_parameter";
-const core::com::slots::key_t has_parameters::SET_ENUM_PARAMETER_SLOT    = "set_enum_parameter";
-
 //-----------------------------------------------------------------------------
 
 has_parameters::has_parameters(sight::core::com::slots& _slots)
 {
-    _slots(SET_PARAMETER_SLOT, core::com::new_slot(&has_parameters::set_parameter, this));
-    _slots(SET_BOOL_PARAMETER_SLOT, core::com::new_slot(&has_parameters::set_bool_parameter, this));
-    _slots(SET_COLOR_PARAMETER_SLOT, core::com::new_slot(&has_parameters::set_color_parameter, this));
-    _slots(SET_DOUBLE_PARAMETER_SLOT, core::com::new_slot(&has_parameters::set_double_parameter, this));
-    _slots(SET_DOUBLE2_PARAMETER_SLOT, core::com::new_slot(&has_parameters::set_double2_parameter, this));
-    _slots(SET_DOUBLE3_PARAMETER_SLOT, core::com::new_slot(&has_parameters::set_double3_parameter, this));
-    _slots(SET_INT_PARAMETER_SLOT, core::com::new_slot(&has_parameters::set_int_parameter, this));
-    _slots(SET_INT2_PARAMETER_SLOT, core::com::new_slot(&has_parameters::set_int2_parameter, this));
-    _slots(SET_INT3_PARAMETER_SLOT, core::com::new_slot(&has_parameters::set_int3_parameter, this));
-    _slots(SET_ENUM_PARAMETER_SLOT, core::com::new_slot(&has_parameters::set_enum_parameter, this));
+    _slots(slots::SET_PARAMETER, core::com::new_slot(&has_parameters::set_parameter, this));
+    _slots(slots::SET_BOOL_PARAMETER, core::com::new_slot(&has_parameters::set_bool_parameter, this));
+    _slots(slots::SET_COLOR_PARAMETER, core::com::new_slot(&has_parameters::set_color_parameter, this));
+    _slots(slots::SET_DOUBLE_PARAMETER, core::com::new_slot(&has_parameters::set_double_parameter, this));
+    _slots(slots::SET_DOUBLE2_PARAMETER, core::com::new_slot(&has_parameters::set_double2_parameter, this));
+    _slots(slots::SET_DOUBLE3_PARAMETER, core::com::new_slot(&has_parameters::set_double3_parameter, this));
+    _slots(slots::SET_INT_PARAMETER, core::com::new_slot(&has_parameters::set_int_parameter, this));
+    _slots(slots::SET_INT2_PARAMETER, core::com::new_slot(&has_parameters::set_int2_parameter, this));
+    _slots(slots::SET_INT3_PARAMETER, core::com::new_slot(&has_parameters::set_int3_parameter, this));
+    _slots(slots::SET_ENUM_PARAMETER, core::com::new_slot(&has_parameters::set_enum_parameter, this));
 }
 
 //-----------------------------------------------------------------------------

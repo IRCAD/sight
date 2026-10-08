@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 
 #include "io/opencv/type.hpp"
 
-#include <data/array.hpp>
+#include <algorithm>
 
 namespace sight::io::opencv
 {
@@ -47,6 +47,7 @@ static cv::Mat to_cv(const data::image::csptr& _image, bool _copy)
     {
         const auto image_size = _image->size();
         std::vector<int> cv_size;
+        cv_size.reserve(_image->num_dimensions());
         for(std::size_t i = 0 ; i < _image->num_dimensions() ; ++i)
         {
             cv_size.push_back(static_cast<int>(image_size[i]));
@@ -59,7 +60,7 @@ static cv::Mat to_cv(const data::image::csptr& _image, bool _copy)
         }
 
         // Reverse from (w,h,d) to (d,h,w) because OpenCV uses a row major format
-        std::reverse(cv_size.begin(), cv_size.end());
+        std::ranges::reverse(cv_size);
 
         if(_copy)
         {
@@ -108,24 +109,24 @@ void image::copy_from_cv(data::image& _image, const cv::Mat& _cv_image)
 
     if(_cv_image.dims == 1)
     {
-        image_size[0] = std::size_t(_cv_image.size[0]);
+        image_size[0] = static_cast<std::size_t>(_cv_image.size[0]);
     }
     else if(_cv_image.dims == 2 && _cv_image.rows == 1)
     {
         // This means this is actually a 1D image so remove the first dimension (==1)
-        image_size[0] = std::size_t(_cv_image.size[1]);
+        image_size[0] = static_cast<std::size_t>(_cv_image.size[1]);
         image_size[1] = 0;
     }
     else if(_cv_image.dims == 2)
     {
-        image_size[0] = std::size_t(_cv_image.size[1]);
-        image_size[1] = std::size_t(_cv_image.size[0]);
+        image_size[0] = static_cast<std::size_t>(_cv_image.size[1]);
+        image_size[1] = static_cast<std::size_t>(_cv_image.size[0]);
     }
     else // 3D
     {
-        image_size[0] = std::size_t(_cv_image.size[2]);
-        image_size[1] = std::size_t(_cv_image.size[1]);
-        image_size[2] = std::size_t(_cv_image.size[0]);
+        image_size[0] = static_cast<std::size_t>(_cv_image.size[2]);
+        image_size[1] = static_cast<std::size_t>(_cv_image.size[1]);
+        image_size[2] = static_cast<std::size_t>(_cv_image.size[0]);
     }
 
     const auto prev_image_size = _image.size();

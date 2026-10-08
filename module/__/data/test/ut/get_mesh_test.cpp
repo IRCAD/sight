@@ -19,8 +19,6 @@
  *
  ***********************************************************************/
 
-#include <core/runtime/runtime.hpp>
-
 #include <data/mesh.hpp>
 #include <data/model_series.hpp>
 #include <data/reconstruction.hpp>
@@ -83,13 +81,13 @@ TEST_SUITE("sight::module::data::get_mesh")
         get_mesh_serv->set_config(config_string);
         get_mesh_serv->set_input(m_series, "modelSeries");
         get_mesh_serv->configure();
-        get_mesh_serv->start().wait();
-        get_mesh_serv->update().wait();
+        get_mesh_serv->start().get();
+        get_mesh_serv->update().get();
 
         CHECK_EQ(get_mesh_serv->output("mesh", 0).lock()->get_id(), mesh3->get_id());
         CHECK_EQ(get_mesh_serv->output("mesh", 1).lock()->get_id(), mesh1->get_id());
         CHECK_EQ(get_mesh_serv->output("mesh", 2).lock()->get_id(), mesh3->get_id());
-        get_mesh_serv->stop().wait();
+        get_mesh_serv->stop().get();
 
         sight::service::remove(get_mesh_serv);
     }
@@ -146,9 +144,9 @@ TEST_SUITE("sight::module::data::get_mesh")
         get_mesh_serv->set_config(config_string);
         get_mesh_serv->set_input(m_series, "modelSeries");
         get_mesh_serv->configure();
-        get_mesh_serv->start().wait();
+        get_mesh_serv->start().get();
         CHECK_THROWS_AS(get_mesh_serv->update().get(), sight::core::exception);
-        get_mesh_serv->stop().wait();
+        get_mesh_serv->stop().get();
         sight::service::remove(get_mesh_serv);
     }
 
@@ -228,15 +226,15 @@ TEST_SUITE("sight::module::data::get_mesh")
         get_mesh_serv->set_config(config_string);
         get_mesh_serv->set_input(m_series, "modelSeries");
         get_mesh_serv->configure();
-        get_mesh_serv->start().wait();
-        get_mesh_serv->update().wait();
+        get_mesh_serv->start().get();
+        get_mesh_serv->update().get();
         CHECK_EQ(get_mesh_serv->output("mesh", 0).lock()->get_id(), mesh2->get_id());
         CHECK_EQ(get_mesh_serv->output("mesh", 1).lock()->get_id(), mesh1->get_id());
         CHECK_EQ(get_mesh_serv->output("mesh", 2).lock()->get_id(), mesh3->get_id());
         CHECK_EQ(get_mesh_serv->output("mesh", 3).lock()->get_id(), mesh4->get_id());
         CHECK_EQ(get_mesh_serv->output("mesh", 4).lock()->get_id(), mesh3->get_id());
         CHECK_EQ(get_mesh_serv->output("mesh", 5).lock()->get_id(), mesh5->get_id());
-        get_mesh_serv->stop().wait();
+        get_mesh_serv->stop().get();
         sight::service::remove(get_mesh_serv);
     }
 
@@ -313,9 +311,9 @@ TEST_SUITE("sight::module::data::get_mesh")
         get_mesh_serv->set_config(config_string);
         get_mesh_serv->set_input(m_series, "modelSeries");
         get_mesh_serv->configure();
-        get_mesh_serv->start().wait();
+        get_mesh_serv->start().get();
         CHECK_THROWS_AS(get_mesh_serv->update().get(), sight::data::exception);
-        get_mesh_serv->stop().wait();
+        get_mesh_serv->stop().get();
         sight::service::remove(get_mesh_serv);
     }
 
@@ -391,9 +389,9 @@ TEST_SUITE("sight::module::data::get_mesh")
         get_mesh_serv->set_config(config_string);
         get_mesh_serv->set_input(m_series, "modelSeries");
         get_mesh_serv->configure();
-        get_mesh_serv->start().wait();
+        get_mesh_serv->start().get();
         CHECK_THROWS_AS(get_mesh_serv->update().get(), sight::data::exception);
-        get_mesh_serv->stop().wait();
+        get_mesh_serv->stop().get();
         sight::service::remove(get_mesh_serv);
     }
 
@@ -471,13 +469,13 @@ TEST_SUITE("sight::module::data::get_mesh")
         get_mesh_serv->set_config(config_string);
         get_mesh_serv->set_input(m_series, "modelSeries");
         get_mesh_serv->configure();
-        get_mesh_serv->start().wait();
-        get_mesh_serv->update().wait();
+        get_mesh_serv->start().get();
+        get_mesh_serv->update().get();
         CHECK_EQ(get_mesh_serv->output("mesh", 0).lock()->get_id(), mesh5->get_id());
         CHECK_EQ(get_mesh_serv->output("mesh", 1).lock()->get_id(), mesh2->get_id());
         CHECK_EQ(get_mesh_serv->output("mesh", 2).lock()->get_id(), mesh1->get_id());
         CHECK_EQ(get_mesh_serv->output("mesh", 3).lock()->get_id(), mesh3->get_id());
-        get_mesh_serv->stop().wait();
+        get_mesh_serv->stop().get();
         sight::service::remove(get_mesh_serv);
     }
 
@@ -499,9 +497,9 @@ TEST_SUITE("sight::module::data::get_mesh")
         get_mesh_serv->set_config(config_string);
         get_mesh_serv->set_input(nullptr, "modelSeries");
         get_mesh_serv->configure();
-        get_mesh_serv->start().wait();
+        get_mesh_serv->start().get();
         CHECK_THROWS_AS(get_mesh_serv->update().get(), sight::data::exception);
-        get_mesh_serv->stop().wait();
+        get_mesh_serv->stop().get();
         sight::service::remove(get_mesh_serv);
     }
 

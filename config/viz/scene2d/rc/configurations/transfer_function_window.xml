@@ -46,15 +46,13 @@
 
         <!-- TF manager -->
         <service uid="tf_manager_cfg" type="sight::app::config_launcher">
-            <properties config="sight::config::viz::scene2d::TransferFunctionWidgetCfg" />
-            <inout group="object">
-                <key name="image" uid="${image}" />
-                <key name="currentTF" uid="${currentTF}" />
-                <key name="presets" uid="${presets}" optional="true" />
-            </inout>
-            <parameter replace="WID_PARENT" by="tf_view" />
-            <parameter replace="USE_DEFAULT_TF" by="${USE_DEFAULT_TF}" />
-            <parameter replace="ADDITIONAL_TF_PATH" by="${ADDITIONAL_TF_PATH}" />
+            <config id="sight::config::viz::scene2d::TransferFunctionWidgetCfg" />
+            <object name="image" uid="${image}" />
+            <object name="currentTF" uid="${currentTF}" />
+            <object name="presets" uid="${presets}" optional="true" />
+            <param name="WID_PARENT" value="tf_view" />
+            <param name="USE_DEFAULT_TF" value="${USE_DEFAULT_TF}" />
+            <param name="ADDITIONAL_TF_PATH" value="${ADDITIONAL_TF_PATH}" />
         </service>
 
         <!-- ******************************* Connections ***************************************** -->

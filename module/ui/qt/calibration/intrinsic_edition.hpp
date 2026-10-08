@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -73,6 +73,8 @@ public:
      * @brief Destructor.
      */
     ~intrinsic_edition() override;
+
+protected:
 
     /**
      * @brief Configuring method : This method is used to configure the service.

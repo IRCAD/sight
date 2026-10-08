@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -88,16 +88,27 @@ public:
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(colour_image_masking, sight::service::filter);
 
+    struct slots
+    {
+        static inline const slot_key_t SET_BACKGROUND            = "set_background";
+        static inline const slot_key_t SET_FOREGROUND            = "set_foreground";
+        static inline const slot_key_t SET_THRESHOLD             = "set_threshold";
+        static inline const slot_key_t SET_NOISE_LEVEL           = "set_noise_level";
+        static inline const slot_key_t SET_BACKGROUND_COMPONENTS = "set_background_components";
+        static inline const slot_key_t SET_FOREGROUND_COMPONENTS = "set_foreground_components";
+        static inline const slot_key_t CLEAR_MASKTL              = "clearMaskTL";
+    };
+
     /// Initializes the slots and member variables.
     colour_image_masking() noexcept;
 
     /// Destroys the service.
     ~colour_image_masking() noexcept override;
 
+protected:
+
     /// Defines auto connection for this service (update slot) to the frame timeline (objectPushed)
     service::connections_t auto_connections() const override;
-
-protected:
 
     /// Initializes segmentation method parameters.
     void configuring() override;

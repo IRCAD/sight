@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2025 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,10 +25,9 @@
 #include "ui/qt/container/widget.hpp"
 #include "ui/qt/widget/slide_bar.hpp"
 
-#include <ui/__/macros.hpp>
-
 #include <QApplication>
 #include <QBoxLayout>
+#include <QIcon>
 #include <QPushButton>
 #include <QTimer>
 #include <QVBoxLayout>
@@ -48,6 +47,30 @@ void notification::show()
         build();
     }
     else
+    {
+        update();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void notification::set_icon(std::optional<std::filesystem::path> _icon)
+{
+    notification_base::set_icon(std::move(_icon));
+
+    if(!m_parent.isNull())
+    {
+        update();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void notification::set_icon_size(int _size)
+{
+    notification_base::set_icon_size(_size);
+
+    if(!m_parent.isNull())
     {
         update();
     }
@@ -198,7 +221,7 @@ inline static bool check_message_length(
 {
     const auto& bounding = _metrics.boundingRect(
         _available,
-        int(Qt::TextWordWrap) | Qt::AlignHCenter | Qt::AlignVCenter,
+        static_cast<int>(Qt::TextWordWrap) | Qt::AlignHCenter | Qt::AlignVCenter,
         _message + (_is_truncated ? "..." : "")
     );
 
@@ -212,29 +235,42 @@ void notification::update()
     // Check that the UI is built
     SIGHT_ASSERT("The dialog UI has not been built", !m_parent.isNull());
 
+    m_msg_box->set_icon_size(m_notification.m_icon_size);
+    m_msg_box->set_icon(
+        m_notification.m_icon && !m_notification.m_icon->empty()
+        ? QIcon(QString::fromStdString(m_notification.m_icon->string()))
+        : QIcon()
+    );
+
     // If we must reapply the style sheet or not
     const auto& old_object_name = m_sub_widget->objectName();
 
-    static constexpr auto s_SUCCESS_NAME {"NotificationDialog_Success"};
-    static constexpr auto s_FAILURE_NAME {"NotificationDialog_Failure"};
-    static constexpr auto s_INFO_NAME {"NotificationDialog_Info"};
+    static constexpr auto s_INSTRUCTION_NAME {"NotificationDialog_Instruction"};
+    static constexpr auto s_ERROR_NAME {"NotificationDialog_Error"};
+    static constexpr auto s_INFORMATION_NAME {"NotificationDialog_Information"};
+    static constexpr auto s_WARNING_NAME {"NotificationDialog_Warning"};
 
     // Set object names
     switch(m_notification.m_type)
     {
-        case notification_base::type::success:
-            m_sub_widget->setObjectName(s_SUCCESS_NAME);
-            m_msg_box->setObjectName(s_SUCCESS_NAME);
+        case notification_base::type::instruction:
+            m_sub_widget->setObjectName(s_INSTRUCTION_NAME);
+            m_msg_box->setObjectName(s_INSTRUCTION_NAME);
             break;
 
-        case notification_base::type::failure:
-            m_sub_widget->setObjectName(s_FAILURE_NAME);
-            m_msg_box->setObjectName(s_FAILURE_NAME);
+        case notification_base::type::error:
+            m_sub_widget->setObjectName(s_ERROR_NAME);
+            m_msg_box->setObjectName(s_ERROR_NAME);
+            break;
+
+        case notification_base::type::warning:
+            m_sub_widget->setObjectName(s_WARNING_NAME);
+            m_msg_box->setObjectName(s_WARNING_NAME);
             break;
 
         default:
-            m_sub_widget->setObjectName(s_INFO_NAME);
-            m_msg_box->setObjectName(s_INFO_NAME);
+            m_sub_widget->setObjectName(s_INFORMATION_NAME);
+            m_msg_box->setObjectName(s_INFORMATION_NAME);
             break;
     }
 
@@ -248,33 +284,42 @@ void notification::update()
         }
         else
         {
-            static constexpr auto s_SUCCESS_STYLE {
+            static constexpr auto s_INSTRUCTION_STYLE {
                 "background-color:#58D68D;color:white;font-weight: bold;font-size: 16px;border-radius: 10px"
             };
 
-            static constexpr auto s_FAILURE_STYLE {
+            static constexpr auto s_ERROR_STYLE {
                 "background-color:#E74C3C;color:white;font-weight: bold;font-size: 16px;border-radius: 10px"
             };
 
-            static constexpr auto s_INFO_STYLE {
+            static constexpr auto s_INFORMATION_STYLE {
                 "background-color:#5DADE2;color:white;font-weight: bold;font-size: 16px;border-radius: 10px"
+            };
+
+            static constexpr auto s_WARNING_STYLE {
+                "background-color:#D9A400;color:white;font-weight: bold;font-size: 16px;border-radius: 10px"
             };
 
             switch(m_notification.m_type)
             {
-                case notification_base::type::success:
-                    m_sub_widget->setStyleSheet(s_SUCCESS_STYLE);
-                    m_msg_box->setStyleSheet(s_SUCCESS_STYLE);
+                case notification_base::type::instruction:
+                    m_sub_widget->setStyleSheet(s_INSTRUCTION_STYLE);
+                    m_msg_box->setStyleSheet(s_INSTRUCTION_STYLE);
                     break;
 
-                case notification_base::type::failure:
-                    m_sub_widget->setStyleSheet(s_FAILURE_STYLE);
-                    m_msg_box->setStyleSheet(s_FAILURE_STYLE);
+                case notification_base::type::error:
+                    m_sub_widget->setStyleSheet(s_ERROR_STYLE);
+                    m_msg_box->setStyleSheet(s_ERROR_STYLE);
+                    break;
+
+                case notification_base::type::warning:
+                    m_sub_widget->setStyleSheet(s_WARNING_STYLE);
+                    m_msg_box->setStyleSheet(s_WARNING_STYLE);
                     break;
 
                 default:
-                    m_sub_widget->setStyleSheet(s_INFO_STYLE);
-                    m_msg_box->setStyleSheet(s_INFO_STYLE);
+                    m_sub_widget->setStyleSheet(s_INFORMATION_STYLE);
+                    m_msg_box->setStyleSheet(s_INFORMATION_STYLE);
                     break;
             }
         }
@@ -293,8 +338,8 @@ void notification::update()
             const QRect available(
                 0,
                 0,
-                int(m_notification.m_size[0] - 0.1 * m_notification.m_size[0]),
-                int(m_notification.m_size[1] - 0.1 * m_notification.m_size[1])
+                static_cast<int>(m_notification.m_size[0] - 0.1 * m_notification.m_size[0]),
+                static_cast<int>(m_notification.m_size[1] - 0.1 * m_notification.m_size[1])
             );
 
             const QFontMetrics metrics(m_msg_box->font());
@@ -348,11 +393,15 @@ void notification::update()
 
         // Create a real message box with the full text
         auto icon = QMessageBox::NoIcon;
-        if(m_notification.m_type == notification_base::type::failure)
+        if(m_notification.m_type == notification_base::type::error)
         {
             icon = QMessageBox::Critical;
         }
-        else if(m_notification.m_type == notification_base::type::info)
+        else if(m_notification.m_type == notification_base::type::warning)
+        {
+            icon = QMessageBox::Warning;
+        }
+        else if(m_notification.m_type == notification_base::type::information)
         {
             icon = QMessageBox::Information;
         }

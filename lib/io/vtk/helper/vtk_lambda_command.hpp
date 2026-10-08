@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,7 +42,7 @@ public:
 
     using callback = std::function<void (vtkObject*, unsigned long, void*)>; // NOLINT(google-runtime-int)
 
-    vtkTypeMacro(vtk_lambda_command, vtkCommand)
+    vtkTypeMacro(vtk_lambda_command, vtkCommand) ~vtk_lambda_command() override = default;
 
     /**
      * @brief returns a new vtk_lambda_command
@@ -68,11 +68,9 @@ public:
 
 protected:
 
-    vtk_lambda_command()
-    = default;
+    vtk_lambda_command() = default;
 
-    ~vtk_lambda_command() override
-    = default;
+private:
 
     callback m_callback;
 };

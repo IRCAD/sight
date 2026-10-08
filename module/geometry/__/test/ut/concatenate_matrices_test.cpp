@@ -19,8 +19,6 @@
  *
  ***********************************************************************/
 
-#include <core/runtime/runtime.hpp>
-
 #include <data/matrix4.hpp>
 
 #include <service/op.hpp>
@@ -51,9 +49,7 @@ TEST_SUITE("sight::module::geometry::concatenate_matrices")
         // One identity matrix as input
         {
             const std::string config =
-                "<in group='matrix'>"
-                "     <key uid='m1' />"
-                "</in>";
+                "     <data input='${m1}' />";
             srv->set_config(config);
         }
 
@@ -64,8 +60,8 @@ TEST_SUITE("sight::module::geometry::concatenate_matrices")
         check_matrix(identity, *input);
         check_matrix(identity, *output);
 
-        srv->set_input(input, "matrix", true, false, 0);
-        srv->set_inout(output, "output");
+        srv->set_input(input, "data.input", true, false, 0);
+        srv->set_inout(output, "data.output");
 
         srv->configure();
         srv->start().get();
@@ -78,14 +74,12 @@ TEST_SUITE("sight::module::geometry::concatenate_matrices")
         // Add a second identity matrix as input
         {
             const std::string config =
-                "<in group='matrix'>"
-                "     <key uid='m1' />"
-                "     <key uid='m2' />"
-                "</in>";
+                "     <data input='${m1}' />"
+                "     <data input='${m2}' />";
             srv->set_config(config);
         }
         auto input2 = std::make_shared<sight::data::matrix4>();
-        srv->set_input(input2, "matrix", true, false, 1);
+        srv->set_input(input2, "data.input", true, false, 1);
 
         srv->configure();
         srv->start().get();
@@ -110,9 +104,7 @@ TEST_SUITE("sight::module::geometry::concatenate_matrices")
 
         {
             const std::string config =
-                "<in group='matrix'>"
-                "     <key uid='m1' />"
-                "</in>";
+                "     <data input='${m1}' />";
             srv->set_config(config);
         }
 
@@ -130,8 +122,8 @@ TEST_SUITE("sight::module::geometry::concatenate_matrices")
         const auto identity = sight::data::matrix4::identity();
         check_matrix(identity, *output);
 
-        srv->set_input(input, "matrix", true, false, 0);
-        srv->set_inout(output, "output");
+        srv->set_input(input, "data.input", true, false, 0);
+        srv->set_inout(output, "data.output");
 
         srv->configure();
         srv->start().get();
@@ -153,10 +145,8 @@ TEST_SUITE("sight::module::geometry::concatenate_matrices")
         CHECK(srv->is_a("sight::module::geometry::concatenate_matrices"));
 
         const std::string config =
-            "<in group='matrix'>"
-            "     <key uid='m1' />"
-            "     <key uid='m2' />"
-            "</in>";
+            "     <data input='${m1}' />"
+            "     <data input='${m2}' />";
         srv->set_config(config);
 
         auto in1    = std::make_shared<sight::data::matrix4>();
@@ -176,9 +166,9 @@ TEST_SUITE("sight::module::geometry::concatenate_matrices")
                 0., 0., 0., 1.
         };
 
-        srv->set_input(in1, "matrix", true, false, 0);
-        srv->set_input(in2, "matrix", true, false, 1);
-        srv->set_inout(output, "output");
+        srv->set_input(in1, "data.input", true, false, 0);
+        srv->set_input(in2, "data.input", true, false, 1);
+        srv->set_inout(output, "data.output");
 
         srv->configure();
         srv->start().get();
@@ -211,12 +201,10 @@ TEST_SUITE("sight::module::geometry::concatenate_matrices")
         CHECK(srv->is_a("sight::module::geometry::concatenate_matrices"));
 
         const std::string config =
-            "<in group='matrix'>"
-            "     <key uid='m1' />"
-            "     <key uid='m2' />"
-            "     <key uid='m3' />"
-            "     <key uid='m4' />"
-            "</in>";
+            "     <data input='${m1}' />"
+            "     <data input='${m2}' />"
+            "     <data input='${m3}' />"
+            "     <data input='${m4}' />";
         srv->set_config(config);
 
         auto in1    = std::make_shared<sight::data::matrix4>();
@@ -247,11 +235,11 @@ TEST_SUITE("sight::module::geometry::concatenate_matrices")
                 0., 0., 0., 1.
         };
 
-        srv->set_input(in1, "matrix", true, false, 0);
-        srv->set_input(in2, "matrix", true, false, 1);
-        srv->set_input(in3, "matrix", true, false, 2);
-        srv->set_input(in4, "matrix", true, false, 3);
-        srv->set_inout(output, "output");
+        srv->set_input(in1, "data.input", true, false, 0);
+        srv->set_input(in2, "data.input", true, false, 1);
+        srv->set_input(in3, "data.input", true, false, 2);
+        srv->set_input(in4, "data.input", true, false, 3);
+        srv->set_inout(output, "data.output");
 
         srv->configure();
         srv->start().get();
@@ -282,12 +270,10 @@ TEST_SUITE("sight::module::geometry::concatenate_matrices")
         CHECK(srv->is_a("sight::module::geometry::concatenate_matrices"));
 
         const std::string config =
-            "<in group='matrix'>"
-            "     <key uid='m1' inverse='true'/>"
-            "     <key uid='m2' />"
-            "     <key uid='m3' inverse='true'/>"
-            "     <key uid='m4' inverse='true'/>"
-            "</in>";
+            "     <data input='${m1}' inverse='true' />"
+            "     <data input='${m2}' />"
+            "     <data input='${m3}' inverse='true' />"
+            "     <data input='${m4}' inverse='true' />";
         srv->set_config(config);
 
         auto in1    = std::make_shared<sight::data::matrix4>();
@@ -318,11 +304,11 @@ TEST_SUITE("sight::module::geometry::concatenate_matrices")
                 0., 0., 0., 1.
         };
 
-        srv->set_input(in1, "matrix", true, false, 0);
-        srv->set_input(in2, "matrix", true, false, 1);
-        srv->set_input(in3, "matrix", true, false, 2);
-        srv->set_input(in4, "matrix", true, false, 3);
-        srv->set_inout(output, "output");
+        srv->set_input(in1, "data.input", true, false, 0);
+        srv->set_input(in2, "data.input", true, false, 1);
+        srv->set_input(in3, "data.input", true, false, 2);
+        srv->set_input(in4, "data.input", true, false, 3);
+        srv->set_inout(output, "data.output");
 
         srv->configure();
         srv->start().get();
@@ -359,10 +345,8 @@ TEST_SUITE("sight::module::geometry::concatenate_matrices")
         CHECK(srv->is_a("sight::module::geometry::concatenate_matrices"));
 
         const std::string config =
-            "<in group='matrix'>"
-            "     <key uid='m1' auto_connect='false'/>"
-            "     <key uid='m2' />"
-            "</in>";
+            "     <data input='${m1}' />"
+            "     <data input='${m2}' />";
 
         srv->set_config(config);
 
@@ -374,9 +358,9 @@ TEST_SUITE("sight::module::geometry::concatenate_matrices")
         check_matrix(identity, *in1);
         check_matrix(identity, *in2);
 
-        srv->set_input(in1, "matrix", false, false, 0);
-        srv->set_input(in2, "matrix", true, false, 1);
-        srv->set_inout(output, "output");
+        srv->set_input(in1, "data.input", false, false, 0);
+        srv->set_input(in2, "data.input", true, false, 1);
+        srv->set_inout(output, "data.output");
 
         srv->configure();
         srv->start().get();
@@ -392,8 +376,7 @@ TEST_SUITE("sight::module::geometry::concatenate_matrices")
                 0., 0., 1., 2.,
                 0., 0., 0., 1.
             };
-            auto sig = in1->signal<sight::data::matrix4::modified_signal_t>(sight::data::matrix4::MODIFIED_SIG);
-            sig->emit();
+            in1->emit(sight::data::signals::MODIFIED);
             check_matrix(identity, *output);
 
             // Thus we require an update
@@ -408,8 +391,7 @@ TEST_SUITE("sight::module::geometry::concatenate_matrices")
                     0., 0.5, -0.866, 0.,
                     0., 0., 0., 1.
             };
-            auto sig = in2->signal<sight::data::matrix4::modified_signal_t>(sight::data::matrix4::MODIFIED_SIG);
-            sig->emit();
+            in2->emit(sight::data::signals::MODIFIED);
 
             const matrix_t expected = {
                 1., 0., 0., 4.,

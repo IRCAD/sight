@@ -21,11 +21,8 @@
 
 #include "settings.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
 #include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
-#include <core/object.hpp>
 #include <core/runtime/path.hpp>
 
 #include <data/boolean.hpp>
@@ -35,19 +32,13 @@
 #include <data/integer.hpp>
 #include <data/ivec2.hpp>
 #include <data/ivec3.hpp>
-#include <data/map.hpp>
 #include <data/real.hpp>
 #include <data/string.hpp>
-#include <data/tools/color.hpp>
 
 #include <ui/__/dialog/location.hpp>
 #include <ui/qt/container/widget.hpp>
 #include <ui/qt/widget/non_linear_slider.hpp>
 
-#include <boost/foreach.hpp>
-#include <boost/lexical_cast.hpp>
-#include <boost/range/iterator_range.hpp>
-#include <boost/range/join.hpp>
 #include <boost/tokenizer.hpp>
 
 #include <QAbstractButton>
@@ -64,6 +55,7 @@
 #include <QSpinBox>
 #include <QString>
 #include <QStyle>
+#include <QTimer>
 #include <QToolButton>
 
 #include <string>
@@ -94,14 +86,7 @@ inline static void set_minimum_size(QWidget* _widget, const settings::param_widg
 
 //-----------------------------------------------------------------------------
 
-settings::settings() noexcept
-{
-    new_slot(slots::UPDATE_ENUM_RANGE, &settings::update_enum_range, this);
-    new_slot(slots::UPDATE_INT_MIN_PARAMETER, &settings::update_int_min_parameter, this);
-    new_slot(slots::UPDATE_INT_MAX_PARAMETER, &settings::update_int_max_parameter, this);
-    new_slot(slots::UPDATE_DOUBLE_MIN_PARAMETER, &settings::update_double_min_parameter, this);
-    new_slot(slots::UPDATE_DOUBLE_MAX_PARAMETER, &settings::update_double_max_parameter, this);
-}
+settings::settings() noexcept = default;
 
 //-----------------------------------------------------------------------------
 
@@ -128,9 +113,10 @@ void settings::starting()
 
     service::config_t config = this->get_config();
 
-    const auto& ui_cfg    = config.get_child("ui");
-    const bool scrollable = ui_cfg.get<bool>("<xmlattr>.scrollable", false);
-    const auto spacing    = ui_cfg.get_optional<int>("<xmlattr>.spacing");
+    const auto& item_cfg  = config;
+    const auto config_cfg = config.get_child_optional("config");
+    const bool scrollable = config_cfg && config_cfg->get<bool>("<xmlattr>.scrollable", false);
+    const auto spacing    = config_cfg ? config_cfg->get_optional<int>("<xmlattr>.spacing") : boost::optional<int> {};
 
     auto* layout = new QFormLayout;
     layout->setAlignment(Qt::AlignCenter);
@@ -158,10 +144,8 @@ void settings::starting()
     // This set keeps tracks of the ones we add, and triggers and assert if it already exists.
     [[maybe_unused]] std::set<std::string> keys;
 
-    const bool use_map = m_settings_map.const_lock() != nullptr;
-
     // Create widgets
-    for(std::size_t data_index = 0 ; const auto& param : boost::make_iterator_range(ui_cfg.equal_range("item")))
+    for(std::size_t data_index = 0 ; const auto& param : boost::make_iterator_range(item_cfg.equal_range("item")))
     {
         const service::config_t& cfg = param.second;
 
@@ -187,27 +171,17 @@ void settings::starting()
         const std::string type =
             [&, this]()
             {
-                sight::data::mt::locked_ptr<const sight::data::map> map_lock;
                 sight::data::mt::locked_ptr<const sight::data::object> lock;
                 sight::data::object::csptr obj;
-                if(use_map)
-                {
-                    widget.key = cfg.get<std::string>("<xmlattr>.key");
-                    map_lock   = m_settings_map.const_lock();
-                    obj        = map_lock->at(widget.key);
-                }
-                else
-                {
-                    lock       = m_settings[widget.data_index].const_lock();
-                    obj        = lock.get_shared();
-                    widget.key = obj->base_id();
-                }
+                lock       = m_settings[widget.data_index].const_lock();
+                obj        = lock.get_shared();
+                widget.key = cfg.get<std::string>("<xmlattr>.key", obj->get_id());
 
                 auto serializable_data = std::dynamic_pointer_cast<const sight::data::string_serializable>(obj);
                 widget.default_value = serializable_data->to_string();
 
                 SIGHT_ERROR_IF(
-                    "No type should be defined for " << std::quoted(widget.key)
+                    "No type should be defined for " << std::quoted(widget.name)
                     << " when passing a data object. It will be ignored.",
                     cfg.get_optional<std::string>("<xmlattr>.type").has_value()
                 );
@@ -215,13 +189,13 @@ void settings::starting()
             }();
 
         SIGHT_ASSERT(
-            get_id() << ": Key " << std::quoted(widget.key) << " already exists.",
+            get_id() << ": Key of widget " << std::quoted(widget.name) << " already exists.",
             keys.insert(widget.key).second
         );
 
         auto* const param_box = new QWidget;
         const auto qt_key     = QString::fromStdString(widget.key) + "_box";
-        param_box->setProperty(qt_property::key, qt_key);
+        param_box->setProperty(qt_property::s_key, qt_key);
         param_box->setObjectName(qt_key);
         param_box->setContentsMargins(0, 0, 0, 0);
 
@@ -315,8 +289,10 @@ void settings::starting()
         {
             const std::string widget_type = cfg.get<std::string>("<xmlattr>.widget", "spin");
 
-            const double min = cfg.get<double>("<xmlattr>.min", 0.);
-            const double max = cfg.get<double>("<xmlattr>.max", 1.);
+            const auto min_ptr = std::as_const(m_min)[widget.data_index].lock();
+            const auto max_ptr = std::as_const(m_max)[widget.data_index].lock();
+            const double min   = min_ptr ? min_ptr->value() : 0.;
+            const double max   = max_ptr ? max_ptr->value() : 1.;
 
             const double_widget widget_double = {widget, min, max};
 
@@ -360,8 +336,10 @@ void settings::starting()
         {
             const auto widget_type = cfg.get<std::string>("<xmlattr>.widget");
 
-            const int min               = cfg.get<int>("<xmlattr>.min", 0);
-            const int max               = cfg.get<int>("<xmlattr>.max", 100);
+            const auto min_ptr          = std::as_const(m_min)[widget.data_index].lock();
+            const auto max_ptr          = std::as_const(m_max)[widget.data_index].lock();
+            const int min               = min_ptr ? static_cast<int>(min_ptr->value()) : 0;
+            const int max               = max_ptr ? static_cast<int>(max_ptr->value()) : 100;
             const int_widget widget_int = {widget, min, max};
 
             const int count = (type == "sight::data::ivec3") ? 3 : (type == "sight::data::ivec2" ? 2 : 1);
@@ -400,27 +378,26 @@ void settings::starting()
         {
             const auto widget_type = cfg.get<std::string>("<xmlattr>.widget", "");
 
+            std::vector<std::string> enum_labels;
+            std::vector<std::string> enum_keys;
+            if(const auto values_ptr = std::as_const(m_values)[widget.data_index].lock(); values_ptr)
+            {
+                sight::module::ui::qt::settings::parse_enum_string(
+                    values_ptr->value(),
+                    enum_labels,
+                    enum_keys
+                );
+            }
+
             if(widget_type == "combobox")
             {
-                const auto options = cfg.get<std::string>("<xmlattr>.values");
-                // split values separated by ',', ' ', ';'
-                std::vector<std::string> values;
-                std::vector<std::string> data;
-
-                sight::module::ui::qt::settings::parse_enum_string(options, values, data);
-                this->create_enum_combobox_widget(param_box_layout, widget, values, data);
+                this->create_enum_combobox_widget(param_box_layout, widget, enum_labels, enum_keys);
             }
             else if(widget_type == "comboslider")
             {
-                const auto options = cfg.get<std::string>("<xmlattr>.values");
-                // split values separated by ',', ' ', ';'
-                std::vector<std::string> values;
-                std::vector<std::string> data;
-
-                sight::module::ui::qt::settings::parse_enum_string(options, values, data);
                 const bool on_release = cfg.get<bool>("<xmlattr>.emit_on_release", false);
 
-                this->create_enum_slider_widget(param_box_layout, widget, values, orientation, on_release);
+                this->create_enum_slider_widget(param_box_layout, widget, enum_labels, orientation, on_release);
 
                 if(orientation == Qt::Vertical)
                 {
@@ -462,13 +439,7 @@ void settings::starting()
             }
             else if(widget_type == "tickmarks")
             {
-                const auto options = cfg.get<std::string>("<xmlattr>.values", "");
-
-                std::vector<std::string> labels;
-                std::vector<std::string> data;
-                sight::module::ui::qt::settings::parse_enum_string(options, labels, data);
-
-                this->create_tickmarks_widget(param_box_layout, widget, labels);
+                this->create_tickmarks_widget(param_box_layout, widget, enum_labels);
             }
             else if(is_text_widget.contains(widget_type))
             {
@@ -494,27 +465,17 @@ void settings::starting()
         }
     }
 
-    for(std::size_t data_index = 0 ; const auto& param : boost::make_iterator_range(ui_cfg.equal_range("item")))
+    for(std::size_t data_index = 0 ; const auto& param : boost::make_iterator_range(item_cfg.equal_range("item")))
     {
         const service::config_t& cfg = param.second;
 
         std::string key;
 
-        sight::data::mt::locked_ptr<const sight::data::map> map_lock;
         sight::data::mt::locked_ptr<sight::data::object> lock;
         sight::data::object::sptr obj;
-        if(use_map)
-        {
-            key      = cfg.get<std::string>("<xmlattr>.key");
-            map_lock = m_settings_map.const_lock();
-            obj      = map_lock->at(key);
-        }
-        else
-        {
-            lock = m_settings[data_index].lock();
-            obj  = lock.get_shared();
-            key  = obj->base_id();
-        }
+        lock = m_settings[data_index].lock();
+        obj  = lock.get_shared();
+        key  = cfg.get<std::string>("<xmlattr>.key", obj->get_id());
 
         const std::string depends       = cfg.get<std::string>("<xmlattr>.depends", "");
         const std::string depends_value = cfg.get<std::string>("<xmlattr>.depends_value", "");
@@ -541,6 +502,11 @@ void settings::starting()
             if(auto* const widget = qobject_cast<QWidget*>((*widget_container_it)))
             {
                 widget->installEventFilter(this);
+                if(depends_widget != nullptr)
+                {
+                    depends_widget->installEventFilter(this);
+                }
+
                 auto* check_box     = qobject_cast<QCheckBox*>(depends_widget);
                 auto* switch_button = qobject_cast<sight::ui::qt::widget::switch_button*>(depends_widget);
                 if(check_box != nullptr)
@@ -580,6 +546,60 @@ void settings::starting()
         ++data_index;
     }
 
+    const auto bind_item_data =
+        [this, &item_cfg](
+            auto& _data,
+            auto&& _update,
+            settings_slot_container_t& _slots )
+        {
+            for(const auto& [index, data_ptr] : _data)
+            {
+                const auto data_lock = data_ptr->lock();
+                const auto data      = data_lock.get_shared();
+                if(!data)
+                {
+                    continue;
+                }
+
+                const service::config_t& cfg = std::next(
+                    item_cfg.equal_range("item").first,
+                    static_cast<std::int64_t>(index)
+                )->second;
+                const auto value_lock = m_settings[index].const_lock();
+                const auto value      = value_lock.get_shared();
+                const auto key        = cfg.get<std::string>("<xmlattr>.key", value->get_id());
+
+                _update(data->value(), key);
+
+                const auto slot = core::com::new_slot(
+                    [data, key, update = _update]()
+                {
+                    update(data->value(), key);
+                });
+                slot->set_worker(this->worker());
+                _slots[key] = slot;
+                const auto signal = data->template signal<data::signals::modified_t>(
+                    data::signals::MODIFIED
+                );
+                signal->connect(slot);
+            }
+        };
+    bind_item_data(
+        m_values,
+        [this](const std::string& _value, const std::string& _key){this->update_range(_value, _key);},
+        m_values_slots
+    );
+    bind_item_data(
+        m_min,
+        [this](const double _value, const std::string& _key){this->update_min(_value, _key);},
+        m_min_slots
+    );
+    bind_item_data(
+        m_max,
+        [this](const double _value, const std::string& _key){this->update_max(_value, _key);},
+        m_max_slots
+    );
+
     if(scroll_area != nullptr)
     {
         auto* main_layout = new QHBoxLayout();
@@ -610,6 +630,9 @@ void settings::stopping()
     this->stop_listening_joystick();
 
     m_settings_slots.clear();
+    m_values_slots.clear();
+    m_min_slots.clear();
+    m_max_slots.clear();
     m_param_boxes.clear(); // Avoid keeping dangling pointers
     this->destroy();
 }
@@ -687,13 +710,19 @@ void settings::on_depends_changed(QComboBox* _combo_box, QWidget* _widget, const
     {
         _widget->setDisabled(true);
     }
-    else if(_reverse)
-    {
-        _widget->setDisabled(_combo_box->currentText().toStdString() == _value);
-    }
     else
     {
-        _widget->setEnabled(_combo_box->currentText().toStdString() == _value);
+        const std::string current = _combo_box->currentText().toStdString();
+        std::vector<std::string> accepted;
+        boost::split(accepted, _value, boost::is_any_of(";"));
+        const bool matches = std::ranges::any_of(
+            accepted,
+            [&current](std::string _value)
+            {
+                boost::trim(_value);
+                return _value == current;
+            });
+        _widget->setEnabled(matches != _reverse);
     }
 }
 
@@ -747,7 +776,7 @@ void settings::on_change_integer(int _val)
     }
     else if(spinbox != nullptr)
     {
-        const int count = spinbox->property(qt_property::count).toInt();
+        const int count = spinbox->property(qt_property::s_count).toInt();
         SIGHT_ASSERT(get_id() << ": Invalid widgets count, must be <= 3", count <= 3);
 
         if(count == 1)
@@ -756,7 +785,7 @@ void settings::on_change_integer(int _val)
         }
         else
         {
-            const auto index = spinbox->property(qt_property::index).toUInt();
+            const auto index = spinbox->property(qt_property::s_index).toUInt();
             SIGHT_ASSERT(get_id() << ": Invalid widgets index, must be <= 3", index <= 3);
 
             if(count <= 2)
@@ -791,7 +820,7 @@ void settings::on_change_double(double _val)
     }
     else if(spinbox != nullptr)
     {
-        const int count = spinbox->property(qt_property::count).toInt();
+        const int count = spinbox->property(qt_property::s_count).toInt();
         SIGHT_ASSERT(get_id() << ": Invalid widgets count, must be <= 3", count <= 3);
 
         if(count == 1)
@@ -800,7 +829,7 @@ void settings::on_change_double(double _val)
         }
         else
         {
-            const auto index = spinbox->property(qt_property::index).toUInt();
+            const auto index = spinbox->property(qt_property::s_index).toUInt();
             SIGHT_ASSERT(get_id() << ": Invalid widgets index, must be <= 3", index <= 3);
 
             if(count <= 2)
@@ -926,7 +955,7 @@ void settings::on_reset_integer(QWidget* _widget)
     }
     else if(spinbox != nullptr)
     {
-        const int count = spinbox->property(qt_property::count).toInt();
+        const int count = spinbox->property(qt_property::s_count).toInt();
         SIGHT_ASSERT(get_id() << ": Invalid widgets count, must be <= 3", count <= 3);
 
         auto* spin1 = spinbox->property("widget#0").value<QSpinBox*>();
@@ -969,12 +998,15 @@ void settings::on_reset_double(QWidget* _widget)
         const double min         = slider->property("min").toDouble();
         const double max         = slider->property("max").toDouble();
         const double value_range = max - min;
-        const int slider_val     = int(std::round(((value - min) / value_range) * double(slider->maximum())));
+        const int slider_val     = static_cast<int>(std::round(
+                                                        ((value - min) / value_range)
+                                                        * static_cast<double>(slider->maximum())
+        ));
         slider->setValue(slider_val);
     }
     else if(spinbox != nullptr)
     {
-        const unsigned int count = spinbox->property(qt_property::count).toUInt();
+        const unsigned int count = spinbox->property(qt_property::s_count).toUInt();
         SIGHT_ASSERT(get_id() << ": Invalid widgets count, must be <= 3", count <= 3);
 
         auto* spin1 = spinbox->property("widget#0").value<QDoubleSpinBox*>();
@@ -1051,8 +1083,8 @@ QPushButton* settings::create_bool_widget(
         // Base properties
         const auto key = QString::fromStdString(_setup.key);
         checkbox->setObjectName(key);
-        checkbox->setProperty(qt_property::key, key);
-        checkbox->setProperty(qt_property::data_index, static_cast<uint>(_setup.data_index));
+        checkbox->setProperty(qt_property::s_key, key);
+        checkbox->setProperty(qt_property::s_data_index, static_cast<uint>(_setup.data_index));
 
         // Data
         const auto obj        = data<sight::data::boolean>(checkbox);
@@ -1096,9 +1128,9 @@ QPushButton* settings::create_bool_widget(
         const auto key      = QString::fromStdString(_setup.key);
         auto path           = core::runtime::get_module_resource_path("sight::module::ui::icons");
         switch_button->setObjectName(key);
-        switch_button->setProperty(qt_property::key, key);
+        switch_button->setProperty(qt_property::s_key, key);
 
-        switch_button->setProperty(qt_property::data_index, static_cast<uint>(_setup.data_index));
+        switch_button->setProperty(qt_property::s_data_index, static_cast<uint>(_setup.data_index));
         switch_button->set_icons(
             QIcon(QString::fromStdString((path / "check.svg").string())),
             QIcon(QString::fromStdString((path / "minus.svg").string()))
@@ -1139,9 +1171,9 @@ QPushButton* settings::create_color_widget(QBoxLayout* _layout, const param_widg
     {
         // Base properties
         colour_button->setObjectName(QString::fromStdString(_setup.key));
-        colour_button->setProperty(qt_property::key, QString::fromStdString(_setup.key));
+        colour_button->setProperty(qt_property::s_key, QString::fromStdString(_setup.key));
         colour_button->setToolTip(tr("Selected color"));
-        colour_button->setProperty(qt_property::data_index, static_cast<uint>(_setup.data_index));
+        colour_button->setProperty(qt_property::s_data_index, static_cast<uint>(_setup.data_index));
 
         // Data
         const auto obj        = data<sight::data::color>(colour_button);
@@ -1190,8 +1222,8 @@ QPushButton* settings::create_double_spin_widget(
     auto* const sub_layout = new QBoxLayout {layout_direction};
     sub_layout->setContentsMargins(0, 0, 0, 0);
     _layout->addLayout(sub_layout);
-    _layout->setProperty(qt_property::key, QString::fromStdString(_setup.key));
-    _layout->setProperty(qt_property::data_index, static_cast<uint>(_setup.data_index));
+    _layout->setProperty(qt_property::s_key, QString::fromStdString(_setup.key));
+    _layout->setProperty(qt_property::s_data_index, static_cast<uint>(_setup.data_index));
 
     std::array<QDoubleSpinBox*, 3> spinboxes {};
     std::array<double, 3> init_values {0., 0., 0.};
@@ -1224,10 +1256,10 @@ QPushButton* settings::create_double_spin_widget(
 
         // Base properties
         spinbox->setObjectName(QString::fromStdString(_setup.key + "/" + std::to_string(i)));
-        spinbox->setProperty(qt_property::key, QString::fromStdString(_setup.key));
-        spinbox->setProperty(qt_property::count, _count);
-        spinbox->setProperty(qt_property::index, static_cast<unsigned int>(i));
-        spinbox->setProperty(qt_property::data_index, static_cast<unsigned int>(_setup.data_index));
+        spinbox->setProperty(qt_property::s_key, QString::fromStdString(_setup.key));
+        spinbox->setProperty(qt_property::s_count, _count);
+        spinbox->setProperty(qt_property::s_index, static_cast<unsigned int>(i));
+        spinbox->setProperty(qt_property::s_data_index, static_cast<unsigned int>(_setup.data_index));
         spinboxes[i] = spinbox;
 
         // Data
@@ -1308,9 +1340,9 @@ QPushButton* settings::create_double_slider_widget(
     const double value_range = _setup.max - _setup.min;
     slider->setOrientation(_orientation);
     slider->setObjectName(QString::fromStdString(_setup.key));
-    slider->setProperty(qt_property::key, slider->objectName());
-    slider->setProperty(qt_property::count, 1);
-    slider->setProperty(qt_property::data_index, static_cast<uint>(_setup.data_index));
+    slider->setProperty(qt_property::s_key, slider->objectName());
+    slider->setProperty(qt_property::s_count, 1);
+    slider->setProperty(qt_property::s_data_index, static_cast<uint>(_setup.data_index));
 
     // Data
     const auto obj        = data<sight::data::real>(slider);
@@ -1327,11 +1359,14 @@ QPushButton* settings::create_double_slider_widget(
     set_double_slider_range(slider, init_value);
 
     const int default_slider_value =
-        int(std::round(((init_value - _setup.min) / value_range) * double(slider->maximum())));
+        static_cast<int>(std::round(
+                             ((init_value - _setup.min) / value_range)
+                             * static_cast<double>(slider->maximum())
+        ));
     slider->setValue(default_slider_value);
 
     // Compute a "usable" page step
-    slider->setPageStep(int(std::round(value_range * 10)));
+    slider->setPageStep(static_cast<int>(std::round(value_range * 10)));
 
     // Style
     slider->setProperty("widget#0", QVariant::fromValue<QSlider*>(slider));
@@ -1438,9 +1473,9 @@ QPushButton* settings::create_integer_slider_widget(
 
     // Base properties
     slider->setObjectName(QString::fromStdString(_setup.key));
-    slider->setProperty(qt_property::key, QString::fromStdString(_setup.key));
-    slider->setProperty(qt_property::count, 1);
-    slider->setProperty(qt_property::data_index, static_cast<uint>(_setup.data_index));
+    slider->setProperty(qt_property::s_key, QString::fromStdString(_setup.key));
+    slider->setProperty(qt_property::s_count, 1);
+    slider->setProperty(qt_property::s_data_index, static_cast<uint>(_setup.data_index));
     slider->setProperty("widget#0", QVariant::fromValue<QSlider*>(slider));
     // Data
     const auto obj        = data<sight::data::integer>(slider);
@@ -1549,8 +1584,8 @@ QPushButton* settings::create_integer_spin_widget(
     auto* sub_layout            = new QBoxLayout {layout_direction};
     sub_layout->setContentsMargins(0, 0, 0, 0);
     _layout->addLayout(sub_layout);
-    _layout->setProperty(qt_property::key, QString::fromStdString(_setup.key));
-    _layout->setProperty(qt_property::data_index, static_cast<uint>(_setup.data_index));
+    _layout->setProperty(qt_property::s_key, QString::fromStdString(_setup.key));
+    _layout->setProperty(qt_property::s_data_index, static_cast<uint>(_setup.data_index));
 
     std::array<QSpinBox*, 3> spinboxes {};
     std::array<std::int64_t, 3> init_values {0, 0, 0};
@@ -1584,10 +1619,10 @@ QPushButton* settings::create_integer_spin_widget(
 
         // Base properties
         spinbox->setObjectName(QString::fromStdString(_setup.key + "/" + std::to_string(i)));
-        spinbox->setProperty(qt_property::key, QString::fromStdString(_setup.key));
-        spinbox->setProperty(qt_property::count, _count);
-        spinbox->setProperty(qt_property::index, static_cast<unsigned int>(i));
-        spinbox->setProperty(qt_property::data_index, static_cast<unsigned int>(_setup.data_index));
+        spinbox->setProperty(qt_property::s_key, QString::fromStdString(_setup.key));
+        spinbox->setProperty(qt_property::s_count, _count);
+        spinbox->setProperty(qt_property::s_index, static_cast<unsigned int>(i));
+        spinbox->setProperty(qt_property::s_data_index, static_cast<unsigned int>(_setup.data_index));
 
         spinbox->setMinimum(_setup.min);
         spinbox->setMaximum(_setup.max);
@@ -1669,9 +1704,9 @@ void settings::create_enum_combobox_widget(
     combo_box->setObjectName(QString::fromStdString(_setup.key));
     combo_box->setStyleSheet(qApp->styleSheet());
 
-    combo_box->setProperty(qt_property::key, QString::fromStdString(_setup.key));
-    combo_box->setProperty(qt_property::data_index, static_cast<uint>(_setup.data_index));
-    combo_box->setProperty(qt_property::use_index, _setup.use_index);
+    combo_box->setProperty(qt_property::s_key, QString::fromStdString(_setup.key));
+    combo_box->setProperty(qt_property::s_data_index, static_cast<uint>(_setup.data_index));
+    combo_box->setProperty(qt_property::s_use_index, _setup.use_index);
 
     for(int idx = 0 ; const auto& value : _values)
     {
@@ -1723,7 +1758,7 @@ void settings::create_enum_combobox_widget(
 
         if(_setup.use_index)
         {
-            combo_box->setCurrentIndex(int(value));
+            combo_box->setCurrentIndex(static_cast<int>(value));
 
             QObject::connect(
                 combo_box,
@@ -1779,9 +1814,9 @@ void settings::create_enum_slider_widget(
     slider->set_orientation(_orientation);
     set_minimum_size(slider, _setup);
     slider->setObjectName(QString::fromStdString(_setup.key));
-    slider->setProperty(qt_property::key, QString::fromStdString(_setup.key));
-    slider->setProperty(qt_property::data_index, static_cast<uint>(_setup.data_index));
-    slider->setProperty(qt_property::use_index, _setup.use_index);
+    slider->setProperty(qt_property::s_key, QString::fromStdString(_setup.key));
+    slider->setProperty(qt_property::s_data_index, static_cast<uint>(_setup.data_index));
+    slider->setProperty(qt_property::s_use_index, _setup.use_index);
 
     slider->set_values(int_values);
     slider->set_tracking(!_on_release);
@@ -1798,11 +1833,11 @@ void settings::create_enum_slider_widget(
 
         if(_setup.use_index)
         {
-            slider->set_value(int_values[std::size_t(value)]);
+            slider->set_value(int_values[static_cast<std::size_t>(value)]);
         }
         else
         {
-            slider->set_value(int(value));
+            slider->set_value(static_cast<int>(value));
         }
 
         connect_data(integer_obj, _setup.key);
@@ -1814,17 +1849,21 @@ void settings::create_enum_slider_widget(
     min_max_labels_font.setPointSize(7);
     min_max_labels_font.setItalic(true);
 
+    // We retrieve the values from the slider because it may have alter them when calling set_value() above.
+    const auto slider_values    = slider->values();
+    const auto min_value        = slider_values.front();
     auto* const min_value_label = new QLabel();
     min_value_label->setFont(min_max_labels_font);
-    min_value_label->setText(QString::fromStdString(_values.front()));
+    min_value_label->setText(QString::fromStdString(std::to_string(min_value)));
     min_value_label->setToolTip("Minimum value.");
     min_value_label->setObjectName(QString::fromStdString(_setup.key + "/minValueLabel"));
     min_value_label->setAlignment(Qt::AlignCenter);
     min_value_label->setStyleSheet(qApp->styleSheet());
 
+    const auto max_value        = slider_values.back();
     auto* const max_value_label = new QLabel();
     max_value_label->setFont(min_max_labels_font);
-    max_value_label->setText(QString::fromStdString(_values.back()));
+    max_value_label->setText(QString::fromStdString(std::to_string(max_value)));
     max_value_label->setToolTip("Maximum value.");
     max_value_label->setObjectName(QString::fromStdString(_setup.key + "/maxValueLabel"));
     max_value_label->setAlignment(Qt::AlignCenter);
@@ -1835,7 +1874,7 @@ void settings::create_enum_slider_widget(
     value_label->setStyleSheet("QLabel { font: bold; }");
     value_label->setText(QString::number(slider->value()));
     value_label->setToolTip("Current value.");
-    set_label_minimum_size(value_label, int_values.front(), int_values.back());
+    set_label_minimum_size(value_label, min_value, max_value);
     value_label->setObjectName(QString::fromStdString(_setup.key + "/valueLabel"));
     value_label->setAlignment(Qt::AlignCenter);
 
@@ -1906,11 +1945,11 @@ void settings::create_tickmarks_widget(
 {
     auto* tick_widget = new sight::ui::qt::widget::tickmarks_slider();
     tick_widget->setProperty(
-        qt_property::key,
+        qt_property::s_key,
         QString::fromStdString(_setup.key)
     );
     tick_widget->setProperty(
-        qt_property::data_index,
+        qt_property::s_data_index,
         static_cast<uint>(_setup.data_index)
     );
 
@@ -1926,7 +1965,7 @@ void settings::create_tickmarks_widget(
     }
     else if(const auto integer_obj = data<sight::data::integer>(tick_widget); integer_obj)
     {
-        tick_widget->set_current_tick(int(integer_obj->value()));
+        tick_widget->set_current_tick(static_cast<int>(integer_obj->value()));
         connect_data(integer_obj, _setup.key);
     }
 
@@ -1942,7 +1981,7 @@ void settings::create_tickmarks_widget(
             }
             else
             {
-                update_data<sight::data::integer>(tick_widget, std::int64_t(tick_widget->current_tick()));
+                update_data<sight::data::integer>(tick_widget, static_cast<std::int64_t>(tick_widget->current_tick()));
             }
         });
 
@@ -1992,8 +2031,8 @@ void settings::create_enum_button_bar_widget(
 
         // The name needs to be the key_value, to find it when the service is updated through a slot
         enum_button->setObjectName((QString::fromStdString(_setup.key + "_" + button_param.value)));
-        enum_button->setProperty(qt_property::key, QString::fromStdString(_setup.key));
-        enum_button->setProperty(qt_property::data_index, static_cast<uint>(_setup.data_index));
+        enum_button->setProperty(qt_property::s_key, QString::fromStdString(_setup.key));
+        enum_button->setProperty(qt_property::s_data_index, static_cast<uint>(_setup.data_index));
 
         enum_button->setIcon(QIcon(QString::fromStdString(button_param.icon_path)));
         enum_button->setToolTip(QString::fromStdString(button_param.label));
@@ -2175,8 +2214,8 @@ QPushButton* settings::create_text_widget(QBoxLayout* _layout, const param_widge
     edit->setObjectName(key);
 
     // Base properties
-    edit->setProperty(qt_property::key, key);
-    edit->setProperty(qt_property::data_index, static_cast<uint>(_setup.data_index));
+    edit->setProperty(qt_property::s_key, key);
+    edit->setProperty(qt_property::s_data_index, static_cast<uint>(_setup.data_index));
 
     // Data
     const auto obj        = data<sight::data::string>(edit);
@@ -2287,7 +2326,7 @@ double settings::get_double_slider_value(const QSlider* _slider)
     double double_value      = min;
     if(_slider->maximum() != 0)
     {
-        double_value = (double(_slider->value()) / _slider->maximum()) * value_range + min;
+        double_value = (static_cast<double>(_slider->value()) / _slider->maximum()) * value_range + min;
     }
 
     return double_value;
@@ -2295,7 +2334,7 @@ double settings::get_double_slider_value(const QSlider* _slider)
 
 //------------------------------------------------------------------------------
 
-void settings::update_enum_range(std::string _options, std::string _key)
+void settings::update_range(const std::string& _options, const std::string& _key)
 {
     QObject* widget = this->get_param_widget(_key);
 
@@ -2333,14 +2372,20 @@ void settings::update_enum_range(std::string _options, std::string _key)
 
         if(const auto string_obj = settings::data<sight::data::string>(combobox); string_obj)
         {
-            const auto init_value = string_obj->value();
-            combobox->setCurrentText(QString::fromStdString(init_value));
+            const auto stored_value = QString::fromStdString(string_obj->value());
+            const auto data_index   = combobox->findData(stored_value);
+            const auto text_index   = combobox->findText(stored_value);
+            const auto index        = data_index >= 0 ? data_index : text_index;
+            if(index >= 0)
+            {
+                combobox->setCurrentIndex(index);
+            }
         }
         else if(const auto integer_obj = settings::data<sight::data::integer>(combobox); integer_obj)
         {
             const auto current_value = integer_obj->value();
 
-            if(combobox->property(qt_property::use_index).toBool())
+            if(combobox->property(qt_property::s_use_index).toBool())
             {
                 combobox->setCurrentIndex(static_cast<int>(current_value));
             }
@@ -2349,6 +2394,15 @@ void settings::update_enum_range(std::string _options, std::string _key)
                 combobox->setCurrentText(QString::number(current_value));
             }
         }
+
+        // The choices can change without a data value change; refresh dependent widgets after rebuilding the list.
+        QTimer::singleShot(
+            0,
+            combobox,
+            [combobox]
+            {
+                combobox->currentIndexChanged(combobox->currentIndex());
+            });
     }
     else if(auto* const non_linear_slider = qobject_cast<sight::ui::qt::widget::non_linear_slider*>(widget);
             non_linear_slider != nullptr)
@@ -2386,11 +2440,11 @@ void settings::update_enum_range(std::string _options, std::string _key)
                     const auto& old_values   = non_linear_slider->values();
                     const auto current_value = integer_obj->value();
 
-                    if(non_linear_slider->property(qt_property::use_index).toBool())
+                    if(non_linear_slider->property(qt_property::s_use_index).toBool())
                     {
                         if(current_value >= 0 && std::cmp_less(current_value, old_values.size()))
                         {
-                            return old_values[std::size_t(current_value)];
+                            return old_values[static_cast<std::size_t>(current_value)];
                         }
                     }
                     else
@@ -2403,6 +2457,7 @@ void settings::update_enum_range(std::string _options, std::string _key)
                 return std::nullopt;
             }();
 
+        QSignalBlocker guard(non_linear_slider);
         // Apply new values
         non_linear_slider->set_values(int_values);
 
@@ -2460,91 +2515,31 @@ void settings::block_signals(bool _block)
 
 //------------------------------------------------------------------------------
 
-void settings::update_int_min_parameter(int _min, std::string _key)
+void settings::update_min(const double _min, const std::string& _key)
 {
     QObject* child = this->get_param_widget(_key);
 
-    auto* spinbox = qobject_cast<QSpinBox*>(child);
-    auto* slider  = qobject_cast<QSlider*>(child);
-
-    if(spinbox != nullptr)
+    if(qobject_cast<QSpinBox*>(child) != nullptr)
     {
-        const int count = child->property(qt_property::count).toInt();
+        const int count = child->property(qt_property::s_count).toInt();
         auto* spin0     = child->property("widget#0").value<QSpinBox*>();
-        spin0->setMinimum(_min);
+        spin0->setMinimum(static_cast<int>(_min));
 
         if(count >= 2)
         {
             auto* spin1 = child->property("widget#1").value<QSpinBox*>();
-            spin1->setMinimum(_min);
+            spin1->setMinimum(static_cast<int>(_min));
         }
 
         if(count >= 3)
         {
             auto* spin2 = child->property("widget#2").value<QSpinBox*>();
-            spin2->setMinimum(_min);
+            spin2->setMinimum(static_cast<int>(_min));
         }
     }
-    else if(slider != nullptr)
+    else if(qobject_cast<QDoubleSpinBox*>(child) != nullptr)
     {
-        slider->setMinimum(_min);
-    }
-    else
-    {
-        SIGHT_ERROR(get_id() << ": Widget " << std::quoted(_key) << " must be a QSlider or a QDoubleSpinBox");
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void settings::update_int_max_parameter(int _max, std::string _key)
-{
-    QObject* child = this->get_param_widget(_key);
-
-    auto* spinbox = qobject_cast<QSpinBox*>(child);
-    auto* slider  = qobject_cast<QSlider*>(child);
-
-    if(spinbox != nullptr)
-    {
-        const int count = child->property(qt_property::count).toInt();
-
-        auto* spin0 = child->property("widget#0").value<QSpinBox*>();
-        spin0->setMaximum(_max);
-
-        if(count >= 2)
-        {
-            auto* spin1 = child->property("widget#1").value<QSpinBox*>();
-            spin1->setMaximum(_max);
-        }
-
-        if(count >= 3)
-        {
-            auto* spin2 = child->property("widget#2").value<QSpinBox*>();
-            spin2->setMaximum(_max);
-        }
-    }
-    else if(slider != nullptr)
-    {
-        slider->setMaximum(_max);
-    }
-    else
-    {
-        SIGHT_ERROR(get_id() << ": Widget " << std::quoted(_key) << " must be a QSlider or a QDoubleSpinBox");
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void settings::update_double_min_parameter(double _min, std::string _key)
-{
-    QObject* child = this->get_param_widget(_key);
-
-    auto* spinbox = qobject_cast<QDoubleSpinBox*>(child);
-    auto* slider  = qobject_cast<QSlider*>(child);
-
-    if(spinbox != nullptr)
-    {
-        const int count = child->property(qt_property::count).toInt();
+        const int count = child->property(qt_property::s_count).toInt();
 
         auto* spin0 = child->property("widget#0").value<QDoubleSpinBox*>();
         spin0->setMinimum(_min);
@@ -2561,11 +2556,17 @@ void settings::update_double_min_parameter(double _min, std::string _key)
             spin2->setMinimum(_min);
         }
     }
-    else if(slider != nullptr)
+    else if(auto* slider = qobject_cast<QSlider*>(child); slider != nullptr)
     {
-        const auto value = data<sight::data::real>(slider)->value();
-        slider->setProperty("min", _min);
-        set_double_slider_range(slider, value);
+        if(const auto real = data<sight::data::real>(slider); real)
+        {
+            slider->setProperty("min", _min);
+            set_double_slider_range(slider, real->value());
+        }
+        else
+        {
+            slider->setMinimum(static_cast<int>(_min));
+        }
     }
     else
     {
@@ -2573,18 +2574,33 @@ void settings::update_double_min_parameter(double _min, std::string _key)
     }
 }
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
-void settings::update_double_max_parameter(double _max, std::string _key)
+void settings::update_max(const double _max, const std::string& _key)
 {
     QObject* child = this->get_param_widget(_key);
 
-    auto* spinbox = qobject_cast<QDoubleSpinBox*>(child);
-    auto* slider  = qobject_cast<QSlider*>(child);
-
-    if(spinbox != nullptr)
+    if(qobject_cast<QSpinBox*>(child) != nullptr)
     {
-        const int count = child->property(qt_property::count).toInt();
+        const int count = child->property(qt_property::s_count).toInt();
+        auto* spin0     = child->property("widget#0").value<QSpinBox*>();
+        spin0->setMaximum(static_cast<int>(_max));
+
+        if(count >= 2)
+        {
+            auto* spin1 = child->property("widget#1").value<QSpinBox*>();
+            spin1->setMaximum(static_cast<int>(_max));
+        }
+
+        if(count >= 3)
+        {
+            auto* spin2 = child->property("widget#2").value<QSpinBox*>();
+            spin2->setMaximum(static_cast<int>(_max));
+        }
+    }
+    else if(qobject_cast<QDoubleSpinBox*>(child) != nullptr)
+    {
+        const int count = child->property(qt_property::s_count).toInt();
 
         auto* spin0 = child->property("widget#0").value<QDoubleSpinBox*>();
         spin0->setMaximum(_max);
@@ -2601,15 +2617,21 @@ void settings::update_double_max_parameter(double _max, std::string _key)
             spin2->setMaximum(_max);
         }
     }
-    else if(slider != nullptr)
+    else if(auto* slider = qobject_cast<QSlider*>(child); slider != nullptr)
     {
-        const auto value = data<sight::data::real>(slider)->value();
-        slider->setProperty("max", _max);
-        set_double_slider_range(slider, value);
+        if(const auto real = data<sight::data::real>(slider); real)
+        {
+            slider->setProperty("max", _max);
+            set_double_slider_range(slider, real->value());
+        }
+        else
+        {
+            slider->setMaximum(static_cast<int>(_max));
+        }
     }
     else
     {
-        SIGHT_ERROR(get_id() << ": Widget " << std::quoted(_key) << " must be a QSlider or a QDoubleSpinBox");
+        SIGHT_ERROR(get_id() << ": Widget " << std::quoted(_key) << " must be a slider or spin box");
     }
 }
 
@@ -2627,14 +2649,15 @@ void settings::set_double_slider_range(QSlider* _slider, double _current_value)
     }
 
     const double value_range = max - min;
-    max_slider_value = int(max_slider_value * value_range);
+    max_slider_value = static_cast<int>(max_slider_value * value_range);
 
     // The slider's maximum internal range is [0; 2 147 483 647]
     // We could technically extend this range by setting the minimum to std::numeric_limits<int>::min()
     // but it would be ridiculous to use a slider handling so many values.
+    QSignalBlocker guard(_slider);
     _slider->setMinimum(0);
 
-    const std::string key = _slider->property(qt_property::key).toString().toStdString();
+    const std::string key = _slider->property(qt_property::s_key).toString().toStdString();
     SIGHT_ERROR_IF(
         ": The requested value range for " << std::quoted(
             key
@@ -2664,7 +2687,10 @@ void settings::set_double_slider_range(QSlider* _slider, double _current_value)
     }
     else
     {
-        const int slider_val = int(std::round(((_current_value - min) / value_range) * double(_slider->maximum())));
+        const int slider_val = static_cast<int>(std::round(
+                                                    ((_current_value - min) / value_range)
+                                                    * static_cast<double>(_slider->maximum())
+        ));
         _slider->setValue(slider_val);
     }
 }
@@ -2900,9 +2926,9 @@ void settings::set_parameter<sight::data::integer>(const std::int64_t& _val, std
     else if(auto* non_linear_slider = qobject_cast<sight::ui::qt::widget::non_linear_slider*>(widget);
             non_linear_slider != nullptr)
     {
-        if(non_linear_slider->property(qt_property::use_index).toBool())
+        if(non_linear_slider->property(qt_property::s_use_index).toBool())
         {
-            non_linear_slider->set_index(std::size_t(val));
+            non_linear_slider->set_index(static_cast<std::size_t>(val));
         }
         else
         {
@@ -2917,9 +2943,9 @@ void settings::set_parameter<sight::data::integer>(const std::int64_t& _val, std
     }
     else if(auto* combobox = qobject_cast<QComboBox*>(widget); combobox != nullptr)
     {
-        if(combobox->property(qt_property::use_index).toBool())
+        if(combobox->property(qt_property::s_use_index).toBool())
         {
-            combobox->setCurrentIndex(int(val));
+            combobox->setCurrentIndex(static_cast<int>(val));
         }
         else
         {
@@ -3030,11 +3056,12 @@ void settings::set_parameter<sight::data::real>(const double& _val, std::string 
         const double min         = slider->property("min").toDouble();
         const double max         = slider->property("max").toDouble();
         const double value_range = max - min;
-        const int slider_val     = int(std::round(
-                                           ((std::max(
-                                                 _val,
-                                                 min
-                                             ) - min) / value_range) * double(slider->maximum())
+        const int slider_val     = static_cast<int>(std::round(
+                                                        ((std::max(
+                                                              _val,
+                                                              min
+                                                          ) - min) / value_range)
+                                                        * static_cast<double>(slider->maximum())
         ));
         slider->setValue(slider_val);
     }
@@ -3094,21 +3121,12 @@ template<class DATATYPE, class SUBTYPE>
 requires std::derived_from<DATATYPE, sight::data::generic<SUBTYPE> >
 std::shared_ptr<const DATATYPE> settings::data(const QObject* _widget)
 {
-    if(const auto data_index = _widget->property(qt_property::data_index); data_index.isValid())
+    if(const auto data_index = _widget->property(qt_property::s_data_index); data_index.isValid())
     {
         sight::data::mt::locked_ptr<const sight::data::object> lock;
         sight::data::object::csptr obj;
-        const std::string key = _widget->property(qt_property::key).toString().toStdString();
-        const auto map        = m_settings_map.lock();
-        if(map)
-        {
-            obj = map->at(key);
-        }
-        else
-        {
-            lock = m_settings[static_cast<std::size_t>(data_index.toUInt())].const_lock();
-            obj  = lock.get_shared();
-        }
+        lock = m_settings[static_cast<std::size_t>(data_index.toUInt())].const_lock();
+        obj  = lock.get_shared();
 
         const auto typed_obj = std::dynamic_pointer_cast<const DATATYPE>(obj);
         return typed_obj;
@@ -3121,9 +3139,9 @@ std::shared_ptr<const DATATYPE> settings::data(const QObject* _widget)
 
 template<class DATATYPE, class SUBTYPE>
 requires std::derived_from<DATATYPE, sight::data::generic<SUBTYPE> >
-void settings::connect_data(const CSPTR(DATATYPE)& _obj, const std::string& _key)
+void settings::connect_data(const sight::csptr<DATATYPE>& _obj, const std::string& _key)
 {
-    const auto sig  = _obj->template signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
+    const auto sig  = _obj->template signal<data::signals::modified_t>(data::signals::MODIFIED);
     const auto slot = core::com::new_slot(
         [_obj, _key, this]()
         {
@@ -3141,30 +3159,19 @@ template<class DATATYPE, class SUBTYPE>
 requires std::derived_from<DATATYPE, sight::data::generic<SUBTYPE> >
 void settings::update_data(const QObject* _widget, const SUBTYPE& _val)
 {
-    if(const auto data_index = _widget->property(qt_property::data_index); data_index.isValid())
+    if(const auto data_index = _widget->property(qt_property::s_data_index); data_index.isValid())
     {
         sight::data::mt::locked_ptr<sight::data::object> lock;
         sight::data::object::sptr obj;
-        const std::string key = _widget->property(qt_property::key).toString().toStdString();
-        const auto map        = m_settings_map.lock();
-        if(map)
-        {
-            obj = map->at(key);
-        }
-        else
-        {
-            lock = m_settings[static_cast<std::size_t>(data_index.toUInt())].lock();
-            obj  = lock.get_shared();
-        }
+        lock = m_settings[static_cast<std::size_t>(data_index.toUInt())].lock();
+        obj  = lock.get_shared();
 
         const auto typed_obj = std::dynamic_pointer_cast<DATATYPE>(obj);
         typed_obj->set_value(_val);
 
         if(not m_block_signals)
         {
-            const auto sig = obj->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-            core::com::connection::blocker block(sig->get_connection(m_settings_slots[key]));
-            sig->async_emit();
+            obj->async_emit(this, data::signals::MODIFIED);
         }
     }
 }
@@ -3275,14 +3282,20 @@ void settings::joystick_axis_direction_event(const sight::io::joystick::axis_dir
 
             if(_event.value == direction_t::left)
             {
-                const int new_index = int(non_linear_slider->index()) - 1;
-                non_linear_slider->set_index(new_index < 0 ? std::size_t(0) : std::size_t(new_index));
+                const int new_index = static_cast<int>(non_linear_slider->index()) - 1;
+                non_linear_slider->set_index(
+                    new_index
+                    < 0 ? static_cast<std::size_t>(0) : static_cast<std::size_t>(new_index)
+                );
             }
             else if(_event.value == direction_t::right)
             {
-                const int new_index  = int(non_linear_slider->index()) + 1;
-                const int last_index = std::max(0, int(non_linear_slider->num_values()) - 1);
-                non_linear_slider->set_index(new_index > last_index ? std::size_t(last_index) : std::size_t(new_index));
+                const int new_index  = static_cast<int>(non_linear_slider->index()) + 1;
+                const int last_index = std::max(0, static_cast<int>(non_linear_slider->num_values()) - 1);
+                non_linear_slider->set_index(
+                    new_index
+                    > last_index ? static_cast<std::size_t>(last_index) : static_cast<std::size_t>(new_index)
+                );
             }
         }
         else if(auto* const slider = dynamic_cast<QSlider*>(widget); slider != nullptr)

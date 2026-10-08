@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -69,7 +69,7 @@ public:
 protected:
 
     /// Main service ID associate with this action
-    std::string m_sid;
+    std::string m_sid; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
 };
 
 } // namespace sight::ui::detail::registry

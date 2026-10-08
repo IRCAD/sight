@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,10 +29,8 @@
 #include "service/manager.hpp"
 #include "service/object_parser.hpp"
 
-#include <core/base.hpp>
 #include <core/com/signals.hpp>
 #include <core/com/slots.hpp>
-#include <core/object.hpp>
 #include <core/runtime/types.hpp>
 
 namespace sight::core
@@ -72,7 +70,7 @@ struct object_serviceconfig
     data::access m_access {data::access::inout};
 
     /// True if the service is autoConnected this object according to the auto-connection map
-    boost::optional<bool> m_auto_connect {};
+    boost::optional<bool> m_auto_connect;
 
     /// True if the object is optional (i.e. the service can start even if the object is not present)
     bool m_optional {false};
@@ -105,7 +103,7 @@ struct service_config
     service::config_t m_config;
 };
 
-}
+} // namespace sight::app::detail
 
 namespace sight::app::helper
 {
@@ -156,10 +154,13 @@ public:
     SIGHT_APP_API static app::detail::service_config parse_service(
         const boost::property_tree::ptree& _srv_elem,
         const std::string& _err_msg_head,
-        const objects_set_t& _objects
-    );
+        const objects_set_t& _objects,
+        const std::set<std::string>& _deferred_objects = {});
 
     SIGHT_APP_API static bool is_key_optional(const std::string& _service_type, const std::string& _key);
+
+    /// Returns the description of all the data keys declared by the given service type
+    SIGHT_APP_API static data::key_info_map_t service_keys(const std::string& _service_type);
 
     SIGHT_APP_API static void clear_props();
 };

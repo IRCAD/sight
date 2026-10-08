@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,12 +22,9 @@
 
 #include "module/viz/scene3d/adaptor/reconstruction.hpp"
 
-#include <core/com/slots.hxx>
 #include <core/ptree.hpp>
 
 #include <data/mesh.hpp>
-
-#include <service/op.hpp>
 
 namespace sight::module::viz::scene3d::adaptor
 {
@@ -83,8 +80,12 @@ void reconstruction::starting()
 service::connections_t module::viz::scene3d::adaptor::reconstruction::auto_connections() const
 {
     service::connections_t connections = adaptor::auto_connections();
-    connections.push(RECONSTRUCTION_INPUT, data::reconstruction::MESH_CHANGED_SIG, adaptor::slots::LAZY_UPDATE);
-    connections.push(RECONSTRUCTION_INPUT, data::reconstruction::VISIBILITY_MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
+    connections.push(RECONSTRUCTION_INPUT, data::reconstruction::signals::MESH_CHANGED, adaptor::slots::LAZY_UPDATE);
+    connections.push(
+        RECONSTRUCTION_INPUT,
+        data::reconstruction::signals::VISIBILITY_MODIFIED,
+        adaptor::slots::LAZY_UPDATE
+    );
     return connections;
 }
 
@@ -99,7 +100,7 @@ void reconstruction::updating()
         module::viz::scene3d::adaptor::mesh::sptr mesh_adaptor = this->get_mesh_adaptor();
 
         // Do nothing if the mesh is identical
-        auto mesh = mesh_adaptor->input<sight::data::mesh>("mesh").lock();
+        auto mesh = mesh_adaptor->input<sight::data::mesh>("data.mesh").lock();
         if(mesh.get_shared() != reconstruction->get_mesh())
         {
             // Updates the mesh adaptor according to the reconstruction
@@ -140,41 +141,33 @@ void reconstruction::create_mesh_service()
         auto mesh_adaptor = this->register_service<module::viz::scene3d::adaptor::mesh>(
             "sight::module::viz::scene3d::adaptor::mesh"
         );
-        mesh_adaptor->set_input(mesh, "mesh", true);
+        mesh_adaptor->set_input(mesh, "data.mesh", true);
 
         config_t mesh_adaptor_config;
-        mesh_adaptor_config.put("properties.<xmlattr>.visible", visible() && reconstruction->get_is_visible());
+        mesh_adaptor_config.put(CONFIG + "visible", visible() && reconstruction->get_is_visible());
         if(not m_material_name.empty())
         {
-            mesh_adaptor_config.put("config.<xmlattr>.material_name", m_material_name);
+            mesh_adaptor_config.put(CONFIG + "material_name", m_material_name);
         }
         else
         {
-            mesh_adaptor_config.put("config.<xmlattr>.material_template", m_material_template_name);
+            mesh_adaptor_config.put(CONFIG + "material_template", m_material_template_name);
         }
 
-        if(!m_uniforms.empty())
+        if(!m_uniform_objects.empty())
         {
             std::size_t i = 0;
-            for(const auto& uniform_data : m_uniforms)
+            for(const auto& uniform_object : m_uniform_objects)
             {
-                mesh_adaptor->set_inout(uniform_data.second->lock().get_shared(), "uniforms", true, {}, i++);
-            }
-
-            const auto config = this->get_config();
-            if(const auto inouts_cfg = config.get_child_optional("inout"); inouts_cfg.has_value())
-            {
-                const auto group = inouts_cfg->get<std::string>("<xmlattr>.group");
-                if(group == "uniforms")
-                {
-                    mesh_adaptor_config.add_child("inout", inouts_cfg.value());
-                }
+                const auto index = i++;
+                mesh_adaptor->set_inout(uniform_object.second->lock().get_shared(), "uniform.object", true, {}, index);
+                mesh_adaptor->set_input(m_uniform_names[index].lock().get_shared(), "uniform.name", true, {}, index);
             }
         }
 
         mesh_adaptor->configure(mesh_adaptor_config);
         mesh_adaptor->set_id(gen_id(mesh_adaptor->get_id()));
-        mesh_adaptor->set_layer_id(m_layer_id);
+        mesh_adaptor->set_layer_id(layer_id());
         mesh_adaptor->set_render_service(this->render_service());
 
         // Here Material cannot be const since material created by mesh can modify it.

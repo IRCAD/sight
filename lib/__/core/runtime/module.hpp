@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,8 @@
 
 #pragma once
 
+#include <core/macros.hpp>
 #include <sight/core/config.hpp>
-
-#include <core/base.hpp>
 
 #include <filesystem>
 #include <set>
@@ -38,7 +37,6 @@ struct extension_registry;
 class executable;
 class executable_factory;
 class plugin;
-class runtime;
 
 /**
  * @brief   Defines the module class.
@@ -93,7 +91,7 @@ public:
      *
      * @return  a shared pointer to a plugin instance or null if the module has not been started.
      */
-    [[nodiscard]] SIGHT_CORE_API virtual SPTR(plugin) get_plugin() const = 0;
+    [[nodiscard]] SIGHT_CORE_API virtual sight::sptr<plugin> get_plugin() const = 0;
 
     /**
      * @brief       Retrieves the value of the given parameter

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,7 +37,7 @@ class SIGHT_DATA_CLASS_API field
 public:
 
     /// Constructor. Initialize parameters.
-    SIGHT_DATA_API field(data::object::sptr _object);
+    SIGHT_DATA_API explicit field(data::object::sptr _object);
 
     /// Destructor. Call notify if changes has been made.
     SIGHT_DATA_API ~field();
@@ -50,7 +50,10 @@ public:
      * @return pointer to corresponding field.
      */
     template<typename DATA_TYPE>
-    SPTR(DATA_TYPE) set_default_field(const data::object::field_name_t& _name, SPTR(DATA_TYPE) _default_value);
+    sight::sptr<DATA_TYPE> set_default_field(
+        const data::object::field_name_t& _name,
+        sight::sptr<DATA_TYPE> _default_value
+    );
 
     /**
      * @brief Register field with specified name. If the name does already exist, the matching field will be replaced.
@@ -126,6 +129,8 @@ protected:
         const data::object::field_map_t& _new_fields
     );
 
+private:
+
     /// Map of added objects, send on notify
     data::fields_container_t m_addedfields;
     /// Map of new changed objects, send on notify
@@ -139,8 +144,13 @@ protected:
     data::object::wptr m_object;
 };
 
+//------------------------------------------------------------------------------
+
 template<typename DATA_TYPE>
-inline SPTR(DATA_TYPE) field::set_default_field(const data::object::field_name_t& _name, SPTR(DATA_TYPE) _default_value)
+inline sight::sptr<DATA_TYPE> field::set_default_field(
+    const data::object::field_name_t& _name,
+    sight::sptr<DATA_TYPE> _default_value
+)
 {
     SIGHT_ASSERT("field helper need a non-null object pointer", !m_object.expired());
     data::object::sptr object = m_object.lock();

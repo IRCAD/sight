@@ -19,10 +19,7 @@
  *
  ***********************************************************************/
 
-#include <core/com/signal.hpp>
-#include <core/com/signal.hxx>
 #include <core/com/slot.hpp>
-#include <core/com/slot.hxx>
 #include <core/compare.hpp>
 #include <core/thread/worker.hpp>
 #include <core/tools/uuid.hpp>
@@ -80,6 +77,7 @@ TEST_SUITE("sight::data::tools::container_notifier")
 
         std::mutex mutex;
         std::condition_variable condition_variable;
+        using super_class_t = sight::data::container<typename T::container_t>;
 
         // Test add
         {
@@ -88,7 +86,7 @@ TEST_SUITE("sight::data::tools::container_notifier")
             typename T::container_t added_from_slot;
 
             std::function<void(typename T::container_t)> add =
-                [&](typename T::container_t _added_from_signal)
+                [&](T::container_t _added_from_signal)
                 {
                     {
                         std::unique_lock lock(mutex);
@@ -100,7 +98,10 @@ TEST_SUITE("sight::data::tools::container_notifier")
 
             auto added_slot = sight::core::com::new_slot(add);
             added_slot->set_worker(worker);
-            auto added_sig = container->template signal<typename T::added_signal_t>(T::ADDED_OBJECTS_SIG);
+            auto added_sig =
+                container->template signal<typename super_class_t::signals::added_t>(
+                    super_class_t::signals::ADDED_OBJECTS
+                );
             added_sig->connect(added_slot);
 
             bool blocked_add_called           = false;
@@ -196,7 +197,7 @@ TEST_SUITE("sight::data::tools::container_notifier")
             typename T::container_t removed_from_slot;
 
             std::function<void(typename T::container_t)> remove =
-                [&](typename T::container_t _removed_from_signal)
+                [&](T::container_t _removed_from_signal)
                 {
                     {
                         std::unique_lock lock(mutex);
@@ -208,7 +209,10 @@ TEST_SUITE("sight::data::tools::container_notifier")
 
             auto removed_slot = sight::core::com::new_slot(remove);
             removed_slot->set_worker(worker);
-            auto removed_sig = container->template signal<typename T::removed_signal_t>(T::REMOVED_OBJECTS_SIG);
+            auto removed_sig =
+                container->template signal<typename super_class_t::signals::removed_t>(
+                    super_class_t::signals::REMOVED_OBJECTS
+                );
             removed_sig->connect(removed_slot);
 
             bool blocked_remove_called           = false;
@@ -287,7 +291,7 @@ TEST_SUITE("sight::data::tools::container_notifier")
             typename T::container_t new_from_slot;
 
             std::function<void(typename T::container_t, typename T::container_t)> change =
-                [&](typename T::container_t _old_from_signal, typename T::container_t _new_from_signal)
+                [&](T::container_t _old_from_signal, T::container_t _new_from_signal)
                 {
                     {
                         std::unique_lock lock(mutex);
@@ -300,7 +304,10 @@ TEST_SUITE("sight::data::tools::container_notifier")
 
             auto changed_slot = sight::core::com::new_slot(change);
             changed_slot->set_worker(worker);
-            auto changed_sig = container->template signal<typename T::changed_signal_t>(T::CHANGED_OBJECTS_SIG);
+            auto changed_sig =
+                container->template signal<typename super_class_t::signals::changed_t>(
+                    super_class_t::signals::CHANGED_OBJECTS
+                );
             changed_sig->connect(changed_slot);
 
             bool blocked_change_called           = false;

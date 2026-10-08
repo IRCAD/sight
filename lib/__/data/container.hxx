@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2024 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -24,7 +24,6 @@
 #include "data/exception.hpp"
 
 #include <core/com/signal.hpp>
-#include <core/com/signal.hxx>
 
 namespace sight::data
 {
@@ -62,9 +61,9 @@ constexpr container<C>::container() :
     object(),
     container_wrapper<C>()
 {
-    new_signal<added_signal_t>(ADDED_OBJECTS_SIG);
-    new_signal<changed_signal_t>(CHANGED_OBJECTS_SIG);
-    new_signal<removed_signal_t>(REMOVED_OBJECTS_SIG);
+    new_signal<typename signals::added_t>(signals::ADDED_OBJECTS);
+    new_signal<typename signals::changed_t>(signals::CHANGED_OBJECTS);
+    new_signal<typename signals::removed_t>(signals::REMOVED_OBJECTS);
 }
 
 template<class C>
@@ -78,7 +77,7 @@ template<class C>
 inline container<C>::container(C&& _container) :
     container<C>::container()
 {
-    this->container_wrapper<C>::operator=(_container);
+    this->container_wrapper<C>::operator=(std::move(_container));
 }
 
 //------------------------------------------------------------------------------
@@ -145,8 +144,8 @@ constexpr bool is_data_object_fn()
         if constexpr(core::is_shared_ptr<typename C::mapped_type>::value)
         {
             // "using" is required for MSVC
-            using shared_ptr_type = typename C::mapped_type;
-            return std::is_base_of<object, typename shared_ptr_type::element_type>::value;
+            using shared_ptr_type = C::mapped_type;
+            return std::is_base_of_v<object, typename shared_ptr_type::element_type>;
         }
     }
     else
@@ -154,8 +153,8 @@ constexpr bool is_data_object_fn()
         if constexpr(core::is_shared_ptr<typename C::value_type>::value)
         {
             // "using" is required for MSVC
-            using shared_ptr_type = typename C::value_type;
-            return std::is_base_of<object, typename shared_ptr_type::element_type>::value;
+            using shared_ptr_type = C::value_type;
+            return std::is_base_of_v<object, typename shared_ptr_type::element_type>;
         }
     }
 
@@ -235,7 +234,7 @@ inline void container<C>::deep_copy(const object::csptr& _source, const std::uni
 template<class C>
 constexpr C container<C>::get_content() const noexcept
 {
-    C c;
+    C c {};
     std::copy(this->container<C>::cbegin(), this->container<C>::cend(), inserter(c));
     return c;
 }
@@ -335,8 +334,11 @@ void container<C>::scoped_emitter::emit() noexcept
     // Send the notifications
     if(!added.empty())
     {
-        auto signal = m_container.template signal<container<C>::added_signal_t>(container<C>::ADDED_OBJECTS_SIG);
+        auto signal = m_container.template signal<typename container<C>::signals::added_t>(
+            container<C>::signals::ADDED_OBJECTS
+        );
         std::vector<core::com::connection::blocker> blockers;
+        blockers.reserve(m_blocked_slots.size());
         for(auto& slot : m_blocked_slots)
         {
             blockers.emplace_back(core::com::connection::blocker(signal->get_connection(slot)));
@@ -348,9 +350,12 @@ void container<C>::scoped_emitter::emit() noexcept
     if(!before.empty() || !after.empty())
     {
         auto signal =
-            m_container.template signal<container<C>::changed_signal_t>(container<C>::CHANGED_OBJECTS_SIG);
+            m_container.template signal<typename container<C>::signals::changed_t>(
+                container<C>::signals::CHANGED_OBJECTS
+            );
 
         std::vector<core::com::connection::blocker> blockers;
+        blockers.reserve(m_blocked_slots.size());
         for(auto& slot : m_blocked_slots)
         {
             blockers.emplace_back(core::com::connection::blocker(signal->get_connection(slot)));
@@ -362,9 +367,12 @@ void container<C>::scoped_emitter::emit() noexcept
     if(!removed.empty())
     {
         auto signal =
-            m_container.template signal<container<C>::removed_signal_t>(container<C>::REMOVED_OBJECTS_SIG);
+            m_container.template signal<typename container<C>::signals::removed_t>(
+                container<C>::signals::REMOVED_OBJECTS
+            );
 
         std::vector<core::com::connection::blocker> blockers;
+        blockers.reserve(m_blocked_slots.size());
         for(auto& slot : m_blocked_slots)
         {
             blockers.emplace_back(core::com::connection::blocker(signal->get_connection(slot)));

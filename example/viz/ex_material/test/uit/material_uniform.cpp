@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,83 +19,92 @@
  *
  ***********************************************************************/
 
-#include "material_uniform.hpp"
-
-#include <core/runtime/path.hpp>
+#include "fixture.hpp"
 
 #include <ui/test/helper/button.hpp>
+#include <ui/test/helper/combo_box.hpp>
 #include <ui/test/helper/file_dialog.hpp>
-#include <ui/test/helper/selector_dialog.hpp>
 #include <ui/test/tester.hpp>
 
 #include <utest_data/data.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::example::ui::ex_material::uit::material_uniform);
+#include <doctest/doctest.h>
 
 namespace sight::example::ui::ex_material::uit
 {
 
 namespace helper = sight::ui::test::helper;
 
+TEST_SUITE("ex_material")
+{
 //------------------------------------------------------------------------------
 
-std::filesystem::path material_uniform::get_profile_path()
-{
-    const std::filesystem::path cwd = sight::core::runtime::working_path();
-    return cwd / "share/sight/ex_material/profile.xml";
-}
+    static void save_snapshot(sight::ui::test::tester& _tester, const std::filesystem::path& _path)
+    {
+        // Click on the "snapshot" button
+        helper::button::push(_tester, "toolbar/Make a snapshot");
 
-//------------------------------------------------------------------------------
+        // Fill the file dialog, tap PATH
+        helper::file_dialog::fill(_tester, _path);
 
-void save_snapshot(sight::ui::test::tester& _tester, const std::filesystem::path& _path)
-{
-    // Click on the "snapshot" button
-    helper::button::push(_tester, "toolbar/Make a snapshot");
-
-    // Fill the file dialog, tap PATH
-    helper::file_dialog::fill(_tester, _path);
-
-    // Once we have pressed Enter, the path must be created...
-    _tester.doubt(
-        "the snapshot is saved",
-        [&_path](QObject*) -> bool {return std::filesystem::exists(_path);},
-        sight::ui::test::tester::DEFAULT_TIMEOUT*2
-    );
-    // ...and the image should be valid.
-    bool ok = QTest::qWaitFor([&_path]() -> bool {return !QImage(QString::fromStdString(_path.string())).isNull();});
-    CPPUNIT_ASSERT_MESSAGE("The writer didn't finish writing", ok);
-}
-
-//------------------------------------------------------------------------------
-
-void material_uniform::test()
-{
-    const auto snapshot_path(sight::ui::test::tester::get_image_output_path() / "ghost_1.png");
-
-    const auto* const  dir = "sight/ui/ex_material";
-    const std::filesystem::path reference_path(utest_data::dir() / dir / "ghost_1.png");
-
-    start(
-        "material_uniform",
-        [&](sight::ui::test::tester& _tester)
+        // Once we have pressed Enter, the path must be created...
+        _tester.doubt(
+            "the snapshot is saved",
+            [&_path](QObject*) -> bool {return std::filesystem::exists(_path);},
+            sight::ui::test::tester::DEFAULT_TIMEOUT*2
+        );
+        // ...and the image should be valid.
+        bool ok = QTest::qWaitFor(
+            [&_path]() -> bool
+            {
+                return !QImage(QString::fromStdString(_path.string())).isNull();
+            },
+            sight::ui::test::tester::DEFAULT_TIMEOUT* 2
+        );
+        if(!ok)
         {
-            // Click on the "Load series" button
-            helper::button::push(_tester, "toolbar/Load a model series");
+            // Called from the scenario thread: report through tester::fail(), never a doctest assertion.
+            sight::ui::test::tester::fail("The writer didn't finish writing");
+        }
+    }
 
-            // Once we clicked the button, a selection window should appear. We select the format we want.
-            helper::selector_dialog::select(_tester, "VTK");
+//------------------------------------------------------------------------------
 
-            // Fill the file dialog, tap PATH
-            helper::file_dialog::fill(_tester, utest_data::dir() / "sight/mesh/vtk/sphere.vtk");
+    TEST_CASE_FIXTURE(fixture, "material_uniform")
+    {
+        const auto snapshot_path(sight::ui::test::tester::get_image_output_path("material_uniform") / "ghost_1.png");
 
-            // Ensure the image loading is started, otherwise it will hang the test.
-            QTest::qWait(1000);
+        const auto* const  dir = "sight/ui/ex_material";
+        const std::filesystem::path reference_path(utest_data::dir() / dir / "ghost_1.png");
 
-            save_snapshot(_tester, snapshot_path);
-            compare_images(snapshot_path, reference_path);
-        },
-        true
-    );
-}
+        const std::string failure_message = start(
+            "material_uniform",
+            [&](sight::ui::test::tester& _tester)
+            {
+                // Click on the "Load series" button
+                helper::button::push(_tester, "toolbar/Load a model series");
+
+                helper::combo_box::select(
+                    _tester,
+                    helper::selector::from_dialog("fileTypeCombo"),
+                    "VTK Legacy Files(.vtk) (*.vtk)"
+                );
+                // Fill the file dialog, tap PATH
+                helper::file_dialog::fill(
+                    _tester,
+                    utest_data::dir() / "sight/mesh/vtk/sphere.vtk"
+                );
+                save_snapshot(_tester, snapshot_path);
+                compare_images(snapshot_path, reference_path);
+            },
+            true
+        );
+
+        // Runs on the main thread, after start() has returned: the only doctest assertion for
+        // this scenario. See sight::ui::test::base::start().
+        INFO(failure_message);
+        REQUIRE(failure_message.empty());
+    }
+} // TEST_SUITE
 
 } // namespace sight::example::ui::ex_material::uit

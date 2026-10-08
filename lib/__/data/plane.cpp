@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,16 +25,10 @@
 #include "data/exception.hpp"
 #include "data/registry/macros.hpp"
 
-#include <core/base.hpp>
-#include <core/com/signal.hpp>
-#include <core/com/signal.hxx>
-
 SIGHT_REGISTER_DATA(sight::data::plane);
 
 namespace sight::data
 {
-
-const core::com::signals::key_t plane::SELECTED_SIG = "selected";
 
 //------------------------------------------------------------------------------
 
@@ -44,7 +38,7 @@ plane::plane()
     m_v_points[1] = std::make_shared<data::point>();
     m_v_points[2] = std::make_shared<data::point>();
 
-    new_signal<selected_signal_t>(SELECTED_SIG);
+    new_signal<signals::selected_t>(signals::SELECTED);
 }
 
 //------------------------------------------------------------------------------

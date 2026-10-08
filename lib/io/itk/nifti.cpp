@@ -24,7 +24,7 @@
 #include "nifti_image_reader.hpp"
 #include "nifti_image_writer.hpp"
 
-#include <core/progress/observer.hpp>
+#include <core/notification/observer.hpp>
 
 namespace sight::io::itk
 {
@@ -39,7 +39,7 @@ bool read_nifti_image(const std::filesystem::path& _path, const sight::data::ima
 
     try
     {
-        auto progress = std::make_shared<sight::core::progress::observer>("Read Nifti image");
+        auto progress = std::make_shared<sight::core::notification::observer>("Read Nifti image");
         nifti_reader->read(progress);
     }
     catch(const std::exception&)
@@ -61,7 +61,7 @@ bool write_nifti_image(const std::filesystem::path& _path, const sight::data::im
     try
     {
         // Ignore progress for now
-        const auto progress = std::make_shared<sight::core::progress::observer>("Write Nifti image");
+        const auto progress = std::make_shared<sight::core::notification::observer>("Write Nifti image");
         writer->write(progress);
     }
     catch(const std::exception& e)

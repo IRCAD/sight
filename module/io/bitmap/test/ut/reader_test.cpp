@@ -19,19 +19,14 @@
  *
  ***********************************************************************/
 
-#include <core/tools/system.hpp>
-#include <core/tools/uuid.hpp>
-
 #include <data/image.hpp>
 
 #include <io/__/service/reader.hpp>
 #include <io/bitmap/backend.hpp>
-#include <io/bitmap/reader.hpp>
 
 #include <service/op.hpp>
 
 #include <utest_data/data.hpp>
-#include <utest_data/generator/image.hpp>
 
 // cspell:ignore nvjpeg sreader
 
@@ -50,7 +45,7 @@ inline static void runreader(
 {
     service::base::sptr sreader = service::add("sight::module::io::bitmap::reader");
     CHECK_MESSAGE(sreader, std::string("Failed to create service 'sight::module::io::bitmap::reader'"));
-    sreader->set_inout(_image, "data");
+    sreader->set_inout(_image, "data.read");
 
     CHECK_NOTHROW(sreader->set_config(_config));
     CHECK_NOTHROW(sreader->configure());
@@ -79,7 +74,7 @@ inline static void test_enable(data::image::sptr _actual_image, bool _gpu_requir
 
         // Add file
         service::config_t config;
-        config.add("file", filepath.string());
+        config.add("path.<xmlattr>.file", filepath.string());
         config.add("gpu_required", _gpu_required);
 
         // Run the service
@@ -103,7 +98,7 @@ TEST_SUITE("sight::module::io::bitmap::reader")
         const auto& filepath = utest_data::dir() / "sight" / "image" / "bitmap" / filename;
 
         service::config_t config;
-        config.add("file", filepath.string());
+        config.add("path.<xmlattr>.file", filepath.string());
 
         auto actual_image = std::make_shared<sight::data::image>();
         runreader(config, actual_image);

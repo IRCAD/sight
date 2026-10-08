@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -58,7 +58,7 @@ public:
     /// @param _format the format of the archive. @see sight::io::zip::archive::archiveFormat
     SIGHT_IO_ZIP_API static archive_reader::uptr get(
         const std::filesystem::path& _archive_path,
-        archive_format _format = archive_format::DEFAULT
+        archive_format _format = archive_format::standard
     );
 
     /// Returns an std::istream to read an archived file
@@ -91,7 +91,7 @@ public:
 protected:
 
     /// Constructor
-    SIGHT_IO_ZIP_API archive_reader(const std::filesystem::path& _archive_path);
+    SIGHT_IO_ZIP_API explicit archive_reader(const std::filesystem::path& _archive_path);
 };
 
 } // namespace sight::io::zip

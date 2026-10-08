@@ -30,11 +30,7 @@
 #include <io/itk/helper/transform.hpp>
 #include <io/itk/itk.hpp>
 
-#include <glm/ext/matrix_transform.hpp>
-#include <glm/glm.hpp>
-
 #include <itkAffineTransform.h>
-#include <itkBoundingBox.h>
 #include <itkBSplineInterpolateImageFunction.h>
 #include <itkMatrix.h>
 #include <itkMinimumMaximumImageCalculator.h>
@@ -64,7 +60,7 @@ void resampler::resample(
             bool _pre_transform,
             std::optional<resampler::parameters_t> _parameters)
         {
-            using image_t = typename itk::Image<PIXEL_TYPE, 3>;
+            using image_t = itk::Image<PIXEL_TYPE, 3>;
             const typename image_t::Pointer itk_image = io::itk::move_to_itk<image_t>(_input_image);
 
             auto resampler      = itk::ResampleImageFilter<image_t, image_t>::New();
@@ -159,7 +155,7 @@ void resampler::resample(
                 for(std::uint8_t i = 0 ; i < 3 ; ++i)
                 {
                     // ITK uses unsigned long to store sizes.
-                    size[i] = static_cast<typename image_t::SizeType::SizeValueType>(out_size[i]);
+                    size[i] = static_cast<image_t::SizeType::SizeValueType>(out_size[i]);
 
                     origin[i]  = out_origin[i];
                     spacing[i] = out_spacing[i];
@@ -177,17 +173,17 @@ void resampler::resample(
                 direction(2, 1) = out_orientation[7];
                 direction(2, 2) = out_orientation[8];
 
-                if(interp == filter::image::interpolation_t::NEAREST)
+                if(interp == filter::image::interpolation_t::nearest)
                 {
                     auto interpolator = itk::NearestNeighborInterpolateImageFunction<image_t, double>::New();
                     resampler->SetInterpolator(interpolator);
                 }
-                else if(interp == filter::image::interpolation_t::LINEAR)
+                else if(interp == filter::image::interpolation_t::linear)
                 {
                     auto interpolator = itk::LinearInterpolateImageFunction<image_t, double>::New();
                     resampler->SetInterpolator(interpolator);
                 }
-                else if(interp == filter::image::interpolation_t::BSPLINE)
+                else if(interp == filter::image::interpolation_t::bspline)
                 {
                     auto interpolator = itk::BSplineInterpolateImageFunction<image_t, double>::New();
                     resampler->SetInterpolator(interpolator);
@@ -271,9 +267,9 @@ data::image::sptr resampler::resample(
 
     // Use the new given spacing to compute the new size.
     const data::image::size_t output_size {
-        data::image::size_t::value_type(std::round(glm_max[0] / _output_spacing[0])),
-        data::image::size_t::value_type(std::round(glm_max[1] / _output_spacing[1])),
-        data::image::size_t::value_type(std::round(glm_max[2] / _output_spacing[2])),
+        static_cast<data::image::size_t::value_type>(std::round(glm_max[0] / _output_spacing[0])),
+        static_cast<data::image::size_t::value_type>(std::round(glm_max[1] / _output_spacing[1])),
+        static_cast<data::image::size_t::value_type>(std::round(glm_max[2] / _output_spacing[2])),
     };
 
     data::image::sptr output = std::make_shared<data::image>();

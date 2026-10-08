@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -142,7 +142,7 @@ data::image::sptr move_from_itk(typename ITKIMAGE::Pointer _itk_image, bool _buf
 //------------------------------------------------------------------------------
 
 template<class ITKIMAGE>
-typename ITKIMAGE::Pointer move_to_itk(const data::image& _image)
+ITKIMAGE::Pointer move_to_itk(const data::image& _image)
 {
     // Pre Condition
     SIGHT_ASSERT(
@@ -200,7 +200,7 @@ typename ITKIMAGE::Pointer move_to_itk(const data::image& _image)
 
     itk_image->GetPixelContainer()->SetImportPointer(
         // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
-        static_cast<typename ITKIMAGE::PixelType*>(const_cast<void*>(_image.buffer())),
+        static_cast<ITKIMAGE::PixelType*>(const_cast<void*>(_image.buffer())),
         nb_pixels,
         false
     );
@@ -211,7 +211,7 @@ typename ITKIMAGE::Pointer move_to_itk(const data::image& _image)
 //------------------------------------------------------------------------------
 
 template<class ITKIMAGE>
-typename ITKIMAGE::Pointer move_to_itk(data::image::csptr _data_image)
+ITKIMAGE::Pointer move_to_itk(data::image::csptr _data_image)
 {
     SIGHT_ASSERT("Image is NULL", _data_image);
     return move_to_itk<ITKIMAGE>(*_data_image);

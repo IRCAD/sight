@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "module/viz/scene3d/adaptor/transform.hpp"
-
 #include <data/camera.hpp>
 #include <data/camera_set.hpp>
 #include <data/matrix4.hpp>
@@ -31,13 +29,6 @@
 #include <viz/scene3d/adaptor.hpp>
 
 #include <OGRE/OgreMovableObject.h>
-
-namespace sight::data
-{
-
-class Camera;
-
-} // namespace sight::data
 
 namespace sight::module::viz::scene3d::adaptor
 {
@@ -51,21 +42,27 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b calibrate(): applies calibration information to Ogre camera.
  *
  * @section XML XML Configuration
- *  *
+ *
  * @code{.xml}
     <service uid="cameraAdaptor" type="sight::module::viz::scene3d::adaptor::camera">
-        <inout key="transform" uid="..." />
-        <in key="calibration" uid="..." />
-        <in key="camera_set" uid="..." />
+        <data transform_in="${...}" />
+        <data transform_out="${...}" />
+        <data calibration="${...}" />
+        <data camera_set="${...}" />
     </service>
  * @endcode
  *
  * @subsection Input Input
- * - \b calibration [sight::data::camera] (optional): camera containing calibration information.
- * - \b calibration [sight::data::camera_set] (optional): camera series containing calibration information.
+ * - \b data.calibration [sight::data::camera] (optional): camera containing calibration information.
+ * - \b data.camera_set [sight::data::camera_set] (optional): camera series containing calibration information.
  *
- * @subsection InOut InOut
- * - \b transform [sight::data::matrix4]: transform matrix for the camera.
+ * @subsection Input Input
+ * - \b data.transform_in [sight::data::matrix4] (optional): input transform matrix for the camera.
+ * - \b data.transform_out [sight::data::matrix4] (optional): output transform matrix for the camera, allows to update
+ * the
+ * camera position from the scene.
+ * - \b data.transform [sight::data::matrix4]: transform matrix for the camera. Deprecated, use transform_in and
+ * transform_out instead.
  */
 class camera final : public sight::viz::scene3d::adaptor
 {
@@ -73,6 +70,12 @@ public:
 
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(camera, sight::viz::scene3d::adaptor);
+
+    struct slots
+    {
+        static inline const slot_key_t TRANSFORM = "transform";
+        static inline const slot_key_t CALIBRATE = "calibrate";
+    };
 
     /// Creates the adaptor and initialize slots.
     camera() noexcept;
@@ -92,10 +95,10 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::matrix4::MODIFIED_SIG of s_TRANSFORM_INOUT to service::slots::UPDATE
-     * Connect data::camera::INTRINSIC_CALIBRATED_SIG of s_CALIBRATION_INPUT to CALIBRATE_SLOT
-     * Connect data::camera_set::MODIFIED_SIG of s_CAMERA_SET_INPUT to CALIBRATE_SLOT
-     * Connect data::camera_set::EXTRINSIC_CALIBRATED_SIG of s_CAMERA_SET_INPUT to CALIBRATE_SLOT
+     * Connect data::signals::MODIFIED of s_TRANSFORM_INOUT to service::slots::UPDATE
+     * Connect data::camera::signals::INTRINSIC_CALIBRATED of s_CALIBRATION_INPUT to CALIBRATE
+     * Connect data::signals::MODIFIED of s_CAMERA_SET_INPUT to CALIBRATE
+     * Connect data::camera_set::signals::EXTRINSIC_CALIBRATED of s_CAMERA_SET_INPUT to CALIBRATE
      */
     service::connections_t auto_connections() const override;
 
@@ -142,8 +145,8 @@ private:
     core::com::helper::sig_slot_connection m_layer_connection;
 
     /// Defines the camera listener class used to pass the projection matrix for autostereo shaders.
-    struct CameraNodeListener;
-    CameraNodeListener* m_camera_node_listener {nullptr};
+    struct camera_node_listener;
+    camera_node_listener* m_camera_node_listener {nullptr};
 
     /// This avoids a self-call to update_tf3D() when we update() the camera
     bool m_skip_update {false};
@@ -153,17 +156,21 @@ private:
 
     enum class update_flags : std::uint8_t
     {
-        TRANSFORM,
-        CALIBRATION
+        transform,
+        calibration
     };
 
-    static constexpr std::string_view CALIBRATION_INPUT = "calibration";
-    static constexpr std::string_view CAMERA_SET_INPUT  = "camera_set";
-    static constexpr std::string_view TRANSFORM_INOUT   = "transform";
+    static constexpr std::string_view CALIBRATION_INPUT = "data.calibration";
+    static constexpr std::string_view CAMERA_SET_INPUT  = "data.camera_set";
+    static constexpr std::string_view TRANSFORM_INOUT   = "data.transform";
+    static constexpr std::string_view TRANSFORM_IN      = "data.transform_in";
+    static constexpr std::string_view TRANSFORM_OUT     = "data.transform_out";
 
     data::ptr<data::camera, data::access::in> m_camera_calibration {this, CALIBRATION_INPUT, true};
     data::ptr<data::camera_set, data::access::in> m_camera_set {this, CAMERA_SET_INPUT, true};
-    data::ptr<data::matrix4, data::access::inout> m_transform {this, TRANSFORM_INOUT};
+    data::ptr<data::matrix4, data::access::inout> m_transform {this, TRANSFORM_INOUT, true}; // @deprecated
+    data::ptr<data::matrix4, data::access::in> m_transform_in {this, TRANSFORM_IN, true};
+    data::ptr<data::matrix4, data::access::inout> m_transform_out {this, TRANSFORM_OUT, true};
 
     bool m_use_orthographic_projection {false};
 };

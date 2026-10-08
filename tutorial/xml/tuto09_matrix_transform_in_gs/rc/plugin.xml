@@ -150,36 +150,36 @@
             </service>
 
             <service uid="mesh0_adp" type="sight::module::viz::scene3d::adaptor::mesh" auto_connect="true">
-                <in key="mesh" uid="mesh" />
+                <data mesh="${mesh}" />
             </service>
 
             <service uid="transform1_adp" type="sight::module::viz::scene3d::adaptor::transform" auto_connect="true">
-                <inout key="transform" uid="rotation1" />
+                <data transform="${rotation1}" />
                 <config transform="rotation_transform1" />
             </service>
 
             <service uid="mesh1_adp" type="sight::module::viz::scene3d::adaptor::mesh" auto_connect="true">
-                <in key="mesh" uid="mesh" />
+                <data mesh="${mesh}" />
                 <config transform="rotation_transform1" />
             </service>
 
             <service uid="transform2_adp" type="sight::module::viz::scene3d::adaptor::transform" auto_connect="true">
-                <inout key="transform" uid="rotation2" />
+                <data transform="${rotation2}" />
                 <config transform="rotation_transform2" />
             </service>
 
             <service uid="mesh2_adp" type="sight::module::viz::scene3d::adaptor::mesh" auto_connect="true">
-                <in key="mesh" uid="mesh" />
+                <data mesh="${mesh}" />
                 <config transform="rotation_transform2" />
             </service>
 
             <service uid="transform3_adp" type="sight::module::viz::scene3d::adaptor::transform" auto_connect="true">
-                <inout key="transform" uid="rotation3" />
+                <data transform="${rotation3}" />
                 <config transform="rotation_transform3" />
             </service>
 
             <service uid="mesh3_adp" type="sight::module::viz::scene3d::adaptor::mesh" auto_connect="true">
-                <in key="mesh" uid="mesh" />
+                <data mesh="${mesh}" />
                 <config transform="rotation_transform3" />
             </service>
 
@@ -198,40 +198,33 @@
             </service>
 
             <service uid="mesh_reader_srv" type="sight::module::ui::io::selector">
-                <inout key="data" uid="mesh" />
-                <type mode="reader" />
+                <data read="${mesh}" />
             </service>
 
             <service uid="rotation1_srv" type="sight::module::geometry::concatenate_matrices">
-                <in group="matrix">
-                    <key uid="matrix_e" auto_connect="true" />
-                    <key uid="matrix_a" />
-                    <key uid="matrix_d" />
-                </in>
-                <inout key="output" uid="rotation1" />
+                <data input="${matrix_e}" />
+                <data input="${matrix_a}" />
+                <data input="${matrix_d}" />
+                <data output="${rotation1}" />
             </service>
 
             <service uid="rotation2_srv" type="sight::module::geometry::concatenate_matrices">
-                <in group="matrix">
-                    <key uid="matrix_b" />
-                    <key uid="matrix_e" auto_connect="true" />
-                    <key uid="matrix_e" />
-                    <key uid="matrix_e" />
-                    <key uid="matrix_d" />
-                    <key uid="matrix_d" />
-                </in>
-                <inout key="output" uid="rotation2" />
+                <data input="${matrix_b}" />
+                <data input="${matrix_e}" />
+                <data input="${matrix_e}" />
+                <data input="${matrix_e}" />
+                <data input="${matrix_d}" />
+                <data input="${matrix_d}" />
+                <data output="${rotation2}" />
             </service>
 
             <service uid="rotation3_srv" type="sight::module::geometry::concatenate_matrices">
-                <in group="matrix">
-                    <key uid="matrix_c" />
-                    <key uid="matrix_e" auto_connect="true" />
-                    <key uid="matrix_d" />
-                    <key uid="matrix_d" />
-                    <key uid="matrix_d" />
-                </in>
-                <inout key="output" uid="rotation3" />
+                <data input="${matrix_c}" />
+                <data input="${matrix_e}" />
+                <data input="${matrix_d}" />
+                <data input="${matrix_d}" />
+                <data input="${matrix_d}" />
+                <data output="${rotation3}" />
             </service>
 
             <connect>

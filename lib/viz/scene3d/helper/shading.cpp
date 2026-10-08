@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "viz/scene3d/ogre.hpp"
 
-#include <data/boolean.hpp>
+#include <algorithm>
 #include <data/dvec2.hpp>
 #include <data/dvec3.hpp>
 #include <data/dvec4.hpp>
@@ -33,12 +33,12 @@
 #include <data/ivec3.hpp>
 #include <data/ivec4.hpp>
 #include <data/matrix4.hpp>
-#include <data/point.hpp>
-#include <data/point_list.hpp>
 #include <data/real.hpp>
 
 #include <OGRE/OgreHighLevelGpuProgram.h>
 #include <OGRE/OgreHighLevelGpuProgramManager.h>
+#include <OGRE/OgreMaterial.h>
+#include <OGRE/OgreTechnique.h>
 
 #include <regex>
 
@@ -187,21 +187,21 @@ shading::shader_constants_t shading::find_material_constants(Ogre::Material& _ma
         {
             params = pass->getVertexProgramParameters();
             auto vp_constants = find_shader_constants(params, Ogre::GPT_VERTEX_PROGRAM);
-            std::move(vp_constants.begin(), vp_constants.end(), std::inserter(constants, constants.begin()));
+            std::ranges::move(vp_constants, std::inserter(constants, constants.begin()));
         }
 
         if(pass->hasFragmentProgram())
         {
             params = pass->getFragmentProgramParameters();
             auto fp_constants = find_shader_constants(params, Ogre::GPT_FRAGMENT_PROGRAM);
-            std::move(fp_constants.begin(), fp_constants.end(), std::inserter(constants, constants.begin()));
+            std::ranges::move(fp_constants, std::inserter(constants, constants.begin()));
         }
 
         if(pass->hasGeometryProgram())
         {
             params = pass->getGeometryProgramParameters();
             auto gp_constants = find_shader_constants(params, Ogre::GPT_GEOMETRY_PROGRAM);
-            std::move(gp_constants.begin(), gp_constants.end(), std::inserter(constants, constants.begin()));
+            std::ranges::move(gp_constants, std::inserter(constants, constants.begin()));
         }
 
         if(pass->hasTessellationHullProgram())

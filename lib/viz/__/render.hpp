@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -51,17 +51,17 @@ public:
 
     SIGHT_DECLARE_SERVICE(render, ui::service);
 
+    /**
+     * @brief   Destructor. Do nothing.
+     */
+    SIGHT_VIZ_API ~render() noexcept override;
+
 protected:
 
     /**
      * @brief   Constructor. Initialize default values.
      */
     SIGHT_VIZ_API render() noexcept;
-
-    /**
-     * @brief   Destructor. Do nothing.
-     */
-    SIGHT_VIZ_API ~render() noexcept override;
 };
 
 } // namespace sight::viz

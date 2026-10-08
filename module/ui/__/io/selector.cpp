@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,42 +24,277 @@
 
 #include "core/thread/worker.hpp"
 
-#include <core/base.hpp>
-#include <core/com/signal.hxx>
-#include <core/com/slots.hpp>
-#include <core/com/slots.hxx>
+#include <core/location/single_file.hpp>
+#include <core/location/single_folder.hpp>
+
+#include <data/series_set.hpp>
 
 #include <io/__/service/reader.hpp>
 #include <io/__/service/writer.hpp>
 
+#include <service/extension/config.hpp>
 #include <service/extension/factory.hpp>
 #include <service/op.hpp>
 
 #include <ui/__/cursor.hpp>
+#include <ui/__/dialog/location.hpp>
 #include <ui/__/dialog/message.hpp>
 #include <ui/__/dialog/selector.hpp>
 
-#include <app/extension/config.hpp>
-
-#include <boost/property_tree/xml_parser.hpp>
 #include <boost/range/iterator_range_core.hpp>
 
 #include <algorithm>
+#include <filesystem>
+#include <memory>
+#include <optional>
 #include <sstream>
+#include <stdexcept>
 #include <string>
+#include <system_error>
+#include <utility>
+#include <vector>
 
 namespace sight::module::ui::io
 {
 
 namespace io = sight::io;
 
+//-----------------------------------------------------------------------------
+
+static std::vector<std::filesystem::path> split_paths(const std::string& _value)
+{
+    std::error_code error_code;
+    if(std::filesystem::exists(_value, error_code) && !error_code)
+    {
+        return {std::filesystem::path(_value)};
+    }
+
+    std::vector<std::string> fragments;
+    boost::split(fragments, _value, boost::is_any_of(";"));
+
+    std::vector<std::filesystem::path> paths;
+    for(auto& fragment : fragments)
+    {
+        boost::trim(fragment);
+        if(!fragment.empty())
+        {
+            paths.emplace_back(fragment);
+        }
+    }
+
+    return paths;
+}
+
+//------------------------------------------------------------------------------
+
+static void append_extensions(
+    const std::vector<sight::ui::dialog::location_base::filter_t>& _filters,
+    std::vector<std::string>& _extensions
+)
+{
+    for(const auto& filter : _filters)
+    {
+        std::istringstream wildcard_stream(filter.second);
+        std::string wildcard;
+
+        while(wildcard_stream >> wildcard)
+        {
+            std::erase(wildcard, '*');
+
+            if(!wildcard.empty()
+               && std::ranges::find(_extensions, wildcard) == _extensions.end())
+            {
+                _extensions.push_back(std::move(wildcard));
+            }
+        }
+    }
+}
+
+//----------------------------------------------------------------------------
+
+static bool supports_extension(const sight::io::service::reader::sptr& _reader, const std::filesystem::path& _path)
+{
+    std::vector<std::string> extensions;
+    append_extensions(_reader->get_supported_extensions(), extensions);
+
+    const auto filename = _path.filename().string();
+    return std::ranges::any_of(
+        extensions,
+        [&filename](const std::string& _extension)
+        {
+            return filename.ends_with(_extension);
+        });
+}
+
+//----------------------------------------------------------------------------
+
+static bool supports_path(const sight::io::service::reader::sptr& _reader, const std::filesystem::path& _path)
+{
+    const auto path_type = _reader->get_path_type();
+    return ((path_type& sight::io::service::file) != 0 || (path_type& sight::io::service::files) != 0)
+           && std::filesystem::is_regular_file(_path)
+           && supports_extension(_reader, _path);
+}
+
+//----------------------------------------------------------------------------
+
+static bool set_reader_path(
+    const sight::io::service::reader::sptr& _reader,
+    const std::vector<std::filesystem::path>& _paths,
+    bool _folder_selected = false
+)
+{
+    if(_paths.empty())
+    {
+        return false;
+    }
+
+    const auto path_type = _reader->get_path_type();
+    if(_paths.size() > 1)
+    {
+        if((path_type& sight::io::service::files) == 0)
+        {
+            return false;
+        }
+
+        _reader->set_files(_paths);
+        return true;
+    }
+
+    if(_folder_selected)
+    {
+        if((path_type& sight::io::service::folder) == 0)
+        {
+            return false;
+        }
+
+        _reader->set_folder(_paths.front());
+        return true;
+    }
+
+    if((path_type& sight::io::service::file) != 0)
+    {
+        _reader->set_file(_paths.front());
+        return true;
+    }
+
+    if((path_type& sight::io::service::files) != 0)
+    {
+        _reader->set_files(_paths);
+        return true;
+    }
+
+    return false;
+}
+
+//----------------------------------------------------------------------------
+
+bool selector::read_paths(
+    const std::vector<std::filesystem::path>& _paths,
+    const sight::data::object::sptr& _data,
+    const std::vector<std::string>& _available_services,
+    bool _append
+)
+{
+    SIGHT_ASSERT("The data object is not initialized.", _data);
+
+    const bool append_paths = _append || _paths.size() > 1;
+
+    const auto try_read =
+        [&](const std::vector<std::filesystem::path>& _candidates) -> std::optional<bool>
+        {
+            const auto& path     = _candidates.front();
+            const bool is_folder = _candidates.size() == 1 && std::filesystem::is_directory(path);
+
+            for(const auto& service_id : _available_services)
+            {
+                auto reader = create_path_reader(service_id, _data, append_paths);
+                if(!reader)
+                {
+                    continue;
+                }
+
+                const bool supported = is_folder || std::ranges::all_of(
+                    _candidates,
+                    [&reader](const std::filesystem::path& _candidate)
+                {
+                    return supports_path(reader, _candidate);
+                });
+                if(supported && set_reader_path(reader, _candidates, is_folder))
+                {
+                    return run_reader(reader, {}, path);
+                }
+
+                sight::service::remove(reader);
+            }
+
+            return std::nullopt;
+        };
+
+    if(_paths.size() > 1)
+    {
+        if(const auto result = try_read(_paths); result.has_value())
+        {
+            return *result;
+        }
+    }
+
+    bool success = true;
+    for(const auto& path : _paths)
+    {
+        const auto result = try_read({path});
+        if(!result)
+        {
+            SIGHT_WARN("No reader found for path: " << path);
+        }
+
+        success = result.value_or(false) && success;
+    }
+
+    return success;
+}
+
+namespace
+{
+
+struct service_filter
+{
+    sight::ui::dialog::location_base::filter_t filter;
+    std::string service_id;
+};
+
+} // namespace
+//------------------------------------------------------------------------------
+
+io::service::reader::sptr selector::create_path_reader(
+    const std::string& _service_id,
+    const data::object::sptr& _data,
+    bool _append
+)
+{
+    try
+    {
+        return create_and_configure_reader(_service_id, _data, _append);
+    }
+    catch(const std::exception& e)
+    {
+        SIGHT_WARN("Unable to configure reader '" << _service_id << "': " << e.what());
+        return nullptr;
+    }
+    catch(...)
+    {
+        SIGHT_WARN("Unable to configure reader '" << _service_id << "': unknown error.");
+        return nullptr;
+    }
+}
+
 //------------------------------------------------------------------------------
 
 selector::selector() :
-    has_monitors(m_signals),
+    has_monitors(has_signals::signals()),
     m_sig_failed(new_signal<signals::failed_t>(signals::FAILED)),
     m_sig_succeeded(new_signal<signals::succeeded_t>(signals::SUCCEEDED)),
-    m_slot_forward_monitor(new_slot(slots::FORWARD_MONITOR, &selector::forward_monitor, this))
+    m_slot_forward_notification(new_slot(slots::FORWARD_NOTIFICATION, &selector::forward_notification, this))
 {
 }
 
@@ -68,14 +303,6 @@ selector::selector() :
 void selector::configuring()
 {
     const config_t srv_config = this->get_config();
-
-    const std::string mode = srv_config.get<std::string>("type.<xmlattr>.mode", "reader");
-    SIGHT_ASSERT(
-        "The xml attribute <mode> must be 'reader' (to open file) or 'writer' (to write a new file).",
-        mode == "writer" || mode == "reader"
-    );
-    m_mode = (mode == "writer") ? writer_mode : reader_mode;
-    SIGHT_DEBUG("mode => " + mode);
 
     const std::string selection_mode = srv_config.get<std::string>("selection.<xmlattr>.mode", "exclude");
     SIGHT_ASSERT(
@@ -114,8 +341,9 @@ void selector::configuring()
 
 void selector::starting()
 {
-    // Move the forward slot on the default worker otherwise it can't be triggered until the reader/writer finishes
-    m_slot_forward_monitor->set_worker(sight::core::thread::get_default_worker());
+    // The notifications from the reader/writer need to be emitted during the update of the sub-service
+    // If we don't do this, the progress will not appear in the GUI
+    m_slot_forward_notification->set_worker(sight::core::thread::get_default_worker());
 }
 
 //------------------------------------------------------------------------------
@@ -126,282 +354,781 @@ void selector::stopping()
 
 //------------------------------------------------------------------------------
 
-void selector::updating()
+io::service::reader::sptr selector::create_and_configure_reader(
+    const std::string& _service_id,
+    const data::object::sptr& _data,
+    bool _append
+)
 {
-    std::vector<std::string> available_extensions_id;
+    const auto reader_data = _data ? _data : m_read.lock().get_shared();
+    SIGHT_ASSERT(
+        "The inout key '" + io::service::READER_DATA_KEY + "' is not correctly set.",
+        reader_data
+    );
+
+    auto reader = service::add<io::service::reader>(_service_id);
+
+    try
     {
-        auto obj_lock          = m_data.lock();
-        data::object::sptr obj = obj_lock.get_shared();
+        reader->set_inout(reader_data, io::service::READER_DATA_KEY);
+        reader->set_worker(this->worker());
 
-        // Retrieve implementation of type io::service::reader for this object
-        if(m_mode == reader_mode)
+        service::config_t reader_config;
+        if(m_service_to_config.contains(_service_id))
         {
-            SIGHT_ASSERT("An inout key '" + io::service::DATA_KEY + "' must be defined.", obj);
-            const auto classname = obj->get_classname();
+            reader_config = service::extension::config::get_default()->get_service_config(
+                m_service_to_config.at(_service_id),
+                _service_id
+            );
 
-            available_extensions_id =
-                service::extension::factory::get()->get_implementation_id_from_object_and_type(
-                    classname,
-                    "sight::io::service::reader"
-                );
+            SIGHT_ASSERT(
+                "No service configuration of type service::extension::config was found",
+                !reader_config.empty()
+            );
         }
-        else // m_mode == WRITER_MODE
-        {
-            SIGHT_ASSERT("The inout key '" + io::service::DATA_KEY + "' is not correctly set.", obj);
 
-            available_extensions_id =
-                service::extension::factory::get()->get_implementation_id_from_object_and_type(
-                    obj->get_classname(),
-                    "sight::io::service::writer"
-                );
+        if(_append && std::dynamic_pointer_cast<data::series_set>(reader_data))
+        {
+            reader_config.put("config.<xmlattr>.append", true);
+        }
+
+        if(!reader_config.empty())
+        {
+            reader->set_config(reader_config);
+        }
+
+        reader->configure();
+        return reader;
+    }
+    catch(...)
+    {
+        service::remove(reader);
+        throw;
+    }
+}
+
+//------------------------------------------------------------------------------
+
+bool selector::run_reader(
+    const io::service::reader::sptr& _reader,
+    std::function<void()> _before_update,
+    const std::filesystem::path& _path
+)
+{
+    bool success = false;
+
+    if(const auto signal = _reader->signal(
+           core::notification::has_notifications::signals::NOTIFICATION_CREATED
+    ); signal)
+    {
+        signal->connect(m_slot_forward_notification);
+    }
+
+    const auto report_error = [&](const std::string& _details)
+                              {
+                                  const std::string path = _path.empty() ? std::string() : " '" + _path.string()
+                                                           + "'";
+                                  const std::string message = "Failed to read" + path + _details;
+                                  SIGHT_ERROR(message);
+                                  if(!_path.empty())
+                                  {
+                                      this->fail(message);
+                                  }
+                                  else
+                                  {
+                                      sight::ui::dialog::message::show("Reader Error", message);
+                                  }
+                              };
+
+    try
+    {
+        _reader->start().get();
+
+        if(_before_update)
+        {
+            _before_update();
+        }
+
+        {
+            sight::ui::busy_cursor cursor;
+            _reader->update().get();
+        }
+
+        success = !_reader->has_failed();
+    }
+    catch(const std::exception& e)
+    {
+        report_error(":\n" + std::string(e.what()));
+    }
+    catch(...)
+    {
+        report_error(": unknown error.");
+    }
+
+    if(!_reader->stopped())
+    {
+        try
+        {
+            _reader->stop().get();
+        }
+        catch(const std::exception& e)
+        {
+            SIGHT_ERROR("Failed to stop reader: " << e.what());
+            success = false;
+        }
+        catch(...)
+        {
+            SIGHT_ERROR("Failed to stop reader: unknown error.");
+            success = false;
         }
     }
 
-    // filter available extensions and replace id by service description
-    std::vector<std::pair<std::string, std::string> > available_extensions_map;
-    std::vector<std::string> available_extensions_selector;
+    service::remove(_reader);
 
-    for(const std::string& service_id : available_extensions_id)
+    return success;
+}
+
+//------------------------------------------------------------------------------
+
+io::service::writer::sptr selector::create_and_configure_writer(const std::string& _service_id)
+{
+    auto writer = service::add<io::service::writer>(_service_id);
+
     {
-        bool service_is_selected_by_user =
-            std::ranges::find(
-                m_selected_services,
-                service_id
-            ) != m_selected_services.end();
+        auto obj = m_write.lock().get_shared();
+        SIGHT_ASSERT(
+            "The input key '" + io::service::WRITER_DATA_KEY + "' is not correctly set.",
+            obj
+        );
+        writer->set_input(obj, io::service::WRITER_DATA_KEY);
+        writer->set_worker(this->worker());
+    }
 
-        // Test if the service is considered here as available by users, if yes push in availableExtensionsSelector
-        // excluded mode => add services that are not selected by users
-        // included mode => add services selected by users
-        if((m_services_are_excluded && !service_is_selected_by_user)
-           || (!m_services_are_excluded && service_is_selected_by_user))
+    if(m_service_to_config.contains(_service_id))
+    {
+        const auto srv_cfg = service::extension::config::get_default()->get_service_config(
+            m_service_to_config.at(_service_id),
+            _service_id
+        );
+
+        SIGHT_ASSERT(
+            "No service configuration of type service::extension::config was found",
+            !srv_cfg.empty()
+        );
+
+        writer->set_config(srv_cfg);
+    }
+
+    writer->configure();
+
+    return writer;
+}
+
+//------------------------------------------------------------------------------
+
+bool selector::run_writer(const io::service::writer::sptr& _writer, std::function<void()> _before_update)
+{
+    if(const auto signal = _writer->signal(
+           core::notification::has_notifications::signals::NOTIFICATION_CREATED
+    ); signal)
+    {
+        signal->connect(m_slot_forward_notification);
+    }
+
+    bool success = false;
+    try
+    {
+        _writer->start().get();
+        if(_before_update)
         {
-            // Add this service
-            std::string info_user =
-                service::extension::factory::get()->get_service_description(service_id);
+            _before_update();
+        }
 
-            auto iter = m_service_to_config.find(service_id);
-            if(iter != m_service_to_config.end())
+        {
+            sight::ui::busy_cursor cursor;
+            _writer->update().get();
+        }
+
+        _writer->stop().get();
+        success = !_writer->has_failed();
+    }
+    catch(const std::exception& e)
+    {
+        sight::ui::dialog::message::show("Writer Error", "Failed to write : \n" + std::string(e.what()));
+        _writer->stop().get();
+    }
+
+    service::remove(_writer);
+    return success;
+}
+
+//------------------------------------------------------------------------------
+
+void selector::select_file_reader(const std::vector<std::pair<std::string, std::string> >& _available_services)
+{
+    std::vector<service_filter> supported_filters;
+    std::vector<std::string> supported_extensions;
+    std::size_t file_reader_count = 0;
+    std::string single_file_reader_id;
+
+    for(const auto& service : _available_services)
+    {
+        const auto& service_id = service.first;
+        auto reader            = create_and_configure_reader(service_id);
+
+        const auto path_type = reader->get_path_type();
+
+        if(((path_type& io::service::file) != 0) || ((path_type& io::service::files) != 0))
+        {
+            ++file_reader_count;
+            single_file_reader_id = service_id;
+            const auto filters = reader->get_supported_extensions();
+            append_extensions(filters, supported_extensions);
+
+            for(const auto& filter : filters)
             {
-                info_user = service::extension::config::get_default()->get_config_desc(iter->second);
+                supported_filters.push_back({.filter = filter, .service_id = service_id});
+            }
+        }
+
+        service::remove(reader);
+    }
+
+    std::ranges::sort(supported_extensions);
+
+    if(file_reader_count > 0 && !supported_extensions.empty())
+    {
+        // Reader-specific aggregate filters would hide formats exposed by the other readers
+        std::erase_if(
+            supported_filters,
+            [](const service_filter& _filter)
+            {
+                return _filter.filter.first.starts_with("All supported");
+            });
+
+        std::string wildcard_list;
+        for(const auto& extension : supported_extensions)
+        {
+            if(!wildcard_list.empty())
+            {
+                wildcard_list += ' ';
             }
 
-            if(!info_user.empty())
+            wildcard_list += '*' + extension;
+        }
+
+        supported_filters.push_back(
+            {.filter     = {"All supported files", std::move(wildcard_list)},
+             .service_id = file_reader_count == 1 ? single_file_reader_id : ""
+            });
+    }
+
+    if(supported_filters.empty())
+    {
+        m_sig_failed->async_emit();
+        return;
+    }
+
+    std::ranges::sort(supported_filters, {}, &service_filter::filter);
+    static auto default_directory = std::make_shared<core::location::single_folder>();
+
+    sight::ui::dialog::location dialog;
+
+    dialog.set_title("Choose a file");
+    dialog.set_default_location(default_directory);
+    dialog.set_type(sight::ui::dialog::location::single_file);
+    dialog.set_option(sight::ui::dialog::location::read);
+    dialog.set_option(sight::ui::dialog::location::file_must_exist);
+
+    for(const auto& filter_info : supported_filters)
+    {
+        dialog.add_filter(filter_info.filter.first, filter_info.filter.second);
+    }
+
+    const auto result = std::dynamic_pointer_cast<core::location::single_file>(dialog.show());
+
+    if(!result)
+    {
+        m_sig_failed->async_emit();
+        return;
+    }
+
+    const auto selected_filter = dialog.get_current_filter();
+    const auto service_it      = std::ranges::find(supported_filters, selected_filter, &service_filter::filter);
+
+    if(service_it == supported_filters.end())
+    {
+        sight::ui::dialog::message::show("Unsupported file filter", "The selected file filter is not supported.");
+        m_sig_failed->async_emit();
+        return;
+    }
+
+    const std::filesystem::path selected_file = result->get_file();
+
+    default_directory->set_folder(selected_file.parent_path());
+    dialog.save_default_location(default_directory);
+
+    // Retrieve and configure the reader associated with the selected filter.
+    std::string service_id = service_it->service_id;
+    if(service_id.empty())
+    {
+        for(const auto& service : _available_services)
+        {
+            auto reader          = create_and_configure_reader(service.first);
+            const auto path_type = reader->get_path_type();
+
+            if((((path_type& io::service::file) != 0)
+                || ((path_type& io::service::files) != 0))
+               && supports_extension(reader, selected_file))
             {
-                available_extensions_map.emplace_back(service_id, info_user);
-                available_extensions_selector.push_back(info_user);
+                service_id = service.first;
             }
-            else
+
+            service::remove(reader);
+
+            if(!service_id.empty())
             {
-                available_extensions_map.emplace_back(service_id, service_id);
-                available_extensions_selector.push_back(service_id);
+                break;
             }
         }
     }
 
-    // Sort available services (lexical string sort)
-    std::ranges::sort(available_extensions_selector);
-
-    // Test if we have an extension
-    if(!available_extensions_map.empty())
+    if(service_id.empty())
     {
-        std::string extension_id             = available_extensions_map[0].first;
-        bool extension_selection_is_canceled = false;
+        sight::ui::dialog::message::show(
+            "Unsupported file",
+            "No reader supports the selected file extension."
+        );
 
-        // Selection of extension when availableExtensions.size() > 1
-        if(available_extensions_selector.size() > 1)
+        m_sig_failed->async_emit();
+        return;
+    }
+
+    auto reader = create_and_configure_reader(service_id);
+
+    if(!set_reader_path(reader, {selected_file}))
+    {
+        SIGHT_WARN("The selected reader does not support files.");
+        service::remove(reader);
+        m_sig_failed->async_emit();
+        return;
+    }
+
+    run_reader(reader) ? m_sig_succeeded->async_emit() : m_sig_failed->async_emit();
+}
+
+//------------------------------------------------------------------------------
+
+void selector::select_folder_reader(const std::vector<std::pair<std::string, std::string> >& _available_services)
+{
+    std::string extension_id = _available_services[0].first;
+
+    bool extension_selection_is_canceled = false;
+
+    if(_available_services.size() > 1)
+    {
+        std::vector<std::string> available_extensions_selector;
+        available_extensions_selector.reserve(_available_services.size());
+
+        for(const auto& service : _available_services)
         {
-            sight::ui::dialog::selector selector;
-
-            if(m_mode != reader_mode)
-            {
-                selector.set_title("Writer to use");
-            }
-            else
-            {
-                selector.set_title("Reader to use");
-            }
-
-            selector.set_choices(available_extensions_selector);
-
-            if(const auto& choices = selector.show(); !choices.empty())
-            {
-                const auto& choice      = choices.front();
-                bool extension_id_found = false;
-
-                using pair_t = std::pair<std::string, std::string>;
-                for(const pair_t& pair : available_extensions_map)
-                {
-                    if(pair.second == choice)
-                    {
-                        extension_id       = pair.first;
-                        extension_id_found = true;
-                    }
-                }
-
-                if(!extension_id_found)
-                {
-                    m_sig_failed->async_emit();
-                }
-
-                SIGHT_ASSERT("Problem to find the selected string.", extension_id_found);
-            }
-            else
-            {
-                extension_selection_is_canceled = true;
-            }
+            available_extensions_selector.push_back(service.second);
         }
 
-        if(!extension_selection_is_canceled)
+        sight::ui::dialog::selector picker;
+
+        picker.set_title("Reader to use");
+        picker.set_choices(available_extensions_selector);
+
+        if(const auto& choices = picker.show(); !choices.empty())
         {
-            // Get config
-            bool has_config_for_service = false;
-            service::config_t srv_cfg;
-            if(m_service_to_config.contains(extension_id))
+            const auto& choice = choices.front();
+
+            bool extension_id_found = false;
+
+            for(const auto& [service_id, description] : _available_services)
             {
-                has_config_for_service = true;
-                srv_cfg                = service::extension::config::get_default()->get_service_config(
-                    m_service_to_config[extension_id],
-                    extension_id
-                );
-                SIGHT_ASSERT(
-                    "No service configuration of type service::extension::config was found",
-                    !srv_cfg.empty()
-                );
+                if(description == choice)
+                {
+                    extension_id       = service_id;
+                    extension_id_found = true;
+                    break;
+                }
             }
 
-            // Configure and start service
-            if(m_mode == reader_mode)
+            if(!extension_id_found)
             {
-                auto reader = service::add<io::service::reader>(extension_id);
-                {
-                    auto obj = m_data.lock();
-                    reader->set_inout(obj.get_shared(), io::service::DATA_KEY);
-                }
-
-                reader->set_worker(this->worker());
-
-                if(has_config_for_service)
-                {
-                    reader->set_config(srv_cfg);
-                }
-
-                reader->configure();
-
-                auto monitor_created_signal = reader->signal(core::progress::has_monitors::signals::MONITOR_CREATED);
-                if(monitor_created_signal)
-                {
-                    monitor_created_signal->connect(m_slot_forward_monitor);
-                }
-
-                try
-                {
-                    reader->start();
-                    reader->open_location_dialog();
-
-                    sight::ui::cursor cursor;
-                    cursor.set_cursor(sight::ui::cursor_base::busy);
-                    reader->update();
-                    cursor.set_default_cursor();
-
-                    reader->stop();
-                    service::unregister_service(reader);
-                }
-                catch(std::exception& e)
-                {
-                    std::string msg = "Failed to read : \n" + std::string(e.what());
-                    sight::ui::dialog::message::show("Reader Error", msg);
-                    m_sig_failed->async_emit();
-                }
-                if(reader->has_failed())
-                {
-                    m_sig_failed->async_emit();
-                }
-                else
-                {
-                    m_sig_succeeded->async_emit();
-                }
-            }
-            else
-            {
-                auto writer = service::add<io::service::writer>(extension_id);
-                {
-                    auto obj = m_data.lock();
-                    writer->set_input(obj.get_shared(), io::service::DATA_KEY);
-                }
-
-                writer->set_worker(this->worker());
-
-                if(has_config_for_service)
-                {
-                    writer->set_config(srv_cfg);
-                }
-
-                writer->configure();
-
-                auto monitor_created_signal = writer->signal(core::progress::has_monitors::signals::MONITOR_CREATED);
-                if(monitor_created_signal)
-                {
-                    monitor_created_signal->connect(m_slot_forward_monitor);
-                }
-
-                try
-                {
-                    writer->start();
-                    writer->open_location_dialog();
-
-                    sight::ui::cursor cursor;
-                    cursor.set_cursor(sight::ui::cursor_base::busy);
-                    writer->update();
-                    cursor.set_default_cursor();
-
-                    writer->stop();
-                    service::unregister_service(writer);
-                }
-                catch(std::exception& e)
-                {
-                    std::string msg = "Failed to write : \n" + std::string(e.what());
-                    sight::ui::dialog::message::show("Writer Error", msg);
-                    m_sig_failed->async_emit();
-                }
-
-                if(writer->has_failed())
-                {
-                    m_sig_failed->async_emit();
-                }
-                else
-                {
-                    m_sig_succeeded->async_emit();
-                }
+                m_sig_failed->async_emit();
+                return;
             }
         }
         else
         {
-            m_sig_failed->async_emit();
+            extension_selection_is_canceled = true;
         }
+    }
+
+    if(extension_selection_is_canceled)
+    {
+        m_sig_failed->async_emit();
+        return;
+    }
+
+    auto reader = create_and_configure_reader(extension_id);
+
+    const auto open_location_dialog = [reader]
+                                      {
+                                          reader->open_location_dialog();
+
+                                          if((reader->get_path_type() & io::service::type_not_defined) != 0)
+                                          {
+                                              return;
+                                          }
+
+                                          const auto paths = reader->get_locations();
+                                          if(!set_reader_path(reader, paths, true))
+                                          {
+                                              throw std::runtime_error("The selected path is not supported.");
+                                          }
+                                      };
+    run_reader(reader, open_location_dialog) ? m_sig_succeeded->async_emit() : m_sig_failed->async_emit();
+}
+
+//------------------------------------------------------------------------------
+
+void selector::update_reader(const std::vector<std::pair<std::string, std::string> >& _available_services)
+{
+    if(_available_services.empty())
+    {
+        m_sig_failed->async_emit();
+        return;
+    }
+
+    bool has_file_reader   = false;
+    bool has_folder_reader = false;
+
+    for(const auto& service : _available_services)
+    {
+        const auto& service_id = service.first;
+        auto reader            = create_and_configure_reader(service_id);
+
+        const auto path_type = reader->get_path_type();
+
+        if(((path_type& io::service::file) != 0) || ((path_type& io::service::files) != 0))
+        {
+            has_file_reader = true;
+        }
+
+        if((path_type& io::service::folder) != 0)
+        {
+            has_folder_reader = true;
+        }
+
+        service::remove(reader);
+    }
+
+    const bool single_reader_supports_folder = _available_services.size() == 1 && has_folder_reader;
+
+    if(has_file_reader && !single_reader_supports_folder)
+    {
+        select_file_reader(_available_services);
     }
     else
     {
-        SIGHT_WARN("selector::load : availableExtensions is empty.");
-        if(m_mode == reader_mode)
+        select_folder_reader(_available_services);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void selector::update_writer(
+    const std::vector<std::pair<std::string, std::string> >& _available_extensions_map,
+    const std::vector<std::string>& _available_extensions_selector
+)
+{
+    std::vector<service_filter> supported_filters;
+    bool has_file_writer              = false;
+    bool all_file_writers_are_exposed = true;
+
+    for(const auto& service : _available_extensions_map)
+    {
+        const auto& service_id = service.first;
+        auto writer            = create_and_configure_writer(service_id);
+        const auto path_type   = writer->get_path_type();
+
+        if((path_type& io::service::file) != 0)
         {
-            sight::ui::dialog::message message_box;
-            message_box.set_title("Reader not found");
-            message_box.set_message("There are no available readers for this data type.");
-            message_box.set_icon(sight::ui::dialog::message::warning);
-            message_box.add_button(sight::ui::dialog::message::ok);
-            message_box.show();
-        }
-        else // m_mode == WRITER_MODE
-        {
-            sight::ui::dialog::message message_box;
-            message_box.set_title("Writer not found");
-            message_box.set_message("There are no available writers for this data type.");
-            message_box.set_icon(sight::ui::dialog::message::warning);
-            message_box.add_button(sight::ui::dialog::message::ok);
-            message_box.show();
+            has_file_writer = true;
+            const auto filters = writer->get_supported_extensions();
+
+            if(filters.empty())
+            {
+                all_file_writers_are_exposed = false;
+            }
+            else
+            {
+                for(const auto& filter : filters)
+                {
+                    supported_filters.push_back({.filter = filter, .service_id = service_id});
+                }
+            }
         }
 
+        service::remove(writer);
+    }
+
+    if(has_file_writer && all_file_writers_are_exposed && !supported_filters.empty())
+    {
+        static auto default_directory = std::make_shared<core::location::single_folder>();
+
+        sight::ui::dialog::location dialog;
+        dialog.set_title("Choose a file");
+        dialog.set_default_location(default_directory);
+        dialog.set_type(sight::ui::dialog::location::single_file);
+        dialog.set_option(sight::ui::dialog::location::write);
+
+        std::ranges::sort(supported_filters, {}, &service_filter::filter);
+
+        for(const auto& filter_info : supported_filters)
+        {
+            dialog.add_filter(filter_info.filter.first, filter_info.filter.second);
+        }
+
+        const auto result = std::dynamic_pointer_cast<core::location::single_file>(dialog.show());
+        if(!result)
+        {
+            m_sig_failed->async_emit();
+            return;
+        }
+
+        const auto selected_filter = dialog.get_current_filter();
+        const auto service_it      = std::ranges::find(
+            supported_filters,
+            selected_filter,
+            &service_filter::filter
+        );
+        const auto selected_extensions = dialog.get_selected_extensions();
+        if(service_it == supported_filters.end() || selected_extensions.empty())
+        {
+            m_sig_failed->async_emit();
+            return;
+        }
+
+        auto selected_file = result->get_file();
+
+        if(!std::ranges::any_of(
+               selected_extensions,
+               [&selected_file](const std::string& _extension)
+            {
+                return selected_file.filename().string().ends_with(_extension);
+            }))
+        {
+            selected_file += selected_extensions.front();
+        }
+
+        default_directory->set_folder(selected_file.parent_path());
+        dialog.save_default_location(default_directory);
+
+        auto writer = create_and_configure_writer(service_it->service_id);
+        writer->set_file(selected_file);
+
+        run_writer(writer) ? m_sig_succeeded->async_emit() : m_sig_failed->async_emit();
+
+        return;
+    }
+
+    std::string extension_id = _available_extensions_map[0].first;
+
+    bool extension_selection_is_canceled = false;
+
+    if(_available_extensions_selector.size() > 1)
+    {
+        sight::ui::dialog::selector picker;
+
+        picker.set_title("Writer to use");
+        picker.set_choices(_available_extensions_selector);
+
+        if(const auto& choices = picker.show(); !choices.empty())
+        {
+            const auto& choice      = choices.front();
+            bool extension_id_found = false;
+
+            for(const auto& [service_id, description] : _available_extensions_map)
+            {
+                if(description == choice)
+                {
+                    extension_id       = service_id;
+                    extension_id_found = true;
+                    break;
+                }
+            }
+
+            if(!extension_id_found)
+            {
+                m_sig_failed->async_emit();
+                return;
+            }
+        }
+        else
+        {
+            extension_selection_is_canceled = true;
+        }
+    }
+
+    if(extension_selection_is_canceled)
+    {
         m_sig_failed->async_emit();
+        return;
+    }
+
+    auto writer = create_and_configure_writer(extension_id);
+
+    run_writer(writer, [writer]{writer->open_location_dialog();})
+    ? m_sig_succeeded->async_emit()
+    : m_sig_failed->async_emit();
+}
+
+//------------------------------------------------------------------------------
+
+void selector::updating()
+{
+    const auto read      = m_read.lock().get_shared();
+    const auto write     = m_write.lock().get_shared();
+    const bool is_reader = read != nullptr;
+
+    SIGHT_ASSERT(
+        "Exactly one of the keys 'data.read' or 'data.write' must be defined.",
+        is_reader != (write != nullptr)
+    );
+
+    const auto service_is_available = [this](const std::string& _service_id)
+                                      {
+                                          const bool selected = std::ranges::find(m_selected_services, _service_id)
+                                                                != m_selected_services.end();
+                                          return m_services_are_excluded != selected;
+                                      };
+
+    const auto& object         = is_reader ? read : write;
+    auto available_services_id = service::extension::factory::get()->get_implementation_id_from_object_and_type(
+        object->get_classname(),
+        is_reader ? "sight::io::service::reader" : "sight::io::service::writer"
+    );
+    std::erase_if(
+        available_services_id,
+        [&service_is_available](const std::string& _id)
+        {
+            return !service_is_available(_id);
+        });
+
+    SIGHT_ASSERT(
+        "The selector configured with input paths must not run on the default worker.",
+        this->worker() != sight::core::thread::get_default_worker()
+    );
+
+    const config_t srv_config = this->get_config();
+    const auto has_path       = srv_config.get_child_optional("path").has_value();
+    if(is_reader && has_path)
+    {
+        std::vector<std::filesystem::path> paths;
+        for(const auto& path : split_paths(*m_file))
+        {
+            if(std::ranges::find(paths, path) == paths.end())
+            {
+                paths.push_back(path);
+            }
+        }
+
+        for(const auto& path : split_paths(*m_folder))
+        {
+            if(std::ranges::find(paths, path) == paths.end())
+            {
+                paths.push_back(path);
+            }
+        }
+
+        if(paths.empty())
+        {
+            return;
+        }
+
+        bool success = false;
+        try
+        {
+            success = read_paths(paths, read, available_services_id, true);
+        }
+        catch(const std::exception& e)
+        {
+            SIGHT_ERROR("Failed to read the supplied paths: " << e.what());
+        }
+        catch(...)
+        {
+            SIGHT_ERROR("Failed to read the supplied paths: unknown error.");
+        }
+
+        success ? m_sig_succeeded->async_emit() : m_sig_failed->async_emit();
+        return;
+    }
+
+    std::vector<std::pair<std::string, std::string> > available_services;
+
+    for(const std::string& service_id : available_services_id)
+    {
+        std::string description = service::extension::factory::get()->get_service_description(service_id);
+
+        const auto config_it = m_service_to_config.find(service_id);
+        if(config_it != m_service_to_config.end())
+        {
+            description = service::extension::config::get_default()->get_config_desc(config_it->second);
+        }
+
+        if(description.empty())
+        {
+            description = service_id;
+        }
+
+        available_services.emplace_back(service_id, description);
+    }
+
+    if(available_services.empty())
+    {
+        SIGHT_WARN("selector::load : available services is empty.");
+
+        sight::ui::dialog::message message_box;
+
+        if(is_reader)
+        {
+            message_box.set_title("Reader not found");
+            message_box.set_message("There are no available readers for this data type.");
+        }
+        else
+        {
+            message_box.set_title("Writer not found");
+            message_box.set_message("There are no available writers for this data type.");
+        }
+
+        message_box.set_icon(sight::ui::dialog::message::warning);
+        message_box.add_button(sight::ui::dialog::message::ok);
+        message_box.show();
+
+        m_sig_failed->async_emit();
+        return;
+    }
+
+    if(is_reader)
+    {
+        this->update_reader(available_services);
+    }
+    else
+    {
+        std::vector<std::string> available_extensions_selector;
+
+        available_extensions_selector.reserve(available_services.size());
+        for(const auto& [service_id, description] : available_services)
+        {
+            available_extensions_selector.push_back(description);
+        }
+
+        this->update_writer(available_services, available_extensions_selector);
     }
 }
 
@@ -409,22 +1136,15 @@ void selector::updating()
 
 void selector::info(std::ostream& _sstream)
 {
-    // Update message
+    // Write the service name.
     _sstream << "selector";
 }
 
 //------------------------------------------------------------------------------
 
-void selector::set_io_mode(io_mode _mode)
+void selector::forward_notification(core::notification::base::sptr _notification)
 {
-    m_mode = _mode;
-}
-
-//------------------------------------------------------------------------------
-
-void selector::forward_monitor(core::progress::monitor::sptr _monitor)
-{
-    this->async_emit(core::progress::has_monitors::signals::MONITOR_CREATED, _monitor);
+    this->async_emit(core::notification::has_notifications::signals::NOTIFICATION_CREATED, _notification);
 }
 
 //------------------------------------------------------------------------------

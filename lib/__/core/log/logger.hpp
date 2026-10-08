@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,8 @@
 
 #include <sight/core/config.hpp>
 
-#include "core/log/log.hpp"
-
-#include <core/object.hpp>
+#include "core/object.hpp"
+#include "log.hpp"
 
 #include <string>
 
@@ -159,7 +158,7 @@ public:
         return m_log_container.rend();
     }
 
-protected:
+private:
 
     /**
      * @brief Function used to sort logs
@@ -167,6 +166,8 @@ protected:
      * @param _log_b Second log
      */
     static bool log_sorter(const core::log::log& _log_a, const core::log::log& _log_b);
+
+private:
 
     /// Log container
     log_container_t m_log_container;

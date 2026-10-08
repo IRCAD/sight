@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -134,7 +134,7 @@ public:
 
         // Setup OPJ user stream
         opj_stream_set_user_data(keeper.m_stream, &_istream, free_callback);
-        opj_stream_set_user_data_length(keeper.m_stream, OPJ_UINT64(stream_size));
+        opj_stream_set_user_data_length(keeper.m_stream, static_cast<OPJ_UINT64>(stream_size));
 
         // Setup stream callback
         opj_stream_set_read_function(keeper.m_stream, read_callback);
@@ -169,8 +169,8 @@ public:
                 {
                     const auto& comp = keeper.m_image->comps[i];
                     prec   = std::max(prec, comp.prec);
-                    width  = std::max(width, std::size_t(comp.w));
-                    height = std::max(height, std::size_t(comp.h));
+                    width  = std::max(width, static_cast<std::size_t>(comp.w));
+                    height = std::max(height, static_cast<std::size_t>(comp.h));
                 }
 
                 const bool sgnd = keeper.m_image->comps[0].sgnd != 0;
@@ -328,22 +328,22 @@ private:
     {
         if(_p_user_data == nullptr || _p_nb_bytes == 0)
         {
-            return OPJ_SIZE_T(-1);
+            return static_cast<OPJ_SIZE_T>(-1);
         }
 
         auto* istream = reinterpret_cast<std::istream*>(_p_user_data);
-        istream->read(reinterpret_cast<char*>(_p_buffer), std::streamsize(_p_nb_bytes));
+        istream->read(reinterpret_cast<char*>(_p_buffer), static_cast<std::streamsize>(_p_nb_bytes));
         const auto count = istream->gcount();
 
         if(count <= 0)
         {
-            return OPJ_SIZE_T(-1);
+            return static_cast<OPJ_SIZE_T>(-1);
         }
 
         // If we have read something, we must clear the failbit
         istream->clear();
 
-        return OPJ_SIZE_T(count);
+        return static_cast<OPJ_SIZE_T>(count);
     }
 
     //------------------------------------------------------------------------------
@@ -480,6 +480,7 @@ private:
         auto pixel_it        = _image.begin<P>();
         const auto pixel_end = _image.end<P>();
 
+        // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
         for(std::size_t i = 0, end = sizes[0] * sizes[1] ; i < end && pixel_it != pixel_end ; ++pixel_it)
         {
             std::size_t c = 0;

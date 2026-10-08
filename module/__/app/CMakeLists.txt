@@ -2,7 +2,7 @@ sight_add_target(module_app TYPE MODULE)
 
 add_dependencies(module_app module_service)
 
-target_link_libraries(module_app PUBLIC app)
+target_link_libraries(module_app PUBLIC app io)
 
 if(SIGHT_BUILD_TESTS)
     add_subdirectory(test/app)

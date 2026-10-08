@@ -22,19 +22,12 @@
 
 #include "open_cv_intrinsic.hpp"
 
-#include <core/com/slots.hxx>
-
 #include <io/opencv/matrix.hpp>
 
-#include <ui/__/preferences.hpp>
-
 #include <opencv2/calib3d.hpp>
-#include <opencv2/core.hpp>
 
 namespace sight::module::geometry::vision
 {
-
-static const core::com::slots::key_t UPDATE_CHESSBOARD_SIZE_SLOT = "update_chessboard_size";
 
 //------------------------------------------------------------------------------
 
@@ -117,13 +110,10 @@ void open_cv_intrinsic::updating()
             {
                 data::matrix4::sptr mat_3d = std::make_shared<data::matrix4>();
 
-                io::opencv::matrix::copy_from_cv(rvecs.at(index), tvecs.at(index), mat_3d);
+                io::opencv::matrix::copy_from_cv(rvecs.at(index), tvecs.at(index), *mat_3d);
 
                 pose_camera->push_back(mat_3d);
-                auto sig = pose_camera->signal<data::vector::added_signal_t>(
-                    data::vector::ADDED_OBJECTS_SIG
-                );
-                sig->async_emit(pose_camera->get_content());
+                pose_camera->async_emit(data::vector::signals::ADDED_OBJECTS, pose_camera->get_content());
             }
         }
 
@@ -144,8 +134,7 @@ void open_cv_intrinsic::updating()
 
         cam->set_is_calibrated(true);
 
-        auto sig = cam->signal<data::camera::intrinsic_calibrated_signal_t>(data::camera::INTRINSIC_CALIBRATED_SIG);
-        sig->async_emit();
+        cam->async_emit(data::camera::signals::INTRINSIC_CALIBRATED);
     }
 }
 

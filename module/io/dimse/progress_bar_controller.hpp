@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,6 +52,16 @@ class progress_bar_controller : public service::controller
 public:
 
     SIGHT_DECLARE_SERVICE(progress_bar_controller, service::controller);
+
+    struct slots
+    {
+        using void_t  = core::com::slot<void ()>;
+        using float_t = core::com::slot<void (float)>;
+
+        static inline const slot_key_t START_PROGRESS  = "start_progress";
+        static inline const slot_key_t UPDATE_PROGRESS = "update_progress";
+        static inline const slot_key_t STOP_PROGRESS   = "stop_progress";
+    };
 
     /// Initializes slots.
     progress_bar_controller() noexcept;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2025 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,6 @@
 
 #include "open_cv_reader.hpp"
 
-#include <core/com/signal.hxx>
 #include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
 
@@ -30,9 +29,8 @@
 
 #include <io/__/service/io_types.hpp>
 
+#include <opencv2/core/persistence.hpp>
 #include <ui/__/dialog/location.hpp>
-
-#include <opencv2/core.hpp>
 
 #include <cmath>
 #include <sstream>
@@ -144,10 +142,10 @@ void open_cv_reader::updating()
     {
         data::camera::csptr cam = camera_set->get_camera(0);
         camera_set->remove_camera(std::const_pointer_cast<data::camera>(cam));
-
-        auto sig = camera_set->signal<data::camera_set::removed_camera_signal_t>
-                       (data::camera_set::REMOVED_CAMERA_SIG);
-        sig->async_emit(std::const_pointer_cast<data::camera>(cam));
+        camera_set->async_emit(
+            data::camera_set::signals::REMOVED_CAMERA,
+            std::const_pointer_cast<data::camera>(cam)
+        );
     }
 
     int nb_cameras = 0;
@@ -206,9 +204,7 @@ void open_cv_reader::updating()
         cam->set_is_calibrated(true);
 
         camera_set->add_camera(cam);
-
-        auto sig = camera_set->signal<data::camera_set::added_camera_signal_t>(data::camera_set::ADDED_CAMERA_SIG);
-        sig->async_emit(cam);
+        camera_set->async_emit(data::camera_set::signals::ADDED_CAMERA, cam);
 
         cv::Mat extrinsic;
         n["extrinsic"] >> extrinsic;
@@ -226,16 +222,15 @@ void open_cv_reader::updating()
             }
 
             camera_set->set_extrinsic_matrix(static_cast<std::size_t>(c), ext_mat);
-            auto sig_extrinsic = camera_set->signal<data::camera_set::extrinsic_calibrated_signal_t>
-                                     (data::camera_set::EXTRINSIC_CALIBRATED_SIG);
+            auto sig_extrinsic = camera_set->signal<data::camera_set::signals::extrinsic_calibrated_t>
+                                     (data::camera_set::signals::EXTRINSIC_CALIBRATED);
             sig_extrinsic->async_emit();
         }
     }
 
     fs.release(); // close file
 
-    auto sig = camera_set->signal<data::camera_set::modified_signal_t>(data::camera_set::MODIFIED_SIG);
-    sig->async_emit();
+    camera_set->async_emit(data::signals::MODIFIED);
 
     //clear locations only if it was configured through GUI.
     if(use_dialog)

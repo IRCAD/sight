@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -79,8 +79,6 @@ protected:
     /// Stop the server
     void stopping() override;
 
-private:
-
     /**
      * @brief method to send data.
      *
@@ -88,6 +86,8 @@ private:
      * @param[in] _index index of the object in the group
      */
     void send_object(const data::object::csptr& _obj, std::size_t _index) override;
+
+private:
 
     /// Server instance
     sight::io::igtl::server::sptr m_server;

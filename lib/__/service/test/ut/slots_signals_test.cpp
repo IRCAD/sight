@@ -55,22 +55,22 @@ TEST_SUITE("sight::service::slots_signals")
 
         auto start_future = basic_test_srv->start();
         CHECK(basic_test_srv->status() != sight::service::base::global_status::started);
-        start_future.wait();
+        start_future.get();
         CHECK(basic_test_srv->status() == sight::service::base::global_status::started);
 
         auto update_future = basic_test_srv->update();
         CHECK_EQ(basic_test_srv->m_update_finished, false);
-        update_future.wait();
+        update_future.get();
         CHECK_EQ(basic_test_srv->m_update_finished, true);
 
         auto swap_future = basic_test_srv->swap_key(sight::service::ut::basic_test::BUFFER_INOUT, buffer2);
         CHECK_EQ(basic_test_srv->m_swap_finished, false);
-        swap_future.wait();
+        swap_future.get();
         CHECK_EQ(basic_test_srv->m_swap_finished, true);
 
         auto stop_future = basic_test_srv->stop();
         CHECK(basic_test_srv->status() != sight::service::base::global_status::stopped);
-        stop_future.wait();
+        stop_future.get();
         CHECK(basic_test_srv->status() == sight::service::base::global_status::stopped);
 
         sight::service::unregister_service(basic_test_srv);
@@ -98,7 +98,7 @@ TEST_SUITE("sight::service::slots_signals")
             show_test_srv->set_inout(buffer1, sight::service::ut::basic_srv::BUFFER_INOUT);
             show_test_srv->set_worker(worker1);
 
-            buffer1->signal(sight::data::object::MODIFIED_SIG)->connect(
+            buffer1->signal(sight::data::signals::MODIFIED)->connect(
                 show_test_srv->slot(
                     sight::service::slots::UPDATE
                 )
@@ -107,16 +107,16 @@ TEST_SUITE("sight::service::slots_signals")
             reader_test_srv->start();
             show_test_srv->start();
 
-            reader_test_srv->update().wait();
+            reader_test_srv->update().get();
 
             sight::service::base::shared_future_t stop_reader_future = reader_test_srv->stop();
             sight::service::base::shared_future_t stop_show_future   = show_test_srv->stop();
-            stop_reader_future.wait();
-            stop_show_future.wait();
+            stop_reader_future.get();
+            stop_show_future.get();
 
             CHECK_EQ(show_test_srv->m_receive_count, 1);
 
-            buffer1->signal(sight::data::object::MODIFIED_SIG)->disconnect(
+            buffer1->signal(sight::data::signals::MODIFIED)->disconnect(
                 show_test_srv->slot(
                     sight::service::slots::UPDATE
                 )
@@ -143,19 +143,19 @@ TEST_SUITE("sight::service::slots_signals")
 
             reader_test_srv->start();
             reader2_test_srv->start();
-            show_test_srv->start().wait();
+            show_test_srv->start().get();
 
             sight::service::base::shared_future_t update_reader_future  = reader_test_srv->update();
             sight::service::base::shared_future_t update_reader2_future = reader2_test_srv->update();
-            update_reader_future.wait();
-            update_reader2_future.wait();
+            update_reader_future.get();
+            update_reader2_future.get();
 
             sight::service::base::shared_future_t stop_reader_future  = reader_test_srv->stop();
             sight::service::base::shared_future_t stop_reader2_future = reader2_test_srv->stop();
             sight::service::base::shared_future_t stop_show_future    = show_test_srv->stop();
-            stop_reader_future.wait();
-            stop_reader2_future.wait();
-            stop_show_future.wait();
+            stop_reader_future.get();
+            stop_reader2_future.get();
+            stop_show_future.get();
 
             CHECK_EQ(show_test_srv->m_receive_count, 2);
 
@@ -186,25 +186,25 @@ TEST_SUITE("sight::service::slots_signals")
         show_test_srv->set_inout(buffer1, sight::service::ut::basic_srv::BUFFER_INOUT);
         show_test_srv->set_worker(worker1);
 
-        reader_test_srv->signal(sight::service::ut::reader2_test::CHANGED_SIG)->connect(
+        reader_test_srv->signal(sight::service::ut::reader2_test::signals::CHANGED)->connect(
             show_test_srv->slot(
-                sight::service::ut::show_test::CHANGE_SLOT
+                sight::service::ut::show_test::slots::CHANGE
             )
         );
 
         reader_test_srv->start();
         show_test_srv->start();
 
-        reader_test_srv->update().wait();
+        reader_test_srv->update().get();
 
         sight::service::base::shared_future_t stop_reader_future = reader_test_srv->stop();
         sight::service::base::shared_future_t stop_show_future   = show_test_srv->stop();
-        stop_reader_future.wait();
-        stop_show_future.wait();
+        stop_reader_future.get();
+        stop_show_future.get();
 
-        reader_test_srv->signal(sight::service::ut::reader2_test::CHANGED_SIG)->disconnect(
+        reader_test_srv->signal(sight::service::ut::reader2_test::signals::CHANGED)->disconnect(
             show_test_srv->slot(
-                sight::service::ut::show_test::CHANGE_SLOT
+                sight::service::ut::show_test::slots::CHANGE
             )
         );
 
@@ -235,8 +235,8 @@ TEST_SUITE("sight::service::slots_signals")
         show_test_srv->set_worker(worker1);
 
         sight::core::com::connection connection;
-        connection = buffer1->signal(sight::data::object::MODIFIED_SIG)->
-                     connect(show_test_srv->slot(sight::service::ut::show2_test::UPDATE_BUFFER_SLOT));
+        connection = buffer1->signal(sight::data::signals::MODIFIED)->
+                     connect(show_test_srv->slot(sight::service::ut::show2_test::slots::UPDATE_BUFFER));
 
         reader_test_srv->start();
         show_test_srv->start();
@@ -247,8 +247,8 @@ TEST_SUITE("sight::service::slots_signals")
 
         sight::service::base::shared_future_t stop_reader_future = reader_test_srv->stop();
         sight::service::base::shared_future_t stop_show_future   = show_test_srv->stop();
-        stop_reader_future.wait();
-        stop_show_future.wait();
+        stop_reader_future.get();
+        stop_show_future.get();
 
         connection.disconnect();
 

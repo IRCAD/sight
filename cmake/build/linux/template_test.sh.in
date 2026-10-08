@@ -29,9 +29,24 @@ fi
 
 export LD_LIBRARY_PATH
 
-require_x="@FWCPPUNITTEST_REQUIRE_X@"
+require_x="@SIGHT_GENERIC_TEST_ARG_REQUIRE_X@"
 
-if [ "$require_x" = "ON" ]; then
+# Test discovery only needs the list of test cases, never a display: skip the display detection
+# and xvfb entirely when doctest is only being asked to enumerate its tests. This keeps the build
+# itself independent from the presence of an X server or xvfb.
+listing=""
+for arg in "$@"; do
+    case "$arg" in
+        --list-test-cases|-ltc|--list-test-suites|-lts|--list-reporters|-lr)
+            listing="1"
+            ;;
+    esac
+done
+
+if [ -n "$listing" ]; then
+    xvfb_run=""
+    export QT_QPA_PLATFORM="offscreen"
+elif [ "$require_x" = "ON" ]; then
     if xprop -root &> /dev/null ; then
         xvfb_run=""
     elif xvfb-run --help &>/dev/null ; then

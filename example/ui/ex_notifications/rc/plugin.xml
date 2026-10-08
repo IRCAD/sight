@@ -1,11 +1,11 @@
 <!--
 This example shows how to display notifications popups.
 
-Mode 1: Using notifier service (recommanded) and 'notified' signal from base
-connected to notifier slots 'pop'.
+Mode 1: Using notifier service (recommanded) and 'notification_created' signal from
+sight::core::notification::has_notifications connected to notifier slot 'add_notification'.
 
 Mode 2: Standalone by calling directly the notification dialog inside your service (see display_test_notifications.cpp)
-this mode is not recommanded since each service can pop notification without any knowlegde of how many notifications
+this mode is not recommanded since each service can pop notification without any knowledge of how many notifications
 are already displayed and where they are displayed on screen.
 
 -->
@@ -108,7 +108,7 @@ are already displayed and where they are displayed on screen.
 
             <service uid="typeAct" type="sight::module::ui::qt::parameters">
                 <parameters>
-                    <param type="enum" name="Type" key="type" defaultValue="INFO" values="INFO,SUCCESS,FAILURE" />
+                    <param type="enum" name="Type" key="type" defaultValue="INSTRUCTION" values="INSTRUCTION,INFORMATION,WARNING,ERROR" />
                 </parameters>
             </service>
 
@@ -142,23 +142,18 @@ are already displayed and where they are displayed on screen.
             <!-- ******************************* Services ******************************* -->
 
             <!-- Dummy service only used to test notifications -->
-            <service uid="testNotifierSrv" type="ex_notifications::display_test_notifications">
-                <notification>
-                    <channel key="CHANNEL1" uid="CHANNEL1" />
-                    <channel key="CHANNEL2" uid="CHANNEL2" />
-                </notification>
-            </service>
+            <service uid="testNotifierSrv" type="ex_notifications::display_test_notifications" />
 
             <!-- notifier listen to all the connected service & display queued notification at the same place (here TOP_RIGHT)-->
             <service uid="notifierSrv" type="sight::module::ui::qt::notifier">
-                <!-- Parent container where notifications will be displayed, use the xmlattr uid hack to generate the generic_uid prefix of "maview" -->
+                <!-- Parent container where notifications will be displayed, use the xmlattr uid hack to generate the generic_uid prefix of "mainview" -->
                 <parent uid="mainview" />
                 <!-- Default message printed if empty string is emitted in notify* signals -->
                 <message>Default Message</message>
                 <channels>
                     <!-- Channel without uid configures default for all notification. It can be changed using enumParameters -->
                     <channel position="TOP_RIGHT" duration="3000" max="3" size="200x60" />
-                    <!-- CHANNEL2 configuration is fixd here. It cannot be changed -->
+                    <!-- CHANNEL2 configuration is fixed here. It cannot be changed -->
                     <channel uid="CHANNEL2" position="TOP_LEFT" duration="5000" max="3" size="800x120" closable="false" />
                 </channels>
             </service>
@@ -169,8 +164,8 @@ are already displayed and where they are displayed on screen.
 
             <!-- connection from base notify signals to the notifier,you can add as many service as you need -->
             <connect>
-                <signal>testNotifierSrv/notified</signal>
-                <slot>notifierSrv/pop</slot>
+                <signal>testNotifierSrv/notification_created</signal>
+                <slot>notifierSrv/add_notification</slot>
             </connect>
 
             <connect>

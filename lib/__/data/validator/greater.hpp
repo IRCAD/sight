@@ -54,7 +54,7 @@ public:
      * @note Given object should be a sight::data::real or sight::data::integer
      * @see data::validator::base::validate
      */
-    SIGHT_DATA_API sight::data::validator::return_t validate(const CSPTR(data::object)& _object) const final;
+    SIGHT_DATA_API sight::data::validator::return_t validate(const sight::csptr<data::object>& _object) const final;
 
     /** Connects with data::MODIFIED signal **/
     SIGHT_DATA_API auto_connect_signals_t auto_connect_signals() const final;

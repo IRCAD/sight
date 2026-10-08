@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <core/progress/observer.hpp>
+#include <core/notification/observer.hpp>
 
 #include <io/__/service/writer.hpp>
 
@@ -44,19 +44,21 @@ namespace sight::module::io::vtk
  * Service writing a VTK Image using the fwVtkIO lib.
  *
  * @section Signals Signals
- * - \b monitor_created(SPTR(core::progress::monitor)): emitted to display a progress bar while the image is written,
+ * - \b notification_created(core::notification::base::sptr): emitted to display a progress bar while the
+ * image is
+ * written,
  * it should be connected to a progress bar
  *
  * @section XML XML Configuration
  *
  * @code{.xml}
    <service type="sight::module::io::vtk::image_writer">
-       <in key="data" uid="..." />
-       <file>...</file>
+       <data write="..." />
+       <path file="..." />
    </service>
    @endcode
  * @subsection Input Input
- * - \b data [sight::data::image]: image to save.
+ * - \b data.write [sight::data::image]: image to save.
  * @subsection Configuration Configuration
  * - \b file (optional): path of the file to save, if it is not defined, 'open_location_dialog()' should be called to
  * define the path.
@@ -85,7 +87,7 @@ public:
      * @brief Save a VTK image.
      * @param[in] _img_file std::filesystem::path.
      * @param[in] _image std::shared_ptr< data::image >.
-     * @param[in] _sig_monitor_created signal emitted when the image is saved.
+     * @param[in] _sig_notification_created signal emitted when the image is saved.
      * @return bool.
      *
      * This method is used to save an image using the file path.
@@ -93,13 +95,14 @@ public:
      */
     static bool save_image(
         const std::filesystem::path& _img_file,
-        const CSPTR(data::image) & _image,
-        SPTR(core::progress::observer) _progress
+        const sight::csptr<data::image>& _image,
+        sight::sptr<core::notification::observer> _progress
     );
 
-protected:
-
     sight::io::service::path_type_t get_path_type() const override;
+    std::vector<std::pair<std::string, std::string> > get_supported_extensions() override;
+
+protected:
 
     /**
      * @brief Starting method.

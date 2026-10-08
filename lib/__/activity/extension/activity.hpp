@@ -27,7 +27,7 @@
 #include <core/base_object.hpp>
 #include <core/mt/types.hpp>
 
-#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/ptree.hpp> // NOLINT(misc-include-cleaner): for config_t
 
 #include <map>
 #include <string>
@@ -66,7 +66,7 @@ struct SIGHT_ACTIVITY_CLASS_API activity_config_param
 
     [[nodiscard]] bool is_object_path() const
     {
-        return (by.substr(0, 1) == "@") || (by.substr(0, 1) == "!");
+        return (by.starts_with("@")) || (by.starts_with("!"));
     }
 
     std::string replace;
@@ -220,7 +220,7 @@ struct SIGHT_ACTIVITY_CLASS_API activity_info
     using data_count_t               = std::map<std::string, unsigned int>;
 
     SIGHT_ACTIVITY_API activity_info() = default;
-    SIGHT_ACTIVITY_API activity_info(const SPTR(core::runtime::extension)& _ext);
+    SIGHT_ACTIVITY_API activity_info(const sight::sptr<core::runtime::extension>& _ext);
 
     [[nodiscard]] SIGHT_ACTIVITY_API bool usable_with(data_count_t _data_count) const;
 
@@ -238,9 +238,7 @@ struct SIGHT_ACTIVITY_CLASS_API activity_info
 
     activity_config app_config;
 
-    protected:
-
-        requirements_min_max_count m_requirement_count;
+    requirements_min_max_count m_requirement_count;
 };
 
 /**
@@ -287,7 +285,7 @@ public:
     /**
      * @brief Get the number of vector objects in the same type.
      */
-    static SIGHT_ACTIVITY_API activity_info::data_count_t get_data_count(const CSPTR(data::vector)& _data);
+    static SIGHT_ACTIVITY_API activity_info::data_count_t get_data_count(const sight::csptr<data::vector>& _data);
 
     /**
      * @brief Get all infos
@@ -299,7 +297,7 @@ public:
      * @brief Get available activities for given data.
      * @note This method is thread safe.
      */
-    SIGHT_ACTIVITY_API infos_t get_infos(const CSPTR(data::vector)& _data) const;
+    SIGHT_ACTIVITY_API infos_t get_infos(const sight::csptr<data::vector>& _data) const;
 
     /**
      * @brief Get all keys
@@ -324,7 +322,7 @@ public:
         const activity_config_params_type& _parameters = activity_config_params_type()
     );
 
-protected:
+private:
 
     using registry = std::map<std::string, activity_info>;
 

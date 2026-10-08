@@ -21,7 +21,6 @@
 
 #pragma once
 
-#include <service/macros.hpp>
 #include <service/registry.hpp>
 
 namespace sight::service
@@ -42,14 +41,14 @@ SIGHT_SERVICE_API service::base::sptr add(const std::string& _impl_type, const s
  * @return a pointer to the new service with the given template type
  */
 template<class SERVICE>
-SPTR(SERVICE) add(const std::string& _impl_type, const std::string& _uid = "");
+sight::sptr<SERVICE> add(const std::string& _impl_type, const std::string& _uid = "");
 
 //@}
 
 //------------------------------------------------------------------------------
 
 template<class SERVICE>
-SPTR(SERVICE) add(const std::string& _impl_type, const std::string& _uid)
+sight::sptr<SERVICE> add(const std::string& _impl_type, const std::string& _uid)
 {
     service::base::sptr generic_srv = service::add(_impl_type, _uid);
     auto srv                        = std::dynamic_pointer_cast<SERVICE>(generic_srv);
@@ -67,7 +66,7 @@ SPTR(SERVICE) add(const std::string& _impl_type, const std::string& _uid)
  * This provides a symmetric function to sight::service::add().
  * @return a pointer to the new service
  */
-inline void remove(const SPTR(service::base)& _srv)
+inline void remove(const sight::sptr<service::base>& _srv)
 {
     service::unregister_service(_srv);
 }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,6 +28,8 @@
 
 #include <service/base.hpp>
 
+#include <utility>
+
 namespace sight::ui
 {
 
@@ -36,7 +38,7 @@ namespace detail::registry
 
 class action;
 
-}
+} // namespace detail::registry
 
 /**
  * @brief   Defines the service interface managing menu or toolbar items. It can be used with properties or only with
@@ -65,15 +67,7 @@ class action;
  * - \b enable(): make the action interactive.
  * - \b disable(): make the action not interactive.
  *
- * Example of configuration using properties
- * @code{.xml}
-    <service uid="item" type="sight::module::ui::action" >
-        <properties checked="false" enabled="false" inverse="true" visible="true" />
-        <confirmation message="..." />
-    </service>
-   @endcode
- *
- * Example of configuration using signals
+ * Example of configuration:
  * @code{.xml}
     <service uid="item" type="sight::module::ui::action" >
         <state checked="false" enabled="false" inverse="true" visible="true" />
@@ -107,33 +101,35 @@ public:
         using bool_t = core::com::signal<void (bool)>;
         using void_t = core::com::signal<void ()>;
 
-        static inline const core::com::signals::key_t IS_ENABLED = "is_enabled";
-        static inline const core::com::signals::key_t ENABLED    = "enabled";
-        static inline const core::com::signals::key_t DISABLED   = "disabled";
-        static inline const core::com::signals::key_t IS_CHECKED = "is_checked";
-        static inline const core::com::signals::key_t CHECKED    = "checked";
-        static inline const core::com::signals::key_t UNCHECKED  = "unchecked";
-        static inline const core::com::signals::key_t IS_VISIBLE = "is_visible";
+        static inline const signal_key_t IS_ENABLED = "is_enabled";
+        static inline const signal_key_t ENABLED    = "enabled";
+        static inline const signal_key_t DISABLED   = "disabled";
+        static inline const signal_key_t IS_CHECKED = "is_checked";
+        static inline const signal_key_t CHECKED    = "checked";
+        static inline const signal_key_t UNCHECKED  = "unchecked";
+        static inline const signal_key_t IS_VISIBLE = "is_visible";
     };
 
     struct slots
     {
-        static inline const core::com::slots::key_t SET_CHECKED       = "set_checked";
-        static inline const core::com::slots::key_t CHECK             = "check";
-        static inline const core::com::slots::key_t UNCHECK           = "uncheck";
-        static inline const core::com::slots::key_t APPLY_CHECKED     = "apply_checked";
-        static inline const core::com::slots::key_t SET_VISIBLE       = "set_visible";
-        static inline const core::com::slots::key_t SET_HIDDEN        = "set_hidden";
-        static inline const core::com::slots::key_t SHOW              = "show";
-        static inline const core::com::slots::key_t HIDE              = "hide";
-        static inline const core::com::slots::key_t TOGGLE_VISIBILITY = "toggle_visibility";
-        static inline const core::com::slots::key_t APPLY_VISIBLE     = "apply_visible";
-        static inline const core::com::slots::key_t SET_ENABLED       = "set_enabled";
-        static inline const core::com::slots::key_t SET_DISABLED      = "set_disabled";
-        static inline const core::com::slots::key_t ENABLE            = "enable";
-        static inline const core::com::slots::key_t DISABLE           = "disable";
-        static inline const core::com::slots::key_t APPLY_ENABLED     = "apply_enabled";
+        static inline const slot_key_t SET_CHECKED       = "set_checked";
+        static inline const slot_key_t CHECK             = "check";
+        static inline const slot_key_t UNCHECK           = "uncheck";
+        static inline const slot_key_t APPLY_CHECKED     = "apply_checked";
+        static inline const slot_key_t SET_VISIBLE       = "set_visible";
+        static inline const slot_key_t SET_HIDDEN        = "set_hidden";
+        static inline const slot_key_t SHOW              = "show";
+        static inline const slot_key_t HIDE              = "hide";
+        static inline const slot_key_t TOGGLE_VISIBILITY = "toggle_visibility";
+        static inline const slot_key_t APPLY_VISIBLE     = "apply_visible";
+        static inline const slot_key_t SET_ENABLED       = "set_enabled";
+        static inline const slot_key_t SET_DISABLED      = "set_disabled";
+        static inline const slot_key_t ENABLE            = "enable";
+        static inline const slot_key_t DISABLE           = "disable";
+        static inline const slot_key_t APPLY_ENABLED     = "apply_enabled";
     };
+
+    SIGHT_UI_API ~action() override = default;
 
     /// Method called when the action service is stopping
     SIGHT_UI_API void action_service_stopping();
@@ -181,7 +177,6 @@ public:
 protected:
 
     SIGHT_UI_API action();
-    SIGHT_UI_API ~action() override = default;
 
     /// Initializes the action. This should be called in the configuring() method in derived classes.
     SIGHT_UI_API void initialize();
@@ -191,12 +186,12 @@ protected:
 
 private:
 
-    SPTR(ui::detail::registry::action) m_registry;
+    sight::sptr<ui::detail::registry::action> m_registry;
 
-    sight::data::property<sight::data::boolean> m_checked {this, "checked", false};
-    sight::data::property<sight::data::boolean> m_enabled {this, "enabled", true};
-    sight::data::property<sight::data::boolean> m_visible {this, "visible", true};
-    sight::data::property<sight::data::boolean> m_inverse {this, "inverse", false};
+    sight::data::ptr<sight::data::boolean> m_checked {this, "state.checked", false};
+    sight::data::ptr<sight::data::boolean> m_enabled {this, "state.enabled", true};
+    sight::data::ptr<sight::data::boolean> m_visible {this, "state.visible", true};
+    sight::data::ptr<sight::data::boolean> m_inverse {this, "state.inverse", false};
 
     std::optional<bool> m_prev_checked;
     std::optional<bool> m_prev_enabled;
@@ -213,8 +208,8 @@ class lock_action
 {
 public:
 
-    lock_action(action::wptr _action) :
-        m_action(_action)
+    explicit lock_action(action::wptr _action) :
+        m_action(std::move(_action))
     {
         m_action.lock()->set_enabled(false);
     }

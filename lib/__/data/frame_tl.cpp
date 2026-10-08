@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #include "data/frame_tl.hpp"
-
-#include <core/base.hpp>
 
 #include <data/exception.hpp>
 #include <data/registry/macros.hpp>
@@ -67,7 +65,7 @@ void frame_tl::deep_copy(const object::csptr& _source, const std::unique_ptr<dee
 
     for(const auto& elt : other->m_timeline)
     {
-        SPTR(data::timeline::buffer) tl_obj = this->create_buffer(elt.first);
+        sight::sptr<data::timeline::buffer> tl_obj = this->create_buffer(elt.first);
         tl_obj->deep_copy(*elt.second);
         m_timeline.insert(timeline_t::value_type(elt.first, tl_obj));
     }
@@ -113,8 +111,8 @@ void frame_tl::init_pool_size(
 
     SIGHT_ASSERT("width or height or numberOfComponents is null", size != 0);
 
-    m_max_element_num = _max_element_num;
-    this->alloc_pool_size(size * m_max_element_num);
+    set_max_element_num(_max_element_num);
+    this->alloc_pool_size(size * _max_element_num);
 }
 
 //------------------------------------------------------------------------------

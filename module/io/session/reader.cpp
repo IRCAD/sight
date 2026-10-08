@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2025 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,12 +23,10 @@
 
 #include "module/io/session/reader.hpp"
 
-#include <core/com/signal.hxx>
 #include <core/crypto/password_keeper.hpp>
 #include <core/crypto/secure_string.hpp>
 #include <core/location/single_folder.hpp>
-#include <core/progress/observer.hpp>
-#include <core/tools/system.hpp>
+#include <core/notification/observer.hpp>
 
 #include <io/session/session_reader.hpp>
 #include <io/zip/exception/read.hpp>
@@ -46,8 +44,7 @@ using core::crypto::secure_string;
 using sight::io::zip::archive;
 
 reader::reader() noexcept :
-    sight::io::service::reader("Choose a session file"),
-    notifier(m_signals)
+    sight::io::service::reader("Choose a session file")
 {
     new_signal<signals::session_path_t>(signals::SESSION_LOADED);
     new_signal<signals::session_path_t>(signals::SESSION_LOADING_FAILED);
@@ -130,7 +127,7 @@ void reader::configuring()
         }
         else if(format == "archive")
         {
-            m_archive_format = archive::archive_format::DEFAULT;
+            m_archive_format = archive::archive_format::standard;
         }
         else
         {
@@ -195,8 +192,8 @@ void reader::updating()
 
     try
     {
-        auto observer = std::make_shared<core::progress::observer>("Reading " + filepath.string() + " file");
-        this->async_emit(has_monitors::signals::MONITOR_CREATED, observer->get_sptr());
+        auto observer = this->make_notification<core::notification::observer>("Reading " + filepath.string() + " file");
+        this->emit_notification_created(observer);
 
         observer->done_work(10);
 
@@ -227,7 +224,7 @@ void reader::updating()
         m_password_retry = 0;
 
         // Signal that we successfully read this file
-        this->signal<signals::session_path_t>(signals::SESSION_LOADED)->async_emit(filepath);
+        this->async_emit(signals::SESSION_LOADED, filepath);
     }
     catch(sight::io::zip::exception::bad_password&)
     {
@@ -252,7 +249,7 @@ void reader::updating()
         }
 
         // Signal that we failed to read this file
-        this->signal<signals::session_path_t>(signals::SESSION_LOADING_FAILED)->async_emit(filepath);
+        this->async_emit(signals::SESSION_LOADING_FAILED, filepath);
     }
     catch(const std::exception& e)
     {
@@ -265,16 +262,16 @@ void reader::updating()
         //     sight::ui::dialog::message::critical
         // );
 
-        this->notifier::failure(e.what());
+        this->fail(e.what());
 
         // Signal that we failed to read this file
-        this->signal<signals::session_path_t>(signals::SESSION_LOADING_FAILED)->async_emit(filepath);
+        this->async_emit(signals::SESSION_LOADING_FAILED, filepath);
     }
     catch(...)
     {
         // Handle the error.
         SIGHT_ERROR("Reading process aborted");
-        this->notifier::failure("Reading process aborted");
+        this->fail("Reading process aborted");
         // FIXME: due to modal message popups, eventLoop may by flushed and introduced race-conditions.
         // sight::ui::dialog::message::show(
         //     "Session reader aborted",
@@ -283,7 +280,7 @@ void reader::updating()
         // );
 
         // Signal that we failed to read this file
-        this->signal<signals::session_path_t>(signals::SESSION_LOADING_FAILED)->async_emit(filepath);
+        this->async_emit(signals::SESSION_LOADING_FAILED, filepath);
     }
 }
 

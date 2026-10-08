@@ -21,11 +21,8 @@
 
 #include "helper.hpp"
 
-#include "data/fiducials_series.hpp"
-
-#include <core/memory/buffer_manager.hpp>
+#include <core/notification/observer.hpp>
 #include <core/os/temp_path.hpp>
-#include <core/progress/observer.hpp>
 #include <core/tools/uuid.hpp>
 
 #include <data/image_series.hpp>
@@ -39,8 +36,6 @@
 #include <utest_data/generator/image.hpp>
 
 #include <doctest/doctest.h>
-
-#include <glm/glm.hpp>
 
 namespace sight::io::dicom::ut
 {
@@ -57,7 +52,7 @@ sight::data::series_set::sptr read(const std::filesystem::path& _path, bool _pro
     reader->set_object(series_set);
     reader->set_folder(_path);
 
-    const auto observer = std::make_shared<core::progress::observer>("DICOM Reader Test");
+    const auto observer = std::make_shared<core::notification::observer>("DICOM Reader Test");
     CHECK_NOTHROW(reader->read(observer));
 
     if(_process_enhanced_us)
@@ -230,14 +225,14 @@ void test_image(const std::string& _name)
     auto writer = std::make_shared<io::dicom::writer::file>();
     writer->set_object(expected);
     writer->set_folder(folder);
-    auto write_observer = std::make_shared<core::progress::observer>("Test write");
+    auto write_observer = std::make_shared<core::notification::observer>("Test write");
     CHECK_NOTHROW(writer->write(write_observer));
 
     auto actual = std::make_shared<data::series_set>();
     auto reader = std::make_shared<io::dicom::reader::file>();
     reader->set_object(actual);
     reader->set_folder(folder);
-    auto read_observer = std::make_shared<core::progress::observer>("Test read");
+    auto read_observer = std::make_shared<core::notification::observer>("Test read");
     CHECK_NOTHROW(reader->read(read_observer));
 
     compare_enhanced_us_volume(expected, actual);
@@ -344,15 +339,19 @@ data::image_series::sptr get_us_volume_image(
             // ..Image Position / Orientation Patient is what we want
             image->set_image_position_patient(
                 {
-                    double(_seed + 1) * 0.1,
-                    double(_seed + 1) * 0.2,
-                    double(_seed + 1) * 0.3
+                    static_cast<double>(_seed + 1) * 0.1,
+                    static_cast<double>(_seed + 1) * 0.2,
+                    static_cast<double>(_seed + 1) * 0.3
                 },
                 frame_index
             );
 
-            glm::dvec3 u = {double(_seed + 1) * 0.4, double(_seed + 1) * 0.5, double(_seed + 1) * 0.6};
-            glm::dvec3 v = {double(_seed + 1) * 0.7, double(_seed + 1) * 0.8, double(_seed + 1) * 0.9};
+            glm::dvec3 u = {static_cast<double>(_seed + 1) * 0.4, static_cast<double>(_seed + 1) * 0.5,
+                            static_cast<double>(_seed + 1) * 0.6
+            };
+            glm::dvec3 v = {static_cast<double>(_seed + 1) * 0.7, static_cast<double>(_seed + 1) * 0.8,
+                            static_cast<double>(_seed + 1) * 0.9
+            };
 
             // We really want orthogonal directions
             geometry::orthogonalize(u, v);

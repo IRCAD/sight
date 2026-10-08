@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,6 +39,12 @@ public:
 
     SIGHT_DECLARE_SERVICE(cross_type_action, sight::ui::action);
 
+    struct signals
+    {
+        using cross_type_modified_t = core::com::signal<void (double)>;
+        static inline const signal_key_t CROSS_TYPE_MODIFIED = "crossTypeModified";
+    };
+
     /// Constructor. Do nothing.
     cross_type_action() noexcept;
 
@@ -71,11 +77,7 @@ protected:
 
 private:
 
-    static std::map<std::string, float> s_scale_conversion;
     std::string m_cross_type;
-
-    using cross_type_modified_signal_t = core::com::signal<void (double)>;
-    cross_type_modified_signal_t::sptr m_sig_cross_type_modified; ///< Signal emitted when cross type is modified
 };
 
 } // namespace sight::module::ui::viz

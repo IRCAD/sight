@@ -55,27 +55,27 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::adaptor::axis">
-        <in key="image" uid="..." />
+        <data image="${...}" />
         <config transform="transformUID" length="30" label="true" name="A1" />
     </service>
    @endcode
  *
  * @subsection Input Input:
- * - \b image [sight::data::image, optional]: if specified, the axis adaptor will use the origin and direction
+ * - \b data.image [sight::data::image, optional]: if specified, the axis adaptor will use the origin and direction
  * of the image.
+ *
+ * - \b config.visible [sight::data::boolean] (optional, default=true): the visibility of the axis.
  *
  * @subsection Configuration Configuration:
  * - \b transform (optional, string, default=""): the name of the Ogre transform node where to attach the mesh, as it
  *      was specified in the transform adaptor.
- * - \b visible (optional, bool, default=true): the visibility of the axis.
  * - \b origin (optional, bool, default=false): the origin visibility.
  * - \b length (optional, float, default=50.f): axis length in scene units.
  * - \b label (optional, bool, default=true): display axis names.
  * - \b fontSize (optional, unsigned int, default=16): label font size in points.
  * - \b name (optional, string): displayed name of the axis (default empty).
  *
- * @subsection Properties Properties:
- * - \b origin_color (optional, hexadecimal, default=#FFFFFF): the color of the axis origin.
+ * - \b config.origin_color [sight::data::color] (optional, default=#FFFFFF): the color of the axis origin.
  */
 class axis final :
     public sight::viz::scene3d::adaptor,
@@ -98,6 +98,12 @@ public:
     /// Destroys the adaptor.
     ~axis() noexcept final = default;
 
+    /**
+     * @brief Sets the axis visibility.
+     * @param _visible the visibility status of the axis.
+     */
+    void set_visible(bool _visible) final;
+
 protected:
 
     /// Configures the adaptor.
@@ -111,12 +117,6 @@ protected:
 
     /// Deletes ogre's resources.
     void stopping() final;
-
-    /**
-     * @brief Sets the axis visibility.
-     * @param _visible the visibility status of the axis.
-     */
-    void set_visible(bool _visible) final;
 
     sight::service::connections_t auto_connections() const final;
 
@@ -152,10 +152,10 @@ private:
     bool m_axis_visibility {true};
 
     /// Contains the lines along the x,y,z axis.
-    Ogre::ManualObject* m_line[3] {nullptr, nullptr, nullptr};
+    std::array<Ogre::ManualObject*, 3> m_line {nullptr, nullptr, nullptr};
 
     /// Contains the arrows along the x,y,z axis.
-    Ogre::ManualObject* m_cone[3] {nullptr, nullptr, nullptr};
+    std::array<Ogre::ManualObject*, 3> m_cone {nullptr, nullptr, nullptr};
 
     /// Contains the scene node where all of manual objects are attached.
     Ogre::SceneNode* m_scene_node {nullptr};
@@ -172,10 +172,13 @@ private:
     std::string m_axis_name;
 
     /// Optional input image
-    sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, "image", true};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, "data.image", true};
 
     /// Defines the origin color.
-    sight::data::property<sight::data::color> m_origin_color {this, "origin_color", {1., 1., 1., 1.}};
+    sight::data::ptr<sight::data::color, sight::data::access::in> m_origin_color {this, "config.origin_color",
+                                                                                  {1., 1., 1., 1.
+                                                                                  }
+    };
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

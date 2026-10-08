@@ -1,4 +1,4 @@
-sight_add_target(service_ut TYPE DOCTEST)
+sight_add_target(service_ut TYPE TEST)
 
 add_dependencies(service_ut module_service)
 

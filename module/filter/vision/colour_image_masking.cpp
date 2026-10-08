@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,6 @@
 
 #include "module/filter/vision/colour_image_masking.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-
 #include <io/opencv/frame_tl.hpp>
 #include <io/opencv/image.hpp>
 
@@ -34,29 +31,21 @@
 namespace sight::module::filter::vision
 {
 
-const core::com::slots::key_t SET_BACKGROUND_SLOT            = "set_background";
-const core::com::slots::key_t SET_FOREGROUND_SLOT            = "set_foreground";
-const core::com::slots::key_t SET_THRESHOLD_SLOT             = "set_threshold";
-const core::com::slots::key_t SET_NOISE_LEVEL_SLOT           = "set_noise_level";
-const core::com::slots::key_t SET_BACKGROUND_COMPONENTS_SLOT = "set_background_components";
-const core::com::slots::key_t SET_FOREGROUND_COMPONENTS_SLOT = "set_foreground_components";
-const core::com::slots::key_t CLEAR_MASKTL_SLOT              = "clearMaskTL";
-
 // ------------------------------------------------------------------------------
 
 colour_image_masking::colour_image_masking() noexcept :
-    filter(m_signals),
+    filter(has_signals::signals()),
     m_mask_downsize(cv::Size(0, 0)),
     m_lower_color(cv::Scalar(0, 0, 0)),
     m_upper_color(cv::Scalar(255, 255, 255))
 {
-    new_slot(SET_BACKGROUND_SLOT, &colour_image_masking::set_background, this);
-    new_slot(SET_FOREGROUND_SLOT, &colour_image_masking::set_foreground, this);
-    new_slot(SET_THRESHOLD_SLOT, &colour_image_masking::set_threshold, this);
-    new_slot(SET_NOISE_LEVEL_SLOT, &colour_image_masking::set_noise_level, this);
-    new_slot(SET_BACKGROUND_COMPONENTS_SLOT, &colour_image_masking::set_background_components, this);
-    new_slot(SET_FOREGROUND_COMPONENTS_SLOT, &colour_image_masking::set_foreground_components, this);
-    new_slot(CLEAR_MASKTL_SLOT, &colour_image_masking::clear_mask_tl, this);
+    new_slot(slots::SET_BACKGROUND, &colour_image_masking::set_background, this);
+    new_slot(slots::SET_FOREGROUND, &colour_image_masking::set_foreground, this);
+    new_slot(slots::SET_THRESHOLD, &colour_image_masking::set_threshold, this);
+    new_slot(slots::SET_NOISE_LEVEL, &colour_image_masking::set_noise_level, this);
+    new_slot(slots::SET_BACKGROUND_COMPONENTS, &colour_image_masking::set_background_components, this);
+    new_slot(slots::SET_FOREGROUND_COMPONENTS, &colour_image_masking::set_foreground_components, this);
+    new_slot(slots::CLEAR_MASKTL, &colour_image_masking::clear_mask_tl, this);
 }
 
 // ------------------------------------------------------------------------------
@@ -145,7 +134,7 @@ service::connections_t colour_image_masking::auto_connections() const
     connections_t connections;
 
     connections.push(VIDEO_TL_KEY, data::timeline::signals::PUSHED, service::slots::UPDATE);
-    connections.push(VIDEO_TL_KEY, data::timeline::signals::CLEARED, CLEAR_MASKTL_SLOT);
+    connections.push(VIDEO_TL_KEY, data::timeline::signals::CLEARED, slots::CLEAR_MASKTL);
 
     return connections;
 }
@@ -176,16 +165,14 @@ void colour_image_masking::updating()
 
         // This service can take a while to run, this blocker skips frames that arrive while we're already processing
         // one
-        auto sig = video_tl->signal<data::timeline::signals::pushed_t>(
-            data::timeline::signals::PUSHED
-        );
+        auto sig = video_tl->signal<data::timeline::signals::pushed_t>(data::timeline::signals::PUSHED);
         core::com::connection::blocker blocker(sig->get_connection(slot(service::slots::UPDATE)));
 
         // Get the timestamp from the latest video frame
         core::clock::type current_timestamp = video_tl->get_newer_timestamp();
 
         // Get image from the video timeline
-        CSPTR(data::frame_tl::buffer_t) video_buffer = video_tl->get_closest_buffer(current_timestamp);
+        sight::csptr<data::frame_tl::buffer_t> video_buffer = video_tl->get_closest_buffer(current_timestamp);
 
         if(!video_buffer)
         {
@@ -195,7 +182,7 @@ void colour_image_masking::updating()
 
         const std::uint8_t* frame_buff_out_video = &video_buffer->get_element(0);
 
-        core::clock::type video_timestamp = video_buffer->get_timestamp();
+        core::clock::type video_timestamp = video_buffer->timestamp();
         if(video_timestamp <= m_last_video_timestamp)
         {
             SIGHT_WARN(
@@ -218,8 +205,8 @@ void colour_image_masking::updating()
         const cv::Mat video_cv = io::opencv::frame_tl::move_to_cv(video_tl.get_shared(), frame_buff_out_video);
 
         // Create image mask to put inside the timeline
-        SPTR(data::frame_tl::buffer_t) mask_buffer = video_mask_tl->create_buffer(current_timestamp);
-        std::uint8_t* frame_buff_out_mask = mask_buffer->add_element(0);
+        sight::sptr<data::frame_tl::buffer_t> mask_buffer = video_mask_tl->create_buffer(current_timestamp);
+        std::uint8_t* frame_buff_out_mask                 = mask_buffer->add_element(0);
 
         cv::Mat video_mask_cv = io::opencv::frame_tl::move_to_cv(video_mask_tl.get_shared(), frame_buff_out_mask);
 
@@ -232,8 +219,7 @@ void colour_image_masking::updating()
         // Push the mask object in the timeline
         video_mask_tl->push_object(mask_buffer);
 
-        auto sig_mask = video_mask_tl->signal<data::timeline::signals::pushed_t>(data::timeline::signals::PUSHED);
-        sig_mask->async_emit(current_timestamp);
+        video_mask_tl->async_emit(data::timeline::signals::PUSHED, current_timestamp);
     }
 }
 
@@ -244,8 +230,8 @@ void colour_image_masking::set_background()
     const auto mask     = m_mask.lock();
     const auto video_tl = m_video_tl.lock();
 
-    core::clock::type current_timestamp = core::clock::get_time_in_milli_sec();
-    CSPTR(data::frame_tl::buffer_t) video_buffer = video_tl->get_closest_buffer(current_timestamp);
+    core::clock::type current_timestamp                 = core::clock::get_time_in_milli_sec();
+    sight::csptr<data::frame_tl::buffer_t> video_buffer = video_tl->get_closest_buffer(current_timestamp);
     if(!video_buffer)
     {
         SIGHT_ERROR("Buffer not found with timestamp " << current_timestamp);
@@ -286,7 +272,7 @@ void colour_image_masking::set_background()
     cv::erode(mask_cv, mask_cv, element_erode);
 
     // Learn background color model
-    m_masker->train_background_model(video_cv, mask_cv, unsigned(m_background_components));
+    m_masker->train_background_model(video_cv, mask_cv, static_cast<unsigned>(m_background_components));
 
     // Initialize the mask timeline
     const auto video_mask_tl = m_video_mask_tl.lock();
@@ -304,8 +290,8 @@ void colour_image_masking::set_foreground()
 {
     const auto video_tl = m_video_tl.lock();
 
-    core::clock::type current_timestamp = core::clock::get_time_in_milli_sec();
-    CSPTR(data::frame_tl::buffer_t) video_buffer = video_tl->get_closest_buffer(current_timestamp);
+    core::clock::type current_timestamp                 = core::clock::get_time_in_milli_sec();
+    sight::csptr<data::frame_tl::buffer_t> video_buffer = video_tl->get_closest_buffer(current_timestamp);
     if(!video_buffer)
     {
         SIGHT_ERROR("Buffer not found with timestamp " << current_timestamp);
@@ -343,7 +329,12 @@ void colour_image_masking::set_foreground()
     cv::erode(foreground_mask, open_foreground_mask, element_erode);
 
     // Learn foreground color model
-    m_masker->train_foreground_model(video_cv, open_foreground_mask, unsigned(m_foreground_components), m_noise);
+    m_masker->train_foreground_model(
+        video_cv,
+        open_foreground_mask,
+        static_cast<unsigned>(m_foreground_components),
+        m_noise
+    );
 }
 
 // ------------------------------------------------------------------------------
@@ -383,8 +374,7 @@ void colour_image_masking::clear_mask_tl()
 {
     auto video_mask_tl = m_video_mask_tl.lock();
     video_mask_tl->clear_timeline();
-    auto sig_tl_cleared = video_mask_tl->signal<data::timeline::signals::cleared_t>(data::timeline::signals::CLEARED);
-    sig_tl_cleared->async_emit();
+    video_mask_tl->async_emit(data::timeline::signals::CLEARED);
     m_last_video_timestamp = 0.;
 }
 

@@ -21,8 +21,6 @@
 
 #include "helper.hpp"
 
-#include <io/dicom/reader/file.hpp>
-
 #include <utest/filter.hpp>
 
 #include <utest_data/data.hpp>
@@ -152,7 +150,7 @@ TEST_SUITE("sight::io::dicom::reader")
         CHECK_LT(std::abs(image_series->window_width().front() - 2000), delta);
 
         // Check image type
-        CHECK_EQ(core::type::DOUBLE, image_series->type());
+        CHECK_EQ(core::type::FLOAT64, image_series->type());
     }
 
     //------------------------------------------------------------------------------

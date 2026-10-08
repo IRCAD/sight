@@ -24,10 +24,8 @@
 
 #include <sight/core/config.hpp>
 
-#include "base.hpp"
-
+#include "macros.hpp"
 #include "mt/types.hpp"
-
 #include "string.hpp"
 
 #include <cstdint>
@@ -50,7 +48,7 @@ public:
 
     using type = std::string;
 
-    enum class policy
+    enum class policy : std::uint8_t
     {
         empty = 1, ///< return an empty id if no one set
         generate,  ///< generate a new id if necessary
@@ -71,10 +69,10 @@ public:
      * @brief Retrieve the object attached to the given id. Return a null sptr if no correspondence exists.
      * @note This method is thread-safe.
      */
-    SIGHT_CORE_API static SPTR(object) get_object(type _request_id);
+    SIGHT_CORE_API static sight::sptr<object> get_object(type _request_id);
 
     template<typename T, typename ... Args>
-    static SPTR(object) get_object(const T& _first, const Args & ... _args);
+    static sight::sptr<object> get_object(const T& _first, const Args& ... _args);
 
     /**
      * @brief Concatenate things with the separator `s_separator`.
@@ -86,7 +84,7 @@ public:
 
 protected:
 
-    inline static constexpr auto s_separator = '-';
+    static constexpr auto S_SEPARATOR = '-';
 
     /**
      * @brief   Constructor : does nothing.
@@ -186,7 +184,7 @@ private:
 //------------------------------------------------------------------------------
 
 template<typename T, typename ... Args>
-SPTR(object) id::get_object(const T& _first, const Args & ... _args)
+sight::sptr<object> id::get_object(const T& _first, const Args& ... _args)
 {
     return get_object(join(_first, _args ...));
 }
@@ -196,7 +194,7 @@ SPTR(object) id::get_object(const T& _first, const Args & ... _args)
 template<typename T, typename ... Args>
 std::string id::join(const T& _first, const Args& ... _args)
 {
-    return string::join(s_separator, _first, _args ...);
+    return string::join(S_SEPARATOR, _first, _args ...);
 }
 
 //------------------------------------------------------------------------------

@@ -147,15 +147,17 @@ class reader2_test : public basic_srv
 {
 public:
 
-    using changed_signal_t = core::com::signal<void ()>;
-
     SIGHT_DECLARE_SERVICE(reader2_test, basic_srv);
+
+    struct signals
+    {
+        static inline const signal_key_t CHANGED = "changed";
+        using changed_t = core::com::signal<void ()>;
+    };
 
     reader2_test();
 
-    static const core::com::signals::key_t CHANGED_SIG;
-
-    changed_signal_t::sptr m_sig_changed;
+    signals::changed_t::sptr m_sig_changed;
 
 protected:
 
@@ -191,6 +193,11 @@ public:
 
     SIGHT_DECLARE_SERVICE(show_test, basic_srv);
 
+    struct slots
+    {
+        static inline const slot_key_t CHANGE = "change";
+    };
+
     show_test();
 
     int m_receive_count {0};
@@ -198,10 +205,6 @@ public:
 
     void change();
 
-    static const core::com::slots::key_t CHANGE_SLOT;
-    using change_slot_t = core::com::slot<void ()>;
-
-    change_slot_t::sptr m_slot_change;
     core::mt::mutex m_mutex;
 
 protected:
@@ -240,7 +243,10 @@ public:
 
     SIGHT_DECLARE_SERVICE(show2_test, basic_srv);
 
-    static const core::com::slots::key_t UPDATE_BUFFER_SLOT;
+    struct slots
+    {
+        static inline const slot_key_t UPDATE_BUFFER = "updateBuffer";
+    };
 
     show2_test();
 

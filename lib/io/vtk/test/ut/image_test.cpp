@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,7 +29,9 @@
 #include <io/vtk/meta_image_reader.hpp>
 #include <io/vtk/meta_image_writer.hpp>
 #include <io/vtk/vti_image_reader.hpp>
+#ifdef WIN32
 #include <io/vtk/vti_image_writer.hpp>
+#endif
 #include <io/vtk/vtk.hpp>
 
 #include <utest_data/data.hpp>
@@ -38,12 +40,11 @@
 
 #include <doctest/doctest.h>
 
+#include <vtkDataArray.h>
 #include <vtkGenericDataObjectReader.h>
 #include <vtkImageData.h>
 #include <vtkPointData.h>
-#include <vtkPolyData.h>
 #include <vtkSmartPointer.h>
-#include <vtkSphereSource.h>
 
 static const double EPSILON = 0.00001;
 
@@ -156,7 +157,7 @@ static void writer(const sight::core::type _imagetype, const std::string& _filen
     typename W::sptr writer = std::make_shared<W>();
     writer->set_object(image);
     writer->set_file(test_file);
-    auto write_observer = std::make_shared<sight::core::progress::observer>("Test write");
+    auto write_observer = std::make_shared<sight::core::notification::observer>("Test write");
     writer->write(write_observer);
 
     CHECK_MESSAGE(
@@ -172,7 +173,7 @@ static void writer(const sight::core::type _imagetype, const std::string& _filen
     typename R::sptr reader         = std::make_shared<R>();
     reader->set_object(image2);
     reader->set_file(test_file);
-    auto read_observer = std::make_shared<sight::core::progress::observer>("Test read");
+    auto read_observer = std::make_shared<sight::core::notification::observer>("Test read");
     reader->read(read_observer);
 
     CHECK_MESSAGE(
@@ -257,7 +258,7 @@ static void test_vtk_reader(sight::core::type _imagetype)
 
     sight::data::image::sptr image = std::make_shared<sight::data::image>();
 
-    auto observer                             = std::make_shared<sight::core::progress::observer>("Test read");
+    auto observer                             = std::make_shared<sight::core::notification::observer>("Test read");
     sight::io::vtk::image_reader::sptr reader = std::make_shared<sight::io::vtk::image_reader>();
     reader->set_object(image);
     reader->set_file(test_file);
@@ -305,8 +306,8 @@ TEST_SUITE("sight::io::vtk::image")
         // image_to_vtk("int64" , { VTK_LONG));
         // image_to_vtk("uint64", { VTK_UNSIGNED_LONG));
 
-        image_to_vtk(sight::core::type::FLOAT, {VTK_FLOAT});
-        image_to_vtk(sight::core::type::DOUBLE, {VTK_DOUBLE});
+        image_to_vtk(sight::core::type::FLOAT32, {VTK_FLOAT});
+        image_to_vtk(sight::core::type::FLOAT64, {VTK_DOUBLE});
     }
 
 // ------------------------------------------------------------------------------
@@ -327,8 +328,8 @@ TEST_SUITE("sight::io::vtk::image")
         //image_from_vtk("sight/image/vtk/img-int64.vtk", "int64"  );
         //image_from_vtk("sight/image/vtk/img-uint64.vtk", "uint64"  );
 
-        image_from_vtk("sight/image/vtk/img-float.vtk", sight::core::type::FLOAT);
-        image_from_vtk("sight/image/vtk/img-double.vtk", sight::core::type::DOUBLE);
+        image_from_vtk("sight/image/vtk/img-float.vtk", sight::core::type::FLOAT32);
+        image_from_vtk("sight/image/vtk/img-double.vtk", sight::core::type::FLOAT64);
 
         int nb_components      = 4;
         sight::core::type type = sight::core::type::UINT8;
@@ -473,7 +474,7 @@ TEST_SUITE("sight::io::vtk::image")
         sight::io::vtk::meta_image_reader::sptr reader = std::make_shared<sight::io::vtk::meta_image_reader>();
         reader->set_object(image);
         reader->set_file(image_path);
-        auto observer = std::make_shared<sight::core::progress::observer>("Test read");
+        auto observer = std::make_shared<sight::core::notification::observer>("Test read");
         reader->read(observer);
 
         compare_image_attributes(
@@ -523,13 +524,13 @@ TEST_SUITE("sight::io::vtk::image")
         auto reader = std::make_shared<sight::io::vtk::meta_image_reader>();
         reader->set_object(image);
         reader->set_file(image_path);
-        auto read_observer = std::make_shared<sight::core::progress::observer>("Test read");
+        auto read_observer = std::make_shared<sight::core::notification::observer>("Test read");
         reader->read(read_observer);
 
         auto writer = std::make_shared<sight::io::vtk::meta_image_writer>();
         writer->set_object(image);
         writer->set_file(test_file);
-        auto write_observer = std::make_shared<sight::core::progress::observer>("Test read");
+        auto write_observer = std::make_shared<sight::core::notification::observer>("Test read");
         writer->write(write_observer);
 
         CHECK(std::filesystem::exists(test_file));
@@ -584,7 +585,7 @@ TEST_SUITE("sight::io::vtk::image")
 
         reader->set_object(image);
         reader->set_file(image_path);
-        auto read_observer = std::make_shared<sight::core::progress::observer>("Test read");
+        auto read_observer = std::make_shared<sight::core::notification::observer>("Test read");
         reader->read(read_observer);
 
         compare_image_attributes(
@@ -652,7 +653,7 @@ TEST_SUITE("sight::io::vtk::image")
 
         reader->set_object(image);
         reader->set_file(image_path);
-        auto read_observer = std::make_shared<sight::core::progress::observer>("Test read");
+        auto read_observer = std::make_shared<sight::core::notification::observer>("Test read");
         reader->read(read_observer);
 
         sight::data::image::size_t vtk_size {{230, 170, 58}};
@@ -678,8 +679,8 @@ TEST_SUITE("sight::io::vtk::image")
         test_vtk_reader(sight::core::type::UINT16);
         test_vtk_reader(sight::core::type::INT32);
         test_vtk_reader(sight::core::type::UINT32);
-        test_vtk_reader(sight::core::type::FLOAT);
-        test_vtk_reader(sight::core::type::DOUBLE);
+        test_vtk_reader(sight::core::type::FLOAT32);
+        test_vtk_reader(sight::core::type::FLOAT64);
     }
 
 // ------------------------------------------------------------------------------

@@ -24,9 +24,6 @@
 
 #include "core/spy_log.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-
 #include <data/helper/medical_image.hpp>
 
 #include <geometry/vision/helper.hpp>
@@ -36,32 +33,23 @@
 #include <io/opencv/matrix.hpp>
 #include <io/opencv/point_list.hpp>
 
-#include <service/macros.hpp>
-
-#include <ui/__/preferences.hpp>
-
 #include <opencv2/calib3d.hpp>
 #include <opencv2/core/types.hpp>
-#include <opencv2/opencv.hpp>
 
 #include <cstddef>
+#include <opencv2/imgproc.hpp>
 
 namespace sight::module::geometry::vision
 {
-
-static const core::com::signals::key_t ERROR_COMPUTED_SIG = "error_computed";
-
-static const core::com::slots::key_t TOGGLE_DISTORTION_SLOT       = "toggle_distortion";
-static const core::com::slots::key_t UPDATE_CHESSBOARD_MODEL_SLOT = "update_chessboard_model";
 
 //-----------------------------------------------------------------------------
 
 chessboard_reprojection::chessboard_reprojection()
 {
-    new_slot(TOGGLE_DISTORTION_SLOT, &chessboard_reprojection::toggle_distortion, this);
-    new_slot(UPDATE_CHESSBOARD_MODEL_SLOT, &chessboard_reprojection::update_chessboard_model, this);
+    new_slot(slots::TOGGLE_DISTORTION, &chessboard_reprojection::toggle_distortion, this);
+    new_slot(slots::UPDATE_CHESSBOARD_MODEL, &chessboard_reprojection::update_chessboard_model, this);
 
-    m_error_computed_sig = new_signal<error_computed_t>(ERROR_COMPUTED_SIG);
+    new_signal<signals::error_computed_t>(signals::ERROR_COMPUTED);
 }
 
 //-----------------------------------------------------------------------------
@@ -125,7 +113,7 @@ void chessboard_reprojection::updating()
         const auto transform = m_transform.lock();
         SIGHT_ASSERT("Missing 'transform'.", transform);
 
-        io::opencv::matrix::copy_to_cv(transform.get_shared(), rvec, tvec);
+        io::opencv::matrix::copy_to_cv(*transform, rvec, tvec);
 
         std::tie(rmse, reprojected_pts) = sight::geometry::vision::helper::compute_reprojection_error(
             m_chessboard_model_3d,
@@ -136,7 +124,7 @@ void chessboard_reprojection::updating()
             distortion_coefficients
         );
 
-        m_error_computed_sig->async_emit(rmse);
+        async_emit(signals::ERROR_COMPUTED, rmse);
     }
 
     const auto video_image = m_video_image.lock();
@@ -242,10 +230,7 @@ void chessboard_reprojection::updating()
 
         if(drawing_enabled)
         {
-            auto sig =
-                video_image->signal<data::image::buffer_modified_signal_t>(data::image::BUFFER_MODIFIED_SIG);
-
-            sig->async_emit();
+            video_image->async_emit(data::image::signals::BUFFER_MODIFIED);
         }
     }
 }
@@ -289,11 +274,11 @@ void chessboard_reprojection::update_chessboard_model()
 service::connections_t chessboard_reprojection::auto_connections() const
 {
     return {
-        {TRANSFORM_INPUT, data::matrix4::MODIFIED_SIG, service::slots::UPDATE},
-        {DETECTED_CHESSBOARD_INPUT, data::point_list::MODIFIED_SIG, service::slots::UPDATE},
-        {CAMERA_INPUT, data::camera::INTRINSIC_CALIBRATED_SIG, service::slots::UPDATE},
-        {CAMERA_INPUT, data::camera::MODIFIED_SIG, service::slots::UPDATE},
-        {CHESSBOARD_MODEL, data::point_list::MODIFIED_SIG, UPDATE_CHESSBOARD_MODEL_SLOT}
+        {TRANSFORM_INPUT, data::signals::MODIFIED, service::slots::UPDATE},
+        {DETECTED_CHESSBOARD_INPUT, data::signals::MODIFIED, service::slots::UPDATE},
+        {CAMERA_INPUT, data::camera::signals::INTRINSIC_CALIBRATED, service::slots::UPDATE},
+        {CAMERA_INPUT, data::signals::MODIFIED, service::slots::UPDATE},
+        {CHESSBOARD_MODEL, data::signals::MODIFIED, slots::UPDATE_CHESSBOARD_MODEL}
     };
 }
 

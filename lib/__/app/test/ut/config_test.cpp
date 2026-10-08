@@ -23,14 +23,9 @@
 #include "helper.hpp"
 
 #include "service/extension/config.hpp"
-#include "service/registry.hpp"
 
 #include "test_service.hpp"
 
-#include <core/com/signal.hpp>
-#include <core/com/signal.hxx>
-#include <core/com/slot.hxx>
-#include <core/runtime/helper.hpp>
 #include <core/runtime/path.hpp>
 #include <core/runtime/runtime.hpp>
 #include <core/time_stamp.hpp>
@@ -45,8 +40,6 @@
 #include <data/string.hpp>
 #include <data/transfer_function.hpp>
 
-#include <service/op.hpp>
-
 #include <utest/wait.hpp>
 
 #include <app/config_manager.hpp>
@@ -57,12 +50,7 @@
 
 //------------------------------------------------------------------------------
 
-namespace
-{
-
-//------------------------------------------------------------------------------
-
-sight::service::config_t build_config()
+static sight::service::config_t build_config()
 {
     sight::service::config_t cfg;
 
@@ -95,6 +83,8 @@ sight::service::config_t build_config()
 }
 
 //------------------------------------------------------------------------------
+namespace
+{
 
 struct fixture
 {
@@ -131,7 +121,7 @@ struct fixture
         {
             // If everything went well, the manager should have been destroyed
             // This means a test failed, thus we need to clean everything properly, otherwise
-            // We will get an assert from the destructor and we will not get the cppunit report in the console
+            // we will get an assert from the destructor and we will not get the doctest report in the console
             m_app_config_mgr->stop_and_destroy();
             m_app_config_mgr = nullptr;
         }
@@ -267,9 +257,9 @@ TEST_SUITE("sight::app::config")
             auto srv2                         = std::dynamic_pointer_cast<sight::service::base>(gn_srv2);
             CHECK(srv2 != nullptr);
             CHECK_EQ(sight::service::base::global_status::started, srv2->status());
-            srv2->stop().wait();
+            srv2->stop().get();
             CHECK_EQ(sight::service::base::global_status::stopped, srv2->status());
-            srv2->start().wait();
+            srv2->start().get();
             CHECK_EQ(sight::service::base::global_status::started, srv2->status());
         }
 
@@ -838,15 +828,11 @@ TEST_SUITE("sight::app::config")
                     CHECK(srv6 != nullptr);
                     CHECK_EQ(sight::service::base::global_status::stopped, srv6->status());
 
-                    srv5->update().wait();
+                    srv5->update().get();
                     SIGHT_TEST_WAIT(srv6->started());
                     CHECK_EQ(true, srv6->started());
 
-                    auto sig =
-                        srv5->signal<sight::app::ut::test_srv::signals::int_sent_t>(
-                            sight::app::ut::test_srv::signals::SIG_1
-                        );
-                    sig->async_emit(0);
+                    srv5->async_emit(sight::app::ut::test_srv::signals::SIG_1, 0);
 
                     SIGHT_TEST_WAIT(srv6->stopped());
                     CHECK_EQ(true, srv6->stopped());
@@ -876,27 +862,23 @@ TEST_SUITE("sight::app::config")
                     CHECK(srv6 != nullptr);
                     CHECK_EQ(sight::service::base::global_status::stopped, srv6->status());
 
-                    srv5->update().wait();
+                    srv5->update().get();
                     SIGHT_TEST_WAIT(srv6->started());
                     CHECK_EQ(true, srv6->started());
 
-                    auto sig =
-                        srv5->signal<sight::app::ut::test_srv::signals::int_sent_t>(
-                            sight::app::ut::test_srv::signals::SIG_1
-                        );
-                    sig->async_emit(0);
+                    srv5->async_emit(sight::app::ut::test_srv::signals::SIG_1, 0);
 
                     SIGHT_TEST_WAIT(srv6->stopped());
                     CHECK_EQ(true, srv6->stopped());
 
-                    srv5->update().wait();
+                    srv5->update().get();
                     SIGHT_TEST_WAIT(srv6->started());
                     CHECK_EQ(true, srv6->started());
 
                     sight::core::object::sptr gn_srv7 = sight::core::id::get_object("TestService7Uid");
                     auto srv7                         =
                         std::dynamic_pointer_cast<sight::app::ut::test_service>(gn_srv7);
-                    srv6->update().wait();
+                    srv6->update().get();
                     SIGHT_TEST_WAIT(srv7->stopped());
                     CHECK_EQ(true, srv7->stopped());
                 }
@@ -1326,7 +1308,7 @@ TEST_SUITE("sight::app::config")
             data4->async_emit(sight::data::signals::MODIFIED);
             SIGHT_TEST_WAIT(srv2->is_updated(), 2500);
             CHECK(!srv2->is_updated());
-            data4->async_emit(sight::data::image::BUFFER_MODIFIED_SIG);
+            data4->async_emit(sight::data::image::signals::BUFFER_MODIFIED);
             SIGHT_TEST_WAIT(srv2->is_updated());
             CHECK(srv2->is_updated());
 
@@ -1336,7 +1318,7 @@ TEST_SUITE("sight::app::config")
             SIGHT_TEST_WAIT(!srv2->is_updated());
             CHECK(!srv2->is_updated());
 
-            data5->async_emit(sight::data::image::BUFFER_MODIFIED_SIG);
+            data5->async_emit(sight::data::image::signals::BUFFER_MODIFIED);
             SIGHT_TEST_WAIT(srv2->is_updated(), 2500);
             CHECK(!srv2->is_updated());
         }
@@ -1421,7 +1403,7 @@ TEST_SUITE("sight::app::config")
         auto srv2           = std::dynamic_pointer_cast<sight::service::base>(gn_srv2);
         auto adapted_config = srv2->get_config();
 
-        const auto params = adapted_config.equal_range("parameter");
+        const auto params = adapted_config.equal_range("param");
 
         std::vector<sight::service::config_t> params_cfg;
         std::for_each(params.first, params.second, [&params_cfg](const auto& _p){params_cfg.push_back(_p.second);});
@@ -1429,16 +1411,16 @@ TEST_SUITE("sight::app::config")
         CHECK_EQ(static_cast<std::size_t>(4), params_cfg.size());
 
         std::string replace_by;
-        CHECK_EQ(std::string("patient"), params_cfg[0].get<std::string>("<xmlattr>.replace"));
-        CHECK_EQ(std::string("name"), params_cfg[0].get<std::string>("<xmlattr>.by"));
+        CHECK_EQ(std::string("patient"), params_cfg[0].get<std::string>("<xmlattr>.name"));
+        CHECK_EQ(std::string("name"), params_cfg[0].get<std::string>("<xmlattr>.value"));
 
-        replace_by = params_cfg[1].get<std::string>("<xmlattr>.by");
+        replace_by = params_cfg[1].get<std::string>("<xmlattr>.value");
         CHECK_EQ(sight::core::id::join("parameterReplaceTest", i, "Channel No5"), replace_by);
 
-        replace_by = params_cfg[2].get<std::string>("<xmlattr>.by");
+        replace_by = params_cfg[2].get<std::string>("<xmlattr>.value");
         CHECK_EQ(sight::core::id::join("parameterReplaceTest", i, "disneyChannel"), replace_by);
 
-        replace_by = params_cfg[3].get<std::string>("<xmlattr>.by");
+        replace_by = params_cfg[3].get<std::string>("<xmlattr>.value");
         CHECK_EQ(sight::core::id::join("parameterReplaceTest", i, "view1"), replace_by);
 
         // Not really elegant, but we have to "guess" how it is replaced
@@ -1541,6 +1523,300 @@ TEST_SUITE("sight::app::config")
 
 //------------------------------------------------------------------------------
 
+    TEST_CASE_FIXTURE(fixture, "value_inout_parameter_test")
+    {
+        m_app_config_mgr = sight::app::ut::launch_app_config_mgr("value_inout_parameter_test", true);
+
+        sight::core::object::sptr receiver_obj;
+        int j = 0;
+        while(receiver_obj == nullptr && j++ < 200)
+        {
+            receiver_obj = sight::core::id::get_object("value_inout_parameter_sub_config", j, "receiver");
+        }
+
+        CHECK(receiver_obj != nullptr);
+
+        auto receiver = std::dynamic_pointer_cast<sight::app::ut::test_service>(receiver_obj);
+        CHECK(receiver != nullptr);
+        CHECK(receiver->started());
+
+        auto show_image =
+            std::dynamic_pointer_cast<const sight::data::boolean>(receiver->input("data1").lock().get_shared());
+        CHECK(show_image != nullptr);
+        CHECK_EQ(true, show_image->value());
+
+        auto position =
+            std::dynamic_pointer_cast<const sight::data::dvec3>(receiver->input("data2").lock().get_shared());
+        CHECK(position != nullptr);
+        CHECK_EQ(sight::vec3d_t({100., 20., 12.}), position->value());
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE_FIXTURE(fixture, "value_inout_dvec3_test")
+    {
+        m_app_config_mgr = sight::app::ut::launch_app_config_mgr("value_inout_dvec3_test", true);
+
+        sight::core::object::sptr receiver_obj;
+        int j = 0;
+        while(receiver_obj == nullptr && j++ < 200)
+        {
+            receiver_obj = sight::core::id::get_object("value_inout_dvec3_sub_config", j, "receiver");
+        }
+
+        CHECK(receiver_obj != nullptr);
+
+        auto receiver = std::dynamic_pointer_cast<sight::app::ut::test_service>(receiver_obj);
+        CHECK(receiver != nullptr);
+        CHECK(receiver->started());
+
+        auto position =
+            std::dynamic_pointer_cast<const sight::data::dvec3>(receiver->input("data1").lock().get_shared());
+        CHECK(position != nullptr);
+        CHECK_EQ(sight::vec3d_t({11.5, -42.0, 7.25}), position->value());
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE_FIXTURE(fixture, "value_inout_optional_override_test")
+    {
+        m_app_config_mgr = sight::app::ut::launch_app_config_mgr("value_inout_optional_override_test", true);
+
+        sight::core::object::sptr receiver_obj;
+        int j = 0;
+        while(receiver_obj == nullptr && j++ < 200)
+        {
+            receiver_obj = sight::core::id::get_object("value_inout_optional_override_sub_config", j, "receiver");
+        }
+
+        CHECK(receiver_obj != nullptr);
+
+        auto receiver = std::dynamic_pointer_cast<sight::app::ut::test_service>(receiver_obj);
+        CHECK(receiver != nullptr);
+        CHECK(receiver->started());
+
+        auto position =
+            std::dynamic_pointer_cast<const sight::data::dvec3>(receiver->input("data1").lock().get_shared());
+        CHECK(position != nullptr);
+
+        // Optional object has default "1;2;3" in target config, but launcher-provided value must take precedence.
+        CHECK_EQ(sight::vec3d_t({9., 8., 7.}), position->value());
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE_FIXTURE(fixture, "value_inout_optional_mixed_test")
+    {
+        m_app_config_mgr = sight::app::ut::launch_app_config_mgr("value_inout_optional_mixed_test", true);
+
+        sight::core::object::sptr receiver_obj;
+        int j = 0;
+        while(receiver_obj == nullptr && j++ < 200)
+        {
+            receiver_obj = sight::core::id::get_object("value_inout_optional_mixed_sub_config", j, "receiver");
+        }
+
+        CHECK(receiver_obj != nullptr);
+
+        auto receiver = std::dynamic_pointer_cast<sight::app::ut::test_service>(receiver_obj);
+        CHECK(receiver != nullptr);
+        CHECK(receiver->started());
+
+        auto position_opt =
+            std::dynamic_pointer_cast<const sight::data::dvec3>(receiver->input("data1").lock().get_shared());
+        CHECK(position_opt != nullptr);
+        CHECK_EQ(sight::vec3d_t({9., 8., 7.}), position_opt->value());
+
+        auto position_uid =
+            std::dynamic_pointer_cast<const sight::data::dvec3>(receiver->input("data2").lock().get_shared());
+        CHECK(position_uid != nullptr);
+        CHECK_EQ(sight::vec3d_t({-5., 0., 4.}), position_uid->value());
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE_FIXTURE(fixture, "nested_config_launcher_test")
+    {
+        m_app_config_mgr = sight::app::ut::launch_app_config_mgr("nested_config_launcher_test", true);
+
+        sight::core::object::sptr receiver_obj;
+        int j = 0;
+        while(receiver_obj == nullptr && j++ < 200)
+        {
+            receiver_obj = sight::core::id::get_object("value_inout_optional_mixed_sub_config", j, "receiver");
+        }
+
+        auto receiver = std::dynamic_pointer_cast<sight::app::ut::test_service>(receiver_obj);
+        REQUIRE(receiver != nullptr);
+        CHECK(receiver->started());
+
+        auto position_opt =
+            std::dynamic_pointer_cast<const sight::data::dvec3>(receiver->input("data1").lock().get_shared());
+        REQUIRE(position_opt != nullptr);
+        CHECK_EQ(sight::vec3d_t({9., 8., 7.}), position_opt->value());
+
+        auto position_uid =
+            std::dynamic_pointer_cast<const sight::data::dvec3>(receiver->input("data2").lock().get_shared());
+        REQUIRE(position_uid != nullptr);
+        CHECK_EQ(sight::vec3d_t({-5., 0., 4.}), position_uid->value());
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE_FIXTURE(fixture, "value_simple_key_test")
+    {
+        m_app_config_mgr = sight::app::ut::launch_app_config_mgr("value_simple_key_test");
+
+        // A simple input and a simple inout, both declared with a literal value instead of an object uid. The type is
+        // deduced from the type the data::ptr is templated with.
+        {
+            auto srv = std::dynamic_pointer_cast<sight::app::ut::test_service_with_typed_data>(
+                sight::core::id::get_object("typed_srv")
+            );
+            CHECK(srv != nullptr);
+            CHECK_EQ(sight::service::base::configuration_status::configured, srv->config_status());
+            CHECK(srv->started());
+
+            const auto flag = srv->m_flag.const_lock();
+            CHECK(flag != nullptr);
+            CHECK_EQ(true, flag->value());
+
+            const auto position = srv->m_position.const_lock();
+            CHECK(position != nullptr);
+            CHECK(sight::vec3d_t({4.5, -1., 0.25}) == position->value());
+
+            // Not declared at all in the configuration, built from the default value declared with the data::ptr.
+            const auto threshold = srv->m_threshold.const_lock();
+            CHECK(threshold != nullptr);
+            CHECK_EQ(std::int64_t(50), threshold->value());
+
+            // Declared without 'uid' nor 'value', built from the default value as well.
+            const auto offset = srv->m_offset.const_lock();
+            CHECK(offset != nullptr);
+            CHECK_EQ(std::int64_t(-3), offset->value());
+        }
+
+        // A group templated with a concrete type, mixing a literal value and an object uid. The value must land at the
+        // right index, the uid keeping its own position.
+        {
+            auto srv = std::dynamic_pointer_cast<sight::app::ut::test_service_with_data>(
+                sight::core::id::get_object("typed_group_srv")
+            );
+            CHECK(srv != nullptr);
+            CHECK_EQ(sight::service::base::configuration_status::configured, srv->config_status());
+            CHECK(srv->started());
+
+            const auto from_value = srv->m_inout_group[0].const_lock();
+            CHECK(from_value != nullptr);
+            CHECK_EQ(std::int64_t(11), from_value->value());
+
+            const auto from_uid = srv->m_inout_group[1].const_lock();
+            CHECK(from_uid != nullptr);
+            CHECK_EQ(std::int64_t(7), from_uid->value());
+        }
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE_FIXTURE(fixture, "nested_keys_test")
+    {
+        m_app_config_mgr = sight::app::ut::launch_app_config_mgr("nested_keys_test");
+
+        {
+            auto srv = std::dynamic_pointer_cast<sight::app::ut::test_service_with_nested_keys>(
+                sight::core::id::get_object("nested_srv")
+            );
+            REQUIRE(srv != nullptr);
+            CHECK_EQ(sight::service::base::configuration_status::configured, srv->config_status());
+            CHECK(srv->started());
+
+            // Objects bound from their uid, declared in two separate <image> tags
+            const auto source = std::dynamic_pointer_cast<const sight::data::string>(
+                srv->m_source.const_lock().get_shared()
+            );
+            REQUIRE(source != nullptr);
+            CHECK_EQ(std::string("source"), source->value());
+
+            const auto target = std::dynamic_pointer_cast<const sight::data::string>(
+                srv->m_target.const_lock().get_shared()
+            );
+            REQUIRE(target != nullptr);
+            CHECK_EQ(std::string("target"), target->value());
+
+            // Properties given a literal value
+            CHECK_EQ(std::int64_t(10), *srv->m_threshold);
+            CHECK_EQ(std::string("hello"), *srv->m_label);
+
+            // Groups, indexed by the rank of the repeated <tracker> tag
+            REQUIRE_EQ(std::size_t(2), srv->m_tracker_ip.size());
+            CHECK_EQ(std::string("127.0.0.1"), *srv->m_tracker_ip[0]);
+            CHECK_EQ(std::string("192.168.0.1"), *srv->m_tracker_ip[1]);
+
+            REQUIRE_EQ(std::size_t(2), srv->m_tracker_port.size());
+            CHECK_EQ(std::int64_t(3000), *srv->m_tracker_port[0]);
+            // The second port is an object uid, not a literal value
+            CHECK_EQ(std::int64_t(4242), *srv->m_tracker_port[1]);
+        }
+
+        // Keys omitted in the configuration fall back on the default value declared with the pointer
+        {
+            auto srv = std::dynamic_pointer_cast<sight::app::ut::test_service_with_nested_keys>(
+                sight::core::id::get_object("nested_default_srv")
+            );
+            REQUIRE(srv != nullptr);
+            CHECK(srv->started());
+
+            CHECK_EQ(std::int64_t(5), *srv->m_threshold);
+            CHECK_EQ(std::string("default_label"), *srv->m_label);
+            CHECK_EQ(std::size_t(0), srv->m_tracker_ip.size());
+        }
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE_FIXTURE(fixture, "nested_keys_deferred_test")
+    {
+        m_app_config_mgr = sight::app::ut::launch_app_config_mgr("nested_keys_deferred_test");
+
+        // The deferred object is never produced, so the service waits for it
+        CHECK(sight::core::id::get_object("nested_deferred_srv") == nullptr);
+
+        // <optional> lets the service start without the deferred object
+        auto srv = std::dynamic_pointer_cast<sight::app::ut::test_service_with_nested_keys>(
+            sight::core::id::get_object("nested_optional_srv")
+        );
+        REQUIRE(srv != nullptr);
+        CHECK(srv->started());
+        CHECK(srv->m_source.const_lock() == nullptr);
+
+        // The reserved 'optional' attribute only applies to the element of the group that carries it
+        auto group_srv = std::dynamic_pointer_cast<sight::app::ut::test_service_with_nested_keys>(
+            sight::core::id::get_object("nested_group_optional_srv")
+        );
+        REQUIRE(group_srv != nullptr);
+        CHECK(group_srv->started());
+        CHECK_EQ(std::string("127.0.0.1"), *group_srv->m_tracker_ip[1]);
+
+        // Without it, the service waits for the deferred object
+        CHECK(sight::core::id::get_object("nested_group_deferred_srv") == nullptr);
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE_FIXTURE(fixture, "nested_key_collision_test")
+    {
+        CHECK_THROWS(sight::app::ut::launch_app_config_mgr("nested_key_collision_test"));
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE_FIXTURE(fixture, "nested_key_value_collision_test")
+    {
+        CHECK_THROWS(sight::app::ut::launch_app_config_mgr("nested_key_value_collision_test"));
+    }
+
+//------------------------------------------------------------------------------
+
     TEST_CASE_FIXTURE(fixture, "object_config_test")
     {
         m_app_config_mgr = sight::app::ut::launch_app_config_mgr("objectConfigTest");
@@ -1570,6 +1846,10 @@ TEST_SUITE("sight::app::config")
         auto config = srv1->get_config();
         CHECK_EQ(std::string("value1"), config.get<std::string>("param1"));
         CHECK_EQ(std::string("value2"), config.get<std::string>("param2"));
+        CHECK_EQ(std::string("config"), config.get<std::string>("settings.fromConfig"));
+        CHECK_EQ(std::string("service"), config.get<std::string>("settings.fromService"));
+        CHECK_EQ(std::string("config"), config.get<std::string>("settings.nested.fromConfig"));
+        CHECK_EQ(std::string("service"), config.get<std::string>("settings.nested.fromService"));
     }
 
 //------------------------------------------------------------------------------

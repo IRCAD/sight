@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,7 +44,7 @@ public:
 
     SIGHT_UI_API const static registry_key_t REGISTRY_KEY;
 
-    enum alignment
+    enum alignment : std::uint8_t
     {
         top,
         bottom,
@@ -95,6 +95,8 @@ public:
 
 protected:
 
+    // NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
+
     /// tool_bar.
     ui::container::toolbar::sptr m_tool_bar;
 
@@ -108,6 +110,8 @@ protected:
     std::string m_background_color;
     /// Defines a qss key to apply style
     std::string m_qss_class;
+
+    // NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 };
 
 } // namespace sight::ui::builder

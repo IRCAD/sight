@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,7 +41,7 @@ class SIGHT_CORE_CLASS_API byte_size
 {
 public:
 
-    enum standard_type
+    enum standard_type : std::uint8_t
     {
         si,
         iec
@@ -170,7 +170,7 @@ public:
     SIGHT_CORE_API static bool parse_size(const std::string& _s, std::uint64_t& _size);
     SIGHT_CORE_API static std::string unit_to_string(unit_t _unit);
 
-protected:
+private:
 
     size_t m_size {};
 };

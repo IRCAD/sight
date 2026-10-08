@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024-2025 IRCAD France
+ * Copyright (C) 2024-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,9 +21,7 @@
 
 #pragma once
 
-#include <sight/ex_progress_bar/config.hpp>
-
-#include <core/progress/has_monitors.hpp>
+#include <core/notification/has_monitors.hpp>
 
 #include <service/base.hpp>
 
@@ -31,7 +29,7 @@ namespace ex_progress_bar
 {
 
 class long_job : public sight::service::base,
-                 public sight::core::progress::has_monitors
+                 public sight::core::notification::has_monitors
 {
 public:
 

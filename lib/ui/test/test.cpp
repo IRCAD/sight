@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2025 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,7 +23,7 @@
 
 #include "tester.hpp"
 
-#include <core/runtime/path.hpp>
+#include <core/runtime/profile/profile.hpp>
 #include <core/runtime/runtime.hpp>
 
 namespace sight::ui::test
@@ -31,14 +31,12 @@ namespace sight::ui::test
 
 //------------------------------------------------------------------------------
 
-void base::setUp()
+base::base(const std::filesystem::path& _profile_path)
 {
     sight::core::runtime::init();
 
-    const auto profile_file_path = get_profile_path();
-
     //load the profiles' project modules
-    const auto profile_module_path = profile_file_path.parent_path().parent_path();
+    const auto profile_module_path = _profile_path.parent_path().parent_path();
     if(std::filesystem::exists(profile_module_path) && std::filesystem::is_directory(profile_module_path))
     {
         sight::core::runtime::add_modules(profile_module_path);
@@ -48,20 +46,29 @@ void base::setUp()
         SIGHT_ERROR("Module path " << profile_module_path << " does not exists or is not a directory.");
     }
 
-    m_profile = sight::core::runtime::io::profile_reader::create_profile(profile_file_path);
+    m_profile = sight::core::runtime::io::profile_reader::create_profile(_profile_path);
     m_profile->start();
     sight::ui::test::tester::init();
 }
 
 //------------------------------------------------------------------------------
 
-void base::start(const std::string& _test_name, std::function<void(tester&)> _test, bool _verbose_mode)
+base::~base() = default;
+
+//------------------------------------------------------------------------------
+
+std::string base::start(const std::string& _test_name, std::function<void(tester&)> _test, bool _verbose_mode)
 {
     tester tester(_test_name, _verbose_mode);
     tester.start([&tester, _test]{_test(tester);});
     m_profile->run();
     m_profile->stop();
-    CPPUNIT_ASSERT_MESSAGE(tester.get_failure_message(), !tester.failed());
+
+    // By the time m_profile->stop() returns, tester::start() has joined the scenario thread and
+    // application::exit() has been processed: the failure state is stable and safe to read here,
+    // on the main thread. This function must stay free of doctest usage - see the class-level
+    // note on sight::ui::test::base in test.hpp.
+    return tester.failed() ? tester.get_failure_message() : std::string();
 }
 
 //------------------------------------------------------------------------------
@@ -80,10 +87,29 @@ void base::compare_images(const std::filesystem::path& _a, const std::filesystem
                               + "\nCorrelation: " + std::to_string(correlation) + "\nVoodoo: "
                               + std::to_string(voodoo)
                               + '\n';
-    CPPUNIT_ASSERT_MESSAGE(message + " (MSE)\n" + score, mse > 0.96);
-    CPPUNIT_ASSERT_MESSAGE(message + " (histogram)\n" + score, histogram > 0.95);
-    CPPUNIT_ASSERT_MESSAGE(message + " (Correlation)\n" + score, correlation > 0.69);
-    CPPUNIT_ASSERT_MESSAGE(message + " (Voodoo)\n" + score, voodoo > 0.96);
+
+    // tester::fail() throws tester_assertion_failed, which tester::start() catches on the scenario
+    // thread: it takes a failure screenshot and composes the GIVEN/WHEN/THEN backtrace. A doctest
+    // assertion must not be used here, since this can be called from the scenario thread.
+    if(mse <= 0.96)
+    {
+        tester::fail(message + " (MSE)\n" + score);
+    }
+
+    if(histogram <= 0.95)
+    {
+        tester::fail(message + " (histogram)\n" + score);
+    }
+
+    if(correlation <= 0.69)
+    {
+        tester::fail(message + " (Correlation)\n" + score);
+    }
+
+    if(voodoo <= 0.96)
+    {
+        tester::fail(message + " (Voodoo)\n" + score);
+    }
 }
 
 } // namespace sight::ui::test

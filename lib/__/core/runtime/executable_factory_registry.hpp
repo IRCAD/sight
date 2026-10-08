@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -49,7 +49,7 @@ struct SIGHT_CORE_CLASS_API executable_factory_registry
      * @param[in]   _factory a shared pointer to an executable factory instance to manage
      * @pre         Loading module exists.
      */
-    SIGHT_CORE_API executable_factory_registry(std::shared_ptr<executable_factory> _factory);
+    SIGHT_CORE_API explicit executable_factory_registry(std::shared_ptr<executable_factory> _factory);
 };
 
 } // namespace sight::core::runtime

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2024 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -71,6 +71,11 @@ class style_selector : public service::controller
 public:
 
     SIGHT_DECLARE_SERVICE(style_selector, sight::service::controller);
+
+    struct slots
+    {
+        static inline const std::string UPDATE_FROM_PREFS = "update_from_preferences";
+    };
 
     /// Constructor, initializes slots.
     style_selector() noexcept;

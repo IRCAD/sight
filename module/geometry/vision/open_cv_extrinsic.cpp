@@ -22,8 +22,6 @@
 
 #include "open_cv_extrinsic.hpp"
 
-#include <core/com/slots.hxx>
-
 #include <data/calibration_info.hpp>
 #include <data/camera.hpp>
 #include <data/camera_set.hpp>
@@ -32,10 +30,7 @@
 
 #include <io/opencv/matrix.hpp>
 
-#include <ui/__/preferences.hpp>
-
 #include <opencv2/calib3d.hpp>
-#include <opencv2/core.hpp>
 
 namespace sight::module::geometry::vision
 {
@@ -203,15 +198,12 @@ void open_cv_extrinsic::updating()
         rotation_matrix.copyTo(cv4x4(cv::Rect(0, 0, 3, 3)));
         translation_vector.copyTo(cv4x4(cv::Rect(3, 0, 1, 3)));
 
-        io::opencv::matrix::copy_from_cv(cv4x4, matrix);
+        io::opencv::matrix::copy_from_cv(cv4x4, *matrix);
 
         cam_series->set_extrinsic_matrix(m_cam_index, matrix);
         cam_series->set_calibration_error(err);
 
-        auto sig = cam_series->signal<data::camera_set::extrinsic_calibrated_signal_t>(
-            data::camera_set::EXTRINSIC_CALIBRATED_SIG
-        );
-        sig->async_emit();
+        cam_series->async_emit(data::camera_set::signals::EXTRINSIC_CALIBRATED);
 
         // Export matrix if needed.
         m_matrix = matrix;

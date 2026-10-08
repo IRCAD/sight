@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,6 +21,7 @@
 // cspell:ignore qputenv
 
 #include "plugin.hpp"
+#include <core/spy_log.hpp>
 
 #include <QApplication>
 

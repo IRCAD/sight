@@ -24,12 +24,10 @@
 
 #include "data/object.hpp"
 
-#include <core/com/slots.hxx>
-
 #include <data/image.hpp>
-#include <data/transfer_function.hpp>
 
 #include <viz/scene3d/helper/camera.hpp>
+#include <viz/scene3d/utils.hpp>
 
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreNode.h>
@@ -37,19 +35,15 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const core::com::slots::key_t RESET_CAMERA_SLOT       = "reset_camera";
-static const core::com::slots::key_t RESIZE_VIEWPORT_SLOT    = "resize_viewport";
-static const core::com::slots::key_t CHANGE_ORIENTATION_SLOT = "changeOrientation";
-
 namespace interactor_3d = sight::viz::scene3d::interactor;
 
 //-----------------------------------------------------------------------------
 
 negato2d_camera::negato2d_camera() noexcept
 {
-    new_slot(RESET_CAMERA_SLOT, &negato2d_camera::reset_camera, this);
-    new_slot(RESIZE_VIEWPORT_SLOT, &negato2d_camera::resize_viewport, this);
-    new_slot(CHANGE_ORIENTATION_SLOT, &negato2d_camera::change_orientation, this);
+    new_slot(slots::RESET_CAMERA, &negato2d_camera::reset_camera, this);
+    new_slot(slots::RESIZE_VIEWPORT, &negato2d_camera::resize_viewport, this);
+    new_slot(slots::CHANGE_ORIENTATION, &negato2d_camera::change_orientation, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -60,8 +54,7 @@ void negato2d_camera::configuring()
 
     const config_t config = this->get_config();
 
-    m_priority              = config.get<int>(CONFIG + "priority", m_priority);
-    m_layer_order_dependant = config.get<bool>(CONFIG + "layerOrderDependant", m_layer_order_dependant);
+    m_priority = config.get<int>(CONFIG + "priority", m_priority);
 
     const std::string orientation = config.get<std::string>(CONFIG + "orientation", "sagittal");
 
@@ -106,9 +99,9 @@ void negato2d_camera::starting()
 
     m_layer_connection.connect(
         this->layer(),
-        sight::viz::scene3d::layer::RESIZE_LAYER_SIG,
+        sight::viz::scene3d::layer::signals::RESIZE_LAYER,
         this->get_sptr(),
-        RESIZE_VIEWPORT_SLOT
+        slots::RESIZE_VIEWPORT
     );
 
     this->reset_camera();
@@ -138,8 +131,8 @@ void negato2d_camera::stopping()
 service::connections_t negato2d_camera::auto_connections() const
 {
     service::connections_t connections = {
-        {IMAGE_INOUT, data::image::MODIFIED_SIG, RESET_CAMERA_SLOT},
-        {IMAGE_INOUT, data::image::SLICE_TYPE_MODIFIED_SIG, CHANGE_ORIENTATION_SLOT}
+        {IMAGE_INOUT, data::signals::MODIFIED, slots::RESET_CAMERA},
+        {IMAGE_INOUT, data::image::signals::SLICE_TYPE_MODIFIED, slots::CHANGE_ORIENTATION}
     };
     return connections + adaptor::auto_connections();
 }
@@ -155,7 +148,7 @@ void negato2d_camera::wheel_event(modifier _modifier, double _delta, int _x, int
 
     const auto layer = this->layer();
 
-    if(interactor_3d::base::is_in_layer(_x, _y, layer, m_layer_order_dependant))
+    if(interactor_3d::base::is_in_layer(_x, _y, layer))
     {
         // CTRL + wheel = Zoom in/out.
         if(_modifier == modifier::control)
@@ -170,7 +163,7 @@ void negato2d_camera::wheel_event(modifier _modifier, double _delta, int _x, int
             // Compute the mouse's position in the camera's view.
             const Ogre::Vector3 screen_pos(static_cast<Ogre::Real>(_x),
                                            static_cast<Ogre::Real>(_y),
-                                           Ogre::Real(0));
+                                           static_cast<Ogre::Real>(0));
             auto mouse_pos_view =
                 sight::viz::scene3d::helper::camera::convert_screen_space_to_view_space(*camera, screen_pos);
 
@@ -237,7 +230,7 @@ void negato2d_camera::wheel_event(modifier _modifier, double _delta, int _x, int
             // Speed up SHIFT+ wheel: "scrolls" 5% of total slices at each wheel move.
             if(_modifier == modifier::shift)
             {
-                slice_move *= int(std::round(static_cast<float>(max_slice) * 5.F / 100.F));
+                slice_move *= static_cast<int>(std::round(static_cast<float>(max_slice) * 5.F / 100.F));
             }
 
             // TODO: We may test for finer-resolution wheels and wait for another event before moving.
@@ -265,7 +258,7 @@ void negato2d_camera::wheel_event(modifier _modifier, double _delta, int _x, int
             m_has_moved = true;
 
             // Send signal.
-            image->async_emit(sight::data::image::SLICE_INDEX_MODIFIED_SIG, idx[2], idx[1], idx[0]);
+            image->async_emit(sight::data::image::signals::SLICE_INDEX_MODIFIED, idx[2], idx[1], idx[0]);
             image->async_emit(
                 sight::data::signals::CHANGED_FIELDS,
                 sight::data::fields_container_t(),
@@ -334,10 +327,10 @@ void negato2d_camera::mouse_move_event(
 
         const Ogre::Vector3 delta_screen_pos(static_cast<Ogre::Real>(_x - _dx),
                                              static_cast<Ogre::Real>(_y - _dy),
-                                             Ogre::Real(0));
+                                             static_cast<Ogre::Real>(0));
         const Ogre::Vector3 screen_pos(static_cast<Ogre::Real>(_x),
                                        static_cast<Ogre::Real>(_y),
-                                       Ogre::Real(0));
+                                       static_cast<Ogre::Real>(0));
 
         auto previous_mouse_pos_view =
             sight::viz::scene3d::helper::camera::convert_screen_space_to_view_space(*camera, delta_screen_pos);
@@ -369,7 +362,7 @@ void negato2d_camera::button_press_event(interactor_3d::base::mouse_button _butt
     const auto layer = this->layer();
     if(_button == mouse_button::middle)
     {
-        m_is_interacting = interactor_3d::base::is_in_layer(_x, _y, layer, m_layer_order_dependant);
+        m_is_interacting = interactor_3d::base::is_in_layer(_x, _y, layer);
     }
 }
 
@@ -395,7 +388,7 @@ void negato2d_camera::key_press_event(int _key, modifier /*_mods*/, int _x, int 
     }
 
     const auto layer = this->layer();
-    if(interactor_3d::base::is_in_layer(_x, _y, layer, m_layer_order_dependant) && (_key == 'R' || _key == 'r'))
+    if(interactor_3d::base::is_in_layer(_x, _y, layer) && (_key == 'R' || _key == 'r'))
     {
         this->reset_camera();
     }

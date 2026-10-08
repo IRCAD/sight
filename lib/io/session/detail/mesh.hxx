@@ -28,7 +28,7 @@
 
 #include <data/mesh.hpp>
 
-#define FW_PROFILING_DISABLED
+#define SIGHT_PROFILING_DISABLED
 #include <core/profiling.hpp>
 
 //#define DEBUG_PLY
@@ -412,7 +412,7 @@ inline static void write(
     const core::crypto::secure_string& _password = ""
 )
 {
-    FW_PROFILE("write mesh (PLY)");
+    SIGHT_PROFILE("write mesh (PLY)");
 
     // Get the object
     const auto mesh = helper::safe_cast<data::mesh>(_object);
@@ -453,7 +453,7 @@ inline static data::mesh::sptr read(
     const core::crypto::secure_string& _password = ""
 )
 {
-    FW_PROFILE("read mesh (PLY)");
+    SIGHT_PROFILE("read mesh (PLY)");
 
     // Create or reuse the object
     auto mesh = helper::cast_or_create<data::mesh>(_object);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,31 +22,17 @@
 
 #include "consumer.hpp"
 
-#include <core/com/slots.hxx>
 #include <core/thread/timer.hpp>
-
-#include <service/macros.hpp>
-
-#include <functional>
 
 namespace ex_timeline
 {
 
 //------------------------------------------------------------------------------
 
-const sight::core::com::slots::key_t consumer::CONSUME_SLOT = "consume";
-
-//------------------------------------------------------------------------------
-
 consumer::consumer() noexcept
 {
-    new_slot(CONSUME_SLOT, &consumer::consume, this);
+    new_slot(slots::CONSUME, &consumer::consume, this);
 }
-
-//------------------------------------------------------------------------------
-
-consumer::~consumer() noexcept =
-    default;
 
 //------------------------------------------------------------------------------
 
@@ -84,8 +70,8 @@ void consumer::updating()
 {
     const auto timeline = m_timeline.lock();
 
-    const auto timestamp = sight::core::clock::get_time_in_milli_sec();
-    const CSPTR(::ex_timeline::message_tl::buffer_t) buffer = timeline->get_closest_buffer(timestamp);
+    const auto timestamp                                           = sight::core::clock::get_time_in_milli_sec();
+    const sight::csptr<::ex_timeline::message_tl::buffer_t> buffer = timeline->get_closest_buffer(timestamp);
 
     if(buffer)
     {
@@ -102,7 +88,7 @@ void consumer::consume(sight::core::clock::type _timestamp)
 {
     const auto timeline = m_timeline.lock();
 
-    const CSPTR(::ex_timeline::message_tl::buffer_t) buffer = timeline->get_closest_buffer(_timestamp);
+    const sight::csptr<::ex_timeline::message_tl::buffer_t> buffer = timeline->get_closest_buffer(_timestamp);
 
     if(buffer)
     {

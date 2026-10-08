@@ -88,16 +88,12 @@
         <service uid="chessboard_size_act" type="sight::module::ui::action" />
 
         <service uid="chessboard_size_cfg" type="sight::app::config_launcher">
-            <appConfig id="sight::geometry::vision::chessboard_settings" />
-            <inout group="object">
-                <key name="board_properties" uid="${board_properties}" />
-            </inout>
-            <properties start="false" />
+            <config id="sight::geometry::vision::chessboard_settings" start="false" />
+            <object name="board_properties" uid="${board_properties}" />
         </service>
 
         <service uid="export_act" type="sight::module::ui::export_set" auto_connect="true">
-            <inout key="container" uid="${dataSet}" />
-            <inout key="data" uid="${camera_set}" />
+            <data container="${dataSet}" element="${camera_set}" />
         </service>
 
         <!-- The action "previous" and "next" are visible only if the application use a "sequencer".
@@ -113,7 +109,7 @@
         <!-- ******************************* Services ***************************************** -->
 
         <service uid="calibrationWriterSrv" type="sight::module::io::vision::open_cv_writer">
-            <in key="data" uid="${camera_set}" />
+            <data write="${camera_set}" />
         </service>
 
         <!-- ******************************* Connections ***************************************** -->

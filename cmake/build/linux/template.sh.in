@@ -39,4 +39,4 @@ export LD_LIBRARY_PATH
 
 # Use CMAKE Variable of fwlauncher and Profile.xml path
 echo  "$bindir/@LAUNCHER@" \""$moduledir/@PROFILE_PATH@"\" $moduleopt
-exec "$bindir/@LAUNCHER@" \""$moduledir/@PROFILE_PATH@"\" $moduleopt $@
+exec "$bindir/@LAUNCHER@" \""$moduledir/@PROFILE_PATH@"\" $moduleopt "$@"

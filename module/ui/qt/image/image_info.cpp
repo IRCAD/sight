@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,12 +22,6 @@
 
 #include "module/ui/qt/image/image_info.hpp"
 
-#include <core/base.hpp>
-#include <core/com/slot.hpp>
-#include <core/com/slot.hxx>
-#include <core/com/slots.hpp>
-#include <core/com/slots.hxx>
-
 #include <data/helper/medical_image.hpp>
 
 #include <ui/qt/container/widget.hpp>
@@ -39,11 +33,9 @@
 namespace sight::module::ui::qt::image
 {
 
-static const core::com::slots::key_t GET_INTERACTION_SLOT = "get_interaction";
-
 image_info::image_info() noexcept
 {
-    new_slot(GET_INTERACTION_SLOT, &image_info::get_interaction, this);
+    new_slot(slots::GET_INTERACTION, &image_info::get_interaction, this);
 }
 
 //------------------------------------------------------------------------------
@@ -167,8 +159,8 @@ service::connections_t image_info::auto_connections() const
 {
     connections_t connections;
 
-    connections.push(IMAGE, data::image::MODIFIED_SIG, service::slots::UPDATE);
-    connections.push(IMAGE, data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(IMAGE, data::signals::MODIFIED, service::slots::UPDATE);
+    connections.push(IMAGE, data::image::signals::BUFFER_MODIFIED, service::slots::UPDATE);
 
     return connections;
 }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -28,6 +28,8 @@
 
 #include <data/color.hpp>
 #include <data/structure_traits.hpp>
+
+#include <type_traits>
 
 namespace sight::io::session::detail::structure_traits
 {
@@ -57,11 +59,14 @@ inline static void write(
     const auto structure_traits = helper::safe_cast<data::structure_traits>(_object);
 
     // Add a version number. Not mandatory, but could help for future release
-    helper::write_version<data::structure_traits>(_tree, 1);
+    helper::write_version<data::structure_traits>(_tree, 2);
 
     // Serialize attributes
     helper::write_string(_tree, TYPE, structure_traits->type());
-    _tree.put(CLASS, structure_traits->get_class());
+    _tree.put<std::underlying_type_t<data::structure_traits::structure_class> >(
+        CLASS,
+        static_cast<std::underlying_type_t<data::structure_traits::structure_class> >(structure_traits->get_class())
+    );
     helper::write_string(_tree, NATIVE_EXP, structure_traits->get_native_exp());
     helper::write_string(_tree, NATIVE_GEOMETRIC_EXP, structure_traits->get_native_geometric_exp());
     helper::write_string(_tree, ATTACHMENT_TYPE, structure_traits->get_attachment_type());
@@ -74,7 +79,10 @@ inline static void write(
 
     for(const auto& category : structure_traits->get_categories())
     {
-        categories_tree.add(CATEGORY, category);
+        categories_tree.add<std::underlying_type_t<data::structure_traits::category> >(
+            CATEGORY,
+            static_cast<std::underlying_type_t<data::structure_traits::category> >(category)
+        );
     }
 
     _tree.add_child(CATEGORIES, categories_tree);
@@ -97,11 +105,25 @@ inline static data::structure_traits::sptr read(
     auto structure_traits = helper::cast_or_create<data::structure_traits>(_object);
 
     // Check version number. Not mandatory, but could help for future release
-    helper::read_version<data::structure_traits>(_tree, 0, 1);
+    const auto version = helper::read_version<data::structure_traits>(_tree, 0, 2);
 
     // Deserialize attributes
     structure_traits->set_type(helper::read_string(_tree, TYPE));
-    structure_traits->set_class(static_cast<data::structure_traits::structure_class>(_tree.get<int>(CLASS)));
+    if(version < 2)
+    {
+        structure_traits->set_class(static_cast<data::structure_traits::structure_class>(_tree.get<int>(CLASS)));
+    }
+    else
+    {
+        structure_traits->set_class(
+            static_cast<data::structure_traits::structure_class>(_tree.get<std::underlying_type_t<data::structure_traits
+                                                                                                  ::structure_class> >(
+                                                                     CLASS
+                                                                                                  )
+            )
+        );
+    }
+
     structure_traits->set_native_exp(helper::read_string(_tree, NATIVE_EXP));
     structure_traits->set_native_geometric_exp(helper::read_string(_tree, NATIVE_GEOMETRIC_EXP));
     structure_traits->set_attachment_type(helper::read_string(_tree, ATTACHMENT_TYPE));
@@ -115,7 +137,20 @@ inline static data::structure_traits::sptr read(
 
     for(const auto& category_tree : _tree.get_child(CATEGORIES))
     {
-        categories.push_back(static_cast<data::structure_traits::category>(category_tree.second.get_value<int>()));
+        if(version < 2)
+        {
+            categories.push_back(static_cast<data::structure_traits::category>(category_tree.second.get_value<int>()));
+        }
+        else
+        {
+            categories.push_back(
+                static_cast<data::structure_traits::category>(category_tree.second.get_value<std::underlying_type_t<data
+                                                                                                                    ::
+                                                                                                                    structure_traits
+                                                                                                                    ::
+                                                                                                                    category> >())
+            );
+        }
     }
 
     structure_traits->set_categories(categories);

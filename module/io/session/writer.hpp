@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2025 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,7 +21,6 @@
 
 #pragma once
 
-#include <core/com/signal.hpp>
 #include <core/crypto/password_keeper.hpp>
 
 #include <io/__/service/writer.hpp>
@@ -45,13 +44,15 @@ namespace sight::module::io::session
  * The compression level is set individually, depending of the type of data to serialize.
  *
  * @section Signals Signals
- * - \b monitor_created(SPTR(core::progress::monitor)): emitted to display a progress bar while the image is written,
+ * - \b notification_created(core::notification::base::sptr): emitted to display a progress bar while the
+ * image is
+ * written,
  * it should be connected to a progress bar
  *
  * @section XML XML Configuration
  * @code{.xml}
     <service type="sight::module::io::session::writer">
-        <in key="data" uid="..." />
+        <data write="..." />
         <dialog extension=".sample" description="Sample Sight session file" policy="once"/>
         <password policy="global", encryption=salted/>
         <archive format="optimized"/>
@@ -59,7 +60,7 @@ namespace sight::module::io::session
    @endcode
  *
  * @subsection Input Input
- * - \b data [sight::data::object]: object to write.
+ * - \b data.write [sight::data::object]: object to write.
  *
  * @subsection Configuration Configuration
  * - \b dialog(optional):
@@ -109,6 +110,14 @@ public:
     /// Propose to create a medical data file
     void open_location_dialog() final;
 
+    /// Returns managed path type, here service manages only single file
+    sight::io::service::path_type_t get_path_type() const final
+    {
+        return sight::io::service::file;
+    }
+
+    std::vector<std::pair<std::string, std::string> > get_supported_extensions() final;
+
 protected:
 
     /// Parses the configuration
@@ -122,12 +131,6 @@ protected:
 
     /// Writes session data to filesystem
     void updating() final;
-
-    /// Returns managed path type, here service manages only single file
-    sight::io::service::path_type_t get_path_type() const final
-    {
-        return sight::io::service::file;
-    }
 
 private:
 
@@ -151,7 +154,7 @@ private:
     };
 
     /// Archive format to use
-    sight::io::zip::archive::archive_format m_archive_format {sight::io::zip::archive::archive_format::DEFAULT};
+    sight::io::zip::archive::archive_format m_archive_format {sight::io::zip::archive::archive_format::standard};
 };
 
 } // namespace sight::module::io::session

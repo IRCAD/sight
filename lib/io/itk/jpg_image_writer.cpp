@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,27 +25,25 @@
 #include "io/itk/helper/progress_itk_to_fw.hpp"
 #include "io/itk/itk.hpp"
 
-#include <core/base.hpp>
 #include <core/tools/dispatcher.hpp>
 
 #include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
-#include <data/integer.hpp>
-#include <data/map.hpp>
-#include <data/transfer_function.hpp>
 
 #include <itkImageSeriesWriter.h>
 #include <itkIntensityWindowingImageFilter.h>
 #include <itkJPEGImageIOFactory.h>
 #include <itkNumericSeriesFileNames.h>
 
-#include <cmath>
 #include <filesystem>
 
 namespace sight::io::itk
 {
 
 //------------------------------------------------------------------------------
+
+namespace
+{
 
 struct itk_jpeg_registry_initializer
 {
@@ -56,19 +54,20 @@ struct itk_jpeg_registry_initializer
     }
 };
 
-static itk_jpeg_registry_initializer global_itk_jpeg_registry_initializer;
+itk_jpeg_registry_initializer global_itk_jpeg_registry_initializer;
+
+} // namespace
 
 //------------------------------------------------------------------------------
 
-void jpg_image_writer::write(sight::core::progress::observer::sptr _progress)
+void jpg_image_writer::write(sight::core::notification::observer::sptr _progress)
 {
-    SIGHT_ASSERT("Object expired", !m_object.expired());
-    SIGHT_ASSERT("Object null", m_object.lock());
+    auto object_lock = get_object();
 
     auto do_read =
         []<class PIXELTYPE>( const data::image::csptr _image,
                              const std::filesystem::path& _directory_path,
-                             sight::core::progress::observer::sptr _progress)
+                             sight::core::notification::observer::sptr _progress)
         {
             SIGHT_DEBUG("itk::image_series_writer with PIXELTYPE " << core::type::get<PIXELTYPE>().name());
 
@@ -81,7 +80,7 @@ void jpg_image_writer::write(sight::core::progress::observer::sptr _progress)
             // create writer
             using itk_image_type = ::itk::Image<PIXELTYPE, 3>;
             using image_2d_type  = ::itk::Image<unsigned char, 2>;
-            using writer_t       = typename ::itk::ImageSeriesWriter<itk_image_type, image_2d_type>;
+            using writer_t       = ::itk::ImageSeriesWriter<itk_image_type, image_2d_type>;
             auto writer = writer_t::New();
             progressor progress(writer, _progress);
 

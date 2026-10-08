@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -111,7 +111,7 @@ public:
      * @brief Get/Set the label associated with the reconstructions
      */
     std::optional<std::uint32_t> get_label() const;
-    void set_label(const std::uint32_t _val);
+    void set_label(std::uint32_t _val);
     /// @}
 
     /**
@@ -125,18 +125,20 @@ public:
      * @name Signals
      * @{
      */
+    struct signals
+    {
+        /// Type of signal when the mesh pointer has changed, mesh parameter is used to store old mesh
+        using mesh_changed_t = core::com::signal<void (mesh::sptr)>;
 
-    /// Type of signal when the mesh pointer has changed, mesh parameter is used to store old mesh
-    using mesh_changed_signal_t = core::com::signal<void (mesh::sptr)>;
+        /// Key in m_signals map of signal m_sigMeshModified
+        static const inline signal_key_t MESH_CHANGED = "meshModified";
 
-    /// Key in m_signals map of signal m_sigMeshModified
-    SIGHT_DATA_API static const core::com::signals::key_t MESH_CHANGED_SIG;
+        /// Type of signal when mesh is modified
+        using visibility_modified_t = core::com::signal<void (bool)>;
 
-    /// Type of signal when mesh is modified
-    using visibility_modified_signal_t = core::com::signal<void (bool)>;
-
-    /// Key in m_signals map of signal m_sigVisibilityModified
-    SIGHT_DATA_API static const core::com::signals::key_t VISIBILITY_MODIFIED_SIG;
+        /// Key in m_signals map of signal m_sigVisibilityModified
+        static const inline signal_key_t VISIBILITY_MODIFIED = "visibilityModified";
+    };
 /**
  * @}
  */
@@ -161,7 +163,7 @@ public:
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;
 
-protected:
+private:
 
     //! true if this reconstruction is visible
     bool m_b_is_visible {false};
@@ -188,20 +190,6 @@ protected:
 
     //! reconstruction's mask volume
     double m_computed_mask_volume;
-
-    /**
-     * @name Signals
-     * @{
-     */
-
-    /// Signal emitted when mesh changed, mesh parameter is used to store old mesh
-    mesh_changed_signal_t::sptr m_sig_mesh_changed;
-
-    /// Signal emitted  when visibility is modified
-    visibility_modified_signal_t::sptr m_sig_visibility_modified;
-    /**
-     * @}
-     */
 };
 
 //-----------------------------------------------------------------------------
@@ -318,7 +306,7 @@ inline std::optional<std::uint32_t> reconstruction::get_label() const
 
 //-----------------------------------------------------------------------------
 
-inline void reconstruction::set_label(const std::uint32_t _val)
+inline void reconstruction::set_label(std::uint32_t _val)
 {
     m_label = _val;
 }

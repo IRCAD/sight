@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2025 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,8 +26,6 @@
 
 #include "ui/__/dialog/notification_base.hpp"
 
-#include <core/base.hpp>
-
 namespace sight::ui::dialog
 {
 
@@ -43,15 +41,15 @@ public:
 
     /// Opens a default message box with the specified title, text and icon.
     /// @param _message Message of the notification box
-    /// @param _type type of the notification box (SUCCESS, FAILURE or INFO)
+    /// @param _type type of the notification box (INFORMATION, INSTRUCTION, WARNING or ERROR)
     /// @param _pos position where notification is displayed (TOP_LEFT, TOP_RIGHT, ...)
     /// @{
     inline static void show(
         std::string _message,
-        sight::service::notification::type _type    = sight::service::notification::type::info,
-        sight::service::notification::position _pos = sight::service::notification::position::top_right
+        notification_base::type _type    = notification_base::type::information,
+        notification_base::position _pos = notification_base::position::top_right
     );
-    SIGHT_UI_API static void show(sight::service::notification _notification);
+    SIGHT_UI_API static void show(notification_base::params _notification);
     /// @}
 
     /// Constructor. Create the implementation of the specific message box
@@ -59,19 +57,19 @@ public:
 
     /// Constructor. Creates a notification box with the specified text and type.
     /// @param _message message of the notification box
-    /// @param _type type of the notification box (SUCCESS, FAILURE or INFO)
+    /// @param _type type of the notification box (INFORMATION, INSTRUCTION, WARNING or ERROR)
     /// @param _pos position where notification is displayed (TOP_LEFT, TOP_RIGHT, ...)
     /// @{
-    inline explicit notification(
+    explicit notification(
         std::string _message,
-        sight::service::notification::type _type    = sight::service::notification::type::info,
-        sight::service::notification::position _pos = sight::service::notification::position::top_right
+        notification_base::type _type    = notification_base::type::information,
+        notification_base::position _pos = notification_base::position::top_right
     ) :
         notification({.m_type = _type, .m_position = _pos, .m_message = std::move(_message)})
     {
     }
 
-    SIGHT_UI_API notification(sight::service::notification _notification);
+    SIGHT_UI_API explicit notification(notification_base::params _notification);
     /// @}
 
     /// Destructor. Does nothing
@@ -85,6 +83,12 @@ public:
 
     /// Sets the notification type.
     SIGHT_UI_API void set_type(type _type) override;
+
+    /// Sets the icon displayed next to the message.
+    SIGHT_UI_API void set_icon(std::optional<std::filesystem::path> _icon) override;
+
+    /// Sets the side, in pixels, the icon is drawn at.
+    SIGHT_UI_API void set_icon_size(int _size) override;
 
     /// Sets the position.
     SIGHT_UI_API void set_position(position _position) override;
@@ -101,7 +105,7 @@ public:
     SIGHT_UI_API std::optional<std::chrono::milliseconds> get_duration() const override;
 
     /// Sets the channel. Empty string for default global channel
-    SIGHT_UI_API void set_channel(std::string) override;
+    SIGHT_UI_API void set_channel(std::string /*_channel*/) override;
     SIGHT_UI_API std::string get_channel() const override;
 
     /// Sets the closable property. std::nullopt means finite duration is closable
@@ -129,7 +133,7 @@ public:
     /// Define the callback called when the dialog is closed
     SIGHT_UI_API void set_closed_callback(std::function<void()> _f) override;
 
-protected:
+private:
 
     /// Implementation of a message box in a specific UI (wx/Qt)
     ui::dialog::notification_base::sptr m_implementation;
@@ -139,8 +143,8 @@ protected:
 
 inline void notification::show(
     std::string _message,
-    sight::service::notification::type _type,
-    sight::service::notification::position _pos
+    notification_base::type _type,
+    notification_base::position _pos
 )
 {
     show({.m_type = _type, .m_position = _pos, .m_message = std::move(_message)});

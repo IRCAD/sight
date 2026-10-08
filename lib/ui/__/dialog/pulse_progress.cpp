@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,9 +31,9 @@ namespace sight::ui::dialog
 
 pulse_progress::pulse_progress(
     const std::string& _title,
-    ui::dialog::pulse_progress_base::Stuff _stuff,
+    ui::dialog::pulse_progress_base::stuff _stuff,
     const std::string& _msg,
-    ui::dialog::pulse_progress_base::MilliSecond _frequency_refresh,
+    ui::dialog::pulse_progress_base::millisecond _frequency_refresh,
     bool _cancellable
 )
 {

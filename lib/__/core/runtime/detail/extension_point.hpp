@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,19 +22,13 @@
 
 #pragma once
 
-#include <sight/core/config.hpp>
-
 #include "core/runtime/detail/extension.hpp"
 #include "core/runtime/detail/runtime.hpp"
 #include "core/runtime/extension.hpp"
 #include "core/runtime/module_element.hpp"
 
-#include <core/base.hpp>
-
 #include <algorithm>
 #include <filesystem>
-#include <iostream>
-#include <ranges>
 #include <string>
 
 namespace sight::core::runtime
@@ -69,7 +63,7 @@ public:
      *                       validate extensions contributed to the point.
      */
     extension_point(
-        const std::shared_ptr<core::runtime::module> _module,
+        std::shared_ptr<core::runtime::module> _module,
         const std::string& _id,
         std::filesystem::path _schema
     );

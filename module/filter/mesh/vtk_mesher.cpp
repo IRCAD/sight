@@ -22,10 +22,6 @@
 
 #include "module/filter/mesh/vtk_mesher.hpp"
 
-#include "core/progress/observer.hpp"
-
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
 #include <core/profiling.hpp>
 
 #include <data/helper/field.hpp>
@@ -53,6 +49,9 @@
 #include <vtkWindowedSincPolyDataFilter.h>
 
 namespace sight::module::filter::mesh
+{
+
+namespace
 {
 
 //-----------------------------------------------------------------------------
@@ -98,12 +97,13 @@ private:
     std::optional<std::string> m_error_message;
 };
 
+} // namespace
+
 //-----------------------------------------------------------------------------
 
 vtk_mesher::vtk_mesher() noexcept :
-    filter(m_signals),
-    notifier(m_signals),
-    has_monitors(m_signals)
+    filter(has_signals::signals()),
+    has_monitors(has_signals::signals())
 {
 }
 
@@ -114,11 +114,11 @@ void vtk_mesher::configuring(const config_t& _config)
     auto mode = _config.get<std::string>("config.<xmlattr>.mode", "add");
     if(mode == "add")
     {
-        m_mode = mode_t::ADD;
+        m_mode = mode_t::add;
     }
     else if(mode == "replace")
     {
-        m_mode = mode_t::REPLACE;
+        m_mode = mode_t::replace;
     }
     else
     {
@@ -142,21 +142,19 @@ void vtk_mesher::stopping()
 
 void vtk_mesher::updating()
 {
-    const auto progress = std::make_shared<sight::core::progress::observer>("Meshing segmentation");
-    progress->set_cancelable(false);
-    this->async_emit(has_monitors::signals::MONITOR_CREATED, progress->get_sptr());
+    const auto progress = this->observe("Meshing segmentation");
 
     {
-        FW_PROFILE("mesh");
+        SIGHT_PROFILE("mesh");
 
-        auto image_series = m_image.lock();
-        auto model_series = m_model.lock();
+        auto image_series = m_input_image.lock();
+        auto model_series = m_output_model.lock();
 
         if(!image_series || !model_series)
         {
             std::string msg = "Invalid input/output data for model series reconstruction.";
             SIGHT_ERROR(msg);
-            this->notifier::failure(msg);
+            this->fail(msg);
 
             this->async_emit(filter::signals::FAILED);
             progress->done();
@@ -294,7 +292,7 @@ void vtk_mesher::updating()
         }
 
         sight::data::model_series::reconstruction_vector_t out_recs = model_series->get_reconstruction_db();
-        if(m_mode == mode_t::REPLACE)
+        if(m_mode == mode_t::replace)
         {
             out_recs.clear();
         }
@@ -323,7 +321,7 @@ vtkSmartPointer<vtkPolyData> vtk_mesher::reconstruct(vtkSmartPointer<vtkImageDat
     vtkSmartPointer<vtkPolyDataAlgorithm> contour_filter;
 
     // Contour filter
-    if(*m_use_flying_edges)
+    if(*m_flying_edges)
     {
         vtkSmartPointer<vtkDiscreteFlyingEdges3D> flying_edges = vtkSmartPointer<vtkDiscreteFlyingEdges3D>::New();
         flying_edges->ComputeScalarsOn();
@@ -356,7 +354,7 @@ vtkSmartPointer<vtkPolyData> vtk_mesher::reconstruct(vtkSmartPointer<vtkImageDat
     auto smooth_filter = vtkSmartPointer<vtkWindowedSincPolyDataFilter>::New();
     smooth_filter->AddObserver(vtkCommand::ErrorEvent, error_obs);
     smooth_filter->SetInputConnection(contour_filter->GetOutputPort());
-    smooth_filter->SetNumberOfIterations(static_cast<int>(*m_num_iterations));
+    smooth_filter->SetNumberOfIterations(static_cast<int>(*m_iterations));
     smooth_filter->SetBoundarySmoothing(static_cast<vtkTypeBool>(*m_boundary_smoothing));
     smooth_filter->SetPassBand(*m_pass_band);
     smooth_filter->SetEdgeAngle(90);
@@ -372,7 +370,7 @@ vtkSmartPointer<vtkPolyData> vtk_mesher::reconstruct(vtkSmartPointer<vtkImageDat
     auto decimate_timer                               = vtkSmartPointer<vtkExecutionTimer>::New();
     vtkSmartPointer<vtkPolyDataAlgorithm> last_filter = smooth_filter;
 
-    if(*m_reduction > 0)
+    if(*m_percent_reduction > 0)
     {
         // Decimator (if needed)
         if(*m_quadric_reduction)
@@ -380,7 +378,13 @@ vtkSmartPointer<vtkPolyData> vtk_mesher::reconstruct(vtkSmartPointer<vtkImageDat
             auto decimate_filter = vtkSmartPointer<vtkQuadricDecimation>::New();
             decimate_filter->AddObserver(vtkCommand::ErrorEvent, error_obs);
             decimate_filter->SetInputConnection(smooth_filter->GetOutputPort());
-            decimate_filter->SetTargetReduction(std::clamp(static_cast<double>(*m_reduction), 0.0, 100.0) / 100.0);
+            decimate_filter->SetTargetReduction(
+                std::clamp(
+                    static_cast<double>(*m_percent_reduction),
+                    0.0,
+                    100.0
+                ) / 100.0
+            );
             decimate_filter->VolumePreservationOn();
             decimate_timer->SetFilter(decimate_filter);
             last_filter = decimate_filter;
@@ -390,7 +394,13 @@ vtkSmartPointer<vtkPolyData> vtk_mesher::reconstruct(vtkSmartPointer<vtkImageDat
             auto decimate_filter = vtkSmartPointer<vtkDecimatePro>::New();
             decimate_filter->AddObserver(vtkCommand::ErrorEvent, error_obs);
             decimate_filter->SetInputConnection(smooth_filter->GetOutputPort());
-            decimate_filter->SetTargetReduction(std::clamp(static_cast<double>(*m_reduction), 0.0, 100.0) / 100.0);
+            decimate_filter->SetTargetReduction(
+                std::clamp(
+                    static_cast<double>(*m_percent_reduction),
+                    0.0,
+                    100.0
+                ) / 100.0
+            );
             decimate_filter->SetPreserveTopology(static_cast<vtkTypeBool>(*m_preserve_topology));
             decimate_filter->SplittingOn();
             decimate_filter->BoundaryVertexDeletionOn();
@@ -404,18 +414,17 @@ vtkSmartPointer<vtkPolyData> vtk_mesher::reconstruct(vtkSmartPointer<vtkImageDat
 
     vtkSmartPointer<vtkPolyData> poly_data = last_filter->GetOutput();
 
-    SIGHT_INFO(this->get_id() << ": Value: " << _value << "Flying edges: " << std::to_string(*m_use_flying_edges));
-    SIGHT_INFO(this->get_id() << ": Contour timer: " << contour_timer->GetElapsedWallClockTime() << "s");
-    SIGHT_INFO(this->get_id() << ": Smooth timer: " << smooth_timer->GetElapsedWallClockTime() << "s");
-    SIGHT_INFO(this->get_id() << ": Decimate timer: " << decimate_timer->GetElapsedWallClockTime() << "s");
-    SIGHT_INFO(this->get_id() << ": Number of points: " << poly_data->GetNumberOfPoints());
-    SIGHT_INFO(this->get_id() << ": Number of cells: " << poly_data->GetNumberOfCells());
+    SIGHT_DEBUG(this->get_id() << ": Value: " << _value << "Flying edges: " << std::to_string(*m_flying_edges));
+    SIGHT_DEBUG(this->get_id() << ": Contour timer: " << contour_timer->GetElapsedWallClockTime() << "s");
+    SIGHT_DEBUG(this->get_id() << ": Smooth timer: " << smooth_timer->GetElapsedWallClockTime() << "s");
+    SIGHT_DEBUG(this->get_id() << ": Decimate timer: " << decimate_timer->GetElapsedWallClockTime() << "s");
+    SIGHT_DEBUG(this->get_id() << ": Number of points: " << poly_data->GetNumberOfPoints());
+    SIGHT_DEBUG(this->get_id() << ": Number of cells: " << poly_data->GetNumberOfCells());
 
     // Check for errors
     if(auto error = error_obs->get_error(); error.has_value())
     {
-        SIGHT_ERROR(*error);
-        this->notifier::failure(*error);
+        SIGHT_DEBUG(*error);
         this->async_emit(filter::signals::FAILED);
 
         return nullptr;
@@ -431,17 +440,17 @@ vtkSmartPointer<vtkPolyData> vtk_mesher::reconstruct(vtkSmartPointer<vtkImageDat
 vtk_mesher::connections_t vtk_mesher::auto_connections() const
 {
     return {
-        {m_boundary_smoothing, data::object::MODIFIED_SIG, service::slots::UPDATE},
-        {m_non_manifold_smoothing, data::object::MODIFIED_SIG, service::slots::UPDATE},
-        {m_feature_smoothing, data::object::MODIFIED_SIG, service::slots::UPDATE},
-        {m_preserve_topology, data::object::MODIFIED_SIG, service::slots::UPDATE},
-        {m_use_flying_edges, data::object::MODIFIED_SIG, service::slots::UPDATE},
-        {m_value, data::object::MODIFIED_SIG, service::slots::UPDATE},
-        {m_pass_band, data::object::MODIFIED_SIG, service::slots::UPDATE},
-        {m_num_iterations, data::object::MODIFIED_SIG, service::slots::UPDATE},
-        {m_feature_angle, data::object::MODIFIED_SIG, service::slots::UPDATE},
-        {m_reduction, data::object::MODIFIED_SIG, service::slots::UPDATE},
-        {m_quadric_reduction, data::object::MODIFIED_SIG, service::slots::UPDATE}
+        {m_boundary_smoothing, data::signals::MODIFIED, service::slots::UPDATE},
+        {m_non_manifold_smoothing, data::signals::MODIFIED, service::slots::UPDATE},
+        {m_feature_smoothing, data::signals::MODIFIED, service::slots::UPDATE},
+        {m_preserve_topology, data::signals::MODIFIED, service::slots::UPDATE},
+        {m_flying_edges, data::signals::MODIFIED, service::slots::UPDATE},
+        {m_value, data::signals::MODIFIED, service::slots::UPDATE},
+        {m_pass_band, data::signals::MODIFIED, service::slots::UPDATE},
+        {m_iterations, data::signals::MODIFIED, service::slots::UPDATE},
+        {m_feature_angle, data::signals::MODIFIED, service::slots::UPDATE},
+        {m_percent_reduction, data::signals::MODIFIED, service::slots::UPDATE},
+        {m_quadric_reduction, data::signals::MODIFIED, service::slots::UPDATE}
     };
 }
 

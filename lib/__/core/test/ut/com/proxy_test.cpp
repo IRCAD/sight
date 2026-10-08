@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,54 +22,56 @@
 
 #include <core/com/proxy.hpp>
 #include <core/com/signal.hpp>
-#include <core/com/signal.hxx>
+
 #include <core/com/slot.hpp>
-#include <core/com/slot.hxx>
 
 #include <utest/wait.hpp>
 
 #include <doctest/doctest.h>
 
+namespace
+{
+
+struct proxy_test_class
+{
+    proxy_test_class()
+    = default;
+
+    //------------------------------------------------------------------------------
+
+    int sum(int _a, int _b)
+    {
+        SIGHT_INFO("SUM " << _a << " + " << _b);
+        ++m_method_sum;
+        return _a + _b;
+    }
+
+    //------------------------------------------------------------------------------
+
+    int square(int _a)
+    {
+        SIGHT_INFO("SQUARE " << _a);
+        ++m_method_square;
+        return _a * _a;
+    }
+
+    //------------------------------------------------------------------------------
+
+    void do_nothing()
+    {
+        SIGHT_INFO("DO NOTHING");
+        ++m_method_do_nothing;
+    }
+
+    int m_method_sum {0};
+    int m_method_square {0};
+    int m_method_do_nothing {0};
+};
+
+} // namespace
+
 TEST_SUITE("sight::core::com::proxy")
 {
-//-----------------------------------------------------------------------------
-
-    struct proxy_test_class
-    {
-        proxy_test_class()
-        = default;
-
-        //------------------------------------------------------------------------------
-
-        int sum(int _a, int _b)
-        {
-            SIGHT_INFO("SUM " << _a << " + " << _b);
-            ++m_method_sum;
-            return _a + _b;
-        }
-
-        //------------------------------------------------------------------------------
-
-        int square(int _a)
-        {
-            SIGHT_INFO("SQUARE " << _a);
-            ++m_method_square;
-            return _a * _a;
-        }
-
-        //------------------------------------------------------------------------------
-
-        void do_nothing()
-        {
-            SIGHT_INFO("DO NOTHING");
-            ++m_method_do_nothing;
-        }
-
-        int m_method_sum {0};
-        int m_method_square {0};
-        int m_method_do_nothing {0};
-    };
-
 //------------------------------------------------------------------------------
 
     TEST_CASE("basic")

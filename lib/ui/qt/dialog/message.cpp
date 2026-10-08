@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,12 +22,8 @@
 
 #include "ui/qt/dialog/message.hpp"
 
-#include <ui/__/macros.hpp>
-
 #include <QApplication>
 #include <QMessageBox>
-#include <QPushButton>
-#include <QVector>
 
 namespace sight::ui::qt::dialog
 {
@@ -78,7 +74,7 @@ void message::set_icon(message::icons _icon)
 
 void message::add_button(message::buttons _button)
 {
-    m_buttons = (message::buttons) (m_buttons | _button);
+    m_buttons = static_cast<message::buttons>(m_buttons | _button);
 }
 
 //------------------------------------------------------------------------------

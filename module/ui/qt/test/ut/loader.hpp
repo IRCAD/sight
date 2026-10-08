@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -35,8 +35,8 @@ namespace sight::module::ui::qt::ut
 // Utility class to clean a service when destroyed
 struct service_cleaner final
 {
-    service_cleaner(service::base::sptr service) :
-        m_service(std::move(service))
+    service_cleaner(service::base::sptr _service) :
+        m_service(std::move(_service))
     {
     }
 
@@ -66,8 +66,6 @@ std::shared_future<bool> click_on_button(
 );
 
 /// Wait for a widget with the predicate
-std::shared_future<bool> wait_for_widget(
-    std::function<bool(QWidget* widget)> _predicate
-);
+std::shared_future<bool> wait_for_widget(std::function<bool(QWidget*)> _predicate);
 
 } // namespace sight::module::ui::qt::ut

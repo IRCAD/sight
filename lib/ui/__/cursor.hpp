@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -53,7 +53,7 @@ public:
     /// Set the default cursor
     SIGHT_UI_API void set_default_cursor() override;
 
-protected:
+private:
 
     /// Implementation of a cursor in a specific UI (wx/Qt)
     ui::cursor_base::sptr m_implementation;

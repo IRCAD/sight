@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -92,10 +92,10 @@ public:
     /// Show the message box and return the clicked button.
     SIGHT_UI_API message::buttons show() override;
 
-protected:
+private:
 
     /// Implementation of a message box in a specific UI (wx/Qt)
-    ui::dialog::message_base::sptr m_implementation;
+    ui::dialog::message_base::sptr m_implementation; //NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
 };
 
 } // namespace sight::ui::dialog

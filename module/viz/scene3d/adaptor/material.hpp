@@ -24,28 +24,13 @@
 
 #include "module/viz/scene3d/adaptor/texture.hpp"
 
-#include <data/image.hpp>
 #include <data/material.hpp>
-#include <data/mesh.hpp>
+#include <data/string.hpp>
 
 #include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/material/generic.hpp>
 #include <viz/scene3d/material/standard.hpp>
-#include <viz/scene3d/mesh.hpp>
 #include <viz/scene3d/ogre.hpp>
-#include <viz/scene3d/r2vb_renderable.hpp>
-
-#include <OGRE/OgreGpuProgramParams.h>
-#include <OGRE/OgreMaterial.h>
-
-#include <regex>
-
-namespace sight::data
-{
-
-class Material;
-
-} // namespace sight::data
 
 namespace sight::module::viz::scene3d::adaptor
 {
@@ -67,19 +52,19 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::adaptor::material">
-        <inout key="material" uid="..." />
-        <inout group="uniforms">
-            <key uid="..." name="u_uniform_name" />
-       </inout>
+        <data material="${...}" />
+            <uniform object="${...}" name="..." />
         <config material_template="materialTemplateName" material_name="meshMaterial" texture_name="texName"
                 shading_mode="phong" normalLength="0.1" representation_mode="SURFACE" />
     </service>
    @endcode
  *
- * @subsection In-Out In-Out
- * - \b material [sight::data::material]: adapted material. The material may be modified to comply to the configuration
+ * @subsection Input Input
+ * - \b data.material [sight::data::material]: adapted material. The material may be modified to comply to the
+ * configuration
  *      of the adaptor.
- * - \b uniforms: list of data to bind to material uniforms.
+ * - \b uniform.object [sight::data::object]: data to bind to a material uniform.
+ * - \b uniform.name [sight::data::string]: name of the material uniform associated with the object.
  *
  * @subsection Configuration Configuration:
  * - \b material_template (optional, string, default=""): name of the base Ogre material/
@@ -114,7 +99,7 @@ public:
         static const inline slot_key_t REMOVE_TEXTURE = "remove_texture";
     };
 
-    static const inline std::string MATERIAL_INOUT = "material";
+    static const inline std::string MATERIAL_INOUT = "data.material";
 
     /// Initializes slots.
     material() noexcept;
@@ -171,7 +156,7 @@ public:
 protected:
 
     /// Configures the adaptor.
-    void configuring(const config_t& config) final;
+    void configuring(const config_t& _config) final;
 
     /// Creates the material.
     void starting() final;
@@ -180,11 +165,11 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::material::MODIFIED_SIG of s_MATERIAL_INOUT to service::slots::UPDATE
-     * Connect data::material::ADDED_FIELDS_SIG of s_MATERIAL_INOUT to UPDATE_FIELD
-     * Connect data::material::CHANGED_FIELDS_SIG of s_MATERIAL_INOUT to UPDATE_FIELD
-     * Connect data::material::ADDED_TEXTURE_SIG of s_MATERIAL_INOUT to ADD_TEXTURE
-     * Connect data::material::REMOVED_TEXTURE_SIG of s_MATERIAL_INOUT to REMOVE_TEXTURE
+     * Connect data::signals::MODIFIED of s_MATERIAL_INOUT to service::slots::UPDATE
+     * Connect data::signals::ADDED_FIELDS of s_MATERIAL_INOUT to UPDATE_FIELD
+     * Connect data::signals::CHANGED_FIELDS of s_MATERIAL_INOUT to UPDATE_FIELD
+     * Connect data::material::signals::ADDED_TEXTURE of s_MATERIAL_INOUT to ADD_TEXTURE
+     * Connect data::material::signals::REMOVED_TEXTURE of s_MATERIAL_INOUT to REMOVE_TEXTURE
      */
     service::connections_t auto_connections() const final;
 
@@ -254,7 +239,8 @@ private:
     sight::data::material::sptr m_internal_material;
 
     data::ptr<data::material, data::access::inout> m_material_data {this, MATERIAL_INOUT, true};
-    data::ptr_vector<data::object, data::access::inout> m_uniforms {this, "uniforms", true};
+    data::ptr_vector<data::object, data::access::inout> m_uniform_objects {this, "uniform.object", true};
+    data::ptr_vector<data::string, data::access::in> m_uniform_names {this, "uniform.name", std::nullopt};
 };
 
 //------------------------------------------------------------------------------
@@ -335,10 +321,8 @@ inline sight::viz::scene3d::material::generic* material::get_material_impl() con
     {
         return m_material_impl.get();
     }
-    else
-    {
-        return m_standard_material_impl.get();
-    }
+
+    return m_standard_material_impl.get();
 }
 
 //------------------------------------------------------------------------------

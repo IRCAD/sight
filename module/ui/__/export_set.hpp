@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,8 +45,7 @@ namespace sight::module::ui
  *
  * @code{.xml}
         <service type="sight::module::ui::export_set" auto_connect="true">
-            <inout key="data" uid="..." />
-            <inout key="container" uid="..." />
+            <data container="${dataSet}" element="${newCameraSet}" />
        </service>
    @endcode
  * @subsection In-Out In-Out:
@@ -63,7 +62,7 @@ public:
     constexpr export_set() = default;
 
     /// Destructor
-    inline ~export_set() noexcept override = default;
+    ~export_set() noexcept override = default;
 
 protected:
 

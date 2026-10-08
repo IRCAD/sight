@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,7 +21,6 @@
  ***********************************************************************/
 
 #include <core/com/util/auto_bind.hpp>
-#include <core/com/util/auto_bind.hxx>
 #include <core/com/util/convert_function_type.hpp>
 #include <core/com/util/remove_last_arg.hpp>
 

@@ -21,25 +21,21 @@
 
 #include "point.hpp"
 
-#include <core/com/slots.hxx>
 #include <core/runtime/path.hpp>
 #include <core/thread/worker.hpp>
 #include <core/tools/uuid.hpp>
 
-#include <data/dicom/attribute.hpp>
 #include <data/fiducials_series.hpp>
-#include <data/helper/fiducials_series.hpp>
 #include <data/image_series.hpp>
 
 #include <geometry/data/image.hpp>
-
-#include <ui/__/cursor.hpp>
 
 #include <viz/scene3d/helper/manual_object.hpp>
 #include <viz/scene3d/helper/scene.hpp>
 #include <viz/scene3d/ogre.hpp>
 #include <viz/scene3d/utils.hpp>
 
+#include <module/viz/scene3d_qt/screen_position.hpp>
 #include <module/viz/scene3d_qt/window_interactor.hpp>
 
 #include <QHBoxLayout>
@@ -59,21 +55,19 @@ namespace
 
 struct private_slots final
 {
-    using key_t = sight::core::com::slots::key_t;
+    inline static const core::com::has_slots::slot_key_t REMOVE_GROUP = "remove_group";
+    inline static const core::com::has_slots::slot_key_t MODIFY_GROUP = "modify_group";
+    inline static const core::com::has_slots::slot_key_t RENAME_GROUP = "rename_group";
 
-    inline static const key_t REMOVE_GROUP = "remove_group";
-    inline static const key_t MODIFY_GROUP = "modify_group";
-    inline static const key_t RENAME_GROUP = "rename_group";
+    inline static const core::com::has_slots::slot_key_t INSERT_POINT   = "insert_point";
+    inline static const core::com::has_slots::slot_key_t MODIFY_POINT   = "modify_point";
+    inline static const core::com::has_slots::slot_key_t ADD_POINT      = "add_point";
+    inline static const core::com::has_slots::slot_key_t REMOVE_POINT   = "remove_point";
+    inline static const core::com::has_slots::slot_key_t SELECT_POINT   = "select_point";
+    inline static const core::com::has_slots::slot_key_t DESELECT_POINT = "deselect_point";
 
-    inline static const key_t INSERT_POINT   = "insert_point";
-    inline static const key_t MODIFY_POINT   = "modify_point";
-    inline static const key_t ADD_POINT      = "add_point";
-    inline static const key_t REMOVE_POINT   = "remove_point";
-    inline static const key_t SELECT_POINT   = "select_point";
-    inline static const key_t DESELECT_POINT = "deselect_point";
-
-    inline static const key_t SLICE_TYPE  = "slice_type";
-    inline static const key_t SLICE_INDEX = "slice_index";
+    inline static const core::com::has_slots::slot_key_t SLICE_TYPE  = "slice_type";
+    inline static const core::com::has_slots::slot_key_t SLICE_INDEX = "slice_index";
 };
 
 class hide_contextual_menu_when_focus_out final : public QObject
@@ -94,8 +88,6 @@ public:
             m_filtered->removeEventFilter(this);
         }
     }
-
-protected:
 
     //------------------------------------------------------------------------------
 
@@ -118,13 +110,13 @@ private:
     const QPointer<QWidget> m_contextual_menu;
 };
 
+} // namespace
+
 /// @return true if the fiducial_query need to be added to the list
-inline bool fiducial_query_predicate(const data::fiducials_series::query_result& _result)
+static inline bool fiducial_query_predicate(const data::fiducials_series::query_result& _result)
 {
     return _result.m_contour_data && _result.m_contour_data->size() == 3;
 }
-
-} // namespace
 
 //------------------------------------------------------------------------------
 
@@ -156,6 +148,7 @@ point::point() noexcept
 
     new_slot(slots::REMOVE_FIDUCIALS, &point::remove_fiducials, this);
     new_slot(slots::REMOVE_VISIBLE_FIDUCIALS, &point::remove_visible_fiducials, this);
+    new_slot(slots::SET_IMAGE_VISIBILITY, &point::set_image_visibility, this);
     new_slot(slots::SET_CURRENT_GROUP, &point::set_current_group, this);
     new_slot(slots::CONFIGURE_FIDUCIALS, &point::configure_fiducials, this);
     new_slot(slots::ENABLE_EDIT_MODE, &point::enable_edit_mode, this);
@@ -432,7 +425,7 @@ void point::starting()
 service::connections_t point::auto_connections() const
 {
     return sight::service::connections_t {
-        {m_image_series, data::image_series::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE},
+        {m_image_series, data::signals::MODIFIED, adaptor::slots::LAZY_UPDATE},
 
         {m_image_series, data::has_fiducials::signals::GROUP_RENAMED, private_slots::RENAME_GROUP},
         {m_image_series, data::has_fiducials::signals::GROUP_REMOVED, private_slots::REMOVE_GROUP},
@@ -445,8 +438,8 @@ service::connections_t point::auto_connections() const
         {m_image_series, data::has_fiducials::signals::POINT_SELECTED, private_slots::SELECT_POINT},
         {m_image_series, data::has_fiducials::signals::POINT_DESELECTED, private_slots::DESELECT_POINT},
 
-        {m_image_series, data::image::SLICE_TYPE_MODIFIED_SIG, private_slots::SLICE_TYPE},
-        {m_image_series, data::image::SLICE_INDEX_MODIFIED_SIG, private_slots::SLICE_INDEX}
+        {m_image_series, data::image::signals::SLICE_TYPE_MODIFIED, private_slots::SLICE_TYPE},
+        {m_image_series, data::image::signals::SLICE_INDEX_MODIFIED, private_slots::SLICE_INDEX}
     } + adaptor::auto_connections();
 }
 
@@ -549,16 +542,6 @@ void point::emit_removed_signals(
     bool _remove_ogre_fiducials
 )
 {
-    // The point_removed signal
-    const auto& point_removed_sig = _image_series.signal<data::has_fiducials::signals::point_removed>(
-        data::has_fiducials::signals::POINT_REMOVED
-    );
-
-    // Block the signal to avoid being called back.
-    core::com::connection::blocker point_removed_blocker(
-        point_removed_sig->get_connection(slot(private_slots::REMOVE_POINT))
-    );
-
     // Do it in reverse order to avoid index shifting.
     for(const auto& remove_result : std::views::reverse(_removed_results))
     {
@@ -569,23 +552,18 @@ void point::emit_removed_signals(
         }
 
         // Emit the point_removed signal for each removed fiducial.
-        point_removed_sig->async_emit(remove_result.m_group_name.value_or(""), remove_result.m_shape_index);
+        _image_series.async_emit(
+            this,
+            data::has_fiducials::signals::POINT_REMOVED,
+            remove_result.m_group_name.value_or(""),
+            remove_result.m_shape_index
+        );
     }
-
-    // The group_removed signal.
-    const auto& group_removed_sig = _image_series.signal<data::has_fiducials::signals::group_removed>(
-        data::has_fiducials::signals::GROUP_REMOVED
-    );
-
-    // Block the signal to avoid being called back.
-    core::com::connection::blocker group_removed_blocker(
-        group_removed_sig->get_connection(slot(private_slots::REMOVE_GROUP))
-    );
 
     for(const auto& removed_fiducial_set : _removed_fiducial_sets)
     {
         // Emit the group_removed signal for each removed fiducial set.
-        group_removed_sig->async_emit(removed_fiducial_set);
+        _image_series.async_emit(this, data::has_fiducials::signals::GROUP_REMOVED, removed_fiducial_set);
     }
 }
 
@@ -603,13 +581,13 @@ void point::remove_fiducials()
     // Then we remove all fiducials from the image series.
     auto locked_image = m_image_series.lock();
     auto fiducials    = locked_image->get_fiducials();
+
     const auto& [remove_results, removed_fiducial_sets] = fiducials->remove_fiducials(
         fiducial_query_predicate,
         data::fiducials_series::shape::point
     );
 
     emit_removed_signals(remove_results, removed_fiducial_sets, *locked_image, true);
-
     if(!remove_results.empty())
     {
         request_render();
@@ -953,10 +931,20 @@ std::shared_ptr<point::ogre_fiducial> point::create_ogre_fiducial(
     manual_object->setVisible(_visible);
     manual_object->setQueryFlags(m_fiducials_query_flag);
 
-    auto* const node = m_transform_node->createChildSceneNode(core::id::join(id, point_name, "node"));
+    auto* const node = m_transform_node->createChildSceneNode(
+        core::id::join(
+            id,
+            point_name,
+            "node"
+        )
+    );
 
     // Set the point to the right position.
-    node->setPosition(Ogre::Real(_position[0]), Ogre::Real(_position[1]), Ogre::Real(_position[2]));
+    node->setPosition(
+        static_cast<Ogre::Real>(_position[0]),
+        static_cast<Ogre::Real>(_position[1]),
+        static_cast<Ogre::Real>(_position[2])
+    );
 
     // Attach the node to the manual object.
     node->attachObject(manual_object);
@@ -1049,13 +1037,15 @@ std::shared_ptr<point::ogre_fiducial> point::create_ogre_fiducial(
                 }
 
                 // The signal should call the rename_group slot
-                locked_image->signal<data::has_fiducials::signals::group_renamed>(
-                    data::has_fiducials::signals::GROUP_RENAMED
-                )->async_emit(ogre_fiducial->m_group_name, new_group_name);
+                locked_image->async_emit(
+                    data::has_fiducials::signals::GROUP_RENAMED,
+                    ogre_fiducial->m_group_name,
+                    new_group_name
+                );
             });
 
         slot_text_edited->set_worker(core::thread::get_default_worker());
-        new_ogre_fiducial->m_label->signal(sight::viz::scene3d::text::TEXT_EDITED_SIGNAL)->connect(slot_text_edited);
+        new_ogre_fiducial->m_label->signal(sight::viz::scene3d::text::signals::TEXT_EDITED)->connect(slot_text_edited);
         new_ogre_fiducial->m_slots.push_back(slot_text_edited);
 
         auto slot_editing_finished = core::com::new_slot(
@@ -1068,7 +1058,7 @@ std::shared_ptr<point::ogre_fiducial> point::create_ogre_fiducial(
             });
 
         slot_editing_finished->set_worker(core::thread::get_default_worker());
-        new_ogre_fiducial->m_label->signal(sight::viz::scene3d::text::EDITING_FINISHED_SIGNAL)->connect(
+        new_ogre_fiducial->m_label->signal(sight::viz::scene3d::text::signals::EDITING_FINISHED)->connect(
             slot_editing_finished
         );
         new_ogre_fiducial->m_slots.push_back(slot_editing_finished);
@@ -1145,7 +1135,7 @@ std::size_t point::destroy_ogre_fiducials(
 void point::select_point(std::string _group_name, std::size_t _index)
 {
     // This method must be synchronized with selectPoint(std::string, std::size_t).
-    std::lock_guard guard(m_selected_mutex);
+    std::scoped_lock guard(m_selected_mutex);
 
     // Check if the point is not already selected.
     if(const auto it = std::ranges::find_if(
@@ -1193,7 +1183,7 @@ void point::select_point(std::string _group_name, std::size_t _index)
 void point::deselect_point(std::string _group_name, std::size_t _index)
 {
     // This method must be synchronized with select_point(std::string, std::size_t).
-    std::lock_guard guard(m_selected_mutex);
+    std::scoped_lock guard(m_selected_mutex);
 
     render_service()->make_current();
 
@@ -1329,7 +1319,7 @@ void point::configure_fiducials(sight::viz::scene3d::fiducials_configuration _co
     {
         if(*_configuration.group_max >= 0)
         {
-            m_group_max[m_current_group] = std::size_t(*_configuration.group_max);
+            m_group_max[m_current_group] = static_cast<std::size_t>(*_configuration.group_max);
         }
         else
         {
@@ -1391,7 +1381,7 @@ void point::enable_edit_mode()
         m_event_filter = std::make_unique<hide_contextual_menu_when_focus_out>(parent_widget, m_contextual_menu);
     }
 
-    signal<signals::edit_mode_changed_t>(signals::EDIT_MODE_CHANGED)->async_emit(true);
+    async_emit(signals::EDIT_MODE_CHANGED, true);
 }
 
 //------------------------------------------------------------------------------
@@ -1425,7 +1415,7 @@ void point::disable_edit_mode()
             });
     }
 
-    signal<signals::edit_mode_changed_t>(signals::EDIT_MODE_CHANGED)->async_emit(false);
+    async_emit(signals::EDIT_MODE_CHANGED, false);
 }
 
 //------------------------------------------------------------------------------
@@ -1558,24 +1548,11 @@ void point::create_and_pick_fiducial(const std::vector<double>& _point, bool _pi
     // Emit group_added signals..
     if(group_added)
     {
-        const auto& sig = locked_image->signal<data::has_fiducials::signals::group_added>(
-            data::has_fiducials::signals::GROUP_ADDED
-        );
-
         // No need to block, we don't have connection on GROUP_ADDED
-        sig->async_emit(m_current_group);
+        locked_image->async_emit(data::has_fiducials::signals::GROUP_ADDED, m_current_group);
     }
 
-    // Emit point_added signals..
-    {
-        const auto& sig = locked_image->signal<data::has_fiducials::signals::point_added>(
-            data::has_fiducials::signals::POINT_ADDED
-        );
-
-        // Block the signal to avoid being called back.
-        core::com::connection::blocker blocker(sig->get_connection(slot(private_slots::ADD_POINT)));
-        sig->async_emit(m_current_group);
-    }
+    locked_image->async_emit(this, data::has_fiducials::signals::POINT_ADDED, m_current_group);
 
     // Create the new point. Assume visible by default.
     const auto& ogre_fiducial = create_ogre_fiducial(
@@ -1691,8 +1668,10 @@ bool point::check_fiducial_visibility(
             // Check if the position is the same than slice position
             const auto fiducial_axis_size = _fiducial_size / axis_spacing;
 
-            return fiducial_axis_position >= std::int64_t(slice_index) - std::int64_t(std::ceil(fiducial_axis_size))
-                   && fiducial_axis_position <= std::int64_t(slice_index) + std::int64_t(std::ceil(fiducial_axis_size));
+            return fiducial_axis_position
+                   >= static_cast<std::int64_t>(slice_index) - static_cast<std::int64_t>(std::ceil(fiducial_axis_size))
+                   && fiducial_axis_position
+                   <= static_cast<std::int64_t>(slice_index) + static_cast<std::int64_t>(std::ceil(fiducial_axis_size));
         }
 
         if(m_view_distance == point::view_distance::current_slice)
@@ -1717,7 +1696,8 @@ bool point::check_fiducial_visibility(
     const float size     = _query.m_size.value_or(m_current_size);
 
     // Check if the fiducial is visible.
-    return _base_visibility.value_or(visible())
+    return m_image_visible
+           && _base_visibility.value_or(visible())
            && _query.m_visible.value_or(true)
            && check_fiducial_visibility(position, size, _image_series);
 }
@@ -1767,6 +1747,18 @@ void point::set_visible(bool _visible)
     if(need_render)
     {
         request_render();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void point::set_image_visibility(std::string _image_id, bool _visible)
+{
+    const auto image = m_image_series.const_lock();
+    if(image && image->get_id() == _image_id)
+    {
+        m_image_visible = _visible;
+        this->apply_visibility();
     }
 }
 
@@ -1908,13 +1900,12 @@ void point::mouse_move_event(mouse_button /*_button*/, modifier /*_mods*/, int _
 
         if(!modify_results.empty())
         {
-            const auto sig = locked_image->signal<data::has_fiducials::signals::point_modified>(
-                data::has_fiducials::signals::POINT_MODIFIED
+            locked_image->async_emit(
+                this,
+                data::has_fiducials::signals::POINT_MODIFIED,
+                m_picked_data->m_group_name,
+                m_picked_data->m_index
             );
-
-            // Block the signal to avoid being called back.
-            core::com::connection::blocker blocker(sig->get_connection(slot(private_slots::MODIFY_POINT)));
-            sig->async_emit(m_picked_data->m_group_name, m_picked_data->m_index);
         }
 
         request_render();
@@ -1948,29 +1939,14 @@ void point::button_release_event(mouse_button _button, modifier /*_mods*/, int /
         // If we are in edit mode, we show the bin button to remove it.
         if((m_edit_mode& edit_mode::edit) == edit_mode::edit && m_must_show_contextual_menu)
         {
-            std::pair<Ogre::Vector2,
-                      Ogre::Vector2> screen_pos = sight::viz::scene3d::helper::scene::compute_bounding_rect(
+            const screen_rect_t screen_pos = sight::viz::scene3d::helper::scene::compute_bounding_rect(
                 *layer()->get_default_camera(),
                 m_picked_data->m_node
-                      );
-            const auto ratio    = m_contextual_menu->devicePixelRatioF();
+            );
             auto interactor     = layer()->render_service()->get_interactor_manager();
             auto qt_interactor  = std::dynamic_pointer_cast<window_interactor>(interactor);
             auto* parent_widget = qt_interactor->get_qt_widget();
-            const int x         = std::clamp(
-                int(((screen_pos.first.x + screen_pos.second.x) / 2) / ratio),
-                0,
-                parent_widget->width() - m_contextual_menu->width()
-            );
-
-            int y = int((screen_pos.first.y / ratio) - m_contextual_menu->height());
-            if(y < 0)
-            {
-                // If there isn't enough place upward the fiducial, place the menu downward.
-                y = int(screen_pos.second.y / ratio);
-            }
-
-            m_contextual_menu->move(x, y);
+            const bool placed   = place_near(*m_contextual_menu, *parent_widget, screen_pos);
             m_contextual_menu->raise();
             const QString service_id = QString::fromStdString(base_id());
             auto* bin_button         = m_contextual_menu->findChild<QPushButton*>(service_id + "/binButton");
@@ -2036,7 +2012,7 @@ void point::button_release_event(mouse_button _button, modifier /*_mods*/, int /
                     });
             }
 
-            m_contextual_menu->show();
+            m_contextual_menu->setVisible(placed);
         }
 
         m_picked_data = nullptr;
@@ -2077,7 +2053,7 @@ void point::button_double_press_event(mouse_button /*_button*/, modifier /*_mods
         {
             // Send signal with world coordinates of the fiducial.
             const auto& point = picked_data->m_node->getPosition();
-            signal<signals::send_world_coordinates_t>(signals::SEND_WORLD_COORD)->async_emit(point.x, point.y, point.z);
+            async_emit(signals::SEND_WORLD_COORD, point.x, point.y, point.z);
         }
     }
 }
@@ -2188,5 +2164,7 @@ void point::set_cursor(const std::optional<Qt::CursorShape>& _cursor)
         }
     }
 }
+
+//-----------------------------------------------------------------------------
 
 } // namespace sight::module::viz::scene3d_qt::adaptor::fiducials.

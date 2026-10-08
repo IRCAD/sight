@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,24 +22,17 @@
 
 #include "module/viz/scene3d/adaptor/light.hpp"
 
-#include <core/com/slots.hxx>
-
 #include <viz/scene3d/helper/manual_object.hpp>
 #include <viz/scene3d/ogre.hpp>
 #include <viz/scene3d/registry/macros.hpp>
 #include <viz/scene3d/render.hpp>
-#include <viz/scene3d/utils.hpp>
 
-#include <OGRE/OgreCamera.h>
 #include <OGRE/OgreMath.h>
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreSceneNode.h>
 
 namespace sight::module::viz::scene3d::adaptor
 {
-
-static const core::com::slots::key_t SET_X_OFFSET_SLOT = "setXOffset";
-static const core::com::slots::key_t SET_Y_OFFSET_SLOT = "setYOffset";
 
 static const service::base::key_t DIFFUSE_COLOR_INOUT  = "diffuseColor";
 static const service::base::key_t SPECULAR_COLOR_INOUT = "specularColor";
@@ -53,8 +46,8 @@ SIGHT_REGISTER_SCENE3D_LIGHT(
 
 light::light() noexcept
 {
-    new_slot(SET_X_OFFSET_SLOT, &light::set_theta_offset, this);
-    new_slot(SET_Y_OFFSET_SLOT, &light::set_phi_offset, this);
+    new_slot(slots::SET_X_OFFSET, &light::set_theta_offset, this);
+    new_slot(slots::SET_Y_OFFSET, &light::set_phi_offset, this);
 }
 
 //------------------------------------------------------------------------------
@@ -181,8 +174,8 @@ void light::starting()
 service::connections_t light::auto_connections() const
 {
     service::connections_t connections = adaptor::auto_connections();
-    connections.push(DIFFUSE_COLOR_INOUT, data::color::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
-    connections.push(SPECULAR_COLOR_INOUT, data::color::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
+    connections.push(DIFFUSE_COLOR_INOUT, data::signals::MODIFIED, adaptor::slots::LAZY_UPDATE);
+    connections.push(SPECULAR_COLOR_INOUT, data::signals::MODIFIED, adaptor::slots::LAZY_UPDATE);
 
     return connections;
 }

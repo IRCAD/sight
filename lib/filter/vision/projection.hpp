@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -97,10 +97,10 @@ bool project_point(
 template<class T>
 void project_pixel(std::size_t _px, std::size_t _py, T _depth, T _cx, T _cy, T _fx, T _fy, T& _x, T& _y, T& _z)
 {
-    static_assert(std::is_floating_point<T>::value, "T must be a floating point type");
+    static_assert(std::is_floating_point_v<T>, "T must be a floating point type");
     _x = (static_cast<T>(_px) - _cx) / _fx * _depth;
     _y = (static_cast<T>(_py) - _cy) / _fy * _depth;
-    _z = static_cast<T>(_depth);
+    _z = _depth;
 }
 
 //------------------------------------------------------------------------------
@@ -120,7 +120,7 @@ bool project_point(
     std::size_t& _py
 )
 {
-    static_assert(std::is_floating_point<T>::value, "T must be a floating point type");
+    static_assert(std::is_floating_point_v<T>, "T must be a floating point type");
     const T a = _x / _z;
     const T b = _y / _z;
     T u       = a * _fx + _cx;

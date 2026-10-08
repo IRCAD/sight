@@ -24,7 +24,10 @@
 
 #include "camera.hpp"
 
+#include <OgreEntity.h>
 #include <algorithm>
+#include <cmath>
+#include <limits>
 #include <stack>
 
 namespace sight::viz::scene3d::helper
@@ -158,6 +161,14 @@ std::pair<Ogre::Vector2, Ogre::Vector2> scene::compute_bounding_rect(
         {
             return sight::viz::scene3d::helper::camera::convert_world_space_to_screen_space(_camera, _world_pos);
         });
+    if(std::ranges::any_of(
+           corners_screen_pos,
+           [](const Ogre::Vector2& _p){return !std::isfinite(_p.x) || !std::isfinite(_p.y);}))
+    {
+        constexpr auto nan = std::numeric_limits<float>::quiet_NaN();
+        return {{nan, nan}, {nan, nan}};
+    }
+
     std::array<float, s_NB_CORNERS> screen_x {};
     std::array<float, s_NB_CORNERS> screen_y {};
     for(std::size_t i = 0 ; i < corners_screen_pos.size() ; i++)

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,22 +26,14 @@
 
 #include <core/location/multiple_files.hpp>
 #include <core/location/single_folder.hpp>
-#include <core/progress/observer.hpp>
 #include <core/tools/date_and_time.hpp>
 #include <core/tools/uuid.hpp>
 
-#include <data/image.hpp>
 #include <data/image_series.hpp>
 #include <data/series_set.hpp>
 
-#include <service/macros.hpp>
-
 #include <ui/__/cursor.hpp>
 #include <ui/__/dialog/location.hpp>
-#include <ui/__/dialog/message.hpp>
-#include <ui/__/dialog/progress.hpp>
-
-#include <boost/date_time/posix_time/posix_time.hpp>
 
 namespace sight::module::io::itk
 {
@@ -63,6 +55,11 @@ sight::io::service::path_type_t series_set_reader::get_path_type() const
 void series_set_reader::configuring()
 {
     sight::io::service::reader::configuring();
+
+    if(const auto config = this->get_config().get_child_optional("config.<xmlattr>"); config)
+    {
+        m_append = config->get("append", false);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -75,7 +72,7 @@ void series_set_reader::open_location_dialog()
     dialog_file.set_title(*m_window_title);
     dialog_file.set_default_location(default_directory);
     dialog_file.add_filter("NIfTI (.nii)", "*.nii *.nii.gz");
-    dialog_file.add_filter("Inr (.inr.gz)", "*.inr.gz");
+    dialog_file.add_filter("Inr (.inr)", "*.inr *.inr.gz");
     dialog_file.set_type(ui::dialog::location::multi_files);
     dialog_file.set_option(ui::dialog::location::read);
     dialog_file.set_option(ui::dialog::location::file_must_exist);
@@ -99,6 +96,15 @@ void series_set_reader::open_location_dialog()
 }
 
 //------------------------------------------------------------------------------
+std::vector<std::pair<std::string, std::string> > series_set_reader::get_supported_extensions()
+{
+    return {
+        {"NIfTI (.nii)", "*.nii *.nii.gz"},
+        {"Inr (.inr)", "*.inr *.inr.gz"}
+    };
+}
+
+//------------------------------------------------------------------------------
 
 void series_set_reader::updating()
 {
@@ -110,7 +116,7 @@ void series_set_reader::updating()
         // Retrieve dataStruct associated with this service
         const auto data       = m_data.lock();
         const auto series_set = std::dynamic_pointer_cast<data::series_set>(data.get_shared());
-        SIGHT_ASSERT("The inout key '" + sight::io::service::DATA_KEY + "' is not correctly set.", series_set);
+        SIGHT_ASSERT("The inout key '" + sight::io::service::READER_DATA_KEY + "' is not correctly set.", series_set);
 
         // Set cursor busy
         sight::ui::busy_cursor cursor;
@@ -123,9 +129,10 @@ void series_set_reader::updating()
         {
             auto img_series = std::make_shared<data::image_series>();
             series_set_reader::init_series(img_series, instance_uid);
+            img_series->set_series_description(path.filename().string());
+            img_series->set_file(path);
 
-            auto read_observer = std::make_shared<sight::core::progress::observer>("Loading images... ");
-            this->async_emit(has_monitors::signals::MONITOR_CREATED, read_observer->get_sptr());
+            auto read_observer = this->observe("Loading images... ");
 
             if(!image_reader::load_image(path, img_series, read_observer))
             {
@@ -138,8 +145,23 @@ void series_set_reader::updating()
         if(!local_set->empty())
         {
             const auto scoped_emitter = series_set->scoped_emit();
-            series_set->clear();
-            series_set->insert(series_set->begin(), local_set->cbegin(), local_set->cend());
+            if(!m_append)
+            {
+                series_set->clear();
+                series_set->insert(series_set->cend(), local_set->cbegin(), local_set->cend());
+            }
+            else
+            {
+                const std::size_t duplicate_count = series_set->append_unique(*local_set);
+                if(duplicate_count > 0)
+                {
+                    this->warn(
+                        duplicate_count == 1
+                        ? "This image is already loaded."
+                        : std::to_string(duplicate_count) + " images are already loaded."
+                    );
+                }
+            }
         }
 
         m_read_failed = read_failed;

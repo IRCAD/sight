@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,78 +19,76 @@
  *
  ***********************************************************************/
 
-#include "non_linear_slider_values_change.hpp"
-
-#include <core/runtime/path.hpp>
+#include "fixture.hpp"
 
 #include <ui/test/helper/button.hpp>
 #include <ui/test/helper/label.hpp>
 #include <ui/test/helper/preferences_configuration.hpp>
 #include <ui/test/tester.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::example::ui::ex_parameters::uit::non_linear_slider_values_change);
+#include <doctest/doctest.h>
 
 namespace sight::example::ui::ex_parameters::uit
 {
 
+TEST_SUITE("ex_parameters")
+{
 //------------------------------------------------------------------------------
 
-std::filesystem::path non_linear_slider_values_change::get_profile_path()
-{
-    const std::filesystem::path cwd = sight::core::runtime::working_path();
-    return cwd / "share/sight/ex_parameters/profile.xml";
-}
+    TEST_CASE_FIXTURE(fixture, "non_linear_slider_values_change")
+    {
+        const std::string failure_message = start(
+            "NonLinearSliderValuesChange",
+            [](sight::ui::test::tester& _tester)
+            {
+                namespace helper = sight::ui::test::helper;
+                using selector   = helper::selector;
 
-//------------------------------------------------------------------------------
+                helper::label::exactly_match(
+                    _tester,
+                    selector::from_parent(
+                        "parameters1Srv",
+                        "nonlin/minValueLabel"
+                    ),
+                    "25"
+                );
+                helper::label::exactly_match(
+                    _tester,
+                    selector::from_parent(
+                        "parameters1Srv",
+                        "nonlin/maxValueLabel"
+                    ),
+                    "150"
+                );
 
-void non_linear_slider_values_change::test()
-{
-    start(
-        "NonLinearSliderValuesChange",
-        [](sight::ui::test::tester& _tester)
-        {
-            namespace helper = sight::ui::test::helper;
-            using selector   = helper::selector;
+                helper::button::push_menu_bar_item(_tester, "menuPreferencesView/Preference sync test");
+                helper::preferences_configuration::fill(_tester, {{"nonlin", "37,70,105,135,160"}});
 
-            helper::label::exactly_match(
-                _tester,
-                selector::from_parent(
-                    "parameters1Srv",
-                    "nonlin/minValueLabel"
-                ),
-                "25"
-            );
-            helper::label::exactly_match(
-                _tester,
-                selector::from_parent(
-                    "parameters1Srv",
-                    "nonlin/maxValueLabel"
-                ),
-                "150"
-            );
+                helper::label::exactly_match(
+                    _tester,
+                    selector::from_parent(
+                        "parameters1Srv",
+                        "nonlin/minValueLabel"
+                    ),
+                    "37"
+                );
+                helper::label::exactly_match(
+                    _tester,
+                    selector::from_parent(
+                        "parameters1Srv",
+                        "nonlin/maxValueLabel"
+                    ),
+                    "160"
+                );
+            },
+            true
+        );
 
-            helper::button::push_menu_bar_item(_tester, "menuPreferencesView/Preference sync test");
-            helper::preferences_configuration::fill(_tester, {{"nonlin", "37,70,105,135,160"}});
-
-            helper::label::exactly_match(
-                _tester,
-                selector::from_parent(
-                    "parameters1Srv",
-                    "nonlin/minValueLabel"
-                ),
-                "37"
-            );
-            helper::label::exactly_match(
-                _tester,
-                selector::from_parent(
-                    "parameters1Srv",
-                    "nonlin/maxValueLabel"
-                ),
-                "160"
-            );
-        },
-        true
-    );
-}
+        // Runs on the main thread, after start() has returned: the only doctest assertion for
+        // this scenario. See sight::ui::test::base::start().
+        INFO(failure_message);
+        REQUIRE(failure_message.empty());
+    }
+} // TEST_SUITE
 
 } // namespace sight::example::ui::ex_parameters::uit

@@ -19,8 +19,8 @@
  *
  ***********************************************************************/
 
+#include <core/notification/observer.hpp>
 #include <core/os/temp_path.hpp>
-#include <core/progress/observer.hpp>
 
 #include <data/matrix4.hpp>
 
@@ -50,7 +50,7 @@ TEST_SUITE("sight::io::matrix4")
         auto matrix_out = std::make_shared<sight::data::matrix4>();
         matrix_reader->set_object(matrix_out);
         matrix_reader->set_file(filepath);
-        const auto observer = std::make_shared<sight::core::progress::observer>("Matrix4 Reader Test");
+        const auto observer = std::make_shared<sight::core::notification::observer>("Matrix4 Reader Test");
         CHECK_NOTHROW(matrix_reader->read(observer));
         for(std::uint8_t i = 0 ; i < 4 ; i++)
         {

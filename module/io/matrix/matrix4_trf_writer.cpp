@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,6 @@
 
 #include "module/io/matrix/matrix4_trf_writer.hpp"
 
-#include <core/base.hpp>
-#include <core/com/signal.hpp>
-#include <core/com/signal.hxx>
 #include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
 
@@ -32,12 +29,9 @@
 
 #include <io/__/writer/matrix4_writer.hpp>
 
-#include <service/macros.hpp>
-
 #include <ui/__/dialog/location.hpp>
 
 #include <filesystem>
-#include <fstream>
 #include <iostream>
 
 namespace sight::module::io::matrix
@@ -124,13 +118,13 @@ void matrix4_trf_writer::updating()
             "The object is not a '"
             + data::matrix4::classname()
             + "' or '"
-            + sight::io::service::DATA_KEY
+            + sight::io::service::WRITER_DATA_KEY
             + "' is not correctly set.",
             matrix
         );
 
-        auto observer = std::make_shared<core::progress::observer>("Writing matrix4 TRF file");
-        this->async_emit(has_monitors::signals::MONITOR_CREATED, observer->get_sptr());
+        auto observer = this->make_notification<core::notification::observer>("Writing matrix4 TRF file");
+        this->emit_notification_created(observer);
 
         const auto writer = std::make_shared<sight::io::writer::matrix4_writer>();
         writer->set_object(matrix);

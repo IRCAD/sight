@@ -19,14 +19,11 @@
  *
  ***********************************************************************/
 
-#define FW_PROFILING_DISABLED
-#include <core/profiling.hpp>
+#define SIGHT_PROFILING_DISABLED
 
 #include <geometry/__/line.hpp>
 
 #include <doctest/doctest.h>
-
-#include <glm/glm.hpp>
 
 TEST_SUITE("sight::geometry::line")
 {
@@ -50,9 +47,9 @@ TEST_SUITE("sight::geometry::line")
             glm::dvec3 pt = {1, 42, 2};
 
             glm::dvec3 closest_pt;
-#ifndef FW_PROFILING_DISABLED
+#ifndef SIGHT_PROFILING_DISABLED
             {
-                FW_PROFILE("::sight::geometry::data::getClosestPoint");
+                SIGHT_PROFILE("::sight::geometry::data::getClosestPoint");
                 for(int i = 0 ; i < 1000000 ; ++i)
                 {
                     closestPt = sight::geometry::data::getClosestPoint(ray, pt);
@@ -112,9 +109,9 @@ TEST_SUITE("sight::geometry::line")
             ray2.second = glm::normalize(ray2.second);
 
             bool b_intersection = false;
-#ifndef FW_PROFILING_DISABLED
+#ifndef SIGHT_PROFILING_DISABLED
             {
-                FW_PROFILE("::sight::geometry::data::getClosestPoints");
+                SIGHT_PROFILE("::sight::geometry::data::getClosestPoints");
                 for(int i = 0 ; i < 1000000 ; ++i)
                 {
                     bIntersection = sight::geometry::data::getClosestPoints(ray1, ray2, pointOnThis, pointOnray);
@@ -160,9 +157,9 @@ TEST_SUITE("sight::geometry::line")
             glm::dvec3 pt = {1, 42, 2};
 
             bool b_intersection = false;
-#ifndef FW_PROFILING_DISABLED
+#ifndef SIGHT_PROFILING_DISABLED
             {
-                FW_PROFILE("::sight::geometry::data::intersect1");
+                SIGHT_PROFILE("::sight::geometry::data::intersect1");
                 for(int i = 0 ; i < 1000000 ; ++i)
                 {
                     bIntersection = sight::geometry::data::intersect(ray, 10.0, pt);
@@ -208,9 +205,9 @@ TEST_SUITE("sight::geometry::line")
             direction = glm::normalize(direction);
 
             bool b_intersection = false;
-#ifndef FW_PROFILING_DISABLED
+#ifndef SIGHT_PROFILING_DISABLED
             {
-                FW_PROFILE("::sight::geometry::data::intersect1");
+                SIGHT_PROFILE("::sight::geometry::data::intersect1");
                 for(int i = 0 ; i < 1000000 ; ++i)
                 {
                     bIntersection = sight::geometry::data::intersect(ray1, 2.0, origin, direction, pointOnray);

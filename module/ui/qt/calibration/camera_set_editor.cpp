@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,35 +22,21 @@
 
 #include "module/ui/qt/calibration/camera_set_editor.hpp"
 
-#include <core/base.hpp>
-#include <core/com/slots.hpp>
-#include <core/com/slots.hxx>
-#include <core/object.hpp>
-#include <core/thread/worker.hpp>
-
 #include <data/matrix4.hpp>
-
-#include <service/macros.hpp>
 
 #include <ui/qt/container/widget.hpp>
 
 #include <QBoxLayout>
 #include <QGridLayout>
 
-#include <algorithm>
-#include <sstream>
-
 namespace sight::module::ui::qt::calibration
 {
 
-const core::com::slots::key_t camera_set_editor::UPDATE_INFOS_SLOT = "updateInfos";
-
 // -------------------------------------------------------------------------
 
-camera_set_editor::camera_set_editor() noexcept :
-    m_cam_index(1)
+camera_set_editor::camera_set_editor() noexcept
 {
-    new_slot(UPDATE_INFOS_SLOT, &camera_set_editor::update_informations, this);
+    new_slot(slots::UPDATE_INFOS, &camera_set_editor::update_informations, this);
 }
 
 // -------------------------------------------------------------------------
@@ -146,9 +132,9 @@ void camera_set_editor::clear_labels()
 service::connections_t camera_set_editor::auto_connections() const
 {
     return {
-        {m_camera_set, data::camera_set::ADDED_CAMERA_SIG, UPDATE_INFOS_SLOT},
-        {m_camera_set, data::camera_set::EXTRINSIC_CALIBRATED_SIG, UPDATE_INFOS_SLOT},
-        {m_camera_set, data::camera_set::REMOVED_CAMERA_SIG, UPDATE_INFOS_SLOT},
+        {m_camera_set, data::camera_set::signals::ADDED_CAMERA, slots::UPDATE_INFOS},
+        {m_camera_set, data::camera_set::signals::EXTRINSIC_CALIBRATED, slots::UPDATE_INFOS},
+        {m_camera_set, data::camera_set::signals::REMOVED_CAMERA, slots::UPDATE_INFOS},
     };
 }
 

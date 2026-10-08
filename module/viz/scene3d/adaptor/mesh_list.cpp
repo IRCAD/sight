@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2025 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,20 +22,15 @@
 
 #include "mesh_list.hpp"
 
-#include <core/com/slots.hxx>
-
 namespace sight::module::viz::scene3d::adaptor
 {
-
-static const core::com::slots::key_t ADD_SLOT   = "add";
-static const core::com::slots::key_t CLEAR_SLOT = "clear";
 
 //-----------------------------------------------------------------------------
 
 mesh_list::mesh_list() noexcept
 {
-    new_slot(ADD_SLOT, &mesh_list::add, this);
-    new_slot(CLEAR_SLOT, &mesh_list::clear, this);
+    new_slot(slots::ADD, &mesh_list::add, this);
+    new_slot(slots::CLEAR, &mesh_list::clear, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -83,8 +78,8 @@ void mesh_list::starting()
         // Create adaptors configurations
         const std::string transform_id = gen_id(transform->get_id());
         service::config_t config;
-        config.add("config.<xmlattr>.layer", m_layer_id);
-        config.add("config.<xmlattr>." + std::string(TRANSFORM_INPUT), transform_id);
+        config.add("config.<xmlattr>.layer", layer_id());
+        config.add("config.<xmlattr>.transform", transform_id);
         config.add("config.<xmlattr>.autoresetcamera", "false");
 
         // Create the transform adaptor.
@@ -93,10 +88,10 @@ void mesh_list::starting()
                 "sight::module::viz::scene3d::adaptor::transform"
             );
 
-        transform_adaptor->set_layer_id(m_layer_id);
+        transform_adaptor->set_layer_id(layer_id());
         transform_adaptor->set_render_service(this->render_service());
 
-        transform_adaptor->set_inout(transform, "transform", true);
+        transform_adaptor->set_inout(transform, "data.transform", true);
 
         transform_adaptor->configure(config);
         transform_adaptor->start();
@@ -111,10 +106,10 @@ void mesh_list::starting()
         texture_config.add("config.<xmlattr>.texture_name", image->get_id());
         texture_config.add("config.<xmlattr>.useAlpha", "true");
 
-        texture_adaptor->set_layer_id(m_layer_id);
+        texture_adaptor->set_layer_id(layer_id());
         texture_adaptor->set_render_service(this->render_service());
 
-        texture_adaptor->set_input(image, "image", false);
+        texture_adaptor->set_input(image, "data.image", false);
 
         texture_adaptor->configure(texture_config);
         texture_adaptor->start();
@@ -127,12 +122,12 @@ void mesh_list::starting()
         service::config_t mesh_config = config;
         mesh_config.add("config.<xmlattr>.texture_name", image->get_id());
 
-        mesh_adaptor->set_layer_id(m_layer_id);
+        mesh_adaptor->set_layer_id(layer_id());
         mesh_adaptor->set_render_service(this->render_service());
 
         {
             const auto mesh = m_mesh.lock();
-            mesh_adaptor->set_input(mesh.get_shared(), "mesh", true);
+            mesh_adaptor->set_input(mesh.get_shared(), "data.mesh", true);
         }
 
         mesh_adaptor->configure(mesh_config);
@@ -141,7 +136,9 @@ void mesh_list::starting()
         SIGHT_ASSERT("mesh is not started", mesh_adaptor->started());
 
         // Store data.
-        mesh_instance instance {transform, image, transform_adaptor, mesh_adaptor, texture_adaptor};
+        mesh_instance instance {.m_matrix = transform, .m_image = image, .m_transform = transform_adaptor,
+                                .m_mesh = mesh_adaptor, .m_texture = texture_adaptor
+        };
         m_meshes.push_back(instance);
     }
 }
@@ -151,7 +148,7 @@ void mesh_list::starting()
 service::connections_t mesh_list::auto_connections() const
 {
     service::connections_t connections = adaptor::auto_connections();
-    connections.push(TRANSFORM_INPUT, data::matrix4::MODIFIED_SIG, ADD_SLOT);
+    connections.push(m_transform, data::signals::MODIFIED, slots::ADD);
     return connections;
 }
 

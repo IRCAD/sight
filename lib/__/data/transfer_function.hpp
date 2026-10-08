@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,13 +24,11 @@
 
 #include <sight/data/config.hpp>
 
-#include "data/container.hpp"
+#include "container.hpp"
 
 #include <core/type.hpp>
 
-#include <glm/vec4.hpp>
-
-#include <span>
+#include <glm/ext/vector_double4.hpp>
 
 namespace sight::data
 {
@@ -51,7 +49,7 @@ public:
     using min_max_t = std::pair<value_t, value_t>;
 
     /// Defines the available modes {LINEAR, NEAREST} to interpolate color between two TF color points.
-    enum class interpolation_mode
+    enum class interpolation_mode : std::uint8_t
     {
         linear,
         nearest
@@ -117,8 +115,7 @@ class SIGHT_DATA_CLASS_API transfer_function_piece final : public container_wrap
 {
 public:
 
-    SIGHT_DECLARE_CLASS(transfer_function_piece);
-
+    using sptr = sight::sptr<transfer_function_piece>;
     using container_wrapper<data_t>::container_wrapper;
 
     SIGHT_DATA_API ~transfer_function_piece() final = default;
@@ -258,7 +255,7 @@ public:
     [[nodiscard]] bool resample_to_max_texture_size() const;
 
     /// Sets whether the transfer function will be resampled or nor.
-    void set_resample_to_max_texture_size(const bool _value);
+    void set_resample_to_max_texture_size(bool _value);
 
     /// Gets the TF background color when tf 'isClamped' is true.
     [[nodiscard]] const color_t& background_color() const;
@@ -295,13 +292,16 @@ public:
 
     /// @name Signals
     /// @{
-    /// Defines the type of signal sent when points are modified.
-    using points_modified_signal_t = core::com::signal<void ()>;
-    SIGHT_DATA_API static const core::com::signals::key_t POINTS_MODIFIED_SIG;
+    struct signals
+    {
+        /// Defines the type of signal sent when points are modified.
+        using points_modified_t = core::com::signal<void ()>;
+        static const inline signal_key_t POINTS_MODIFIED = "pointsModified";
 
-    /// Defines the type of signal sent when window-level is modified (window, level).
-    using windowing_modified_signal_t = core::com::signal<void (value_t, value_t)>;
-    SIGHT_DATA_API static const core::com::signals::key_t WINDOWING_MODIFIED_SIG;
+        /// Defines the type of signal sent when window-level is modified (window, level).
+        using windowing_modified_t = core::com::signal<void (value_t, value_t)>;
+        static const inline signal_key_t WINDOWING_MODIFIED = "windowingModified";
+    };
     /// @}
 
     /// Defines shallow copy

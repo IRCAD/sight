@@ -22,17 +22,7 @@
 
 #include "module/filter/image/label_image_to_binary_image.hpp"
 
-#include <core/com/signal.hxx>
-
-#include <data/integer.hpp>
-#include <data/vector.hpp>
-
 #include <filter/image/labeling.hpp>
-
-#include <algorithm>
-#include <bitset>
-#include <functional>
-#include <utility>
 
 namespace sight::module::filter::image
 {
@@ -40,7 +30,7 @@ namespace sight::module::filter::image
 //------------------------------------------------------------------------------
 
 label_image_to_binary_image::label_image_to_binary_image() :
-    filter(m_signals)
+    filter(has_signals::signals())
 {
 }
 
@@ -76,7 +66,7 @@ void label_image_to_binary_image::updating()
 
     sight::filter::image::convert_label_image_to_binary_mask(*label_image, *mask_image, m_label_set_field_name);
 
-    mask_image->async_emit(data::image::MODIFIED_SIG);
+    mask_image->async_emit(data::signals::MODIFIED);
     this->async_emit(signals::SUCCEEDED);
 }
 
@@ -91,8 +81,8 @@ void label_image_to_binary_image::stopping()
 service::connections_t label_image_to_binary_image::auto_connections() const
 {
     return {
-        {LABEL_IMAGE_INPUT, data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE},
-        {LABEL_IMAGE_INPUT, data::image::MODIFIED_SIG, service::slots::UPDATE}
+        {LABEL_IMAGE_INPUT, data::image::signals::BUFFER_MODIFIED, service::slots::UPDATE},
+        {LABEL_IMAGE_INPUT, data::signals::MODIFIED, service::slots::UPDATE}
     };
 }
 

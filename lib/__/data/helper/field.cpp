@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,13 +22,10 @@
 
 #include "data/helper/field.hpp"
 
-#include <core/com/signal.hxx>
+#include <algorithm>
 
 #include <data/exception.hpp>
 #include <data/object.hpp>
-
-#include <algorithm>
-#include <functional>
 
 namespace sight::data::helper
 {
@@ -167,29 +164,17 @@ void field::notify()
 
     if(!m_removedfields.empty())
     {
-        auto sig = m_object.lock()->signal<data::object::removed_fields_signal_t>(
-            data::object::REMOVED_FIELDS_SIG
-        );
-
-        sig->async_emit(m_removedfields);
+        m_object.lock()->async_emit(data::signals::REMOVED_FIELDS, m_removedfields);
     }
 
     if(!m_new_changedfields.empty() && !m_old_changedfields.empty())
     {
-        auto sig = m_object.lock()->signal<data::object::changed_fields_signal_t>(
-            data::object::CHANGED_FIELDS_SIG
-        );
-
-        sig->async_emit(m_new_changedfields, m_old_changedfields);
+        m_object.lock()->async_emit(data::signals::CHANGED_FIELDS, m_new_changedfields, m_old_changedfields);
     }
 
     if(!m_addedfields.empty())
     {
-        auto sig = m_object.lock()->signal<data::object::added_fields_signal_t>(
-            data::object::ADDED_FIELDS_SIG
-        );
-
-        sig->async_emit(m_addedfields);
+        m_object.lock()->async_emit(data::signals::ADDED_FIELDS, m_addedfields);
     }
 
     SIGHT_INFO_IF(
@@ -214,45 +199,45 @@ void field::build_message(
     data::object::field_name_vector_t old_field_names;
     data::object::field_name_vector_t new_field_names;
 
-    std::transform(
-        _old_fields.begin(),
-        _old_fields.end(),
+    std::ranges::transform(
+        _old_fields,
+
         std::back_inserter(old_field_names),
         [](const auto& _e){return _e.first;});
-    std::transform(
-        _new_fields.begin(),
-        _new_fields.end(),
+    std::ranges::transform(
+        _new_fields,
+
         std::back_inserter(new_field_names),
         [](const auto& _e){return _e.first;});
 
-    std::sort(old_field_names.begin(), old_field_names.end());
-    std::sort(new_field_names.begin(), new_field_names.end());
+    std::ranges::sort(old_field_names);
+    std::ranges::sort(new_field_names);
 
     data::object::field_name_vector_t added;   // new - old
     data::object::field_name_vector_t changed; // old & new
     data::object::field_name_vector_t removed; // old - new
 
-    std::set_difference(
-        new_field_names.begin(),
-        new_field_names.end(),
-        old_field_names.begin(),
-        old_field_names.end(),
+    std::ranges::set_difference(
+        new_field_names,
+
+        old_field_names,
+
         std::back_inserter(added)
     );
 
-    std::set_intersection(
-        new_field_names.begin(),
-        new_field_names.end(),
-        old_field_names.begin(),
-        old_field_names.end(),
+    std::ranges::set_intersection(
+        new_field_names,
+
+        old_field_names,
+
         std::back_inserter(changed)
     );
 
-    std::set_difference(
-        old_field_names.begin(),
-        old_field_names.end(),
-        new_field_names.begin(),
-        new_field_names.end(),
+    std::ranges::set_difference(
+        old_field_names,
+
+        new_field_names,
+
         std::back_inserter(removed)
     );
 

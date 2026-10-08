@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,9 +38,9 @@ namespace registry
 {
 
 using key_t = std::string;
-using type  = core::factory_registry<SPTR(data::object)(), key_t>;
+using type  = core::factory_registry<sight::sptr<data::object>(), key_t>;
 
-SIGHT_DATA_API SPTR(type) get();
+SIGHT_DATA_API sight::sptr<type> get();
 
 } // namespace registry
 

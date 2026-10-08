@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2024 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -72,6 +72,18 @@ public:
 
     SIGHT_DECLARE_SERVICE(point_cloud_from_depth_map, service::filter);
 
+    struct signals
+    {
+        using computed_t = core::com::signal<void ()>;
+        static inline const signal_key_t COMPUTED = "computed";
+    };
+
+    struct slots
+    {
+        static inline const slot_key_t COMPUTE         = "compute";
+        static inline const slot_key_t SET_DEPTH_RANGE = "setDepthRange";
+    };
+
     /**
      * @brief point_cloud_from_depth_map constructor.
      */
@@ -113,13 +125,6 @@ protected:
     void updating() override;
 
 private:
-
-    /**
-     * @name Slots API
-     * @{
-     */
-    static const core::com::slots::key_t SET_DEPTH_RANGE;
-    /** @} */
 
     /// SLOT: update the depth range
     void set_depth_range(int _val, std::string _key);

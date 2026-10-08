@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,14 +22,12 @@
 
 #pragma once
 
-#include <sight/core/config.hpp>
-
 #include "core/runtime/profile.hpp"
 
-#include <filesystem>
 #include <functional>
 #include <map>
 #include <vector>
+
 namespace sight::core::runtime::detail::profile
 {
 
@@ -58,21 +56,21 @@ public:
      *
      * @param[in]   _activater   a shared pointer to an activator
      */
-    void add(SPTR(activater) _activater);
+    void add(sight::sptr<activater> _activater);
 
     /**
      * @brief       Adds a new starter.
      *
-     * @param[in]   _starterIdentifier  identifier of the starter to add
+     * @param[in]   _identifier  identifier of the starter to add
      */
-    void add_starter(const std::string& _starterIdentifier);
+    void add_starter(const std::string& _identifier);
 
     /**
      * @brief       Adds a new stopper.
      *
-     * @param[in]   _stopperIdentifier identifier of the stopper to add
+     * @param[in]   _identifier identifier of the stopper to add
      */
-    void add_stopper(const std::string& _stopperIdentifier, int _priority);
+    void add_stopper(const std::string& _identifier, int _priority);
 
     /**
      * @brief   Starts the profile.
@@ -91,7 +89,7 @@ public:
     /**
      * @brief   Return profile CheckSingleInstance.
      */
-    bool get_check_single_instance() const
+    [[nodiscard]] bool get_check_single_instance() const
     {
         return m_check_single_instance;
     }

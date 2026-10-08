@@ -19,8 +19,8 @@
  *
  ***********************************************************************/
 
+#include <core/notification/observer.hpp>
 #include <core/os/temp_path.hpp>
-#include <core/progress/observer.hpp>
 
 #include <data/array.hpp>
 
@@ -39,7 +39,7 @@ TEST_SUITE("sight::io::array")
         sight::core::os::temp_dir temp_dir;
         std::filesystem::path filepath = temp_dir / ("test" + array_reader->extension());
         std::array<std::uint8_t, 16> array_in {};
-        std::iota(array_in.begin(), array_in.end(), std::uint8_t(0));
+        std::iota(array_in.begin(), array_in.end(), static_cast<std::uint8_t>(0));
         {
             std::ofstream out(filepath, std::ios::binary);
             out.write(reinterpret_cast<char*>(array_in.data()), 16);
@@ -48,7 +48,7 @@ TEST_SUITE("sight::io::array")
         array_out->resize({16}, sight::core::type::UINT8);
         array_reader->set_object(array_out);
         array_reader->set_file(filepath);
-        const auto observer = std::make_shared<sight::core::progress::observer>("ARRAY Reader Test");
+        const auto observer = std::make_shared<sight::core::notification::observer>("ARRAY Reader Test");
         CHECK_NOTHROW(array_reader->read(observer));
         std::uint8_t i = 0;
         {

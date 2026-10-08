@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,22 +24,15 @@
 
 #include "module/io/vtk/image_writer.hpp"
 
-#include <core/com/signal.hxx>
 #include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
-#include <core/tools/failed.hpp>
 
 #include <data/image_series.hpp>
 
 #include <io/__/service/writer.hpp>
-#include <io/vtk/image_writer.hpp>
-#include <io/vtk/meta_image_writer.hpp>
-#include <io/vtk/vti_image_writer.hpp>
 
 #include <ui/__/cursor.hpp>
 #include <ui/__/dialog/location.hpp>
-#include <ui/__/dialog/message.hpp>
-#include <ui/__/dialog/progress.hpp>
 
 namespace sight::module::io::vtk
 {
@@ -127,7 +120,7 @@ void image_series_writer::updating()
             "The object is not a '"
             + data::image_series::classname()
             + "' or '"
-            + sight::io::service::DATA_KEY
+            + sight::io::service::WRITER_DATA_KEY
             + "' is not correctly set.",
             image_series
         );
@@ -135,8 +128,7 @@ void image_series_writer::updating()
         sight::ui::busy_cursor cursor;
 
         const auto& file = this->get_file();
-        auto observer    = std::make_shared<core::progress::observer>("Writing " + file.string() + " file");
-        this->async_emit(has_monitors::signals::MONITOR_CREATED, observer->get_sptr());
+        auto observer    = this->observe("Writing " + file.string() + " file");
 
         image_writer::save_image(file, image_series, observer);
         m_write_failed = false;

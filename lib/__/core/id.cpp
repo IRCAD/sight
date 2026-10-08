@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,13 +23,9 @@
 // cspell:ignore NOLINTNEXTLINE
 
 #include "id.hpp"
-
-#include "demangler.hpp"
 #include "object.hpp"
-
+#include "spy_log.hpp"
 #include "tools/failed.hpp"
-
-#include <boost/lexical_cast.hpp>
 
 namespace sight::core
 {
@@ -88,7 +84,7 @@ void id::add_id_in_dictionary(type _new_id) const
     id::remove_id_from_dictionary(m_id);
     // note we use a static cast for a down cast because we do not use the classical polymorphic approach
     //m_dictionary[ newID ] = (static_cast< Object *>(this))->get_sptr();
-    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-cstyle-cast)
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-cstyle-cast,modernize-avoid-c-style-cast)
     s_dictionary[_new_id] = ((object*) (this))->get_sptr();
     m_id                  = _new_id;
 }
@@ -125,7 +121,7 @@ id::type id::base_id(policy _policy) const
 {
     const auto& id = get_id(_policy);
 
-    if(const auto pos = id.find_last_of(s_separator); pos != std::string::npos)
+    if(const auto pos = id.find_last_of(S_SEPARATOR); pos != std::string::npos)
     {
         return id.substr(pos + 1);
     }
@@ -142,7 +138,7 @@ id::type id::generate() const
     do
     {
         core::mt::scoped_lock lock(s_mutex_counter);
-        new_id = prefix + "-" + std::to_string(s_categorized_counter[prefix]++);
+        new_id = prefix + "_" + std::to_string(s_categorized_counter[prefix]++);
     }
     while(exist(new_id));
 

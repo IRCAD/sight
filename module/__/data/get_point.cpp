@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -83,7 +83,7 @@ void get_point::updating()
         (*point)[1] = (*result.m_contour_data)[1];
         (*point)[2] = (*result.m_contour_data)[2];
 
-        point->async_emit(sight::data::object::MODIFIED_SIG);
+        point->async_emit(sight::data::signals::MODIFIED);
     }
 }
 

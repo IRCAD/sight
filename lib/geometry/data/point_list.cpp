@@ -27,9 +27,6 @@
 
 #include <geometry/data/matrix4.hpp>
 
-#include <glm/geometric.hpp>
-#include <glm/vec3.hpp>
-
 #include <cmath>
 #include <list>
 
@@ -51,7 +48,7 @@ sight::data::array::sptr point_list::compute_distance(
     const std::size_t size = _point_list1->size();
 
     sight::data::array::sptr output_array = std::make_shared<sight::data::array>();
-    output_array->resize({size}, sight::core::type::DOUBLE);
+    output_array->resize({size}, sight::core::type::FLOAT64);
     const auto dump_lock    = output_array->dump_lock();
     auto distance_array_itr = output_array->begin<double>();
 

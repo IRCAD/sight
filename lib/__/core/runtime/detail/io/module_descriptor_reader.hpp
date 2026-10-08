@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,11 +22,7 @@
 
 #pragma once
 
-#include "core/runtime/detail/dl/library.hpp"
 #include "core/runtime/detail/extension_point.hpp"
-#include "core/runtime/runtime_exception.hpp"
-
-#include <libxml/parser.h>
 
 #include <filesystem>
 #include <string>
@@ -96,7 +92,7 @@ public:
      *
      * @return  a pointer to the created extension
      */
-    static std::shared_ptr<extension> process_extension(xmlNodePtr _node, const std::shared_ptr<module> _module);
+    static std::shared_ptr<extension> process_extension(xmlNodePtr _node, std::shared_ptr<module> _module);
 
     /**
      * Processes a node that is a point
@@ -105,7 +101,7 @@ public:
      * @param   _module  a pointer to the module the extension will be attached to
      * @return  a pair with the created extension point and extensions
      */
-    static point_extensions_pair_type process_point(xmlNodePtr _node, const std::shared_ptr<module> _module);
+    static point_extensions_pair_type process_point(xmlNodePtr _node, std::shared_ptr<module> _module);
 
     /**
      * @brief   Processes an extension point XML node.
@@ -117,7 +113,7 @@ public:
      */
     static std::shared_ptr<extension_point> process_extension_point(
         xmlNodePtr _node,
-        const std::shared_ptr<module> _module
+        std::shared_ptr<module> _module
     );
 
     /**

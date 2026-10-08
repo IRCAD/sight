@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2025 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,17 +21,14 @@
  ***********************************************************************/
 
 #include "module/io/video/grabber_proxy.hpp"
-
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
+#include "core/notification/has_monitors.hpp"
 
 #include <data/camera.hpp>
 #include <data/camera_set.hpp>
 #include <data/frame_tl.hpp>
 
 #include <service/extension/config.hpp>
-#include <service/macros.hpp>
-#include <service/registry.hpp>
+#include <service/extension/factory.hpp>
 
 #include <ui/__/dialog/message.hpp>
 #include <ui/__/dialog/selector.hpp>
@@ -59,8 +56,6 @@ grabber_proxy::grabber_proxy() noexcept
     new_slot(slots::FWD_START_CAMERA, &grabber_proxy::fwd_start_camera, this);
     new_slot(slots::FWD_STOP_CAMERA, &grabber_proxy::fwd_stop_camera, this);
     new_slot(slots::FWD_PRESENT_FRAME, &grabber_proxy::fwd_present_frame, this);
-
-    new_slot(slots::FWD_NOTIFY, &grabber_proxy::fwd_notify, this);
 
     new_slot(slots::FWD_SET_PARAMETER, &grabber_proxy::fwd_set_parameter, this);
     new_slot(slots::FWD_CREATE_MONITOR, &grabber_proxy::fwd_create_monitor, this);
@@ -244,7 +239,7 @@ void grabber_proxy::start_camera()
                     auto objects_type = srv_factory->get_service_objects(srv_impl);
                     const auto config = this->get_config();
 
-                    // NOLINTBEGIN(modernize-use-ranges)
+                    // NOLINTBEGIN(modernize-use-ranges,llvm-use-ranges)
                     // 1. Verify that we have the same number of timelines
                     objects_type.erase(
                         std::remove_if(
@@ -256,21 +251,23 @@ void grabber_proxy::start_camera()
                         }),
                         objects_type.end()
                     );
-                    // NOLINTEND(modernize-use-ranges)
+                    // NOLINTEND(modernize-use-ranges,llvm-use-ranges)
 
                     std::size_t num_tl = 0;
-                    auto inouts_cfg    = config.equal_range("inout");
-                    for(auto it_cfg = inouts_cfg.first ; it_cfg != inouts_cfg.second ; ++it_cfg)
+                    auto timelines_cfg = config.equal_range("timeline");
+                    for(auto it_cfg = timelines_cfg.first ; it_cfg != timelines_cfg.second ; ++it_cfg)
                     {
-                        service::config_t parameter_cfg;
-
-                        const auto key = it_cfg->second.get<std::string>("<xmlattr>.key");
-                        SIGHT_DEBUG("Evaluating if key '" + key + "' is suitable...");
-                        const auto obj = this->inout(key).lock();
-                        SIGHT_ASSERT("Object key '" + key + "' not found", obj);
-                        if(obj->get_classname() == "data::frame_tl")
+                        for(const auto& attribute : it_cfg->second.get_child("<xmlattr>"))
                         {
-                            ++num_tl;
+                            const auto& key_suffix = attribute.first;
+                            const auto key         = "timeline." + key_suffix;
+                            SIGHT_DEBUG("Evaluating if key '" + key + "' is suitable...");
+                            const auto obj = this->inout(key).lock();
+                            SIGHT_ASSERT("Object key '" + key + "' not found", obj);
+                            if(obj->get_classname() == "data::frame_tl")
+                            {
+                                ++num_tl;
+                            }
                         }
                     }
 
@@ -376,7 +373,7 @@ void grabber_proxy::start_camera()
                                                             };
 
                             // Remove the ones excluded by the grabber proxy.
-                            // NOLINTBEGIN(modernize-use-ranges)
+                            // NOLINTBEGIN(modernize-use-ranges,llvm-use-ranges)
                             selectable_configs.erase(
                                 std::remove_if(
                                     selectable_configs.begin(),
@@ -385,7 +382,7 @@ void grabber_proxy::start_camera()
                                 ),
                                 selectable_configs.end()
                             );
-                            // NOLINTEND(modernize-use-ranges)
+                            // NOLINTEND(modernize-use-ranges,llvm-use-ranges)
                         }
                     }
 
@@ -470,16 +467,15 @@ void grabber_proxy::start_camera()
 
                 std::size_t input_tl_count = 0;
                 const auto proxy_config    = this->get_config();
-                auto inouts_cfg            = proxy_config.equal_range("inout");
-                for(auto it_cfg = inouts_cfg.first ; it_cfg != inouts_cfg.second ; ++it_cfg)
+                auto timelines_cfg         = proxy_config.equal_range("timeline");
+                for(auto it_cfg = timelines_cfg.first ; it_cfg != timelines_cfg.second ; ++it_cfg)
                 {
-                    const auto key = it_cfg->second.get<std::string>("<xmlattr>.key");
-                    SIGHT_ASSERT("Missing 'key' tag.", !key.empty());
-
-                    auto inout = this->inout(key).lock();
-                    if(inout)
+                    for(const auto& attribute : it_cfg->second.get_child("<xmlattr>"))
                     {
-                        if(key == grabber::FRAMETL_INOUT)
+                        const auto& key_suffix = attribute.first;
+                        const auto key         = "timeline." + key_suffix;
+                        auto inout             = this->inout(key).lock();
+                        if(inout && key == grabber::FRAMETL_INOUT)
                         {
                             auto frame_tl = std::dynamic_pointer_cast<data::frame_tl>(inout.get_shared());
                             if(m_services.size() > 1)
@@ -513,33 +509,46 @@ void grabber_proxy::start_camera()
                 srv->set_worker(this->worker());
                 srv->start();
 
-                m_connections.connect(srv, grabber::POSITION_MODIFIED_SIG, this->get_sptr(), slots::MODIFY_POSITION);
-                m_connections.connect(srv, grabber::DURATION_MODIFIED_SIG, this->get_sptr(), slots::MODIFY_DURATION);
-                m_connections.connect(srv, grabber::CAMERA_STARTED_SIG, this->get_sptr(), slots::FWD_START_CAMERA);
-                m_connections.connect(srv, grabber::CAMERA_STOPPED_SIG, this->get_sptr(), slots::FWD_STOP_CAMERA);
-                m_connections.connect(srv, grabber::FRAME_PRESENTED_SIG, this->get_sptr(), slots::FWD_PRESENT_FRAME);
-
-                m_connections.connect(srv, notifier::signals::NOTIFIED, this->get_sptr(), slots::FWD_NOTIFY);
+                m_connections.connect(
+                    srv,
+                    grabber::signals::POSITION_MODIFIED,
+                    this->get_sptr(),
+                    slots::MODIFY_POSITION
+                );
+                m_connections.connect(
+                    srv,
+                    grabber::signals::DURATION_MODIFIED,
+                    this->get_sptr(),
+                    slots::MODIFY_DURATION
+                );
+                m_connections.connect(srv, grabber::signals::CAMERA_STARTED, this->get_sptr(), slots::FWD_START_CAMERA);
+                m_connections.connect(srv, grabber::signals::CAMERA_STOPPED, this->get_sptr(), slots::FWD_STOP_CAMERA);
+                m_connections.connect(
+                    srv,
+                    grabber::signals::FRAME_PRESENTED,
+                    this->get_sptr(),
+                    slots::FWD_PRESENT_FRAME
+                );
 
                 m_connections.connect(
                     srv,
-                    grabber::PARAMETER_CHANGED_SIG,
+                    grabber::signals::PARAMETER_CHANGED,
                     this->get_sptr(),
                     slots::FWD_SET_PARAMETER
                 );
 
                 m_connections.connect(
                     srv,
-                    grabber::MONITOR_CREATED_SIG,
+                    core::notification::has_monitors::signals::NOTIFICATION_CREATED,
                     this->get_sptr(),
                     slots::FWD_CREATE_MONITOR
                 );
 
                 m_connections.connect(
                     srv,
-                    grabber::FPS_CHANGED_SIG,
+                    grabber::signals::FPS_CHANGED,
                     this->get_sptr(),
-                    grabber::FORWARD_FPS_CHANGED_SLOT
+                    grabber::slots::FORWARD_FPS_CHANGED
                 );
 
                 ++srv_count;
@@ -734,71 +743,56 @@ void grabber_proxy::reconfigure()
 
 void grabber_proxy::modify_position(int64_t _position)
 {
-    auto sig = this->signal<position_modified_signal_t>(POSITION_MODIFIED_SIG);
-    sig->async_emit(static_cast<std::int64_t>(_position));
+    this->async_emit(signals::POSITION_MODIFIED, static_cast<std::int64_t>(_position));
 }
 
 //-----------------------------------------------------------------------------
 
 void grabber_proxy::modify_duration(int64_t _duration)
 {
-    auto sig = this->signal<duration_modified_signal_t>(DURATION_MODIFIED_SIG);
-    sig->async_emit(static_cast<std::int64_t>(_duration));
+    this->async_emit(signals::DURATION_MODIFIED, static_cast<std::int64_t>(_duration));
 }
 
 //-----------------------------------------------------------------------------
 
 void grabber_proxy::fwd_start_camera()
 {
-    auto sig = this->signal<camera_started_signal_t>(CAMERA_STARTED_SIG);
-    sig->async_emit();
+    this->async_emit(signals::CAMERA_STARTED);
 }
 
 //-----------------------------------------------------------------------------
 
 void grabber_proxy::fwd_stop_camera()
 {
-    auto sig = this->signal<camera_stopped_signal_t>(CAMERA_STOPPED_SIG);
-    sig->async_emit();
+    this->async_emit(signals::CAMERA_STOPPED);
 }
 
 //-----------------------------------------------------------------------------
 
 void grabber_proxy::fwd_present_frame()
 {
-    auto sig = this->signal<frame_presented_signal_t>(FRAME_PRESENTED_SIG);
-    sig->async_emit();
-}
-
-//-----------------------------------------------------------------------------
-
-void grabber_proxy::fwd_notify(service::notification _notification)
-{
-    notifier::m_notified_sig->async_emit(std::move(_notification));
+    this->async_emit(signals::FRAME_PRESENTED);
 }
 
 //------------------------------------------------------------------------------
 
 void grabber_proxy::fwd_set_parameter(ui::parameter_t _value, std::string _key)
 {
-    auto sig = this->signal<grabber::parameter_changed_t>(grabber::PARAMETER_CHANGED_SIG);
-    sig->async_emit(_value, _key);
+    this->async_emit(grabber::signals::PARAMETER_CHANGED, _value, _key);
 }
 
 //------------------------------------------------------------------------------
 
-void grabber_proxy::fwd_create_monitor(sight::core::progress::monitor::sptr _monitor)
+void grabber_proxy::fwd_create_monitor(sight::core::notification::base::sptr _monitor)
 {
-    auto sig = this->signal<grabber::monitor_created_signal_t>(grabber::MONITOR_CREATED_SIG);
-    sig->async_emit(_monitor);
+    this->emit_notification_created(_monitor);
 }
 
 //------------------------------------------------------------------------------
 
 void grabber_proxy::forward_fps_changed(double _fps)
 {
-    auto sig = this->signal<grabber::fps_changed_signal_t>(grabber::FPS_CHANGED_SIG);
-    sig->async_emit(_fps);
+    this->async_emit(grabber::signals::FPS_CHANGED, _fps);
 }
 
 //------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,7 +30,7 @@
 namespace sight::data::timeline
 {
 
-enum direction_t
+enum direction_t : std::int8_t
 {
     past   = -1,
     both   = 0,
@@ -39,13 +39,13 @@ enum direction_t
 
 struct signals
 {
-    using pushed_t  = core::com::signal<void (core::clock::type _timestamp)>;
-    using removed_t = core::com::signal<void (core::clock::type _timestamp)>;
+    using pushed_t  = core::com::signal<void (core::clock::type)>;
+    using removed_t = core::com::signal<void (core::clock::type)>;
     using cleared_t = core::com::signal<void ()>;
 
     inline static const core::com::signals::key_t PUSHED  = "object_pushed";
-    inline static const core::com::signals::key_t REMOVED = "objectRemoved";
-    inline static const core::com::signals::key_t CLEARED = "objectCleared";
+    inline static const core::com::signals::key_t REMOVED = "object_removed";
+    inline static const core::com::signals::key_t CLEARED = "object_cleared";
 };
 
 /**
@@ -63,55 +63,42 @@ public:
     SIGHT_DATA_API ~base() override = default;
 
     /// Push an object to the base
-    SIGHT_DATA_API virtual void push_object(const SPTR(timeline::object)& _obj) = 0;
+    SIGHT_DATA_API virtual void push_object(const sight::sptr<timeline::object>& _obj) = 0;
 
     /// Removes an object from the base
-    SIGHT_DATA_API virtual SPTR(timeline::object) pop_object(core::clock::type _timestamp) = 0;
+    SIGHT_DATA_API virtual sight::sptr<timeline::object> pop_object(core::clock::type _timestamp) = 0;
 
     /// modify an object timestamp
-    SIGHT_DATA_API virtual void modify_time(
-        core::clock::type _timestamp,
-        core::clock::type _new_timestamp
-    ) = 0;
+    SIGHT_DATA_API virtual void modify_time(core::clock::type _timestamp, core::clock::type _new_timestamp) = 0;
 
     /// Change an object to the specified timestamp
-    SIGHT_DATA_API virtual void set_object(
-        core::clock::type _timestamp,
-        const SPTR(timeline::object)& _obj
-    ) = 0;
+    SIGHT_DATA_API virtual void set_object(core::clock::type _timestamp, const sight::sptr<timeline::object>& _obj) = 0;
 
     /**
      * @brief Return a new timeline::object with the given timestamp.
      * @note This buffer memory is managed by the pool.
      * @warning This buffer is not registered in the base. You must call pushObject() to register it.
      */
-    SIGHT_DATA_API virtual SPTR(timeline::object) create_object(core::clock::type _timestamp) = 0;
+    SIGHT_DATA_API virtual sight::sptr<timeline::object> create_object(core::clock::type _timestamp) = 0;
 
     /**
      * @brief Return the closest object to the given timestamp
      * @param _timestamp timestamp used to find the closest object
      * @param _direction direction to find the closest object (PAST, FUTURE, BOTH)
      */
-    SIGHT_DATA_API virtual CSPTR(timeline::object) get_closest_object(
+    SIGHT_DATA_API virtual sight::csptr<timeline::object> get_closest_object(
         core::clock::type _timestamp,
         direction_t _direction = both
-    ) const = 0;
+    ) const                    = 0;
 
     /// Return the object with the specified timestamp
-    SIGHT_DATA_API virtual CSPTR(timeline::object) get_object(core::clock::type _timestamp) const = 0;
+    SIGHT_DATA_API virtual sight::csptr<timeline::object> get_object(core::clock::type _timestamp) const = 0;
 
     /// Equality comparison operators
     /// @{
     SIGHT_DATA_API bool operator==(const base& _other) const noexcept;
     SIGHT_DATA_API bool operator!=(const base& _other) const noexcept;
     /// @}
-
-protected:
-
-    /// Signal to emit when an object is pushed in the base.
-    signals::pushed_t::sptr m_sig_object_pushed;
-    /// Signal to emit when an object is removed in the base.
-    signals::pushed_t::sptr m_sig_object_removed;
 }; // class base
 
 } // namespace sight::data::timeline

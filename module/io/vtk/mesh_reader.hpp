@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include <data/mesh.hpp>
-
 #include <io/__/service/reader.hpp>
 
 #include <filesystem>
@@ -39,13 +37,13 @@ namespace sight::module::io::vtk
  * @section XML Configuration
  * @code{.xml}
     <service uid="..." type="sight::module::io::vtk::mesh_reader">
-        <inout key="data" uid="..." />
-        <file>@path/to/file</file>
+        <data read="..." />
+        <path file="@path/to/file" />
     </service>
  * @endcode
  *
  * @subsection In-Out In-Out
- * - \b data [sight::data::mesh]: mesh to read
+ * - \b data.read [sight::data::mesh]: mesh to read
  * @subsection Configuration Configuration
  * - \b file (optional): path of the file to load, if it is not defined, 'open_location_dialog()' should be called to
  * define the path.
@@ -69,9 +67,9 @@ public:
      */
     void open_location_dialog() override;
 
-protected:
-
     sight::io::service::path_type_t get_path_type() const override;
+
+protected:
 
     /**
      * @brief Starting method.

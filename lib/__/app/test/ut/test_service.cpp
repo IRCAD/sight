@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #include "test_service.hpp"
-
-#include <core/com/slots.hxx>
 
 #include <data/object.hpp>
 
@@ -46,7 +44,9 @@ SIGHT_REGISTER_SERVICE(sight::app::ut::test_srv, sight::app::ut::test1_input1_in
 SIGHT_REGISTER_SERVICE(sight::app::ut::test_srv, sight::app::ut::test1_input1_opt_input1_opt_in_out);
 SIGHT_REGISTER_SERVICE(sight::app::ut::test_srv, sight::app::ut::test_out);
 SIGHT_REGISTER_SERVICE(sight::service::base, sight::app::ut::test_service_with_data);
+SIGHT_REGISTER_SERVICE(sight::service::base, sight::app::ut::test_service_with_typed_data);
 SIGHT_REGISTER_SERVICE(sight::service::base, sight::app::ut::test_service_with_properties);
+SIGHT_REGISTER_SERVICE(sight::service::base, sight::app::ut::test_service_with_nested_keys);
 
 namespace sight::app::ut
 {

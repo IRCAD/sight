@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2025 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -50,10 +50,8 @@ namespace sight::module::filter::image
  *
  * @code{.xml}
    <service type="sight::module::filter::image::plane_slicer" auto_connect="true">
-       <in key="image" uid="..." />
-       <in key="axes" uid="..." />
-       <in key="offset" uid="..." />
-       <inout key="slice" uid="..." />
+       <input image="${...}" axes="${...}" offset="${...}" />
+       <output slice="${...}" />
    </service>
    @endcode
  *
@@ -78,12 +76,12 @@ public:
     struct signals
     {
         using slice_range_changed_t = core::com::signal<void (double, double)>;
-        static inline const core::com::signals::key_t SLICE_RANGE_CHANGED = "slice_range_changed";
+        static inline const signal_key_t SLICE_RANGE_CHANGED = "slice_range_changed";
     };
 
     struct slots
     {
-        static inline const core::com::slots::key_t UPDATE_DEFAULT_VALUE = "update_default_value";
+        static inline const slot_key_t UPDATE_DEFAULT_VALUE = "update_default_value";
     };
 
     /// Constructor.
@@ -102,11 +100,11 @@ protected:
     /**
      * @brief Returns proposals to connect service slots to associated object signals.
      *
-     * Connect image::MODIFIED_SIG to this::service::slots::UPDATE
-     * Connect image::BUFFER_MODIFIED_SIG to this::service::slots::UPDATE
-     * Connect image::MODIFIED_SIG to slots::UPDATE_DEFAULT_VALUE
-     * Connect image::BUFFER_MODIFIED_SIG to slots::UPDATE_DEFAULT_VALUE
-     * Connect axes::MODIFIED_SIG to this::service::slots::UPDATE
+     * Connect data::signals::MODIFIED to this::service::slots::UPDATE
+     * Connect image::signals::BUFFER_MODIFIED to this::service::slots::UPDATE
+     * Connect data::signals::MODIFIED to slots::UPDATE_DEFAULT_VALUE
+     * Connect image::signals::BUFFER_MODIFIED to slots::UPDATE_DEFAULT_VALUE
+     * Connect data::signals::MODIFIED to this::service::slots::UPDATE
      */
     connections_t auto_connections() const final;
 
@@ -118,13 +116,15 @@ private:
     /// Vtk reslicing algorithm.
     vtkSmartPointer<vtkImageReslice> m_reslicer;
 
-    sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, "image"};
-    sight::data::ptr<sight::data::matrix4, sight::data::access::in> m_axes {this, "axes"};
-    sight::data::ptr<sight::data::matrix4, sight::data::access::in> m_offset {this, "offset", true};
-    sight::data::ptr<sight::data::image, sight::data::access::inout> m_slice {this, "slice"};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, "input.image"};
+    sight::data::ptr<sight::data::matrix4, sight::data::access::in> m_axes {this, "input.axes"};
+    sight::data::ptr<sight::data::matrix4, sight::data::access::in> m_offset {this, "input.offset", true};
+    sight::data::ptr<sight::data::image, sight::data::access::inout> m_slice {this, "output.slice"};
 
-    sight::data::property<sight::data::boolean> m_center {this, "center", false};
-    sight::data::property<sight::data::string> m_interpolation {this, "interpolation", std::string("LINEAR")};
+    sight::data::ptr<sight::data::boolean, sight::data::access::in> m_center {this, "config.center", false};
+    sight::data::ptr<sight::data::string, sight::data::access::in> m_interpolation {
+        this, "config.interpolation", std::string("LINEAR")
+    };
 };
 
 } //namespace sight::module::filter::image

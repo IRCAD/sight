@@ -2,22 +2,21 @@ sight_add_target(tuto08_mesher_with_generic_scene TYPE APP UNIQUE ON)
 
 add_dependencies(
     tuto08_mesher_with_generic_scene
-    sightrun
-    module_app
-    module_ui
-    module_ui_qt
-    module_viz_scene3d
-    module_viz_scene3d_qt
     data
+    module_app
+    module_data
+    module_filter_mesh
+    module_io_bitmap
+    module_io_itk
+    module_io_matrix
+    module_io_vtk
     module_service
     module_ui
     module_ui_icons
-    module_io_matrix
-    module_io_itk
-    module_io_vtk
-    module_io_bitmap
-    module_data
-    module_filter_mesh
+    module_ui_qt
+    module_viz_scene3d
+    module_viz_scene3d_qt
+    sightrun
 )
 
 # Allow dark theme via module_ui_qt

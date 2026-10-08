@@ -49,7 +49,7 @@ endif()
 
 project(
     sight
-    VERSION 26.0.0
+    VERSION 26.1.0
     DESCRIPTION "Surgical Image Guidance and Healthcare Toolkit"
     HOMEPAGE_URL "https://git.ircad.fr/sight/sight"
 )
@@ -187,10 +187,6 @@ if(UNIX)
     endif()
 endif()
 
-if(SIGHT_BUILD_TESTS)
-    find_package(CppUnit QUIET REQUIRED)
-endif()
-
 ########################################################################################################################
 # Default paths settings for libraries, module and resources
 ########################################################################################################################
@@ -250,30 +246,15 @@ configure_file(
     COPYONLY
 )
 
-configure_file(
-    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/install/linux/exec_gui_tests.sh ${CMAKE_CURRENT_BINARY_DIR}/bin/exec_gui_tests.sh
-    COPYONLY
-)
-configure_file(
-    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/install/windows/exec_gui_tests.bat
-    ${CMAKE_CURRENT_BINARY_DIR}/bin/exec_gui_tests.bat COPYONLY
-)
-
 # Install the sightConfig.cmake and sightConfigVersion.cmake
 install(FILES "${CMAKE_BINARY_DIR}/cmake/sightConfig.cmake" "${CMAKE_BINARY_DIR}/cmake/sightConfigVersion.cmake"
               "${CMAKE_SOURCE_DIR}/cmake/build/macros.cmake" DESTINATION ${FWCONFIG_PACKAGE_LOCATION} COMPONENT dev
-)
-
-# install CppUnitConfig.cmake in a module folder.
-install(FILES "${CMAKE_SOURCE_DIR}/cmake/module/CppUnitConfig.cmake" DESTINATION ${FWCONFIG_PACKAGE_LOCATION}/module
-        COMPONENT dev
 )
 
 # Install some files needed for the build
 install(
     FILES "${CMAKE_SOURCE_DIR}/cmake/build/configure_file.cmake"
           "${CMAKE_SOURCE_DIR}/cmake/build/flags.cmake"
-          "${FWCMAKE_RESOURCE_PATH}/build/cppunit_main.cpp.in"
           "${FWCMAKE_RESOURCE_PATH}/build/doctest_main.cpp.in"
           "${FWCMAKE_RESOURCE_PATH}/build/doctest.cmake"
           "${FWCMAKE_RESOURCE_PATH}/build/doctestAddTests.cmake"
@@ -327,9 +308,6 @@ if(WIN32)
               "${CMAKE_SOURCE_DIR}/cmake/install/windows/NSIS/rc/license.rtf"
         DESTINATION ${FWCONFIG_PACKAGE_LOCATION}/install/windows/NSIS/rc/
     )
-    install(PROGRAMS "${CMAKE_SOURCE_DIR}/cmake/install/windows/exec_gui_tests.bat"
-            DESTINATION ${FWCONFIG_PACKAGE_LOCATION}/install/windows COMPONENT dev
-    )
 elseif(UNIX)
     install(
         FILES "${CMAKE_SOURCE_DIR}/cmake/build/linux/template.sh.in"
@@ -344,10 +322,6 @@ elseif(UNIX)
     )
 
     install(PROGRAMS "${CMAKE_SOURCE_DIR}/cmake/install/linux/safe-xvfb-run"
-            DESTINATION ${FWCONFIG_PACKAGE_LOCATION}/install/linux COMPONENT dev
-    )
-
-    install(PROGRAMS "${CMAKE_SOURCE_DIR}/cmake/install/linux/exec_gui_tests.sh"
             DESTINATION ${FWCONFIG_PACKAGE_LOCATION}/install/linux COMPONENT dev
     )
 

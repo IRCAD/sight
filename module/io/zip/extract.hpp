@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,9 +21,6 @@
 
 #pragma once
 
-#include <core/com/signal.hpp>
-#include <core/progress/monitor.hpp>
-
 #include <io/__/service/reader.hpp>
 
 namespace sight::module::io::zip
@@ -36,7 +33,9 @@ namespace sight::module::io::zip
  * so, a popup will ask the user for the password.
  *
  * @section Signals Signals
- * - \b monitor_created(SPTR(core::progress::monitor)): emitted to display a progress bar while the image is written,
+ * - \b notification_created(core::notification::base::sptr): emitted to display a progress bar while the
+ * image is
+ * written,
  * it should be connected to a progress bar
  *
  * @section XML XML Configuration
@@ -60,6 +59,12 @@ public:
     /// Propose to read an archive
     void open_location_dialog() override;
 
+    /// Returns managed path type, here service manages only single file
+    sight::io::service::path_type_t get_path_type() const override
+    {
+        return sight::io::service::file;
+    }
+
 protected:
 
     /// Does nothing
@@ -73,12 +78,6 @@ protected:
 
     /// Extract an archive to the specified directory
     void updating() override;
-
-    /// Returns managed path type, here service manages only single file
-    sight::io::service::path_type_t get_path_type() const override
-    {
-        return sight::io::service::file;
-    }
 
 private:
 

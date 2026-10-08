@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,13 +20,14 @@
  *
  ***********************************************************************/
 
+#include "camera.hpp"
 #include "camera_device_dlg.hpp"
 
 #include "module/ui/qt/video/formats.hpp"
 
+#include <algorithm>
 #include <data/camera.hpp>
 
-#include <ui/__/dialog/message.hpp>
 #include <ui/__/preferences.hpp>
 
 #include <QCamera>
@@ -39,13 +40,10 @@
 #include <QMediaDevices>
 #include <QMessageBox>
 #include <QPushButton>
-#include <QtMultimedia>
 #include <QVBoxLayout>
 
-#include <algorithm>
 #include <regex>
 #include <sstream>
-#include <unordered_map>
 
 Q_DECLARE_METATYPE(QCameraDevice);
 Q_DECLARE_METATYPE(QCameraFormat);
@@ -317,7 +315,7 @@ QSize camera_device_dlg::get_resolution(
                               {
                                   return (_a.width() * _a.height()) <= (_b.width() * _b.height());
                               };
-        const QSize min = *std::min_element(_supported_resolutions.begin(), _supported_resolutions.end(), criteria);
+        const QSize min = *std::ranges::min_element(_supported_resolutions, criteria);
         return min;
     }
 
@@ -327,7 +325,7 @@ QSize camera_device_dlg::get_resolution(
                               {
                                   return (_a.width() * _a.height()) <= (_b.width() * _b.height());
                               };
-        const QSize max = *std::max_element(_supported_resolutions.begin(), _supported_resolutions.end(), criteria);
+        const QSize max = *std::ranges::max_element(_supported_resolutions, criteria);
         return max;
     }
 

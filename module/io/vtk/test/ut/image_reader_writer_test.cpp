@@ -31,8 +31,6 @@
 #include <utest_data/data.hpp>
 #include <utest_data/generator/image.hpp>
 
-#include <boost/property_tree/xml_parser.hpp>
-
 #include <doctest/doctest.h>
 
 #include <filesystem>
@@ -53,18 +51,18 @@ TEST_SUITE("sight::module::io::vtk::image_reader_writer")
 
         if(srv->is_a("sight::io::service::reader"))
         {
-            srv->set_inout(_image, "data");
+            srv->set_inout(_image, "data.read");
         }
         else
         {
-            srv->set_input(_image, "data");
+            srv->set_input(_image, "data.write");
         }
 
         CHECK_NOTHROW(srv->set_config(_cfg));
         CHECK_NOTHROW(srv->configure());
-        CHECK_NOTHROW(srv->start().wait());
-        CHECK_NOTHROW(srv->update().wait());
-        CHECK_NOTHROW(srv->stop().wait());
+        CHECK_NOTHROW(srv->start().get());
+        CHECK_NOTHROW(srv->update().get());
+        CHECK_NOTHROW(srv->stop().get());
         sight::service::remove(srv);
     }
 
@@ -73,7 +71,7 @@ TEST_SUITE("sight::module::io::vtk::image_reader_writer")
     static boost::property_tree::ptree get_io_configuration(const std::filesystem::path& _file)
     {
         sight::service::config_t reader_srv_cfg;
-        reader_srv_cfg.add("file", _file.string());
+        reader_srv_cfg.add("path.<xmlattr>.file", _file.string());
 
         return reader_srv_cfg;
     }
@@ -260,13 +258,13 @@ TEST_SUITE("sight::module::io::vtk::image_reader_writer")
 
             CHECK(srv);
 
-            srv->set_inout(image, "data");
+            srv->set_inout(image, "data.read");
 
             CHECK_NOTHROW(srv->set_config(get_io_configuration(tmp_file)));
             CHECK_NOTHROW(srv->configure());
-            CHECK_NOTHROW(srv->start().wait());
+            CHECK_NOTHROW(srv->start().get());
             CHECK_THROWS_AS(srv->update().get(), sight::core::tools::failed);
-            CHECK_NOTHROW(srv->stop().wait());
+            CHECK_NOTHROW(srv->stop().get());
             sight::service::remove(srv);
         }
     }
@@ -347,7 +345,7 @@ TEST_SUITE("sight::module::io::vtk::image_reader_writer")
 
     TEST_CASE("vtk_image_series_writer")
     {
-        sight::core::type type = sight::core::type::FLOAT;
+        sight::core::type type = sight::core::type::FLOAT32;
         auto image_series      = std::make_shared<sight::data::image_series>();
         sight::utest_data::generator::image::generate_random_image(image_series, type);
 
@@ -560,12 +558,12 @@ TEST_SUITE("sight::module::io::vtk::image_reader_writer")
 
             CHECK(srv);
 
-            srv->set_input(image, "data");
+            srv->set_input(image, "data.write");
             CHECK_NOTHROW(srv->set_config(get_io_configuration(file)));
             CHECK_NOTHROW(srv->configure());
-            CHECK_NOTHROW(srv->start().wait());
+            CHECK_NOTHROW(srv->start().get());
             CHECK_THROWS_AS(srv->update().get(), sight::core::tools::failed);
-            CHECK_NOTHROW(srv->stop().wait());
+            CHECK_NOTHROW(srv->stop().get());
             sight::service::remove(srv);
         }
     }

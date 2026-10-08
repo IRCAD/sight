@@ -24,8 +24,8 @@
 #include <sight/ui/qt/config.hpp>
 
 #include <QMouseEvent>
-#include <QPainter>
 #include <QPaintEvent>
+#include <QPainter>
 #include <QPoint>
 #include <QPointer>
 #include <QPropertyAnimation>

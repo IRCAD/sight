@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,8 +41,8 @@ public:
 
     SIGHT_DECLARE_CLASS(structure_traits_dictionary, object);
 
-    using StructureTypeNameContainer = std::vector<std::string>;
-    using structure_traits_map_t     = std::map<std::string, structure_traits::sptr>;
+    using structure_type_name_container = std::vector<std::string>;
+    using structure_traits_map_t        = std::map<std::string, structure_traits::sptr>;
 
     /// Destructor. Does nothing.
     SIGHT_DATA_API ~structure_traits_dictionary() noexcept override = default;
@@ -65,7 +65,7 @@ public:
     SIGHT_DATA_API structure_traits::csptr get_structure(std::string _type) const;
 
     /// Return all array names stock in the structureTraits-map
-    SIGHT_DATA_API StructureTypeNameContainer get_structure_type_names() const;
+    SIGHT_DATA_API structure_type_name_container get_structure_type_names() const;
 
     /// sets the entire structures map
     SIGHT_DATA_API void set_structure_traits_map(const structure_traits_map_t& _structure_traits_map);

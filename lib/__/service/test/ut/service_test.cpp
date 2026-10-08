@@ -23,15 +23,14 @@
 #include "test_service.hpp"
 
 #include <core/com/helper/sig_slot_connection.hpp>
-#include <core/com/slots.hxx>
-#include <core/runtime/helper.hpp>
+
 #include <core/thread/worker.hpp>
 #include <core/time_stamp.hpp>
 
-#include <data/image.hpp>
 #include <data/map.hpp>
 #include <data/object.hpp>
 
+#include <service/extension/factory.hpp>
 #include <service/op.hpp>
 
 #include <utest/wait.hpp>
@@ -58,10 +57,10 @@ struct fixture
         {
             if(srv->started())
             {
-                srv->stop().wait();
+                srv->stop().get();
             }
 
-            sight::service::unregister_service(srv);
+            sight::service::remove(srv);
         }
 
         m_worker->stop();
@@ -80,6 +79,9 @@ namespace sight::service::ut
 
 //------------------------------------------------------------------------------
 
+namespace
+{
+
 struct test_service_signals : public sight::core::com::has_slots
 {
     using sptr = std::shared_ptr<test_service_signals>;
@@ -91,7 +93,7 @@ struct test_service_signals : public sight::core::com::has_slots
         new_slot("stop", &test_service_signals::stop, this);
 
         m_worker = sight::core::thread::worker::make();
-        m_slots.set_worker(m_worker);
+        slots().set_worker(m_worker);
     }
 
     ~test_service_signals() override;
@@ -122,6 +124,8 @@ struct test_service_signals : public sight::core::com::has_slots
     bool m_updated {false};
     bool m_stopped {false};
 };
+
+} // namespace
 
 //------------------------------------------------------------------------------
 
@@ -176,8 +180,8 @@ TEST_SUITE("sight::service::service")
         CHECK_EQ(option_2, srv2->get_option());
 
         // Test erasing service
-        sight::service::unregister_service(srv);
-        sight::service::unregister_service(srv2);
+        sight::service::remove(srv);
+        sight::service::remove(srv2);
     }
 
 //------------------------------------------------------------------------------
@@ -346,21 +350,21 @@ TEST_SUITE("sight::service::service")
         CHECK(!service->started());
 
         // Start service
-        service->start().wait();
+        service->start().get();
         CHECK(service->started());
         CHECK(!service->stopped());
 
         // Update service
-        service->update().wait();
+        service->update().get();
         CHECK(service->is_updated());
 
         // Stop service
-        service->stop().wait();
+        service->stop().get();
         CHECK(service->stopped());
         CHECK(!service->started());
 
         // Erase Service
-        sight::service::unregister_service(service);
+        sight::service::remove(service);
     }
 
 //------------------------------------------------------------------------------
@@ -375,11 +379,11 @@ TEST_SUITE("sight::service::service")
             CHECK(service->stopped());
 
             // Start service
-            service->start().wait();
+            service->start().get();
             CHECK(service->started());
 
             // Stop service
-            service->stop().wait();
+            service->stop().get();
             CHECK(service->stopped());
 
             // Start service with exceptions
@@ -403,11 +407,11 @@ TEST_SUITE("sight::service::service")
 
             // Start service again
             service->set_raise_exception(false);
-            service->start().wait();
+            service->start().get();
             CHECK(service->started());
 
             // Update service
-            service->update().wait();
+            service->update().get();
             CHECK(service->is_updated());
             service->reset_is_updated();
             CHECK(!service->is_updated());
@@ -433,7 +437,7 @@ TEST_SUITE("sight::service::service")
 
             // Update service
             service->set_raise_exception(false);
-            service->update().wait();
+            service->update().get();
             CHECK(service->is_updated());
 
             // Stop service with exception caught
@@ -456,11 +460,11 @@ TEST_SUITE("sight::service::service")
             CHECK(service->started());
 
             service->set_raise_exception(false);
-            service->stop().wait();
+            service->stop().get();
             CHECK(service->stopped());
 
             // Erase Service
-            sight::service::unregister_service(service);
+            sight::service::remove(service);
         }
         // Test on a different worker
         {
@@ -472,11 +476,11 @@ TEST_SUITE("sight::service::service")
             CHECK(service->stopped());
 
             // Start service
-            service->start().wait();
+            service->start().get();
             CHECK(service->started());
 
             // Stop service
-            service->stop().wait();
+            service->stop().get();
             CHECK(service->stopped());
 
             // Start service with exceptions
@@ -500,11 +504,11 @@ TEST_SUITE("sight::service::service")
 
             // Start service again
             service->set_raise_exception(false);
-            service->start().wait();
+            service->start().get();
             CHECK(service->started());
 
             // Update service
-            service->update().wait();
+            service->update().get();
             CHECK(service->is_updated());
             service->reset_is_updated();
             CHECK(!service->is_updated());
@@ -530,7 +534,7 @@ TEST_SUITE("sight::service::service")
 
             // Update service
             service->set_raise_exception(false);
-            service->update().wait();
+            service->update().get();
             CHECK(service->is_updated());
 
             // Stop service with exception caught
@@ -553,16 +557,19 @@ TEST_SUITE("sight::service::service")
             CHECK(service->started());
 
             service->set_raise_exception(false);
-            service->stop().wait();
+            service->stop().get();
             CHECK(service->stopped());
 
             // Erase Service
-            sight::service::unregister_service(service);
+            sight::service::remove(service);
             worker->stop();
         }
     }
 
 //------------------------------------------------------------------------------
+
+    namespace
+    {
 
     struct test_service_signals : public sight::core::com::has_slots
     {
@@ -575,7 +582,7 @@ TEST_SUITE("sight::service::service")
             new_slot("stop", &test_service_signals::stop, this);
 
             m_worker = sight::core::thread::worker::make();
-            m_slots.set_worker(m_worker);
+            slots().set_worker(m_worker);
         }
 
         ~test_service_signals() override;
@@ -606,6 +613,8 @@ TEST_SUITE("sight::service::service")
         bool m_updated {false};
         bool m_stopped {false};
     };
+
+    } // namespace
 
 //------------------------------------------------------------------------------
 
@@ -659,8 +668,8 @@ TEST_SUITE("sight::service::service")
         CHECK_EQ(false, receiver2->m_stopped);
 
         // Start services
-        service1->start().wait();
-        service2->start().wait();
+        service1->start().get();
+        service2->start().get();
         CHECK(service1->started());
         CHECK(service2->started());
 
@@ -687,8 +696,8 @@ TEST_SUITE("sight::service::service")
             service1->async_emit(service1.get(), sight::service::ut::test_srv::signals::MSG_SENT, event);
         }
 
-        service1->update().wait();
-        service2->update().wait();
+        service1->update().get();
+        service2->update().get();
         CHECK(service2->is_updated2());
 
         SIGHT_TEST_WAIT(receiver1->m_updated && receiver2->m_updated)
@@ -700,8 +709,8 @@ TEST_SUITE("sight::service::service")
         CHECK_EQ(false, receiver2->m_stopped);
 
         // Test if service2 has received the message
-        service1->stop().wait();
-        service2->stop().wait();
+        service1->stop().get();
+        service2->stop().get();
 
         SIGHT_TEST_WAIT(receiver1->m_stopped && receiver2->m_stopped)
         CHECK_EQ(true, receiver1->m_started);
@@ -713,8 +722,8 @@ TEST_SUITE("sight::service::service")
 
         com_helper.disconnect();
 
-        sight::service::unregister_service(service1);
-        sight::service::unregister_service(service2);
+        sight::service::remove(service1);
+        sight::service::remove(service2);
     }
 
 //------------------------------------------------------------------------------
@@ -733,7 +742,7 @@ TEST_SUITE("sight::service::service")
         service->set_inout(obj[0], sight::service::ut::test_service_with_data::INOUT_GROUP, true, false, 0);
         service->set_inout(obj[1], sight::service::ut::test_service_with_data::INOUT_GROUP, true, false, 1);
 
-        service->start().wait();
+        service->start().get();
         CHECK(service->started());
         CHECK(
             nullptr
@@ -742,7 +751,7 @@ TEST_SUITE("sight::service::service")
                 sight::data::access::in
             )
         );
-        service->update().wait();
+        service->update().get();
         CHECK(
             nullptr
             != service->sight::data::has_data::object(
@@ -785,7 +794,7 @@ TEST_SUITE("sight::service::service")
             ++it_obj;
         }
 
-        service->stop().wait();
+        service->stop().get();
 
         auto null_integer = service->output<sight::data::integer>(sight::service::ut::test_service_with_data::OUTPUT);
         CHECK(null_integer.expired());
@@ -805,7 +814,80 @@ TEST_SUITE("sight::service::service")
             )
         );
 
-        sight::service::unregister_service(service);
+        sight::service::remove(service);
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("parallel_optional_groups_1")
+    {
+        auto service = sight::service::add<sight::service::ut::test_parallel_groups_1>(
+            "sight::service::ut::test_parallel_groups_1"
+        );
+
+        sight::service::config_t config;
+        sight::service::config_t first_item;
+        first_item.put("<xmlattr>.object1", "required");
+        first_item.put("<xmlattr>.object2", "explicit");
+        first_item.put("<xmlattr>.object3", "explicit-default");
+        config.add_child("item", first_item);
+
+        sight::service::config_t second_item;
+        second_item.put("<xmlattr>.object1", "required-2");
+        config.add_child("item", second_item);
+
+        service->set_config(config);
+        service->configure();
+
+        CHECK_EQ(service->m_object1[0].lock()->value(), "required");
+        CHECK_EQ(service->m_object2[0].lock()->value(), "explicit");
+        CHECK_EQ(service->m_object3[0].lock()->value(), "explicit-default");
+        CHECK_EQ(service->m_object1[1].lock()->value(), "required-2");
+        CHECK(service->m_object2[1].lock() == nullptr);
+        CHECK_EQ(service->m_object3[1].lock()->value(), "default");
+
+        sight::service::remove(service);
+    }
+
+    TEST_CASE("parallel_optional_groups_2")
+    {
+        auto service = sight::service::add<sight::service::ut::test_parallel_groups_2>(
+            "sight::service::ut::test_parallel_groups_2"
+        );
+
+        sight::service::config_t config;
+        sight::service::config_t first_item;
+        first_item.put("<xmlattr>.object1", "required");
+        config.add_child("item", first_item);
+
+        sight::service::config_t second_item;
+        second_item.put("<xmlattr>.object1", "required-2");
+        config.add_child("item", second_item);
+
+        service->set_config(config);
+        service->configure();
+
+        CHECK_EQ(*service->m_object1[0], "required");
+        CHECK_EQ(*service->m_object2[0], 0);
+        CHECK_EQ(*service->m_object1[1], "required-2");
+        CHECK_EQ(*service->m_object2[1], 0);
+
+        sight::service::remove(service);
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("standalone_optional_group")
+    {
+        auto service = sight::service::add<sight::service::ut::test_optional_group>(
+            "sight::service::ut::test_optional_group"
+        );
+        service->set_config(sight::service::config_t {});
+
+        CHECK_NOTHROW(service->configure());
+        CHECK_EQ(service->m_optional.size(), 0U);
+
+        sight::service::remove(service);
     }
 
 //------------------------------------------------------------------------------
@@ -822,12 +904,12 @@ TEST_SUITE("sight::service::service")
             service->configure();
             CHECK_EQ(sight::service::base::configuration_status::configured, service->config_status());
 
-            service->start().wait();
+            service->start().get();
             CHECK(service->started());
             CHECK(nullptr != service->sight::data::has_data::object("prop1", sight::data::access::inout));
-            service->update().wait();
+            service->update().get();
             CHECK_EQ(std::int64_t(12), *service->m_prop1);
-            service->stop().wait();
+            service->stop().get();
         }
         {
             // Value set directly in configuring
@@ -839,12 +921,12 @@ TEST_SUITE("sight::service::service")
             service->set_config(config);
             service->configure();
 
-            service->start().wait();
+            service->start().get();
             CHECK(service->started());
             CHECK(nullptr != service->sight::data::has_data::object("prop1", sight::data::access::inout));
-            service->update().wait();
+            service->update().get();
             CHECK_EQ(std::int64_t(1234), service->m_prop1.value());
-            service->stop().wait();
+            service->stop().get();
         }
         {
             // Value set as object
@@ -856,14 +938,62 @@ TEST_SUITE("sight::service::service")
             service->set_inout(i1, "prop1");
             service->configure();
 
-            service->start().wait();
+            service->start().get();
             CHECK(service->started());
             CHECK(nullptr != service->sight::data::has_data::object("prop1", sight::data::access::inout));
-            service->update().wait();
+            service->update().get();
             CHECK_EQ(i1->value(), *service->m_prop1);
-            service->stop().wait();
-            sight::service::unregister_service(service);
+            service->stop().get();
+            sight::service::remove(service);
         }
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("reconfiguration_with_literal_value")
+    {
+        auto service = sight::service::add<sight::service::ut::test1_value>("sight::service::ut::test1_value");
+        sight::service::config_t config;
+        config.put("in.<xmlattr>.key", "value");
+        config.put("in.<xmlattr>.value", "1234");
+
+        service->set_config(config);
+        service->configure();
+        const auto value = service->input<sight::data::integer>("value").lock().get_shared();
+        CHECK_EQ(std::int64_t(1234), value->value());
+
+        sight::service::config_t reconfigured;
+        reconfigured.put("in.<xmlattr>.key", "value");
+        reconfigured.put("in.<xmlattr>.value", "5678");
+
+        service->set_config(reconfigured);
+        service->configure();
+        CHECK(value == service->input<sight::data::integer>("value").lock().get_shared());
+        CHECK_EQ(std::int64_t(5678), value->value());
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("reconfiguration_with_hierarchical_property_value")
+    {
+        auto service = sight::service::add<sight::service::ut::test1_path_property>(
+            "sight::service::ut::test1_path_property"
+        );
+        sight::service::config_t config;
+        config.put("path.<xmlattr>.file", "first.tf");
+
+        service->set_config(config);
+        service->configure();
+        const auto value = service->inout<sight::data::string>("path.file").lock().get_shared();
+        CHECK_EQ("first.tf", value->value());
+
+        sight::service::config_t reconfigured;
+        reconfigured.put("path.<xmlattr>.file", "second.tf");
+
+        service->set_config(reconfigured);
+        service->configure();
+        CHECK(value == service->inout<sight::data::string>("path.file").lock().get_shared());
+        CHECK_EQ("second.tf", value->value());
     }
 
 //------------------------------------------------------------------------------
@@ -892,13 +1022,13 @@ TEST_SUITE("sight::service::service")
         srv->set_input(obj3, data_key3);
         srv->set_worker(m_worker);
 
-        srv->start().wait();
+        srv->start().get();
 
         CHECK(not srv->is_updated());
         CHECK(not srv->is_updated2());
 
         // Auto-connected by default because there is a match in the auto_connections() map
-        obj1->signal<sight::data::object::modified_signal_t>(sight::data::object::MODIFIED_SIG)->emit();
+        obj1->emit(sight::data::signals::MODIFIED);
 
         CHECK(srv->is_updated());
         CHECK(not srv->is_updated2());
@@ -906,34 +1036,34 @@ TEST_SUITE("sight::service::service")
         srv->reset_is_updated();
 
         // Auto-connected by default because there is a match in the auto_connections() map
-        obj2->signal<sight::data::object::modified_signal_t>(sight::data::object::MODIFIED_SIG)->emit();
+        obj2->emit(sight::data::signals::MODIFIED);
 
         CHECK(not srv->is_updated());
         CHECK(srv->is_updated2());
 
-        srv->stop().wait();
+        srv->stop().get();
 
         // Auto-connected by default because there is a match in the auto_connections() map
         // BUT, it has been configured to false in set_inout()
         srv->set_inout(obj2, data_key2, false, false);
-        srv->start().wait();
+        srv->start().get();
 
         srv->reset_is_updated2();
 
-        obj2->signal<sight::data::object::modified_signal_t>(sight::data::object::MODIFIED_SIG)->emit();
+        obj2->emit(sight::data::signals::MODIFIED);
 
         CHECK(not srv->is_updated());
         CHECK(not srv->is_updated2());
 
         // Not auto-connected by default because there is no match in the auto_connections() map
-        obj3->signal<sight::data::object::modified_signal_t>(sight::data::object::MODIFIED_SIG)->emit();
+        obj3->emit(sight::data::signals::MODIFIED);
 
         CHECK(not srv->is_updated());
         CHECK(not srv->is_updated2());
 
-        srv->stop().wait();
+        srv->stop().get();
 
-        sight::service::unregister_service(srv);
+        sight::service::remove(srv);
     }
 
 //------------------------------------------------------------------------------

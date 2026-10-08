@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,7 +28,7 @@ namespace sight::core::com
 
 //-----------------------------------------------------------------------------
 
-proxy::sptr s_current_proxy = std::make_shared<proxy>();
+static proxy::sptr s_current_proxy = std::make_shared<proxy>();
 
 //-----------------------------------------------------------------------------
 
@@ -168,9 +168,9 @@ void proxy::disconnect(channel_key_type _channel, core::com::slot_base::sptr _sl
 
 //------------------------------------------------------------------------------
 
-SPTR(proxy::sig_slots_t) proxy::find_or_create_channel(channel_key_type _channel)
+sight::sptr<proxy::sig_slots_t> proxy::find_or_create_channel(channel_key_type _channel)
 {
-    SPTR(sig_slots_t) sigslots;
+    sight::sptr<sig_slots_t> sigslots;
 
     {
         core::mt::read_to_write_lock lock(m_channel_mutex);

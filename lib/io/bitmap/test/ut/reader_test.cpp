@@ -217,7 +217,7 @@ inline static void profile_reader(
                     return "openJPEG";
 
                 default:
-                    SIGHT_THROW("Unknown backend: '" << std::uint8_t(_backend) << "'");
+                    SIGHT_THROW("Unknown backend: '" << static_cast<unsigned int>(std::uint8_t(_backend)) << "'");
             }
         }();
 
@@ -407,7 +407,7 @@ TEST_SUITE("sight::io::bitmap::reader")
         test_backend(
             "libTIFF_GRAYSCALE_DOUBLE.tiff",
             backend::libtiff,
-            get_synthetic_image(2, core::type::DOUBLE, data::image::pixel_format_t::gray_scale)
+            get_synthetic_image(2, core::type::FLOAT64, data::image::pixel_format_t::gray_scale)
         );
     }
 

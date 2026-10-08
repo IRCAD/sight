@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,6 +42,8 @@ public:
 
     using registry_key_t = std::string;
 
+    SIGHT_UI_API ~action_callback_base() override = default;
+
     /**
      * @brief  Sets service ID updated in executed method.
      */
@@ -61,8 +63,7 @@ public:
 
 protected:
 
-    SIGHT_UI_API action_callback_base()           = default;
-    SIGHT_UI_API ~action_callback_base() override = default;
+    SIGHT_UI_API action_callback_base() = default;
 
 private:
 

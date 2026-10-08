@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -41,16 +41,16 @@ namespace sight::module::data
               <entry key="green" value="#00FF00" />
               <entry key="red" value="#FF0000" />
            </map>
-           <in key="key" uid="..." />
-           <inout key="value" uid="..." />
+           <data input="${...}" />
+           <data output="${...}" />
        </service>
    @endcode
  *
  * @subsection Input Input
- * - \b key [sight::data::string_serializable]: define the source object to translate.
+ * - \b data.input [sight::data::string_serializable]: define the source object to translate.
  *
  * @subsection In-Out In-Out
- * - \b value [sight::data::string_serializable]: define the output object.
+ * - \b data.output [sight::data::string_serializable]: define the output object.
  *
  * @subsection Configuration Configuration
  * - \b map: List of key/values pairs.
@@ -90,8 +90,8 @@ private:
 
     std::map<std::string, std::string> m_map;
 
-    sight::data::ptr<sight::data::string_serializable, sight::data::access::in> m_key {this, "key"};
-    sight::data::ptr<sight::data::string_serializable, sight::data::access::inout> m_value {this, "value"};
+    sight::data::ptr<sight::data::string_serializable, sight::data::access::in> m_key {this, "data.input"};
+    sight::data::ptr<sight::data::string_serializable, sight::data::access::inout> m_value {this, "data.output"};
 };
 
 } // namespace sight::module::data.

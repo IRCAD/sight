@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -65,6 +65,11 @@ public:
 
     SIGHT_DECLARE_SERVICE(image_info, sight::ui::editor);
 
+    struct slots
+    {
+        static inline const std::string GET_INTERACTION = "get_interaction";
+    };
+
     image_info() noexcept;
 
     ~image_info() noexcept override;
@@ -89,8 +94,8 @@ protected:
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
      *
-     * Connect image::MODIFIED_SIG to this::service::slots::UPDATE
-     * Connect image::BUFFER_MODIFIED_SIG to this::service::slots::UPDATE
+     * Connect data::signals::MODIFIED to this::service::slots::UPDATE
+     * Connect image::signals::BUFFER_MODIFIED to this::service::slots::UPDATE
      */
     connections_t auto_connections() const override;
 

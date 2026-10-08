@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #pragma once
 
-#include <sight/io/igtl/config.hpp>
 #include "io/igtl/network.hpp"
+#include <sight/io/igtl/config.hpp>
 // Patched header.
 #include "io/igtl/patch/igtlSocket.h"
 

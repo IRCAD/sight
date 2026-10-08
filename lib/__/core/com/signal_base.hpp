@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -55,22 +55,22 @@ struct SIGHT_CORE_CLASS_API signal_base : virtual core::base_object
      * @brief Connects the given slot.
      * @throws BadSlot If given slot doesn't match signal type.
      */
-    virtual connection connect(SPTR(slot_base) _slot) = 0;
+    virtual connection connect(sight::sptr<slot_base> _slot) = 0;
 
     /**
      * @brief Disconnects the given slot.
      * @throws BadSlot If given slot is not found in current connections.
      */
-    virtual void disconnect(SPTR(slot_base) _slot) = 0;
+    virtual void disconnect(sight::sptr<slot_base> _slot) = 0;
 
     /// Returns number of connections.
-    virtual std::size_t num_connections() const = 0;
+    [[nodiscard]] virtual std::size_t num_connections() const = 0;
 
     /**
      * @brief Returns the connection handler matching given slot.
      * @throws BadSlot if given slot is not connected and `throws` is true.
      */
-    virtual connection get_connection(SPTR(slot_base) _slot, bool _throws = false) = 0;
+    virtual connection get_connection(sight::sptr<slot_base> _slot, bool _throws = false) = 0;
 
     protected:
 

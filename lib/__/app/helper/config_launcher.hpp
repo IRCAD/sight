@@ -27,9 +27,10 @@
 #include "app/config_manager.hpp"
 
 #include "service/base.hpp"
-#include "service/extension/config.hpp"
 
-#include <core/tools/failed.hpp>
+#include <data/object.hpp>
+
+#include <service/value_parameters.hpp>
 
 namespace sight::app::helper
 {
@@ -44,6 +45,10 @@ public:
     using uptr = std::unique_ptr<config_launcher>;
     static constexpr std::string_view DATA_GROUP   = "data";
     static constexpr std::string_view OBJECT_GROUP = "object";
+
+    /// Groups used by the hierarchical syntax, i.e. <object name="..." uid="..." />
+    static constexpr std::string_view OBJECT_NAME_GROUP = "object.name";
+    static constexpr std::string_view OBJECT_UID_GROUP  = "object.uid";
 
     /**
      * @brief Parses a configuration.
@@ -78,7 +83,7 @@ public:
     }
 
     SIGHT_APP_API void set_config(const std::string& _key);
-    const std::string& config() const;
+    [[nodiscard]] const std::string& config() const;
 
 private:
 
@@ -107,6 +112,14 @@ private:
 
     /// Stores key and uid of optional inputs.
     std::map<std::string, std::pair<std::string, size_t> > m_optional_inputs;
+
+    /// Stores key and literal value of the inputs declared without a uid. The matching objects can only be built when
+    /// the configuration is launched, since its identifier may be set at runtime.
+    service::value_parameters_t m_value_inputs;
+
+    /// Stores the objects built from m_value_inputs. They are owned by this helper, and thus must be kept alive as
+    /// long as the configuration runs.
+    std::vector<data::object::sptr> m_local_value_objects;
 };
 
 //------------------------------------------------------------------------------

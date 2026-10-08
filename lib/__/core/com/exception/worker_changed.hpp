@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,7 +32,7 @@ namespace sight::core::com::exception
 /// No worker exception.
 struct worker_changed : core::exception
 {
-    SIGHT_CORE_API worker_changed(const std::string& _err);
+    SIGHT_CORE_API explicit worker_changed(const std::string& _err);
 };
 
 } // namespace sight::core::com::exception

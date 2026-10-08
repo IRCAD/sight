@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,7 +23,7 @@
 #pragma once
 
 #include <core/macros.hpp>
-#include <core/progress/observer.hpp>
+#include <core/notification/observer.hpp>
 
 #include <io/__/service/reader.hpp>
 
@@ -46,12 +46,12 @@ namespace sight::module::io::itk
  *
  * @code{.xml}
    <service type="sight::module::io::itk::image_reader">
-       <inout key="data" uid="..." />
-       <file>...</file>
+       <data read="..." />
+       <path file="..." />
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b data [sight::data::image]: loaded image.
+ * - \b data.read [sight::data::image]: loaded image.
  * @subsection Configuration Configuration
  * - \b file (optional): path of the image to load, if it is not defined, 'open_location_dialog()' should be called to
  * define the path.
@@ -68,9 +68,16 @@ public:
 
     static bool load_image(
         const std::filesystem::path& _img_file,
-        const SPTR(data::image)& _img,
-        const SPTR(core::progress::observer)& _read_observer
+        const sight::sptr<data::image>& _img,
+        const sight::sptr<core::notification::observer>& _read_observer
     );
+
+    /// Return managed file type, here FILE
+    sight::io::service::path_type_t get_path_type() const override;
+    std::vector<std::pair<std::string, std::string> > get_supported_extensions() override;
+
+    /// Configure using GUI.
+    void open_location_dialog() override;
 
 protected:
 
@@ -92,14 +99,6 @@ protected:
 
     /// Override
     void info(std::ostream& _sstream) override;
-
-    /// Configure using GUI.
-    void open_location_dialog() override;
-
-    /// Return managed file type, here FILE
-    sight::io::service::path_type_t get_path_type() const override;
-
-private:
 };
 
 } // namespace sight::module::io::itk

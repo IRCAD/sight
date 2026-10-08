@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,12 +22,10 @@
 
 #pragma once
 
-#include <sight/core/config.hpp>
-
 #include "core/runtime/types.hpp"
 #include "core/runtime/validator.hpp"
 
-#include <libxml/xmlschemastypes.h>
+#include <libxml/xmlschemas.h>
 #include <libxml/xmlversion.h>
 
 #include <filesystem>
@@ -71,7 +69,7 @@ public:
     /**
      * @brief   Destructor
      */
-    ~validator() = default;
+    ~validator() override = default;
 
     /**
      * @brief   Clears the error log.
@@ -92,7 +90,7 @@ public:
      *
      * @return  true when the validation succeeds, false otherwise
      */
-    bool validate(const std::filesystem::path& _xml_file);
+    bool validate(const std::filesystem::path& _xml_file) override;
 
     /**
      * @brief   Validates the given xml node.
@@ -110,7 +108,7 @@ public:
      *
      * @return  true when the validation succeeds, false otherwise
      */
-    bool validate(const config_t& _config);
+    bool validate(const config_t& _config) override;
 
     /**
      * @brief   Returns the xsd content in string format

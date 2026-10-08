@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2025 IRCAD France
+ * Copyright (C) 2016-2026 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,56 +20,31 @@
  *
  ***********************************************************************/
 
-// cspell:ignore NOLINTNEXTLINE
-
 #include "frame_writer.hpp"
 
-#include <core/com/signal.hpp>
-#include <core/com/signal.hxx>
-#include <core/com/slot.hpp>
-#include <core/com/slot.hxx>
-#include <core/com/slots.hpp>
-#include <core/com/slots.hxx>
 #include <core/location/single_folder.hpp>
 
-#include <data/map.hpp>
-
-#include <service/macros.hpp>
-
 #include <ui/__/dialog/location.hpp>
-#include <ui/__/dialog/message.hpp>
 
-#include <opencv2/core.hpp>
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
-#include <opencv2/opencv.hpp>
 
 #include <filesystem>
 
 namespace sight::module::io::video
 {
 
-static const core::com::slots::key_t SAVE_FRAME           = "save_frame";
-static const core::com::slots::key_t START_RECORD         = "start_record";
-static const core::com::slots::key_t STOP_RECORD          = "stop_record";
-static const core::com::slots::key_t RECORD               = "record";
-static const core::com::slots::key_t TOGGLE_RECORDING     = "toggle_recording";
-static const core::com::slots::key_t WRITE                = "write";
-static const core::com::slots::key_t SET_FORMAT_PARAMETER = "set_format_parameter";
-
-//------------------------------------------------------------------------------
-
 frame_writer::frame_writer() noexcept :
     writer("Choose a folder to save the frames"),
     m_format(".tiff")
 {
-    new_slot(SAVE_FRAME, &frame_writer::save_frame, this);
-    new_slot(START_RECORD, &frame_writer::start_record, this);
-    new_slot(STOP_RECORD, &frame_writer::stop_record, this);
-    new_slot(RECORD, &frame_writer::record, this);
-    new_slot(TOGGLE_RECORDING, &frame_writer::toggle_recording, this);
-    new_slot(WRITE, &frame_writer::write, this);
-    new_slot(SET_FORMAT_PARAMETER, &frame_writer::set_format_parameter, this);
+    new_slot(slots::SAVE_FRAME, &frame_writer::save_frame, this);
+    new_slot(slots::START_RECORD, &frame_writer::start_record, this);
+    new_slot(slots::STOP_RECORD, &frame_writer::stop_record, this);
+    new_slot(slots::RECORD, &frame_writer::record, this);
+    new_slot(slots::TOGGLE_RECORDING, &frame_writer::toggle_recording, this);
+    new_slot(slots::WRITE, &frame_writer::write, this);
+    new_slot(slots::SET_FORMAT_PARAMETER, &frame_writer::set_format_parameter, this);
 }
 
 //------------------------------------------------------------------------------
@@ -166,20 +141,22 @@ void frame_writer::write(core::clock::type _timestamp)
         const auto sig = frame_tl->signal<data::timeline::signals::pushed_t>(
             data::timeline::signals::PUSHED
         );
-        core::com::connection::blocker write_blocker(sig->get_connection(m_slots[WRITE]));
+        core::com::connection::blocker write_blocker(sig->get_connection(has_slots::slot(slots::WRITE)));
 
         // Get the buffer of the copied timeline
         const auto buffer = frame_tl->get_closest_buffer(_timestamp);
 
         if(buffer)
         {
-            _timestamp = buffer->get_timestamp();
+            _timestamp = buffer->timestamp();
             const int width  = static_cast<int>(frame_tl->get_width());
             const int height = static_cast<int>(frame_tl->get_height());
 
             const std::uint8_t* image_buffer = &buffer->get_element(0);
 
-            cv::Mat image(cv::Size(width, height), m_image_type, (void*) image_buffer, cv::Mat::AUTO_STEP);
+            cv::Mat image(cv::Size(width, height), m_image_type,
+                          // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
+                          const_cast<std::uint8_t*>(image_buffer), cv::Mat::AUTO_STEP);
 
             const auto time = static_cast<std::size_t>(_timestamp);
             const std::string filename("img_" + std::to_string(time) + m_format);
@@ -226,7 +203,7 @@ void frame_writer::start_record()
             "The object is not a '"
             + data::frame_tl::classname()
             + "' or '"
-            + sight::io::service::DATA_KEY
+            + sight::io::service::WRITER_DATA_KEY
             + "' is not correctly set.",
             frame_tl
         );
@@ -332,7 +309,7 @@ void frame_writer::set_format_parameter(std::string _val, std::string _key)
 service::connections_t frame_writer::auto_connections() const
 {
     service::connections_t connections;
-    connections.push(sight::io::service::DATA_KEY, data::timeline::signals::PUSHED, WRITE);
+    connections.push(sight::io::service::WRITER_DATA_KEY, data::timeline::signals::PUSHED, slots::WRITE);
     return connections;
 }
 

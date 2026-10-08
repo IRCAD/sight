@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,7 +23,6 @@
 
 #include "viz/scene3d/helper/shading.hpp"
 
-#include <viz/scene3d/layer.hpp>
 #include <viz/scene3d/mesh.hpp>
 
 #include <OgreTechnique.h>
@@ -49,7 +48,7 @@ void standard::update_options_mode(int _options_mode)
     this->remove_pass(material::generic::passes::NORMALS);
     this->remove_pass(material::generic::passes::SELECTED);
 
-    const Ogre::Material::Techniques& techniques = m_material->getTechniques();
+    const Ogre::Material::Techniques& techniques = material()->getTechniques();
 
     if(_options_mode == data::material::normals || _options_mode == data::material::cells_normals)
     {
@@ -144,7 +143,7 @@ void standard::set_shading(
     this->clean_generated_techniques();
 
     // Iterate through each technique found in the material and switch the shading mode
-    const Ogre::Material::Techniques& techniques = m_material->getTechniques();
+    const Ogre::Material::Techniques& techniques = material()->getTechniques();
     for(auto* const tech : techniques)
     {
         SIGHT_ASSERT("technique is not set", tech);

@@ -23,6 +23,8 @@
 #include "app/helper/config_launcher.hpp"
 
 #include "app/detail/config_manager.hpp"
+#include "app/extension/config.hpp"
+#include "app/helper/config.hpp"
 
 #include "core/runtime/path.hpp"
 #include "core/runtime/validator.hpp"
@@ -41,6 +43,10 @@ void config_launcher::parse_config(
     const service::base::sptr& _service
 )
 {
+    m_parameters.clear();
+    m_optional_inputs.clear();
+    m_value_inputs.clear();
+
     const service::config_t& old_config = _config;
     if(old_config.count("appConfig") == 1)
     {
@@ -88,7 +94,7 @@ service::config_t config_launcher::init_config(
         SIGHT_FATAL_IF("validation", not s_VALIDATOR->validate(validate_cfg));
     }
 
-    size_t i = 0;
+    size_t inout_index = 0;
     if(const auto inouts_cfg = _old_config.get_child_optional("inout"); inouts_cfg.has_value())
     {
         for(const auto& it_cfg : boost::make_iterator_range(inouts_cfg->equal_range("key")))
@@ -98,34 +104,99 @@ service::config_t config_launcher::init_config(
             const auto key = it_cfg.second.get<std::string>("<xmlattr>.name");
             SIGHT_ASSERT("[" + _service->get_id() + "] Missing 'key' tag.", !key.empty());
 
-            const auto uid = it_cfg.second.get<std::string>("<xmlattr>.uid");
-            SIGHT_ASSERT("[" + _service->get_id() + "] Missing 'uid' tag.", !uid.empty());
+            const auto uid   = it_cfg.second.get_optional<std::string>("<xmlattr>.uid");
+            const auto value = it_cfg.second.get_optional<std::string>("<xmlattr>.value");
+
+            SIGHT_ASSERT(
+                "[" + _service->get_id() + "] Exactly one of 'uid' or 'value' is required in <key>.",
+                uid.has_value() != value.has_value()
+            );
 
             parameter_cfg.add("<xmlattr>.replace", key);
 
             const bool optional = core::ptree::get_value(it_cfg.second, "<xmlattr>.optional", false);
 
-            if(optional)
+            if(uid.has_value())
             {
-                m_optional_inputs[key] = {uid, i};
-                parameter_cfg.add("<xmlattr>.by", uid);
+                if(optional)
+                {
+                    m_optional_inputs[key] = {*uid, inout_index};
+                    parameter_cfg.add("<xmlattr>.by", *uid);
+                }
+                else
+                {
+                    auto obj = _service->inout(OBJECT_GROUP, inout_index).lock();
+                    if(obj == nullptr)
+                    {
+                        // Backwards compatibility
+                        obj = _service->inout(DATA_GROUP, inout_index).lock();
+                    }
+
+                    SIGHT_ASSERT(
+                        std::string("Object key '") + key + "' with uid '" + *uid + "' does not exist.",
+                        obj
+                    );
+                    parameter_cfg.add("<xmlattr>.by", obj->get_id());
+                }
+
+                srv_cfg.add_child("parameters.parameter", parameter_cfg);
             }
             else
             {
-                auto obj = _service->inout(OBJECT_GROUP, i).lock();
-                if(obj == nullptr)
-                {
-                    // Backwards compatibility
-                    obj = _service->inout(DATA_GROUP, i).lock();
-                }
+                SIGHT_ASSERT(
+                    "[" + _service->get_id() + "] 'optional' cannot be used with literal 'value' in <key>.",
+                    !optional
+                );
 
-                SIGHT_ASSERT(std::string("Object key '") + key + "' with uid '" + uid + "' does not exist.", obj);
-                parameter_cfg.add("<xmlattr>.by", obj->get_id());
+                // The type of the object is declared by the sub-configuration, which may only be known at runtime.
+                // The object is thus built when the configuration is launched, see start_config().
+                m_value_inputs[key] = *value;
+            }
+
+            // The index is consumed by every key, including the ones declaring a literal value, so that it stays
+            // aligned with the group indices computed when parsing the service configuration.
+            ++inout_index;
+        }
+    }
+
+    // Hierarchical syntax, i.e. <object name="..." uid="..." /> as a direct child of the service
+    std::size_t object_index = 0;
+    for(const auto& it_cfg : boost::make_iterator_range(_old_config.equal_range("object")))
+    {
+        const auto name = it_cfg.second.get<std::string>("<xmlattr>.name", "");
+        SIGHT_ASSERT("[" + _service->get_id() + "] Missing 'name' attribute in <object>.", !name.empty());
+
+        const auto uid   = it_cfg.second.get_optional<std::string>("<xmlattr>.uid");
+        const auto value = it_cfg.second.get_optional<std::string>("<xmlattr>.value");
+
+        SIGHT_ASSERT(
+            "[" + _service->get_id() + "] Exactly one of 'uid' or 'value' is required in <object>.",
+            uid.has_value() != value.has_value()
+        );
+
+        if(uid.has_value())
+        {
+            service::config_t parameter_cfg;
+            parameter_cfg.add("<xmlattr>.replace", name);
+
+            // A deferred object is not bound yet, the uid declared in the configuration is then the only reference
+            const auto obj = _service->inout(OBJECT_UID_GROUP, object_index).lock();
+            parameter_cfg.add("<xmlattr>.by", obj ? obj->get_id() : *uid);
+
+            if(!obj)
+            {
+                m_optional_inputs[name] = {*uid, object_index};
             }
 
             srv_cfg.add_child("parameters.parameter", parameter_cfg);
-            ++i;
         }
+        else
+        {
+            // The type of the object is declared by the sub-configuration, which may only be known at runtime.
+            m_value_inputs[name] = *value;
+        }
+
+        ++object_index;
     }
 
     bool deprecated = false;
@@ -198,6 +269,23 @@ void config_launcher::start_config(
         replace_map[param.first] = param.second;
     }
 
+    // Build the objects declared with a literal value. This can only be done now, because their type is declared by
+    // the sub-configuration, which may be chosen at runtime.
+    m_local_value_objects = service::materialize_value_parameters(
+        m_value_inputs,
+        replace_map,
+        [this](const std::string& _key) -> std::string
+        {
+            const auto object_parameter = app::extension::config::get()->get_object_parameter(m_config_key, _key);
+            return object_parameter.has_value() ? object_parameter->type : std::string {};
+        },
+        [](const std::string& _key) -> std::string
+        {
+            return app::extension::config::get_unique_identifier("config_launcher_value_" + _key);
+        },
+        m_config_key
+    );
+
     // Init manager
     auto config_manager = std::make_shared<app::detail::config_manager>();
     config_manager->set_config(m_config_key, replace_map);
@@ -209,6 +297,11 @@ void config_launcher::start_config(
     for(const auto& [key, value] : m_optional_inputs)
     {
         auto obj = _service->inout(OBJECT_GROUP, value.second).lock();
+        if(obj == nullptr)
+        {
+            obj = _service->inout(OBJECT_UID_GROUP, value.second).lock();
+        }
+
         if(obj == nullptr)
         {
             // Backwards compatibility
@@ -239,6 +332,7 @@ void config_launcher::stop_config()
         m_config_manager.reset();
     }
 
+    m_local_value_objects.clear();
     m_config_is_running = false;
 }
 

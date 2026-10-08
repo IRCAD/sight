@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2025 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,7 +23,6 @@
 
 #include "module/io/itk/image_reader.hpp"
 
-#include <core/com/signal.hxx>
 #include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
 #include <core/tools/date_and_time.hpp>
@@ -31,17 +30,13 @@
 #include <core/tools/os.hpp>
 #include <core/tools/uuid.hpp>
 
-#include <data/image.hpp>
+#include <data/image_series.hpp>
 
 #include <io/__/service/io_types.hpp>
 #include <io/__/service/reader.hpp>
 
 #include <ui/__/cursor.hpp>
 #include <ui/__/dialog/location.hpp>
-#include <ui/__/dialog/message.hpp>
-#include <ui/__/dialog/progress.hpp>
-
-#include <boost/date_time/posix_time/posix_time.hpp>
 
 #include <filesystem>
 
@@ -70,7 +65,7 @@ void image_series_reader::open_location_dialog()
     dialog_file.set_title(*m_window_title);
     dialog_file.set_default_location(default_directory);
     dialog_file.add_filter("NIfTI (.nii)", "*.nii *.nii.gz");
-    dialog_file.add_filter("Inr (.inr.gz)", "*.inr.gz");
+    dialog_file.add_filter("Inr (.inr)", "*.inr *.inr.gz");
     dialog_file.set_option(ui::dialog::location::read);
     dialog_file.set_option(ui::dialog::location::file_must_exist);
 
@@ -152,7 +147,7 @@ void image_series_reader::updating()
             "The object is not a '"
             + data::image_series::classname()
             + "' or '"
-            + sight::io::service::DATA_KEY
+            + sight::io::service::READER_DATA_KEY
             + "' is not correctly set.",
             image_series
         );
@@ -162,16 +157,12 @@ void image_series_reader::updating()
 
         try
         {
-            auto read_observer = std::make_shared<sight::core::progress::observer>("Loading image... ");
+            auto read_observer = this->make_notification<sight::core::notification::observer>("Loading image... ");
             if(image_reader::load_image(this->get_file(), image_series, read_observer))
             {
                 init_series(image_series);
 
-                auto sig = image_series->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-                {
-                    core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
-                    sig->async_emit();
-                }
+                image_series->async_emit(this, data::signals::MODIFIED);
             }
         }
         catch(core::tools::failed& e)

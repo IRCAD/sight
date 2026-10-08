@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2025 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,25 +24,19 @@
 
 #include "module/io/vtk/image_reader.hpp"
 
-#include <core/com/signal.hxx>
 #include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
 #include <core/tools/date_and_time.hpp>
-#include <core/tools/failed.hpp>
 #include <core/tools/os.hpp>
 #include <core/tools/uuid.hpp>
 
-#include <data/image.hpp>
+#include <data/image_series.hpp>
 
 #include <io/__/service/io_types.hpp>
 #include <io/vtk/bitmap_image_reader.hpp>
 
 #include <ui/__/cursor.hpp>
 #include <ui/__/dialog/location.hpp>
-#include <ui/__/dialog/message.hpp>
-#include <ui/__/dialog/progress.hpp>
-
-#include <boost/date_time/posix_time/posix_time.hpp>
 
 #include <filesystem>
 
@@ -173,7 +167,7 @@ void image_series_reader::updating()
             "The object is not a '"
             + data::image_series::classname()
             + "' or '"
-            + sight::io::service::DATA_KEY
+            + sight::io::service::READER_DATA_KEY
             + "' is not correctly set.",
             image_series
         );
@@ -182,8 +176,7 @@ void image_series_reader::updating()
 
         const auto& file = this->get_file();
 
-        auto observer = std::make_shared<core::progress::observer>("Reading " + file.string() + " file");
-        this->async_emit(has_monitors::signals::MONITOR_CREATED, observer->get_sptr());
+        auto observer = this->observe("Reading " + file.string() + " file");
 
         if(image_reader::load_image(file, image_series, observer))
         {

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -59,6 +59,6 @@ inline std::string to_string(const boost::property_tree::ptree& _pt)
     return core::ptree::to_string(_pt);
 }
 
-}
+} // namespace property_tree
 
 } // namespace sight::core::runtime

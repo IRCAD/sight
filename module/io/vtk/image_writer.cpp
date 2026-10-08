@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,8 +39,6 @@
 #include <ui/__/dialog/message.hpp>
 #include <ui/__/dialog/progress.hpp>
 
-#include <boost/algorithm/string.hpp>
-
 namespace sight::module::io::vtk
 {
 
@@ -56,6 +54,17 @@ image_writer::image_writer() noexcept :
 sight::io::service::path_type_t image_writer::get_path_type() const
 {
     return sight::io::service::file;
+}
+
+//------------------------------------------------------------------------------
+
+std::vector<std::pair<std::string, std::string> > image_writer::get_supported_extensions()
+{
+    return {
+        {"Vtk", "*.vtk"},
+        {"Vti", "*.vti"},
+        {"MetaImage", "*.mhd"}
+    };
 }
 
 //------------------------------------------------------------------------------
@@ -115,8 +124,8 @@ void image_writer::info(std::ostream& _sstream)
 
 bool image_writer::save_image(
     const std::filesystem::path& _img_file,
-    const CSPTR(data::image)& _image,
-    SPTR(core::progress::observer) _progress
+    const sight::csptr<data::image>& _image,
+    sight::sptr<core::notification::observer> _progress
 )
 {
     bool b_value = true;
@@ -196,13 +205,13 @@ void image_writer::updating()
     {
         const auto data    = m_data.lock();
         const auto p_image = std::dynamic_pointer_cast<const data::image>(data.get_shared());
-        SIGHT_ASSERT("The input key '" + sight::io::service::DATA_KEY + "' is not correctly set.", p_image);
+        SIGHT_ASSERT("The input key '" + sight::io::service::WRITER_DATA_KEY + "' is not correctly set.", p_image);
 
         sight::ui::cursor cursor;
         cursor.set_cursor(ui::cursor_base::busy);
 
-        auto observer = std::make_shared<core::progress::observer>("Saving image");
-        this->async_emit(has_monitors::signals::MONITOR_CREATED, observer->get_sptr());
+        auto observer = this->observe("Saving image");
+
         try
         {
             image_writer::save_image(this->get_file(), p_image, observer);

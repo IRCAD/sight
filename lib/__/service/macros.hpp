@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,6 +31,8 @@
 
 namespace sight::service
 {
+
+//NOLINTBEGIN(cppcoreguidelines-macro-usage)
 
 /**
  * @name Macros for declaring service to object association
@@ -68,5 +70,7 @@ namespace sight::service
         FWSERVICE_REGISTER_OBJECT_MACRO(ServiceImpl, ServiceObject)
 
 //@}
+
+//NOLINTEND(cppcoreguidelines-macro-usage)
 
 } // namespace sight::service

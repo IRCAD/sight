@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,13 +25,8 @@
 #include <io/opencv/camera.hpp>
 #include <io/opencv/image.hpp>
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-
-#define FW_PROFILING_DISABLED
+#define SIGHT_PROFILING_DISABLED
 #include <core/profiling.hpp>
-
-#include <data/array.hpp>
 
 #include <ui/__/dialog/message.hpp>
 
@@ -41,18 +36,14 @@
 namespace sight::module::geometry::vision
 {
 
-// Public slot
-const core::com::slots::key_t distortion::CHANGE_STATE_SLOT = "change_state";
-
-// Private slot
-static const core::com::slots::key_t CALIBRATE_SLOT = "calibrate";
+// Public/Private slots
 
 //------------------------------------------------------------------------------
 distortion::distortion() noexcept :
-    filter(m_signals)
+    filter(has_signals::signals())
 {
-    new_slot(CHANGE_STATE_SLOT, &distortion::change_state, this);
-    new_slot(CALIBRATE_SLOT, &distortion::calibrate, this);
+    new_slot(slots::CHANGE_STATE, &distortion::change_state, this);
+    new_slot(slots::CALIBRATE, &distortion::calibrate, this);
 }
 
 // ----------------------------------------------------------------------------
@@ -60,10 +51,10 @@ distortion::distortion() noexcept :
 service::connections_t distortion::auto_connections() const
 {
     service::connections_t connections;
-    connections.push(CAMERA_INPUT, data::camera::MODIFIED_SIG, CALIBRATE_SLOT);
-    connections.push(CAMERA_INPUT, data::camera::INTRINSIC_CALIBRATED_SIG, CALIBRATE_SLOT);
-    connections.push(IMAGE_INPUT, data::image::MODIFIED_SIG, service::slots::UPDATE);
-    connections.push(IMAGE_INPUT, data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(m_camera, data::signals::MODIFIED, slots::CALIBRATE);
+    connections.push(m_camera, data::camera::signals::INTRINSIC_CALIBRATED, slots::CALIBRATE);
+    connections.push(m_image, data::signals::MODIFIED, service::slots::UPDATE);
+    connections.push(m_image, data::image::signals::BUFFER_MODIFIED, service::slots::UPDATE);
 
     return connections;
 }
@@ -105,7 +96,7 @@ void distortion::stopping()
 void distortion::updating()
 {
     const auto input_image = m_image.lock();
-    SIGHT_ASSERT("No '" << IMAGE_INPUT << "' found.", input_image);
+    SIGHT_ASSERT("No '" << m_image.key() << "' found.", input_image);
 
     if(input_image && m_calibration_mismatch)
     {
@@ -121,7 +112,7 @@ void distortion::updating()
     if(m_is_enabled)
     {
         const auto camera = m_camera.lock();
-        SIGHT_ASSERT("No '" << CAMERA_INPUT << "' found.", camera);
+        SIGHT_ASSERT("No '" << m_camera.key() << "' found.", camera);
 
         if(camera->get_is_calibrated())
         {
@@ -138,7 +129,7 @@ void distortion::updating()
 
         auto output_image = m_output.lock();
 
-        SIGHT_ASSERT("No '" << IMAGE_INOUT << "' found.", output_image);
+        SIGHT_ASSERT("No '" << m_output.key() << "' found.", output_image);
 
         if(input_image && output_image)
         {
@@ -155,18 +146,10 @@ void distortion::updating()
 
             if(reallocated)
             {
-                auto sig = output_image->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-                {
-                    core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
-                    sig->async_emit();
-                }
+                output_image->async_emit(this, data::signals::MODIFIED);
             }
 
-            auto sig = output_image->signal<data::image::buffer_modified_signal_t>(data::image::BUFFER_MODIFIED_SIG);
-            {
-                core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
-                sig->async_emit();
-            }
+            output_image->async_emit(this, data::image::signals::BUFFER_MODIFIED);
         }
     }
 }
@@ -176,18 +159,18 @@ void distortion::updating()
 void distortion::remap()
 {
     const auto input_image = m_image.lock();
-    SIGHT_ASSERT("No '" << IMAGE_INPUT << "' found.", input_image);
+    SIGHT_ASSERT("No '" << m_image.key() << "' found.", input_image);
     auto output_image = m_output.lock();
-    SIGHT_ASSERT("No '" << IMAGE_INOUT << "' found.", output_image);
+    SIGHT_ASSERT("No '" << m_output.key() << "' found.", output_image);
 
     if(!input_image || !output_image || m_calibration_mismatch)
     {
         return;
     }
 
-    FW_PROFILE_AVG("distort", 5);
+    SIGHT_PROFILE_AVG("distort", 5);
 
-    auto sig = input_image->signal<data::object::modified_signal_t>(data::image::BUFFER_MODIFIED_SIG);
+    auto sig = input_image->signal<data::signals::modified_t>(data::image::signals::BUFFER_MODIFIED);
 
     // Blocking signals early allows to discard any event while we are updating
     core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
@@ -201,7 +184,7 @@ void distortion::remap()
     }
 
     const auto camera = m_camera.lock();
-    SIGHT_ASSERT("No '" << CAMERA_INPUT << "' found.", camera);
+    SIGHT_ASSERT("No '" << m_camera.key() << "' found.", camera);
 
     if(input_size[0] != camera->get_width() || input_size[1] != camera->get_height())
     {
@@ -264,7 +247,7 @@ void distortion::remap()
 
     {
 #ifdef OPENCV_CUDA_SUPPORT
-        FW_PROFILE_AVG("cv::cuda::remap", 5);
+        SIGHT_PROFILE_AVG("cv::cuda::remap", 5);
 
         cv::cuda::GpuMat image_gpu(img);
         cv::cuda::GpuMat image_gpu_rect(undistortedImage);
@@ -273,7 +256,7 @@ void distortion::remap()
 
         io::opencv::image::copy_from_cv(outputImage.get_shared(), undistortedImage);
 #else
-        FW_PROFILE_AVG("cv::remap", 5);
+        SIGHT_PROFILE_AVG("cv::remap", 5);
 
         cv::remap(img, undistorted_image, m_map_x, m_map_y, cv::INTER_LINEAR, cv::BORDER_CONSTANT);
 
@@ -297,15 +280,10 @@ void distortion::remap()
 
     if(prev_size != new_size)
     {
-        auto sig_modified = output_image->signal<data::image::modified_signal_t>(data::image::MODIFIED_SIG);
-        {
-            core::com::connection::blocker another_block(sig_modified->get_connection(slot(service::slots::UPDATE)));
-            sig_modified->async_emit();
-        }
+        output_image->async_emit(this, data::signals::MODIFIED);
     }
 
-    auto sig_out = output_image->signal<data::object::modified_signal_t>(data::image::BUFFER_MODIFIED_SIG);
-    sig_out->async_emit();
+    output_image->async_emit(data::image::signals::BUFFER_MODIFIED);
 }
 
 // ----------------------------------------------------------------------------
@@ -347,7 +325,7 @@ void distortion::calibrate()
         {
             for(int j = 0 ; j < size.width ; j++)
             {
-                pixel_locations_src.at<cv::Point2f>(i, j) = cv::Point2f(float(j), float(i));
+                pixel_locations_src.at<cv::Point2f>(i, j) = cv::Point2f(static_cast<float>(j), static_cast<float>(i));
             }
 
             cv::undistortPoints(
@@ -401,8 +379,7 @@ void distortion::calibrate()
 
         io::opencv::image::copy_from_cv(*map, cv_map);
 
-        auto sig_modified = map->signal<data::image::modified_signal_t>(data::image::MODIFIED_SIG);
-        sig_modified->async_emit();
+        map->async_emit(data::signals::MODIFIED);
     }
     else
     {

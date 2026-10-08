@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024-2025 IRCAD France
+ * Copyright (C) 2024-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,8 +23,10 @@
 
 #include <io/joystick/interactor.hpp>
 
+#include <data/real.hpp>
+#include <data/string.hpp>
+
 #include <ui/__/editor.hpp>
-#include <ui/__/parameter.hpp>
 #include <ui/qt/widget/switch_button.hpp>
 #include <ui/qt/widget/tickmarks_slider.hpp>
 
@@ -48,16 +50,11 @@ namespace sight::module::ui::qt
  * Once the user validates the properties, a signal is sent containing the key and the value.
  * It supports booleans, doubles or integer at the moment.
  *
- * @section Slots Slots
- * - \b update_enum_range(std::string, std::string): update range of an existing enum (value can contains a tokenized
- * list
- * such as value1;value2;value3=test;...)
- * - \b update_int_min_parameter(int, std::string): set the minimum value of an integer parameter (int, int2, int3)
- * - \b update_int_max_parameter(int, std::string): set the maximum value of an integer parameter (int, int2, int3)
- * - \b update_double_min_parameter(double, std::string): set the minimum value of a double parameter (double, double2,
- * double3)
- * - \b update_double_max_parameter(double, std::string): set the maximum value of a double parameter (double, double2,
- * double3)
+ * @section Data
+ * - \b item.data [sight::data::object] (mandatory): value edited by the matching item.
+ * - \b item.values [sight::data::string] (optional): tokenized values of the matching item.
+ * - \b item.min [sight::data::real] (optional): minimum bound of the matching item.
+ * - \b item.max [sight::data::real] (optional): maximum bound of the matching item.
  *
  * @section XML XML Configuration
  *
@@ -65,63 +62,31 @@ namespace sight::module::ui::qt
  *
  * @code{.xml}
        <service uid="..." type="sight::module::ui::qt::settings" >
-        <inout group="keys">
-            <key uid="..." />
-            <key uid="..." />
-            <key uid="..." />
-            <key uid="..." />
-            <key uid="..." />
-            <key uid="..." />
-            <key uid="..." />
-        </inout>
-        <ui scrollable="true">
-            <item name="label1" key="param1" />
-            <item name="label2" key="param2"  min="1.5" max="42.42" depends="param1" />
-            <item name="label3" key="int" min="0" max="2" depends="param1" depends_reverse="true" />
-            <item name="label4" key="param4"values="p1,p2,p3" />
-            <item name="label5" key="param5" min="0" max="255" depends="param4" depends_value="p2" />
-            <item name="button list:" key="buttonRaw" widget="buttonBar" >
+        <config scrollable="true" />
+        <item data="${...}" name="label1" key="param1" />
+        <item data="${...}" name="label2" key="param2"  min="1.5" max="42.42" depends="param1" />
+        <item data="${...}" name="label3" key="int" min="0" max="2" depends="param1" depends_reverse="true" />
+        <item data="${...}" name="label4" key="param4" values="p1,p2,p3" />
+        <item data="${...}" name="label5" key="param5" min="0" max="255" depends="param4" depends_value="p2" />
+        <item data="${...}" name="button list:" key="buttonRaw" widget="buttonBar" >
                 <item value="button1" label="..." icon="..." uncheckedIcon="..."/>
                 <item value="button2" label="..." icon="..."/>
                 <item value="button3" icon="..."/>
             </item>
-            <item name="label6" key="..." widget="slider" orientation="vertical" .../>
-        </ui>
+        <item data="${...}" name="label6" key="..." widget="slider" orientation="vertical" .../>
        </service>
    @endcode
  *
- * The configuration with a map of objects is as follows:
- *
- * @code{.xml}
-       <service uid="..." type="sight::module::ui::qt::settings" >
-        <inout key="map" uid="..." />
-        <ui scrollable="true">
-            <item name="label1" key="param1" />
-            <item name="label2" key="param2"  min="1.5" max="42.42" depends="param1" />
-            <item name="label3" key="int" min="0" max="2" depends="param1" depends_reverse="true" />
-            <item name="label4" key="param4"values="p1,p2,p3" />
-            <item name="label5" key="param5" min="0" max="255" depends="param4" depends_value="p2" />
-            <item name="button list:" key="buttonRaw" widget="buttonBar" >
-                <item value="button1" label="..." icon="..." uncheckedIcon="..."/>
-                <item value="button2" label="..." icon="..."/>
-                <item value="button3" icon="..."/>
-            </item>
-            <item name="label6" key="..." widget="slider" orientation="vertical" .../>
-        </ui>
-       </service>
-   @endcode
- * No default value can be given because in this configuration, it is the responsibility if the data to do it. Doing
- * otherwise could be confusing and would lead to timing issues with start order.
- * Also, the type is defined by the type of the object key in the properties map.
+ * Also, the type is defined by the type of the bound object.
  *
  * @subsection Configuration Configuration:
- * <properties> tag:
+ * <config> tag (individual objects):
  * - \b scrollable: If true, add a scroll bar if the content doesn't fit on the screen. If false, flatten the content
- * <param> tag:
+ * <item> tag:
+ *
+ * Static attributes:
  * - \b name: label to display.
  * - \b key: name used in the signal to identify the parameter.
- * - \b min: minimum value, if relevant for the data type.
- * - \b max: maximum value, if relevant for the data type.
  * - \b hide_min_max (optional, boolean): allows to hide the min and max labels.
  * - \b widget (optional) : widget type, available for types 'sight::data::integer', 'sight::data::real',
  * 'sight::data::string'.
@@ -136,13 +101,9 @@ namespace sight::module::ui::qt
  *     - \b icon: path to the icon to display.
  * - \b decimals (optional, default=2): number of decimals settable using a double slider.
  * - \b reset (optional, default=true): display the reset button.
- * - \b values: for 'combobox', 'comboslider', or 'buttonBar' widgets, the list of possible values separated by a
- * comma ',' a space ' ' or a semicolon ';'.
- * The actual displayed value and the returned one in the signal can be different using '=' to separate the two. For
- * example 'values="BLEND=imageBlend,CHECKERBOARD=imageCheckerboard"' means the combo will display BLEND, CHECKERBOARD
- * and will send 'imageBlend' or 'imageCheckerboard'.
  * - \b depends (optional, string): key of the dependency.
- * - \b depends_value (optional, string): value of the dependency in case of enum.
+ * - \b depends_value (optional, string): displayed value of an enum dependency; several accepted values can be
+ *   separated with ";".
  * - \b depends_reverse (optional, bool, default=false): reverse the dependency status checking.
  * - \b emit_on_release (optional, default = false): sliders only, if true send value when slider is released,
  * send value when value changed otherwise.
@@ -153,6 +114,28 @@ namespace sight::module::ui::qt
  * - \b joystick (optional, string): joystick alias to use for the widget. It can be 'left' or 'right'.
  * - \b joystick_axis (optional, string): joystick axes to use for the widget. It can be a combination up to three axes.
  *                                        Allowed values: 'rx', 'ry', 'rz', 'tx', 'ty', 'tz'.
+ *
+ * Runtime-adjustable attributes:
+ * - \b values: for 'combobox', 'comboslider', or 'tickmarks' widgets. It accepts either a literal list or a
+ *   \c sight::data::string binding. Values are separated by ',', ' ', or ';'. A displayed label and its stored value
+ *   can be separated with '='. For example,
+ *   \c values="BLEND=imageBlend,CHECKERBOARD=imageCheckerboard" displays \c BLEND and \c CHECKERBOARD while storing
+ *   \c imageBlend and \c imageCheckerboard.
+ * - \b min and \b max: for integer and real widgets. Each accepts either a literal numeric value or a
+ *   \c sight::data::real binding. For integer widgets, the received value is converted with \c static_cast<int>.
+ *
+ * Literal values are read when the service starts. Bound \c sight::data::string and \c sight::data::real objects are
+ * also observed: changing them and emitting \c sight::data::signals::MODIFIED refreshes the corresponding widget.
+ *
+ * @code{.xml}
+ *     <!-- Static values and bounds -->
+ *     <item data="${enum_value}" values="low,medium,high" />
+ *     <item data="${numeric_value}" min="0" max="100" />
+ *
+ *     <!-- Dynamically updated values and bounds -->
+ *     <item data="${enum_value}" values="${list_of_values}" />
+ *     <item data="${numeric_value}" min="${minimum}" max="${maximum}" />
+ * @endcode
  */
 class settings : public QObject,
                  public sight::ui::editor,
@@ -163,17 +146,6 @@ Q_OBJECT
 public:
 
     SIGHT_DECLARE_SERVICE(settings, sight::ui::editor);
-
-    /// @brief  Struct to handle all slots
-    struct slots
-    {
-        using key_t = core::com::slots::key_t;
-        inline static const key_t UPDATE_ENUM_RANGE           = "update_enum_range";
-        inline static const key_t UPDATE_INT_MIN_PARAMETER    = "update_int_min_parameter";
-        inline static const key_t UPDATE_INT_MAX_PARAMETER    = "update_int_max_parameter";
-        inline static const key_t UPDATE_DOUBLE_MIN_PARAMETER = "update_double_min_parameter";
-        inline static const key_t UPDATE_DOUBLE_MAX_PARAMETER = "update_double_max_parameter";
-    };
 
     struct enum_button_param
     {
@@ -198,11 +170,11 @@ public:
 
     struct qt_property
     {
-        inline static const char* key        = "key";
-        inline static const char* data_index = "data_index";
-        inline static const char* count      = "count";
-        inline static const char* index      = "index";
-        inline static const char* use_index  = "use_index";
+        inline static const char* s_key        = "key";
+        inline static const char* s_data_index = "data_index";
+        inline static const char* s_count      = "count";
+        inline static const char* s_index      = "index";
+        inline static const char* s_use_index  = "use_index";
     };
 
     template<typename T>
@@ -219,6 +191,14 @@ public:
 
     /// Destructor. Does nothing
     ~settings() noexcept override = default;
+
+    /**
+     * @brief Called on all dependent widget to update it.
+     * @param _watched Widget to update.
+     * @param _event Event type, only care about ::QEvent::EnabledChange
+     * @return False.
+     */
+    bool eventFilter(QObject* _watched, QEvent* _event) override;
 
 protected:
 
@@ -315,14 +295,6 @@ private Q_SLOTS:
     static void on_double_slider_range_mapped(QLabel* _min_label, QLabel* _max_label, QSlider* _slider);
 
 private:
-
-    /**
-     * @brief Called on all dependent widget to update it.
-     * @param _watched Widget to update.
-     * @param _event Event type, only care about ::QEvent::EnabledChange
-     * @return False.
-     */
-    bool eventFilter(QObject* _watched, QEvent* _event) override;
 
     /// Creates a reset button for one widget.
     /// @param _key Name of the parameter it resets.
@@ -423,9 +395,9 @@ private:
         QBoxLayout* _layout,
         const param_widget& _setup,
         const std::vector<enum_button_param>& _button_list,
-        const int _width,
-        const int _height,
-        const int _spacing,
+        int _width,
+        int _height,
+        int _spacing,
         const std::string& _style,
         Qt::Orientation _orientation
     );
@@ -450,26 +422,20 @@ private:
     /// SLOT: This method sets an enum parameter using the index of the enum
     void set_enum_index_parameter(int /*val*/, std::string _key);
 
-    /// SLOT: This method updates the all enum values using a tokenized string ("value1;value2")
-    void update_enum_range(std::string _options, std::string _key);
-
-    /// SLOT: Updates the minimum value of an integer parameter (int, int2, int3)
-    void update_int_min_parameter(int _min, std::string _key);
-
-    /// SLOT: Updates the maximum value of an integer parameter (int, int2, int3)
-    void update_int_max_parameter(int _max, std::string _key);
-
-    /// SLOT: Updates the minimum value of a double parameter (double, double2, double3)
-    void update_double_min_parameter(double _min, std::string _key);
-
-    /// SLOT: Updates the maximum value of a double parameter (double, double2, double3)
-    void update_double_max_parameter(double _max, std::string _key);
+    /// Updates all enum values using a tokenized string ("value1;value2").
+    void update_range(const std::string& _options, const std::string& _key);
 
     /// @}
 
+    /// Updates the minimum value of the widget associated with the given key.
+    void update_min(double _min, const std::string& _key);
+
+    /// Updates the maximum value of the widget associated with the given key.
+    void update_max(double _max, const std::string& _key);
+
     /// Updates the values of tickmarks widgets
     void update_tickmarks(
-        sight::ui::qt::widget::tickmarks_slider* const _tickmarks,
+        sight::ui::qt::widget::tickmarks_slider* _tickmarks,
         const std::string& _options
     );
 
@@ -495,11 +461,12 @@ private:
 
     /// Returns the data pointer at the given index and key
     template<class DATATYPE, class SUBTYPE = DATATYPE::value_t>
-    requires std::derived_from<DATATYPE, sight::data::generic<SUBTYPE> > CSPTR(DATATYPE) data(const QObject * _widget);
+    requires std::derived_from<DATATYPE,
+                               sight::data::generic<SUBTYPE> > sight::csptr<DATATYPE> data(const QObject* _widget);
 
     template<class DATATYPE, class SUBTYPE = DATATYPE::value_t>
     requires std::derived_from<DATATYPE, sight::data::generic<SUBTYPE> >
-    void connect_data(const CSPTR(DATATYPE)& _obj, const std::string& _key);
+    void connect_data(const sight::csptr<DATATYPE>& _obj, const std::string& _key);
 
     template<class DATATYPE, class SUBTYPE = DATATYPE::value_t>
     requires std::derived_from<DATATYPE, sight::data::generic<SUBTYPE> >
@@ -514,14 +481,23 @@ private:
     std::vector<QPointer<QWidget> > m_param_boxes;
 
     /// Used when we bind widgets to data
-    data::ptr_vector<data::object, data::access::inout> m_settings {this, "keys"};
+    data::ptr_vector<data::object, data::access::inout> m_settings {this, "item.data"};
 
-    /// Used when we bind widgets to a map of data
-    data::ptr<data::map, data::access::inout> m_settings_map {this, "map"};
+    /// Optional tokenized values associated with the settings items by their XML occurrence.
+    data::ptr_vector<data::string, data::access::in> m_values {this, "item.values", std::nullopt};
+
+    /// Optional minimum bounds associated with the settings items by their XML occurrence.
+    data::ptr_vector<data::real, data::access::in> m_min {this, "item.min", std::nullopt};
+
+    /// Optional maximum bounds associated with the settings items by their XML occurrence.
+    data::ptr_vector<data::real, data::access::in> m_max {this, "item.max", std::nullopt};
 
     using object_modified_t         = core::com::slot<void ()>;
-    using settings_slot_container_t = std::map<std::string, SPTR(object_modified_t)>;
+    using settings_slot_container_t = std::map<std::string, sight::sptr<object_modified_t> >;
     settings_slot_container_t m_settings_slots;
+    settings_slot_container_t m_values_slots;
+    settings_slot_container_t m_min_slots;
+    settings_slot_container_t m_max_slots;
 
     struct widget_joystick
     {

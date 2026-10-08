@@ -24,7 +24,6 @@
 
 #include "core/runtime/path.hpp"
 
-#include <core/com/slots.hxx>
 #include <core/tools/uuid.hpp>
 
 #include <data/tools/color.hpp>
@@ -32,11 +31,12 @@
 #include <geometry/data/image.hpp>
 
 #include <viz/scene3d/helper/camera.hpp>
-#include <viz/scene3d/helper/fiducials.hpp>
 #include <viz/scene3d/helper/manual_object.hpp>
 #include <viz/scene3d/helper/scene.hpp>
 #include <viz/scene3d/ogre.hpp>
+#include <viz/scene3d/utils.hpp>
 
+#include <module/viz/scene3d_qt/screen_position.hpp>
 #include <module/viz/scene3d_qt/window_interactor.hpp>
 
 namespace sight::module::viz::scene3d_qt::adaptor::fiducials
@@ -49,13 +49,14 @@ static constexpr std::uint8_t RULER_RQ_GROUP_ID = sight::viz::scene3d::rq::SURFA
 ruler::ruler() noexcept
 {
     new_slot(slots::REMOVE_ALL, &ruler::remove_all, this);
+    new_slot(slots::SET_IMAGE_VISIBILITY, &ruler::set_image_visibility, this);
     new_slot(slots::ACTIVATE_TOOL, &ruler::activate_tool, this);
     new_slot(slots::REMOVE_FROM_CURRENT_SLICE, &ruler::remove_from_current_slice, this);
     new_slot(private_slots::UPDATE_MODIFIED_RULER, &ruler::update_modified_ruler, this);
     new_slot(private_slots::REMOVE_RULER_OGRE_SET, &ruler::remove_ruler_ogre_set, this);
     new_slot(private_slots::DISPLAY_ON_CURRENT_SLICE, &ruler::display_on_current_slice, this);
 
-    new_signal<signals::void_signal_t>(signals::TOOL_DEACTIVATED);
+    new_signal<signals::void_t>(signals::TOOL_DEACTIVATED);
 }
 
 //------------------------------------------------------------------------------
@@ -63,13 +64,13 @@ ruler::ruler() noexcept
 sight::service::connections_t ruler::auto_connections() const
 {
     return {
-        {s_IMAGE_INOUT, sight::data::object::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE},
-        {s_IMAGE_INOUT, sight::data::image_series::RULER_MODIFIED_SIG, private_slots::UPDATE_MODIFIED_RULER},
-        {s_IMAGE_INOUT, sight::data::image_series::FIDUCIAL_REMOVED_SIG, private_slots::REMOVE_RULER_OGRE_SET},
-        {s_IMAGE_INOUT, sight::data::image_series::SLICE_INDEX_MODIFIED_SIG,
+        {m_image, sight::data::signals::MODIFIED, adaptor::slots::LAZY_UPDATE},
+        {m_image, sight::data::image::signals::RULER_MODIFIED, private_slots::UPDATE_MODIFIED_RULER},
+        {m_image, sight::data::image::signals::FIDUCIAL_REMOVED, private_slots::REMOVE_RULER_OGRE_SET},
+        {m_image, sight::data::image::signals::SLICE_INDEX_MODIFIED,
          private_slots::DISPLAY_ON_CURRENT_SLICE
         },
-        {s_IMAGE_INOUT, sight::data::image_series::SLICE_TYPE_MODIFIED_SIG,
+        {m_image, sight::data::image::signals::SLICE_TYPE_MODIFIED,
          private_slots::DISPLAY_ON_CURRENT_SLICE
         },
     };
@@ -148,6 +149,7 @@ void ruler::configuring()
 void ruler::starting()
 {
     adaptor::init();
+    m_image_visible = true;
 
     this->render_service()->make_current();
 
@@ -217,6 +219,20 @@ void ruler::starting()
 
     auto interactor = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::base>(this->get_sptr());
     layer->add_interactor(interactor, m_priority);
+
+    this->apply_visibility();
+}
+
+//------------------------------------------------------------------------------
+
+void ruler::swapping(std::string_view _key)
+{
+    if(_key == "data.image")
+    {
+        m_image_visible = true;
+        m_creation_mode = false;
+        this->apply_visibility();
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -285,23 +301,23 @@ void ruler::updating()
         if(projection_type == Ogre::ProjectionType::PT_ORTHOGRAPHIC)
         {
             const Ogre::Vector3 begin = is_tiled_sparse ? Ogre::Vector3 {
-                float(fiducial_graphic_data[0] * spacing[0]),
-                float(fiducial_graphic_data[1] * spacing[1]),
-                float(fiducial_slice_index)
+                static_cast<float>(fiducial_graphic_data[0] * spacing[0]),
+                static_cast<float>(fiducial_graphic_data[1] * spacing[1]),
+                static_cast<float>(fiducial_slice_index)
             } : Ogre::Vector3 {
-                float(fiducial_contour_data[0]),
-                float(fiducial_contour_data[1]),
-                float(fiducial_contour_data[2])
+                static_cast<float>(fiducial_contour_data[0]),
+                static_cast<float>(fiducial_contour_data[1]),
+                static_cast<float>(fiducial_contour_data[2])
             };
 
             const Ogre::Vector3 end = is_tiled_sparse ? Ogre::Vector3 {
-                float(fiducial_graphic_data[2] * spacing[0]),
-                float(fiducial_graphic_data[3] * spacing[1]),
-                float(fiducial_slice_index)
+                static_cast<float>(fiducial_graphic_data[2] * spacing[0]),
+                static_cast<float>(fiducial_graphic_data[3] * spacing[1]),
+                static_cast<float>(fiducial_slice_index)
             } : Ogre::Vector3 {
-                float(fiducial_contour_data[3]),
-                float(fiducial_contour_data[4]),
-                float(fiducial_contour_data[5])
+                static_cast<float>(fiducial_contour_data[3]),
+                static_cast<float>(fiducial_contour_data[4]),
+                static_cast<float>(fiducial_contour_data[5])
             };
 
             const float axis_offset = -0.1F;
@@ -669,7 +685,7 @@ void ruler::activate_tool(const bool _activate)
 
 void ruler::set_visible(bool _visible)
 {
-    m_visible = _visible;
+    m_visible = _visible && m_image_visible;
     if(!m_tool_activated)
     {
         this->activate_tool(false);
@@ -681,6 +697,17 @@ void ruler::set_visible(bool _visible)
     else
     {
         this->updating();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void ruler::set_image_visibility(std::string _image_id, bool _visible)
+{
+    if(const auto image = m_image.const_lock(); image&& image->get_id() == _image_id)
+    {
+        m_image_visible = _visible;
+        this->apply_visibility();
     }
 }
 
@@ -743,10 +770,7 @@ void ruler::remove_ruler_fiducial(std::optional<std::string> _id)
         image_series->get_fiducials()->set_fiducial_sets(fiducial_sets);
     }
 
-    const auto sig = image->signal<data::image::fiducial_removed_signal_t>(
-        data::image::FIDUCIAL_REMOVED_SIG
-    );
-    sig->async_emit(_id);
+    image->async_emit(data::image::signals::FIDUCIAL_REMOVED, _id);
 }
 
 //------------------------------------------------------------------------------
@@ -1079,8 +1103,8 @@ void ruler::mouse_move_event(
 
             {
                 const auto image = m_image.const_lock();
-                const auto& sig  = image->signal<sight::data::image_series::ruler_modified_signal_t>(
-                    sight::data::image_series::RULER_MODIFIED_SIG
+                const auto& sig  = image->signal<sight::data::image::signals::ruler_modified_t>(
+                    sight::data::image::signals::RULER_MODIFIED
                 );
 
                 sig->async_emit(
@@ -1211,26 +1235,11 @@ void ruler::button_release_event(mouse_button _button, modifier /*_mods*/, int /
                     m_bin_button->raise();
                     Ogre::SceneNode* node =
                         m_picked_ruler.m_first ? m_picked_ruler.m_data->node1 : m_picked_ruler.m_data->node2;
-                    std::pair<Ogre::Vector2,
-                              Ogre::Vector2> screen_pos = sight::viz::scene3d::helper::scene::compute_bounding_rect(
+                    const screen_rect_t screen_pos = sight::viz::scene3d::helper::scene::compute_bounding_rect(
                         *layer()->get_default_camera(),
                         node
-                              );
-                    double ratio = m_bin_button->devicePixelRatioF();
-                    const int x  = std::clamp(
-                        int(((screen_pos.first.x + screen_pos.second.x) / 2) / ratio),
-                        0,
-                        parent_widget->width() - m_bin_button->width()
                     );
-                    int y = int((screen_pos.first.y / ratio) - m_bin_button->height());
-                    if(y < 0)
-                    {
-                        // If there isn't enough place upward the landmark, place the menu downward.
-                        y = int(screen_pos.second.y / ratio);
-                    }
-
-                    m_bin_button->move(x, y);
-                    m_bin_button->show();
+                    m_bin_button->setVisible(place_near(*m_bin_button, *parent_widget, screen_pos));
                     QObject::connect(
                         m_bin_button,
                         &QPushButton::clicked,
@@ -1268,7 +1277,7 @@ void ruler::button_release_event(mouse_button _button, modifier /*_mods*/, int /
         else
         {
             this->activate_tool(false);
-            this->signal<signals::void_signal_t>(signals::TOOL_DEACTIVATED)->async_emit();
+            this->async_emit(signals::TOOL_DEACTIVATED);
         }
     }
 }
@@ -1416,7 +1425,7 @@ void ruler::key_press_event(int _key, modifier /*_mods*/, int /*_mouseX*/, int /
     if(m_tool_activated && _key == Qt::Key_Escape)
     {
         this->activate_tool(false);
-        this->signal<signals::void_signal_t>(signals::TOOL_DEACTIVATED)->async_emit();
+        this->async_emit(signals::TOOL_DEACTIVATED);
     }
 }
 

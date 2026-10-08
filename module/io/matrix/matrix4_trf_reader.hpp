@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,6 @@
 
 #include <io/__/service/reader.hpp>
 
-#include <service/notifier.hpp>
-
 namespace sight::module::io::matrix
 {
 
@@ -38,14 +36,13 @@ namespace sight::module::io::matrix
  *
  * @code{.xml}
    <service type="sight::module::io::matrix::matrix4_trf_reader">
-       <inout key="data" uid="..." />
+       <data read="..." />
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b data [sight::data::matrix4]: matrix to read.
+ * - \b data.read [sight::data::matrix4]: matrix to read.
  */
-class matrix4_trf_reader : public sight::io::service::reader,
-                           public sight::service::notifier
+class matrix4_trf_reader : public sight::io::service::reader
 {
 public:
 
@@ -71,7 +68,7 @@ public:
     /**
      * @brief   returns  (filename) extension
      */
-    std::vector<std::string> get_supported_extensions() override;
+    std::vector<std::pair<std::string, std::string> > get_supported_extensions() override;
     /// @}
 
     /// Return path type managed by the service, here FILE

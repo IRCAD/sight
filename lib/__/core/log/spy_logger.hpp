@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,7 +37,7 @@ namespace sight::core::log::detail
 
 class spy_logger_impl;
 
-}
+} // namespace sight::core::log::detail
 namespace sight::core::log
 {
 
@@ -48,13 +48,11 @@ constexpr static auto ENCRYPTED_LOG_FILE = "sight.log.aes";
 /**
  * @brief Implements the spy_logger log system. The spy_logger class is a wrapper around the boost logging system.
  *
- * The global logging is setup from `profile_launcher` and `cppunit_main` for unit tests.
- * `profile_launcher` can use the static `add_global_console_log()` which sets up a simple global console sink or the
- * more advanced `start()` on the global spy_logger instance `sight::core::log::g_logger` which allows log file
- * compression (ZSTD) and encryption (AES256) with a non empty password. Setting up a sink, makes the log macros
- * (SIGHT_DEBUG, SIGHT_ERROR, ...) to output log messages on console or file.
- * `cppunit_main` only uses the static `add_global_file_log()` to setup a simple global `FWTest.log` file sink, which
- * is useful for debugging.
+ * The global logging is setup from `profile_launcher`, which can use the static
+ * `add_global_console_log()` which sets up a simple global console sink or the more advanced `start()` on the
+ * global spy_logger instance `sight::core::log::g_logger` which allows log file compression (ZSTD) and encryption
+ * (AES256) with a non empty password. Setting up a sink, makes the log macros (SIGHT_DEBUG, SIGHT_ERROR, ...) to
+ * output log messages on console or file.
  *
  * It is also possible to setup a local private spy_logger with the static `make()` function. This is useful to bypass
  * the global logging system and to have a private log file. Of course, log macros cannot be used, and direct calls to
@@ -80,8 +78,8 @@ public:
     {
     public:
 
-        SIGHT_CORE_API bad_password(const char* const what = "Invalid password.") :
-            std::runtime_error(what)
+        SIGHT_CORE_API explicit bad_password(const char* const _what = "Invalid password.") :
+            std::runtime_error(_what)
         {
         }
     };
@@ -91,8 +89,8 @@ public:
     {
     public:
 
-        SIGHT_CORE_API premature_end(const char* const what = "Premature end.") :
-            std::runtime_error(what)
+        SIGHT_CORE_API explicit premature_end(const char* const _what = "Premature end.") :
+            std::runtime_error(_what)
         {
         }
     };
@@ -160,10 +158,10 @@ public:
     );
 
     /// Returns true if the current log file is encrypted.
-    SIGHT_CORE_API bool is_log_encrypted() const;
+    [[nodiscard]] SIGHT_CORE_API bool is_log_encrypted() const;
 
     /// Returns the current log file path.
-    SIGHT_CORE_API std::filesystem::path get_current_log_path() const;
+    [[nodiscard]] SIGHT_CORE_API std::filesystem::path get_current_log_path() const;
 
     /// Logs a message with the given severity level.
     /// @param _mes The message to log.
@@ -203,10 +201,11 @@ public:
         const optional_password_t& _password = std::nullopt
     );
 
+    SIGHT_CORE_API virtual ~spy_logger();
+
 private:
 
     SIGHT_CORE_API spy_logger();
-    SIGHT_CORE_API virtual ~spy_logger();
 
     std::unique_ptr<detail::spy_logger_impl> m_pimpl;
 }; // spy_logger

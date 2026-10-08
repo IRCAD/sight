@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2025 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,15 +22,17 @@
 
 #pragma once
 
-#include <core/time_stamp.hpp>
+#include <core/time_stamp.hpp> // NOLINT(misc-include-cleaner): used inside the macros below
 
 #include <boost/preprocessor/cat.hpp>
 #include <boost/preprocessor/facilities/is_empty_variadic.hpp>
-#include <boost/preprocessor/if.hpp>
+#include <boost/preprocessor/if.hpp> // NOLINT(misc-include-cleaner): used inside the macros below
 #include <boost/preprocessor/variadic/elem.hpp>
 
-#include <chrono>
-#include <thread>
+#include <chrono> // NOLINT(misc-include-cleaner): used inside the macros below
+#include <thread> // NOLINT(misc-include-cleaner): used inside the macros below
+
+// NOLINTBEGIN(cppcoreguidelines-macro-usage)
 
 // Wait at worst 1s for a given condition
 #define SIGHT_TEST_WAIT(cond, ...) \
@@ -51,11 +53,7 @@
             std::this_thread::sleep_for(std::chrono::milliseconds(10)); \
         }
 
-#ifdef DOCTEST_LIBRARY_INCLUDED
-    #define __SIGHT_TEST_CHECK CHECK
-#else
-    #define __SIGHT_TEST_CHECK CPPUNIT_ASSERT
-#endif
+#define SIGHT_TEST_CHECK CHECK
 
 #define SIGHT_TEST_FAIL_WAIT(cond, ...) \
         sight::core::time_stamp BOOST_PP_CAT(timeStamp, __LINE__); \
@@ -74,4 +72,6 @@
         { \
             std::this_thread::sleep_for(std::chrono::milliseconds(10)); \
         } \
-        __SIGHT_TEST_CHECK(cond);
+        SIGHT_TEST_CHECK(cond);
+
+// NOLINTEND(cppcoreguidelines-macro-usage)

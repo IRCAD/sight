@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2025 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,8 +21,8 @@
 
 #pragma once
 
-#include <sight/data/config.hpp>
 #include "data/object.hpp"
+#include <sight/data/config.hpp>
 
 #include <core/com/signal.hpp>
 #include <core/compare.hpp>
@@ -49,6 +49,7 @@ using sequenced_set = boost::multi_index::multi_index_container<
     >
 >;
 
+//NOLINTBEGIN(cppcoreguidelines-macro-usage)
 #define USING_CONTAINER(C) \
         using typename C::value_type; \
         using typename C::reference; \
@@ -135,6 +136,7 @@ using sequenced_set = boost::multi_index::multi_index_container<
         using C::try_emplace; \
         using C::insert_or_assign; \
         using typename C::insert_return_type
+//NOLINTEND(cppcoreguidelines-macro-usage)
 
 /// Dummy class.
 template<class C, typename = void>
@@ -211,13 +213,13 @@ public:
     constexpr virtual ~container_wrapper() noexcept = default;
 
     /// Utility function to remove all matching elements from the container.
-    constexpr auto remove(const typename C::value_type& _value)
+    constexpr auto remove(const C::value_type& _value)
     {
         return C::erase(std::remove(C::begin(), C::end(), _value), C::end());
     }
 
     /// Utility function to remove first matching elements from the container.
-    constexpr auto remove_one(const typename C::value_type& _value)
+    constexpr auto remove_one(const C::value_type& _value)
     {
         if(const auto& it = std::find(C::cbegin(), C::cend(), _value); it != C::cend())
         {
@@ -359,16 +361,14 @@ public:
     constexpr virtual ~container_wrapper() noexcept = default;
 
     /// Utility function to remove first matching elements from the container.
-    constexpr auto remove(const typename C::value_type& _value)
+    constexpr auto remove(const C::value_type& _value)
     {
         if(const auto& it = std::find(C::cbegin(), C::cend(), _value); it != C::cend())
         {
             return C::erase(it);
         }
-        else
-        {
-            return C::end();
-        }
+
+        return C::end();
     }
 };
 
@@ -643,7 +643,7 @@ public:
     constexpr container();
     inline explicit container(const C& _container);
     inline explicit container(C&& _container);
-    inline ~container() noexcept override = default;
+    ~container() noexcept override = default;
 
     /// To allow assignment from STL containers
     using container_wrapper<C>::container_wrapper;
@@ -658,17 +658,20 @@ public:
 
     /// Signals
     /// @{
-    /// Type of signal when objects are added
-    using added_signal_t = core::com::signal<void (container_t)>;
-    inline static const core::com::signals::key_t ADDED_OBJECTS_SIG = "added_objects";
+    struct signals
+    {
+        /// Type of signal when objects are added
+        using added_t = core::com::signal<void (container_t)>;
+        inline static const signal_key_t ADDED_OBJECTS = "added_objects";
 
-    /// Type of signal when objects are changed (newObjects, oldObjects)
-    using changed_signal_t = core::com::signal<void (container_t, container_t)>;
-    inline static const core::com::signals::key_t CHANGED_OBJECTS_SIG = "changedObjects";
+        /// Type of signal when objects are changed (newObjects, oldObjects)
+        using changed_t = core::com::signal<void (container_t, container_t)>;
+        inline static const signal_key_t CHANGED_OBJECTS = "changedObjects";
 
-    /// Type of signal when objects are removed
-    using removed_signal_t = core::com::signal<void (container_t)>;
-    inline static const core::com::signals::key_t REMOVED_OBJECTS_SIG = "removed_objects";
+        /// Type of signal when objects are removed
+        using removed_t = core::com::signal<void (container_t)>;
+        inline static const signal_key_t REMOVED_OBJECTS = "removed_objects";
+    };
     /// @}
 
     /// Returns a copy of the underlying container
@@ -676,7 +679,7 @@ public:
 
     struct SIGHT_DATA_CLASS_API scoped_emitter
     {
-        constexpr scoped_emitter(const container& _container) noexcept;
+        constexpr explicit scoped_emitter(const container& _container) noexcept;
         inline ~scoped_emitter() noexcept;
 
         /// Emits the needed signals
@@ -690,7 +693,7 @@ public:
 
         const container& m_container;
         container::container_t m_backup;
-        std::vector<core::com::slot_base::sptr> m_blocked_slots;
+        std::vector<core::com::slot_base::sptr> m_blocked_slots {};
     };
 
     [[nodiscard]] constexpr auto scoped_emit() const noexcept;

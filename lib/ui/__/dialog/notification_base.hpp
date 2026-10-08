@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2025 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,9 +27,11 @@
 #include "ui/__/container/widget.hpp"
 #include "ui/__/object.hpp"
 
-#include <service/notifier.hpp>
-
 #include <array>
+#include <chrono>
+#include <cstdint>
+#include <filesystem>
+#include <optional>
 #include <string>
 
 namespace sight::ui::dialog
@@ -45,10 +47,43 @@ public:
     SIGHT_DECLARE_CLASS(notification_base, ui::object);
 
     /// Notification Type (changes Qss style).
-    using type = sight::service::notification::type;
+    enum class type : std::uint8_t
+    {
+        information = 0,
+        warning,
+        instruction,
+        error
+    };
 
     /// Where to display notifications.
-    using position = sight::service::notification::position;
+    enum class position : std::uint8_t
+    {
+        top_right = 0,
+        top_left,
+        bottom_right,
+        bottom_left,
+        centered,
+        centered_top,
+        centered_bottom
+    };
+
+    /// Notification display parameters, in one bundle.
+    struct params final
+    {
+        type m_type {type::information};
+        position m_position {position::top_right};
+        std::string m_message {};
+        /// Absolute path of the icon, empty or unset for no icon at all.
+        std::optional<std::filesystem::path> m_icon {};
+
+        /// Side, in pixels, the icon is drawn at. 0 follows the text height.
+        int m_icon_size {0};
+        std::optional<std::chrono::milliseconds> m_duration {std::chrono::seconds(3)};
+        std::string m_channel {};
+        std::optional<bool> m_closable {std::nullopt};
+        std::array<int, 2> m_size {200, 60};
+        std::optional<bool> m_sound {std::nullopt};
+    };
 
     /// Constructor. Does nothing.
     SIGHT_UI_API notification_base();
@@ -83,6 +118,15 @@ public:
     SIGHT_UI_API virtual std::array<int, 2> size() const;
 
     /**
+     * @brief Sets the icon displayed next to the message.
+     * @param _icon absolute path of the icon, empty or unset for no icon at all.
+     */
+    SIGHT_UI_API virtual void set_icon(std::optional<std::filesystem::path> _icon);
+
+    /// Sets the side, in pixels, the icon is drawn at. 0 follows the text height.
+    SIGHT_UI_API virtual void set_icon_size(int _size);
+
+    /**
      * @brief Sets the queue index of the notification (when notifications are queued).
      * @param _index index in the queue (0 = first, 1 = second,...).
      */
@@ -108,7 +152,7 @@ public:
 
     /// Set the notification attributes (type, message, duration...) in one step.
     /// @param _notification notification attributes.
-    SIGHT_UI_API virtual void set_notification(sight::service::notification _notification);
+    SIGHT_UI_API virtual void set_notification(params _notification);
 
     /// Shows the message box and return the clicked button.
     SIGHT_UI_API virtual void show() = 0;
@@ -139,8 +183,10 @@ public:
 
 protected:
 
+    // NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
+
     /// Notification attributes (message, position, type, ...).
-    sight::service::notification m_notification {};
+    params m_notification;
 
     /// Position of the notification, used to avoid overlapping
     /// when several notifications are shown. (0 = first, 1 = second, ...)
@@ -150,6 +196,8 @@ protected:
     ui::container::widget::csptr m_parent_container {nullptr};
 
     std::function<void()> m_closed_call_back;
+
+    //NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 };
 
 } // namespace sight::ui::dialog

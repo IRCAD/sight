@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,12 +22,7 @@
 
 #include "view.hpp"
 
-#include <core/com/signal.hpp>
-#include <core/com/signal.hxx>
-#include <core/com/signals.hpp>
-
-#include <service/extension/config.hpp>
-#include <service/macros.hpp>
+#include <app/extension/config.hpp>
 
 #include <ui/__/dialog/message.hpp>
 #include <ui/__/registry.hpp>
@@ -39,21 +34,14 @@
 namespace sight::module::ui::qt::activity
 {
 
-const core::com::signals::key_t ACTIVITY_LAUNCHED_SIG = "activity_launched";
-
 static const std::string BORDER_CONFIG = "border";
 
 //------------------------------------------------------------------------------
 
-view::view() :
-    m_sig_activity_launched(new_signal<activity_launched_signal_t>(ACTIVITY_LAUNCHED_SIG))
+view::view()
 {
+    new_signal<signals::activity_launched_t>(signals::ACTIVITY_LAUNCHED);
 }
-
-//------------------------------------------------------------------------------
-
-view::~view()
-= default;
 
 //-----------------------------------------------------------------------------
 
@@ -120,6 +108,8 @@ void view::stopping()
         m_config_manager->stop_and_destroy();
     }
 
+    m_local_value_objects.clear();
+
     auto sub_container = sight::ui::registry::get_wid_container(m_wid);
     sight::ui::registry::unregister_wid_container(m_wid);
 
@@ -143,6 +133,7 @@ void view::launch_activity(data::activity::sptr _activity)
         if(m_config_manager->started())
         {
             m_config_manager->stop_and_destroy();
+            m_local_value_objects.clear();
         }
 
         auto [info, replacementMap] = sight::activity::extension::activity::get_default()->get_info_and_replacement_map(
@@ -155,10 +146,25 @@ void view::launch_activity(data::activity::sptr _activity)
 
         try
         {
+            m_local_value_objects = sight::service::materialize_value_parameters(
+                m_value_parameters,
+                replacementMap,
+                [&info](const std::string& _key) -> std::string
+                {
+                    const auto object_parameter =
+                        app::extension::config::get()->get_object_parameter(info.app_config.id, _key);
+                    return object_parameter.has_value() ? object_parameter->type : std::string {};
+                },
+                [](const std::string& _key) -> std::string
+                {
+                    return app::extension::config::get_unique_identifier("activity_value_" + _key);
+                },
+                info.app_config.id
+            );
             m_config_manager->set_config(info.app_config.id, replacementMap);
             m_config_manager->launch();
 
-            m_sig_activity_launched->async_emit(_activity);
+            async_emit(signals::ACTIVITY_LAUNCHED, _activity);
         }
         catch(std::exception& e)
         {

@@ -32,7 +32,6 @@
 #include <boost/range/iterator_range_core.hpp>
 
 #include <limits>
-#include <regex>
 
 namespace sight::activity::extension
 {
@@ -126,7 +125,7 @@ activity_requirement::activity_requirement(const config_t& _config) :
 
 //-----------------------------------------------------------------------------
 
-activity_info::activity_info(const SPTR(core::runtime::extension)& _ext) :
+activity_info::activity_info(const sight::sptr<core::runtime::extension>& _ext) :
     bundle_id(_ext->get_module()->identifier())
 {
     const auto& config = _ext->get_config();
@@ -249,10 +248,10 @@ activity::sptr activity::get_default()
 
 void activity::parse_plugin_infos()
 {
-    std::vector<SPTR(core::runtime::extension)> extensions =
+    std::vector<sight::sptr<core::runtime::extension> > extensions =
         core::runtime::get_all_extensions_for_point("sight::activity::extension");
 
-    for(const SPTR(core::runtime::extension) & ext : extensions)
+    for(const sight::sptr<core::runtime::extension>& ext : extensions)
     {
         SIGHT_DEBUG("Parsing <" << ext->get_module()->identifier() << "> Activity");
         activity_info info(ext);

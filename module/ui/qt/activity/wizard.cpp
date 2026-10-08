@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2024 IRCAD France
+ * Copyright (C) 2016-2026 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,16 +23,11 @@
 #include "wizard.hpp"
 
 #include <activity/builder/data.hpp>
-#include <activity/validator/base.hpp>
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
 #include <core/runtime/path.hpp>
 #include <core/runtime/runtime.hpp>
 
 #include <data/activity_set.hpp>
-#include <data/map.hpp>
-#include <data/series.hpp>
 
 #include <ui/__/dialog/input.hpp>
 #include <ui/qt/container/widget.hpp>
@@ -47,14 +42,6 @@
 namespace sight::module::ui::qt::activity
 {
 
-//------------------------------------------------------------------------------
-
-const core::com::slots::key_t wizard::CREATE_ACTIVITY_SLOT   = "create_activity";
-const core::com::slots::key_t wizard::UPDATE_ACTIVITY_SLOT   = "update_activity";
-const core::com::signals::key_t wizard::ACTIVITY_CREATED_SIG = "activity_created";
-const core::com::signals::key_t wizard::ACTIVITY_UPDATED_SIG = "activity_updated";
-const core::com::signals::key_t wizard::CANCELED_SIG         = "canceled";
-
 using sight::activity::extension::activity_info;
 using sight::activity::extension::activity;
 
@@ -64,12 +51,12 @@ using sight::activity::extension::activity;
 
 wizard::wizard() noexcept
 {
-    new_slot(CREATE_ACTIVITY_SLOT, &wizard::create_activity, this);
-    new_slot(UPDATE_ACTIVITY_SLOT, &wizard::update_activity, this);
+    new_slot(slots::CREATE_ACTIVITY, &wizard::create_activity, this);
+    new_slot(slots::UPDATE_ACTIVITY, &wizard::update_activity, this);
 
-    m_sig_activity_created = new_signal<activity_created_signal_t>(ACTIVITY_CREATED_SIG);
-    m_sig_activity_updated = new_signal<activity_updated_signal_t>(ACTIVITY_UPDATED_SIG);
-    m_sig_canceled         = new_signal<canceled_signal_t>(CANCELED_SIG);
+    new_signal<signals::activity_created_t>(signals::ACTIVITY_CREATED);
+    new_signal<signals::activity_updated_t>(signals::ACTIVITY_UPDATED);
+    new_signal<signals::canceled_t>(signals::CANCELED);
 }
 
 //------------------------------------------------------------------------------
@@ -262,7 +249,7 @@ void wizard::create_activity(std::string _activity_id)
             m_ok_button->setText("Next");
         }
 
-        this->slot(slots::SHOW)->async_run();
+        this->slot(sight::ui::service::slots::SHOW)->async_run();
     }
     else
     {
@@ -279,7 +266,7 @@ void wizard::create_activity(std::string _activity_id)
         const auto scoped_emitter = activity_set->scoped_emit();
         activity_set->push_back(m_new_activity);
 
-        m_sig_activity_created->async_emit(m_new_activity);
+        this->async_emit(signals::ACTIVITY_CREATED, m_new_activity);
     }
 }
 
@@ -322,10 +309,8 @@ void wizard::update_activity(data::activity::sptr _activity)
     else
     {
         // Start immediately without popping any configuration UI
-        data::object::modified_signal_t::sptr sig;
-        sig = m_new_activity->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-        sig->async_emit();
-        m_sig_activity_updated->async_emit(m_new_activity);
+        m_new_activity->async_emit(data::signals::MODIFIED);
+        this->async_emit(signals::ACTIVITY_UPDATED, m_new_activity);
     }
 }
 
@@ -365,7 +350,7 @@ void wizard::on_reset()
 void wizard::on_cancel()
 {
     m_data_view->clear();
-    m_sig_canceled->async_emit();
+    this->async_emit(signals::CANCELED);
 }
 
 //------------------------------------------------------------------------------
@@ -382,7 +367,7 @@ void wizard::on_build_activity()
 
     std::string error_msg;
     // Check current data
-    if(m_data_view->check_data(std::size_t(index), error_msg))
+    if(m_data_view->check_data(static_cast<std::size_t>(index), error_msg))
     {
         if(index != last_tab)
         {
@@ -443,14 +428,12 @@ void wizard::on_build_activity()
                     const auto scoped_emitter = activity_set->scoped_emit();
                     activity_set->push_back(m_new_activity);
 
-                    m_sig_activity_created->async_emit(m_new_activity);
+                    this->async_emit(signals::ACTIVITY_CREATED, m_new_activity);
                 }
                 else // m_mode == Mode::UPDATE
                 {
-                    data::object::modified_signal_t::sptr sig;
-                    sig = m_new_activity->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-                    sig->async_emit();
-                    m_sig_activity_updated->async_emit(m_new_activity);
+                    m_new_activity->async_emit(data::signals::MODIFIED);
+                    this->async_emit(signals::ACTIVITY_UPDATED, m_new_activity);
                 }
             }
             else

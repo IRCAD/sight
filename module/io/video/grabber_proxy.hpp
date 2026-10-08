@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2025 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,6 @@
 #include <io/__/service/grabber.hpp>
 
 #include <service/has_services.hpp>
-#include <service/notifier.hpp>
 
 namespace sight::data
 {
@@ -73,10 +72,8 @@ namespace sight::module::io::video
  *
  * @code{.xml}
         <service uid="..." type="sight::module::io::video::grabber_proxy">
-            <in key="camera" uid="..." />
-            <inout key="frame_tl" uid="..." />
-            <inout key="depth_tl" uid="..." />
-            <config>
+            <timeline image="..." depth="..." />
+            <config camera="...">
                 <camera type="RGBD" />
                 <match id="Webcam" service="sight::module::io::video::frame_grabber" />
                 <selection mode="include" />
@@ -87,10 +84,10 @@ namespace sight::module::io::video
         </service>
    @endcode
  * @subsection Input Input
- * - \b camera [sight::data::camera]: camera used to display video.
+ * - \b config.camera [sight::data::camera]: camera used to display video.
  * @subsection In-Out In-Out
- * - \b frame_tl [sight::data::frame_tl]: timeline where to extract the video frames.
- * - \b depth_tl [sight::data::frame_tl] (optional): timeline where to extract the depth frames.
+ * - \b timeline.image [sight::data::frame_tl]: timeline where to extract the video frames.
+ * - \b timeline.depth [sight::data::frame_tl] (optional): timeline where to extract the depth frames.
  * @subsection Configuration Configuration
  *  - \b type (optional, default="RGB"): allows to filter for RGB or RGBD grabbers
  *  - \b selection
@@ -120,8 +117,6 @@ public:
     /// Internal wrapper holding slots keys.
     struct slots
     {
-        using key_t = sight::core::com::slots::key_t;
-
         static inline const key_t RECONFIGURE = "reconfigure";
 
         static inline const key_t MODIFY_POSITION = "modifyPosition";
@@ -129,25 +124,10 @@ public:
 
         static inline const key_t FWD_START_CAMERA   = "forward_start_camera";
         static inline const key_t FWD_STOP_CAMERA    = "forward_stop_camera";
-        static inline const key_t FWD_NOTIFY         = "forward_notify";
         static inline const key_t FWD_SET_PARAMETER  = "forward_set_parameter";
         static inline const key_t FWD_PRESENT_FRAME  = "forward_present_frame";
         static inline const key_t FWD_CREATE_MONITOR = "forward_create_monitor";
     };
-
-protected:
-
-    /// Does nothing.
-    void starting() final;
-
-    /// Stop the underlying grabber, destroy it, and empty the input FrameTl.
-    void stopping() final;
-
-    /// Does nothing.
-    void updating() final;
-
-    /// Parses the XML configuration of the service.
-    void configuring() final;
 
     /**
      * @name Slots methods
@@ -195,7 +175,24 @@ protected:
 
     /// SLOT: Removes a region of interest center.
     void remove_roi_center(sight::data::point::sptr _p) final;
+
+    /// Forward FPS data
+    void forward_fps_changed(double _fps) final;
 /** @} */
+
+protected:
+
+    /// Does nothing.
+    void starting() final;
+
+    /// Stop the underlying grabber, destroy it, and empty the input FrameTl.
+    void stopping() final;
+
+    /// Does nothing.
+    void updating() final;
+
+    /// Parses the XML configuration of the service.
+    void configuring() final;
 
 private:
 
@@ -234,14 +231,8 @@ private:
     void fwd_set_parameter(ui::parameter_t _value, std::string _key);
 
     /// A monitor has been created in the proxied service.
-    void fwd_create_monitor(sight::core::progress::monitor::sptr _monitor);
-
-    // Forwards notifications
-    void fwd_notify(service::notification _notification);
+    void fwd_create_monitor(sight::core::notification::base::sptr _monitor);
     /** @} */
-
-    /// Forward FPS data
-    void forward_fps_changed(double _fps) final;
 
     /// Camera type (RGB, RGBD,...)
     camera_t m_type {camera_t::rgb};

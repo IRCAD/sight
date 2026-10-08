@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,8 +21,6 @@
 
 #pragma once
 
-#include <sight/io/session/config.hpp>
-
 #include "io/session/detail/session.hpp"
 #include "io/session/session_writer.hpp"
 
@@ -30,7 +28,7 @@
 
 #include <io/zip/archive.hpp>
 
-#include <filesystem>
+#include <boost/property_tree/ptree.hpp> // NOLINT(misc-include-cleaner)
 
 namespace sight::io::session::detail
 {
@@ -63,7 +61,7 @@ public:
     void serialize(
         const std::filesystem::path& _archive_path,
         sight::data::object::csptr _object,
-        io::zip::archive::archive_format _archive_format                    = io::zip::archive::archive_format::DEFAULT,
+        io::zip::archive::archive_format _archive_format                    = io::zip::archive::archive_format::standard,
         const core::crypto::secure_string& _password                        = "",
         core::crypto::password_keeper::encryption_policy _encryption_policy = core::crypto::password_keeper::
         encryption_policy::password
@@ -91,7 +89,7 @@ private:
 
     /// Return a serializer from a data object class name
     /// @param _class_name the name of the object to find a serializer
-    serializer_t find_serializer(const std::string& _class_name) const;
+    [[nodiscard]] serializer_t find_serializer(const std::string& _class_name) const;
 
     /// Serializes recursively a data::object to an opened archive using an initialized property tree
     /// @param _cache ptree cache

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,23 +21,15 @@
 
 #include "module/viz/scene3d/adaptor/grid.hpp"
 
-#include "module/viz/scene3d/adaptor/transform.hpp"
-
-#include <core/com/slots.hxx>
-
 #include <data/tools/color.hpp>
 
 #include <viz/scene3d/helper/manual_object.hpp>
 #include <viz/scene3d/ogre.hpp>
 
-#include <Ogre.h>
-#include <OgreAxisAlignedBox.h>
 #include <OgreCamera.h>
 
 namespace sight::module::viz::scene3d::adaptor
 {
-
-static const core::com::slots::key_t UPDATE_LENGTH_SLOT = "updateSize";
 
 //-----------------------------------------------------------------------------
 
@@ -66,7 +58,7 @@ struct grid::camera_listener : public Ogre::Camera::Listener
 
 grid::grid() noexcept
 {
-    new_slot(UPDATE_LENGTH_SLOT, &grid::update_size, this);
+    new_slot(slots::UPDATE_LENGTH, &grid::update_size, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -189,17 +181,17 @@ void grid::attach_node(Ogre::MovableObject* _object)
 
     if(const auto orientation = m_orientation.lock(); orientation)
     {
-        trans_node->yaw(Ogre::Degree(Ogre::Real(orientation->value()[0])));
-        trans_node->pitch(Ogre::Degree(Ogre::Real(orientation->value()[1])));
-        trans_node->roll(Ogre::Degree(Ogre::Real(orientation->value()[2])));
+        trans_node->yaw(Ogre::Degree(static_cast<Ogre::Real>(orientation->value()[0])));
+        trans_node->pitch(Ogre::Degree(static_cast<Ogre::Real>(orientation->value()[1])));
+        trans_node->roll(Ogre::Degree(static_cast<Ogre::Real>(orientation->value()[2])));
     }
 
     if(const auto position = m_position.lock(); position)
     {
         const auto pos = Ogre::Vector3(
-            Ogre::Real(position->value()[0]),
-            Ogre::Real(position->value()[1]),
-            Ogre::Real(position->value()[2])
+            static_cast<Ogre::Real>(position->value()[0]),
+            static_cast<Ogre::Real>(position->value()[1]),
+            static_cast<Ogre::Real>(position->value()[2])
         );
         trans_node->setPosition(pos);
     }
@@ -270,17 +262,17 @@ void grid::set_visible(bool /*_visible*/)
 
     if(const auto orientation = m_orientation.lock(); orientation)
     {
-        trans_node->yaw(Ogre::Degree(Ogre::Real(orientation->value()[0])));
-        trans_node->pitch(Ogre::Degree(Ogre::Real(orientation->value()[1])));
-        trans_node->roll(Ogre::Degree(Ogre::Real(orientation->value()[2])));
+        trans_node->yaw(Ogre::Degree(static_cast<Ogre::Real>(orientation->value()[0])));
+        trans_node->pitch(Ogre::Degree(static_cast<Ogre::Real>(orientation->value()[1])));
+        trans_node->roll(Ogre::Degree(static_cast<Ogre::Real>(orientation->value()[2])));
     }
 
     if(const auto position = m_position.lock(); position)
     {
         const auto pos = Ogre::Vector3(
-            Ogre::Real(position->value()[0]),
-            Ogre::Real(position->value()[1]),
-            Ogre::Real(position->value()[2])
+            static_cast<Ogre::Real>(position->value()[0]),
+            static_cast<Ogre::Real>(position->value()[1]),
+            static_cast<Ogre::Real>(position->value()[2])
         );
         trans_node->setPosition(pos);
     }

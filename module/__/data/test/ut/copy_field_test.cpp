@@ -42,11 +42,11 @@ TEST_SUITE("sight::module::data::copy_field")
         source->set_field("field1", field1);
         source->set_field("field2", field2);
 
-        srv->set_input(source, "source");
+        srv->set_input(source, "data.source");
 
         // Create target object
         auto target = std::make_shared<sight::data::mesh>();
-        srv->set_inout(target, "target");
+        srv->set_inout(target, "data.target");
 
         boost::property_tree::ptree ptree;
         ptree.put("in", "");
@@ -85,14 +85,14 @@ TEST_SUITE("sight::module::data::copy_field")
         // Create empty source object
         auto source = std::make_shared<sight::data::mesh>();
 
-        srv->set_input(source, "source");
+        srv->set_input(source, "data.source");
 
         // Create target object with initial fields
         auto target        = std::make_shared<sight::data::mesh>();
         auto initial_field = std::make_shared<sight::data::string>("initial");
         target->set_field("initial", initial_field);
 
-        srv->set_inout(target, "target");
+        srv->set_inout(target, "data.target");
 
         boost::property_tree::ptree ptree;
         ptree.put("in", "");

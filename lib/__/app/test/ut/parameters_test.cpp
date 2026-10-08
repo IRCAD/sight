@@ -23,8 +23,6 @@
 #include <core/runtime/path.hpp>
 #include <core/runtime/runtime.hpp>
 
-#include <service/extension/config.hpp>
-
 #include <app/extension/parameters.hpp>
 
 #include <doctest/doctest.h>
@@ -73,6 +71,10 @@ TEST_SUITE("sight::app::parameters")
         sight::app::field_adaptor_t parameters2 = app_config_param->get_parameters("id2");
         CHECK(!parameters2.empty());
         CHECK_EQ(std::string("value3"), parameters2["param3"]);
+
+        sight::app::field_adaptor_t cli_parameters = app_config_param->get_cli_parameters("id1");
+        CHECK_EQ(std::string("input,i"), cli_parameters["input"]);
+        CHECK(app_config_param->get_cli_parameters("id2").empty());
     }
 
 //------------------------------------------------------------------------------

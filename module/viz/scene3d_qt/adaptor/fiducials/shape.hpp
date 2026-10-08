@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024-2025 IRCAD France
+ * Copyright (C) 2024-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -40,14 +40,14 @@ namespace sight::module::viz::scene3d_qt::adaptor::fiducials
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::adaptor::fiducials::shape" auto_connect="true" >
-        <inout key="image" uid="..." />
-        <config fontSource="DejaVuSans.ttf" fontSize="32" priority="2" />
-        <properties visible="..." radius="..." line_width="..." filter="..." />
+        <data image="${...}" />
+        <config fontSource="DejaVuSans.ttf" fontSize="32" priority="2" visible="..." radius="..." line_width="..."
+ * filter="..." />
     </service>
    @endcode
  *
  * @subsection Input Input
- * - \b image [sight::data::image_series]: image containing the fiducials.
+ * - \b data.image [sight::data::image_series]: image containing the fiducials.
  *
  * @subsection Configuration Configuration
  * - \b orientation (optional, string, default="z_axis"): orientation of the image.
@@ -62,10 +62,10 @@ namespace sight::module::viz::scene3d_qt::adaptor::fiducials
  * @subsection Slots Slots
  * - \b activate_shape_tool(): activates the shape tool by changing the cursor and updating a boolean.
  *
- * @subsection Properties Properties
- * - \b radius (sight::data::real, default=10.0): radius of spheres.
- * - \b line_width (sight::data::real, default=4.0): line width.
- * - \b filter (sight::data::string, default="current"): whether to show only the shape
+ * @subsection Input Input
+ * - \b config.radius [sight::data::real] (optional, default=10.0): radius of spheres.
+ * - \b config.line_width [sight::data::real] (optional, default=4.0): line width.
+ * - \b config.filter [sight::data::string] (optional, default="current"): whether to show only the shape
  *   of the current slice ("current") or all of them ("all")
  *
  */
@@ -85,13 +85,17 @@ public:
 
     struct slots final
     {
-        using key_t = sight::core::com::slots::key_t;
-
-        inline static const key_t ACTIVATE_SHAPE_TOOL = "activate_shape_tool";
+        inline static const slot_key_t ACTIVATE_SHAPE_TOOL = "activate_shape_tool";
     };
 
     /// SLOT: Activates the shape tool by changing the cursor and updating a boolean
     void activate_shape_tool(bool _activate);
+
+    /**
+     * @brief Sets the entity visibility.
+     * @param _visible the visibility status.
+     */
+    void set_visible(bool _visible) final;
 
 protected:
 
@@ -108,12 +112,6 @@ protected:
 
     /// Removes the actor from the renderer.
     void stopping() final;
-
-    /**
-     * @brief Sets the entity visibility.
-     * @param _visible the visibility status.
-     */
-    void set_visible(bool _visible) final;
 
 private:
 
@@ -160,17 +158,16 @@ private:
 
     Ogre::ManualObject* m_sphere_object {nullptr};
 
-    static constexpr std::string_view s_IMAGE_INOUT = "image";
-    sight::data::ptr<sight::data::image_series, sight::data::access::inout> m_image {this, s_IMAGE_INOUT};
+    sight::data::ptr<sight::data::image_series, sight::data::access::inout> m_image {this, "data.image"};
 
     /// Defines the radius of spheres.
-    sight::data::property<sight::data::real> m_sphere_radius {this, "radius", 10.};
+    sight::data::ptr<sight::data::real, sight::data::access::in> m_sphere_radius {this, "config.radius", 10.};
 
     /// Defines the width of the lines.
-    sight::data::property<sight::data::real> m_line_width {this, "line_width", 4.};
+    sight::data::ptr<sight::data::real, sight::data::access::in> m_line_width {this, "config.line_width", 4.};
 
     // Enable seeing only the shape of the current slice ("current") or all of them ("all")
-    sight::data::property<sight::data::string> m_filter {this, "filter", std::string("current")};
+    sight::data::ptr<sight::data::string, sight::data::access::in> m_filter {this, "config.filter", "current"};
 };
 
 } // namespace sight::module::viz::scene3d_qt::adaptor::fiducials

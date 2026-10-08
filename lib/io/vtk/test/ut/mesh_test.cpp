@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #include <core/os/temp_path.hpp>
 #include <core/tools/random/generator.hpp>
-
-#include <data/iterator.hpp>
 
 #include <geometry/data/mesh.hpp>
 
@@ -49,7 +47,6 @@
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkSmartPointer.h>
-#include <vtkSphereSource.h>
 #include <vtkTexturedSphereSource.h>
 
 TEST_SUITE("sight::io::vtk::mesh")
@@ -208,7 +205,7 @@ TEST_SUITE("sight::io::vtk::mesh")
         const sight::io::vtk::mesh_writer::sptr writer = std::make_shared<sight::io::vtk::mesh_writer>();
         writer->set_object(mesh1);
         writer->set_file(test_file);
-        auto write_observer = std::make_shared<sight::core::progress::observer>("Test write");
+        auto write_observer = std::make_shared<sight::core::notification::observer>("Test write");
         writer->write(write_observer);
         CHECK(std::filesystem::exists(test_file));
 
@@ -216,7 +213,7 @@ TEST_SUITE("sight::io::vtk::mesh")
         const sight::io::vtk::mesh_reader::sptr reader = std::make_shared<sight::io::vtk::mesh_reader>();
         reader->set_object(mesh2);
         reader->set_file(test_file);
-        auto read_observer = std::make_shared<sight::core::progress::observer>("Test read");
+        auto read_observer = std::make_shared<sight::core::notification::observer>("Test read");
         reader->read(read_observer);
 
         CHECK(*mesh1 == *mesh2);
@@ -260,7 +257,7 @@ TEST_SUITE("sight::io::vtk::mesh")
 
     TEST_CASE("read_vtk_file")
     {
-        const std::filesystem::path test_file(sight::utest_data::dir() / ("sight/mesh/vtk/sphere.vtk"));
+        const std::filesystem::path test_file(sight::utest_data::dir() / "sight/mesh/vtk/sphere.vtk");
         CHECK_MESSAGE(
             std::filesystem::exists(test_file),
             "The file '",
@@ -275,7 +272,7 @@ TEST_SUITE("sight::io::vtk::mesh")
         vtk_reader->set_object(mesh);
         vtk_reader->set_file(test_file);
 
-        auto read_observer = std::make_shared<sight::core::progress::observer>("Test read");
+        auto read_observer = std::make_shared<sight::core::notification::observer>("Test read");
         CHECK_NOTHROW(vtk_reader->read(read_observer));
 
         CHECK(mesh->num_cells() == 720);
@@ -284,12 +281,15 @@ TEST_SUITE("sight::io::vtk::mesh")
 
 //------------------------------------------------------------------------------
 
-// FIXME: This test is disabled on linux until vtk is patched upstream.
+// FIXME: This test is skipped at runtime on linux until vtk is patched upstream.
 // see https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1064762
 #ifdef WIN32
     TEST_CASE("read_vtp_file")
+#else
+    TEST_CASE("read_vtp_file" * doctest::skip())
+#endif
     {
-        const std::filesystem::path test_file(sight::utest_data::dir() / ("sight/mesh/vtp/sphere.vtp"));
+        const std::filesystem::path test_file(sight::utest_data::dir() / "sight/mesh/vtp/sphere.vtp");
         CHECK_MESSAGE(
             std::filesystem::exists(test_file),
             "The file '",
@@ -304,19 +304,18 @@ TEST_SUITE("sight::io::vtk::mesh")
         vtk_reader->set_object(mesh);
         vtk_reader->set_file(test_file);
 
-        auto read_observer = std::make_shared<sight::core::progress::observer>("Test read");
+        auto read_observer = std::make_shared<sight::core::notification::observer>("Test read");
         CHECK_NOTHROW(vtk_reader->read(read_observer));
 
         CHECK(mesh->num_cells() == 720);
         CHECK(mesh->num_points() == 362);
     }
-#endif
 
 //------------------------------------------------------------------------------
 
     TEST_CASE("read_obj_file")
     {
-        const std::filesystem::path test_file(sight::utest_data::dir() / ("sight/mesh/obj/sphere.obj"));
+        const std::filesystem::path test_file(sight::utest_data::dir() / "sight/mesh/obj/sphere.obj");
         CHECK_MESSAGE(
             std::filesystem::exists(test_file),
             "The file '",
@@ -331,7 +330,7 @@ TEST_SUITE("sight::io::vtk::mesh")
         vtk_reader->set_object(mesh);
         vtk_reader->set_file(test_file);
 
-        auto read_observer = std::make_shared<sight::core::progress::observer>("Test read");
+        auto read_observer = std::make_shared<sight::core::notification::observer>("Test read");
         CHECK_NOTHROW(vtk_reader->read(read_observer));
 
         CHECK(mesh->num_cells() == 720);
@@ -342,7 +341,7 @@ TEST_SUITE("sight::io::vtk::mesh")
 
     TEST_CASE("read_ply_file")
     {
-        const std::filesystem::path test_file(sight::utest_data::dir() / ("sight/mesh/ply/sphere.ply"));
+        const std::filesystem::path test_file(sight::utest_data::dir() / "sight/mesh/ply/sphere.ply");
         CHECK_MESSAGE(
             std::filesystem::exists(test_file),
             "The file '",
@@ -357,7 +356,7 @@ TEST_SUITE("sight::io::vtk::mesh")
         vtk_reader->set_object(mesh);
         vtk_reader->set_file(test_file);
 
-        auto read_observer = std::make_shared<sight::core::progress::observer>("Test read");
+        auto read_observer = std::make_shared<sight::core::notification::observer>("Test read");
         CHECK_NOTHROW(vtk_reader->read(read_observer));
 
         CHECK(mesh->num_cells() == 720);
@@ -368,7 +367,7 @@ TEST_SUITE("sight::io::vtk::mesh")
 
     TEST_CASE("read_stl_file")
     {
-        const std::filesystem::path test_file(sight::utest_data::dir() / ("sight/mesh/stl/sphere.stl"));
+        const std::filesystem::path test_file(sight::utest_data::dir() / "sight/mesh/stl/sphere.stl");
         CHECK_MESSAGE(
             std::filesystem::exists(test_file),
             "The file '",
@@ -383,7 +382,7 @@ TEST_SUITE("sight::io::vtk::mesh")
         vtk_reader->set_object(mesh);
         vtk_reader->set_file(test_file);
 
-        auto read_observer = std::make_shared<sight::core::progress::observer>("Test read");
+        auto read_observer = std::make_shared<sight::core::notification::observer>("Test read");
         CHECK_NOTHROW(vtk_reader->read(read_observer));
 
         CHECK(mesh->num_cells() == 720);
@@ -410,7 +409,7 @@ TEST_SUITE("sight::io::vtk::mesh")
         const auto writer = std::make_shared<sight::io::vtk::mesh_writer>();
         writer->set_object(mesh1);
         writer->set_file(test_file);
-        auto write_observer = std::make_shared<sight::core::progress::observer>("Test write");
+        auto write_observer = std::make_shared<sight::core::notification::observer>("Test write");
         CHECK_NOTHROW(writer->write(write_observer));
         CHECK(std::filesystem::exists(test_file));
     }
@@ -435,7 +434,7 @@ TEST_SUITE("sight::io::vtk::mesh")
         const auto writer = std::make_shared<sight::io::vtk::vtp_mesh_writer>();
         writer->set_object(mesh1);
         writer->set_file(test_file);
-        auto write_observer = std::make_shared<sight::core::progress::observer>("Test write");
+        auto write_observer = std::make_shared<sight::core::notification::observer>("Test write");
         CHECK_NOTHROW(writer->write(write_observer));
         CHECK(std::filesystem::exists(test_file));
     }
@@ -460,7 +459,7 @@ TEST_SUITE("sight::io::vtk::mesh")
         const auto writer = std::make_shared<sight::io::vtk::obj_mesh_writer>();
         writer->set_object(mesh1);
         writer->set_file(test_file);
-        auto write_observer = std::make_shared<sight::core::progress::observer>("Test write");
+        auto write_observer = std::make_shared<sight::core::notification::observer>("Test write");
         CHECK_NOTHROW(writer->write(write_observer));
         CHECK(std::filesystem::exists(test_file));
     }
@@ -485,7 +484,7 @@ TEST_SUITE("sight::io::vtk::mesh")
         const auto writer = std::make_shared<sight::io::vtk::ply_mesh_writer>();
         writer->set_object(mesh1);
         writer->set_file(test_file);
-        auto write_observer = std::make_shared<sight::core::progress::observer>("Test write");
+        auto write_observer = std::make_shared<sight::core::notification::observer>("Test write");
         CHECK_NOTHROW(writer->write(write_observer));
         CHECK(std::filesystem::exists(test_file));
     }
@@ -510,7 +509,7 @@ TEST_SUITE("sight::io::vtk::mesh")
         const auto writer = std::make_shared<sight::io::vtk::stl_mesh_writer>();
         writer->set_object(mesh1);
         writer->set_file(test_file);
-        auto write_observer = std::make_shared<sight::core::progress::observer>("Test write");
+        auto write_observer = std::make_shared<sight::core::notification::observer>("Test write");
         CHECK_NOTHROW(writer->write(write_observer));
         CHECK(std::filesystem::exists(test_file));
     }

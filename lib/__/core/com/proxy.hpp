@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,13 +24,11 @@
 
 #include <sight/core/config.hpp>
 
-#include <core/base.hpp>
 #include <core/com/signal_base.hpp>
 #include <core/com/slot_base.hpp>
 #include <core/mt/types.hpp>
 
 #include <map>
-#include <vector>
 
 namespace sight::core::com
 {
@@ -90,9 +88,9 @@ private:
      * @param _channel identifier of the channel
      * @return the sigslot structure for a given channel
      */
-    [[nodiscard]] SPTR(sig_slots_t) find_or_create_channel(channel_key_type _channel);
+    [[nodiscard]] sight::sptr<sig_slots_t> find_or_create_channel(channel_key_type _channel);
 
-    using channel_map_type = std::map<channel_key_type, SPTR(sig_slots_t)>;
+    using channel_map_type = std::map<channel_key_type, sight::sptr<sig_slots_t> >;
 
     /// Association channels, SigSlot
     channel_map_type m_channels;

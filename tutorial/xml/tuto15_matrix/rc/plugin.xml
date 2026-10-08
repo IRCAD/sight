@@ -140,15 +140,13 @@
 
             <!-- Mesh adaptors -->
             <service uid="mesh1_adp" type="sight::module::viz::scene3d::adaptor::mesh" auto_connect="true">
-                <in key="mesh" uid="mesh" />
-                <config transform="transRotMat" />
-                <properties color="#EE2234" />
+                <data mesh="${mesh}" />
+                <config transform="transRotMat" color="#EE2234" />
             </service>
 
             <service uid="mesh2_adp" type="sight::module::viz::scene3d::adaptor::mesh" auto_connect="true">
-                <in key="mesh" uid="mesh" />
-                <config transform="rotTransMat" />
-                <properties color="#2234EE" />
+                <data mesh="${mesh}" />
+                <config transform="rotTransMat" color="#2234EE" />
             </service>
 
             <!--
@@ -158,28 +156,25 @@
             versa.
             -->
             <service uid="matrix1_adp" type="sight::module::viz::scene3d::adaptor::transform" auto_connect="true">
-                <inout key="transform" uid="transRotMatrix" />
+                <data transform="${transRotMatrix}" />
                 <config transform="transRotMat" />
             </service>
 
             <service uid="matrix2_adp" type="sight::module::viz::scene3d::adaptor::transform" auto_connect="true">
-                <inout key="transform" uid="rotTransMatrix" />
+                <data transform="${rotTransMatrix}" />
                 <config transform="rotTransMat" />
             </service>
 
             <service uid="axis1_adp" type="sight::module::viz::scene3d::adaptor::axis">
-                <config length="10" transform="transRotMat" label="false" origin="true" name="Base" />
-                <properties origin_color="#6997BB" />
+                <config length="10" transform="transRotMat" label="false" origin="true" name="Base" origin_color="#6997BB" />
             </service>
 
             <service uid="axis2_adp" type="sight::module::viz::scene3d::adaptor::axis">
-                <config length="10" transform="rotTransMat" label="false" origin="true" />
-                <properties origin_color="#D25252" />
+                <config length="10" transform="rotTransMat" label="false" origin="true" origin_color="#D25252" />
             </service>
 
             <service uid="origin_axis_adp" type="sight::module::viz::scene3d::adaptor::axis">
-                <config length="10" label="false" origin="true" />
-                <properties origin_color="#000000" />
+                <config length="10" label="false" origin="true" origin_color="#000000" />
             </service>
 
             <service uid="text1_adp" type="sight::module::viz::scene3d::adaptor::text">
@@ -195,8 +190,7 @@
             <!-- ******************************* Services ***************************************** -->
 
             <service uid="mesh_reader_srv" type="sight::module::ui::io::selector">
-                <inout key="data" uid="mesh" />
-                <type mode="reader" />
+                <data read="${mesh}" />
             </service>
 
             <!--
@@ -211,20 +205,16 @@
 
             <!-- to multiply matrices -->
             <service uid="concatenate_translation_and_rotation_arv" type="sight::module::geometry::concatenate_matrices" auto_connect="true">
-                <in group="matrix">
-                    <key uid="translationMatrix" />
-                    <key uid="rotationMatrix" />
-                </in>
-                <inout key="output" uid="transRotMatrix" />
+                <data input="${translationMatrix}" />
+                <data input="${rotationMatrix}" />
+                <data output="${transRotMatrix}" />
             </service>
 
             <!-- to multiply matrices -->
             <service uid="concatenate_rotation_and_translation_srv" type="sight::module::geometry::concatenate_matrices" auto_connect="true">
-                <in group="matrix">
-                    <key uid="rotationMatrix" />
-                    <key uid="translationMatrix" />
-                </in>
-                <inout key="output" uid="rotTransMatrix" />
+                <data input="${rotationMatrix}" />
+                <data input="${translationMatrix}" />
+                <data output="${rotTransMatrix}" />
             </service>
 
             <service uid="show_mesh_srv" type="sight::module::ui::qt::parameters">

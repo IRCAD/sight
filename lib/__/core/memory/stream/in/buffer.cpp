@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,6 +33,9 @@
 namespace sight::core::memory::stream::in
 {
 
+namespace
+{
+
 struct hold_counter_stream : boost::iostreams::stream<boost::iostreams::array_source>
 {
     hold_counter_stream(char* _buf, std::size_t _size, buffer::lock_type _lock) :
@@ -44,9 +47,11 @@ struct hold_counter_stream : boost::iostreams::stream<boost::iostreams::array_so
     buffer::lock_type m_counter;
 };
 
+} // namespace
+
 //------------------------------------------------------------------------------
 
-buffer::lock_type no_factory()
+static buffer::lock_type no_factory()
 {
     return {};
 }
@@ -67,10 +72,12 @@ buffer::buffer(void* _buf, std::size_t _size, counter_factory_type _counter_fact
     SIGHT_ASSERT("Buffer is null.", m_buf || _size == 0);
 }
 
-SPTR(std::istream) buffer::get()
+//------------------------------------------------------------------------------
+
+sight::sptr<std::istream> buffer::get()
 {
-    using array_stream_type                 = hold_counter_stream;
-    SPTR(array_stream_type) array_in_stream =
+    using array_stream_type = hold_counter_stream;
+    sight::sptr<array_stream_type> array_in_stream =
         std::make_shared<array_stream_type>(static_cast<char*>(m_buf), m_size, m_counter_factory());
 
     return array_in_stream;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -32,7 +32,7 @@ class slider
 {
 public:
 
-    enum class position
+    enum class position : std::uint8_t
     {
         top,
         right,
@@ -61,4 +61,4 @@ public:
     SIGHT_UI_TEST_API static void set(tester& _tester, const selector& _slider, int _value);
 };
 
-} // namespace sight::ui::testCore::helper
+} // namespace sight::ui::test::helper

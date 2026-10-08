@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -58,7 +58,7 @@ public:
         const std::string& _mtl_name
     );
 
-    SIGHT_VIZ_SCENE3D_API r2vb_renderable(const Ogre::String& _name);
+    SIGHT_VIZ_SCENE3D_API explicit r2vb_renderable(const Ogre::String& _name);
     SIGHT_VIZ_SCENE3D_API ~r2vb_renderable() override;
 
     /// Set the maximum number of vertices in output, and adjust the size of the output buffer accordingly.
@@ -97,9 +97,10 @@ public:
     /// Set the material used to process the geometry pass.
     SIGHT_VIZ_SCENE3D_API void set_render_to_buffer_material(const std::string& _mtl_name);
 
-    viz::scene3d::material::r2vb::uptr material;
-
     data::mesh::cell_type_t get_input_primitive_type() const;
+
+    /// NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
+    viz::scene3d::material::r2vb::uptr material;
 
 protected:
 
@@ -118,6 +119,7 @@ protected:
 
     /// Maximum number of vertices in output buffer
     std::size_t m_max_output_vertex_count {0};
+    /// NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 };
 
 //-----------------------------------------------------------------------------

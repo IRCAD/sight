@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,6 +36,7 @@
 #include <data/vector.hpp>
 
 #include <optional>
+#include <utility>
 
 namespace sight::data::helper
 {
@@ -62,12 +63,12 @@ namespace medical_image
 using index_t = std::array<int, 3>;
 using vec3_t  = std::array<double, 3>;
 
-enum axis_t
+enum axis_t : std::uint8_t
 {
     /// Directions.
     x_axis = 0,
-    y_axis,
-    z_axis,
+    y_axis = 1,
+    z_axis = 2,
     /// Planar definitions.
     sagittal = x_axis,
     frontal  = y_axis,
@@ -346,7 +347,7 @@ public:
     public:
 
         param(data::image::csptr _img, T& _min, T& _max) :
-            image(_img),
+            image(std::move(_img)),
             min(_min),
             max(_max)
         {
@@ -374,9 +375,9 @@ public:
         const data::image::const_iterator<IMAGE> begin = _img_begin + _region_min;
         const data::image::const_iterator<IMAGE> end   = _img_begin + _region_max;
 
-        typedef std::numeric_limits<IMAGE> ImgLimits;
-        IMAGE imin = ImgLimits::max();
-        IMAGE imax = ImgLimits::lowest();
+        using img_limits = std::numeric_limits<IMAGE>;
+        IMAGE imin = img_limits::max();
+        IMAGE imax = img_limits::lowest();
 
         for(auto itr = begin ; itr != end ; ++itr)
         {
@@ -392,9 +393,9 @@ public:
             }
         }
 
-        typedef std::numeric_limits<T> TLimits;
-        constexpr T min_t = TLimits::lowest();
-        constexpr T max_t = TLimits::max();
+        using t_limits = std::numeric_limits<T>;
+        constexpr T min_t = t_limits::lowest();
+        constexpr T max_t = t_limits::max();
 
         const T min = (static_cast<T>(imin) < min_t) ? min_t : static_cast<T>(imin);
         const T max = (static_cast<T>(imax) > max_t) ? max_t : static_cast<T>(imax);
@@ -453,6 +454,6 @@ std::pair<T, T> get_min_max(const data::image::csptr _img)
     return {min, max};
 }
 
-} // namespace sight::data::helper::medical_image
+} // namespace medical_image
 
 } // namespace sight::data::helper

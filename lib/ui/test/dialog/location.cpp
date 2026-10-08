@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -33,6 +33,8 @@ namespace sight::ui::test::dialog
 {
 
 std::queue<std::vector<std::filesystem::path> > location::s_paths_list;
+std::optional<location::filter_t> location::s_current_filter;
+std::vector<location::filter_t> location::s_filters;
 
 //------------------------------------------------------------------------------
 
@@ -49,15 +51,21 @@ void location::set_option(options /*option*/)
 
 //------------------------------------------------------------------------------
 
-void location::add_filter(const std::string& /*filterName*/, const std::string& /*wildcardList*/)
+void location::add_filter(const std::string& _filter_name, const std::string& _wildcard_list)
 {
+    s_filters.emplace_back(_filter_name, _wildcard_list);
+
+    if(m_current_filter.first.empty())
+    {
+        m_current_filter = {_filter_name, _wildcard_list};
+    }
 }
 
 //------------------------------------------------------------------------------
 
-std::string location::get_current_selection() const
+location::filter_t location::get_current_filter() const
 {
-    return "";
+    return s_current_filter.value_or(m_current_filter);
 }
 
 //------------------------------------------------------------------------------
@@ -76,19 +84,33 @@ void location::push_paths(const std::vector<std::filesystem::path>& _files)
 
 //------------------------------------------------------------------------------
 
+void location::set_current_filter(const filter_t& _filter)
+{
+    s_current_filter = _filter;
+}
+
+//------------------------------------------------------------------------------
+
+const std::vector<location::filter_t>& location::get_filters()
+{
+    return s_filters;
+}
+
+//------------------------------------------------------------------------------
+
 bool location::clear()
 {
-    if(s_paths_list.empty())
-    {
-        return true;
-    }
+    const bool was_empty = s_paths_list.empty();
 
     while(!s_paths_list.empty())
     {
         s_paths_list.pop();
     }
 
-    return false;
+    s_current_filter.reset();
+    s_filters.clear();
+
+    return was_empty;
 }
 
 //------------------------------------------------------------------------------
@@ -97,6 +119,12 @@ sight::core::location::base::sptr location::show()
 {
     std::vector<std::filesystem::path> paths = s_paths_list.front();
     s_paths_list.pop();
+
+    if(paths.empty())
+    {
+        return nullptr;
+    }
+
     if(m_type == single_file)
     {
         auto single_file = std::make_shared<sight::core::location::single_file>();

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,6 @@
 
 #include <io/__/service/reader.hpp>
 
-#include <filesystem>
 #include <string>
 
 namespace sight::data
@@ -34,14 +33,14 @@ namespace sight::data
 
 class image;
 
-}
+} // namespace sight::data
 
 namespace sight::data
 {
 
 class series;
 
-}
+} // namespace sight::data
 
 namespace sight::module::io::itk
 {
@@ -53,18 +52,19 @@ namespace sight::module::io::itk
  *
  * @code{.xml}
    <service type="sight::module::io::itk::series_set_reader">
-       <inout key="data" uid="..." />
-       <file>...</file>
-       <file>...</file>
-       <file>...</file>
-       <file>...</file>
+       <data read="..." />
+       <path file="..." />
+       <path file="..." />
+       <path file="..." />
+       <path file="..." />
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b data [sight::data::series_set]: store the loaded images.
+ * - \b data.read [sight::data::series_set]: store the loaded images.
  * @subsection Configuration Configuration
  * - \b file (optional): path of the images to load, if it not defined, 'open_location_dialog()' should be called to
  * define the path.
+ * - \b config.append (optional, default=false): appends images instead of replacing the current series set.
  */
 class series_set_reader : public sight::io::service::reader
 {
@@ -73,8 +73,18 @@ public:
     SIGHT_DECLARE_SERVICE(series_set_reader, sight::io::service::reader);
 
     series_set_reader() noexcept;
-
     ~series_set_reader() noexcept override = default;
+
+    /**
+     * @brief Configure the inr files path.
+     *
+     * This method is used to find the inr files path using a files selector.
+     */
+    void open_location_dialog() override;
+
+    /// Returns managed file type, here FILES
+    sight::io::service::path_type_t get_path_type() const override;
+    std::vector<std::pair<std::string, std::string> > get_supported_extensions() override;
 
 protected:
 
@@ -94,20 +104,12 @@ protected:
     /// Reads inr files specified by user (configure or open_location_dialog) and pushes them into series_set.
     void updating() override;
 
-    /**
-     * @brief Configure the inr files path.
-     *
-     * This method is used to find the inr files path using a files selector.
-     */
-    void open_location_dialog() override;
-
-    /// Returns managed file type, here FILES
-    sight::io::service::path_type_t get_path_type() const override;
-
 private:
 
     /// Initializes Series with dummy values and Study with specified instanceUID.
-    static void init_series(SPTR(data::series) _series, const std::string& _instance_uid);
+    static void init_series(sight::sptr<data::series> _series, const std::string& _instance_uid);
+
+    bool m_append {false};
 };
 
 } // namespace sight::module::io::itk

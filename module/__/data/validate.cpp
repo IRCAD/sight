@@ -21,8 +21,6 @@
 
 #include "validate.hpp"
 
-#include <core/com/signal.hxx>
-
 #include <data/validator/factory/new.hpp>
 
 namespace sight::module::data

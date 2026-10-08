@@ -26,8 +26,6 @@
 #include <io/zip/archive_writer.hpp>
 #include <io/zip/exception/read.hpp>
 
-#include <boost/algorithm/string.hpp>
-
 #include <doctest/doctest.h>
 
 #include <filesystem>
@@ -252,6 +250,125 @@ TEST_SUITE("sight::io::zip::archive")
         }
 
         std::filesystem::remove_all(folder_path);
+    }
+
+    TEST_CASE("seek")
+    {
+        // Create a temporary file
+        sight::core::os::temp_dir tmp_dir;
+        const std::filesystem::path archive_path = tmp_dir / "seekTest.zip";
+
+        const std::string content("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+
+        {
+            // Create the archive writer
+            auto archive_writer = sight::io::zip::archive_writer::get(archive_path);
+
+            // Write a new file in the archive
+            auto ostream = archive_writer->open_file("seek_test");
+            ostream->write(content.data(), static_cast<std::streamsize>(content.size()));
+        }
+
+        // Create the archive reader
+        auto archive_reader = sight::io::zip::archive_reader::get(archive_path);
+        auto istream        = archive_reader->open_file("seek_test");
+
+        //------------------------------------------------------------------------------
+
+        auto read = [&](std::streamsize _size)
+                    {
+                        std::string buffer(static_cast<std::size_t>(_size), 0);
+                        istream->read(buffer.data(), _size);
+                        return buffer;
+                    };
+
+        // Initial position must be 0
+        CHECK_EQ(std::streampos(0), istream->tellg());
+
+        // seekg(beg): move forward and read from there
+        istream->seekg(10, std::ios_base::beg);
+        CHECK_EQ(std::streampos(10), istream->tellg());
+        CHECK_EQ(content.substr(10, 5), read(5));
+        CHECK_EQ(std::streampos(15), istream->tellg());
+
+        // seekg(cur): move backward from the current position (forces a rewind, since minizip can only
+        // read forward)
+        istream->seekg(-5, std::ios_base::cur);
+        CHECK_EQ(std::streampos(10), istream->tellg());
+        CHECK_EQ(content.substr(10, 5), read(5));
+
+        // seekg(end)
+        const auto size = static_cast<std::streamoff>(content.size());
+        istream->seekg(0, std::ios_base::end);
+        CHECK_EQ(std::streampos(size), istream->tellg());
+
+        istream->seekg(-3, std::ios_base::end);
+        CHECK_EQ(std::streampos(size - 3), istream->tellg());
+        CHECK_EQ(content.substr(content.size() - 3), read(3));
+
+        // Seeking beyond the end must be clamped to the total size
+        istream->seekg(1000, std::ios_base::beg);
+        CHECK_EQ(std::streampos(size), istream->tellg());
+
+        // Seeking before the beginning must be clamped to 0
+        istream->seekg(-1000, std::ios_base::beg);
+        CHECK_EQ(std::streampos(0), istream->tellg());
+        CHECK_EQ(content.substr(0, 4), read(4));
+    }
+
+    TEST_CASE("partial_read")
+    {
+        // Regression test for a crash observed when reading real world sessions (e.g. GDCM reading a DICOM
+        // instance from a session archive): with zstd, a single physical read can decode a whole compressed
+        // block internally and thus exhaust the entry before all the decompressed bytes have been returned
+        // to the caller. Closing (or rewinding) the entry in that state used to make minizip report
+        // MZ_CRC_ERROR, which was previously turned into an exception thrown from a destructor, terminating
+        // the application during stack unwinding. Content must be bigger than a single read buffer so that
+        // it cannot be fully decompressed and returned in one call.
+        sight::core::os::temp_dir tmp_dir;
+        const std::filesystem::path archive_path = tmp_dir / "partialReadTest.zip";
+
+        std::string content(50000, 0);
+        for(std::size_t i = 0 ; i < content.size() ; ++i)
+        {
+            content[i] = static_cast<char>('A' + (i % 26));
+        }
+
+        {
+            // Create the archive writer, using the default (zstd) compression method
+            auto archive_writer = sight::io::zip::archive_writer::get(archive_path);
+
+            auto ostream = archive_writer->open_file("partial_read_test");
+            ostream->write(content.data(), static_cast<std::streamsize>(content.size()));
+        }
+
+        // Destroying the stream without reading it until the end must not throw nor crash
+        {
+            auto archive_reader = sight::io::zip::archive_reader::get(archive_path);
+            auto istream        = archive_reader->open_file("partial_read_test");
+
+            std::string buffer(10, 0);
+            istream->read(buffer.data(), static_cast<std::streamsize>(buffer.size()));
+            CHECK_EQ(content.substr(0, buffer.size()), buffer);
+        }
+
+        // Seeking backward after a partial read (forcing a rewind of the still open entry) must not throw
+        // either, and reading from the beginning afterward must return the full, correct content
+        {
+            auto archive_reader = sight::io::zip::archive_reader::get(archive_path);
+            auto istream        = archive_reader->open_file("partial_read_test");
+
+            std::string small_buffer(10, 0);
+            istream->read(small_buffer.data(), static_cast<std::streamsize>(small_buffer.size()));
+            CHECK_EQ(content.substr(0, small_buffer.size()), small_buffer);
+
+            istream->seekg(0, std::ios_base::beg);
+            CHECK_EQ(std::streampos(0), istream->tellg());
+
+            std::string full_buffer(content.size(), 0);
+            istream->read(full_buffer.data(), static_cast<std::streamsize>(full_buffer.size()));
+            CHECK_EQ(content, full_buffer);
+        }
     }
 
     TEST_CASE("archive_format_to_string")

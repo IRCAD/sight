@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2024 IRCAD France
+ * Copyright (C) 2016-2026 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -62,21 +62,21 @@ public:
     SIGHT_UI_API const static std::string REGISTRY_KEY;
 
     /// Defines the horizontal alignment of the widget.
-    enum h_alignment
+    enum h_alignment : std::uint8_t
     {
         right,
         left
     };
 
     /// Defines the vertical alignment of the widget.
-    enum v_alignment
+    enum v_alignment : std::uint8_t
     {
         top,
         bottom
     };
 
     /// Defines animation direction.
-    enum animatable_alignment
+    enum animatable_alignment : std::uint8_t
     {
         right_animation,
         left_animation,
@@ -103,6 +103,8 @@ public:
     SIGHT_UI_API virtual void destroy_container() = 0;
 
 protected:
+
+    // NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
 
     /// Contains the generic container of the slide view.
     ui::container::widget::sptr m_container;
@@ -148,6 +150,8 @@ protected:
 
     /// Defines the additional style sheet of the widget.
     std::string m_style_sheet;
+
+    // NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 };
 
 } // namespace sight::ui::builder

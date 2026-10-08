@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,6 +45,7 @@ public:
 
     SIGHT_UI_API virtual void set_visible(bool _is_visible) = 0;
     SIGHT_UI_API virtual void set_enabled(bool _is_enabled) = 0;
+    SIGHT_UI_API virtual void set_blurred(bool _is_blurred) = 0;
 };
 
 } // namespace sight::ui::container

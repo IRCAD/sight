@@ -26,10 +26,6 @@
 
 #include "activity/validator/base.hpp"
 
-#include "core/runtime/extension.hpp"
-
-#include <core/base.hpp>
-
 #include <data/activity.hpp>
 
 namespace sight::data
@@ -56,7 +52,7 @@ public:
     /// Does nothing.
     SIGHT_ACTIVITY_API return_t validate(
         const extension::activity_info& /*activity_info*/,
-        const CSPTR(data::vector)&
+        const sight::csptr<data::vector>&
         /*currentSelection*/
     ) const override
     {
@@ -70,14 +66,14 @@ public:
      * @brief Performs the validation of the given activity data.
      * @return pair <isValid, errorMsg> : errorMsg is empty if the data are valid else it contains detailed error.
      */
-    SIGHT_ACTIVITY_API virtual return_t validate(const CSPTR(data::activity)& _activity) const = 0;
+    SIGHT_ACTIVITY_API virtual return_t validate(const sight::csptr<data::activity>& _activity) const = 0;
 
     /**
      * @brief Checks if all the required data are present in the activity.
      * @return pair <isValid, errorMsg> : errorMsg is empty if the data are valid else it contains the list of missing
      *         (or not valid) data.
      */
-    static SIGHT_ACTIVITY_API return_t check_requirements(const CSPTR(data::activity)& _activity);
+    static SIGHT_ACTIVITY_API return_t check_requirements(const sight::csptr<data::activity>& _activity);
 
     /**
      * @brief Calls the object validator if it is defined.
@@ -88,7 +84,7 @@ public:
      * @see activity::validator::object
      */
     static SIGHT_ACTIVITY_API return_t check_object(
-        const CSPTR(data::object)& _object,
+        const sight::csptr<data::object>& _object,
         const std::string& _validator_impl,
         const extension::config_t& _config
     );

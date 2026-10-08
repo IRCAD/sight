@@ -28,31 +28,21 @@
 #include "data/mesh.hpp"
 #include "data/registry/macros.hpp"
 
-#include <core/base.hpp>
-#include <core/com/signal.hpp>
-#include <core/com/signal.hxx>
-#include <core/com/signals.hpp>
-
 SIGHT_REGISTER_DATA(sight::data::reconstruction);
 namespace sight::data
 {
 
 const double reconstruction::NO_COMPUTED_MASK_VOLUME = -1.;
 
-const core::com::signals::key_t reconstruction::MESH_CHANGED_SIG        = "meshModified";
-const core::com::signals::key_t reconstruction::VISIBILITY_MODIFIED_SIG = "visibilityModified";
-
 //------------------------------------------------------------------------------
 
 reconstruction::reconstruction() :
 
     m_material(data::factory::make<data::material>()),
-    m_computed_mask_volume(reconstruction::NO_COMPUTED_MASK_VOLUME),
-    m_sig_mesh_changed(std::make_shared<mesh_changed_signal_t>()),
-    m_sig_visibility_modified(std::make_shared<visibility_modified_signal_t>())
+    m_computed_mask_volume(reconstruction::NO_COMPUTED_MASK_VOLUME)
 {
-    m_signals(MESH_CHANGED_SIG, m_sig_mesh_changed)
-        (VISIBILITY_MODIFIED_SIG, m_sig_visibility_modified);
+    new_signal<signals::mesh_changed_t>(signals::MESH_CHANGED);
+    new_signal<signals::visibility_modified_t>(signals::VISIBILITY_MODIFIED);
 }
 
 //------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -69,7 +69,7 @@ void viewport_updater::updating()
 service::connections_t viewport_updater::auto_connections() const
 {
     connections_t connections;
-    connections.push(VIEWPORT_INOUT, sight::viz::scene2d::data::viewport::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(VIEWPORT_INOUT, sight::data::signals::MODIFIED, service::slots::UPDATE);
     return connections;
 }
 

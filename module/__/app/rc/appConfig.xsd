@@ -71,6 +71,11 @@
             <xs:element name="color"  type="xs:string"  minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="file"  type="xs:string"  minOccurs="0" maxOccurs="1" />
             <xs:element name="resource"  type="xs:string"  minOccurs="0" maxOccurs="1" />
+            <xs:element name="ambient"  type="xs:string"  minOccurs="0" maxOccurs="1" />
+            <xs:element name="diffuse"  type="xs:string"  minOccurs="0" maxOccurs="1" />
+            <xs:element name="shading"  type="xs:string"  minOccurs="0" maxOccurs="1" />
+            <xs:element name="representation"  type="xs:string"  minOccurs="0" maxOccurs="1" />
+            <xs:element name="options"  type="xs:string"  minOccurs="0" maxOccurs="1" />
             <xs:element name="gray"  type="xs:string"  minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="param" minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="config" minOccurs="0" maxOccurs="unbounded" />
@@ -144,6 +149,7 @@
         <xs:attribute name='loop' type='boolean_t' />
         <xs:attribute name='parent' type='xs:string' />
         <xs:attribute name='start' type='boolean_t' />
+        <xs:attribute name='worker' type='xs:string' />
     </xs:complexType>
 
     <xs:complexType name="parallel_t">
@@ -157,6 +163,7 @@
         <xs:attribute name='uid' type='xs:string' />
         <xs:attribute name='loop' type='boolean_t' />
         <xs:attribute name='parent' type='xs:string' />
+        <xs:attribute name='worker' type='xs:string' />
     </xs:complexType>
 
     <xs:complexType name="service_update_t">

@@ -22,8 +22,6 @@
 
 #include <io/http/request.hpp>
 
-#include <utest/exception.hpp>
-
 #include <doctest/doctest.h>
 
 #include <QNetworkRequest>
@@ -33,7 +31,7 @@ TEST_SUITE("sight::io::http::request")
     TEST_CASE("request")
     {
         const std::string dummy_url("http://localhost:8080");
-        auto request = sight::io::http::request::New(dummy_url);
+        auto request = sight::io::http::request::make(dummy_url);
 
         const std::string key("Content-Type");
         const std::string value("application/json");

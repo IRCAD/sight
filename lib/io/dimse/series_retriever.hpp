@@ -24,11 +24,9 @@
 
 #include <sight/io/dimse/config.hpp>
 
-#include <core/com/slot.hpp>
 #include <core/com/slots.hpp>
-#include <core/progress/observer.hpp>
+#include <core/notification/observer.hpp>
 
-#include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmnet/scp.h>
 
 #include <filesystem>
@@ -47,8 +45,10 @@ public:
     SIGHT_DECLARE_CLASS(series_retriever, io::dimse::series_retriever);
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
-    SIGHT_IO_DIMSE_API static const core::com::slots::key_t PROGRESS_CALLBACK_SLOT;
-    using progress_callback_slot_t = core::com::slot<void (const std::string&, unsigned int, const std::string&)>;
+    struct slots
+    {
+        static inline const core::com::slots::key_t PROGRESS_CALLBACK = "CMoveProgressCallback";
+    };
 
     /// Constructor
     SIGHT_IO_DIMSE_API series_retriever();
@@ -66,8 +66,8 @@ public:
     SIGHT_IO_DIMSE_API void initialize(
         const std::string& _application_title,
         std::uint16_t _applicationport,
-        int _timeout                             = 3,
-        core::progress::observer::sptr _progress = core::progress::observer::sptr()
+        int _timeout                                 = 3,
+        core::notification::observer::sptr _progress = core::notification::observer::sptr()
     );
 
     /// Start the server
@@ -98,7 +98,7 @@ private:
     std::filesystem::path m_path;
 
     /// Progress callback slot
-    core::progress::observer::sptr m_progress;
+    core::notification::observer::sptr m_progress;
 
     /// Downloaded instance index
     unsigned int m_instance_index {};

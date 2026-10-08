@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2025 IRCAD France
+ * Copyright (C) 2019-2026 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,14 +23,10 @@
 #include "activity/launcher.hpp"
 
 #include "activity/validator/activity.hpp"
-#include "activity/validator/base.hpp"
 
 #include <activity/builder/data.hpp>
 
 #include <core/runtime/runtime.hpp>
-
-#include <data/map.hpp>
-#include <data/mt/locked_ptr.hpp>
 
 #include <boost/range/iterator_range_core.hpp>
 
@@ -39,8 +35,15 @@ namespace sight::activity
 
 //------------------------------------------------------------------------------
 
-void launcher::parse_configuration(const configuration_t& _config, const in_out_map_t& _inouts)
+void launcher::parse_configuration(
+    const configuration_t& _config,
+    const in_out_map_t& _inouts,
+    const in_out_map_t& _bound_data_ids
+)
 {
+    m_parameters.clear();
+    m_value_parameters.clear();
+
     m_main_activity_id = _config.get<std::string>("mainActivity.<xmlattr>.id", "");
     SIGHT_DEBUG_IF("main activity 'id' is not defined", m_main_activity_id.empty());
 
@@ -55,26 +58,81 @@ void launcher::parse_configuration(const configuration_t& _config, const in_out_
                 const auto key = it_cfg.second.get<std::string>("<xmlattr>.name");
                 SIGHT_ASSERT("Missing 'name' tag.", !key.empty());
 
-                const auto uid = it_cfg.second.get<std::string>("<xmlattr>.uid");
-                SIGHT_ASSERT("Missing 'uid' tag.", !uid.empty());
+                const auto uid   = it_cfg.second.get_optional<std::string>("<xmlattr>.uid");
+                const auto value = it_cfg.second.get_optional<std::string>("<xmlattr>.value");
+
+                SIGHT_ASSERT(
+                    "Exactly one of 'uid' or 'value' is required in <inout><key>.",
+                    uid.has_value() != value.has_value()
+                );
 
                 const bool optional = it_cfg.second.get<bool>("<xmlattr>.optional", false);
-                const auto& obj_id  = _inouts[i];
                 parameter_t param;
                 param.replace = key;
-                if(optional)
+
+                if(uid.has_value())
                 {
-                    param.by = uid;
+                    if(optional)
+                    {
+                        param.by = *uid;
+                    }
+                    else
+                    {
+                        SIGHT_ASSERT(
+                            "Not enough inout objects provided for non-optional key '" + key + "'.",
+                            i < _inouts.size()
+                        );
+                        param.by = _inouts[i];
+                        ++i;
+                    }
                 }
                 else
                 {
-                    param.by = obj_id;
-                    ++i;
+                    SIGHT_ASSERT(
+                        "'optional' cannot be used with literal 'value' in <inout><key>.",
+                        !optional
+                    );
+                    param.by                = *value;
+                    m_value_parameters[key] = *value;
                 }
 
                 m_parameters.push_back(param);
             }
         }
+    }
+
+    // Hierarchical syntax, i.e. <object name="..." uid="..." /> as a direct child of the service
+    std::size_t data_index = 0;
+    for(const auto& it_cfg : boost::make_iterator_range(_config.equal_range("object")))
+    {
+        const auto key = it_cfg.second.get<std::string>("<xmlattr>.name", "");
+        SIGHT_ASSERT("Missing 'name' attribute in <object>.", !key.empty());
+
+        const auto uid   = it_cfg.second.get_optional<std::string>("<xmlattr>.uid");
+        const auto value = it_cfg.second.get_optional<std::string>("<xmlattr>.value");
+
+        SIGHT_ASSERT(
+            "Exactly one of 'uid' or 'value' is required in <object>.",
+            uid.has_value() != value.has_value()
+        );
+
+        parameter_t param;
+        param.replace = key;
+
+        if(uid.has_value())
+        {
+            // A deferred object is not bound yet, the uid declared in the configuration is then the only reference
+            const bool bound = data_index < _bound_data_ids.size() && !_bound_data_ids[data_index].empty();
+            param.by = bound ? _bound_data_ids[data_index] : *uid;
+        }
+        else
+        {
+            param.by                = *value;
+            m_value_parameters[key] = *value;
+        }
+
+        m_parameters.push_back(param);
+        ++data_index;
     }
 
     if(const auto config_params = _config.get_child_optional("parameters"); config_params.has_value())

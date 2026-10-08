@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,7 +33,7 @@ namespace sight::io::igtl::detail::exception
 /// reasons)
 struct SIGHT_IO_IGTL_CLASS_API conversion : core::exception
 {
-    SIGHT_IO_IGTL_API conversion(const std::string& _err) :
+    SIGHT_IO_IGTL_API explicit conversion(const std::string& _err) :
         core::exception(_err)
     {
     }

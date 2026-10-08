@@ -27,8 +27,6 @@
 
 #include <ui/test/tester.hpp>
 
-#include <cppunit/extensions/HelperMacros.h>
-
 #include <QApplication>
 #include <QLabel>
 #include <QSlider>
@@ -72,7 +70,7 @@ public:
         tester& _tester,
         const selector& _slider,
         tickmarks_slider_test::position _pos,
-        int = 1
+        int _times = 1
     );
 
     SIGHT_UI_TEST_API static  void check_value(tester& _tester, const selector& _slider, const std::string& _expected);

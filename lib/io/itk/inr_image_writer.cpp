@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,11 +27,9 @@
 #include "io/itk/helper/progress_itk_to_fw.hpp"
 #include "io/itk/itk.hpp"
 
-#include <core/base.hpp>
 #include <core/tools/dispatcher.hpp>
 
 #include <itkImageFileWriter.h>
-#include <itkNiftiImageIOFactory.h>
 
 #include <filesystem>
 
@@ -40,22 +38,21 @@ namespace sight::io::itk
 
 //------------------------------------------------------------------------------
 
-void inr_image_writer::write(sight::core::progress::observer::sptr _progress)
+void inr_image_writer::write(sight::core::notification::observer::sptr _progress)
 {
-    SIGHT_ASSERT("Object expired", !m_object.expired());
-    SIGHT_ASSERT("Object null", m_object.lock());
+    auto object_lock = get_object();
 
     auto do_write =
         []<class PIXEL_TYPE>(
             data::image::csptr _data_image,
             const std::string& _filename,
-            core::progress::observer::sptr _progress
+            core::notification::observer::sptr _progress
     )
         {
             SIGHT_DEBUG("itk::ImageFileWriter with PIXEL_TYPE " << core::type::get<PIXEL_TYPE>().name());
 
             // Reader IO (*1*)
-            typename ::itk::ImageIOBase::Pointer image_io_write = ::itk::ImageIOFactory::CreateImageIO(
+            ::itk::ImageIOBase::Pointer image_io_write = ::itk::ImageIOFactory::CreateImageIO(
                 _filename.c_str(),
                 ::itk::ImageIOFactory::WriteMode
             );
@@ -63,12 +60,13 @@ void inr_image_writer::write(sight::core::progress::observer::sptr _progress)
 
             // create writer
             using itk_image_type = ::itk::Image<PIXEL_TYPE, 3>;
-            using writer_t       = typename ::itk::ImageFileWriter<itk_image_type>;
+            using writer_t       = ::itk::ImageFileWriter<itk_image_type>;
             typename writer_t::Pointer writer = writer_t::New();
             progressor progress(writer, _progress);
 
             // set observation (*2*)
-            ::itk::LightProcessObject::Pointer cast_helper = (::itk::LightProcessObject*) (image_io_write.GetPointer());
+            ::itk::LightProcessObject::Pointer cast_helper =
+                static_cast<::itk::LightProcessObject*>(image_io_write.GetPointer());
             assert(cast_helper.IsNotNull());
 
             // create itk Image

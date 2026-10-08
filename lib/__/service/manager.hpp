@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -27,6 +27,8 @@
 
 #include "service/base.hpp"
 
+#include <set>
+
 namespace sight::service
 {
 
@@ -37,6 +39,11 @@ namespace sight::service
 class SIGHT_SERVICE_CLASS_API manager
 {
 public:
+
+    /// Tags that the framework parses itself in a service configuration, and thus can not be used as data keys
+    static inline const std::set<std::string, std::less<> > RESERVED_TAGS {
+        "in", "inout", "out", "properties", "optional"
+    };
 
     /**
      * @brief Set a registered object for a service
@@ -56,7 +63,7 @@ public:
         std::optional<std::size_t> _index,
         data::access _access,
         std::optional<bool> _auto_connect,
-        const bool _optional
+        bool _optional
     );
 
     /**
@@ -106,10 +113,10 @@ public:
     SIGHT_SERVICE_API static core::com::connection connect_unregister_out(const core::com::slot_base::sptr& _slot);
 
     /// Notify about a newly deferred object
-    SIGHT_SERVICE_API static void notify_register_out(data::object::sptr, const std::string&);
+    SIGHT_SERVICE_API static void notify_register_out(data::object::sptr /*_obj*/, const std::string& /*_id*/);
 
     /// Notify about a destroyed deferred object
-    SIGHT_SERVICE_API static void notify_unregister_out(data::object::sptr, const std::string&);
+    SIGHT_SERVICE_API static void notify_unregister_out(data::object::sptr /*_obj*/, const std::string& /*_id*/);
 
     /// Returns a boolean to indicate if the object is optional
     SIGHT_SERVICE_API static bool is_key_optional(const service::base::sptr& _srv, const std::string& _key);

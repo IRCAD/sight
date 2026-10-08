@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,9 +25,7 @@
 #include "io/vtk/helper/vtk_lambda_command.hpp"
 #include "io/vtk/vtk.hpp"
 
-#include <core/base.hpp>
-#include <core/progress/monitor.hpp>
-#include <core/progress/observer.hpp>
+#include <core/notification/observer.hpp>
 
 #include <vtkGenericDataObjectReader.h>
 #include <vtkImageData.h>
@@ -39,10 +37,9 @@ namespace sight::io::vtk
 
 //------------------------------------------------------------------------------
 
-void vti_image_reader::read(sight::core::progress::observer::sptr _progress)
+void vti_image_reader::read(sight::core::notification::observer::sptr _progress)
 {
-    assert(!m_object.expired());
-    assert(m_object.lock());
+    auto object_lock = get_object();
 
     data::image::sptr p_image = get_concrete_object();
 

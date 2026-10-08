@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2025 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,28 +23,57 @@
 #include "tester.hpp"
 
 #include <core/os/temp_path.hpp>
-#include <core/spy_log.hpp>
 
 #include <ui/__/application.hpp>
 #include <ui/__/preferences.hpp>
 
-#include <boost/algorithm/string.hpp>
+#include <boost/algorithm/string/join.hpp>
+#include <boost/dll/runtime_symbol_info.hpp>
 
 #include <QAbstractEventDispatcher>
 #include <QAction>
 #include <QApplication>
 #include <QMainWindow>
 #include <QMutex>
+#include <QPointer>
 #include <QScreen>
 #include <QTest>
+#include <QWindow>
 
+#include <algorithm>
+#include <chrono>
 #include <cmath>
+#include <condition_variable>
+#include <future>
 #include <iostream>
-#include <ranges>
+#include <memory>
+#include <mutex>
 #include <set>
 
 namespace sight::ui::test
 {
+
+/// Runs @p _f on the GUI thread and waits for it, bounded by @p _timeout. Returns false if it never ran.
+static bool run_on_gui_thread(std::function<void()> _f, int _timeout)
+{
+    // The promise is shared rather than captured by reference: on timeout this function returns while the event is
+    // still queued, and the payload must not write through a dangling pointer.
+    auto done    = std::make_shared<std::promise<void> >();
+    auto has_run = done->get_future();
+    auto payload = std::move(_f);
+
+    qApp->postEvent(
+        qApp,
+        new test_event(
+            [done, payload]
+        {
+            payload();
+            done->set_value();
+        })
+    );
+
+    return has_run.wait_for(std::chrono::milliseconds(_timeout)) == std::future_status::ready;
+}
 
 //------------------------------------------------------------------------------
 
@@ -275,19 +304,11 @@ void tester::do_something_asynchronously(std::function<void(QObject*)> _f)
 
 //------------------------------------------------------------------------------
 
-void tester::take_screenshot(const std::filesystem::path& _path)
+void tester::wait_for_pending_interactions()
 {
-    if(get<QWidget*>()->windowHandle() != nullptr)
+    if(!run_on_gui_thread([]{}, DEFAULT_TIMEOUT))
     {
-        get<QWidget*>()->screen()->grabWindow(get<QWidget*>()->winId()).save(QString::fromStdString(_path.string()));
-    }
-    else
-    {
-        do_something_asynchronously<QWidget*>(
-            [_path](QWidget* _o)
-            {
-                _o->grab().save(QString::fromStdString(_path.string()));
-            });
+        fail("The GUI thread did not process the pending interactions in time");
     }
 }
 
@@ -305,7 +326,7 @@ void tester::start(std::function<void()> _f)
                     qDebug() << "Waiting up to 5000 ms for the main window to appear";
                 }
 
-                bool ok = QTest::qWaitFor(
+                bool ok = wait_for_asynchronously(
                     [this]() -> bool
                 {
                     return std::ranges::any_of(
@@ -330,7 +351,15 @@ void tester::start(std::function<void()> _f)
                 }
 
                 // Temporize, because the window takes time to effectively show up
-                ok = QTest::qWaitForWindowExposed(m_main_window, DEFAULT_TIMEOUT);
+                ok = wait_for_asynchronously(
+                    [this]() -> bool
+                {
+                    return m_main_window != nullptr
+                           && m_main_window->windowHandle() != nullptr
+                           && m_main_window->windowHandle()->isExposed();
+                },
+                    DEFAULT_TIMEOUT
+                );
 
                 if(!ok)
                 {
@@ -347,8 +376,33 @@ void tester::start(std::function<void()> _f)
                 // Take a screenshot
                 if(m_main_window != nullptr)
                 {
-                    m_main_window->screen()->grabWindow(0).save(
-                        QString::fromStdString((s_image_output_path / (m_test_name + "_failure.png")).string())
+                    const auto path = get_image_output_path(m_test_name) / (m_test_name + "_failure.png");
+
+                    // This runs on the scenario thread, and grabbing a widget sends it paint events, which Qt
+                    // forbids across threads - it asserts and takes the process down, losing the very failure
+                    // this screenshot documents. Hence the hop to the GUI thread.
+                    run_on_gui_thread(
+                        [this, path]
+                    {
+                        QPixmap pixmap;
+
+                        // Grabbing from the screen is the only way to see what Ogre actually rendered:
+                        // QWidget::grab() paints the widget tree and never reaches the native 3D surface. It may
+                        // however catch an overlapping window, so it is only the first choice, not the only one.
+                        if(auto* const handle = m_main_window->windowHandle();
+                           handle != nullptr && handle->screen() != nullptr)
+                        {
+                            pixmap = handle->screen()->grabWindow(m_main_window->winId());
+                        }
+
+                        if(pixmap.isNull())
+                        {
+                            pixmap = m_main_window->grab();
+                        }
+
+                        pixmap.save(QString::fromStdString(path.string()));
+                    },
+                        DEFAULT_TIMEOUT
                     );
                 }
             }
@@ -371,25 +425,15 @@ void tester::start(std::function<void()> _f)
                     qDebug() << "Waiting up to " << DEFAULT_TIMEOUT << "ms for the main window to close";
                 }
 
-                wait_for_asynchronously(
+                const bool closed = wait_for_asynchronously(
                     [this]() -> bool
                 {
-                    m_main_window->hide();
+                    if(m_main_window != nullptr)
+                    {
+                        m_main_window->hide();
+                    }
+
                     qApp->closeAllWindows();
-                    qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
-
-                    return true;
-                },
-                    DEFAULT_TIMEOUT
-                );
-
-                // Exit the application with a return code, asynchronously
-                sight::ui::application::get()->exit(m_failed ? 1 : 0, true);
-
-                // Wait for the main window to close
-                const bool closed = QTest::qWaitFor(
-                    [this]() -> bool
-                {
                     qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
 
                     return m_main_window.isNull() || m_main_window->windowHandle() == nullptr
@@ -408,6 +452,9 @@ void tester::start(std::function<void()> _f)
 
                     std::exit(1);
                 }
+
+                // Exit the application only after the GUI-thread close check has completed.
+                sight::ui::application::get()->exit(m_failed ? 1 : 0, true);
             }
             catch(const std::exception& e)
             {
@@ -956,59 +1003,52 @@ QImage tester::voodooize(const QImage& _img)
 
 bool tester::wait_for_asynchronously(std::function<bool()> _predicate, int _timeout)
 {
-    return QTest::qWaitFor(
-        [_predicate, _timeout]() -> bool
-        {
-            std::mutex mutex;
-            std::condition_variable condition_variable;
+    // Shared with the posted event, which may still be queued once this call has timed out.
+    struct shared_state
+    {
+        std::mutex mutex;
+        std::condition_variable condition_variable;
+        bool processed {false};
+        bool abandoned {false};
+        bool result {false};
+    };
 
-            bool ready     = false;
-            bool processed = false;
-            bool result    = false;
+    return QTest::qWaitFor(
+        [&_predicate, _timeout]() -> bool
+        {
+            auto state = std::make_shared<shared_state>();
 
             qApp->postEvent(
                 qApp,
                 new test_event(
-                    [&mutex, &condition_variable, &ready, &result, &processed, _predicate, _timeout]
+                    [state, _predicate]
             {
-                // Wait until test thread is ready
-                std::unique_lock lock(mutex);
-
-                if(condition_variable.wait_for(lock, std::chrono::milliseconds(_timeout), [&ready]{return ready;}))
+                // The lock is held while the predicate runs, so the caller cannot give up and unwind the frames the
+                // predicate refers to in the meantime.
+                std::unique_lock lock(state->mutex);
+                if(state->abandoned)
                 {
-                    // Execute the predicate
-                    result = _predicate();
-                }
-                else
-                {
-                    result = false;
+                    return;
                 }
 
-                // Send result to test thread
-                processed = true;
-
-                // Manual unlocking is done before notifying, to avoid waking up the waiting thread only to block again
+                state->result    = _predicate();
+                state->processed = true;
                 lock.unlock();
-                condition_variable.notify_one();
+                state->condition_variable.notify_one();
             })
             );
 
-            // Make the test event in the event loop ready
+            std::unique_lock lock(state->mutex);
+            if(state->condition_variable.wait_for(
+                   lock,
+                   std::chrono::milliseconds(_timeout),
+                   [&state]{return state->processed;}))
             {
-                std::unique_lock lock(mutex);
-                ready = true;
+                return state->result;
             }
 
-            condition_variable.notify_one();
-
-            // Wait for the event loop
-            std::unique_lock lock(mutex);
-
-            if(condition_variable.wait_for(lock, std::chrono::milliseconds(_timeout), [&processed]{return processed;}))
-            {
-                return result;
-            }
-
+            state->abandoned = true;
+            qWarning() << "GUI thread did not run the predicate within" << _timeout << "ms";
             return false;
         },
         _timeout
@@ -1052,17 +1092,24 @@ QPoint tester::bottom_of(const QWidget* _widget)
 
 //------------------------------------------------------------------------------
 
-std::filesystem::path tester::get_image_output_path()
+std::filesystem::path tester::get_image_output_path(const std::string& _scenario_name)
 {
-    return s_image_output_path;
+    // Namespaced by binary, since two different `_uit` binaries may share a scenario name (e.g.
+    // "synchronization" in both ex_parameters_uit and ex_settings_uit).
+    static const std::string s_BINARY_NAME = boost::dll::program_location().stem().string();
+    auto binary_path                       = s_image_output_path / s_BINARY_NAME;
+
+    if(_scenario_name.empty())
+    {
+        std::filesystem::create_directories(binary_path);
+        return binary_path;
+    }
+
+    auto scenario_path = binary_path / _scenario_name;
+    std::filesystem::create_directories(scenario_path);
+    return scenario_path;
 }
 
 //------------------------------------------------------------------------------
-
-QPointingDevice* tester::get_dummy_touch_screen()
-{
-    static QPointingDevice* res = QTest::createTouchDevice();
-    return res;
-}
 
 } // namespace sight::ui::test

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -120,18 +120,20 @@ public:
      * @name Signals
      * @{
      */
+    struct signals
+    {
+        /// Type of signal when a reconstruction is added
+        using reconstruction_added_t = core::com::signal<void ()>;
 
-    /// Type of signal when a reconstruction is added
-    using reconstruction_added_signal_t = core::com::signal<void ()>;
+        /// Key in m_signals map of signal m_sigReconstructionAdded
+        static const inline signal_key_t RECONSTRUCTION_ADDED = "reconstructionAdded";
 
-    /// Key in m_signals map of signal m_sigReconstructionAdded
-    SIGHT_DATA_API static const core::com::signals::key_t RECONSTRUCTION_ADDED_SIG;
+        /// Type of signal when the resection visibility is modified
+        using visibility_modified_t = core::com::signal<void ()>;
 
-    /// Type of signal when the resection visibility is modified
-    using visibility_modified_signal_t = core::com::signal<void ()>;
-
-    /// Key in m_signals map of signal m_sigVisibilityModified
-    SIGHT_DATA_API static const core::com::signals::key_t VISIBILITY_MODIFIED_SIG;
+        /// Key in m_signals map of signal m_sigVisibilityModified
+        static const inline signal_key_t VISIBILITY_MODIFIED = "pointTexCoordsModified";
+    };
     /**
      * @}
      */
@@ -156,7 +158,7 @@ public:
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;
 
-protected:
+private:
 
     //! resection name
     std::string m_name;
@@ -178,21 +180,6 @@ protected:
 
     //! flag if the resection is visible
     bool m_visible {true};
-
-private:
-
-    /**
-     * @name Signals attributes
-     * @{
-     */
-    /// Signal emitted when a reconstruction is added
-    reconstruction_added_signal_t::sptr m_sig_reconstruction_added;
-
-    /// Signal emitted when the resection visibility is modified
-    visibility_modified_signal_t::sptr m_sig_visibility_modified;
-    /**
-     * @}
-     */
 }; // end class resection
 
 //-----------------------------------------------------------------------------

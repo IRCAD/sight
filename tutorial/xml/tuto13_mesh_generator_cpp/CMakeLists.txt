@@ -2,16 +2,16 @@ sight_add_target(tuto13_mesh_generator_cpp TYPE APP UNIQUE ON)
 
 add_dependencies(
     tuto13_mesh_generator_cpp
-    sightrun
     data
     module_app
+    module_io_matrix
+    module_io_vtk
+    module_service
     module_ui
     module_ui_qt
     module_viz_scene3d
     module_viz_scene3d_qt
-    module_service
-    module_io_matrix
-    module_io_vtk
+    sightrun
 )
 
 target_link_libraries(tuto13_mesh_generator_cpp PUBLIC data geometry_data service ui)

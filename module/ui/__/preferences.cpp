@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024 IRCAD France
+ * Copyright (C) 2024-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,9 +21,6 @@
 
 #include "preferences.hpp"
 
-#include <core/com/slots.hxx>
-#include <core/object.hpp>
-#include <core/runtime/path.hpp>
 #include <core/time_stamp.hpp>
 
 #include <data/string_serializable.hpp>
@@ -35,7 +32,7 @@ namespace sight::module::ui
 
 service::connections_t preferences::auto_connections() const
 {
-    return {{m_preferences, data::object::MODIFIED_SIG, service::slots::UPDATE}};
+    return {{m_preferences, data::signals::MODIFIED, service::slots::UPDATE}};
 }
 
 //-----------------------------------------------------------------------------
@@ -90,7 +87,7 @@ void preferences::starting()
                             save_pref(data, core::id::join(id, _x.first));
                             m_map_keys_connections.connect(
                                 data,
-                                data::object::MODIFIED_SIG,
+                                data::signals::MODIFIED,
                                 this->get_sptr(),
                                 service::base::slots::UPDATE
                             );

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -46,6 +46,18 @@ Q_OBJECT
 
 public:
 
+    struct signals
+    {
+        using position_changed_t = core::com::signal<void (int64_t)>;
+        static inline const signal_key_t POSITION_CHANGED = "position_changed";
+    };
+
+    struct slots
+    {
+        static inline const slot_key_t SET_POSITION = "set_position_slider";
+        static inline const slot_key_t SET_DURATION = "set_duration_slider";
+    };
+
     SIGHT_DECLARE_SERVICE(slider, sight::ui::editor);
 
     /// Constructor. Do nothing.
@@ -54,27 +66,8 @@ public:
     /// Destructor. Do nothing.
     ~slider() noexcept override = default;
 
-    /**@name Signals API
-     * @{
-     */
-
-    static const core::com::signals::key_t POSITION_CHANGED_SIG;
-    using position_changed_signal_t = core::com::signal<void (int64_t)>;
-
-    /** @} */
-
-    /**
-     * @name Slots API
-     * @{
-     */
-
-    static const core::com::slots::key_t SET_POSITION_SLIDER_SLOT;
     using change_position_slot_t = core::com::slot<void (int64_t)>;
-
-    static const core::com::slots::key_t SET_DURATION_SLIDER_SLOT;
     using change_duration_slot_t = core::com::slot<void (int64_t)>;
-
-    ///@}
 
 protected:
 
@@ -96,9 +89,6 @@ protected:
        @endcode
      */
     void configuring() override;
-
-    /// Signal when the position os the slider changed
-    position_changed_signal_t::sptr m_sig_position_changed;
 
     /// SLOT : Call to set the video position.
     void set_position(int64_t _new_pos);

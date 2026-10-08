@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024-2025 IRCAD France
+ * Copyright (C) 2024-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -26,6 +26,27 @@ namespace sight::app
 
 //-----------------------------------------------------------------------------
 
+void updater::request_stop() noexcept
+{
+    m_stop_requested = true;
+}
+
+//-----------------------------------------------------------------------------
+
+bool updater::stop_requested() const noexcept
+{
+    return m_stop_requested;
+}
+
+//-----------------------------------------------------------------------------
+
+void updater::reset_stop_request() noexcept
+{
+    m_stop_requested = false;
+}
+
+//-----------------------------------------------------------------------------
+
 void updater::configuring(const config_t& _config)
 {
     const auto config = _config.get_child("config");
@@ -38,12 +59,12 @@ void updater::configuring(const config_t& _config)
             const auto uid            = element.second.get<std::string>("<xmlattr>.uid");
             const auto slot           = element.second.get<std::string>("<xmlattr>.slot", "update");
             const auto ignore_stopped = element.second.get<bool>("<xmlattr>.ignore_stopped", false);
-            m_elements.push_back({uid, slot, type_t::SERVICE, ignore_stopped});
+            m_elements.push_back({.uid = uid, .slot = slot, .type = type_t::service, .ignore_stopped = ignore_stopped});
         }
         else if(element.first == "updater")
         {
             const auto uid = element.second.get<std::string>("<xmlattr>.uid");
-            m_elements.push_back({uid, "update", type_t::UPDATER});
+            m_elements.push_back({.uid = uid, .slot = "update", .type = type_t::updater});
         }
     }
 }

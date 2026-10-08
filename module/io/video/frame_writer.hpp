@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2024 IRCAD France
+ * Copyright (C) 2016-2026 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,16 +48,16 @@ namespace sight::module::io::video
  *
  * @code{.xml}
    <service type="sight::module::io::video::frame_writer">
-       <in key="data" uid="..." auto_connect="true" />
-       <windowTitle>Select the image file to load</windowTitle>
+       <data write="..." />
+       <config window_title ="Select the image file to load" />
        <format>.tiff</format>
    </service>
    @endcode
  * @subsection Input Input
- * - \b data [sight::data::frame_tl]: timeline containing the frame to save.
+ * - \b data.write [sight::data::frame_tl]: timeline containing the frame to save.
  *
  * @subsection Configuration Configuration
- * - \b windowTitle: allow overriding the default title of the modal file selection window. \see io::writer
+ * - \b config.window_title: allow overriding the default title of the modal file selection window. \see io::writer
  * - \b format: optional, file format used to store frames. Possible extensions (.jpeg ,.bmp, .tiff, .png, .jp2,... )
  */
 class frame_writer : public sight::io::service::writer
@@ -66,14 +66,25 @@ public:
 
     SIGHT_DECLARE_SERVICE(frame_writer, sight::io::service::writer);
 
+    struct slots
+    {
+        using frame_t = core::com::slot<void (core::clock::type)>;
+        using void_t  = core::com::slot<void ()>;
+
+        static inline const slot_key_t SAVE_FRAME           = "save_frame";
+        static inline const slot_key_t START_RECORD         = "start_record";
+        static inline const slot_key_t STOP_RECORD          = "stop_record";
+        static inline const slot_key_t RECORD               = "record";
+        static inline const slot_key_t TOGGLE_RECORDING     = "toggle_recording";
+        static inline const slot_key_t WRITE                = "write";
+        static inline const slot_key_t SET_FORMAT_PARAMETER = "set_format_parameter";
+    };
+
     /// Constructor.
     frame_writer() noexcept;
 
     /// Destructor. Does nothing
     ~frame_writer() noexcept override;
-
-    /// Defines auto connection for this service (saveFrame()) to the frame timeline (objectPushed)
-    service::connections_t auto_connections() const override;
 
     /// Display a location dialog allowing to select the video file to save
     void open_location_dialog() override;
@@ -82,6 +93,9 @@ public:
     sight::io::service::path_type_t get_path_type() const override;
 
 protected:
+
+    /// Defines auto connection for this service (saveFrame()) to the frame timeline (objectPushed)
+    service::connections_t auto_connections() const override;
 
     /// Does nothing
     void configuring() override;

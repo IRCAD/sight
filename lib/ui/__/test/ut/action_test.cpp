@@ -20,19 +20,19 @@
  *
  ***********************************************************************/
 
-#include "action_test.hpp"
-
 #include <ui/__/action.hpp>
 
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::ui::ut::action_test);
+#include <doctest/doctest.h>
 
 namespace sight::ui::ut
 {
 
+namespace
+{
+
 class test_action : public ui::action
 {
-public:
+protected:
 
     //------------------------------------------------------------------------------
 
@@ -60,126 +60,115 @@ public:
     }
 };
 
+} // namespace
+
+TEST_SUITE("sight::ui::ut::action")
+{
 //------------------------------------------------------------------------------
 
-void action_test::setUp()
-{
-}
+    TEST_CASE("configuring_test")
+    {
+        {
+            auto action = std::make_shared<test_action>();
+            action->configure();
+
+            CHECK_EQ(false, action->checked());
+            CHECK_EQ(true, action->enabled());
+            CHECK_EQ(true, action->visible());
+            CHECK_EQ(false, action->inverted());
+        }
+        {
+            auto action              = std::make_shared<test_action>();
+            const std::string config = "<state visible='false' checked='true' enabled='true' />";
+
+            action->set_config(config);
+            action->configure();
+            action->start();
+
+            CHECK_EQ(true, action->checked());
+            CHECK_EQ(true, action->enabled());
+            CHECK_EQ(false, action->visible());
+            CHECK_EQ(false, action->inverted());
+
+            CHECK_EQ(true, action->confirm_action());
+
+            action->stop();
+        }
+        {
+            auto action              = std::make_shared<test_action>();
+            const std::string config = "<state visible='false' checked='true' enabled='true' />"
+                                       "<confirmation message='Are you sure?' defaultButton='true'/>";
+
+            action->set_config(config);
+            action->configure();
+            action->start();
+
+            CHECK_EQ(true, action->checked());
+            CHECK_EQ(true, action->enabled());
+            CHECK_EQ(false, action->visible());
+            CHECK_EQ(false, action->inverted());
+
+            CHECK_EQ(false, action->confirm_action());
+
+            action->stop();
+        }
+        {
+            // Test deprecated attributes
+            auto action              = std::make_shared<test_action>();
+            const std::string config = "<state inverse='true' checked='true' enabled='false' />";
+
+            action->set_config(config);
+            action->configure();
+            action->start();
+
+            CHECK_EQ(true, action->checked());
+            CHECK_EQ(false, action->enabled());
+            CHECK_EQ(true, action->visible());
+            CHECK_EQ(true, action->inverted());
+
+            action->stop();
+        }
+    }
 
 //------------------------------------------------------------------------------
 
-void action_test::tearDown()
-{
-}
-
-//------------------------------------------------------------------------------
-
-void action_test::configuring_test()
-{
+    TEST_CASE("properties_test")
     {
         auto action = std::make_shared<test_action>();
         action->configure();
 
-        CPPUNIT_ASSERT_EQUAL(false, action->checked());
-        CPPUNIT_ASSERT_EQUAL(true, action->enabled());
-        CPPUNIT_ASSERT_EQUAL(true, action->visible());
-        CPPUNIT_ASSERT_EQUAL(false, action->inverted());
-    }
-    {
-        auto action              = std::make_shared<test_action>();
-        const std::string config = "<state visible='false' checked='true' enabled='true' />";
-
-        action->set_config(config);
-        action->configure();
-        action->start();
-
-        CPPUNIT_ASSERT_EQUAL(true, action->checked());
-        CPPUNIT_ASSERT_EQUAL(true, action->enabled());
-        CPPUNIT_ASSERT_EQUAL(false, action->visible());
-        CPPUNIT_ASSERT_EQUAL(false, action->inverted());
-
-        CPPUNIT_ASSERT_EQUAL(true, action->confirm_action());
-
-        action->stop();
-    }
-    {
-        auto action              = std::make_shared<test_action>();
-        const std::string config = "<state visible='false' checked='true' enabled='true' />"
-                                   "<confirmation message='Are you sure?' defaultButton='true'/>";
-
-        action->set_config(config);
-        action->configure();
-        action->start();
-
-        CPPUNIT_ASSERT_EQUAL(true, action->checked());
-        CPPUNIT_ASSERT_EQUAL(true, action->enabled());
-        CPPUNIT_ASSERT_EQUAL(false, action->visible());
-        CPPUNIT_ASSERT_EQUAL(false, action->inverted());
-
-        CPPUNIT_ASSERT_EQUAL(false, action->confirm_action());
-
-        action->stop();
-    }
-    {
-        // Test deprecated attributes
-        auto action              = std::make_shared<test_action>();
-        const std::string config = "<state inverse='true' checked='true' enabled='false' />";
-
-        action->set_config(config);
-        action->configure();
-        action->start();
-
-        CPPUNIT_ASSERT_EQUAL(true, action->checked());
-        CPPUNIT_ASSERT_EQUAL(false, action->enabled());
-        CPPUNIT_ASSERT_EQUAL(true, action->visible());
-        CPPUNIT_ASSERT_EQUAL(true, action->inverted());
-
-        action->stop();
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void action_test::properties_test()
-{
-    {
-        auto action = std::make_shared<test_action>();
-        action->configure();
-
-        CPPUNIT_ASSERT_EQUAL(false, action->checked());
-        CPPUNIT_ASSERT_EQUAL(true, action->enabled());
+        CHECK_EQ(false, action->checked());
+        CHECK_EQ(true, action->enabled());
 
         action->start();
 
         using bool_slot_t = core::com::slot<void (bool)>;
 
         action->slot("disable")->run();
-        CPPUNIT_ASSERT_EQUAL(false, action->enabled());
+        CHECK_EQ(false, action->enabled());
         action->slot("enable")->run();
-        CPPUNIT_ASSERT_EQUAL(true, action->enabled());
+        CHECK_EQ(true, action->enabled());
         std::dynamic_pointer_cast<bool_slot_t>(action->slot("set_enabled"))->run(false);
-        CPPUNIT_ASSERT_EQUAL(false, action->enabled());
+        CHECK_EQ(false, action->enabled());
         std::dynamic_pointer_cast<bool_slot_t>(action->slot("set_enabled"))->run(true);
-        CPPUNIT_ASSERT_EQUAL(true, action->enabled());
+        CHECK_EQ(true, action->enabled());
 
         action->slot("check")->run();
-        CPPUNIT_ASSERT_EQUAL(true, action->checked());
+        CHECK_EQ(true, action->checked());
         action->slot("uncheck")->run();
-        CPPUNIT_ASSERT_EQUAL(false, action->checked());
+        CHECK_EQ(false, action->checked());
         std::dynamic_pointer_cast<bool_slot_t>(action->slot("set_checked"))->run(true);
-        CPPUNIT_ASSERT_EQUAL(true, action->checked());
+        CHECK_EQ(true, action->checked());
         std::dynamic_pointer_cast<bool_slot_t>(action->slot("set_checked"))->run(false);
-        CPPUNIT_ASSERT_EQUAL(false, action->checked());
+        CHECK_EQ(false, action->checked());
 
         action->slot("hide")->run();
-        CPPUNIT_ASSERT_EQUAL(false, action->visible());
+        CHECK_EQ(false, action->visible());
         action->slot("show")->run();
-        CPPUNIT_ASSERT_EQUAL(true, action->visible());
+        CHECK_EQ(true, action->visible());
 
         action->stop();
     }
-}
-
-//------------------------------------------------------------------------------
+} // TEST_SUITE
 
 } // namespace sight::ui::ut

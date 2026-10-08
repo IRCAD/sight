@@ -21,8 +21,6 @@
 
 #include "copy_field.hpp"
 
-#include <core/com/signal.hxx>
-
 #include <data/object.hpp>
 
 namespace sight::module::data
@@ -33,9 +31,9 @@ namespace sight::module::data
 service::base::connections_t copy_field::auto_connections() const
 {
     base::connections_t connections = {
-        {m_source, sight::data::object::CHANGED_FIELDS_SIG, slots::UPDATE},
-        {m_source, sight::data::object::ADDED_FIELDS_SIG, slots::UPDATE},
-        {m_source, sight::data::object::REMOVED_FIELDS_SIG, slots::UPDATE}
+        {m_source, sight::data::signals::CHANGED_FIELDS, slots::UPDATE},
+        {m_source, sight::data::signals::ADDED_FIELDS, slots::UPDATE},
+        {m_source, sight::data::signals::REMOVED_FIELDS, slots::UPDATE}
     };
     return connections + service::base::auto_connections();
 }

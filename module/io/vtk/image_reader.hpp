@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <core/progress/observer.hpp>
+#include <core/notification/observer.hpp>
 
 #include <io/__/service/reader.hpp>
 
@@ -42,7 +42,9 @@ namespace sight::module::io::vtk
  * @brief Service reading a VTK image using the fwVtkIO lib.
  *
  * @section Signals Signals
- * - \b monitor_created(SPTR(core::progress::monitor)): emitted to display a progress bar while the image is loading,
+ * - \b notification_created(core::notification::base::sptr): emitted to display a progress bar while the
+ * image is
+ * loading,
  * it should be connected to a progress bar.
  *
  * @section Slots Slots
@@ -52,12 +54,12 @@ namespace sight::module::io::vtk
  *
  * @code{.xml}
    <service type="sight::module::io::vtk::image_reader">
-       <inout key="data" uid="..." />
-       <file>...</file>
+       <data read="..." />
+       <path file="..." />
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b data [sight::data::image]: loaded image.
+ * - \b data.read [sight::data::image]: loaded image.
  * @subsection Configuration Configuration
  * - \b file (optional): path of the image to load, if it is not defined, 'open_location_dialog()' should be called to
  * define the path.
@@ -87,12 +89,13 @@ public:
     static bool load_image(
         const std::filesystem::path& _vtk_file,
         std::shared_ptr<data::image> _image,
-        SPTR(core::progress::observer) _progress
+        sight::sptr<core::notification::observer> _progress
     );
 
-protected:
-
     sight::io::service::path_type_t get_path_type() const override;
+    std::vector<std::pair<std::string, std::string> > get_supported_extensions() override;
+
+protected:
 
     /// Method called when the service is started, does nothing.
     void starting() override;
@@ -100,7 +103,7 @@ protected:
     /// Method called when the service is stopped, does nothing.
     void stopping() override;
 
-    /// Method called when the service is stopped, does nothing.
+    /// Method called when the service is configured, does nothing.
     void configuring() override;
 
     /**

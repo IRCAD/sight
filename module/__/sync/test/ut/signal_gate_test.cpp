@@ -20,14 +20,15 @@
  ***********************************************************************/
 
 #include <core/com/signal.hpp>
-#include <core/com/signal.hxx>
-#include <core/com/slot.hxx>
 
 #include <service/op.hpp>
 
 #include <utest/wait.hpp>
 
 #include <doctest/doctest.h>
+
+namespace
+{
 
 class object : public sight::data::object
 {
@@ -42,9 +43,11 @@ public:
 
     void emit_signal()
     {
-        signal<sight::core::com::signal<void()> >("signal")->emit();
+        emit("signal");
     }
 };
+
+} // namespace
 
 //------------------------------------------------------------------------------
 

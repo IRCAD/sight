@@ -26,13 +26,10 @@
 
 #include <doctest/doctest.h>
 
-namespace
-{
-
 //------------------------------------------------------------------------------
 
 template<typename T>
-std::pair<sight::data::frame_tl::sptr, SPTR(sight::data::frame_tl::buffer_t)> gen_frame_tl(
+static std::pair<sight::data::frame_tl::sptr, sight::sptr<sight::data::frame_tl::buffer_t> > gen_frame_tl(
     std::size_t _w,
     std::size_t _h,
     std::uint8_t _num_channels
@@ -63,7 +60,7 @@ std::pair<sight::data::frame_tl::sptr, SPTR(sight::data::frame_tl::buffer_t)> ge
 //------------------------------------------------------------------------------
 
 template<typename T>
-void compare_images(
+static void compare_images(
     const cv::Mat& _cv_image,
     const sight::data::frame_tl::buffer_t::element_t* _buffer,
     std::size_t _w,
@@ -98,12 +95,12 @@ void compare_images(
 //------------------------------------------------------------------------------
 
 template<typename T>
-void test_move_to_cv(std::size_t _w, std::size_t _h, std::uint8_t _num_channels)
+static void test_move_to_cv(std::size_t _w, std::size_t _h, std::uint8_t _num_channels)
 {
     const std::vector<T> image_buffer = sight::io::opencv::ut::gen_image_buffer<T>(_w, _h, 0, _num_channels);
 
     sight::data::frame_tl::sptr frame_tl;
-    SPTR(sight::data::frame_tl::buffer_t) buffer;
+    sight::sptr<sight::data::frame_tl::buffer_t> buffer;
 
     std::tie(frame_tl, buffer) = gen_frame_tl<T>(_w, _h, _num_channels);
     auto* elt_buffer = buffer->add_element(0);
@@ -132,13 +129,13 @@ void test_move_to_cv(std::size_t _w, std::size_t _h, std::uint8_t _num_channels)
 //------------------------------------------------------------------------------
 
 template<typename T>
-void test_copy_from_cv(std::size_t _w, std::size_t _h, std::uint8_t _num_channels)
+static void test_copy_from_cv(std::size_t _w, std::size_t _h, std::uint8_t _num_channels)
 {
     const std::vector<T> image_buffer = sight::io::opencv::ut::gen_image_buffer<T>(_w, _h, 0, _num_channels);
     const cv::Mat cv_image            = sight::io::opencv::ut::gen_cv_image<T>(image_buffer, _w, _h, 0, _num_channels);
 
     sight::data::frame_tl::sptr frame_tl;
-    SPTR(sight::data::frame_tl::buffer_t) buffer;
+    sight::sptr<sight::data::frame_tl::buffer_t> buffer;
 
     std::tie(frame_tl, buffer) = gen_frame_tl<T>(_w, _h, _num_channels);
     auto* elt_buffer = buffer->add_element(0);
@@ -154,12 +151,12 @@ void test_copy_from_cv(std::size_t _w, std::size_t _h, std::uint8_t _num_channel
 //------------------------------------------------------------------------------
 
 template<typename T>
-void test_copy_to_cv(std::size_t _w, std::size_t _h, std::uint8_t _num_channels)
+static void test_copy_to_cv(std::size_t _w, std::size_t _h, std::uint8_t _num_channels)
 {
     const std::vector<T> image_buffer = sight::io::opencv::ut::gen_image_buffer<T>(_w, _h, 0, _num_channels);
 
     sight::data::frame_tl::sptr frame_tl;
-    SPTR(sight::data::frame_tl::buffer_t) buffer;
+    sight::sptr<sight::data::frame_tl::buffer_t> buffer;
 
     std::tie(frame_tl, buffer) = gen_frame_tl<T>(_w, _h, _num_channels);
     auto* elt_buffer = buffer->add_element(0);
@@ -173,8 +170,6 @@ void test_copy_to_cv(std::size_t _w, std::size_t _h, std::uint8_t _num_channels)
 
     compare_images<T>(cv_image, elt_buffer, _w, _h, _num_channels);
 }
-
-} // namespace
 
 TEST_SUITE("sight::io::opencv::frame_tl")
 {

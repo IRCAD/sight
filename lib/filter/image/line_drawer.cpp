@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2025 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,8 +39,8 @@ line_drawer::line_drawer(data::image::sptr _img, data::image::csptr _roi) :
 {
     m_use_roi = data::helper::medical_image::check_image_validity(m_roi_image);
 
-    m_image_type_size = std::uint8_t(m_image->type().size());
-    m_roi_type_size   = m_use_roi ? std::uint8_t(m_roi_image->type().size()) : 0;
+    m_image_type_size = static_cast<std::uint8_t>(m_image->type().size());
+    m_roi_type_size   = m_use_roi ? static_cast<std::uint8_t>(m_roi_image->type().size()) : 0;
     const auto& size = m_image->size();
     m_y_pitch = size[0];
     m_z_pitch = size[1] * m_y_pitch;
@@ -139,7 +139,7 @@ bool line_drawer::draw_pixel(
 //-----------------------------------------------------------------------------
 
 image_diff line_drawer::draw(
-    const bresenham_line::Orientation _orientation,
+    const bresenham_line::orientation _orientation,
     const coordinates_t& _start_coord,
     const coordinates_t& _end_coord,
     const data::image::buffer_t* _value,
@@ -154,17 +154,17 @@ image_diff line_drawer::draw(
 
     switch(_orientation)
     {
-        case bresenham_line::Orientation::z_axis:
+        case bresenham_line::orientation::z_axis:
             dim0 = 0;
             dim1 = 1;
             break;
 
-        case bresenham_line::Orientation::y_axis:
+        case bresenham_line::orientation::y_axis:
             dim0 = 2;
             dim1 = 0;
             break;
 
-        case bresenham_line::Orientation::x_axis:
+        case bresenham_line::orientation::x_axis:
             dim0 = 1;
             dim1 = 2;
             break;

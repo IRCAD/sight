@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 namespace sight::core::memory
 {
 
-enum file_format_type
+enum file_format_type : std::uint8_t
 {
     other = 0,
     raw   = 1,

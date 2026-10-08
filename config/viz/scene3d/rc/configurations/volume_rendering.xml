@@ -3,23 +3,23 @@
     <parameters>
         <object uid="model_series" type="sight::data::model_series" deferred="true" />
         <object uid="image" type="sight::data::image_series" deferred="true" />
-        <object uid="volume_tf" type="sight::data::transfer_function" />
-        <object uid="extruded_model_series" type="sight::data::model_series" />
+        <object uid="series_set" type="sight::data::series_set" />
+        <object uid="volume_tf" type="sight::data::transfer_function" deferred="true" />
+        <object uid="image_transfer_functions" type="sight::data::map" optional="true" />
+        <object uid="extruded_meshes" type="sight::data::model_series" />
+        <object uid="extruded_meshes_by_image" type="sight::data::map" optional="true" />
 
         <object uid="vr_visibility" type="sight::data::boolean" />
         <object uid="negato_visibility" type="sight::data::boolean" />
         <object uid="model_visibility" type="sight::data::boolean" />
         <object uid="axis_visibility" type="sight::data::boolean" />
+        <object uid="volume_parameters" type="sight::data::map" />
 
         <param name="WID_PARENT" />
         <param name="maximized" default="false" />
         <param name="restored" default="true" />
 
         <channel name="toggle_view_visibility" />
-        <channel name="vr_bool_param" />
-        <channel name="vr_int_param" />
-        <channel name="vr_double_param" />
-        <channel name="box_widget_visibility" />
         <channel name="box_widget_reset" />
         <channel name="shape_extruder_enable_tool" />
         <channel name="shape_extruder_tool_disabled" />
@@ -28,6 +28,9 @@
         <channel name="negato_3d_transparency" />
         <channel name="ruler_activation" optional="true" />
         <channel name="ruler_deactivation" optional="true" />
+        <channel name="mesh_activation" optional="true" />
+        <channel name="volume_activation" optional="true" />
+        <channel name="image_visibility" />
         <channel name="landmarks_edit_mode" />
         <channel name="world_coords_landmarks" />
         <channel name="landmarks_group_selected" />
@@ -39,9 +42,6 @@
     <config>
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="mask" type="sight::data::image" />
-        <object uid="clipping_matrix" type="sight::data::matrix4" />
-        <object uid="identity_matrix" type="sight::data::matrix4" />
         <object uid="snapshot" type="sight::data::image" />
         <object uid="global_camera" type="sight::data::matrix4" />
 
@@ -51,22 +51,24 @@
             <gui>
                 <layout type="sight::ui::layout::overlay">
                     <view />
-                    <view x="0" y="0" />
+                    <view x="-1" y="0" />
+                    <view x="-82%" y="0" />
                 </layout>
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
                 <view sid="scene_view" />
                 <view sid="top_toolbar_slider_view" />
+                <view sid="top_toolbar_left_view" />
             </registry>
         </service>
 
         <service uid="scene_view" type="sight::module::ui::view">
             <gui>
-                <layout type="sight::ui::layout::line">
+                <layout type="sight::ui::layout::line" spacing="0">
                     <orientation value="vertical" />
                     <view proportion="1" />
-                    <view proportion="0" QSSClass="view_background" spacing="0" />
+                    <view proportion="0" QSSClass="view_background" />
                 </layout>
             </gui>
             <registry>
@@ -80,6 +82,7 @@
                 <toolbar background_color="#00000000" />
                 <layout type="sight::ui::layout::line">
                     <orientation value="vertical" />
+                    <view />
                 </layout>
             </gui>
             <registry>
@@ -87,19 +90,50 @@
             </registry>
         </service>
 
+        <service uid="top_toolbar_left_view" type="sight::module::ui::view">
+            <gui>
+                <toolbar background_color="#00000000" />
+                <layout type="sight::ui::layout::line">
+                    <orientation value="horizontal" />
+                    <view />
+                </layout>
+            </gui>
+            <registry>
+                <toolbar sid="top_toolbar_left" />
+            </registry>
+        </service>
+
         <service uid="top_toolbar_view" type="sight::module::ui::toolbar">
             <gui>
                 <layout>
+                    <menu_item name="Snapshot" icon="sight::module::ui::icons/frame.svg" shortcut="CTRL+S" />
                     <menu_item name="Maximize" icon="sight::module::ui::icons/maximize.svg" />
                     <menu_item name="Restore" icon="sight::module::ui::icons/restore.svg" shortcut="1" />
-                    <menu_item name="Snapshot" icon="sight::module::ui::icons/frame.svg" shortcut="CTRL+S" />
                     <spacer />
                 </layout>
             </gui>
             <registry>
+                <menu_item sid="snapshot_act" />
                 <menu_item sid="maximize_act" />
                 <menu_item sid="restore_act" />
-                <menu_item sid="snapshot_act" />
+            </registry>
+        </service>
+
+        <service uid="top_toolbar_left" type="sight::module::ui::toolbar">
+            <gui>
+                <layout>
+                    <menu_item name="mesh" icon="sight::module::ui::icons/show_mesh.svg" style="check" />
+                    <menu_item name="volume" icon="sight::module::ui::icons/show_volume.svg" style="check" />
+                    <menu_item name="negato" icon="sight::module::ui::icons/show_negato.svg" style="check" />
+                    <menu_item name="axis" icon="sight::module::ui::icons/axis.svg" style="check" />
+                    <spacer />
+                </layout>
+            </gui>
+            <registry>
+                <menu_item sid="mesh_visibility_act" />
+                <menu_item sid="volume_visibility_act" />
+                <menu_item sid="negato3_d_visibility_act" />
+                <menu_item sid="axis_visibility_act" />
             </registry>
         </service>
 
@@ -115,8 +149,8 @@
                     <adaptor uid="trackball_interactor_adp" />
                     <adaptor uid="picker_interactor_adp" />
                     <adaptor uid="model_series_adp" />
-                    <adaptor uid="3d_negato_adp" />
-                    <adaptor uid="volume_adp" />
+                    <adaptor uid="image_negato3d_adp" />
+                    <adaptor uid="image_volume_adp" />
                     <adaptor uid="landmarks_adp" />
                     <adaptor uid="ruler_fiducial_adp" />
                     <adaptor uid="axis_adp" />
@@ -134,7 +168,7 @@
         </service>
 
         <service uid="global_camera_adp" type="sight::module::viz::scene3d::adaptor::camera">
-            <inout key="transform" uid="global_camera" />
+            <data transform_out="${global_camera}" />
         </service>
 
         <service uid="trackball_interactor_adp" type="sight::module::viz::scene3d::adaptor::trackball_camera">
@@ -145,42 +179,61 @@
             <config queryMask="0x40000000" priority="1" />
         </service>
 
-        <service uid="model_series_adp" type="sight::module::viz::scene3d::adaptor::model_series" auto_connect="true">
-            <in key="model" uid="${model_series}" />
-            <config query_flags="0x40000000" autoresetcamera="true" />
-            <properties visible="${model_visibility}" />
+        <service uid="model_series_adp" type="sight::module::viz::scene3d::adaptor::model_series">
+            <data model="${model_series}" />
+            <config query_flags="0x40000000" autoresetcamera="true" visible="${model_visibility}" />
         </service>
 
-        <service uid="volume_adp" type="sight::module::viz::scene3d::adaptor::volume_render">
-            <in key="image" uid="${image}" />
-            <in key="mask" uid="mask" />
-            <in key="tf" uid="${volume_tf}" />
-            <inout key="clippingMatrix" uid="clipping_matrix" />
-            <config widgets="false" preintegration="false" autoresetcamera="true" samples="1200" />
-            <properties visible="${vr_visibility}" />
+        <service uid="image_volume_adp" type="sight::module::viz::scene3d::adaptor::image_series">
+            <data series="${series_set}" />
+            <data tf="${volume_tf}" />
+            <data transfer_functions="${image_transfer_functions}" />
+            <data extrudedMeshes="${extruded_meshes}" />
+            <data extruded_meshes_by_image="${extruded_meshes_by_image}" />
+            <volume_rendering>
+                <config pre_integration="${volume_parameters}.pre_integration" />
+                <config ambient_occlusion="${volume_parameters}.ambient_occlusion" />
+                <config color_bleeding="${volume_parameters}.color_bleeding" />
+                <config shadows="${volume_parameters}.shadows" />
+                <config widgets="${volume_parameters}.widgets" />
+                <config sampling="${volume_parameters}.sampling" />
+                <config opacity_correction="${volume_parameters}.opacity_correction" />
+                <config sat_shells_number="${volume_parameters}.sat_shells_number" />
+                <config sat_shell_radius="${volume_parameters}.sat_shell_radius" />
+                <config sat_cone_samples="${volume_parameters}.sat_cone_samples" />
+                <config color_bleeding_factor="${volume_parameters}.color_bleeding_factor" />
+                <config ao_factor="${volume_parameters}.ao_factor" />
+                <config sat_cone_angle="${volume_parameters}.sat_cone_angle" />
+                <config sat_size_ratio="${volume_parameters}.sat_size_ratio" />
+            </volume_rendering>
+            <landmarks>
+                <config fontSize="16" priority="4" initialGroup="Group_0" initialSize="10.0" viewDistance="allSlices" />
+            </landmarks>
+            <ruler>
+                <config font_size="16" query_flags="0x40000000" always_display_all="true" priority="3" radius="1.5" />
+            </ruler>
+            <config autoresetcamera="true" />
         </service>
 
-        <service uid="3d_negato_adp" type="sight::module::viz::scene3d::adaptor::negato3d">
-            <in key="image" uid="${image}" />
-            <inout key="tf" uid="${volume_tf}" />
-            <config query_flags="0x40000000" interactive="true" priority="2" />
-            <properties visible="${negato_visibility}" />
+        <service uid="image_negato3d_adp" type="sight::module::viz::scene3d::adaptor::image_series">
+            <data series="${series_set}" />
+            <data tf="${volume_tf}" />
+            <data transfer_functions="${image_transfer_functions}" />
+            <config representation="negato3d" query_flags="0x40000000" interactive="true" priority="2" visible="${negato_visibility}" depth_bias="0.000001" />
         </service>
 
-        <service uid="landmarks_adp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::point" auto_connect="true">
-            <inout key="imageSeries" uid="${image}" />
+        <service uid="landmarks_adp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::point">
+            <data imageSeries="${image}" />
             <config fontSize="16" priority="4" initialGroup="Group_0" initialSize="10.0" viewDistance="allSlices" />
         </service>
 
-        <service uid="ruler_fiducial_adp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::ruler" auto_connect="true">
-            <inout key="image" uid="${image}" />
-            <config font_size="16" query_flags="0x40000000" always_display_all="true" priority="3" />
-            <properties radius="1.5" />
+        <service uid="ruler_fiducial_adp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::ruler">
+            <data image="${image}" />
+            <config font_size="16" query_flags="0x40000000" always_display_all="true" priority="3" radius="1.5" />
         </service>
 
         <service uid="axis_adp" type="sight::module::viz::scene3d::adaptor::axis">
-            <config origin="true" label="false" />
-            <properties visible="${axis_visibility}" />
+            <config origin="true" label="false" visible="${axis_visibility}" />
         </service>
 
         <service uid="picked_voxel_text_adp" type="sight::module::viz::scene3d::adaptor::text">
@@ -189,36 +242,25 @@
         </service>
 
         <service uid="shape_extruder_adp" type="sight::module::viz::scene3d::adaptor::shape_extruder">
-            <inout key="extrudedMeshes" uid="${extruded_model_series}" />
+            <data extrudedMeshes="${extruded_meshes}" />
+            <data image="${image}" extruded_meshes_by_image="${extruded_meshes_by_image}" />
             <config lineColor="#FFC66D" edgeColor="#D35151" />
         </service>
 
         <service uid="snapshot_adp" type="sight::module::viz::scene3d::adaptor::fragments_info">
-            <inout key="image" uid="snapshot" />
+            <data image="${snapshot}" />
         </service>
 
         <service uid="event_adp" type="sight::module::viz::scene3d::adaptor::event">
             <event type="buttonDoublePress" buttons="left" modifiers="none" />
         </service>
 
-        <service uid="orientation_marker_adp" type="sight::module::viz::scene3d::adaptor::orientation_marker" auto_connect="true">
-            <in key="matrix" uid="global_camera" />
+        <service uid="orientation_marker_adp" type="sight::module::viz::scene3d::adaptor::orientation_marker">
+            <data matrix="${global_camera}" />
         </service>
 
         <service uid="grid_adp" type="sight::module::viz::scene3d::adaptor::grid">
             <config size="5000" step="50" color="#505050" elevation="400" dashLength="10" />
-        </service>
-
-        <!-- Reset the clipping box matrix -->
-        <service uid="clipping_box_reset_srv" type="sight::module::data::copy">
-            <in key="source" uid="identity_matrix" />
-            <inout key="target" uid="clipping_matrix" />
-        </service>
-
-        <service uid="image_extruder_srv" type="sight::module::filter::image::image_extruder" worker="EXTRUSION">
-            <in key="meshes" uid="${extruded_model_series}" />
-            <in key="image" uid="${image}" />
-            <inout key="mask" uid="mask" />
         </service>
 
         <service uid="notifier_srv" type="sight::module::ui::qt::notifier">
@@ -230,25 +272,38 @@
 
         <!-- Write the snapshot image -->
         <service uid="image_writer_srv" type="sight::module::io::bitmap::writer">
-            <in key="data" uid="snapshot" />
+            <data write="${snapshot}" />
             <dialog policy="always" />
             <backends enable="all" mode="best" />
         </service>
 
-        <service uid="sliderCfg" type="sight::app::config_launcher">
-            <properties config="sight::config::viz::image::imageSlider" />
-            <parameter replace="WID_PARENT" by="slider_view" />
-            <parameter replace="sliceIndex" by="axial" />
-            <parameter replace="enableSliceSlider" by="false" />
-            <parameter replace="enableSliceType" by="false" />
-            <parameter replace="enableOpacity" by="true" />
-            <inout group="object">
-                <key name="image" uid="${image}" />
-                <key name="transferFunction" uid="${volume_tf}" />
-            </inout>
+        <service uid="slider_cfg" type="sight::app::config_launcher">
+            <config id="sight::config::viz::image::image_slider" />
+            <object name="image" uid="${image}" />
+            <object name="transferFunction" uid="${volume_tf}" />
+            <param name="WID_PARENT" value="slider_view" />
+            <param name="sliceIndex" value="axial" />
+            <param name="enableSliceSlider" value="false" />
+            <param name="enableSliceType" value="false" />
+            <param name="enableOpacity" value="true" />
         </service>
 
         <!-- ************************************* Actions ************************************ -->
+        <service uid="volume_visibility_act" type="sight::module::ui::action">
+            <state checked="${vr_visibility}" enabled="false" />
+        </service>
+
+        <service uid="negato3_d_visibility_act" type="sight::module::ui::action">
+            <state checked="${negato_visibility}" enabled="false" />
+        </service>
+
+        <service uid="mesh_visibility_act" type="sight::module::ui::action">
+            <state checked="${model_visibility}" enabled="false" />
+        </service>
+
+        <service uid="axis_visibility_act" type="sight::module::ui::action">
+            <state checked="${axis_visibility}" />
+        </service>
 
         <!-- Set the view in full screen -->
         <service uid="maximize_act" type="sight::module::ui::action">
@@ -265,27 +320,21 @@
 
         <!-- ******************************* Connections ***************************************** -->
 
-        <!-- Volume rendering parameters -->
-        <connect channel="${vr_bool_param}">
-            <slot>volume_adp/set_bool_parameter</slot>
+        <connect>
+            <signal>volume_visibility_act/is_checked</signal>
+            <slot>image_volume_adp/update_visibility</slot>
         </connect>
 
-        <connect channel="${vr_int_param}">
-            <slot>volume_adp/set_int_parameter</slot>
-        </connect>
-
-        <connect channel="${vr_double_param}">
-            <slot>volume_adp/set_double_parameter</slot>
+        <connect channel="${image_visibility}">
+            <slot>image_volume_adp/set_image_visibility</slot>
+            <slot>image_negato3d_adp/set_image_visibility</slot>
+            <slot>landmarks_adp/set_image_visibility</slot>
+            <slot>ruler_fiducial_adp/set_image_visibility</slot>
         </connect>
 
         <!-- Adaptors visibility -->
-        <connect channel="${box_widget_visibility}">
-            <slot>volume_adp/toggle_widgets</slot>
-        </connect>
-
         <connect channel="${box_widget_reset}">
-            <slot>clipping_box_reset_srv/update</slot>
-            <slot>volume_adp/update_clipping_box</slot>
+            <slot>image_volume_adp/reset_clipping_box</slot>
         </connect>
 
         <connect channel="${shape_extruder_enable_tool}">
@@ -305,11 +354,11 @@
         </connect>
 
         <connect channel="${world_coords_landmarks}">
-            <slot>3d_negato_adp/update_slices_from_world</slot>
+            <slot>image_negato3d_adp/update_slices_from_world</slot>
         </connect>
 
         <connect channel="${negato_3d_transparency}">
-            <slot>3d_negato_adp/set_transparency</slot>
+            <slot>image_negato3d_adp/set_transparency</slot>
         </connect>
 
         <connect channel="${landmarks_edit_mode}">
@@ -329,7 +378,7 @@
         </connect>
 
         <connect channel="${visibility_rulers}">
-            <slot>ruler_fiducial_adp/toggle_visibility</slot>
+            <slot>ruler_fiducial_adp/update_visibility</slot>
         </connect>
 
         <connect channel="${landmarks_edit_mode_changed}">
@@ -356,21 +405,32 @@
             <slot>maximize_act/show</slot>
         </connect>
 
+        <connect channel="${mesh_activation}">
+            <slot>mesh_visibility_act/enable</slot>
+        </connect>
+
+        <connect channel="${volume_activation}">
+            <slot>volume_visibility_act/enable</slot>
+            <slot>volume_visibility_act/check</slot>
+            <slot>negato3_d_visibility_act/enable</slot>
+            <slot>negato3_d_visibility_act/check</slot>
+        </connect>
+
         <!-- Display the picked voxel information -->
         <connect>
-            <signal>3d_negato_adp/picked_voxel</signal>
+            <signal>image_negato3d_adp/picked_voxel</signal>
             <slot>picked_voxel_text_adp/set_text</slot>
         </connect>
 
         <connect>
-            <signal>shape_extruder_adp/notified</signal>
-            <slot>notifier_srv/pop</slot>
+            <signal>shape_extruder_adp/notification_created</signal>
+            <slot>notifier_srv/add_notification</slot>
         </connect>
 
         <!-- Connects double click on landmark to slice moves. -->
         <connect>
             <signal>landmarks_adp/send_world_coord</signal>
-            <slot>3d_negato_adp/update_slices_from_world</slot>
+            <slot>image_negato3d_adp/update_slices_from_world</slot>
         </connect>
 
         <connect>
@@ -402,7 +462,6 @@
             <signal>ruler_fiducial_adp/tool_deactivated</signal>
         </connect>
 
-        <update uid="image_extruder_srv" />
         <update uid="shape_extruder_adp" />
     </config>
 </extension>

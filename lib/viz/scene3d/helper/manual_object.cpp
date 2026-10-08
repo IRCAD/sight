@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2025 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,11 @@
 
 #include "viz/scene3d/ogre.hpp"
 
-#include <core/exceptionmacros.hpp>
+#include <core/spy_log.hpp>
 
 #include <OgreMath.h>
+
+#include <array>
 
 namespace sight::viz::scene3d::helper
 {
@@ -356,25 +358,25 @@ void manual_object::create_frustum(
 {
     _object->begin(_material, Ogre::RenderOperation::OT_LINE_LIST, RESOURCE_GROUP);
 
-    const Ogre::Frustum::Corners& corners = _frustum.getWorldSpaceCorners();
+    const auto& corners = _frustum.getWorldSpaceCorners();
 
     std::ranges::for_each(corners, [_object](const auto& _corner){_object->position(_corner);});
 
     // see AxisAlignedBox::getAllCorners
-    const std::vector<Ogre::uint32> idx = {0, 1, 1, 2, 2, 3, 3, 0, 4, 5, 5, 6, 6, 7, 7, 4, 0, 6, 1, 5, 2, 4, 3, 7};
+    static constexpr std::array<Ogre::uint32, 24> s_IDX =
+    {0, 1, 1, 2, 2, 3, 3, 0, 4, 5, 5, 6, 6, 7, 7, 4, 0, 6, 1, 5, 2, 4, 3, 7};
 
-    std::ranges::for_each(idx, [_object](const auto _i){_object->index(_i);});
+    std::ranges::for_each(s_IDX, [_object](const auto _i){_object->index(_i);});
 
     _object->end();
 
     Ogre::Vector3 min(std::numeric_limits<Ogre::Real>::max());
     Ogre::Vector3 max(std::numeric_limits<Ogre::Real>::lowest());
 
-    for(size_t i = 0 ; i < 7 ; ++i)
+    for(const auto& corner : corners)
     {
-        std::tie(min.x, max.x) = std::minmax(corners[i].x, corners[i + 1].x);
-        std::tie(min.y, max.y) = std::minmax(corners[i].y, corners[i + 1].y);
-        std::tie(min.z, max.z) = std::minmax(corners[i].z, corners[i + 1].z);
+        min.makeFloor(corner);
+        max.makeCeil(corner);
     }
 
     _object->setBoundingBox(Ogre::AxisAlignedBox(min, max));

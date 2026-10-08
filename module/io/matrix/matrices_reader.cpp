@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2025 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,17 +22,12 @@
 
 #include "matrices_reader.hpp"
 
-#include <core/com/signal.hpp>
-#include <core/com/signal.hxx>
-#include <core/com/signals.hpp>
-#include <core/com/slot.hpp>
-#include <core/com/slot.hxx>
 #include <core/com/slots.hpp>
-#include <core/com/slots.hxx>
+
 #include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
 
-#include <service/macros.hpp>
+#include <data/matrix_tl.hpp>
 
 #include <ui/__/dialog/location.hpp>
 #include <ui/__/dialog/message.hpp>
@@ -42,32 +37,22 @@
 #include <cmath>
 #include <filesystem>
 #include <fstream>
+#include <utility>
 
 namespace sight::module::io::matrix
 {
 
-static const core::com::slots::key_t START_READING    = "start_reading";
-static const core::com::slots::key_t STOP_READING     = "stop_reading";
-static const core::com::slots::key_t PAUSE            = "pause";
-static const core::com::slots::key_t TOGGLE_LOOP_MODE = "toggle_loop_mode";
-
-static const core::com::slots::key_t READ_NEXT     = "readNext";
-static const core::com::slots::key_t READ_PREVIOUS = "readPrevious";
-static const core::com::slots::key_t SET_STEP      = "set_step";
-
-//------------------------------------------------------------------------------
-
 matrices_reader::matrices_reader() noexcept :
     reader("Choose a csv file to read")
 {
-    new_slot(START_READING, &matrices_reader::start_reading, this);
-    new_slot(STOP_READING, &matrices_reader::stop_reading, this);
-    new_slot(PAUSE, &matrices_reader::pause, this);
-    new_slot(TOGGLE_LOOP_MODE, &matrices_reader::toggle_loop_mode, this);
+    new_slot(slots::START_READING, &matrices_reader::start_reading, this);
+    new_slot(slots::STOP_READING, &matrices_reader::stop_reading, this);
+    new_slot(slots::PAUSE, &matrices_reader::pause, this);
+    new_slot(slots::TOGGLE_LOOP_MODE, &matrices_reader::toggle_loop_mode, this);
 
-    new_slot(READ_NEXT, &matrices_reader::read_next, this);
-    new_slot(READ_PREVIOUS, &matrices_reader::read_previous, this);
-    new_slot(SET_STEP, &matrices_reader::set_step, this);
+    new_slot(slots::READ_NEXT, &matrices_reader::read_next, this);
+    new_slot(slots::READ_PREVIOUS, &matrices_reader::read_previous, this);
+    new_slot(slots::SET_STEP, &matrices_reader::set_step, this);
 }
 
 //------------------------------------------------------------------------------
@@ -205,7 +190,7 @@ void matrices_reader::read_next()
         const std::int64_t shift   = static_cast<std::int64_t>(m_step_changed) - static_cast<std::int64_t>(m_step);
         const std::int64_t shifted = static_cast<std::int64_t>(m_ts_matrices_count) + shift;
 
-        if(shifted < static_cast<std::int64_t>(m_ts_matrices.size()))
+        if(std::cmp_less(shifted, m_ts_matrices.size()))
         {
             // Update matrix position index
             m_ts_matrices_count = static_cast<std::size_t>(shifted);
@@ -283,7 +268,9 @@ void matrices_reader::start_reading()
 
                 const auto nb_of_matrices = static_cast<unsigned int>((nb_of_elements - 1) / 16);
 
-                const auto matrix_tl = m_matrix_tl.lock();
+                const auto data      = m_data.lock();
+                const auto matrix_tl = std::dynamic_pointer_cast<data::matrix_tl>(data.get_shared());
+                SIGHT_ASSERT("The object is not a '" + data::matrix_tl::classname() + "'.", matrix_tl);
                 matrix_tl->init_pool_size(nb_of_matrices);
 
                 time_stamped_matrices current_ts_mat;
@@ -394,11 +381,12 @@ void matrices_reader::stop_reading()
     m_ts_matrices_count = 0;
 
     //clear the timeline
-    const auto matrix_tl = m_matrix_tl.lock();
+    const auto data      = m_data.lock();
+    const auto matrix_tl = std::dynamic_pointer_cast<data::matrix_tl>(data.get_shared());
+    SIGHT_ASSERT("The object is not a '" + data::matrix_tl::classname() + "'.", matrix_tl);
     matrix_tl->clear_timeline();
 
-    auto sig = matrix_tl->signal<data::timeline::signals::cleared_t>(data::timeline::signals::CLEARED);
-    sig->async_emit();
+    matrix_tl->async_emit(data::timeline::signals::CLEARED);
 }
 
 //------------------------------------------------------------------------------
@@ -419,7 +407,9 @@ void matrices_reader::read_matrices()
     if(!m_is_paused && m_ts_matrices_count < m_ts_matrices.size())
     {
         const auto t_start   = core::clock::get_time_in_milli_sec();
-        const auto matrix_tl = m_matrix_tl.lock();
+        const auto data      = m_data.lock();
+        const auto matrix_tl = std::dynamic_pointer_cast<data::matrix_tl>(data.get_shared());
+        SIGHT_ASSERT("The object is not a '" + data::matrix_tl::classname() + "'.", matrix_tl);
 
         time_stamped_matrices current_matrices = m_ts_matrices[m_ts_matrices_count];
 
@@ -435,7 +425,7 @@ void matrices_reader::read_matrices()
         }
 
         // Push matrix in timeline
-        SPTR(data::matrix_tl::buffer_t) matrix_buf;
+        sight::sptr<data::matrix_tl::buffer_t> matrix_buf;
         matrix_buf = matrix_tl->create_buffer(timestamp);
         matrix_tl->push_object(matrix_buf);
 
@@ -486,17 +476,15 @@ void matrices_reader::read_matrices()
         }
 
         //Notify
-        data::timeline::signals::pushed_t::sptr sig;
-        sig = matrix_tl->signal<data::timeline::signals::pushed_t>(
-            data::timeline::signals::PUSHED
-        );
-        sig->async_emit(timestamp);
+        matrix_tl->async_emit(data::timeline::signals::PUSHED, timestamp);
 
         m_ts_matrices_count += m_step;
     }
     else if(!m_is_paused && m_loop_matrix)
     {
-        const auto matrix_tl = m_matrix_tl.lock();
+        const auto data      = m_data.lock();
+        const auto matrix_tl = std::dynamic_pointer_cast<data::matrix_tl>(data.get_shared());
+        SIGHT_ASSERT("The object is not a '" + data::matrix_tl::classname() + "'.", matrix_tl);
         matrix_tl->clear_timeline();
         m_ts_matrices_count = 0;
     }

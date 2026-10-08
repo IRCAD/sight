@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -49,16 +49,16 @@ namespace sight::module::io::matrix
  *
  * @code{.xml}
    <service type="sight::module::io::matrix::matrix_writer">
-       <in key="data" uid="..." auto_connect="true" />
-       <windowTitle>Select the file to save the matrix timeline to</windowTitle>
+       <data write="..." />
+       <config window_title ="Select the file to save the matrix timeline to" />
        <config interactive="true" />
    </service>
    @endcode
  * @subsection Input Input
- * - \b data [sight::data::matrix_tl]: timeline containing the matrices to save.
+ * - \b data.write [sight::data::matrix_tl]: timeline containing the matrices to save.
  *
  * @subsection Configuration Configuration
- * - \b windowTitle: allow overriding the default title of the modal file selection window. \see io::writer
+ * - \b config.window_title: allow overriding the default title of the modal file selection window. \see io::writer
  * - \b config:
  *   - \b interactive: if true, the service will display a dialog box to select the file to save. If false, no dialog
  *                     box will be shown. In this case, for practical reasons, the recording will start when setting a
@@ -70,14 +70,19 @@ public:
 
     SIGHT_DECLARE_SERVICE(matrix_writer, sight::io::service::writer);
 
+    struct slots
+    {
+        static inline const slot_key_t SAVE_MATRIX  = "saveMatrix";
+        static inline const slot_key_t START_RECORD = "start_record";
+        static inline const slot_key_t STOP_RECORD  = "stop_record";
+        static inline const slot_key_t WRITE        = "write";
+    };
+
     /// Constructor.
     matrix_writer() noexcept;
 
     /// Destructor. Does nothing
     ~matrix_writer() noexcept override;
-
-    /// Defines auto connection for this service (saveFrame()) to the frame timeline (objectPushed)
-    service::connections_t auto_connections() const override;
 
     /// Display a location dialog allowing to select the video file to save
     void open_location_dialog() override;
@@ -101,6 +106,9 @@ public:
     void set_base_folder(std::string _path) override;
 
 protected:
+
+    /// Defines auto connection for this service (saveFrame()) to the frame timeline (objectPushed)
+    service::connections_t auto_connections() const override;
 
     /// Does nothing
     void configuring() override;

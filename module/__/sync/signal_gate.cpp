@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,25 +22,18 @@
 
 #include "signal_gate.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
+#include <algorithm>
 
-#include <data/object.hpp>
-
-#include <future>
 #include <regex>
 
 namespace sight::module::sync
 {
 
-// Public signal
-const core::com::signals::key_t signal_gate::ALL_RECEIVED_SIG = "all_received";
-
 //-----------------------------------------------------------------------------
 
 signal_gate::signal_gate()
 {
-    new_signal<all_received_signal_t>(ALL_RECEIVED_SIG);
+    new_signal<signals::all_received_t>(signals::ALL_RECEIVED);
 }
 
 //-----------------------------------------------------------------------------
@@ -134,11 +127,11 @@ void signal_gate::received(std::size_t _index)
     if(all_received)
     {
         // Reset all flags before sending the signal
+        // NOLINTNEXTLINE(modernize-use-ranges)
         std::fill(m_flags.begin(), m_flags.end(), false);
 
         SIGHT_DEBUG("'" << this->get_id() << "' received all signals, sending 'allReceived' now.");
-        auto sig = this->signal<all_received_signal_t>(ALL_RECEIVED_SIG);
-        sig->async_emit();
+        this->async_emit(signals::ALL_RECEIVED);
     }
 }
 

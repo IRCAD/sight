@@ -26,15 +26,13 @@
 
 #include <geometry/data/matrix4.hpp>
 
-#include <service/macros.hpp>
-
 namespace sight::module::filter::image
 {
 
 //------------------------------------------------------------------------------
 
 image_center::image_center() :
-    filter(m_signals)
+    filter(has_signals::signals())
 {
 }
 
@@ -88,9 +86,9 @@ void image_center::updating()
     const auto& spacing = image->spacing();
 
     const glm::dvec4 image_center {
-        double(size[0]) * spacing[0] / 2.0,
-        double(size[1]) * spacing[1] / 2.0,
-        double(size[2]) * spacing[2] / 2.0,
+        static_cast<double>(size[0]) * spacing[0] / 2.0,
+        static_cast<double>(size[1]) * spacing[1] / 2.0,
+        static_cast<double>(size[2]) * spacing[2] / 2.0,
         1
     };
 
@@ -101,7 +99,7 @@ void image_center::updating()
     matrix->set_orientation(orientation);
     matrix->set_position(world_center);
 
-    matrix->signal<data::matrix4::modified_signal_t>(data::matrix4::MODIFIED_SIG)->async_emit();
+    matrix->async_emit(data::signals::MODIFIED);
     this->async_emit(signals::SUCCEEDED);
 }
 
@@ -115,7 +113,7 @@ void image_center::stopping()
 
 service::connections_t image_center::auto_connections() const
 {
-    return {{IMAGE_IN, data::image::MODIFIED_SIG, service::slots::UPDATE}};
+    return {{IMAGE_IN, data::signals::MODIFIED, service::slots::UPDATE}};
 }
 
 //------------------------------------------------------------------------------

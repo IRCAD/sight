@@ -16,6 +16,7 @@ add_dependencies(
     module_io_activity
     module_io_matrix
     module_io_dicom
+    module_io_itk
     module_io_vtk
     module_io_bitmap
     activity_viz_negato

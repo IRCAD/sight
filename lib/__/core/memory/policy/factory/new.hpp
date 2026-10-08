@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,20 +26,20 @@
 
 #include "core/memory/policy/registry/detail.hpp"
 
-#include <string>
-
 namespace sight::core::memory::policy::factory
 {
 
 template<class CLASSNAME>
-SPTR(CLASSNAME)  create();
+sight::sptr<CLASSNAME> create();
 
-SIGHT_CORE_API SPTR(core::memory::policy::base) create(const core::memory::policy::registry::key_t& _classname);
+SIGHT_CORE_API sight::sptr<core::memory::policy::base> create(const core::memory::policy::registry::key_t& _classname);
+
+//------------------------------------------------------------------------------
 
 template<class CLASSNAME>
-SPTR(CLASSNAME)  create()
+sight::sptr<CLASSNAME> create()
 {
-    SPTR(CLASSNAME) policy = std::make_shared<CLASSNAME>();
+    sight::sptr<CLASSNAME> policy = std::make_shared<CLASSNAME>();
     return policy;
 }
 

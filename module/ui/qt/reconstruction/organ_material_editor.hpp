@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2024 IRCAD France
+ * Copyright (C) 2019-2026 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,9 +31,11 @@
 #include <QObject>
 #include <QPointer>
 
+// NOLINTBEGIN(readability-identifier-naming)
 class QSlider;
 class QPushButton;
 class QLabel;
+// NOLINTEND(readability-identifier-naming)
 
 namespace sight::module::ui::qt::reconstruction
 {
@@ -52,8 +54,8 @@ namespace sight::module::ui::qt::reconstruction
  * @subsection In-Out In-Out
  * - \b reconstruction [sight::data::reconstruction]: reconstruction containing the material to update.
  */
-class organ_material_editor : public QObject,
-                              public sight::ui::editor
+class organ_material_editor final : public QObject,
+                                    public sight::ui::editor
 {
 Q_OBJECT
 
@@ -65,17 +67,17 @@ public:
     organ_material_editor() noexcept;
 
     /// Destroys the service.
-    ~organ_material_editor() noexcept override;
+    ~organ_material_editor() noexcept final;
 
-private:
+protected:
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::object::MODIFIED_SIG of s_RECONSTRUCTION_INOUT to service::slots::UPDATE
+     * Connect data::signals::MODIFIED of s_RECONSTRUCTION_INOUT to service::slots::UPDATE
      */
-    connections_t auto_connections() const override;
+    connections_t auto_connections() const final;
 
     /// Configures the service.
     void configuring() final;
@@ -88,6 +90,8 @@ private:
 
     /// Destroys the connections and cleans the container.
     void stopping() final;
+
+private:
 
     /// Updates the UI according to the material (color and transparency widgets)
     void refresh_material();

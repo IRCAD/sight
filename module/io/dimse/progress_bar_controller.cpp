@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,26 +22,16 @@
 
 #include "progress_bar_controller.hpp"
 
-#include <core/com/slots.hxx>
-
-#include <service/macros.hpp>
-
-#include <ui/qt/dialog/progress.hpp>
-
 namespace sight::module::io::dimse
 {
-
-static const core::com::slots::key_t START_PROGRESS_SLOT  = "start_progress";
-static const core::com::slots::key_t UPDATE_PROGRESS_SLOT = "update_progress";
-static const core::com::slots::key_t STOP_PROGRESS_SLOT   = "stop_progress";
 
 //------------------------------------------------------------------------------
 
 progress_bar_controller::progress_bar_controller() noexcept
 {
-    new_slot(START_PROGRESS_SLOT, &progress_bar_controller::start_progress, this);
-    new_slot(UPDATE_PROGRESS_SLOT, &progress_bar_controller::update_progress, this);
-    new_slot(STOP_PROGRESS_SLOT, &progress_bar_controller::stop_progress, this);
+    new_slot(slots::START_PROGRESS, &progress_bar_controller::start_progress, this);
+    new_slot(slots::UPDATE_PROGRESS, &progress_bar_controller::update_progress, this);
+    new_slot(slots::STOP_PROGRESS, &progress_bar_controller::stop_progress, this);
 }
 
 //------------------------------------------------------------------------------
@@ -86,7 +76,7 @@ void progress_bar_controller::start_progress(std::string _id)
 void progress_bar_controller::update_progress(std::string _id, float _percentage, std::string _message)
 {
     core::mt::scoped_lock lock(m_mutex);
-    if(m_progress_dialogs.find(_id) != m_progress_dialogs.end())
+    if(m_progress_dialogs.contains(_id))
     {
         (*m_progress_dialogs[_id])(_percentage, _message);
         m_progress_dialogs[_id]->set_message(_message);

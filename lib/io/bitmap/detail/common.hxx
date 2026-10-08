@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,15 +21,11 @@
 
 #pragma once
 
-#include "core/exceptionmacros.hpp"
+#include "io/bitmap/backend.hpp"
 
-#include "data/image.hpp"
+#include <core/exceptionmacros.hpp>
 
-#include "io/bitmap/reader.hpp"
-#include "io/bitmap/writer.hpp"
-
-#include <functional>
-#include <optional>
+#include <data/image.hpp>
 
 namespace sight::io::bitmap::detail
 {
@@ -118,6 +114,7 @@ public:
 
 static constexpr flag operator|(flag _lhs, flag _rhs)
 {
+    // NOLINTNEXTLINE(readability-redundant-casting)
     return static_cast<flag>(
         static_cast<std::underlying_type_t<flag> >(_lhs)
         | static_cast<std::underlying_type_t<flag> >(_rhs)
@@ -128,6 +125,7 @@ static constexpr flag operator|(flag _lhs, flag _rhs)
 
 static constexpr flag operator&(flag _lhs, flag _rhs)
 {
+    // NOLINTNEXTLINE(readability-redundant-casting)
     return static_cast<flag>(
         static_cast<std::underlying_type_t<flag> >(_lhs)
         & static_cast<std::underlying_type_t<flag> >(_rhs)
@@ -141,7 +139,7 @@ inline static backend extension_to_backend(const std::string& _extension)
 {
     if(_extension.ends_with(detail::JPEG_EXT) || _extension.ends_with(detail::JPG_EXT))
     {
-        if(nvjpeg())
+        if(nvjpeg()) // NOLINT(readability-implicit-bool-conversion)
         {
             return backend::nvjpeg;
         }
@@ -151,7 +149,7 @@ inline static backend extension_to_backend(const std::string& _extension)
 
     if(_extension.ends_with(detail::J2K_EXT))
     {
-        if(nvjpeg2k())
+        if(nvjpeg2k()) // NOLINT(readability-implicit-bool-conversion)
         {
             return backend::nvjpeg2k_j2k;
         }
@@ -161,7 +159,7 @@ inline static backend extension_to_backend(const std::string& _extension)
 
     if(_extension.ends_with(detail::JP2_EXT))
     {
-        if(nvjpeg2k())
+        if(nvjpeg2k()) // NOLINT(readability-implicit-bool-conversion)
         {
             return backend::nvjpeg2k;
         }

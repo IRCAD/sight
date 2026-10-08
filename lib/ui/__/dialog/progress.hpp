@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,8 +26,6 @@
 
 #include "ui/__/dialog/progress_base.hpp"
 
-#include <core/base.hpp>
-
 namespace sight::ui::dialog
 {
 
@@ -43,7 +41,7 @@ public:
     SIGHT_DECLARE_CLASS(progress, ui::dialog::progress_base);
 
     /// will instantiate the concrete implementation
-    SIGHT_UI_API progress(const std::string& _title = std::string(), const std::string& _msg = std::string());
+    SIGHT_UI_API explicit progress(const std::string& _title = std::string(), const std::string& _msg = std::string());
     SIGHT_UI_API ~progress() override;
 
     ///set the title for the dialog
@@ -55,13 +53,15 @@ public:
     /// action called by core::tools::progress_adviser
     SIGHT_UI_API void operator()(float _percent, std::string _msg) override;
 
-    SIGHT_UI_API void set_cancel_callback(core::progress::cancel_callback_t _callback) override;
+    SIGHT_UI_API void set_cancel_callback(core::notification::cancel_callback_t _callback) override;
 
     SIGHT_UI_API void hide_cancel_button() override;
 
 protected:
 
     SIGHT_UI_API void cancel_pressed() override;
+
+private:
 
     ui::dialog::progress_base::sptr m_implementation;
 };

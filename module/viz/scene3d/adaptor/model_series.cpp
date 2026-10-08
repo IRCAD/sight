@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,30 +25,18 @@
 #include "module/viz/scene3d/adaptor/mesh.hpp"
 #include "module/viz/scene3d/adaptor/reconstruction.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
 #include <core/ptree.hpp>
 
 #include <data/boolean.hpp>
-#include <data/material.hpp>
-#include <data/matrix4.hpp>
-#include <data/reconstruction.hpp>
-
-#include <service/macros.hpp>
-#include <service/op.hpp>
 
 namespace sight::module::viz::scene3d::adaptor
 {
-
-//-----------------------------------------------------------------------------
-
-static const core::com::slots::key_t CHANGE_FIELD_SLOT = "changeField";
 
 //------------------------------------------------------------------------------
 
 model_series::model_series() noexcept
 {
-    new_slot(CHANGE_FIELD_SLOT, &model_series::show_reconstructions_on_field_changed, this);
+    new_slot(slots::CHANGE_FIELD, &model_series::show_reconstructions_on_field_changed, this);
 }
 
 //------------------------------------------------------------------------------
@@ -95,7 +83,7 @@ void model_series::configuring()
         m_query_flags = static_cast<std::uint32_t>(std::stoul(hexa_mask, nullptr, 16));
     }
 
-    if(config.get_optional<bool>(CONFIG + "visible") || config.get_optional<bool>("properties.<xmlattr>.visible"))
+    if(config.get_optional<bool>(CONFIG + "visible"))
     {
         m_is_visible_tag = true;
     }
@@ -115,12 +103,12 @@ void model_series::starting()
 service::connections_t model_series::auto_connections() const
 {
     service::connections_t connections = adaptor::auto_connections();
-    connections.push(MODEL_INPUT, data::model_series::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
-    connections.push(MODEL_INPUT, data::model_series::RECONSTRUCTIONS_ADDED_SIG, adaptor::slots::LAZY_UPDATE);
-    connections.push(MODEL_INPUT, data::model_series::RECONSTRUCTIONS_REMOVED_SIG, adaptor::slots::LAZY_UPDATE);
-    connections.push(MODEL_INPUT, data::model_series::ADDED_FIELDS_SIG, CHANGE_FIELD_SLOT);
-    connections.push(MODEL_INPUT, data::model_series::REMOVED_FIELDS_SIG, CHANGE_FIELD_SLOT);
-    connections.push(MODEL_INPUT, data::model_series::CHANGED_FIELDS_SIG, CHANGE_FIELD_SLOT);
+    connections.push(MODEL_INPUT, data::signals::MODIFIED, adaptor::slots::LAZY_UPDATE);
+    connections.push(MODEL_INPUT, data::model_series::signals::RECONSTRUCTIONS_ADDED, adaptor::slots::LAZY_UPDATE);
+    connections.push(MODEL_INPUT, data::model_series::signals::RECONSTRUCTIONS_REMOVED, adaptor::slots::LAZY_UPDATE);
+    connections.push(MODEL_INPUT, data::signals::ADDED_FIELDS, slots::CHANGE_FIELD);
+    connections.push(MODEL_INPUT, data::signals::REMOVED_FIELDS, slots::CHANGE_FIELD);
+    connections.push(MODEL_INPUT, data::signals::CHANGED_FIELDS, slots::CHANGE_FIELD);
     return connections;
 }
 
@@ -138,7 +126,7 @@ void model_series::updating()
         auto adaptor = this->register_service<module::viz::scene3d::adaptor::reconstruction>(
             "sight::module::viz::scene3d::adaptor::reconstruction"
         );
-        adaptor->set_input(reconstruction, "reconstruction", true);
+        adaptor->set_input(reconstruction, "data.reconstruction", true);
 
         bool is_visible = visible();
         if(const auto visibility_field = model_series->get_field("ShowReconstructions"); visibility_field)
@@ -148,25 +136,17 @@ void model_series::updating()
         }
 
         config_t rec_adaptor_config;
-        rec_adaptor_config.put("properties.<xmlattr>.visible", is_visible);
+        rec_adaptor_config.put("config.<xmlattr>.visible", is_visible);
         rec_adaptor_config.put("config.<xmlattr>.material_template", m_material_template_name);
 
-        if(!m_uniforms.empty())
+        if(!m_uniform_objects.empty())
         {
             std::size_t i = 0;
-            for(const auto& uniform_data : m_uniforms)
+            for(const auto& uniform_object : m_uniform_objects)
             {
-                adaptor->set_inout(uniform_data.second->lock().get_shared(), "uniforms", true, {}, i++);
-            }
-
-            const auto config = this->get_config();
-            if(const auto inouts_cfg = config.get_child_optional("inout"); inouts_cfg.has_value())
-            {
-                const auto group = inouts_cfg->get<std::string>("<xmlattr>.group");
-                if(group == "uniforms")
-                {
-                    rec_adaptor_config.add_child("inout", inouts_cfg.value());
-                }
+                const auto index = i++;
+                adaptor->set_inout(uniform_object.second->lock().get_shared(), "uniform.object", true, {}, index);
+                adaptor->set_input(m_uniform_names[index].lock().get_shared(), "uniform.name", true, {}, index);
             }
         }
 
@@ -176,7 +156,7 @@ void model_series::updating()
         adaptor->set_id(this->get_id(), adaptor->get_id());
 
         adaptor->set_render_service(this->render_service());
-        adaptor->set_layer_id(m_layer_id);
+        adaptor->set_layer_id(layer_id());
         adaptor->set_transform_id(this->get_transform_id());
         adaptor->set_auto_reset_camera(m_auto_reset_camera);
         adaptor->set_query_flags(m_query_flags);

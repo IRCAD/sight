@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2025 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,14 +19,15 @@
  *
  ***********************************************************************/
 
-#include "viz/scene3d/helper/scene.hpp"
 #include "viz/scene3d/transformable.hpp"
+#include "viz/scene3d/utils.hpp"
 
 #include <doctest/doctest.h>
 
 #include <OGRE/OgreSceneNode.h>
 
-#include <cstdint>
+namespace
+{
 
 // Create a object of type transformable to test it.
 class test_transformable : public sight::viz::scene3d::transformable
@@ -36,6 +37,8 @@ public:
     test_transformable()  = default;
     ~test_transformable() = default;
 };
+
+} // namespace
 
 //------------------------------------------------------------------------------
 

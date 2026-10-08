@@ -19,8 +19,6 @@
  *
  ***********************************************************************/
 
-#include <core/runtime/runtime.hpp>
-
 #include <data/matrix4.hpp>
 #include <data/point_list.hpp>
 #include <data/tools/picking_info.hpp>
@@ -43,7 +41,7 @@ public:
         CHECK(srv->is_a("sight::module::geometry::manage_point_list"));
 
         point_list = std::make_shared<sight::data::point_list>();
-        srv->set_inout(point_list, "point_list");
+        srv->set_inout(point_list, "output.point_list");
     }
 
     //------------------------------------------------------------------------------
@@ -52,7 +50,7 @@ public:
     {
         if(srv->started())
         {
-            CHECK_NOTHROW(srv->stop().wait());
+            CHECK_NOTHROW(srv->stop().get());
         }
 
         sight::service::remove(srv);
@@ -65,7 +63,7 @@ public:
         srv->set_config(_config);
 
         srv->configure();
-        srv->start().wait();
+        srv->start().get();
     }
 
     sight::service::base::sptr srv;
@@ -79,7 +77,7 @@ TEST_SUITE("sight::module::geometry::manage_point_list")
     TEST_CASE_FIXTURE(context, "update_test")
     {
         auto input_point = std::make_shared<sight::data::matrix4>();
-        srv->set_input(input_point, "position");
+        srv->set_input(input_point, "input.position");
 
         set_config("");
 

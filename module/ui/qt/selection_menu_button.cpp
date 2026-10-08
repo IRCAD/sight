@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,10 +22,6 @@
 
 #include "selection_menu_button.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slot.hxx>
-#include <core/com/slots.hxx>
-
 #include <ui/qt/container/widget.hpp>
 
 #include <boost/range/iterator_range_core.hpp>
@@ -38,23 +34,15 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
-#include <filesystem>
-
 namespace sight::module::ui::qt
 {
 
-static const core::com::signals::key_t SELECTED_SIG = "selected";
-
-static const core::com::slots::key_t SET_ENABLED_SIG = "set_enabled";
-static const core::com::slots::key_t SENABLE_SIG     = "enable";
-static const core::com::slots::key_t DISABLE_SIG     = "disable";
-
 selection_menu_button::selection_menu_button() noexcept :
-    m_sig_selected(new_signal<selected_signal_t>(SELECTED_SIG))
+    m_sig_selected(new_signal<selection_menu_button::signals::selected_t>(signals::SELECTED))
 {
-    new_slot(SET_ENABLED_SIG, &selection_menu_button::set_enabled, this);
-    new_slot(SENABLE_SIG, &selection_menu_button::enable, this);
-    new_slot(DISABLE_SIG, &selection_menu_button::disable, this);
+    new_slot(slots::SET_ENABLED, &selection_menu_button::set_enabled, this);
+    new_slot(slots::ENABLE, &selection_menu_button::enable, this);
+    new_slot(slots::DISABLE, &selection_menu_button::disable, this);
 }
 
 //------------------------------------------------------------------------------

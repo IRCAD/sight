@@ -41,8 +41,8 @@
                 The <resource> tag defines the resource path (/rc) of a module or application.
             -->
             <service uid="image_reader_srv" type="sight::module::io::vtk::image_reader">
-                <inout key="data" uid="image_data" />
-                <resource>tuto02_data_service_basic/img-test.vtk</resource>
+                <data read="${image_data}" />
+                <path resource="tuto02_data_service_basic/img-test.vtk" />
             </service>
 
             <!--
@@ -50,7 +50,7 @@
                 This service will render the 3D image.
             -->
             <service uid="image_renderer_srv" type="sight::module::viz::sample::image">
-                <in key="image" uid="image_data" />
+                <data image="${image_data}" />
             </service>
 
             <!-- ******************************* Update services ***************************************** -->

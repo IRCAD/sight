@@ -26,9 +26,7 @@
 #include <data/image_series.hpp>
 #include <data/model_series.hpp>
 
-#include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/join.hpp>
-#include <boost/algorithm/string/split.hpp>
 
 #include <doctest/doctest.h>
 
@@ -3243,14 +3241,8 @@ TEST_SUITE("sight::data::series")
 
         static const std::string s_MODALITY_STRING(*sight::data::dicom::to_string(s_MODALITY));
 
-        static const std::string s_HASH =
-            []
-            {
-                std::ostringstream hex;
-                hex << std::hex << std::hash<std::string> {}(s_UID);
-
-                return hex.str();
-            }();
+        // FNV-1a(64) hash of "789" encoded as lowercase hexadecimal
+        static const std::string s_HASH = "350a6a180f1c6dc9";
 
         auto series = std::make_shared<sight::data::series>();
 

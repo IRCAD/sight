@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,15 +21,37 @@
 
 #pragma once
 
-#include "writer_impl.hxx"
+#include "common.hxx"
+#include "io/bitmap/writer.hpp"
 
-#include <npp.h>
+#include <npp.h> // NOLINT(misc-include-cleaner)
 #include <nvjpeg2k.h>
 
 // cspell:ignore nvjpeg nvjpeg2k nppi bitstream LRCP NOLINTNEXTLINE
 
 namespace sight::io::bitmap::detail
 {
+
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
+#define CHECK_CUDA(func, success) \
+        if(const auto& status = func; status != (success)) \
+        { \
+            SIGHT_THROW("The function " #func " failed: " << status); \
+        }
+
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
+#define CHECK_CUDA_NOEXCEPT(func, success) \
+        try \
+        { \
+            if(const auto status = func; status != (success)) \
+            { \
+                SIGHT_THROW("The function " #func " failed: " << status); \
+            } \
+        } \
+        catch(const std::exception& e) \
+        { \
+            SIGHT_ERROR(e.what()); \
+        }
 
 class nvjpeg2k_writer final
 {
@@ -93,7 +115,7 @@ public:
 
         const auto pixel_format = _image.pixel_format();
         SIGHT_THROW_IF(
-            NAME << " - Unsupported image format: " << pixel_format,
+            NAME << " - Unsupported image format: " << static_cast<unsigned int>(pixel_format),
             pixel_format != data::image::pixel_format_t::gray_scale
             && pixel_format != data::image::pixel_format_t::rgb
             && pixel_format != data::image::pixel_format_t::rgba
@@ -104,7 +126,8 @@ public:
         /// @todo Check new version of nvjpeg2k (>0.6).
         /// No idea why the decoding fails with unsigned 16 bits and 4 components images, we mark this as unsupported.
         SIGHT_THROW_IF(
-            NAME << " - Unsupported format (" << pixel_format << ") and type (" << pixel_type << ") combination",
+            NAME << " - Unsupported format (" << static_cast<unsigned int>(pixel_format) << ") and type ("
+            << pixel_type << ") combination",
             (pixel_format == data::image::pixel_format_t::rgba || pixel_format == data::image::pixel_format_t::bgra)
             && pixel_type == core::type::UINT16
         );
@@ -118,13 +141,14 @@ public:
         std::vector<nvjpeg2kImageComponentInfo_t> components_info(num_components);
         for(auto& component_info : components_info)
         {
-            component_info.component_width  = std::uint32_t(sizes[0]);
-            component_info.component_height = std::uint32_t(sizes[1]);
-            component_info.precision        = std::uint8_t(pixel_type.size() * 8);
+            component_info.component_width  = static_cast<std::uint32_t>(sizes[0]);
+            component_info.component_height = static_cast<std::uint32_t>(sizes[1]);
+            component_info.precision        = static_cast<std::uint8_t>(pixel_type.size() * 8);
             component_info.sgn              = pixel_type.is_signed() ? 1 : 0;
         }
 
         // Fill component pitches
+        // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
         const std::size_t pitch_in_bytes = sizes[0] * pixel_type.size();
         std::vector<size_t> pitches_in_bytes(num_components);
         for(auto& pitch : pitches_in_bytes)
@@ -140,7 +164,7 @@ public:
             .pixel_type     = pixel_type == core::type::INT16 || pixel_type == core::type::UINT16
                               ? NVJPEG2K_UINT16
                               : NVJPEG2K_UINT8,
-            .num_components = std::uint32_t(num_components)
+            .num_components = static_cast<std::uint32_t>(num_components)
         };
 
         // Fill nvjpeg2kEncodeConfig_t
@@ -159,9 +183,9 @@ public:
             : NVJPEG2K_COLORSPACE_SRGB;
 
         // Image configuration
-        encode_config.image_width     = std::uint32_t(sizes[0]);
-        encode_config.image_height    = std::uint32_t(sizes[1]);
-        encode_config.num_components  = std::uint32_t(num_components);
+        encode_config.image_width     = static_cast<std::uint32_t>(sizes[0]);
+        encode_config.image_height    = static_cast<std::uint32_t>(sizes[1]);
+        encode_config.num_components  = static_cast<std::uint32_t>(num_components);
         encode_config.image_comp_info = components_info.data();
 
         // Code block size: 64*64 (a bit better compression), 32*32 (almost 2x faster) - in lossless mode
@@ -191,14 +215,14 @@ public:
         // 1 is the fastest, but with an huge compression penalty (+20% size) - in lossless mode
         // Cannot be greater than image/tile dimensions
         encode_config.num_resolutions = std::min(
-            std::uint32_t(sizes[0]) / encode_config.code_block_w,
-            std::uint32_t(sizes[1]) / encode_config.code_block_h
+            static_cast<std::uint32_t>(sizes[0]) / encode_config.code_block_w,
+            static_cast<std::uint32_t>(sizes[1]) / encode_config.code_block_h
         );
 
         encode_config.num_resolutions = std::clamp(
             encode_config.num_resolutions,
-            std::uint32_t(1),
-            std::uint32_t(6)
+            static_cast<std::uint32_t>(1),
+            static_cast<std::uint32_t>(6)
         );
 
         CHECK_CUDA(
@@ -258,7 +282,7 @@ public:
             CHECK_CUDA(cudaStreamSynchronize(m_stream), cudaSuccess);
 
             // Write to disk...
-            _output.write(reinterpret_cast<char*>(m_output_buffer.data()), std::streamsize(encoded_size));
+            _output.write(reinterpret_cast<char*>(m_output_buffer.data()), static_cast<std::streamsize>(encoded_size));
         }
         else if constexpr(std::is_same_v<std::uint8_t**, O>)
         {
@@ -396,14 +420,17 @@ private:
 
             const auto& type  = _image.type();
             const auto& sizes = _image.size();
-            const int width   = int(sizes[0]);
-            const int height  = int(sizes[1]);
+            // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
+            const int width = static_cast<int>(sizes[0]);
+            // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
+            const int height = static_cast<int>(sizes[1]);
             const NppiSize nppi_size {.width = width, .height = height};
 
             if(type == core::type::INT8 || type == core::type::UINT8)
             {
                 const auto* in_buffer = reinterpret_cast<const Npp8u*>(m_packed_gpu_buffer);
-                const int out_step    = width * int(sizeof(Npp8u));
+                // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
+                const int out_step = width * static_cast<int>(sizeof(Npp8u));
 
                 if(num_components == 3)
                 {
@@ -418,7 +445,7 @@ private:
                         CHECK_CUDA(
                             nppiCopy_8u_C3P3R_Ctx(
                                 in_buffer,
-                                out_step * int(num_components),
+                                out_step * static_cast<int>(num_components),
                                 out_buffer.data(),
                                 out_step,
                                 nppi_size,
@@ -438,7 +465,7 @@ private:
                         CHECK_CUDA(
                             nppiCopy_8u_C3P3R_Ctx(
                                 in_buffer,
-                                out_step * int(num_components),
+                                out_step * static_cast<int>(num_components),
                                 out_buffer.data(),
                                 out_step,
                                 nppi_size,
@@ -466,7 +493,7 @@ private:
                         CHECK_CUDA(
                             nppiCopy_8u_C4P4R_Ctx(
                                 in_buffer,
-                                out_step * int(num_components),
+                                out_step * static_cast<int>(num_components),
                                 out_buffer.data(),
                                 out_step,
                                 nppi_size,
@@ -487,7 +514,7 @@ private:
                         CHECK_CUDA(
                             nppiCopy_8u_C4P4R_Ctx(
                                 in_buffer,
-                                out_step * int(num_components),
+                                out_step * static_cast<int>(num_components),
                                 out_buffer.data(),
                                 out_step,
                                 nppi_size,
@@ -505,7 +532,8 @@ private:
             else if(type == core::type::UINT16)
             {
                 const auto* in_buffer = reinterpret_cast<const Npp16u*>(m_packed_gpu_buffer);
-                const int out_step    = width * int(sizeof(Npp16u));
+                // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
+                const int out_step = width * static_cast<int>(sizeof(Npp16u));
 
                 if(num_components == 3)
                 {
@@ -520,7 +548,7 @@ private:
                         CHECK_CUDA(
                             nppiCopy_16u_C3P3R_Ctx(
                                 in_buffer,
-                                out_step * int(num_components),
+                                out_step * static_cast<int>(num_components),
                                 out_buffer.data(),
                                 out_step,
                                 nppi_size,
@@ -540,7 +568,7 @@ private:
                         CHECK_CUDA(
                             nppiCopy_16u_C3P3R_Ctx(
                                 in_buffer,
-                                out_step * int(num_components),
+                                out_step * static_cast<int>(num_components),
                                 out_buffer.data(),
                                 out_step,
                                 nppi_size,
@@ -568,7 +596,7 @@ private:
                         CHECK_CUDA(
                             nppiCopy_16u_C4P4R_Ctx(
                                 in_buffer,
-                                out_step * int(num_components),
+                                out_step * static_cast<int>(num_components),
                                 out_buffer.data(),
                                 out_step,
                                 nppi_size,
@@ -589,7 +617,7 @@ private:
                         CHECK_CUDA(
                             nppiCopy_16u_C4P4R_Ctx(
                                 in_buffer,
-                                out_step * int(num_components),
+                                out_step * static_cast<int>(num_components),
                                 out_buffer.data(),
                                 out_step,
                                 nppi_size,
@@ -607,7 +635,8 @@ private:
             else if(type == core::type::INT16)
             {
                 const auto* in_buffer = reinterpret_cast<const Npp16s*>(m_packed_gpu_buffer);
-                const int out_step    = width * int(sizeof(Npp16s));
+                // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
+                const int out_step = width * static_cast<int>(sizeof(Npp16s));
 
                 if(num_components == 3)
                 {
@@ -622,7 +651,7 @@ private:
                         CHECK_CUDA(
                             nppiCopy_16s_C3P3R_Ctx(
                                 in_buffer,
-                                out_step * int(num_components),
+                                out_step * static_cast<int>(num_components),
                                 out_buffer.data(),
                                 out_step,
                                 nppi_size,
@@ -642,7 +671,7 @@ private:
                         CHECK_CUDA(
                             nppiCopy_16s_C3P3R_Ctx(
                                 in_buffer,
-                                out_step * int(num_components),
+                                out_step * static_cast<int>(num_components),
                                 out_buffer.data(),
                                 out_step,
                                 nppi_size,
@@ -670,7 +699,7 @@ private:
                         CHECK_CUDA(
                             nppiCopy_16s_C4P4R_Ctx(
                                 in_buffer,
-                                out_step * int(num_components),
+                                out_step * static_cast<int>(num_components),
                                 out_buffer.data(),
                                 out_step,
                                 nppi_size,
@@ -691,7 +720,7 @@ private:
                         CHECK_CUDA(
                             nppiCopy_16s_C4P4R_Ctx(
                                 in_buffer,
-                                out_step * int(num_components),
+                                out_step * static_cast<int>(num_components),
                                 out_buffer.data(),
                                 out_step,
                                 nppi_size,

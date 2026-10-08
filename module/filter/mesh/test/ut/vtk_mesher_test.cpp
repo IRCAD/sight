@@ -20,8 +20,6 @@
  ***********************************************************************/
 
 #include <core/os/temp_path.hpp>
-#include <core/runtime/runtime.hpp>
-#include <core/tools/random/generator.hpp>
 
 #include <data/image.hpp>
 #include <data/image_series.hpp>
@@ -40,6 +38,9 @@
 
 TEST_SUITE("sight::module::filter::mesh::vtk_mesher")
 {
+    namespace
+    {
+
     class mesher_fixture
     {
     public:
@@ -96,13 +97,13 @@ TEST_SUITE("sight::module::filter::mesh::vtk_mesher")
             auto my_writer = std::make_shared<sight::io::vtk::image_writer>();
             my_writer->set_object(image_series);
             my_writer->set_file(temp_file);
-            auto write_observer = std::make_shared<sight::core::progress::observer>("Test write");
+            auto write_observer = std::make_shared<sight::core::notification::observer>("Test write");
             CHECK_NOTHROW(my_writer->write(write_observer));
 
             model_series = std::make_shared<sight::data::model_series>();
 
-            mesher_service->set_input(image_series, "image_series");
-            mesher_service->set_inout(model_series, "model_series");
+            mesher_service->set_input(image_series, "data.input_image");
+            mesher_service->set_inout(model_series, "data.output_model");
         }
 
         ~mesher_fixture()
@@ -116,13 +117,14 @@ TEST_SUITE("sight::module::filter::mesh::vtk_mesher")
         sight::data::image_series::sptr image_series;
     };
 
+    } // namespace
     TEST_CASE_FIXTURE(mesher_fixture, "generate_mesh")
     {
         const std::string config =
-            "<in key='image_series' uid='image_series'/>"
-            "<out key='model_series' uid='modelSeries'/>"
-            "<properties percent_reduction='50' value='255' pass_band='0.1' boundary_smoothing='true'"
-            "feature_smoothing='true' feature_angle='120'/>";
+            "<data input_image='${image_series}' output_model='${modelSeries}'/>"
+            "<label value='255'/>"
+            "<smoothing pass_band='0.1' boundary='true' feature='true' feature_angle='120'/>"
+            "<decimation reduction='50'/>";
 
         mesher_service->set_config(config);
         mesher_service->configure();
@@ -140,9 +142,9 @@ TEST_SUITE("sight::module::filter::mesh::vtk_mesher")
     TEST_CASE_FIXTURE(mesher_fixture, "generate_mesh_with_min_reduction")
     {
         const std::string config =
-            "<in key='image_series' uid='image_series'/>"
-            "<out key='model_series' uid='modelSeries'/>"
-            "<properties percent_reduction='0' value='255'/>";
+            "<data input_image='${image_series}' output_model='${modelSeries}'/>"
+            "<label value='255'/>"
+            "<decimation reduction='0'/>";
 
         mesher_service->set_config(config);
         mesher_service->configure();
@@ -160,9 +162,9 @@ TEST_SUITE("sight::module::filter::mesh::vtk_mesher")
     TEST_CASE_FIXTURE(mesher_fixture, "no_mesh_generated")
     {
         const std::string config =
-            "<in key='image_series' uid='image_series'/>"
-            "<out key='model_series' uid='modelSeries'/>"
-            "<properties percent_reduction='90' value='30'/>";
+            "<data input_image='${image_series}' output_model='${modelSeries}'/>"
+            "<label value='30'/>"
+            "<decimation reduction='90'/>";
 
         mesher_service->set_config(config);
         mesher_service->configure();

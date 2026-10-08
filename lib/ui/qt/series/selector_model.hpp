@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,7 +45,7 @@ Q_OBJECT
 public:
 
     /// Defines the role of the items data (ITEM_TYPE or UID)
-    enum role
+    enum role : std::uint16_t
     {
         item_type = Qt::UserRole, ///< Role for the item type (STUDY or SERIES)
         uid,                      ///< Role for the fwID of the object
@@ -53,7 +53,7 @@ public:
     };
 
     /// Defines item type (STUDY or SERIES), it is used in items data (ITEM_TYPE role).
-    enum item_t
+    enum item_t : std::uint8_t
     {
         study = 1, ///< Type to represent Study/Patient
         series     ///< Type to represent Series
@@ -90,7 +90,7 @@ public:
     SIGHT_UI_QT_API_QT void clear();
 
     /// Returns item flags with non editable flag
-    Qt::ItemFlags flags(const QModelIndex& _index) const override
+    [[nodiscard]] Qt::ItemFlags flags(const QModelIndex& _index) const override
     {
         return QStandardItemModel::flags(_index) & ~Qt::ItemIsEditable;
     }
@@ -106,7 +106,7 @@ public:
     SIGHT_UI_QT_API_QT QModelIndex get_index(const QModelIndex& _index, int _column);
 
     /// Removes the rows given by the indexes.
-    SIGHT_UI_QT_API_QT void removeRows(const QModelIndexList _indexes);
+    SIGHT_UI_QT_API_QT void removeRows(QModelIndexList _indexes);
 
     /// Returns the series item representing the series.
     SIGHT_UI_QT_API_QT QStandardItem* find_series_item(data::series::sptr _series);
@@ -218,7 +218,7 @@ QStandardItem* selector_model::get_info(T _data, QString _separator)
         }
     }
 
-    QStandardItem* item = new QStandardItem(data_str);
+    auto* item = new QStandardItem(data_str);
     return item;
 }
 

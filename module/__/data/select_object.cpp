@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2023 IRCAD France
+ * Copyright (C) 2015-2026 IRCAD France
  * Copyright (C) 2015-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,20 +22,15 @@
 
 #include "select_object.hpp"
 
-#include <core/com/slots.hxx>
-
 namespace sight::module::data
 {
-
-const core::com::slots::key_t select_object::ADD_SLOT    = "add";
-const core::com::slots::key_t select_object::REMOVE_SLOT = "remove";
 
 //-----------------------------------------------------------------------------
 
 select_object::select_object() noexcept
 {
-    new_slot(ADD_SLOT, &select_object::add, this);
-    new_slot(REMOVE_SLOT, &select_object::remove, this);
+    new_slot(slots::ADD, &select_object::add, this);
+    new_slot(slots::REMOVE, &select_object::remove, this);
 }
 
 //-----------------------------------------------------------------------------

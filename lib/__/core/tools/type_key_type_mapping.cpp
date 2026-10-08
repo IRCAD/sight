@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -92,7 +92,7 @@ bool is_mapping<std::int64_t>(const type& _type)
 template<>
 bool is_mapping<float>(const type& _type)
 {
-    return _type == type::FLOAT;
+    return _type == type::FLOAT32;
 }
 
 //------------------------------------------------------------------------------
@@ -100,7 +100,7 @@ bool is_mapping<float>(const type& _type)
 template<>
 bool is_mapping<double>(const type& _type)
 {
-    return _type == type::DOUBLE;
+    return _type == type::FLOAT64;
 }
 
 } // namespace sight::core::tools

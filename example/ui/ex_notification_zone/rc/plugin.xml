@@ -1,0 +1,446 @@
+<!-- Minimal example application to exercise the notification zone -->
+<plugin id="ex_notification_zone" library="true">
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::ui" />
+    <requirement id="sight::module::ui::qt" />
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::service::base</type>
+        <service>ex_notification_zone::long_job</service>
+        <desc>Create a generic long job</desc>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::service::controller</type>
+        <service>ex_notification_zone::notification_sender</service>
+        <desc>Create a generic notification sender</desc>
+    </extension>
+
+    <extension implements="sight::app::extension::config">
+        <id>ex_notification_zone_app_cfg</id>
+        <config>
+            <!-- Main frame service -->
+            <service uid="main_frame" type="sight::module::ui::frame">
+                <gui>
+                    <frame>
+                        <name>ex_notification_zone</name>
+                        <icon>ex_notification_zone/app.ico</icon>
+                        <screen index="0" />
+                        <style mode="DEFAULT" />
+                    </frame>
+                </gui>
+                <registry>
+                    <view sid="main_view" />
+                </registry>
+            </service>
+
+            <!-- Main view: one row per toolbar, then the notification zones -->
+            <service uid="main_view" type="sight::module::ui::view">
+                <gui>
+                    <layout type="sight::ui::layout::line">
+                        <orientation value="vertical" />
+                        <view proportion="0" />
+                        <view proportion="0" />
+                        <view proportion="0" />
+                        <view proportion="0" />
+                        <view proportion="0" />
+                        <view proportion="1" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="send_row_view" />
+                    <view sid="close_errors_row_view" />
+                    <view sid="warning_row_view" />
+                    <view sid="instruction_row_view" />
+                    <view sid="error_row_view" />
+                    <view sid="zones_view" />
+                </registry>
+            </service>
+
+            <!-- A view holds a single toolbar, hence one row view per toolbar. -->
+
+            <!-- Row 1: one-shot notifications, sent directly by notification_sender. Disabled while an error is
+                 displayed. -->
+            <service uid="send_row_view" type="sight::module::ui::view">
+                <gui>
+                    <layout type="sight::ui::layout::line">
+                        <orientation value="vertical" />
+                    </layout>
+                    <toolbar align="top" />
+                </gui>
+                <registry>
+                    <toolbar sid="send_toolbar" />
+                </registry>
+            </service>
+
+            <service uid="send_toolbar" type="sight::module::ui::toolbar">
+                <gui>
+                    <layout style="ToolButtonTextBesideIcon">
+                        <menuItem name="Instruction" />
+                        <menuItem name="Information" />
+                        <menuItem name="Warning" />
+                        <menuItem name="Error" />
+                        <menuItem name="Progress" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="instruction_act" />
+                    <menuItem sid="information_act" />
+                    <menuItem sid="warning_act" />
+                    <menuItem sid="error_act" />
+                    <menuItem sid="progress_act" />
+                </registry>
+            </service>
+
+            <service uid="instruction_act" type="sight::module::ui::action" />
+            <service uid="information_act" type="sight::module::ui::action" />
+            <service uid="warning_act" type="sight::module::ui::action" />
+            <service uid="error_act" type="sight::module::ui::action" />
+            <service uid="progress_act" type="sight::module::ui::action">
+                <state enabled="false" />
+            </service>
+
+            <!-- Row 2: closes error notifications from the service side. Stays enabled while an error is displayed,
+                 so the user can still dismiss it. -->
+            <service uid="close_errors_row_view" type="sight::module::ui::view">
+                <gui>
+                    <layout type="sight::ui::layout::line">
+                        <orientation value="vertical" />
+                    </layout>
+                    <toolbar align="top" />
+                </gui>
+                <registry>
+                    <toolbar sid="close_errors_toolbar" />
+                </registry>
+            </service>
+
+            <service uid="close_errors_toolbar" type="sight::module::ui::toolbar">
+                <gui>
+                    <layout style="ToolButtonTextBesideIcon">
+                        <menuItem name="Close errors" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="close_errors_act" />
+                </registry>
+            </service>
+
+            <service uid="close_errors_act" type="sight::module::ui::action" />
+
+            <!-- Rows 3 to 5: contributions composed by notification_composer_srv, one row per notification type. -->
+            <service uid="warning_row_view" type="sight::module::ui::view">
+                <gui>
+                    <layout type="sight::ui::layout::line">
+                        <orientation value="vertical" />
+                    </layout>
+                    <toolbar align="top" />
+                </gui>
+                <registry>
+                    <toolbar sid="warning_toolbar" />
+                </registry>
+            </service>
+
+            <service uid="warning_toolbar" type="sight::module::ui::toolbar">
+                <gui>
+                    <layout style="ToolButtonTextBesideIcon">
+                        <menuItem name="Contribution A (warning in 2 zones)" />
+                        <menuItem name="Remove A" />
+                        <menuItem name="Contribution B (warning in 2 zones)" />
+                        <menuItem name="Remove B" />
+                        <separator />
+                        <menuItem name="No icon" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="add_warning_a_act" />
+                    <menuItem sid="remove_warning_a_act" />
+                    <menuItem sid="add_warning_b_act" />
+                    <menuItem sid="remove_warning_b_act" />
+                    <menuItem sid="silent_act" />
+                </registry>
+            </service>
+
+            <service uid="add_warning_a_act" type="sight::module::ui::action" />
+            <service uid="remove_warning_a_act" type="sight::module::ui::action" />
+            <service uid="add_warning_b_act" type="sight::module::ui::action" />
+            <service uid="remove_warning_b_act" type="sight::module::ui::action" />
+            <service uid="silent_act" type="sight::module::ui::action" />
+
+            <service uid="instruction_row_view" type="sight::module::ui::view">
+                <gui>
+                    <layout type="sight::ui::layout::line">
+                        <orientation value="vertical" />
+                    </layout>
+                    <toolbar align="top" />
+                </gui>
+                <registry>
+                    <toolbar sid="instruction_toolbar" />
+                </registry>
+            </service>
+
+            <service uid="instruction_toolbar" type="sight::module::ui::toolbar">
+                <gui>
+                    <layout style="ToolButtonTextBesideIcon">
+                        <menuItem name="Contribution A (instruction in 2 zones)" />
+                        <menuItem name="Remove A" />
+                        <menuItem name="Contribution B (instruction in 2 zones)" />
+                        <menuItem name="Remove B" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="add_instruction_a_act" />
+                    <menuItem sid="remove_instruction_a_act" />
+                    <menuItem sid="add_instruction_b_act" />
+                    <menuItem sid="remove_instruction_b_act" />
+                </registry>
+            </service>
+
+            <service uid="add_instruction_a_act" type="sight::module::ui::action" />
+            <service uid="remove_instruction_a_act" type="sight::module::ui::action" />
+            <service uid="add_instruction_b_act" type="sight::module::ui::action" />
+            <service uid="remove_instruction_b_act" type="sight::module::ui::action" />
+
+            <service uid="error_row_view" type="sight::module::ui::view">
+                <gui>
+                    <layout type="sight::ui::layout::line">
+                        <orientation value="vertical" />
+                    </layout>
+                    <toolbar align="top" />
+                </gui>
+                <registry>
+                    <toolbar sid="error_toolbar" />
+                </registry>
+            </service>
+
+            <service uid="error_toolbar" type="sight::module::ui::toolbar">
+                <gui>
+                    <layout style="ToolButtonTextBesideIcon">
+                        <menuItem name="Contribution A (error in 2 zones)" />
+                        <menuItem name="Remove A" />
+                        <menuItem name="Contribution B (error in 2 zones)" />
+                        <menuItem name="Remove B" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="add_error_a_act" />
+                    <menuItem sid="remove_error_a_act" />
+                    <menuItem sid="add_error_b_act" />
+                    <menuItem sid="remove_error_b_act" />
+                </registry>
+            </service>
+
+            <service uid="add_error_a_act" type="sight::module::ui::action" />
+            <service uid="remove_error_a_act" type="sight::module::ui::action" />
+            <service uid="add_error_b_act" type="sight::module::ui::action" />
+            <service uid="remove_error_b_act" type="sight::module::ui::action" />
+
+            <!-- Both notification zones, stacked. -->
+            <service uid="zones_view" type="sight::module::ui::view">
+                <gui>
+                    <layout type="sight::ui::layout::line">
+                        <orientation value="vertical" />
+                        <view proportion="1" />
+                        <view proportion="1" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="notification_zone_srv" />
+                    <view sid="fixed_icon_zone_srv" />
+                </registry>
+            </service>
+
+            <!-- Icons follow the text height by default. -->
+            <service uid="notification_zone_srv" type="sight::module::ui::qt::notification_zone" />
+
+            <!-- The same notifications, with icons pinned at 64 pixels instead. -->
+            <service uid="fixed_icon_zone_srv" type="sight::module::ui::qt::notification_zone">
+                <properties notification_icon_size="64" />
+            </service>
+
+            <!-- Composes warning_a/warning_b into a single warning notification, merging or
+                 splitting it back as each contribution is shown or cancelled. The instruction and the error
+                 are composed the same way, from their own contributions. -->
+            <service uid="notification_composer_srv" type="sight::module::ui::notification_composer">
+                <warning icon="sight::module::ui::icons/connection.svg">
+                    <notification id="warning_a">
+                        <message>Warning A</message>
+                    </notification>
+                    <notification id="warning_b">
+                        <message>Warning B</message>
+                    </notification>
+                    <message><![CDATA[Warnings currently active:<br/>${warning_a}<br/>${warning_b}]]></message>
+                </warning>
+
+                <instruction>
+                    <notification id="instruction_a">
+                        <message>Instruction A</message>
+                    </notification>
+                    <notification id="instruction_b">
+                        <message>Instruction B</message>
+                    </notification>
+                    <message><![CDATA[Instructions currently active:<br/>${instruction_a}<br/>${instruction_b}]]></message>
+                </instruction>
+
+                <error>
+                    <notification id="error_a">
+                        <message>Error A</message>
+                    </notification>
+                    <notification id="error_b">
+                        <message>Error B</message>
+                    </notification>
+                    <message><![CDATA[Errors currently active:<br/>${error_a}<br/>${error_b}]]></message>
+                </error>
+
+                <!-- An empty icon opts out of the type's default one. -->
+                <information id="silent" icon="">
+                    <message>Information without icon</message>
+                </information>
+            </service>
+
+            <service uid="notification_sender" type="ex_notification_zone::notification_sender" />
+
+            <service uid="long_job_srv" type="ex_notification_zone::long_job" worker="long_job_worker" />
+
+            <connect>
+                <signal>long_job_srv/started</signal>
+                <slot>progress_act/enable</slot>
+            </connect>
+
+            <!-- One-shot notifications, sent directly by notification_sender. -->
+            <connect>
+                <signal>instruction_act/clicked</signal>
+                <slot>notification_sender/instruction</slot>
+            </connect>
+
+            <connect>
+                <signal>information_act/clicked</signal>
+                <slot>notification_sender/information</slot>
+            </connect>
+
+            <connect>
+                <signal>warning_act/clicked</signal>
+                <slot>notification_sender/warning</slot>
+            </connect>
+
+            <connect>
+                <signal>error_act/clicked</signal>
+                <slot>notification_sender/error</slot>
+            </connect>
+
+            <!-- Contribution-based notifications, merged into one by notification_composer_srv. -->
+            <connect>
+                <signal>add_warning_a_act/clicked</signal>
+                <slot>notification_composer_srv/show_warning_a</slot>
+            </connect>
+
+            <connect>
+                <signal>remove_warning_a_act/clicked</signal>
+                <slot>notification_composer_srv/cancel_warning_a</slot>
+            </connect>
+
+            <connect>
+                <signal>add_warning_b_act/clicked</signal>
+                <slot>notification_composer_srv/show_warning_b</slot>
+            </connect>
+
+            <connect>
+                <signal>remove_warning_b_act/clicked</signal>
+                <slot>notification_composer_srv/cancel_warning_b</slot>
+            </connect>
+
+            <connect>
+                <signal>silent_act/clicked</signal>
+                <slot>notification_composer_srv/show_silent</slot>
+            </connect>
+
+            <connect>
+                <signal>add_instruction_a_act/clicked</signal>
+                <slot>notification_composer_srv/show_instruction_a</slot>
+            </connect>
+
+            <connect>
+                <signal>remove_instruction_a_act/clicked</signal>
+                <slot>notification_composer_srv/cancel_instruction_a</slot>
+            </connect>
+
+            <connect>
+                <signal>add_instruction_b_act/clicked</signal>
+                <slot>notification_composer_srv/show_instruction_b</slot>
+            </connect>
+
+            <connect>
+                <signal>remove_instruction_b_act/clicked</signal>
+                <slot>notification_composer_srv/cancel_instruction_b</slot>
+            </connect>
+
+            <connect>
+                <signal>add_error_a_act/clicked</signal>
+                <slot>notification_composer_srv/show_error_a</slot>
+            </connect>
+
+            <connect>
+                <signal>remove_error_a_act/clicked</signal>
+                <slot>notification_composer_srv/cancel_error_a</slot>
+            </connect>
+
+            <connect>
+                <signal>add_error_b_act/clicked</signal>
+                <slot>notification_composer_srv/show_error_b</slot>
+            </connect>
+
+            <connect>
+                <signal>remove_error_b_act/clicked</signal>
+                <slot>notification_composer_srv/cancel_error_b</slot>
+            </connect>
+
+            <connect>
+                <signal>close_errors_act/clicked</signal>
+                <slot>notification_sender/close_errors</slot>
+            </connect>
+
+            <connect>
+                <signal>notification_sender/notification_created</signal>
+                <slot>notification_zone_srv/add_notification</slot>
+            </connect>
+
+            <connect>
+                <signal>notification_composer_srv/notification_created</signal>
+                <slot>notification_zone_srv/add_notification</slot>
+                <slot>fixed_icon_zone_srv/add_notification</slot>
+            </connect>
+
+            <!-- Block send_toolbar while an error notification is up; close_errors_toolbar stays enabled. -->
+            <connect>
+                <signal>notification_zone_srv/error</signal>
+                <slot>send_toolbar/disable</slot>
+            </connect>
+
+            <connect>
+                <signal>notification_zone_srv/error_acknowledged</signal>
+                <slot>send_toolbar/enable</slot>
+            </connect>
+
+            <!-- Drive the Progress action from the long job's own notification: disabled while it runs
+                 (progress_act/clicked starts it), re-enabled once the notification is acknowledged. -->
+            <connect>
+                <signal>progress_act/clicked</signal>
+                <slot>long_job_srv/update</slot>
+            </connect>
+
+            <connect>
+                <signal>long_job_srv/notification_created</signal>
+                <slot>notification_zone_srv/add_notification</slot>
+            </connect>
+
+            <connect>
+                <signal>notification_zone_srv/progress</signal>
+                <slot>progress_act/disable</slot>
+            </connect>
+
+            <connect>
+                <signal>notification_zone_srv/progress_acknowledged</signal>
+                <slot>progress_act/enable</slot>
+            </connect>
+        </config>
+    </extension>
+</plugin>

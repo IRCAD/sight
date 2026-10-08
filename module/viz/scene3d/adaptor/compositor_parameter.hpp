@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,7 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-class CompositorListener;
+class compositor_listener;
 
 /**
  * @brief This adaptor binds a Sight data to a shader uniform from a specific compositor.
@@ -50,16 +50,18 @@ class CompositorListener;
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::adaptor::compositor_parameter">
-        <inout key="parameter" uid="collimation" />
+        <data parameter="${collimation}" />
         <config compositor_name="compositor" parameter="u_value" shader_type="fragment" />
     </service>
    @endcode
  *
  * @subsection InOut InOut:
- * - \b parameter [sight::data::object]: parameter containing the data to upload.
+ * - \b data.parameter [sight::data::object]: parameter containing the data to upload.
+ *
+ * @subsection Input Input:
+ * - \b config.visible [sight::data::boolean] (optional, default=true): defines if the compositor is enabled or not.
  *
  * @subsection Configuration Configuration:
- * - \b visible (optional, bool, default=true): defines if the compositor is enabled or not.
  * - \b compositor_name (mandatory, string): the name of the associated Ogre compositor.
  * - \b parameter (mandatory, string): name of the shader parameter to set.
  * - \b technique (optional, string, default=""): name of the technique, default to the first in the compositor.
@@ -73,11 +75,22 @@ public:
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(compositor_parameter, sight::viz::scene3d::parameter_adaptor);
 
+    struct slots
+    {
+        static inline const slot_key_t ADD_LISTENER = "add_listener";
+    };
+
     /// Creates the adaptor.
     compositor_parameter() noexcept;
 
     /// Destroys the adaptor.
     ~compositor_parameter() noexcept override = default;
+
+    /**
+     * @brief Sets the compositor status.
+     * @param _enable the status of the compositor.
+     */
+    void set_visible(bool _enable) override;
 
 protected:
 
@@ -89,12 +102,6 @@ protected:
 
     /// Removes the compositor listener.
     void stopping() override;
-
-    /**
-     * @brief Sets the compositor status.
-     * @param _enable the status of the compositor.
-     */
-    void set_visible(bool _enable) override;
 
 private:
 
@@ -108,12 +115,12 @@ private:
     std::string m_compositor_name;
 
     /// Contains the Ogre compositor listener, we need to keep a pointer to unregister it.
-    CompositorListener* m_listener {nullptr};
+    compositor_listener* m_listener {nullptr};
 
     /// Handles connection with the layer.
     core::com::helper::sig_slot_connection m_resize_connection;
 
-    friend class CompositorListener;
+    friend class compositor_listener;
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

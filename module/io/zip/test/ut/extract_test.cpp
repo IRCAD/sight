@@ -21,8 +21,8 @@
 
 // cspell:ignore bouboule
 
+#include <core/notification/observer.hpp>
 #include <core/os/temp_path.hpp>
-#include <core/progress/observer.hpp>
 
 #include <io/vtk/vti_image_reader.hpp>
 
@@ -82,7 +82,7 @@ TEST_SUITE("sight::module::io::zip::extract")
         vti_reader->set_file(vti_path);
         auto img = std::make_shared<sight::data::image>();
         vti_reader->set_object(img);
-        auto observer = std::make_shared<sight::core::progress::observer>("Reading VTI image");
+        auto observer = std::make_shared<sight::core::notification::observer>("Reading VTI image");
         CHECK_NOTHROW(vti_reader->read(observer));
 
         sight::ui::test::dialog::location::push_paths(
@@ -165,7 +165,7 @@ TEST_SUITE("sight::module::io::zip::extract")
         vti_reader->set_file(vti_path);
         auto img = std::make_shared<sight::data::image>();
         vti_reader->set_object(img);
-        auto observer = std::make_shared<sight::core::progress::observer>("Reading VTI image");
+        auto observer = std::make_shared<sight::core::notification::observer>("Reading VTI image");
         CHECK_NOTHROW(vti_reader->read(observer));
 
         CHECK(sight::ui::test::dialog::location::clear());

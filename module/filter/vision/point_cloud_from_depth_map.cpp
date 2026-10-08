@@ -22,31 +22,21 @@
 
 #include "point_cloud_from_depth_map.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-#include <core/profiling.hpp>
-
 #include <filter/vision/projection.hpp>
 
 #include <geometry/data/matrix4.hpp>
-
-#include <service/macros.hpp>
-
-#include <glm/glm.hpp>
 
 #include <cmath>
 
 namespace sight::module::filter::vision
 {
 
-const core::com::slots::key_t point_cloud_from_depth_map::SET_DEPTH_RANGE = "setDepthRange";
-
 //------------------------------------------------------------------------------
 
 point_cloud_from_depth_map::point_cloud_from_depth_map() noexcept :
-    filter(m_signals)
+    filter(has_signals::signals())
 {
-    new_slot(SET_DEPTH_RANGE, &point_cloud_from_depth_map::set_depth_range, this);
+    new_slot(slots::SET_DEPTH_RANGE, &point_cloud_from_depth_map::set_depth_range, this);
 }
 
 //------------------------------------------------------------------------------
@@ -114,8 +104,8 @@ void point_cloud_from_depth_map::updating()
         }
 
         point_cloud->resize(
-            data::mesh::size_t(nb_points),
-            data::mesh::size_t(nb_points),
+            static_cast<data::mesh::size_t>(nb_points),
+            static_cast<data::mesh::size_t>(nb_points),
             data::mesh::cell_type_t::point,
             attribute
         );
@@ -127,11 +117,10 @@ void point_cloud_from_depth_map::updating()
         // to display the mesh, we need to create cells with one point.
         for(std::size_t i = 0 ; i < nb_points ; ++i, ++itr)
         {
-            itr->pt = data::mesh::cell_t(i);
+            itr->pt = static_cast<data::mesh::cell_t>(i);
         }
 
-        auto sig = point_cloud->signal<data::mesh::modified_signal_t>(data::mesh::MODIFIED_SIG);
-        sig->async_emit();
+        point_cloud->async_emit(data::signals::MODIFIED);
     }
 
     if(rgb_map)
@@ -145,22 +134,18 @@ void point_cloud_from_depth_map::updating()
             point_cloud.get_shared()
         );
 
-        auto sig =
-            point_cloud->signal<data::mesh::signal_t>(data::mesh::VERTEX_MODIFIED_SIG);
-        sig->async_emit();
+        point_cloud->async_emit(data::mesh::signals::VERTEX_MODIFIED);
 
-        auto sig2 = point_cloud->signal<data::mesh::signal_t>(data::mesh::POINT_COLORS_MODIFIED_SIG);
-        sig2->async_emit();
+        point_cloud->async_emit(data::mesh::signals::POINT_COLORS_MODIFIED);
     }
     else
     {
         this->depth_map_to_point_cloud(depth_calibration, depth_map.get_shared(), point_cloud.get_shared());
-        auto sig =
-            point_cloud->signal<data::mesh::signal_t>(data::mesh::VERTEX_MODIFIED_SIG);
-        sig->async_emit();
+
+        point_cloud->async_emit(data::mesh::signals::VERTEX_MODIFIED);
     }
 
-    this->signal<signals::computed_t>(signals::SUCCEEDED)->async_emit();
+    this->async_emit(service::filter::signals::SUCCEEDED);
 }
 
 //------------------------------------------------------------------------------
@@ -191,9 +176,7 @@ void point_cloud_from_depth_map::set_depth_range(int _val, std::string _key)
     }
     else
     {
-        SIGHT_ERROR(
-            std::string("unknown key '") + _key + "' in slot '" + SET_DEPTH_RANGE + "'"
-        );
+        SIGHT_ERROR(std::string("unknown key '") + _key + "' in slot '" + slots::SET_DEPTH_RANGE + "'");
     }
 }
 
@@ -371,7 +354,7 @@ void point_cloud_from_depth_map::depth_map_to_point_cloud_rgb(
                     const std::size_t rgb_idx = rgb_py * rgb_width + rgb_px;
                     if(rgb_idx < image_size)
                     {
-                        const auto color = rgb_begin + std::int64_t(rgb_idx);
+                        const auto color = rgb_begin + static_cast<std::int64_t>(rgb_idx);
                         c = *color;
                     }
                     else

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024 IRCAD France
+ * Copyright (C) 2024-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -63,6 +63,8 @@ public:
 
     /// Destructor. Does nothing
     ~preferences() noexcept final = default;
+
+protected:
 
     /// Saves the configured preferences
     service::connections_t auto_connections() const final;

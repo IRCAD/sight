@@ -20,21 +20,18 @@
  *
  ***********************************************************************/
 
-#include <core/tools/system.hpp>
-
 #include <data/image.hpp>
 #include <data/image_series.hpp>
 #include <data/mesh.hpp>
 #include <data/model_series.hpp>
 #include <data/reconstruction.hpp>
-#include <data/series.hpp>
 #include <data/series_set.hpp>
+#include <io/__/service/reader.hpp>
+#include <ui/test/dialog/location.hpp>
 
 #include <service/op.hpp>
 
 #include <utest_data/data.hpp>
-
-#include <boost/property_tree/xml_parser.hpp>
 
 #include <doctest/doctest.h>
 
@@ -58,10 +55,10 @@ TEST_SUITE("sight::module::io::vtk::series_set_reader")
         );
 
         sight::service::config_t reader_srv_cfg;
-        reader_srv_cfg.add("file", image_file.string());
-        sight::service::config_t file2_cfg;
-        reader_srv_cfg.add("file", mesh_file.string());
-        reader_srv_cfg.add("file", mesh_file.string());
+        reader_srv_cfg.add(
+            "path.<xmlattr>.file",
+            image_file.string() + ";" + mesh_file.string() + ";" + mesh_file.string()
+        );
 
         auto series_set = std::make_shared<sight::data::series_set>();
 
@@ -69,12 +66,12 @@ TEST_SUITE("sight::module::io::vtk::series_set_reader")
 
         CHECK(srv);
 
-        srv->set_inout(series_set, "data");
+        srv->set_inout(series_set, "data.read");
         srv->set_config(reader_srv_cfg);
         srv->configure();
-        srv->start().wait();
-        srv->update().wait();
-        srv->stop().wait();
+        srv->start().get();
+        srv->update().get();
+        srv->stop().get();
         sight::service::remove(srv);
 
         // Data expected
@@ -137,7 +134,7 @@ TEST_SUITE("sight::module::io::vtk::series_set_reader")
         );
 
         sight::service::config_t reader_srv_cfg;
-        reader_srv_cfg.add("file", image_file.string());
+        reader_srv_cfg.add("path.<xmlattr>.file", image_file.string());
 
         auto image_series = std::make_shared<sight::data::image_series>();
         auto series_set   = std::make_shared<sight::data::series_set>();
@@ -147,14 +144,46 @@ TEST_SUITE("sight::module::io::vtk::series_set_reader")
 
         CHECK(srv);
 
-        srv->set_inout(series_set, "data");
+        srv->set_inout(series_set, "data.read");
         srv->set_config(reader_srv_cfg);
         srv->configure();
-        srv->start().wait();
-        srv->update().wait();
-        srv->stop().wait();
+        srv->start().get();
+        srv->update().get();
+        srv->stop().get();
         sight::service::remove(srv);
 
         CHECK_EQ(std::size_t(1), series_set->size());
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("open_location_dialog")
+    {
+        const auto file1 = std::filesystem::temp_directory_path() / "image.vtk";
+        const auto file2 = std::filesystem::temp_directory_path() / "mesh.vtp";
+
+        CHECK(sight::ui::test::dialog::location::clear());
+
+        sight::ui::test::dialog::location::set_paths({file1, file2});
+
+        auto reader = sight::service::add<sight::io::service::reader>(
+            "sight::module::io::vtk::series_set_reader"
+        );
+
+        REQUIRE(reader);
+
+        reader->configure();
+
+        CHECK_NOTHROW(reader->open_location_dialog());
+
+        const auto& files = reader->get_files();
+
+        REQUIRE_EQ(files.size(), std::size_t(2));
+        CHECK_EQ(files[0], file1);
+        CHECK_EQ(files[1], file2);
+
+        sight::service::remove(reader);
+
+        CHECK(sight::ui::test::dialog::location::clear());
     }
 } // TEST_SUITE

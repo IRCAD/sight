@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2024 IRCAD France
+ * Copyright (C) 2016-2026 IRCAD France
  * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,8 +26,6 @@
 
 #include "activity/validator/activity.hpp"
 
-#include <core/base.hpp>
-
 namespace sight::activity::validator
 {
 
@@ -47,7 +45,7 @@ public:
 
     /// Checks if all the required data are present and if the appConfig parameters are found.
     SIGHT_ACTIVITY_API validator::return_t validate(
-        const CSPTR(data::activity)& _activity
+        const sight::csptr<data::activity>& _activity
     ) const override;
 };
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -34,7 +34,7 @@ public:
 
     bool Code(gdcm::DataElement const& _in, gdcm::DataElement& _out) override;
 
-    ImageCodec* Clone() const override;
+    [[nodiscard]] ImageCodec* Clone() const override;
 };
 
-}
+} // namespace sight::io::dicom::codec

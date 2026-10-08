@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,11 +26,12 @@
 
 #include <app/config_manager.hpp>
 
-#include <core/tools/failed.hpp>
-
 #include <data/activity.hpp>
+#include <data/object.hpp>
 
 #include <ui/__/activity_view.hpp>
+
+#include <vector>
 
 namespace sight::module::ui::qt::activity
 {
@@ -74,21 +75,14 @@ public:
 
     SIGHT_DECLARE_SERVICE(view, sight::ui::activity_view);
 
-    /// Constructor. Do nothing.
+    struct signals
+    {
+        using activity_launched_t = core::com::signal<void (data::activity::sptr)>;
+        static inline const signal_key_t ACTIVITY_LAUNCHED = "activity_launched";
+    };
+
     view();
-
-    /// Destructor. Do nothing.
-
-    ~view() override;
-
-    /**
-     * @name Signal API
-     * @{
-     */
-    using activity_launched_signal_t = core::com::signal<void (data::activity::sptr)>;
-/**
- * @}
- */
+    ~view() override = default;
 
 protected:
 
@@ -104,20 +98,21 @@ protected:
     /// Do nothing
     void updating() override;
 
-private:
-
     /**
      * @brief Slot: Launch the given activity in the current view (stop and destroy the previous one).
      */
     void launch_activity(data::activity::sptr _activity) override;
 
+private:
+
     /// Helper to launch activity configuration
     sight::app::config_manager::sptr m_config_manager;
 
+    /// Keep objects created from literal inout values alive while a sub-configuration is running.
+    std::vector<data::object::sptr> m_local_value_objects;
+
     /// WID used to register the activity container
     std::string m_wid;
-
-    activity_launched_signal_t::sptr m_sig_activity_launched;
 
     /// Contents margins of the layout.
     int m_border {-1};

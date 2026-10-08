@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2025 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -98,9 +98,9 @@ public:
         Ogre::ManualObject* _object,
         const Ogre::Vector3& _position,
         const Ogre::ColourValue& _color,
-        const float _radius,
-        const unsigned int _sample,
-        const Ogre::uint32 _index = 0
+        float _radius,
+        unsigned int _sample,
+        Ogre::uint32 _index = 0
     );
 
     /**
@@ -149,8 +149,8 @@ public:
         Ogre::ManualObject* _object,
         const Ogre::Vector3& _p1,
         const Ogre::Vector3& _p2,
-        const float _dash_length,
-        const float _dash_spacing,
+        float _dash_length,
+        float _dash_spacing,
         std::optional<Ogre::ColourValue> _color = {});
 };
 

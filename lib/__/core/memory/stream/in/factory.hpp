@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,14 +38,16 @@ public:
     virtual ~factory()
     = default;
 
-    SPTR(std::istream) operator()()
+    //------------------------------------------------------------------------------
+
+    sight::sptr<std::istream> operator()()
     {
         return this->get();
     }
 
 protected:
 
-    virtual SPTR(std::istream) get() = 0;
+    virtual sight::sptr<std::istream> get() = 0;
 };
 
 } // namespace sight::core::memory::stream::in

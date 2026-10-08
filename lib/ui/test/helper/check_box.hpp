@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -54,4 +54,4 @@ public:
     SIGHT_UI_TEST_API static void should_not_be_checked(tester& _tester, const selector& _check_box);
 };
 
-} // namespace sight::ui::testCore::helper
+} // namespace sight::ui::test::helper

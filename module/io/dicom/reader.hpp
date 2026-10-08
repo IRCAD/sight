@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2025 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,9 +21,6 @@
 
 #pragma once
 
-#include <core/com/signal.hpp>
-#include <core/progress/monitor.hpp>
-
 #include <data/series_set.hpp>
 
 #include <io/__/service/reader.hpp>
@@ -41,24 +38,26 @@ namespace sight::module::io::dicom
  *          typeFilter configuration parameters.
  *
  * @section Signals Signals
- * - \b monitor_created(SPTR(core::progress::monitor)): emitted to display a progress bar while the image is read,
+ * - \b notification_created(core::notification::base::sptr): emitted to display a progress bar while the
+ * image is
+ * read,
  * it should be connected to a progress bar
  *
  * @section XML XML Configuration
  * @code{.xml}
     <service type="sight::module::io::dicom::reader">
-        <inout key="data" uid="..." />
-        <config>
-            <windowTitle>Open DICOM directory</windowTitle>
-            <dialog sopFilter="1.2.840.10008.5.1.4.1.1.2, 1.2.840.10008.5.1.4.1.1.4.1"/>
-        </config>
+        <data read="..." />
+        <dialog sopFilter="1.2.840.10008.5.1.4.1.1.2, 1.2.840.10008.5.1.4.1.1.4.1"/>
+        <config window_title="Open DICOM directory" />
     </service>
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b data [sight::data::object]: object to read to.
+ * - \b data.read [sight::data::object]: object to read to.
  *
  * @subsection Configuration Configuration
+ * - \b config.window_title (optional): allows overriding the default title of the modal file selection window.
+ * - \b config.append (optional, default=false): appends the loaded series instead of replacing the current set.
  * - \b dialog(optional):
  *      \b sopFilter: The SOP class uids to filter. If empty, and if typeFilter is also empty, the default type filter
  *                    "image", "model", "report" is used.
@@ -79,14 +78,18 @@ public:
 
     SIGHT_DECLARE_SERVICE(reader, sight::io::service::reader);
 
-    using monitor_created_signal_t = core::com::signal<void (core::progress::monitor::sptr)>;
-
     reader() noexcept;
 
     ~reader() noexcept final;
 
     /// Propose to read a session data file
     void open_location_dialog() final;
+
+    /// Returns the supported DICOM file extension.
+    std::vector<std::pair<std::string, std::string> > get_supported_extensions() final;
+
+    /// Returns the supported path types: DICOM files and folders.
+    sight::io::service::path_type_t get_path_type() const final;
 
 protected:
 
@@ -102,12 +105,6 @@ protected:
     /// Read DICOM data from filesystem
     void updating() final;
 
-    /// Returns managed path type, here service manages only single file
-    sight::io::service::path_type_t get_path_type() const final
-    {
-        return sight::io::service::folder;
-    }
-
 private:
 
     /// Clear location and selected series
@@ -119,6 +116,9 @@ private:
 
     /// Dialog policy to use for dialogs. By default, always show dialog
     dialog_policy m_dialog_policy {dialog_policy::always};
+
+    /// Keep the series already present in the destination when loading new data.
+    bool m_append {false};
 
     /// Default filters to use when scanning for DICOM files
     sight::data::series::sop_keywords_t m_filters {

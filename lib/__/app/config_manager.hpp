@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2024 IRCAD France
+ * Copyright (C) 2015-2026 IRCAD France
  * Copyright (C) 2015-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,8 +28,6 @@
 
 #include <core/object.hpp>
 
-#include <data/map.hpp>
-
 #include <service/manager.hpp>
 
 namespace sight::app
@@ -54,7 +52,7 @@ public:
     /// Return a new config_manager implementation. Should be used for all the config_manager of the
     /// application,
     /// except the first one which must be explicitly called.
-    SIGHT_APP_API static SPTR(config_manager) make();
+    SIGHT_APP_API static sight::sptr<config_manager> make();
 
     /// Return state
     bool is_created() const;
@@ -63,7 +61,7 @@ public:
     bool is_destroyed() const;
 
     /// Set configuration
-    void set_config(const config_t& _cfg);
+    SIGHT_APP_API virtual void set_config(const config_t& _cfg) = 0;
 
     /**
      * @brief Set configuration
@@ -103,10 +101,7 @@ public:
 
 protected:
 
-    /// Constructor. Does nothing.
-    SIGHT_APP_API config_manager() = default;
-
-    enum config_state
+    enum config_state : std::uint8_t
     {
         state_created,
         state_started,
@@ -114,8 +109,13 @@ protected:
         state_destroyed
     };
 
-    /// XML Configuration tree
-    core::runtime::config_t m_cfg_elem;
+    /// Constructor. Does nothing.
+    SIGHT_APP_API config_manager() = default;
+
+    /// Set state
+    void set_state(config_state _state);
+
+private:
 
     /// Running state of the app config manager
     config_state m_state {state_destroyed};
@@ -151,9 +151,9 @@ inline bool config_manager::is_destroyed() const
 
 //------------------------------------------------------------------------------
 
-inline void config_manager::set_config(const config_t& _cfg)
+inline void config_manager::set_state(config_state _state)
 {
-    m_cfg_elem = _cfg;
+    m_state = _state;
 }
 
 //------------------------------------------------------------------------------

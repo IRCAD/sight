@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,7 +23,6 @@
 #pragma once
 
 #include <core/com/signal.hpp>
-#include <core/tools/failed.hpp>
 
 #include <data/camera.hpp>
 #include <data/camera_set.hpp>
@@ -57,7 +56,7 @@ namespace sight::module::ui::qt::video
  *
  * @code{.xml}
     <service uid="..." type="sight::module::ui::qt::video::camera" >
-        <inout key="camera" uid="..."/>
+        <data camera="..." />
         <video_support>true</video_support>
         <label>Video source: </label>
     </service>
@@ -69,7 +68,7 @@ namespace sight::module::ui::qt::video
  *
  * @code{.xml}
     <service uid="..." type="sight::module::ui::qt::video::camera" >
-        <inout key="camera_set" uid="..."/>
+        <data camera_set="..." />
         <createCameraNumber>2</createCameraNumber>
         <video_support>true</video_support>
         <useAbsolutePath>false</useAbsolutePath>
@@ -79,8 +78,8 @@ namespace sight::module::ui::qt::video
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b camera [sight::data::camera]: camera data.
- * - \b camera_set [sight::data::camera_set]: camera series thus containing several camera.
+ * - \b data.camera [sight::data::camera]: camera data.
+ * - \b data.camera_set [sight::data::camera_set]: camera series thus containing several camera.
  *
  * @subsection Configuration Configuration
  * - \b video_support (optional, default="false"): if we can open a video file in addition with cameras.
@@ -108,6 +107,23 @@ public:
 
     SIGHT_DECLARE_SERVICE(camera, sight::ui::editor);
 
+    struct signals
+    {
+        using configured_t = core::com::signal<void ()>;
+
+        static inline const signal_key_t CONFIGURED_CAMERAS = "configured_cameras";
+        static inline const signal_key_t CONFIGURED_DEVICE  = "configured_device";
+        static inline const signal_key_t CONFIGURED_FILE    = "configured_file";
+        static inline const signal_key_t CONFIGURED_STREAM  = "configured_stream";
+    };
+
+    struct slots
+    {
+        static inline const slot_key_t CONFIGURE_DEVICE = "configureDevice";
+        static inline const slot_key_t CONFIGURE_FILE   = "configureFile";
+        static inline const slot_key_t CONFIGURE_STREAM = "configureStream";
+    };
+
     /// Initialize signals and slots.
     camera();
 
@@ -134,11 +150,6 @@ protected Q_SLOTS:
     /// Allows setting the camera resolution preference.
     void set_preference();
 
-private:
-
-    /// Type of the 'configured' signal.
-    using configured_signal_t = core::com::signal<void ()>;
-
     /// Configures the service.
     void configuring() final;
 
@@ -150,6 +161,11 @@ private:
 
     /// Does nothing.
     void updating() final;
+
+private:
+
+    /// Type of the 'configured' signal.
+    using configured_t = core::com::signal<void ()>;
 
     /// Calls when user select a file.
     void on_choose_file();
@@ -176,7 +192,7 @@ private:
     bool m_use_absolute_path {false};
 
     /// Signal emitted when the camera_set has been configured.
-    configured_signal_t::sptr m_sig_configured_cameras;
+    configured_t::sptr m_sig_configured_cameras;
 
     /// Label of the selector.
     std::string m_label {"Video source: "};
@@ -189,8 +205,8 @@ private:
 
     bool m_preference_mode {false};
 
-    static constexpr std::string_view CAMERA     = "camera";
-    static constexpr std::string_view CAMERA_SET = "camera_set";
+    static constexpr std::string_view CAMERA     = "data.camera";
+    static constexpr std::string_view CAMERA_SET = "data.camera_set";
 
     data::ptr<data::camera, data::access::inout> m_camera {this, CAMERA, true};
     data::ptr<data::camera_set, data::access::inout> m_camera_set {this, CAMERA_SET, true};

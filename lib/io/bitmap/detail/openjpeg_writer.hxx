@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,11 +21,10 @@
 
 #pragma once
 
-#include "writer_impl.hxx"
+#include "common.hxx"
+#include "io/bitmap/writer.hpp"
 
 #include <openjpeg.h>
-
-#include <type_traits>
 
 // cspell:ignore nvjpeg NOLINTNEXTLINE numresolution cblockw cblockh sgnd CLRSPC cparameters
 
@@ -128,7 +127,7 @@ public:
 
         const auto pixel_format = _image.pixel_format();
         SIGHT_THROW_IF(
-            NAME << " - Unsupported image format: " << pixel_format,
+            NAME << " - Unsupported image format: " << static_cast<unsigned int>(pixel_format),
             pixel_format != data::image::pixel_format_t::gray_scale
             && pixel_format != data::image::pixel_format_t::rgb
             && pixel_format != data::image::pixel_format_t::rgba
@@ -202,34 +201,34 @@ public:
 
         // Adjust parameters
         const auto& sizes = _image.size();
-        const auto width  = OPJ_UINT32(sizes[0]);
-        const auto height = OPJ_UINT32(sizes[1]);
+        const auto width  = static_cast<OPJ_UINT32>(sizes[0]);
+        const auto height = static_cast<OPJ_UINT32>(sizes[1]);
 
         // Format can .jp2 or .j2k
         m_parameters.cod_format = _flag == flag::j2k_stream ? 0 : 1;
 
         // Wavelet decomposition levels. 6-5 Seems to be a good default, but should be multiple of block size
         m_parameters.numresolution = std::min(
-            int(width) / m_parameters.cblockw_init,
-            int(height) / m_parameters.cblockh_init
+            static_cast<int>(width) / m_parameters.cblockw_init,
+            static_cast<int>(height) / m_parameters.cblockh_init
         );
 
         m_parameters.numresolution = std::clamp(m_parameters.numresolution, 1, 6);
 
-        const auto num_components = OPJ_UINT32(_image.num_components());
+        const auto num_components = static_cast<OPJ_UINT32>(_image.num_components());
         m_parameters.tcp_mct = num_components == 1 ? 0 : 1;
 
         // Build the component param array
         std::vector<opj_image_cmptparm_t> component_params(num_components);
 
-        const auto prec       = OPJ_UINT32(image_type.size() * 8);
+        const auto prec       = static_cast<OPJ_UINT32>(image_type.size() * 8);
         const OPJ_UINT32 sgnd = image_type.is_signed() ? 1 : 0;
 
         std::ranges::fill(
             component_params,
             opj_image_cmptparm_t {
-                .dx   = OPJ_UINT32(m_parameters.subsampling_dx),
-                .dy   = OPJ_UINT32(m_parameters.subsampling_dy),
+                .dx   = static_cast<OPJ_UINT32>(m_parameters.subsampling_dx),
+                .dy   = static_cast<OPJ_UINT32>(m_parameters.subsampling_dy),
                 .w    = width,
                 .h    = height,
                 .x0   = 0,
@@ -248,15 +247,15 @@ public:
         keeper.m_image = opj_image_create(num_components, component_params.data(), color_space);
 
         // Set image offset and reference grid
-        keeper.m_image->x0 = OPJ_UINT32(m_parameters.image_offset_x0);
-        keeper.m_image->y0 = OPJ_UINT32(m_parameters.image_offset_y0);
+        keeper.m_image->x0 = static_cast<OPJ_UINT32>(m_parameters.image_offset_x0);
+        keeper.m_image->y0 = static_cast<OPJ_UINT32>(m_parameters.image_offset_y0);
 
         keeper.m_image->x1 = OPJ_UINT32(
-            keeper.m_image->x0 + (width - 1) * OPJ_UINT32(m_parameters.subsampling_dx) + 1
+            keeper.m_image->x0 + (width - 1) * static_cast<OPJ_UINT32>(m_parameters.subsampling_dx) + 1
         );
 
         keeper.m_image->y1 = OPJ_UINT32(
-            keeper.m_image->y0 + (height - 1) * OPJ_UINT32(m_parameters.subsampling_dy) + 1
+            keeper.m_image->y0 + (height - 1) * static_cast<OPJ_UINT32>(m_parameters.subsampling_dy) + 1
         );
 
         // Convert Sight interlaced pixels to planar openJPEG pixels
@@ -382,7 +381,7 @@ private:
         if(_p_user_data != nullptr)
         {
             auto* ostream = reinterpret_cast<std::ostream*>(_p_user_data);
-            ostream->write(reinterpret_cast<char*>(_p_buffer), std::streamsize(_p_nb_bytes));
+            ostream->write(reinterpret_cast<char*>(_p_buffer), static_cast<std::streamsize>(_p_nb_bytes));
             return _p_nb_bytes;
         }
 
@@ -510,27 +509,32 @@ private:
         auto pixel_it        = _image.cbegin<P>();
         const auto pixel_end = _image.cend<P>();
 
+        // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
         for(std::size_t i = 0, end = sizes[0] * sizes[1] ; i < end && pixel_it != pixel_end ; ++pixel_it)
         {
             std::size_t c = 0;
 
             if constexpr(has_r<P>::value)
             {
+                // NOLINTNEXTLINE(bugprone-signed-char-misuse,cert-str34-c)
                 _opj_image.comps[c++].data[i] = OPJ_INT32(pixel_it->r);
             }
 
             if constexpr(has_g<P>::value)
             {
+                // NOLINTNEXTLINE(bugprone-signed-char-misuse,cert-str34-c)
                 _opj_image.comps[c++].data[i] = OPJ_INT32(pixel_it->g);
             }
 
             if constexpr(has_b<P>::value)
             {
+                // NOLINTNEXTLINE(bugprone-signed-char-misuse,cert-str34-c)
                 _opj_image.comps[c++].data[i] = OPJ_INT32(pixel_it->b);
             }
 
             if constexpr(has_alpha<P>::value)
             {
+                // NOLINTNEXTLINE(bugprone-signed-char-misuse,cert-str34-c)
                 _opj_image.comps[c].data[i] = OPJ_INT32(pixel_it->a);
             }
 

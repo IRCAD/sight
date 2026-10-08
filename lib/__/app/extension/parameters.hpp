@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,6 +30,7 @@
 #include <core/object.hpp>
 
 #include <map>
+#include <vector>
 
 namespace sight::app::extension
 {
@@ -42,7 +43,8 @@ class SIGHT_APP_CLASS_API parameters final
 {
 public:
 
-    using sptr = std::shared_ptr<parameters>;
+    using sptr         = std::shared_ptr<parameters>;
+    using cli_values_t = std::map<std::string, std::vector<std::string> >;
 
     /// Return the default global instance of parameters
     SIGHT_APP_API static parameters::sptr get_default();
@@ -58,7 +60,13 @@ public:
      * @brief Get the parameters associated to extension id.
      * @note This method is thread safe.
      **/
-    SIGHT_APP_API const field_adaptor_t& get_parameters(const std::string& _extension_id) const;
+    SIGHT_APP_API field_adaptor_t get_parameters(const std::string& _extension_id) const;
+
+    /// Returns the CLI parameters associated with an extension id.
+    SIGHT_APP_API const field_adaptor_t& get_cli_parameters(const std::string& _extension_id) const;
+
+    /// Returns all values passed for each CLI parameter of an extension.
+    SIGHT_APP_API cli_values_t get_cli_values(const std::string& _extension_id) const;
 
     /**
      * @brief Clear the registry.
@@ -70,11 +78,18 @@ protected:
 
     using registry = std::map<std::string, field_adaptor_t>;
 
+    // NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
+
     /// Container of parameter information
     registry m_reg;
+    registry m_cli_reg;
+    // NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 
+    // NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
     /// Used to protect the registry access.
     mutable core::mt::read_write_mutex m_registry_mutex;
+
+    // NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 
     /// The global instance of the app config parameters.
     static parameters::sptr s_app_config_parameters;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,15 +24,11 @@
 
 #include "core/spy_log.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slot.hxx>
-#include <core/com/slots.hxx>
 #include <core/runtime/path.hpp>
 
 #include <data/series.hpp>
 #include <data/series_set.hpp>
 
-#include <ui/__/dialog/message.hpp>
 #include <ui/qt/container/widget.hpp>
 #include <ui/qt/series/selector.hpp>
 
@@ -45,11 +41,6 @@ namespace sight::module::ui::qt::series
 
 //------------------------------------------------------------------------------
 
-static const core::com::signals::key_t SERIES_DOUBLE_CLICKED_SIG = "series_double_clicked";
-
-static const core::com::slots::key_t ADD_SERIES_SLOT    = "addSeries";
-static const core::com::slots::key_t REMOVE_SERIES_SLOT = "removeSeries";
-
 static const std::string SELECTION_MODE_CONFIG    = "selectionMode";
 static const std::string ALLOWED_REMOVE_CONFIG    = "allowedRemove";
 static const std::string INSERT_MODE_CONFIG       = "insertMode";
@@ -61,10 +52,10 @@ static const std::string DISPLAYED_COLUMN_CONFIG  = "displayedColumns";
 
 selector::selector()
 {
-    m_sig_series_double_clicked = new_signal<series_double_clicked_signal_t>(SERIES_DOUBLE_CLICKED_SIG);
+    m_sig_series_double_clicked = new_signal<series_double_clicked_t>(signals::SERIES_DOUBLE_CLICKED);
 
-    new_slot(ADD_SERIES_SLOT, &selector::add_series, this);
-    m_slot_remove_series = new_slot(REMOVE_SERIES_SLOT, &selector::remove_series, this);
+    new_slot(slots::ADD_SERIES, &selector::add_series, this);
+    m_slot_remove_series = new_slot(slots::REMOVE_SERIES, &selector::remove_series, this);
 }
 
 //------------------------------------------------------------------------------
@@ -205,8 +196,8 @@ void selector::starting()
 service::connections_t selector::auto_connections() const
 {
     connections_t connections;
-    connections.push(SERIES_SET,data::series_set::ADDED_OBJECTS_SIG,ADD_SERIES_SLOT);
-    connections.push(SERIES_SET,data::series_set::REMOVED_OBJECTS_SIG,REMOVE_SERIES_SLOT);
+    connections.push(SERIES_SET,data::series_set::signals::ADDED_OBJECTS,slots::ADD_SERIES);
+    connections.push(SERIES_SET,data::series_set::signals::REMOVED_OBJECTS,slots::REMOVE_SERIES);
 
     return connections;
 }
@@ -279,7 +270,9 @@ void selector::on_remove_series(QVector<data::series::sptr> _selection)
 {
     const auto series_set = m_series_set.lock();
 
-    auto sig = series_set->signal<data::series_set::removed_signal_t>(data::series_set::REMOVED_OBJECTS_SIG);
+    auto sig = series_set->signal<data::series_set::signals::removed_t>(
+        data::series_set::signals::REMOVED_OBJECTS
+    );
     core::com::connection::blocker block(sig->get_connection(m_slot_remove_series));
 
     {

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,18 +22,9 @@
 
 #include "ui/__/layout/frame_manager.hpp"
 
-#include <core/base.hpp>
 #include <core/runtime/path.hpp>
 
-#include <data/integer.hpp>
-#include <data/string.hpp>
-
-#include <service/macros.hpp>
-#include <service/registry.hpp>
-
 #include <ui/__/preferences.hpp>
-
-#include <boost/lexical_cast.hpp>
 
 #include <filesystem>
 
@@ -180,7 +171,7 @@ void frame_manager::initialize(const ui::config_t& _configuration)
     {
         if(mode.value() == "DEFAULT")
         {
-            m_frame_info.m_style = DEFAULT;
+            m_frame_info.m_style = standard;
         }
         else if(mode.value() == "STAY_ON_TOP")
         {
@@ -222,7 +213,7 @@ void frame_manager::initialize(const ui::config_t& _configuration)
 
 //-----------------------------------------------------------------------------
 
-void frame_manager::set_close_callback(CloseCallback _fct)
+void frame_manager::set_close_callback(close_callback _fct)
 {
     this->m_close_callback = _fct;
 }
@@ -296,7 +287,7 @@ void frame_manager::write_config() const
         {
             preferences.put(
                 get_frame_state_key(frame_name),
-                std::underlying_type_t<frame_state>(*m_frame_info.m_state)
+                static_cast<std::underlying_type_t<frame_state> >(*m_frame_info.m_state)
             );
         }
 

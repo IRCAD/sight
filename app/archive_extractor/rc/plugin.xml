@@ -65,7 +65,7 @@
             </connect>
 
             <connect>
-                <signal>extract_archive_srv/monitor_created</signal>
+                <signal>extract_archive_srv/notification_created</signal>
                 <slot>progress_bar/add_monitor</slot>
             </connect>
         </config>

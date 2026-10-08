@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2024 IRCAD France
+ * Copyright (C) 2016-2026 IRCAD France
  * Copyright (C) 2016-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,21 +38,21 @@ Q_OBJECT
 public:
 
     /// Defines the horizontal alignment of the widget.
-    enum h_alignment
+    enum h_alignment : std::uint8_t
     {
         right,
         left
     };
 
     /// Defines the vertical alignment of the widget.
-    enum v_alignment
+    enum v_alignment : std::uint8_t
     {
         top,
         bottom
     };
 
     /// Defines animation direction.
-    enum animatable_alignment
+    enum animatable_alignment : std::uint8_t
     {
         right_animation,
         left_animation,
@@ -106,9 +106,9 @@ public:
     /// Gets if the widget is shown.
     [[nodiscard]] inline bool is_shown() const;
 
-private:
-
     bool eventFilter(QObject* _obj, QEvent* _event) override;
+
+private:
 
     /// Initializes the widget by settings flags and attributes.
     void init();

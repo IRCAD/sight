@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2025 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -24,7 +24,7 @@
 #include "io/session/detail/core/session_deserializer.hpp"
 
 #include <core/crypto/password_keeper.hpp>
-#include <core/progress/observer.hpp>
+#include <core/notification/observer.hpp>
 
 namespace sight::io::session
 {
@@ -49,7 +49,7 @@ public:
         m_session_reader(_session_reader),
         m_password(std::make_unique<password_keeper>()),
         m_encryption_policy(password_keeper::encryption_policy::password),
-        m_archive_format(archive::archive_format::DEFAULT)
+        m_archive_format(archive::archive_format::standard)
     {
     }
 
@@ -57,7 +57,7 @@ public:
     ~session_reader_impl() = default;
 
     /// Read the session from archive.
-    void read(sight::core::progress::observer::sptr _progress)
+    void read(sight::core::notification::observer::sptr _progress)
     {
         // Deserialize the root object
         m_object = m_session_deserializer.deserialize(
@@ -98,7 +98,7 @@ session_reader::~session_reader() = default;
 
 //------------------------------------------------------------------------------
 
-void session_reader::read(sight::core::progress::observer::sptr _progress)
+void session_reader::read(sight::core::notification::observer::sptr _progress)
 {
     m_pimpl->read(_progress);
 

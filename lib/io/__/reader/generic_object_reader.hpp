@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,7 @@
 
 #pragma once
 
-#include <sight/io/__/config.hpp>
-
-#include "io/__/reader/object_reader.hpp"
+#include "object_reader.hpp"
 
 namespace sight::io::reader
 {
@@ -48,18 +46,15 @@ public:
     SIGHT_DECLARE_CLASS(generic_object_reader<DATATYPE>, io::reader::object_reader);
 
     /// Constructor. Does nothing.
-    generic_object_reader() = default;
+    generic_object_reader()           = default;
+    ~generic_object_reader() override = default;
 
     //------------------------------------------------------------------------------
 
-    std::string extension() const override
+    [[nodiscard]] std::string extension() const override
     {
         return "";
     }
-
-    /// Destructor. Does nothing.
-    ~generic_object_reader() override
-    = default;
 
     /**
      * @brief m_object setter.
@@ -70,7 +65,8 @@ public:
     void set_object(core::object::sptr _obj) override
     {
         assert(std::dynamic_pointer_cast<data_t>(_obj));
-        m_object = _obj;
+        // NOLINTNEXTLINE(readability-identifier-naming)
+        io::reader::object_reader::set_object(_obj);
     }
 
     /**

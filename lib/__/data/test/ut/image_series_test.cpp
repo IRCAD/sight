@@ -28,11 +28,7 @@
 
 #include <doctest/doctest.h>
 
-#include <gdcmDataSet.h>
-#include <gdcmExplicitDataElement.h>
 #include <gdcmTagKeywords.h>
-#include <gdcmTagToVR.h>
-#include <gdcmUIDs.h>
 
 TEST_SUITE("sight::data::image_series")
 {
@@ -42,7 +38,7 @@ TEST_SUITE("sight::data::image_series")
     {
         const auto series = std::make_shared<sight::data::image_series>();
 
-        sight::utest_data::generator::image::generate_random_image(series, sight::core::type::FLOAT);
+        sight::utest_data::generator::image::generate_random_image(series, sight::core::type::FLOAT32);
 
         auto series2 = std::make_shared<sight::data::image_series>();
         CHECK(*series2 != *series);
@@ -246,7 +242,7 @@ TEST_SUITE("sight::data::image_series")
         CHECK(*series1 == *series2);
         CHECK(!(*series1 != *series2));
 
-        sight::utest_data::generator::image::generate_random_image(series1, sight::core::type::FLOAT);
+        sight::utest_data::generator::image::generate_random_image(series1, sight::core::type::FLOAT32);
         CHECK(*series1 != *series2);
         CHECK(!(*series1 == *series2));
         series2->shallow_copy(series1);
@@ -351,14 +347,14 @@ TEST_SUITE("sight::data::image_series")
         CHECK(*series1 == *series2);
         CHECK(!(*series1 != *series2));
 
-        series1->set_rows(std::uint16_t(42));
+        series1->set_rows(static_cast<std::uint16_t>(42));
         CHECK(*series1 != *series2);
         CHECK(!(*series1 == *series2));
         series2->set_rows(series1->get_rows());
         CHECK(*series1 == *series2);
         CHECK(!(*series1 != *series2));
 
-        series1->set_columns(std::uint16_t(43));
+        series1->set_columns(static_cast<std::uint16_t>(43));
         CHECK(*series1 != *series2);
         CHECK(!(*series1 == *series2));
         series2->set_columns(series1->get_columns());
@@ -388,7 +384,11 @@ TEST_SUITE("sight::data::image_series")
 
         for(std::size_t i = 0, end = size[2] ; i < end ; ++i)
         {
-            series1->set_image_position_patient({0.1 * double(i), 0.2 * double(i), 0.3 * double(i)}, i);
+            series1->set_image_position_patient(
+                {0.1 * static_cast<double>(i), 0.2 * static_cast<double>(i), 0.3 * static_cast<double>(i)
+                },
+                i
+            );
             series1->set_frame_comments("Comments" + std::to_string(i), i);
             series1->set_frame_label("Label" + std::to_string(i), i);
         }

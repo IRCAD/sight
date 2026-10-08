@@ -21,15 +21,13 @@
 
 #include "matrix_to_point.hpp"
 
-#include <core/com/signal.hxx>
-
 namespace sight::module::geometry
 {
 
 //-----------------------------------------------------------------------------
 
 matrix_to_point::matrix_to_point() :
-    filter(m_signals)
+    filter(has_signals::signals())
 {
 }
 
@@ -67,7 +65,7 @@ void matrix_to_point::updating()
         point->set_label(*m_label);
     }
 
-    point->async_emit(data::point::MODIFIED_SIG);
+    point->async_emit(data::signals::MODIFIED);
     this->async_emit(signals::SUCCEEDED);
 }
 

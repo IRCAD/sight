@@ -25,14 +25,12 @@
 #include <core/os/temp_path.hpp>
 #include <core/runtime/profile.hpp>
 #include <core/runtime/runtime.hpp>
-#include <core/tools/os.hpp>
 #include <core/tools/uuid.hpp>
 
 #include <io/__/service/writer.hpp>
 
 #include <ui/__/preferences.hpp>
 
-#include <boost/dll/runtime_symbol_info.hpp>
 #include <boost/property_tree/ptree.hpp>
 
 #include <doctest/doctest.h>
@@ -62,14 +60,20 @@ public:
         m_path_type = _pt;
     }
 
-protected:
-
     //------------------------------------------------------------------------------
 
     sight::io::service::path_type_t get_path_type() const override
     {
         return m_path_type;
     }
+
+    //------------------------------------------------------------------------------
+
+    void open_location_dialog() override
+    {
+    }
+
+protected:
 
     //------------------------------------------------------------------------------
 
@@ -86,12 +90,6 @@ protected:
     //------------------------------------------------------------------------------
 
     void updating() override
-    {
-    }
-
-    //------------------------------------------------------------------------------
-
-    void open_location_dialog() override
     {
     }
 
@@ -144,7 +142,7 @@ TEST_SUITE("sight::io::writer")
             auto srv = std::make_shared<test_writer>(sight::io::service::file);
 
             sight::service::config_t config;
-            config.add("file", (m_root_path / m_file).string());
+            config.add("path.<xmlattr>.file", (m_root_path / m_file).string());
             srv->set_config(config);
             srv->configure();
             srv->start();
@@ -161,7 +159,7 @@ TEST_SUITE("sight::io::writer")
             auto srv = std::make_shared<test_writer>(sight::io::service::folder);
 
             sight::service::config_t config;
-            config.add("folder", m_root_path.string());
+            config.add("path.<xmlattr>.folder", m_root_path.string());
             srv->set_config(config);
             srv->configure();
             srv->start();
@@ -192,7 +190,7 @@ TEST_SUITE("sight::io::writer")
             auto srv = std::make_shared<test_writer>(sight::io::service::file);
 
             sight::service::config_t config;
-            config.add("file", m_file);
+            config.add("path.<xmlattr>.file", m_file);
             srv->set_config(config);
             srv->configure();
             srv->start();
@@ -206,7 +204,7 @@ TEST_SUITE("sight::io::writer")
         {
             auto srv = std::make_shared<test_writer>(sight::io::service::file);
             sight::service::config_t config;
-            config.add("file", (m_root_path / m_file).string());
+            config.add("path.<xmlattr>.file", (m_root_path / m_file).string());
             srv->set_config(config);
             srv->configure();
             srv->start();
@@ -224,7 +222,7 @@ TEST_SUITE("sight::io::writer")
             auto srv = std::make_shared<test_writer>(sight::io::service::file);
 
             sight::service::config_t config;
-            config.add("baseFolder", m_root_path.string());
+            config.add("path.<xmlattr>.base_folder", m_root_path.string());
             srv->set_config(config);
             srv->configure();
             srv->start();
@@ -239,8 +237,8 @@ TEST_SUITE("sight::io::writer")
             auto srv = std::make_shared<test_writer>(sight::io::service::file);
 
             sight::service::config_t config;
-            config.add("baseFolder", m_root_path.string());
-            config.add("file", m_file);
+            config.add("path.<xmlattr>.base_folder", m_root_path.string());
+            config.add("path.<xmlattr>.file", m_file);
             srv->set_config(config);
             srv->configure();
             srv->start();
@@ -255,7 +253,7 @@ TEST_SUITE("sight::io::writer")
             auto srv = std::make_shared<test_writer>(sight::io::service::folder);
 
             sight::service::config_t config;
-            config.add("baseFolder", m_root_path.string());
+            config.add("path.<xmlattr>.base_folder", m_root_path.string());
             srv->set_config(config);
             srv->configure();
             srv->start();
@@ -270,8 +268,8 @@ TEST_SUITE("sight::io::writer")
             auto srv = std::make_shared<test_writer>(sight::io::service::folder);
 
             sight::service::config_t config;
-            config.add("baseFolder", m_root_path.string());
-            config.add("folder", m_folder);
+            config.add("path.<xmlattr>.base_folder", m_root_path.string());
+            config.add("path.<xmlattr>.folder", m_folder);
             srv->set_config(config);
             srv->configure();
             srv->start();
@@ -289,7 +287,7 @@ TEST_SUITE("sight::io::writer")
             auto srv = std::make_shared<test_writer>(sight::io::service::folder);
 
             sight::service::config_t config;
-            config.add("folder", (m_root_path / m_folder).string());
+            config.add("path.<xmlattr>.folder", (m_root_path / m_folder).string());
             srv->set_config(config);
             srv->configure();
             srv->start();
@@ -304,7 +302,7 @@ TEST_SUITE("sight::io::writer")
             auto srv = std::make_shared<test_writer>(sight::io::service::file);
 
             sight::service::config_t config;
-            config.add("file", (m_root_path / m_file).string());
+            config.add("path.<xmlattr>.file", (m_root_path / m_file).string());
             srv->set_config(config);
             srv->configure();
             srv->start();
@@ -319,8 +317,8 @@ TEST_SUITE("sight::io::writer")
             auto srv = std::make_shared<test_writer>(sight::io::service::file);
 
             sight::service::config_t config;
-            config.add("baseFolder", m_root_path.string());
-            config.add("file", m_file);
+            config.add("path.<xmlattr>.base_folder", m_root_path.string());
+            config.add("path.<xmlattr>.file", m_file);
             srv->set_config(config);
             srv->configure();
             srv->start();
@@ -335,8 +333,8 @@ TEST_SUITE("sight::io::writer")
             auto srv = std::make_shared<test_writer>(sight::io::service::folder);
 
             sight::service::config_t config;
-            config.add("baseFolder", m_root_path.string());
-            config.add("folder", m_folder);
+            config.add("path.<xmlattr>.base_folder", m_root_path.string());
+            config.add("path.<xmlattr>.folder", m_folder);
             srv->set_config(config);
             srv->configure();
             srv->start();
@@ -345,5 +343,22 @@ TEST_SUITE("sight::io::writer")
 
             srv->stop();
         }
+    }
+
+    TEST_CASE_FIXTURE(fixture, "test_hierarchical_base_folder")
+    {
+        auto srv  = std::make_shared<test_writer>(sight::io::service::file);
+        auto file = std::make_shared<sight::data::string>(m_file);
+        srv->set_input(file, sight::io::service::FILE_KEY);
+
+        sight::service::config_t config;
+        config.put(sight::io::service::WRITER_BASE_FOLDER_KEY, m_root_path.string());
+        srv->set_config(config);
+        srv->configure();
+        srv->start();
+
+        CHECK_EQ(srv->get_file(), (m_root_path / m_file).string());
+
+        srv->stop();
     }
 }

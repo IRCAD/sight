@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,13 +22,12 @@
 
 #include <doctest/doctest.h>
 
-#define FW_PROFILING_DISABLED
-#include <core/profiling.hpp>
+#define SIGHT_PROFILING_DISABLED
 
 #include <geometry/data/matrix4.hpp>
 
-#include <glm/gtc/type_ptr.hpp>
 #include <cmath>
+#include <glm/gtc/type_ptr.hpp>
 
 //------------------------------------------------------------------------------
 
@@ -70,9 +69,9 @@ TEST_SUITE("sight::geometry::data::matrix4")
         CHECK(sight::geometry::data::is_identity(tm1));
         CHECK(sight::geometry::data::is_identity(tm2));
 
-#ifndef FW_PROFILING_DISABLED
+#ifndef SIGHT_PROFILING_DISABLED
         {
-            FW_PROFILE("::geometry::data::multiply");
+            SIGHT_PROFILE("::geometry::data::multiply");
             for(int i = 0 ; i < 1000000 ; ++i)
             {
                 geometry::data::multiply(tm1, tm2, tm3);
@@ -83,9 +82,9 @@ TEST_SUITE("sight::geometry::data::matrix4")
 #endif
         CHECK(sight::geometry::data::is_identity(tm3));
 
-#ifndef FW_PROFILING_DISABLED
+#ifndef SIGHT_PROFILING_DISABLED
         {
-            FW_PROFILE("::geometry::data::invert");
+            SIGHT_PROFILE("::geometry::data::invert");
             for(int i = 0 ; i < 1000000 ; ++i)
             {
                 geometry::data::invert(tm1, tm4);
@@ -96,9 +95,9 @@ TEST_SUITE("sight::geometry::data::matrix4")
 #endif
         CHECK(sight::geometry::data::is_identity(tm4));
 
-#ifndef FW_PROFILING_DISABLED
+#ifndef SIGHT_PROFILING_DISABLED
         {
-            FW_PROFILE("::geometry::data::multiply");
+            SIGHT_PROFILE("::geometry::data::multiply");
             for(int i = 0 ; i < 1000000 ; ++i)
             {
                 geometry::data::multiply(tm1, p1, p2);
@@ -126,14 +125,14 @@ TEST_SUITE("sight::geometry::data::matrix4")
         sight::data::matrix4::container_t tm1_coefs {};
         for(std::size_t i = 0 ; i < 16 ; ++i)
         {
-            tm1_coefs[i] = double(i + 1);
+            tm1_coefs[i] = static_cast<double>(i + 1);
         }
 
         for(std::size_t i = 0 ; i < 4 ; ++i)
         {
             for(std::size_t j = 0 ; j < 4 ; ++j)
             {
-                tm2(i, j) = std::abs(double(i) - double(j)) + 1.;
+                tm2(i, j) = std::abs(static_cast<double>(i) - static_cast<double>(j)) + 1.;
             }
         }
 
@@ -234,9 +233,9 @@ TEST_SUITE("sight::geometry::data::matrix4")
         // Test getter
         glm::dmat4x4 glm_mat;
 
-#ifndef FW_PROFILING_DISABLED
+#ifndef SIGHT_PROFILING_DISABLED
         {
-            FW_PROFILE("::geometry::data::to_glm_mat");
+            SIGHT_PROFILE("::geometry::data::to_glm_mat");
             for(int i = 0 ; i < 1000000 ; ++i)
             {
                 glmMat = geometry::data::to_glm_mat(mat);
@@ -264,9 +263,9 @@ TEST_SUITE("sight::geometry::data::matrix4")
         };
 
         glm_mat = glm::make_mat4<double>(coefs2.data());
-#ifndef FW_PROFILING_DISABLED
+#ifndef SIGHT_PROFILING_DISABLED
         {
-            FW_PROFILE("::geometry::data::from_glm_mat");
+            SIGHT_PROFILE("::geometry::data::from_glm_mat");
             for(int i = 0 ; i < 1000000 ; ++i)
             {
                 geometry::data::from_glm_mat(mat, glmMat);

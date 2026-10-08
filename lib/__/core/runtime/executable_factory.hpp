@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,7 +52,7 @@ public:
      *
      * @param[in]   _type    a string containing a type identifier
      */
-    SIGHT_CORE_API executable_factory(const std::string& _type);
+    SIGHT_CORE_API explicit executable_factory(const std::string& _type);
 
     /**
      * @brief   Destructor : does nothing

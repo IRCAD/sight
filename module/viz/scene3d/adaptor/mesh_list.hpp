@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -46,19 +46,20 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::mesh_list">
-        <inout key="mesh" uid="..." />
-        <in key="transform" uid="..." />
-        <in key="texture" uid="..." />
+        <data mesh="${...}" />
+        <data transform="${...}" />
+        <data texture="${...}" />
         <config capacity="50" drop="1" textureAlpha="false" />
     </service>
    @endcode
  *
  * @subsection Input Input
- * - \b texture [sight::data::image]: image displayed as a texture on the mesh
- * - \b transform [sight::data::matrix4]: Sight transform matrix.
+ * - \b data.texture [sight::data::image]: image displayed as a texture on the mesh
+ * - \b data.transform [sight::data::matrix4]: Sight transform matrix.
  *
  * @subsection In-Out In-Out
- * - \b mesh [sight::data::mesh]: adapted mesh. It can not be a read-only data because we may generate normals or add
+ * - \b data.mesh [sight::data::mesh]: adapted mesh. It can not be a read-only data because we may generate normals or
+ * add
  * some
  *      fields.
  *
@@ -75,40 +76,46 @@ public:
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(mesh_list, sight::viz::scene3d::adaptor);
 
+    struct slots
+    {
+        static inline const slot_key_t ADD   = "add";
+        static inline const slot_key_t CLEAR = "clear";
+    };
+
     /// Sets default parameters and initializes necessary members.
     mesh_list() noexcept;
 
     /// Destroys the service.
-    ~mesh_list() noexcept override;
-
-protected:
-
-    /// Configures the adaptor.
-    void configuring() override;
-
-    /// Initializes the adaptor.
-    void starting() override;
-
-    /**
-     * @brief Proposal to connect service slots to associated object signals.
-     * @return A map of each proposed connection.
-     *
-     * Connect data::matrix4::MODIFIED_SIG of s_TRANSFORM_INOUT to ADD_MESH_SLOT
-     */
-    service::connections_t auto_connections() const override;
-
-    /// Does nothing.
-    void updating() override;
-
-    /// Unregisters all services.
-    /// @see clear()
-    void stopping() override;
+    ~mesh_list() noexcept final;
 
     /**
      * @brief Sets the list visibility.
      * @param _visible the visibility status of the list.
      */
-    void set_visible(bool _visible) override;
+    void set_visible(bool _visible) final;
+
+protected:
+
+    /// Configures the adaptor.
+    void configuring() final;
+
+    /// Initializes the adaptor.
+    void starting() final;
+
+    /**
+     * @brief Proposal to connect service slots to associated object signals.
+     * @return A map of each proposed connection.
+     *
+     * Connect data::signals::MODIFIED of s_TRANSFORM_INOUT to ADD_MESH
+     */
+    service::connections_t auto_connections() const final;
+
+    /// Does nothing.
+    void updating() final;
+
+    /// Unregisters all services.
+    /// @see clear()
+    void stopping() final;
 
 private:
 
@@ -147,11 +154,9 @@ private:
     /// Generates alpha value for the texture if the image contains only 1 or 3 channels. It may be slower.
     bool m_generate_alpha {false};
 
-    static constexpr std::string_view TRANSFORM_INPUT = "transform";
-
-    sight::data::ptr<sight::data::image, sight::data::access::in> m_texture {this, "texture"};
-    sight::data::ptr<sight::data::matrix4, sight::data::access::in> m_transform {this, TRANSFORM_INPUT};
-    sight::data::ptr<sight::data::mesh, sight::data::access::inout> m_mesh {this, "mesh"};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_texture {this, "data.texture"};
+    sight::data::ptr<sight::data::matrix4, sight::data::access::in> m_transform {this, "data.transform"};
+    sight::data::ptr<sight::data::mesh, sight::data::access::inout> m_mesh {this, "data.mesh"};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor

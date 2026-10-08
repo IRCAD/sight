@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,50 +27,62 @@
 namespace sight::viz::scene3d::registry
 {
 
-struct render_ogre_registry_instantiator_tag {};
+namespace
+{
 
-SPTR(type) get()
+struct render_ogre_registry_instantiator_tag {};
+struct interactor_offscreen_mgr_registry_instantiator_tag {};
+struct interactor_registry_instantiator_tag {};
+struct camera_registry_instantiator_tag {};
+struct light_registry_instantiator_tag {};
+struct text_registry_instantiator_tag {};
+
+} // namespace
+
+//------------------------------------------------------------------------------
+
+sight::sptr<type> get()
 {
     using instantiator_t = core::lazy_instantiator<type, render_ogre_registry_instantiator_tag>;
     return instantiator_t::get_instance();
 }
 
-struct interactor_offscreen_mgr_registry_instantiator_tag {};
+//------------------------------------------------------------------------------
 
-SPTR(offscreen_mgr_t) get_offscreen_mgr()
+sight::sptr<offscreen_mgr_t> get_offscreen_mgr()
 {
     using instantiator_t = core::lazy_instantiator<offscreen_mgr_t,
                                                    interactor_offscreen_mgr_registry_instantiator_tag>;
     return instantiator_t::get_instance();
 }
 
-struct interactor_registry_instantiator_tag {};
+//------------------------------------------------------------------------------
 
-SPTR(interactor_factory_t) get_interactor_registry()
+sight::sptr<interactor_factory_t> get_interactor_registry()
 {
     using instantiator_t = core::lazy_instantiator<interactor_factory_t, interactor_registry_instantiator_tag>;
     return instantiator_t::get_instance();
 }
 
-struct camera_registry_instantiator_tag {};
+//------------------------------------------------------------------------------
 
-SPTR(camera_factory_t) get_camera_registry()
+sight::sptr<camera_factory_t> get_camera_registry()
 {
     using instantiator_t = core::lazy_instantiator<camera_factory_t, camera_registry_instantiator_tag>;
     return instantiator_t::get_instance();
 }
 
-struct light_registry_instantiator_tag {};
+//------------------------------------------------------------------------------
 
-SPTR(light_factory_t) get_light_registry()
+sight::sptr<light_factory_t> get_light_registry()
 {
     using instantiator_t = core::lazy_instantiator<light_factory_t, light_registry_instantiator_tag>;
     return instantiator_t::get_instance();
 }
 
-struct text_registry_instantiator_tag {};
+//------------------------------------------------------------------------------
 
-SPTR(text_factory_t) get_text_registry()
+sight::sptr<text_factory_t> get_text_registry()
 {
     using instantiator_t = core::lazy_instantiator<text_factory_t, text_registry_instantiator_tag>;
     return instantiator_t::get_instance();

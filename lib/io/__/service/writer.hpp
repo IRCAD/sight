@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,8 +27,7 @@
 #include "io/__/service/io_types.hpp"
 
 #include <core/com/signal.hpp>
-#include <core/progress/has_monitors.hpp>
-#include <core/tools/failed.hpp>
+#include <core/notification/has_monitors.hpp>
 
 #include <data/string.hpp>
 
@@ -58,10 +57,22 @@ namespace sight::io::service
  * - \b set_base_folder(std::string): When connected to a string-emitting signal (or function),
  *   this slot will set the base folder used by writers.
  *
+ * @section XML XML Configuration
+ * @code{.xml}
+    <service uid="..." type="...">
+        <data write="..." />
+        <path file="..." folder="..." base_folder="..." />
+        <config window_title="..." />
+    </service>
+   @endcode
+ *
+ * @subsection Input Input
+ * - \b data.write [sight::data::object]: Generic data to write.
+ *
  * @subsection Configuration Configuration
- * - \b file: @deprecated default file path.
- * - \b folder: @deprecated default folder path.
- * - \b baseFolder: path or preference key specifying the root output path.
+ * - \b path.file: default file path(s).
+ * - \b path.folder: default folder path.
+ * - \b path.base_folder: path or preference key specifying the root output path.
  *      If set, it will override user setting the path via GUI input,
  *      leading to a service that automatically saves data without user queries.
  *      If the output is a file, then the output will be built as follows:
@@ -70,14 +81,12 @@ namespace sight::io::service
  *        <base_folder>(/<prefix>)^{0,1}/<folder>, where folder is the value in the folder tag.
  *
  * @subsection Properties Properties
- * - \b window_title (optional) : The window title that can be used for open_location_dialog. This abstract class
+ * - \b config.window_title (optional) : The window title that can be used for open_location_dialog. This abstract class
  *                   defines a default that can be overriden by calling the appropriate constructor, but the XML
  *                   property definition have the precedence in all cases.
- * - \b files : The file(s) to write. Depending of the path_type_t, it can be a single file or multiple files.
- * - \b folder : The folder to open. Used when the path_type_t is "folder".
  */
 class SIGHT_IO_CLASS_API writer : public sight::service::base,
-                                  public sight::core::progress::has_monitors
+                                  public sight::core::notification::has_monitors
 {
 public:
 
@@ -100,7 +109,7 @@ public:
      */
     struct signals
     {
-        using void_signal_t = core::com::signal<void ()>;
+        using void_t = core::com::signal<void ()>;
 
         static inline const signal_key_t FAILED          = "failed";
         static inline const signal_key_t SUCCEEDED       = "succeeded";
@@ -129,6 +138,9 @@ public:
      * the file path  using a file selector.
      */
     SIGHT_IO_API virtual void open_location_dialog() = 0;
+
+    /// Returns the filename extensions supported by this writer.
+    SIGHT_IO_API virtual std::vector<std::pair<std::string, std::string> > get_supported_extensions();
 
     /**
      * @brief This method must be implemented by concrete service writers
@@ -250,7 +262,7 @@ public:
 protected:
 
     SIGHT_IO_API explicit writer(
-        const std::string& _default_window_title = s_DEFAULT_WINDOW_TITLE
+        const std::string& _default_window_title = S_DEFAULT_WINDOW_TITLE
     ) noexcept;
 
     /**
@@ -262,14 +274,19 @@ protected:
     /// Defines the auto-connection between the file/folder properties and the 'set_file/set_folder'
     SIGHT_IO_API connections_t auto_connections() const override;
 
+    /// NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
+
     /// Defines whether writing was performed correctly, or if user has cancelled the process.
     bool m_write_failed {false};
 
     /// Generic input data
-    data::ptr<data::object, data::access::in> m_data {this, sight::io::service::DATA_KEY};
+    data::ptr<data::object, data::access::in> m_data {this, sight::io::service::WRITER_DATA_KEY};
 
     /// Window title for the file dialog
-    sight::data::property<sight::data::string> m_window_title {this, WINDOW_TITLE_KEY, s_DEFAULT_WINDOW_TITLE};
+    sight::data::ptr<sight::data::string, data::access::in> m_window_title
+    {this, WINDOW_TITLE_KEY, S_DEFAULT_WINDOW_TITLE};
+
+    /// NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 
 private:
 
@@ -295,7 +312,7 @@ private:
     void update_base_folder(std::string& _out_base_folder) const;
 
     /// Default window title
-    inline static const std::string s_DEFAULT_WINDOW_TITLE = "Choose a file";
+    inline static const std::string S_DEFAULT_WINDOW_TITLE = "Choose a file";
 
     /// Value to store file or folder paths
     io::service::locations_t m_locations;
@@ -306,8 +323,8 @@ private:
     /// Base folder
     std::string m_base_folder;
 
-    sight::data::property<sight::data::string> m_files {this, FILES_KEY, std::string()};
-    sight::data::property<sight::data::string> m_folder {this, FOLDER_KEY, std::string()};
+    sight::data::ptr<sight::data::string, data::access::in> m_files {this, FILE_KEY, std::string()};
+    sight::data::ptr<sight::data::string, data::access::in> m_folder {this, FOLDER_KEY, std::string()};
 };
 
 } //namespace sight::io::service

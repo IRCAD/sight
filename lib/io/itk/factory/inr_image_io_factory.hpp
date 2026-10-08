@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,8 +39,9 @@ public:
     /** Standard class typedefs. */
     using self_t       = inr_image_io_factory;
     using superclass_t = ObjectFactoryBase;
-    using Pointer      = SmartPointer<self_t>;
+    using pointer      = SmartPointer<self_t>;
 
+    ~inr_image_io_factory() override;
     inr_image_io_factory(const self_t&) = delete; //purposely not implemented
     void operator=(const self_t&)       = delete; //purposely not implemented
 
@@ -49,7 +50,7 @@ public:
     const char* GetDescription() const override;
 
     /** Method for class instantiation. */
-    itkFactorylessNewMacro(self_t)
+    itkFactorylessNewMacro(self_t) // NOLINT(hicpp-use-auto,modernize-use-auto)
 
     /** Run-time type information (and related methods). */
     itkTypeMacro(inr_image_io_factory, ObjectFactoryBase)
@@ -57,14 +58,13 @@ public:
     /** Register one factory of this type  */
     static void register_one_factory()
     {
-        inr_image_io_factory::Pointer meta_factory = inr_image_io_factory::New();
+        auto meta_factory = inr_image_io_factory::New();
         ObjectFactoryBase::RegisterFactory(meta_factory);
     }
 
 protected:
 
     inr_image_io_factory();
-    ~inr_image_io_factory() override;
     void PrintSelf(std::ostream& _os, Indent _indent) const override;
 };
 

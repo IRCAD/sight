@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,17 +19,24 @@
  *
  ***********************************************************************/
 
-#include "timestamp_slot_caller_test.hpp"
+#include <core/com/has_slots.hpp>
+#include <core/com/slots.hpp>
+#include <core/thread/worker.hpp>
 
-#include <core/com/slots.hxx>
+#include <data/object.hpp>
 
+#include <service/base.hpp>
 #include <service/op.hpp>
 
 #include <utest/wait.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::ui::com::ut::timestamp_slot_caller_test);
+#include <doctest/doctest.h>
 
-namespace sight::module::ui::com::ut
+#include <memory>
+#include <thread>
+#include <vector>
+
+namespace
 {
 
 class test_object : public sight::data::object,
@@ -37,97 +44,95 @@ class test_object : public sight::data::object,
 {
 public:
 
-    test_object();
+    test_object()
+    {
+        auto slot = new_slot("slot", &test_object::slot, this);
+        slot->set_worker(m_worker);
+    }
 
-    ~test_object() override;
+    ~test_object() override
+    {
+        m_worker->stop();
+    }
 
-    void slot(double _timestamp);
+    //------------------------------------------------------------------------------
 
-    const std::vector<double>& get_timestamps() const;
+    void slot(double _timestamp)
+    {
+        m_timestamps.push_back(_timestamp);
+    }
+
+    //------------------------------------------------------------------------------
+
+    [[nodiscard]] const std::vector<double>& timestamps() const
+    {
+        return m_timestamps;
+    }
 
 private:
 
     std::vector<double> m_timestamps;
 
-    core::thread::worker::sptr m_worker = core::thread::worker::make();
+    sight::core::thread::worker::sptr m_worker = sight::core::thread::worker::make();
 };
 
-test_object::test_object()
+struct timestamp_slot_caller_fixture
 {
-    auto slot = new_slot("slot", &test_object::slot, this);
-    slot->set_worker(m_worker);
-}
-
-test_object::~test_object()
-{
-    m_worker->stop();
-}
-
-//------------------------------------------------------------------------------
-
-void test_object::slot(double _timestamp)
-{
-    m_timestamps.push_back(_timestamp);
-}
-
-//------------------------------------------------------------------------------
-
-const std::vector<double>& test_object::get_timestamps() const
-{
-    return m_timestamps;
-}
-
-//------------------------------------------------------------------------------
-
-void timestamp_slot_caller_test::setUp()
-{
-    m_timestamp_slot_caller = service::add("sight::module::ui::com::timestamp_slot_caller");
-    CPPUNIT_ASSERT_MESSAGE(
-        "Failed to create service 'sight::module::ui::com::timestamp_slot_caller'",
-        m_timestamp_slot_caller
-    );
-}
-
-//------------------------------------------------------------------------------
-
-void timestamp_slot_caller_test::tearDown()
-{
-    if(!m_timestamp_slot_caller->stopped())
+    timestamp_slot_caller_fixture()
     {
-        CPPUNIT_ASSERT_NO_THROW(m_timestamp_slot_caller->stop().get());
+        m_timestamp_slot_caller = sight::service::add("sight::module::ui::com::timestamp_slot_caller");
+        REQUIRE_MESSAGE(
+            m_timestamp_slot_caller,
+            "Failed to create service 'sight::module::ui::com::timestamp_slot_caller'"
+        );
     }
 
-    service::remove(m_timestamp_slot_caller);
-}
+    ~timestamp_slot_caller_fixture()
+    {
+        if(!m_timestamp_slot_caller->stopped())
+        {
+            CHECK_NOTHROW(m_timestamp_slot_caller->stop().get());
+        }
 
-//------------------------------------------------------------------------------
+        sight::service::remove(m_timestamp_slot_caller);
+    }
 
-void timestamp_slot_caller_test::basic_test()
+    timestamp_slot_caller_fixture(const timestamp_slot_caller_fixture&)            = delete;
+    timestamp_slot_caller_fixture& operator=(const timestamp_slot_caller_fixture&) = delete;
+    timestamp_slot_caller_fixture(timestamp_slot_caller_fixture&&)                 = delete;
+    timestamp_slot_caller_fixture& operator=(timestamp_slot_caller_fixture&&)      = delete;
+
+    sight::service::base::sptr m_timestamp_slot_caller;
+};
+
+} // namespace
+
+TEST_SUITE("sight::module::ui::com::timestamp_slot_caller")
 {
-    using namespace std::literals::chrono_literals;
+    TEST_CASE_FIXTURE(timestamp_slot_caller_fixture, "basic")
+    {
+        using namespace std::literals::chrono_literals;
 
-    auto obj = std::make_shared<test_object>();
-    obj->set_id("targetObject");
+        auto obj = std::make_shared<test_object>();
+        obj->set_id("targetObject");
 
-    boost::property_tree::ptree ptree;
-    ptree.put("slots.slot", "targetObject/slot");
-    m_timestamp_slot_caller->set_config(ptree);
-    CPPUNIT_ASSERT_NO_THROW(m_timestamp_slot_caller->configure());
-    CPPUNIT_ASSERT_NO_THROW(m_timestamp_slot_caller->start().get());
+        boost::property_tree::ptree ptree;
+        ptree.put("slots.slot", "targetObject/slot");
+        m_timestamp_slot_caller->set_config(ptree);
 
-    CPPUNIT_ASSERT_NO_THROW(m_timestamp_slot_caller->update().get());
-    SIGHT_TEST_WAIT(1 == obj->get_timestamps().size());
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), obj->get_timestamps().size());
+        CHECK_NOTHROW(m_timestamp_slot_caller->configure());
+        CHECK_NOTHROW(m_timestamp_slot_caller->start().get());
 
-    std::this_thread::sleep_for(1000ms);
+        CHECK_NOTHROW(m_timestamp_slot_caller->update().get());
+        SIGHT_TEST_WAIT(1 == obj->timestamps().size());
+        CHECK_EQ(std::size_t(1), obj->timestamps().size());
 
-    CPPUNIT_ASSERT_NO_THROW(m_timestamp_slot_caller->update().get());
-    SIGHT_TEST_WAIT(2 == obj->get_timestamps().size());
-    CPPUNIT_ASSERT_EQUAL(std::size_t(2), obj->get_timestamps().size());
+        std::this_thread::sleep_for(1000ms);
 
-    CPPUNIT_ASSERT(obj->get_timestamps()[1] - obj->get_timestamps()[0] >= 1);
+        CHECK_NOTHROW(m_timestamp_slot_caller->update().get());
+        SIGHT_TEST_WAIT(2 == obj->timestamps().size());
+        REQUIRE_EQ(std::size_t(2), obj->timestamps().size());
+
+        CHECK(obj->timestamps()[1] - obj->timestamps()[0] >= 1);
+    }
 }
-
-//------------------------------------------------------------------------------
-
-} // namespace sight::module::ui::com::ut

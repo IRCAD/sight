@@ -19,14 +19,11 @@
  *
  ***********************************************************************/
 
-#include <data/boolean.hpp>
 #include <data/integer.hpp>
 #include <data/object.hpp>
 #include <data/string.hpp>
 
 #include <service/op.hpp>
-
-#include <boost/property_tree/xml_parser.hpp>
 
 #include <doctest/doctest.h>
 
@@ -64,7 +61,7 @@ TEST_SUITE("sight::module::data::concat")
         // Test automatic update on fragment change
         target->set_value("b");
         prefix->set_value("x");
-        prefix->emit(sight::data::object::MODIFIED_SIG);
+        prefix->emit(sight::data::signals::MODIFIED);
 
         CHECK_EQ("xbc"s, target->get_value());
 

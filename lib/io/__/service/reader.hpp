@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,8 +26,7 @@
 
 #include "io/__/service/io_types.hpp"
 
-#include <core/progress/has_monitors.hpp>
-#include <core/tools/failed.hpp>
+#include <core/notification/has_monitors.hpp>
 
 #include <data/string.hpp>
 
@@ -49,20 +48,29 @@ namespace sight::io::service
  * @section Slots Slots
  * - \b open_location_dialog() : Open a dialog to select a file or a folder.
  *
- * @subsection In-Out In-Out
- * - \b data [sight::data::object]: Generic data inout. The reader should puplate this data with the read data.
+ * @section XML XML Configuration
  *
- * @subsection Properties Properties
- * - \b window_title (optional) : The window title that can be used for open_location_dialog. This abstract class
- *                   defines a default that can be overriden by calling the appropriate constructor, but the XML
- *                   property definition have the precedence in all cases.
- * - \b files : The file(s) to open. Depending of the path_type_t, it can be a single file or multiple files.
- * - \b folder : The folder to open. Used when the path_type_t is "folder".
- * - \b resources : When files / folder to open are resources and need to be found in the module or libraries.
+ * @code{.xml}
+   <service uid="..." type="...">
+       <data read="${object}" />
+       <path file="..." folder="..." resource="..." />
+       <config window_title="..." />
+   </service>
+   @endcode
+ *
+ * @subsection In-Out In-Out
+ * - \b data.read [sight::data::object]: Generic data inout. The reader should puplate this data with the read data.
+ * @subsection Configuration Configuration
+ * - \b config.window_title (optional) : The window title that can be used for open_location_dialog. This abstract
+ *                   class defines a default that can be overriden by calling the appropriate constructor, but the
+ *                   XML configuration have the precedence in all cases.
+ * - \b path.file : The file(s) to open. Depending of the path_type_t, it can be a single file or multiple files.
+ * - \b path.folder : The folder to open. Used when the path_type_t is "folder".
+ * - \b path.resource : When files / folder to open are resources and need to be found in the module or libraries.
  */
 
 class SIGHT_IO_CLASS_API reader : public sight::service::base,
-                                  public sight::core::progress::has_monitors
+                                  public sight::core::notification::has_monitors
 {
 public:
 
@@ -79,7 +87,7 @@ public:
 
     struct signals
     {
-        using void_signal_t = core::com::signal<void ()>;
+        using void_t = core::com::signal<void ()>;
         static inline const signal_key_t FAILED    = "failed";
         static inline const signal_key_t SUCCEEDED = "succeeded";
     };
@@ -112,7 +120,7 @@ public:
     /**
      * @brief   returns  (filename) extension
      */
-    SIGHT_IO_API virtual std::vector<std::string> get_supported_extensions();
+    SIGHT_IO_API virtual std::vector<std::pair<std::string, std::string> > get_supported_extensions();
 
     /**
      * @brief This method must be implemented by concrete service readers
@@ -234,14 +242,19 @@ protected:
     /// Defines the auto-connection between the file/folder properties and the 'set_file/set_folder'
     SIGHT_IO_API connections_t auto_connections() const override;
 
+    /// NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
+
     /// Defines whether reading was performed correctly, or if it has failed or if user has cancelled the process.
     bool m_read_failed {false};
 
     /// Generic output data
-    data::ptr<data::object, data::access::inout> m_data {this, sight::io::service::DATA_KEY};
+    data::ptr<data::object, data::access::inout> m_data {this, sight::io::service::READER_DATA_KEY};
 
     /// Window title for the file dialog
-    sight::data::property<sight::data::string> m_window_title {this, WINDOW_TITLE_KEY, S_DEFAULT_WINDOW_TITLE};
+    sight::data::ptr<sight::data::string, data::access::in> m_window_title
+    {this, WINDOW_TITLE_KEY, S_DEFAULT_WINDOW_TITLE};
+
+    /// NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 
 private:
 
@@ -270,9 +283,9 @@ private:
     io::service::locations_t m_locations;
 
     /// Default values for file/folder paths
-    sight::data::property<sight::data::string> m_files {this, FILES_KEY, std::string()};
-    sight::data::property<sight::data::string> m_folder {this, FOLDER_KEY, std::string()};
-    sight::data::property<sight::data::string> m_resources {this, RESOURCES_KEY, std::string()};
+    sight::data::ptr<sight::data::string, data::access::in> m_files {this, FILE_KEY, std::string()};
+    sight::data::ptr<sight::data::string, data::access::in> m_folder {this, FOLDER_KEY, std::string()};
+    sight::data::ptr<sight::data::string, data::access::in> m_resources {this, READER_RESOURCE_KEY, std::string()};
 };
 
 } //namespace sight::io::service

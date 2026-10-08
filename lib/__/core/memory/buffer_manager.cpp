@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,16 +26,13 @@
 #include "core/memory/stream/in/buffer.hpp"
 #include "core/memory/stream/in/raw.hpp"
 
-#include <core/com/signal.hxx>
 #include <core/lazy_instantiator.hpp>
 #include <core/os/temp_path.hpp>
 #include <core/thread/worker.hpp>
-#include <core/tools/system.hpp>
 
 #include <algorithm>
 #include <filesystem>
 #include <fstream>
-#include <functional>
 #include <iomanip>
 #include <iosfwd>
 #include <iostream>
@@ -43,7 +40,9 @@
 namespace sight::core::memory
 {
 
-SPTR(void) get_lock(const buffer_manager::sptr& _manager, buffer_manager::const_buffer_ptr_t _buffer_ptr)
+//------------------------------------------------------------------------------
+
+static sight::sptr<void> get_lock(const buffer_manager::sptr& _manager, buffer_manager::const_buffer_ptr_t _buffer_ptr)
 {
     return _manager->lock_buffer(_buffer_ptr).get();
 }
@@ -58,7 +57,7 @@ buffer_manager::sptr buffer_manager::get()
 //-----------------------------------------------------------------------------
 
 buffer_manager::buffer_manager() :
-    m_updated_sig(std::make_shared<updated_signal_t>()),
+    m_updated_sig(std::make_shared<signals::updated_t>()),
     m_dump_policy(std::make_shared<core::memory::policy::never_dump>()),
     m_worker(core::thread::worker::make())
 {
@@ -319,6 +318,9 @@ void buffer_manager::swap_buffer_impl(buffer_manager::buffer_ptr_t _buf_a, buffe
 
 //-----------------------------------------------------------------------------
 
+namespace
+{
+
 struct auto_unlock
 {
     auto_unlock(
@@ -360,20 +362,28 @@ struct auto_unlock
     buffer_manager::const_buffer_ptr_t m_buffer_ptr;
 };
 
+} // namespace
+
 //------------------------------------------------------------------------------
 
-std::shared_future<SPTR(void)> buffer_manager::lock_buffer(buffer_manager::const_buffer_ptr_t _buffer_ptr)
+std::shared_future<sight::sptr<void> > buffer_manager::lock_buffer(buffer_manager::const_buffer_ptr_t _buffer_ptr)
 {
-    return m_worker->post_task<SPTR(void)>([this, _buffer_ptr](auto&& ...){return lock_buffer_impl(_buffer_ptr);});
+    return m_worker->post_task<sight::sptr<void> >(
+        [this, _buffer_ptr](auto&& ...)
+        {
+            return lock_buffer_impl(_buffer_ptr);
+        });
 }
 
-SPTR(void) buffer_manager::lock_buffer_impl(buffer_manager::const_buffer_ptr_t _buffer_ptr)
+//------------------------------------------------------------------------------
+
+sight::sptr<void> buffer_manager::lock_buffer_impl(buffer_manager::const_buffer_ptr_t _buffer_ptr)
 {
     buffer_info& info = m_buffer_infos[_buffer_ptr];
 
     m_dump_policy->lock_request(info, _buffer_ptr);
 
-    SPTR(void) counter = info.lock_counter.lock();
+    sight::sptr<void> counter = info.lock_counter.lock();
     if(!counter)
     {
         counter           = std::make_shared<auto_unlock>(this->get_sptr(), _buffer_ptr, info);
@@ -478,7 +488,7 @@ bool buffer_manager::restore_buffer(
     buffer_manager::size_t _alloc_size
 )
 {
-    _alloc_size = ((_alloc_size) != 0U ? _alloc_size : _info.size);
+    _alloc_size = (_alloc_size != 0U ? _alloc_size : _info.size);
     if(!_info.loaded)
     {
         if(*_buffer_ptr == nullptr)
@@ -494,9 +504,12 @@ bool buffer_manager::restore_buffer(
         size_t size     = std::min(_alloc_size, _info.size);
         bool not_failed = false;
         {
-            SPTR(std::istream) stream = (*_info.istream_factory)();
-            std::istream& is = *stream;
-            const auto read  = static_cast<size_t>(is.read(char_buf, static_cast<std::streamsize>(size)).gcount());
+            sight::sptr<std::istream> stream = (*_info.istream_factory)();
+            std::istream& is                 = *stream;
+            const auto read                  = static_cast<size_t>(is.read(
+                                                                       char_buf,
+                                                                       static_cast<std::streamsize>(size)
+            ).gcount());
 
             SIGHT_THROW_IF(" Bad file size, expected: " << size << ", was: " << read, size - read != 0);
             not_failed = !is.fail();
@@ -621,7 +634,7 @@ std::string buffer_manager::to_string_impl() const
     for(const auto& item : m_buffer_infos)
     {
         const buffer_info& info = item.second;
-        sstr << std::setw(18) << item.first << "->" << std::setw(18) << *(item.first) << " "
+        sstr << std::setw(18) << static_cast<const void*>(item.first) << "->" << std::setw(18) << *(item.first) << " "
         << std::setw(10) << info.size << " "
         << std::setw(18) << info.buffer_policy << " "
         << std::setw(6) << info.last_access << " "
@@ -675,7 +688,7 @@ std::shared_future<buffer_manager::buffer_stats> buffer_manager::get_buffer_stat
 
 buffer_manager::buffer_stats buffer_manager::compute_buffer_stats(const buffer_info_map_t& _buffer_info)
 {
-    buffer_stats stats = {0, 0};
+    buffer_stats stats = {.total_dumped = 0, .total_managed = 0};
     for(const auto& item : _buffer_info)
     {
         const auto& info = item.second;
@@ -694,7 +707,7 @@ buffer_manager::buffer_stats buffer_manager::compute_buffer_stats(const buffer_i
 
 std::shared_future<void> buffer_manager::set_istream_factory(
     buffer_ptr_t _buffer_ptr,
-    const SPTR(core::memory::stream::in::factory)& _factory,
+    const sight::sptr<core::memory::stream::in::factory>& _factory,
     size_t _size,
     core::memory::file_holder _fs_file,
     core::memory::file_format_type _format,
@@ -712,7 +725,7 @@ std::shared_future<void> buffer_manager::set_istream_factory(
 
 void buffer_manager::set_istream_factory_impl(
     buffer_ptr_t _buffer_ptr,
-    const SPTR(core::memory::stream::in::factory)& _factory,
+    const sight::sptr<core::memory::stream::in::factory>& _factory,
     size_t _size,
     core::memory::file_holder _fs_file,
     core::memory::file_format_type _format,

@@ -152,11 +152,13 @@ struct SIGHT_IO_JOYSTICK_CLASS_API button_event final : public joystick_event
  */
 class SIGHT_IO_JOYSTICK_CLASS_API interactor
 {
+public:
+
+    SIGHT_IO_JOYSTICK_API virtual ~interactor();
+
 protected:
 
     friend class detail::event_loop;
-
-    SIGHT_IO_JOYSTICK_API virtual ~interactor();
 
     /**
      * @brief register the interactor to the event loop
@@ -172,7 +174,7 @@ protected:
      *
      * @return std::vector<std::shared_ptr<const device>> List of connected controllers
      */
-    SIGHT_IO_JOYSTICK_API std::vector<std::shared_ptr<const device> > devices() const;
+    [[nodiscard]] SIGHT_IO_JOYSTICK_API std::vector<std::shared_ptr<const device> > devices() const;
 
     /**
      * @brief Set joystick alias. This is a global setting and will be applied to all interactors.

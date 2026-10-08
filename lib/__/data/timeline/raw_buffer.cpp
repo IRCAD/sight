@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,14 +39,9 @@ raw_buffer::raw_buffer(
 
 //-----------------------------------------------------------------------------
 
-raw_buffer::~raw_buffer()
-= default;
-
-//-----------------------------------------------------------------------------
-
 void raw_buffer::set_buffer_values(buffer_data_t _values)
 {
-    memcpy(m_buffer, _values, m_size);
+    memcpy(data(), _values, size());
 }
 
 } // namespace sight::data::timeline

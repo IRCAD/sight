@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2024 IRCAD France
+ * Copyright (C) 2016-2026 IRCAD France
  * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -58,25 +58,28 @@ class SIGHT_UI_CLASS_API has_parameters
 {
 public:
 
-    SIGHT_UI_API static const core::com::slots::key_t SET_PARAMETER_SLOT;
-    SIGHT_UI_API static const core::com::slots::key_t SET_BOOL_PARAMETER_SLOT;
-    SIGHT_UI_API static const core::com::slots::key_t SET_COLOR_PARAMETER_SLOT;
-    SIGHT_UI_API static const core::com::slots::key_t SET_DOUBLE_PARAMETER_SLOT;
-    SIGHT_UI_API static const core::com::slots::key_t SET_DOUBLE2_PARAMETER_SLOT;
-    SIGHT_UI_API static const core::com::slots::key_t SET_DOUBLE3_PARAMETER_SLOT;
-    SIGHT_UI_API static const core::com::slots::key_t SET_INT_PARAMETER_SLOT;
-    SIGHT_UI_API static const core::com::slots::key_t SET_INT2_PARAMETER_SLOT;
-    SIGHT_UI_API static const core::com::slots::key_t SET_INT3_PARAMETER_SLOT;
-    SIGHT_UI_API static const core::com::slots::key_t SET_ENUM_PARAMETER_SLOT;
+    struct slots
+    {
+        static inline const core::com::slots::key_t SET_PARAMETER         = "set_parameter";
+        static inline const core::com::slots::key_t SET_BOOL_PARAMETER    = "set_bool_parameter";
+        static inline const core::com::slots::key_t SET_COLOR_PARAMETER   = "set_color_parameter";
+        static inline const core::com::slots::key_t SET_DOUBLE_PARAMETER  = "set_double_parameter";
+        static inline const core::com::slots::key_t SET_DOUBLE2_PARAMETER = "set_double2_parameter";
+        static inline const core::com::slots::key_t SET_DOUBLE3_PARAMETER = "set_double3_parameter";
+        static inline const core::com::slots::key_t SET_INT_PARAMETER     = "set_int_parameter";
+        static inline const core::com::slots::key_t SET_INT2_PARAMETER    = "set_int2_parameter";
+        static inline const core::com::slots::key_t SET_INT3_PARAMETER    = "set_int3_parameter";
+        static inline const core::com::slots::key_t SET_ENUM_PARAMETER    = "set_enum_parameter";
+    };
+
+    /// Destructor. Do nothing.
+    SIGHT_UI_API virtual ~has_parameters();
 
 protected:
 
     /// Constructor. Create all default slots.
     /// @param _slots map of slots of the child class. For services, just pass the protected variable base::m_slots.
-    SIGHT_UI_API has_parameters(sight::core::com::slots& _slots);
-
-    /// Destructor. Do nothing.
-    SIGHT_UI_API virtual ~has_parameters();
+    SIGHT_UI_API explicit has_parameters(sight::core::com::slots& _slots);
 
     /// Slot: This method is used to set an boolean parameter.
     SIGHT_UI_API virtual void set_parameter(sight::ui::parameter_t _val, std::string _key);

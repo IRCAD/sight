@@ -48,8 +48,8 @@ public:
 
     struct signals
     {
-        static inline const core::com::signals::key_t POINT_ADDED   = "point_added";
-        static inline const core::com::signals::key_t POINT_REMOVED = "point_removed";
+        static inline const signal_key_t POINT_ADDED   = "point_added";
+        static inline const signal_key_t POINT_REMOVED = "point_removed";
 
         using point_added_t   = core::com::signal<void (point::sptr)>;
         using point_removed_t = core::com::signal<void (point::sptr)>;

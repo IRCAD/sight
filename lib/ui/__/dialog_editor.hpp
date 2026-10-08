@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,13 +42,11 @@ public:
 
     SIGHT_DECLARE_SERVICE(dialog_editor, service::base);
 
+    ~dialog_editor() noexcept override = default;
+
 protected:
 
-    dialog_editor() noexcept =
-        default;
-
-    ~dialog_editor() noexcept override =
-        default;
+    dialog_editor() noexcept = default;
 };
 
 } // namespace sight::ui

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -162,6 +162,9 @@ protected:
     /// Patched version: Doesn't rely on VTK_HAVE_SO_REUSEADDR to add option SO_REUSEADDR.
     static int bind_socket(int _socket_descriptor, std::uint16_t _port);
 
+protected:
+
+    // NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
     /// client socket
     ::igtl::Socket::Pointer m_socket;
 
@@ -173,6 +176,7 @@ protected:
 
     /// device name in the sent message
     std::string m_device_name_out;
+    // NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 };
 
 } // namespace sight::io::igtl

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,11 +23,9 @@
 #include "core/com/exception/bad_call.hpp"
 #include "core/com/exception/bad_run.hpp"
 #include "core/com/exception/no_worker.hpp"
-#include "core/com/util/auto_bind.hpp"
-#include "core/com/util/auto_bind.hxx"
 
 #include <core/com/slot.hpp>
-#include <core/com/slot.hxx>
+
 #include <core/mt/types.hpp>
 #include <core/thread/worker.hpp>
 
@@ -37,70 +35,98 @@
 #include <future>
 #include <thread>
 
-TEST_SUITE("sight::core::com::slot")
+namespace
 {
+
+struct test_a
+{
+    //------------------------------------------------------------------------------
+
+    void method0()
+    {
+        m_method0 = true;
+    }
+
+    //------------------------------------------------------------------------------
+
+    float method1(float _f)
+    {
+        m_method1 = true;
+        return 2 * _f;
+    }
+
+    //------------------------------------------------------------------------------
+
+    int method2(int _value)
+    {
+        m_method2 = _value;
+        return m_method2;
+    }
+
+    bool m_method0 {false};
+    bool m_method1 {false};
+    int m_method2 {0};
+};
+
+struct test_b
+{
+    //------------------------------------------------------------------------------
+
+    std::thread::id wait_seconds(const unsigned int _nb_seconds)
+    {
+        sight::core::mt::write_lock lock(m_mutex);
+        std::thread::id old_id = m_thread_id;
+        m_thread_id = std::this_thread::get_id();
+        m_first_run = false;
+
+        std::this_thread::sleep_for(std::chrono::seconds(_nb_seconds));
+
+        return old_id;
+    }
+
+    std::thread::id m_thread_id;
+
+    bool m_first_run {true};
+
+    sight::core::mt::read_write_mutex m_mutex;
+};
+
+} // namespace
+
 //-----------------------------------------------------------------------------
 
-    struct a
-    {
-        //------------------------------------------------------------------------------
-
-        void method0()
-        {
-            m_method0 = true;
-        }
-
-        //------------------------------------------------------------------------------
-
-        float method1(float _f)
-        {
-            m_method1 = true;
-            return 2 * _f;
-        }
-
-        //------------------------------------------------------------------------------
-
-        int method2(int _value)
-        {
-            m_method2 = _value;
-            return m_method2;
-        }
-
-        bool m_method0 {false};
-        bool m_method1 {false};
-        int m_method2 {0};
-    };
-
-    static int last_sum_result       = 0;
-    static int last_three_sum_result = 0;
+static int last_sum_result       = 0;
+static int last_three_sum_result = 0;
 
 //------------------------------------------------------------------------------
 
-    static int sum(int _a, int _b)
-    {
-        last_sum_result = _a + _b;
-        return last_sum_result;
-    }
+static int sum(int _a, int _b)
+{
+    last_sum_result = _a + _b;
+    return last_sum_result;
+}
 
 //------------------------------------------------------------------------------
 
-    static int three_sum(int _a, int _b, int _c)
-    {
-        last_three_sum_result = _a + _b + _c;
-        return last_three_sum_result;
-    }
+static int three_sum(int _a, int _b, int _c)
+{
+    last_three_sum_result = _a + _b + _c;
+    return last_three_sum_result;
+}
 
+TEST_SUITE("sight::core::com::slot")
+{
 //------------------------------------------------------------------------------
 
     TEST_CASE("build")
     {
-        a a;
+        test_a a;
 
         auto slot1 = sight::core::com::new_slot(&sum);
-        auto slot2 = sight::core::com::new_slot(&a::method0, &a);
-        auto slot3 = sight::core::com::new_slot(&a::method1, &a);
+        auto slot2 = sight::core::com::new_slot(&test_a::method0, &a);
+        auto slot3 = sight::core::com::new_slot(&test_a::method1, &a);
         auto slot4 = sight::core::com::new_slot(&three_sum);
-        auto slot5 = sight::core::com::new_slot(&a::method2, &a);
+        auto slot5 = sight::core::com::new_slot(&test_a::method2, &a);
 
         auto fn    = [object_ptr = &a]{object_ptr->method2(4321);};
         auto slot6 = std::make_shared<sight::core::com::slot<std::function<void(void)> > >(fn);
@@ -154,13 +180,13 @@ TEST_SUITE("sight::core::com::slot")
 
     TEST_CASE("run")
     {
-        a a;
+        test_a a;
 
         auto slot1 = sight::core::com::new_slot(&sum);
-        auto slot2 = sight::core::com::new_slot(&a::method0, &a);
-        auto slot3 = sight::core::com::new_slot(&a::method1, &a);
+        auto slot2 = sight::core::com::new_slot(&test_a::method0, &a);
+        auto slot3 = sight::core::com::new_slot(&test_a::method1, &a);
         auto slot4 = sight::core::com::new_slot(&three_sum);
-        auto slot5 = sight::core::com::new_slot(&a::method2, &a);
+        auto slot5 = sight::core::com::new_slot(&test_a::method2, &a);
         auto slot6 = sight::core::com::new_slot([&a](){a.method2(4321);});
         auto slot7 = sight::core::com::new_slot([&a](int _x){a.method2(_x);});
 
@@ -192,11 +218,11 @@ TEST_SUITE("sight::core::com::slot")
 
     TEST_CASE("call")
     {
-        a a;
+        test_a a;
 
         auto slot1 = sight::core::com::new_slot(&sum);
-        auto slot2 = sight::core::com::new_slot(&a::method0, &a);
-        auto slot3 = sight::core::com::new_slot(&a::method1, &a);
+        auto slot2 = sight::core::com::new_slot(&test_a::method0, &a);
+        auto slot3 = sight::core::com::new_slot(&test_a::method1, &a);
         auto slot4 = sight::core::com::new_slot(&three_sum);
         auto slot5 = sight::core::com::new_slot([&a](){a.method2(4321);});
 
@@ -214,11 +240,11 @@ TEST_SUITE("sight::core::com::slot")
 
     TEST_CASE("async")
     {
-        a a;
+        test_a a;
 
         auto slot1 = sight::core::com::new_slot(&sum);
-        auto slot2 = sight::core::com::new_slot(&a::method0, &a);
-        auto slot3 = sight::core::com::new_slot(&a::method1, &a);
+        auto slot2 = sight::core::com::new_slot(&test_a::method0, &a);
+        auto slot3 = sight::core::com::new_slot(&test_a::method1, &a);
         auto slot4 = sight::core::com::new_slot(&three_sum);
         auto slot5 = sight::core::com::new_slot([&a](){return a.method2(4321);});
 
@@ -229,11 +255,11 @@ TEST_SUITE("sight::core::com::slot")
         slot4->set_worker(w);
         slot5->set_worker(w);
 
-        slot1->async_run(40, 2).wait();
+        slot1->async_run(40, 2).get();
         slot2->async_run();
-        slot3->async_run(w, 2.1F).wait();
-        slot4->async_run(w, 40, 2, 3).wait();
-        slot5->async_run().wait();
+        slot3->async_run(w, 2.1F).get();
+        slot4->async_run(w, 40, 2, 3).get();
+        slot5->async_run().get();
 
         CHECK_EQ(last_sum_result, 42);
         CHECK(a.m_method0);
@@ -251,28 +277,28 @@ TEST_SUITE("sight::core::com::slot")
         std::shared_future<int> f4   = slot4->async_call(w, 40, 2, 3);
         std::shared_future<int> f5   = slot5->async_call();
 
-        f1.wait();
+        f1.get();
         CHECK(f1.valid());
         CHECK_EQ(f1.get(), 42);
         CHECK(f1.valid());
 
-        f2.wait();
+        f2.get();
         CHECK(f2.valid());
         CHECK(a.m_method0);
         CHECK(f2.valid());
 
-        f3.wait();
+        f3.get();
         CHECK(f3.valid());
         CHECK_EQ(f3.get(), 4.2F);
         CHECK(f3.valid());
         CHECK(a.m_method1);
 
-        f4.wait();
+        f4.get();
         CHECK(f4.valid());
         CHECK_EQ(f4.get(), 45);
         CHECK(f4.valid());
 
-        f5.wait();
+        f5.get();
         CHECK(f5.valid());
         CHECK_EQ(f5.get(), 4321);
         CHECK(f5.valid());
@@ -285,11 +311,11 @@ TEST_SUITE("sight::core::com::slot")
 
     TEST_CASE("slot_base")
     {
-        a a;
+        test_a a;
 
         sight::core::com::slot_base::sptr slot1 = sight::core::com::new_slot(&sum);
-        sight::core::com::slot_base::sptr slot2 = sight::core::com::new_slot(&a::method0, &a);
-        sight::core::com::slot_base::sptr slot3 = sight::core::com::new_slot(&a::method1, &a);
+        sight::core::com::slot_base::sptr slot2 = sight::core::com::new_slot(&test_a::method0, &a);
+        sight::core::com::slot_base::sptr slot3 = sight::core::com::new_slot(&test_a::method1, &a);
         sight::core::com::slot_base::sptr slot4 = sight::core::com::new_slot(&three_sum);
         sight::core::com::slot_base::sptr slot5 = sight::core::com::new_slot([&a](){a.method2(4321);});
 
@@ -332,10 +358,10 @@ TEST_SUITE("sight::core::com::slot")
         slot3->set_worker(w);
         slot4->set_worker(w);
 
-        slot1->async_run(40, 2).wait();
+        slot1->async_run(40, 2).get();
         slot2->async_run();
-        slot3->async_run(2.1F).wait();
-        slot4->async_run(40, 2, 3).wait();
+        slot3->async_run(2.1F).get();
+        slot4->async_run(40, 2, 3).get();
 
         CHECK_EQ(last_sum_result, 42);
         CHECK(a.m_method0);
@@ -352,23 +378,23 @@ TEST_SUITE("sight::core::com::slot")
         std::shared_future<float> f3 = slot3->async_call<float>(2.1F);
         std::shared_future<int> f4   = slot4->async_call<int>(40, 2, 3);
 
-        f1.wait();
+        f1.get();
         CHECK(f1.valid());
         CHECK_EQ(f1.get(), 42);
         CHECK(f1.valid());
 
-        f2.wait();
+        f2.get();
         CHECK(f2.valid());
         CHECK(a.m_method0);
         CHECK(f2.valid());
 
-        f3.wait();
+        f3.get();
         CHECK(f3.valid());
         CHECK_EQ(f3.get(), 4.2F);
         CHECK(f3.valid());
         CHECK(a.m_method1);
 
-        f4.wait();
+        f4.get();
         CHECK(f4.valid());
         CHECK_EQ(f4.get(), 45);
         CHECK(f4.valid());
@@ -393,34 +419,6 @@ TEST_SUITE("sight::core::com::slot")
 
 //-----------------------------------------------------------------------------
 
-    struct b
-    {
-        b()
-        = default;
-
-        //------------------------------------------------------------------------------
-
-        std::thread::id wait_seconds(const unsigned int _nb_seconds)
-        {
-            sight::core::mt::write_lock lock(m_mutex);
-            std::thread::id old_id = m_thread_id;
-            m_thread_id = std::this_thread::get_id();
-            m_first_run = false;
-
-            std::this_thread::sleep_for(std::chrono::seconds(_nb_seconds));
-
-            return old_id;
-        }
-
-        std::thread::id m_thread_id;
-
-        bool m_first_run {true};
-
-        sight::core::mt::read_write_mutex m_mutex;
-    };
-
-//------------------------------------------------------------------------------
-
     TEST_CASE("worker_swap")
     {
         // Tests if weak call gets interrupted when slot worker is changed while
@@ -430,12 +428,12 @@ TEST_SUITE("sight::core::com::slot")
         {
             using signature = std::thread::id(const unsigned int);
 
-            b b;
+            test_b b;
 
             auto w1 = sight::core::thread::worker::make();
             auto w2 = sight::core::thread::worker::make();
 
-            sight::core::com::slot<signature>::sptr m0 = sight::core::com::new_slot(&b::wait_seconds, &b);
+            sight::core::com::slot<signature>::sptr m0 = sight::core::com::new_slot(&test_b::wait_seconds, &b);
 
             CHECK(b.m_thread_id == std::thread::id());
 
@@ -463,12 +461,12 @@ TEST_SUITE("sight::core::com::slot")
         {
             using signature = std::thread::id(const unsigned int);
 
-            b b;
+            test_b b;
 
             auto w1 = sight::core::thread::worker::make();
             auto w2 = sight::core::thread::worker::make();
 
-            sight::core::com::slot<signature>::sptr m0 = sight::core::com::new_slot(&b::wait_seconds, &b);
+            sight::core::com::slot<signature>::sptr m0 = sight::core::com::new_slot(&test_b::wait_seconds, &b);
 
             CHECK(b.m_thread_id == std::thread::id());
 
@@ -482,12 +480,12 @@ TEST_SUITE("sight::core::com::slot")
             }
 
             m0->set_worker(w2);
-            future1.wait();
+            future1.get();
             CHECK(b.m_thread_id == w1->get_thread_id());
 
             sight::core::com::slot<signature>::void_shared_future_type future2 = m0->async_run(1);
 
-            future2.wait();
+            future2.get();
 
             CHECK(b.m_thread_id == w2->get_thread_id());
             w1->stop();
@@ -498,12 +496,12 @@ TEST_SUITE("sight::core::com::slot")
         {
             using signature = std::thread::id(const unsigned int);
 
-            b b;
+            test_b b;
 
             auto w1 = sight::core::thread::worker::make();
             auto w2 = sight::core::thread::worker::make();
 
-            sight::core::com::slot<signature>::sptr m0 = sight::core::com::new_slot(&b::wait_seconds, &b);
+            sight::core::com::slot<signature>::sptr m0 = sight::core::com::new_slot(&test_b::wait_seconds, &b);
 
             CHECK(b.m_thread_id == std::thread::id());
 
@@ -517,12 +515,12 @@ TEST_SUITE("sight::core::com::slot")
             }
 
             m0->set_worker(w2);
-            future1.wait();
+            future1.get();
             CHECK(b.m_thread_id == w1->get_thread_id());
 
             sight::core::com::slot<signature>::shared_future_type future2 = m0->async_call(1);
 
-            future2.wait();
+            future2.get();
 
             CHECK(b.m_thread_id == w2->get_thread_id());
             CHECK(future1.get() == std::thread::id());
@@ -538,12 +536,12 @@ TEST_SUITE("sight::core::com::slot")
     {
         // Tests whether fallback when calling a slot with too many arguments works
         // correctly.
-        a a;
+        test_a a;
         last_sum_result = 0;
 
         sight::core::com::slot_base::sptr slot1 = sight::core::com::new_slot(&sum);
-        sight::core::com::slot_base::sptr slot2 = sight::core::com::new_slot(&a::method0, &a);
-        sight::core::com::slot_base::sptr slot3 = sight::core::com::new_slot(&a::method1, &a);
+        sight::core::com::slot_base::sptr slot2 = sight::core::com::new_slot(&test_a::method0, &a);
+        sight::core::com::slot_base::sptr slot3 = sight::core::com::new_slot(&test_a::method1, &a);
 
         slot1->run(40, 2, 3);
         slot2->run("Hello world");
@@ -572,9 +570,9 @@ TEST_SUITE("sight::core::com::slot")
         slot2->set_worker(w);
         slot3->set_worker(w);
 
-        slot1->async_run(40, 2, 3).wait();
+        slot1->async_run(40, 2, 3).get();
         slot2->async_run("Hello world");
-        slot3->async_run(2.1F, 4.2F).wait();
+        slot3->async_run(2.1F, 4.2F).get();
 
         CHECK_EQ(last_sum_result, 42);
         CHECK(a.m_method0);
@@ -588,17 +586,17 @@ TEST_SUITE("sight::core::com::slot")
         std::shared_future<void> f2  = slot2->async_call<void>("Hello world");
         std::shared_future<float> f3 = slot3->async_call<float>(2.1F, 4.2F);
 
-        f1.wait();
+        f1.get();
         CHECK(f1.valid());
         CHECK_EQ(f1.get(), 42);
         CHECK(f1.valid());
 
-        f2.wait();
+        f2.get();
         CHECK(f2.valid());
         CHECK(a.m_method0);
         CHECK(f2.valid());
 
-        f3.wait();
+        f3.get();
         CHECK(f3.valid());
         CHECK_EQ(f3.get(), 4.2F);
         CHECK(f3.valid());

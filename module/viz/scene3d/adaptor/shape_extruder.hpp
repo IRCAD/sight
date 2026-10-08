@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2025 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2020-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,11 @@
 
 #pragma once
 
-#include <data/model_series.hpp>
+#include <core/notification/has_notifications.hpp>
 
-#include <service/notifier.hpp>
+#include <data/image.hpp>
+#include <data/map.hpp>
+#include <data/model_series.hpp>
 
 #include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/interactor/base.hpp>
@@ -62,13 +64,17 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::adaptor::shape_extruder">
-        <inout key="extrudedMeshes" uid="..." />
+        <data extrudedMeshes="${...}" />
         <config priority="2" extrude="true" validation_on_double_click="true" />
     </service>
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b extrudedMeshes [sight::data::model_series]: model series where all extruded meshes are stored.
+ * - \b data.extrudedMeshes [sight::data::model_series]: model series where all extruded meshes are stored.
+ * - \b data.extruded_meshes_by_image [sight::data::map] (optional): meshes indexed by image ID.
+ *
+ * @subsection Input Input
+ * - \b data.image [sight::data::image] (optional): selected image for per-image cropping.
  *
  * @subsection Configuration Configuration:
  * - \b extrude (optional, bool, true) : sets if the extrusion is done or not (3D or 2D shape).
@@ -80,24 +86,24 @@ namespace sight::module::viz::scene3d::adaptor
 class shape_extruder final :
     public sight::viz::scene3d::adaptor,
     public sight::viz::scene3d::interactor::base,
-    private service::notifier
+    public core::notification::has_notifications
 {
 public:
 
     struct signals
     {
-        using tool_disabled_signal_t = core::com::signal<void ()>;
-        static inline const core::com::signals::key_t TOOL_DISABLED = "tool_disabled";
+        using tool_disabled_t = core::com::signal<void ()>;
+        static inline const signal_key_t TOOL_DISABLED = "tool_disabled";
     };
 
     struct slots
     {
-        static inline const core::com::slots::key_t ENABLE_TOOL       = "enable_tool";
-        static inline const core::com::slots::key_t UNDO              = "undo";
-        static inline const core::com::slots::key_t DELETE_LAST_MESH  = "delete_last_mesh";
-        static inline const core::com::slots::key_t CANCEL_LAST_CLICK = "cancel_last_click";
-        static inline const core::com::slots::key_t RESET             = "reset";
-        static inline const core::com::slots::key_t VALIDATE          = "validate";
+        static inline const slot_key_t ENABLE_TOOL       = "enable_tool";
+        static inline const slot_key_t UNDO              = "undo";
+        static inline const slot_key_t DELETE_LAST_MESH  = "delete_last_mesh";
+        static inline const slot_key_t CANCEL_LAST_CLICK = "cancel_last_click";
+        static inline const slot_key_t RESET             = "reset";
+        static inline const slot_key_t VALIDATE          = "validate";
     };
 
     /// Generates default methods as New, dynamicCast, ...
@@ -108,6 +114,45 @@ public:
 
     /// Destroys the adaptor.
     ~shape_extruder() noexcept final = default;
+
+    /**
+     * @brief Cancels further interactions.
+     * @pre @ref m_interactionEnableState must be true.
+     */
+    void wheel_event(modifier /*_mods*/, double /*_angleDelta*/, int /*_x*/, int /*_y*/) final;
+
+    /**
+     * @brief Adds a new point to the lasso.
+     * @pre @ref m_toolEnableState must be true.
+     * @param _button mouse modifier.
+     * @param _x X screen coordinate.
+     * @param _y Y screen coordinate.
+     */
+    void button_press_event(mouse_button _button, modifier /*_mods*/, int _x, int _y) final;
+
+    /**
+     * @brief Closes the lasso shape.
+     * @pre @ref m_interactionEnableState must be true.
+     * @param _button mouse modifier.
+     * @param _x X screen coordinate.
+     * @param _y Y screen coordinate.
+     */
+    void button_double_press_event(mouse_button _button, modifier /*_mods*/, int _x, int _y) final;
+
+    /**
+     * @brief Draws the last lasso line or add a point to the lasso in the mouse is dragged.
+     * @pre @ref m_interactionEnableState must be true.
+     * @param _button mouse modifier.
+     * @param _x X screen coordinate.
+     * @param _y Y screen coordinate.
+     */
+    void mouse_move_event(mouse_button _button, modifier /*_mods*/, int _x, int _y, int /*_dx*/, int /*_dy*/) final;
+
+    /**
+     * @brief Ends the drag interaction.
+     * @pre @ref m_interactionEnableState and @ref m_leftButtonMoveState must be true.
+     */
+    void button_release_event(mouse_button /*_button*/, modifier /*_mods*/, int /*_x*/, int /*_y*/) final;
 
 protected:
 
@@ -124,6 +169,8 @@ protected:
     void stopping() final;
 
 private:
+
+    data::model_series::sptr get_extruded_meshes() const;
 
     /// Represents a 2D triangle by three points, a barycenter, and a center/radius of the circumscribed circle.
     class triangle2_d
@@ -160,7 +207,7 @@ private:
         Ogre::Vector2 barycentre;
 
         /// Defines the unique ID of the triangle.
-        std::size_t id;
+        std::size_t id {s_id++};
 
     private:
 
@@ -212,7 +259,7 @@ private:
         Ogre::Vector2 b;
     };
 
-    enum class action
+    enum class action : std::uint8_t
     {
         add,
         remove
@@ -256,45 +303,6 @@ private:
      * @param _y Y screen coordinate.
      */
     void modify_lasso(action _action, int _x = -1, int _y = -1);
-
-    /**
-     * @brief Cancels further interactions.
-     * @pre @ref m_interactionEnableState must be true.
-     */
-    void wheel_event(modifier /*_mods*/, double /*_angleDelta*/, int /*_x*/, int /*_y*/) final;
-
-    /**
-     * @brief Adds a new point to the lasso.
-     * @pre @ref m_toolEnableState must be true.
-     * @param _button mouse modifier.
-     * @param _x X screen coordinate.
-     * @param _y Y screen coordinate.
-     */
-    void button_press_event(mouse_button _button, modifier /*_mods*/, int _x, int _y) final;
-
-    /**
-     * @brief Closes the lasso shape.
-     * @pre @ref m_interactionEnableState must be true.
-     * @param _button mouse modifier.
-     * @param _x X screen coordinate.
-     * @param _y Y screen coordinate.
-     */
-    void button_double_press_event(mouse_button _button, modifier /*_mods*/, int _x, int _y) final;
-
-    /**
-     * @brief Draws the last lasso line or add a point to the lasso in the mouse is dragged.
-     * @pre @ref m_interactionEnableState must be true.
-     * @param _button mouse modifier.
-     * @param _x X screen coordinate.
-     * @param _y Y screen coordinate.
-     */
-    void mouse_move_event(mouse_button _button, modifier /*_mods*/, int _x, int _y, int /*_dx*/, int /*_dy*/) final;
-
-    /**
-     * @brief Ends the drag interaction.
-     * @pre @ref m_interactionEnableState and @ref m_leftButtonMoveState must be true.
-     */
-    void button_release_event(mouse_button /*_button*/, modifier /*_mods*/, int /*_x*/, int /*_y*/) final;
 
     /// Draws the lasso from @ref m_lassoNearPositions.
     void draw_lasso();
@@ -390,7 +398,11 @@ private:
     /// Contains the last lasso line, this line is drawn between the last position and the current mouse position.
     Ogre::ManualObject* m_last_lasso_line {nullptr};
 
-    sight::data::ptr<sight::data::model_series, sight::data::access::inout> m_extruded_meshes {this, "extrudedMeshes"};
+    sight::data::ptr<sight::data::model_series, sight::data::access::inout> m_extruded_meshes {this,
+                                                                                               "data.extrudedMeshes"
+    };
+    ptr_inout<data::map> m_extruded_meshes_by_image {this, "data.extruded_meshes_by_image", true};
+    ptr_in<data::image> m_image {this, "data.image", true};
 
     bool m_validation_by_double_click {true};
 };

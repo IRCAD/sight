@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,7 +47,7 @@ namespace sight::module::filter::vision
  *
  * @code{.xml}
      <service uid="..." type="sight::module::filter::vision::optical_flow" worker="ofWorker  >
-        <in key="timeline" uid="..." auto_connect="true" />
+        <data timeline="${...}" />
         <config latency="333" scaleFactor="3.6" />
      </service>
    @endcode
@@ -68,19 +68,23 @@ public:
 
     SIGHT_DECLARE_SERVICE(optical_flow, sight::service::controller);
 
-    using motion_signal_t    = core::com::signal<void ()>;
-    using no_motion_signal_t = core::com::signal<void ()>;
+    struct signals
+    {
+        using motion_t    = core::com::signal<void ()>;
+        using no_motion_t = core::com::signal<void ()>;
+        static inline const signal_key_t CAMERA_MOVED    = "camera_moved";
+        static inline const signal_key_t CAMERA_REMAINED = "camera_remained";
+    };
 
     /// Constructor
     optical_flow() noexcept;
 
     /// Destructor
-    ~optical_flow() noexcept override;
-
-    /// Connects ::arData:FrameTL::signals::PUSHED to service::slots::UPDATE
-    service::connections_t auto_connections() const override;
+    ~optical_flow() noexcept override = default;
 
 protected:
+
+    service::connections_t auto_connections() const override;
 
     /// Does nothing.
     void configuring() override;
@@ -100,10 +104,10 @@ private:
     std::mutex m_main_mutex;
 
     /// Signal send when motion is detected.
-    motion_signal_t::sptr m_motion_signal;
+    signals::motion_t::sptr m_motion_signal;
 
     /// Signal send when no motion is detected.
-    no_motion_signal_t::sptr m_no_motion_signal;
+    signals::no_motion_t::sptr m_no_motion_signal;
 
     /// Stores last image.
     cv::Mat m_last_gray_img;
@@ -127,9 +131,7 @@ private:
     /// Stores last processed frame timestamp.
     core::clock::type m_last_timestamp {0};
 
-    static constexpr std::string_view FRAME_TIMELINE_INPUT = "timeline";
-
-    sight::data::ptr<sight::data::frame_tl, sight::data::access::in> m_timeline {this, FRAME_TIMELINE_INPUT};
+    sight::data::ptr<sight::data::frame_tl, sight::data::access::in> m_timeline {this, "data.timeline"};
 };
 
 } //namespace sight::module::filter::vision

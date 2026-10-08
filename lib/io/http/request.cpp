@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,7 +37,7 @@ request::request(std::string _url) :
 
 //------------------------------------------------------------------------------
 
-request::sptr request::New(const std::string& _url)
+request::sptr request::make(const std::string& _url)
 {
     return std::make_shared<request>(_url);
 }

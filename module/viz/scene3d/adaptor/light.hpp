@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,15 +47,15 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="lightAdaptor" type="sight::module::viz::scene3d::adaptor::light">
-        <inout key="diffuseColor" uid="diffuseColorUid" />
-        <inout key="specularColor" uid="specularColorUid" />
+        <data diffuseColor="${diffuseColorUid}" />
+        <data specularColor="${specularColorUid}" />
         <config name="sceneLight" transform="..." switchedOn="true" thetaOffset="30.5" phiOffset="45" />
     </service>
  * @endcode
  *
  * @subsection In-Out In-Out
- * - \b diffuseColor [sight::data::color]: diffuse color of the light.
- * - \b specularColor [sight::data::color]: specular color of the light.
+ * - \b data.diffuseColor [sight::data::color]: diffuse color of the light.
+ * - \b data.specularColor [sight::data::color]: specular color of the light.
  *
  * @subsection Configuration Configuration:
  * - \b name (mandatory, string): defines a name for the associated Ogre light.
@@ -70,6 +70,12 @@ public:
 
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(light, sight::viz::scene3d::light_adaptor);
+
+    struct slots
+    {
+        static inline const slot_key_t SET_X_OFFSET = "setXOffset";
+        static inline const slot_key_t SET_Y_OFFSET = "setYOffset";
+    };
 
     /// Creates the service.
     light() noexcept;
@@ -187,8 +193,8 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::color::MODIFIED_SIG of s_DIFFUSE_COLOR_INOUT to service::slots::UPDATE
-     * Connect data::color::MODIFIED_SIG of s_DIFFUSE_COLOR_INOUT to service::slots::UPDATE
+     * Connect data::signals::MODIFIED of s_DIFFUSE_COLOR_INOUT to service::slots::UPDATE
+     * Connect data::signals::MODIFIED of s_DIFFUSE_COLOR_INOUT to service::slots::UPDATE
      */
     service::connections_t auto_connections() const final;
 
@@ -235,6 +241,9 @@ private:
 
     /// Contains objects used for the directional light visual feedback.
     std::pair<Ogre::ManualObject*, Ogre::ManualObject*> m_directional_feedback {nullptr, nullptr};
+
+    data::ptr<data::color, data::access::inout> m_diffuse {this, "data.diffuseColor"};
+    data::ptr<data::color, data::access::inout> m_specular {this, "data.specularColor"};
 };
 
 //------------------------------------------------------------------------------

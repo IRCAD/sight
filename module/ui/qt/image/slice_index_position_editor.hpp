@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,17 +36,18 @@
 namespace sight::module::ui::qt::image
 {
 
-enum label_option_t
+enum label_option_t : std::uint8_t
 {
     index = 0,
     position
 };
-enum orientation_t
+
+enum orientation_t : std::uint8_t
 {
     /// Directions.
     x_axis = 0,
-    y_axis,
-    z_axis,
+    y_axis = 1,
+    z_axis = 2,
     /// Planar definitions.
     sagittal = x_axis,
     frontal  = y_axis,
@@ -64,13 +65,13 @@ enum orientation_t
  *
  * @code{.xml}
    <service uid="..." type="sight::module::ui::qt::image::slice_index_position_editor" auto_connect="true">
-      <inout key="image" uid="..."/>
+      <data image="..."/>
       <config orientation="${orientationValue}" label="position" display_axis_selector="true"
  * display_step_buttons="true" />
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b image [sight::data::image]: image on which the slice index/position will be changed.
+ * - \b data.image [sight::data::image]: image on which the slice index/position will be changed.
  *
  * @subsection Configuration Configuration
  * - \b orientation : Axis on which the index/position of slice will be changed, must be "axial", "frontal" or
@@ -85,6 +86,14 @@ class slice_index_position_editor : public sight::ui::editor
 public:
 
     SIGHT_DECLARE_SERVICE(slice_index_position_editor, sight::ui::editor);
+
+    struct slots
+    {
+        using int_t = core::com::slot<void (int)>;
+
+        static inline const slot_key_t UPDATE_SLICE_INDEX = "updateSliceIndex";
+        static inline const slot_key_t UPDATE_SLICE_TYPE  = "updateSliceType";
+    };
 
     /// Constructor. Do nothing.
     slice_index_position_editor() noexcept;
@@ -113,14 +122,17 @@ protected:
     /// Update editor information from the image
     void updating() override;
 
+    /// Refresh the range and fiducial marks when the input image is replaced.
+    void swapping(std::string_view _key) override;
+
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
      *
-     * Connect image::MODIFIED_SIG to this::service::slots::UPDATE
-     * Connect image::SLICE_INDEX_MODIFIED_SIG to this::UPDATE_SLICE_INDEX_SLOT
-     * Connect image::SLICE_TYPE_MODIFIED_SIG to this::UPDATE_SLICE_TYPE_SLOT
-     * Connect image::BUFFER_MODIFIED_SIG to this::UPDATE_BUFFER_SLOT
+     * Connect data::signals::MODIFIED to this::service::slots::UPDATE
+     * Connect image::signals::SLICE_INDEX_MODIFIED to this::slots::UPDATE_SLICE_INDEX
+     * Connect image::signals::SLICE_TYPE_MODIFIED to this::slots::UPDATE_SLICE_TYPE
+     * Connect image::signals::BUFFER_MODIFIED to this::slots::UPDATE_BUFFER
      */
     connections_t auto_connections() const override;
 
@@ -143,7 +155,7 @@ protected:
     void update_slider_fiducial();
 
     /// This method is called when the label type changes, to destroy the previous type of `qt_container`.
-    void destroyEditorContainer();
+    void destroy_editor_container();
 
     /// This method is called when the slice label option changes. It notifies that the slice label option has been
     /// toggled.
@@ -169,7 +181,7 @@ private:
      */
 
     sight::ui::qt::slice_selector* m_slice_selector_with_index {};
-    data::ptr<data::image, data::access::inout> m_image {this, "image"};
+    data::ptr<data::image, data::access::inout> m_image {this, "data.image"};
 
     std::int64_t m_axial_index {-1};
     std::int64_t m_frontal_index {-1};
@@ -182,7 +194,7 @@ private:
     label_option_t m_label_option {label_option_t::index};
     axis_t m_axis {axis_t::z_axis};
 
-    static std::map<axis_t, std::string> orientation_prefix_map;
+    static std::map<axis_t, std::string> s_orientation_prefix_map;
     bool m_display_axis_selector {true};
 
     bool m_display_step_buttons {false};

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -81,6 +81,20 @@ class matrix_list final : public service::base
 {
 public:
 
+    struct signals
+    {
+        using matrix_added_t   = core::com::signal<void (int, std::string)>;
+        using matrix_removed_t = core::com::signal<void (int)>;
+        static inline const signal_key_t MATRIX_ADDED   = "matrixAdded";
+        static inline const signal_key_t MATRIX_REMOVED = "matrixRemoved";
+    };
+
+    struct slots
+    {
+        static inline const slot_key_t SELECT_MATRIX = "selectMatrix";
+        static inline const slot_key_t REMOVE_MATRIX = "removeMatrix";
+    };
+
     /// Generates default methods like New, dynamicCast,...
     SIGHT_DECLARE_SERVICE(matrix_list, service::base);
 
@@ -111,9 +125,6 @@ private:
 
     ///SLOT: removes a matrix.
     void remove_matrix(int /*_index*/);
-
-    using matrix_added_signal_t   = core::com::signal<void (int, std::string)>;
-    using matrix_removed_signal_t = core::com::signal<void (int)>;
 
     static constexpr std::string_view MATRICES_INOUT = "matrices";
     static constexpr std::string_view SELECTED_INOUT = "selectedMatrix";

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2025 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -103,22 +103,22 @@ namespace sight::module::io::realsense
  * @section XML XML Configuration
  * @code{.xml}
    <service uid="videoGrabber" type ="sight::module::io::realsense::scan" auto_connect="false">
-        <inout key="depth_tl" uid="..." />
-        <inout key="frame_tl" uid="..." />
-        <out key="pointcloud" uid="..." />
-        <inout key="camera_set" uid="..." />
+        <timeline depth="..." />
+        <timeline image="..." />
+        <output pointcloud="..." />
+        <config camera_set="..." />
         <config fps="30" colorW="1280" colorH="720" depthW="1280" depthH="720" switchToIR="true/false" preset="..."
  * alignTo="Color"/>
         <recordFile>/path/to/the/file.bag</recordFile>
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b depth_tl [sight::data::frame_tl]: Frame timeline of the depth video.
- * - \b frame_tl [sight::data::frame_tl]: Frame timeline of the color video.
- * - \b camera_set [sight::data::camera_set]: Camera series that will contain device camera information.
+ * - \b timeline.depth [sight::data::frame_tl]: Frame timeline of the depth video.
+ * - \b timeline.image [sight::data::frame_tl]: Frame timeline of the color video.
+ * - \b config.camera_set [sight::data::camera_set]: Camera series that will contain device camera information.
  *
  * @subsection Output Output
- * - \b pointcloud [sight::data::mesh]: pointcloud computed from depth map. (optional)
+ * - \b output.pointcloud [sight::data::mesh]: pointcloud computed from depth map. (optional)
  *
  * @subsection Configuration Configuration
  * - \b fps: desired framerate (value can be [6-15-25-30-60-90]), note that fps is correlated to resolution (default
@@ -178,16 +178,32 @@ class scan : public sight::io::service::rgbd_grabber
 {
 public:
 
+    struct signals
+    {
+        using distance_computed_t = core::com::signal<void (double)>;
+        using device_played_t     = core::com::signal<void (void)>;
+        using file_played_t       = core::com::signal<void (void)>;
+        static inline const signal_key_t DISTANCE_COMPUTED = "distance_computed";
+        static inline const signal_key_t DEVICE_PLAYED     = "device_played";
+        static inline const signal_key_t FILE_PLAYED       = "file_played";
+    };
+
+    struct slots
+    {
+        static inline const slot_key_t CONFIGURE_RECORDING_PATH = "configure_recording_path";
+        static inline const slot_key_t RECORD                   = "record";
+    };
+
     SIGHT_DECLARE_SERVICE(scan, sight::io::service::rgbd_grabber);
 
     /// Signal send when Distance is computed.
-    typedef core::com::signal<void (double)> distance_computed_t;
+    typedef signals::distance_computed_t distance_computed_t;
 
     /// Signal send when stream from a realsense device, can be useful to enable/disable some gui actions.
-    typedef core::com::signal<void (void)> device_played_signal_t;
+    typedef signals::device_played_t device_played_signal_t;
 
     /// Signal send when stream from a file (.bag), can be useful to enable/disable some gui actions.
-    typedef core::com::signal<void (void)> file_played_signal_t;
+    typedef signals::file_played_t file_played_signal_t;
 
     /// Constructor. Initializes signals/slots.
     scan() noexcept;
@@ -459,10 +475,10 @@ private:
 
     data::ptr<data::camera, data::access::in> m_camera {this, s_CAMERA_INPUT, true};
 
-    static constexpr std::string_view s_CAMERA_SET_INOUT = "camera_set";
+    static constexpr std::string_view s_CAMERA_SET_INOUT = "config.camera_set";
     data::ptr<data::camera_set, data::access::inout> m_camera_set {this, s_CAMERA_SET_INOUT, true};
 
-    static constexpr std::string_view s_POINTCLOUD_OUTPUT = "pointcloud";
+    static constexpr std::string_view s_POINTCLOUD_OUTPUT = "output.pointcloud";
     data::ptr<data::mesh, data::access::out> m_pointCloudOutput {this, s_POINTCLOUD_OUTPUT, true};
     data::mesh::sptr m_pointCloud;
 };

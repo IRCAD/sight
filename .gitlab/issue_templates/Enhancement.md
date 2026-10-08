@@ -4,16 +4,16 @@ _Describe the existing feature and what is the enhancement, use cases, benefits,
 
 _Optionally, you may give directions about how to address the issue._
 
-## Functional specifications
+## Acceptance Criteria
 
-_Workflow, UX/UI design, screenshots, etc..._
+_List the observable and verifiable outcomes required to consider this issue done._
 
-## Technical specifications
+_Keep criteria concise, testable, and user-oriented._
+
+1. _criterion_
+
+## Specifications
 
 _Details of the implementation._
-
-## Test plan
-
-_Describe how you will verify that the implementation meets specifications._
 
 /label ~"Type::enhancement" ~"Priority::medium"

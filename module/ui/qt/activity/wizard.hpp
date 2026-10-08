@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2024 IRCAD France
+ * Copyright (C) 2016-2026 IRCAD France
  * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -97,33 +97,27 @@ public:
 
     SIGHT_DECLARE_SERVICE(wizard, sight::ui::editor);
 
+    struct signals
+    {
+        using activity_created_t = core::com::signal<void (data::activity::sptr)>;
+        using activity_updated_t = core::com::signal<void (data::activity::sptr)>;
+        using canceled_t         = core::com::signal<void ()>;
+        static inline const signal_key_t ACTIVITY_CREATED = "activity_created";
+        static inline const signal_key_t ACTIVITY_UPDATED = "activity_updated";
+        static inline const signal_key_t CANCELED         = "canceled";
+    };
+
+    struct slots
+    {
+        static inline const slot_key_t CREATE_ACTIVITY = "create_activity";
+        static inline const slot_key_t UPDATE_ACTIVITY = "update_activity";
+    };
+
     /// Constructor. Do nothing.
     wizard() noexcept;
 
     /// Destructor. Do nothing.
     ~wizard() noexcept override;
-
-    /**
-     * @name Slot API
-     * @{
-     */
-    static const core::com::slots::key_t CREATE_ACTIVITY_SLOT;
-    static const core::com::slots::key_t UPDATE_ACTIVITY_SLOT;
-    /// @}
-
-    /**
-     * @name Signal API
-     * @{
-     */
-    static const core::com::signals::key_t ACTIVITY_CREATED_SIG;
-    using activity_created_signal_t = core::com::signal<void (data::activity::sptr)>;
-
-    static const core::com::signals::key_t ACTIVITY_UPDATED_SIG;
-    using activity_updated_signal_t = core::com::signal<void (data::activity::sptr)>;
-
-    static const core::com::signals::key_t CANCELED_SIG;
-    using canceled_signal_t = core::com::signal<void ()>;
-    /// @}
 
 protected:
 
@@ -188,10 +182,6 @@ private:
 
     bool m_confirm_update {true}; ///< if true, the editor proposes a confirmation dialog when the activity is updated.
     bool m_is_cancelable {true};  /// true if the cancel button is proposed
-
-    activity_created_signal_t::sptr m_sig_activity_created; ///< Signal emitted when the activity is created
-    activity_created_signal_t::sptr m_sig_activity_updated; ///< Signal emitted when the activity is updated
-    canceled_signal_t::sptr m_sig_canceled;                 /// Signal emitted when the creation is canceled.
 
     static constexpr std::string_view ACTIVITY_SET = "activitySet";
     data::ptr<data::activity_set, data::access::inout> m_activity_set {this, ACTIVITY_SET};

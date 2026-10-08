@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,6 +27,7 @@
 #include <core/exceptionmacros.hpp>
 
 #include <filesystem>
+#include <fstream>
 #include <utility>
 
 namespace sight::io::zip
@@ -46,7 +47,7 @@ read_dir_archive::~read_dir_archive()
 
 //-----------------------------------------------------------------------------
 
-SPTR(std::istream) read_dir_archive::get_file(const std::filesystem::path& _path)
+sight::sptr<std::istream> read_dir_archive::get_file(const std::filesystem::path& _path)
 {
     SIGHT_THROW_EXCEPTION_IF(
         io::zip::exception::read(
@@ -56,7 +57,7 @@ SPTR(std::istream) read_dir_archive::get_file(const std::filesystem::path& _path
         !std::filesystem::exists(m_archive / _path)
     );
 
-    SPTR(std::ifstream) is = std::make_shared<std::ifstream>();
+    sight::sptr<std::ifstream> is = std::make_shared<std::ifstream>();
     is->open((m_archive / _path).string().c_str(), std::fstream::binary | std::fstream::in);
     return is;
 }

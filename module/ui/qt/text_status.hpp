@@ -75,13 +75,26 @@ public:
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(text_status, sight::ui::editor);
 
+    struct slots
+    {
+        using double_t = core::com::slot<void (double)>;
+        using int_t    = core::com::slot<void (int)>;
+        using bool_t   = core::com::slot<void (bool)>;
+        using string_t = core::com::slot<void (std::string)>;
+
+        static inline const slot_key_t SET_DOUBLE_PARAMETER = "set_double_parameter";
+        static inline const slot_key_t SET_INT_PARAMETER    = "set_int_parameter";
+        static inline const slot_key_t SET_BOOL_PARAMETER   = "set_bool_parameter";
+        static inline const slot_key_t SET_STRING_PARAMETER = "set_string_parameter";
+    };
+
     /// Initializes slots and member.
     text_status();
 
     /// Destroys the service.
     ~text_status() override = default;
 
-private:
+protected:
 
     /// Configures the service.
     void configuring() override;
@@ -99,9 +112,11 @@ private:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::object::MODIFIED_SIG of s_STRING_INPUT to service::slots::UPDATE
+     * Connect data::signals::MODIFIED of s_STRING_INPUT to service::slots::UPDATE
      */
     connections_t auto_connections() const override;
+
+private:
 
     /// Sets the interger to display.
     void set_int_parameter(int _val);

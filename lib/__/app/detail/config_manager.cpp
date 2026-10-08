@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,22 +25,22 @@
 #include "app/detail/config_manager.hpp"
 
 #include "app/extension/config.hpp"
-#include <core/progress/has_monitors.hpp>
+#include "app/helper/config.hpp"
+#include "app/updater.hpp"
+#include <core/notification/has_monitors.hpp>
 #include <core/thread/worker.hpp>
 #include <service/extension/factory.hpp>
-#include "app/helper/config.hpp"
 #include <service/op.hpp>
-#include <service/manager.hpp>
 #include <service/registry.hpp>
 
 #include <boost/algorithm/string/case_conv.hpp>
 #include <core/com/proxy.hpp>
-#include <core/com/slots.hxx>
+
 #include <core/runtime/exit_exception.hpp>
 #include <core/runtime/runtime.hpp>
 #include <memory>
 
-#define FW_PROFILING_DISABLED
+#define SIGHT_PROFILING_DISABLED
 #include <core/profiling.hpp>
 
 #include <data/object.hpp>
@@ -54,21 +54,16 @@ namespace sight::app::detail
 
 // ------------------------------------------------------------------------
 
-static const core::com::slots::key_t ADD_OBJECTS_SLOT        = "addObject";
-static const core::com::slots::key_t REMOVE_OBJECTS_SLOT     = "removeObjects";
-static const core::com::slots::key_t ADD_STARTED_SRV_SLOT    = "add_started_service";
-static const core::com::slots::key_t REMOVE_STARTED_SRV_SLOT = "remove_started_service";
-
 static const std::string PREFERENCES_SRV = "__generated_preference_srv";
 
 // ------------------------------------------------------------------------
 
 config_manager::config_manager()
 {
-    new_slot(ADD_OBJECTS_SLOT, &config_manager::add_objects, this);
-    new_slot(REMOVE_OBJECTS_SLOT, &config_manager::remove_objects, this);
+    new_slot(slots::ADD_OBJECTS, &config_manager::add_objects, this);
+    new_slot(slots::REMOVE_OBJECTS, &config_manager::remove_objects, this);
     new_slot(
-        ADD_STARTED_SRV_SLOT,
+        slots::ADD_STARTED_SRV,
         [this](service::base::wptr _srv)
         {
             core::mt::scoped_lock lock(m_mutex);
@@ -86,7 +81,7 @@ config_manager::config_manager()
             }
         });
     new_slot(
-        REMOVE_STARTED_SRV_SLOT,
+        slots::REMOVE_STARTED_SRV,
         [this](service::base::wptr _srv)
         {
             core::mt::scoped_lock lock(m_mutex);
@@ -106,7 +101,14 @@ config_manager::config_manager()
 
 config_manager::~config_manager()
 {
-    SIGHT_ASSERT("Manager must be stopped before destruction.", m_state == state_destroyed);
+    SIGHT_ASSERT("Manager must be stopped before destruction.", is_destroyed());
+}
+
+//------------------------------------------------------------------------------
+
+void config_manager::set_config(const config_t& _cfg)
+{
+    m_cfg_elem = _cfg;
 }
 
 // ------------------------------------------------------------------------
@@ -128,7 +130,7 @@ void config_manager::set_config(
 
 void config_manager::launch()
 {
-    FW_PROFILE("launch");
+    SIGHT_PROFILE("launch");
 
     try
     {
@@ -146,7 +148,7 @@ void config_manager::launch()
         SIGHT_DEBUG("Exit exception caught. Exit code:" << e.what());
 
         // To ensure proper destruction of the manager
-        m_state = state_started;
+        set_state(state_started);
     }
 }
 
@@ -174,10 +176,10 @@ void config_manager::start_module()
 
 void config_manager::create()
 {
-    SIGHT_ASSERT("Manager already running.", m_state == state_destroyed);
+    SIGHT_ASSERT("Manager already running.", is_destroyed());
 
-    m_add_object_connection    = connect_register_out(this->slot(ADD_OBJECTS_SLOT));
-    m_remove_object_connection = connect_unregister_out(this->slot(REMOVE_OBJECTS_SLOT));
+    m_add_object_connection    = connect_register_out(this->slot(slots::ADD_OBJECTS));
+    m_remove_object_connection = connect_unregister_out(this->slot(slots::REMOVE_OBJECTS));
 
     this->create_objects(m_cfg_elem);
     this->create_connections();
@@ -187,17 +189,17 @@ void config_manager::create()
     this->create_services(m_cfg_elem);
     this->create_updater_services();
 
-    m_state = state_created;
+    set_state(state_created);
 }
 
 // ------------------------------------------------------------------------
 
 void config_manager::start()
 {
-    SIGHT_ASSERT("Manager must be created first.", m_state == state_created || m_state == state_stopped);
+    SIGHT_ASSERT("Manager must be created first.", is_created() || stopped());
     SIGHT_INFO(std::quoted(this->m_config_id) << " started");
 
-    core::com::has_slots::m_slots.set_worker(core::thread::get_default_worker());
+    core::com::has_slots::slots().set_worker(core::thread::get_default_worker());
 
     service::config_t start_config;
     const auto add_start_elements =
@@ -217,7 +219,7 @@ void config_manager::start()
 
     this->process_start_items(start_config);
 
-    m_state = state_started;
+    set_state(state_started);
 }
 
 // ------------------------------------------------------------------------
@@ -231,47 +233,73 @@ void config_manager::update()
 
 void config_manager::stop()
 {
-    SIGHT_ASSERT("Manager is not started, cannot stop.", m_state == state_started);
+    SIGHT_ASSERT("Manager is not started, cannot stop.", started());
     SIGHT_INFO(std::quoted(this->m_config_id) << " stopped");
 
     m_add_object_connection.disconnect();
     m_remove_object_connection.disconnect();
 
-    std::vector<service::base::shared_future_t> futures;
     std::vector<core::com::connection::blocker> blockers;
+    const auto stop_services =
+        [this, &blockers](bool _updaters)
+        {
+            std::vector<service::base::shared_future_t> futures;
+            {
+                core::mt::scoped_lock lock(m_mutex);
+                for(auto& w_srv : std::views::reverse(m_started_srv))
+                {
+                    const service::base::sptr srv = w_srv.lock();
+                    SIGHT_ASSERT(
+                        "Service expired.",
+                        srv
+                    );
+
+                    if((std::dynamic_pointer_cast<app::updater>(srv) != nullptr) != _updaters)
+                    {
+                        continue;
+                    }
+
+                    // The service can have been stopped just before...
+                    // This is a rare case, but nothing can really prevent that. So we just warn the developer, because
+                    // if it was not expected, at least he has a notice in the log.
+                    if(srv->stopped())
+                    {
+                        SIGHT_WARN("Service " << srv->get_id() << " already stopped.");
+                    }
+                    else
+                    {
+                        if(const auto updater = std::dynamic_pointer_cast<app::updater>(srv); updater)
+                        {
+                            updater->request_stop();
+                        }
+
+                        auto sig = srv->signal(service::signals::STOPPED);
+                        blockers.emplace_back(sig->get_connection(slot(slots::REMOVE_STARTED_SRV)));
+                        futures.emplace_back(srv->stop());
+                    }
+                }
+            }
+
+            std::ranges::for_each(futures, std::mem_fn(&std::shared_future<void>::wait));
+        };
+
     {
         core::mt::scoped_lock lock(m_mutex);
 
         // Disconnect configuration connections
         this->destroy_proxies();
-
-        for(auto& w_srv : std::views::reverse(m_started_srv))
-        {
-            const service::base::sptr srv = w_srv.lock();
-            SIGHT_ASSERT(
-                "Service expired.",
-                srv
-            );
-
-            // The service can have been stopped just before...
-            // This is a rare case, but nothing can really prevent that. So we just warn the developer, because if it
-            // was not expected, at least he has a notice in the log
-            if(srv->stopped())
-            {
-                SIGHT_WARN("Service " << srv->get_id() << " already stopped.");
-            }
-            else
-            {
-                auto sig = srv->signal(service::signals::STOPPED);
-                blockers.emplace_back(sig->get_connection(slot(REMOVE_STARTED_SRV_SLOT)));
-                futures.emplace_back(srv->stop());
-            }
-        }
-
-        m_started_srv.clear();
-        m_state = state_stopped;
     }
-    std::ranges::for_each(futures, std::mem_fn(&std::shared_future<void>::wait));
+
+    // An updater may still be executing a sequence when shutdown starts. Wait for it before stopping the services it
+    // drives, otherwise it can update a service that has already been stopped.
+    stop_services(true);
+    stop_services(false);
+
+    {
+        core::mt::scoped_lock lock(m_mutex);
+        m_started_srv.clear();
+        set_state(state_stopped);
+    }
 
     app::helper::config::clear_props();
 }
@@ -280,7 +308,7 @@ void config_manager::stop()
 
 void config_manager::destroy()
 {
-    SIGHT_ASSERT("Manager is not stopped, cannot destroy.", m_state == state_stopped || m_state == state_created);
+    SIGHT_ASSERT("Manager is not stopped, cannot destroy.", stopped() || is_created());
     this->destroy_created_services();
 
     SIGHT_DEBUG(
@@ -299,7 +327,7 @@ void config_manager::destroy()
     m_deferred_update_srv.clear();
     m_services_proxies.clear();
 
-    m_state = state_destroyed;
+    set_state(state_destroyed);
 }
 
 // ------------------------------------------------------------------------
@@ -309,7 +337,7 @@ void config_manager::add_existing_deferred_object(const data::object::sptr& _obj
     SIGHT_ASSERT(
         this->msg_head()
         + "Existing deferred objects must be added before starting the configuration, it's useless to do it later",
-        m_state == state_destroyed
+        is_destroyed()
     );
     deferred_object_t deferred_object;
     deferred_object.m_object = _obj;
@@ -373,6 +401,7 @@ data::object::sptr config_manager::find_object(const std::string& _uid, std::str
 
 // ------------------------------------------------------------------------
 
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 service::base::sptr config_manager::get_new_service(const std::string& _uid, const std::string& _impl_type) const
 {
     auto srv_factory = service::extension::factory::get();
@@ -451,7 +480,7 @@ void config_manager::process_start_items(const core::runtime::config_t& _element
                 );
 
                 auto sig = srv->signal(service::signals::STARTED);
-                blockers.emplace_back(sig->get_connection(slot(ADD_STARTED_SRV_SLOT)));
+                blockers.emplace_back(sig->get_connection(slot(slots::ADD_STARTED_SRV)));
                 futures.emplace_back(srv->start());
                 m_started_srv.push_back(srv);
             }
@@ -565,10 +594,21 @@ void config_manager::create_objects(const core::runtime::config_t& _cfg_elem)
 
 void config_manager::create_services(const core::runtime::config_t& _cfg_elem)
 {
+    std::set<std::string> deferred_uids;
+    std::ranges::transform(
+        m_deferred_objects,
+        std::inserter(deferred_uids, deferred_uids.begin()),
+        [](const auto& _o){return _o.first;});
+
     for(const auto& service_cfg : boost::make_iterator_range(_cfg_elem.equal_range("service")))
     {
         // Parse the service configuration
-        auto srv_config = app::helper::config::parse_service(service_cfg.second, this->msg_head(), m_created_objects);
+        auto srv_config = app::helper::config::parse_service(
+            service_cfg.second,
+            this->msg_head(),
+            m_created_objects,
+            deferred_uids
+        );
 
         // Check if we can start the service now or if we must deferred its creation
         bool create_service = true;
@@ -606,7 +646,7 @@ void config_manager::create_services(const core::runtime::config_t& _cfg_elem)
         if(create_service)
         {
             auto srv                  = this->create_service(srv_config);
-            const auto start_property = srv->inout<sight::data::boolean>("start");
+            const auto start_property = srv->inout<sight::data::boolean>("config.start");
             if(*start_property.lock())
             {
                 config_t auto_start_cfg;
@@ -643,11 +683,14 @@ void config_manager::create_services(const core::runtime::config_t& _cfg_elem)
 service::base::sptr config_manager::create_service(const detail::service_config& _srv_config)
 {
     // Create and bind service
-    service::base::sptr srv = this->get_new_service(_srv_config.m_uid, _srv_config.m_type);
+    service::base::sptr srv = sight::app::detail::config_manager::get_new_service(
+        _srv_config.m_uid,
+        _srv_config.m_type
+    );
     service::register_service(srv);
     m_created_srv.push_back(srv);
 
-    const bool has_monitors = std::dynamic_pointer_cast<sight::core::progress::has_monitors>(srv) != nullptr;
+    const bool has_monitors = std::dynamic_pointer_cast<sight::core::notification::has_monitors>(srv) != nullptr;
 
     if(not _srv_config.m_worker.empty() || has_monitors)
     {
@@ -722,8 +765,8 @@ service::base::sptr config_manager::create_service(const detail::service_config&
     // Configure
     srv->configure();
 
-    srv->signal(service::signals::STARTED)->connect(this->slot(ADD_STARTED_SRV_SLOT));
-    srv->signal(service::signals::STOPPED)->connect(this->slot(REMOVE_STARTED_SRV_SLOT));
+    srv->signal(service::signals::STARTED)->connect(this->slot(slots::ADD_STARTED_SRV));
+    srv->signal(service::signals::STOPPED)->connect(this->slot(slots::REMOVE_STARTED_SRV));
 
     return srv;
 }
@@ -916,6 +959,11 @@ void config_manager::create_updater_services()
 
             config_t service_cfg;
             service_cfg.put("<xmlattr>.uid", uid);
+            if(const auto worker = _elem.get_optional<std::string>("<xmlattr>.worker"); worker.has_value())
+            {
+                service_cfg.put("<xmlattr>.worker", *worker);
+            }
+
             if(_sequence)
             {
                 service_cfg.put("<xmlattr>.type", "sight::app::update_sequence");
@@ -961,10 +1009,10 @@ void config_manager::create_updater_services()
 
             service_cfg.add_child("config", config);
 
-            config_t properties;
+            config_t start_cfg;
             const auto start = _elem.get("<xmlattr>.start", true);
-            properties.put("<xmlattr>.start", start);
-            service_cfg.add_child("properties", properties);
+            start_cfg.put("<xmlattr>.start", start);
+            service_cfg.add_child("config", start_cfg);
 
             config_t updater_service_cfg;
             updater_service_cfg.add_child("service", service_cfg);
@@ -992,12 +1040,13 @@ void config_manager::create_updater_services()
 
 // ------------------------------------------------------------------------
 
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 void config_manager::destroy_proxy(
     const std::string& _channel,
     const proxy_connections_t& _proxy_cfg,
     const std::string& _key,
     data::object::csptr _hint_obj
-)
+) const
 {
     core::com::proxy::sptr proxy = core::com::proxy::get();
 
@@ -1066,7 +1115,7 @@ void config_manager::destroy_proxies()
         {
             for(const auto& it_proxy : it_deferred_obj.second.m_proxy_cnt)
             {
-                this->destroy_proxy(
+                sight::app::detail::config_manager::destroy_proxy(
                     it_proxy.first,
                     it_proxy.second,
                     it_deferred_obj.first,
@@ -1081,7 +1130,7 @@ void config_manager::destroy_proxies()
     // Remove local proxies from all created objects
     for(const auto& it_proxy : m_created_objects_proxies)
     {
-        this->destroy_proxy(it_proxy.first, it_proxy.second);
+        sight::app::detail::config_manager::destroy_proxy(it_proxy.first, it_proxy.second);
     }
 
     m_created_objects_proxies.clear();
@@ -1094,13 +1143,13 @@ void config_manager::add_objects(data::object::sptr _obj, const std::string& _id
     SIGHT_ASSERT("Object id can not be empty", !_id.empty());
 
     core::mt::scoped_lock lock(m_mutex);
-    if(m_state != state_started)
+    if(not started())
     {
         SIGHT_INFO("Skip processing of a new object since the config is not running.");
         return;
     }
 
-    FW_PROFILE("addObjects");
+    SIGHT_PROFILE("addObjects");
 
     // Local map used to process services only once
     std::map<std::string, const detail::service_config*> services_map_cfg;
@@ -1270,7 +1319,7 @@ void config_manager::add_objects(data::object::sptr _obj, const std::string& _id
         auto it_srv = new_services.find(uid);
         if(it_srv != new_services.end())
         {
-            const auto start_property = it_srv->second->inout<sight::data::boolean>("start");
+            const auto start_property = it_srv->second->inout<sight::data::boolean>("config.start");
             // Autostart with respect to the start property
             if(*start_property.lock())
             {
@@ -1315,13 +1364,13 @@ void config_manager::remove_objects(data::object::sptr _obj, const std::string& 
     SIGHT_ASSERT("Object id can not be empty", !_id.empty());
 
     core::mt::scoped_lock lock(m_mutex);
-    if(m_state != state_started)
+    if(not started())
     {
         SIGHT_INFO("Skip processing of a new object since the config is not running.");
         return;
     }
 
-    FW_PROFILE("removeObjects");
+    SIGHT_PROFILE("removeObjects");
 
     // Are there services that were connected with this object ?
     const auto it_deferred_obj = m_deferred_objects.find(_id);
@@ -1329,7 +1378,12 @@ void config_manager::remove_objects(data::object::sptr _obj, const std::string& 
     {
         for(const auto& it_proxy : it_deferred_obj->second.m_proxy_cnt)
         {
-            this->destroy_proxy(it_proxy.first, it_proxy.second, _id, it_deferred_obj->second.m_object);
+            sight::app::detail::config_manager::destroy_proxy(
+                it_proxy.first,
+                it_proxy.second,
+                _id,
+                it_deferred_obj->second.m_object
+            );
         }
 
         it_deferred_obj->second.m_object.reset();

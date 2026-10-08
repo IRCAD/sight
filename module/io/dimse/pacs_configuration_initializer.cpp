@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,15 +22,7 @@
 
 #include "pacs_configuration_initializer.hpp"
 
-#include <data/map.hpp>
-#include <data/string.hpp>
-
-#include <service/macros.hpp>
-#include <service/registry.hpp>
-
 #include <ui/__/preferences.hpp>
-
-#include <utility>
 
 namespace sight::module::io::dimse
 {
@@ -83,8 +75,8 @@ void pacs_configuration_initializer::configuring()
     // Retrieve Method.
     const auto retrieve_method = config.get<std::string>(RETRIEVE_METHOD);
     m_retrieve_method = (retrieve_method == "MOVE")
-                        ? (sight::io::dimse::data::pacs_configuration::retrieve_method::move)
-                        : (sight::io::dimse::data::pacs_configuration::retrieve_method::get);
+                        ? sight::io::dimse::data::pacs_configuration::retrieve_method::move
+                        : sight::io::dimse::data::pacs_configuration::retrieve_method::get;
 
     // Move application title.
     m_move_app_entity_title = config.get<std::string>(MOVE_APPLICATION_TITLE);
@@ -144,7 +136,7 @@ service::connections_t pacs_configuration_initializer::auto_connections() const
 
     connections.push(
         CONFIG_INOUT,
-        sight::io::dimse::data::pacs_configuration::MODIFIED_SIG,
+        sight::data::signals::MODIFIED,
         service::slots::UPDATE
     );
 

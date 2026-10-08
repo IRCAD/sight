@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2024 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include <viz/scene3d/adaptor.hpp>
 
-#include <OGRE/OgreCompositionTechnique.h>
+#include <OGRE/OgreRenderTargetListener.h>
 
 namespace sight::module::viz::scene3d::adaptor
 {
@@ -35,17 +35,17 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::adaptor::fragments_info">
-        <config layer="default  width="1280" height="720"/>
-        <inout key="image" uid="..." />
-        <inout key="depth" uid="..." />
-        <inout key="primitiveID" uid="..." />
+        <config layer="default" width="" height="720" />
+        <data image="${...}" />
+        <data depth="${...}" />
+        <data primitiveID="${...}" />
     </service>
    @endcode
  *
- * @subsection InOut InOut:
- * - \b image [sight::data::image] (optional): image containing the snapshot of the layer color buffer.
- * - \b depth [sight::data::image] (optional): image containing the snapshot of the layer depth buffer.
- * - \b primitiveID [sight::data::image] (optional): image containing the primitive ID of the layer.
+ * @subsection Input Input:
+ * - \b data.image [sight::data::image] (optional): image containing the snapshot of the layer color buffer.
+ * - \b data.depth [sight::data::image] (optional): image containing the snapshot of the layer depth buffer.
+ * - \b data.primitiveID [sight::data::image] (optional): image containing the primitive ID of the layer.
  *
  * @subsection Configuration Configuration:
  * - \b width (optional): fixed width of snapshot.
@@ -62,6 +62,11 @@ public:
 
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(fragments_info, sight::viz::scene3d::adaptor);
+
+    struct slots
+    {
+        static inline const slot_key_t RESIZE_VIEWPORT = "resize_viewport";
+    };
 
     /// Initializes the adaptor.
     fragments_info() noexcept;
@@ -130,13 +135,13 @@ private:
     /// Handles connection with the layer.
     core::com::helper::sig_slot_connection m_resize_connection;
 
-    static constexpr std::string_view IMAGE_INOUT = "image";
+    static constexpr std::string_view IMAGE_INOUT = "data.image";
     data::ptr<data::image, data::access::inout> m_image {this, IMAGE_INOUT};
 
-    static constexpr std::string_view DEPTH_INOUT = "depth";
+    static constexpr std::string_view DEPTH_INOUT = "data.depth";
     data::ptr<data::image, data::access::inout> m_depth {this, DEPTH_INOUT};
 
-    static constexpr std::string_view PRIMITIVE_ID_INOUT = "primitiveID";
+    static constexpr std::string_view PRIMITIVE_ID_INOUT = "data.primitiveID";
     data::ptr<data::image, data::access::inout> m_primitive {this, PRIMITIVE_ID_INOUT};
 };
 

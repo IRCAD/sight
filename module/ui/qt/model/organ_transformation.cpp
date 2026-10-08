@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,20 +21,11 @@
  ***********************************************************************/
 
 #include "organ_transformation.hpp"
+#include "data/helper/field.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slot.hxx>
-#include <core/id.hpp>
-
-#include <data/helper/field.hpp>
-#include <data/material.hpp>
 #include <data/mesh.hpp>
 #include <data/reconstruction.hpp>
-
 #include <geometry/data/matrix4.hpp>
-
-#include <service/macros.hpp>
-
 #include <ui/qt/container/widget.hpp>
 
 #include <QCheckBox>
@@ -46,8 +37,6 @@
 #include <QString>
 #include <QStringList>
 #include <QVBoxLayout>
-
-#include <map>
 
 namespace sight::module::ui::qt::model
 {
@@ -170,7 +159,7 @@ void organ_transformation::refresh()
         {
             std::string organ_name = it.first;
             auto* item             = new QListWidgetItem(QString::fromStdString(organ_name), m_reconstruction_list_box);
-            if(p_map && p_map->find(organ_name) != p_map->end())
+            if(p_map && p_map->contains(organ_name))
             {
                 item->setCheckState(Qt::Checked);
             }
@@ -188,8 +177,7 @@ void organ_transformation::refresh()
 
 void organ_transformation::notify_transformation_matrix(data::matrix4::sptr _a_trans_mat)
 {
-    auto sig = _a_trans_mat->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-    sig->async_emit();
+    _a_trans_mat->async_emit(data::signals::MODIFIED);
 }
 
 //------------------------------------------------------------------------------
@@ -230,7 +218,7 @@ void organ_transformation::on_reset_click()
             p_tmp_tr_mesh->get_field<data::matrix4>(MATRIX_FIELD_NAME);
         if(p_tmp_mat)
         {
-            geometry::data::identity(*p_tmp_mat);
+            sight::geometry::data::identity(*p_tmp_mat);
             notify_transformation_matrix(p_tmp_mat);
         }
     }
@@ -281,7 +269,7 @@ void organ_transformation::on_load_click()
         for(const data::reconstruction::sptr& rec : series->get_reconstruction_db())
         {
             data::mesh::sptr p_tmp_tr_mesh = rec->get_mesh();
-            if(mat_map.find(p_tmp_tr_mesh->get_id()) != mat_map.end())
+            if(mat_map.contains(p_tmp_tr_mesh->get_id()))
             {
                 data::matrix4::sptr p_tmp_mat =
                     p_tmp_tr_mesh->get_field<data::matrix4>(MATRIX_FIELD_NAME);
@@ -354,13 +342,13 @@ void organ_transformation::add_mesh_transform()
 service::connections_t organ_transformation::auto_connections() const
 {
     connections_t connections;
-    connections.push(MODEL_SERIES, data::model_series::MODIFIED_SIG, service::slots::UPDATE);
-    connections.push(MODEL_SERIES, data::model_series::RECONSTRUCTIONS_ADDED_SIG, service::slots::UPDATE);
-    connections.push(MODEL_SERIES, data::model_series::RECONSTRUCTIONS_REMOVED_SIG, service::slots::UPDATE);
-    connections.push(MAP, data::map::MODIFIED_SIG, service::slots::UPDATE);
-    connections.push(MAP, data::map::ADDED_OBJECTS_SIG, service::slots::UPDATE);
-    connections.push(MAP, data::map::CHANGED_OBJECTS_SIG, service::slots::UPDATE);
-    connections.push(MAP, data::map::REMOVED_OBJECTS_SIG, service::slots::UPDATE);
+    connections.push(MODEL_SERIES, data::signals::MODIFIED, service::slots::UPDATE);
+    connections.push(MODEL_SERIES, data::model_series::signals::RECONSTRUCTIONS_ADDED, service::slots::UPDATE);
+    connections.push(MODEL_SERIES, data::model_series::signals::RECONSTRUCTIONS_REMOVED, service::slots::UPDATE);
+    connections.push(MAP, data::signals::MODIFIED, service::slots::UPDATE);
+    connections.push(MAP, data::map::signals::ADDED_OBJECTS, service::slots::UPDATE);
+    connections.push(MAP, data::map::signals::CHANGED_OBJECTS, service::slots::UPDATE);
+    connections.push(MAP, data::map::signals::REMOVED_OBJECTS, service::slots::UPDATE);
 
     return connections;
 }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -133,6 +133,19 @@ public:
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(preferences_configuration, sight::ui::action);
 
+    struct signals
+    {
+        using parameters_modified_t = core::com::signal<void ()>;
+        using changed_t             = core::com::signal<void (sight::ui::parameter_t, std::string)>;
+        static inline const signal_key_t PARAMETERS_MODIFIED = "parameters_modified";
+        static inline const signal_key_t PREFERENCE_CHANGED  = "preference_changed";
+    };
+
+    struct slots
+    {
+        static inline const slot_key_t REQUEST_VALUES = "request_values";
+    };
+
     /// Initializes the signal.
     preferences_configuration() noexcept;
 
@@ -162,30 +175,15 @@ private Q_SLOTS:
 
 private:
 
-    /// Type of signal when parameters are updated.
-    using parameters_modified_signal_t = core::com::signal<void ()>;
-    static const core::com::signals::key_t PARAMETERS_MODIFIED_SIG;
-
-    /// Generic changed signal type
-    using changed_signal_t = core::com::signal<void (sight::ui::parameter_t, std::string)>;
-    static const core::com::signals::key_t PREFERENCE_CHANGED_SIG;
-
-    /// Internal wrapper holding slots keys.
-    struct slots
-    {
-        using key_t = sight::core::com::slots::key_t;
-        static inline const key_t REQUEST_VALUES = "request_values";
-    };
-
     enum class preference_t : std::int8_t
     {
         text,
         checkbox,
-        INT,
+        integer,
         path,
         file,
         combobox,
-        DOUBLE,
+        real,
         list
     };
 
@@ -215,9 +213,6 @@ private:
     static void on_select_file(QPointer<QLineEdit> _line_edit);
 
     void update_from_preferences() noexcept;
-
-    parameters_modified_signal_t::sptr m_sig_parameters_modified;
-    changed_signal_t::sptr m_sig_preference_changed;
 
     std::vector<preference_elt> m_preferences;
 };

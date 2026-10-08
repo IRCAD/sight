@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,12 +25,9 @@
 #include <sight/io/dimse/config.hpp>
 
 #include <core/base_object.hpp>
-#include <core/com/slot.hpp>
 #include <core/com/slots.hpp>
-#include <core/memory/buffer_object.hpp>
-#include <core/progress/observer.hpp>
+#include <core/notification/observer.hpp>
 
-#include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmnet/scu.h>
 
 #include <filesystem>
@@ -72,9 +69,10 @@ public:
     SIGHT_DECLARE_CLASS(series_enquirer, io::dimse::series_enquirer, std::make_shared<series_enquirer>);
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
-    SIGHT_IO_DIMSE_API static const core::com::slots::key_t PROGRESS_CALLBACK_SLOT;
-
-    using progress_callback_slot_t = core::com::slot<void (const std::string&, unsigned int, const std::string&)>;
+    struct slots
+    {
+        static inline const core::com::slots::key_t PROGRESS_CALLBACK = "CGetProgressCallback";
+    };
 
     using instance_uid_container_t = std::vector<std::string>;
 
@@ -102,8 +100,8 @@ public:
         const std::string& _peer_host_name,
         std::uint16_t _peer_port,
         const std::string& _peer_application_title,
-        const std::string& _move_application_title = "",
-        core::progress::observer::sptr _progress   = nullptr
+        const std::string& _move_application_title   = "",
+        core::notification::observer::sptr _progress = nullptr
     );
 
     /// Initializes the network and negotiates association.
@@ -263,7 +261,7 @@ protected:
      * @param _dataset The dicom dataset.
      * @return OFTrue on success.
      */
-    SIGHT_IO_DIMSE_API OFCondition send_store_request(const CSPTR(DcmDataset)& _dataset);
+    SIGHT_IO_DIMSE_API OFCondition send_store_request(const sight::csptr<DcmDataset>& _dataset);
 
     /**
      * @brief Handles a C-MOVE response.
@@ -303,7 +301,7 @@ private:
     std::string m_move_application_title;
 
     /// Contains the progress callback slot.
-    core::progress::observer::sptr m_progress;
+    core::notification::observer::sptr m_progress;
 
     /// Sets the dowloaded instance index.
     unsigned int m_instance_index {0};

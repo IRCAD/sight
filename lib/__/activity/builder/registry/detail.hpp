@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,8 +41,8 @@ using key_t = std::string;
 
 using type = core::factory_registry<std::shared_ptr<activity::builder::base>(), key_t>;
 
-SIGHT_ACTIVITY_API SPTR(type) get();
+SIGHT_ACTIVITY_API sight::sptr<type> get();
 
-} // namespace builder::registry
+} // namespace registry
 
-} // namespace sight::activity
+} // namespace sight::activity::builder

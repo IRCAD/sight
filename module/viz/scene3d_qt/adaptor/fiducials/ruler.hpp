@@ -44,13 +44,13 @@ namespace sight::module::viz::scene3d_qt::adaptor::fiducials
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d_qt::adaptor::fiducials::ruler" auto_connect="true" >
-        <inout key="image" uid="..." />
+        <data image="${...}" />
         <config font_size="16" radius="3" priority="2" />
     </service>
    @endcode
  *
  * @subsection Input Input:
- * - \b image [sight::data::image]: image containing the ruler fiducials.
+ * - \b data.image [sight::data::image]: image containing the ruler fiducials.
  *
  * @subsection Configuration Configuration:
  * - \b font_size (optional, int, default=16): font size in labels, if equals 0 we hide the label instead.
@@ -63,11 +63,12 @@ namespace sight::module::viz::scene3d_qt::adaptor::fiducials
  * - \b always_display_all (optional, bool, default=false): boolean that impacts how rulers will be displayed.
  * If it's true, all rulers will always be displayed, regardless of the current slice.
 
- * @subsection Properties Properties:
- * - \b max_rulers [sight::data::integer]: Maximal number of rulers to be displayed at once..
+ * @subsection Input Input:
+ * - \b config.max_ruler [sight::data::integer] (optional, default=0): Maximal number of rulers to be displayed at once.
  *
  * @section Slots Slots
  * - \b activate_tool(bool): enables or not the ruler tool.
+ * - \b set_image_visibility(string, bool): follows the visibility of the input image.
  * - \b remove_all(): removes all rulers.
  * - \b remove_from_current_slice(): removes rulers contained in the current slice.
  *
@@ -82,10 +83,8 @@ public:
 
     struct signals
     {
-        using key_t = sight::core::com::signals::key_t;
-
-        static inline const key_t TOOL_DEACTIVATED = "tool_deactivated";
-        using void_signal_t = sight::core::com::signal<void ()>;
+        static inline const signal_key_t TOOL_DEACTIVATED = "tool_deactivated";
+        using void_t = sight::core::com::signal<void ()>;
     };
 
     /// Generates default methods as New, dynamicCast, ...
@@ -99,12 +98,38 @@ public:
 
     struct slots final
     {
-        using key_t = sight::core::com::slots::key_t;
-
-        inline static const key_t ACTIVATE_TOOL             = "activate_tool";
-        inline static const key_t REMOVE_ALL                = "remove_all";
-        inline static const key_t REMOVE_FROM_CURRENT_SLICE = "remove_from_current_slice";
+        inline static const slot_key_t ACTIVATE_TOOL             = "activate_tool";
+        inline static const slot_key_t SET_IMAGE_VISIBILITY      = "set_image_visibility";
+        inline static const slot_key_t REMOVE_ALL                = "remove_all";
+        inline static const slot_key_t REMOVE_FROM_CURRENT_SLICE = "remove_from_current_slice";
     };
+
+    /// Changes visibility of rulers.
+    void set_visible(bool _visible) final;
+
+    /// SLOT: Changes the visibility when the input image visibility changes.
+    void set_image_visibility(std::string _image_id, bool _visible);
+
+    /**
+     * @brief Retrieves the picked ruler and stores the result in m_picked_ruler.
+     * @param _button mouse modifier.
+     * @param _x X screen coordinate.
+     * @param _y Y screen coordinate.
+     */
+    void button_press_event(mouse_button _button, modifier _mod, int _x, int _y) final;
+
+    /**
+     * @brief Moves a ruler stored in m_picked_ruler.
+     * @param _x X screen coordinate.
+     * @param _y Y screen coordinate.
+     */
+    void mouse_move_event(mouse_button /*_button*/, modifier _mod, int _x, int _y, int /*_dx*/, int /*_dy*/) final;
+
+    /// Resets m_picked_ruler.
+    void button_release_event(mouse_button _button, modifier _mod, int _x, int _y) final;
+
+    /// Catches escape to go out of the ruler creation mode.
+    void key_press_event(int _key, modifier /*_mods*/, int /*_mouseX*/, int /*_mouseY*/) final;
 
 protected:
 
@@ -119,20 +144,19 @@ protected:
     /// Creates or recreates m_ruler_ogre_sets from the fiducials.
     void updating() final;
 
+    /// Rebuilds the rulers when the input image changes.
+    void swapping(std::string_view _key) final;
+
     /// Removes the interactor, reset materials and m_ruler_ogre_sets.
     void stopping() final;
-
-    /// Gets the current control point radius, depending on the interactivity state.
-    float control_point_radius();
 
 private:
 
     struct private_slots final
     {
-        using key_t = sight::core::com::slots::key_t;
-        inline static const key_t REMOVE_RULER_OGRE_SET    = "remove_ruler_ogre_set";
-        inline static const key_t UPDATE_MODIFIED_RULER    = "update_modified_ruler";
-        inline static const key_t DISPLAY_ON_CURRENT_SLICE = "display_on_current_slice";
+        inline static const slot_key_t REMOVE_RULER_OGRE_SET    = "remove_ruler_ogre_set";
+        inline static const slot_key_t UPDATE_MODIFIED_RULER    = "update_modified_ruler";
+        inline static const slot_key_t DISPLAY_ON_CURRENT_SLICE = "display_on_current_slice";
     };
 
     class delete_bin_button_when_focus_out : public QObject
@@ -140,7 +164,7 @@ private:
     public:
 
         explicit delete_bin_button_when_focus_out(ruler* _ruler);
-        bool eventFilter(QObject* _o, QEvent* _e) override;
+        bool eventFilter(QObject* _o, QEvent* _e) final;
     };
 
     /// Represents ogre elements and the associated fiducial id.
@@ -168,31 +192,31 @@ private:
     /// Vector of ruler_ogre_sets.
     std::vector<ruler_ogre_set> m_ruler_ogre_sets;
 
+    /// Gets the current control point radius, depending on the interactivity state.
+    float control_point_radius();
+
     /// Creates a ruler fiducial and add it to fiducial_sets.
     void create_ruler_fiducial(
-        const std::array<float, 4> _color,
-        const std::optional<std::string> _id,
-        const std::array<double, 3> _begin,
-        const std::array<double, 3> _end
+        std::array<float, 4> _color,
+        std::optional<std::string> _id,
+        std::array<double, 3> _begin,
+        std::array<double, 3> _end
     );
 
     /// Create a ruler_ogre_set and store it in m_ruler_ogre_sets.
     void create_ruler_ogre_set(
-        const std::array<float, 4> _color,
-        const float _sphere_radius,
-        const std::optional<std::string> _id,
-        const std::array<double, 3> _begin,
-        const std::array<double, 3> _end,
-        const bool _visible,
+        std::array<float, 4> _color,
+        float _sphere_radius,
+        std::optional<std::string> _id,
+        std::array<double, 3> _begin,
+        std::array<double, 3> _end,
+        bool _visible,
         int _slice_index
     );
 
     /// SLOT: Activates the ruler tool by changing the cursor and updating a boolean.
     /// @param _activate set the state of ruler tool.
-    void activate_tool(const bool _activate);
-
-    /// Changes visibility of rulers.
-    void set_visible(bool _visible) override;
+    void activate_tool(bool _activate);
 
     /// SLOT: Removes ogre elements from m_ruler_ogre_sets for the given id ruler.
     void remove_ruler_ogre_set(std::optional<std::string> _id);
@@ -209,36 +233,6 @@ private:
     /// SLOT: Displays ruler associated to the current slice.
     void display_on_current_slice();
 
-    /**
-     * @brief Retrieves the picked ruler and stores the result in m_picked_ruler.
-     * @param _button mouse modifier.
-     * @param _x X screen coordinate.
-     * @param _y Y screen coordinate.
-     */
-    void button_press_event(mouse_button _button, modifier _mod, int _x, int _y) override;
-
-    /**
-     * @brief Moves a ruler stored in m_picked_ruler.
-     * @param _x X screen coordinate.
-     * @param _y Y screen coordinate.
-     */
-    void mouse_move_event(
-        mouse_button /*_button*/,
-        modifier _mod,
-        int _x,
-        int _y,
-        int /*_dx*/,
-        int /*_dy*/
-    ) override;
-
-    /// Resets m_picked_ruler.
-    void button_release_event(
-        mouse_button _button,
-        modifier _mod,
-        int _x,
-        int _y
-    ) override;
-
     /// Updates picked ruler on mouse movement.
     void update_picked_ruler(ruler_ogre_set* _ruler_to_update, Ogre::Vector3 _begin, Ogre::Vector3 _end);
 
@@ -250,14 +244,6 @@ private:
         std::array<double, 3> _end
     );
 
-    /// Catches escape to go out of the ruler creation mode.
-    void key_press_event(
-        int _key,
-        modifier /*_mods*/,
-        int /*_mouseX*/,
-        int /*_mouseY*/
-    ) final;
-
     /// Changes the cursor type.
     void set_cursor(QCursor _cursor);
 
@@ -266,7 +252,6 @@ private:
 
     /// Returns true if the given ruler is on current slice
     bool is_visible_on_current_slice(std::array<double, 3> _begin, std::array<double, 3> _end);
-
     using axis_t = sight::data::helper::medical_image::axis_t;
 
     axis_t m_axis {
@@ -281,6 +266,9 @@ private:
 
     /// Defines whether the rulers are actually visible or not.
     bool m_visible {true};
+
+    /// Indicates whether the image associated with this adaptor is visible.
+    bool m_image_visible {true};
 
     /// Defines the priority of the interactor.
     int m_priority {2};
@@ -328,7 +316,7 @@ private:
     bool m_is_over_ruler {false};
 
     /// Defines the current picked data, reset by buttonReleaseEvent(MouseButton, int, int).
-    picked_ruler m_picked_ruler {nullptr, true};
+    picked_ruler m_picked_ruler {.m_data = nullptr, .m_first = true};
 
     QPushButton* m_bin_button = nullptr;
 
@@ -336,17 +324,16 @@ private:
 
     std::unique_ptr<delete_bin_button_when_focus_out> m_event_filter = nullptr;
 
-    static constexpr std::string_view s_IMAGE_INOUT = "image";
-    sight::data::ptr<sight::data::image_series, sight::data::access::inout> m_image {this, s_IMAGE_INOUT};
+    sight::data::ptr<sight::data::image_series, sight::data::access::inout> m_image {this, "data.image"};
 
     /// Defines the radius of spheres.
-    sight::data::property<sight::data::real> m_sphere_radius {this, "radius", 10.};
+    sight::data::ptr<sight::data::real, sight::data::access::in> m_sphere_radius {this, "config.radius", 10.};
 
     /// Defines the width of the lines.
-    sight::data::property<sight::data::real> m_line_width {this, "line_width", 4.};
+    sight::data::ptr<sight::data::real, sight::data::access::in> m_line_width {this, "config.line_width", 4.};
 
     /// Defines the maximal number of rulers to be displayed at once.
-    sight::data::property<sight::data::integer> m_max_rulers {this, "max_ruler", 0};
+    sight::data::ptr<sight::data::integer, sight::data::access::in> m_max_rulers {this, "config.max_ruler", 0};
 };
 
-} // sight::module::viz::scene3d_qt::adaptor::fiducials
+} // namespace sight::module::viz::scene3d_qt::adaptor::fiducials

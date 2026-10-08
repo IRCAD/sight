@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2023 IRCAD France
+ * Copyright (C) 2016-2026 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,16 +24,6 @@
 
 #include "series_signal.hpp"
 
-#include <core/com/signal.hpp>
-#include <core/com/signal.hxx>
-#include <core/com/slot.hpp>
-#include <core/com/slots.hpp>
-#include <core/com/slots.hxx>
-
-#include <data/activity.hpp>
-
-#include <service/macros.hpp>
-
 #include <boost/foreach.hpp>
 
 namespace sight::module::data
@@ -41,16 +31,10 @@ namespace sight::module::data
 
 //------------------------------------------------------------------------------
 
-const core::com::slots::key_t series_signal::REPORT_SERIES_SLOT = "reportSeries";
-
-const core::com::signals::key_t series_signal::SERIES_ADDED_SIG = "seriesAdded";
-
-//------------------------------------------------------------------------------
-
-series_signal::series_signal() noexcept :
-    m_sig_series_added(new_signal<series_added_signal_t>(SERIES_ADDED_SIG))
+series_signal::series_signal() noexcept
 {
-    new_slot(REPORT_SERIES_SLOT, &series_signal::report_series_slot, this);
+    new_signal<signals::series_added_t>(signals::SERIES_ADDED);
+    new_slot(slots::REPORT_SERIES, &series_signal::report_series_slot, this);
 }
 
 //------------------------------------------------------------------------------
@@ -111,7 +95,7 @@ void series_signal::report_series(const T& _added_series)
 
         if(key_it != m_types.end() && is_include_mode)
         {
-            m_sig_series_added->async_emit(series);
+            this->async_emit(signals::SERIES_ADDED, series);
         }
     }
 }
@@ -138,8 +122,8 @@ void series_signal::updating()
 service::connections_t series_signal::auto_connections() const
 {
     return {
-        {SERIES_SET_INPUT, sight::data::series_set::ADDED_OBJECTS_SIG, REPORT_SERIES_SLOT},
-        {SERIES_SET_INPUT, sight::data::series_set::MODIFIED_SIG, service::slots::UPDATE}
+        {SERIES_SET_INPUT, sight::data::series_set::signals::ADDED_OBJECTS, slots::REPORT_SERIES},
+        {SERIES_SET_INPUT, sight::data::signals::MODIFIED, service::slots::UPDATE}
     };
 }
 

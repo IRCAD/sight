@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,11 +22,9 @@
 
 #include "module/ui/qt/style_selector.hpp"
 
-#include <core/com/slots.hxx>
-#include <core/macros.hpp>
-#include <core/runtime/path.hpp>
+#include <algorithm>
 
-#include <service/macros.hpp>
+#include <core/runtime/path.hpp>
 
 #include <ui/__/preferences.hpp>
 
@@ -35,19 +33,16 @@
 #include <QResource>
 #include <QTextStream>
 
-#include <algorithm>
 #include <filesystem>
 
 namespace sight::module::ui::qt
 {
 
-static const core::com::slots::key_t UPDATE_FROM_PREFS_SLOT = "update_from_preferences";
-
 //-----------------------------------------------------------------------------
 
 style_selector::style_selector() noexcept
 {
-    new_slot(UPDATE_FROM_PREFS_SLOT, &style_selector::update_from_prefs, this);
+    new_slot(slots::UPDATE_FROM_PREFS, &style_selector::update_from_prefs, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -79,9 +74,8 @@ void style_selector::starting()
             const std::string filename = f.filename().replace_extension("").string();
 
             std::string name = filename;
-            std::transform(
-                filename.begin(),
-                filename.end(),
+            std::ranges::transform(
+                filename,
                 name.begin(),
                 [](unsigned char _c) -> unsigned char {return static_cast<unsigned char>(std::toupper(_c));});
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,12 +21,10 @@
  ***********************************************************************/
 
 #include "module/ui/qt/plugin.hpp"
+#include "core/thread/worker.hpp"
 
-#include <core/base.hpp>
 #include <core/runtime/path.hpp>
-#include <core/runtime/profile/profile.hpp>
-
-#include <service/macros.hpp>
+#include <core/runtime/profile.hpp>
 
 #include <ui/__/macros.hpp>
 #include <ui/qt/app.hpp>
@@ -47,6 +45,7 @@
 #include <QString>
 #include <QStyleFactory>
 #include <QTextStream>
+#include <QtGlobal>
 
 #include <functional>
 
@@ -68,6 +67,9 @@ namespace sight::module::ui::qt
 //-----------------------------------------------------------------------------
 
 SIGHT_REGISTER_PLUGIN("sight::module::ui::qt::plugin");
+
+namespace
+{
 
 /// This class is used to provide a proper disabled icon, especially when the icon is full white.
 class proxy_style final : public QProxyStyle
@@ -97,6 +99,8 @@ public:
         return QProxyStyle::generatedIconPixmap(_icon_mode, _pixmap, _option);
     }
 };
+
+} // namespace
 
 //------------------------------------------------------------------------------
 
@@ -171,6 +175,13 @@ inline static QString get_application_style_sheet()
 
 void plugin::start()
 {
+    // Select FFmpeg before Qt Multimedia initialization, while honoring explicit environment overrides.
+    // cspell:ignore qputenv
+    if(!qEnvironmentVariableIsSet("QT_MEDIA_BACKEND"))
+    {
+        qputenv("QT_MEDIA_BACKEND", "ffmpeg");
+    }
+
     core::runtime::profile::sptr profile = core::runtime::get_current_profile();
     SIGHT_ASSERT("Profile is not initialized", profile);
     int& argc   = profile->get_raw_arg_count();

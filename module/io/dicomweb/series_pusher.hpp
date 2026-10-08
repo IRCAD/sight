@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -67,8 +67,11 @@ public:
 
     using dicom_series_container_t = std::vector<std::shared_ptr<const data::series> >;
 
-    static const core::com::slots::key_t DISPLAY_SLOT;
-    using display_message_slot_t = core::com::slot<void (const std::string&, bool)>;
+    struct slots
+    {
+        using display_message_t = core::com::slot<void (const std::string&, bool)>;
+        static inline const slot_key_t DISPLAY = "display_message";
+    };
 
     /**
      * @brief Constructor

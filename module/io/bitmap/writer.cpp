@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,15 +21,11 @@
 
 #include "writer.hpp"
 
-#include <core/com/signal.hxx>
 #include <core/location/single_folder.hpp>
-#include <core/tools/system.hpp>
 
 #include <ui/__/cursor.hpp>
 #include <ui/__/dialog/location.hpp>
 #include <ui/__/dialog/message.hpp>
-
-#include <boost/algorithm/string.hpp>
 
 #include <algorithm>
 
@@ -70,6 +66,33 @@ sight::io::bitmap::backend writer::find_backend(const std::string& _extension) c
 sight::io::service::path_type_t writer::get_path_type() const
 {
     return sight::io::service::path_type_t::file;
+}
+
+//------------------------------------------------------------------------------
+
+std::vector<std::pair<std::string, std::string> > writer::get_supported_extensions()
+{
+    std::vector<std::pair<std::string, std::string> > result;
+    std::string all_wildcards;
+
+    for(const auto& [backend, mode] : m_mode_by_backend)
+    {
+        const auto filter = sight::io::bitmap::wildcard_filter(backend);
+        if(!all_wildcards.empty())
+        {
+            all_wildcards += ' ';
+        }
+
+        all_wildcards += filter.second;
+        result.push_back(filter);
+    }
+
+    if(result.size() >= 2)
+    {
+        result.insert(result.begin(), {"All supported images", all_wildcards});
+    }
+
+    return result;
 }
 
 //------------------------------------------------------------------------------
@@ -211,7 +234,7 @@ void writer::configuring()
     m_mode_by_backend.insert_or_assign(sight::io::bitmap::backend::libpng, mode);
     m_mode_by_backend.insert_or_assign(sight::io::bitmap::backend::libtiff, mode);
 
-#if defined(SIGHT_ENABLE_NVJPEG)
+#ifdef SIGHT_ENABLE_NVJPEG
     if(sight::io::bitmap::nvjpeg())
     {
         m_mode_by_backend.insert_or_assign(sight::io::bitmap::backend::nvjpeg, mode);
@@ -231,7 +254,7 @@ void writer::configuring()
         m_mode_by_backend.insert_or_assign(sight::io::bitmap::backend::libjpeg, mode);
     }
 
-#if defined(SIGHT_ENABLE_NVJPEG2K)
+#ifdef SIGHT_ENABLE_NVJPEG2K
     if(sight::io::bitmap::nvjpeg2k())
     {
         m_mode_by_backend.insert_or_assign(sight::io::bitmap::backend::nvjpeg2k, mode);
@@ -291,9 +314,9 @@ void writer::updating()
             // If the user selected a specific backend, it must match the one given by the file extension.
             SIGHT_THROW(
                 "Backend mismatch: "
-                << std::uint8_t(m_selected_backend)
+                << static_cast<unsigned int>(std::uint8_t(m_selected_backend))
                 << " != "
-                << std::uint8_t(backend_from_extension)
+                << static_cast<unsigned int>(std::uint8_t(backend_from_extension))
             );
         }
     }
@@ -346,8 +369,7 @@ void writer::updating()
 
     SIGHT_THROW_IF("The file '" << file_path << "' is an existing folder.", std::filesystem::is_directory(file_path));
 
-    const auto write_progress = std::make_shared<core::progress::observer>("Writing '" + file_path.string() + "' file");
-    this->async_emit(has_monitors::signals::MONITOR_CREATED, write_progress->get_sptr());
+    const auto write_progress = this->observe("Writing '" + file_path.string() + "' file");
 
     try
     {

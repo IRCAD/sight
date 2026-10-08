@@ -30,25 +30,13 @@
 #include <data/color.hpp>
 #include <data/material.hpp>
 #include <data/mesh.hpp>
+#include <data/string.hpp>
 
 #include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/mesh.hpp>
 #include <viz/scene3d/transformable.hpp>
 
 #include <OGRE/OgreEntity.h>
-
-namespace sight::data
-{
-
-class Material;
-
-} // namespace sight::data
-namespace sight::data
-{
-
-class mesh;
-
-} // namespace sight::data
 
 namespace sight::module::viz::scene3d::adaptor
 {
@@ -86,18 +74,17 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::adaptor::mesh" >
-        <in key="mesh" uid="..." />
-        <inout group="uniforms">
-            <key uid="..." name="u_uniform_name" />
-       </inout>
+        <data mesh="${...}" />
+            <uniform object="${...}" name="..." />
         <config transform="..." visible="true" material_name="..." shading="phong" texture_name="..."
         query_flags="0x40000000" />
     </service>
    @endcode
  *
  * @subsection Input Input
- * - \b mesh [sight::data::mesh]: adapted mesh.
- * - \b uniforms: list of data to bind to material uniforms. They will be passed to the underlying material adaptor.
+ * - \b data.mesh [sight::data::mesh]: adapted mesh.
+ * - \b uniform.object [sight::data::object]: data to bind to a material uniform.
+ * - \b uniform.name [sight::data::string]: name of the material uniform associated with the object.
  *
  * @subsection Configuration Configuration:
  *  - \b autoresetcamera (optional, true/false, default=true): reset the camera when this mesh is modified, "true" or
@@ -105,7 +92,7 @@ namespace sight::module::viz::scene3d::adaptor
  *  - \b transform (optional, string, default=""): the name of the Ogre transform node where to attach the mesh, as it
  *       was specified
  *       in the transform adaptor.
- *  - \b visible (optional, bool, default=true): set the initial visibility of the mesh.
+ * - \b config.visible [sight::data::boolean] (optional, default=true): set the initial visibility of the mesh.
  *       Either of the following (whether a material is configured in the XML scene or not) :
  *  - \b material_name (optional, string, default=""): name of the Ogre material, as defined in the
  *       module::viz::scene3d::adaptor::material you want to be bound to.
@@ -120,9 +107,10 @@ namespace sight::module::viz::scene3d::adaptor
  *  - \b query_flags (optional, uint32, default=0x40000000): Used for picking. Picked only by pickers whose mask that
  *       match the flag.
  *
- * @subsection Properties Properties:
- *  - \b color: the mesh color, used to set the material diffuse color if material_name is not set.
- *  - \b bounding_box_visible (optional, bool, default=false): whether the bounding box is shown.
+ *  - \b config.color [sight::data::color]: the mesh color, used to set the material diffuse color if material_name is
+ * not set.
+ *  - \b config.bounding_box_visible [sight::data::boolean] (optional, default=false): whether the bounding box is
+ * shown.
  */
 class mesh final :
     public sight::viz::scene3d::adaptor,
@@ -205,9 +193,6 @@ public:
      */
     void set_query_flags(std::uint32_t _query_flags);
 
-    /// Flags the r2vb objects as dirty and asks the render service to update.
-    void request_render() final;
-
     /**
      * @brief Sets the mesh visibility.
      * @param _visible the visibility status of the mesh.
@@ -226,11 +211,11 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::mesh::VERTEX_MODIFIED_SIG to MODIFY_VERTICES_SLOT
-     * Connect data::mesh::POINT_COLORS_MODIFIED_SIG to MODIFY_COLORS_SLOT
-     * Connect data::mesh::CELL_COLORS_MODIFIED_SIG to MODIFY_COLORS_SLOT
-     * Connect data::mesh::POINT_TEX_COORDS_MODIFIED_SIG to MODIFY_POINT_TEX_COORDS_SLOT
-     * Connect data::mesh::MODIFIED_SIG to service::slots::UPDATE
+     * Connect data::mesh::signals::VERTEX_MODIFIED to MODIFY_VERTICES
+     * Connect data::mesh::signals::POINT_COLORS_MODIFIED to MODIFY_COLORS
+     * Connect data::mesh::signals::CELL_COLORS_MODIFIED to MODIFY_COLORS
+     * Connect data::mesh::signals::POINT_TEX_COORDS_MODIFIED to MODIFY_POINT_TEX_COORDS
+     * Connect data::signals::MODIFIED to service::slots::UPDATE
      */
     service::connections_t auto_connections() const final;
 
@@ -239,6 +224,9 @@ protected:
 
     /// Updates the mesh.
     void updating() final;
+
+    /// Flags the r2vb objects as dirty and asks the render service to update.
+    void request_render() final;
 
 private:
 
@@ -339,15 +327,21 @@ private:
         tex_coords
     };
 
-    static constexpr std::string_view MESH_IN = "mesh";
+    static constexpr std::string_view MESH_IN = "data.mesh";
     data::ptr<data::mesh, data::access::in> m_mesh {this, MESH_IN};
-    data::ptr_vector<data::object, data::access::inout> m_uniforms {this, "uniforms", true};
+    data::ptr_vector<data::object, data::access::inout> m_uniform_objects {this, "uniform.object", true};
+    data::ptr_vector<data::string, data::access::in> m_uniform_names {this, "uniform.name", std::nullopt};
 
     /// Diffuse color of the mesh, used if no material is provided.
-    sight::data::property<sight::data::color> m_color {this, "color", {1.0F, 1.0F, 1.0F, 1.0F}};
+    sight::data::ptr<sight::data::color, sight::data::access::in> m_color {this, "config.color", {1.0F, 1.0F, 1.0F, 1.0F
+                                                                           }
+    };
 
     /// Whether the bounding box visualization is shown.
-    sight::data::property<sight::data::boolean> m_bounding_box_visible {this, "bounding_box_visible", false};
+    sight::data::ptr<sight::data::boolean, sight::data::access::in> m_bounding_box_visible {this,
+                                                                                            "config.bounding_box_visible",
+                                                                                            false
+    };
 };
 
 //------------------------------------------------------------------------------

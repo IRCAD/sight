@@ -19,14 +19,12 @@
  *
  ***********************************************************************/
 
+#include <core/notification/observer.hpp>
 #include <core/os/temp_path.hpp>
-#include <core/progress/observer.hpp>
 
 #include <data/matrix4.hpp>
 
 #include <io/__/writer/matrix4_writer.hpp>
-
-#include <boost/algorithm/string.hpp>
 
 #include <doctest/doctest.h>
 
@@ -44,7 +42,7 @@ TEST_SUITE("sight::io::matrix4")
         matrix_writer->set_object(matrix_in);
         std::filesystem::remove(filepath);
         matrix_writer->set_file(filepath);
-        auto observer = std::make_shared<sight::core::progress::observer>("Test write");
+        auto observer = std::make_shared<sight::core::notification::observer>("Test write");
         CHECK_NOTHROW(matrix_writer->write(observer));
         constexpr std::string_view expected_content = R"(0 1 2 3
 4 5 6 7
@@ -54,7 +52,13 @@ TEST_SUITE("sight::io::matrix4")
         {
             std::ifstream in(filepath);
             std::getline(in, actual_content, '\0');
-            boost::trim(actual_content);
+            // Trim whitespace
+            const auto start = actual_content.find_first_not_of(" \t\n\r\f\v");
+            const auto end   = actual_content.find_last_not_of(" \t\n\r\f\v");
+            if(start != std::string::npos)
+            {
+                actual_content = actual_content.substr(start, end - start + 1);
+            }
         }
         CHECK_EQ(std::string(expected_content), actual_content);
     }

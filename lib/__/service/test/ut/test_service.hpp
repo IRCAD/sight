@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,11 +24,10 @@
 
 #include <core/com/has_slots.hpp>
 #include <core/com/signal.hpp>
-#include <core/com/signal.hxx>
 
-#include <data/image.hpp>
 #include <data/integer.hpp>
 #include <data/ptr.hpp>
+#include <data/string.hpp>
 
 #include <service/base.hpp>
 
@@ -52,27 +51,6 @@ public:
 
     test_service() noexcept = default;
     ~test_service() noexcept override = default;
-
-    //------------------------------------------------------------------------------
-
-    void configuring() final
-    {
-        const config_t cfg = this->get_config();
-
-        m_option = cfg.get(OPTION_KEY, NOT_DEFINED);
-    }
-
-    void starting() override;
-    //------------------------------------------------------------------------------
-
-    void stopping() final;
-    void updating() override;
-    //------------------------------------------------------------------------------
-
-    void info(std::ostream& _sstream) override
-    {
-        _sstream << "test_service";
-    }
 
     /// return true if the service is updated with update() method
     bool is_updated() const
@@ -134,6 +112,28 @@ public:
 
 protected:
 
+    //------------------------------------------------------------------------------
+
+    void configuring() final
+    {
+        const config_t cfg = this->get_config();
+
+        m_option = cfg.get(OPTION_KEY, NOT_DEFINED);
+    }
+
+    void starting() override;
+    //------------------------------------------------------------------------------
+
+    void stopping() final;
+    void updating() override;
+    //------------------------------------------------------------------------------
+
+    void info(std::ostream& _sstream) override
+    {
+        _sstream << "test_service";
+    }
+
+    // NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
     bool m_is_updated {false};
     bool m_is_updated2 {false};
     bool m_is_updated_message {false};
@@ -141,6 +141,7 @@ protected:
     unsigned int m_start_order {0};
     unsigned int m_update_order {0};
     std::string m_option {UNCONFIGURED};
+    // NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 };
 
 /**
@@ -154,20 +155,20 @@ public:
 
     struct signals
     {
-        static inline const core::com::signals::key_t SIG_1    = "signal1";
-        static inline const core::com::signals::key_t MSG_SENT = "msgSent";
+        static inline const signal_key_t SIG_1    = "signal1";
+        static inline const signal_key_t MSG_SENT = "msgSent";
 
         using int_sent_t = core::com::signal<void (int)>;
         using msg_sent_t = core::com::signal<void (std::string)>;
     };
     struct slots
     {
-        static inline const core::com::slots::key_t UPDATE2 = "update2";
-        static inline const core::com::slots::key_t SLOT_1  = "slot1";
+        static inline const slot_key_t UPDATE2 = "update2";
+        static inline const slot_key_t SLOT_1  = "slot1";
     };
 
     /// Type of signal
-    using int_sent_signal_t = core::com::signal<void (int)>;
+    using int_sent_t = core::com::signal<void (int)>;
 
     //-------------------------------------------------------------------------
 
@@ -182,20 +183,6 @@ public:
     //-------------------------------------------------------------------------
     ~test_srv() noexcept override =
         default;
-
-    //-------------------------------------------------------------------------
-    void starting() final
-    {
-        test_service::starting();
-    }
-
-    //-------------------------------------------------------------------------
-
-    void updating() override
-    {
-        test_service::updating();
-        m_is_updated = true;
-    }
 
     //-------------------------------------------------------------------------
     void receive_slot()
@@ -224,13 +211,6 @@ public:
     }
 
     //-------------------------------------------------------------------------
-    void swapping(std::string_view _key) final
-    {
-        m_swapped_object_key = _key;
-        m_swapped_object     = this->input(_key).lock().get_shared();
-    }
-
-    //-------------------------------------------------------------------------
 
     const std::string& get_swapped_object_key() const
     {
@@ -244,13 +224,36 @@ public:
         return m_swapped_object;
     }
 
+protected:
+
+    //-------------------------------------------------------------------------
+    void starting() final
+    {
+        test_service::starting();
+    }
+
+    //-------------------------------------------------------------------------
+
+    void updating() override
+    {
+        test_service::updating();
+        m_is_updated = true;
+    }
+
+    //-------------------------------------------------------------------------
+    void swapping(std::string_view _key) final
+    {
+        m_swapped_object_key = _key;
+        m_swapped_object     = this->input(_key).lock().get_shared();
+    }
+
     //-------------------------------------------------------------------------
 
     connections_t auto_connections() const override
     {
         return {
-            {"data1", data::object::MODIFIED_SIG, service::slots::UPDATE},
-            {"data2", data::object::MODIFIED_SIG, slots::UPDATE2}
+            {"data1", data::signals::MODIFIED, service::slots::UPDATE},
+            {"data2", data::signals::MODIFIED, slots::UPDATE2}
         };
     }
 
@@ -318,14 +321,16 @@ public:
 
     SIGHT_DECLARE_SERVICE(test1_input1_opt_input1_opt_in_out, service::ut::test_srv);
 
+protected:
+
     //-------------------------------------------------------------------------
 
     connections_t auto_connections() const override
     {
         connections_t connections;
-        connections.push("data1", data::object::MODIFIED_SIG, service::slots::UPDATE);
-        connections.push("data2", data::object::MODIFIED_SIG, slots::SLOT_1);
-        connections.push("data3", data::object::MODIFIED_SIG, slots::SLOT_1);
+        connections.push("data1", data::signals::MODIFIED, service::slots::UPDATE);
+        connections.push("data2", data::signals::MODIFIED, slots::SLOT_1);
+        connections.push("data3", data::signals::MODIFIED, slots::SLOT_1);
         return connections;
     }
 
@@ -345,6 +350,28 @@ public:
     data::property<data::integer> m_prop1 {this, "prop1", 12};
 };
 
+class test1_value : public test_srv
+{
+public:
+
+    SIGHT_DECLARE_SERVICE(test1_value, service::ut::test_srv);
+
+private:
+
+    data::ptr<data::integer, data::access::in> m_value {this, "value"};
+};
+
+class test1_path_property : public test_srv
+{
+public:
+
+    SIGHT_DECLARE_SERVICE(test1_path_property, service::ut::test_srv);
+
+private:
+
+    data::property<data::string> m_path {this, "path.file", std::string()};
+};
+
 class test_service_with_data : public service::base
 {
 public:
@@ -356,6 +383,8 @@ public:
     SIGHT_DECLARE_SERVICE(test_service_with_data, service::base);
     test_service_with_data() noexcept = default;
     ~test_service_with_data() noexcept override = default;
+
+protected:
 
     //------------------------------------------------------------------------------
 
@@ -374,6 +403,8 @@ public:
     void stopping() override;
     void updating() override;
 
+public:
+
     data::ptr<data::object, data::access::in> m_input {this, INPUT};
     data::ptr_vector<data::integer, data::access::inout> m_inout_group {this, INOUT_GROUP};
     data::ptr<data::object, data::access::out> m_output {this, OUTPUT, true};
@@ -385,14 +416,16 @@ public:
 
     SIGHT_DECLARE_SERVICE(test3_inouts_v2, service::ut::test_srv);
 
+protected:
+
     //-------------------------------------------------------------------------
 
     connections_t auto_connections() const override
     {
         return {
-            {"data1", data::object::MODIFIED_SIG, service::slots::UPDATE},
-            {"data2", data::object::MODIFIED_SIG, slots::SLOT_1},
-            {"data3", data::object::MODIFIED_SIG, slots::SLOT_1},
+            {"data1", data::signals::MODIFIED, service::slots::UPDATE},
+            {"data2", data::signals::MODIFIED, slots::SLOT_1},
+            {"data3", data::signals::MODIFIED, slots::SLOT_1},
         };
     }
 
@@ -401,6 +434,114 @@ private:
     data::ptr<data::object, data::access::inout> m_inout1 {this, "data1"};
     data::ptr<data::object, data::access::inout> m_inout2 {this, "data2"};
     data::ptr<data::object, data::access::inout> m_inout3 {this, "data3"};
+};
+
+class test_parallel_groups_1 : public service::base
+{
+public:
+
+    SIGHT_DECLARE_SERVICE(test_parallel_groups_1, service::base);
+
+    data::ptr_vector<data::string, data::access::in> m_object1 {this, "item.object1"};
+    data::ptr_vector<data::string, data::access::in> m_object2 {this, "item.object2", std::nullopt};
+    data::ptr_vector<data::string, data::access::in> m_object3 {this, "item.object3", std::string("default")};
+
+protected:
+
+    //------------------------------------------------------------------------------
+
+    void configuring() override
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void starting() override
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void stopping() override
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void updating() override
+    {
+    }
+};
+
+class test_parallel_groups_2 : public service::base
+{
+public:
+
+    SIGHT_DECLARE_SERVICE(test_parallel_groups_2, service::base);
+
+    data::ptr_vector<data::string, data::access::in> m_object1 {this, "item.object1"};
+    data::ptr_vector<data::integer, data::access::in> m_object2 {this, "item.object2", 0};
+
+protected:
+
+    //------------------------------------------------------------------------------
+
+    void configuring() override
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void starting() override
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void stopping() override
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void updating() override
+    {
+    }
+};
+
+class test_optional_group : public service::base
+{
+public:
+
+    SIGHT_DECLARE_SERVICE(test_optional_group, service::base);
+
+    data::ptr_vector<data::string, data::access::in> m_optional {this, "item.optional", std::nullopt};
+
+protected:
+
+    //------------------------------------------------------------------------------
+
+    void configuring() override
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void starting() override
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void stopping() override
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void updating() override
+    {
+    }
 };
 
 } // namespace sight::service::ut

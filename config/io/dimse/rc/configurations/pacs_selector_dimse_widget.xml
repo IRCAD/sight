@@ -96,13 +96,16 @@
         </connect>
 
         <connect channel="${notified_slider}">
-            <signal>slider_index_dicom_puller_editor_srv/notified</signal>
-            <signal>series_puller_srv/notified</signal>
+            <signal>series_puller_srv/notification_created</signal>
+        </connect>
+
+        <connect channel="${notified_slider}">
+            <signal>slider_index_dicom_puller_editor_srv/notification_created</signal>
         </connect>
 
         <connect>
-            <signal>query_editor_srv/notified</signal>
-            <slot>left_notifier_srv/pop</slot>
+            <signal>query_editor_srv/notification_created</signal>
+            <slot>left_notifier_srv/add_notification</slot>
         </connect>
 
         <connect>
@@ -111,7 +114,7 @@
         </connect>
 
         <connect channel="${pull_progress}">
-            <signal>series_puller_srv/monitor_created</signal>
+            <signal>series_puller_srv/notification_created</signal>
         </connect>
     </config>
 </extension>

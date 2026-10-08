@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2024 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -24,8 +24,6 @@
 #include "core/com/proxy.hpp"
 
 #include "service/base.hpp"
-
-#include <core/com/signal.hxx>
 
 namespace sight::service::detail
 {

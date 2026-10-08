@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -79,14 +79,14 @@ public:
     void request_render();
 
     /// Without giving a minimum size, the scene might be rendered "black" in sight_viewever in Qt 6.4.x on Linux.
-    QSize minimumSizeHint() const override;
+    [[nodiscard]] QSize minimumSizeHint() const override;
 
 Q_SIGNALS:
 
     /// Emits when the user interacts with the scene using the mouse and keyboard.
     void interacted(sight::viz::scene3d::window_interactor::interaction_info);
 
-private:
+protected:
 
     /// Manages events
     bool event(QEvent* _e) override;
@@ -121,6 +121,14 @@ private:
     /// Manages gestures.
     void gesture_event(QGestureEvent* _e);
 
+    /// Creates the Ogre render window associated to this window,
+    /// called by renderNow() once the window is first exposed.
+    void initializeGL() override;
+    void resizeGL(int _w, int _h) override;
+    void paintGL() override;
+
+private:
+
     using interaction_info = sight::viz::scene3d::window_interactor::interaction_info;
 
     /// Converts the mouse event to be able to handle it with ogre.
@@ -128,12 +136,6 @@ private:
         const QMouseEvent* _evt,
         interaction_info::interaction_enum _interaction_type
     ) const;
-
-    /// Creates the Ogre render window associated to this window,
-    /// called by renderNow() once the window is first exposed.
-    void initializeGL() override;
-    void resizeGL(int _w, int _h) override;
-    void paintGL() override;
 
     /// Forwards the resize event.
     /// @param _new_size size in hidpi, you must multiplicate with devicePixelRatioF to get the real pixel value

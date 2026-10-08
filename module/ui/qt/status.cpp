@@ -23,9 +23,6 @@
 
 #include "service/base.hpp"
 
-#include <core/com/slots.hxx>
-#include <core/runtime/path.hpp>
-
 #include <ui/qt/container/widget.hpp>
 
 #include <QColor>
@@ -41,10 +38,10 @@ namespace sight::module::ui::qt
 
 status::status() noexcept
 {
-    new_slot(slots::CHANGE_TO_GREEN_SLOT, &status::change_to_green, this);
-    new_slot(slots::CHANGE_TO_RED_SLOT, &status::change_to_red, this);
-    new_slot(slots::CHANGE_TO_ORANGE_SLOT, &status::change_to_orange, this);
-    new_slot(slots::TOGGLE_GREEN_RED_SLOT, &status::toggle_green_red, this);
+    new_slot(slots::CHANGE_TO_GREEN, &status::change_to_green, this);
+    new_slot(slots::CHANGE_TO_RED, &status::change_to_red, this);
+    new_slot(slots::CHANGE_TO_ORANGE, &status::change_to_orange, this);
+    new_slot(slots::TOGGLE_GREEN_RED, &status::toggle_green_red, this);
 }
 
 //------------------------------------------------------------------------------

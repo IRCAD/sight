@@ -1,2 +1,1 @@
-add_subdirectory(ex_video_tracking)
 add_subdirectory(ex_stereo_ar)

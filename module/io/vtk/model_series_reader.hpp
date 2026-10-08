@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,21 +36,23 @@ namespace sight::module::io::vtk
  * Accepted extensions: *.vtk *.vtp *.obj *.ply *.stl
  *
  * @section Signals Signals
- * - \b monitor_created(SPTR(core::progress::monitor)): emitted to display a progress bar while the image is loading,
+ * - \b notification_created(core::notification::base::sptr): emitted to display a progress bar while the
+ * image is
+ * loading,
  * it should be connected to a progress bar
  *
  * @section XML XML Configuration
  *
  * @code{.xml}
    <service type="sight::module::io::vtk::model_series_reader">
-       <inout key="data" uid="..." />
-       <file>...</file>
-       <file>...</file>
-       <file>...</file>
+       <data read="..." />
+       <path file="..." />
+       <path file="..." />
+       <path file="..." />
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b data [sight::data::model_series]: model series that will contain the loaded meshes.
+ * - \b data.read [sight::data::model_series]: model series that will contain the loaded meshes.
  * @subsection Configuration Configuration
  * - \b file (optional): path of the files to load, if it is not defined, 'open_location_dialog()' should be called to
  * define the path.
@@ -75,9 +77,10 @@ public:
      */
     void open_location_dialog() override;
 
-protected:
-
     sight::io::service::path_type_t get_path_type() const override;
+    std::vector<std::pair<std::string, std::string> > get_supported_extensions() override;
+
+protected:
 
     /**
      * @brief Starting method.

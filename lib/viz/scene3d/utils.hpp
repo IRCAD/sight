@@ -29,7 +29,6 @@
 #include <data/matrix4.hpp>
 
 #include <OGRE/OgreColourValue.h>
-#include <OGRE/OgreImage.h>
 #include <OGRE/OgrePixelFormat.h>
 #include <OGRE/OgreRoot.h>
 #include <OGRE/OgreTexture.h>
@@ -98,6 +97,34 @@ public:
      * @return OgreRoot, if it doesn't exist initialise Ogre Root and default Ogre behavior
      */
     SIGHT_VIZ_SCENE3D_API static Ogre::Root* get_ogre_root();
+
+    /**
+     * @brief Logs the resources managed by an Ogre resource manager.
+     *
+     * @param _manager Ogre resource manager to inspect.
+     * @param _manager_name Name used to identify the manager in the log.
+     * @param _parent_id If non-empty, resources whose name contains this identifier are logged individually.
+     * @param _stage Label identifying the point in the lifecycle at which the resources are logged.
+     */
+    SIGHT_VIZ_SCENE3D_API static void log_resources(
+        Ogre::ResourceManager& _manager,
+        const std::string& _manager_name,
+        const std::string& _parent_id,
+        const std::string& _stage
+    );
+
+    /**
+     * @brief Logs Ogre resources and cameras associated with a scene manager.
+     *
+     * @param _scene_manager Scene manager whose cameras are inspected.
+     * @param _parent_id Identifier used to select resources and rendering objects associated with the caller.
+     * @param _stage Label identifying the point in the lifecycle at which the resources are logged.
+     */
+    SIGHT_VIZ_SCENE3D_API static void log_ogre_resources(
+        Ogre::SceneManager& _scene_manager,
+        const std::string& _parent_id,
+        const std::string& _stage
+    );
 
     /**
      * @brief destroy the OgreRoot

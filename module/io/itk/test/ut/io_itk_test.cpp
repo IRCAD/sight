@@ -21,17 +21,16 @@
  ***********************************************************************/
 
 #include <core/os/temp_path.hpp>
-#include <core/thread/worker.hpp>
-#include <core/tools/date_and_time.hpp>
 
-#include <data/helper/medical_image.hpp>
 #include <data/image_series.hpp>
 #include <data/series_set.hpp>
 
 #include <io/__/service/io_types.hpp>
+#include <io/__/service/reader.hpp>
 
 #include <service/op.hpp>
 #include <service/registry.hpp>
+#include <ui/test/dialog/location.hpp>
 
 #include <utest_data/data.hpp>
 #include <utest_data/generator/image.hpp>
@@ -59,18 +58,19 @@ TEST_SUITE("sight::module::io::itk")
 
         if(_access == sight::data::access::inout)
         {
-            srv->set_inout(_obj, sight::io::service::DATA_KEY);
+            // Readers expose their generic data under the hierarchical key, writers keep the legacy one
+            srv->set_inout(_obj, sight::io::service::READER_DATA_KEY);
         }
         else
         {
-            srv->set_input(_obj, sight::io::service::DATA_KEY);
+            srv->set_input(_obj, sight::io::service::WRITER_DATA_KEY);
         }
 
         srv->set_config(_cfg);
         CHECK_NOTHROW(srv->configure());
-        CHECK_NOTHROW(srv->start().wait());
-        CHECK_NOTHROW(srv->update().wait());
-        CHECK_NOTHROW(srv->stop().wait());
+        CHECK_NOTHROW(srv->start().get());
+        CHECK_NOTHROW(srv->update().get());
+        CHECK_NOTHROW(srv->stop().get());
         sight::service::unregister_service(srv);
     }
 
@@ -87,7 +87,7 @@ TEST_SUITE("sight::module::io::itk")
 
         // Create config
         sight::service::config_t srv_cfg;
-        srv_cfg.add("folder", tmp_dir.string());
+        srv_cfg.add("path.<xmlattr>.folder", tmp_dir.string());
 
         // Create and execute service
         execute_service(
@@ -123,7 +123,7 @@ TEST_SUITE("sight::module::io::itk")
 
         // Create config
         sight::service::config_t srv_cfg;
-        srv_cfg.add("file", path.string());
+        srv_cfg.add("path.<xmlattr>.file", path.string());
 
         // Create and execute service
         execute_service(
@@ -173,7 +173,7 @@ TEST_SUITE("sight::module::io::itk")
 
         // Create config
         sight::service::config_t srv_cfg;
-        srv_cfg.add("file", path.string());
+        srv_cfg.add("path.<xmlattr>.file", path.string());
 
         // Create and execute service
         execute_service(
@@ -224,7 +224,7 @@ TEST_SUITE("sight::module::io::itk")
 
         // Create config
         sight::service::config_t srv_cfg;
-        srv_cfg.add("file", path.string());
+        srv_cfg.add("path.<xmlattr>.file", path.string());
 
         // Create and execute service
         execute_service(
@@ -277,7 +277,7 @@ TEST_SUITE("sight::module::io::itk")
 
         // Create config
         sight::service::config_t srv_cfg;
-        srv_cfg.add("file", path.string());
+        srv_cfg.add("path.<xmlattr>.file", path.string());
 
         // Create and execute service
         execute_service(
@@ -340,8 +340,7 @@ TEST_SUITE("sight::module::io::itk")
 
         // Create config
         sight::service::config_t srv_cfg;
-        srv_cfg.add("file", image_file.string());
-        srv_cfg.add("file", skin_file.string());
+        srv_cfg.add("path.<xmlattr>.file", image_file.string() + ";" + skin_file.string());
 
         // load series_set
         auto series_set = std::make_shared<sight::data::series_set>();
@@ -360,6 +359,7 @@ TEST_SUITE("sight::module::io::itk")
             std::dynamic_pointer_cast<sight::data::image_series>(series_set->at(0));
         CHECK(img_series);
         CHECK_EQ(sight::data::dicom::modality_t::ot, img_series->get_modality());
+        CHECK_EQ(std::string("image.inr.gz"), img_series->get_series_description());
 
         CHECK_EQ(std::string("int16"), img_series->type().name());
         CHECK(size == img_series->size());
@@ -370,6 +370,7 @@ TEST_SUITE("sight::module::io::itk")
         img_series = std::dynamic_pointer_cast<sight::data::image_series>(series_set->at(1));
         CHECK(img_series);
         CHECK_EQ(sight::data::dicom::modality_t::ot, img_series->get_modality());
+        CHECK_EQ(std::string("skin.inr.gz"), img_series->get_series_description());
 
         CHECK_EQ(std::string("uint8"), img_series->type().name());
         CHECK(size == img_series->size());
@@ -379,4 +380,34 @@ TEST_SUITE("sight::module::io::itk")
     }
 
 //------------------------------------------------------------------------------
+
+    TEST_CASE("series_set_reader_open_location_dialog")
+    {
+        const auto file1 = std::filesystem::temp_directory_path() / "image.nii";
+        const auto file2 = std::filesystem::temp_directory_path() / "image.inr.gz";
+
+        CHECK(sight::ui::test::dialog::location::clear());
+
+        sight::ui::test::dialog::location::set_paths({file1, file2});
+
+        auto reader = sight::service::add<sight::io::service::reader>(
+            "sight::module::io::itk::series_set_reader"
+        );
+
+        REQUIRE(reader);
+
+        reader->configure();
+
+        CHECK_NOTHROW(reader->open_location_dialog());
+
+        const auto& files = reader->get_files();
+
+        REQUIRE_EQ(files.size(), std::size_t(2));
+        CHECK_EQ(files[0], file1);
+        CHECK_EQ(files[1], file2);
+
+        sight::service::remove(reader);
+
+        CHECK(sight::ui::test::dialog::location::clear());
+    }
 } // TEST_SUITE

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,21 +25,17 @@
 #include "service/base.hpp"
 #include "service/extension/factory.hpp"
 
-#include <core/id.hpp>
 #include <core/lazy_instantiator.hpp>
-#include <core/logic_stamp.hpp>
 #include <core/mt/types.hpp>
-#include <core/object.hpp>
 #include <core/runtime/runtime.hpp>
-#include <core/tools/failed.hpp>
 
-#include <filesystem>
 #include <iostream>
-#include <map>
 #include <sstream>
-#include <utility>
 
 namespace sight::service
+{
+
+namespace
 {
 
 /**
@@ -53,7 +49,7 @@ class object_service
 public:
 
     using sptr             = std::shared_ptr<object_service>;
-    using service_vector_t = std::set<SPTR(service::base)>;
+    using service_vector_t = std::set<sight::sptr<service::base> >;
 
     /// Return some informations contain in the registry
     std::string get_registry_information() const;
@@ -85,7 +81,7 @@ public:
      * @note Services may be associated to different object
      */
     template<class SERVICE>
-    std::set<SPTR(SERVICE)> get_services() const;
+    std::set<sight::sptr<SERVICE> > get_services() const;
 
     /**
      * @brief Return registered services matching serviceType
@@ -102,6 +98,8 @@ private:
 
     mutable core::mt::read_write_mutex m_container_mutex;
 };
+
+} // namespace
 
 //------------------------------------------------------------------------------
 
@@ -172,7 +170,7 @@ const service::service_vector_t& object_service::get_services() const
 
 //------------------------------------------------------------------------------
 
-service::object_service::sptr get()
+static service::object_service::sptr get()
 {
     return core::lazy_instantiator<service::object_service>::get_instance();
 }

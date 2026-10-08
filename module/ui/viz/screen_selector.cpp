@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2025 IRCAD France
+ * Copyright (C) 2019-2026 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,7 @@
 
 #include "screen_selector.hpp"
 
-#include <core/com/signal.hxx>
-
-#include <service/macros.hpp>
+#include <algorithm>
 
 #include <QApplication>
 #include <QGuiApplication>
@@ -35,13 +33,11 @@
 namespace sight::module::ui::viz
 {
 
-static const core::com::signals::key_t SCREEN_SELECTED_SIG = "screen_selected";
-
 //------------------------------------------------------------------------------
 
-screen_selector::screen_selector() :
-    m_screen_selected_sig(new_signal<screen_selected_signal_t>(SCREEN_SELECTED_SIG))
+screen_selector::screen_selector()
 {
+    new_signal<signals::screen_selected_t>(signals::SCREEN_SELECTED);
 }
 
 //------------------------------------------------------------------------------
@@ -90,7 +86,7 @@ void screen_selector::updating()
             if(const auto* const window_screen =
                    QGuiApplication::screenAt(active_window->mapToGlobal(active_window->rect().center())); window_screen)
             {
-                screen_num = int(screens.indexOf(window_screen));
+                screen_num = static_cast<int>(screens.indexOf(window_screen));
 
                 if(m_mode == "neighbor")
                 {
@@ -101,13 +97,13 @@ void screen_selector::updating()
 
         if(screen_num >= screens.count())
         {
-            screen_num = int(screens.indexOf(QGuiApplication::primaryScreen()));
+            screen_num = static_cast<int>(screens.indexOf(QGuiApplication::primaryScreen()));
         }
     }
 
     if(screen_num >= 0)
     {
-        m_screen_selected_sig->async_emit(screen_num);
+        async_emit(signals::SCREEN_SELECTED, screen_num);
     }
 }
 
@@ -171,6 +167,7 @@ int screen_selector::select_screen()
     std::int64_t ret_screen = -1;
     if(ok_clicked)
     {
+        // NOLINTNEXTLINE(modernize-use-ranges)
         auto name_it = std::find(screen_names.cbegin(), screen_names.cend(), selected_item);
 
         if(name_it != screen_names.cend())

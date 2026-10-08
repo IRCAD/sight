@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,14 +24,12 @@
 
 #include <sight/io/__/config.hpp>
 
-#include <core/progress/monitor.hpp>
-
-#include <data/camera.hpp>
 #include <data/frame_tl.hpp>
 #include <data/point.hpp>
 
+#include <core/notification/has_monitors.hpp>
+
 #include <service/base.hpp>
-#include <service/notifier.hpp>
 
 #include <ui/__/parameter.hpp>
 
@@ -49,7 +47,8 @@ namespace sight::io::service
  * - \b camera_stopped(): Emitted when camera is stopped.
  * - \b framePresented(): Emitted when a frame is presented.
  * - \b parameter_changed(): Emitted when a named parameter is changed.
- * - \b monitor_created(sight::core::progress::monitor::sptr): Emitted when a long running task has been launched.
+ * - \b notification_created(sight::core::notification::base::sptr): Emitted when a long running task has been
+ * launched.
  *
  * @section Slots Slots
  * - \b start_camera(): Start playing the camera or the video.
@@ -69,73 +68,66 @@ namespace sight::io::service
  * - \b remove_roi_center(sight::data::point::sptr): Removes a region of interest via its center.
  */
 class SIGHT_IO_CLASS_API grabber : public sight::service::base,
-                                   public sight::service::notifier
+                                   public sight::core::notification::has_monitors
 {
 public:
 
     SIGHT_DECLARE_SERVICE(grabber, sight::service::base);
 
-    /**
-     * @name Slots API
-     * @{
-     */
-    SIGHT_IO_API static const core::com::slots::key_t START_CAMERA_SLOT;
-    SIGHT_IO_API static const core::com::slots::key_t STOP_CAMERA_SLOT;
-    SIGHT_IO_API static const core::com::slots::key_t PAUSE_CAMERA_SLOT;
-    SIGHT_IO_API static const core::com::slots::key_t PLAY_PAUSE_CAMERA_SLOT;
-    SIGHT_IO_API static const core::com::slots::key_t SELECT_CAMERA_SLOT;
-    SIGHT_IO_API static const core::com::slots::key_t LOOP_VIDEO_SLOT;
-    SIGHT_IO_API static const core::com::slots::key_t SET_POSITION_VIDEO_SLOT;
-    SIGHT_IO_API static const core::com::slots::key_t PRESENT_SLOT;
-    SIGHT_IO_API static const core::com::slots::key_t PREVIOUS_IMAGE_SLOT;
-    SIGHT_IO_API static const core::com::slots::key_t NEXT_IMAGE_SLOT;
-    SIGHT_IO_API static const core::com::slots::key_t SET_STEP_SLOT;
-    SIGHT_IO_API static const core::com::slots::key_t SET_PARAMETER_SLOT;
-    SIGHT_IO_API static const core::com::slots::key_t REQUEST_SETTINGS_SLOT;
-    SIGHT_IO_API static const core::com::slots::key_t OPTIMIZE_SLOT;
-    SIGHT_IO_API static const core::com::slots::key_t ADD_ROI_CENTER_SLOT;
-    SIGHT_IO_API static const core::com::slots::key_t REMOVE_ROI_CENTER_SLOT;
-    SIGHT_IO_API static const core::com::slots::key_t FORWARD_FPS_CHANGED_SLOT;
-    ///@}
+    struct slots
+    {
+        static inline const slot_key_t START_CAMERA        = "start_camera";
+        static inline const slot_key_t STOP_CAMERA         = "stop_camera";
+        static inline const slot_key_t PAUSE_CAMERA        = "pause_camera";
+        static inline const slot_key_t PLAY_PAUSE_CAMERA   = "playPauseCamera";
+        static inline const slot_key_t SELECT_CAMERA       = "select_camera";
+        static inline const slot_key_t LOOP_VIDEO          = "loop_video";
+        static inline const slot_key_t SET_POSITION_VIDEO  = "set_position_video";
+        static inline const slot_key_t PRESENT             = "framePresented";
+        static inline const slot_key_t PREVIOUS_IMAGE      = "previous_image";
+        static inline const slot_key_t NEXT_IMAGE          = "next_image";
+        static inline const slot_key_t SET_STEP            = "set_step";
+        static inline const slot_key_t SET_PARAMETER       = "set_parameter";
+        static inline const slot_key_t REQUEST_SETTINGS    = "request_settings";
+        static inline const slot_key_t OPTIMIZE            = "optimize";
+        static inline const slot_key_t ADD_ROI_CENTER      = "add_roi_center";
+        static inline const slot_key_t REMOVE_ROI_CENTER   = "remove_roi_center";
+        static inline const slot_key_t FORWARD_FPS_CHANGED = "forward_fps_changed";
+    };
 
-    /**
-     * @name Signals API
-     * @{
-     */
-    SIGHT_IO_API static const core::com::signals::key_t POSITION_MODIFIED_SIG;
-    using position_modified_signal_t = core::com::signal<void (int64_t)>;
+    struct signals
+    {
+        using position_modified_t = core::com::signal<void (int64_t)>;
+        static inline const signal_key_t POSITION_MODIFIED = "position_modified";
 
-    SIGHT_IO_API static const core::com::signals::key_t DURATION_MODIFIED_SIG;
-    using duration_modified_signal_t = core::com::signal<void (int64_t)>;
+        using duration_modified_t = core::com::signal<void (int64_t)>;
+        static inline const signal_key_t DURATION_MODIFIED = "duration_modified";
 
-    SIGHT_IO_API static const core::com::signals::key_t FRAME_PRESENTED_SIG;
-    using frame_presented_signal_t = core::com::signal<void ()>;
+        using frame_presented_t = core::com::signal<void ()>;
+        static inline const signal_key_t FRAME_PRESENTED = "framePresented";
 
-    SIGHT_IO_API static const core::com::signals::key_t CAMERA_STARTED_SIG;
-    using camera_started_signal_t = core::com::signal<void ()>;
+        using camera_started_t = core::com::signal<void ()>;
+        static inline const signal_key_t CAMERA_STARTED = "camera_started";
 
-    SIGHT_IO_API static const core::com::signals::key_t CAMERA_STOPPED_SIG;
-    using camera_stopped_signal_t = core::com::signal<void ()>;
+        using camera_stopped_t = core::com::signal<void ()>;
+        static inline const signal_key_t CAMERA_STOPPED = "camera_stopped";
 
-    SIGHT_IO_API static const core::com::signals::key_t CAMERA_PAUSED_SIG;
-    using camera_paused_signal_t = core::com::signal<void ()>;
+        using camera_paused_t = core::com::signal<void ()>;
+        static inline const signal_key_t CAMERA_PAUSED = "camera_paused";
 
-    SIGHT_IO_API static const core::com::signals::key_t PARAMETER_CHANGED_SIG;
-    using parameter_changed_t = core::com::signal<void (ui::parameter_t, std::string)>;
+        using parameter_changed_t = core::com::signal<void (ui::parameter_t, std::string)>;
+        static inline const signal_key_t PARAMETER_CHANGED = "parameter_changed";
 
-    SIGHT_IO_API static const core::com::signals::key_t MONITOR_CREATED_SIG;
-    using monitor_created_signal_t = core::com::signal<void (core::progress::monitor::sptr)>;
-
-    SIGHT_IO_API static const core::com::signals::key_t FPS_CHANGED_SIG;
-    using fps_changed_signal_t = sight::core::com::signal<void (double)>;
-    /** @} */
+        using fps_changed_t = sight::core::com::signal<void (double)>;
+        static inline const signal_key_t FPS_CHANGED = "fps_changed";
+    };
 
     /**
      * @name Data API
      * @{
      */
-    static constexpr std::string_view CAMERA_INPUT  = "camera";
-    static constexpr std::string_view FRAMETL_INOUT = "frame_tl";
+    static constexpr std::string_view CAMERA_INPUT  = "config.camera";
+    static constexpr std::string_view FRAMETL_INOUT = "timeline.image";
     /** @} */
     /**
      * @brief Constructor.
@@ -219,6 +211,7 @@ protected:
     void set_start_state(bool _state);
     bool started() const;
 
+    // NOLINTNEXTLINE(cppcoreguidelines-non-private-member-variables-in-classes)
     data::ptr<data::frame_tl, data::access::inout> m_frame {this, FRAMETL_INOUT};
 
 private:

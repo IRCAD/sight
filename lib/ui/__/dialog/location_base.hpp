@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,8 +28,10 @@
 
 #include <core/location/base.hpp>
 
+#include <cstdint>
 #include <filesystem>
 #include <string>
+#include <utility>
 
 namespace sight::ui::dialog
 {
@@ -43,7 +45,7 @@ public:
 
     SIGHT_DECLARE_CLASS(location_base, ui::object);
 
-    enum options
+    enum options : std::uint8_t
     {
         none            = 0,
         read            = 1 << 1,
@@ -51,7 +53,7 @@ public:
         file_must_exist = 1 << 3
     };
 
-    enum types
+    enum types : std::uint8_t
     {
         single_file,
         folder,
@@ -59,6 +61,7 @@ public:
     };
 
     using factory_registry_key_t = std::string;
+    using filter_t               = std::pair<std::string, std::string>;
 
     /// this *unique* key should  be used *for all* factory for specific location(qt,wx,...)
     SIGHT_UI_API static const factory_registry_key_t REGISTRY_KEY;
@@ -106,10 +109,13 @@ public:
      */
     SIGHT_UI_API virtual core::location::base::sptr show() = 0;
 
-    /// Gets the current extension file selection
-    SIGHT_UI_API virtual std::string get_current_selection() const = 0;
+    /// Gets the selected filter as its display name and wildcard list.
+    SIGHT_UI_API virtual filter_t get_current_filter() const = 0;
 
-    /// Helpers that splits the extension getCurrentSelection()
+    /// Gets the wildcard list of the selected filter.
+    SIGHT_UI_API virtual std::string get_current_selection() const;
+
+    /// Splits the wildcard list returned by get_current_selection().
     /// @return a vector of selected extensions
     SIGHT_UI_API std::vector<std::string> get_selected_extensions() const;
 

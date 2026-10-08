@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2025 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,17 +19,16 @@
  *
  ***********************************************************************/
 
-#include "module/io/dicom/reader.hpp"
+#include "reader.hpp"
 
-#include <core/com/signal.hxx>
 #include <core/location/single_folder.hpp>
-#include <core/progress/observer.hpp>
 
 #include <ui/__/cursor.hpp>
-#include <ui/__/dialog/input.hpp>
 #include <ui/__/dialog/location.hpp>
 #include <ui/__/dialog/message.hpp>
 #include <ui/qt/series/selector_dialog.hpp>
+
+#include <filesystem>
 
 namespace sight::module::io::dicom
 {
@@ -145,6 +144,8 @@ void reader::configuring()
     const auto& config = tree.get_child_optional("config.<xmlattr>");
     if(config.is_initialized())
     {
+        m_append = config->get("append", false);
+
         if(std::string displayed_columns = config->get("displayedColumns", ""); !displayed_columns.empty())
         {
             m_displayed_columns = displayed_columns;
@@ -158,6 +159,23 @@ void reader::updating()
 {
     // Set to failed until successful
     m_read_failed = true;
+    if(!m_reader && this->has_location_defined())
+    {
+        try
+        {
+            if(!this->scan() || !show_selection())
+            {
+                clear();
+                return;
+            }
+        }
+        catch(const std::exception& e)
+        {
+            SIGHT_ERROR("Unable to scan the DICOM folder: " << e.what());
+            clear();
+            return;
+        }
+    }
 
     // If the user did not choose a series, we stop here
     if(!m_reader)
@@ -165,19 +183,37 @@ void reader::updating()
         return;
     }
 
-    const auto read_progress = std::make_shared<core::progress::observer>("Reading DICOM series");
-
-    this->async_emit(has_monitors::signals::MONITOR_CREATED, read_progress->get_sptr());
+    const auto read_progress = this->observe("Reading DICOM series");
 
     try
     {
         // Set cursor to busy state. It will be reset to default even if exception occurs
         const sight::ui::busy_cursor busy_cursor;
 
-        SIGHT_THROW_IF("No series were selected.", !m_selection || m_selection->empty());
+        if(!m_reader)
+        {
+            SIGHT_THROW_IF(
+                "No DICOM folder was provided.",
+                !has_location_defined()
+            );
 
+            if(!scan())
+            {
+                clear();
+                return;
+            }
+        }
+
+        SIGHT_THROW_IF(
+            "No DICOM series were found.",
+            !m_selection || m_selection->empty()
+        );
         // Sort the series
         m_reader->sort();
+
+        // Use a temporary series set to read the data, so we don't modify the output series set until successful
+        auto tmp_read = std::make_shared<data::series_set>();
+        m_reader->set_object(tmp_read);
 
         // Really read the series
         m_reader->read(read_progress);
@@ -190,11 +226,24 @@ void reader::updating()
             const auto output = std::dynamic_pointer_cast<data::series_set>(data.get_shared());
             SIGHT_ASSERT("Output series_set not instantiated", output);
 
-            // Clear series_set and add new series
+            // Add the loaded series, optionally preserving the ones already opened.
             const auto scoped_emitter = output->scoped_emit();
-
-            output->clear();
-            output->shallow_copy(read);
+            if(m_append)
+            {
+                const std::size_t duplicate_count = output->append_unique(*read);
+                if(duplicate_count > 0)
+                {
+                    this->warn(
+                        duplicate_count == 1
+                        ? "This DICOM series is already loaded."
+                        : std::to_string(duplicate_count) + " DICOM series are already loaded."
+                    );
+                }
+            }
+            else
+            {
+                output->shallow_copy(read);
+            }
         }
 
         m_read_failed = false;
@@ -285,8 +334,8 @@ void reader::clear()
         sight::ui::dialog::location location_dialog;
         location_dialog.set_title(*m_window_title);
         location_dialog.set_default_location(default_location);
-        location_dialog.set_option(ui::dialog::location::read);
-        location_dialog.set_type(ui::dialog::location::folder);
+        location_dialog.set_option(sight::ui::dialog::location::read);
+        location_dialog.set_type(sight::ui::dialog::location::folder);
 
         // Show the dialog
         const auto& selected_location = std::dynamic_pointer_cast<core::location::single_folder>(
@@ -313,6 +362,22 @@ void reader::clear()
 
 //------------------------------------------------------------------------------
 
+std::vector<std::pair<std::string, std::string> > reader::get_supported_extensions()
+{
+    return {{"DICOM files", "*.dcm"}};
+}
+
+//------------------------------------------------------------------------------
+
+sight::io::service::path_type_t reader::get_path_type() const
+{
+    return static_cast<sight::io::service::path_type_t>(
+        sight::io::service::files | sight::io::service::folder
+    );
+}
+
+//------------------------------------------------------------------------------
+
 bool reader::scan()
 {
     // Set cursor to busy state. It will be reset to default even if exception occurs
@@ -321,13 +386,22 @@ bool reader::scan()
     // Create the reader
     m_reader = std::make_shared<sight::io::dicom::reader::file>();
 
-    // Set the folder from the service location
-    m_reader->set_folder(get_folder());
+    const auto& locations = get_locations();
+
+    // Keep file inputs restricted to the selected files. Folder inputs are still scanned recursively.
+    if(locations.size() == 1 && std::filesystem::is_directory(locations.front()))
+    {
+        m_reader->set_folder(locations.front());
+    }
+    else
+    {
+        m_reader->set_files(locations);
+    }
 
     // Set filters
     m_reader->set_filters(m_filters);
 
-    // Scan the folder
+    // Scan the selected files or folder
     m_selection = m_reader->scan();
 
     // Exit if there is no DICOM files.
@@ -335,7 +409,7 @@ bool reader::scan()
     {
         sight::ui::dialog::message::show(
             "DICOM reader",
-            "No DICOM files found in the selected folder.",
+            "No DICOM files found in the selected location.",
             sight::ui::dialog::message::warning
         );
 

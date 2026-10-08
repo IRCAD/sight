@@ -38,9 +38,9 @@ TEST_SUITE("sight::module::data::inverse")
         using namespace std::literals::string_literals;
 
         auto source = std::make_shared<sight::data::boolean>(true);
-        srv->set_input(source, "source");
+        srv->set_input(source, "data.source");
         auto target = std::make_shared<sight::data::boolean>(true);
-        srv->set_inout(target, "target");
+        srv->set_inout(target, "data.target");
 
         CHECK_EQ(true, target->value());
 
@@ -62,9 +62,9 @@ TEST_SUITE("sight::module::data::inverse")
         using namespace std::literals::string_literals;
 
         auto source = std::make_shared<sight::data::boolean>(false);
-        srv->set_input(source, "source");
+        srv->set_input(source, "data.source");
         auto target = std::make_shared<sight::data::boolean>(false);
-        srv->set_inout(target, "target");
+        srv->set_inout(target, "data.target");
 
         CHECK_EQ(false, target->value());
 
@@ -86,10 +86,10 @@ TEST_SUITE("sight::module::data::inverse")
         using namespace std::literals::string_literals;
 
         auto source = std::make_shared<sight::data::string>("true");
-        srv->set_input(source, "source");
+        srv->set_input(source, "data.source");
 
         auto target = std::make_shared<sight::data::boolean>();
-        srv->set_inout(target, "target");
+        srv->set_inout(target, "data.target");
 
         CHECK_NOTHROW(srv->configure());
         CHECK_NOTHROW(srv->start().get());
@@ -98,7 +98,7 @@ TEST_SUITE("sight::module::data::inverse")
         CHECK_EQ("false"s, target->to_string());
 
         source = std::make_shared<sight::data::string>("false");
-        srv->set_input(source, "source");
+        srv->set_input(source, "data.source");
 
         CHECK_NOTHROW(srv->update().get());
         CHECK_EQ("true"s, target->to_string());
@@ -115,10 +115,10 @@ TEST_SUITE("sight::module::data::inverse")
         using namespace std::literals::string_literals;
 
         auto source = std::make_shared<sight::data::integer>(1);
-        srv->set_input(source, "source");
+        srv->set_input(source, "data.source");
 
         auto target = std::make_shared<sight::data::boolean>();
-        srv->set_inout(target, "target");
+        srv->set_inout(target, "data.target");
 
         CHECK_NOTHROW(srv->configure());
         CHECK_NOTHROW(srv->start().get());
@@ -127,7 +127,7 @@ TEST_SUITE("sight::module::data::inverse")
         CHECK_EQ(false, target->value());
 
         source = std::make_shared<sight::data::integer>(0);
-        srv->set_input(source, "source");
+        srv->set_input(source, "data.source");
 
         CHECK_NOTHROW(srv->update().get());
         CHECK_EQ(true, target->value());
@@ -144,9 +144,9 @@ TEST_SUITE("sight::module::data::inverse")
         using namespace std::literals::string_literals;
 
         auto source = std::make_shared<sight::data::string>("not_a_boolean");
-        srv->set_input(source, "source");
+        srv->set_input(source, "data.source");
         auto target = std::make_shared<sight::data::string>();
-        srv->set_inout(target, "target");
+        srv->set_inout(target, "data.target");
 
         CHECK_NOTHROW(srv->configure());
         CHECK_NOTHROW(srv->start().get());

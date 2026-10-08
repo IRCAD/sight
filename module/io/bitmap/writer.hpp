@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -43,21 +43,23 @@ namespace sight::module::io::bitmap
  * @copydoc sight::io::bitmap::writer
  *
  * @section Signals Signals
- * - \b monitor_created(SPTR(core::progress::monitor)): emitted to display a progress bar while the image is written
+ * - \b notification_created(core::notification::base::sptr): emitted to display a progress bar while the
+ * image is
+ * written
  *
  * @section XML XML Configuration
  *
  * @code{.xml}
     <service type="sight::module::io::bitmap::writer">
-        <in key="data" uid="..." />
-        <file>...</file>
+        <data write="..." />
+        <path file="..." />
         <dialog>...</dialog>
         <gpu_required>true|false</gpu_required>
         <mode>best|fast</mode>
     </service>
    @endcode
  * @subsection Input Input
- * - \b data [sight::data::image]: image to save.
+ * - \b data.write [sight::data::image]: image to save.
  * @subsection Configuration Configuration
  * - \b file (optional): path of the file to save, if it is not defined, 'open_location_dialog()' should be called to
  *           define the path.
@@ -87,9 +89,10 @@ public:
     /// Show a file selection dialog
     void open_location_dialog() final;
 
-protected:
-
     sight::io::service::path_type_t get_path_type() const final;
+    std::vector<std::pair<std::string, std::string> > get_supported_extensions() final;
+
+protected:
 
     /// Does nothing
     void starting() final;
@@ -114,7 +117,7 @@ private:
     dialog_policy m_dialog_policy {dialog_policy::never};
 
     /// Selected backend
-    sight::io::bitmap::backend m_selected_backend {sight::io::bitmap::backend::libtiff};
+    sight::io::bitmap::backend m_selected_backend {sight::io::bitmap::backend::any};
 
     /// Enabled backends
     std::map<sight::io::bitmap::backend, sight::io::bitmap::writer::mode> m_mode_by_backend {

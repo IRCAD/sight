@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -28,8 +28,10 @@
 #include <QObject>
 #include <QPointer>
 
+// NOLINTBEGIN(readability-identifier-naming)
 class QSlider;
 class QLabel;
+// NOLINTEND(readability-identifier-naming)
 
 namespace sight::module::ui::qt
 {
@@ -41,7 +43,7 @@ namespace sight::module::ui::qt
  *
  * @code{.xml}
    <service type="sight::module::ui::qt::material_opacity_editor">
-       <inout key="material" uid="..." />
+       <data material="..." />
        <label>Object's opacity: </label>
    </service>
    @endcode
@@ -65,7 +67,7 @@ public:
     /// Destroys the service.
     ~material_opacity_editor() noexcept override = default;
 
-private:
+protected:
 
     /// Configures the slider's label.
     void configuring() override;
@@ -79,13 +81,15 @@ private:
     /// Destroys the connections and cleans the container.
     void stopping() override;
 
+private:
+
     QPointer<QSlider> m_opacity_slider;
     QPointer<QLabel> m_opacity_value;
 
     /// Name that appears next to the slider.
     std::string m_label {"Material opacity : "};
 
-    data::ptr<data::material, data::access::inout> m_material {this, "material"};
+    data::ptr<data::material, data::access::inout> m_material {this, "data.material"};
 
 private Q_SLOTS:
 

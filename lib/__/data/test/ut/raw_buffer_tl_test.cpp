@@ -21,9 +21,6 @@
  ***********************************************************************/
 
 #include <data/raw_buffer_tl.hpp>
-#include <data/timeline/buffer.hpp>
-
-#include <utest/exception.hpp>
 
 #include <doctest/doctest.h>
 
@@ -41,24 +38,24 @@ TEST_SUITE("sight::data::raw_buffer_tl")
         sight::core::clock::type time1 = sight::core::clock::get_time_in_milli_sec();
         sight::core::clock::type time2 = time1 + 42;
 
-        std::array values1 = {1.0F, 5.2F, 7.5F};
-        std::array values2 = {8.0F, 9.0F, 66.F};
-        SPTR(sight::data::timeline::raw_buffer) data1 = timeline->create_buffer(time1);
+        std::array values1                                   = {1.0F, 5.2F, 7.5F};
+        std::array values2                                   = {8.0F, 9.0F, 66.F};
+        sight::sptr<sight::data::timeline::raw_buffer> data1 = timeline->create_buffer(time1);
         std::ranges::copy(values1, data1->buffer<float>());
-        SPTR(sight::data::timeline::raw_buffer) data2 = timeline->create_buffer(time2);
+        sight::sptr<sight::data::timeline::raw_buffer> data2 = timeline->create_buffer(time2);
         std::ranges::copy(values2, data2->buffer<float>());
 
         timeline->push_object(data1);
         timeline->push_object(data2);
 
-        CSPTR(sight::data::timeline::object) data_pushed1 = timeline->get_object(time1);
+        sight::csptr<sight::data::timeline::object> data_pushed1 = timeline->get_object(time1);
         CHECK(data1 == data_pushed1);
 
-        CSPTR(sight::data::timeline::object) data_pushed2 = timeline->get_object(time2);
+        sight::csptr<sight::data::timeline::object> data_pushed2 = timeline->get_object(time2);
         CHECK(data2 == data_pushed2);
 
-        CSPTR(sight::data::timeline::object) data_pushed1_bis = timeline->get_closest_object(time1 + 1.5);
-        CSPTR(sight::data::timeline::raw_buffer) buff         =
+        sight::csptr<sight::data::timeline::object> data_pushed1_bis = timeline->get_closest_object(time1 + 1.5);
+        sight::csptr<sight::data::timeline::raw_buffer> buff         =
             std::dynamic_pointer_cast<const sight::data::timeline::raw_buffer>(data_pushed1_bis);
         CHECK(buff);
         CHECK_EQ(buff, timeline->get_closest_buffer(time1 + 1.5));
@@ -67,14 +64,14 @@ TEST_SUITE("sight::data::raw_buffer_tl")
         CHECK_EQ(5.2F, buff_data[1]);
         CHECK_EQ(7.5F, buff_data[2]);
 
-        CSPTR(sight::data::timeline::object) data_pushed2_bis = timeline->get_newer_object();
+        sight::csptr<sight::data::timeline::object> data_pushed2_bis = timeline->get_newer_object();
         CHECK(data2 == data_pushed2_bis);
 
         sight::core::clock::type time2_pushed = timeline->get_newer_timestamp();
         CHECK_EQ(time2, time2_pushed);
 
         timeline->clear_timeline();
-        CSPTR(sight::data::timeline::object) null_obj = timeline->get_newer_object();
+        sight::csptr<sight::data::timeline::object> null_obj = timeline->get_newer_object();
         CHECK(null_obj == nullptr);
     }
 
@@ -87,13 +84,13 @@ TEST_SUITE("sight::data::raw_buffer_tl")
 
         std::array values = {1.0F, 5.2F, 7.5F};
 
-        SPTR(sight::data::timeline::raw_buffer) data1 = timeline->create_buffer(1);
+        sight::sptr<sight::data::timeline::raw_buffer> data1 = timeline->create_buffer(1);
         std::ranges::copy(values, data1->buffer<float>());
-        SPTR(sight::data::timeline::raw_buffer) data2 = timeline->create_buffer(2);
+        sight::sptr<sight::data::timeline::raw_buffer> data2 = timeline->create_buffer(2);
         std::ranges::copy(values, data2->buffer<float>());
-        SPTR(sight::data::timeline::raw_buffer) data3 = timeline->create_buffer(3);
+        sight::sptr<sight::data::timeline::raw_buffer> data3 = timeline->create_buffer(3);
         std::ranges::copy(values, data3->buffer<float>());
-        SPTR(sight::data::timeline::raw_buffer) data4 = timeline->create_buffer(4);
+        sight::sptr<sight::data::timeline::raw_buffer> data4 = timeline->create_buffer(4);
         std::ranges::copy(values, data4->buffer<float>());
 
         timeline->push_object(data1);
@@ -101,7 +98,7 @@ TEST_SUITE("sight::data::raw_buffer_tl")
         timeline->push_object(data3);
         timeline->push_object(data4);
 
-        CSPTR(sight::data::timeline::object) obj;
+        sight::csptr<sight::data::timeline::object> obj;
 
         obj = timeline->get_object(1);
         CHECK(data1 == obj);
@@ -187,13 +184,13 @@ TEST_SUITE("sight::data::raw_buffer_tl")
 
         std::array values = {1.0F, 5.2F, 7.5F};
 
-        SPTR(sight::data::timeline::raw_buffer) data1 = timeline->create_buffer(1);
+        sight::sptr<sight::data::timeline::raw_buffer> data1 = timeline->create_buffer(1);
         std::ranges::copy(values, data1->buffer<float>());
-        SPTR(sight::data::timeline::raw_buffer) data2 = timeline->create_buffer(2);
+        sight::sptr<sight::data::timeline::raw_buffer> data2 = timeline->create_buffer(2);
         std::ranges::copy(values, data2->buffer<float>());
-        SPTR(sight::data::timeline::raw_buffer) data3 = timeline->create_buffer(3);
+        sight::sptr<sight::data::timeline::raw_buffer> data3 = timeline->create_buffer(3);
         std::ranges::copy(values, data3->buffer<float>());
-        SPTR(sight::data::timeline::raw_buffer) data4 = timeline->create_buffer(4);
+        sight::sptr<sight::data::timeline::raw_buffer> data4 = timeline->create_buffer(4);
         std::ranges::copy(values, data4->buffer<float>());
 
         timeline->push_object(data1);
@@ -201,7 +198,7 @@ TEST_SUITE("sight::data::raw_buffer_tl")
         timeline->push_object(data3);
         timeline->push_object(data4);
 
-        CSPTR(sight::data::timeline::object) obj;
+        sight::csptr<sight::data::timeline::object> obj;
 
         timeline->set_object(1, data2);
         timeline->set_object(2, data3);
@@ -234,13 +231,13 @@ TEST_SUITE("sight::data::raw_buffer_tl")
 
         std::array values = {2.0F, 1.2F, 6.5F};
 
-        SPTR(sight::data::timeline::raw_buffer) data1 = timeline->create_buffer(1);
+        sight::sptr<sight::data::timeline::raw_buffer> data1 = timeline->create_buffer(1);
         std::ranges::copy(values, data1->buffer<float>());
-        SPTR(sight::data::timeline::raw_buffer) data2 = timeline->create_buffer(2);
+        sight::sptr<sight::data::timeline::raw_buffer> data2 = timeline->create_buffer(2);
         std::ranges::copy(values, data2->buffer<float>());
-        SPTR(sight::data::timeline::raw_buffer) data3 = timeline->create_buffer(3);
+        sight::sptr<sight::data::timeline::raw_buffer> data3 = timeline->create_buffer(3);
         std::ranges::copy(values, data3->buffer<float>());
-        SPTR(sight::data::timeline::raw_buffer) data4 = timeline->create_buffer(4);
+        sight::sptr<sight::data::timeline::raw_buffer> data4 = timeline->create_buffer(4);
         std::ranges::copy(values, data4->buffer<float>());
 
         timeline->push_object(data1);
@@ -248,7 +245,7 @@ TEST_SUITE("sight::data::raw_buffer_tl")
         timeline->push_object(data3);
         timeline->push_object(data4);
 
-        CSPTR(sight::data::timeline::object) obj;
+        sight::csptr<sight::data::timeline::object> obj;
 
         obj = timeline->get_object(1);
         CHECK(data1 == obj);
@@ -290,11 +287,11 @@ TEST_SUITE("sight::data::raw_buffer_tl")
         sight::core::clock::type time1 = sight::core::clock::get_time_in_milli_sec();
         sight::core::clock::type time2 = time1 + 42;
 
-        std::array values1 = {1.0F, 5.2F, 7.5F};
-        std::array values2 = {8.0F, 9.0F, 66.F};
-        SPTR(sight::data::timeline::raw_buffer) data1 = timeline->create_buffer(time1);
+        std::array values1                                   = {1.0F, 5.2F, 7.5F};
+        std::array values2                                   = {8.0F, 9.0F, 66.F};
+        sight::sptr<sight::data::timeline::raw_buffer> data1 = timeline->create_buffer(time1);
         std::ranges::copy(values1, data1->buffer<float>());
-        SPTR(sight::data::timeline::raw_buffer) data2 = timeline->create_buffer(time2);
+        sight::sptr<sight::data::timeline::raw_buffer> data2 = timeline->create_buffer(time2);
         std::ranges::copy(values2, data2->buffer<float>());
 
         timeline->push_object(data1);
@@ -307,10 +304,10 @@ TEST_SUITE("sight::data::raw_buffer_tl")
         deep_timeline->deep_copy(timeline);
         CHECK(*timeline == *deep_timeline);
 
-        CSPTR(sight::data::timeline::object) deep_data_pushed1 = deep_timeline->get_object(time1);
+        sight::csptr<sight::data::timeline::object> deep_data_pushed1 = deep_timeline->get_object(time1);
         CHECK(deep_data_pushed1);
         CHECK(data1 != deep_data_pushed1);
-        CSPTR(sight::data::timeline::raw_buffer) buff1 =
+        sight::csptr<sight::data::timeline::raw_buffer> buff1 =
             std::dynamic_pointer_cast<const sight::data::timeline::raw_buffer>(deep_data_pushed1);
         CHECK(buff1);
         CHECK_EQ(buff1, deep_timeline->get_buffer(time1));
@@ -319,10 +316,10 @@ TEST_SUITE("sight::data::raw_buffer_tl")
         CHECK_EQ(5.2F, buff_data1[1]);
         CHECK_EQ(7.5F, buff_data1[2]);
 
-        CSPTR(sight::data::timeline::object) deep_data_pushed2 = deep_timeline->get_object(time2);
+        sight::csptr<sight::data::timeline::object> deep_data_pushed2 = deep_timeline->get_object(time2);
         CHECK(deep_data_pushed2);
         CHECK(data2 != deep_data_pushed2);
-        CSPTR(sight::data::timeline::raw_buffer) buff2 =
+        sight::csptr<sight::data::timeline::raw_buffer> buff2 =
             std::dynamic_pointer_cast<const sight::data::timeline::raw_buffer>(deep_data_pushed2);
         CHECK(buff2);
         auto* buff_data2 = buff2->buffer<float>();

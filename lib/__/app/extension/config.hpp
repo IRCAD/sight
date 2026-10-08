@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,15 +24,12 @@
 
 #include <sight/app/config.hpp>
 
-#include "service/extension/config.hpp"
-
 #include <core/mt/types.hpp>
-#include <core/object.hpp>
 #include <core/runtime/extension.hpp>
-
 #include <data/map.hpp>
 
 #include <map>
+#include <optional>
 #include <unordered_set>
 
 namespace sight::app
@@ -50,7 +47,7 @@ class SIGHT_APP_CLASS_API app_info
 {
 public:
 
-    using sptr = SPTR(app_info);
+    using sptr = sight::sptr<app_info>;
 
     std::string group;
     std::string desc;
@@ -59,8 +56,8 @@ public:
     struct objects_info_t
     {
         std::string type;
-        bool deferred;
-        bool optional;
+        bool deferred {false};
+        bool optional {false};
         std::string value;
     };
     using objects_t = std::map<std::string, objects_info_t>;
@@ -78,7 +75,7 @@ class SIGHT_APP_CLASS_API config final
 {
 public:
 
-    using sptr = SPTR(config);
+    using sptr = sight::sptr<config>;
 
     /**
      * @brief Parses module information to retrieve configuration declaration.
@@ -124,7 +121,7 @@ public:
      */
     SIGHT_APP_API core::runtime::config_t get_adapted_template_config(
         const std::string& _config_id,
-        const field_adaptor_t _replace_fields,
+        field_adaptor_t _replace_fields,
         const std::string& _auto_prefix_id
     );
 
@@ -147,6 +144,18 @@ public:
     SIGHT_APP_API std::vector<std::string> get_configs_from_group(const std::string& _group) const;
 
     /**
+     * @brief Return object parameter metadata for a given configuration.
+     * @param _config_id the configuration identifier
+     * @param _object_uid the object parameter uid declared in <parameters>
+     * @return object metadata if found, std::nullopt otherwise.
+     * @note This method is thread safe.
+     */
+    SIGHT_APP_API std::optional<app_info::objects_info_t> get_object_parameter(
+        const std::string& _config_id,
+        const std::string& _object_uid
+    ) const;
+
+    /**
      * @brief Clear the registry.
      * @note This method is thread safe.
      */
@@ -160,13 +169,6 @@ public:
 
     /// Return an instance of config.
     SIGHT_APP_API static config::sptr get();
-
-protected:
-
-    using registry = std::map<std::string, app_info::sptr>;
-
-    /// Container of <configId, config information>
-    registry m_reg;
 
 private:
 
@@ -192,6 +194,11 @@ private:
 
     /// Adapts field thanks to field adaptors
     static std::string subst_var(std::string _str, const field_adaptor_t& _variables_map);
+
+    using registry = std::map<std::string, app_info::sptr>;
+
+    /// Container of <configId, config information>
+    registry m_reg;
 
     /// Used to protect the registry access.
     mutable core::mt::read_write_mutex m_registry_mutex;

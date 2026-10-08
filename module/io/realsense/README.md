@@ -46,10 +46,10 @@ You can achieve this in two different ways:
 
 ```xml
 <service uid="videoGrabber" type ="sight::module::io::realsense::scan" auto_connect="no">
-    <inout key="depthTL" uid="..." />
-    <inout key="frame_tl" uid="..." />
-    <out key="pointcloud" uid="..." />
-    <inout key="camera_set" uid="..." />
+    <timeline depth="..." />
+    <timeline image="..." />
+    <output pointcloud="..." />
+    <config camera_set="..." />
     <config preset="NAME" />
 </service>
    ```
@@ -64,7 +64,6 @@ You can achieve this in two different ways:
     </parameters>
 </service>
 ```
-
 
 
 

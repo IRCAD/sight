@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,11 +22,11 @@
 
 #pragma once
 
-#include <core/com/slot.hpp>
 #include <core/com/slots.hpp>
 #include <core/mt/types.hpp>
 #include <core/thread/timer.hpp>
-#include <core/tools/failed.hpp>
+
+#include <data/camera.hpp>
 
 #include <io/__/service/grabber.hpp>
 
@@ -77,8 +77,8 @@ namespace sight::module::io::video
  *
  * @code{.xml}
         <service type="sight::module::io::video::frame_grabber">
-            <in key="camera" uid="..." />
-            <inout key="frame_tl" uid="..." />
+            <config camera="..." />
+            <timeline image="..." />
             <fps>30</fps>
             <oneShot>false</oneShot>
             <createTimestamp>false</createTimestamp>
@@ -88,9 +88,9 @@ namespace sight::module::io::video
         </service>
    @endcode
  * @subsection Input Input
- * - \b camera [sight::data::camera]: camera used to display video.
+ * - \b config.camera [sight::data::camera]: camera used to display video.
  * @subsection In-Out In-Out
- * - \b frame_tl [sight::data::frame_tl]: timeline where to extract the video frames.
+ * - \b timeline.image [sight::data::frame_tl]: timeline where to extract the video frames.
  * @subsection Configuration Configuration
  * - \b fps (optional) : target playback frame rate when playing an image sequence (default: 30).
  * - \b useTimelapse (optional): if true, the difference between two image's timestamps will be use as timer duration,
@@ -118,20 +118,6 @@ public:
     ~frame_grabber() noexcept override;
 
     void set_parameter(ui::parameter_t _value, std::string _key) override;
-
-protected:
-
-    /// Initialize the layout and the camera.
-    void starting() override;
-
-    /// Destroy the layout.
-    void stopping() override;
-
-    /// Do nothing.
-    void updating() override;
-
-    /// Do nothing.
-    void configuring() override;
 
     /// SLOT : Initialize and start camera (restart camera if is already started).
     void start_camera() override;
@@ -164,6 +150,20 @@ protected:
     /// SLOT: Removes a region of interest center. Currently this function relates to image zoom.
     ///       The removed point can be forwarded from a picker in singlePointMode for example.
     void remove_roi_center(sight::data::point::sptr _p) final;
+
+protected:
+
+    /// Initialize the layout and the camera.
+    void starting() override;
+
+    /// Destroy the layout.
+    void stopping() override;
+
+    /// Do nothing.
+    void updating() override;
+
+    /// Do nothing.
+    void configuring() override;
 
 private:
 

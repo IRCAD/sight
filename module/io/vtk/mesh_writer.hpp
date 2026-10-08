@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,19 +42,21 @@ namespace sight::module::io::vtk
  * Service writing a VTK Mesh using the fwVtkIO lib.
  *
  * @section Signals Signals
- * - \b monitor_created(SPTR(core::progress::monitor)): emitted to display a progress bar while the image is written,
+ * - \b notification_created(core::notification::base::sptr): emitted to display a progress bar while the
+ * image is
+ * written,
  * it should be connected to a progress bar
  *
  * @section XML XML Configuration
  *
  * @code{.xml}
    <service type="sight::module::io::vtk::mesh_writer">
-       <in key="data" uid="..." />
-       <file>...</file>
+       <data write="..." />
+       <path file="..." />
    </service>
    @endcode
  * @subsection Input Input
- * - \b data [sight::data::mesh]: mesh to save.
+ * - \b data.write [sight::data::mesh]: mesh to save.
  * @subsection Configuration Configuration
  * - \b file (optional): path of the file to save, if it is not defined, 'open_location_dialog()' should be called to
  * define the path.
@@ -79,9 +81,9 @@ public:
      */
     void open_location_dialog() override;
 
-protected:
-
     sight::io::service::path_type_t get_path_type() const override;
+
+protected:
 
     /**
      * @brief Starting method.

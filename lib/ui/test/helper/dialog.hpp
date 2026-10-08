@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -122,4 +122,4 @@ inline void dialog::maybe_take(tester& _tester, const std::string& _desc, const 
         });
 }
 
-} // namespace sight::ui::testCore::helper
+} // namespace sight::ui::test::helper

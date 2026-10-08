@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,11 +30,13 @@
 #include <vtkSmartPointer.h>
 
 // forward declaration
+// NOLINTBEGIN(cppcoreguidelines-virtual-class-destructor,readability-identifier-naming)
 class vtkPolyData;
 class vtkImageData;
 class vtkImageImport;
 class vtkMatrix4x4;
 class vtkLookupTable;
+// NOLINTEND(cppcoreguidelines-virtual-class-destructor,readability-identifier-naming)
 
 namespace sight::io::vtk
 {

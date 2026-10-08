@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,9 +21,9 @@
  ***********************************************************************/
 
 #include "core/com/slot_base.hpp"
+#include "core/com/slot_run.hpp"
 
 #include "core/com/exception/bad_run.hpp"
-#include "core/com/slot_base.hxx"
 
 namespace sight::core::com
 {

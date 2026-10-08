@@ -34,7 +34,7 @@ class SIGHT_UTEST_CLASS_API exception : public std::runtime_error
 {
 public:
 
-    inline exception(const std::string& _err) :
+    explicit exception(const std::string& _err) :
         std::runtime_error(_err)
     {
     }

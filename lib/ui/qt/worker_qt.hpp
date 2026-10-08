@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include <sight/ui/qt/config.hpp>
 
-#include <core/base.hpp>
+#include <core/macros.hpp>
 
 #include <QCoreApplication>
 #include <QSharedPointer>
@@ -43,7 +43,7 @@ namespace sight::ui::qt
 
 //-----------------------------------------------------------------------------
 
-SIGHT_UI_QT_API SPTR(core::thread::worker) get_qt_worker(
+SIGHT_UI_QT_API sight::sptr<core::thread::worker> get_qt_worker(
     int& _argc,
     char** _argv,
     std::function<QSharedPointer<QCoreApplication>(int&, char**)> _callback,

@@ -29,8 +29,8 @@
 #include <boost/mpl/empty.hpp>
 #include <boost/mpl/front.hpp>
 #include <boost/mpl/if.hpp>
-#include <boost/mpl/push_back.hpp>
 #include <boost/mpl/pop_front.hpp>
+#include <boost/mpl/push_back.hpp>
 #include <boost/mpl/vector.hpp>
 
 #include <stdexcept>
@@ -99,8 +99,8 @@ struct dispatcher
 {
     private:
 
-        using tail = typename boost::mpl::pop_front<TSEQ>::type;
-        using head = typename boost::mpl::front<TSEQ>::type;
+        using tail = boost::mpl::pop_front<TSEQ>::type;
+        using head = boost::mpl::front<TSEQ>::type;
 
     public:
 

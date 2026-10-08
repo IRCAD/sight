@@ -22,11 +22,7 @@
 
 #include "module/filter/image/matrix_regressor.hpp"
 
-#include <core/com/signal.hxx>
-
 #include <filter/image/matrix_regressor.hpp>
-
-#include <service/macros.hpp>
 
 namespace sight::module::filter::image
 {
@@ -34,7 +30,7 @@ namespace sight::module::filter::image
 //-----------------------------------------------------------------------------
 
 matrix_regressor::matrix_regressor() :
-    filter(m_signals)
+    filter(has_signals::signals())
 {
 }
 
@@ -62,7 +58,7 @@ void matrix_regressor::updating()
 
     const auto optimal_matrix = m_optimal_matrix.lock();
 
-    SIGHT_ASSERT("'optimalMatrix' does not exist", optimal_matrix);
+    SIGHT_ASSERT("'output.optimal_matrix' does not exist", optimal_matrix);
 
     std::vector<sight::filter::image::matrix_regressor::point_t> pt_list;
 
@@ -82,7 +78,7 @@ void matrix_regressor::updating()
         data::matrix4::sptr res = regressor.minimize(*init_val, 1., 1e-4, 1e-4);
         optimal_matrix->deep_copy(res);
 
-        this->signal<signals::computed_t>(signals::SUCCEEDED)->async_emit();
+        this->async_emit(signals::SUCCEEDED);
     }
 }
 
@@ -97,9 +93,9 @@ void matrix_regressor::stopping()
 service::connections_t matrix_regressor::auto_connections() const
 {
     return {
-        {MATRIX_LIST_IN, data::vector::ADDED_OBJECTS_SIG, service::slots::UPDATE},
-        {MATRIX_LIST_IN, data::vector::REMOVED_OBJECTS_SIG, service::slots::UPDATE},
-        {MATRIX_LIST_IN, data::vector::MODIFIED_SIG, service::slots::UPDATE},
+        {MATRIX_LIST_IN, data::vector::signals::ADDED_OBJECTS, service::slots::UPDATE},
+        {MATRIX_LIST_IN, data::vector::signals::REMOVED_OBJECTS, service::slots::UPDATE},
+        {MATRIX_LIST_IN, data::signals::MODIFIED, service::slots::UPDATE},
         {POINT_LIST_IN, data::point_list::signals::POINT_ADDED, service::slots::UPDATE},
         {POINT_LIST_IN, data::point_list::signals::POINT_REMOVED, service::slots::UPDATE},
         {POINT_LIST_IN, data::signals::MODIFIED, service::slots::UPDATE}

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,12 +22,7 @@
 
 #include "module/viz/scene2d/adaptor/grid2d.hpp"
 
-#include <core/com/slots.hxx>
-
-#include <service/macros.hpp>
-
 #include <viz/scene2d/data/init_qt_pen.hpp>
-#include <viz/scene2d/graphics_view.hpp>
 
 #include <QGraphicsItemGroup>
 
@@ -38,19 +33,10 @@ namespace sight::module::viz::scene2d::adaptor
 
 //---------------------------------------------------------------------------------------------------------------
 
-const core::com::slots::key_t grid2d::SET_GRID_SPACING_SLOT = "set_grid_spacing";
-
-//---------------------------------------------------------------------------------------------------------------
-
 grid2d::grid2d() noexcept
 {
-    new_slot(SET_GRID_SPACING_SLOT, &sight::module::viz::scene2d::adaptor::grid2d::set_grid_spacing, this);
+    new_slot(slots::SET_GRID_SPACING, &grid2d::set_grid_spacing, this);
 }
-
-//---------------------------------------------------------------------------------------------------------------
-
-grid2d::~grid2d() noexcept =
-    default;
 
 //---------------------------------------------------------------------------------------------------------------
 

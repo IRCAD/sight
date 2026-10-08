@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -70,13 +70,16 @@ public:
      * @name Signals
      * @{
      */
-    /// Defines the type of signal sent when a reconstruction is added.
-    using reconstructions_added_signal_t = core::com::signal<void (reconstruction_vector_t)>;
-    SIGHT_DATA_API static const core::com::signals::key_t RECONSTRUCTIONS_ADDED_SIG;
+    struct signals
+    {
+        /// Defines the type of signal sent when a reconstruction is added.
+        using reconstructions_added_t = core::com::signal<void (reconstruction_vector_t)>;
+        static const inline signal_key_t RECONSTRUCTIONS_ADDED = "reconstructionsAdded";
 
-    /// Defines the type of signal sent when a reconstruction is removed.
-    using reconstructions_removed_signal_t = core::com::signal<void (reconstruction_vector_t)>;
-    SIGHT_DATA_API static const core::com::signals::key_t RECONSTRUCTIONS_REMOVED_SIG;
+        /// Defines the type of signal sent when a reconstruction is removed.
+        using reconstructions_removed_t = core::com::signal<void (reconstruction_vector_t)>;
+        static const inline signal_key_t RECONSTRUCTIONS_REMOVED = "reconstructionsRemoved";
+    };
 /**
  * @}
  */
@@ -101,18 +104,10 @@ public:
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;
 
-protected:
+private:
 
     /// Stores models.
     reconstruction_vector_t m_reconstruction_db;
-
-private:
-
-    /// Stores the signal emitted when reconstructions are added.
-    reconstructions_added_signal_t::sptr m_sig_reconstructions_added;
-
-    /// Stores the signal emitted when reconstructions are removed.
-    reconstructions_removed_signal_t ::sptr m_sig_reconstructions_removed;
 };
 
 //-----------------------------------------------------------------------------

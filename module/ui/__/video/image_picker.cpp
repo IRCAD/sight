@@ -22,21 +22,14 @@
 
 #include "image_picker.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-
-#include <service/macros.hpp>
-
 namespace sight::module::ui::video
 {
 
 //-----------------------------------------------------------------------------
 
-const core::com::slots::key_t GET_INTERACTION_SLOT = "get_interaction";
-
 image_picker::image_picker() noexcept
 {
-    new_slot(GET_INTERACTION_SLOT, &image_picker::get_interaction, this);
+    new_slot(slots::GET_INTERACTION, &image_picker::get_interaction, this);
 
     m_video_ref_map["top_left"] = video_reference_t::top_left;
     m_video_ref_map["center"]   = video_reference_t::center;

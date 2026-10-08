@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2024 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -25,12 +25,12 @@
 
 #include <chrono>
 #include <cmath>
-#include <functional>
 #include <numeric>
 #include <optional>
 
 /// @note std::source_location is not yet supported by clang...
 /// Profile a function with multiple calls
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define SIGHT_PROFILE_FUNC(Func, ...) \
         sight::utest::profile_func(SIGHT_SOURCE_FILE, __LINE__, Func __VA_OPT__( , ) __VA_ARGS__)
 
@@ -50,7 +50,7 @@ static inline std::tuple<Unit, Unit> profile_func(
 )
 {
     // Just to have at least one iteration
-    _iteration = std::max(std::size_t(1), _iteration);
+    _iteration = std::max(static_cast<std::size_t>(1), _iteration);
 
     std::vector<std::chrono::steady_clock::duration> durations;
     durations.reserve(_iteration);
@@ -81,15 +81,15 @@ static inline std::tuple<Unit, Unit> profile_func(
         0.0,
         [&](auto _a, const auto& _b)
         {
-            const double diff = double(_b.count()) - double(mean.count());
+            const double diff = double(_b.count()) - static_cast<double>(mean.count());
             return std::move(_a) + (diff * diff);
-        }) / double(durations.size());
+        }) / static_cast<double>(durations.size());
 
     // Compute standard error
     const double standard_error = std::sqrt(variance);
 
     using d_unit     = std::chrono::duration<double, typename Unit::period>;
-    using d_duration = std::chrono::duration<double, typename std::chrono::steady_clock::duration::period>;
+    using d_duration = std::chrono::duration<double, std::chrono::steady_clock::duration::period>;
 
     // Convert standard error to the same unit as "mean"
     const auto converted_error = d_duration(standard_error);

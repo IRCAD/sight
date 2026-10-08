@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,26 +22,20 @@
 
 #include "cross_type_action.hpp"
 
-#include <core/com/signal.hxx>
-
-#include <boost/algorithm/string.hpp>
-
 namespace sight::module::ui::viz
 {
 
-static const core::com::signals::key_t CROSS_TYPE_MODIFIED_SIG = "crossTypeModified";
-
-std::map<std::string, float> cross_type_action::s_scale_conversion = {
-    {std::string("full"), 1.0F},
-    {std::string("half"), 0.5F},
-    {std::string("hide"), 0.0F}
+static std::map<std::string, double> s_scale_conversion = {
+    {std::string("full"), 1.0},
+    {std::string("half"), 0.5},
+    {std::string("hide"), 0.0}
 };
 
 //------------------------------------------------------------------------------
 
-cross_type_action::cross_type_action() noexcept :
-    m_sig_cross_type_modified(new_signal<cross_type_modified_signal_t>(CROSS_TYPE_MODIFIED_SIG))
+cross_type_action::cross_type_action() noexcept
 {
+    new_signal<signals::cross_type_modified_t>(signals::CROSS_TYPE_MODIFIED);
 }
 
 //------------------------------------------------------------------------------
@@ -70,7 +64,7 @@ void cross_type_action::configuring()
         m_cross_type = cross_type.value();
         boost::algorithm::trim(m_cross_type);
         boost::algorithm::to_lower(m_cross_type);
-        SIGHT_ASSERT("Unknown crossType", s_scale_conversion.find(m_cross_type) != s_scale_conversion.end());
+        SIGHT_ASSERT("Unknown crossType", s_scale_conversion.contains(m_cross_type));
     }
 }
 
@@ -78,7 +72,7 @@ void cross_type_action::configuring()
 
 void cross_type_action::updating()
 {
-    m_sig_cross_type_modified->async_emit(s_scale_conversion[m_cross_type]);
+    async_emit(signals::CROSS_TYPE_MODIFIED, s_scale_conversion[m_cross_type]);
 }
 
 //------------------------------------------------------------------------------

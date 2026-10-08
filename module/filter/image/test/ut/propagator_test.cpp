@@ -23,7 +23,6 @@
 #include <core/type.hpp>
 
 #include <data/boolean.hpp>
-#include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
 #include <data/point_list.hpp>
 #include <data/string.hpp>
@@ -93,15 +92,15 @@ TEST_SUITE("sight::module::filter::image::propagator")
 
         srv->set_worker(sight::core::thread::get_default_worker());
 
-        const std::string config = "<properties value='50'/>";
+        const std::string config = "<config value='50'/>";
         srv->set_config(config);
-        srv->set_input(image, "image_in");
-        srv->set_input(point_list, "seeds");
-        srv->set_inout(mask, "image_out");
-        srv->set_inout(mode, "mode");
+        srv->set_input(image, "input.image");
+        srv->set_input(point_list, "input.seeds");
+        srv->set_inout(mask, "output.image");
+        srv->set_input(mode, "config.mode");
         srv->configure();
-        srv->start().wait();
-        srv->update().wait();
+        srv->start().get();
+        srv->update().get();
 
         // No seed, no change expected
         {
@@ -125,7 +124,7 @@ TEST_SUITE("sight::module::filter::image::propagator")
         // One seed in the '2554' region, propagation expected
         point_list->push_back(std::make_shared<sight::data::point>(105., -190., 40.));
 
-        srv->update().wait();
+        srv->update().get();
         {
             const auto mask_lock = mask->dump_lock();
             for(std::size_t x = 0 ; x < 10 ; ++x)
@@ -153,17 +152,17 @@ TEST_SUITE("sight::module::filter::image::propagator")
         // Reset the output image
         {
             const auto lock = mask->dump_lock();
-            std::fill(mask->begin(), mask->end(), std::uint8_t(0));
+            std::fill(mask->begin(), mask->end(), static_cast<std::uint8_t>(0));
         }
 
         // One seed in the '2554' region and one seed in the '1200' region, propagation expected in both regions
         point_list->push_back(std::make_shared<sight::data::point>(105., -190., 55.));
         auto samples_out = std::make_shared<sight::data::image>();
-        srv->set_inout(samples_out, "samples_out");
+        srv->set_inout(samples_out, "output.sample");
         auto mask_filled_out = std::make_shared<sight::data::boolean>(false);
-        srv->set_inout(mask_filled_out, "mask_filled_out");
+        srv->set_output(mask_filled_out, "output.mask_filled");
 
-        srv->update().wait();
+        srv->update().get();
         {
             const auto mask_lock = mask->dump_lock();
             for(std::size_t x = 0 ; x < 10 ; ++x)
@@ -231,8 +230,7 @@ TEST_SUITE("sight::module::filter::image::propagator")
 
         // Switch to standard deviation mode
         mode->set_value("stddev");
-        auto sig = mode->signal<sight::data::object::modified_signal_t>(sight::data::object::MODIFIED_SIG);
-        sig->emit();
+        mode->emit(sight::data::signals::MODIFIED);
 
         point_list->push_back(std::make_shared<sight::data::point>(105., -190., 52.));
 
@@ -251,7 +249,7 @@ TEST_SUITE("sight::module::filter::image::propagator")
             }
         }
 
-        srv->update().wait();
+        srv->update().get();
 
         {
             const auto mask_lock = mask->dump_lock();
@@ -295,7 +293,7 @@ TEST_SUITE("sight::module::filter::image::propagator")
             CHECK_EQ(true, mask_filled_out->value());
         }
 
-        srv->stop().wait();
+        srv->stop().get();
         sight::service::remove(srv);
     }
 }

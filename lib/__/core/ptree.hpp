@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -26,6 +26,10 @@
 #include <core/exceptionmacros.hpp>
 
 #include <boost/property_tree/ptree.hpp>
+
+#include <set>
+#include <string>
+#include <vector>
 
 namespace sight::core::ptree
 {
@@ -83,4 +87,37 @@ template<class T>
 
 SIGHT_CORE_API std::string to_string(const boost::property_tree::ptree& _pt);
 
-} // namespace sight::core
+/// A single attribute of a flattened property tree, see flatten().
+struct flat_entry
+{
+    /// Dotted path built from the tag names and the attribute name, e.g. "config.tracker.ip"
+    std::string key;
+    std::string value;
+    /// Rank of the innermost tag among its homonym siblings, used to resolve groups
+    std::size_t index {0};
+};
+
+/**
+ * @brief Flattens the attributes of a property tree into a list of dotted keys.
+ *
+ * `<config threshold="1"><tracker ip="a"/><tracker ip="b"/></config>` yields
+ * `{"config.threshold", "1", 0}`, `{"config.tracker.ip", "a", 0}` and `{"config.tracker.ip", "b", 1}`.
+ *
+ * @param _tree tree to flatten
+ * @param _reserved tag names to skip, only considered at the first level
+ */
+SIGHT_CORE_API std::vector<flat_entry> flatten(
+    const boost::property_tree::ptree& _tree,
+    const std::set<std::string, std::less<> >& _reserved = {});
+
+//------------------------------------------------------------------------------
+
+/**
+ * @brief Recursively merges the source property tree into the destination tree.
+ *
+ * Existing children are merged by name and children only present in the source
+ * are appended to the destination.
+ */
+SIGHT_CORE_API void merge(boost::property_tree::ptree& _destination, const boost::property_tree::ptree& _source);
+
+} // namespace sight::core::ptree

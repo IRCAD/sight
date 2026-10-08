@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,7 +41,7 @@ class min_max_propagation
 {
 public:
 
-    enum mode
+    enum mode : std::uint8_t
     {
         min,
         max,

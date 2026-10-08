@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2025 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,11 +24,7 @@
 
 #include <core/runtime/path.hpp>
 
-#include <data/image_series.hpp>
-
 #include <io/http/helper/series.hpp>
-
-#include <service/macros.hpp>
 
 #include <ui/__/dialog/message.hpp>
 #include <ui/qt/container/widget.hpp>
@@ -105,8 +101,18 @@ void query_editor::starting()
         m_study_date_query_button->setIcon(icon);
         if(m_icon_width > 0 && m_icon_height > 0)
         {
-            m_patient_name_query_button->setIconSize(QSize(int(m_icon_width), int(m_icon_height)));
-            m_study_date_query_button->setIconSize(QSize(int(m_icon_width), int(m_icon_height)));
+            m_patient_name_query_button->setIconSize(
+                QSize(
+                    static_cast<int>(m_icon_width),
+                    static_cast<int>(m_icon_height)
+                )
+            );
+            m_study_date_query_button->setIconSize(
+                QSize(
+                    static_cast<int>(m_icon_width),
+                    static_cast<int>(m_icon_height)
+                )
+            );
         }
     }
 
@@ -185,7 +191,7 @@ void query_editor::query_patient_name()
         const std::string pacs_server("http://" + *m_server_hostname + ":" + std::to_string(*m_server_port));
 
         /// Orthanc "/tools/find" route. POST a JSON to get all Series corresponding to the SeriesInstanceUID.
-        auto request                    = sight::io::http::request::New(pacs_server + "/tools/find");
+        auto request                    = sight::io::http::request::make(pacs_server + "/tools/find");
         const QByteArray& series_answer = m_client_qt.post(request, QJsonDocument(body).toJson());
         QJsonDocument json_response     = QJsonDocument::fromJson(series_answer);
         QJsonArray series_array         = json_response.array();
@@ -195,7 +201,7 @@ void query_editor::query_patient_name()
         {
             const std::string& series_uid = series_array.at(i).toString().toStdString();
             const std::string instances_list_url(pacs_server + "/series/" + series_uid);
-            const QByteArray& instances_answer = m_client_qt.get(sight::io::http::request::New(instances_list_url));
+            const QByteArray& instances_answer = m_client_qt.get(sight::io::http::request::make(instances_list_url));
             json_response = QJsonDocument::fromJson(instances_answer);
             const QJsonObject& json_obj      = json_response.object();
             const QJsonArray& instance_array = json_obj["Instances"].toArray();
@@ -203,7 +209,7 @@ void query_editor::query_patient_name()
             // Retrieve the first instance for the needed information
             const std::string& instance_uid = instance_array.at(0).toString().toStdString();
             const std::string instance_url(pacs_server + "/instances/" + instance_uid + "/simplified-tags");
-            const QByteArray& instance = m_client_qt.get(sight::io::http::request::New(instance_url));
+            const QByteArray& instance = m_client_qt.get(sight::io::http::request::make(instance_url));
 
             QJsonObject series_json = QJsonDocument::fromJson(instance).object();
             series_json.insert("NumberOfSeriesRelatedInstances", instance_array.count());
@@ -246,7 +252,7 @@ void query_editor::query_study_date()
         const std::string pacs_server("http://" + *m_server_hostname + ":" + std::to_string(*m_server_port));
 
         /// Orthanc "/tools/find" route. POST a JSON to get all Studies corresponding to StudyDate range.
-        sight::io::http::request::sptr request = sight::io::http::request::New(pacs_server + "/tools/find");
+        sight::io::http::request::sptr request = sight::io::http::request::make(pacs_server + "/tools/find");
         QByteArray studies_list_answer;
         try
         {
@@ -271,7 +277,7 @@ void query_editor::query_study_date()
         {
             const std::string& studies_uid = studies_list_array.at(i).toString().toStdString();
             const std::string studies_url(pacs_server + "/studies/" + studies_uid);
-            const QByteArray& studies_answer = m_client_qt.get(sight::io::http::request::New(studies_url));
+            const QByteArray& studies_answer = m_client_qt.get(sight::io::http::request::make(studies_url));
 
             json_response = QJsonDocument::fromJson(studies_answer);
             const QJsonObject& json_obj    = json_response.object();
@@ -282,7 +288,7 @@ void query_editor::query_study_date()
             {
                 const std::string& series_uid = series_array.at(j).toString().toStdString();
                 const std::string instances_url(pacs_server + "/series/" + series_uid);
-                const QByteArray& instances_answer = m_client_qt.get(sight::io::http::request::New(instances_url));
+                const QByteArray& instances_answer = m_client_qt.get(sight::io::http::request::make(instances_url));
                 json_response = QJsonDocument::fromJson(instances_answer);
                 const QJsonObject& another_json_obj = json_response.object();
                 const QJsonArray& instance_array    = another_json_obj["Instances"].toArray();
@@ -290,7 +296,7 @@ void query_editor::query_study_date()
                 // Retrieve the first instance for the needed information
                 const std::string& instance_uid = instance_array.at(0).toString().toStdString();
                 const std::string instance_url(pacs_server + "/instances/" + instance_uid + "/simplified-tags");
-                const QByteArray& instance = m_client_qt.get(sight::io::http::request::New(instance_url));
+                const QByteArray& instance = m_client_qt.get(sight::io::http::request::make(instance_url));
 
                 QJsonObject series_json = QJsonDocument::fromJson(instance).object();
                 series_json.insert("NumberOfSeriesRelatedInstances", instance_array.count());

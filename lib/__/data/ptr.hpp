@@ -25,11 +25,15 @@
 
 #include <data/generic.hpp>
 #include <data/has_data.hpp>
+#include <data/mt/locked_ptr.hpp>
 #include <data/mt/shared_ptr.hpp>
 
+#include <functional>
 #include <optional>
 #include <string_view>
-#include <system_error>
+#include <type_traits>
+#include <utility>
+#include <vector>
 
 namespace sight::data
 {
@@ -40,6 +44,10 @@ using ptr_type_traits = std::conditional_t<ACCESS == data::access::out,
                                            data::mt::weak_ptr<typename access_type_traits<DATATYPE, ACCESS>::object> >;
 
 class has_data;
+
+/// Constrains the types that can be built from a string representation, and can thus declare a default value.
+template<class T>
+concept serializable = std::derived_from<T, sight::data::string_serializable>&& !std::is_abstract_v<T>;
 
 /**
  * @brief Interface class for ptr and ptr_vector.
@@ -64,11 +72,39 @@ public:
     [[nodiscard]] bool optional() const;
     [[nodiscard]] enum access access () const;
 
+    /// True for data::ptr_vector, i.e. when the key designates a group of objects instead of a single one.
+    [[nodiscard]] virtual bool is_group() const;
+
+    /// Non-empty when the key is bound to an object that is created at runtime, and thus not available yet.
+    [[nodiscard]] virtual std::string deferred_id() const;
+
+    /// Indices currently materialized for a data group. Empty for a singular pointer.
+    [[nodiscard]] virtual std::vector<std::size_t> indices() const;
+
+    /// Materializes an addressable null group element at the given index.
+    virtual void materialize(std::size_t _index);
+
     // Returns key()
-    [[nodiscard]] operator std::string_view() const;
+    [[nodiscard]] operator std::string_view() const; //NOLINT(google-explicit-constructor,hicpp-explicit-conversions)
 
     // Generic getter
     SIGHT_DATA_API virtual sight::data::object::csptr get() = 0;
+
+    /**
+     * @brief Returns the class name of the data type this pointer is templated with.
+     *
+     * This is only returned when the type is a concrete sight::data::string_serializable, i.e. when an object can be
+     * built from a string representation. In any other case, an empty string is returned. This notably occurs with
+     * generic types such as sight::data::object, for which the actual type can only be resolved at a higher level.
+     */
+    [[nodiscard]] SIGHT_DATA_API virtual std::string default_object_type() const = 0;
+
+    /**
+     * @brief Builds a new object initialized with the default value declared with this pointer.
+     *
+     * @return a new object, or nullptr when no default value was declared.
+     */
+    [[nodiscard]] SIGHT_DATA_API virtual sight::data::object::sptr make_default_object() const = 0;
 
 protected:
 
@@ -89,6 +125,7 @@ protected:
         std::optional<std::size_t> _index = std::nullopt
     )                                     = 0;
 
+    //NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
     has_data* m_holder {nullptr};
     std::string_view m_key;
     std::optional<bool> m_auto_connect;
@@ -97,6 +134,7 @@ protected:
     {
         access::in
     };
+    //NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 };
 
 //------------------------------------------------------------------------------
@@ -129,6 +167,33 @@ inline enum access base_ptr::access() const
 
 //------------------------------------------------------------------------------
 
+inline bool base_ptr::is_group() const
+{
+    return false;
+}
+
+//------------------------------------------------------------------------------
+
+inline std::string base_ptr::deferred_id() const
+{
+    return {};
+}
+
+//------------------------------------------------------------------------------
+
+inline std::vector<std::size_t> base_ptr::indices() const
+{
+    return {};
+}
+
+//------------------------------------------------------------------------------
+
+inline void base_ptr::materialize(std::size_t /*_index*/)
+{
+}
+
+//------------------------------------------------------------------------------
+
 inline base_ptr::operator std::string_view() const
 {
     return m_key;
@@ -149,13 +214,61 @@ public:
 
     using base_ptr_t = ptr_type_traits<DATATYPE, ACCESS>;
 
-    /// Constructor that registers the pointer into the owner, i.e. a service instance.
+    /**
+     * @brief Constructor that registers the pointer into the owner, i.e. a service instance.
+     *
+     * The template parameter forbids any implicit conversion into the 'optional' flag.
+     */
+    template<class T = bool>
+    requires(!serializable<DATATYPE>) && std::same_as<T, bool>
     ptr(
         has_data* _holder,
         std::string_view _key,
-        bool _optional                    = access_type_traits<DATATYPE, ACCESS>::OPTIONAL_DEFAULT,
-        std::optional<std::size_t> _index = {}) noexcept :
-        base_ptr(_holder, _key, _optional, ACCESS, _index)
+        T _optional = access_type_traits<DATATYPE, ACCESS>::OPTIONAL_DEFAULT //NOLINT(modernize-avoid-c-style-cast)
+    ) noexcept :
+        base_ptr(_holder, _key, _optional, ACCESS)
+    {
+    }
+
+    /// Constructor that registers a mandatory pointer into the owner, i.e. a service instance.
+    ptr(has_data* _holder, std::string_view _key) noexcept
+    requires serializable<DATATYPE>:
+        base_ptr(_holder, _key, access_type_traits<DATATYPE, ACCESS>::OPTIONAL_DEFAULT, ACCESS)
+    {
+    }
+
+    /// Constructor that registers an optional pointer, left unassigned when the configuration provides no object.
+    ptr(has_data* _holder, std::string_view _key, std::nullopt_t /*no default value*/) noexcept
+    requires serializable<DATATYPE>:
+        base_ptr(_holder, _key, true, ACCESS)
+    {
+    }
+
+    /**
+     * @brief Constructor that registers the pointer into the owner, with a default value.
+     *
+     * When neither a 'uid' nor a 'value' is given in the configuration, the service builds the object itself from this
+     * default value, like it does for the properties. The pointer is thus always assigned, so it is optional.
+     *
+     * @note A bool is rejected on purpose, so that the legacy 'optional' flag can not be silently converted into a
+     * default value. A data::boolean must thus be spelled out, i.e. data::boolean(true) and not true.
+     */
+    ptr(has_data* _holder, std::string_view _key, DATATYPE _default_value) noexcept
+    requires serializable<DATATYPE>&& (ACCESS != data::access::out) :
+        base_ptr(_holder, _key, true, ACCESS),
+        m_default_factory(
+            [value = std::move(_default_value)]{return std::make_shared<DATATYPE>(value);})
+    {
+    }
+
+    template<class T>
+    requires serializable<DATATYPE>&& (ACCESS != data::access::out)
+    && std::constructible_from<DATATYPE, T>
+    // NOLINTNEXTLINE(cppcoreguidelines-missing-std-forward)
+    ptr(has_data* _holder, std::string_view _key, T&& _default_value) noexcept :
+        base_ptr(_holder, _key, true, ACCESS),
+        m_default_factory(
+            [value = DATATYPE(std::forward<T>(_default_value))]{return std::make_shared<DATATYPE>(value);})
     {
     }
 
@@ -170,7 +283,7 @@ public:
 
     /// This method is only available if it is an output
     template<data::access A = ACCESS>
-    ptr& operator=(const typename access_type_traits<DATATYPE, ACCESS>::value& _obj)
+    ptr& operator=(const access_type_traits<DATATYPE, ACCESS>::value& _obj)
     requires assignable_traits<A>::VALUE
     {
         this->set(_obj, {}, {}, {}, true);
@@ -183,6 +296,65 @@ public:
     void reset()
     {
         this->set(nullptr, {}, {}, {}, true);
+    }
+
+    //------------------------------------------------------------------------------
+
+    sight::data::object::csptr get() final
+    {
+        return std::dynamic_pointer_cast<const data::object>(base_ptr_t::get_shared());
+    }
+
+    //------------------------------------------------------------------------------
+
+    [[nodiscard]] std::string default_object_type() const final
+    {
+        if constexpr(serializable<DATATYPE>)
+        {
+            return DATATYPE::classname();
+        }
+        else
+        {
+            return {};
+        }
+    }
+
+    //------------------------------------------------------------------------------
+
+    [[nodiscard]] sight::data::object::sptr make_default_object() const final
+    {
+        return m_default_factory ? m_default_factory() : nullptr;
+    }
+
+    /// @brief Get the value (only available for a data::generic<value_t>-derived DATATYPE)
+    template<class T = DATATYPE>
+    requires serializable<T>&& requires {typename T::value_t;
+    }
+    //------------------------------------------------------------------------------
+
+    [[nodiscard]] const T::value_t& value() const
+    {
+        const auto obj = this->const_lock();
+        return obj->value();
+    }
+
+    //------------------------------------------------------------------------------
+
+    template<class T = DATATYPE>
+    requires serializable<T>&& requires {typename T::value_t;
+    }
+    //------------------------------------------------------------------------------
+
+    const T::value_t& operator*() const
+    {
+        return this->value();
+    }
+
+    //------------------------------------------------------------------------------
+
+    [[nodiscard]] std::string deferred_id() const final
+    {
+        return m_deferred_id;
     }
 
 protected:
@@ -221,7 +393,7 @@ protected:
         }
         else
         {
-            using target_t = typename access_type_traits<DATATYPE, ACCESS>::object;
+            using target_t = access_type_traits<DATATYPE, ACCESS>::object;
             auto typed_obj = std::dynamic_pointer_cast<target_t>(_obj);
             SIGHT_ASSERT(
                 "Can not convert pointer type from '" + _obj->get_classname()
@@ -232,7 +404,7 @@ protected:
 
             if(_auto_connect.has_value())
             {
-                m_auto_connect = _auto_connect.value();
+                m_auto_connect = _auto_connect;
             }
 
             if(_optional.has_value())
@@ -257,9 +429,17 @@ protected:
         }
     }
 
+    //------------------------------------------------------------------------------
+
+    void set_deferred_id(const std::string& _id, std::optional<std::size_t>/*_index*/ = std::nullopt) final
+    {
+        SIGHT_ASSERT("Object id can not be empty", !_id.empty());
+        m_deferred_id = _id;
+    }
+
 private:
 
-    /// Constructor used by ptr_vector, allowing to duplicate the auto_connect status between elements.
+    /// Constructor used by ptr_vector, which is the only holder allowed to index a pointer.
     ptr(
         has_data* _holder,
         std::string_view _key,
@@ -269,27 +449,8 @@ private:
     ) noexcept :
         base_ptr(_holder, _key, _optional, ACCESS, _index)
     {
+        //NOLINTNEXTLINE(cppcoreguidelines-prefer-member-initializer)
         m_auto_connect = _auto_connect;
-    }
-
-    /// Only the owner of the pointer can update the content of the pointer
-    friend class has_data;
-    template<class, data::access>
-    friend class ptr_vector;
-
-    //------------------------------------------------------------------------------
-
-    sight::data::object::csptr get() final
-    {
-        return std::dynamic_pointer_cast<const data::object>(base_ptr_t::get_shared());
-    }
-
-    //------------------------------------------------------------------------------
-
-    void set_deferred_id(const std::string& _id, std::optional<std::size_t>/*_index*/ = std::nullopt) final
-    {
-        SIGHT_ASSERT("Object id can not be empty", !_id.empty());
-        m_deferred_id = _id;
     }
 
     /// Only the owner of the pointer can update the content of the pointer
@@ -300,6 +461,9 @@ private:
     // Pointer on deferred objects (created at runtime) may reference different objects over time
     // To reference the same object amongst different services, we use a specific label
     std::string m_deferred_id;
+
+    /// Builds a new object initialized with the default value, empty when no default value was declared.
+    std::function<sight::data::object::sptr()> m_default_factory;
 };
 
 /**
@@ -316,12 +480,48 @@ public:
     using container_ptr_t = std::map<std::size_t, ptr_t*>;
 
     /// Constructor that registers the pointer into the owner, i.e. a service instance.
+    template<class T = bool>
+    requires(!serializable<DATATYPE>) && std::same_as<T, bool>
     ptr_vector(
         has_data* _holder,
         std::string_view _key,
-        bool _optional = access_type_traits<DATATYPE, ACCESS>::OPTIONAL_DEFAULT
+        T _optional = access_type_traits<DATATYPE, ACCESS>::OPTIONAL_DEFAULT //NOLINT(modernize-avoid-c-style-cast)
     ) noexcept :
         base_ptr(_holder, _key, _optional, ACCESS, {})
+    {
+    }
+
+    /// Constructor that registers a mandatory group into the owner.
+    ptr_vector(has_data* _holder, std::string_view _key) noexcept
+    requires serializable<DATATYPE>:
+        base_ptr(_holder, _key, access_type_traits<DATATYPE, ACCESS>::OPTIONAL_DEFAULT, ACCESS, {})
+    {
+    }
+
+    /// Constructor that registers an optional group whose missing elements are left unassigned.
+    ptr_vector(has_data* _holder, std::string_view _key, std::nullopt_t /*no default value*/) noexcept
+    requires serializable<DATATYPE>:
+        base_ptr(_holder, _key, true, ACCESS, {})
+    {
+    }
+
+    /// Constructor that registers an optional group whose missing elements use the given default value.
+    ptr_vector(has_data* _holder, std::string_view _key, DATATYPE _default_value) noexcept
+    requires serializable<DATATYPE>&& (ACCESS != data::access::out) :
+        base_ptr(_holder, _key, true, ACCESS, {}),
+        m_default_factory(
+            [value = std::move(_default_value)]{return std::make_shared<DATATYPE>(value);})
+    {
+    }
+
+    template<class T>
+    requires serializable<DATATYPE>&& (ACCESS != data::access::out)
+    && std::constructible_from<DATATYPE, T>
+    // NOLINTNEXTLINE(cppcoreguidelines-missing-std-forward)
+    ptr_vector(has_data* _holder, std::string_view _key, T&& _default_value) noexcept :
+        base_ptr(_holder, _key, true, ACCESS, {}),
+        m_default_factory(
+            [value = DATATYPE(std::forward<T>(_default_value))]{return std::make_shared<DATATYPE>(value);})
     {
     }
 
@@ -336,6 +536,38 @@ public:
     ptr_vector(ptr_vector&&)                 = delete;
     ptr_vector& operator=(const ptr_vector&) = delete;
     ptr_vector& operator=(ptr_vector&&)      = delete;
+
+    //------------------------------------------------------------------------------
+
+    [[nodiscard]] bool is_group() const final
+    {
+        return true;
+    }
+
+    //------------------------------------------------------------------------------
+
+    [[nodiscard]] std::vector<std::size_t> indices() const final
+    {
+        std::vector<std::size_t> indices;
+        indices.reserve(m_ptrs.size());
+        for(const auto& [index, ptr] : m_ptrs)
+        {
+            SIGHT_NOT_USED(ptr);
+            indices.push_back(index);
+        }
+
+        return indices;
+    }
+
+    //------------------------------------------------------------------------------
+
+    void materialize(std::size_t _index) final
+    {
+        if(!m_ptrs.contains(_index))
+        {
+            m_ptrs.emplace(std::make_pair(_index, new ptr_t(m_holder, m_key, this->optional(), _index, {})));
+        }
+    }
 
     /// Accessor for individual weak pointers
     /// This method is only available if it is an output
@@ -371,36 +603,31 @@ public:
 
     //------------------------------------------------------------------------------
 
-    typename container_ptr_t::iterator begin()
+    container_ptr_t::iterator begin()
     {
         return m_ptrs.begin();
     }
 
     //------------------------------------------------------------------------------
 
-    typename container_ptr_t::iterator end()
+    container_ptr_t::iterator end()
     {
         return m_ptrs.end();
     }
 
     //------------------------------------------------------------------------------
 
-    typename container_ptr_t::const_iterator cbegin()
+    container_ptr_t::const_iterator cbegin()
     {
         return m_ptrs.cbegin();
     }
 
     //------------------------------------------------------------------------------
 
-    typename container_ptr_t::const_iterator cend()
+    container_ptr_t::const_iterator cend()
     {
         return m_ptrs.cend();
     }
-
-private:
-
-    /// Only the owner of the pointer can update the content of the pointer
-    friend class has_data;
 
     //------------------------------------------------------------------------------
 
@@ -408,6 +635,29 @@ private:
     {
         return nullptr;
     }
+
+    //------------------------------------------------------------------------------
+
+    [[nodiscard]] std::string default_object_type() const final
+    {
+        if constexpr(serializable<DATATYPE>)
+        {
+            return DATATYPE::classname();
+        }
+        else
+        {
+            return {};
+        }
+    }
+
+    //------------------------------------------------------------------------------
+
+    [[nodiscard]] sight::data::object::sptr make_default_object() const final
+    {
+        return m_default_factory ? m_default_factory() : nullptr;
+    }
+
+protected:
 
     /// Pointer assignment
     void set(
@@ -418,21 +668,21 @@ private:
         bool _signal                      = false
     ) final
     {
-        SIGHT_ASSERT(
-            "Index parameter must be set for '" + _obj->get_classname() + "'",
-            _index.has_value()
-        );
+        SIGHT_ASSERT("Index parameter must be set for a data group", _index.has_value());
 
         auto index = _index.value();
         if(_obj == nullptr)
         {
-            m_ptrs[index]->set(nullptr, {}, {}, _signal);
-            delete m_ptrs[index];
-            m_ptrs.erase(index);
+            if(const auto it = m_ptrs.find(index); it != m_ptrs.end())
+            {
+                it->second->set(nullptr, {}, {}, _signal);
+                delete it->second;
+                m_ptrs.erase(it);
+            }
         }
         else
         {
-            using target_t = typename access_type_traits<DATATYPE, ACCESS>::object;
+            using target_t = access_type_traits<DATATYPE, ACCESS>::object;
             auto typed_obj = std::dynamic_pointer_cast<target_t>(_obj);
             SIGHT_ASSERT(
                 "Can not convert pointer type from '" + _obj->get_classname()
@@ -443,7 +693,7 @@ private:
             if(m_ptrs.find(index) == m_ptrs.end())
             {
                 const bool optional = _optional.has_value() ? *_optional : this->optional();
-                m_ptrs.emplace(std::make_pair(index, new ptr_t(m_holder, m_key, optional, index)));
+                m_ptrs.emplace(std::make_pair(index, new ptr_t(m_holder, m_key, optional, index, {})));
             }
 
             m_ptrs[index]->set(_obj, _auto_connect, _optional, _signal);
@@ -461,7 +711,7 @@ private:
             m_ptrs.emplace(
                 std::make_pair(
                     _index.value(),
-                    new ptr_t(m_holder, m_key, m_optional, _index)
+                    new ptr_t(m_holder, m_key, m_optional, _index, {})
                 )
             );
         }
@@ -469,8 +719,16 @@ private:
         m_ptrs[*_index]->m_deferred_id = _id;
     }
 
+private:
+
+    /// Only the owner of the pointer can update the content of the pointer
+    friend class has_data;
+
     /// Collection of data, indexed by key
     container_ptr_t m_ptrs;
+
+    /// Builds a missing group element from its declared default value.
+    std::function<sight::data::object::sptr()> m_default_factory;
 };
 
 //------------------------------------------------------------------------------
@@ -501,31 +759,14 @@ public:
     property(
         has_data* _holder,
         std::string_view _key,
-        const DATATYPE& _default_value
+        DATATYPE  _default_value
     ) noexcept :
-        ptr<DATATYPE, data::access::inout>(_holder, _key, true),
-        m_default_value(_default_value)
+        ptr<DATATYPE, data::access::inout>(_holder, _key, std::nullopt),
+        m_default_value(std::move(_default_value))
     {
     }
 
     ~property() final = default;
-
-    //------------------------------------------------------------------------------
-
-    const DATATYPE::value_t& value() const
-    {
-        const auto prop = this->const_lock();
-        return prop->value();
-    }
-
-    //------------------------------------------------------------------------------
-
-    const DATATYPE::value_t& operator*() const
-    {
-        return this->value();
-    }
-
-private:
 
     //------------------------------------------------------------------------------
 
@@ -535,6 +776,8 @@ private:
         this->set(default_object, {}, {}, {}, false);
         return default_object;
     }
+
+private:
 
     const DATATYPE m_default_value;
 };

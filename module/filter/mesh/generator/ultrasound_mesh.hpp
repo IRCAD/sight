@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -77,6 +77,12 @@ public:
 
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(ultrasound_mesh, service::base);
+
+    struct slots
+    {
+        static inline const slot_key_t SET_INT_PARAMETER  = "set_int_parameter";
+        static inline const slot_key_t SET_BOOL_PARAMETER = "set_bool_parameter";
+    };
 
     /// Create slots.
     ultrasound_mesh() noexcept;

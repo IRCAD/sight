@@ -1,4 +1,4 @@
-sight_add_target(module_filter_mesh_ut TYPE DOCTEST)
+sight_add_target(module_filter_mesh_ut TYPE TEST)
 
 add_dependencies(module_filter_mesh_ut data module_service module_data module_filter_mesh)
 

@@ -19,9 +19,6 @@
  *
  ***********************************************************************/
 
-#include <core/com/slot.hpp>
-#include <core/com/slot.hxx>
-
 #include <data/string.hpp>
 
 #include <service/op.hpp>

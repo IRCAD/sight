@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,16 +21,14 @@
 
 #include "reader.hpp"
 
-#include <core/com/signal.hxx>
+#include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
-#include <core/progress/observer.hpp>
-#include <core/tools/system.hpp>
+
+#include <io/bitmap/reader.hpp>
 
 #include <ui/__/cursor.hpp>
 #include <ui/__/dialog/location.hpp>
 #include <ui/__/dialog/message.hpp>
-
-#include <boost/algorithm/string.hpp>
 
 #include <algorithm>
 
@@ -38,6 +36,35 @@
 
 namespace sight::module::io::bitmap
 {
+
+//------------------------------------------------------------------------------
+
+std::vector<std::pair<std::string, std::string> > reader::get_supported_extensions()
+{
+    std::vector<std::pair<std::string, std::string> > result;
+    std::string all_wildcards;
+
+    for(const auto backend : m_backends)
+    {
+        const auto filter = sight::io::bitmap::wildcard_filter(backend);
+        if(!all_wildcards.empty())
+        {
+            all_wildcards += ' ';
+        }
+
+        all_wildcards += filter.second;
+        result.push_back(filter);
+    }
+
+    if(result.size() >= 2)
+    {
+        result.insert(result.begin(), {"All supported images", all_wildcards});
+    }
+
+    return result;
+}
+
+//----------------------------------------------------------------------------------
 
 // Retrieve the backend from the extension
 sight::io::bitmap::backend reader::find_backend(const std::string& _extension) const
@@ -193,7 +220,7 @@ void reader::configuring()
     m_backends.emplace(sight::io::bitmap::backend::libpng);
     m_backends.emplace(sight::io::bitmap::backend::libtiff);
 
-#if defined(SIGHT_ENABLE_NVJPEG)
+#ifdef SIGHT_ENABLE_NVJPEG
     if(sight::io::bitmap::nvjpeg())
     {
         m_backends.emplace(sight::io::bitmap::backend::nvjpeg);
@@ -213,7 +240,7 @@ void reader::configuring()
         m_backends.emplace(sight::io::bitmap::backend::libjpeg);
     }
 
-#if defined(SIGHT_ENABLE_NVJPEG2K)
+#ifdef SIGHT_ENABLE_NVJPEG2K
     if(sight::io::bitmap::nvjpeg2k())
     {
         m_backends.emplace(sight::io::bitmap::backend::nvjpeg2k);
@@ -325,8 +352,7 @@ void reader::updating()
 
     SIGHT_THROW_IF("The file '" << file_path << "' is an existing folder.", std::filesystem::is_directory(file_path));
 
-    const auto read_progress = std::make_shared<core::progress::observer>("Reading '" + file_path.string() + "' file");
-    this->async_emit(has_monitors::signals::MONITOR_CREATED, read_progress->get_sptr());
+    const auto read_progress = this->observe("Reading '" + file_path.string() + "' file");
 
     try
     {
@@ -372,11 +398,7 @@ void reader::updating()
     }
 
     auto image = m_data.lock();
-    auto sig   = image->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-    {
-        core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
-        sig->async_emit();
-    }
+    image->async_emit(this, data::signals::MODIFIED);
 
     m_dialog_shown = false;
 }

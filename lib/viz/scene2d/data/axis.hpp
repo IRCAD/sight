@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,7 +36,7 @@ public:
 
     using sptr = std::shared_ptr<axis>;
 
-    enum scale_t
+    enum scale_t : std::uint8_t
     {
         linear,
         log

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,8 +26,6 @@
 
 #include "viz/scene3d/registry/detail.hpp"
 
-#include <string>
-
 namespace sight::viz::scene3d
 {
 
@@ -40,16 +38,18 @@ namespace factory
 {
 
 template<class CLASSNAME>
-SPTR(CLASSNAME)  make();
+sight::sptr<CLASSNAME> make();
 
-SIGHT_VIZ_SCENE3D_API SPTR(viz::scene3d::window_interactor) make(
+SIGHT_VIZ_SCENE3D_API sight::sptr<viz::scene3d::window_interactor> make(
     const viz::scene3d::registry::key_t& _classname
 );
 
+//------------------------------------------------------------------------------
+
 template<class CLASSNAME>
-SPTR(CLASSNAME)  make()
+sight::sptr<CLASSNAME> make()
 {
-    SPTR(CLASSNAME) obj = std::make_shared<CLASSNAME>();
+    sight::sptr<CLASSNAME> obj = std::make_shared<CLASSNAME>();
     return obj;
 }
 
@@ -59,58 +59,64 @@ namespace offscreen_interactor_mgr_factory
 {
 
 template<class CLASSNAME>
-SPTR(CLASSNAME) make(std::pair<unsigned int, unsigned int> _dims);
+sight::sptr<CLASSNAME> make(std::pair<unsigned int, unsigned int> _dims);
 
-SIGHT_VIZ_SCENE3D_API SPTR(viz::scene3d::window_interactor) make(
+SIGHT_VIZ_SCENE3D_API sight::sptr<viz::scene3d::window_interactor> make(
     const viz::scene3d::registry::key_t& _classname,
     std::pair<unsigned int, unsigned int> _dims
 );
 
+//------------------------------------------------------------------------------
+
 template<class CLASSNAME>
-SPTR(CLASSNAME) make(std::pair<unsigned int, unsigned int> _dims)
+sight::sptr<CLASSNAME> make(std::pair<unsigned int, unsigned int> _dims)
 {
     return std::make_shared<CLASSNAME>(_dims.first, _dims.second);
 }
 
-} // namespace offscreenInteractorMgrFactory
+} // namespace offscreen_interactor_mgr_factory
 
 namespace light_factory
 {
 
 template<class CLASSNAME>
-SPTR(CLASSNAME)  make();
+sight::sptr<CLASSNAME> make();
 
-SIGHT_VIZ_SCENE3D_API SPTR(viz::scene3d::light_adaptor) make(
+SIGHT_VIZ_SCENE3D_API sight::sptr<viz::scene3d::light_adaptor> make(
     const viz::scene3d::registry::key_t& _classname
 );
 
+//------------------------------------------------------------------------------
+
 template<class CLASSNAME>
-SPTR(CLASSNAME) make()
+sight::sptr<CLASSNAME> make()
 {
-    SPTR(CLASSNAME) obj = std::make_shared<CLASSNAME>();
+    sight::sptr<CLASSNAME> obj = std::make_shared<CLASSNAME>();
     return obj;
 }
 
-} // namespace lightFactory
+} // namespace light_factory
 
 namespace text_factory
 {
 
 template<class CLASSNAME>
-SPTR(CLASSNAME) make(const SPTR(sight::viz::scene3d::layer) & _layer);
+sight::sptr<CLASSNAME> make(const sight::sptr<sight::viz::scene3d::layer>& _layer);
 
-SIGHT_VIZ_SCENE3D_API SPTR(viz::scene3d::text) make(
+SIGHT_VIZ_SCENE3D_API sight::sptr<viz::scene3d::text> make(
     const viz::scene3d::registry::key_t& _classname,
-    const SPTR(sight::viz::scene3d::layer) & _layer
+    const sight::sptr<sight::viz::scene3d::layer>& _layer
 );
 
+//------------------------------------------------------------------------------
+
 template<class CLASSNAME>
-SPTR(CLASSNAME) make(const SPTR(sight::viz::scene3d::layer) & _layer)
+sight::sptr<CLASSNAME> make(const sight::sptr<sight::viz::scene3d::layer>& _layer)
 {
-    SPTR(CLASSNAME) obj = std::make_shared<CLASSNAME>(_layer);
+    sight::sptr<CLASSNAME> obj = std::make_shared<CLASSNAME>(_layer);
     return obj;
 }
 
-} // namespace textFactory
+} // namespace text_factory
 
 } // namespace sight::viz::scene3d

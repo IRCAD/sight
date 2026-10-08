@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -60,14 +60,11 @@ public:
 
     SIGHT_DECLARE_SERVICE(marker_to_point, service::controller);
 
-    /**
-     * @name Slots API
-     * @{
-     */
-    static const core::com::slots::key_t ADD_POINT_SLOT;
-
-    static const core::com::slots::key_t CLEAR_SLOT;
-    ///@}
+    struct slots
+    {
+        static inline const slot_key_t ADD_POINT = "add_point";
+        static inline const slot_key_t CLEAR     = "clear";
+    };
 
     /// Constructor
     marker_to_point() noexcept;
@@ -94,6 +91,8 @@ protected:
 
     /// Slot called to clear the pointlist
     void clear();
+
+private:
 
     data::ptr<data::matrix_tl, data::access::in> m_matrix_tl {this, "matrix_tl"};
     data::ptr<data::point_list, data::access::inout> m_point_list {this, "pointList"};

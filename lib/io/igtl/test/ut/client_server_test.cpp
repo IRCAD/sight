@@ -20,7 +20,6 @@
  ***********************************************************************/
 
 #include <io/igtl/client.hpp>
-#include <io/igtl/detail/message_factory.hpp>
 #include <io/igtl/exception.hpp>
 #include <io/igtl/server.hpp>
 
@@ -77,7 +76,7 @@ struct fixture
         {
             s_server->stop();
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
-            s_server_future.wait();
+            s_server_future.get();
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
     }
@@ -220,7 +219,7 @@ TEST_SUITE("sight::io::igtl")
         // stop server.
         s_server->stop();
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        s_server_future.wait();
+        s_server_future.get();
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
         // Client still connected.
@@ -259,7 +258,7 @@ TEST_SUITE("sight::io::igtl")
         // stop server.
         s_server->stop();
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        s_server_future.wait();
+        s_server_future.get();
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
         ::igtl::MessageBase::Pointer msg;

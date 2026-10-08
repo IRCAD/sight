@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2024 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,31 +48,29 @@ namespace sight::module::ui::qt::image
  * @section XML XML Configuration
  * @code{.xml}
    <service type="sight::module::ui::qt::image::transfer_function">
-       <in key="image" uid="..." />
-       <inout key="presets" uid="..." />
-       <inout key="tf" uid="..." />
+       <data image="${...}" />
+       <data presets="${...}" />
+       <data tf="${...}" />
        <config useDefaultPath="true" >
            <path>....</path>
            <path>....</path>
            <path>....</path>
        </config>
-       <properties editable="true" />
+       <config editable="true" />
    </service>
    @endcode
  *
  *
- * @subsection Input Input
- * - \b image [sight::data::image](optional): reference image that can be used to generate the default transfer
- * function.
- *
- * @subsection In-Out In-Out
- * - \b current [sight::data::transfer_function]: current transfer function used to change editor
+ * @subsection Data Data
+ * - \b data.tf [sight::data::transfer_function]: current transfer function used to change editor
  * selection. It should be the same as the output.
- * - \b presets [sight::data::map](optional): map of sight::data::transfer_function that should be used as
+ * - \b data.presets [sight::data::map](optional): map of sight::data::transfer_function that should be used as
  * presets, instead of loading it from the specified path(s).
+ * - \b data.image [sight::data::image](optional): reference image used to generate the default transfer function.
  *
  * @subsection Configuration Configuration
  * - \b useDefaultPath (optional, default="true"): if true, load tf files from uiTF module.
+ * - \b preserve_current_tf (optional, default="false"): preserve an image-owned TF on startup and image updates.
  * - \b path (optional): path to a directory containing tf files.
  * - \b deleteIcon (optional): path of the delete button icon.
  * - \b newIcon (optional): path of the new button icon.
@@ -97,13 +95,19 @@ public:
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(module::ui::qt::image::transfer_function, sight::ui::editor);
 
+    struct slots
+    {
+        static inline const slot_key_t UPDATE_DEFAULT_PRESET = "updateDefaultPreset";
+        static inline const slot_key_t UPDATE_PRESETS        = "updatePresets";
+    };
+
     /// Creates the editor.
     transfer_function();
 
     /// Destroyes the editor.
     ~transfer_function() noexcept override = default;
 
-private:
+protected:
 
     /// Configures the editor.
     void configuring() override;
@@ -119,10 +123,12 @@ private:
 
     /**
      * @brief
-     * Connect image::MODIFIED_SIG to this::service::slots::UPDATE
-     * Connect image::BUFFER_MODIFIED_SIG to this::UPDATE_BUFFER_SLOT
+     * Connect data::signals::MODIFIED to this::service::slots::UPDATE
+     * Connect image::signals::BUFFER_MODIFIED to this::UPDATE_BUFFER
      */
     connections_t auto_connections() const override;
+
+private:
 
     /**
      * @brief Checks if the map contains the specified key.
@@ -243,15 +249,16 @@ private:
 
     /// Working copy of the TF presets, can be internal or use the optional "presets" input
     data::map::sptr m_tf_presets;
+    bool m_preserve_current_tf {false};
 
-    static constexpr std::string_view CURRENT_INPUT = "tf";
-    static constexpr std::string_view IMAGE_INPUT   = "image";
-    static constexpr std::string_view PRESETS_INOUT = "presets";
+    static constexpr std::string_view CURRENT_INPUT = "data.tf";
+    static constexpr std::string_view IMAGE_INPUT   = "data.image";
+    static constexpr std::string_view PRESETS_INOUT = "data.presets";
     data::ptr<data::transfer_function, data::access::inout> m_current_tf {this, CURRENT_INPUT};
     data::ptr<data::map, data::access::inout> m_opt_presets {this, PRESETS_INOUT, true};
     data::ptr<data::image, data::access::in> m_image {this, IMAGE_INPUT, true};
 
-    data::property<data::boolean> m_editable {this, "editable", true};
+    data::ptr<data::boolean, data::access::in> m_editable {this, "config.editable", true};
 };
 
 } // namespace sight::module::ui::qt::image.

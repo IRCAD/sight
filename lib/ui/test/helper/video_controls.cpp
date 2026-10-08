@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -34,9 +34,6 @@ namespace sight::ui::test::helper
 
 void video_controls::load(tester& _tester, const std::string& _controls_name, const std::filesystem::path& _path)
 {
-    // Some activity takes time to load and the control is not always there
-    QTest::qWait(1000);
-
     _tester.take("controls", _controls_name);
     helper::combo_box::select(_tester, selector::from_parent(_controls_name, "videoSelectorSrv"), "File...");
     helper::file_dialog::fill(_tester, _path);

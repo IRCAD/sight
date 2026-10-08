@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,20 +22,11 @@
 
 #include "stereo_selector.hpp"
 
-#include <core/com/slots.hxx>
-
-#include <data/map.hpp>
-
-#include <service/macros.hpp>
 #include <service/registry.hpp>
 
 #include <ui/qt/container/widget.hpp>
 
 #include <viz/scene3d/render.hpp>
-
-#include <OGRE/OgreCompositorManager.h>
-#include <OGRE/OgreResource.h>
-#include <OGRE/OgreResourceManager.h>
 
 #include <QHBoxLayout>
 #include <QWidget>

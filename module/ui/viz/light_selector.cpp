@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,14 +24,10 @@
 
 #include "module/ui/viz/helper/utils.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
+#include <algorithm>
 
 #include <data/color.hpp>
-#include <data/map.hpp>
-#include <data/matrix4.hpp>
 
-#include <service/macros.hpp>
 #include <service/registry.hpp>
 
 #include <ui/qt/container/widget.hpp>
@@ -55,15 +51,10 @@ using sight::viz::scene3d::layer;
 
 //------------------------------------------------------------------------------
 
-const core::com::signals::key_t LIGHT_SELECTED_SIG = "light_selected";
-const core::com::slots::key_t INIT_LIGHT_LIST_SLOT = "initLightList";
-
-//------------------------------------------------------------------------------
-
 light_selector::light_selector() noexcept
 {
-    new_signal<light_selected_signal_t>(LIGHT_SELECTED_SIG);
-    new_slot(INIT_LIGHT_LIST_SLOT, &light_selector::init_light_list, this);
+    new_signal<signals::light_selected_t>(signals::LIGHT_SELECTED);
+    new_slot(slots::INIT_LIGHT_LIST, &light_selector::init_light_list, this);
 }
 
 //------------------------------------------------------------------------------
@@ -185,8 +176,7 @@ void light_selector::on_selected_light_item(QListWidgetItem* _item, QListWidgetI
     {
         m_current_light = this->retrieve_light_adaptor(_item->text().toStdString());
 
-        auto sig = this->signal<light_selected_signal_t>(LIGHT_SELECTED_SIG);
-        sig->async_emit(m_current_light);
+        this->async_emit(signals::LIGHT_SELECTED, m_current_light);
 
         m_remove_light_btn->setEnabled(true);
     }
@@ -218,9 +208,9 @@ void light_selector::on_add_light(bool /*unused*/)
         std::string light_name = light_dialog->property("lightName").toString().toStdString();
 
         auto existing_light =
-            std::find_if(
-                m_light_adaptors.begin(),
-                m_light_adaptors.end(),
+            std::ranges::find_if(
+                m_light_adaptors,
+
                 [light_name](light_adaptor::sptr _light_adaptor)
             {
                 return _light_adaptor->get_name() == light_name;
@@ -242,9 +232,9 @@ void light_selector::on_remove_light(bool /*unused*/)
         layer::sptr current_layer = m_current_layer.lock();
 
         const auto position =
-            std::find_if(
-                m_managed_light_adaptors.begin(),
-                m_managed_light_adaptors.end(),
+            std::ranges::find_if(
+                m_managed_light_adaptors,
+
                 [&](const light& _light)
             {
                 return _light.m_light == m_current_light;
@@ -271,8 +261,7 @@ void light_selector::on_remove_light(bool /*unused*/)
 
         m_remove_light_btn->setEnabled(false);
 
-        auto sig = this->signal<light_selected_signal_t>(LIGHT_SELECTED_SIG);
-        sig->async_emit(nullptr);
+        this->async_emit(signals::LIGHT_SELECTED, nullptr);
 
         current_layer->request_render();
     }
@@ -336,9 +325,9 @@ void light_selector::refresh_layers()
 
             m_connections.connect(
                 layer_map.second,
-                layer::INIT_LAYER_SIG,
+                layer::signals::INIT_LAYER,
                 this->get_sptr(),
-                INIT_LIGHT_LIST_SLOT
+                slots::INIT_LIGHT_LIST
             );
         }
     }
@@ -395,7 +384,9 @@ void light_selector::create_light_adaptor(const std::string& _name)
         light_adaptor->set_name(_name);
         light_adaptor->start();
 
-        m_managed_light_adaptors.push_back({light_adaptor, light_diffuse_color, light_specular_color});
+        m_managed_light_adaptors.push_back(
+            {.m_light = light_adaptor, .m_diffuse = light_diffuse_color, .m_specular = light_specular_color
+            });
         m_light_adaptors = current_layer->get_light_adaptors();
         this->update_lights_list();
 
@@ -418,9 +409,9 @@ void light_selector::create_light_adaptor(const std::string& _name)
 
 light_adaptor::sptr light_selector::retrieve_light_adaptor(const std::string& _name) const
 {
-    auto it = std::find_if(
-        m_light_adaptors.begin(),
-        m_light_adaptors.end(),
+    auto it = std::ranges::find_if(
+        m_light_adaptors,
+
         [_name](light_adaptor::sptr _light_adaptor)
         {
             return _light_adaptor->get_name() == _name;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,9 +26,7 @@
 #include "io/vtk/helper/vtk_lambda_command.hpp"
 #include "io/vtk/vtk.hpp"
 
-#include <core/memory/buffer_object.hpp>
-#include <core/memory/stream/in/factory.hpp>
-#include <core/progress/observer.hpp>
+#include <core/notification/observer.hpp>
 #include <core/tools/date_and_time.hpp>
 #include <core/tools/uuid.hpp>
 
@@ -40,7 +38,6 @@
 
 #include <boost/algorithm/string/join.hpp>
 
-#include <vtkDataSetAttributes.h>
 #include <vtkGenericDataObjectReader.h>
 #include <vtkImageData.h>
 #include <vtkInformation.h>
@@ -48,18 +45,12 @@
 #include <vtkOBJReader.h>
 #include <vtkPLYReader.h>
 #include <vtkPolyData.h>
-#include <vtkSmartPointer.h>
 #include <vtkSTLReader.h>
-#include <vtkStreamingDemandDrivenPipeline.h>
-#include <vtkStructuredPoints.h>
-#include <vtkStructuredPointsReader.h>
+#include <vtkSmartPointer.h>
 #include <vtkXMLGenericDataObjectReader.h>
 #include <vtkXMLImageDataReader.h>
 
-#include <algorithm>
 #include <filesystem>
-#include <iosfwd>
-#include <numeric>
 
 namespace sight::io::vtk
 {
@@ -82,14 +73,11 @@ static void init_series(data::series::sptr _series, const std::string& _instance
 
 //------------------------------------------------------------------------------
 
-series_set_reader::series_set_reader() :
-    m_lazy_mode(true)
-{
-}
+series_set_reader::series_set_reader() = default;
 
 //------------------------------------------------------------------------------
 template<typename T, typename FILE>
-static vtkSmartPointer<vtkDataObject> get_obj(FILE& _file, const core::progress::observer::sptr& _progress)
+static vtkSmartPointer<vtkDataObject> get_obj(FILE& _file, const core::notification::observer::sptr& _progress)
 {
     vtkSmartPointer<T> reader = vtkSmartPointer<T>::New();
     reader->SetFileName(_file.string().c_str());
@@ -141,7 +129,7 @@ static data::object::sptr get_data_object(
 
         data::reconstruction::sptr rec = std::make_shared<data::reconstruction>();
         rec->set_mesh(mesh_obj);
-        rec->set_organ_name(_file.stem().string());
+        rec->set_organ_name(_file.filename().string());
         rec->set_is_visible(true);
         data_obj = rec;
     }
@@ -152,7 +140,7 @@ static data::object::sptr get_data_object(
         io::vtk::helper::mesh::from_vtk_mesh(mesh, mesh_obj);
         data::reconstruction::sptr rec = std::make_shared<data::reconstruction>();
         rec->set_mesh(mesh_obj);
-        rec->set_organ_name(_file.stem().string());
+        rec->set_organ_name(_file.filename().string());
         rec->set_is_visible(true);
         data_obj = rec;
     }
@@ -175,7 +163,7 @@ static data::object::sptr get_data_object(
 
 //------------------------------------------------------------------------------
 
-void series_set_reader::read(sight::core::progress::observer::sptr _progress)
+void series_set_reader::read(sight::core::notification::observer::sptr _progress)
 {
     auto series_set = get_concrete_object();
 
@@ -183,13 +171,14 @@ void series_set_reader::read(sight::core::progress::observer::sptr _progress)
     const std::string instance_uid                  = core::tools::uuid::generate();
 
     data::model_series::reconstruction_vector_t recs;
+    std::vector<std::filesystem::path> model_files;
     std::vector<std::string> error_files;
     const std::size_t file_count = files.size();
     _progress->set_total_work_units(static_cast<std::uint64_t>(file_count));
     std::uint64_t current_file_index = 0;
     for(const auto& file : files)
     {
-        const auto progress_observer = std::make_shared<core::progress::observer>(file.string());
+        const auto progress_observer = std::make_shared<core::notification::observer>(file.string());
 
         vtkSmartPointer<vtkDataObject> obj;
         data::image::sptr img;
@@ -241,12 +230,15 @@ void series_set_reader::read(sight::core::progress::observer::sptr _progress)
         {
             auto img_series = std::make_shared<data::image_series>();
             init_series(img_series, instance_uid);
+            img_series->set_series_description(file.filename().string());
+            img_series->set_file(file);
             img_series->image::shallow_copy(img);
             series_set->push_back(img_series);
         }
         else if(rec)
         {
             recs.push_back(rec);
+            model_files.push_back(file);
         }
         else
         {
@@ -267,6 +259,11 @@ void series_set_reader::read(sight::core::progress::observer::sptr _progress)
     {
         data::model_series::sptr model_series = std::make_shared<data::model_series>();
         init_series(model_series, instance_uid);
+        for(std::size_t index = 0 ; index < model_files.size() ; ++index)
+        {
+            model_series->set_file(model_files[index], index);
+        }
+
         model_series->set_reconstruction_db(recs);
         series_set->push_back(model_series);
     }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -180,6 +180,7 @@ protected:
     using sid_toolbar_map_t     = std::map<std::string, unsigned int>;
     using wid_tool_bar_map_type = std::map<std::string, unsigned int>;
 
+    // NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
     /**
      * @brief All toolbar services ID managed and associated with pair containing:
      * action's index vector and boolean describing if is started by the manager.
@@ -206,6 +207,8 @@ protected:
 
     /// Callback associate with toolbar items
     callbacks_t m_callbacks;
+
+    // NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 };
 
 } // namespace sight::ui::detail::registry

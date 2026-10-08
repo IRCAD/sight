@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -61,8 +61,11 @@ public:
 
     SIGHT_DECLARE_SERVICE(axis, sight::viz::scene2d::adaptor);
 
-    axis() noexcept;
-    ~axis() noexcept override;
+    axis() noexcept = default;
+    ~axis() noexcept override = default;
+
+    /// Manage the given events
+    void process_interaction(sight::viz::scene2d::data::event& _event) override;
 
 protected:
 
@@ -70,9 +73,6 @@ protected:
     void stopping() override;
     void updating() override;
     void configuring() override;
-
-    /// Manage the given events
-    void process_interaction(sight::viz::scene2d::data::event& _event) override;
 
     connections_t auto_connections() const override;
 

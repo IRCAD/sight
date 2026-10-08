@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,14 +23,9 @@
 #include "app/extension/config.hpp"
 #include "app/helper/config.hpp"
 
-#include "core/com/proxy.hpp"
-
-#include "service/detail/service.hpp"
+#include "service/extension/config.hpp"
 #include "service/extension/factory.hpp"
 
-#include <core/com/has_signals.hpp>
-#include <core/com/has_slots.hpp>
-#include <core/com/helper/sig_slot_connection.hpp>
 #include <core/object.hpp>
 #include <core/ptree.hpp>
 #include <core/runtime/runtime.hpp>
@@ -38,8 +33,8 @@
 #include <data/extension/config.hpp>
 #include <data/object.hpp>
 
-#include <array>
 #include <regex>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -108,11 +103,11 @@ core::com::helper::proxy_connections config::parse_connections(
 //------------------------------------------------------------------------------
 
 void config::parse_object(
-    const boost::property_tree::ptree& _config,
+    const boost::property_tree::ptree& _cfg,
     service::object_parser::objects_t& _objects
 )
 {
-    const boost::property_tree::ptree config = _config.get_child("object", _config);
+    const boost::property_tree::ptree config = _cfg.get_child("object", _cfg);
 
     // Id
     config_attribute_t id("", false);
@@ -248,7 +243,7 @@ void config::parse_object(
 data::object::sptr config::get_new_object(config_attribute_t _type, config_attribute_t _uid)
 {
     // Building object structure
-    SPTR(core::runtime::extension) ext = core::runtime::find_extension(_type.first);
+    sight::sptr<core::runtime::extension> ext = core::runtime::find_extension(_type.first);
     if(ext)
     {
         const std::string class_name = core::get_classname<data::object>();
@@ -300,7 +295,8 @@ data::object::sptr config::get_object(config_attribute_t _type, const std::strin
 app::detail::service_config config::parse_service(
     const boost::property_tree::ptree& _srv_elem,
     const std::string& _err_msg_head,
-    const objects_set_t& _objects
+    const objects_set_t& _objects,
+    const std::set<std::string>& _deferred_objects
 )
 {
 #ifndef _DEBUG
@@ -335,8 +331,30 @@ app::detail::service_config config::parse_service(
     // Get service configuration
     if(!config.empty())
     {
-        const auto srv_cfg_factory = service::extension::config::get_default();
-        srv_config.m_config = srv_cfg_factory->get_service_config(config, srv_config.m_type);
+        const auto srv_cfg_factory                      = service::extension::config::get_default();
+        boost::property_tree::ptree service_config_tree = srv_cfg_factory->get_service_config(
+            config,
+            srv_config.m_type
+        );
+
+        // Merge the two trees: first add attributes from _srv_elem to
+        for(const auto& attr : _srv_elem.get_child("<xmlattr>"))
+        {
+            service_config_tree.put(attr.first, attr.second.data());
+        }
+
+        // Then recursively add children from _srv_elem that are not already in service_config_tree.
+        for(const auto& child : _srv_elem)
+        {
+            if(child.first != "<xmlattr>")
+            {
+                boost::property_tree::ptree child_tree;
+                child_tree.push_back(child);
+                core::ptree::merge(service_config_tree, child_tree);
+            }
+        }
+
+        srv_config.m_config = service_config_tree;
     }
     else
     {
@@ -370,6 +388,7 @@ app::detail::service_config config::parse_service(
     }
 
     // Parse input/output configurations
+    std::set<std::pair<std::string, std::optional<std::size_t> > > configured_keys;
     for(const auto& cfg : object_cfgs)
     {
         // Access type
@@ -421,7 +440,19 @@ app::detail::service_config config::parse_service(
                 app::detail::object_serviceconfig group_objconfig = objconfig;
 
                 // Identifier
-                group_objconfig.m_uid = group_cfg->second.get<std::string>("<xmlattr>.uid", "");
+                const auto uid   = group_cfg->second.get_optional<std::string>("<xmlattr>.uid");
+                const auto value = group_cfg->second.get_optional<std::string>("<xmlattr>.value");
+
+                if(!uid.has_value() && value.has_value())
+                {
+                    // The object is built on the fly by the service itself, there is nothing to bind here. The index
+                    // is still consumed so that the next keys of the group keep their position.
+                    configured_keys.insert({key, count});
+                    ++count;
+                    continue;
+                }
+
+                group_objconfig.m_uid = uid.value_or("");
                 SIGHT_ASSERT(
                     std::string(_err_msg_head) + "\"uid\" attribute is empty" + err_msg_tail,
                     !group_objconfig.m_uid.empty()
@@ -448,13 +479,33 @@ app::detail::service_config config::parse_service(
                 }
 
                 // Assign the current object config in the service config
+                configured_keys.insert({key, count});
                 srv_config.m_objects[{key, count++}] = group_objconfig;
             }
         }
         else
         {
             // Identifier
-            objconfig.m_uid = cfg.second.get<std::string>("<xmlattr>.uid", "");
+            const auto uid   = cfg.second.get_optional<std::string>("<xmlattr>.uid");
+            const auto value = cfg.second.get_optional<std::string>("<xmlattr>.value");
+
+            if(!uid.has_value())
+            {
+                // Without an object uid, the object is built on the fly by the service itself, either from the
+                // literal value or from the default value declared with the data::ptr. Nothing to bind here.
+                if(value.has_value())
+                {
+                    const auto key = cfg.second.get_optional<std::string>("<xmlattr>.key");
+                    if(key.has_value())
+                    {
+                        configured_keys.insert({*key, std::nullopt});
+                    }
+                }
+
+                continue;
+            }
+
+            objconfig.m_uid = uid.value_or("");
             SIGHT_ASSERT(
                 std::string(_err_msg_head) + "\"uid\" attribute is empty" + err_msg_tail,
                 !objconfig.m_uid.empty()
@@ -466,6 +517,8 @@ app::detail::service_config config::parse_service(
                 std::string(_err_msg_head) + "Missing object attribute 'key'" + err_msg_tail,
                 !objconfig.m_key.empty()
             );
+
+            configured_keys.insert({objconfig.m_key, std::nullopt});
 
             const auto default_optional_cfg = is_key_optional(srv_config.m_type, objconfig.m_key);
 
@@ -540,36 +593,122 @@ app::detail::service_config config::parse_service(
         }
     }
 
+    // Parse the hierarchical syntax, where the XML structure mirrors the structure of the service keys.
+    // Any tag or attribute that does not match a key declared by the service is left untouched in the service
+    // configuration, so that the service can parse it itself.
+    const auto declared_keys = config::service_keys(srv_config.m_type);
+
+    // <optional key="..."/> overrides the optional flag declared by the service, typically for deferred objects
+    std::set<std::string, std::less<> > optional_keys;
+    for(const auto& opt_cfg : boost::make_iterator_range(srv_config.m_config.equal_range("optional")))
+    {
+        optional_keys.insert(opt_cfg.second.get<std::string>("<xmlattr>.key"));
+    }
+
+    const auto entries = core::ptree::flatten(srv_config.m_config, RESERVED_TAGS);
+
+    // The reserved 'optional' attribute applies to the keys carried by the same tag occurrence, which gives a
+    // per-element granularity for the groups, i.e. <object name="image" uid="${image}" optional="true" />
+    const auto tag_of = [](const core::ptree::flat_entry& _e)
+                        {
+                            return std::pair {_e.key.substr(0, _e.key.rfind('.')), _e.index};
+                        };
+
+    std::set<std::pair<std::string, std::size_t> > optional_tags;
+    for(const auto& entry : entries)
+    {
+        if(entry.key.ends_with(".optional") && entry.value == "true")
+        {
+            optional_tags.insert(tag_of(entry));
+        }
+    }
+
+    for(const auto& entry : entries)
+    {
+        const auto it_key = declared_keys.find(entry.key);
+        if(it_key == declared_keys.end())
+        {
+            continue;
+        }
+
+        const data::key_info& info             = it_key->second;
+        const std::optional<std::size_t> index = info.group ? std::optional {entry.index} : std::nullopt;
+
+        // A key may be given either an object uid, bound here, or a literal value, built by the service itself
+        if(!is_object_property(entry.value) && !_deferred_objects.contains(entry.value))
+        {
+            SIGHT_THROW_IF(
+                "Key " << std::quoted(entry.key) << " is configured twice" << err_msg_tail,
+                configured_keys.contains({entry.key, index})
+            );
+            continue;
+        }
+
+        SIGHT_THROW_IF(
+            "Key " << std::quoted(entry.key) << " is configured twice" << err_msg_tail,
+            configured_keys.contains({entry.key, index})
+        );
+
+        srv_config.m_objects[{entry.key, index}] = app::detail::object_serviceconfig
+        {
+            .m_key          = entry.key,
+            .m_uid          = entry.value,
+            .m_access       = info.access,
+            .m_auto_connect = boost::none,
+            .m_optional     = info.access == data::access::out || info.optional
+                              || optional_keys.contains(entry.key) || optional_tags.contains(tag_of(entry))
+        };
+        configured_keys.insert({entry.key, index});
+    }
+
+    for(const auto& optional_key : optional_keys)
+    {
+        SIGHT_THROW_IF(
+            "Unknown key " << std::quoted(optional_key) << " declared optional" << err_msg_tail,
+            !declared_keys.contains(optional_key)
+        );
+    }
+
     return srv_config;
+}
+
+//------------------------------------------------------------------------------
+
+/// Returns a cached prototype of the given service type, used to introspect the data keys it declares.
+static service::base::sptr service_prototype(const std::string& _service_type)
+{
+    std::scoped_lock guard(s_services_props_mutex);
+
+    auto it = s_services_props.find(_service_type);
+    if(it == s_services_props.end())
+    {
+        auto srv = service::extension::factory::get()->create(_service_type);
+        s_services_props[_service_type] = srv;
+        return srv;
+    }
+
+    return it->second;
 }
 
 //------------------------------------------------------------------------------
 
 bool config::is_key_optional(const std::string& _service_type, const std::string& _key)
 {
-    std::lock_guard guard(s_services_props_mutex);
+    return service::manager::is_key_optional(service_prototype(_service_type), _key);
+}
 
-    service::base::sptr srv;
-    auto it = s_services_props.find(_service_type);
-    if(it == s_services_props.end())
-    {
-        auto srv_factory = service::extension::factory::get();
-        srv                             = srv_factory->create(_service_type);
-        s_services_props[_service_type] = srv;
-    }
-    else
-    {
-        srv = it->second;
-    }
+//------------------------------------------------------------------------------
 
-    return service::manager::is_key_optional(srv, _key);
+data::key_info_map_t config::service_keys(const std::string& _service_type)
+{
+    return service_prototype(_service_type)->keys();
 }
 
 // ----------------------------------------------------------------------------
 
 void config::clear_props()
 {
-    std::lock_guard guard(s_services_props_mutex);
+    std::scoped_lock guard(s_services_props_mutex);
     s_services_props.clear();
 }
 

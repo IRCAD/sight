@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -139,7 +139,7 @@ public:
                         return core::type::UINT64;
 
                     default:
-                        SIGHT_THROW("Unsupported bit depth: " << bit_depth);
+                        SIGHT_THROW("Unsupported bit depth: " << static_cast<unsigned int>(bit_depth));
                 }
             }();
 
@@ -161,7 +161,7 @@ public:
                         return data::image::pixel_format_t::rgba;
 
                     default:
-                        SIGHT_THROW("Unsupported number of channels: " << channels);
+                        SIGHT_THROW("Unsupported number of channels: " << static_cast<unsigned int>(channels));
                 }
             }();
 
@@ -196,7 +196,7 @@ private:
     static void read_callback(png_structp _png_ptr, png_bytep _data, png_size_t _length)
     {
         auto* istream = reinterpret_cast<std::istream*>(png_get_io_ptr(_png_ptr));
-        istream->read(reinterpret_cast<char*>(_data), std::streamsize(_length));
+        istream->read(reinterpret_cast<char*>(_data), static_cast<std::streamsize>(_length));
     }
 
     //------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -63,6 +63,12 @@ Q_OBJECT
 
 public:
 
+    struct signals
+    {
+        using distance_requested_t = core::com::signal<void ()>;
+        static inline const signal_key_t DISTANCE_REQUESTED = "distance_requested";
+    };
+
     SIGHT_DECLARE_SERVICE(distance, sight::ui::editor);
 
     /// Constructor. Do nothing.
@@ -70,16 +76,6 @@ public:
 
     /// Destructor. Do nothing.
     ~distance() noexcept override;
-
-    /**
-     * @name Signal
-     * @{
-     */
-    static const core::com::signals::key_t DISTANCE_REQUESTED_SIG;
-    using distance_requested_signal_t = core::com::signal<void ()>;
-/**
- * @}
- */
 
 protected:
 
@@ -113,8 +109,6 @@ protected Q_SLOTS:
 private:
 
     QPointer<QPushButton> m_dist_button;
-
-    distance_requested_signal_t::sptr m_sig_distance_requested; /// signal emitted when a distance is requested
 
     data::ptr<data::image, data::access::inout> m_image {this, "image"};
 };

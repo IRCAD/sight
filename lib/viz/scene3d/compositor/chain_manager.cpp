@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,12 +28,10 @@
 #include "viz/scene3d/layer.hpp"
 #include "viz/scene3d/render.hpp"
 
-#include <service/op.hpp>
-#include <service/registry.hpp>
+#include <algorithm>
 
 #include <viz/scene3d/ogre.hpp>
 
-#include <OGRE/OgreCamera.h>
 #include <OGRE/OgreCompositionPass.h>
 #include <OGRE/OgreCompositionTargetPass.h>
 #include <OGRE/OgreCompositorChain.h>
@@ -125,9 +123,9 @@ void chain_manager::update_compositor_state(compositor_id_t _compositor_name, bo
     // If there isn't any compositor available, the update operation can't be done
     if(!m_compositor_chain.empty())
     {
-        auto compositor_to_update = std::find_if(
-            m_compositor_chain.begin(),
-            m_compositor_chain.end(),
+        auto compositor_to_update = std::ranges::find_if(
+            m_compositor_chain,
+
             [_compositor_name](const compositor_t& _compositor)
             {
                 return _compositor.first == _compositor_name;
@@ -142,10 +140,7 @@ void chain_manager::update_compositor_state(compositor_id_t _compositor_name, bo
 
             // Send a signal, i.e. to update editors in user interfaces
             auto render_service = layer->render_service();
-            auto sig            = render_service->signal<render::signals::compositor_updated_signal_t>(
-                render::signals::COMPOSITOR_UPDATED
-            );
-            sig->async_emit(_compositor_name, _is_enabled, layer);
+            render_service->async_emit(render::signals::COMPOSITOR_UPDATED, _compositor_name, _is_enabled, layer);
         }
     }
 }
@@ -180,10 +175,7 @@ void chain_manager::set_compositor_chain(const std::vector<compositor_id_t>& _co
 
             // Send a signal, i.e. to update editors in user interfaces
             auto render_service = layer->render_service();
-            auto sig            = render_service->signal<render::signals::compositor_updated_signal_t>(
-                render::signals::COMPOSITOR_UPDATED
-            );
-            sig->async_emit(compositor_name, true, layer);
+            render_service->async_emit(render::signals::COMPOSITOR_UPDATED, compositor_name, true, layer);
         }
         else
         {

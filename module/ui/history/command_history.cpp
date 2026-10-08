@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,37 +23,21 @@
 #include "command_history.hpp"
 
 #include <core/com/signal.hpp>
-#include <core/com/signal.hxx>
-#include <core/com/signals.hpp>
-#include <core/com/slot.hpp>
-#include <core/com/slot.hxx>
-#include <core/com/slots.hpp>
-#include <core/com/slots.hxx>
-
-#include <numeric>
 
 namespace sight::module::ui::history
 {
-
-static const core::com::signals::key_t CANUNDO_SIGNAL = "canUndo";
-static const core::com::signals::key_t CANREDO_SIGNAL = "canRedo";
-
-static const core::com::slots::key_t ENQUEUE_SLOT = "enqueue";
-static const core::com::slots::key_t UNDO_SLOT    = "undo";
-static const core::com::slots::key_t REDO_SLOT    = "redo";
-static const core::com::slots::key_t CLEAR_SLOT   = "clear";
 
 //-----------------------------------------------------------------------------
 
 command_history::command_history()
 {
-    new_slot(ENQUEUE_SLOT, &command_history::enqueue, this);
-    new_slot(UNDO_SLOT, &command_history::undo, this);
-    new_slot(REDO_SLOT, &command_history::redo, this);
-    new_slot(CLEAR_SLOT, &command_history::clear, this);
+    new_slot(slots::ENQUEUE, &command_history::enqueue, this);
+    new_slot(slots::UNDO, &command_history::undo, this);
+    new_slot(slots::REDO, &command_history::redo, this);
+    new_slot(slots::CLEAR, &command_history::clear, this);
 
-    m_can_undo_sig = new_signal<can_do_signal_t>(CANUNDO_SIGNAL);
-    m_can_redo_sig = new_signal<can_do_signal_t>(CANREDO_SIGNAL);
+    m_can_undo_sig = new_signal<signals::can_do_t>(signals::CAN_UNDO);
+    m_can_redo_sig = new_signal<signals::can_do_t>(signals::CAN_REDO);
 }
 
 //-----------------------------------------------------------------------------

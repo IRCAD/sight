@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,8 +26,6 @@
 
 #include "data/validator/base.hpp"
 
-#include <core/base.hpp>
-
 namespace sight::activity::validator
 {
 
@@ -48,7 +46,7 @@ public:
      * @note Given object must be a Vector or Map of ImageSeries (or images)
      * @see activity::validator::base::validate
      */
-    SIGHT_ACTIVITY_API data::validator::return_t validate(const CSPTR(data::object)& _current_object) const
+    SIGHT_ACTIVITY_API data::validator::return_t validate(const sight::csptr<data::object>& _current_object) const
     override;
 };
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -33,7 +33,7 @@ class SIGHT_CORE_CLASS_API exit_exception : public core::exception
 {
 public:
 
-    inline explicit exit_exception(int _exit_code) noexcept :
+    explicit exit_exception(int _exit_code) noexcept :
         core::exception(std::to_string(_exit_code)),
         m_exit_code(_exit_code)
     {
@@ -43,7 +43,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    constexpr int exit_code() const noexcept
+    [[nodiscard]] constexpr int exit_code() const noexcept
     {
         return m_exit_code;
     }

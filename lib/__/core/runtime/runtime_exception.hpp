@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -50,7 +50,7 @@ struct SIGHT_CORE_CLASS_API runtime_exception : public core::exception
      *
      * @param[in]   _message a string containing the exception message
      */
-    SIGHT_CORE_API runtime_exception(const std::string& _message) noexcept;
+    SIGHT_CORE_API explicit runtime_exception(const std::string& _message) noexcept;
 
     /**
      * @brief   Destructor : does nothing.

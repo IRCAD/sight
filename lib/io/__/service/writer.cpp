@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,16 +21,7 @@
  ***********************************************************************/
 #include "io/__/service/writer.hpp"
 
-#include <core/base.hpp>
-#include <core/com/signal.hxx>
-#include <core/com/slots.hpp>
-#include <core/com/slots.hxx>
-
-#include <service/macros.hpp>
-
 #include <ui/__/preferences.hpp>
-
-#include <boost/algorithm/string.hpp>
 
 namespace sight::io::service
 {
@@ -38,19 +29,25 @@ namespace sight::io::service
 //-----------------------------------------------------------------------------
 
 writer::writer(const std::string& _default_window_title) noexcept :
-    has_monitors(m_signals),
+    has_monitors(has_signals::signals()),
     m_window_title(this, WINDOW_TITLE_KEY, _default_window_title)
 {
-    new_signal<signals::void_signal_t>(signals::FAILED);
-    new_signal<signals::void_signal_t>(signals::SUCCEEDED);
-    new_signal<signals::void_signal_t>(signals::PREFIX_SET);
-    new_signal<signals::void_signal_t>(signals::BASE_FOLDER_SET);
+    new_signal<signals::void_t>(signals::FAILED);
+    new_signal<signals::void_t>(signals::SUCCEEDED);
+    new_signal<signals::void_t>(signals::PREFIX_SET);
+    new_signal<signals::void_t>(signals::BASE_FOLDER_SET);
 
     new_slot(slots::OPEN_LOCATION_DIALOG, &writer::open_location_dialog, this);
     new_slot(slots::SET_PREFIX, &writer::set_prefix, this);
     new_slot(slots::SET_BASE_FOLDER, &writer::set_base_folder, this);
 
     new_slot(slots::UPDATE_DEFAULT_LOCATIONS, &writer::update_default_locations, this);
+}
+
+//-----------------------------------------------------------------------------
+std::vector<std::pair<std::string, std::string> > writer::get_supported_extensions()
+{
+    return {};
 }
 
 //-----------------------------------------------------------------------------
@@ -196,68 +193,7 @@ void writer::configuring()
         (this->get_path_type() & io::service::files) == 0 || (this->get_path_type() & io::service::file) == 0
     );
 
-    // Check if we use properties or XML configuration
-    const config_t config              = this->get_config();
-    const bool use_file_config         = config.count(OLD_FILE_KEY) > 0;
-    const bool use_folder_config       = config.count(FOLDER_KEY) > 0;
-    const bool use_window_title_config = config.count(OLD_WINDOW_TITLE_KEY) > 0;
-
-    if(use_file_config || use_folder_config || use_window_title_config)
-    {
-        // Use XML configuration
-        /// @todo remove me once deprecated configuration is removed
-
-        // Deprecation messages
-        if(use_file_config)
-        {
-            FW_DEPRECATED_MSG(
-                "<" + OLD_FILE_KEY + "> XML configuration is deprecated, use `" + FILES_KEY + "` property instead.",
-                "26.0"
-            );
-        }
-
-        if(use_folder_config)
-        {
-            FW_DEPRECATED_MSG(
-                "<" + FOLDER_KEY + "> XML configuration is deprecated, use `" + FOLDER_KEY + "` property instead.",
-                "26.0"
-            );
-        }
-
-        // windowTitle
-        if(use_window_title_config)
-        {
-            FW_DEPRECATED_MSG(
-                "<" + OLD_WINDOW_TITLE_KEY + "> XML configuration is deprecated, use `" + WINDOW_TITLE_KEY
-                + "` property instead.",
-                "26.0"
-            );
-
-            auto window_title = m_window_title.lock();
-            window_title->set_value(config.get<std::string>(OLD_WINDOW_TITLE_KEY));
-        }
-
-        // Files
-        io::service::locations_t files;
-        files.reserve(config.count(OLD_FILE_KEY));
-
-        const auto files_cfg = config.equal_range(OLD_FILE_KEY);
-        for(auto file_cfg = files_cfg.first ; file_cfg != files_cfg.second ; ++file_cfg)
-        {
-            files.emplace_back(file_cfg->second.get_value<std::filesystem::path>());
-        }
-
-        // Folder
-        auto folder = config.get<std::filesystem::path>(FOLDER_KEY, "");
-
-        // Perform validity checks and fill m_locations
-        this->update_locations(files, folder);
-    }
-    else
-    {
-        // Use properties
-        this->update_default_locations();
-    }
+    this->update_default_locations();
 }
 
 //------------------------------------------------------------------------------
@@ -265,8 +201,8 @@ void writer::configuring()
 sight::service::base::connections_t writer::auto_connections() const
 {
     return {
-        {m_files, data::object::MODIFIED_SIG, slots::UPDATE_DEFAULT_LOCATIONS},
-        {m_folder, data::object::MODIFIED_SIG, slots::UPDATE_DEFAULT_LOCATIONS}
+        {m_files, data::signals::MODIFIED, slots::UPDATE_DEFAULT_LOCATIONS},
+        {m_folder, data::signals::MODIFIED, slots::UPDATE_DEFAULT_LOCATIONS}
     };
 }
 
@@ -276,12 +212,13 @@ void writer::update_default_locations()
 {
     io::service::locations_t files;
 
-    if(const auto files_property = *m_files; !files_property.empty())
+    if(const auto files_property = m_files.const_lock(); files_property && !files_property->value().empty())
     {
-        boost::split(files, files_property, boost::is_any_of(";"), boost::token_compress_on);
+        boost::split(files, files_property->value(), boost::is_any_of(";"), boost::token_compress_on);
     }
 
-    this->update_locations(files, *m_folder);
+    const auto folder_property = m_folder.const_lock();
+    this->update_locations(files, folder_property ? folder_property->value() : std::string());
 }
 
 //------------------------------------------------------------------------------
@@ -334,25 +271,25 @@ void writer::update_base_folder(std::string& _out_base_folder) const
 
     if(base_folder_cfg.empty())
     {
-        base_folder_cfg = config.get<std::string>("baseFolder", m_base_folder);
+        base_folder_cfg = config.get<std::string>(WRITER_BASE_FOLDER_KEY, m_base_folder);
     }
 
     if(!base_folder_cfg.empty())
     {
         // We need to check for potential updates to the base folder
         // In case the user updates an associated preference during runtime
-        // We also re-read the xml configuration for file and folder if baseFolder was set
+        // We also re-read the xml configuration for file and folder if base_folder was set
         sight::ui::preferences preferences;
 
         // We need to provide the separator, otherwise the 2-args method will be selected
-        auto [key, baseFolder] = preferences.parsed_get<std::string>(base_folder_cfg);
+        auto [key, base_folder] = preferences.parsed_get<std::string>(base_folder_cfg);
 
         // If the returned value is indeed a preference
         if(!key.empty())
         {
-            if(!baseFolder.empty())
+            if(!base_folder.empty())
             {
-                _out_base_folder = baseFolder;
+                _out_base_folder = base_folder;
             }
             else
             {
@@ -388,7 +325,7 @@ bool writer::has_location_defined() const
     update_base_folder(base_folder);
 
     // Either we have an absolution location set by the user
-    // Or we are using the baseFolder value from the xml configuration
+    // Or we are using the base_folder value from the xml configuration
     return ((base_folder.empty()) && !m_locations.empty() && m_locations.front().is_absolute())
            || (!base_folder.empty() && ((this->get_path_type() & io::service::file) != 0)
                && !m_locations.empty())

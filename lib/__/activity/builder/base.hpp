@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,8 +27,6 @@
 #include "activity/builder/factory/new.hpp"
 #include "activity/builder/registry/detail.hpp"
 #include "activity/extension/activity.hpp"
-
-#include <core/base.hpp>
 
 #include <data/activity.hpp>
 
@@ -81,13 +79,13 @@ public:
      */
     SIGHT_ACTIVITY_API virtual data::activity::sptr build_data(
         const activity::extension::activity_info& _activity_info,
-        const CSPTR(data::vector)& _current_selection
+        const sight::csptr<data::vector>& _current_selection
     ) const = 0;
 
 protected:
 
-    SIGHT_ACTIVITY_API virtual SPTR(data::vector) type(
-        const CSPTR(data::vector) & _current_selection,
+    SIGHT_ACTIVITY_API virtual sight::sptr<data::vector> type(
+        const sight::csptr<data::vector>& _current_selection,
         const std::string& _type
     ) const;
 };

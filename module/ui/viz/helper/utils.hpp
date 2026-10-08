@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -53,7 +53,7 @@ public:
      * @param _q_color the Qt color to convert.
      * @return the converted Ogre color.
      */
-    static inline Ogre::ColourValue convert_q_color_to_ogre_color(const QColor& _q_color)
+    static Ogre::ColourValue convert_q_color_to_ogre_color(const QColor& _q_color)
     {
         const float r = static_cast<float>(_q_color.red()) / 255.F;
         const float g = static_cast<float>(_q_color.green()) / 255.F;

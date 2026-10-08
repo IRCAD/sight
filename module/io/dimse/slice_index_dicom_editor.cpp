@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2025 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,7 @@
 
 #include "slice_index_dicom_editor.hpp"
 
-#include "core/progress/observer.hpp"
-
-#include <core/com/slots.hxx>
+#include "core/notification/observer.hpp"
 
 #include <data/helper/medical_image.hpp>
 #include <data/image_series.hpp>
@@ -35,8 +33,6 @@
 #include <io/dimse/exceptions/base.hpp>
 #include <io/dimse/helper/series.hpp>
 #include <io/dimse/series_enquirer.hpp>
-
-#include <service/extension/config.hpp>
 
 #include <ui/qt/container/widget.hpp>
 
@@ -53,7 +49,7 @@ static const std::string DELAY_CONFIG = "delay";
 //------------------------------------------------------------------------------
 
 slice_index_dicom_editor::slice_index_dicom_editor() noexcept :
-    sight::service::notifier(m_signals)
+    has_notifications(has_signals::signals())
 {
 }
 
@@ -117,7 +113,7 @@ void slice_index_dicom_editor::starting()
 service::connections_t slice_index_dicom_editor::auto_connections() const
 {
     service::connections_t connections;
-    connections.push(m_series, data::series::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(m_series, data::signals::MODIFIED, service::slots::UPDATE);
 
     return connections;
 }
@@ -188,7 +184,7 @@ void slice_index_dicom_editor::retrieve_slice()
 {
     // Check if the slice already exists.
     const auto dicom_series                = m_series.lock();
-    const std::size_t selected_slice_index = std::size_t(m_slider->value()) + 1;
+    const std::size_t selected_slice_index = static_cast<std::size_t>(m_slider->value()) + 1;
 
     if(!sight::io::dicom::helper::series::is_instance_available(*dicom_series, selected_slice_index))
     {
@@ -226,7 +222,7 @@ void slice_index_dicom_editor::pull_slice(std::size_t _selected_slice_index) con
     catch(const sight::io::dimse::exceptions::base& e)
     {
         SIGHT_ERROR("Unable to establish a connection with the PACS: " + std::string(e.what()));
-        this->notifier::failure("Unable to connect to PACS");
+        this->fail("Unable to connect to PACS");
     }
 
     const auto dicom_series = m_series.lock();
@@ -267,13 +263,13 @@ void slice_index_dicom_editor::pull_slice(std::size_t _selected_slice_index) con
         }
         else
         {
-            this->notifier::failure("No instance found");
+            this->fail("No instance found");
         }
     }
     catch(const sight::io::dimse::exceptions::base& e)
     {
         SIGHT_ERROR("Unable to execute query to the PACS: " + std::string(e.what()));
-        this->notifier::failure("Unable to execute query");
+        this->fail("Unable to execute query");
     }
     catch(const std::filesystem::filesystem_error& e)
     {
@@ -303,7 +299,7 @@ void slice_index_dicom_editor::read_slice(
     const auto type = _dicom_series.get_dicom_type();
     if(type == data::series::dicom_t::image)
     {
-        this->notifier::info("Unable to read the modality '" + _dicom_series.get_modality_string() + "'");
+        this->inform("Unable to read the modality '" + _dicom_series.get_modality_string() + "'");
         return;
     }
 
@@ -313,7 +309,7 @@ void slice_index_dicom_editor::read_slice(
     reader->set_object(reading_series);
     reader->set_files({path.string()});
 
-    auto observer = std::make_shared<sight::core::progress::observer>("Read slice");
+    auto observer = std::make_shared<sight::core::notification::observer>("Read slice");
     reader->read(observer);
 
     if(!reading_series->empty())
@@ -347,13 +343,12 @@ void slice_index_dicom_editor::read_slice(
         );
 
         // Send the signal
-        const auto sig = image->signal<data::image::modified_signal_t>(data::image::MODIFIED_SIG);
-        sig->async_emit();
+        image->async_emit(data::signals::MODIFIED);
     }
     else
     {
         SIGHT_ERROR("Unable to read the image");
-        this->notifier::failure("Unable to read the image");
+        this->fail("Unable to read the image");
     }
 }
 

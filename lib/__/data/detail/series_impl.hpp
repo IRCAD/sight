@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024 IRCAD France
+ * Copyright (C) 2024-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -56,4 +56,4 @@ std::string shrink(const std::string& _source);
 
 std::optional<std::string> get_private_string_value(const gdcm::DataSet& _dataset, const gdcm::Tag& _tag);
 
-} // sight::data::detail
+} // namespace sight::data::detail

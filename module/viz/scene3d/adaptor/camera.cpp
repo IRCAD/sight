@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,34 +22,26 @@
 
 #include "module/viz/scene3d/adaptor/camera.hpp"
 
-#include <core/com/slots.hxx>
-
 #include <viz/scene3d/helper/camera.hpp>
 #include <viz/scene3d/render.hpp>
 #include <viz/scene3d/utils.hpp>
 
-#include <Ogre.h>
 #include <OgreCamera.h>
 #include <OgreMatrix4.h>
-#include <OgreSceneManager.h>
 #include <OgreSceneNode.h>
 
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const core::com::slots::key_t TRANSFORM_SLOT = "transform";
-static const core::com::slots::key_t CALIBRATE_SLOT = "calibrate";
-static const core::com::slots::key_t UPDATE_TF_SLOT = "updateTransformation";
-
 //-----------------------------------------------------------------------------
 
-struct camera::CameraNodeListener : public Ogre::MovableObject::Listener
+struct camera::camera_node_listener : public Ogre::MovableObject::Listener
 {
     camera* m_layer {nullptr};
 
     //------------------------------------------------------------------------------
 
-    explicit CameraNodeListener(camera* _renderer) :
+    explicit camera_node_listener(camera* _renderer) :
         m_layer(_renderer)
     {
     }
@@ -66,9 +58,8 @@ struct camera::CameraNodeListener : public Ogre::MovableObject::Listener
 
 camera::camera() noexcept
 {
-    new_slot(TRANSFORM_SLOT, [this](){lazy_update(update_flags::TRANSFORM);});
-    new_slot(CALIBRATE_SLOT, [this](){lazy_update(update_flags::CALIBRATION);});
-    new_slot(UPDATE_TF_SLOT, &camera::update_tf_3d, this);
+    new_slot(slots::TRANSFORM, [this](){lazy_update(update_flags::transform);});
+    new_slot(slots::CALIBRATE, [this](){lazy_update(update_flags::calibration);});
 }
 
 //------------------------------------------------------------------------------
@@ -112,20 +103,20 @@ void camera::starting()
         this->layer()->set_orthographic_camera(true);
     }
 
-    m_camera_node_listener = new CameraNodeListener(this);
+    m_camera_node_listener = new camera_node_listener(this);
     m_camera->setListener(m_camera_node_listener);
 
     m_layer_connection.connect(
         this->layer(),
-        sight::viz::scene3d::layer::CAMERA_RANGE_UPDATED_SIG,
+        sight::viz::scene3d::layer::signals::CAMERA_RANGE_UPDATED,
         this->get_sptr(),
-        CALIBRATE_SLOT
+        slots::CALIBRATE
     );
     m_layer_connection.connect(
         this->layer(),
-        sight::viz::scene3d::layer::RESIZE_LAYER_SIG,
+        sight::viz::scene3d::layer::signals::RESIZE_LAYER,
         this->get_sptr(),
-        CALIBRATE_SLOT
+        slots::CALIBRATE
     );
 
     this->lazy_update();
@@ -138,11 +129,13 @@ service::connections_t camera::auto_connections() const
 {
     service::connections_t connections = adaptor::auto_connections();
 
-    connections.push(TRANSFORM_INOUT, data::matrix4::MODIFIED_SIG, TRANSFORM_SLOT);
-    connections.push(CALIBRATION_INPUT, data::camera::MODIFIED_SIG, CALIBRATE_SLOT);
-    connections.push(CALIBRATION_INPUT, data::camera::INTRINSIC_CALIBRATED_SIG, CALIBRATE_SLOT);
-    connections.push(CAMERA_SET_INPUT, data::camera_set::MODIFIED_SIG, CALIBRATE_SLOT);
-    connections.push(CAMERA_SET_INPUT, data::camera_set::EXTRINSIC_CALIBRATED_SIG, CALIBRATE_SLOT);
+    connections.push(TRANSFORM_INOUT, data::signals::MODIFIED, slots::TRANSFORM);
+    connections.push(TRANSFORM_IN, data::signals::MODIFIED, slots::TRANSFORM);
+    connections.push(TRANSFORM_OUT, data::signals::MODIFIED, slots::TRANSFORM);
+    connections.push(CALIBRATION_INPUT, data::signals::MODIFIED, slots::CALIBRATE);
+    connections.push(CALIBRATION_INPUT, data::camera::signals::INTRINSIC_CALIBRATED, slots::CALIBRATE);
+    connections.push(CAMERA_SET_INPUT, data::signals::MODIFIED, slots::CALIBRATE);
+    connections.push(CAMERA_SET_INPUT, data::camera_set::signals::EXTRINSIC_CALIBRATED, slots::CALIBRATE);
 
     return connections;
 }
@@ -151,34 +144,41 @@ service::connections_t camera::auto_connections() const
 
 void camera::updating()
 {
-    if(update_needed(update_flags::TRANSFORM))
+    if(update_needed(update_flags::transform))
     {
         if(m_calibration_done || this->calibrate())
         {
-            Ogre::Affine3 ogre_matrix;
+            Ogre::Matrix4 ogre_matrix = Ogre::Matrix4::IDENTITY;
             {
-                const auto transform = m_transform.lock();
-
-                // Received input line and column data from Sight transformation matrix
-                for(std::size_t lt = 0 ; lt < 4 ; lt++)
+                const auto transform            = m_transform_in.lock();
+                const auto deprecated_transform = m_transform.const_lock();
+                SIGHT_ERROR_IF(
+                    "Using deprecated 'transform' input. Please use 'transform_in' instead.",
+                    deprecated_transform
+                );
+                SIGHT_ERROR_IF(
+                    "Using 'transform_in' and 'transform' is not allowed.",
+                    deprecated_transform && transform
+                );
+                if(transform)
                 {
-                    for(std::size_t ct = 0 ; ct < 4 ; ct++)
-                    {
-                        ogre_matrix[ct][lt] = static_cast<Ogre::Real>((*transform)(ct, lt));
-                    }
+                    ogre_matrix = sight::viz::scene3d::utils::to_ogre_matrix(transform.get_shared());
+                }
+                else if(deprecated_transform)
+                {
+                    ogre_matrix = sight::viz::scene3d::utils::to_ogre_matrix(deprecated_transform.get_shared());
                 }
             }
-
             // Decompose the camera matrix
             Ogre::Vector3 position;
             Ogre::Vector3 scale;
             Ogre::Quaternion orientation;
-            ogre_matrix.decomposition(position, scale, orientation);
+            Ogre::Affine3 ogre_affine(ogre_matrix);
+            ogre_affine.decomposition(position, scale, orientation);
 
             // Reverse view-up and direction for AR
-            const Ogre::Quaternion rotate_y(Ogre::Degree(180), Ogre::Vector3(0, 1, 0));
-            const Ogre::Quaternion rotate_z(Ogre::Degree(180), Ogre::Vector3(0, 0, 1));
-            orientation = orientation * rotate_z * rotate_y;
+            const Ogre::Quaternion rotate_x(Ogre::Degree(180), Ogre::Vector3(1, 0, 0));
+            orientation = orientation * rotate_x;
 
             // Flag to skip update_tf3D() when called from the camera listener
             m_skip_update = true;
@@ -195,7 +195,7 @@ void camera::updating()
         }
     }
 
-    if(update_needed(update_flags::CALIBRATION))
+    if(update_needed(update_flags::calibration))
     {
         this->calibrate();
     }
@@ -231,6 +231,31 @@ void camera::update_tf_3d()
         return;
     }
 
+    sight::data::matrix4::sptr transform = [this]()
+                                           {
+                                               const auto transform            = m_transform_out.lock();
+                                               const auto deprecated_transform = m_transform.lock();
+                                               SIGHT_ERROR_IF(
+                                                   "Using deprecated 'transform' input. Please use 'transform_out' instead.",
+                                                   deprecated_transform
+                                               );
+                                               SIGHT_ERROR_IF(
+                                                   "Using 'transform_out' and 'transform' is not allowed.",
+                                                   deprecated_transform && transform
+                                               );
+                                               if(transform)
+                                               {
+                                                   return transform.get_shared();
+                                               }
+
+                                               return deprecated_transform.get_shared();
+                                           }();
+    if(transform == nullptr)
+    {
+        // No output transform is connected, so we do not update it
+        return;
+    }
+
     const Ogre::SceneNode* cam_node     = m_camera->getParentSceneNode();
     const Ogre::Quaternion& orientation = cam_node->getOrientation();
 
@@ -263,15 +288,10 @@ void camera::update_tf_3d()
     new_trans_mat[3][3] = 1;
 
     // Now nullify the reverse of the view-up and direction
-    Ogre::Quaternion rotate;
-    const Ogre::Quaternion rotate_y(Ogre::Degree(180), Ogre::Vector3(0, 1, 0));
-    const Ogre::Quaternion rotate_z(Ogre::Degree(180), Ogre::Vector3(0, 0, 1));
-    rotate = rotate_z * rotate_y;
-    rotate = rotate.Inverse();
+    const Ogre::Quaternion rotate_x(Ogre::Degree(180), Ogre::Vector3(1, 0, 0));
+    const Ogre::Quaternion rotate = rotate_x.Inverse();
 
     new_trans_mat = new_trans_mat * Ogre::Matrix4(rotate);
-
-    const auto transform = m_transform.lock();
 
     // Received input line and column data from Sight transformation matrix
     for(std::size_t lt = 0 ; lt < 4 ; lt++)
@@ -282,7 +302,7 @@ void camera::update_tf_3d()
         }
     }
 
-    transform->async_emit(this, data::object::MODIFIED_SIG);
+    transform->async_emit(this, data::signals::MODIFIED);
 }
 
 //------------------------------------------------------------------------------

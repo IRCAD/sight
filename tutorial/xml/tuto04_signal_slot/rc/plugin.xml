@@ -84,9 +84,7 @@
             <!-- ******************************* Services ***************************************** -->
 
             <service uid="mesh_reader_srv" type="sight::module::ui::io::selector">
-                <inout key="data" uid="mesh" />
-                <!-- mode is optional (by default it is "reader") -->
-                <type mode="reader" />
+                <data read="${mesh}" />
             </service>
 
             <!--
@@ -95,15 +93,15 @@
                 shown in the windows defines in 'view' service.
             -->
             <service uid="rendering1_srv" type="sight::module::viz::sample::mesh">
-                <in key="mesh" uid="mesh" auto_connect="true" />
+                <data mesh="${mesh}" />
             </service>
 
             <service uid="rendering2_srv" type="sight::module::viz::sample::mesh">
-                <in key="mesh" uid="mesh" auto_connect="true" />
+                <data mesh="${mesh}" />
             </service>
 
             <service uid="rendering3_srv" type="sight::module::viz::sample::mesh">
-                <in key="mesh" uid="mesh" auto_connect="true" />
+                <data mesh="${mesh}" />
             </service>
 
             <!-- ******************************* Connections ***************************************** -->

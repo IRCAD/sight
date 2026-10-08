@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2024 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -481,11 +481,11 @@ std::string keyboard_click::to_string() const
 }
 
 pinch_gesture::pinch_gesture(
-    std::pair<QPoint, QPoint> _first_finger_pos,
-    std::pair<QPoint, QPoint> _second_finger_pos
+    const std::pair<QPoint, QPoint>& _first_finger_pos,
+    const std::pair<QPoint, QPoint>& _second_finger_pos
 ) :
-    m_first_finger_pos(std::move(_first_finger_pos)),
-    m_second_finger_pos(std::move(_second_finger_pos))
+    m_first_finger_pos(_first_finger_pos),
+    m_second_finger_pos(_second_finger_pos)
 {
     SIGHT_ASSERT(
         "Two fingers can't be at the same place at the same time",
@@ -497,28 +497,47 @@ pinch_gesture::pinch_gesture(
 
 void pinch_gesture::interact_with(QWidget* _widget) const
 {
-    interact_with<>(_widget);
+    qApp->postEvent(
+        qApp,
+        new test_event(
+            [*this, _widget]
+        {
+            // QTest::touchEvent(QWidget*) uses the widget's own window handle, null unless the widget is native. Qt
+            // then looks for the target under the touch point on the desktop, where another application may sit.
+            auto* const top = _widget->window();
+            const auto map  = [&](const std::pair<QPoint, QPoint>& _pos)
+                              {
+                                  return std::pair(_widget->mapTo(top, _pos.first), _widget->mapTo(top, _pos.second));
+                              };
+            pinch_gesture(map(m_first_finger_pos), map(m_second_finger_pos)).send(top->windowHandle());
+        })
+    );
 }
 
 //------------------------------------------------------------------------------
 
 void pinch_gesture::interact_with(QWindow* _window) const
 {
-    interact_with<>(_window);
+    qApp->postEvent(qApp, new test_event([*this, _window]{send(_window);}));
 }
 
 //------------------------------------------------------------------------------
 
-template<typename T>
-void pinch_gesture::interact_with(T _thing) const
+void pinch_gesture::send(QWindow* _window) const
 {
-    static constexpr T s_NULL = nullptr; // Required to avoid ambiguous overload compiler error
-    QTest::touchEvent(_thing, tester::get_dummy_touch_screen())
-    .press(0, m_first_finger_pos.first, s_NULL)
-    .press(1, m_second_finger_pos.first, s_NULL);
-    QTest::touchEvent(_thing, tester::get_dummy_touch_screen())
-    .move(0, m_first_finger_pos.first, s_NULL)
-    .move(1, m_second_finger_pos.first, s_NULL);
+    static QPointingDevice* const s_DEVICE = QTest::createTouchDevice();
+
+    // Qt hands a gesture to the window found under its hot spot on the desktop, so another application's window
+    // there swallows it. Stay above every other window while the sequence is delivered.
+    const bool on_top = _window->flags().testFlag(Qt::WindowStaysOnTopHint);
+    _window->setFlag(Qt::WindowStaysOnTopHint, true);
+
+    QTest::touchEvent(_window, s_DEVICE)
+    .press(0, m_first_finger_pos.first)
+    .press(1, m_second_finger_pos.first);
+    QTest::touchEvent(_window, s_DEVICE)
+    .move(0, m_first_finger_pos.first)
+    .move(1, m_second_finger_pos.first);
 
     // If the two fingers are too far in one go, Qt will ignore it as it will consider them as spurious. We must
     // therefore divide the moves in multiple steps.
@@ -526,17 +545,19 @@ void pinch_gesture::interact_with(T _thing) const
     QLineF second_finger_line(m_second_finger_pos.first, m_second_finger_pos.second);
     for(int i = 0 ; i < 100 ; i++)
     {
-        QTest::touchEvent(_thing, tester::get_dummy_touch_screen())
-        .move(0, first_finger_line.pointAt(i / 100.).toPoint(), s_NULL)
-        .move(1, second_finger_line.pointAt(i / 100.).toPoint(), s_NULL);
+        QTest::touchEvent(_window, s_DEVICE)
+        .move(0, first_finger_line.pointAt(i / 100.).toPoint())
+        .move(1, second_finger_line.pointAt(i / 100.).toPoint());
     }
 
-    QTest::touchEvent(_thing, tester::get_dummy_touch_screen())
-    .move(0, m_first_finger_pos.second, s_NULL)
-    .move(1, m_second_finger_pos.second, s_NULL);
-    QTest::touchEvent(_thing, tester::get_dummy_touch_screen())
-    .release(0, m_first_finger_pos.second, s_NULL)
-    .release(1, m_second_finger_pos.second, s_NULL);
+    QTest::touchEvent(_window, s_DEVICE)
+    .move(0, m_first_finger_pos.second)
+    .move(1, m_second_finger_pos.second);
+    QTest::touchEvent(_window, s_DEVICE)
+    .release(0, m_first_finger_pos.second)
+    .release(1, m_second_finger_pos.second);
+
+    _window->setFlag(Qt::WindowStaysOnTopHint, on_top);
 }
 
 //------------------------------------------------------------------------------

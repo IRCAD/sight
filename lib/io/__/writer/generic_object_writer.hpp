@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,7 @@
 
 #pragma once
 
-#include <sight/io/__/config.hpp>
-
-#include "io/__/writer/object_writer.hpp"
+#include "object_writer.hpp"
 
 namespace sight::io::writer
 {
@@ -47,12 +45,10 @@ public:
     SIGHT_DECLARE_CLASS(generic_object_writer<DATATYPE>, io::writer::object_writer);
 
     /// Constructor. Do nothing.
-    generic_object_writer()
-    = default;
+    generic_object_writer() = default;
 
     /// Destructor. Do nothing.
-    ~generic_object_writer() override
-    = default;
+    ~generic_object_writer() override = default;
 
     /**
      * @brief m_object setter.
@@ -67,6 +63,8 @@ public:
             << "' is not a '" << typeid(data_t()).name() << "'",
             std::dynamic_pointer_cast<const data_t>(_obj)
         );
+
+        // NOLINTNEXTLINE(readability-identifier-naming)
         object_writer::set_object(_obj);
     }
 

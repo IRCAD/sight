@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,8 +23,6 @@
 #include "timestamp_slot_caller.hpp"
 
 #include <core/clock.hpp>
-#include <core/com/slot.hxx>
-#include <core/com/slots.hxx>
 
 #include <boost/range/iterator_range_core.hpp>
 
@@ -76,8 +74,8 @@ void timestamp_slot_caller::updating()
 
     for(const slot_info_t& info : m_slot_infos)
     {
-        has_slot_id_type has_slot_id     = info.first;
-        core::com::slots::key_t slot_key = info.second;
+        has_slot_id_type has_slot_id = info.first;
+        slot_key_t slot_key          = info.second;
 
         if(core::id::exist(has_slot_id))
         {

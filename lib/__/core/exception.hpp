@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,7 +34,7 @@ class SIGHT_CORE_CLASS_API exception : public std::runtime_error
 {
 public:
 
-    SIGHT_CORE_API exception(const std::string& _err);
+    SIGHT_CORE_API exception(const std::string& _err); //NOLINT(google-explicit-constructor,hicpp-explicit-conversions)
 
     SIGHT_CORE_API ~exception() override = default;
 };

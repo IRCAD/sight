@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2024 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -44,4 +44,4 @@ using parameter_t = std::variant<bool,
                                  std::int64_t, int, int2_t, int3_t, ivec3_t, ivec4_t,
                                  sight::ui::color_t, std::string, enum_list_t>;
 
-} // sight::ui
+} // namespace sight::ui

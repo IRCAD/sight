@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,7 +32,7 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-class PostWindowRenderListener;
+class post_window_render_listener;
 
 /**
  * @brief This adaptor displays rendering statistics in the window overlay.
@@ -79,10 +79,10 @@ protected:
 
 private:
 
-    friend class PostWindowRenderListener;
+    friend class post_window_render_listener;
 
     /// Contains the listener to frame update events and updates the stats text.
-    std::unique_ptr<PostWindowRenderListener> m_listener;
+    std::unique_ptr<post_window_render_listener> m_listener;
 
     /// Contains the displays stats in the overlay.
     sight::viz::scene3d::text::sptr m_stats_text;

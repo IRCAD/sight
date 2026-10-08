@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2025 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,19 +22,16 @@
 
 #pragma once
 
-#include <core/progress/has_monitors.hpp>
+#include <core/notification/has_monitors.hpp>
 
 #include <data/integer.hpp>
 #include <data/series_set.hpp>
 #include <data/string.hpp>
 #include <data/vector.hpp>
 
-#include <io/__/service/reader.hpp>
 #include <io/http/client_qt.hpp>
 
 #include <service/controller.hpp>
-
-#include <filesystem>
 
 namespace sight::data
 {
@@ -73,7 +70,7 @@ namespace sight::module::io::dicomweb
  */
 
 class series_puller : public service::controller,
-                      public core::progress::has_monitors
+                      public core::notification::has_monitors
 {
 public:
 

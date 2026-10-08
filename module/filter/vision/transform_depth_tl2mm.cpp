@@ -22,22 +22,15 @@
 
 #include "transform_depth_tl2mm.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-
-#include <service/macros.hpp>
-
 namespace sight::module::filter::vision
 {
-
-static const core::com::slots::key_t COMPUTE_SLOT = "compute";
 
 //------------------------------------------------------------------------------
 
 transform_depth_tl2mm::transform_depth_tl2mm() :
-    filter(m_signals)
+    filter(has_signals::signals())
 {
-    new_slot(COMPUTE_SLOT, &transform_depth_tl2mm::compute, this);
+    new_slot(slots::COMPUTE, &transform_depth_tl2mm::compute, this);
 }
 
 //------------------------------------------------------------------------------
@@ -100,7 +93,7 @@ void transform_depth_tl2mm::compute(core::clock::type _timestamp)
 
             const auto* depth_buffer_in = reinterpret_cast<const std::uint16_t*>(&depth_buffer_obj->get_element(0));
 
-            SPTR(data::frame_tl::buffer_t) depth_buffer_out_obj = scaled_frame_tl->create_buffer(_timestamp);
+            sight::sptr<data::frame_tl::buffer_t> depth_buffer_out_obj = scaled_frame_tl->create_buffer(_timestamp);
 
             auto* depth_buffer_out = reinterpret_cast<std::uint16_t*>(depth_buffer_out_obj->add_element(0));
 
@@ -111,12 +104,8 @@ void transform_depth_tl2mm::compute(core::clock::type _timestamp)
 
             scaled_frame_tl->push_object(depth_buffer_out_obj);
 
-            auto sig =
-                scaled_frame_tl->signal<data::timeline::signals::pushed_t>(
-                    data::timeline::signals::PUSHED
-                );
-            sig->async_emit(_timestamp);
-            this->signal<signals::computed_t>(signals::SUCCEEDED)->async_emit();
+            scaled_frame_tl->async_emit(data::timeline::signals::PUSHED, _timestamp);
+            this->async_emit(service::filter::signals::SUCCEEDED);
         }
 
         m_last_timestamp = _timestamp;
@@ -133,7 +122,7 @@ void transform_depth_tl2mm::updating()
 
 service::connections_t transform_depth_tl2mm::auto_connections() const
 {
-    return {{ORIGIN_FRAME_TL_INPUT, data::timeline::signals::PUSHED, COMPUTE_SLOT}};
+    return {{ORIGIN_FRAME_TL_INPUT, data::timeline::signals::PUSHED, slots::COMPUTE}};
 }
 
 //-----------------------------------------------------------------------------

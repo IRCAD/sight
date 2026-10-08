@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include <core/com/signal.hpp>
 
 #include <data/mesh.hpp>
 
@@ -47,20 +45,22 @@ namespace sight::module::io::vtk
  * Service writing a model series as .vtk files using the fwVtkIO lib.
  *
  * @section Signals Signals
- * - \b monitor_created(SPTR(core::progress::monitor)): emitted to display a progress bar while the image is written,
+ * - \b notification_created(core::notification::base::sptr): emitted to display a progress bar while the
+ * image is
+ * written,
  * it should be connected to a progress bar
  *
  * @section XML XML Configuration
  *
  * @code{.xml}
    <service type="sight::module::io::vtk::model_series_writer">
-       <in key="data" uid="..." />
-       <folder>...</folder>
+       <data write="..." />
+       <path folder="..." />
        <extension>vtk</extension>
    </service>
    @endcode
  * @subsection Input Input
- * - \b data [sight::data::model_series]: model to save.
+ * - \b data.write [sight::data::model_series]: model to save.
  * @subsection Configuration Configuration
  * - \b folder (optional): path of the folder, if it is not defined, 'open_location_dialog()' should be called to define
  * the path.
@@ -85,9 +85,9 @@ public:
      */
     void open_location_dialog() override;
 
-protected:
-
     sight::io::service::path_type_t get_path_type() const override;
+
+protected:
 
     /**
      * @brief Starting method.
@@ -133,7 +133,7 @@ private:
      * @param[in] _filename : name of the file to write with extension. extension will be used to choose the writer.
      * @param[in] _mesh : const pointer of the data mesh.
      */
-    void write_mesh(const std::filesystem::path& _filename, const data::mesh::csptr _mesh);
+    void write_mesh(const std::filesystem::path& _filename, data::mesh::csptr _mesh);
 
     ///  Stores the selectedExtension from dialog.
     std::string m_selected_extension;

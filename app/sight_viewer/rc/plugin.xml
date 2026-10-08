@@ -5,29 +5,11 @@
     <requirement id="sight::module::service" />
     <requirement id="sight::module::io::session" />
 
-    <extension implements="sight::service::extension::config">
-        <id>SightViewer_SightData_SrvCfg</id>
-        <desc>Sight data</desc>
-        <config>
-            <dialog extension=".sight" description="Sight data" policy="default" />
-            <password policy="default" encryption="default" />
-        </config>
-    </extension>
-
-    <extension implements="sight::service::extension::config">
-        <id>SightViewer_vtk_SrvCfg</id>
-        <desc>VTK</desc>
-        <config>
-            <windowTitle>Open VTK file</windowTitle>
-        </config>
-    </extension>
-
-    <extension implements="sight::service::extension::config">
-        <id>SightViewer_itk_SrvCfg</id>
-        <desc>Nifti or Inr images</desc>
-        <config>
-            <windowTitle>Open an .inr or .nii file</windowTitle>
-        </config>
+    <extension implements="sight::app::extension::parameters">
+        <id>SightViewer_AppCfgParam</id>
+        <cli>
+            <param name="input" option="input,i" />
+        </cli>
     </extension>
 
     <extension implements="sight::service::extension::config">
@@ -36,6 +18,25 @@
         <config>
             <windowTitle>Open DICOM directory</windowTitle>
             <dialog filter="image" />
+            <config append="true" />
+        </config>
+    </extension>
+
+    <extension implements="sight::service::extension::config">
+        <id>SightViewer_itk_series_set_reader_SrvCfg</id>
+        <service>sight::module::io::itk::series_set_reader</service>
+        <desc>Load and append ITK image series</desc>
+        <config>
+            <config append="true" />
+        </config>
+    </extension>
+
+    <extension implements="sight::service::extension::config">
+        <id>SightViewer_vtk_series_set_reader_SrvCfg</id>
+        <service>sight::module::io::vtk::series_set_reader</service>
+        <desc>Load and append VTK series</desc>
+        <config>
+            <config append="true" />
         </config>
     </extension>
 
@@ -51,21 +52,43 @@
 
     <extension implements="sight::app::extension::config">
         <id>SightViewer_AppCfg</id>
+        <parameters>
+            <param name="input" default="" />
+        </parameters>
         <config>
             <!-- ******************************* Objects declaration ****************************** -->
 
             <object uid="series_set" type="sight::data::series_set" />
             <object uid="model_series" type="sight::data::model_series" deferred="true" />
+            <object uid="display_models" type="sight::data::model_series" deferred="true" />
             <object uid="pacs_series_set" type="sight::data::series_set" />
             <object uid="image" type="sight::data::image_series" deferred="true" />
-            <object uid="extruded_model_series" type="sight::data::model_series" />
+            <object uid="extruded_meshes" type="sight::data::model_series" />
+            <object uid="extruded_meshes_by_image" type="sight::data::map" />
+            <object uid="input_path" type="sight::data::string" />
 
-            <object uid="volume_tf" type="sight::data::transfer_function" />
-
+            <object uid="volume_tf" type="sight::data::transfer_function" deferred="true" />
+            <object uid="image_transfer_functions" type="sight::data::map" />
             <object uid="vr_visibility" type="sight::data::boolean" value="false" />
             <object uid="negato_visibility" type="sight::data::boolean" value="false" />
             <object uid="model_visibility" type="sight::data::boolean" value="true" />
             <object uid="axis_visibility" type="sight::data::boolean" value="false" />
+            <object uid="volume_parameters" type="sight::data::map">
+                <item key="sampling" type="sight::data::integer" value="1200" />
+                <item key="opacity_correction" type="sight::data::integer" value="200" />
+                <item key="pre_integration" type="sight::data::boolean" value="false" />
+                <item key="ambient_occlusion" type="sight::data::boolean" value="false" />
+                <item key="color_bleeding" type="sight::data::boolean" value="false" />
+                <item key="shadows" type="sight::data::boolean" value="false" />
+                <item key="widgets" type="sight::data::boolean" value="false" />
+                <item key="color_bleeding_factor" type="sight::data::real" value="1." />
+                <item key="ao_factor" type="sight::data::real" value="2." />
+                <item key="sat_size_ratio" type="sight::data::integer" value="2" />
+                <item key="sat_shells_number" type="sight::data::integer" value="4" />
+                <item key="sat_shell_radius" type="sight::data::integer" value="4" />
+                <item key="sat_cone_angle" type="sight::data::real" value="0.1" />
+                <item key="sat_cone_samples" type="sight::data::integer" value="50" />
+            </object>
 
             <!-- ******************************* UI declaration *********************************** -->
 
@@ -98,16 +121,14 @@
 
             <service uid="container_view" type="sight::module::ui::view">
                 <gui>
-                    <toolbar align="left" />
                     <layout type="sight::ui::layout::overlay">
                         <view />
-                        <view x="-1" y="0" visible="false" />
+                        <view x="+1" y="0" visible="false" />
                     </layout>
                 </gui>
                 <registry>
-                    <toolbar sid="toolbar_view" />
                     <view sid="scene_parameter_view" />
-                    <view sid="right_toolbar_slider_view" />
+                    <view sid="left_toolbar_slider_view" />
                 </registry>
             </service>
 
@@ -115,13 +136,13 @@
                 <gui>
                     <layout type="sight::ui::layout::line">
                         <orientation value="horizontal" />
+                        <view proportion="0" min_width="500" />
                         <view proportion="1" />
-                        <view proportion="0" minWidth="500" QSSClass="view_background" />
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="scene_overlay_view" />
                     <view sid="parameter_view" />
+                    <view sid="scene_overlay_view" />
                 </registry>
             </service>
 
@@ -138,7 +159,7 @@
                 </registry>
             </service>
 
-            <service uid="right_toolbar_slider_view" type="sight::module::ui::view">
+            <service uid="left_toolbar_slider_view" type="sight::module::ui::view">
                 <gui>
                     <toolbar QSSClass="view_background" />
                     <layout type="sight::ui::layout::line">
@@ -146,15 +167,15 @@
                     </layout>
                 </gui>
                 <registry>
-                    <toolbar sid="right_toolbar_view" />
+                    <toolbar sid="left_toolbar_view" />
                 </registry>
             </service>
 
-            <service uid="right_toolbar_view" type="sight::module::ui::toolbar">
+            <service uid="left_toolbar_view" type="sight::module::ui::toolbar">
                 <gui>
                     <layout>
                         <spacer />
-                        <menu_item name="Show parameters" icon="sight::module::ui::icons/left.svg" />
+                        <menu_item name="Show parameters" icon="sight::module::ui::icons/right.svg" />
                     </layout>
                 </gui>
                 <registry>
@@ -164,24 +185,160 @@
 
             <service uid="parameter_view" type="sight::module::ui::view">
                 <gui>
-                    <toolbar />
                     <layout type="sight::ui::layout::line">
                         <orientation value="vertical" />
-                        <view proportion="0" spacing="0" QSSClass="view_background" />
-                        <view proportion="0" spacing="0" QSSClass="view_background" />
-                        <view proportion="0" spacing="0" QSSClass="view_background" />
-                        <view proportion="0" spacing="0" QSSClass="view_background" />
-                        <view proportion="0" spacing="0" QSSClass="view_background" />
-                        <view proportion="0" spacing="0" QSSClass="view_background" />
+                        <view proportion="0" />
+                        <view proportion="0" />
+                        <view proportion="0" />
+                        <view proportion="0" QSSClass="transparent_toolbox_content" />
+                        <view proportion="0" />
+                        <view proportion="0" />
+                        <view proportion="0" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="parameter_toolbar_container" />
+                    <view sid="data_parameter_view" />
+                    <view wid="organs_parameter_view" />
+                    <view sid="volume_parameter_view" />
+                    <view sid="annotation_parameter_view" />
+                    <view sid="comparison_parameter_view" />
+                </registry>
+            </service>
+
+            <service uid="parameter_toolbar_container" type="sight::module::ui::view">
+                <gui>
+                    <toolbar align="top" />
+                    <layout type="sight::ui::layout::line">
+                        <orientation value="vertical" />
                     </layout>
                 </gui>
                 <registry>
                     <toolbar sid="parameter_toolbar_view" />
-                    <view sid="volume_parameter_view" />
+                </registry>
+            </service>
+
+            <service uid="parameter_toolbar_view" type="sight::module::ui::toolbar">
+                <gui>
+                    <layout>
+                        <menu_item name="Data" icon="sight::module::ui::icons/image_series.svg" style="check" />
+                        <menu_item name="organs manager" icon="sight::module::ui::icons/organs.svg" style="check" />
+                        <menu_item name="Volume rendering" icon="sight::module::ui::icons/volume.svg" style="check" />
+                        <menu_item name="Annotation" icon="sight::module::ui::icons/edit.svg" style="check" />
+                        <menu_item name="Comparison" icon="sight::module::ui::icons/split.svg" style="check" />
+                        <spacer />
+                        <menu_item name="Close parameters" icon="sight::module::ui::icons/left.svg" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu_item sid="data_manager_act" />
+                    <menu_item sid="organs_manager_act" />
+                    <menu_item sid="volume_manager_act" />
+                    <menu_item sid="annotation_manager_act" />
+                    <menu_item sid="comparison_manager_act" />
+                    <menu_item sid="hide_parameter_act" />
+                </registry>
+            </service>
+
+            <service uid="data_parameter_view" type="sight::module::ui::view">
+                <gui>
+                    <layout type="sight::ui::layout::line">
+                        <orientation value="vertical" />
+                        <view proportion="1" />
+                        <view proportion="0" />
+                        <spacer />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="data_tools_row_1_container" />
+                </registry>
+            </service>
+
+            <service uid="data_tools_row_1_container" type="sight::module::ui::view">
+                <gui>
+                    <toolbar />
+                    <layout type="sight::ui::layout::line">
+                        <orientation value="vertical" />
+                        <view />
+                    </layout>
+                </gui>
+                <registry>
+                    <toolbar sid="data_tools_row_1" />
+                    <view sid="image_manager_widget_srv" />
+                </registry>
+            </service>
+
+            <service uid="data_tools_row_1" type="sight::module::ui::toolbar">
+                <gui>
+                    <layout>
+                        <menu_item name="Load DICOM Folders" icon="sight::module::ui::icons/load.svg" />
+                        <menu_item name="Load Files" icon="sight::module::ui::icons/file.svg" />
+                        <menu_item name="Open PACS" icon="sight::module::ui::icons/connection.svg" style="check" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu_item sid="open_folder_act" />
+                    <menu_item sid="open_files_act" />
+                    <menu_item sid="pacs_act" />
+                </registry>
+            </service>
+
+            <service uid="annotation_parameter_view" type="sight::module::ui::view">
+                <gui>
+                    <layout type="sight::ui::layout::line">
+                        <orientation value="vertical" />
+                        <view proportion="0" />
+                        <view proportion="1" QSSClass="view_background" />
+                        <spacer />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="annotation_tools_container" />
+                    <view sid="annotation_srv" />
+                </registry>
+            </service>
+
+            <service uid="annotation_tools_container" type="sight::module::ui::view">
+                <gui>
+                    <toolbar align="top" />
+                    <layout type="sight::ui::layout::line">
+                        <orientation value="vertical" />
+                    </layout>
+                </gui>
+                <registry>
+                    <toolbar sid="annotation_tools_toolbar" />
+                </registry>
+            </service>
+
+            <service uid="annotation_tools_toolbar" type="sight::module::ui::toolbar">
+                <gui>
+                    <layout>
+                        <menu_item name="Add / edit fiducial" icon="sight::module::ui::icons/fiducial.svg" style="check" />
+                        <menu_item name="Delete fiducials" icon="sight::module::ui::icons/trash.svg" />
+                        <menu_item name="Add / edit distance" icon="sight::module::ui::icons/distance.svg" style="check" />
+                        <menu_item name="Delete distances" icon="sight::module::ui::icons/remove_distance.svg" />
+                        <menu_item name="Distances visible" icon="sight::module::ui::icons/show_distance.svg" style="check" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu_item sid="landmarks_edit_mode_act" />
+                    <menu_item sid="remove_all_landmarks_act" />
+                    <menu_item sid="add_ruler_act" />
+                    <menu_item sid="remove_all_rulers_act" />
+                    <menu_item sid="show_ruler_act" />
+                </registry>
+            </service>
+
+            <service uid="comparison_parameter_view" type="sight::module::ui::view">
+                <gui>
+                    <layout type="sight::ui::layout::line">
+                        <orientation value="vertical" />
+                        <view proportion="0" QSSClass="view_background" />
+                        <spacer />
+                    </layout>
+                </gui>
+                <registry>
                     <view sid="tf_parameter_view" />
-                    <view wid="organs_parameter_view" />
-                    <view sid="landmarks_parameter_view" />
-                    <view sid="light_parameter_view" />
                 </registry>
             </service>
 
@@ -195,190 +352,152 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view wid="tf_cfg_parameter_view" />
                     <view sid="transparency_parameter_srv" />
-                </registry>
-            </service>
-
-            <service uid="parameter_toolbar_view" type="sight::module::ui::toolbar">
-                <gui>
-                    <layout>
-                        <menu_item name="Show volume parameters" icon="sight::module::ui::icons/volume.svg" style="check" />
-                        <menu_item name="Show transfer function editor" icon="sight::module::ui::icons/tf1.svg" style="check" />
-                        <menu_item name="Show organs manager" icon="sight::module::ui::icons/organs.svg" style="check" />
-                        <menu_item name="Show landmarks manager" icon="sight::module::ui::icons/fiducial.svg" style="check" />
-                        <menu_item name="Show light manager" icon="sight::module::ui::icons/light.svg" style="check" />
-                        <spacer />
-                        <menu_item name="Close parameters" icon="sight::module::ui::icons/right.svg" />
-                    </layout>
-                </gui>
-                <registry>
-                    <menu_item sid="volume_manager_act" />
-                    <menu_item sid="tf_manager_act" />
-                    <menu_item sid="organs_manager_act" />
-                    <menu_item sid="landmarks_manager_act" />
-                    <menu_item sid="light_manager_act" />
-                    <menu_item sid="hide_parameter_act" />
                 </registry>
             </service>
 
             <service uid="volume_parameter_view" type="sight::module::ui::view">
                 <gui>
-                    <layout type="sight::ui::layout::line">
+                    <layout type="sight::ui::layout::toolbox">
                         <orientation value="vertical" />
-                        <view proportion="0" />
-                        <spacer />
+                        <view caption="Cropping settings" expanded="true" />
+                        <view caption="Transfer function" expanded="true" />
+                        <view caption="Advanced settings" />
                     </layout>
                 </gui>
                 <registry>
+                    <view sid="cropping_tools_container" />
+                    <view wid="tf_cfg_parameter_view" />
                     <view sid="volume_parameter_srv" />
                 </registry>
             </service>
 
-            <service uid="landmarks_parameter_view" type="sight::module::ui::view">
+            <service uid="cropping_tools_container" type="sight::module::ui::view">
                 <gui>
+                    <toolbar />
                     <layout type="sight::ui::layout::line">
-                        <orientation value="vertical" />
-                        <view proportion="0" />
-                        <spacer />
+                        <orientation value="horizontal" />
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="landmarks_parameter_srv" />
+                    <toolbar sid="cropping_tools_toolbar" />
                 </registry>
             </service>
 
-            <service uid="light_parameter_view" type="sight::module::ui::view">
-                <gui>
-                    <layout type="sight::ui::layout::line">
-                        <orientation value="vertical" />
-                        <view proportion="0" />
-                        <view proportion="0" />
-                        <view proportion="1" />
-                        <spacer />
-                    </layout>
-                </gui>
-                <registry>
-                    <view sid="light_selector_srv" />
-                    <view sid="light_editor_srv" />
-                    <view sid="compositor_selector_srv" />
-                </registry>
-            </service>
-
-            <service uid="toolbar_view" type="sight::module::ui::toolbar">
+            <service uid="cropping_tools_toolbar" type="sight::module::ui::toolbar">
                 <gui>
                     <layout>
-                        <menu_item name="Load series" icon="sight::module::ui::icons/load.svg" />
-                        <menu_item name="Open PACS" icon="sight::module::ui::icons/connection.svg" style="check" />
-                        <separator />
-                        <menu_item name="Show/hide mesh" icon="sight::module::ui::icons/show_mesh.svg" style="check" />
-                        <menu_item name="Show/hide volume" icon="sight::module::ui::icons/show_volume.svg" style="check" />
-                        <menu_item name="Show/hide negato" icon="sight::module::ui::icons/show_negato.svg" style="check" />
+                        <menu_item name="Draw a new freehand cropping region" icon="sight::module::ui::icons/eraser.svg" style="check" />
+                        <menu_item name="Undo" icon="sight::module::ui::icons/reset.svg" />
                         <separator />
                         <menu_item name="Show/hide cropping box" icon="sight::module::ui::icons/cropping_box.svg" style="check" />
                         <menu_item name="Reset cropping box" icon="sight::module::ui::icons/reset.svg" />
-                        <accordion>
-                            <menu_item name="Draw a new freehand cropping region" icon="sight::module::ui::icons/eraser.svg" style="check" />
-                            <menu_item name="Undo" icon="sight::module::ui::icons/reset.svg" />
-                        </accordion>
-                        <separator />
-                        <accordion>
-                            <menu_item name="Enable landmarks edit mode" icon="sight::module::ui::icons/fiducial.svg" style="check" />
-                            <menu_item name="Remove all landmarks" icon="sight::module::ui::icons/trash.svg" />
-                        </accordion>
-                        <accordion>
-                            <menu_item name="Add/Edit distance" icon="sight::module::ui::icons/distance.svg" style="check" />
-                            <menu_item name="Remove all distances" icon="sight::module::ui::icons/remove_distance.svg" />
-                        </accordion>
-                        <menu_item name="Show/Hide distance" icon="sight::module::ui::icons/show_distance.svg" style="check" />
-                        <separator />
-                        <menu_item name="Show/hide axis" icon="sight::module::ui::icons/axis.svg" style="check" />
                     </layout>
                 </gui>
                 <registry>
-                    <menu_item sid="open_series_set_act" />
-                    <menu_item sid="pacs_act" />
-                    <menu_item sid="mesh_visibility_act" />
-                    <menu_item sid="volume_visibility_act" />
-                    <menu_item sid="negato3_d_visibility_act" />
-                    <menu_item sid="box_widget_visibility_act" />
-                    <menu_item sid="box_widget_reset_act" />
                     <menu_item sid="shape_extruder_act" />
                     <menu_item sid="shape_extruder_undo_act" />
-                    <menu_item sid="landmarks_edit_mode_act" />
-                    <menu_item sid="remove_all_landmarks_act" />
-                    <menu_item sid="add_ruler_act" />
-                    <menu_item sid="remove_all_rulers_act" />
-                    <menu_item sid="show_ruler_act" />
-                    <menu_item sid="axis_visibility_act" />
+                    <menu_item sid="box_widget_visibility_act" />
+                    <menu_item sid="box_widget_reset_act" />
                 </registry>
             </service>
 
             <!-- ******************************* Actions ****************************************** -->
 
-            <service uid="open_series_set_act" type="sight::module::ui::action" />
+            <service uid="open_folder_act" type="sight::module::ui::action" />
+            <service uid="open_files_act" type="sight::module::ui::action" />
 
             <!-- Read a series -->
-            <service uid="open_series_set_srv" type="sight::module::ui::io::selector">
-                <inout key="data" uid="series_set" />
-                <type mode="reader" />
-                <selection mode="exclude" />
-                <addSelection service="sight::module::io::dicom::series_set_reader" />
-                <addSelection service="sight::module::io::dicom::dicom_series_set_reader" />
-                <config id="SightViewer_SightData_SrvCfg" service="sight::module::io::session::reader" />
-                <config id="SightViewer_vtk_SrvCfg" service="sight::module::io::vtk::series_set_reader" />
-                <config id="SightViewer_itk_SrvCfg" service="sight::module::io::itk::series_set_reader" />
+            <service uid="open_folder_srv" type="sight::module::ui::io::selector">
+                <data read="${series_set}" />
+                <selection mode="include" />
+                <addSelection service="sight::module::io::dicom::reader" />
                 <config id="SightViewer_dicom_SrvCfg" service="sight::module::io::dicom::reader" />
             </service>
 
+            <service uid="image_drop_srv" type="sight::module::ui::qt::io::drag_and_drop">
+                <inout key="path" uid="input_path" />
+                <config wid="scene_view" />
+            </service>
+
+            <service uid="open_files_srv" type="sight::module::ui::io::selector">
+                <data read="${series_set}" />
+                <selection mode="include" />
+                <addSelection service="sight::module::io::dicom::reader" />
+                <addSelection service="sight::module::io::itk::series_set_reader" />
+                <addSelection service="sight::module::io::vtk::series_set_reader" />
+                <config id="SightViewer_dicom_SrvCfg" service="sight::module::io::dicom::reader" />
+                <config id="SightViewer_itk_series_set_reader_SrvCfg" service="sight::module::io::itk::series_set_reader" />
+                <config id="SightViewer_vtk_series_set_reader_SrvCfg" service="sight::module::io::vtk::series_set_reader" />
+            </service>
+
+            <service uid="path_cli_srv" type="sight::module::ui::io::selector">
+                <data read="${series_set}" />
+                <path file="${input}" folder="${input}" />
+                <selection mode="include" />
+                <addSelection service="sight::module::io::dicom::reader" />
+                <addSelection service="sight::module::io::itk::series_set_reader" />
+                <addSelection service="sight::module::io::vtk::series_set_reader" />
+            </service>
+
+            <service uid="path_drag_and_drop_srv" type="sight::module::ui::io::selector">
+                <data read="${series_set}" />
+                <path file="${input_path}" folder="${input_path}" />
+                <selection mode="include" />
+                <addSelection service="sight::module::io::dicom::reader" />
+                <addSelection service="sight::module::io::itk::series_set_reader" />
+                <addSelection service="sight::module::io::vtk::series_set_reader" />
+            </service>
+
             <!-- Switch between parameters -->
-            <service uid="volume_manager_act" type="sight::module::ui::modify_layout">
+            <service uid="data_manager_act" type="sight::module::ui::modify_layout">
+                <state checked="true" />
                 <config>
-                    <show sid="volume_parameter_view" />
-                    <hide sid="tf_parameter_view" />
+                    <show sid="data_parameter_view" />
                     <hide wid="organs_parameter_view" />
-                    <hide sid="landmarks_parameter_view" />
-                    <hide sid="light_parameter_view" />
+                    <hide sid="volume_parameter_view" />
+                    <hide sid="annotation_parameter_view" />
+                    <hide sid="comparison_parameter_view" />
                 </config>
             </service>
 
-            <service uid="tf_manager_act" type="sight::module::ui::modify_layout">
+            <service uid="annotation_manager_act" type="sight::module::ui::modify_layout">
                 <config>
-                    <hide sid="volume_parameter_view" />
-                    <show sid="tf_parameter_view" />
+                    <hide sid="data_parameter_view" />
                     <hide wid="organs_parameter_view" />
-                    <hide sid="landmarks_parameter_view" />
-                    <hide sid="light_parameter_view" />
+                    <hide sid="volume_parameter_view" />
+                    <show sid="annotation_parameter_view" />
+                    <hide sid="comparison_parameter_view" />
+                </config>
+            </service>
+
+            <service uid="comparison_manager_act" type="sight::module::ui::modify_layout">
+                <config>
+                    <hide sid="data_parameter_view" />
+                    <hide wid="organs_parameter_view" />
+                    <hide sid="volume_parameter_view" />
+                    <hide sid="annotation_parameter_view" />
+                    <show sid="comparison_parameter_view" />
+                </config>
+            </service>
+
+            <service uid="volume_manager_act" type="sight::module::ui::modify_layout">
+                <config>
+                    <show sid="volume_parameter_view" />
+                    <hide sid="data_parameter_view" />
+                    <hide wid="organs_parameter_view" />
+                    <hide sid="annotation_parameter_view" />
+                    <hide sid="comparison_parameter_view" />
                 </config>
             </service>
 
             <service uid="organs_manager_act" type="sight::module::ui::modify_layout">
                 <config>
-                    <hide sid="volume_parameter_view" />
-                    <hide sid="tf_parameter_view" />
+                    <hide sid="data_parameter_view" />
                     <show wid="organs_parameter_view" />
-                    <hide sid="landmarks_parameter_view" />
-                    <hide sid="light_parameter_view" />
-                </config>
-            </service>
-
-            <service uid="landmarks_manager_act" type="sight::module::ui::modify_layout">
-                <config>
                     <hide sid="volume_parameter_view" />
-                    <hide sid="tf_parameter_view" />
-                    <hide wid="organs_parameter_view" />
-                    <show sid="landmarks_parameter_view" />
-                    <hide sid="light_parameter_view" />
-                </config>
-            </service>
-
-            <service uid="light_manager_act" type="sight::module::ui::modify_layout">
-                <config>
-                    <hide sid="volume_parameter_view" />
-                    <hide sid="tf_parameter_view" />
-                    <hide wid="organs_parameter_view" />
-                    <hide sid="landmarks_parameter_view" />
-                    <show sid="light_parameter_view" />
+                    <hide sid="annotation_parameter_view" />
+                    <hide sid="comparison_parameter_view" />
                 </config>
             </service>
 
@@ -392,27 +511,6 @@
             <!-- PACS manager -->
             <service uid="pacs_act" type="sight::module::ui::action" />
 
-            <!-- Adaptors visibility -->
-            <service uid="volume_visibility_act" type="sight::module::ui::action">
-                <properties checked="${vr_visibility}" enabled="false" />
-            </service>
-
-            <service uid="negato3_d_visibility_act" type="sight::module::ui::action">
-                <properties checked="${negato_visibility}" enabled="false" />
-            </service>
-
-            <service uid="mesh_visibility_act" type="sight::module::ui::action">
-                <properties checked="${model_visibility}" enabled="false" />
-            </service>
-
-            <service uid="box_widget_visibility_act" type="sight::module::ui::action">
-                <state enabled="false" />
-            </service>
-
-            <service uid="box_widget_reset_act" type="sight::module::ui::action">
-                <state enabled="false" />
-            </service>
-
             <service uid="shape_extruder_act" type="sight::module::ui::action">
                 <state enabled="true" />
             </service>
@@ -421,12 +519,16 @@
                 <state enabled="true" />
             </service>
 
-            <service uid="axis_visibility_act" type="sight::module::ui::action">
-                <properties checked="${axis_visibility}" />
+            <service uid="box_widget_visibility_act" type="sight::module::ui::action">
+                <state enabled="false" checked="${volume_parameters}.widgets" />
+            </service>
+
+            <service uid="box_widget_reset_act" type="sight::module::ui::action">
+                <state enabled="false" />
             </service>
 
             <service uid="landmarks_edit_mode_act" type="sight::module::ui::action">
-                <state enabled="false" />
+                <state enabled="false" checked="false" />
             </service>
 
             <service uid="remove_all_landmarks_act" type="sight::module::ui::action" />
@@ -439,28 +541,26 @@
             <service uid="remove_all_rulers_act" type="sight::module::ui::action" />
 
             <service uid="show_ruler_act" type="sight::module::ui::action">
-                <state enabled="false" checked="false" />
+                <state enabled="false" checked="true" />
             </service>
 
             <!-- ************************ Configuration launchers ********************************* -->
 
             <service uid="image_split_views_cfg" type="sight::app::config_launcher">
-                <properties config="sight::config::viz::scene3d::image_split_views" />
-                <inout group="object">
-                    <key name="model_series" uid="model_series" optional="true" />
-                    <key name="image" uid="image" optional="true" />
-                    <key name="volume_tf" uid="volume_tf" />
-                    <key name="extruded_model_series" uid="extruded_model_series" />
-                    <key name="vr_visibility" uid="${vr_visibility}" />
-                    <key name="negato_visibility" uid="${negato_visibility}" />
-                    <key name="model_visibility" uid="${model_visibility}" />
-                    <key name="axis_visibility" uid="${axis_visibility}" />
-                </inout>
+                <config id="sight::config::viz::scene3d::image_split_views" />
+                <object name="model_series" uid="display_models" optional="true" />
+                <object name="image" uid="image" optional="true" />
+                <object name="series_set" uid="series_set" />
+                <object name="volume_tf" uid="volume_tf" optional="true" />
+                <object name="image_transfer_functions" uid="image_transfer_functions" />
+                <object name="extruded_meshes" uid="extruded_meshes" />
+                <object name="extruded_meshes_by_image" uid="extruded_meshes_by_image" />
+                <object name="vr_visibility" uid="${vr_visibility}" />
+                <object name="negato_visibility" uid="${negato_visibility}" />
+                <object name="model_visibility" uid="${model_visibility}" />
+                <object name="axis_visibility" uid="${axis_visibility}" />
+                <object name="volume_parameters" uid="${volume_parameters}" />
                 <param name="WID_PARENT" value="scene_view" />
-                <channel name="vr_bool_param" uid="volume_bool" />
-                <channel name="vr_int_param" uid="volume_int" />
-                <channel name="vr_double_param" uid="volume_double" />
-                <channel name="box_widget_visibility" uid="box_widget_visibility" />
                 <channel name="box_widget_reset" uid="box_widget_reset" />
                 <channel name="shape_extruder_enable_tool" uid="shape_extruder_enable_tool" />
                 <channel name="shape_extruder_tool_disabled" uid="shape_extruder_tool_disabled" />
@@ -470,6 +570,9 @@
                 <channel name="negato_3d_transparency" uid="negato_3d_transparency" />
                 <channel name="ruler_activation" uid="ruler_activation" />
                 <channel name="ruler_deactivation" uid="ruler_deactivation" />
+                <channel name="mesh_activation" uid="mesh_activation" />
+                <channel name="volume_activation" uid="volume_activation" />
+                <channel name="image_visibility" uid="image_visibility" />
                 <channel name="landmarks_edit_mode" uid="landmarks_edit_mode" />
                 <channel name="landmarks_group_selected" uid="landmarks_group_selected" />
                 <channel name="remove_all_landmarks" uid="remove_all_landmarks" />
@@ -480,73 +583,72 @@
 
             <!-- TF manager -->
             <service uid="tf_manager_cfg" type="sight::app::config_launcher">
-                <properties config="sight::config::viz::scene2d::TransferFunctionWidgetCfg" />
-                <inout group="object">
-                    <key name="image" uid="image" />
-                    <key name="currentTF" uid="volume_tf" />
-                </inout>
+                <config id="sight::config::viz::scene2d::TransferFunctionWidgetCfg" />
+                <object name="image" uid="image" />
+                <object name="currentTF" uid="volume_tf" />
+                <param name="PRESERVE_CURRENT_TF" value="true" />
                 <param name="WID_PARENT" value="tf_cfg_parameter_view" />
             </service>
 
             <service uid="organ_manager_cfg" type="sight::app::config_launcher">
-                <properties config="sight::config::viz::scene3d::organManager" />
-                <inout group="object">
-                    <key name="model_series" uid="model_series" />
-                </inout>
+                <config id="sight::config::viz::scene3d::organManager" />
+                <object name="model_series" uid="model_series" />
+                <object name="display_models" uid="display_models" optional="true" />
                 <param name="WID_PARENT" value="organs_parameter_view" />
                 <param name="enable_delete" value="true" />
             </service>
 
             <service uid="pacs_cfg" type="sight::app::config_launcher">
-                <properties config="sight::config::io::dicom::pacs_selector_window" start="false" />
-                <inout group="object">
-                    <key name="output_series_set" uid="pacs_series_set" />
-                </inout>
+                <config id="sight::config::io::dicom::pacs_selector_window" start="false" />
+
+                <object name="output_series_set" uid="pacs_series_set" />
                 <param name="WINDOW_TITLE" value="PACS" />
                 <param name="WINDOW_ICON" value="sight::module::ui::icons/liver.svg" />
             </service>
 
             <!-- ******************************* Services ***************************************** -->
 
+            <service uid="image_manager_widget_srv" type="sight::module::ui::qt::series::image_manager_widget">
+                <in key="series_set" uid="series_set" />
+                <in key="model_series" uid="model_series" />
+                <config thumbnail_width="130" thumbnail_height="96" thumbnail_color="#00000000" />
+            </service>
+
             <!-- Extract the model or the image from the series -->
             <service uid="extract_series_srv" type="sight::module::ui::qt::series::select_dialog">
-                <in key="series_set" uid="series_set" />
+                <inout key="series_set" uid="series_set" />
+                <inout key="transfer_functions" uid="image_transfer_functions" />
+                <out key="transfer_function" uid="volume_tf" />
                 <out key="model_series" uid="model_series" />
+                <out key="display_models" uid="display_models" />
                 <out key="image" uid="image" />
+                <config display_all_models="true" />
             </service>
 
             <service uid="extract_pacs_image_srv" type="sight::module::ui::qt::series::select_dialog">
-                <in key="series_set" uid="pacs_series_set" />
+                <inout key="series_set" uid="pacs_series_set" />
                 <out key="image" uid="image" />
             </service>
 
             <!-- Parameters for the volume rendering -->
-            <service uid="volume_parameter_srv" type="sight::module::ui::qt::parameters">
-                <parameters>
-                    <param type="int" name="Samples" key="sampling" defaultValue="1200" min="128" max="8192" reset="false" />
-                    <param type="int" name="Opacity correction" key="opacityCorrection" defaultValue="200" min="0" max="200" reset="false" />
-                    <param type="bool" name="Pre-integration" key="preIntegration" defaultValue="false" reset="false" />
-                    <param type="bool" name="Ambient occlusion" key="ambientOcclusion" defaultValue="false" reset="false" />
-                    <param type="bool" name="Color bleeding" key="colorBleeding" defaultValue="false" reset="false" />
-                    <param type="double" name="Color bleeding factor" key="colorBleedingFactor" defaultValue="1.0" min="0.1" max="10.0" reset="false" depends="colorBleeding" />
-                    <param type="int" name="SAT size ratio" key="satSizeRatio" defaultValue="1" min="1" max="4" reset="false" emitOnRelease="true" />
-                    <param type="double" name="AO factor" key="aoFactor" defaultValue="1.0" min="0.1" max="10.0" reset="false" depends="ambientOcclusion" />
-                    <param type="int" name="AO shells number" key="satShellsNumber" defaultValue="4" min="1" max="10" reset="false" depends="ambientOcclusion" emitOnRelease="true" />
-                    <param type="int" name="AO shell radius" key="satShellRadius" defaultValue="4" min="1" max="10" reset="false" depends="ambientOcclusion" emitOnRelease="true" />
-                </parameters>
+            <service uid="volume_parameter_srv" type="sight::module::ui::qt::settings">
+                <item data="${volume_parameters}.sampling" name="Samples" key="sampling" min="128" max="4096" reset="false" widget="slider" />
+                <item data="${volume_parameters}.opacity_correction" name="Opacity correction" key="opacity_correction" min="0" max="200" reset="false" widget="slider" />
+                <item data="${volume_parameters}.pre_integration" name="Pre-integration" key="pre_integration" reset="false" />
+                <item data="${volume_parameters}.ambient_occlusion" name="Ambient occlusion" key="ambient_occlusion" reset="false" />
+                <item data="${volume_parameters}.color_bleeding" name="Color bleeding" key="color_bleeding" reset="false" />
+                <item data="${volume_parameters}.color_bleeding_factor" name="Color bleeding factor" key="color_bleeding_factor" min="0.1" max="4.0" reset="false" widget="slider" depends="color_bleeding" />
+                <item data="${volume_parameters}.sat_size_ratio" name="SAT size ratio" key="sat_size_ratio" min="1" max="4" reset="false" widget="slider" emit_on_release="true" />
+                <item data="${volume_parameters}.ao_factor" name="AO factor" key="ao_factor" min="0.1" max="4.0" reset="false" widget="slider" decimals="0.1" depends="ambient_occlusion" />
+                <item data="${volume_parameters}.sat_shells_number" name="AO shells number" key="sat_shells_number" min="1" max="10" reset="false" depends="ambient_occlusion" emit_on_release="true" widget="slider" />
+                <item data="${volume_parameters}.sat_shell_radius" name="AO shell radius" key="sat_shell_radius" min="1" max="10" reset="false" depends="ambient_occlusion" emit_on_release="true" widget="slider" />
             </service>
 
             <!-- Parameters for landmarks -->
-            <service uid="landmarks_parameter_srv" type="sight::module::ui::qt::metrics::landmarks" auto_connect="true">
-                <inout key="imageSeries" uid="image" />
+            <service uid="annotation_srv" type="sight::module::ui::qt::metrics::landmarks">
+                <inout key="image_series" uid="image" />
                 <advanced>true</advanced>
             </service>
-
-            <!-- Light editor -->
-            <service uid="light_selector_srv" type="sight::module::ui::viz::light_selector" />
-
-            <service uid="light_editor_srv" type="sight::module::ui::viz::light_editor" />
-            <service uid="compositor_selector_srv" type="sight::module::ui::viz::compositor_selector" />
 
             <!-- Transparency for the 3D negato -->
             <service uid="transparency_parameter_srv" type="sight::module::ui::qt::parameters">
@@ -559,20 +661,71 @@
                 <config show_cancel="false" />
             </service>
 
+            <service uid="image_notifier_srv" type="sight::module::ui::qt::notifier">
+                <parent uid="scene_view" />
+                <channels>
+                    <channel position="CENTERED_TOP" duration="2000" />
+                </channels>
+            </service>
+
             <!-- ******************************* Connections ***************************************** -->
 
             <connect>
-                <signal>open_series_set_srv/monitor_created</signal>
+                <signal>image_manager_widget_srv/image_removed</signal>
+                <slot>extract_series_srv/remove_image</slot>
+            </connect>
+
+            <connect>
+                <signal>open_folder_srv/notification_created</signal>
+                <signal>open_files_srv/notification_created</signal>
+                <signal>path_cli_srv/notification_created</signal>
+                <signal>path_drag_and_drop_srv/notification_created</signal>
+                <slot>image_notifier_srv/add_notification</slot>
                 <slot>progress_bar_srv/add_monitor</slot>
             </connect>
 
             <connect>
-                <signal>open_series_set_act/clicked</signal>
-                <slot>open_series_set_srv/update</slot>
+                <signal>image_manager_widget_srv/image_selected</signal>
+                <slot>extract_series_srv/select_image</slot>
             </connect>
 
-            <connect channel="box_widget_visibility">
-                <signal>box_widget_visibility_act/is_checked</signal>
+            <connect channel="image_visibility">
+                <signal>image_manager_widget_srv/image_visibility_changed</signal>
+            </connect>
+
+            <connect>
+                <signal>image_manager_widget_srv/model_removed</signal>
+                <slot>extract_series_srv/remove_model</slot>
+            </connect>
+
+            <connect>
+                <signal>image_manager_widget_srv/model_selected</signal>
+                <slot>extract_series_srv/select_model</slot>
+            </connect>
+
+            <connect>
+                <signal>open_folder_act/clicked</signal>
+                <slot>open_folder_srv/update</slot>
+            </connect>
+
+            <connect>
+                <signal>open_files_act/clicked</signal>
+                <slot>open_files_srv/update</slot>
+            </connect>
+
+            <connect>
+                <signal>input_path/modified</signal>
+                <slot>path_drag_and_drop_srv/update</slot>
+            </connect>
+
+            <connect>
+                <signal>path_drag_and_drop_srv/succeeded</signal>
+                <slot>image_drop_srv/next_path</slot>
+            </connect>
+
+            <connect>
+                <signal>path_drag_and_drop_srv/failed</signal>
+                <slot>image_drop_srv/next_path</slot>
             </connect>
 
             <connect channel="box_widget_reset">
@@ -587,9 +740,10 @@
                 <slot>shape_extruder_act/uncheck</slot>
             </connect>
 
-            <connect channel="shape_extruder_reset">
+            <connect>
                 <signal>extract_series_srv/image_selected</signal>
                 <signal>extract_pacs_image_srv/updated</signal>
+                <slot>shape_extruder_act/uncheck</slot>
             </connect>
 
             <connect channel="shape_extruder_undo">
@@ -603,13 +757,13 @@
             <connect>
                 <signal>hide_parameter_act/clicked</signal>
                 <slot>parameter_view/hide</slot>
-                <slot>right_toolbar_slider_view/show</slot>
+                <slot>left_toolbar_slider_view/show</slot>
             </connect>
 
             <connect>
                 <signal>show_parameter_act/clicked</signal>
                 <slot>parameter_view/show</slot>
-                <slot>right_toolbar_slider_view/hide</slot>
+                <slot>left_toolbar_slider_view/hide</slot>
             </connect>
 
             <connect channel="ruler_activation">
@@ -646,22 +800,28 @@
             </connect>
 
             <connect>
+                <signal>model_series/reconstructionsAdded</signal>
+                <signal>model_series/reconstructionsRemoved</signal>
+                <slot>extract_series_srv/update</slot>
+            </connect>
+
+            <connect>
                 <signal>pacs_series_set/added_objects</signal>
                 <slot>extract_pacs_image_srv/update</slot>
             </connect>
 
-            <connect>
+            <connect channel="mesh_activation">
                 <signal>extract_series_srv/model_selected</signal>
-                <slot>mesh_visibility_act/enable</slot>
+            </connect>
+
+            <connect channel="volume_activation">
+                <signal>extract_series_srv/image_selected</signal>
+                <signal>extract_pacs_image_srv/updated</signal>
             </connect>
 
             <connect>
                 <signal>extract_series_srv/image_selected</signal>
                 <signal>extract_pacs_image_srv/updated</signal>
-                <slot>volume_visibility_act/enable</slot>
-                <slot>volume_visibility_act/check</slot>
-                <slot>negato3_d_visibility_act/enable</slot>
-                <slot>negato3_d_visibility_act/check</slot>
                 <slot>box_widget_visibility_act/enable</slot>
                 <slot>shape_extruder_act/enable</slot>
                 <slot>box_widget_reset_act/enable</slot>
@@ -671,81 +831,56 @@
                 <slot>show_ruler_act/enable</slot>
             </connect>
 
-            <connect channel="volume_bool">
-                <signal>volume_parameter_srv/bool_changed</signal>
-            </connect>
-
-            <connect channel="volume_int">
-                <signal>volume_parameter_srv/int_changed</signal>
-            </connect>
-
-            <connect channel="volume_double">
-                <signal>volume_parameter_srv/double_changed</signal>
-            </connect>
-
+            <!-- Allow to check button in the toolbar -->
             <connect>
-                <signal>light_selector_srv/light_selected</signal>
-                <slot>light_editor_srv/edit_light</slot>
-            </connect>
-
-            <!-- Allow to check button in the advanced toolbar -->
-            <connect>
-                <signal>volume_manager_act/updated</signal>
-                <slot>volume_manager_act/check</slot>
-                <slot>tf_manager_act/uncheck</slot>
+                <signal>annotation_manager_act/updated</signal>
+                <slot>data_manager_act/uncheck</slot>
                 <slot>organs_manager_act/uncheck</slot>
-                <slot>landmarks_manager_act/uncheck</slot>
-                <slot>light_manager_act/uncheck</slot>
-            </connect>
-
-            <connect>
-                <signal>tf_manager_act/updated</signal>
                 <slot>volume_manager_act/uncheck</slot>
-                <slot>tf_manager_act/check</slot>
+                <slot>annotation_manager_act/check</slot>
+                <slot>comparison_manager_act/uncheck</slot>
+            </connect>
+
+            <connect>
+                <signal>data_manager_act/updated</signal>
+                <slot>data_manager_act/check</slot>
                 <slot>organs_manager_act/uncheck</slot>
-                <slot>landmarks_manager_act/uncheck</slot>
-                <slot>light_manager_act/uncheck</slot>
+                <slot>volume_manager_act/uncheck</slot>
+                <slot>annotation_manager_act/uncheck</slot>
+                <slot>comparison_manager_act/uncheck</slot>
+            </connect>
+
+            <connect>
+                <signal>comparison_manager_act/updated</signal>
+                <slot>data_manager_act/uncheck</slot>
+                <slot>organs_manager_act/uncheck</slot>
+                <slot>volume_manager_act/uncheck</slot>
+                <slot>annotation_manager_act/uncheck</slot>
+                <slot>comparison_manager_act/check</slot>
             </connect>
 
             <connect>
                 <signal>organs_manager_act/updated</signal>
-                <slot>volume_manager_act/uncheck</slot>
-                <slot>tf_manager_act/uncheck</slot>
+                <slot>data_manager_act/uncheck</slot>
                 <slot>organs_manager_act/check</slot>
-                <slot>landmarks_manager_act/uncheck</slot>
-                <slot>light_manager_act/uncheck</slot>
+                <slot>volume_manager_act/uncheck</slot>
+                <slot>annotation_manager_act/uncheck</slot>
+                <slot>comparison_manager_act/uncheck</slot>
             </connect>
 
             <connect>
-                <signal>landmarks_manager_act/updated</signal>
-                <slot>volume_manager_act/uncheck</slot>
-                <slot>tf_manager_act/uncheck</slot>
+                <signal>volume_manager_act/updated</signal>
+                <slot>data_manager_act/uncheck</slot>
                 <slot>organs_manager_act/uncheck</slot>
-                <slot>landmarks_manager_act/check</slot>
-                <slot>light_manager_act/uncheck</slot>
-            </connect>
-
-            <connect>
-                <signal>light_manager_act/updated</signal>
-                <slot>volume_manager_act/uncheck</slot>
-                <slot>tf_manager_act/uncheck</slot>
-                <slot>organs_manager_act/uncheck</slot>
-                <slot>landmarks_manager_act/uncheck</slot>
-                <slot>light_manager_act/check</slot>
-            </connect>
-
-            <connect>
-                <slot>volume_manager_act/uncheck</slot>
-                <slot>tf_manager_act/uncheck</slot>
-                <slot>organs_manager_act/uncheck</slot>
-                <slot>landmarks_manager_act/uncheck</slot>
-                <slot>light_manager_act/uncheck</slot>
+                <slot>volume_manager_act/check</slot>
+                <slot>annotation_manager_act/uncheck</slot>
+                <slot>comparison_manager_act/uncheck</slot>
             </connect>
 
             <!-- Manage landmarks -->
 
             <connect channel="world_coords_landmarks">
-                <signal>landmarks_parameter_srv/send_world_coord</signal>
+                <signal>annotation_srv/send_world_coord</signal>
             </connect>
 
             <connect channel="landmarks_edit_mode">
@@ -753,7 +888,7 @@
             </connect>
 
             <connect channel="landmarks_group_selected">
-                <signal>landmarks_parameter_srv/group_selected</signal>
+                <signal>annotation_srv/group_selected</signal>
             </connect>
 
             <connect channel="remove_all_landmarks">
@@ -761,7 +896,7 @@
             </connect>
 
             <connect channel="visibility_rulers">
-                <signal>show_ruler_act/clicked</signal>
+                <signal>show_ruler_act/is_checked</signal>
             </connect>
 
             <connect channel="remove_all_rulers">
@@ -772,8 +907,9 @@
                 <slot>landmarks_edit_mode_act/set_checked</slot>
             </connect>
 
-            <update uid="tf_manager_act" />
+            <update uid="data_manager_act" />
             <update uid="volume_parameter_srv" />
+            <update uid="path_cli_srv" />
         </config>
     </extension>
 </plugin>

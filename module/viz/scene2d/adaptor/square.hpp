@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -62,8 +62,15 @@ public:
 
     SIGHT_DECLARE_SERVICE(square, sight::viz::scene2d::adaptor);
 
+    struct slots
+    {
+        static inline const slot_key_t SET_DOUBLE_PARAMETER = "set_double_parameter";
+    };
+
     square() noexcept;
-    ~square() noexcept override;
+    ~square() noexcept override = default;
+
+    void process_interaction(sight::viz::scene2d::data::event& _event) override;
 
 protected:
 
@@ -71,8 +78,6 @@ protected:
     void starting() override;
     void updating() override;
     void stopping() override;
-
-    void process_interaction(sight::viz::scene2d::data::event& _event) override;
 
     void set_color(const std::string& _color);
     bool coord_view_is_in_item(const sight::viz::scene2d::vec2d_t& _coord, QGraphicsItem* _item);
@@ -93,7 +98,6 @@ private:
     bool m_point_is_captured {false};
     bool m_auto_refresh {true};
     bool m_interaction {true};
-    static const core::com::slots::key_t SET_DOUBLE_PARAMETER_SLOT;
     void set_double_parameter(double _val, std::string _key);
 };
 

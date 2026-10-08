@@ -7,8 +7,20 @@
         <xs:sequence>
             <xs:element name="id" type="xs:string" />
             <xs:element name="parameters" type="parameters_t" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="cli" type="cli_t" minOccurs="0" maxOccurs="1"/>
         </xs:sequence>
         <xs:anyAttribute processContents="skip" />
+    </xs:complexType>
+
+    <xs:complexType name="cli_t">
+        <xs:sequence>
+            <xs:element name="param" type="cli_param_t" maxOccurs="unbounded" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="cli_param_t">
+        <xs:attribute name="name" type="xs:string" use="required" />
+        <xs:attribute name="option" type="xs:string" use="required" />
     </xs:complexType>
 
     <xs:complexType name="parameters_t">

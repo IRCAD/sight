@@ -16,6 +16,9 @@
 #ifndef MZ_ZIP_H
 #define MZ_ZIP_H
 
+#include "mz_strm.h"
+#include "mz_strm_os.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif

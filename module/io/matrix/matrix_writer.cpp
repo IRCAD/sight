@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2025 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,40 +22,27 @@
 
 #include "matrix_writer.hpp"
 
-#include <core/com/slot.hpp>
-#include <core/com/slot.hxx>
-#include <core/com/slots.hpp>
-#include <core/com/slots.hxx>
 #include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
 
-#include <service/macros.hpp>
-
 #include <ui/__/dialog/location.hpp>
-#include <ui/__/dialog/message.hpp>
 
 #include <filesystem>
 #include <fstream>
-#include <iomanip>
 
 namespace sight::module::io::matrix
 {
-
-static const core::com::slots::key_t SAVE_MATRIX  = "saveMatrix";
-static const core::com::slots::key_t START_RECORD = "start_record";
-static const core::com::slots::key_t STOP_RECORD  = "stop_record";
-static const core::com::slots::key_t WRITE        = "write";
 
 //------------------------------------------------------------------------------
 
 matrix_writer::matrix_writer() noexcept :
     writer("Choose a folder to save the csv file")
 {
-    new_slot(SAVE_MATRIX, &matrix_writer::save_matrix, this);
-    new_slot(START_RECORD, &matrix_writer::start_record, this);
-    new_slot(STOP_RECORD, &matrix_writer::stop_record, this);
-    new_slot(WRITE, &matrix_writer::write, this);
-    new_slot(matrix_writer::slots::SET_BASE_FOLDER, &matrix_writer::set_base_folder, this);
+    new_slot(slots::SAVE_MATRIX, &matrix_writer::save_matrix, this);
+    new_slot(slots::START_RECORD, &matrix_writer::start_record, this);
+    new_slot(slots::STOP_RECORD, &matrix_writer::stop_record, this);
+    new_slot(slots::WRITE, &matrix_writer::write, this);
+    new_slot(writer::slots::SET_BASE_FOLDER, &matrix_writer::set_base_folder, this);
 }
 
 //------------------------------------------------------------------------------
@@ -167,19 +154,19 @@ void matrix_writer::write(core::clock::type _timestamp)
         "The object is not a '"
         + data::matrix_tl::classname()
         + "' or '"
-        + sight::io::service::DATA_KEY
+        + sight::io::service::WRITER_DATA_KEY
         + "' is not correctly set.",
         matrix_tl
     );
 
-    const unsigned int number_of_mat = matrix_tl->get_max_element_num();
+    const unsigned int number_of_mat = matrix_tl->max_element_num();
 
     // Get the buffer of the copied timeline
     if(const auto& object = matrix_tl->get_closest_object(_timestamp); object)
     {
         if(const auto& buffer = std::dynamic_pointer_cast<const data::matrix_tl::buffer_t>(object); buffer)
         {
-            _timestamp = object->get_timestamp();
+            _timestamp = object->timestamp();
             const auto time = static_cast<std::size_t>(_timestamp);
             m_filestream << time << ";";
 
@@ -327,7 +314,7 @@ void matrix_writer::set_base_folder(std::string _path)
 service::connections_t matrix_writer::auto_connections() const
 {
     service::connections_t connections;
-    connections.push(sight::io::service::DATA_KEY, data::timeline::signals::PUSHED, WRITE);
+    connections.push(sight::io::service::WRITER_DATA_KEY, data::timeline::signals::PUSHED, slots::WRITE);
     return connections;
 }
 

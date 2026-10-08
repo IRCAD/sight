@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,7 +48,7 @@ public:
     SIGHT_DECLARE_CLASS(structure_traits, object);
 
     /// Defines structure categories
-    enum category
+    enum category : std::uint8_t
     {
         body,
         head,
@@ -66,7 +66,7 @@ public:
     using roi_expression_t     = std::string;
 
     /// Defines structure class
-    enum structure_class
+    enum structure_class : std::uint8_t
     {
         tool,
         environment,

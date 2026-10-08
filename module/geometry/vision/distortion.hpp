@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -49,17 +49,17 @@ namespace sight::module::geometry::vision
  *
  * @code{.xml}
     <service type="sight::module::geometry::vision::distortion">
-        <in key="camera" uid="..." />
-        <in key="input" uid="..." />
-        <inout key="output" uid="..." />
+        <input camera="..." />
+        <input image="..." />
+        <output image="..." />
         <mode>distort</mode>
     </service>
    @endcode
  * Or
  * @code{.xml}
     <service type="sight::module::geometry::vision::distortion">
-        <in key="camera" uid="..." />
-        <inout key="map" uid="..." />
+        <input camera="..." />
+        <output image="..." />
         <mode>distort</mode>
     </service>
    @endcode
@@ -79,13 +79,11 @@ public:
 
     SIGHT_DECLARE_SERVICE(distortion, sight::service::filter);
 
-    /**
-     * @name Slots API
-     * @{
-     */
-    static const core::com::slots::key_t CHANGE_STATE_SLOT;
-    using change_state_slot_t = core::com::slot<void ()>;
-    ///@}
+    struct slots
+    {
+        static inline const slot_key_t CHANGE_STATE = "change_state";
+        static inline const slot_key_t CALIBRATE    = "calibrate";
+    };
 
     /// Constructor.
     distortion() noexcept;
@@ -93,13 +91,13 @@ public:
     /// Destructor. Does nothing
     ~distortion() noexcept override = default;
 
+protected:
+
     /**
-     * @brief Connect data::image::MODIFIED_SIG to service::slots::UPDATE
-     * and data::image::BUFFER_MODIFIED_SIG to service::slots::UPDATE
+     * @brief Connect data::signals::MODIFIED to service::slots::UPDATE
+     * and data::image::signals::BUFFER_MODIFIED to service::slots::UPDATE
      */
     service::connections_t auto_connections() const override;
-
-protected:
 
     /// Does nothing
     void configuring() override;
@@ -144,15 +142,10 @@ private:
     cv::Mat m_map_y;
 #endif // OPENCV_CUDA_SUPPORT
 
-    static constexpr std::string_view CAMERA_INPUT = "camera";
-    static constexpr std::string_view IMAGE_INPUT  = "input";
-    static constexpr std::string_view IMAGE_INOUT  = "output";
-    static constexpr std::string_view MAP_INOUT    = "map";
-
-    sight::data::ptr<sight::data::camera, sight::data::access::in> m_camera {this, CAMERA_INPUT};
-    sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, IMAGE_INPUT};
-    sight::data::ptr<sight::data::image, sight::data::access::inout> m_output {this, IMAGE_INOUT};
-    sight::data::ptr<sight::data::image, sight::data::access::inout> m_map {this, MAP_INOUT};
+    sight::data::ptr<sight::data::camera, sight::data::access::in> m_camera {this, "input.camera"};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, "input.image"};
+    sight::data::ptr<sight::data::image, sight::data::access::inout> m_output {this, "output.image"};
+    sight::data::ptr<sight::data::image, sight::data::access::inout> m_map {this, "output.map"};
 };
 
 } // namespace sight::module::geometry::vision

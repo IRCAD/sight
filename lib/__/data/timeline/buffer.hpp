@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,7 +40,7 @@ public:
     using deleter_t     = std::function<void (void*)>;
 
     /// Constructor
-    SIGHT_DATA_API buffer(
+    SIGHT_DATA_API explicit buffer(
         core::clock::type _timestamp = 0,
         buffer_data_t _buffer        = nullptr,
         std::size_t _size            = 0,
@@ -53,10 +53,18 @@ public:
     /// Makes a copy of this buffer
     SIGHT_DATA_API void deep_copy(const object& _other) override;
 
-    /// Returns size
+    //------------------------------------------------------------------------------
+
     [[nodiscard]] std::size_t size() const
     {
         return m_size;
+    }
+
+    //------------------------------------------------------------------------------
+
+    [[nodiscard]] buffer_data_t data() const
+    {
+        return m_buffer;
     }
 
     /// Equality comparison operators
@@ -65,7 +73,7 @@ public:
     SIGHT_DATA_API bool operator!=(const buffer& _other) const noexcept;
     /// @}
 
-protected:
+private:
 
     ///buffer size
     std::size_t m_size;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2025 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,8 +21,6 @@
 
 #pragma once
 
-#include <data/image_series.hpp>
-
 #include <io/__/service/reader.hpp>
 
 #include <filesystem>
@@ -39,13 +37,13 @@ namespace sight::module::io::itk
  * @section XML Configuration
  * @code{.xml}
     <service uid="..." type="sight::module::io::itk::image_series_reader">
-        <inout key="data" uid="imageSeries" />
-        <file>@path/to/file</file>
+        <data read="${imageSeries}" />
+        <path file="@path/to/file" />
     </service>
  * @endcode
  *
  * @subsection In-Out In-Out
- * - \b data [sight::data::image_series]: ImageSeries containing read image
+ * - \b data.read [sight::data::image_series]: ImageSeries containing read image
  *
  */
 class image_series_reader : public sight::io::service::reader
@@ -66,9 +64,9 @@ public:
      */
     void open_location_dialog() override;
 
-protected:
-
     sight::io::service::path_type_t get_path_type() const override;
+
+protected:
 
     /**
      * @brief Starting method.

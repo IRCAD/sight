@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,50 +22,42 @@
 
 // cspell:ignore NOLINTNEXTLINE NOLINT
 
-#include <iostream>
+#include "dictionary_reader.hpp"
+
 #include <fstream>
-#include <vector>
+#include <iostream>
 #include <sstream>
 
 #ifdef DEBUG
-static std::stringstream spiritDebugStream;
-  #define BOOST_SPIRIT_DEBUG_OUT spiritDebugStream // NOLINT(cppcoreguidelines-macro-usage): needed by Boost
-  #define BOOST_SPIRIT_DEBUG                       // NOLINT(cppcoreguidelines-macro-usage): needed by Boost
+static std::stringstream spirit_debug_stream;
+  #define BOOST_SPIRIT_DEBUG_OUT spirit_debug_stream // NOLINT(cppcoreguidelines-macro-usage): needed by Boost
+  #define BOOST_SPIRIT_DEBUG                         // NOLINT(cppcoreguidelines-macro-usage): needed by Boost
 #endif
 
-#include <boost/algorithm/string.hpp>
-#include <boost/algorithm/string/trim.hpp>
 #include <boost/algorithm/string/split.hpp>
-#include <boost/algorithm/string/detail/case_conv.hpp>
+#include <boost/algorithm/string/trim.hpp>
 
-#include <boost/spirit/include/qi.hpp>
-#include <boost/spirit/include/qi_eol.hpp>
-#include <boost/phoenix.hpp>
-#include <boost/phoenix/core.hpp>
-#include <boost/phoenix/operator.hpp>
-#include <boost/phoenix/bind.hpp>
-#include <boost/phoenix/statement.hpp>
-#include <boost/phoenix/stl.hpp>
-
-#include <boost/fusion/include/adapt_struct.hpp>
-
-#include <boost/fusion/container.hpp>
-#include <boost/fusion/container/vector/vector.hpp>
-#include <boost/fusion/include/vector.hpp>
+#include <boost/fusion/include/adapt_struct.hpp> // NOLINT(misc-include-cleaner)
+#include <boost/phoenix/bind.hpp>                // NOLINT(misc-include-cleaner)
+#include <boost/phoenix/object/construct.hpp>
+#include <boost/phoenix/operator.hpp>  // NOLINT(misc-include-cleaner)
+#include <boost/phoenix/stl.hpp>       // NOLINT(misc-include-cleaner)
+#include <boost/spirit/include/qi.hpp> // NOLINT(misc-include-cleaner)
 
 #include <core/exceptionmacros.hpp>
 
-#include <core/progress/observer.hpp>
+#include <core/notification/observer.hpp>
 #include <data/color.hpp>
-#include <data/structure_traits_dictionary.hpp>
 #include <data/structure_traits.hpp>
+#include <data/structure_traits_dictionary.hpp>
 #include <data/structure_traits_helper.hpp>
 
 #include <core/runtime/path.hpp>
 
-#include "io/__/reader/dictionary_reader.hpp"
-
 namespace sight::io
+{
+
+namespace
 {
 
 struct line
@@ -84,6 +76,8 @@ struct line
     std::string property_category;
     std::string property_type;
 };
+
+} // namespace
 
 } // namespace sight::io
 
@@ -129,7 +123,7 @@ template<typename map_t>
 static std::string get_values(const map_t& _m)
 {
     std::stringstream str;
-    using const_iterator = typename map_t::const_iterator;
+    using const_iterator = map_t::const_iterator;
     const_iterator iter = _m.begin();
     str << "( " << iter->first;
     for( ; iter != _m.end() ; ++iter)
@@ -144,6 +138,9 @@ static std::string get_values(const map_t& _m)
 //------------------------------------------------------------------------------
 
 namespace sight::io
+{
+
+namespace
 {
 
 namespace qi    = boost::spirit::qi;
@@ -212,15 +209,15 @@ struct line_parser : qi::grammar<Iterator,
         BOOST_SPIRIT_DEBUG_NODE(dbl);
         BOOST_SPIRIT_DEBUG_NODE(line);
         BOOST_SPIRIT_DEBUG_NODE(lines);
-        SIGHT_DEBUG(spiritDebugStream.str());
-        spiritDebugStream.str(std::string());
+        SIGHT_DEBUG(spirit_debug_stream.str());
+        spirit_debug_stream.str(std::string());
     #endif
 
         qi::on_error<qi::fail>
         (
             line
             ,
-            phx::ref((std::ostream&) error)
+            phx::ref(static_cast<std::ostream&>(error))
             << phx::val("Error! Expecting ")
             << qi::_4 // what failed?
             << phx::val(" here: \"")
@@ -244,6 +241,8 @@ struct line_parser : qi::grammar<Iterator,
     qi::rule<Iterator, std::vector<io::line>()> lines;
     std::stringstream error;
 };
+
+} // namespace
 
 namespace reader
 {
@@ -274,7 +273,7 @@ static std::pair<bool, std::string> parse(std::string& _buf, std::vector<io::lin
 
 //------------------------------------------------------------------------------
 
-void dictionary_reader::read(sight::core::progress::observer::sptr _progress)
+void dictionary_reader::read(sight::core::notification::observer::sptr _progress)
 {
     std::filesystem::path path = this->get_file();
 

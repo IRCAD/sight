@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,9 +25,6 @@
 #include <sight/data/config.hpp>
 
 #include "data/generic_tl.hpp"
-#include "data/generic_tl.hxx"
-#include "data/timeline/generic_object.hpp"
-#include "data/timeline/generic_object.hxx"
 
 #include <array>
 

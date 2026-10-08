@@ -42,6 +42,24 @@ public:
     }
 
     sight::io::service::path_type_t m_path_type {sight::io::service::path_type_t::file};
+    inline static const std::string DEFAULT_WINDOW_TITLE = "test_writer";
+    std::string m_used_window_title;
+
+    //------------------------------------------------------------------------------
+
+    sight::io::service::path_type_t get_path_type() const override
+    {
+        return m_path_type;
+    }
+
+    //------------------------------------------------------------------------------
+
+    void open_location_dialog() override
+    {
+        m_used_window_title = *m_window_title;
+    }
+
+protected:
 
     //------------------------------------------------------------------------------
 
@@ -60,23 +78,6 @@ public:
     void stopping() override
     {
     }
-
-    //------------------------------------------------------------------------------
-
-    sight::io::service::path_type_t get_path_type() const override
-    {
-        return m_path_type;
-    }
-
-    //------------------------------------------------------------------------------
-
-    void open_location_dialog() override
-    {
-        m_used_window_title = *m_window_title;
-    }
-
-    inline static const std::string DEFAULT_WINDOW_TITLE = "test_writer";
-    std::string m_used_window_title;
 };
 
 class test_reader : public sight::io::service::reader
@@ -91,7 +92,21 @@ public:
     {
     }
 
-    sight::io::service::path_type_t m_path_type {sight::io::service::path_type_t::file};
+    //------------------------------------------------------------------------------
+
+    sight::io::service::path_type_t get_path_type() const override
+    {
+        return m_path_type;
+    }
+
+    //------------------------------------------------------------------------------
+
+    void open_location_dialog() override
+    {
+        m_used_window_title = *m_window_title;
+    }
+
+protected:
 
     //------------------------------------------------------------------------------
 
@@ -111,20 +126,9 @@ public:
     {
     }
 
-    //------------------------------------------------------------------------------
+public:
 
-    sight::io::service::path_type_t get_path_type() const override
-    {
-        return m_path_type;
-    }
-
-    //------------------------------------------------------------------------------
-
-    void open_location_dialog() override
-    {
-        m_used_window_title = *m_window_title;
-    }
-
+    sight::io::service::path_type_t m_path_type {sight::io::service::path_type_t::file};
     inline static const std::string DEFAULT_WINDOW_TITLE = "test_reader";
     std::string m_used_window_title;
 };
@@ -145,12 +149,12 @@ TEST_SUITE("sight::io::base")
             // Reader
             {
                 auto test_reader_srv = std::make_shared<test_reader>(sight::io::service::file);
-                test_reader_srv->set_inout(file, sight::io::service::FILES_KEY);
+                test_reader_srv->set_input(file, sight::io::service::FILE_KEY);
 
                 CHECK_NOTHROW(test_reader_srv->configure());
-                CHECK_NOTHROW(test_reader_srv->start().wait());
-                CHECK_NOTHROW(test_reader_srv->update().wait());
-                CHECK_NOTHROW(test_reader_srv->stop().wait());
+                CHECK_NOTHROW(test_reader_srv->start().get());
+                CHECK_NOTHROW(test_reader_srv->update().get());
+                CHECK_NOTHROW(test_reader_srv->stop().get());
                 CHECK_EQ(expected_file, test_reader_srv->get_file());
                 CHECK_THROWS_AS(test_reader_srv->get_files(), sight::core::exception);
                 CHECK_THROWS_AS(test_reader_srv->get_folder(), sight::core::exception);
@@ -159,12 +163,12 @@ TEST_SUITE("sight::io::base")
             // Writer
             {
                 auto test_writer_srv = std::make_shared<test_writer>(sight::io::service::file);
-                test_writer_srv->set_inout(file, sight::io::service::FILES_KEY);
+                test_writer_srv->set_input(file, sight::io::service::FILE_KEY);
 
                 CHECK_NOTHROW(test_writer_srv->configure());
-                CHECK_NOTHROW(test_writer_srv->start().wait());
-                CHECK_NOTHROW(test_writer_srv->update().wait());
-                CHECK_NOTHROW(test_writer_srv->stop().wait());
+                CHECK_NOTHROW(test_writer_srv->start().get());
+                CHECK_NOTHROW(test_writer_srv->update().get());
+                CHECK_NOTHROW(test_writer_srv->stop().get());
                 CHECK_EQ(expected_file, test_writer_srv->get_file());
                 CHECK_THROWS_AS(test_writer_srv->get_files(), sight::core::exception);
                 CHECK_THROWS_AS(test_writer_srv->get_folder(), sight::core::exception);
@@ -186,12 +190,12 @@ TEST_SUITE("sight::io::base")
             // Reader
             {
                 auto test_reader_srv = std::make_shared<test_reader>(sight::io::service::files);
-                test_reader_srv->set_inout(files, sight::io::service::FILES_KEY);
+                test_reader_srv->set_input(files, sight::io::service::FILE_KEY);
 
                 CHECK_NOTHROW(test_reader_srv->configure());
-                CHECK_NOTHROW(test_reader_srv->start().wait());
-                CHECK_NOTHROW(test_reader_srv->update().wait());
-                CHECK_NOTHROW(test_reader_srv->stop().wait());
+                CHECK_NOTHROW(test_reader_srv->start().get());
+                CHECK_NOTHROW(test_reader_srv->update().get());
+                CHECK_NOTHROW(test_reader_srv->stop().get());
 
                 const auto& actual_files = test_reader_srv->get_files();
                 CHECK_EQ(expected_files.size(), actual_files.size());
@@ -207,12 +211,12 @@ TEST_SUITE("sight::io::base")
             // Writer
             {
                 auto test_writer_srv = std::make_shared<test_writer>(sight::io::service::files);
-                test_writer_srv->set_inout(files, sight::io::service::FILES_KEY);
+                test_writer_srv->set_input(files, sight::io::service::FILE_KEY);
 
                 CHECK_NOTHROW(test_writer_srv->configure());
-                CHECK_NOTHROW(test_writer_srv->start().wait());
-                CHECK_NOTHROW(test_writer_srv->update().wait());
-                CHECK_NOTHROW(test_writer_srv->stop().wait());
+                CHECK_NOTHROW(test_writer_srv->start().get());
+                CHECK_NOTHROW(test_writer_srv->update().get());
+                CHECK_NOTHROW(test_writer_srv->stop().get());
 
                 const auto& actual_files = test_writer_srv->get_files();
                 CHECK_EQ(expected_files.size(), actual_files.size());
@@ -239,12 +243,12 @@ TEST_SUITE("sight::io::base")
             // Reader
             {
                 auto test_reader_srv = std::make_shared<test_reader>(sight::io::service::folder);
-                test_reader_srv->set_inout(folder, sight::io::service::FOLDER_KEY);
+                test_reader_srv->set_input(folder, sight::io::service::FOLDER_KEY);
 
                 CHECK_NOTHROW(test_reader_srv->configure());
-                CHECK_NOTHROW(test_reader_srv->start().wait());
-                CHECK_NOTHROW(test_reader_srv->update().wait());
-                CHECK_NOTHROW(test_reader_srv->stop().wait());
+                CHECK_NOTHROW(test_reader_srv->start().get());
+                CHECK_NOTHROW(test_reader_srv->update().get());
+                CHECK_NOTHROW(test_reader_srv->stop().get());
                 CHECK_EQ(expected_folder, test_reader_srv->get_folder());
                 CHECK_THROWS_AS(test_reader_srv->get_file(), sight::core::exception);
                 CHECK_THROWS_AS(test_reader_srv->get_files(), sight::core::exception);
@@ -253,12 +257,12 @@ TEST_SUITE("sight::io::base")
             // Writer
             {
                 auto test_writer_srv = std::make_shared<test_writer>(sight::io::service::folder);
-                test_writer_srv->set_inout(folder, sight::io::service::FOLDER_KEY);
+                test_writer_srv->set_input(folder, sight::io::service::FOLDER_KEY);
 
                 CHECK_NOTHROW(test_writer_srv->configure());
-                CHECK_NOTHROW(test_writer_srv->start().wait());
-                CHECK_NOTHROW(test_writer_srv->update().wait());
-                CHECK_NOTHROW(test_writer_srv->stop().wait());
+                CHECK_NOTHROW(test_writer_srv->start().get());
+                CHECK_NOTHROW(test_writer_srv->update().get());
+                CHECK_NOTHROW(test_writer_srv->stop().get());
                 CHECK_EQ(expected_folder, test_writer_srv->get_folder());
                 CHECK_THROWS_AS(test_writer_srv->get_file(), sight::core::exception);
                 CHECK_THROWS_AS(test_writer_srv->get_files(), sight::core::exception);
@@ -275,12 +279,12 @@ TEST_SUITE("sight::io::base")
             const std::string expected_resource("sight::module::ui::icons/export.svg");
             auto resource        = std::make_shared<sight::data::string>(expected_resource);
             auto test_reader_srv = std::make_shared<test_reader>(sight::io::service::file);
-            test_reader_srv->set_inout(resource, sight::io::service::RESOURCES_KEY);
+            test_reader_srv->set_input(resource, sight::io::service::READER_RESOURCE_KEY);
 
             CHECK_NOTHROW(test_reader_srv->configure());
-            CHECK_NOTHROW(test_reader_srv->start().wait());
-            CHECK_NOTHROW(test_reader_srv->update().wait());
-            CHECK_NOTHROW(test_reader_srv->stop().wait());
+            CHECK_NOTHROW(test_reader_srv->start().get());
+            CHECK_NOTHROW(test_reader_srv->update().get());
+            CHECK_NOTHROW(test_reader_srv->stop().get());
             CHECK_EQ(
                 std::filesystem::path(expected_resource).filename(),
                 test_reader_srv->get_file().filename()
@@ -295,13 +299,13 @@ TEST_SUITE("sight::io::base")
             // Test that file get precedence over resources
             const std::filesystem::path expected_file("a");
             auto file = std::make_shared<sight::data::string>(expected_file.string());
-            test_reader_srv->set_inout(file, sight::io::service::FILES_KEY);
-            test_reader_srv->set_inout(resource, sight::io::service::RESOURCES_KEY);
+            test_reader_srv->set_input(file, sight::io::service::FILE_KEY);
+            test_reader_srv->set_input(resource, sight::io::service::READER_RESOURCE_KEY);
 
             CHECK_NOTHROW(test_reader_srv->configure());
-            CHECK_NOTHROW(test_reader_srv->start().wait());
-            CHECK_NOTHROW(test_reader_srv->update().wait());
-            CHECK_NOTHROW(test_reader_srv->stop().wait());
+            CHECK_NOTHROW(test_reader_srv->start().get());
+            CHECK_NOTHROW(test_reader_srv->update().get());
+            CHECK_NOTHROW(test_reader_srv->stop().get());
 
             CHECK_EQ(expected_file, test_reader_srv->get_file());
             CHECK_THROWS_AS(test_reader_srv->get_files(), sight::core::exception);
@@ -326,13 +330,13 @@ TEST_SUITE("sight::io::base")
             );
 
             auto test_reader_srv = std::make_shared<test_reader>(sight::io::service::files);
-            test_reader_srv->set_inout(resources, sight::io::service::RESOURCES_KEY);
-            test_reader_srv->set_inout(files, sight::io::service::FILES_KEY);
+            test_reader_srv->set_input(resources, sight::io::service::READER_RESOURCE_KEY);
+            test_reader_srv->set_input(files, sight::io::service::FILE_KEY);
 
             CHECK_NOTHROW(test_reader_srv->configure());
-            CHECK_NOTHROW(test_reader_srv->start().wait());
-            CHECK_NOTHROW(test_reader_srv->update().wait());
-            CHECK_NOTHROW(test_reader_srv->stop().wait());
+            CHECK_NOTHROW(test_reader_srv->start().get());
+            CHECK_NOTHROW(test_reader_srv->update().get());
+            CHECK_NOTHROW(test_reader_srv->stop().get());
 
             const auto& actual_files = test_reader_srv->get_files();
             CHECK_EQ(expected_resources.size() + expected_files.size(), actual_files.size());
@@ -366,12 +370,12 @@ TEST_SUITE("sight::io::base")
             const std::string expected_resource("sight::module::ui::icons/");
             auto resource        = std::make_shared<sight::data::string>(expected_resource);
             auto test_reader_srv = std::make_shared<test_reader>(sight::io::service::folder);
-            test_reader_srv->set_inout(resource, sight::io::service::RESOURCES_KEY);
+            test_reader_srv->set_input(resource, sight::io::service::READER_RESOURCE_KEY);
 
             CHECK_NOTHROW(test_reader_srv->configure());
-            CHECK_NOTHROW(test_reader_srv->start().wait());
-            CHECK_NOTHROW(test_reader_srv->update().wait());
-            CHECK_NOTHROW(test_reader_srv->stop().wait());
+            CHECK_NOTHROW(test_reader_srv->start().get());
+            CHECK_NOTHROW(test_reader_srv->update().get());
+            CHECK_NOTHROW(test_reader_srv->stop().get());
             CHECK(test_reader_srv->get_folder().string().ends_with("icons"));
             CHECK(std::filesystem::is_directory(test_reader_srv->get_folder()));
             CHECK_THROWS_AS(test_reader_srv->get_file(), sight::core::exception);
@@ -383,13 +387,13 @@ TEST_SUITE("sight::io::base")
             // Test that folder get precedence over resources
             const std::filesystem::path expected_folder("d");
             auto folder = std::make_shared<sight::data::string>(expected_folder.string());
-            test_reader_srv->set_inout(folder, sight::io::service::FOLDER_KEY);
-            test_reader_srv->set_inout(resource, sight::io::service::RESOURCES_KEY);
+            test_reader_srv->set_input(folder, sight::io::service::FOLDER_KEY);
+            test_reader_srv->set_input(resource, sight::io::service::READER_RESOURCE_KEY);
 
             CHECK_NOTHROW(test_reader_srv->configure());
-            CHECK_NOTHROW(test_reader_srv->start().wait());
-            CHECK_NOTHROW(test_reader_srv->update().wait());
-            CHECK_NOTHROW(test_reader_srv->stop().wait());
+            CHECK_NOTHROW(test_reader_srv->start().get());
+            CHECK_NOTHROW(test_reader_srv->update().get());
+            CHECK_NOTHROW(test_reader_srv->stop().get());
 
             CHECK_EQ(expected_folder, test_reader_srv->get_folder());
             CHECK_THROWS_AS(test_reader_srv->get_file(), sight::core::exception);
@@ -405,17 +409,17 @@ TEST_SUITE("sight::io::base")
         {
             auto test_reader_srv = std::make_shared<test_reader>(sight::io::service::file);
             CHECK_NOTHROW(test_reader_srv->configure());
-            CHECK_NOTHROW(test_reader_srv->start().wait());
+            CHECK_NOTHROW(test_reader_srv->start().get());
             CHECK_NOTHROW(test_reader_srv->open_location_dialog());
-            CHECK_NOTHROW(test_reader_srv->stop().wait());
+            CHECK_NOTHROW(test_reader_srv->stop().get());
 
             CHECK_EQ(test_reader_srv->DEFAULT_WINDOW_TITLE, test_reader_srv->m_used_window_title);
 
             auto test_writer_srv = std::make_shared<test_writer>(sight::io::service::file);
             CHECK_NOTHROW(test_writer_srv->configure());
-            CHECK_NOTHROW(test_writer_srv->start().wait());
+            CHECK_NOTHROW(test_writer_srv->start().get());
             CHECK_NOTHROW(test_writer_srv->open_location_dialog());
-            CHECK_NOTHROW(test_writer_srv->stop().wait());
+            CHECK_NOTHROW(test_writer_srv->stop().get());
 
             CHECK_EQ(test_writer_srv->DEFAULT_WINDOW_TITLE, test_writer_srv->m_used_window_title);
         }
@@ -425,20 +429,20 @@ TEST_SUITE("sight::io::base")
             auto window_title = std::make_shared<sight::data::string>("Custom window title");
 
             auto test_reader_srv = std::make_shared<test_reader>(sight::io::service::file);
-            test_reader_srv->set_inout(window_title, sight::io::service::WINDOW_TITLE_KEY);
+            test_reader_srv->set_input(window_title, sight::io::service::WINDOW_TITLE_KEY);
             CHECK_NOTHROW(test_reader_srv->configure());
-            CHECK_NOTHROW(test_reader_srv->start().wait());
+            CHECK_NOTHROW(test_reader_srv->start().get());
             CHECK_NOTHROW(test_reader_srv->open_location_dialog());
-            CHECK_NOTHROW(test_reader_srv->stop().wait());
+            CHECK_NOTHROW(test_reader_srv->stop().get());
 
             CHECK_EQ(window_title->get_value(), test_reader_srv->m_used_window_title);
 
             auto test_writer_srv = std::make_shared<test_writer>(sight::io::service::file);
-            test_writer_srv->set_inout(window_title, sight::io::service::WINDOW_TITLE_KEY);
+            test_writer_srv->set_input(window_title, sight::io::service::WINDOW_TITLE_KEY);
             CHECK_NOTHROW(test_writer_srv->configure());
-            CHECK_NOTHROW(test_writer_srv->start().wait());
+            CHECK_NOTHROW(test_writer_srv->start().get());
             CHECK_NOTHROW(test_writer_srv->open_location_dialog());
-            CHECK_NOTHROW(test_writer_srv->stop().wait());
+            CHECK_NOTHROW(test_writer_srv->stop().get());
 
             CHECK_EQ(window_title->get_value(), test_writer_srv->m_used_window_title);
         }

@@ -1,4 +1,4 @@
-sight_add_target(filter_image_ut TYPE DOCTEST)
+sight_add_target(filter_image_ut TYPE TEST)
 
 target_link_libraries(${SIGHT_TARGET} PUBLIC utest_data data filter_image io_itk)
 

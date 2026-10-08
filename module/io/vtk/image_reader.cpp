@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #include "module/io/vtk/image_reader.hpp"
 
-#include <core/com/signal.hxx>
 #include <core/location/single_folder.hpp>
+#include <core/tools/failed.hpp>
 
 #include <data/image.hpp>
 
@@ -34,13 +34,9 @@
 #include <io/vtk/meta_image_reader.hpp>
 #include <io/vtk/vti_image_reader.hpp>
 
-#include <service/macros.hpp>
-
 #include <ui/__/cursor.hpp>
 #include <ui/__/dialog/location.hpp>
 #include <ui/__/dialog/message.hpp>
-
-#include <boost/algorithm/string.hpp>
 
 #include <filesystem>
 
@@ -59,6 +55,38 @@ image_reader::image_reader() noexcept :
 sight::io::service::path_type_t image_reader::get_path_type() const
 {
     return sight::io::service::file;
+}
+
+//------------------------------------------------------------------------------
+
+std::vector<std::pair<std::string, std::string> > image_reader::get_supported_extensions()
+{
+    std::vector<std::string> extensions;
+    sight::io::vtk::bitmap_image_reader::get_available_extensions(extensions);
+
+    std::string bitmap_wildcards;
+    for(const auto& extension : extensions)
+    {
+        if(!bitmap_wildcards.empty())
+        {
+            bitmap_wildcards += ' ';
+        }
+
+        bitmap_wildcards += "*" + extension;
+    }
+
+    std::vector<std::pair<std::string, std::string> > filters {
+        {"Vtk", "*.vtk"},
+        {"Vti", "*.vti"},
+        {"MetaImage", "*.mhd"}
+    };
+
+    if(!bitmap_wildcards.empty())
+    {
+        filters.emplace_back("Bitmap image", std::move(bitmap_wildcards));
+    }
+
+    return filters;
 }
 
 //------------------------------------------------------------------------------
@@ -145,7 +173,7 @@ void image_reader::updating()
             "The object is not a '"
             + data::image::classname()
             + "' or '"
-            + sight::io::service::DATA_KEY
+            + sight::io::service::READER_DATA_KEY
             + "' is not correctly set.",
             image
         );
@@ -155,8 +183,7 @@ void image_reader::updating()
 
         sight::ui::cursor cursor;
         cursor.set_cursor(ui::cursor_base::busy);
-        auto observer = std::make_shared<core::progress::observer>("Reading image");
-        this->async_emit(has_monitors::signals::MONITOR_CREATED, observer->get_sptr());
+        auto observer = this->observe("Reading image");
 
         try
         {
@@ -180,7 +207,7 @@ void image_reader::updating()
 //------------------------------------------------------------------------------
 
 template<typename READER>
-static typename READER::sptr configure_reader(const std::filesystem::path& _img_file)
+static READER::sptr configure_reader(const std::filesystem::path& _img_file)
 {
     typename READER::sptr reader = std::make_shared<READER>();
     reader->set_file(_img_file);
@@ -192,7 +219,7 @@ static typename READER::sptr configure_reader(const std::filesystem::path& _img_
 bool image_reader::load_image(
     const std::filesystem::path& _vtk_file,
     std::shared_ptr<data::image> _image,
-    core::progress::observer::sptr _progress
+    core::notification::observer::sptr _progress
 )
 {
     bool ok = true;

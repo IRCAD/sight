@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,7 +33,7 @@ namespace sight::io::writer
 
 //------------------------------------------------------------------------------
 
-void gz_array_writer::write(sight::core::progress::observer::sptr _progress)
+void gz_array_writer::write(sight::core::notification::observer::sptr _progress)
 {
     SIGHT_ASSERT("File path is empty.", get_file().empty() == false);
 

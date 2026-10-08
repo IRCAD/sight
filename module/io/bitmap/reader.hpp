@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,11 +21,8 @@
 
 #pragma once
 
-#include <core/com/signal.hpp>
-#include <core/progress/monitor.hpp>
-
 #include <io/__/service/reader.hpp>
-#include <io/bitmap/reader.hpp>
+#include <io/bitmap/backend.hpp>
 
 #include <set>
 
@@ -49,20 +46,21 @@ namespace sight::module::io::bitmap
  * @copydoc sight::io::bitmap::reader
  *
  * @section Signals Signals
- * - \b monitor_created(SPTR(core::progress::monitor)): emitted to display a progress bar while the image is read
+ * - \b notification_created(core::notification::base::sptr): emitted to display a progress bar while the
+ * image is read
  *
  * @section XML XML Configuration
  *
  * @code{.xml}
     <service type="sight::module::io::bitmap::reader">
-        <inout key="data" uid="..." />
-        <file>...</file>
+        <data read="..." />
+        <path file="..." />
         <dialog>...</dialog>
         <gpu_required>true|false</gpu_required>
     </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b data [sight::data::image]: image to read to.
+ * - \b data.read [sight::data::image]: image to read to.
  * @subsection Configuration Configuration
  * - \b file (optional): path of the file to read, if it is not defined, 'open_location_dialog()' should be called to
  *           define the path.
@@ -89,9 +87,10 @@ public:
     /// Show a file selection dialog
     void open_location_dialog() final;
 
-protected:
-
     sight::io::service::path_type_t get_path_type() const final;
+    std::vector<std::pair<std::string, std::string> > get_supported_extensions() final;
+
+protected:
 
     /// Does nothing
     void starting() final;

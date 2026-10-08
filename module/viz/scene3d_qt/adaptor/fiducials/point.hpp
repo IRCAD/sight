@@ -29,6 +29,7 @@
 #include <data/image_series.hpp>
 #include <data/material.hpp>
 
+#include <utility>
 #include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/fiducials_configuration.hpp>
 #include <viz/scene3d/material/standard.hpp>
@@ -52,6 +53,7 @@ namespace sight::module::viz::scene3d_qt::adaptor::fiducials
  * - \b enable_move_mode(): enables the move mode.
  * - \b disable_move_mode(): disables the move mode.
  * - \b update_visibility(bool): shows or hides the fiducials.
+ * - \b set_image_visibility(string, bool): follows the visibility of the input image.
  * - \b toggle_visibility(): toggles whether the fiducials are shown or not.
  * - \b show(): shows the fiducials.
  * - \b hide(): hides the fiducials.
@@ -64,13 +66,13 @@ namespace sight::module::viz::scene3d_qt::adaptor::fiducials
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d_qt::adaptor::fiducials::point">
-        <inout key="image" uid="..." />
+        <data image="${...}" />
         <config transform="transformUID" visible="true" priority="2" />
     </service>
    @endcode
  *
- * @subsection Inout Inout:
- * - \b image [sight::data::image_series]: holds the fiducials data.
+ * @subsection Input Input:
+ * - \b data.image [sight::data::image_series]: holds the fiducials data.
  *
  * @subsection Configuration Configuration:
  * - \b transform (optional, string, default=""): the name of the Ogre transform node where to attach the mesh, as it
@@ -93,16 +95,20 @@ namespace sight::module::viz::scene3d_qt::adaptor::fiducials
  * - \b allow_renaming (optional, bool, default=true): true if the user can rename fiducials
  * - \b modify (optional, all/group, default="all"): if "all", all the fiducials can be modified, ignoring the current
         group; if "group", only the fiducials belonging to the current group can be modified.
- * @subsection Properties Properties
- * - \b max_fiducials (sight::data::integer, default=0): overall max number of fiducials allowed for this group.
- * - \b max_fiducials_per_slice (sight::data::integer, default=0): max number of fiducials allowed in a single slice for
+ * @subsection Input Input
+ * - \b config.max_fiducials [sight::data::integer] (optional, default=0): overall max number of fiducials allowed for
+ * this group.
+ * - \b config.max_group_fiducials [sight::data::integer] (optional, default=0): max number of fiducials allowed in a
+ * group.
+ * - \b config.max_fiducials_per_slice [sight::data::integer] (optional, default=0): max number of fiducials allowed in
+ * a single slice for
    the current group.
  *
  */
 class point final :
     public sight::viz::scene3d::adaptor,
-    public sight::viz::scene3d::transformable,
-    public sight::viz::scene3d::interactor::base
+    public sight::viz::scene3d::interactor::base,
+    public sight::viz::scene3d::transformable
 {
 public:
 
@@ -123,21 +129,20 @@ public:
 
     struct slots final
     {
-        using key_t = sight::core::com::slots::key_t;
+        inline static const slot_key_t REMOVE_FIDUCIALS         = "remove_all";
+        inline static const slot_key_t REMOVE_VISIBLE_FIDUCIALS = "remove_landmarks";
+        inline static const slot_key_t SET_IMAGE_VISIBILITY     = "set_image_visibility";
+        inline static const slot_key_t SET_CURRENT_GROUP        = "set_current_group";
+        inline static const slot_key_t CONFIGURE_FIDUCIALS      = "configure_landmarks";
 
-        inline static const key_t REMOVE_FIDUCIALS         = "remove_all";
-        inline static const key_t REMOVE_VISIBLE_FIDUCIALS = "remove_landmarks";
-        inline static const key_t SET_CURRENT_GROUP        = "set_current_group";
-        inline static const key_t CONFIGURE_FIDUCIALS      = "configure_landmarks";
-
-        inline static const key_t ENABLE_EDIT_MODE  = "enableEditMode";
-        inline static const key_t DISABLE_EDIT_MODE = "disableEditMode";
-        inline static const key_t TOGGLE_EDIT_MODE  = "toggleEditMode";
-        inline static const key_t CHANGE_EDIT_MODE  = "change_edit_mode";
-        inline static const key_t ENABLE_MOVE_MODE  = "enableMoveMode";
-        inline static const key_t DISABLE_MOVE_MODE = "disableMoveMode";
-        inline static const key_t TOGGLE_MOVE_MODE  = "toggleMoveMode";
-        inline static const key_t CHANGE_MOVE_MODE  = "change_move_mode";
+        inline static const slot_key_t ENABLE_EDIT_MODE  = "enableEditMode";
+        inline static const slot_key_t DISABLE_EDIT_MODE = "disableEditMode";
+        inline static const slot_key_t TOGGLE_EDIT_MODE  = "toggleEditMode";
+        inline static const slot_key_t CHANGE_EDIT_MODE  = "change_edit_mode";
+        inline static const slot_key_t ENABLE_MOVE_MODE  = "enableMoveMode";
+        inline static const slot_key_t DISABLE_MOVE_MODE = "disableMoveMode";
+        inline static const slot_key_t TOGGLE_MOVE_MODE  = "toggleMoveMode";
+        inline static const slot_key_t CHANGE_MOVE_MODE  = "change_move_mode";
     };
 
     /**
@@ -182,15 +187,23 @@ public:
      */
     void disable_move_mode();
 
+    /**
+     * @brief Sets the adaptor visibility.
+     *
+     * @param _visible If false, it will hide all fiducials. If true, it will show them if possible.
+     */
+    void set_visible(bool _visible) final;
+
+    /// SLOT: Changes the visibility when the input image visibility changes.
+    void set_image_visibility(std::string _image_id, bool _visible);
+
     struct signals final
     {
-        using key_t = sight::core::com::signals::key_t;
-
         /// Signal send when double clicked on a landmark, send its world coordinates;
-        inline static const key_t SEND_WORLD_COORD = "send_world_coord";
+        inline static const signal_key_t SEND_WORLD_COORD = "send_world_coord";
         using send_world_coordinates_t = core::com::signal<void (double, double, double)>;
 
-        inline static const key_t EDIT_MODE_CHANGED = "edit_mode_changed";
+        inline static const signal_key_t EDIT_MODE_CHANGED = "edit_mode_changed";
         using edit_mode_changed_t = core::com::signal<void (bool)>;
     };
 
@@ -201,46 +214,6 @@ public:
         current_slice,
         all_slices
     };
-
-protected:
-
-    /**
-     * @brief Configure the adaptor.
-     *
-     */
-    void configuring() final;
-
-    /**
-     * @brief Initialize Ogre resources.
-     *
-     */
-    void starting() final;
-
-    /**
-     * @brief Proposals to connect service slots to associated object signals.
-     *
-     * @return A map of each proposed connection.
-     */
-    service::connections_t auto_connections() const final;
-
-    /**
-     * @brief Redraw all fiducials.
-     *
-     */
-    void updating() final;
-
-    /**
-     * @brief Free Ogre resources.
-     *
-     */
-    void stopping() final;
-
-    /**
-     * @brief Sets the adaptor visibility.
-     *
-     * @param _visible If false, it will hide all fiducials. If true, it will show them if possible.
-     */
-    void set_visible(bool _visible) final;
 
     /**
      * @brief Retrieves a fiducial or create a new one. Stores the result in m_picked_data.
@@ -299,6 +272,39 @@ protected:
      */
     void key_press_event(int _key, modifier _mods, int _mouse_x, int _mouse_y) final;
 
+protected:
+
+    /**
+     * @brief Configure the adaptor.
+     *
+     */
+    void configuring() final;
+
+    /**
+     * @brief Initialize Ogre resources.
+     *
+     */
+    void starting() final;
+
+    /**
+     * @brief Proposals to connect service slots to associated object signals.
+     *
+     * @return A map of each proposed connection.
+     */
+    service::connections_t auto_connections() const final;
+
+    /**
+     * @brief Redraw all fiducials.
+     *
+     */
+    void updating() final;
+
+    /**
+     * @brief Free Ogre resources.
+     *
+     */
+    void stopping() final;
+
 private:
 
     /// Stores data used to display one landmark.
@@ -313,9 +319,9 @@ private:
         ) :
             m_node(_node),
             m_manual_object(_manual_object),
-            m_group_name(_group_name),
+            m_group_name(std::move(_group_name)),
             m_index(_index),
-            m_label(_label)
+            m_label(std::move(_label))
         {
         }
 
@@ -342,8 +348,8 @@ private:
     struct selected_ogre_fiducial final
     {
         selected_ogre_fiducial(core::thread::timer::sptr _timer, std::shared_ptr<ogre_fiducial> _ogre_fiducial) :
-            m_timer(_timer),
-            m_ogre_fiducial(_ogre_fiducial)
+            m_timer(std::move(_timer)),
+            m_ogre_fiducial(std::move(_ogre_fiducial))
         {
         }
 
@@ -510,7 +516,7 @@ private:
     std::size_t destroy_ogre_fiducials(
         const std::string& _group_name,
         const std::optional<std::size_t>& _index = std::nullopt,
-        const bool _rebuild_indexes              = false
+        bool _rebuild_indexes                    = false
     );
 
     /**
@@ -653,13 +659,16 @@ private:
         edit    = 1 << 2
     };
 
-    std::uint8_t m_edit_mode {std::uint8_t(edit_mode::display)};
+    std::uint8_t m_edit_mode {static_cast<std::uint8_t>(edit_mode::display)};
 
     /// Whether all fiducials can be modified or only fiducials belonging to the current group
     bool m_can_only_modify_current {false};
 
     /// True if the fiducials can be renamed by the user
     bool m_renaming_allowed {true};
+
+    /// Indicates whether the image associated with this adaptor is visible.
+    bool m_image_visible {true};
 
     /// True if we must show the contextual menu. It must be shown if the fiducial already existed and wasn't moved.
     bool m_must_show_contextual_menu {false};
@@ -669,11 +678,17 @@ private:
     /// Auto-delete the event filter in the end
     std::unique_ptr<QObject> m_event_filter {nullptr};
 
-    sight::data::ptr<sight::data::image_series, sight::data::access::inout> m_image_series {this, "imageSeries"};
+    sight::data::ptr<sight::data::image_series, sight::data::access::inout> m_image_series {this, "data.imageSeries"};
 
-    sight::data::property<sight::data::integer> m_max_fiducials {this, "max_fiducials", {0}};
-    sight::data::property<sight::data::integer> m_max_group_fiducials {this, "max_group_fiducials", {0}};
-    sight::data::property<sight::data::integer> m_max_fiducials_per_slice {this, "max_fiducials_per_slice", {0}};
+    sight::data::ptr<sight::data::integer, sight::data::access::in> m_max_fiducials {this, "config.max_fiducials", 0};
+    sight::data::ptr<sight::data::integer, sight::data::access::in> m_max_group_fiducials {this,
+                                                                                           "config.max_group_fiducials",
+                                                                                           0
+    };
+    sight::data::ptr<sight::data::integer, sight::data::access::in> m_max_fiducials_per_slice {this,
+                                                                                               "config.max_fiducials_per_slice",
+                                                                                               0
+    };
 };
 
-} // namespace sight::module::viz::scene3d_qt::adaptor.
+} // namespace sight::module::viz::scene3d_qt::adaptor::fiducials

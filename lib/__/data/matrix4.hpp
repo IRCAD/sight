@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -55,7 +55,8 @@ public:
     inline matrix4(std::initializer_list<value_type> _init_list);
 
     template<typename T>
-    inline matrix4(const T& _data);
+    requires core::is_container<T>::value
+    inline matrix4(const T& _data); //NOLINT(google-explicit-constructor,hicpp-explicit-conversions)
     /// @}
 
     //! @brief destructor
@@ -180,6 +181,7 @@ inline matrix4& matrix4::operator=(std::initializer_list<value_type> _init_list)
 //------------------------------------------------------------------------------
 
 template<typename T>
+requires core::is_container<T>::value
 inline matrix4::matrix4(const T& _data)
 {
     ///@todo make this functions constexpr once we support C++23 which will support SIGHT_ASSERT
@@ -227,7 +229,7 @@ constexpr bool matrix4::operator!=(const T& _other) const noexcept
 template<typename T>
 [[nodiscard]] constexpr T matrix4::values() const noexcept
 {
-    T values;
+    T values {};
 
     if constexpr(!core::is_container_dynamic<T>::value)
     {

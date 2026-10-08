@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,6 +22,8 @@
 #include "reader.hpp"
 
 #include "detail/reader_impl.hxx"
+
+#include <core/notification/observer.hpp>
 
 #include <algorithm>
 #include <fstream>
@@ -60,7 +62,7 @@ std::string reader::extension() const
 
 //------------------------------------------------------------------------------
 
-void reader::read(sight::core::progress::observer::sptr _progress)
+void reader::read(sight::core::notification::observer::sptr _progress)
 {
     read(backend::any);
     _progress->done();

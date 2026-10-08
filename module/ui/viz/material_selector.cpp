@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #include "material_selector.hpp"
 
-#include <core/com/signal.hxx>
-
 #include <data/helper/field.hpp>
 #include <data/material.hpp>
 #include <data/string.hpp>
@@ -31,7 +29,6 @@
 #include <ui/qt/container/widget.hpp>
 
 #include <viz/scene3d/ogre.hpp>
-#include <viz/scene3d/utils.hpp>
 
 #include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgrePass.h>
@@ -48,14 +45,12 @@
 namespace sight::module::ui::viz
 {
 
-const core::com::signals::key_t material_selector::SELECTED_SIG = "selected";
-
 static const std::string MATERIAL_RESOURCEGROUP_NAME = "materialsTemplate";
 
 //------------------------------------------------------------------------------
 material_selector::material_selector() noexcept
 {
-    new_signal<selected_signal_t>(SELECTED_SIG);
+    new_signal<signals::selected_t>(signals::SELECTED);
 }
 
 //------------------------------------------------------------------------------
@@ -167,8 +162,7 @@ void material_selector::on_selected_mode_item(const QString& _text)
     helper.set_field("material", string);
     helper.notify();
 
-    auto sig = this->signal<selected_signal_t>(SELECTED_SIG);
-    sig->async_emit(_text.toStdString());
+    this->async_emit(signals::SELECTED, _text.toStdString());
 }
 
 //------------------------------------------------------------------------------

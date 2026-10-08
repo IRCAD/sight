@@ -27,7 +27,6 @@
 #include <doctest/doctest.h>
 
 #include <opencv2/calib3d.hpp>
-#include <opencv2/core.hpp>
 
 TEST_SUITE("sight::io::opencv::matrix")
 {
@@ -35,18 +34,18 @@ TEST_SUITE("sight::io::opencv::matrix")
 
     TEST_CASE("copy_from_cv_float")
     {
-        cv::Matx44f cv_mat                = cv::Matx44f::eye();
-        sight::data::matrix4::sptr fw_mat = std::make_shared<sight::data::matrix4>();
+        cv::Matx44f cv_mat = cv::Matx44f::eye();
+        sight::data::matrix4 sight_mat;
 
         //identity test
-        sight::io::opencv::matrix::copy_from_cv(cv_mat, fw_mat);
+        sight::io::opencv::matrix::copy_from_cv(cv_mat, sight_mat);
 
         for(std::uint8_t i = 0 ; i < 4 ; ++i)
         {
             for(std::uint8_t j = 0 ; j < 4 ; ++j)
             {
                 CHECK_MESSAGE(
-                    static_cast<double>(cv_mat(i, j)) == (*fw_mat)(i, j),
+                    static_cast<double>(cv_mat(i, j)) == sight_mat(i, j),
                     "values are not equals at [",
                     std::to_string(i),
                     " ; ",
@@ -60,14 +59,14 @@ TEST_SUITE("sight::io::opencv::matrix")
         cv_mat = cv::Matx44f(1.F, 2.F, 3.F, 4.F, 5.F, 6.F, 7.F, 8.F, 9.F, 10.F, 11.F, 12.F, 13.F, 14.F, 15.F, 16.F);
 
         //values test
-        sight::io::opencv::matrix::copy_from_cv(cv_mat, fw_mat);
+        sight::io::opencv::matrix::copy_from_cv(cv_mat, sight_mat);
 
         for(std::uint8_t i = 0 ; i < 4 ; ++i)
         {
             for(std::uint8_t j = 0 ; j < 4 ; ++j)
             {
                 CHECK_MESSAGE(
-                    static_cast<double>(cv_mat(i, j)) == (*fw_mat)(i, j),
+                    static_cast<double>(cv_mat(i, j)) == sight_mat(i, j),
                     "values are not equals at [",
                     std::to_string(i),
                     " ; ",
@@ -82,17 +81,17 @@ TEST_SUITE("sight::io::opencv::matrix")
 
     TEST_CASE("copy_to_cv_float")
     {
-        sight::data::matrix4::sptr fw_mat = std::make_shared<sight::data::matrix4>();
-        cv::Matx44f cv_mat                = cv::Matx44f::eye();
+        sight::data::matrix4::sptr sight_mat = std::make_shared<sight::data::matrix4>();
+        cv::Matx44f cv_mat                   = cv::Matx44f::eye();
 
         //identity test
-        sight::io::opencv::matrix::copy_to_cv(fw_mat, cv_mat);
+        cv_mat = sight::io::opencv::matrix::copy_to_cv<float>(*sight_mat);
 
         for(std::uint8_t i = 0 ; i < 4 ; ++i)
         {
             for(std::uint8_t j = 0 ; j < 4 ; ++j)
             {
-                CHECK_EQ((*fw_mat)(i, j), static_cast<double>(cv_mat(i, j)));
+                CHECK_EQ((*sight_mat)(i, j), static_cast<double>(cv_mat(i, j)));
             }
         }
 
@@ -102,16 +101,16 @@ TEST_SUITE("sight::io::opencv::matrix")
             40.0, 30.0, 20.0, 10.0
         }
         };
-        (*fw_mat) = array;
+        (*sight_mat) = array;
 
-        sight::io::opencv::matrix::copy_to_cv(fw_mat, cv_mat);
+        cv_mat = sight::io::opencv::matrix::copy_to_cv<float>(*sight_mat);
 
         for(std::uint8_t i = 0 ; i < 4 ; ++i)
         {
             for(std::uint8_t j = 0 ; j < 4 ; ++j)
             {
                 CHECK_MESSAGE(
-                    static_cast<double>(cv_mat(i, j)) == doctest::Approx((*fw_mat)(i, j)),
+                    static_cast<double>(cv_mat(i, j)) == doctest::Approx((*sight_mat)(i, j)),
                     "values are not equals at [",
                     std::to_string(i),
                     " ; ",
@@ -126,18 +125,18 @@ TEST_SUITE("sight::io::opencv::matrix")
 
     TEST_CASE("copy_from_cv_double")
     {
-        cv::Matx44d cv_mat                = cv::Matx44d::eye();
-        sight::data::matrix4::sptr fw_mat = std::make_shared<sight::data::matrix4>();
+        cv::Matx44d cv_mat = cv::Matx44d::eye();
+        sight::data::matrix4 sight_mat;
 
         //identity test
-        sight::io::opencv::matrix::copy_from_cv(cv_mat, fw_mat);
+        sight::io::opencv::matrix::copy_from_cv(cv_mat, sight_mat);
 
         for(std::uint8_t i = 0 ; i < 4 ; ++i)
         {
             for(std::uint8_t j = 0 ; j < 4 ; ++j)
             {
                 CHECK_MESSAGE(
-                    static_cast<double>(cv_mat(i, j)) == (*fw_mat)(i, j),
+                    static_cast<double>(cv_mat(i, j)) == sight_mat(i, j),
                     "values are not equals at [",
                     std::to_string(i),
                     " ; ",
@@ -168,14 +167,14 @@ TEST_SUITE("sight::io::opencv::matrix")
         );
 
         //values test
-        sight::io::opencv::matrix::copy_from_cv(cv_mat, fw_mat);
+        sight::io::opencv::matrix::copy_from_cv(cv_mat, sight_mat);
 
         for(std::uint8_t i = 0 ; i < 4 ; ++i)
         {
             for(std::uint8_t j = 0 ; j < 4 ; ++j)
             {
                 CHECK_MESSAGE(
-                    static_cast<double>(cv_mat(i, j)) == (*fw_mat)(i, j),
+                    static_cast<double>(cv_mat(i, j)) == sight_mat(i, j),
                     "values are not equals at [",
                     std::to_string(i),
                     " ; ",
@@ -188,20 +187,48 @@ TEST_SUITE("sight::io::opencv::matrix")
 
 //-----------------------------------------------------------------------------
 
+    TEST_CASE("copy_to_mat_ref")
+    {
+        sight::data::matrix4 sight_mat;
+        sight_mat = {
+            1., 2., 3., 4.,
+            5., 6., 7., 8.,
+            9., 10., 11.9874563, 12.,
+            13.123456, 14., 15., 16.
+        };
+
+        const cv::Mat mat = sight::io::opencv::matrix::copy_to_cv<float>(sight_mat);
+
+        CHECK_EQ(mat.rows, 4);
+        CHECK_EQ(mat.cols, 4);
+        CHECK_EQ(mat.channels(), 1);
+        CHECK_EQ(mat.type(), CV_32FC1);
+
+        for(std::uint8_t i = 0 ; i < 4 ; ++i)
+        {
+            for(std::uint8_t j = 0 ; j < 4 ; ++j)
+            {
+                CHECK_EQ(mat.at<float>(i, j), doctest::Approx(sight_mat(i, j)));
+            }
+        }
+    }
+
+//-----------------------------------------------------------------------------
+
     TEST_CASE("copy_to_cv_double")
     {
-        sight::data::matrix4::sptr fw_mat = std::make_shared<sight::data::matrix4>();
-        cv::Matx44d cv_mat                = cv::Matx44d::eye();
+        sight::data::matrix4::sptr sight_mat = std::make_shared<sight::data::matrix4>();
+        cv::Matx44d cv_mat                   = cv::Matx44d::eye();
 
         //identity test
-        sight::io::opencv::matrix::copy_to_cv(fw_mat, cv_mat);
+        cv_mat = sight::io::opencv::matrix::copy_to_cv<double>(*sight_mat);
 
         for(std::uint8_t i = 0 ; i < 4 ; ++i)
         {
             for(std::uint8_t j = 0 ; j < 4 ; ++j)
             {
                 CHECK_MESSAGE(
-                    static_cast<double>(cv_mat(i, j)) == (*fw_mat)(i, j),
+                    static_cast<double>(cv_mat(i, j)) == (*sight_mat)(i, j),
                     "values are not equals at [",
                     std::to_string(i),
                     " ; ",
@@ -217,17 +244,17 @@ TEST_SUITE("sight::io::opencv::matrix")
             40.0, 30.0, 20.0, 10.0
         }
         };
-        (*fw_mat) = array;
+        (*sight_mat) = array;
 
         //values test
-        sight::io::opencv::matrix::copy_to_cv(fw_mat, cv_mat);
+        cv_mat = sight::io::opencv::matrix::copy_to_cv<double>(*sight_mat);
 
         for(std::uint8_t i = 0 ; i < 4 ; ++i)
         {
             for(std::uint8_t j = 0 ; j < 4 ; ++j)
             {
                 CHECK_MESSAGE(
-                    static_cast<double>(cv_mat(i, j)) == (*fw_mat)(i, j),
+                    static_cast<double>(cv_mat(i, j)) == (*sight_mat)(i, j),
                     "values are not equals at [",
                     std::to_string(i),
                     " ; ",
@@ -243,17 +270,17 @@ TEST_SUITE("sight::io::opencv::matrix")
     TEST_CASE("copy_from_cv_mat")
     {
         // identity test
-        sight::data::matrix4::sptr fw_mat = std::make_shared<sight::data::matrix4>();
-        cv::Mat cv_mat                    = cv::Mat::eye(4, 4, CV_64F);
+        sight::data::matrix4 sight_mat;
+        cv::Mat cv_mat = cv::Mat::eye(4, 4, CV_64F);
 
-        CHECK_NOTHROW(sight::io::opencv::matrix::copy_from_cv(cv_mat, fw_mat));
+        CHECK_NOTHROW(sight::io::opencv::matrix::copy_from_cv(cv_mat, sight_mat));
 
         for(std::uint8_t i = 0 ; i < 4 ; ++i)
         {
             for(std::uint8_t j = 0 ; j < 4 ; ++j)
             {
                 CHECK_MESSAGE(
-                    static_cast<double>(cv_mat.at<double>(i, j)) == (*fw_mat)(i, j),
+                    static_cast<double>(cv_mat.at<double>(i, j)) == sight_mat(i, j),
                     "values are not equals at [",
                     std::to_string(i),
                     " ; ",
@@ -271,14 +298,14 @@ TEST_SUITE("sight::io::opencv::matrix")
                   9., 10., 11.9874563, 12.,
                   13.123456, 14., 15., 16.);
 
-        CHECK_NOTHROW(sight::io::opencv::matrix::copy_from_cv(cv_mat, fw_mat));
+        CHECK_NOTHROW(sight::io::opencv::matrix::copy_from_cv(cv_mat, sight_mat));
 
         for(std::uint8_t i = 0 ; i < 4 ; ++i)
         {
             for(std::uint8_t j = 0 ; j < 4 ; ++j)
             {
                 CHECK_MESSAGE(
-                    static_cast<double>(cv_mat.at<double>(i, j)) == (*fw_mat)(i, j),
+                    static_cast<double>(cv_mat.at<double>(i, j)) == sight_mat(i, j),
                     "values are not equals at [",
                     std::to_string(i),
                     " ; ",
@@ -293,18 +320,18 @@ TEST_SUITE("sight::io::opencv::matrix")
 
     TEST_CASE("copy_to_cv_mat")
     {
-        sight::data::matrix4::sptr fw_mat = std::make_shared<sight::data::matrix4>();
-        cv::Mat cv_mat                    = cv::Mat::eye(4, 4, CV_64F);
+        sight::data::matrix4::sptr sight_mat = std::make_shared<sight::data::matrix4>();
+        cv::Mat cv_mat                       = cv::Mat::eye(4, 4, CV_64F);
 
         //identity test
-        CHECK_NOTHROW(sight::io::opencv::matrix::copy_to_cv(fw_mat, cv_mat));
+        CHECK_NOTHROW(cv_mat = sight::io::opencv::matrix::copy_to_cv<double>(*sight_mat));
 
         for(std::uint8_t i = 0 ; i < 4 ; ++i)
         {
             for(std::uint8_t j = 0 ; j < 4 ; ++j)
             {
                 CHECK_MESSAGE(
-                    static_cast<double>(cv_mat.at<double>(i, j)) == (*fw_mat)(i, j),
+                    static_cast<double>(cv_mat.at<double>(i, j)) == (*sight_mat)(i, j),
                     "values are not equals at [",
                     std::to_string(i),
                     " ; ",
@@ -320,17 +347,17 @@ TEST_SUITE("sight::io::opencv::matrix")
             0.08, 0.07, 0.0645687, 0.05,
             40.0, 30.0, 20.0, 10.0
         };
-        (*fw_mat) = array;
+        (*sight_mat) = array;
 
         //values test
-        sight::io::opencv::matrix::copy_to_cv(fw_mat, cv_mat);
+        cv_mat = sight::io::opencv::matrix::copy_to_cv<double>(*sight_mat);
 
         for(std::uint8_t i = 0 ; i < 4 ; ++i)
         {
             for(std::uint8_t j = 0 ; j < 4 ; ++j)
             {
                 CHECK_MESSAGE(
-                    static_cast<double>(cv_mat.at<double>(i, j)) == (*fw_mat)(i, j),
+                    static_cast<double>(cv_mat.at<double>(i, j)) == (*sight_mat)(i, j),
                     "values are not equals at [",
                     std::to_string(i),
                     " ; ",
@@ -351,16 +378,16 @@ TEST_SUITE("sight::io::opencv::matrix")
         cv::Mat tvec = cv_mat(cv::Rect(3, 0, 1, 3));
         cv::Mat rvec;
         cv::Rodrigues(cv_mat(cv::Rect(0, 0, 3, 3)), rvec);
-        sight::data::matrix4::sptr fw_mat = std::make_shared<sight::data::matrix4>();
+        sight::data::matrix4 sight_mat;
 
-        CHECK_NOTHROW(sight::io::opencv::matrix::copy_from_cv(rvec, tvec, fw_mat));
+        CHECK_NOTHROW(sight::io::opencv::matrix::copy_from_cv(rvec, tvec, sight_mat));
 
         for(std::uint8_t i = 0 ; i < 4 ; ++i)
         {
             for(std::uint8_t j = 0 ; j < 4 ; ++j)
             {
                 CHECK_MESSAGE(
-                    static_cast<double>(cv_mat.at<double>(i, j)) == doctest::Approx((*fw_mat)(i, j)),
+                    static_cast<double>(cv_mat.at<double>(i, j)) == doctest::Approx(sight_mat(i, j)),
                     "values are not equals at [",
                     std::to_string(i),
                     " ; ",
@@ -380,14 +407,14 @@ TEST_SUITE("sight::io::opencv::matrix")
         tvec = cv_mat(cv::Rect(3, 0, 1, 3));
         cv::Rodrigues(cv_mat(cv::Rect(0, 0, 3, 3)), rvec);
 
-        CHECK_NOTHROW(sight::io::opencv::matrix::copy_from_cv(rvec, tvec, fw_mat));
+        CHECK_NOTHROW(sight::io::opencv::matrix::copy_from_cv(rvec, tvec, sight_mat));
 
         for(std::uint8_t i = 0 ; i < 4 ; ++i)
         {
             for(std::uint8_t j = 0 ; j < 4 ; ++j)
             {
                 CHECK_MESSAGE(
-                    static_cast<double>(cv_mat.at<double>(i, j)) == doctest::Approx((*fw_mat)(i, j)),
+                    static_cast<double>(cv_mat.at<double>(i, j)) == doctest::Approx(sight_mat(i, j)),
                     "values are not equals at [",
                     std::to_string(i),
                     " ; ",
@@ -402,14 +429,14 @@ TEST_SUITE("sight::io::opencv::matrix")
         rvec = (cv::Mat_<double>(3, 1) << 0.523611478769991, 0, 0);
         tvec = (cv::Mat_<double>(3, 1) << 4, 8, 12);
 
-        CHECK_NOTHROW(sight::io::opencv::matrix::copy_from_cv(rvec, tvec, fw_mat));
+        CHECK_NOTHROW(sight::io::opencv::matrix::copy_from_cv(rvec, tvec, sight_mat));
 
         for(std::uint8_t i = 0 ; i < 4 ; ++i)
         {
             for(std::uint8_t j = 0 ; j < 4 ; ++j)
             {
                 CHECK_MESSAGE(
-                    static_cast<double>(cv_mat.at<double>(i, j)) == doctest::Approx((*fw_mat)(i, j)),
+                    static_cast<double>(cv_mat.at<double>(i, j)) == doctest::Approx(sight_mat(i, j)),
                     "values are not equals at [",
                     std::to_string(i),
                     " ; ",
@@ -424,14 +451,14 @@ TEST_SUITE("sight::io::opencv::matrix")
 
     TEST_CASE("copy_to_rvec_tvec")
     {
-        sight::data::matrix4::sptr fw_mat = std::make_shared<sight::data::matrix4>();
-        cv::Mat expected_rvec             = (cv::Mat_<double>(3, 1) << 0., 0., 0.);
-        cv::Mat expected_tvec             = (cv::Mat_<double>(3, 1) << 0., 0., 0.);
+        sight::data::matrix4 sight_mat;
+        cv::Mat expected_rvec = (cv::Mat_<double>(3, 1) << 0., 0., 0.);
+        cv::Mat expected_tvec = (cv::Mat_<double>(3, 1) << 0., 0., 0.);
         cv::Mat rvec;
         cv::Mat tvec;
 
         //identity test
-        CHECK_NOTHROW(sight::io::opencv::matrix::copy_to_cv(fw_mat, rvec, tvec));
+        CHECK_NOTHROW(sight::io::opencv::matrix::copy_to_cv(sight_mat, rvec, tvec));
 
         for(std::uint8_t i = 0 ; i < 3 ; ++i)
         {
@@ -456,10 +483,10 @@ TEST_SUITE("sight::io::opencv::matrix")
             0., 0.50001100, 0.86601905, 12.,
             0., 0., 0., 1.
         };
-        (*fw_mat) = array;
+        sight_mat = array;
 
         //values test
-        sight::io::opencv::matrix::copy_to_cv(fw_mat, rvec, tvec);
+        sight::io::opencv::matrix::copy_to_cv(sight_mat, rvec, tvec);
         expected_rvec = (cv::Mat_<double>(3, 1) << 0.523611478769991, 0., 0.);
         expected_tvec = (cv::Mat_<double>(3, 1) << 4., 8., 12.);
 
@@ -490,7 +517,7 @@ TEST_SUITE("sight::io::opencv::matrix")
             for(std::uint8_t j = 0 ; j < 4 ; ++j)
             {
                 CHECK_MESSAGE(
-                    static_cast<double>(mat4x4.at<double>(i, j)) == doctest::Approx((*fw_mat)(i, j)),
+                    static_cast<double>(mat4x4.at<double>(i, j)) == doctest::Approx(sight_mat(i, j)),
                     "values are not equals at [",
                     std::to_string(i),
                     " ; ",

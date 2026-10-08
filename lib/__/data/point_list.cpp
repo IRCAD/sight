@@ -25,10 +25,6 @@
 #include "data/exception.hpp"
 #include "data/registry/macros.hpp"
 
-#include <core/base.hpp>
-#include <core/com/signal.hpp>
-#include <core/com/signal.hxx>
-
 SIGHT_REGISTER_DATA(sight::data::point_list);
 
 namespace sight::data

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2025 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,32 +22,34 @@
 
 #include "display_test_notifications.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
+#include <core/notification/error.hpp>
+#include <core/notification/information.hpp>
+#include <core/notification/instruction.hpp>
+#include <core/notification/warning.hpp>
+#include <core/runtime/path.hpp>
 
-#include <service/macros.hpp>
+#include <ui/__/dialog/notification.hpp>
 
 namespace ex_notifications
 {
 
-static const sight::core::com::slots::key_t SET_ENUM_PARAMETER_SLOT = "set_enum_parameter";
-static const sight::core::com::slots::key_t SET_BOOL_PARAMETER_SLOT = "set_bool_parameter";
-static const sight::core::com::slots::key_t CLOSE_CHANNEL1_SLOT     = "close_channel1";
-
 //------------------------------------------------------------------------------
 
 display_test_notifications::display_test_notifications() noexcept :
-    notifier(m_signals)
+    has_notifications(has_signals::signals())
 {
-    new_slot(SET_ENUM_PARAMETER_SLOT, &display_test_notifications::set_enum_parameter, this);
-    new_slot(SET_BOOL_PARAMETER_SLOT, &display_test_notifications::set_bool_parameter, this);
-    new_slot(CLOSE_CHANNEL1_SLOT, &display_test_notifications::close_channel1, this);
+    new_slot(slots::SET_ENUM_PARAMETER, &display_test_notifications::set_enum_parameter, this);
+    new_slot(slots::SET_BOOL_PARAMETER, &display_test_notifications::set_bool_parameter, this);
+    new_slot(slots::CLOSE_CHANNEL1, &display_test_notifications::close_channel1, this);
+
+    new_signal<signals::notification_closed_t>(signals::NOTIFICATION_CLOSED);
 }
 
 //------------------------------------------------------------------------------
 
 void display_test_notifications::set_enum_parameter(std::string _val, std::string _key)
 {
+    namespace dial = sight::ui::dialog;
     if(_key == "position")
     {
         m_display_all = false;
@@ -57,31 +59,31 @@ void display_test_notifications::set_enum_parameter(std::string _val, std::strin
         }
         else if(_val == "TOP_LEFT")
         {
-            m_notification.m_position = ::dial::notification::position::top_left;
+            m_notification.m_position = dial::notification::position::top_left;
         }
         else if(_val == "TOP_RIGHT")
         {
-            m_notification.m_position = ::dial::notification::position::top_right;
+            m_notification.m_position = dial::notification::position::top_right;
         }
         else if(_val == "CENTERED_TOP")
         {
-            m_notification.m_position = ::dial::notification::position::centered_top;
+            m_notification.m_position = dial::notification::position::centered_top;
         }
         else if(_val == "CENTERED")
         {
-            m_notification.m_position = ::dial::notification::position::centered;
+            m_notification.m_position = dial::notification::position::centered;
         }
         else if(_val == "BOTTOM_LEFT")
         {
-            m_notification.m_position = ::dial::notification::position::bottom_left;
+            m_notification.m_position = dial::notification::position::bottom_left;
         }
         else if(_val == "BOTTOM_RIGHT")
         {
-            m_notification.m_position = ::dial::notification::position::bottom_right;
+            m_notification.m_position = dial::notification::position::bottom_right;
         }
         else if(_val == "CENTERED_BOTTOM")
         {
-            m_notification.m_position = ::dial::notification::position::centered_bottom;
+            m_notification.m_position = dial::notification::position::centered_bottom;
         }
         else
         {
@@ -90,17 +92,21 @@ void display_test_notifications::set_enum_parameter(std::string _val, std::strin
     }
     else if(_key == "type")
     {
-        if(_val == "SUCCESS")
+        if(_val == "INFORMATION")
         {
-            m_notification.m_type = ::dial::notification::type::success;
+            m_notification.m_type = dial::notification::type::information;
         }
-        else if(_val == "INFO")
+        else if(_val == "INSTRUCTION")
         {
-            m_notification.m_type = ::dial::notification::type::info;
+            m_notification.m_type = dial::notification::type::instruction;
         }
-        else if(_val == "FAILURE")
+        else if(_val == "WARNING")
         {
-            m_notification.m_type = ::dial::notification::type::failure;
+            m_notification.m_type = dial::notification::type::warning;
+        }
+        else if(_val == "ERROR")
+        {
+            m_notification.m_type = dial::notification::type::error;
         }
         else
         {
@@ -178,7 +184,7 @@ void display_test_notifications::set_bool_parameter(bool _val, std::string _key)
 
 void display_test_notifications::close_channel1()
 {
-    close_notification("CHANNEL1");
+    this->signal<signals::notification_closed_t>(signals::NOTIFICATION_CLOSED)->async_emit("CHANNEL1");
 }
 
 //------------------------------------------------------------------------------
@@ -193,13 +199,14 @@ void display_test_notifications::info(std::ostream& _sstream)
 void display_test_notifications::configuring()
 {
     this->action::initialize();
-    this->notifier::initialize(this->get_config());
 }
 
 //------------------------------------------------------------------------------
 
 void display_test_notifications::updating()
 {
+    namespace dial = sight::ui::dialog;
+
     static std::uint64_t count = 1;
 
     std::string channel = m_notification.m_channel;
@@ -236,6 +243,16 @@ void display_test_notifications::updating()
 
     std::string message = "[" + channel + duration + closable + "] " + std::to_string(count);
 
+    const auto icon = sight::core::runtime::get_resource_file_path(
+        m_notification.m_type == dial::notification::type::error
+        ? "sight::module::ui::icons/critical.svg"
+        : m_notification.m_type == dial::notification::type::warning
+        ? "sight::module::ui::icons/warning.svg"
+        : m_notification.m_type == dial::notification::type::instruction
+        ? "sight::module::ui::icons/question.svg"
+        : "sight::module::ui::icons/information.svg"
+    );
+
     if(m_usenotifier)
     {
         // Mode 1: You use the notifier service that will display for you the notifications, you need to emit the
@@ -245,6 +262,7 @@ void display_test_notifications::updating()
 
         if(m_reach_max_characters)
         {
+            // cspell: disable
             message = "This notification "
                       + std::to_string(count)
                       + " will exceeds the maximum allowed characters ! "
@@ -256,24 +274,61 @@ void display_test_notifications::updating()
                         "velit esse cillum dolore eu fugiat nulla pariatur. "
                         "Excepteur sint occaecat cupidatat non proident, "
                         "sunt in culpa qui officia deserunt mollit anim id est laborum.";
+            // cspell: enable
         }
 
-        this->notify(
-            {
-                .m_type     = m_notification.m_type,
-                .m_message  = message,
-                .m_duration = m_notification.m_duration,
-                .m_channel  = m_notification.m_channel,
-                .m_closable = m_notification.m_closable,
-                .m_sound    = m_notification.m_sound
-            });
+        namespace notification = sight::core::notification;
+
+        switch(m_notification.m_type)
+        {
+            case dial::notification::type::instruction:
+                this->notify<notification::instruction>(
+                    notification::message::params {
+                    .text     = message,
+                    .icon     = icon,
+                    .channel  = m_notification.m_channel,
+                    .duration = m_notification.m_duration,
+                    .sound    = m_notification.m_sound
+                });
+                break;
+
+            case dial::notification::type::warning:
+                this->notify<notification::warning>(
+                    notification::message::params {
+                    .text     = message,
+                    .channel  = m_notification.m_channel,
+                    .duration = m_notification.m_duration,
+                    .sound    = m_notification.m_sound
+                });
+                break;
+
+            case dial::notification::type::error:
+                this->notify<notification::error>(
+                    notification::message::params {
+                    .text     = message,
+                    .channel  = m_notification.m_channel,
+                    .duration = m_notification.m_duration,
+                    .sound    = m_notification.m_sound
+                });
+                break;
+
+            default:
+                this->notify<notification::information>(
+                    notification::message::params {
+                    .text     = message,
+                    .channel  = m_notification.m_channel,
+                    .duration = m_notification.m_duration,
+                    .sound    = m_notification.m_sound
+                });
+                break;
+        }
     }
     else
     {
         // Mode 2: Standalone, you decide where to pop the notification by calling directly the notification.
         if(m_display_all)
         {
-            using position_t = sight::service::notification::position;
+            using position_t = dial::notification_base::position;
 
             for(const auto& position : {
                     position_t::top_left,
@@ -285,12 +340,13 @@ void display_test_notifications::updating()
                     position_t::centered_bottom
                 })
             {
-                ::dial::notification::show(
-                    sight::service::notification
+                dial::notification::show(
+                    dial::notification_base::params
                     {
                         .m_type     = m_notification.m_type,
                         .m_position = position,
                         .m_message  = message,
+                        .m_icon     = icon,
                         .m_duration = m_notification.m_duration,
                         .m_channel  = m_notification.m_channel,
                         .m_closable = m_notification.m_closable
@@ -299,12 +355,13 @@ void display_test_notifications::updating()
         }
         else
         {
-            ::dial::notification::show(
-                sight::service::notification
+            dial::notification::show(
+                dial::notification_base::params
                 {
                     .m_type     = m_notification.m_type,
                     .m_position = m_notification.m_position,
                     .m_message  = message,
+                    .m_icon     = icon,
                     .m_duration = m_notification.m_duration,
                     .m_channel  = m_notification.m_channel,
                     .m_closable = m_notification.m_closable

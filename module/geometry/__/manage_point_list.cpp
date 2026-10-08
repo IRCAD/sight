@@ -22,15 +22,6 @@
 
 #include "manage_point_list.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-
-#include <data/string.hpp>
-
-#include <boost/algorithm/string.hpp>
-
-#include <glm/mat4x4.hpp>
-#include <glm/vec4.hpp>
 namespace sight::module::geometry
 {
 
@@ -83,19 +74,7 @@ void manage_point_list::updating()
     }
 
     const data::point::sptr new_point = std::make_shared<data::point>();
-    const auto matrix                 = m_transform.lock();
-    if(matrix)
-    {
-        const glm::dmat4x4 mat = sight::geometry::data::to_glm_mat(*matrix);
-
-        const glm::dvec4 point          = {(*input_position)[3], (*input_position)[7], (*input_position)[11], 1.0};
-        const glm::dvec4 modified_point = mat * point;
-        *new_point = {modified_point[0], modified_point[1], modified_point[2]};
-    }
-    else
-    {
-        *new_point = {(*input_position)[3], (*input_position)[7], (*input_position)[11]};
-    }
+    *new_point = {(*input_position)[3], (*input_position)[7], (*input_position)[11]};
 
     this->add_point(new_point);
 }
@@ -113,20 +92,7 @@ void manage_point_list::pick(data::tools::picking_info _info) const
     if(_info.m_modifier_mask == m_modifier)
     {
         const data::point::sptr new_point = std::make_shared<data::point>();
-
-        const auto matrix = m_transform.lock();
-        if(matrix)
-        {
-            const glm::dvec4 picked_point = {_info.m_world_pos[0], _info.m_world_pos[1], _info.m_world_pos[2], 1.0};
-            const glm::dmat4x4 mat        = sight::geometry::data::to_glm_mat(*matrix);
-
-            const glm::dvec4 modified_picked_point = mat * picked_point;
-            *new_point = {modified_picked_point[0], modified_picked_point[1], modified_picked_point[2]};
-        }
-        else
-        {
-            *new_point = {_info.m_world_pos[0], _info.m_world_pos[1], _info.m_world_pos[2]};
-        }
+        *new_point = {_info.m_world_pos[0], _info.m_world_pos[1], _info.m_world_pos[2]};
 
         if(_info.m_event_id == data::tools::picking_info::event::mouse_left_up)
         {

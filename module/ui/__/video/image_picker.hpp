@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,15 +44,17 @@ namespace sight::module::ui::video
  *
  * @code{.xml}
    <service uid="..." type="sight::module::ui::video::image_picker" >
-        <inout key="pointList" uid="..." />
-        <inout key="pixelPointList" uid="..." />
-        <in key="camera" uid="..." />
+        <input camera="${camera}" />
+        <output world_points="${world_points}" screen_points="${screen_points}" />
         <config videoReference="center" useCtrlModifier="true" singlePointMode="false" />
    </service>
    @endcode
- * @section InOut InOut
- * - \b pointList [sight::data::point_list] : Pointlist of clicked points, real coordinates given by picker.
- * - \b pixelPointList [sight::data::point_list] : PointList of clicked points, transformed in pixel world.
+ * @section Input Input
+ * - \b input.camera [sight::data::camera]: camera used to convert world points to screen points.
+ *
+ * @section Output Output
+ * - \b output.world_points [sight::data::point_list]: clicked points in world coordinates.
+ * - \b output.screen_points [sight::data::point_list]: clicked points in screen coordinates.
  *
  * @section Configuration Configuration
  * - \b videoReference: specifies where is the reference system of picker interactor.
@@ -88,6 +90,10 @@ class image_picker : public service::controller
 public:
 
     SIGHT_DECLARE_SERVICE(image_picker, service::controller);
+    struct slots
+    {
+        static inline const std::string GET_INTERACTION = "get_interaction";
+    };
 
     /// Creates the video reference map..
     image_picker() noexcept;
@@ -112,7 +118,7 @@ protected:
 private:
 
     /// Manages several video coordinate system.
-    enum video_reference_t
+    enum video_reference_t : std::uint8_t
     {
         top_left = 0,
         center
@@ -139,9 +145,9 @@ private:
     // Whether to enable or not use of single point mode (see the service description for more information).
     bool m_single_point_mode {false};
 
-    data::ptr<data::point_list, sight::data::access::inout> m_point_list {this, "pointList"};
-    data::ptr<data::point_list, sight::data::access::inout> m_pixel_point_list {this, "pixelPointList"};
-    data::ptr<data::camera, sight::data::access::in> m_camera {this, "camera"};
+    data::ptr<data::point_list, sight::data::access::inout> m_point_list {this, "output.world_points"};
+    data::ptr<data::point_list, sight::data::access::inout> m_pixel_point_list {this, "output.screen_points"};
+    data::ptr<data::camera, sight::data::access::in> m_camera {this, "input.camera"};
 };
 
 } //namespace sight::module::ui::video

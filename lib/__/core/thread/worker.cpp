@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,16 +22,15 @@
 
 // cspell:ignore HRESULT PWSTR
 
-#include "core/thread/worker.hpp"
+#include "worker.hpp"
 
+#include "core/exceptionmacros.hpp"
 #include "core/lazy_instantiator.hpp"
 #include "core/mt/types.hpp"
 #include "core/spy_log.hpp"
 
-#include <boost/algorithm/string.hpp>
-#include <boost/locale/encoding_utf.hpp>
+#include <boost/algorithm/string.hpp> // NOLINT(misc-include-cleaner)
 
-#include <codecvt>
 #include <map>
 
 #ifdef _WIN32
@@ -145,6 +144,9 @@ std::string get_thread_name(std::optional<std::thread::native_handle_type> _thre
     return {thread_name.data()};
 #endif
 }
+
+namespace
+{
 
 //------------------------------------------------------------------------------
 
@@ -295,6 +297,8 @@ private:
     /// Used to protect the registry access.
     mutable core::mt::read_write_mutex m_registry_mutex;
 };
+
+} // namespace
 
 static auto active_workers = core::thread::active_workers::get();
 

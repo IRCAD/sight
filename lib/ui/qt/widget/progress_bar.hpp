@@ -23,7 +23,8 @@
 
 #include <sight/ui/qt/config.hpp>
 
-#include <core/progress/monitor.hpp>
+#include <core/notification/monitor.hpp>
+#include <core/notification/notifications_store.hpp>
 
 #include <QLabel>
 #include <QLayout>
@@ -42,7 +43,8 @@ namespace sight::ui::qt::widget
  *
  * When all tasks are finished, an optional callback can be invoked.
  */
-class SIGHT_UI_QT_CLASS_API_QT progress_bar final : public std::enable_shared_from_this<progress_bar>
+class SIGHT_UI_QT_CLASS_API_QT progress_bar final : public std::enable_shared_from_this<progress_bar>,
+                                                    public sight::core::notification::notifications_store
 {
 public:
 
@@ -76,14 +78,14 @@ public:
      *
      * Everything is cleared and all widgets destroyed. The _monitors themselves are not cancelled or stopped.
      */
-    SIGHT_UI_QT_API_QT virtual ~progress_bar();
+    SIGHT_UI_QT_API_QT ~progress_bar() final;
 
     /**
      * @brief Add a _monitor to the progress bar.
      *
-     * @param __monitor : the _monitor to add.
+     * @param _monitor : the _monitor to add.
      */
-    SIGHT_UI_QT_API_QT void add_monitor(core::progress::monitor::sptr __monitor);
+    SIGHT_UI_QT_API_QT void add_monitor(core::notification::monitor::sptr _monitor);
 
     /**
      * @brief Get the underlying QWidget that contains the progress bar.
@@ -105,6 +107,11 @@ public:
      * @return true if all _monitors are finished, false otherwise.
      */
     inline bool is_finished() const;
+
+protected:
+
+    /// notifications_store: react to a tracked monitor becoming canceled/finished.
+    void on_notification_finished(const notification_t::wptr& _notification) final;
 
 private:
 
@@ -134,11 +141,8 @@ private:
     QPointer<QSvgWidget> m_svg_widget;
     QPointer<QToolButton> m_cancel_button;
 
-    /// Protect the _monitors list
-    mutable std::recursive_mutex m_mutex;
-
-    /// List of current _monitors being displayed
-    std::vector<core::progress::monitor::wptr> m_progress_monitors;
+    /// Protect m_finished_callback
+    mutable std::mutex m_finished_callback_mutex;
 
     /// Callback called when all _monitors are finished
     finished_callback_t m_finished_callback;
@@ -155,7 +159,7 @@ inline QWidget* progress_bar::widget() const
 
 inline void progress_bar::set_finished_callback(finished_callback_t _callback)
 {
-    std::lock_guard lock(m_mutex);
+    std::scoped_lock lock(m_finished_callback_mutex);
     m_finished_callback = _callback;
 }
 
@@ -163,15 +167,7 @@ inline void progress_bar::set_finished_callback(finished_callback_t _callback)
 
 inline bool progress_bar::is_finished() const
 {
-    std::lock_guard lock(m_mutex);
-
-    return m_progress_monitors.empty() || std::ranges::all_of(
-        m_progress_monitors,
-        [](const auto& _monitor)
-        {
-            const auto monitor = _monitor.lock();
-            return !monitor || monitor->get_state() >= core::progress::monitor::state::canceled;
-        });
+    return this->all_finished();
 }
 
 } //namespace sight::ui::qt::widget

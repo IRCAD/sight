@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,34 +26,38 @@
 
 #pragma once
 
-#include "core/demangler.hpp"
+#include "demangler.hpp" // NOLINT(misc-include-cleaner)
 
-#include <boost/preprocessor/cat.hpp>
-#include <boost/preprocessor/facilities/empty.hpp>
 #include <boost/preprocessor/facilities/overload.hpp>
 
 #include <memory>
-#include <string>
-#include <type_traits>
 
-#define SIGHT_NOT_USED(x) ((void) x)
+namespace sight
+{
 
-/**
- * @name Smart pointers macro
- * @{ */
-// Expand to shared_ptr < _cls_ >
-#define SPTR(_cls_) std::shared_ptr<_cls_>
-// Expand to shared_ptr < const _cls_ >
-#define CSPTR(_cls_) std::shared_ptr<const _cls_>
-// Expand to weak_ptr < _cls_ >
-#define WPTR(_cls_) std::weak_ptr<_cls_>
-// Expand to weak_ptr < const _cls_ >
-#define CWPTR(_cls_) std::weak_ptr<const _cls_>
-// Expand to unique_ptr < _cls_ >
-#define UPTR(_cls_) std::unique_ptr<_cls_>
-// Expand to unique_ptr < const _cls_ >
-#define CUPTR(_cls_) std::unique_ptr<const _cls_>
-/**  @} */
+template<typename T, typename deleter = std::default_delete<T> >
+using uptr = std::unique_ptr<T, deleter>;
+
+template<typename T, typename deleter = std::default_delete<T> >
+using cuptr = std::unique_ptr<const T, deleter>;
+
+template<typename T>
+using sptr = std::shared_ptr<T>;
+
+template<typename T>
+using csptr = std::shared_ptr<const T>;
+
+template<typename T>
+using wptr = std::weak_ptr<T>;
+
+template<typename T>
+using cwptr = std::weak_ptr<const T>;
+
+} // namespace sight
+
+//NOLINTBEGIN(cppcoreguidelines-macro-usage)
+
+#define SIGHT_NOT_USED(x) ((void) (x))
 
 /*
  * @brief Define several typdefs for classes (sptr, wptr, ...)
@@ -66,17 +70,17 @@
         /** Type of root class  */ \
         using root_class_t = self_t; \
         /** Shared pointer type  */ \
-        using sptr = SPTR(self_t); \
+        using sptr = sight::sptr<self_t>; \
         /** Weak pointer type  */ \
-        using wptr = WPTR(self_t); \
+        using wptr = sight::wptr<self_t>; \
         /** Unique pointer type  */ \
-        using uptr = UPTR(self_t); \
+        using uptr = sight::uptr<self_t>; \
         /** Const shared pointer type  */ \
-        using csptr = CSPTR(self_t); \
+        using csptr = sight::csptr<self_t>; \
         /** Const weak pointer type  */ \
-        using cwptr = CWPTR(self_t); \
+        using cwptr = sight::cwptr<self_t>; \
         /** Const unique pointer type  */ \
-        using cuptr = CUPTR(self_t); \
+        using cuptr = sight::cuptr<self_t>; \
 
 /**
  * @brief Define several typdefs for classes (sptr, wptr, ...)
@@ -91,17 +95,17 @@
         /** Type of root class  */ \
         using root_class_t = base_class_t::root_class_t; \
         /** Shared pointer type  */ \
-        using sptr = SPTR(self_t); \
+        using sptr = sight::sptr<self_t>; \
         /** Weak pointer type  */ \
-        using wptr = WPTR(self_t); \
+        using wptr = sight::wptr<self_t>; \
         /** Unique pointer type  */ \
-        using uptr = UPTR(self_t); \
+        using uptr = sight::uptr<self_t>; \
         /** Const shared pointer type  */ \
-        using csptr = CSPTR(self_t); \
+        using csptr = sight::csptr<self_t>; \
         /** Const weak pointer type  */ \
-        using cwptr = CWPTR(self_t); \
+        using cwptr = sight::cwptr<self_t>; \
         /** Const unique pointer type  */ \
-        using cuptr = CUPTR(self_t);
+        using cuptr = sight::cuptr<self_t>;
 
 #define FWCORE_STATIC_CACHE(value) \
         static const std::string __cache__(value); \
@@ -115,6 +119,7 @@
  * - LeafClassname is Object
  */
 #define FWCORE_INTERFACE_MACRO() \
+        /* NOLINTBEGIN(misc-override-with-different-visibility) */ \
         /** @name Demangling methods */ \
         /** @{ */ \
         /** @brief return object's classname without its namespace, i.e. base_object */ \
@@ -135,6 +140,7 @@
         { \
             FWCORE_STATIC_CACHE(sight::core::get_classname<self_t>()); \
         } \
+        /* NOLINTEND(misc-override-with-different-visibility) */ \
         /** @} */
 
 /**
@@ -145,6 +151,7 @@
  * - LeafClassname is Object
  */
 #define FWCORE_CLASSNAME_MACRO() \
+        /* NOLINTBEGIN(misc-override-with-different-visibility) */ \
         /** @name Demangling methods */ \
         /** @{ */ \
         /** @brief return object's classname without its namespace, i.e. base_object */ \
@@ -165,6 +172,7 @@
         { \
             FWCORE_STATIC_CACHE(sight::core::get_classname<self_t>()); \
         } \
+        /* NOLINTEND(misc-override-with-different-visibility) */ \
         /** @} */
 
 /**
@@ -181,6 +189,7 @@
         { \
             return self_t::classname() == type; \
         } \
+        /* NOLINTNEXTLINE(misc-override-with-different-visibility) */ \
         virtual bool is_a(const std::string& type) const \
         { \
             return self_t::is_type_of(type); \
@@ -195,7 +204,8 @@
             } \
             return base_class_t::is_type_of(type); \
         } \
-        bool is_a(const std::string& type) const override \
+        /* NOLINTNEXTLINE(misc-override-with-different-visibility) */ \
+        virtual bool is_a(const std::string& type) const override \
         { \
             return self_t::is_type_of(type); \
         }
@@ -206,12 +216,14 @@
  * These methods use 'shared_from_this' to get a shared pointer and cast it to required type
  */
 #define SIGHT_ALLOW_SHARED_FROM_THIS() \
-        /** @brief return a casted const shared ptr from this object */ \
+        /** @brief return a casted const shared ptr from this object \
+         * NOLINTNEXTLINE(bugprone-derived-method-shadowing-base-method) */ \
         csptr get_const_sptr() const \
         { \
             return dynamic_pointer_cast<const self_t>(this->core::base_object::shared_from_this()); \
         } \
-        /** @brief return a casted shared ptr from this object */ \
+        /** @brief return a casted shared ptr from this object \
+         * NOLINTNEXTLINE(bugprone-derived-method-shadowing-base-method) */ \
         sptr get_sptr() \
         { \
             return dynamic_pointer_cast<self_t>(this->core::base_object::shared_from_this()); \
@@ -248,32 +260,11 @@
 #define SIGHT_DECLARE_SERVICE(_class, _parent_class) \
         FWCORE_CLASS_MACRO_2(_class, _parent_class)
 
+//NOLINTEND(cppcoreguidelines-macro-usage)
+
 /// Force inline
 #ifdef _MSC_VER
     #define FINLINE __forceinline
 #else
     #define FINLINE __attribute__((always_inline))
 #endif
-
-namespace sight
-{
-
-template<typename T, typename deleter = std::default_delete<T> >
-using uptr = std::unique_ptr<T, deleter>;
-
-template<typename T, typename deleter = std::default_delete<T> >
-using cuptr = std::unique_ptr<const T, deleter>;
-
-template<typename T>
-using sptr = std::shared_ptr<T>;
-
-template<typename T>
-using csptr = std::shared_ptr<const T>;
-
-template<typename T>
-using wptr = std::weak_ptr<T>;
-
-template<typename T>
-using cwptr = std::weak_ptr<const T>;
-
-} // namespace sight

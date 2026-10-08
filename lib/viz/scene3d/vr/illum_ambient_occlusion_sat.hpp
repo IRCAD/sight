@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2024 IRCAD France
+ * Copyright (C) 2016-2026 IRCAD France
  * Copyright (C) 2016-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,7 +45,7 @@ public:
     struct sat_parameters_t
     {
         /// Ratio used to determine the size of the SAT regarding of the associated image size.
-        float size_ratio = 0.25F;
+        unsigned int size_ratio = 1;
 
         /// Number of shells used to compute the volume illumination from the SAT.
         unsigned shells = 4;
@@ -72,13 +72,10 @@ public:
     SIGHT_VIZ_SCENE3D_API ~illum_ambient_occlusion_sat();
 
     /// Computes a new SAT with a different resolution given by the size ratio.
-    SIGHT_VIZ_SCENE3D_API void update_sat_from_ratio(float _sat_size_ratio);
-
-    /// Recomputes the illumination volume using the current SAT.
-    SIGHT_VIZ_SCENE3D_API void update_volume_illumination();
+    SIGHT_VIZ_SCENE3D_API void set_size_ratio(unsigned int _sat_size_ratio);
 
     /// Recomputes the SAT and the illumination volume when the image or the TF changed.
-    SIGHT_VIZ_SCENE3D_API void sat_update(
+    SIGHT_VIZ_SCENE3D_API void compute(
         const texture::sptr& _img,
         const viz::scene3d::transfer_function::sptr& _tf,
         float _sample_distance
@@ -111,10 +108,13 @@ public:
 private:
 
     /// Allocates or resize the texture used to store the illumination volume.
-    void update_texture();
+    void resize_volume();
 
     /// texture holding the illumination volume.
     Ogre::TexturePtr m_illumination_volume;
+
+    /// Per-volume material used to sample the SAT while computing illumination.
+    Ogre::MaterialPtr m_illumination_material;
 
     /// Sets ambient occlusion / color bleeding usage.
     bool m_ao;
@@ -135,7 +135,7 @@ private:
     static inline const std::string BUFFER_NAME = "__IlluminationVolume";
 
     /// Camera used
-    std::unique_ptr<Ogre::Camera> m_dummy_camera {nullptr};
+    Ogre::Camera* m_dummy_camera {nullptr};
 
     /// scene manager.
     Ogre::SceneManager* m_scene_manager;

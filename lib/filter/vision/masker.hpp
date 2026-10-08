@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,7 +33,7 @@ namespace sight::filter::vision
 /**
  * @brief Define supported color spaces
  */
-enum col_space
+enum col_space : std::uint8_t
 {
     bgr,
     h_sv,
@@ -44,7 +44,7 @@ enum col_space
 /**
  * @brief Define supported image masking mode
  */
-enum detection_mode
+enum detection_mode : std::uint8_t
 {
     fg_ll,   /// Using only a foreground likelihood color model
     bg_ll,   /// Using only a background likelihood color model

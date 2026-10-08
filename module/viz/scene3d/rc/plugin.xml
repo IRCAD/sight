@@ -100,6 +100,17 @@
 
     <extension implements="sight::service::extension::factory">
         <type>sight::viz::scene3d::adaptor</type>
+        <service>sight::module::viz::scene3d::adaptor::image_series</service>
+        <object key="series">sight::data::series_set</object>
+        <object key="tf">sight::data::transfer_function</object>
+        <object key="transfer_functions">sight::data::map</object>
+        <object key="extrudedMeshes">sight::data::model_series</object>
+        <object key="extruded_meshes_by_image">sight::data::map</object>
+        <desc>This adaptor displays image series with independent visibility.</desc>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::viz::scene3d::adaptor</type>
         <service>sight::module::viz::scene3d::adaptor::negato2d</service>
         <object key="image">sight::data::image</object>
         <object key="tf">sight::data::transfer_function</object>
@@ -173,6 +184,8 @@
         <type>sight::viz::scene3d::adaptor</type>
         <service>sight::module::viz::scene3d::adaptor::shape_extruder</service>
         <object key="extrudedMeshes">sight::data::model_series</object>
+        <object key="extruded_meshes_by_image">sight::data::map</object>
+        <object key="image">sight::data::image</object>
         <desc>This adaptor allows to draw a 2D shape with a lasso tool, and create an extruded mesh from it.</desc>
     </extension>
 
@@ -222,7 +235,7 @@
         <service>sight::module::viz::scene3d::adaptor::volume_render</service>
         <object key="image">sight::data::image</object>
         <object key="tf">sight::data::transfer_function</object>
-        <object key="clippingMatrix">sight::data::matrix4</object>
+        <object key="data.clipping_matrix">sight::data::matrix4</object>
         <desc>This adaptor displays a volume rendering.</desc>
     </extension>
 
@@ -237,5 +250,25 @@
         <type>sight::viz::scene3d::adaptor</type>
         <service>sight::module::viz::scene3d::adaptor::predefined_camera</service>
         <desc>This adaptor forbid mouse action to move camera.</desc>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::viz::scene3d::adaptor</type>
+        <service>sight::module::viz::scene3d::adaptor::stroke</service>
+        <object>sight::data::point_list</object>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::viz::scene3d::adaptor</type>
+        <service>sight::module::viz::scene3d::adaptor::unproject_depth_map</service>
+        <object key="depthMapIn">sight::data::image</object>
+        <object key="depthMapOut">sight::data::image</object>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::viz::scene3d::adaptor</type>
+        <service>sight::module::viz::scene3d::adaptor::unproject_points</service>
+        <object key="pointListIn">sight::data::point_list</object>
+        <object key="pointListOut">sight::data::point_list</object>
     </extension>
 </plugin>

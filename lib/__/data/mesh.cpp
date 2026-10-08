@@ -19,18 +19,15 @@
  * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************/
+#include <core/compare.hpp>
 
-#include "data/mesh.hpp"
+#include "mesh.hpp"
 
-#include "data/exception.hpp"
-#include "data/registry/macros.hpp"
-
-#include <core/com/signal.hxx>
+#include "exception.hpp"
+#include "registry/macros.hpp"
 
 #include <array>
 #include <cstdlib>
-#include <functional>
-#include <numeric>
 
 namespace sight::data
 {
@@ -57,25 +54,15 @@ static constexpr auto CELL_SIZE_TO_TYPE = [](std::size_t _size)
 
 //------------------------------------------------------------------------------
 
-const core::com::signals::key_t mesh::VERTEX_MODIFIED_SIG           = "vertexModified";
-const core::com::signals::key_t mesh::POINT_COLORS_MODIFIED_SIG     = "pointColorsModified";
-const core::com::signals::key_t mesh::CELL_COLORS_MODIFIED_SIG      = "cellColorsModified";
-const core::com::signals::key_t mesh::POINT_NORMALS_MODIFIED_SIG    = "pointNormalsModified";
-const core::com::signals::key_t mesh::CELL_NORMALS_MODIFIED_SIG     = "cellNormalsModified";
-const core::com::signals::key_t mesh::POINT_TEX_COORDS_MODIFIED_SIG = "pointTexCoordsModified";
-const core::com::signals::key_t mesh::CELL_TEX_COORDS_MODIFIED_SIG  = "cellTexCoordsModified";
-
-//------------------------------------------------------------------------------
-
 mesh::mesh()
 {
-    new_signal<signal_t>(VERTEX_MODIFIED_SIG);
-    new_signal<signal_t>(POINT_COLORS_MODIFIED_SIG);
-    new_signal<signal_t>(CELL_COLORS_MODIFIED_SIG);
-    new_signal<signal_t>(POINT_NORMALS_MODIFIED_SIG);
-    new_signal<signal_t>(CELL_NORMALS_MODIFIED_SIG);
-    new_signal<signal_t>(POINT_TEX_COORDS_MODIFIED_SIG);
-    new_signal<signal_t>(CELL_TEX_COORDS_MODIFIED_SIG);
+    new_signal<signals::signal_t>(signals::VERTEX_MODIFIED);
+    new_signal<signals::signal_t>(signals::POINT_COLORS_MODIFIED);
+    new_signal<signals::signal_t>(signals::CELL_COLORS_MODIFIED);
+    new_signal<signals::signal_t>(signals::POINT_NORMALS_MODIFIED);
+    new_signal<signals::signal_t>(signals::CELL_NORMALS_MODIFIED);
+    new_signal<signals::signal_t>(signals::POINT_TEX_COORDS_MODIFIED);
+    new_signal<signals::signal_t>(signals::CELL_TEX_COORDS_MODIFIED);
 
     std::ranges::for_each(m_points, [](auto& _array){_array = std::make_shared<data::array>();});
     std::ranges::for_each(m_cells, [](auto& _array){_array = std::make_shared<data::array>();});
@@ -166,7 +153,7 @@ std::size_t mesh::reserve(mesh::size_t _nb_pts, mesh::size_t _nb_cells, cell_typ
     {
         m_points[static_cast<std::size_t>(point_attribute::normals)]->resize(
             {3, _nb_pts},
-            core::type(core::type::FLOAT)
+            core::type(core::type::FLOAT32)
         );
     }
 
@@ -174,7 +161,7 @@ std::size_t mesh::reserve(mesh::size_t _nb_pts, mesh::size_t _nb_cells, cell_typ
     {
         m_points[static_cast<std::size_t>(point_attribute::tex_coords)]->resize(
             {2, _nb_pts},
-            core::type(core::type::FLOAT)
+            core::type(core::type::FLOAT32)
         );
     }
 
@@ -195,7 +182,7 @@ std::size_t mesh::reserve(mesh::size_t _nb_pts, mesh::size_t _nb_cells, cell_typ
     {
         m_cells[static_cast<std::size_t>(cell_attribute::normals)]->resize(
             {3, _nb_cells},
-            core::type(core::type::FLOAT)
+            core::type(core::type::FLOAT32)
         );
     }
 
@@ -203,7 +190,7 @@ std::size_t mesh::reserve(mesh::size_t _nb_pts, mesh::size_t _nb_cells, cell_typ
     {
         m_cells[static_cast<std::size_t>(cell_attribute::tex_coords)]->resize(
             {2, _nb_cells},
-            core::type(core::type::FLOAT)
+            core::type(core::type::FLOAT32)
         );
     }
 
@@ -232,32 +219,43 @@ bool mesh::shrink_to_fit()
 
     if(static_cast<std::uint8_t>(m_attributes & attribute::point_colors) != 0U)
     {
-        m_points[static_cast<std::size_t>(point_attribute::colors)]->resize({4, std::size_t(m_num_points)});
+        m_points[static_cast<std::size_t>(point_attribute::colors)]->resize(
+            {4,
+             static_cast<std::size_t>(m_num_points)
+            });
     }
 
     if(static_cast<std::uint8_t>(m_attributes & attribute::point_normals) != 0U)
     {
-        m_points[static_cast<std::size_t>(point_attribute::normals)]->resize({3, std::size_t(m_num_points)});
+        m_points[static_cast<std::size_t>(point_attribute::normals)]->resize(
+            {3,
+             static_cast<std::size_t>(m_num_points)
+            });
     }
 
     if(static_cast<std::uint8_t>(m_attributes & attribute::point_tex_coords) != 0U)
     {
-        m_points[static_cast<std::size_t>(point_attribute::tex_coords)]->resize({2, std::size_t(m_num_points)});
+        m_points[static_cast<std::size_t>(point_attribute::tex_coords)]->resize(
+            {2, static_cast<std::size_t>(m_num_points)
+            });
     }
 
     if(static_cast<std::uint8_t>(m_attributes & attribute::cell_colors) != 0U)
     {
-        m_cells[static_cast<std::size_t>(cell_attribute::colors)]->resize({4, std::size_t(m_num_cells)});
+        m_cells[static_cast<std::size_t>(cell_attribute::colors)]->resize({4, static_cast<std::size_t>(m_num_cells)});
     }
 
     if(static_cast<std::uint8_t>(m_attributes & attribute::cell_normals) != 0U)
     {
-        m_cells[static_cast<std::size_t>(cell_attribute::normals)]->resize({3, std::size_t(m_num_cells)});
+        m_cells[static_cast<std::size_t>(cell_attribute::normals)]->resize({3, static_cast<std::size_t>(m_num_cells)});
     }
 
     if(static_cast<std::uint8_t>(m_attributes & attribute::cell_tex_coords) != 0U)
     {
-        m_cells[static_cast<std::size_t>(cell_attribute::tex_coords)]->resize({2, std::size_t(m_num_cells)});
+        m_cells[static_cast<std::size_t>(cell_attribute::tex_coords)]->resize(
+            {2,
+             static_cast<std::size_t>(m_num_cells)
+            });
     }
 
     const auto new_allocated_size = this->allocated_size_in_bytes();

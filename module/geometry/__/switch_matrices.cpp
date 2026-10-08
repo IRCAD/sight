@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,11 +21,6 @@
  ***********************************************************************/
 
 #include "module/geometry/__/switch_matrices.hpp"
-
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-
-#include <geometry/data/matrix4.hpp>
 
 namespace sight::module::geometry
 {
@@ -61,8 +56,8 @@ void switch_matrices::stopping()
 service::connections_t switch_matrices::auto_connections() const
 {
     return {
-        {m_current_index, data::object::MODIFIED_SIG, service::slots::UPDATE},
-        {m_matrix, data::object::MODIFIED_SIG, service::slots::UPDATE}
+        {m_current_index, data::signals::MODIFIED, service::slots::UPDATE},
+        {m_matrix, data::signals::MODIFIED, service::slots::UPDATE}
     };
 }
 
@@ -77,7 +72,7 @@ void switch_matrices::updating()
 
     auto desired_matrix = m_matrix[current_index].lock();
     matrix->shallow_copy(desired_matrix.get_shared());
-    matrix->async_emit(this, data::object::MODIFIED_SIG);
+    matrix->async_emit(this, data::signals::MODIFIED);
 }
 
 // ----------------------------------------------------------------------------
@@ -86,8 +81,8 @@ void switch_matrices::switch_matrix()
 {
     {
         auto current_index = m_current_index.lock();
-        *current_index = *current_index + 1;
-        if(static_cast<std::size_t>(*current_index) >= m_matrix.size())
+        *current_index = current_index->value() + 1;
+        if(static_cast<std::size_t>(current_index->value()) >= m_matrix.size())
         {
             *current_index = 0;
         }

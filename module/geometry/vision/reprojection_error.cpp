@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,53 +22,36 @@
 
 #include "reprojection_error.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-
 #include <geometry/vision/helper.hpp>
 
 #include <io/opencv/camera.hpp>
 #include <io/opencv/image.hpp>
 
 #include <opencv2/calib3d.hpp>
-#include <opencv2/opencv.hpp>
+#include <opencv2/imgproc.hpp>
 
 namespace sight::module::geometry::vision
 {
-
-const core::com::slots::key_t reprojection_error::COMPUTE_SLOT       = "compute";
-const core::com::slots::key_t reprojection_error::SET_PARAMETER_SLOT = "set_parameter";
-
-static const core::com::signals::key_t ERROR_COMPUTED_SIG = "error_computed";
 
 //-----------------------------------------------------------------------------
 
 reprojection_error::reprojection_error()
 {
-    new_signal<error_computed_t>(ERROR_COMPUTED_SIG);
+    new_signal<signals::error_computed_t>(signals::ERROR_COMPUTED);
 
-    new_slot(COMPUTE_SLOT, &reprojection_error::compute, this);
+    new_slot(slots::COMPUTE, &reprojection_error::compute, this);
 }
 
 //-----------------------------------------------------------------------------
 
 void reprojection_error::configuring(const config_t& _config)
 {
-    auto in_cfg = _config.equal_range("in");
-    for(auto it_cfg = in_cfg.first ; it_cfg != in_cfg.second ; ++it_cfg)
+    const auto& matrix_cfg  = _config.get_child("input.matrix");
+    const auto matrix_items = matrix_cfg.equal_range("item");
+    for(auto it_item_cfg = matrix_items.first ; it_item_cfg != matrix_items.second ; ++it_item_cfg)
     {
-        const auto group = it_cfg->second.get<std::string>("<xmlattr>.group", "");
-        if(group == MATRIX_INPUT)
-        {
-            auto key_cfg = it_cfg->second.equal_range("key");
-            for(auto it_key_cfg = key_cfg.first ; it_key_cfg != key_cfg.second ; ++it_key_cfg)
-            {
-                const auto key = it_key_cfg->second.get<std::string>("<xmlattr>.id");
-                m_matrices_tag.push_back(key);
-            }
-
-            break;
-        }
+        const auto key = it_item_cfg->second.get<std::string>("<xmlattr>.id");
+        m_matrices_tag.push_back(key);
     }
 }
 
@@ -181,7 +164,7 @@ void reprojection_error::compute(core::clock::type _timestamp)
                             m_distorsion_coef
                         );
 
-                    this->signal<error_computed_t>(ERROR_COMPUTED_SIG)->async_emit(err_p.first);
+                    this->async_emit(signals::ERROR_COMPUTED, err_p.first);
 
                     errors.push_back(err_p);
                 }
@@ -196,7 +179,7 @@ void reprojection_error::compute(core::clock::type _timestamp)
             for(const auto& err : errors)
             {
                 auto frame = m_frame.lock();
-                SIGHT_ASSERT("The input " << FRAME_INOUT << " is not valid.", frame);
+                SIGHT_ASSERT("The data " << m_frame.key() << " is not valid.", frame);
 
                 if(frame->size_in_bytes() > 0)
                 {
@@ -236,7 +219,7 @@ void reprojection_error::updating()
 service::connections_t reprojection_error::auto_connections() const
 {
     return {
-        {MATRIX_INPUT, data::object::MODIFIED_SIG, service::slots::UPDATE}
+        {m_matrix, data::signals::MODIFIED, service::slots::UPDATE}
     };
 }
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,6 +22,8 @@
 
 #pragma once
 
+#include <data/matrix4.hpp>
+
 #include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/render.hpp>
 #include <viz/scene3d/transformable.hpp>
@@ -37,13 +39,13 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service type="sight::module::viz::scene3d::adaptor::transform">
-        <inout key="transform" uid="..." />
+        <data transform="${...}" />
         <config transform="meshTFAdaptor" />
    </service>
    @endcode
  *
  * @subsection In-Out In-Out:
- * - \b transform [sight::data::matrix4]: Sight transform matrix.
+ * - \b data.transform [sight::data::matrix4]: Sight transform matrix.
  *
  * @subsection Configuration Configuration:
  * - \b transform (mandatory, string): Name of the Ogre Transform.
@@ -55,7 +57,7 @@ class transform final :
 {
 public:
 
-    static constexpr std::string_view TRANSFORM_INOUT = "transform";
+    static constexpr std::string_view TRANSFORM_INOUT = "data.transform";
 
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(transform, sight::viz::scene3d::adaptor);
@@ -78,7 +80,7 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::object::MODIFIED_SIG of s_TRANSFORM_INOUT to service::slots::UPDATE
+     * Connect data::signals::MODIFIED of s_TRANSFORM_INOUT to service::slots::UPDATE
      */
     service::connections_t auto_connections() const final;
 

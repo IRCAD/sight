@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,14 +24,9 @@
 
 #include <sight/ui/qt/config.hpp>
 
-#include <core/base.hpp>
-#include <core/object.hpp>
-
 #include <ui/__/container/widget.hpp>
 
 #include <QLayout>
-#include <qmainwindow.h>
-#include <qnamespace.h>
 #include <QPointer>
 #include <QWidget>
 
@@ -69,6 +64,7 @@ public:
 
     SIGHT_UI_QT_API void set_visible(bool _is_visible) override;
     SIGHT_UI_QT_API void set_enabled(bool _is_enabled) override;
+    SIGHT_UI_QT_API void set_blurred(bool _is_blurred) override;
 
 private:
 
@@ -97,7 +93,7 @@ inline QWidget* widget::get_qt_container() const
 
 inline QWidget* widget::get_qt_root() const
 {
-    return m_root ? m_root : m_container;
+    return (m_root != nullptr) ? m_root : m_container;
 }
 
 } // namespace sight::ui::qt::container

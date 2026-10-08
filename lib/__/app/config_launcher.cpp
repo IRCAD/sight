@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,8 +23,6 @@
 #include "app/config_launcher.hpp"
 
 #include <core/com/proxy.hpp>
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
 
 namespace sight::app
 {
@@ -44,8 +42,17 @@ config_launcher::config_launcher() noexcept :
 service::connections_t config_launcher::auto_connections() const
 {
     return {
-        {m_config_id, sight::data::object::MODIFIED_SIG, slots::UPDATE}
+        {m_config_id, sight::data::signals::MODIFIED, slots::UPDATE},
+        {m_nested_config_id, sight::data::signals::MODIFIED, slots::UPDATE}
     };
+}
+
+//------------------------------------------------------------------------------
+
+std::string config_launcher::config_id() const
+{
+    const auto nested = *m_nested_config_id;
+    return nested.empty() ? *m_config_id : nested;
 }
 
 //------------------------------------------------------------------------------
@@ -58,9 +65,28 @@ void config_launcher::configuring(const config_t& _config)
 
 //------------------------------------------------------------------------------
 
+std::optional<std::string> config_launcher::resolve_object_type(
+    std::string_view _key,
+    std::optional<std::size_t> _index
+) const
+{
+    // The type of the objects forwarded to the sub-configuration is declared by that sub-configuration, which is only
+    // known when the service starts, since it may be set at runtime through the "config" property. The objects are
+    // thus built at that moment, see app::helper::config_launcher::start_config().
+    if(_index.has_value()
+       && (_key == helper::config_launcher::OBJECT_GROUP || _key == helper::config_launcher::DATA_GROUP))
+    {
+        return std::nullopt;
+    }
+
+    return base::resolve_object_type(_key, _index);
+}
+
+//------------------------------------------------------------------------------
+
 void config_launcher::starting()
 {
-    const auto config = *m_config_id;
+    const auto config = this->config_id();
     if(not config.empty())
     {
         m_config_launcher->set_config(config);
@@ -85,7 +111,7 @@ void config_launcher::updating()
 {
     bool start = !m_config_launcher->config_is_running();
 
-    const auto new_config = *m_config_id;
+    const auto new_config = this->config_id();
 
     // If the configuration is different from the current one
     if(m_config_launcher->config() != new_config)

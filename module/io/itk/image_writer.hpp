@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <core/progress/observer.hpp>
+#include <core/notification/observer.hpp>
 
 #include <io/__/service/writer.hpp>
 
@@ -45,12 +45,12 @@ namespace sight::module::io::itk
  *
  * @code{.xml}
    <service type="sight::module::io::itk::image_writer">
-       <in key="data" uid="..." />
-       <file>...</file>
+       <data write="..." />
+       <path file="..." />
    </service>
    @endcode
  * @subsection Input Input
- * - \b data [sight::data::image]: image to save.
+ * - \b data.write [sight::data::image]: image to save.
  * @subsection Configuration Configuration
  * - \b file (optional): path of the file to save, if it not defined, 'open_location_dialog()' should be called to
  * define
@@ -63,14 +63,20 @@ public:
     SIGHT_DECLARE_SERVICE(image_writer, sight::io::service::writer);
 
     image_writer() noexcept;
-
     ~image_writer() noexcept override = default;
 
     static bool save_image(
         const std::filesystem::path& _img_save_path,
-        const CSPTR(data::image)& _image,
-        const SPTR(core::progress::observer)& _progress
+        const sight::csptr<data::image>& _image,
+        const sight::sptr<core::notification::observer>& _progress
     );
+
+    /// configure using GUI.
+    void open_location_dialog() override;
+
+    /// Return managed file type, here FILE
+    sight::io::service::path_type_t get_path_type() const override;
+    std::vector<std::pair<std::string, std::string> > get_supported_extensions() override;
 
 protected:
 
@@ -88,12 +94,6 @@ protected:
 
     /// Override
     void info(std::ostream& _sstream) override;
-
-    /// configure using GUI.
-    void open_location_dialog() override;
-
-    /// Return managed file type, here FILE
-    sight::io::service::path_type_t get_path_type() const override;
 };
 
 } // namespace sight::module::io::itk

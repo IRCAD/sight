@@ -2,20 +2,19 @@ sight_add_target(tuto11_picker TYPE APP UNIQUE ON)
 
 add_dependencies(
     tuto11_picker
-    sightrun
-    module_app
-    module_ui
-    module_ui_qt
-    module_viz_scene3d
-    module_viz_scene3d_qt
     data
+    module_app
+    module_data
+    module_io_bitmap
+    module_io_matrix
+    module_io_vtk
     module_service
     module_ui
     module_ui_icons
-    module_io_matrix
-    module_io_vtk
-    module_io_bitmap
-    module_data
+    module_ui_qt
+    module_viz_scene3d
+    module_viz_scene3d_qt
+    sightrun
 )
 
 # Allow dark theme via module_ui_qt

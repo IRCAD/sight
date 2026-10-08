@@ -25,8 +25,8 @@
     <extension implements="sight::service::extension::factory">
         <type>sight::service::controller</type>
         <service>sight::module::data::manage</service>
-        <object key="object">sight::data::object</object>
-        <object key="container">sight::data::object</object>
+        <object key="data.element">sight::data::object</object>
+        <object key="data.container">sight::data::object</object>
         <desc>This service manages an object (add/swap/remove) into a container object (Map, Vector, SeriesSet).</desc>
     </extension>
 
@@ -47,8 +47,9 @@
     <extension implements="sight::service::extension::factory">
         <type>sight::service::controller</type>
         <service>sight::module::data::get_camera</service>
-        <object key="camera_set">sight::data::camera_set</object>
-        <object key="camera">sight::data::camera</object>
+        <object key="input.camera_set">sight::data::camera_set</object>
+        <object key="output.camera">sight::data::camera</object>
+        <object key="output.extrinsic">sight::data::matrix4</object>
         <desc>This service extracts camera parameters from a camera series</desc>
     </extension>
 
@@ -58,6 +59,21 @@
         <object key="modelSeries">sight::data::model_series</object>
         <object key="mesh">sight::data::mesh</object>
         <desc>This service extracts meshes from a model series</desc>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::service::controller</type>
+        <service>sight::module::data::remove_mesh</service>
+        <object key="data.model">sight::data::model_series</object>
+        <desc>This service removes reconstructions from a model series</desc>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::service::controller</type>
+        <service>sight::module::data::show_mesh</service>
+        <object key="data.model">sight::data::model_series</object>
+        <object key="visible">sight::data::boolean</object>
+        <desc>This service shows or hides selected reconstructions in a model series</desc>
     </extension>
 
     <extension implements="sight::service::extension::factory">
@@ -102,16 +118,16 @@
     <extension implements="sight::service::extension::factory">
         <type>sight::service::controller</type>
         <service>sight::module::data::inverse</service>
-        <object key="source">sight::data::string_serializable</object>
-        <object key="target">sight::data::string_serializable</object>
+        <object key="data.source">sight::data::string_serializable</object>
+        <object key="data.target">sight::data::string_serializable</object>
         <desc>Inverts a boolean value from a string_serializable source</desc>
     </extension>
 
     <extension implements="sight::service::extension::factory">
         <type>sight::service::filter</type>
         <service>sight::module::data::translate</service>
-        <object key="key">sight::data::string_serializable</object>
-        <object key="value">sight::data::string_serializable</object>
+        <object key="data.input">sight::data::string_serializable</object>
+        <object key="data.output">sight::data::string_serializable</object>
         <desc>Translate a string to another.</desc>
     </extension>
 
@@ -126,7 +142,7 @@
     <extension implements="sight::service::extension::factory">
         <type>sight::service::controller</type>
         <service>sight::module::data::validate</service>
-        <object key="data">sight::data::object</object>
+        <object key="data.input">sight::data::object</object>
         <desc>Validate an object.</desc>
     </extension>
 </plugin>

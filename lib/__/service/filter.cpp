@@ -22,8 +22,6 @@
 
 #include "service/filter.hpp"
 
-#include <core/com/signal.hxx>
-
 namespace sight::service
 {
 

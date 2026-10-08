@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,9 +25,7 @@
 #include "data/exception.hpp"
 #include "data/registry/macros.hpp"
 
-#include <core/base.hpp>
-
-#include <functional>
+#include <algorithm>
 
 SIGHT_REGISTER_DATA(sight::data::structure_traits_dictionary);
 
@@ -40,7 +38,7 @@ structure_traits::sptr structure_traits_dictionary::get_structure(std::string _t
 {
     SIGHT_ASSERT(
         "Structure of type '" + _type + "' not found",
-        m_structure_traits_map.find(_type) != m_structure_traits_map.end()
+        m_structure_traits_map.contains(_type)
     );
     return m_structure_traits_map[_type];
 }
@@ -51,7 +49,7 @@ structure_traits::csptr structure_traits_dictionary::get_structure(std::string _
 {
     SIGHT_ASSERT(
         "Structure of type '" + _type + "' not found",
-        m_structure_traits_map.find(_type) != m_structure_traits_map.end()
+        m_structure_traits_map.contains(_type)
     );
     return m_structure_traits_map.at(_type);
 }
@@ -66,18 +64,18 @@ void structure_traits_dictionary::add_structure(structure_traits::sptr _structur
 
     SIGHT_THROW_IF(
         "Structure of type '" << type << "' already exist",
-        m_structure_traits_map.find(type) != m_structure_traits_map.end()
+        m_structure_traits_map.contains(type)
     );
 
     SIGHT_THROW_IF(
-        "Structure of class '" << struct_class << "' can not have attachment",
+        "Structure of class '" << static_cast<unsigned int>(struct_class) << "' can not have attachment",
         !(attachment.empty() || struct_class == structure_traits::lesion || struct_class
           == structure_traits::functional)
     );
 
     SIGHT_THROW_IF(
         "Structure attachment '" << attachment << "' not found in dictionary",
-        !(attachment.empty() || m_structure_traits_map.find(attachment) != m_structure_traits_map.end())
+        !(attachment.empty() || m_structure_traits_map.contains(attachment))
     );
 
     SIGHT_THROW_IF(
@@ -100,12 +98,11 @@ void structure_traits_dictionary::add_structure(structure_traits::sptr _structur
 
 //------------------------------------------------------------------------------
 
-structure_traits_dictionary::StructureTypeNameContainer structure_traits_dictionary::get_structure_type_names() const
+structure_traits_dictionary::structure_type_name_container structure_traits_dictionary::get_structure_type_names() const
 {
-    StructureTypeNameContainer vect_names;
-    std::transform(
-        m_structure_traits_map.begin(),
-        m_structure_traits_map.end(),
+    structure_type_name_container vect_names;
+    std::ranges::transform(
+        m_structure_traits_map,
         std::back_inserter(vect_names),
         [](const auto& _e){return _e.first;});
     return vect_names;

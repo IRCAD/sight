@@ -21,10 +21,8 @@
 
 #include "helper.hxx"
 
+#include <core/notification/observer.hpp>
 #include <core/os/temp_path.hpp>
-#include <core/profiling.hpp>
-#include <core/progress/observer.hpp>
-#include <core/tools/uuid.hpp>
 
 #include <io/bitmap/writer.hpp>
 #include <io/dicom/reader/file.hpp>
@@ -55,12 +53,12 @@ inline static std::vector<data::image::sptr> read_dicom_images(std::size_t _coun
             // Read a DICOM image "us/Ultrasound Image Storage/GE, lossy JPEG"
             reader->set_folder(utest_data::dir() / "us/Ultrasound Image Storage/GE, lossy JPEG");
             {
-                auto observer = std::make_shared<core::progress::observer>("Reading DICOM images");
+                auto observer = std::make_shared<core::notification::observer>("Reading DICOM images");
                 reader->read(observer);
             }
 
             // Just to be sure we read the good data
-            if(series_set->size() != std::size_t(1))
+            if(series_set->size() != static_cast<std::size_t>(1))
             {
                 throw std::runtime_error("Expected 1 series, got " + std::to_string(series_set->size()));
             }
@@ -72,7 +70,8 @@ inline static std::vector<data::image::sptr> read_dicom_images(std::size_t _coun
             }
 
             auto size = image_series->size();
-            if(size[0] != std::size_t(636) || size[1] != std::size_t(434) || size[2] != std::size_t(1))
+            if(size[0] != static_cast<std::size_t>(636) || size[1] != static_cast<std::size_t>(434)
+               || size[2] != static_cast<std::size_t>(1))
             {
                 throw std::runtime_error("Image size mismatch");
             }
@@ -83,12 +82,12 @@ inline static std::vector<data::image::sptr> read_dicom_images(std::size_t _coun
             // Read next image "us/Ultrasound Image Storage/Siemens Acuson 500"
             reader->set_folder(utest_data::dir() / "us/Ultrasound Image Storage/Siemens Acuson 500");
             {
-                auto observer = std::make_shared<core::progress::observer>("Reading DICOM images");
+                auto observer = std::make_shared<core::notification::observer>("Reading DICOM images");
                 reader->read(observer);
             }
 
             // Just to be sure we read the good data
-            if(series_set->size() != std::size_t(1))
+            if(series_set->size() != static_cast<std::size_t>(1))
             {
                 throw std::runtime_error("Expected 1 series at second read");
             }
@@ -100,7 +99,8 @@ inline static std::vector<data::image::sptr> read_dicom_images(std::size_t _coun
             }
 
             size = image_series->size();
-            if(size[0] != std::size_t(800) || size[1] != std::size_t(600) || size[2] != std::size_t(1))
+            if(size[0] != static_cast<std::size_t>(800) || size[1] != static_cast<std::size_t>(600)
+               || size[2] != static_cast<std::size_t>(1))
             {
                 throw std::runtime_error("Image size mismatch at second read");
             }
@@ -111,12 +111,12 @@ inline static std::vector<data::image::sptr> read_dicom_images(std::size_t _coun
             // Read next image "us/Ultrasound Multi-frame Image Storage/Siemens Acuson 500"
             reader->set_folder(utest_data::dir() / "us/Ultrasound Multi-frame Image Storage/Siemens Acuson 500");
             {
-                auto observer = std::make_shared<core::progress::observer>("Reading DICOM images");
+                auto observer = std::make_shared<core::notification::observer>("Reading DICOM images");
                 reader->read(observer);
             }
 
             // Just to be sure we read the good data
-            if(series_set->size() != std::size_t(1))
+            if(series_set->size() != static_cast<std::size_t>(1))
             {
                 throw std::runtime_error("Expected 1 series at third read");
             }
@@ -128,7 +128,8 @@ inline static std::vector<data::image::sptr> read_dicom_images(std::size_t _coun
             }
 
             size = image_series->size();
-            if(size[0] != std::size_t(800) || size[1] != std::size_t(600) || size[2] != std::size_t(60))
+            if(size[0] != static_cast<std::size_t>(800) || size[1] != static_cast<std::size_t>(600)
+               || size[2] != static_cast<std::size_t>(60))
             {
                 throw std::runtime_error("Image size mismatch at third read");
             }
@@ -208,7 +209,7 @@ inline static void profile_writer(
     // Wait for all file delete task to finish
     while(!_tasks.empty())
     {
-        _tasks.back().wait();
+        _tasks.back().get();
         _tasks.pop_back();
     }
 }
@@ -316,7 +317,7 @@ inline static void profile_open_cv_writer(
     // Wait for all file delete task to finish
     while(!_tasks.empty())
     {
-        _tasks.back().wait();
+        _tasks.back().get();
         _tasks.pop_back();
     }
 }
@@ -574,7 +575,7 @@ TEST_SUITE("sight::io::bitmap::writer")
         {
             const auto& tmp_path = tmp_dir / ("empty" + ext);
             CHECK_NOTHROW(writer->set_file(tmp_path));
-            auto observer = std::make_shared<core::progress::observer>("Writing empty image... ");
+            auto observer = std::make_shared<core::notification::observer>("Writing empty image... ");
             CHECK_THROWS(writer->write(observer));
             CHECK_MESSAGE(!std::filesystem::exists(tmp_path), (tmp_path.string() + " exists."));
         }
@@ -599,7 +600,7 @@ TEST_SUITE("sight::io::bitmap::writer")
         {
             const auto& tmp_path = tmp_folder / ("wrong_path" + ext);
             CHECK_NOTHROW(writer->set_file(tmp_path));
-            auto observer = std::make_shared<core::progress::observer>("Writing wrong path image... ");
+            auto observer = std::make_shared<core::notification::observer>("Writing wrong path image... ");
             CHECK_NOTHROW(writer->write(observer));
             CHECK_MESSAGE(std::filesystem::exists(tmp_path), (tmp_path.string() + " doesn't exist."));
         }
@@ -633,11 +634,11 @@ TEST_SUITE("sight::io::bitmap::writer")
             {
                 const auto& tmp_path = tmp_dir / (std::to_string(_i) + "_from_dicom" + _ext);
                 CHECK_NOTHROW(writer->set_file(tmp_path));
-                auto observer = std::make_shared<core::progress::observer>("Writing from DICOM image... ");
+                auto observer = std::make_shared<core::notification::observer>("Writing from DICOM image... ");
                 CHECK_NOTHROW(writer->write(observer));
                 CHECK(std::filesystem::exists(tmp_path));
 
-                return std::int64_t(std::filesystem::file_size(tmp_path));
+                return static_cast<std::int64_t>(std::filesystem::file_size(tmp_path));
             };
 
         for(std::size_t i = 0 ; const auto& image : image_series)
@@ -900,9 +901,9 @@ TEST_SUITE("sight::io::bitmap::writer")
             );
         }
 
-        for(const auto& task : tasks)
+        for(auto& task : tasks)
         {
-            task.wait();
+            task.get();
         }
     }
 } // TEST_SUITE

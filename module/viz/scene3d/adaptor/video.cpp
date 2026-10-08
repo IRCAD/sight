@@ -22,25 +22,16 @@
 
 #include "module/viz/scene3d/adaptor/video.hpp"
 
-#include <core/com/slots.hxx>
-
-#include <service/macros.hpp>
-
 #include <viz/scene3d/ogre.hpp>
-#include <viz/scene3d/utils.hpp>
 
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreCommon.h>
 #include <OGRE/OgreEntity.h>
-#include <OGRE/OgreHardwarePixelBuffer.h>
-#include <OGRE/OgreMaterial.h>
-#include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgreMesh.h>
 #include <OGRE/OgreMeshManager.h>
 #include <OGRE/OgreMovablePlane.h>
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreSceneNode.h>
-#include <OGRE/OgreTechnique.h>
 
 namespace sight::module::viz::scene3d::adaptor
 {
@@ -53,9 +44,9 @@ static const std::string VIDEO_WITH_TF_INT_MATERIAL_NAME = "VideoWithTF_Int";
 
 video::video() noexcept
 {
-    new_slot(slots::UPDATE_IMAGE, [this](){lazy_update(update_flags::IMAGE);});
-    new_slot(slots::UPDATE_TF, [this](){lazy_update(update_flags::TF);});
-    new_slot(slots::UPDATE_PL, [this](){lazy_update(update_flags::POINT_LIST);});
+    new_slot(slots::UPDATE_IMAGE, [this](){lazy_update(update_flags::image);});
+    new_slot(slots::UPDATE_TF, [this](){lazy_update(update_flags::tf);});
+    new_slot(slots::UPDATE_PL, [this](){lazy_update(update_flags::point_list);});
     new_slot(slots::SET_FILTERING, &video::set_filtering, this);
     new_slot(slots::UPDATE_COLOR, &video::update_color, this);
     new_slot(slots::SCALE, &video::scale, this);
@@ -179,14 +170,14 @@ void video::starting()
 service::connections_t video::auto_connections() const
 {
     service::connections_t connections = adaptor::auto_connections();
-    connections.push(m_image, data::image::BUFFER_MODIFIED_SIG, slots::UPDATE_IMAGE);
-    connections.push(m_image, data::image::MODIFIED_SIG, slots::UPDATE_IMAGE);
+    connections.push(m_image, data::image::signals::BUFFER_MODIFIED, slots::UPDATE_IMAGE);
+    connections.push(m_image, data::signals::MODIFIED, slots::UPDATE_IMAGE);
 
-    connections.push(m_tf, data::transfer_function::MODIFIED_SIG, slots::UPDATE_TF);
-    connections.push(m_tf, data::transfer_function::POINTS_MODIFIED_SIG, slots::UPDATE_TF);
-    connections.push(m_tf, data::transfer_function::WINDOWING_MODIFIED_SIG, slots::UPDATE_TF);
+    connections.push(m_tf, data::signals::MODIFIED, slots::UPDATE_TF);
+    connections.push(m_tf, data::transfer_function::signals::POINTS_MODIFIED, slots::UPDATE_TF);
+    connections.push(m_tf, data::transfer_function::signals::WINDOWING_MODIFIED, slots::UPDATE_TF);
 
-    connections.push(m_pl, data::point_list::MODIFIED_SIG, slots::UPDATE_PL);
+    connections.push(m_pl, data::signals::MODIFIED, slots::UPDATE_PL);
     connections.push(m_pl, data::point_list::signals::POINT_ADDED, slots::UPDATE_PL);
     connections.push(m_pl, data::point_list::signals::POINT_REMOVED, slots::UPDATE_PL);
 
@@ -199,16 +190,16 @@ void video::updating()
 {
     this->render_service()->make_current();
 
-    if(update_needed(update_flags::POINT_LIST))
+    if(update_needed(update_flags::point_list))
     {
         this->update_pl();
     }
 
-    if(update_needed(update_flags::TF))
+    if(update_needed(update_flags::tf))
     {
         this->update_tf();
     }
-    else if(update_needed(update_flags::IMAGE))
+    else if(update_needed(update_flags::image))
     {
         const auto&& type_and_size = [this]
                                      {
@@ -230,7 +221,7 @@ void video::updating()
             Ogre::MaterialPtr default_mat;
             if(tf)
             {
-                if(type == core::type::FLOAT || type == core::type::DOUBLE)
+                if(type == core::type::FLOAT32 || type == core::type::FLOAT64)
                 {
                     tpl_mat = VIDEO_WITH_TF_MATERIAL_NAME;
                 }
@@ -415,10 +406,7 @@ void video::update_pl()
     }
 
     // Send the signal:
-    auto modified_sig = m_point_list->signal<data::point_list::modified_signal_t>(
-        data::point_list::MODIFIED_SIG
-    );
-    modified_sig->async_emit();
+    m_point_list->async_emit(data::signals::MODIFIED);
 }
 
 //------------------------------------------------------------------------------

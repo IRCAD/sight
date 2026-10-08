@@ -23,8 +23,7 @@
 #include <io/opencv/type.hpp>
 
 #include <doctest/doctest.h>
-
-#include <opencv2/core.hpp>
+#include <opencv2/core/hal/interface.h>
 
 //------------------------------------------------------------------------------
 
@@ -54,6 +53,20 @@ static void test_from_cv(std::int32_t _cv_type)
 
 TEST_SUITE("sight::io::opencv::type")
 {
+    TEST_CASE("type2str")
+    {
+        CHECK_EQ("8UC1", sight::io::opencv::type::type2str(CV_8UC1));
+        CHECK_EQ("8SC2", sight::io::opencv::type::type2str(CV_8SC2));
+        CHECK_EQ("16UC3", sight::io::opencv::type::type2str(CV_16UC3));
+        CHECK_EQ("32SC4", sight::io::opencv::type::type2str(CV_32SC4));
+        CHECK_EQ("32FC2", sight::io::opencv::type::type2str(CV_32FC2));
+        CHECK_EQ("64FC1", sight::io::opencv::type::type2str(CV_64FC1));
+
+        // Unknown depth falls back to "User" while preserving the number of channels.
+        const auto custom_type = CV_MAKETYPE(7, 2);
+        CHECK_EQ("UserC2", sight::io::opencv::type::type2str(custom_type));
+    }
+
     TEST_CASE("to_cv")
     {
         test_to_cv<std::uint8_t, 1>(CV_8UC1);

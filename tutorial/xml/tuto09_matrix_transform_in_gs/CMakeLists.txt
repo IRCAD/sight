@@ -2,17 +2,17 @@ sight_add_target(tuto09_matrix_transform_in_gs TYPE APP)
 
 add_dependencies(
     tuto09_matrix_transform_in_gs
-    sightrun
+    data
     module_app
+    module_geometry # Contains basic geometrical functions
+    module_io_matrix
+    module_io_vtk
+    module_service
     module_ui
     module_ui_qt
     module_viz_scene3d
     module_viz_scene3d_qt
-    data
-    module_service
-    module_io_matrix
-    module_io_vtk
-    module_geometry
+    sightrun
 )
 
 # Allow dark theme via module_ui_qt

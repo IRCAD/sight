@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,9 +20,10 @@
  *
  ***********************************************************************/
 
-#include "core/logic_stamp.hpp"
+#include "logic_stamp.hpp"
 
-#include "core/mt/types.hpp"
+#include "mt/types.hpp"
+#include "spy_log.hpp"
 
 namespace sight::core
 {

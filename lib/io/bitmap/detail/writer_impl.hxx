@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -33,8 +33,8 @@
 #endif
 
 #include "libjpeg_writer.hxx"
-#include "libtiff_writer.hxx"
 #include "libpng_writer.hxx"
+#include "libtiff_writer.hxx"
 #include "openjpeg_writer.hxx"
 
 // cspell:ignore nvjpeg LIBJPEG LIBTIFF LIBPNG
@@ -54,17 +54,17 @@ public:
     writer_impl& operator=(writer_impl&&)      = delete;
 
     /// Constructor
-    inline explicit writer_impl(writer* const _writer) :
+    explicit writer_impl(writer* const _writer) :
         m_writer(_writer)
     {
     }
 
     /// Default destructor
-    inline ~writer_impl() noexcept = default;
+    ~writer_impl() noexcept = default;
 
     /// Main write function
     template<typename O>
-    inline std::size_t write(O& _output, backend _backend, writer::mode _mode)
+    std::size_t write(O& _output, backend _backend, writer::mode _mode)
     {
         // Get the image pointer
         const auto& image = m_writer->get_concrete_object();
@@ -109,7 +109,8 @@ public:
         {
             return write<openjpeg_writer>(m_openjpeg, *image, _output, _mode);
         }
-        else if(_backend == backend::openjpeg_j2k)
+
+        if(_backend == backend::openjpeg_j2k)
         {
             return write<openjpeg_writer>(
                 m_openjpeg,
@@ -119,31 +120,30 @@ public:
                 flag::j2k_stream
             );
         }
-        else
 
 #ifdef SIGHT_ENABLE_NVJPEG
         if(nvjpeg() && _backend == backend::nvjpeg)
         {
             return write<nvjpeg_writer>(m_nvjpeg, *image, _output, _mode);
         }
-        else
 #endif
+
         if(_backend == backend::libjpeg)
         {
             return write<libjpeg_writer>(m_libjpeg, *image, _output, _mode);
         }
-        else if(_backend == backend::libtiff)
+
+        if(_backend == backend::libtiff)
         {
             return write<libtiff_writer>(m_libtiff, *image, _output, _mode);
         }
-        else if(_backend == backend::libpng)
+
+        if(_backend == backend::libpng)
         {
             return write<libpng_writer>(m_libpng, *image, _output, _mode);
         }
-        else
-        {
-            SIGHT_THROW("No suitable backend found.");
-        }
+
+        SIGHT_THROW("No suitable backend found.");
     }
 
 private:
@@ -169,7 +169,7 @@ private:
     }
 
     /// Pointer to the public interface
-    writer* const m_writer;
+    writer* const m_writer {};
 
 #ifdef SIGHT_ENABLE_NVJPEG
     std::unique_ptr<nvjpeg_writer> m_nvjpeg;

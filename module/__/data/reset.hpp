@@ -28,25 +28,18 @@ namespace sight::module::data
 
 /**
  * @brief This service resets an object using the default constructor.
- * It can reset a single object or a collection of objects in batch using the "targets" group.
+ * It resets one or several objects using the "data.target" group.
  *
  * @section XML XML Configuration
  * @code{.xml}
    <service uid="..." type="sight::module::data::reset" >
-       <inout key="target" uid="..." />
-   </service>
-
-   <service uid="..." type="sight::module::data::reset" >
-    <inout group="targets">
-       <key uid="..." />
-       <key uid="..." />
-    </inout>
+       <data target="..." />
+       <data target="..." />
    </service>
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b target [sight::data::object]: define the target object to reset (singular).
- * - \b targets [sight::data::object]: define the target objects to reset (batch mode).
+ * - \b data.target [sight::data::object]: define the target objects to reset.
  */
 class reset final : public service::controller
 {
@@ -62,31 +55,21 @@ public:
 
 protected:
 
-    //// Configures the service
-    void configuring(const config_t& _config) final;
-
     /// Does nothing.
     void starting() final;
 
     /// Resets the object(s)
     void updating() final;
 
-    /// Sets the output to null.
+    /// Does nothing.
     void stopping() final;
 
 private:
 
-    /// Resets a single object in singular mode.
-    void reset_single();
+    /// Resets the target objects.
+    void reset_targets();
 
-    /// Resets objects in batch mode.
-    void reset_batch();
-
-    // Singular mode
-    sight::data::ptr<sight::data::object, sight::data::access::inout> m_target {this, "target", true};
-
-    // Batch mode (group)
-    sight::data::ptr_vector<sight::data::object, sight::data::access::inout> m_targets {this, "targets"};
+    sight::data::ptr_vector<sight::data::object, sight::data::access::inout> m_targets {this, "data.target"};
 };
 
 } // namespace sight::module::data.

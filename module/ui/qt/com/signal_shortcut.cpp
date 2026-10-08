@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2025 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #include "signal_shortcut.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
 #include <core/ptree.hpp>
 
 #include <service/op.hpp>
@@ -99,25 +97,22 @@ void signal_shortcut::set_enabled(bool _enabled)
         if(_enabled != enabled->value())
         {
             *enabled = _enabled;
-            enabled->async_emit(this, data::object::MODIFIED_SIG);
+            enabled->async_emit(this, data::signals::MODIFIED);
         }
     }
 
     if(_enabled)
     {
         this->enable();
-        auto sig = this->signal<signals::void_t>(signals::ENABLED);
-        sig->async_emit();
+        this->async_emit(signals::ENABLED);
     }
     else
     {
         this->disable();
-        auto sig = this->signal<signals::void_t>(signals::DISABLED);
-        sig->async_emit();
+        this->async_emit(signals::DISABLED);
     }
 
-    auto sig = this->signal<signals::bool_t>(signals::IS_ENABLED);
-    sig->async_emit(_enabled);
+    this->async_emit(signals::IS_ENABLED, _enabled);
 }
 
 //-----------------------------------------------------------------------------
@@ -130,23 +125,20 @@ void signal_shortcut::set_checked(bool _checked)
         if(_checked != checked->value())
         {
             *checked = _checked;
-            checked->async_emit(this, data::object::MODIFIED_SIG);
+            checked->async_emit(this, data::signals::MODIFIED);
         }
     }
 
     if(_checked)
     {
-        auto sig = this->signal<signals::void_t>(signals::CHECKED);
-        sig->async_emit();
+        this->async_emit(signals::CHECKED);
     }
     else
     {
-        auto sig = this->signal<signals::void_t>(signals::UNCHECKED);
-        sig->async_emit();
+        this->async_emit(signals::UNCHECKED);
     }
 
-    auto sig = this->signal<signals::bool_t>(signals::IS_CHECKED);
-    sig->async_emit(_checked);
+    this->async_emit(signals::IS_CHECKED, _checked);
 }
 
 //-----------------------------------------------------------------------------
@@ -160,13 +152,11 @@ void signal_shortcut::starting()
         // Make sure that we propagate this status to imitate action behaviour.
         if(*m_checked)
         {
-            auto sig = this->signal<signals::void_t>(signals::CHECKED);
-            sig->async_emit();
+            this->async_emit(signals::CHECKED);
         }
         else
         {
-            auto sig = this->signal<signals::void_t>(signals::UNCHECKED);
-            sig->async_emit();
+            this->async_emit(signals::UNCHECKED);
         }
     }
 }
@@ -192,8 +182,8 @@ void signal_shortcut::updating()
 service::connections_t signal_shortcut::auto_connections() const
 {
     return {
-        {m_checked, sight::data::object::MODIFIED_SIG, slots::APPLY_CHECKED},
-        {m_enabled, sight::data::object::MODIFIED_SIG, slots::APPLY_ENABLED}
+        {m_checked, sight::data::signals::MODIFIED, slots::APPLY_CHECKED},
+        {m_enabled, sight::data::signals::MODIFIED, slots::APPLY_ENABLED}
     };
 }
 
@@ -203,7 +193,7 @@ void signal_shortcut::on_activation()
 {
     if(*m_enabled)
     {
-        this->signal<signals::void_t>(signals::ACTIVATED)->async_emit();
+        this->async_emit(signals::ACTIVATED);
 
         const auto checked = [&](){return m_checked.lock()->value();}();
         this->set_checked(not checked);

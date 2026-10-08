@@ -8,9 +8,14 @@ _Optional, fill this section if there is a breaking change or remove it otherwis
 
 /label ~"Breaking change"
 
-### Results
+## Acceptance Criteria Coverage
 
-_Optional, extensive description of results, screenshots, performances,..._
+_List each acceptance criterion from the related issue and state its status._
+
+1. :white_check_mark: _criterion_
+    - Evidence: _(optional) tests, logs, screenshots, or observed behavior_
+1. :x: _criterion_
+    - Reason: _why you did not meet the criterion_
 
 ## How to test it?
 

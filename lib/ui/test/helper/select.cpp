@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -56,7 +56,8 @@ selector selector::from_dialog(const std::string& _object_name)
 
 selector selector::from_parent(const std::string& _parent_name, const std::string& _child_name)
 {
-    return {type::from_parent, Data {std::in_place_type<std::pair<std::string, std::string> >, _parent_name, _child_name
+    return {type::from_parent,
+            data_t {std::in_place_type<std::pair<std::string, std::string> >, _parent_name, _child_name
             }
     };
 }
@@ -183,7 +184,7 @@ std::string selector::get_description(const tester& _tester) const
     return "";
 }
 
-selector::selector(enum type _type, Data _data) :
+selector::selector(enum type _type, data_t _data) :
     m_type(_type),
     m_data(std::move(_data))
 {

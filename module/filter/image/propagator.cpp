@@ -21,10 +21,6 @@
 
 #include "module/filter/image/propagator.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-#include <core/progress/observer.hpp>
-
 #include <data/helper/medical_image.hpp>
 
 #include <filter/image/image_diff.hpp>
@@ -37,8 +33,8 @@ namespace sight::module::filter::image
 //-----------------------------------------------------------------------------
 
 propagator::propagator() :
-    filter(m_signals),
-    has_monitors(m_signals)
+    filter(has_signals::signals()),
+    has_monitors(has_signals::signals())
 {
     new_slot(slots::CLEAR, &propagator::clear, this);
     new_slot(slots::PROPAGATE, &propagator::propagate, this);
@@ -76,7 +72,7 @@ void propagator::updating()
             image_out->set_origin(image_in->origin());
             image_out->set_orientation(image_in->orientation());
             const auto lock = image_out->dump_lock();
-            std::fill(image_out->begin(), image_out->end(), std::uint8_t(0));
+            std::fill(image_out->begin(), image_out->end(), static_cast<std::uint8_t>(0));
         }
 
         propagate();
@@ -87,12 +83,7 @@ void propagator::updating()
 
 void propagator::propagate()
 {
-    const auto progress = std::make_shared<sight::core::progress::observer>("Propagation");
-
-    progress->set_cancelable(false);
-    progress->set_total_work_units(10);
-
-    this->async_emit(has_monitors::signals::MONITOR_CREATED, progress->get_sptr());
+    const auto progress = this->observe("Propagation", false, nullptr, 10);
 
     // Convert point list into seeds
     sight::filter::image::min_max_propagation::seeds_t seeds;
@@ -120,9 +111,9 @@ void propagator::propagate()
             {
                 const auto indices = geometry::data::world_to_image(*image_in, *_x, true);
 
-                if(indices[0] >= 0 && indices[0] < std::int64_t(sizes[0])
-                   && indices[1] >= 0 && indices[1] < std::int64_t(sizes[1])
-                   && indices[2] >= 0 && indices[2] < std::int64_t(sizes[2]))
+                if(indices[0] >= 0 && indices[0] < static_cast<std::int64_t>(sizes[0])
+                   && indices[1] >= 0 && indices[1] < static_cast<std::int64_t>(sizes[1])
+                   && indices[2] >= 0 && indices[2] < static_cast<std::int64_t>(sizes[2]))
                 {
                     seeds.insert(
                     {
@@ -181,7 +172,7 @@ void propagator::propagate()
         bool filled = false;
         if(propag_diff.num_elements() > 0)
         {
-            image_out->async_emit(data::image::BUFFER_MODIFIED_SIG);
+            image_out->async_emit(data::image::signals::BUFFER_MODIFIED);
             this->async_emit(filter::signals::SUCCEEDED);
 
             const auto samples_out = m_samples_out.lock();
@@ -197,7 +188,7 @@ void propagator::propagate()
                     samples_out->set_pixel(i, propag_diff.get_element(i).m_old_value);
                 }
 
-                samples_out->async_emit(data::image::MODIFIED_SIG);
+                samples_out->async_emit(data::signals::MODIFIED);
             }
 
             filled = true;
@@ -207,7 +198,7 @@ void propagator::propagate()
         if(mask_filled)
         {
             *mask_filled = filled;
-            mask_filled->async_emit(this, data::object::MODIFIED_SIG);
+            mask_filled->async_emit(this, data::signals::MODIFIED);
         }
     }
 
@@ -222,8 +213,8 @@ void propagator::clear()
         const auto image_out = m_image_out.lock();
         const auto lock      = image_out->dump_lock();
 
-        std::fill(image_out->begin(), image_out->end(), std::uint8_t(0));
-        image_out->async_emit(data::image::BUFFER_MODIFIED_SIG);
+        std::fill(image_out->begin(), image_out->end(), static_cast<std::uint8_t>(0));
+        image_out->async_emit(data::image::signals::BUFFER_MODIFIED);
     }
     {
         const auto image_in = m_image_in.lock();
@@ -234,13 +225,13 @@ void propagator::clear()
 
         sight::data::image::size_t voxels_size {0, 1, 1};
         samples_out->resize(voxels_size, image_in->type(), image_in->pixel_format());
-        samples_out->async_emit(data::image::MODIFIED_SIG);
+        samples_out->async_emit(data::signals::MODIFIED);
 
         const auto mask_filled = m_mask_filled_out.lock();
         if(mask_filled)
         {
             *mask_filled = false;
-            mask_filled->async_emit(this, data::object::MODIFIED_SIG);
+            mask_filled->async_emit(this, data::signals::MODIFIED);
         }
     }
 }
@@ -256,8 +247,8 @@ void propagator::stopping()
 service::connections_t propagator::auto_connections() const
 {
     return {
-        {m_image_in, data::image::MODIFIED_SIG, service::slots::UPDATE},
-        {m_seeds_in, data::point_list::MODIFIED_SIG, slots::PROPAGATE}
+        {m_image_in, data::signals::MODIFIED, service::slots::UPDATE},
+        {m_seeds_in, data::signals::MODIFIED, slots::PROPAGATE}
     };
 }
 

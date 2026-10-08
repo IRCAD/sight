@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -70,7 +70,13 @@ class icon_speed_dial : public sight::ui::service
 {
 public:
 
-    icon_speed_dial();
+    SIGHT_DECLARE_SERVICE(icon_speed_dial, sight::ui::service);
+    struct slots
+    {
+        static inline const slot_key_t FOLD           = "fold";
+        static inline const slot_key_t UNFOLD         = "unfold";
+        static inline const slot_key_t UPDATE_ACTIONS = "updateActions";
+    };
 
     struct action
     {
@@ -80,14 +86,9 @@ public:
         std::string shortcut;
     };
 
-    SIGHT_DECLARE_SERVICE(icon_speed_dial, sight::ui::service);
+    icon_speed_dial();
 
-    struct slots
-    {
-        static inline const core::com::slots::key_t FOLD           = "fold";
-        static inline const core::com::slots::key_t UNFOLD         = "unfold";
-        static inline const core::com::slots::key_t UPDATE_ACTIONS = "updateActions";
-    };
+protected:
 
     void configuring() override;
     void starting() override;

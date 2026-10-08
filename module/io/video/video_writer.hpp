@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2024 IRCAD France
+ * Copyright (C) 2016-2026 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,11 +42,11 @@ namespace sight::module::io::video
  *
  * @code{.xml}
    <service type="sight::module::io::video::video_writer">
-       <in key="data" uid="..." />
+       <data write="..." />
    </service>
    @endcode
  * @subsection Input Input
- * - \b data [sight::data::frame_tl]: timeline containing the frame to save.
+ * - \b data.write [sight::data::frame_tl]: timeline containing the frame to save.
  */
 class video_writer : public sight::io::service::writer
 {
@@ -54,14 +54,23 @@ public:
 
     SIGHT_DECLARE_SERVICE(video_writer, sight::io::service::writer);
 
+    struct slots
+    {
+        using frame_t = core::com::slot<void (core::clock::type)>;
+        using void_t  = core::com::slot<void ()>;
+
+        static inline const slot_key_t SAVE_FRAME       = "save_frame";
+        static inline const slot_key_t START_RECORD     = "start_record";
+        static inline const slot_key_t STOP_RECORD      = "stop_record";
+        static inline const slot_key_t RECORD           = "record";
+        static inline const slot_key_t TOGGLE_RECORDING = "toggle_recording";
+    };
+
     /// Constructor.
     video_writer() noexcept;
 
     /// Destructor. Does nothing
     ~video_writer() noexcept override;
-
-    /// Defines auto connection for this service (saveFrame()) to the frame timeline (objectPushed)
-    service::connections_t auto_connections() const override;
 
     /// Display a location dialog allowing to select the video file to save
     void open_location_dialog() override;
@@ -70,6 +79,9 @@ public:
     sight::io::service::path_type_t get_path_type() const override;
 
 protected:
+
+    /// Defines auto connection for this service (saveFrame()) to the frame timeline (objectPushed)
+    service::connections_t auto_connections() const override;
 
     /// Does nothing
     void configuring() override;
@@ -89,7 +101,7 @@ private:
     void save_frame(core::clock::type _timestamp);
 
     /// saves current buffer with OpenCV video writer (m_writer must be initialized)
-    void write_buffer(int _width, int _height, CSPTR(data::frame_tl::buffer_t) _buffer);
+    void write_buffer(int _width, int _height, sight::csptr<data::frame_tl::buffer_t> _buffer);
 
     /// SLOT: Starts recording
     void start_record();
@@ -104,7 +116,7 @@ private:
     void toggle_recording();
 
     /// opencv video writer
-    UPTR(cv::VideoWriter) m_writer;
+    sight::uptr<cv::VideoWriter> m_writer;
 
     /// opencv image type ( CV_8UC3, CV_8UC4, ...)
     int m_image_type {0};

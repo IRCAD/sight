@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2025 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -27,8 +27,6 @@
 #include <io/__/service/reader.hpp>
 #include <io/zip/archive.hpp>
 
-#include <service/notifier.hpp>
-
 namespace sight::module::io::session
 {
 
@@ -47,13 +45,15 @@ namespace sight::module::io::session
  * The compression level is set individually, depending of the type of data to serialize.
  *
  * @section Signals Signals
- * - \b monitor_created(SPTR(core::progress::monitor)): emitted to display a progress bar while the image is written,
+ * - \b notification_created(core::notification::base::sptr): emitted to display a progress bar while the
+ * image is
+ * written,
  * it should be connected to a progress bar
  *
  * @section XML XML Configuration
  * @code{.xml}
     <service type="sight::module::io::session::reader">
-        <inout key="data" uid="..." />
+        <data read="..." />
         <dialog extension=".sample" description="Sample Sight session file" policy="always"/>
         <password policy="once, encryption=salted"/>
         <archive format="default"/>
@@ -61,7 +61,7 @@ namespace sight::module::io::session
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b data [sight::data::object]: object to read.
+ * - \b data.read [sight::data::object]: object to read.
  *
  * @subsection Configuration Configuration
  * - \b dialog(optional):
@@ -97,8 +97,7 @@ namespace sight::module::io::session
  * @see sight::io::session::session_reader
  */
 
-class reader final : public sight::io::service::reader,
-                     public sight::service::notifier
+class reader final : public sight::io::service::reader
 {
 public:
 
@@ -106,12 +105,10 @@ public:
 
     struct signals
     {
-        using monitor_created_signal_t = sight::core::com::signal<void (sight::core::progress::monitor::sptr)>;
-        using session_path_t           = core::com::signal<void (std::filesystem::path)>;
+        using session_path_t = core::com::signal<void (std::filesystem::path)>;
 
-        using signal_t = sight::core::com::signals::key_t;
-        inline static const signal_t SESSION_LOADED         = "session_loaded";
-        inline static const signal_t SESSION_LOADING_FAILED = "session_loading_failed";
+        inline static const signal_key_t SESSION_LOADED         = "session_loaded";
+        inline static const signal_key_t SESSION_LOADING_FAILED = "session_loading_failed";
     };
 
     reader() noexcept;
@@ -119,6 +116,12 @@ public:
 
     /// Propose to read a session data file
     void open_location_dialog() final;
+
+    /// Returns managed path type, here service manages only single file
+    sight::io::service::path_type_t get_path_type() const final
+    {
+        return sight::io::service::file;
+    }
 
 protected:
 
@@ -133,12 +136,6 @@ protected:
 
     /// Read session data from filesystem
     void updating() final;
-
-    /// Returns managed path type, here service manages only single file
-    sight::io::service::path_type_t get_path_type() const final
-    {
-        return sight::io::service::file;
-    }
 
 private:
 
@@ -162,7 +159,7 @@ private:
     };
 
     /// Archive format to use
-    sight::io::zip::archive::archive_format m_archive_format {sight::io::zip::archive::archive_format::DEFAULT};
+    sight::io::zip::archive::archive_format m_archive_format {sight::io::zip::archive::archive_format::standard};
 
     /// Used in case of bad password
     int m_password_retry {0};

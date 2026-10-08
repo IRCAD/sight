@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,7 +34,7 @@ namespace sight::data
 {
 
 image_series::image_series() :
-    has_fiducials(m_signals)
+    has_fiducials(has_signals::signals())
 {
 }
 
@@ -52,7 +52,7 @@ void image_series::shallow_copy(const object::csptr& _source)
         !bool(other)
     );
 
-    m_fiducials_series = other->m_fiducials_series;
+    get_fiducials()->shallow_copy(other->get_fiducials());
 
     series::shallow_copy(other);
 
@@ -73,8 +73,8 @@ void image_series::deep_copy(const object::csptr& _source, const std::unique_ptr
         !bool(other)
     );
 
-    m_fiducials_series = std::make_shared<fiducials_series>();
-    m_fiducials_series->deep_copy(other->m_fiducials_series, _cache);
+    get_fiducials() = std::make_shared<fiducials_series>();
+    get_fiducials()->deep_copy(other->get_fiducials(), _cache);
 
     series::deep_copy(other, _cache);
 
@@ -139,7 +139,7 @@ void image_series::set_rows(const std::optional<std::uint16_t>& _rows)
 
         if(const auto& original_size = size(); original_size[0] != rows_value)
         {
-            resize({std::size_t(rows_value), original_size[1], original_size[2]}, type(), pixel_format);
+            resize({static_cast<std::size_t>(rows_value), original_size[1], original_size[2]}, type(), pixel_format);
         }
     }
 }
@@ -157,7 +157,7 @@ void image_series::set_columns(const std::optional<std::uint16_t>& _columns)
 
         if(const auto& original_size = size(); original_size[1] != columns_value)
         {
-            resize({original_size[0], std::size_t(columns_value), original_size[2]}, type(), pixel_format);
+            resize({original_size[0], static_cast<std::size_t>(columns_value), original_size[2]}, type(), pixel_format);
         }
     }
 }
@@ -350,7 +350,7 @@ void image_series::set_orientation(const orientation_t& _orientation)
 void image_series::set_patient_id(const std::string& _patient_id)
 {
     this->series::set_patient_id(_patient_id);
-    this->m_fiducials_series->set_patient_id(_patient_id);
+    this->get_fiducials()->set_patient_id(_patient_id);
 }
 
 //------------------------------------------------------------------------------
@@ -358,7 +358,7 @@ void image_series::set_patient_id(const std::string& _patient_id)
 void image_series::set_patient_name(const std::string& _patient_name)
 {
     this->series::set_patient_name(_patient_name);
-    this->m_fiducials_series->set_patient_id(_patient_name);
+    this->get_fiducials()->set_patient_name(_patient_name);
 }
 
 //------------------------------------------------------------------------------
@@ -366,7 +366,7 @@ void image_series::set_patient_name(const std::string& _patient_name)
 void image_series::set_study_instance_uid(const std::string& _study_instance_uid)
 {
     this->series::set_study_instance_uid(_study_instance_uid);
-    this->m_fiducials_series->set_study_instance_uid(_study_instance_uid);
+    this->get_fiducials()->set_study_instance_uid(_study_instance_uid);
 }
 
 //------------------------------------------------------------------------------

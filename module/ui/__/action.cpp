@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2025 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,10 +21,17 @@
 
 #include "action.hpp"
 
-#include <core/com/signal.hxx>
 #include <core/ptree.hpp>
 namespace sight::module::ui
 {
+
+//------------------------------------------------------------------------------
+
+action::action() noexcept
+{
+    new_signal<sight::ui::action::signals::void_t>(signals::CLICKED);
+    new_signal<signals::changed_t>(signals::PARAMETER_CHANGED);
+}
 
 //------------------------------------------------------------------------------
 
@@ -88,11 +95,11 @@ void action::updating()
     {
         if(m_sync)
         {
-            m_clicked_sig->emit();
+            emit(signals::CLICKED);
         }
         else
         {
-            m_clicked_sig->async_emit();
+            async_emit(signals::CLICKED);
         }
 
         if(m_key)
@@ -100,7 +107,8 @@ void action::updating()
             const bool is_checked = this->checked();
             if(m_sync)
             {
-                m_parameter_changed_sig->emit(
+                emit(
+                    signals::PARAMETER_CHANGED,
                     m_clicked
                     ? *m_clicked
                     : is_checked && m_checked
@@ -113,7 +121,8 @@ void action::updating()
             }
             else
             {
-                m_parameter_changed_sig->async_emit(
+                async_emit(
+                    signals::PARAMETER_CHANGED,
                     m_clicked
                     ? *m_clicked
                     : is_checked && m_checked

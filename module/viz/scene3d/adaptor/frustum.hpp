@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2025 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,20 +47,21 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::adaptor::frustum">
-        <in key="camera" uid="..." />
-        <config transform="..." near="..." far="..."/>
+        <data camera="${...}" />
+        <config transform="..." near="..." far="..." />
     </service>
    @endcode
  *
  * @subsection Input Input:
- * - \b camera [sight::data::camera]:  camera containing calibration information.
+ * - \b data.camera [sight::data::camera]:  camera containing calibration information.
+ *
+ * - \b config.visible [sight::data::boolean] (optional, default=true): the visibility of the adaptor.
  *
  * @subsection Configuration Configuration:
  * - \b transform (optional, string, default=""): transform applied to the frustum's scene node
  * - \b near (optional, float, default=1.0): near clipping distance of the Ogre::Camera
  * - \b far (optional, float, default=20.0): far clipping distance of the Ogre::Camera
  * - \b color (optional, hexadecimal, default=0xFF0000): frustum's color
- * - \b visible (optional, bool, default=true): the visibility of the adaptor.
  */
 class frustum final : public sight::viz::scene3d::adaptor,
                       public sight::viz::scene3d::transformable
@@ -76,6 +77,12 @@ public:
     /// Destroys the adaptor.
     ~frustum() noexcept override = default;
 
+    /**
+     * @brief Sets the frustum visibility.
+     * @param _visible the visibility status of the frustum.
+     */
+    void set_visible(bool _visible) override;
+
 protected:
 
     /// Configures.
@@ -88,8 +95,8 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::camera::INTRINSIC_CALIBRATED_SIG of s_CAMERA_INPUT to adaptor::slots::LAZY_UPDATE
-     * Connect data::camera::MODIFIED_SIG of s_CAMERA_INPUT to adaptor::slots::LAZY_UPDATE
+     * Connect data::camera::signals::INTRINSIC_CALIBRATED of s_CAMERA_INPUT to adaptor::slots::LAZY_UPDATE
+     * Connect data::signals::MODIFIED of s_CAMERA_INPUT to adaptor::slots::LAZY_UPDATE
      */
     service::connections_t auto_connections() const override;
 
@@ -98,12 +105,6 @@ protected:
 
     /// Checks if the camera has changed, and updates it if it has.
     void updating() override;
-
-    /**
-     * @brief Sets the frustum visibility.
-     * @param _visible the visibility status of the frustum.
-     */
-    void set_visible(bool _visible) override;
 
 private:
 
@@ -128,7 +129,7 @@ private:
     /// Defines the color of frustum.
     std::string m_color {"#FF0000"};
 
-    static constexpr std::string_view CAMERA_INPUT = "camera";
+    static constexpr std::string_view CAMERA_INPUT = "data.camera";
     sight::data::ptr<sight::data::camera, sight::data::access::in> m_camera {this, CAMERA_INPUT};
 };
 

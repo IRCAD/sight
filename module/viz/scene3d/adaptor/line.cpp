@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2025 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,19 +22,8 @@
 
 #include "module/viz/scene3d/adaptor/line.hpp"
 
-#include "module/viz/scene3d/adaptor/transform.hpp"
-
-#include <core/com/slots.hxx>
-
-#include <data/tools/color.hpp>
-
-#include <service/macros.hpp>
-
-#include <viz/scene3d/helper/scene.hpp>
-#include <viz/scene3d/mesh.hpp>
 #include <viz/scene3d/ogre.hpp>
 
-#include <Ogre.h>
 #include <OgreAxisAlignedBox.h>
 
 namespace sight::module::viz::scene3d::adaptor
@@ -45,10 +34,10 @@ namespace sight::module::viz::scene3d::adaptor
 service::connections_t line::auto_connections() const
 {
     return {
-        {m_length, data::object::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE},
-        {m_color, data::object::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE},
-        {m_dash_length, data::object::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE},
-        {m_dashed, data::object::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE}
+        {m_length, data::signals::MODIFIED, adaptor::slots::LAZY_UPDATE},
+        {m_color, data::signals::MODIFIED, adaptor::slots::LAZY_UPDATE},
+        {m_dash_length, data::signals::MODIFIED, adaptor::slots::LAZY_UPDATE},
+        {m_dashed, data::signals::MODIFIED, adaptor::slots::LAZY_UPDATE}
     };
 }
 

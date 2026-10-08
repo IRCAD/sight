@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -65,6 +65,9 @@ public:
         }
     };
 
+    /// Destructor. Does nothing.
+    SIGHT_SERVICE_API ~object_parser() override = default;
+
     SIGHT_SERVICE_API virtual void parse(
         const service::config_t& _cfg_elem,
         core::object::sptr _obj,
@@ -75,9 +78,6 @@ protected:
 
     /// Constructor. Does nothing.
     SIGHT_SERVICE_API object_parser() = default;
-
-    /// Destructor. Does nothing.
-    SIGHT_SERVICE_API ~object_parser() override = default;
 
     /// Does nothing
     SIGHT_SERVICE_API void configuring() final;

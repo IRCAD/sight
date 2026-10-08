@@ -22,26 +22,18 @@
 
 #include "marker_to_point.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-
 #include <data/matrix4.hpp>
 #include <data/point.hpp>
 
-#include <service/base.hpp>
-
 namespace sight::module::geometry::vision
 {
-
-const core::com::slots::key_t marker_to_point::ADD_POINT_SLOT = "add_point";
-const core::com::slots::key_t marker_to_point::CLEAR_SLOT     = "clear";
 
 // ----------------------------------------------------------------------------
 
 marker_to_point::marker_to_point() noexcept
 {
-    new_slot(ADD_POINT_SLOT, &marker_to_point::add_point, this);
-    new_slot(CLEAR_SLOT, &marker_to_point::clear, this);
+    new_slot(slots::ADD_POINT, &marker_to_point::add_point, this);
+    new_slot(slots::CLEAR, &marker_to_point::clear, this);
 }
 
 // ----------------------------------------------------------------------------
@@ -81,8 +73,8 @@ void marker_to_point::add_point()
 
     data::matrix4::sptr matrix_3d = std::make_shared<data::matrix4>();
 
-    core::clock::type current_timestamp = core::clock::get_time_in_milli_sec();
-    CSPTR(data::matrix_tl::buffer_t) buffer = matrix_tl->get_closest_buffer(current_timestamp);
+    core::clock::type current_timestamp            = core::clock::get_time_in_milli_sec();
+    sight::csptr<data::matrix_tl::buffer_t> buffer = matrix_tl->get_closest_buffer(current_timestamp);
     SIGHT_ASSERT("Buffer not found with timestamp " << current_timestamp, buffer);
 
     const std::array<float, 16> values = buffer->get_element(0);
@@ -91,7 +83,7 @@ void marker_to_point::add_point()
     {
         for(unsigned int j = 0 ; j < 4 ; ++j)
         {
-            (*matrix_3d)(i, j) = values[i * std::size_t(4) + j];
+            (*matrix_3d)(i, j) = values[i * static_cast<std::size_t>(4) + j];
         }
     }
 

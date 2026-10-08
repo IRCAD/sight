@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,13 +19,12 @@
  *
  ***********************************************************************/
 
-#include "viz/scene3d/compositor/manager/oit.hpp"
+#include "oit.hpp"
 
 #include "viz/scene3d/helper/shading.hpp"
 #include "viz/scene3d/helper/technique.hpp"
 #include "viz/scene3d/material/generic.hpp"
-
-#include <viz/scene3d/ogre.hpp>
+#include "viz/scene3d/ogre.hpp"
 
 #include <OGRE/OgreCompositionPass.h>
 #include <OGRE/OgreCompositionTargetPass.h>
@@ -39,6 +38,9 @@ namespace sight::viz::scene3d::compositor::manager
 {
 
 static const std::string SEPARATOR = "/";
+
+namespace
+{
 
 struct algo
 {
@@ -87,6 +89,8 @@ struct buffers
         return (_i % 2) != 0 ? buffers::PING : buffers::PONG;
     }
 };
+
+} // namespace
 
 //------------------------------------------------------------------------------
 
@@ -244,7 +248,7 @@ Ogre::Technique* viz::scene3d::compositor::manager::oit::handleSchemeNotFound(
             }
 
             auto params = pass->getFragmentProgramParameters();
-            params->setNamedConstant("u_nearestDepthBuffer", int(num_tex_unit));
+            params->setNamedConstant("u_nearestDepthBuffer", static_cast<int>(num_tex_unit));
             params->setNamedAutoConstant("u_viewport", Ogre::GpuProgramParameters::ACT_VIEWPORT_SIZE);
             if(auto defs = params->getConstantDefinitions().map; defs.contains("u_diffuse"))
             {
@@ -339,7 +343,7 @@ Ogre::Technique* viz::scene3d::compositor::manager::oit::handleSchemeNotFound(
                     tex_state->setContentType(Ogre::TextureUnitState::CONTENT_COMPOSITOR);
                     tex_state->setCompositorReference(algo_name, buffers::PING, 1);
 
-                    params->setNamedConstant("u_frontDepthBuffer", int(num_tex_unit++));
+                    params->setNamedConstant("u_frontDepthBuffer", static_cast<int>(num_tex_unit++));
                 }
 
                 Ogre::TextureUnitState* tex_state = pass->createTextureUnitState();
@@ -348,7 +352,7 @@ Ogre::Technique* viz::scene3d::compositor::manager::oit::handleSchemeNotFound(
                 tex_state->setContentType(Ogre::TextureUnitState::CONTENT_COMPOSITOR);
                 tex_state->setCompositorReference(algo_name, "occlusion", 0);
 
-                params->setNamedConstant("u_occlusionDepthBuffer", int(num_tex_unit));
+                params->setNamedConstant("u_occlusionDepthBuffer", static_cast<int>(num_tex_unit));
                 params->setNamedAutoConstant("u_viewport", Ogre::GpuProgramParameters::ACT_VIEWPORT_SIZE);
                 params->setNamedAutoConstant("u_near", Ogre::GpuProgramParameters::ACT_NEAR_CLIP_DISTANCE);
                 params->setNamedAutoConstant("u_far", Ogre::GpuProgramParameters::ACT_FAR_CLIP_DISTANCE);
@@ -396,7 +400,7 @@ Ogre::Technique* viz::scene3d::compositor::manager::oit::handleSchemeNotFound(
                     tex_state->setTextureFiltering(Ogre::TFO_NONE);
                     tex_state->setContentType(Ogre::TextureUnitState::CONTENT_COMPOSITOR);
                     tex_state->setCompositorReference(algo_name, buffers::PING, 1);
-                    params->setNamedConstant("u_frontDepthBuffer", int(num_tex_unit++));
+                    params->setNamedConstant("u_frontDepthBuffer", static_cast<int>(num_tex_unit++));
                 }
 
                 Ogre::TextureUnitState* tex_state = pass->createTextureUnitState();
@@ -405,7 +409,7 @@ Ogre::Technique* viz::scene3d::compositor::manager::oit::handleSchemeNotFound(
                 tex_state->setContentType(Ogre::TextureUnitState::CONTENT_COMPOSITOR);
                 tex_state->setCompositorReference(algo_name, "occlusion", 0);
 
-                params->setNamedConstant("u_occlusionDepthBuffer", int(num_tex_unit));
+                params->setNamedConstant("u_occlusionDepthBuffer", static_cast<int>(num_tex_unit));
                 params->setNamedAutoConstant("u_viewport", Ogre::GpuProgramParameters::ACT_VIEWPORT_SIZE);
 
                 if(auto defs = params->getConstantDefinitions().map; defs.contains("u_diffuse"))
@@ -487,10 +491,10 @@ Ogre::Technique* viz::scene3d::compositor::manager::oit::handleSchemeNotFound(
             }
 
             auto params = pass->getFragmentProgramParameters();
-            params->setNamedConstant("u_nearestDepthBuffer", int(num_tex_unit));
-            params->setNamedConstant("u_farthestDepthBuffer", int(num_tex_unit + 1));
-            params->setNamedConstant("u_forwardColorBuffer", int(num_tex_unit + 2));
-            params->setNamedConstant("u_forwardAlphasBuffer", int(num_tex_unit + 3));
+            params->setNamedConstant("u_nearestDepthBuffer", static_cast<int>(num_tex_unit));
+            params->setNamedConstant("u_farthestDepthBuffer", static_cast<int>(num_tex_unit + 1));
+            params->setNamedConstant("u_forwardColorBuffer", static_cast<int>(num_tex_unit + 2));
+            params->setNamedConstant("u_forwardAlphasBuffer", static_cast<int>(num_tex_unit + 3));
             params->setNamedAutoConstant("u_viewport", Ogre::GpuProgramParameters::ACT_VIEWPORT_SIZE);
 
             if(auto defs = params->getConstantDefinitions().map; defs.contains("u_diffuse"))

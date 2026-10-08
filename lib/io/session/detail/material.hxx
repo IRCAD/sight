@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -30,6 +30,8 @@
 #include <data/image.hpp>
 #include <data/material.hpp>
 
+#include <type_traits>
+
 namespace sight::io::session::detail::material
 {
 
@@ -55,13 +57,28 @@ inline static void write(
     const auto material = helper::safe_cast<data::material>(_object);
 
     // Add a version number. Not mandatory, but could help for future release
-    helper::write_version<data::material>(_tree, 1);
+    helper::write_version<data::material>(_tree, 2);
 
-    _tree.put(SHADING_MODE, static_cast<int>(material->get_shading_mode()));
-    _tree.put(REPRESENTATION_MODE, material->get_representation_mode());
-    _tree.put(OPTIONS_MODE, material->get_options_mode());
-    _tree.put(DIFFUSE_TEXTURE_FILTERING, material->get_diffuse_texture_filtering());
-    _tree.put(DIFFUSE_TEXTURE_WRAPPING, material->get_diffuse_texture_wrapping());
+    _tree.put<std::underlying_type_t<data::material::shading_t> >(
+        SHADING_MODE,
+        static_cast<std::underlying_type_t<data::material::shading_t> >(material->get_shading_mode())
+    );
+    _tree.put<std::underlying_type_t<data::material::representation_t> >(
+        REPRESENTATION_MODE,
+        static_cast<std::underlying_type_t<data::material::representation_t> >(material->get_representation_mode())
+    );
+    _tree.put<std::underlying_type_t<data::material::options_t> >(
+        OPTIONS_MODE,
+        static_cast<std::underlying_type_t<data::material::options_t> >(material->get_options_mode())
+    );
+    _tree.put<std::underlying_type_t<data::material::filtering_t> >(
+        DIFFUSE_TEXTURE_FILTERING,
+        static_cast<std::underlying_type_t<data::material::filtering_t> >(material->get_diffuse_texture_filtering())
+    );
+    _tree.put<std::underlying_type_t<data::material::wrapping_t> >(
+        DIFFUSE_TEXTURE_WRAPPING,
+        static_cast<std::underlying_type_t<data::material::wrapping_t> >(material->get_diffuse_texture_wrapping())
+    );
 
     _children[AMBIENT]         = material->ambient();
     _children[DIFFUSE]         = material->diffuse();
@@ -82,25 +99,76 @@ inline static data::material::sptr read(
     auto material = helper::cast_or_create<data::material>(_object);
 
     // Check version number. Not mandatory, but could help for future release
-    helper::read_version<data::material>(_tree, 0, 1);
+    const auto version = helper::read_version<data::material>(_tree, 0, 2);
 
-    material->set_shading_mode(static_cast<data::material::shading_t>(_tree.get<int>(SHADING_MODE)));
-    material->set_representation_mode(
-        static_cast<data::material::representation_t>(
-            _tree.get<int>(REPRESENTATION_MODE)
-        )
-    );
-    material->set_options_mode(static_cast<data::material::options_t>(_tree.get<int>(OPTIONS_MODE)));
-    material->set_diffuse_texture_filtering(
-        static_cast<data::material::filtering_t>(
-            _tree.get<int>(DIFFUSE_TEXTURE_FILTERING)
-        )
-    );
-    material->set_diffuse_texture_wrapping(
-        static_cast<data::material::wrapping_t>(
-            _tree.get<int>(DIFFUSE_TEXTURE_WRAPPING)
-        )
-    );
+    if(version < 2)
+    {
+        material->set_shading_mode(static_cast<data::material::shading_t>(_tree.get<int>(SHADING_MODE)));
+    }
+    else
+    {
+        material->set_shading_mode(static_cast<data::material::shading_t>(_tree.get<std::uint8_t>(SHADING_MODE)));
+    }
+
+    if(version < 2)
+    {
+        material->set_representation_mode(
+            static_cast<data::material::representation_t>(
+                _tree.get<int>(REPRESENTATION_MODE)
+            )
+        );
+    }
+    else
+    {
+        material->set_representation_mode(
+            static_cast<data::material::representation_t>(
+                _tree.get<std::uint8_t>(REPRESENTATION_MODE)
+            )
+        );
+    }
+
+    if(version < 2)
+    {
+        material->set_options_mode(static_cast<data::material::options_t>(_tree.get<int>(OPTIONS_MODE)));
+    }
+    else
+    {
+        material->set_options_mode(static_cast<data::material::options_t>(_tree.get<std::uint8_t>(OPTIONS_MODE)));
+    }
+
+    if(version < 2)
+    {
+        material->set_diffuse_texture_filtering(
+            static_cast<data::material::filtering_t>(
+                _tree.get<int>(DIFFUSE_TEXTURE_FILTERING)
+            )
+        );
+    }
+    else
+    {
+        material->set_diffuse_texture_filtering(
+            static_cast<data::material::filtering_t>(
+                _tree.get<std::uint8_t>(DIFFUSE_TEXTURE_FILTERING)
+            )
+        );
+    }
+
+    if(version < 2)
+    {
+        material->set_diffuse_texture_wrapping(
+            static_cast<data::material::wrapping_t>(
+                _tree.get<int>(DIFFUSE_TEXTURE_WRAPPING)
+            )
+        );
+    }
+    else
+    {
+        material->set_diffuse_texture_wrapping(
+            static_cast<data::material::wrapping_t>(
+                _tree.get<std::uint8_t>(DIFFUSE_TEXTURE_WRAPPING)
+            )
+        );
+    }
 
     material->set_ambient(std::dynamic_pointer_cast<data::color>(_children.at(AMBIENT)));
     material->set_diffuse(std::dynamic_pointer_cast<data::color>(_children.at(DIFFUSE)));

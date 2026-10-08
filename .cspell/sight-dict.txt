@@ -54,8 +54,8 @@ coeffs
 coefs
 cosinus
 cpack
-cppunit
 crange
+ctest
 ctmr
 cuda
 cumul
@@ -110,6 +110,7 @@ fwservice
 fwtest
 gbuffer
 gdcm
+glab
 glsl
 gouraud
 gregs
@@ -172,6 +173,7 @@ marquardt
 masktl
 matrixtl
 matx
+memcpy
 memorystatusex
 mesher
 methodv
@@ -254,6 +256,7 @@ qvariant
 qvec
 qvtk
 qwidget
+raii
 randn
 rawz
 raycast
@@ -326,6 +329,7 @@ tutos
 tvec
 tvecs
 ublas
+uchar
 uicalibration
 uid
 uids

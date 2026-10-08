@@ -339,7 +339,7 @@ public:
         /// Returns true when the box has never been populated or has been default-constructed.
         /// The default state sets min to +∞ and max to −∞, so any min[i] > max[i] indicates
         /// that no points were ever accumulated (empty or missing geometry).
-        bool is_invalid() const
+        [[nodiscard]] bool is_invalid() const
         {
             return min[0] > max[0] || min[1] > max[1] || min[2] > max[2];
         }
@@ -352,16 +352,19 @@ public:
      * @name Signals
      * @{
      */
-    using signal_t = core::com::signal<void ()>;
+    struct signals
+    {
+        using signal_t = core::com::signal<void ()>;
 
-    /// Key in m_signals map of signal m_sigVertexModified
-    SIGHT_DATA_API static const core::com::signals::key_t VERTEX_MODIFIED_SIG;
-    SIGHT_DATA_API static const core::com::signals::key_t POINT_COLORS_MODIFIED_SIG;
-    SIGHT_DATA_API static const core::com::signals::key_t CELL_COLORS_MODIFIED_SIG;
-    SIGHT_DATA_API static const core::com::signals::key_t POINT_NORMALS_MODIFIED_SIG;
-    SIGHT_DATA_API static const core::com::signals::key_t CELL_NORMALS_MODIFIED_SIG;
-    SIGHT_DATA_API static const core::com::signals::key_t POINT_TEX_COORDS_MODIFIED_SIG;
-    SIGHT_DATA_API static const core::com::signals::key_t CELL_TEX_COORDS_MODIFIED_SIG;
+        /// Key in m_signals map of signal m_sigVertexModified
+        static const inline signal_key_t VERTEX_MODIFIED           = "vertexModified";
+        static const inline signal_key_t POINT_COLORS_MODIFIED     = "pointColorsModified";
+        static const inline signal_key_t CELL_COLORS_MODIFIED      = "cellColorsModified";
+        static const inline signal_key_t POINT_NORMALS_MODIFIED    = "pointNormalsModified";
+        static const inline signal_key_t CELL_NORMALS_MODIFIED     = "cellNormalsModified";
+        static const inline signal_key_t POINT_TEX_COORDS_MODIFIED = "pointTexCoordsModified";
+        static const inline signal_key_t CELL_TEX_COORDS_MODIFIED  = "cellTexCoordsModified";
+    };
     /// @}
 
     /**
@@ -515,7 +518,7 @@ public:
     SIGHT_DATA_API cell_t push_cell(point_t _id_p1, point_t _id_p2);
     SIGHT_DATA_API cell_t push_cell(point_t _id_p1, point_t _id_p2, point_t _id_p3);
     SIGHT_DATA_API cell_t push_cell(point_t _id_p1, point_t _id_p2, point_t _id_p3, point_t _id_p4);
-    SIGHT_DATA_API cell_t push_cell(const std::vector<point_t> _point_ids);
+    SIGHT_DATA_API cell_t push_cell(std::vector<point_t> _point_ids);
     SIGHT_DATA_API cell_t push_cell(const point_t* _point_ids, std::size_t _nb_points);
     /// @}
 
@@ -699,7 +702,7 @@ private:
     mutable std::uint64_t m_bb_last_updated {~0UL};
 
     /// The Axis-Aligned Bounding Box of the mesh, lazy-computed in get_bounding_box().
-    mutable axis_aligned_box_t m_bbox {};
+    mutable axis_aligned_box_t m_bbox;
 
     /// Helper function used to get the array given a point or cell attribute type
     template<class ATTR>
@@ -785,8 +788,8 @@ private:
 inline mesh::attribute operator|(const mesh::attribute& _lhs, const mesh::attribute& _rhs)
 {
     return static_cast<mesh::attribute>(
-        static_cast<std::underlying_type<mesh::attribute>::type>(_lhs)
-        | static_cast<std::underlying_type<mesh::attribute>::type>(_rhs)
+        static_cast<std::underlying_type_t<mesh::attribute> >(_lhs)
+        | static_cast<std::underlying_type_t<mesh::attribute> >(_rhs)
     );
 }
 
@@ -795,8 +798,8 @@ inline mesh::attribute operator|(const mesh::attribute& _lhs, const mesh::attrib
 inline mesh::attribute operator&(const mesh::attribute& _lhs, const mesh::attribute& _rhs)
 {
     return static_cast<mesh::attribute>(
-        static_cast<std::underlying_type<mesh::attribute>::type>(_lhs)
-        & static_cast<std::underlying_type<mesh::attribute>::type>(_rhs)
+        static_cast<std::underlying_type_t<mesh::attribute> >(_lhs)
+        & static_cast<std::underlying_type_t<mesh::attribute> >(_rhs)
     );
 }
 
@@ -804,7 +807,7 @@ inline mesh::attribute operator&(const mesh::attribute& _lhs, const mesh::attrib
 
 inline mesh::attribute operator~(const mesh::attribute& _lhs)
 {
-    return static_cast<mesh::attribute>(~static_cast<std::underlying_type<mesh::attribute>::type>(_lhs));
+    return static_cast<mesh::attribute>(~static_cast<std::underlying_type_t<mesh::attribute> >(_lhs));
 }
 
 //------------------------------------------------------------------------------
@@ -875,7 +878,7 @@ template<typename T>
 inline array_iterator<T> mesh::begin()
 {
     auto array = get_array<T>();
-    return array_iterator<T>(static_cast<typename array_iterator<T>::pointer_t>(array->buffer()));
+    return array_iterator<T>(static_cast<array_iterator<T>::pointer_t>(array->buffer()));
 }
 
 //------------------------------------------------------------------------------
@@ -884,7 +887,7 @@ template<typename T>
 inline array_iterator<T> mesh::end()
 {
     auto itr = begin<T>();
-    itr += static_cast<typename array_iterator<T>::difference_type>(num_elements<T>());
+    itr += static_cast<array_iterator<T>::difference_type>(num_elements<T>());
     return itr;
 }
 
@@ -894,7 +897,7 @@ template<typename T>
 inline const_array_iterator<T> mesh::begin() const
 {
     auto array = get_array<T>();
-    return const_array_iterator<T>(static_cast<typename const_array_iterator<T>::pointer_t>(array->buffer()));
+    return const_array_iterator<T>(static_cast<const_array_iterator<T>::pointer_t>(array->buffer()));
 }
 
 //------------------------------------------------------------------------------
@@ -903,7 +906,7 @@ template<typename T>
 inline const_array_iterator<T> mesh::end() const
 {
     auto itr = cbegin<T>();
-    itr += static_cast<typename const_array_iterator<T>::difference_type>(num_elements<T>());
+    itr += static_cast<const_array_iterator<T>::difference_type>(num_elements<T>());
     return itr;
 }
 
@@ -913,7 +916,7 @@ template<typename T>
 inline const_array_iterator<T> mesh::cbegin() const
 {
     auto array = get_array<T>();
-    return const_array_iterator<T>(static_cast<typename const_array_iterator<T>::pointer_t>(array->buffer()));
+    return const_array_iterator<T>(static_cast<const_array_iterator<T>::pointer_t>(array->buffer()));
 }
 
 //------------------------------------------------------------------------------
@@ -922,7 +925,7 @@ template<typename T>
 inline const_array_iterator<T> mesh::cend() const
 {
     auto itr = cbegin<T>();
-    itr += static_cast<typename const_array_iterator<T>::difference_type>(num_elements<T>());
+    itr += static_cast<const_array_iterator<T>::difference_type>(num_elements<T>());
     return itr;
 }
 

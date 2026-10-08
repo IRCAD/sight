@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -68,13 +68,13 @@ public:
         password
     );
 
+    /// Destructor
+    SIGHT_IO_SESSION_API ~session() override = default;
+
 protected:
 
     /// Constructor
     SIGHT_IO_SESSION_API session() = default;
-
-    /// Destructor
-    SIGHT_IO_SESSION_API ~session() override = default;
 };
 
 //------------------------------------------------------------------------------
@@ -105,10 +105,8 @@ inline core::crypto::secure_string session::pickle(
         {
             return core::crypto::hash(_salt);
         }
-        else
-        {
-            SIGHT_THROW("No password provided.");
-        }
+
+        SIGHT_THROW("No password provided.");
     }
     else if(_policy == core::crypto::password_keeper::encryption_policy::salted)
     {

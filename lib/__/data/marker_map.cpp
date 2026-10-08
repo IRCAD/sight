@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,6 +22,7 @@
 
 #include "data/marker_map.hpp"
 
+#include <core/compare.hpp>
 #include <data/exception.hpp>
 #include <data/registry/macros.hpp>
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,11 +28,8 @@
 #include "io/dimse/exceptions/request_failure.hpp"
 #include "io/dimse/helper/series.hpp"
 
-#include <core/os/temp_path.hpp>
-
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmdata/dcfilefo.h>
-#include <dcmtk/dcmnet/diutil.h>
 
 #include <filesystem>
 #include <utility>
@@ -51,8 +48,6 @@
 namespace sight::io::dimse
 {
 
-const core::com::slots::key_t series_enquirer::PROGRESS_CALLBACK_SLOT = "CGetProgressCallback";
-
 //------------------------------------------------------------------------------
 
 void series_enquirer::initialize(
@@ -61,7 +56,7 @@ void series_enquirer::initialize(
     std::uint16_t _peer_port,
     const std::string& _peer_application_title,
     const std::string& _move_application_title,
-    core::progress::observer::sptr _progress
+    core::notification::observer::sptr _progress
 )
 {
     // Save move application title for move requests.
@@ -277,7 +272,7 @@ OFCondition series_enquirer::send_store_request(const std::filesystem::path& _pa
 
 //------------------------------------------------------------------------------
 
-OFCondition series_enquirer::send_store_request(const CSPTR(DcmDataset)& _dataset)
+OFCondition series_enquirer::send_store_request(const sight::csptr<DcmDataset>& _dataset)
 {
     // Try to find a presentation context.
     T_ASC_PresentationContextID pres_id = this->find_uncompressed_pc(UID_MOVEStudyRootQueryRetrieveInformationModel);

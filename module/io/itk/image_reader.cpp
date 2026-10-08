@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,10 +22,10 @@
 
 #include "image_reader.hpp"
 
-#include <core/com/signal.hxx>
 #include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
-#include <core/progress/observer.hpp>
+#include <core/notification/observer.hpp>
+#include <core/tools/failed.hpp>
 
 #include <data/image.hpp>
 
@@ -36,9 +36,6 @@
 #include <ui/__/cursor.hpp>
 #include <ui/__/dialog/location.hpp>
 #include <ui/__/dialog/message.hpp>
-#include <ui/__/dialog/progress.hpp>
-
-#include <boost/algorithm/string.hpp>
 
 namespace sight::module::io::itk
 {
@@ -57,6 +54,16 @@ sight::io::service::path_type_t image_reader::get_path_type() const
 
 //------------------------------------------------------------------------------
 
+std::vector<std::pair<std::string, std::string> > image_reader::get_supported_extensions()
+{
+    return {
+        {"NIfTI (.nii)", "*.nii *.nii.gz"},
+        {"Inr (.inr)", "*.inr *.inr.gz"}
+    };
+}
+
+//------------------------------------------------------------------------------
+
 void image_reader::open_location_dialog()
 {
     static auto default_directory = std::make_shared<core::location::single_folder>();
@@ -65,7 +72,7 @@ void image_reader::open_location_dialog()
     dialog_file.set_title(*m_window_title);
     dialog_file.set_default_location(default_directory);
     dialog_file.add_filter("NIfTI (.nii)", "*.nii *.nii.gz");
-    dialog_file.add_filter("Inr (.inr.gz)", "*.inr.gz");
+    dialog_file.add_filter("Inr (.inr)", "*.inr *.inr.gz");
     dialog_file.set_option(ui::dialog::location::read);
     dialog_file.set_option(ui::dialog::location::file_must_exist);
 
@@ -111,7 +118,7 @@ void image_reader::updating()
             "The object is not a '"
             + data::image::classname()
             + "' or '"
-            + sight::io::service::DATA_KEY
+            + sight::io::service::READER_DATA_KEY
             + "' is not correctly set.",
             image
         );
@@ -121,15 +128,11 @@ void image_reader::updating()
 
         try
         {
-            auto read_observer = std::make_shared<sight::core::progress::observer>("Loading image... ");
+            auto read_observer = this->make_notification<sight::core::notification::observer>("Loading image... ");
             if(sight::module::io::itk::image_reader::load_image(this->get_file(), image, read_observer))
             {
                 m_read_failed = false;
-                auto sig = image->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-                {
-                    core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
-                    sig->async_emit();
-                }
+                image->async_emit(this, data::signals::MODIFIED);
             }
         }
         catch(core::tools::failed& e)
@@ -150,7 +153,7 @@ void image_reader::updating()
 bool image_reader::load_image(
     const std::filesystem::path& _img_file,
     const data::image::sptr& _img,
-    const core::progress::observer::sptr& _read_observer
+    const core::notification::observer::sptr& _read_observer
 )
 {
     bool ok = true;
@@ -159,7 +162,7 @@ bool image_reader::load_image(
     boost::algorithm::to_lower(ext);
 
     sight::io::reader::object_reader::sptr image_reader;
-    if(boost::algorithm::ends_with(_img_file.string(), ".inr.gz"))
+    if(ext == ".inr" || boost::algorithm::ends_with(_img_file.string(), ".inr.gz"))
     {
         auto inr_reader = std::make_shared<sight::io::itk::inr_image_reader>();
         inr_reader->set_file(_img_file);
@@ -175,7 +178,7 @@ bool image_reader::load_image(
     {
         std::stringstream ss;
         ss << "The file extension " << ext
-        << " is not supported by the image reader. Please choose either *.inr.gz, *.nii or *.nii.gz files";
+        << " is not supported by the image reader. Please choose *.inr, *.inr.gz, *.nii or *.nii.gz files";
         sight::ui::dialog::message::show(
             "Error",
             ss.str(),

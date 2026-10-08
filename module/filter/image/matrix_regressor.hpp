@@ -44,19 +44,19 @@ namespace sight::module::filter::image
  * @section XML XML Configuration
  * @code{.xml}
    <service type="sight::module::filter::image::matrix_regressor">
-       <in key="matrixList" uid="..." auto_connect="true" />
-       <in key="pointList" uid="..." />
-       <inout key="optimalMatrix" uid="..." />
+       <input matrix_list="${...}" point_list="${...}" />
+       <output optimal_matrix="${...}" />
    </service>
    @endcode
  *
  * @subsection Input Input
- * - \b matrixList [sight::data::vector]: The list of matrices used to compute an optimal one.
- * - \b pointList [sight::data::point_list]: A list of relevant points used to evaluate the distance to the optimal
+ * - \b input.matrix_list [sight::data::vector]: The list of matrices used to compute an optimal one.
+ * - \b input.point_list [sight::data::point_list]: A list of relevant points used to evaluate the distance to the
+ * optimal
  * matrix.
  *
  * @subsection In-Out In-Out
- * - \b optimalMatrix [sight::data::matrix4]: The optimal matrix.
+ * - \b output.optimal_matrix [sight::data::matrix4]: The optimal matrix.
  */
 class matrix_regressor : public service::filter
 {
@@ -89,20 +89,20 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::vector::ADDED_OBJECTS_SIG of s_MATRIX_LIST_IN to service::slots::UPDATE
-     * Connect data::vector::REMOVED_OBJECTS_SIG of s_MATRIX_LIST_IN to service::slots::UPDATE
-     * Connect data::vector::MODIFIED_SIG of s_MATRIX_LIST_IN to service::slots::UPDATE
+     * Connect data::vector::signals::ADDED_OBJECTS of s_MATRIX_LIST_IN to service::slots::UPDATE
+     * Connect data::vector::signals::REMOVED_OBJECTS of s_MATRIX_LIST_IN to service::slots::UPDATE
+     * Connect data::signals::MODIFIED of s_MATRIX_LIST_IN to service::slots::UPDATE
      * Connect data::point_list::signals::POINT_ADDED of s_POINT_LIST_IN to service::slots::UPDATE
      * Connect data::point_list::signals::POINT_REMOVED of s_POINT_LIST_IN to service::slots::UPDATE
-     * Connect data::point_list::MODIFIED_SIG of s_POINT_LIST_IN to service::slots::UPDATE
+     * Connect data::signals::MODIFIED of s_POINT_LIST_IN to service::slots::UPDATE
      */
     connections_t auto_connections() const override;
 
 private:
 
-    static constexpr std::string_view MATRIX_LIST_IN       = "matrixList";
-    static constexpr std::string_view POINT_LIST_IN        = "pointList";
-    static constexpr std::string_view OPTIMAL_MATRIX_INOUT = "optimalMatrix";
+    static constexpr std::string_view MATRIX_LIST_IN       = "input.matrix_list";
+    static constexpr std::string_view POINT_LIST_IN        = "input.point_list";
+    static constexpr std::string_view OPTIMAL_MATRIX_INOUT = "output.optimal_matrix";
 
     sight::data::ptr<sight::data::vector, sight::data::access::in> m_matrix_list {this, MATRIX_LIST_IN};
     sight::data::ptr<sight::data::point_list, sight::data::access::in> m_point_list {this, POINT_LIST_IN};

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -19,25 +19,25 @@
  * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************/
+#include "core/spy_log.hpp"
+#include "logger.hpp"
 
-#include "core/log/logger.hpp"
+#include <algorithm>
 
 namespace sight::core::log
 {
 
-logger::logger()
-= default;
+logger::logger() = default;
 
 //-----------------------------------------------------------------------------
 
-logger::~logger()
-= default;
+logger::~logger() = default;
 
 //-----------------------------------------------------------------------------
 
 void logger::information(const std::string& _message)
 {
-    core::log::log log(core::log::log::information, _message);
+    log log(log::level_t::information, _message);
     m_log_container.push_back(log);
     SIGHT_INFO(_message);
 }
@@ -46,7 +46,7 @@ void logger::information(const std::string& _message)
 
 void logger::warning(const std::string& _message)
 {
-    core::log::log log(core::log::log::warning, _message);
+    log log(log::level_t::warning, _message);
     m_log_container.push_back(log);
     SIGHT_WARN(_message);
 }
@@ -55,14 +55,14 @@ void logger::warning(const std::string& _message)
 
 void logger::critical(const std::string& _message)
 {
-    core::log::log log(core::log::log::critical, _message);
+    log log(log::level_t::critical, _message);
     m_log_container.push_back(log);
     SIGHT_ERROR(_message);
 }
 
 //-----------------------------------------------------------------------------
 
-core::log::log logger::get_log(unsigned int _index)
+log logger::get_log(unsigned int _index)
 {
     SIGHT_ASSERT("Please be sure to provide an index lower than the number of items.", _index < this->count());
     return m_log_container[_index];
@@ -95,7 +95,7 @@ std::size_t logger::count(core::log::log::level_t _level) const
 
 void logger::sort()
 {
-    std::sort(m_log_container.begin(), m_log_container.end(), logger::log_sorter);
+    std::ranges::sort(m_log_container, logger::log_sorter);
 }
 
 //-----------------------------------------------------------------------------

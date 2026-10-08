@@ -138,14 +138,16 @@ protected:
     /// Helper function to execute a function for all techniques of this material
     void for_all_techniques(std::function<void(Ogre::Pass&)> _fn);
 
+    /// Input vertex layout
+    sight::data::mesh::attribute m_layout {data::mesh::attribute::point_normals}; //NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
+
+private:
+
     /// Ogre material resource
     Ogre::MaterialPtr m_material;
 
     /// Name of the material template
     std::string m_template_name;
-
-    /// Input vertex layout
-    sight::data::mesh::attribute m_layout {data::mesh::attribute::point_normals};
 };
 
 //------------------------------------------------------------------------------

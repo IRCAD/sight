@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,8 +27,6 @@
 
 #include <core/memory/buffered.hpp>
 #include <core/type.hpp>
-
-#include <data/iterator.hpp>
 
 #include <boost/range/iterator_range_core.hpp>
 
@@ -182,7 +180,7 @@ public:
     using buffer_t = std::uint8_t;
 
     /// image format
-    enum pixel_format_t
+    enum pixel_format_t : std::uint8_t
     {
         undefined = 0, ///< Undefined pixel format
         rgb,           ///< image with 3 component RGB.
@@ -293,39 +291,42 @@ public:
      * @name Signals
      * @{
      */
-    /// Type of signal when image's buffer is added
-    using buffer_modified_signal_t = core::com::signal<void ()>;
-    SIGHT_DATA_API static const core::com::signals::key_t BUFFER_MODIFIED_SIG;
+    struct signals
+    {
+        /// Type of signal when image's buffer is added
+        using buffer_modified_t = core::com::signal<void ()>;
+        static const inline signal_key_t BUFFER_MODIFIED = "buffer_modified";
 
-    /// Type of signal when a landmark is added
-    using landmark_added_signal_t = core::com::signal<void (std::shared_ptr<point>)>;
-    SIGHT_DATA_API static const core::com::signals::key_t LANDMARK_ADDED_SIG;
+        /// Type of signal when a landmark is added
+        using landmark_added_t = core::com::signal<void (std::shared_ptr<point>)>;
+        static const inline signal_key_t LANDMARK_ADDED = "landmarkAdded";
 
-    /// Type of signal when a landmark is removed
-    using landmark_removed_signal_t = core::com::signal<void (std::shared_ptr<point>)>;
-    SIGHT_DATA_API static const core::com::signals::key_t LANDMARK_REMOVED_SIG;
+        /// Type of signal when a landmark is removed
+        using landmark_removed_t = core::com::signal<void (std::shared_ptr<point>)>;
+        static const inline signal_key_t LANDMARK_REMOVED = "landmarkRemoved";
 
-    /// Type of signal when a landmark is added
-    using landmark_displayed_signal_t = core::com::signal<void (bool)>;
-    SIGHT_DATA_API static const core::com::signals::key_t LANDMARK_DISPLAYED_SIG;
+        /// Type of signal when a landmark is added
+        using landmark_displayed_t = core::com::signal<void (bool)>;
+        static const inline signal_key_t LANDMARK_DISPLAYED = "landmarkDisplayed";
 
-    /// Type of signal when slice index is modified (axial index, frontal index, sagittal index)
-    using slice_index_modified_signal_t = core::com::signal<void (int, int, int)>;
-    SIGHT_DATA_API static const core::com::signals::key_t SLICE_INDEX_MODIFIED_SIG;
+        /// Type of signal when slice index is modified (axial index, frontal index, sagittal index)
+        using slice_index_modified_t = core::com::signal<void (int, int, int)>;
+        static const inline signal_key_t SLICE_INDEX_MODIFIED = "sliceIndexModified";
 
-    /// Type of signal when slice type is modified (from slice type, to slice type)
-    using slice_type_modified_signal_t = core::com::signal<void (int, int)>;
-    SIGHT_DATA_API static const core::com::signals::key_t SLICE_TYPE_MODIFIED_SIG;
+        /// Type of signal when slice type is modified (from slice type, to slice type)
+        using slice_type_modified_t = core::com::signal<void (int, int)>;
+        static const inline signal_key_t SLICE_TYPE_MODIFIED = "sliceTypeModified";
 
-    /// Type of signal when ruler fiducial is modified (the associated id of ruler fiducial and the new coordinates)
-    using ruler_modified_signal_t =
-        core::com::signal<void (std::optional<std::string>, std::array<double, 3>, std::array<double, 3>)>;
-    SIGHT_DATA_API static const core::com::signals::key_t RULER_MODIFIED_SIG;
+        /// Type of signal when ruler fiducial is modified (the associated id of ruler fiducial and the new coordinates)
+        using ruler_modified_t =
+            core::com::signal<void (std::optional<std::string>, std::array<double, 3>, std::array<double, 3>)>;
+        static const inline signal_key_t RULER_MODIFIED = "ruler_modified";
 
-    /// Type of signal when fiducial is removed (the associated id of fiducial)
-    using fiducial_removed_signal_t =
-        core::com::signal<void (std::optional<std::string>)>;
-    SIGHT_DATA_API static const core::com::signals::key_t FIDUCIAL_REMOVED_SIG;
+        /// Type of signal when fiducial is removed (the associated id of fiducial)
+        using fiducial_removed_t =
+            core::com::signal<void (std::optional<std::string>)>;
+        static const inline signal_key_t FIDUCIAL_REMOVED = "fiducial_removed";
+    };
     /**
      * @}
      */
@@ -712,7 +713,7 @@ inline const image::size_t& image::size() const
 template<typename T>
 inline image::iterator<T> image::begin()
 {
-    return iterator<T>(static_cast<typename iterator<T>::pointer_t>(buffer()));
+    return iterator<T>(static_cast<iterator<T>::pointer_t>(buffer()));
 }
 
 //------------------------------------------------------------------------------
@@ -721,7 +722,7 @@ template<typename T>
 inline image::iterator<T> image::end()
 {
     auto itr = begin<T>();
-    itr += static_cast<typename iterator<T>::difference_type>(this->size_in_bytes() / sizeof(T));
+    itr += static_cast<iterator<T>::difference_type>(this->size_in_bytes() / sizeof(T));
     return itr;
 }
 
@@ -730,7 +731,7 @@ inline image::iterator<T> image::end()
 template<typename T>
 inline image::const_iterator<T> image::begin() const
 {
-    return const_iterator<T>(static_cast<typename const_iterator<T>::pointer_t>(buffer()));
+    return const_iterator<T>(static_cast<const_iterator<T>::pointer_t>(buffer()));
 }
 
 //------------------------------------------------------------------------------
@@ -739,7 +740,7 @@ template<typename T>
 inline image::const_iterator<T> image::end() const
 {
     auto itr = begin<T>();
-    itr += static_cast<typename const_iterator<T>::difference_type>(this->size_in_bytes() / sizeof(T));
+    itr += static_cast<const_iterator<T>::difference_type>(this->size_in_bytes() / sizeof(T));
     return itr;
 }
 
@@ -748,7 +749,7 @@ inline image::const_iterator<T> image::end() const
 template<typename T>
 inline image::const_iterator<T> image::cbegin() const
 {
-    return const_iterator<T>(static_cast<typename const_iterator<T>::pointer_t>(buffer()));
+    return const_iterator<T>(static_cast<const_iterator<T>::pointer_t>(buffer()));
 }
 
 //------------------------------------------------------------------------------
@@ -757,7 +758,7 @@ template<typename T>
 inline image::const_iterator<T> image::cend() const
 {
     auto itr = begin<T>();
-    itr += static_cast<typename const_iterator<T>::difference_type>(this->size_in_bytes() / sizeof(T));
+    itr += static_cast<const_iterator<T>::difference_type>(this->size_in_bytes() / sizeof(T));
     return itr;
 }
 

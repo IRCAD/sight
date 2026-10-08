@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,11 +22,8 @@
 
 #include "ui/qt/dialog/progress.hpp"
 
-#include <core/base.hpp>
-
 #include <ui/__/container/widget.hpp>
 #include <ui/__/frame.hpp>
-#include <ui/__/macros.hpp>
 
 #include <QPaintEvent>
 
@@ -130,7 +127,7 @@ progress::~progress()
 void progress::operator()(float _percent, std::string _msg)
 {
     SIGHT_ASSERT("m_dialog or m_progressbar not instanced", m_progressbar || m_dialog);
-    int value = (int) (_percent * 100);
+    int value = static_cast<int>(_percent * 100);
     if(value != this->m_value)
     {
         this->set_message(_msg);
@@ -144,7 +141,7 @@ void progress::operator()(float _percent, std::string _msg)
             m_dialog->setValue(value);
         }
 
-        if(m_process_user_events)
+        if(process_user_events())
         {
             QCoreApplication::processEvents(QEventLoop::AllEvents);
         }

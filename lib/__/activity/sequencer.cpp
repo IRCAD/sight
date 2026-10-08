@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2025 IRCAD France
+ * Copyright (C) 2019-2026 IRCAD France
  * Copyright (C) 2019-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,6 @@
 
 #include "activity/sequencer.hpp"
 
-#include "activity/builder/base.hpp"
 #include "activity/builder/data.hpp"
 
 #include <data/mt/locked_ptr.hpp>
@@ -62,7 +61,7 @@ int sequencer::parse_activities(data::activity_set& _activity_set)
         }
     }
 
-    return int(index) - 1;
+    return static_cast<int>(index) - 1;
 }
 
 //------------------------------------------------------------------------------
@@ -81,7 +80,7 @@ void sequencer::store_activity_data(
     for(const auto& [key, value] : *activity)
     {
         // Do not store overriden requirements
-        if(!_overrides || _overrides->count(key) == 0)
+        if(!_overrides || !_overrides->contains(key))
         {
             m_requirements[key] = value;
         }
@@ -164,11 +163,13 @@ data::activity::sptr sequencer::get_activity(
 
         if(_slot)
         {
-            auto sig = _activity_set.signal<data::activity_set::added_signal_t>(data::activity_set::ADDED_OBJECTS_SIG);
+            auto sig = _activity_set.signal<data::activity_set::signals::added_t>(
+                data::activity_set::signals::ADDED_OBJECTS
+            );
             core::com::connection::blocker block(sig->get_connection(_slot));
 
             // Force signal emission while blocker exists
-            scoped_emitter.reset();
+            scoped_emitter = nullptr;
         }
     }
 
@@ -184,7 +185,7 @@ void sequencer::remove_last_activities(data::activity_set& _activity_set, std::s
         const auto scoped_emitter = _activity_set.scoped_emit();
 
         // Remove the activities behind the index
-        _activity_set.erase(_activity_set.cbegin() + int(_index), _activity_set.cend());
+        _activity_set.erase(_activity_set.cbegin() + static_cast<int>(_index), _activity_set.cend());
 
         // clear the requirements and parse the remaining activities to recreate the requirements
         m_requirements.clear();

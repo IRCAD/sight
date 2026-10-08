@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -87,7 +87,10 @@ public:
     /// Gets the current extension file selection
     SIGHT_UI_API std::string get_current_selection() const override;
 
-protected:
+    /// Gets the selected filter as its display name and wildcard list.
+    SIGHT_UI_API filter_t get_current_filter() const override;
+
+private:
 
     ui::dialog::location_base::sptr m_implementation;
 };

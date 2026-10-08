@@ -19,8 +19,6 @@
  *
  ***********************************************************************/
 
-#include <core/runtime/runtime.hpp>
-
 #include <data/image_series.hpp>
 #include <data/model_series.hpp>
 #include <data/vector.hpp>
@@ -73,20 +71,20 @@ TEST_SUITE("sight::module::data::get_vector")
         get_vector->set_config(config);
         get_vector->set_input(vector, "vector");
         get_vector->configure();
-        get_vector->start().wait();
-        get_vector->update().wait();
+        get_vector->start().get();
+        get_vector->update().get();
 
         CHECK_EQ(get_vector->output("objects", 0).lock()->get_id(), index_0_id);
         CHECK_EQ(get_vector->output("objects", 1).lock()->get_id(), index_3_id);
 
         vector->clear();
 
-        get_vector->update().wait();
+        get_vector->update().get();
 
         CHECK(get_vector->output("objects", 0).lock() == nullptr);
         CHECK(get_vector->output("objects", 1).lock() == nullptr);
 
-        get_vector->stop().wait();
+        get_vector->stop().get();
         sight::service::remove(get_vector);
     }
 
@@ -104,10 +102,10 @@ TEST_SUITE("sight::module::data::get_vector")
             "</out>";
         get_vector->set_config(config);
         get_vector->set_input(nullptr, "vector");
-        get_vector->start().wait();
+        get_vector->start().get();
         CHECK_THROWS_AS(get_vector->update().get(), sight::data::exception);
 
-        get_vector->stop().wait();
+        get_vector->stop().get();
         sight::service::remove(get_vector);
     }
 

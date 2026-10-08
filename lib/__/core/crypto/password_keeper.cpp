@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -27,7 +27,6 @@
 #include <core/log/spy_logger.hpp>
 #include <core/tools/system.hpp>
 
-#include <iomanip>
 #include <mutex>
 
 namespace sight::core::crypto
@@ -57,8 +56,6 @@ secure_string password_keeper::get_pseudo_password_hash(const secure_string& _sa
 class password_keeper::password_keeper_impl final
 {
 public:
-
-    SIGHT_DECLARE_CLASS(password_keeper_impl);
 
     /// Delete default copy constructors and assignment operators
     password_keeper_impl(const password_keeper_impl&)            = delete;
@@ -183,7 +180,7 @@ core::crypto::secure_string password_keeper::get_global_password_hash()
 
 core::crypto::secure_string password_keeper::get_global_password()
 {
-    std::lock_guard guard(s_password_mutex);
+    std::scoped_lock guard(s_password_mutex);
 
     if(s_password.empty())
     {
@@ -200,7 +197,7 @@ void password_keeper::set_global_password(
     [[maybe_unused]] bool _restart_logger
 )
 {
-    std::lock_guard guard(s_password_mutex);
+    std::scoped_lock guard(s_password_mutex);
 
     // Check if the password is new
     if(_restart_logger)
@@ -225,7 +222,7 @@ void password_keeper::set_global_password(
 
 bool password_keeper::check_global_password(const core::crypto::secure_string& _password)
 {
-    std::lock_guard guard(s_password_mutex);
+    std::scoped_lock guard(s_password_mutex);
 
     return core::crypto::decrypt(s_password, get_global_password_key()) == _password;
 }
@@ -234,7 +231,7 @@ bool password_keeper::check_global_password(const core::crypto::secure_string& _
 
 void password_keeper::reset_global_password()
 {
-    std::lock_guard guard(s_password_mutex);
+    std::scoped_lock guard(s_password_mutex);
 
     s_password.clear();
 }

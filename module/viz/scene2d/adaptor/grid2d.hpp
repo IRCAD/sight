@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -64,18 +64,19 @@ public:
 
     SIGHT_DECLARE_SERVICE(grid2d, sight::viz::scene2d::adaptor);
 
-    /**
-     * @name Slots API
-     * @{
-     */
-    static const core::com::slots::key_t SET_GRID_SPACING_SLOT;
-    /** @} */
+    struct slots
+    {
+        static inline const slot_key_t SET_GRID_SPACING = "set_grid_spacing";
+    };
 
     /// Constructor, set the x and y spacing to 10
     grid2d() noexcept;
 
     /// Basic destructor, do nothing
-    ~grid2d() noexcept override;
+    ~grid2d() noexcept override = default;
+
+    /// Manage the given events
+    void process_interaction(sight::viz::scene2d::data::event& _event) override;
 
 protected:
 
@@ -88,9 +89,6 @@ protected:
 
     /// Clean the lines vector and remove the layer from the scene.
     void stopping() override;
-
-    /// Manage the given events
-    void process_interaction(sight::viz::scene2d::data::event& _event) override;
 
 private:
 
