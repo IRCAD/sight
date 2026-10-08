@@ -149,6 +149,7 @@ point::point() noexcept
     new_slot(slots::REMOVE_FIDUCIALS, &point::remove_fiducials, this);
     new_slot(slots::REMOVE_VISIBLE_FIDUCIALS, &point::remove_visible_fiducials, this);
     new_slot(slots::SET_IMAGE_VISIBILITY, &point::set_image_visibility, this);
+    new_slot(slots::SET_GROUP_VISIBILITY, &point::set_group_visibility, this);
     new_slot(slots::SET_CURRENT_GROUP, &point::set_current_group, this);
     new_slot(slots::CONFIGURE_FIDUCIALS, &point::configure_fiducials, this);
     new_slot(slots::ENABLE_EDIT_MODE, &point::enable_edit_mode, this);
@@ -1698,6 +1699,7 @@ bool point::check_fiducial_visibility(
     // Check if the fiducial is visible.
     return m_image_visible
            && _base_visibility.value_or(visible())
+           && !m_hidden_groups.contains(_query.m_group_name.value_or(""))
            && _query.m_visible.value_or(true)
            && check_fiducial_visibility(position, size, _image_series);
 }
@@ -1760,6 +1762,22 @@ void point::set_image_visibility(std::string _image_id, bool _visible)
         m_image_visible = _visible;
         this->apply_visibility();
     }
+}
+
+//------------------------------------------------------------------------------
+
+void point::set_group_visibility(std::string _group_name, bool _visible)
+{
+    if(_visible)
+    {
+        m_hidden_groups.erase(_group_name);
+    }
+    else
+    {
+        m_hidden_groups.insert(std::move(_group_name));
+    }
+
+    this->apply_visibility();
 }
 
 //------------------------------------------------------------------------------

@@ -61,17 +61,17 @@ namespace sight::module::viz::scene3d_qt::adaptor::fiducials
  * - \b transform (optional): Ogre transform node to which the line is attached.
  *
  * @section Slots Slots
- * - \b create_path(): draws the line from the current group points.
- * - \b clear_path(): removes only the displayed line.
  * - \b clear(): removes the line and point fiducials in the path group.
  * - \b select_group(bool): selects the path group or restores the ordinary group.
  * - \b point_edit_mode_changed(bool): restores the ordinary group when point editing ends.
  * - \b set_landmark_group(std::string): remembers the ordinary group to restore after path editing.
+ * - \b hide_group(), show_group(): hides or shows the configured path group in the scene.
  *
  * @section Signals Signals
  * - \b group_selected(std::string): emits the group selected for editing.
  * - \b path_edit_mode_changed(bool): requests that the path action be unchecked when point editing ends.
  * - \b points_available(bool): whether the path has at least two valid points.
+ * - \b group_visibility_changed(std::string, bool): requests visibility for the configured group.
  */
 class path final : public sight::viz::scene3d::adaptor,
                    public sight::viz::scene3d::transformable
@@ -89,6 +89,8 @@ public:
         inline static const slot_key_t SELECT_GROUP       = "select_group";
         inline static const slot_key_t POINT_EDIT_MODE    = "point_edit_mode_changed";
         inline static const slot_key_t SET_LANDMARK_GROUP = "set_landmark_group";
+        inline static const slot_key_t HIDE_GROUP         = "hide_group";
+        inline static const slot_key_t SHOW_GROUP         = "show_group";
     };
 
     struct signals final
@@ -101,6 +103,9 @@ public:
 
         inline static const signal_key_t POINTS_AVAILABLE = "points_available";
         using points_available_t = core::com::signal<void (bool)>;
+
+        inline static const signal_key_t GROUP_VISIBILITY_CHANGED = "group_visibility_changed";
+        using group_visibility_changed_t = core::com::signal<void (std::string, bool)>;
     };
 
     /**
@@ -123,6 +128,12 @@ public:
      */
     void set_landmark_group(std::string _group);
 
+    /// SLOT: Hides the configured group, including its path line.
+    void hide_group();
+
+    /// SLOT: Shows the configured group, including its path line.
+    void show_group();
+
 protected:
 
     void configuring() final;
@@ -143,10 +154,13 @@ private:
      */
     void clear_path();
 
+    void set_group_visibility(bool _visible);
+
     Ogre::SceneNode* m_transform_node {nullptr};
     Ogre::ManualObject* m_path_object {nullptr};
     sight::viz::scene3d::material::standard::uptr m_path_material {nullptr};
     std::string m_landmark_group;
+    bool m_group_visible {true};
 
     ptr_inout<sight::data::image_series> m_image_series {this, "data.image_series"};
     ptr_in<sight::data::string> m_path_group {this, "config.path_group", "Path"};

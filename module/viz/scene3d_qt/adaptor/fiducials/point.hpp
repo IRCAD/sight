@@ -29,7 +29,10 @@
 #include <data/image_series.hpp>
 #include <data/material.hpp>
 
+#include <set>
+#include <string>
 #include <utility>
+
 #include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/fiducials_configuration.hpp>
 #include <viz/scene3d/material/standard.hpp>
@@ -54,6 +57,7 @@ namespace sight::module::viz::scene3d_qt::adaptor::fiducials
  * - \b disable_move_mode(): disables the move mode.
  * - \b update_visibility(bool): shows or hides the fiducials.
  * - \b set_image_visibility(string, bool): follows the visibility of the input image.
+ * - \b set_group_visibility(string, bool): shows or hides one fiducial group in this view.
  * - \b toggle_visibility(): toggles whether the fiducials are shown or not.
  * - \b show(): shows the fiducials.
  * - \b hide(): hides the fiducials.
@@ -132,6 +136,7 @@ public:
         inline static const slot_key_t REMOVE_FIDUCIALS         = "remove_all";
         inline static const slot_key_t REMOVE_VISIBLE_FIDUCIALS = "remove_landmarks";
         inline static const slot_key_t SET_IMAGE_VISIBILITY     = "set_image_visibility";
+        inline static const slot_key_t SET_GROUP_VISIBILITY     = "set_group_visibility";
         inline static const slot_key_t SET_CURRENT_GROUP        = "set_current_group";
         inline static const slot_key_t CONFIGURE_FIDUCIALS      = "configure_landmarks";
 
@@ -196,6 +201,9 @@ public:
 
     /// SLOT: Changes the visibility when the input image visibility changes.
     void set_image_visibility(std::string _image_id, bool _visible);
+
+    /// SLOT: Changes the visibility of one group without changing its stored fiducial data.
+    void set_group_visibility(std::string _group_name, bool _visible);
 
     struct signals final
     {
@@ -669,6 +677,7 @@ private:
 
     /// Indicates whether the image associated with this adaptor is visible.
     bool m_image_visible {true};
+    std::set<std::string> m_hidden_groups;
 
     /// True if we must show the contextual menu. It must be shown if the fiducial already existed and wasn't moved.
     bool m_must_show_contextual_menu {false};

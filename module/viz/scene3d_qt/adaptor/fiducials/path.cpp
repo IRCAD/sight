@@ -49,10 +49,13 @@ path::path() noexcept
     new_slot(slots::SELECT_GROUP, &path::select_group, this);
     new_slot(slots::POINT_EDIT_MODE, &path::point_edit_mode_changed, this);
     new_slot(slots::SET_LANDMARK_GROUP, &path::set_landmark_group, this);
+    new_slot(slots::HIDE_GROUP, &path::hide_group, this);
+    new_slot(slots::SHOW_GROUP, &path::show_group, this);
 
     new_signal<signals::group_selected_t>(signals::GROUP_SELECTED);
     new_signal<signals::path_edit_mode_changed_t>(signals::PATH_EDIT_MODE_CHANGED);
     new_signal<signals::points_available_t>(signals::POINTS_AVAILABLE);
+    new_signal<signals::group_visibility_changed_t>(signals::GROUP_VISIBILITY_CHANGED);
 }
 
 //-----------------------------------------------------------------------------
@@ -167,6 +170,7 @@ void path::create_path()
 
     m_path_object->end();
     m_path_object->setQueryFlags(0x0);
+    m_path_object->setVisible(visible() && m_group_visible);
     m_transform_node->attachObject(m_path_object);
     async_emit(signals::POINTS_AVAILABLE, true);
 }
@@ -236,6 +240,11 @@ void path::select_group(bool _selected)
 {
     if(_selected)
     {
+        if(!m_group_visible)
+        {
+            show_group();
+        }
+
         auto image       = m_image_series.lock();
         const auto group = m_path_group.value();
         auto fiducials   = image->get_fiducials();
@@ -275,6 +284,35 @@ void path::set_landmark_group(std::string _group)
     {
         m_landmark_group = std::move(_group);
     }
+}
+
+//-----------------------------------------------------------------------------
+
+void path::hide_group()
+{
+    set_group_visibility(false);
+}
+
+//-----------------------------------------------------------------------------
+
+void path::show_group()
+{
+    set_group_visibility(true);
+}
+
+//-----------------------------------------------------------------------------
+
+void path::set_group_visibility(bool _visible)
+{
+    m_group_visible = _visible;
+    if(m_path_object != nullptr)
+    {
+        render_service()->make_current();
+        m_path_object->setVisible(visible() && _visible);
+        request_render();
+    }
+
+    async_emit(signals::GROUP_VISIBILITY_CHANGED, m_path_group.value(), _visible);
 }
 
 } // namespace sight::module::viz::scene3d_qt::adaptor::fiducials

@@ -22,6 +22,7 @@
 #include "test.hpp"
 
 #include <data/image_series.hpp>
+#include <data/matrix4.hpp>
 
 #include <service/registry.hpp>
 
@@ -34,6 +35,7 @@
 #include <QAction>
 
 #include <algorithm>
+#include <cmath>
 #include <string>
 
 namespace sight::sight_viewer::uit
@@ -123,6 +125,113 @@ TEST_SUITE("sight_viewer")
                 {
                     return image->get_fiducials()->get_number_of_points_in_group("Path") == 2;
                 });
+                _tester.take("Interaction mode action", "fly_through_camera_toolbar/Interaction mode");
+                _tester.doubt<QAction*>(
+                    "Interaction mode stays disabled before Play",
+                    [](QAction* _action){return !_action->isEnabled() && !_action->isChecked();});
+
+                sight::service::base::sptr camera_service;
+                _tester.doubt<QAction*>(
+                    "The normal camera exposes its pose",
+                    [&](QAction*)
+                {
+                    for(const auto& service : sight::service::get_services(
+                            "sight::module::viz::scene3d::adaptor::camera"
+                    ))
+                    {
+                        if(service->started()
+                           && service->get_id().find("volumeRendering") != std::string::npos
+                           && service->get_id().ends_with("-global_camera_adp"))
+                        {
+                            camera_service = service;
+                            return true;
+                        }
+                    }
+
+                    return false;
+                });
+
+                const auto camera_pose = [&camera_service]
+                                         {
+                                             const auto pose = camera_service->inout<sight::data::matrix4>(
+                                                 "data.transform_out"
+                                             ).const_lock();
+                                             return pose->values();
+                                         };
+                const auto poses_match = [](const auto& _first, const auto& _second)
+                                         {
+                                             return std::ranges::equal(
+                                                 _first,
+                                                 _second,
+                                                 [](double _left, double _right)
+                    {
+                        return std::abs(_left - _right) < 1e-4;
+                    });
+                                         };
+                const auto normal_pose = camera_pose();
+
+                helper::button::push(_tester, "fly_through_camera_toolbar/Play");
+                _tester.take("Interaction mode action", "fly_through_camera_toolbar/Interaction mode");
+                _tester.doubt<QAction*>(
+                    "Play checks interaction mode",
+                    [](QAction* _action)
+                {
+                    return _action->isEnabled() && _action->isCheckable() && _action->isChecked();
+                });
+                _tester.doubt<QAction*>(
+                    "Playback moves the camera",
+                    [&](QAction*){return !poses_match(camera_pose(), normal_pose);});
+
+                helper::button::push(_tester, "fly_through_camera_toolbar/Pause");
+                _tester.take("Play action", "fly_through_camera_toolbar/Play");
+                _tester.doubt<QAction*>(
+                    "Pause enables Play",
+                    [](QAction* _action){return _action->isEnabled();});
+                _tester.take("Interaction mode action", "fly_through_camera_toolbar/Interaction mode");
+                _tester.doubt<QAction*>(
+                    "Pause keeps fly interaction enabled",
+                    [](QAction* _action){return _action->isChecked();});
+
+                const auto paused_pose = camera_pose();
+                helper::selector::from_parent("top_scenes_view/1", "scene_srv").select(_tester);
+                _tester.interact(
+                    std::make_unique<sight::ui::test::mouse_drag>(scene_center, scene_center + QPoint(40, 20))
+                );
+                _tester.doubt<QWidget*>(
+                    "The mouse rotates the paused fly camera",
+                    [&](QWidget*){return !poses_match(camera_pose(), paused_pose);});
+
+                helper::button::push(_tester, "fly_through_camera_toolbar/Interaction mode");
+                _tester.take("Interaction mode action", "fly_through_camera_toolbar/Interaction mode");
+                _tester.doubt<QAction*>(
+                    "Interaction mode can be unchecked manually",
+                    [](QAction* _action){return !_action->isChecked();});
+                _tester.doubt<QAction*>(
+                    "Disabling fly interaction restores the normal camera pose",
+                    [&](QAction*){return poses_match(camera_pose(), normal_pose);});
+
+                helper::selector::from_parent("top_scenes_view/1", "scene_srv").select(_tester);
+                _tester.interact(
+                    std::make_unique<sight::ui::test::mouse_drag>(QPoint(30, 80), QPoint(70, 100))
+                );
+                _tester.doubt<QWidget*>(
+                    "Normal camera interaction works again",
+                    [&](QWidget*){return !poses_match(camera_pose(), normal_pose);});
+
+                helper::button::push(_tester, "fly_through_camera_toolbar/Play");
+                _tester.take("Interaction mode action", "fly_through_camera_toolbar/Interaction mode");
+                _tester.doubt<QAction*>(
+                    "Play reactivates fly interaction",
+                    [](QAction* _action){return _action->isChecked();});
+                helper::button::push(_tester, "fly_through_camera_toolbar/Interaction mode");
+                _tester.take("Play action", "fly_through_camera_toolbar/Play");
+                _tester.doubt<QAction*>(
+                    "Leaving fly interaction stops playback and enables Play",
+                    [](QAction* _action){return _action->isEnabled();});
+                _tester.take("Pause action", "fly_through_camera_toolbar/Pause");
+                _tester.doubt<QAction*>(
+                    "Leaving fly interaction disables Pause",
+                    [](QAction* _action){return !_action->isEnabled();});
 
                 helper::button::push(_tester, "fly_through_camera_toolbar/Clear path");
                 _tester.take("Clear path action", "fly_through_camera_toolbar/Clear path");

@@ -38,6 +38,7 @@
 #include <viz/scene3d/adaptor.hpp>
 
 #include <cstdint>
+#include <set>
 #include <string>
 #include <unordered_map>
 
@@ -66,6 +67,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @section Slots Slots
  * - \b set_image_visibility(string, bool): changes the visibility of the image identified by the first argument.
  *   In `negato2d` mode, making an image visible hides the other images.
+ * - \b set_group_visibility(string, bool): changes a fiducial group's visibility in volume children.
  * - \b update_clipping_box(): updates volume clipping boxes.
  * - \b reset_clipping_box(): resets every volume clipping matrix.
  * - \b update_slices_from_world(double, double, double): updates slices from a world point.
@@ -152,6 +154,7 @@ public:
     struct slots
     {
         static inline const slot_key_t SET_IMAGE_VISIBILITY     = "set_image_visibility";
+        static inline const slot_key_t SET_GROUP_VISIBILITY     = "set_group_visibility";
         static inline const slot_key_t UPDATE_CLIPPING_BOX      = "update_clipping_box";
         static inline const slot_key_t UPDATE_SLICES_FROM_WORLD = "update_slices_from_world";
         static inline const slot_key_t SET_SLICE_INDEX          = "set_slice_index";
@@ -190,6 +193,7 @@ private:
     };
 
     void set_image_visibility(std::string _image_id, bool _visible);
+    void set_group_visibility(std::string _group_name, bool _visible);
     void set_child_visibility(const std::string& _image_id, bool _visible);
     void update_clipping_box();
     void update_slices_from_world(double _x, double _y, double _z);
@@ -209,6 +213,7 @@ private:
     std::unordered_map<std::string, sight::viz::scene3d::adaptor::sptr> m_landmarks;
     std::unordered_map<std::string, sight::viz::scene3d::adaptor::sptr> m_rulers;
     std::unordered_map<std::string, bool> m_image_visibility;
+    std::set<std::string> m_hidden_groups;
     std::unordered_map<std::string, data::boolean::sptr> m_child_visibility;
     std::unordered_map<std::string, sight::viz::scene3d::adaptor::sptr> m_children;
     std::unordered_map<std::string, data::image::sptr> m_masks;

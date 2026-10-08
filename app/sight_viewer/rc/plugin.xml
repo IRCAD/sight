@@ -54,6 +54,7 @@
         <id>SightViewer_AppCfg</id>
         <parameters>
             <param name="input" default="" />
+            <param name="flythrough_path_group" default="Path" />
         </parameters>
         <config>
             <!-- ******************************* Objects declaration ****************************** -->
@@ -66,13 +67,15 @@
             <object uid="extruded_meshes" type="sight::data::model_series" />
             <object uid="extruded_meshes_by_image" type="sight::data::map" />
             <object uid="input_path" type="sight::data::string" />
-
             <object uid="volume_tf" type="sight::data::transfer_function" deferred="true" />
             <object uid="image_transfer_functions" type="sight::data::map" />
             <object uid="vr_visibility" type="sight::data::boolean" value="false" />
             <object uid="negato_visibility" type="sight::data::boolean" value="false" />
             <object uid="model_visibility" type="sight::data::boolean" value="true" />
             <object uid="axis_visibility" type="sight::data::boolean" value="false" />
+            <object uid="flythrough_camera_distance" type="sight::data::real" value="0" />
+            <object uid="flythrough_camera_speed" type="sight::data::integer" value="10" />
+            <object uid="flythrough_camera_direction" type="sight::data::integer" value="1" />
             <object uid="volume_parameters" type="sight::data::map">
                 <item key="sampling" type="sight::data::integer" value="1200" />
                 <item key="opacity_correction" type="sight::data::integer" value="200" />
@@ -361,6 +364,21 @@
 
             <service uid="fly_through_camera_tools_container" type="sight::module::ui::view">
                 <gui>
+                    <layout type="sight::ui::layout::line">
+                        <orientation value="vertical" />
+                        <view proportion="0" />
+                        <view proportion="0" />
+                        <spacer />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="fly_through_camera_toolbar_container" />
+                    <view sid="fly_through_camera_speed_container" />
+                </registry>
+            </service>
+
+            <service uid="fly_through_camera_toolbar_container" type="sight::module::ui::view">
+                <gui>
                     <toolbar align="top" />
                     <layout type="sight::ui::layout::line">
                         <orientation value="vertical" />
@@ -371,17 +389,55 @@
                 </registry>
             </service>
 
+            <service uid="fly_through_camera_speed_container" type="sight::module::ui::view">
+                <gui>
+                    <toolbar align="top" />
+                    <layout type="sight::ui::layout::line">
+                        <orientation value="vertical" />
+                    </layout>
+                </gui>
+                <registry>
+                    <toolbar sid="fly_through_camera_speed_toolbar" />
+                </registry>
+            </service>
+
             <service uid="fly_through_camera_toolbar" type="sight::module::ui::toolbar">
                 <gui>
                     <layout>
                         <menu_item name="Draw path" icon="sight::module::ui::icons/path.svg" style="check" />
                         <menu_item name="Clear path" icon="sight::module::ui::icons/trash.svg" />
+                        <menu_item name="Interaction mode" icon="sight::module::ui::icons/show_volume.svg" style="check" />
+                        <spacer />
+                        <menu_item name="Play" icon="sight::module::ui::icons/play.svg" />
+                        <menu_item name="Pause" icon="sight::module::ui::icons/pause.svg" />
                     </layout>
                 </gui>
                 <registry>
                     <menu_item sid="draw_path_act" />
                     <menu_item sid="clear_path_act" />
+                    <menu_item sid="interaction_mode_act" />
+                    <menu_item sid="play_camera_act" />
+                    <menu_item sid="pause_camera_act" />
                 </registry>
+            </service>
+
+            <service uid="fly_through_camera_speed_toolbar" type="sight::module::ui::toolbar">
+                <gui>
+                    <layout>
+                        <editor />
+                    </layout>
+                </gui>
+                <registry>
+                    <editor sid="fly_through_camera_parameters" />
+                </registry>
+            </service>
+
+            <service uid="fly_through_camera_parameters" type="sight::module::ui::qt::settings">
+                <item data="${flythrough_camera_speed}" name="Speed(mm/s)" key="speed_mm_s" min="1" max="100" reset="false" widget="slider" />
+                <item data="${flythrough_camera_direction}" name="Direction" key="direction" widget="buttonBar" style="ToolButtonTextBesideIcon">
+                    <item value="backward" label="Backward" icon="sight::module::ui::icons/left.svg" />
+                    <item value="forward" label="Forward" icon="sight::module::ui::icons/right.svg" />
+                </item>
             </service>
 
             <service uid="tf_parameter_view" type="sight::module::ui::view">
@@ -610,6 +666,18 @@
                 <state enabled="false" checked="false" />
             </service>
 
+            <service uid="play_camera_act" type="sight::module::ui::action">
+                <state enabled="false" />
+            </service>
+
+            <service uid="interaction_mode_act" type="sight::module::ui::action">
+                <state enabled="false" checked="false" />
+            </service>
+
+            <service uid="pause_camera_act" type="sight::module::ui::action">
+                <state enabled="false" />
+            </service>
+
             <!-- ************************ Configuration launchers ********************************* -->
 
             <service uid="image_split_views_cfg" type="sight::app::config_launcher">
@@ -627,7 +695,11 @@
                 <object name="axis_visibility" uid="${axis_visibility}" />
                 <object name="volume_parameters" uid="${volume_parameters}" />
                 <object name="negato_3d_transparency" uid="${negato_3d_transparency}" />
+                <object name="flythrough_camera_distance" uid="flythrough_camera_distance" />
+                <object name="flythrough_camera_speed" uid="flythrough_camera_speed" />
+                <object name="flythrough_camera_direction" uid="flythrough_camera_direction" />
                 <param name="WID_PARENT" value="scene_view" />
+                <param name="flythrough_path_group" value="${flythrough_path_group}" />
                 <channel name="box_widget_reset" uid="box_widget_reset" />
                 <channel name="shape_extruder_enable_tool" uid="shape_extruder_enable_tool" />
                 <channel name="shape_extruder_tool_disabled" uid="shape_extruder_tool_disabled" />
@@ -640,6 +712,9 @@
                 <channel name="flythrough_path_mode_changed" uid="flythrough_path_mode_changed" />
                 <channel name="flythrough_path_clear" uid="flythrough_path_clear" />
                 <channel name="flythrough_path_points_available" uid="flythrough_path_points_available" />
+                <channel name="flythrough_camera_play" uid="flythrough_camera_play" />
+                <channel name="flythrough_camera_pause" uid="flythrough_camera_pause" />
+                <channel name="flythrough_camera_interaction" uid="flythrough_camera_interaction" />
                 <channel name="mesh_activation" uid="mesh_activation" />
                 <channel name="volume_activation" uid="volume_activation" />
                 <channel name="image_visibility" uid="image_visibility" />
@@ -718,7 +793,7 @@
             <service uid="annotation_srv" type="sight::module::ui::qt::metrics::landmarks">
                 <inout key="image_series" uid="image" />
                 <advanced>true</advanced>
-                <excluded_group>Path</excluded_group>
+                <excluded_group>${flythrough_path_group}</excluded_group>
             </service>
 
             <!-- Transparency for the 3D negato -->
@@ -877,6 +952,7 @@
 
             <connect channel="mesh_activation">
                 <signal>extract_series_srv/model_selected</signal>
+                <slot>draw_path_act/enable</slot>
             </connect>
 
             <connect channel="volume_activation">
@@ -908,6 +984,36 @@
 
             <connect channel="flythrough_path_points_available">
                 <slot>clear_path_act/set_enabled</slot>
+                <slot>play_camera_act/set_enabled</slot>
+            </connect>
+
+            <connect channel="flythrough_camera_interaction">
+                <signal>interaction_mode_act/is_checked</signal>
+            </connect>
+
+            <connect>
+                <signal>clear_path_act/clicked</signal>
+                <slot>interaction_mode_act/uncheck</slot>
+                <slot>interaction_mode_act/disable</slot>
+            </connect>
+
+            <connect channel="flythrough_camera_play">
+                <signal>play_camera_act/clicked</signal>
+                <slot>interaction_mode_act/enable</slot>
+                <slot>interaction_mode_act/check</slot>
+                <slot>draw_path_act/uncheck</slot>
+                <slot>draw_path_act/disable</slot>
+                <slot>clear_path_act/disable</slot>
+                <slot>play_camera_act/disable</slot>
+                <slot>pause_camera_act/enable</slot>
+            </connect>
+
+            <connect channel="flythrough_camera_pause">
+                <signal>pause_camera_act/clicked</signal>
+                <slot>draw_path_act/enable</slot>
+                <slot>clear_path_act/enable</slot>
+                <slot>play_camera_act/enable</slot>
+                <slot>pause_camera_act/disable</slot>
             </connect>
 
             <!-- Allow to check button in the toolbar -->

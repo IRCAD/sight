@@ -40,6 +40,7 @@ image_series::image_series() noexcept
     new_signal<signals::picked_voxel_t>(signals::PICKED_VOXEL);
 
     new_slot(slots::SET_IMAGE_VISIBILITY, &image_series::set_image_visibility, this);
+    new_slot(slots::SET_GROUP_VISIBILITY, &image_series::set_group_visibility, this);
     new_slot(slots::UPDATE_CLIPPING_BOX, &image_series::update_clipping_box, this);
     new_slot(slots::UPDATE_SLICES_FROM_WORLD, &image_series::update_slices_from_world, this);
     new_slot(slots::SET_SLICE_INDEX, &image_series::set_slice_index, this);
@@ -54,7 +55,6 @@ image_series::image_series() noexcept
 void image_series::configuring()
 {
     this->configure_params();
-
     const auto representation = this->get_config().get<std::string>(
         CONFIG + "representation",
         "volume"
@@ -194,6 +194,8 @@ void image_series::updating()
         m_extruders.clear();
         m_clipping_matrices.clear();
         m_child_visibility.clear();
+        m_landmarks.clear();
+        m_rulers.clear();
 
         m_selection_initialized = false;
         this->update_done();
@@ -462,6 +464,10 @@ void image_series::updating()
             landmarks->set_layer_id(this->layer_id());
             landmarks->start().wait();
             landmarks->slot("set_image_visibility")->run(id, image_visible);
+            for(const auto& group : m_hidden_groups)
+            {
+                landmarks->slot("set_group_visibility")->run(group, false);
+            }
 
             m_landmarks.emplace(id, landmarks);
 
@@ -593,6 +599,25 @@ void image_series::set_image_visibility(std::string _image_id, bool _visible)
     }
 
     this->request_render();
+}
+
+//-----------------------------------------------------------------------------
+
+void image_series::set_group_visibility(std::string _group_name, bool _visible)
+{
+    if(_visible)
+    {
+        m_hidden_groups.erase(_group_name);
+    }
+    else
+    {
+        m_hidden_groups.insert(_group_name);
+    }
+
+    for(const auto& [id, landmarks] : m_landmarks)
+    {
+        landmarks->slot("set_group_visibility")->run(_group_name, _visible);
+    }
 }
 
 //-----------------------------------------------------------------------------
