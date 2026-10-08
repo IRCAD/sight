@@ -28,6 +28,10 @@
         <channel name="negato_3d_transparency" />
         <channel name="ruler_activation" optional="true" />
         <channel name="ruler_deactivation" optional="true" />
+        <channel name="flythrough_path_activation" />
+        <channel name="flythrough_path_clear" />
+        <channel name="flythrough_path_points_available" />
+        <channel name="flythrough_path_mode_changed" />
         <channel name="mesh_activation" optional="true" />
         <channel name="volume_activation" optional="true" />
         <channel name="image_visibility" />
@@ -152,6 +156,7 @@
                     <adaptor uid="image_negato3d_adp" />
                     <adaptor uid="image_volume_adp" />
                     <adaptor uid="landmarks_adp" />
+                    <adaptor uid="path_adp" />
                     <adaptor uid="ruler_fiducial_adp" />
                     <adaptor uid="axis_adp" />
                     <adaptor uid="picked_voxel_text_adp" />
@@ -212,7 +217,7 @@
             <ruler>
                 <config font_size="16" query_flags="0x40000000" always_display_all="true" priority="3" radius="1.5" />
             </ruler>
-            <config autoresetcamera="true" />
+            <config autoresetcamera="true" visible="${vr_visibility}" />
         </service>
 
         <service uid="image_negato3d_adp" type="sight::module::viz::scene3d::adaptor::image_series">
@@ -224,7 +229,12 @@
 
         <service uid="landmarks_adp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::point">
             <data imageSeries="${image}" />
-            <config fontSize="16" priority="4" initialGroup="Group_0" initialSize="10.0" viewDistance="allSlices" />
+            <config fontSize="16" priority="4" initialGroup="Group_0" initialSize="10.0" viewDistance="allSlices" modify="group" />
+        </service>
+
+        <service uid="path_adp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::path">
+            <data image_series="${image}" />
+            <config path_group="Path" path_color="#00FF00" fiducial_size="10.0" />
         </service>
 
         <service uid="ruler_fiducial_adp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::ruler">
@@ -366,7 +376,9 @@
         </connect>
 
         <connect channel="${landmarks_group_selected}">
+            <signal>path_adp/group_selected</signal>
             <slot>landmarks_adp/set_current_group</slot>
+            <slot>path_adp/set_landmark_group</slot>
         </connect>
 
         <connect channel="${remove_all_landmarks}">
@@ -383,6 +395,11 @@
 
         <connect channel="${landmarks_edit_mode_changed}">
             <signal>landmarks_adp/edit_mode_changed</signal>
+            <slot>path_adp/point_edit_mode_changed</slot>
+        </connect>
+
+        <connect channel="${flythrough_path_mode_changed}">
+            <signal>path_adp/path_edit_mode_changed</signal>
         </connect>
 
         <!-- Slide view -->
@@ -460,6 +477,19 @@
 
         <connect channel="${ruler_deactivation}">
             <signal>ruler_fiducial_adp/tool_deactivated</signal>
+        </connect>
+
+        <connect channel="${flythrough_path_activation}">
+            <slot>path_adp/select_group</slot>
+            <slot>landmarks_adp/change_edit_mode</slot>
+        </connect>
+
+        <connect channel="${flythrough_path_clear}">
+            <slot>path_adp/clear</slot>
+        </connect>
+
+        <connect channel="${flythrough_path_points_available}">
+            <signal>path_adp/points_available</signal>
         </connect>
 
         <update uid="shape_extruder_adp" />

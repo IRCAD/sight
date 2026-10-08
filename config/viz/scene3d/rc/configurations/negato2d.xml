@@ -18,6 +18,7 @@
         <channel name="image_visibility" />
         <channel name="ruler_activation" optional="true" />
         <channel name="ruler_deactivation" optional="true" />
+        <channel name="flythrough_path_activation" />
         <channel name="landmarks_edit_mode" optional="true" />
         <channel name="landmarks_group_selected" optional="true" />
         <channel name="remove_all_landmarks" optional="true" />
@@ -129,7 +130,7 @@
 
         <service uid="landmarks_adp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::point" auto_connect="true">
             <data imageSeries="${image}" />
-            <config label="false" orientation="${slice_index}" priority="4" initialGroup="Group_0" initialSize="10.0" />
+            <config label="false" orientation="${slice_index}" priority="4" initialGroup="Group_0" initialSize="10.0" modify="group" />
         </service>
 
         <service uid="picked_voxel_text_adp" type="sight::module::viz::scene3d::adaptor::text">
@@ -172,6 +173,10 @@
 
         <connect channel="${ruler_deactivation}">
             <signal>ruler_fiducial_adp/tool_deactivated</signal>
+        </connect>
+
+        <connect channel="${flythrough_path_activation}">
+            <slot>landmarks_adp/change_edit_mode</slot>
         </connect>
 
         <connect channel="${visibility_rulers}">

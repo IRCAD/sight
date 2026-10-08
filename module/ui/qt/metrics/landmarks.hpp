@@ -59,6 +59,7 @@ namespace sight::module::ui::qt::metrics
  *
  * @section Signals Signals
  * - \b group_selected(std::string groupName): triggered when a new group is selected from the editor
+ * - \b group_removed_from_editor(): emitted when the last group is deleted from the editor.
  *
  * @section XML XML Configuration
  *
@@ -90,6 +91,7 @@ namespace sight::module::ui::qt::metrics
  * - \b opacity (optional, default="1.0"): default opacity of created landmarks.
  * - \b advanced (optional, default="false"): if "true", use the advanced mode displaying point information
  *      and groups with multiple points.
+ * - \b excluded_group (optional): DICOM fiducial group kept out of the landmarks table.
  */
 class landmarks final : public QObject,
                         public sight::ui::editor
@@ -107,6 +109,10 @@ public:
 
         using group_selected_t = core::com::signal<void (std::string)>;
         static inline const signal_key_t GROUP_SELECTED = "group_selected";
+
+        /// Emitted when the last group is deleted from the editor.
+        using groups_removed_from_editor_t = core::com::signal<void ()>;
+        static inline const signal_key_t GROUPS_REMOVED_FROM_EDITOR = "groups_removed_from_editor";
     };
 
     struct slots
@@ -359,6 +365,9 @@ private:
     data::ptr<data::matrix4, sight::data::access::in> m_matrix {this, MATRIX_IN, true};
     data::ptr<data::image_series, sight::data::access::inout> m_image_series {this, IMAGE_SERIES_INOUT};
     data::ptr<data::point, sight::data::access::inout> m_current_landmark {this, CURRENT_LANDMARK_INOUT, true};
+
+    /// @brief The name of the group that should be excluded from the landmarks editor.
+    std::string m_excluded_group;
 
     /// Used to generate random color
     std::uniform_real_distribution<float> m_distributor {0.0F, 1.0F};

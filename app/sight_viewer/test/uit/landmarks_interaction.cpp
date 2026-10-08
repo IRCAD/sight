@@ -269,6 +269,12 @@ TEST_SUITE("sight_viewer")
 
                 {
                     auto bt = _tester.add_in_backtrace("Remove three landmarks from the first group");
+                    _tester.take("Landmarks tree widget", "annotation_srv/treeWidget");
+                    _tester.do_something_asynchronously<QTreeWidget*>(
+                        [](QTreeWidget* _obj)
+                    {
+                        _obj->setCurrentItem(_obj->topLevelItem(0));
+                    });
                     selector::from_parent("top_scenes_view/1", "scene_srv").select(_tester);
                     _tester.interact(
                         std::make_unique<sight::ui::test::mouse_click>(
@@ -315,6 +321,12 @@ TEST_SUITE("sight_viewer")
 
                 {
                     auto bt = _tester.add_in_backtrace("Remove two landmarks from the second group");
+                    _tester.take("Landmarks tree widget", "annotation_srv/treeWidget");
+                    _tester.do_something_asynchronously<QTreeWidget*>(
+                        [](QTreeWidget* _obj)
+                    {
+                        _obj->setCurrentItem(_obj->topLevelItem(1));
+                    });
                     selector::from_parent("top_scenes_view/1", "scene_srv").select(_tester);
                     _tester.interact(
                         std::make_unique<sight::ui::test::mouse_click>(
@@ -350,6 +362,12 @@ TEST_SUITE("sight_viewer")
 
                 {
                     auto bt = _tester.add_in_backtrace("Remove one landmark from the third group");
+                    _tester.take("Landmarks tree widget", "annotation_srv/treeWidget");
+                    _tester.do_something_asynchronously<QTreeWidget*>(
+                        [](QTreeWidget* _obj)
+                    {
+                        _obj->setCurrentItem(_obj->topLevelItem(2));
+                    });
                     selector::from_parent("top_scenes_view/1", "scene_srv").select(_tester);
                     _tester.interact(
                         std::make_unique<sight::ui::test::mouse_click>(

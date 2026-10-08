@@ -11,6 +11,13 @@
 
     <extension implements="sight::service::extension::factory">
         <type>sight::viz::scene3d::adaptor</type>
+        <service>sight::module::viz::scene3d_qt::adaptor::fiducials::path</service>
+        <object key="imageSeries">sight::data::image_series</object>
+        <desc>Displays a path through fiducials in a group.</desc>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::viz::scene3d::adaptor</type>
         <service>sight::module::viz::scene3d_qt::adaptor::fiducials::ruler</service>
         <object key="image">sight::data::image</object>
         <desc>Displays ruler fiducials.</desc>

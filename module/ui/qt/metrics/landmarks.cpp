@@ -137,10 +137,11 @@ struct fiducials_group
 static const char* s_group_property_name = "group";
 static const int GROUP_NAME_ROLE         = Qt::UserRole + 1;
 
-static const std::string SIZE_CONFIG     = "size";
-static const std::string OPACITY_CONFIG  = "opacity";
-static const std::string ADVANCED_CONFIG = "advanced";
-static const std::string TEXT_CONFIG     = "text";
+static const std::string SIZE_CONFIG           = "size";
+static const std::string OPACITY_CONFIG        = "opacity";
+static const std::string ADVANCED_CONFIG       = "advanced";
+static const std::string TEXT_CONFIG           = "text";
+static const std::string EXCLUDED_GROUP_CONFIG = "excluded_group";
 
 //------------------------------------------------------------------------------
 
@@ -158,6 +159,7 @@ landmarks::landmarks() noexcept
 
     new_signal<signals::world_coordinates_t>(signals::SEND_WORLD_COORD);
     new_signal<signals::group_selected_t>(signals::GROUP_SELECTED);
+    new_signal<signals::groups_removed_from_editor_t>(signals::GROUPS_REMOVED_FROM_EDITOR);
 }
 
 //------------------------------------------------------------------------------
@@ -182,7 +184,8 @@ void landmarks::configuring()
 
     m_advanced_mode = config.get<bool>(ADVANCED_CONFIG, false);
 
-    m_text = config.get<std::string>(TEXT_CONFIG, m_text);
+    m_text           = config.get<std::string>(TEXT_CONFIG, m_text);
+    m_excluded_group = config.get<std::string>(EXCLUDED_GROUP_CONFIG, "");
 }
 
 //------------------------------------------------------------------------------
@@ -318,6 +321,11 @@ void landmarks::updating()
 
         for(const auto& name : image_series->get_fiducials()->get_point_fiducials_group_names())
         {
+            if(name == m_excluded_group)
+            {
+                continue;
+            }
+
             this->add_group(name);
             this->add_point(name);
         }
@@ -412,6 +420,10 @@ void landmarks::on_group_name_edited(QTreeWidgetItem* _item, int _column)
             QMessageBox msg_box(QMessageBox::Warning, "No group name", msg, QMessageBox::Ok);
             msg_box.exec();
 
+            _item->setText(0, old_group_name);
+        }
+        else if(new_group_name.toStdString() == m_excluded_group)
+        {
             _item->setText(0, old_group_name);
         }
         else if(old_group_name != new_group_name)
@@ -801,7 +813,7 @@ void landmarks::on_remove_selection()
     {
         const int top_level_index = m_tree_widget->indexOfTopLevelItem(item);
 
-        auto image_series = m_image_series.lock();
+        const auto image_series = m_image_series.lock();
         SIGHT_ASSERT(std::quoted(IMAGE_SERIES_INOUT) << " does not exists.", image_series != nullptr);
 
         if(m_advanced_mode && top_level_index == -1) // Delete point
@@ -820,12 +832,16 @@ void landmarks::on_remove_selection()
         else
         {
             const std::string& group_name = item->text(0).toStdString();
-
             image_series->get_fiducials()->remove_group(group_name);
 
             delete m_tree_widget->takeTopLevelItem(top_level_index);
 
             image_series->async_emit(this, data::has_fiducials::signals::GROUP_REMOVED, group_name);
+
+            if(m_tree_widget->topLevelItemCount() == 0)
+            {
+                this->async_emit(signals::GROUPS_REMOVED_FROM_EDITOR);
+            }
         }
 
         m_tree_widget->setCurrentItem(nullptr);
@@ -839,6 +855,11 @@ void landmarks::on_remove_selection()
 
 void landmarks::add_point(std::string _group_name) const
 {
+    if(_group_name == m_excluded_group)
+    {
+        return;
+    }
+
     if(m_advanced_mode)
     {
         m_tree_widget->blockSignals(true);
@@ -883,6 +904,11 @@ void landmarks::add_point(std::string _group_name) const
 
 void landmarks::add_group(std::string _name) const
 {
+    if(_name == m_excluded_group)
+    {
+        return;
+    }
+
     QColor color;
     {
         const auto image_series = m_image_series.const_lock();
@@ -919,6 +945,11 @@ void landmarks::add_group(std::string _name) const
 
 void landmarks::remove_group(std::string _name) const
 {
+    if(_name == m_excluded_group)
+    {
+        return;
+    }
+
     try
     {
         QTreeWidgetItem* const item = get_group_item(_name);
@@ -939,6 +970,11 @@ void landmarks::remove_group(std::string _name) const
 
 void landmarks::remove_point(std::string _group_name, std::size_t _index) const
 {
+    if(_group_name == m_excluded_group)
+    {
+        return;
+    }
+
     m_tree_widget->blockSignals(true);
 
     QTreeWidgetItem* const item = get_group_item(_group_name);
@@ -954,6 +990,11 @@ void landmarks::remove_point(std::string _group_name, std::size_t _index) const
 
 void landmarks::rename_group(std::string _old_name, std::string _new_name) const
 {
+    if(_old_name == m_excluded_group)
+    {
+        return;
+    }
+
     m_tree_widget->blockSignals(true);
 
     const QString qt_new_name   = QString::fromStdString(_new_name);
@@ -971,6 +1012,11 @@ void landmarks::rename_group(std::string _old_name, std::string _new_name) const
 
 void landmarks::modify_group(std::string _name) const
 {
+    if(_name == m_excluded_group)
+    {
+        return;
+    }
+
     QTreeWidgetItem* const item = get_group_item(_name);
 
     item->setText(0, _name.c_str());
@@ -1020,6 +1066,11 @@ void landmarks::modify_group(std::string _name) const
 
 void landmarks::modify_point(std::string _group_name, std::size_t _index) const
 {
+    if(_group_name == m_excluded_group)
+    {
+        return;
+    }
+
     if(m_advanced_mode)
     {
         auto const item_list = m_tree_widget->findItems(QString::fromStdString(_group_name), Qt::MatchExactly);
@@ -1057,6 +1108,11 @@ void landmarks::modify_point(std::string _group_name, std::size_t _index) const
 
 void landmarks::select_point(std::string _group_name, std::size_t _index) const
 {
+    if(_group_name == m_excluded_group)
+    {
+        return;
+    }
+
     m_tree_widget->blockSignals(true);
 
     QTreeWidgetItem* current_item = get_group_item(_group_name);
@@ -1107,8 +1163,13 @@ void landmarks::select_point(std::string _group_name, std::size_t _index) const
 
 //------------------------------------------------------------------------------
 
-void landmarks::deselect_point(std::string /*unused*/, std::size_t /*unused*/) const
+void landmarks::deselect_point(std::string _group_name, std::size_t /*unused*/) const
 {
+    if(_group_name == m_excluded_group)
+    {
+        return;
+    }
+
     m_tree_widget->blockSignals(true);
     m_tree_widget->setCurrentItem(nullptr);
     m_group_editor_widget->setDisabled(true);

@@ -29,8 +29,12 @@
         <channel name="image_visibility" />
         <channel name="ruler_activation" />
         <channel name="ruler_deactivation" />
+        <channel name="flythrough_path_activation" />
+        <channel name="flythrough_path_clear" />
+        <channel name="flythrough_path_mode_changed" />
         <channel name="landmarks_edit_mode" />
         <channel name="landmarks_group_selected" />
+        <channel name="flythrough_path_points_available" />
         <channel name="remove_all_landmarks" />
         <channel name="remove_all_rulers" />
         <channel name="visibility_rulers" />
@@ -116,8 +120,12 @@
             <channel name="image_visibility" uid="${image_visibility}" />
             <channel name="ruler_activation" uid="${ruler_activation}" />
             <channel name="ruler_deactivation" uid="${ruler_deactivation}" />
+            <channel name="flythrough_path_activation" uid="${flythrough_path_activation}" />
+            <channel name="flythrough_path_clear" uid="${flythrough_path_clear}" />
+            <channel name="flythrough_path_mode_changed" uid="${flythrough_path_mode_changed}" />
             <channel name="landmarks_edit_mode" uid="${landmarks_edit_mode}" />
             <channel name="landmarks_group_selected" uid="${landmarks_group_selected}" />
+            <channel name="flythrough_path_points_available" uid="${flythrough_path_points_available}" />
             <channel name="remove_all_landmarks" uid="${remove_all_landmarks}" />
             <channel name="remove_all_rulers" uid="${remove_all_rulers}" />
             <channel name="visibility_rulers" uid="${visibility_rulers}" />
@@ -140,6 +148,7 @@
             <channel name="image_visibility" uid="${image_visibility}" />
             <channel name="ruler_activation" uid="${ruler_activation}" />
             <channel name="ruler_deactivation" uid="${ruler_deactivation}" />
+            <channel name="flythrough_path_activation" uid="${flythrough_path_activation}" />
             <channel name="visibility_rulers" uid="${visibility_rulers}" />
             <channel name="landmarks_edit_mode" uid="${landmarks_edit_mode}" />
             <channel name="landmarks_group_selected" uid="${landmarks_group_selected}" />
@@ -161,6 +170,7 @@
             <channel name="image_visibility" uid="${image_visibility}" />
             <channel name="ruler_activation" uid="${ruler_activation}" />
             <channel name="ruler_deactivation" uid="${ruler_deactivation}" />
+            <channel name="flythrough_path_activation" uid="${flythrough_path_activation}" />
             <channel name="visibility_rulers" uid="${visibility_rulers}" />
             <channel name="landmarks_edit_mode" uid="${landmarks_edit_mode}" />
             <channel name="landmarks_group_selected" uid="${landmarks_group_selected}" />
@@ -182,6 +192,7 @@
             <channel name="image_visibility" uid="${image_visibility}" />
             <channel name="ruler_activation" uid="${ruler_activation}" />
             <channel name="ruler_deactivation" uid="${ruler_deactivation}" />
+            <channel name="flythrough_path_activation" uid="${flythrough_path_activation}" />
             <channel name="visibility_rulers" uid="${visibility_rulers}" />
             <channel name="landmarks_edit_mode" uid="${landmarks_edit_mode}" />
             <channel name="landmarks_group_selected" uid="${landmarks_group_selected}" />

@@ -902,7 +902,7 @@ std::shared_ptr<point::ogre_fiducial> point::create_ogre_fiducial(
 {
     // Create the point name.
     const std::string point_name = core::id::join(_group_name, _index);
-    const auto id                = get_id();
+    const auto id                = core::id::join(get_id(), core::tools::uuid::generate());
 
     auto* const manual_object = get_scene_manager()->createManualObject(core::id::join(id, point_name, "object"));
     manual_object->setRenderQueueGroup(sight::viz::scene3d::rq::SURFACE);
