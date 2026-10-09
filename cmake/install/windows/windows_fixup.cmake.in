@@ -12,8 +12,6 @@ file(GLOB_RECURSE OGRE_PLUGINS "@CMAKE_INSTALL_PREFIX@/ogreplugins/*@CMAKE_SHARE
 
 list(APPEND LIBS ${MODULES} ${QT_PLUGINS} ${OGRE_PLUGINS})
 
-set(LAUNCHER_PATH @CMAKE_INSTALL_PREFIX@/@LAUNCHER_PATH@)
-
 set(_install_bin "@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_BINDIR@")
 set(_runtime_dependency_directories "${_install_bin}" "@SIGHT_VCPKG_ROOT_DIR@/bin" "@FW_SIGHT_EXTERNAL_LIBRARIES_DIR@")
 set(_cuda_bin_dir "@CUDAToolkit_BIN_DIR@")

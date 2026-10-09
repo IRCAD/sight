@@ -343,6 +343,11 @@ macro(fw_exec SIGHT_TARGET)
             ${FWCMAKE_RESOURCE_PATH}/build/windows/template_exe.bat.in
             ${CMAKE_CURRENT_BINARY_DIR}/${${SIGHT_TARGET}_SCRIPT} @ONLY
         )
+        configure_file(
+            ${FWCMAKE_RESOURCE_PATH}/install/windows/template_exe.bat.in
+            ${CMAKE_CURRENT_BINARY_DIR}/install/${${SIGHT_TARGET}_SCRIPT} @ONLY
+        )
+        install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/install/${${SIGHT_TARGET}_SCRIPT} DESTINATION bin)
         unset(ADMIN_REQUEST)
         file(
             COPY ${CMAKE_CURRENT_BINARY_DIR}/${${SIGHT_TARGET}_SCRIPT}
@@ -1307,7 +1312,13 @@ function(sight_create_package_targets SIGHT_COMPONENTS SIGHT_IMPORTED_COMPONENTS
             else()
                 set(SIGHT_VCPKG_ROOT_DIR "${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}")
             endif()
-            set(LAUNCHER_PATH "${CMAKE_INSTALL_BINDIR}/sightrun.exe")
+            # Standalone executables are their own launcher
+            get_target_property(APP_TYPE ${APP} SIGHT_TARGET_TYPE)
+            if("${APP_TYPE}" STREQUAL "EXECUTABLE")
+                set(LAUNCHER "$<TARGET_FILE_NAME:${APP}>")
+            else()
+                set(LAUNCHER "sightrun.exe")
+            endif()
 
             configure_file(
                 ${FWCMAKE_RESOURCE_PATH}/install/windows/windows_fixup.cmake.in ${CMAKE_BINARY_DIR}/windows_fixup.cmake
@@ -1316,7 +1327,9 @@ function(sight_create_package_targets SIGHT_COMPONENTS SIGHT_IMPORTED_COMPONENTS
             add_custom_target(
                 ${APP}_fixup
                 ${CMAKE_COMMAND}
-                -DSIGHT_RUNTIME_DEPENDENCIES_MANIFEST=${CMAKE_BINARY_DIR}/${APP}-runtime-dependencies.tsv -P
+                -DSIGHT_RUNTIME_DEPENDENCIES_MANIFEST=${CMAKE_BINARY_DIR}/${APP}-runtime-dependencies.tsv
+                -DLAUNCHER_PATH=${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR}/${LAUNCHER}
+                -P
                 ${CMAKE_BINARY_DIR}/windows_fixup.cmake
                 COMMENT "Fixup before packaging..."
             )
