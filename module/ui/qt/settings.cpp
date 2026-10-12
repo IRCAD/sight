@@ -1758,7 +1758,7 @@ void settings::create_enum_combobox_widget(
 
         if(_setup.use_index)
         {
-            combo_box->setCurrentIndex(static_cast<int>(value));
+            this->set_combobox_index(combo_box, value);
 
             QObject::connect(
                 combo_box,
@@ -2334,6 +2334,31 @@ double settings::get_double_slider_value(const QSlider* _slider)
 
 //------------------------------------------------------------------------------
 
+void settings::set_combobox_index(QComboBox* _combobox, std::int64_t _value)
+{
+    const QSignalBlocker blocker(_combobox);
+    if(_combobox->count() == 0)
+    {
+        _combobox->setCurrentIndex(-1);
+        return;
+    }
+
+    const bool invalid = _value < 0 || _value >= _combobox->count();
+    const auto index   = invalid ? 0 : _value;
+    _combobox->setCurrentIndex(static_cast<int>(index));
+
+    if(invalid)
+    {
+        const auto integer = data<sight::data::integer>(_combobox);
+        if(integer->value() != index)
+        {
+            update_data<sight::data::integer>(_combobox, index);
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void settings::update_range(const std::string& _options, const std::string& _key)
 {
     QObject* widget = this->get_param_widget(_key);
@@ -2387,7 +2412,7 @@ void settings::update_range(const std::string& _options, const std::string& _key
 
             if(combobox->property(qt_property::s_use_index).toBool())
             {
-                combobox->setCurrentIndex(static_cast<int>(current_value));
+                this->set_combobox_index(combobox, current_value);
             }
             else
             {
@@ -2945,7 +2970,7 @@ void settings::set_parameter<sight::data::integer>(const std::int64_t& _val, std
     {
         if(combobox->property(qt_property::s_use_index).toBool())
         {
-            combobox->setCurrentIndex(static_cast<int>(val));
+            this->set_combobox_index(combobox, _val);
         }
         else
         {
