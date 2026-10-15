@@ -253,7 +253,8 @@ install(FILES "${CMAKE_BINARY_DIR}/cmake/sightConfig.cmake" "${CMAKE_BINARY_DIR}
 
 # Install some files needed for the build
 install(
-    FILES "${CMAKE_SOURCE_DIR}/cmake/build/configure_file.cmake"
+    FILES "${CMAKE_SOURCE_DIR}/cmake/build/clean_test_logs.cmake"
+          "${CMAKE_SOURCE_DIR}/cmake/build/configure_file.cmake"
           "${CMAKE_SOURCE_DIR}/cmake/build/flags.cmake"
           "${FWCMAKE_RESOURCE_PATH}/build/doctest_main.cpp.in"
           "${FWCMAKE_RESOURCE_PATH}/build/doctest.cmake"

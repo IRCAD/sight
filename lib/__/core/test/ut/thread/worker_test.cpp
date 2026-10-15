@@ -24,14 +24,13 @@
 #include <core/thread/timer.hpp>
 #include <core/thread/worker.hpp>
 
-#include <utest/exception.hpp>
-
 #include <doctest/doctest.h>
 
 #include <atomic>
 #include <thread>
 
 //-----------------------------------------------------------------------------
+
 namespace
 {
 
@@ -78,8 +77,6 @@ struct test_handler
 
 TEST_SUITE("sight::core::thread::worker")
 {
-    static sight::utest::exception e(""); // force link with fwTest
-
 //-----------------------------------------------------------------------------
 
     TEST_CASE("basic")

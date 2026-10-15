@@ -34,6 +34,10 @@ lint:ubuntu-24.04:
         SIGHT_ENABLE_REALSENSE: "OFF"
         SIGHT_ENABLE_GDB: "OFF"
         TEST_DATA_REF: "7e68743ecc30b3642aa753a84af94b4130168e93"
+        # An unusable test log directory must fail the tests, not hide the logs elsewhere
+        SIGHT_TEST_LOG_FALLBACK_DIR: "none"
+        # Every CTest run of a job uploads its logs
+        SIGHT_TEST_LOG_KEEP: "1"
     script:
         # Reset the modified time of all files to improve ccache performance
         - /usr/lib/git-core/git-restore-mtime --force --skip-missing --commit-time
@@ -108,6 +112,7 @@ lint:ubuntu-24.04:
         when: always
         paths:
             - .build/ctest*.log
+            - .build/bin/test-logs/
             - .build/Documentation/Doxygen/
             - .build/packages/*.tar.zst
             - .build/coverage
@@ -273,6 +278,10 @@ deploy:apps-linux-release:
         MSVC_VERSION: "17"
         CUDA_VERSION: "12_5"
         TEST_DATA_REF: "7e68743ecc30b3642aa753a84af94b4130168e93"
+        # An unusable test log directory must fail the tests, not hide the logs elsewhere
+        SIGHT_TEST_LOG_FALLBACK_DIR: "none"
+        # Every CTest run of a job uploads its logs
+        SIGHT_TEST_LOG_KEEP: "1"
     stage: build
     script:
         # Print CCache statistics
@@ -335,12 +344,12 @@ deploy:apps-linux-release:
         name: "${env:CI_JOB_NAME}-${env:CI_COMMIT_REF_SLUG}"
         paths:
             - build/ctest*.log
-            - build/fwTest.log
+            - build/bin/test-logs/
             - build/packages/*.exe
             - build/packages/sight-*.zip
             - build/testImages
         reports:
-            junit: build/junit.xml
+            junit: build/junit*.xml
 
 .windows_sight_deploy_test:
     extends: .windows_deploy_test

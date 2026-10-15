@@ -24,16 +24,12 @@
 
 #include <service/registry.hpp>
 
-#include <utest/exception.hpp>
-
 #include <doctest/doctest.h>
 
 #include <thread>
 
 namespace sight::service::ut
 {
-
-static sight::utest::exception fw_test_exception(""); // force link with fwTest
 
 TEST_SUITE("sight::service::slots_signals")
 {

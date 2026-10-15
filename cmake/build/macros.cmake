@@ -413,16 +413,36 @@ macro(sight_generic_test SIGHT_TARGET)
         endif()
     endif()
 
+    # Exported by doctest_main.cpp as the sight_test_target symbol, which core looks up to open the test logs
+    set(SIGHT_TEST_TARGET_NAME "${SIGHT_TARGET}")
+
     configure_file(
         "${FWCMAKE_RESOURCE_PATH}/build/doctest_main.cpp.in" "${CMAKE_CURRENT_BINARY_DIR}/src/doctest_main.cpp"
         IMMEDIATE @ONLY
     )
+
+    # Each CTest run starts with empty test logs, unless SIGHT_TEST_LOG_KEEP is set
+    get_property(test_logs_cleaned GLOBAL PROPERTY SIGHT_TEST_LOGS_CLEANED)
+    if(NOT test_logs_cleaned)
+        set_property(GLOBAL PROPERTY SIGHT_TEST_LOGS_CLEANED ON)
+        set(clean_command "\"${CMAKE_COMMAND}\" \"-DTEST_LOGS_DIR=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/test-logs\"")
+        string(APPEND clean_command " -P \"${FWCMAKE_RESOURCE_PATH}/build/clean_test_logs.cmake\"")
+        string(REPLACE "\"" "\\\"" clean_command "${clean_command}")
+        file(WRITE "${CMAKE_BINARY_DIR}/CTestCustom.cmake" "set(CTEST_CUSTOM_PRE_TEST \"${clean_command}\")\n")
+    endif()
 
     add_executable(
         ${SIGHT_TARGET}
         ${${SIGHT_TARGET}_HEADERS} ${${SIGHT_TARGET}_SOURCES} ${CMAKE_CURRENT_BINARY_DIR}/src/doctest_main.cpp
         ${${SIGHT_TARGET}_RC_FILES} ${${SIGHT_TARGET}_CMAKE_FILES} ${${SIGHT_TARGET}_PCH_LIB}
     )
+
+    if(WIN32)
+        # The export alone is needed, not an import library
+        target_link_options(${SIGHT_TARGET} PRIVATE /NOIMPLIB /NOEXP)
+    else()
+        target_link_options(${SIGHT_TARGET} PRIVATE "LINKER:--export-dynamic-symbol=sight_test_target")
+    endif()
 
     # Do it here because add ".bin" suffix change the ${SIGHT_TARGET} (!!!)
     if(UNIX)
