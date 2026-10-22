@@ -65,7 +65,8 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b near (optional, float, default=1.0): near clipping distance of the Ogre::Camera
  * - \b far (optional, float, default=20.0): far clipping distance of the Ogre::Camera
  * - \b color (optional, hexadecimal, default=0x0000FF): frustum's color
- * - \b transform (optional, string, default=""): transform applied to the frustumList's scene node
+ * - \b transform (optional, string, default=""): parent transform applied to all frustums. Updating
+ *   this transform moves the entire list without changing the matrices supplied to add_frustum.
  */
 class frustum_list final :
     public sight::viz::scene3d::adaptor,

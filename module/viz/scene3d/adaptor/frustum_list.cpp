@@ -171,7 +171,8 @@ void frustum_list::add_frustum(sight::data::matrix4::sptr _matrix)
 
         auto* const frustum = scene_manager->createManualObject(gen_id("frustum" + current_index_str));
         frustum->setRenderQueueGroup(sight::viz::scene3d::rq::SURFACE);
-        auto* const frustum_node = scene_manager->getRootSceneNode()->createChildSceneNode("Node_" + current_index_str);
+        auto* const transform_node = this->get_or_create_transform_node(scene_manager->getRootSceneNode());
+        auto* const frustum_node   = transform_node->createChildSceneNode(gen_id("frustum_node_" + current_index_str));
 
         sight::viz::scene3d::helper::manual_object::create_frustum(frustum, m_material->name(), *m_ogre_camera);
 
