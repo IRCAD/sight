@@ -33,13 +33,6 @@ namespace sight::module::viz::scene2d::adaptor
 
 //---------------------------------------------------------------------------------------------------------------
 
-grid2d::grid2d() noexcept
-{
-    new_slot(slots::SET_GRID_SPACING, &grid2d::set_grid_spacing, this);
-}
-
-//---------------------------------------------------------------------------------------------------------------
-
 void grid2d::configuring()
 {
     this->configure_params();
@@ -57,18 +50,7 @@ void grid2d::configuring()
     m_y_min = config.get<float>("yMin");
     m_y_max = config.get<float>("yMax");
 
-    // If the corresponding attributes are present in the config, set the xSpacing, ySpacing between
-    // the lines and color of the lines:
-    if(config.count("xSpacing") != 0U)
-    {
-        m_x_spacing = config.get<float>("xSpacing");
-    }
-
-    if(config.count("ySpacing") != 0U)
-    {
-        m_y_spacing = config.get<float>("ySpacing");
-    }
-
+    // Set the line color when specified.
     if(config.count("color") != 0U)
     {
         sight::viz::scene2d::data::init_qt_pen::set_pen_color(m_pen, config.get<std::string>("color"), m_opacity);
@@ -81,8 +63,8 @@ void grid2d::draw()
 {
     using sight::viz::scene2d::vec2d_t;
 
-    SIGHT_ASSERT("m_xSpacing can not be equal to 0", m_x_spacing != 0.F);
-    SIGHT_ASSERT("m_ySpacing can not be equal to 0", m_y_spacing != 0.F);
+    SIGHT_ASSERT("X spacing cannot be zero", (*m_spacing)[0] != 0.F);
+    SIGHT_ASSERT("Y spacing cannot be zero", (*m_spacing)[1] != 0.F);
 
     // Remove all lines from the scene
     for(const auto& line : m_lines)
@@ -110,7 +92,7 @@ void grid2d::draw()
 
     // Draw the horizontal lines
     float y_val = y_start_val;
-    for(std::size_t i = 0 ; i < static_cast<std::size_t>((y_end_val - y_start_val) / m_y_spacing) ; i++)
+    for(std::size_t i = 0 ; i < static_cast<std::size_t>((y_end_val - y_start_val) / (*m_spacing)[1]) ; i++)
     {
         coord1 = this->map_adaptor_to_scene((vec2d_t(x_start_val, y_val)));
         coord2 = this->map_adaptor_to_scene((vec2d_t(x_end_val, y_val)));
@@ -121,12 +103,12 @@ void grid2d::draw()
         line->setPen(m_pen);
         m_lines.push_back(line);
 
-        y_val += m_y_spacing;
+        y_val += static_cast<float>((*m_spacing)[1]);
     }
 
     // Draw the vertical lines
     float x_val = x_start_val;
-    for(std::size_t i = 0 ; i < static_cast<std::size_t>((x_end_val - x_start_val) / m_x_spacing) ; i++)
+    for(std::size_t i = 0 ; i < static_cast<std::size_t>((x_end_val - x_start_val) / (*m_spacing)[0]) ; i++)
     {
         coord1 = this->map_adaptor_to_scene((vec2d_t(x_val, y_start_val)));
         coord2 = this->map_adaptor_to_scene((vec2d_t(x_val, y_end_val)));
@@ -137,7 +119,7 @@ void grid2d::draw()
         line->setPen(m_pen);
         m_lines.push_back(line);
 
-        x_val += m_x_spacing;
+        x_val += static_cast<float>((*m_spacing)[0]);
     }
 
     // Add the lines contained in the lines vector to the layer
@@ -172,40 +154,28 @@ void grid2d::starting()
 
 float grid2d::get_x_start_val() const
 {
-    return std::floor(m_x_min / m_x_spacing) * m_x_spacing;
+    return static_cast<float>(std::floor(m_x_min / (*m_spacing)[0]) * (*m_spacing)[0]);
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
 float grid2d::get_x_end_val() const
 {
-    return std::floor(m_x_max / m_x_spacing) * m_x_spacing;
+    return static_cast<float>(std::floor(m_x_max / (*m_spacing)[0]) * (*m_spacing)[0]);
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
 float grid2d::get_y_start_val() const
 {
-    return std::floor(m_y_min / m_y_spacing) * m_y_spacing;
+    return static_cast<float>(std::floor(m_y_min / (*m_spacing)[1]) * (*m_spacing)[1]);
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
 float grid2d::get_y_end_val() const
 {
-    return std::floor(m_y_max / m_y_spacing) * m_y_spacing;
-}
-
-//---------------------------------------------------------------------------------------------------------------
-
-void grid2d::set_grid_spacing(double _x, double _y, std::string _key)
-{
-    if(_key == "spacing")
-    {
-        m_x_spacing = static_cast<float>(_x);
-        m_y_spacing = static_cast<float>(_y);
-        this->draw();
-    }
+    return static_cast<float>(std::floor(m_y_max / (*m_spacing)[1]) * (*m_spacing)[1]);
 }
 
 //---------------------------------------------------------------------------------------------------------------
@@ -234,6 +204,15 @@ void grid2d::stopping()
 
     // Remove the layer (and therefore all its related items) from the scene
     this->get_scene_2d_render()->get_scene()->removeItem(m_layer);
+}
+
+//------------------------------------------------------------------------------
+
+sight::service::connections_t grid2d::auto_connections() const
+{
+    auto connections = sight::viz::scene2d::adaptor::auto_connections();
+    connections.push(m_spacing, sight::data::signals::MODIFIED, slots::UPDATE);
+    return connections;
 }
 
 } // namespace sight::module::viz::scene2d::adaptor

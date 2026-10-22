@@ -50,19 +50,17 @@ class image_series_reader : public sight::io::service::reader
 {
 public:
 
-    /**
-     * @brief Constructor. Do nothing.
-     */
-    image_series_reader() noexcept;
-
-    ~image_series_reader() noexcept override = default;
-
     SIGHT_DECLARE_SERVICE(image_series_reader, sight::io::service::reader);
 
-    /**
-     * @brief Configure the image path.
-     */
-    void open_location_dialog() override;
+    image_series_reader() noexcept;
+    ~image_series_reader() noexcept override = default;
+
+    //------------------------------------------------------------------------------
+
+    std::vector<std::pair<std::string, std::string> > get_supported_extensions() const override
+    {
+        return {{"NIfTI (.nii)", "*.nii *.nii.gz"}, {"Inr (.inr)", "*.inr *.inr.gz"}};
+    }
 
     sight::io::service::path_type_t get_path_type() const override;
 

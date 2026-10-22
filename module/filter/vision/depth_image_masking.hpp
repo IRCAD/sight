@@ -22,11 +22,13 @@
 
 #pragma once
 
+#include <data/integer.hpp>
+
 #include <data/image.hpp>
 
 #include <service/filter.hpp>
 
-#include <opencv2/opencv.hpp>
+#include <opencv2/core/mat.hpp>
 
 namespace sight::module::filter::vision
 {
@@ -39,7 +41,6 @@ namespace sight::module::filter::vision
  *
  * @section Slots Slots
  * - \b set_background() : Slot to learn the background depth image.
- * - \b set_threshold() : Slot to change the difference value tolerance between the larned depth image and the current.
  *
  * @section XML XML Configuration
  *
@@ -65,6 +66,11 @@ namespace sight::module::filter::vision
  * @subsection In-Out In-Out
  * - \b foregroundImage [sight::data::image] : image containing the foreground pixels and background pixels are
  * transparent.
+ *
+ * @subsection ConfigBindings Configuration data bindings
+ * Configuration inputs accept literals or shared data objects.
+ * Default values apply when no configuration value is provided.
+ * - \b config.threshold [sight::data::integer]: threshold.
  */
 class depth_image_masking : public service::filter
 {
@@ -75,7 +81,6 @@ public:
     struct slots
     {
         static inline const slot_key_t SET_BACKGROUND = "set_background";
-        static inline const slot_key_t SET_THRESHOLD  = "set_threshold";
     };
 
     /// Initializes slots
@@ -108,9 +113,6 @@ private:
     /// image are in front of this learned background image.
     void set_background();
 
-    /// Slot: Sets the threshold tolerance value when performing the depth images difference.
-    void set_threshold(int _threshold);
-
     /// Mask image to perform computation only inside this mask.
     cv::Mat m_cv_mask_image;
 
@@ -118,17 +120,22 @@ private:
     cv::Mat m_cv_depth_mask_image;
 
     /// Threshold value to manage a tolerance when performing the depth difference because of noise in such images.
-    int m_threshold {10};
 
     static constexpr std::string_view MASK_IMAGE_KEY       = "maskImage";
     static constexpr std::string_view VIDEO_IMAGE_KEY      = "videoImage";
     static constexpr std::string_view DEPTH_IMAGE_KEY      = "depthImage";
     static constexpr std::string_view FOREGROUND_IMAGE_KEY = "foregroundImage";
 
-    sight::data::ptr<sight::data::image, sight::data::access::in> m_mask_image {this, MASK_IMAGE_KEY};
-    sight::data::ptr<sight::data::image, sight::data::access::in> m_video_image {this, VIDEO_IMAGE_KEY};
-    sight::data::ptr<sight::data::image, sight::data::access::in> m_depth_image {this, DEPTH_IMAGE_KEY};
-    sight::data::ptr<sight::data::image, sight::data::access::inout> m_foreground_image {this, FOREGROUND_IMAGE_KEY};
+    /// Typed config.threshold configuration binding.
+    ptr_in<sight::data::integer> m_threshold {this, "config.threshold", 10};
+
+    ptr_in<sight::data::image> m_mask_image {this, MASK_IMAGE_KEY};
+
+    ptr_in<sight::data::image> m_video_image {this, VIDEO_IMAGE_KEY};
+
+    ptr_in<sight::data::image> m_depth_image {this, DEPTH_IMAGE_KEY};
+
+    ptr_inout<sight::data::image> m_foreground_image {this, FOREGROUND_IMAGE_KEY};
 };
 
 } // namespace sight::module::filter::vision

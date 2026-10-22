@@ -24,6 +24,8 @@
 
 #include <io/opencv/image.hpp>
 
+#include <opencv2/imgproc.hpp>
+
 namespace sight::module::filter::vision
 {
 
@@ -33,7 +35,6 @@ depth_image_masking::depth_image_masking() noexcept :
     filter(has_signals::signals())
 {
     new_slot(slots::SET_BACKGROUND, &depth_image_masking::set_background, this);
-    new_slot(slots::SET_THRESHOLD, &depth_image_masking::set_threshold, this);
 }
 
 // ------------------------------------------------------------------------------
@@ -82,7 +83,8 @@ void depth_image_masking::updating()
         cv::Mat cv_masked_depth;
         cv_depth_image.copyTo(cv_masked_depth, m_cv_mask_image);
 
-        cv::Mat cv_foreground_image = (cv_masked_depth < (m_cv_depth_mask_image - m_threshold));
+        cv::Mat cv_foreground_image = (cv_masked_depth
+                                       < (m_cv_depth_mask_image - static_cast < double > (*m_threshold)));
 
         cv::Mat morph_elem = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(7, 7));
         cv::dilate(cv_foreground_image, cv_foreground_image, morph_elem);
@@ -134,13 +136,6 @@ void depth_image_masking::set_background()
 
         cv_depth_image.copyTo(m_cv_depth_mask_image, m_cv_mask_image);
     }
-}
-
-// ------------------------------------------------------------------------------
-
-void depth_image_masking::set_threshold(int _threshold)
-{
-    m_threshold = _threshold;
 }
 
 // ------------------------------------------------------------------------------

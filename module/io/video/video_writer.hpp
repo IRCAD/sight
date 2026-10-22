@@ -72,8 +72,12 @@ public:
     /// Destructor. Does nothing
     ~video_writer() noexcept override;
 
-    /// Display a location dialog allowing to select the video file to save
-    void open_location_dialog() override;
+    //------------------------------------------------------------------------------
+
+    std::vector<std::pair<std::string, std::string> > get_supported_extensions() const override
+    {
+        return {{"MP4 files", "*.mp4"}};
+    }
 
     /// Return file type (io::service::FILE)
     sight::io::service::path_type_t get_path_type() const override;
@@ -126,9 +130,6 @@ private:
 
     /// container used to store first video frame timestamps to compute framerate of the video stream
     std::vector<core::clock::type> m_timestamps;
-
-    /// Extension selected in file dialog
-    std::string m_selected_extension;
 
     ///  static string containing the file extension
     static const std::string P4_EXTENSION;

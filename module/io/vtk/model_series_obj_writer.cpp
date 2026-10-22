@@ -55,10 +55,11 @@ sight::io::service::path_type_t model_series_obj_writer::get_path_type() const
 
 void model_series_obj_writer::open_location_dialog()
 {
-    static auto default_directory = std::make_shared<core::location::single_folder>();
+    auto default_directory = std::make_shared<core::location::single_folder>();
 
     sight::ui::dialog::location dialog;
     dialog.set_title(*m_window_title);
+    dialog.set_preferences_key(this->get_classname());
     dialog.set_default_location(default_directory);
     dialog.set_option(ui::dialog::location::write);
     dialog.set_type(ui::dialog::location::folder);

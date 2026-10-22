@@ -33,6 +33,8 @@
 
 #include <QCheckBox>
 #include <QComboBox>
+#include <QLabel>
+#include <QSlider>
 
 #include <atomic>
 #include <limits>
@@ -82,6 +84,81 @@ static void add_item(
 
 TEST_SUITE("sight::module::ui::qt::settings")
 {
+    TEST_CASE_FIXTURE(sight::ui::test::gui_fixture, "settings_group_observes_enabled_data")
+    {
+        test_service(
+            "sight::module::ui::qt::settings",
+            [](const sight::service::base::sptr& _service)
+        {
+            auto enabled = std::make_shared<sight::data::boolean>(false);
+            auto value   = std::make_shared<sight::data::boolean>(true);
+            auto worker  = sight::core::thread::get_default_worker();
+            sight::service::config_t config;
+            sight::module::ui::qt::ut::add_item(config, "group_value", "bool");
+            _service->set_inout(value, "item.data", true, false, 0);
+            _service->set_input(enabled, "config.enabled", true);
+            worker->post_task<void>([&]{_service->configure(config); _service->start().get();}).get();
+            CHECK(query_widget<QCheckBox>("group_value", [](auto* _w){return _w->isEnabled();}) == false);
+            for(const bool state : {true, false, true})
+            {
+                worker->post_task<void>(
+                    [&]
+                {
+                    enabled->set_value(state);
+                    enabled->async_emit(sight::data::signals::MODIFIED);
+                }).get();
+                SIGHT_TEST_FAIL_WAIT(
+                    query_widget<QCheckBox>("group_value", [](auto* _w){return _w->isEnabled();}) == state
+                );
+                CHECK(value->value());
+            }
+
+            worker->post_task<void>([&]{_service->stop().get();}).get();
+        });
+    }
+
+    TEST_CASE_FIXTURE(sight::ui::test::gui_fixture, "non_linear_slider_observes_choices_and_external_values")
+    {
+        test_service(
+            "sight::module::ui::qt::settings",
+            [](const sight::service::base::sptr& _service)
+        {
+            auto value   = std::make_shared<sight::data::integer>(90);
+            auto choices = std::make_shared<sight::data::string>("25;50;90;120;150");
+            auto worker  = sight::core::thread::get_default_worker();
+            sight::service::config_t config;
+            sight::module::ui::qt::ut::add_item(config, "nonlin", "integer");
+            config.put("item.<xmlattr>.widget", "comboslider");
+            config.put("item.<xmlattr>.use_index", false);
+            config.put("item.<xmlattr>.values", "choices");
+            _service->set_inout(value, "item.data", true, false, 0);
+            _service->set_input(choices, "item.values", true, false, 0);
+            worker->post_task<void>([&]{_service->configure(config); _service->start().get();}).get();
+            CHECK(query_widget<QLabel>("nonlin/minValueLabel", [](auto* _w){return _w->text();}) == "25");
+            CHECK(query_widget<QLabel>("nonlin/maxValueLabel", [](auto* _w){return _w->text();}) == "150");
+            worker->post_task<void>(
+                [&]
+            {
+                choices->set_value("37;70;105;135;160");
+                choices->async_emit(sight::data::signals::MODIFIED);
+            }).get();
+            SIGHT_TEST_FAIL_WAIT(
+                query_widget<QLabel>("nonlin/minValueLabel", [](auto* _w){return _w->text();}) == "37"
+            );
+            CHECK(query_widget<QLabel>("nonlin/maxValueLabel", [](auto* _w){return _w->text();}) == "160");
+            worker->post_task<void>(
+                [&]
+            {
+                value->set_value(135);
+                value->async_emit(sight::data::signals::MODIFIED);
+            }).get();
+            SIGHT_TEST_FAIL_WAIT(
+                query_widget<QLabel>("nonlin/valueLabel", [](auto* _w){return _w->text();}) == "135"
+            );
+            worker->post_task<void>([&]{_service->stop().get();}).get();
+        });
+    }
+
     TEST_CASE_FIXTURE(sight::ui::test::gui_fixture, "integer_combobox_normalizes_invalid_indices")
     {
         test_service(

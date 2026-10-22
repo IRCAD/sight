@@ -117,8 +117,6 @@ public:
     /// Destructor. Do nothing.
     ~frame_grabber() noexcept override;
 
-    void set_parameter(ui::parameter_t _value, std::string _key) override;
-
     /// SLOT : Initialize and start camera (restart camera if is already started).
     void start_camera() override;
 
@@ -141,7 +139,7 @@ public:
     void previous_image() override;
 
     /// SLOT: Set step used on readPrevious/readNext slots
-    void set_step(int _step, std::string _key) override;
+    void set_step(int _step) override;
 
     /// SLOT: Adds a region of interest center. Currently this function implements image zoom.
     ///       The added point can be forwarded from a picker in singlePointMode for example.

@@ -29,7 +29,6 @@
 #include <core/location/base.hpp>
 
 #include <cstdint>
-#include <filesystem>
 #include <string>
 #include <utility>
 
@@ -80,6 +79,9 @@ public:
     /// returns the title for the dialog
     SIGHT_UI_API virtual const std::string& get_title();
 
+    /// Set the key used to store the default location in preferences. Empty keeps the title-based key.
+    SIGHT_UI_API virtual void set_preferences_key(const std::string& _key);
+
     /// set the initial location for the dialog
     SIGHT_UI_API virtual void set_default_location(core::location::base::sptr _loc);
 
@@ -129,6 +131,9 @@ private:
 
     std::string m_title;
     core::location::base::sptr m_default_locaction;
+
+    /// Optional key used instead of the visible title to store default locations.
+    std::string m_preferences_key;
 };
 
 } // namespace sight::ui::dialog

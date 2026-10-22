@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <data/frame_tl.hpp>
+#include <data/string.hpp>
 
 #include <io/__/service/writer.hpp>
 
@@ -42,15 +42,13 @@ namespace sight::module::io::video
  * - \b start_record(): starts recording
  * - \b stop_record(): stops recording
  * - \b record(state): starts/stops the recording, according to the state in parameter
- * - \b set_format_parameter(value, key): changes format
  *
  * @section XML XML Configuration
  *
  * @code{.xml}
    <service type="sight::module::io::video::frame_writer">
        <data write="..." />
-       <config window_title ="Select the image file to load" />
-       <format>.tiff</format>
+       <config window_title="Select the folder to save frames" format=".tiff" />
    </service>
    @endcode
  * @subsection Input Input
@@ -58,7 +56,13 @@ namespace sight::module::io::video
  *
  * @subsection Configuration Configuration
  * - \b config.window_title: allow overriding the default title of the modal file selection window. \see io::writer
- * - \b format: optional, file format used to store frames. Possible extensions (.jpeg ,.bmp, .tiff, .png, .jp2,... )
+ * - \b config.format: optional, file format used to store frames. Possible extensions (.jpeg ,.bmp, .tiff, .png,
+ * .jp2,... )
+ *
+ * @subsection ConfigBindings Configuration data bindings
+ * Configuration inputs accept literals or shared data objects.
+ * Default values apply when no configuration value is provided.
+ * - \b config.format [sight::data::string]: format.
  */
 class frame_writer : public sight::io::service::writer
 {
@@ -71,23 +75,26 @@ public:
         using frame_t = core::com::slot<void (core::clock::type)>;
         using void_t  = core::com::slot<void ()>;
 
-        static inline const slot_key_t SAVE_FRAME           = "save_frame";
-        static inline const slot_key_t START_RECORD         = "start_record";
-        static inline const slot_key_t STOP_RECORD          = "stop_record";
-        static inline const slot_key_t RECORD               = "record";
-        static inline const slot_key_t TOGGLE_RECORDING     = "toggle_recording";
-        static inline const slot_key_t WRITE                = "write";
-        static inline const slot_key_t SET_FORMAT_PARAMETER = "set_format_parameter";
+        static inline const slot_key_t SAVE_FRAME       = "save_frame";
+        static inline const slot_key_t START_RECORD     = "start_record";
+        static inline const slot_key_t STOP_RECORD      = "stop_record";
+        static inline const slot_key_t RECORD           = "record";
+        static inline const slot_key_t TOGGLE_RECORDING = "toggle_recording";
+        static inline const slot_key_t WRITE            = "write";
     };
 
     /// Constructor.
     frame_writer() noexcept;
 
     /// Destructor. Does nothing
-    ~frame_writer() noexcept override;
+    ~frame_writer() noexcept override = default;
 
     /// Display a location dialog allowing to select the video file to save
-    void open_location_dialog() override;
+
+    std::vector<std::pair<std::string, std::string> > get_supported_extensions() const override
+    {
+        return {{"Image files", "*.tiff *.jpeg *.bmp *.png *.jp2"}};
+    }
 
     /// Return file type (io::service::FOLDER)
     sight::io::service::path_type_t get_path_type() const override;
@@ -129,14 +136,12 @@ private:
     /// SLOT: Toggle the recording.
     void toggle_recording();
 
-    /// Slot called when a format is changed
-    void set_format_parameter(std::string _val, std::string _key);
-
     int m_image_type {0}; ///< opencv image type ( CV_8UC3, CV_8UC4, ...)
 
     bool m_is_recording {false}; ///< flag if the service is recording.
 
-    std::string m_format; ///< file format (.tiff by default)
+    /// Typed config.format configuration binding.
+    ptr_in<sight::data::string> m_format {this, "config.format", ".tiff"};
 };
 
 } // namespace sight::module::io::video

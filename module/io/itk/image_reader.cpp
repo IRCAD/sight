@@ -22,8 +22,6 @@
 
 #include "image_reader.hpp"
 
-#include <core/location/single_file.hpp>
-#include <core/location/single_folder.hpp>
 #include <core/notification/observer.hpp>
 #include <core/tools/failed.hpp>
 
@@ -34,7 +32,6 @@
 #include <io/itk/nifti_image_reader.hpp>
 
 #include <ui/__/cursor.hpp>
-#include <ui/__/dialog/location.hpp>
 #include <ui/__/dialog/message.hpp>
 
 namespace sight::module::io::itk
@@ -54,7 +51,7 @@ sight::io::service::path_type_t image_reader::get_path_type() const
 
 //------------------------------------------------------------------------------
 
-std::vector<std::pair<std::string, std::string> > image_reader::get_supported_extensions()
+std::vector<std::pair<std::string, std::string> > image_reader::get_supported_extensions() const
 {
     return {
         {"NIfTI (.nii)", "*.nii *.nii.gz"},
@@ -63,31 +60,6 @@ std::vector<std::pair<std::string, std::string> > image_reader::get_supported_ex
 }
 
 //------------------------------------------------------------------------------
-
-void image_reader::open_location_dialog()
-{
-    static auto default_directory = std::make_shared<core::location::single_folder>();
-
-    sight::ui::dialog::location dialog_file;
-    dialog_file.set_title(*m_window_title);
-    dialog_file.set_default_location(default_directory);
-    dialog_file.add_filter("NIfTI (.nii)", "*.nii *.nii.gz");
-    dialog_file.add_filter("Inr (.inr)", "*.inr *.inr.gz");
-    dialog_file.set_option(ui::dialog::location::read);
-    dialog_file.set_option(ui::dialog::location::file_must_exist);
-
-    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialog_file.show());
-    if(result)
-    {
-        this->set_file(result->get_file());
-        default_directory->set_folder(result->get_file().parent_path());
-        dialog_file.save_default_location(default_directory);
-    }
-    else
-    {
-        this->clear_locations();
-    }
-}
 
 //
 //------------------------------------------------------------------------------

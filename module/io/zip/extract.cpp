@@ -27,7 +27,6 @@
 
 #include <core/crypto/password_keeper.hpp>
 #include <core/crypto/secure_string.hpp>
-#include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
 #include <core/notification/observer.hpp>
 
@@ -97,11 +96,12 @@ void extract::updating()
 
     if(m_output_path.empty())
     {
-        static auto default_location = std::make_shared<core::location::single_folder>();
+        auto default_location = std::make_shared<core::location::single_folder>();
         default_location->set_folder("/");
 
         sight::ui::dialog::location location_dialog;
         location_dialog.set_title("Enter the folder where the files must be extracted");
+        location_dialog.set_preferences_key(this->get_classname() + ".output");
         location_dialog.set_default_location(default_location);
         location_dialog.set_option(ui::dialog::location::write);
         location_dialog.set_type(ui::dialog::location::folder);
@@ -287,37 +287,6 @@ void extract::updating()
             "Reading process aborted",
             sight::ui::dialog::message::warning
         );
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void extract::open_location_dialog()
-{
-    static auto default_location = std::make_shared<core::location::single_folder>();
-    default_location->set_folder("/");
-
-    sight::ui::dialog::location location_dialog;
-    location_dialog.set_title(*m_window_title);
-    location_dialog.set_default_location(default_location);
-    location_dialog.set_option(ui::dialog::location::read);
-    location_dialog.set_option(ui::dialog::location::file_must_exist);
-    location_dialog.set_type(ui::dialog::location::single_file);
-
-    const auto result = std::dynamic_pointer_cast<core::location::single_file>(location_dialog.show());
-
-    if(result)
-    {
-        const auto& filepath = result->get_file();
-        set_file(filepath);
-
-        // Save default location for later use
-        default_location->set_folder(filepath.parent_path());
-        location_dialog.save_default_location(default_location);
-    }
-    else
-    {
-        clear_locations();
     }
 }
 

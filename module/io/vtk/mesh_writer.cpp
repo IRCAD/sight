@@ -22,9 +22,6 @@
 
 #include "module/io/vtk/mesh_writer.hpp"
 
-#include <core/location/single_file.hpp>
-#include <core/location/single_folder.hpp>
-
 #include <core/tools/failed.hpp>
 
 #include <data/mesh.hpp>
@@ -36,7 +33,6 @@
 #include <io/vtk/vtp_mesh_writer.hpp>
 
 #include <ui/__/cursor.hpp>
-#include <ui/__/dialog/location.hpp>
 #include <ui/__/dialog/message.hpp>
 
 namespace sight::module::io::vtk
@@ -57,34 +53,6 @@ sight::io::service::path_type_t mesh_writer::get_path_type() const
 }
 
 //------------------------------------------------------------------------------
-
-void mesh_writer::open_location_dialog()
-{
-    static auto default_directory = std::make_shared<core::location::single_folder>();
-
-    sight::ui::dialog::location dialog_file;
-    dialog_file.set_title(*m_window_title);
-    dialog_file.set_default_location(default_directory);
-    dialog_file.add_filter("OBJ File(.obj)", "*.obj");
-    dialog_file.add_filter("PLY File(.ply)", "*.ply");
-    dialog_file.add_filter("STL File(.stl)", "*.stl");
-    dialog_file.add_filter("VTK Legacy File(.vtk)", "*.vtk");
-    dialog_file.add_filter("VTK Polydata File(.vtp)", "*.vtp");
-    dialog_file.set_option(ui::dialog::location::write);
-
-    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialog_file.show());
-    if(result)
-    {
-        this->set_file(result->get_file());
-        m_selected_extension = dialog_file.get_selected_extensions().front();
-        default_directory->set_folder(result->get_file().parent_path());
-        dialog_file.save_default_location(default_directory);
-    }
-    else
-    {
-        this->clear_locations();
-    }
-}
 
 //------------------------------------------------------------------------------
 
@@ -154,7 +122,7 @@ void mesh_writer::updating()
         if(provided_extension.empty())
         {
             // No extension provided, add extension of selected filter.
-            extension_to_use = m_selected_extension;
+            extension_to_use = this->get_selected_extension();
             file_to_write   += extension_to_use;
         }
         else

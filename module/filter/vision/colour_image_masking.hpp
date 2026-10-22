@@ -22,6 +22,9 @@
 
 #pragma once
 
+#include <data/integer.hpp>
+#include <data/real.hpp>
+
 #include <data/frame_tl.hpp>
 #include <data/image.hpp>
 
@@ -42,9 +45,6 @@ namespace sight::module::filter::vision
  * - \b set_background() : Slot to set the background image to learn the background model color
  * - \b set_foreground() : Slot to set the foreground image to learn the foreground model color
  * - \b set_threshold(int threshold) : Slot to set the threshold value to get the final binary image
- * - \b set_noise_level(double noiseLevel) : Slot to set the noise level added in the learning steps
- * - \b set_background_components(int bgComponents) : Slot to set the number of background components learned
- * - \b set_foreground_components(int fgComponents) : Slot to set the number of foreground components learned
  * - \b clearMaskTL() : Slot to clear the output foreground mask timeline and reset the last timestamp.
  *
  * @section XML XML Configuration
@@ -53,7 +53,7 @@ namespace sight::module::filter::vision
             <in key="videoTL" uid="..." auto_connect="true" />
             <inout key="mask" uid="..." />
             <inout key="videoMaskTL" uid="..." />
-            <config scaleFactor="0.5" noise="30" foregroundComponents="5" backgroundComponents="5"/>
+            <config scaleFactor="0.5" noise_level="30" foreground_components="5" background_components="5"/>
             <HSV>
                 <lower>35,0,0</lower>
                 <upper>360.5,255,255</upper>
@@ -72,14 +72,23 @@ namespace sight::module::filter::vision
  *
  * @subsection Configuration Configuration
  * - \b scaleFactor (optional)(default: 1.0) : factor to scale the image to perform image masking on
- * - \b noise (optional)(default: 0.0) : standard deviation value for the additive noise used during the foreground
+ * - \b noise_level (optional)(default: 0.0) : standard deviation value for the additive noise used during the
+ * foreground
  * learning step. It allows to perform a more robust learning step by providing different values close to the initial
  * pixel. It is sometimes needed when real values are a little bit different than the given input image used during the
  * learning step. For example, to avoid missing pixels when brightness or shadows is changing.
- * - \b foregroundComponents (optional)(default: 5) : number of components learned in the foreground color model
- * - \b backgroundComponents (optional)(default: 5) : number of components learned in the foreground color model
+ * - \b foreground_components (optional)(default: 5) : number of components learned in the foreground color model
+ * - \b background_components (optional)(default: 5) : number of components learned in the foreground color model
  * - \b HSV (optional) : values in HSV defined by <lower>(default: 0,0,0) and <upper> (default: 255,255,255) tags
  * allowing to compute automatically the mask during the foreground color model learning step
+ *
+ * @subsection ConfigBindings Configuration data bindings
+ * Configuration inputs accept literals or shared data objects.
+ * Default values apply when no configuration value is provided.
+ * - \b config.threshold [sight::data::integer]: threshold.
+ * - \b config.noise_level [sight::data::real]: noise level.
+ * - \b config.background_components [sight::data::integer]: background components.
+ * - \b config.foreground_components [sight::data::integer]: foreground components.
  */
 class colour_image_masking final : public service::filter
 {
@@ -90,13 +99,10 @@ public:
 
     struct slots
     {
-        static inline const slot_key_t SET_BACKGROUND            = "set_background";
-        static inline const slot_key_t SET_FOREGROUND            = "set_foreground";
-        static inline const slot_key_t SET_THRESHOLD             = "set_threshold";
-        static inline const slot_key_t SET_NOISE_LEVEL           = "set_noise_level";
-        static inline const slot_key_t SET_BACKGROUND_COMPONENTS = "set_background_components";
-        static inline const slot_key_t SET_FOREGROUND_COMPONENTS = "set_foreground_components";
-        static inline const slot_key_t CLEAR_MASKTL              = "clearMaskTL";
+        static inline const slot_key_t SET_BACKGROUND = "set_background";
+        static inline const slot_key_t SET_FOREGROUND = "set_foreground";
+        static inline const slot_key_t SET_THRESHOLD  = "set_threshold";
+        static inline const slot_key_t CLEAR_MASKTL   = "clearMaskTL";
     };
 
     /// Initializes the slots and member variables.
@@ -124,6 +130,9 @@ protected:
 
 private:
 
+    /// Apply settings from bound data at startup and after external modifications.
+    void apply_config_threshold();
+
     /// SLOT: Sets background image and learn background model.
     void set_background();
 
@@ -132,15 +141,6 @@ private:
 
     /// SLOT: Sets the threshold value to compute final binary image.
     void set_threshold(int _threshold);
-
-    /// SLOT: Sets the noise level added in the learning steps.
-    void set_noise_level(double _noise_level);
-
-    /// SLOT: Sets the number of background components learned.
-    void set_background_components(int _bg_components);
-
-    /// SLOT: Sets the number of foreground components learned.
-    void set_foreground_components(int _fg_components);
 
     /// SLOT: Clears the output mask timeline and reset the last timestamp.
     void clear_mask_tl();
@@ -163,22 +163,26 @@ private:
     /// Opencv HSV upper value to threshold the image used during foreground color model learning step.
     cv::Scalar m_upper_color;
 
-    /// Noise level to add during the foreground learning step.
-    double m_noise {0.};
-
-    /// Number of background components.
-    int m_background_components {5};
-
-    /// Number of foreground components.
-    int m_foreground_components {5};
-
     static constexpr std::string_view MASK_KEY          = "mask";
     static constexpr std::string_view VIDEO_TL_KEY      = "videoTL";
     static constexpr std::string_view VIDEO_MASK_TL_KEY = "videoMaskTL";
 
-    sight::data::ptr<sight::data::image, sight::data::access::in> m_mask {this, MASK_KEY};
-    sight::data::ptr<sight::data::frame_tl, sight::data::access::in> m_video_tl {this, VIDEO_TL_KEY};
-    sight::data::ptr<sight::data::frame_tl, sight::data::access::inout> m_video_mask_tl {this, VIDEO_MASK_TL_KEY};
+    /// Typed config.threshold configuration binding.
+    ptr_in<sight::data::integer> m_threshold {this, "config.threshold", 1};
+
+    /// Noise level to add during the foreground learning step.
+    ptr_in<sight::data::real> m_noise {this, "config.noise_level", 0.};
+
+    /// Number of background components.
+    ptr_in<sight::data::integer> m_background_components {this, "config.background_components", 5};
+
+    /// Number of foreground components.
+    ptr_in<sight::data::integer> m_foreground_components {this, "config.foreground_components", 5};
+
+    ptr_in<sight::data::image> m_mask {this, MASK_KEY};
+    ptr_in<sight::data::frame_tl> m_video_tl {this, VIDEO_TL_KEY};
+
+    ptr_inout<sight::data::frame_tl> m_video_mask_tl {this, VIDEO_MASK_TL_KEY};
 };
 
 } // namespace sight::module::filter::vision.

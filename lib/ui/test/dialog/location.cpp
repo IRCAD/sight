@@ -35,18 +35,23 @@ namespace sight::ui::test::dialog
 std::queue<std::vector<std::filesystem::path> > location::s_paths_list;
 std::optional<location::filter_t> location::s_current_filter;
 std::vector<location::filter_t> location::s_filters;
+location::types location::s_type {location::single_file};
+location::options location::s_options {location::none};
+core::location::base::sptr location::s_initial_location;
 
 //------------------------------------------------------------------------------
 
 void location::set_type(types _type)
 {
     m_type = _type;
+    s_type = _type;
 }
 
 //------------------------------------------------------------------------------
 
-void location::set_option(options /*option*/)
+void location::set_option(options _option)
 {
+    s_options = static_cast<options>(static_cast<std::uint8_t>(s_options) | static_cast<std::uint8_t>(_option));
 }
 
 //------------------------------------------------------------------------------
@@ -98,6 +103,27 @@ const std::vector<location::filter_t>& location::get_filters()
 
 //------------------------------------------------------------------------------
 
+location::types location::get_type()
+{
+    return s_type;
+}
+
+//------------------------------------------------------------------------------
+
+location::options location::get_options()
+{
+    return s_options;
+}
+
+//------------------------------------------------------------------------------
+
+core::location::base::sptr location::get_initial_location()
+{
+    return s_initial_location;
+}
+
+//------------------------------------------------------------------------------
+
 bool location::clear()
 {
     const bool was_empty = s_paths_list.empty();
@@ -109,6 +135,9 @@ bool location::clear()
 
     s_current_filter.reset();
     s_filters.clear();
+    s_type    = single_file;
+    s_options = none;
+    s_initial_location.reset();
 
     return was_empty;
 }
@@ -117,6 +146,7 @@ bool location::clear()
 
 sight::core::location::base::sptr location::show()
 {
+    s_initial_location = this->get_default_location();
     std::vector<std::filesystem::path> paths = s_paths_list.front();
     s_paths_list.pop();
 

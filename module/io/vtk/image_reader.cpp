@@ -22,7 +22,6 @@
 
 #include "module/io/vtk/image_reader.hpp"
 
-#include <core/location/single_folder.hpp>
 #include <core/tools/failed.hpp>
 
 #include <data/image.hpp>
@@ -35,7 +34,6 @@
 #include <io/vtk/vti_image_reader.hpp>
 
 #include <ui/__/cursor.hpp>
-#include <ui/__/dialog/location.hpp>
 #include <ui/__/dialog/message.hpp>
 
 #include <filesystem>
@@ -59,7 +57,7 @@ sight::io::service::path_type_t image_reader::get_path_type() const
 
 //------------------------------------------------------------------------------
 
-std::vector<std::pair<std::string, std::string> > image_reader::get_supported_extensions()
+std::vector<std::pair<std::string, std::string> > image_reader::get_supported_extensions() const
 {
     std::vector<std::string> extensions;
     sight::io::vtk::bitmap_image_reader::get_available_extensions(extensions);
@@ -87,49 +85,6 @@ std::vector<std::pair<std::string, std::string> > image_reader::get_supported_ex
     }
 
     return filters;
-}
-
-//------------------------------------------------------------------------------
-
-void image_reader::open_location_dialog()
-{
-    static auto default_directory = std::make_shared<core::location::single_folder>();
-
-    /* Initialize the available extensions for BitmapImageReader */
-    std::vector<std::string> ext;
-    sight::io::vtk::bitmap_image_reader::get_available_extensions(ext);
-    std::string available_extensions;
-
-    if(!ext.empty())
-    {
-        available_extensions = "*" + ext.at(0);
-        for(std::size_t i = 1 ; i < ext.size() ; i++)
-        {
-            available_extensions.append(" *").append(ext.at(i));
-        }
-    }
-
-    sight::ui::dialog::location dialog_file;
-    dialog_file.set_title(*m_window_title);
-    dialog_file.set_default_location(default_directory);
-    dialog_file.add_filter("Vtk", "*.vtk");
-    dialog_file.add_filter("Vti", "*.vti");
-    dialog_file.add_filter("MetaImage", "*.mhd");
-    dialog_file.add_filter("Bitmap image", available_extensions);
-    dialog_file.set_option(ui::dialog::location::read);
-    dialog_file.set_option(ui::dialog::location::file_must_exist);
-
-    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialog_file.show());
-    if(result)
-    {
-        this->set_file(result->get_file());
-        default_directory->set_folder(result->get_file().parent_path());
-        dialog_file.save_default_location(default_directory);
-    }
-    else
-    {
-        this->clear_locations();
-    }
 }
 
 //------------------------------------------------------------------------------

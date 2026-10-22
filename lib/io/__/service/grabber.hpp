@@ -61,7 +61,6 @@ namespace sight::io::service
  * - \b previous_image(): display the previous image in step by step mode. Does nothing if not overridden.
  * - \b set_step(): set the step value between two images when calling nextImage/previous_image. Does nothing if not
  * overridden.
- * - \b set_parameters(parameters_t, std::string): Sets a parameters with value (variant) and key.
  * - \b request_settings(): Requests the grabber internal settings.
  * - \b optimize(): Calls grabber-specific optimization function (e.g. hardware related).
  * - \b add_roi_center(sight::data::point::sptr): Adds a new region fo interest center.
@@ -87,7 +86,6 @@ public:
         static inline const slot_key_t PREVIOUS_IMAGE      = "previous_image";
         static inline const slot_key_t NEXT_IMAGE          = "next_image";
         static inline const slot_key_t SET_STEP            = "set_step";
-        static inline const slot_key_t SET_PARAMETER       = "set_parameter";
         static inline const slot_key_t REQUEST_SETTINGS    = "request_settings";
         static inline const slot_key_t OPTIMIZE            = "optimize";
         static inline const slot_key_t ADD_ROI_CENTER      = "add_roi_center";
@@ -114,9 +112,6 @@ public:
 
         using camera_paused_t = core::com::signal<void ()>;
         static inline const signal_key_t CAMERA_PAUSED = "camera_paused";
-
-        using parameter_changed_t = core::com::signal<void (ui::parameter_t, std::string)>;
-        static inline const signal_key_t PARAMETER_CHANGED = "parameter_changed";
 
         using fps_changed_t = sight::core::com::signal<void (double)>;
         static inline const signal_key_t FPS_CHANGED = "fps_changed";
@@ -177,7 +172,7 @@ public:
     /**
      * @brief API to set step used on readPrevious/readNext slots in frame by frame mode.
      */
-    SIGHT_IO_API virtual void set_step(int _step, std::string _key);
+    SIGHT_IO_API virtual void set_step(int _step);
 
     /// SLOT: Requests the grabber internal settings.
     SIGHT_IO_API virtual void request_settings();
@@ -190,9 +185,6 @@ public:
 
     /// SLOT: Removes a region of interest center.
     SIGHT_IO_API virtual void remove_roi_center(sight::data::point::sptr _p);
-
-    /// SLOT: Sets a parameter value with its key.
-    SIGHT_IO_API virtual void set_parameter(ui::parameter_t _value, std::string _key);
 
     /// SLOT: Forward FPS data
     SIGHT_IO_API virtual void forward_fps_changed(double _fps);

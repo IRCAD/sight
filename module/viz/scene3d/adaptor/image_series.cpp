@@ -301,6 +301,11 @@ void image_series::updating()
         child->set_input(image, "data.image", true);
         auto visibility = std::make_shared<data::boolean>(this->visible() && image_visible);
         child->set_input(visibility, "config.visible", true);
+        if(!is_volume)
+        {
+            child->set_input(m_transparency.lock().get_shared(), "config.transparency", true);
+        }
+
         m_child_visibility.emplace(id, std::move(visibility));
 
         data::transfer_function::sptr tf;
@@ -543,6 +548,7 @@ void image_series::set_visible(bool _visible)
 }
 
 //-----------------------------------------------------------------------------
+
 void image_series::set_child_visibility(const std::string& _image_id, bool _visible)
 {
     if(const auto it = m_child_visibility.find(_image_id);
@@ -557,6 +563,7 @@ void image_series::set_child_visibility(const std::string& _image_id, bool _visi
 }
 
 //-----------------------------------------------------------------------------
+
 void image_series::set_image_visibility(std::string _image_id, bool _visible)
 {
     if(m_representation == representation_t::negato2d && _visible)

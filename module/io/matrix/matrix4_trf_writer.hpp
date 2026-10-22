@@ -24,8 +24,6 @@
 
 #include <io/__/service/writer.hpp>
 
-#include <filesystem>
-
 namespace sight::module::io::matrix
 {
 
@@ -55,17 +53,12 @@ public:
 
     matrix4_trf_writer() noexcept;
 
-    /** @name Specified writer service methods ( override from sight::io::service::writer )
-     * @{
-     */
+    //------------------------------------------------------------------------------
 
-    /**
-     * @brief Configure the matrix path.
-     *
-     * This method is used to find
-     * the file path  using a file selector.
-     */
-    void open_location_dialog() override;
+    std::vector<std::pair<std::string, std::string> > get_supported_extensions() const override
+    {
+        return {{"TRF files", "*.trf"}};
+    }
 
     /// Return path type managed by the service, here FILE
     sight::io::service::path_type_t get_path_type() const override;

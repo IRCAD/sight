@@ -24,8 +24,6 @@
 
 #include "module/io/itk/image_reader.hpp"
 
-#include <core/location/multiple_files.hpp>
-#include <core/location/single_folder.hpp>
 #include <core/tools/date_and_time.hpp>
 #include <core/tools/uuid.hpp>
 
@@ -33,7 +31,6 @@
 #include <data/series_set.hpp>
 
 #include <ui/__/cursor.hpp>
-#include <ui/__/dialog/location.hpp>
 
 namespace sight::module::io::itk
 {
@@ -64,39 +61,7 @@ void series_set_reader::configuring()
 
 //------------------------------------------------------------------------------
 
-void series_set_reader::open_location_dialog()
-{
-    static auto default_directory = std::make_shared<core::location::single_folder>();
-
-    sight::ui::dialog::location dialog_file;
-    dialog_file.set_title(*m_window_title);
-    dialog_file.set_default_location(default_directory);
-    dialog_file.add_filter("NIfTI (.nii)", "*.nii *.nii.gz");
-    dialog_file.add_filter("Inr (.inr)", "*.inr *.inr.gz");
-    dialog_file.set_type(ui::dialog::location::multi_files);
-    dialog_file.set_option(ui::dialog::location::read);
-    dialog_file.set_option(ui::dialog::location::file_must_exist);
-
-    auto result = std::dynamic_pointer_cast<core::location::multiple_files>(dialog_file.show());
-    if(result)
-    {
-        const std::vector<std::filesystem::path> paths = result->get_files();
-        if(!paths.empty())
-        {
-            default_directory->set_folder(paths[0].parent_path());
-            dialog_file.save_default_location(default_directory);
-        }
-
-        this->set_files(paths);
-    }
-    else
-    {
-        this->clear_locations();
-    }
-}
-
-//------------------------------------------------------------------------------
-std::vector<std::pair<std::string, std::string> > series_set_reader::get_supported_extensions()
+std::vector<std::pair<std::string, std::string> > series_set_reader::get_supported_extensions() const
 {
     return {
         {"NIfTI (.nii)", "*.nii *.nii.gz"},

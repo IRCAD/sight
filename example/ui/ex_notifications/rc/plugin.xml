@@ -25,6 +25,14 @@ are already displayed and where they are displayed on screen.
         <config>
             <!-- ******************************* UI declaration *********************************** -->
 
+            <object uid="use_notifier_act_usenotifier" type="sight::data::boolean" value="true" />
+            <object uid="reach_max_characters" type="sight::data::boolean" value="false" />
+            <object uid="use_sound" type="sight::data::boolean" value="false" />
+            <object uid="duration" type="sight::data::string" value="3000" />
+            <object uid="type" type="sight::data::string" value="INSTRUCTION" />
+            <object uid="position" type="sight::data::string" value="TOP_RIGHT" />
+            <object uid="channel" type="sight::data::string" value="GLOBAL" />
+
             <service uid="mainFrame" type="sight::module::ui::frame">
                 <gui>
                     <frame>
@@ -82,46 +90,32 @@ are already displayed and where they are displayed on screen.
 
             <!-- ************************************* Action ************************************ -->
 
-            <service uid="useNotifierAct" type="sight::module::ui::qt::parameters">
-                <parameters>
-                    <param type="bool" name="Use notifier to centralize." key="usenotifier" defaultValue="true" />
-                </parameters>
+            <service uid="useNotifierAct" type="sight::module::ui::qt::settings">
+                <item data="${use_notifier_act_usenotifier}" name="Use notifier to centralize." key="usenotifier" />
             </service>
 
-            <service uid="maxChar" type="sight::module::ui::qt::parameters">
-                <parameters>
-                    <param type="bool" name="Reach max. characters" key="reachMaxCharacters" defaultValue="false" />
-                </parameters>
+            <service uid="maxChar" type="sight::module::ui::qt::settings">
+                <item data="${reach_max_characters}" name="Reach max. characters" key="reachMaxCharacters" />
             </service>
 
-            <service uid="useSound" type="sight::module::ui::qt::parameters">
-                <parameters>
-                    <param type="bool" name="Sound" key="sound" defaultValue="false" />
-                </parameters>
+            <service uid="useSound" type="sight::module::ui::qt::settings">
+                <item data="${use_sound}" name="Sound" key="sound" />
             </service>
 
-            <service uid="durationAct" type="sight::module::ui::qt::parameters">
-                <parameters>
-                    <param type="enum" name="Duration" key="duration" defaultValue="3000" values="3000,1000,infinite" />
-                </parameters>
+            <service uid="durationAct" type="sight::module::ui::qt::settings">
+                <item data="${duration}" name="Duration" key="duration" values="3000,1000,infinite" widget="combobox" />
             </service>
 
-            <service uid="typeAct" type="sight::module::ui::qt::parameters">
-                <parameters>
-                    <param type="enum" name="Type" key="type" defaultValue="INSTRUCTION" values="INSTRUCTION,INFORMATION,WARNING,ERROR" />
-                </parameters>
+            <service uid="typeAct" type="sight::module::ui::qt::settings">
+                <item data="${type}" name="Type" key="type" values="INSTRUCTION,INFORMATION,WARNING,ERROR" widget="combobox" />
             </service>
 
-            <service uid="positionAct" type="sight::module::ui::qt::parameters">
-                <parameters>
-                    <param type="enum" name="Position" key="position" defaultValue="TOP_RIGHT" values="ALL,TOP_LEFT,TOP_RIGHT,CENTERED_TOP,CENTERED,BOTTOM_LEFT,BOTTOM_RIGHT,CENTERED_BOTTOM" />
-                </parameters>
+            <service uid="positionAct" type="sight::module::ui::qt::settings">
+                <item data="${position}" name="Position" key="position" values="ALL,TOP_LEFT,TOP_RIGHT,CENTERED_TOP,CENTERED,BOTTOM_LEFT,BOTTOM_RIGHT,CENTERED_BOTTOM" widget="combobox" />
             </service>
 
-            <service uid="channelAct" type="sight::module::ui::qt::parameters">
-                <parameters>
-                    <param type="enum" name="Channel" key="channel" defaultValue="GLOBAL" values="GLOBAL,CHANNEL1,CHANNEL2" />
-                </parameters>
+            <service uid="channelAct" type="sight::module::ui::qt::settings">
+                <item data="${channel}" name="Channel" key="channel" values="GLOBAL,CHANNEL1,CHANNEL2" widget="combobox" />
             </service>
 
             <service uid="notifyAct" type="sight::module::ui::action" />
@@ -142,7 +136,9 @@ are already displayed and where they are displayed on screen.
             <!-- ******************************* Services ******************************* -->
 
             <!-- Dummy service only used to test notifications -->
-            <service uid="testNotifierSrv" type="ex_notifications::display_test_notifications" />
+            <service uid="testNotifierSrv" type="ex_notifications::display_test_notifications">
+                <config usenotifier="${use_notifier_act_usenotifier}" reach_max_characters="${reach_max_characters}" sound="${use_sound}" duration="${duration}" type="${type}" position="${position}" channel="${channel}" />
+            </service>
 
             <!-- notifier listen to all the connected service & display queued notification at the same place (here TOP_RIGHT)-->
             <service uid="notifierSrv" type="sight::module::ui::qt::notifier">
@@ -156,6 +152,7 @@ are already displayed and where they are displayed on screen.
                     <!-- CHANNEL2 configuration is fixed here. It cannot be changed -->
                     <channel uid="CHANNEL2" position="TOP_LEFT" duration="5000" max="3" size="800x120" closable="false" />
                 </channels>
+                <config duration="${duration}" position="${position}" />
             </service>
 
             <service uid="qt_style_changer_srv" type="sight::module::ui::qt::style_selector" />
@@ -174,34 +171,6 @@ are already displayed and where they are displayed on screen.
             </connect>
 
             <!-- Others connections -->
-            <connect>
-                <signal>positionAct/enum_changed</signal>
-                <slot>testNotifierSrv/set_enum_parameter</slot>
-                <slot>notifierSrv/set_enum_parameter</slot>
-            </connect>
-
-            <connect>
-                <signal>durationAct/enum_changed</signal>
-                <slot>testNotifierSrv/set_enum_parameter</slot>
-                <slot>notifierSrv/set_enum_parameter</slot>
-            </connect>
-
-            <connect>
-                <signal>typeAct/enum_changed</signal>
-                <slot>testNotifierSrv/set_enum_parameter</slot>
-            </connect>
-
-            <connect>
-                <signal>channelAct/enum_changed</signal>
-                <slot>testNotifierSrv/set_enum_parameter</slot>
-            </connect>
-
-            <connect>
-                <signal>useNotifierAct/bool_changed</signal>
-                <signal>maxChar/bool_changed</signal>
-                <signal>useSound/bool_changed</signal>
-                <slot>testNotifierSrv/set_bool_parameter</slot>
-            </connect>
 
             <connect>
                 <signal>changeThemeAct/parameters_modified</signal>

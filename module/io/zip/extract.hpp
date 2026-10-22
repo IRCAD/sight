@@ -56,8 +56,12 @@ public:
     extract() noexcept;
     ~extract() noexcept override;
 
-    /// Propose to read an archive
-    void open_location_dialog() override;
+    //------------------------------------------------------------------------------
+
+    std::vector<std::pair<std::string, std::string> > get_supported_extensions() const override
+    {
+        return {{"ZIP archives", "*.zip"}};
+    }
 
     /// Returns managed path type, here service manages only single file
     sight::io::service::path_type_t get_path_type() const override

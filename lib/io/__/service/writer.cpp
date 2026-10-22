@@ -20,6 +20,7 @@
  *
  ***********************************************************************/
 #include "io/__/service/writer.hpp"
+#include "io/__/service/detail/location_dialog.hpp"
 
 #include <ui/__/preferences.hpp>
 
@@ -45,9 +46,34 @@ writer::writer(const std::string& _default_window_title) noexcept :
 }
 
 //-----------------------------------------------------------------------------
-std::vector<std::pair<std::string, std::string> > writer::get_supported_extensions()
+
+void writer::open_location_dialog()
 {
-    return {};
+    sight::io::service::detail::open_location_dialog(
+        *this,
+        *m_window_title,
+        false,
+        [this](const std::vector<std::string>& _extensions)
+        {
+            this->set_selected_extension(_extensions);
+        });
+}
+
+//-----------------------------------------------------------------------------
+
+void writer::set_selected_extension(const std::vector<std::string>& _extensions)
+{
+    if(!_extensions.empty())
+    {
+        m_selected_extension = _extensions.front();
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+const std::string& writer::get_selected_extension() const
+{
+    return m_selected_extension;
 }
 
 //-----------------------------------------------------------------------------

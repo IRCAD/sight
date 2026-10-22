@@ -21,9 +21,10 @@
 
 #pragma once
 
+#include <data/real.hpp>
+
 #include <data/helper/medical_image.hpp>
 #include <data/integer.hpp>
-#include <data/real.hpp>
 #include <data/string.hpp>
 
 #include <viz/scene3d/adaptor.hpp>
@@ -39,6 +40,8 @@ namespace sight::module::viz::scene3d::adaptor
 
 /**
  * @brief This is the base interface for 2D and 3D negato classes.
+ * - \b config.transparency [sight::data::real] (optional, default=0): transparency of the image planes,
+ *   reapplied after image changes and service restarts.
  */
 class negato :
     public sight::viz::scene3d::adaptor,
@@ -117,6 +120,8 @@ protected:
 
 private:
 
+    void apply_transparency();
+
     /// Sets the filtering type.
     void set_filtering(sight::viz::scene3d::plane::filter_t _filtering);
 
@@ -192,8 +197,8 @@ protected:
     /// Defines the mask used for picking request.
     std::uint32_t m_query_flags {Ogre::SceneManager::ENTITY_TYPE_MASK};
 
-    sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, "data.image"};
-    sight::data::ptr<sight::data::transfer_function, sight::data::access::inout> m_tf {this, "data.tf", true};
+    ptr_in<sight::data::image> m_image {this, "data.image"};
+    ptr_inout<sight::data::transfer_function> m_tf {this, "data.tf", true};
 //NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 
 private:
@@ -226,16 +231,13 @@ private:
         mask,
         tf
     };
-
-    sight::data::ptr<sight::data::image, sight::data::access::in> m_mask {this, "data.mask", true};
-    sight::data::ptr<sight::data::string, sight::data::access::in> m_classification {this, "config.classification",
-                                                                                     "post"
-    };
-    sight::data::ptr<sight::data::real, sight::data::access::in> m_depth_bias {this, "config.depth_bias", 0.};
-    sight::data::ptr<sight::data::boolean, sight::data::access::in> m_rgb_negato {this, "config.rgb_negato", false};
-
-    /// Sets the order for interactions and display.
-    sight::data::ptr<sight::data::integer, sight::data::access::in> m_priority {this, "config.priority", 1};
+    ptr_in<sight::data::image> m_mask {this, "data.mask", true};
+    ptr_in<sight::data::string> m_classification {this, "config.classification", "post"};
+    ptr_in<sight::data::real> m_depth_bias {this, "config.depth_bias", 0.};
+    ptr_in<sight::data::integer> m_priority {this, "config.priority", 1}; ///< Sets the order for interactions and
+                                                                          ///< display.
+    ptr_in<sight::data::real> m_transparency {this, "config.transparency", 0.};
+    ptr_in<sight::data::boolean> m_rgb_negato {this, "config.rgb_negato", false};
 };
 
 //------------------------------------------------------------------------------

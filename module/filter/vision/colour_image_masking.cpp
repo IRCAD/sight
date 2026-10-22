@@ -39,12 +39,11 @@ colour_image_masking::colour_image_masking() noexcept :
     m_lower_color(cv::Scalar(0, 0, 0)),
     m_upper_color(cv::Scalar(255, 255, 255))
 {
+    new_slot("apply_config_threshold", &colour_image_masking::apply_config_threshold, this);
+
     new_slot(slots::SET_BACKGROUND, &colour_image_masking::set_background, this);
     new_slot(slots::SET_FOREGROUND, &colour_image_masking::set_foreground, this);
     new_slot(slots::SET_THRESHOLD, &colour_image_masking::set_threshold, this);
-    new_slot(slots::SET_NOISE_LEVEL, &colour_image_masking::set_noise_level, this);
-    new_slot(slots::SET_BACKGROUND_COMPONENTS, &colour_image_masking::set_background_components, this);
-    new_slot(slots::SET_FOREGROUND_COMPONENTS, &colour_image_masking::set_foreground_components, this);
     new_slot(slots::CLEAR_MASKTL, &colour_image_masking::clear_mask_tl, this);
 }
 
@@ -59,23 +58,20 @@ void colour_image_masking::configuring()
 {
     const service::config_t config = this->get_config().get_child("config.<xmlattr>");
 
-    m_scale_factor          = config.get<float>("scaleFactor", 1.0);
-    m_noise                 = config.get<double>("noise", 0.0);
-    m_foreground_components = config.get<int>("foregroundComponents", 5);
-    m_background_components = config.get<int>("backgroundComponents", 5);
+    m_scale_factor = config.get<float>("scaleFactor", 1.0);
 
     SIGHT_ASSERT(
         "Scale factor must be between 0 and 1. Current value: " << m_scale_factor,
         (m_scale_factor > 0 && m_scale_factor <= 1)
     );
     SIGHT_ASSERT(
-        "The number of background components must be greater than 0. Current value: " << m_background_components,
-        m_background_components > 0
+        "The number of background components must be greater than 0. Current value: " << *m_background_components,
+        *m_background_components > 0
     );
-    SIGHT_ASSERT("Noise value must be >= 0. Current value:" << m_noise, m_noise >= 0);
+    SIGHT_ASSERT("Noise value must be >= 0. Current value:" << *m_noise, *m_noise >= 0);
     SIGHT_ASSERT(
-        "The number of foreground components must be greater than 0. Current value: " << m_foreground_components,
-        m_foreground_components > 0
+        "The number of foreground components must be greater than 0. Current value: " << *m_foreground_components,
+        *m_foreground_components > 0
     );
 
     m_lower_color = cv::Scalar(0, 0, 0);
@@ -119,6 +115,7 @@ void colour_image_masking::starting()
     m_masker->set_threshold(1.);
 
     m_last_video_timestamp = 0.;
+    apply_config_threshold();
 }
 
 // ------------------------------------------------------------------------------
@@ -135,6 +132,8 @@ service::connections_t colour_image_masking::auto_connections() const
 
     connections.push(VIDEO_TL_KEY, data::timeline::signals::PUSHED, service::slots::UPDATE);
     connections.push(VIDEO_TL_KEY, data::timeline::signals::CLEARED, slots::CLEAR_MASKTL);
+
+    connections.push(m_threshold, sight::data::signals::MODIFIED, "apply_config_threshold");
 
     return connections;
 }
@@ -272,7 +271,7 @@ void colour_image_masking::set_background()
     cv::erode(mask_cv, mask_cv, element_erode);
 
     // Learn background color model
-    m_masker->train_background_model(video_cv, mask_cv, static_cast<unsigned>(m_background_components));
+    m_masker->train_background_model(video_cv, mask_cv, static_cast<unsigned>(*m_background_components));
 
     // Initialize the mask timeline
     const auto video_mask_tl = m_video_mask_tl.lock();
@@ -332,8 +331,8 @@ void colour_image_masking::set_foreground()
     m_masker->train_foreground_model(
         video_cv,
         open_foreground_mask,
-        static_cast<unsigned>(m_foreground_components),
-        m_noise
+        static_cast<unsigned>(*m_foreground_components),
+        *m_noise
     );
 }
 
@@ -349,24 +348,9 @@ void colour_image_masking::set_threshold(int _threshold)
 
 // ------------------------------------------------------------------------------
 
-void colour_image_masking::set_noise_level(double _noise_level)
-{
-    m_noise = _noise_level;
-}
-
 // ------------------------------------------------------------------------------
 
-void colour_image_masking::set_background_components(int _bg_components)
-{
-    m_background_components = _bg_components;
-}
-
 // ------------------------------------------------------------------------------
-
-void colour_image_masking::set_foreground_components(int _fg_components)
-{
-    m_foreground_components = _fg_components;
-}
 
 // ------------------------------------------------------------------------------
 
@@ -379,5 +363,18 @@ void colour_image_masking::clear_mask_tl()
 }
 
 // ------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+
+void colour_image_masking::apply_config_threshold()
+{
+    if(const auto setting = m_threshold.lock())
+    {
+        const auto value = setting->value();
+        this->set_threshold(static_cast<int>(value));
+    }
+}
+
+//------------------------------------------------------------------------------
 
 } // namespace sight::module::filter::vision

@@ -37,8 +37,6 @@ grabber::grabber() noexcept :
     new_signal<signals::camera_stopped_t>(signals::CAMERA_STOPPED);
     new_signal<signals::camera_paused_t>(signals::CAMERA_PAUSED);
     new_signal<signals::frame_presented_t>(signals::FRAME_PRESENTED);
-
-    new_signal<signals::parameter_changed_t>(signals::PARAMETER_CHANGED);
     new_signal<signals::fps_changed_t>(signals::FPS_CHANGED);
 
     new_slot(slots::START_CAMERA, &grabber::start_camera, this);
@@ -50,8 +48,6 @@ grabber::grabber() noexcept :
     new_slot(slots::PREVIOUS_IMAGE, &grabber::previous_image, this);
     new_slot(slots::NEXT_IMAGE, &grabber::next_image, this);
     new_slot(slots::SET_STEP, &grabber::set_step, this);
-
-    new_slot(slots::SET_PARAMETER, &grabber::set_parameter, this);
 
     new_slot(slots::REQUEST_SETTINGS, &grabber::request_settings, this);
     new_slot(slots::OPTIMIZE, &grabber::optimize, this);
@@ -91,15 +87,9 @@ void grabber::next_image()
 
 // ----------------------------------------------------------------------------
 
-void grabber::set_step(int /*step*/, std::string /*key*/)
+void grabber::set_step(int /*step*/)
 {
     SIGHT_WARN("Frame by frame mode not implemented for this grabber type.");
-}
-
-//-----------------------------------------------------------------------------
-
-void grabber::set_parameter(ui::parameter_t /*unused*/, std::string /*unused*/)
-{
 }
 
 // ----------------------------------------------------------------------------

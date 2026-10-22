@@ -63,22 +63,11 @@ public:
 
     SIGHT_DECLARE_SERVICE(model_series_reader, sight::io::service::reader);
 
-    /**
-     * @brief Constructor. Do nothing.
-     */
     model_series_reader() noexcept;
-
     ~model_series_reader() noexcept override = default;
 
-    /**
-     * @brief Configure the mesh path.
-     *
-     * This method is used to find the file path  using a file selector.
-     */
-    void open_location_dialog() override;
-
     sight::io::service::path_type_t get_path_type() const override;
-    std::vector<std::pair<std::string, std::string> > get_supported_extensions() override;
+    std::vector<std::pair<std::string, std::string> > get_supported_extensions() const override;
 
 protected:
 

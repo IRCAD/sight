@@ -27,6 +27,11 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
+            <object uid="threshold_slider_srv_threshold" type="sight::data::integer" value="1" />
+            <object uid="noise_level_srv_noise_level" type="sight::data::real" value="30" />
+            <object uid="bg_components_srv_bg_components" type="sight::data::integer" value="5" />
+            <object uid="fg_components_srv_fg_components" type="sight::data::integer" value="5" />
+
             <service uid="mainFrame" type="sight::module::ui::frame">
                 <gui>
                     <frame>
@@ -307,28 +312,20 @@
                 <output extrinsic="${extrinsic}" index="1" />
             </service>
 
-            <service uid="thresholdSliderSrv" type="sight::module::ui::qt::parameters">
-                <parameters>
-                    <param type="int" name="Threshold" key="threshold" defaultValue="1" min="-5" max="5" />
-                </parameters>
+            <service uid="thresholdSliderSrv" type="sight::module::ui::qt::settings">
+                <item data="${threshold_slider_srv_threshold}" name="Threshold" key="threshold" min="-5" max="5" widget="slider" />
             </service>
 
-            <service uid="noiseLevelSrv" type="sight::module::ui::qt::parameters">
-                <parameters>
-                    <param type="double" name="Noise level" key="noiseLevel" defaultValue="30" min="0" max="200" />
-                </parameters>
+            <service uid="noiseLevelSrv" type="sight::module::ui::qt::settings">
+                <item data="${noise_level_srv_noise_level}" name="Noise level" key="noiseLevel" min="0" max="200" />
             </service>
 
-            <service uid="bgComponentsSrv" type="sight::module::ui::qt::parameters">
-                <parameters>
-                    <param type="int" name="Background components" key="bgComponents" defaultValue="5" min="1" max="10" widget="spin" />
-                </parameters>
+            <service uid="bgComponentsSrv" type="sight::module::ui::qt::settings">
+                <item data="${bg_components_srv_bg_components}" name="Background components" key="bgComponents" min="1" max="10" widget="spin" />
             </service>
 
-            <service uid="fgComponentsSrv" type="sight::module::ui::qt::parameters">
-                <parameters>
-                    <param type="int" name="Foreground components" key="fgComponents" defaultValue="5" min="1" max="10" widget="spin" />
-                </parameters>
+            <service uid="fgComponentsSrv" type="sight::module::ui::qt::settings">
+                <item data="${fg_components_srv_fg_components}" name="Foreground components" key="fgComponents" min="1" max="10" widget="spin" />
             </service>
 
             <!-- GUI to select camera (device, file, or stream) -->
@@ -380,7 +377,13 @@
                 <in key="videoTL" uid="frameTL" auto_connect="false" />
                 <in key="mask" uid="backgroundMask" />
                 <inout key="videoMaskTL" uid="maskTL" />
-                <config scaleFactor="1.0" noise="30" foregroundComponents="5" backgroundComponents="5" />
+                <config
+                    scaleFactor="1.0"
+                    threshold="${threshold_slider_srv_threshold}"
+                    noise_level="${noise_level_srv_noise_level}"
+                    background_components="${bg_components_srv_bg_components}"
+                    foreground_components="${fg_components_srv_fg_components}"
+                />
                 <HSV>
                     <!-- Range for the blue gloves -->
                     <lower>35,0,0</lower>
@@ -481,26 +484,6 @@
             <connect>
                 <signal>camera_set/added_camera</signal>
                 <slot>cameraExtractorSrv/update</slot>
-            </connect>
-
-            <connect>
-                <signal>thresholdSliderSrv/int_changed</signal>
-                <slot>extractForegroundSrv/set_threshold</slot>
-            </connect>
-
-            <connect>
-                <signal>noiseLevelSrv/double_changed</signal>
-                <slot>extractForegroundSrv/set_noise_level</slot>
-            </connect>
-
-            <connect>
-                <signal>bgComponentsSrv/int_changed</signal>
-                <slot>extractForegroundSrv/set_background_components</slot>
-            </connect>
-
-            <connect>
-                <signal>fgComponentsSrv/int_changed</signal>
-                <slot>extractForegroundSrv/set_foreground_components</slot>
             </connect>
 
             <connect>

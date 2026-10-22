@@ -48,7 +48,8 @@ service::connections_t negato::auto_connections() const
         {m_tf, data::transfer_function::signals::POINTS_MODIFIED, slots::UPDATE_TF},
         {m_tf, data::transfer_function::signals::WINDOWING_MODIFIED, slots::UPDATE_TF},
         {m_mask, data::signals::MODIFIED, slots::UPDATE_MASK},
-        {m_mask, data::image::signals::BUFFER_MODIFIED, slots::UPDATE_MASK}
+        {m_mask, data::image::signals::BUFFER_MODIFIED, slots::UPDATE_MASK},
+        {m_transparency, data::signals::MODIFIED, "apply_transparency"}
     };
     return connections + adaptor::auto_connections();
 }
@@ -57,6 +58,7 @@ service::connections_t negato::auto_connections() const
 
 negato::negato() noexcept
 {
+    new_slot("apply_transparency", &negato::apply_transparency, this);
     // Auto-connected slots
     new_slot(slots::UPDATE_IMAGE, [this](){lazy_update(update_flags::image);});
     new_slot(slots::UPDATE_IMAGE_BUFFER, [this](){lazy_update(update_flags::image_buffer);});
@@ -322,6 +324,7 @@ void negato::update_image(bool _new)
             {
                 plane.first->update(plane.second, spacing, this->priority());
                 plane.first->set_query_flags(m_query_flags);
+                plane.first->set_entity_opacity(1.F - static_cast<float>(*m_transparency));
                 SIGHT_ERROR_IF(
                     "Priority is too high, should be less than 65535",
                     *m_priority >= 0xFFFF
@@ -466,5 +469,20 @@ void negato::update_windowing(double _dw, double _dl)
 }
 
 //-----------------------------------------------------------------------------
+
+void negato::apply_transparency()
+{
+    this->render_service()->make_current();
+    const float opacity = 1.F - static_cast<float>(*m_transparency);
+    for(const auto& plane : m_planes)
+    {
+        if(plane.first)
+        {
+            plane.first->set_entity_opacity(opacity);
+        }
+    }
+
+    this->request_render();
+}
 
 } // namespace sight::module::viz::scene3d::adaptor.

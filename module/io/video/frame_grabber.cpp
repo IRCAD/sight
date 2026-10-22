@@ -929,32 +929,12 @@ void frame_grabber::previous_image()
     }
 }
 
-//-----------------------------------------------------------------------------
-
-void frame_grabber::set_parameter(ui::parameter_t _value, std::string _key)
-{
-    if(_key == "step")
-    {
-        const int step = std::get<int>(_value);
-        SIGHT_ASSERT("Needed step value (" << step << ") should be > 0.", step > 0);
-        // Save the changed step value
-        m_step_changed = static_cast<std::uint64_t>(step);
-    }
-    else if(_key == "loop")
-    {
-        m_loop_video = std::get<bool>(_value);
-    }
-    else
-    {
-        SIGHT_WARN("Only 'step' and 'loop' keys are supported (current key value is : '" << _key << "').");
-    }
-}
-
 //------------------------------------------------------------------------------
 
-void frame_grabber::set_step(int _step, std::string _key)
+void frame_grabber::set_step(int _step)
 {
-    this->set_parameter(_step, _key);
+    SIGHT_ASSERT("Needed step value (" << _step << ") should be > 0.", _step > 0);
+    m_step_changed = static_cast<std::uint64_t>(_step);
 }
 
 //------------------------------------------------------------------------------

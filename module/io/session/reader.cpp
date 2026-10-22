@@ -25,7 +25,6 @@
 
 #include <core/crypto/password_keeper.hpp>
 #include <core/crypto/secure_string.hpp>
-#include <core/location/single_folder.hpp>
 #include <core/notification/observer.hpp>
 
 #include <io/session/session_reader.hpp>
@@ -33,7 +32,6 @@
 
 #include <ui/__/cursor.hpp>
 #include <ui/__/dialog/input.hpp>
-#include <ui/__/dialog/location.hpp>
 #include <ui/__/dialog/message.hpp>
 
 namespace sight::module::io::session
@@ -281,39 +279,6 @@ void reader::updating()
 
         // Signal that we failed to read this file
         this->async_emit(signals::SESSION_LOADING_FAILED, filepath);
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void reader::open_location_dialog()
-{
-    static auto default_location = std::make_shared<core::location::single_folder>();
-
-    sight::ui::dialog::location location_dialog;
-    location_dialog.set_title(*m_window_title);
-    location_dialog.set_default_location(default_location);
-    location_dialog.set_option(ui::dialog::location::read);
-    location_dialog.set_option(ui::dialog::location::file_must_exist);
-    location_dialog.set_type(ui::dialog::location::single_file);
-    location_dialog.add_filter(m_extension_description, "*" + m_extension_name);
-
-    // Show the dialog
-    const auto result = std::dynamic_pointer_cast<core::location::single_file>(location_dialog.show());
-
-    if(result)
-    {
-        const auto& filepath = result->get_file();
-        set_file(filepath);
-        m_extension_name = location_dialog.get_selected_extensions().front();
-
-        // Save default location for later use
-        default_location->set_folder(filepath.parent_path());
-        location_dialog.save_default_location(default_location);
-    }
-    else
-    {
-        clear_locations();
     }
 }
 

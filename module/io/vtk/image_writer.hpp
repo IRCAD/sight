@@ -76,14 +76,6 @@ public:
     SIGHT_DECLARE_SERVICE(image_writer, sight::io::service::writer);
 
     /**
-     * @brief Configure the image path.
-     *
-     * This method is used to find
-     * the file path  using a file selector.
-     */
-    void open_location_dialog() override;
-
-    /**
      * @brief Save a VTK image.
      * @param[in] _img_file std::filesystem::path.
      * @param[in] _image std::shared_ptr< data::image >.
@@ -100,7 +92,7 @@ public:
     );
 
     sight::io::service::path_type_t get_path_type() const override;
-    std::vector<std::pair<std::string, std::string> > get_supported_extensions() override;
+    std::vector<std::pair<std::string, std::string> > get_supported_extensions() const override;
 
 protected:
 

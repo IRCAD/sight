@@ -26,8 +26,6 @@
 
 #include "ui/__/dialog/location_base.hpp"
 
-#include <core/base.hpp>
-
 namespace sight::ui::dialog
 {
 
@@ -74,6 +72,9 @@ public:
 
     /// Returns the title for the dialog
     SIGHT_UI_API const std::string& get_title() override;
+
+    /// Set the key used to store the default location in preferences.
+    SIGHT_UI_API void set_preferences_key(const std::string& _key) override;
 
     /// Set the initial location for the dialog
     SIGHT_UI_API void set_default_location(core::location::base::sptr _loc) override;

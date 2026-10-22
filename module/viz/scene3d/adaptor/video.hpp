@@ -22,6 +22,8 @@
 
 #pragma once
 
+#include <data/boolean.hpp>
+
 #include <data/color.hpp>
 #include <data/point_list.hpp>
 
@@ -29,8 +31,6 @@
 #include <viz/scene3d/material/generic.hpp>
 #include <viz/scene3d/texture.hpp>
 #include <viz/scene3d/transfer_function.hpp>
-
-#include <OGRE/OgreTexture.h>
 
 namespace sight::module::viz::scene3d::adaptor
 {
@@ -45,8 +45,6 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b hide(): hides the video.
  * - \b update_tf(): updates the displayed transfer function.
  * - \b update_pl(): updates the displayed point list.
- * - \b set_filtering(bool): toggles between nearest (false) and bilinear (true) filtering.
- * - \b scale(bool): displays the video at its original size (false) or scales the video to the viewport size (true).
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -83,6 +81,12 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b fontSize (optional, unsigned int, default=16): font size in points.
  *
  * - \b config.color [sight::data::color] (optional, default=#FFFFFFFF): color of the texture in hexadecimal.
+ *
+ * @subsection ConfigBindings Configuration data bindings
+ * Configuration inputs accept literals or shared data objects.
+ * Default values apply when no configuration value is provided.
+ * - \b config.scaling [sight::data::boolean]: scaling.
+ * - \b config.filtering [sight::data::boolean]: filtering.
  */
 class video final : public sight::viz::scene3d::adaptor
 {
@@ -93,12 +97,10 @@ public:
 
     struct slots
     {
-        inline static const slot_key_t UPDATE_IMAGE  = "update_image";
-        inline static const slot_key_t UPDATE_TF     = "update_tf";
-        inline static const slot_key_t UPDATE_PL     = "update_pl";
-        inline static const slot_key_t UPDATE_COLOR  = "update_color";
-        inline static const slot_key_t SET_FILTERING = "set_filtering";
-        inline static const slot_key_t SCALE         = "scale";
+        inline static const slot_key_t UPDATE_IMAGE = "update_image";
+        inline static const slot_key_t UPDATE_TF    = "update_tf";
+        inline static const slot_key_t UPDATE_PL    = "update_pl";
+        inline static const slot_key_t UPDATE_COLOR = "update_color";
     };
 
     /// Creates the adaptor an initialize slots.
@@ -141,6 +143,10 @@ protected:
 
 private:
 
+    /// Apply settings from bound data at startup and after external modifications.
+    void apply_config_scaling();
+    void apply_config_filtering();
+
     ///@brief Internal wrapper holding config defines.
     struct config
     {
@@ -164,12 +170,6 @@ private:
 
     /// SLOTS: updates 2D coordinates of the pointlist from image space (bottom left) to video space (center center).
     void update_pl();
-
-    /// SLOTS: whether to use or not bilinear filtering
-    void set_filtering(bool /*filtering*/);
-
-    /// SLOTS: whether to scale or not the video to occupy the whole viewport
-    void scale(bool /*value*/);
 
     /// SLOTS: updates the color of the video.
     void update_color();
@@ -228,12 +228,6 @@ private:
     /// Defines the attached texture adaptor UID used by the point list.
     std::string m_texture_name;
 
-    /// Defines whether of not the video texture will use bilinear filtering
-    bool m_filtering {false};
-
-    /// Defines whether the video is scaled to the viewport or displayed at its original size.
-    bool m_scaling {true};
-
     /// Whether an update to the current plane is required due to a scaling change or not
     bool m_force_plane_update {false};
 
@@ -268,11 +262,17 @@ private:
         point_list
     };
 
-    sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, "data.image"};
-    sight::data::ptr<sight::data::transfer_function, sight::data::access::in> m_tf {this, "data.tf", true};
-    sight::data::ptr<sight::data::point_list, sight::data::access::in> m_pl {this, "data.pointList", true};
+    ptr_in<sight::data::image> m_image {this, "data.image"};
+    ptr_in<sight::data::transfer_function> m_tf {this, "data.tf", true};
+    ptr_in<sight::data::point_list> m_pl {this, "data.pointList", true};
 
-    sight::data::ptr<sight::data::color, sight::data::access::in> m_color {this, "config.color", {1.0, 1.0, 1.0, 1.0}};
+    ptr_in<sight::data::color> m_color {this, "config.color", {1.0, 1.0, 1.0, 1.0}};
+
+    /// Typed config.scaling configuration binding.
+    ptr_in<sight::data::boolean> m_scaling {this, "config.scaling", true};
+
+    /// Typed config.filtering configuration binding.
+    ptr_in<sight::data::boolean> m_filtering {this, "config.filtering", false};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor

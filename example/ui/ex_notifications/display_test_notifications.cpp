@@ -38,6 +38,12 @@ namespace ex_notifications
 display_test_notifications::display_test_notifications() noexcept :
     has_notifications(has_signals::signals())
 {
+    new_slot("apply_config_sound", &display_test_notifications::apply_config_sound, this);
+    new_slot("apply_config_duration", &display_test_notifications::apply_config_duration, this);
+    new_slot("apply_config_type", &display_test_notifications::apply_config_type, this);
+    new_slot("apply_config_position", &display_test_notifications::apply_config_position, this);
+    new_slot("apply_config_channel", &display_test_notifications::apply_config_channel, this);
+
     new_slot(slots::SET_ENUM_PARAMETER, &display_test_notifications::set_enum_parameter, this);
     new_slot(slots::SET_BOOL_PARAMETER, &display_test_notifications::set_bool_parameter, this);
     new_slot(slots::CLOSE_CHANNEL1, &display_test_notifications::close_channel1, this);
@@ -162,15 +168,7 @@ void display_test_notifications::set_enum_parameter(std::string _val, std::strin
 
 void display_test_notifications::set_bool_parameter(bool _val, std::string _key)
 {
-    if(_key == "usenotifier")
-    {
-        m_usenotifier = _val;
-    }
-    else if(_key == "reachMaxCharacters")
-    {
-        m_reach_max_characters = _val;
-    }
-    else if(_key == "sound")
+    if(_key == "sound")
     {
         m_notification.m_sound = _val;
     }
@@ -253,14 +251,14 @@ void display_test_notifications::updating()
         : "sight::module::ui::icons/information.svg"
     );
 
-    if(m_usenotifier)
+    if(*m_usenotifier)
     {
         // Mode 1: You use the notifier service that will display for you the notifications, you need to emit the
         // proper signal.
         // Notification will always be displayed at the same place,
         // and will be queued if several notifications are displayed at the same time.
 
-        if(m_reach_max_characters)
+        if(*m_reach_max_characters)
         {
             // cspell: disable
             message = "This notification "
@@ -383,6 +381,11 @@ void display_test_notifications::updating()
 void display_test_notifications::starting()
 {
     this->sight::ui::action::action_service_starting();
+    apply_config_sound();
+    apply_config_duration();
+    apply_config_type();
+    apply_config_position();
+    apply_config_channel();
 }
 
 //------------------------------------------------------------------------------
@@ -393,5 +396,71 @@ void display_test_notifications::stopping()
 }
 
 //------------------------------------------------------------------------------
+
+sight::service::connections_t display_test_notifications::auto_connections() const
+{
+    auto connections = sight::ui::action::auto_connections();
+    connections.push(m_config_sound, sight::data::signals::MODIFIED, "apply_config_sound");
+    connections.push(m_config_duration, sight::data::signals::MODIFIED, "apply_config_duration");
+    connections.push(m_config_type, sight::data::signals::MODIFIED, "apply_config_type");
+    connections.push(m_config_position, sight::data::signals::MODIFIED, "apply_config_position");
+    connections.push(m_config_channel, sight::data::signals::MODIFIED, "apply_config_channel");
+    return connections;
+}
+
+//------------------------------------------------------------------------------
+
+void display_test_notifications::apply_config_sound()
+{
+    if(const auto setting = m_config_sound.lock())
+    {
+        const auto value = setting->value();
+        this->set_bool_parameter(value, "sound");
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void display_test_notifications::apply_config_duration()
+{
+    if(const auto setting = m_config_duration.lock())
+    {
+        const auto value = setting->value();
+        this->set_enum_parameter(value, "duration");
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void display_test_notifications::apply_config_type()
+{
+    if(const auto setting = m_config_type.lock())
+    {
+        const auto value = setting->value();
+        this->set_enum_parameter(value, "type");
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void display_test_notifications::apply_config_position()
+{
+    if(const auto setting = m_config_position.lock())
+    {
+        const auto value = setting->value();
+        this->set_enum_parameter(value, "position");
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void display_test_notifications::apply_config_channel()
+{
+    if(const auto setting = m_config_channel.lock())
+    {
+        const auto value = setting->value();
+        this->set_enum_parameter(value, "channel");
+    }
+}
 
 } // namespace ex_notifications

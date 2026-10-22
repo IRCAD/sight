@@ -61,6 +61,13 @@ public:
     /// Configure using GUI.
     void open_location_dialog() override;
 
+    //------------------------------------------------------------------------------
+
+    std::vector<std::pair<std::string, std::string> > get_supported_extensions() const override
+    {
+        return {{"NIfTI (.nii)", "*.nii *.nii.gz"}, {"Inr (.inr.gz)", "*.inr.gz"}, {"JPEG", "*.jpg *.jpeg"}};
+    }
+
     /// Return managed file type, here FOLDER
     sight::io::service::path_type_t get_path_type() const override;
 

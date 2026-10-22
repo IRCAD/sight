@@ -44,12 +44,13 @@ static const std::string VIDEO_WITH_TF_INT_MATERIAL_NAME = "VideoWithTF_Int";
 
 video::video() noexcept
 {
+    new_slot("apply_config_scaling", &video::apply_config_scaling, this);
+    new_slot("apply_config_filtering", &video::apply_config_filtering, this);
+
     new_slot(slots::UPDATE_IMAGE, [this](){lazy_update(update_flags::image);});
     new_slot(slots::UPDATE_TF, [this](){lazy_update(update_flags::tf);});
     new_slot(slots::UPDATE_PL, [this](){lazy_update(update_flags::point_list);});
-    new_slot(slots::SET_FILTERING, &video::set_filtering, this);
     new_slot(slots::UPDATE_COLOR, &video::update_color, this);
-    new_slot(slots::SCALE, &video::scale, this);
 }
 
 //------------------------------------------------------------------------------
@@ -62,8 +63,6 @@ void video::configuring()
 
     m_material_template_name = config.get<std::string>(config::MATERIAL_TEMPLATE, m_material_template_name);
     m_texture_name           = config.get<std::string>(config::TEXTURE_NAME, m_texture_name);
-    m_filtering              = config.get<bool>(config::FILTERING, m_filtering);
-    m_scaling                = config.get<bool>(config::SCALING, m_scaling);
     m_radius                 = config.get<std::string>(config::RADIUS, m_radius);
     m_display_label          = config.get<std::string>(config::DISPLAY_LABEL, m_display_label);
     m_label_color            = config.get<std::string>(config::LABEL_COLOR, m_label_color);
@@ -163,6 +162,8 @@ void video::starting()
     }
 
     this->apply_visibility();
+    apply_config_scaling();
+    apply_config_filtering();
 }
 
 //-----------------------------------------------------------------------------
@@ -180,6 +181,9 @@ service::connections_t video::auto_connections() const
     connections.push(m_pl, data::signals::MODIFIED, slots::UPDATE_PL);
     connections.push(m_pl, data::point_list::signals::POINT_ADDED, slots::UPDATE_PL);
     connections.push(m_pl, data::point_list::signals::POINT_REMOVED, slots::UPDATE_PL);
+
+    connections.push(m_scaling, sight::data::signals::MODIFIED, "apply_config_scaling");
+    connections.push(m_filtering, sight::data::signals::MODIFIED, "apply_config_filtering");
 
     return connections;
 }
@@ -260,12 +264,12 @@ void video::updating()
         if(!m_is_texture_init || size[0] != m_previous_width || size[1] != m_previous_height
            // If scaling is disabled and one of the viewport coordinate is modified
            // Then we need to trigger an update of the viewport displaying the texture
-           || (!m_scaling
+           || (!*m_scaling
                && (viewport->getActualWidth() != m_previous_viewport_width
                    || viewport->getActualHeight() != m_previous_viewport_height))
            || m_force_plane_update)
         {
-            m_material->set_texture("image", m_texture->get(), m_filtering ? Ogre::TFO_BILINEAR : Ogre::TFO_NONE);
+            m_material->set_texture("image", m_texture->get(), *m_filtering ? Ogre::TFO_BILINEAR : Ogre::TFO_NONE);
 
             this->clear_entity();
 
@@ -308,7 +312,7 @@ void video::updating()
             SIGHT_ASSERT("Default camera not found", cam);
             cam->setProjectionType(Ogre::PT_ORTHOGRAPHIC);
 
-            if(m_scaling)
+            if(*m_scaling)
             {
                 cam->setOrthoWindowHeight(static_cast<Ogre::Real>(size[1]));
             }
@@ -437,24 +441,9 @@ void video::clear_entity()
 
 //------------------------------------------------------------------------------
 
-void video::set_filtering(bool _filtering)
-{
-    m_filtering = _filtering;
-
-    // Only allow updating when the texture has been initialized
-    // Otherwise, we might end up in cases where the slot is called before the
-    // initialization, thus crashing the app
-    if(m_is_texture_init)
-    {
-        this->update_texture_filtering();
-    }
-}
-
-//------------------------------------------------------------------------------
-
 void video::update_texture_filtering()
 {
-    m_material->set_texture("image", m_texture->get(), m_filtering ? Ogre::TFO_BILINEAR : Ogre::TFO_NONE);
+    m_material->set_texture("image", m_texture->get(), *m_filtering ? Ogre::TFO_BILINEAR : Ogre::TFO_NONE);
 }
 
 //------------------------------------------------------------------------------
@@ -470,17 +459,22 @@ void video::update_color()
 
 //------------------------------------------------------------------------------
 
-void video::scale(bool _value)
+void video::apply_config_scaling()
 {
-    m_scaling            = _value;
     m_force_plane_update = true;
-
-    // Only allow updating when the texture has been initialized
-    // Otherwise, we might end up in cases where the slot is called before the
-    // initialization, thus crashing the app
     if(m_is_texture_init)
     {
         this->updating();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void video::apply_config_filtering()
+{
+    if(m_is_texture_init)
+    {
+        this->update_texture_filtering();
     }
 }
 

@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <service/macros.hpp>
+#include <data/real.hpp>
 
 #include <viz/scene2d/adaptor.hpp>
 
@@ -54,7 +54,12 @@ namespace sight::module::viz::scene2d::adaptor
  *    - \b interaction (optional, default=true): enable or disable mouse interaction with the square
  *
  * @section Slots Slots
- * -\b set_double_parameter(double, std::string): set the double parameters 'x' and 'y'
+ *
+ * @subsection ConfigBindings Configuration data bindings
+ * Configuration inputs accept literals or shared data objects.
+ * Default values apply when no configuration value is provided.
+ * - \b config.x [sight::data::real]: x.
+ * - \b config.y [sight::data::real]: y.
  */
 class square : public sight::viz::scene2d::adaptor
 {
@@ -62,17 +67,14 @@ public:
 
     SIGHT_DECLARE_SERVICE(square, sight::viz::scene2d::adaptor);
 
-    struct slots
-    {
-        static inline const slot_key_t SET_DOUBLE_PARAMETER = "set_double_parameter";
-    };
-
     square() noexcept;
     ~square() noexcept override = default;
 
     void process_interaction(sight::viz::scene2d::data::event& _event) override;
 
 protected:
+
+    sight::service::connections_t auto_connections() const override;
 
     void configuring() override;
     void starting() override;
@@ -88,7 +90,10 @@ protected:
 
 private:
 
-    sight::viz::scene2d::vec2d_t m_coord {};
+    /// Apply settings from bound data at startup and after external modifications.
+    void apply_config_x();
+    void apply_config_y();
+
     std::uint32_t m_size {0};
     QColor m_color;
     QGraphicsItemGroup* m_layer {nullptr};
@@ -98,7 +103,12 @@ private:
     bool m_point_is_captured {false};
     bool m_auto_refresh {true};
     bool m_interaction {true};
-    void set_double_parameter(double _val, std::string _key);
+
+    /// Typed config.x configuration binding.
+    ptr_in<sight::data::real> m_x {this, "config.x", 0.};
+
+    /// Typed config.y configuration binding.
+    ptr_in<sight::data::real> m_y {this, "config.y", 0.};
 };
 
 } // namespace sight::module::viz::scene2d::adaptor

@@ -63,10 +63,11 @@ sight::io::service::path_type_t model_series_writer::get_path_type() const
 
 void model_series_writer::open_location_dialog()
 {
-    static auto default_directory = std::make_shared<core::location::single_folder>();
+    auto default_directory = std::make_shared<core::location::single_folder>();
 
     sight::ui::dialog::location dialog;
     dialog.set_title(*m_window_title);
+    dialog.set_preferences_key(this->get_classname());
     dialog.set_default_location(default_directory);
     dialog.set_option(ui::dialog::location::write);
     dialog.set_type(ui::dialog::location::folder);
@@ -104,11 +105,10 @@ void model_series_writer::open_location_dialog()
             // Ask user to select extension
             // Create a map with description that will be displayed to user, and extensions.
             std::map<std::string, std::string> description_to_extension;
-            description_to_extension["VTK Legacy (*.vtk)"]                = ".vtk";
-            description_to_extension["VTK Polydata (*.vtp"]               = ".vtp";
-            description_to_extension["OBJ Wavefront Object (*.obj)"]      = ".obj";
-            description_to_extension["PLY Polygonal File Format (*.ply)"] = ".ply";
-            description_to_extension["STL StereoLithograpy (*.stl)"]      = ".stl";
+            for(const auto& [description, wildcard] : get_supported_extensions())
+            {
+                description_to_extension[description] = wildcard.substr(1);
+            }
 
             // Fill the descriptions vector with map keys.
             std::vector<std::string> descriptions;

@@ -22,22 +22,17 @@
 
 #include "module/io/matrix/matrix4_trf_writer.hpp"
 
-#include <core/location/single_file.hpp>
-#include <core/location/single_folder.hpp>
-
 #include <data/matrix4.hpp>
 
 #include <io/__/writer/matrix4_writer.hpp>
 
-#include <ui/__/dialog/location.hpp>
-
-#include <filesystem>
 #include <iostream>
 
 namespace sight::module::io::matrix
 {
 
 //-----------------------------------------------------------------------------
+
 matrix4_trf_writer::matrix4_trf_writer() noexcept :
     writer("Choose a file to save a transformation matrix")
 {
@@ -69,31 +64,6 @@ sight::io::service::path_type_t matrix4_trf_writer::get_path_type() const
 void matrix4_trf_writer::configuring()
 {
     sight::io::service::writer::configuring();
-}
-
-//-----------------------------------------------------------------------------
-
-void matrix4_trf_writer::open_location_dialog()
-{
-    static auto default_directory = std::make_shared<core::location::single_folder>();
-
-    sight::ui::dialog::location dialog_file;
-    dialog_file.set_title(*m_window_title);
-    dialog_file.set_default_location(default_directory);
-    dialog_file.add_filter("TRF files", "*.trf");
-    dialog_file.set_option(ui::dialog::location::write);
-
-    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialog_file.show());
-    if(result)
-    {
-        default_directory->set_folder(result->get_file().parent_path());
-        dialog_file.save_default_location(default_directory);
-        this->set_file(result->get_file());
-    }
-    else
-    {
-        this->clear_locations();
-    }
 }
 
 //-----------------------------------------------------------------------------

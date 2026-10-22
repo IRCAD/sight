@@ -142,7 +142,11 @@ public:
     /// Called when the image being rendered is modified.
     SIGHT_VIZ_SCENE3D_API virtual void update_image(data::image::csptr _image, data::transfer_function::csptr _tf) = 0;
 
-    /// @brief Loads the 3D texture onto the GPU.
+    /// @brief Loads the 3D texture onto the GPU
+    /// @warning This will lead to lock the image in reading inside in the resource manager, it is strongly advised to
+    /// NOT lock the image before to avoid a deadlock situation if another thread locks the image in writing.
+    /// Indeed in this case, the first lock succeeds, then comes the write lock, and last the second read lock in the
+    /// resource manager fails.
     SIGHT_VIZ_SCENE3D_API virtual void load_image();
 
     /// @brief Loads the mask onto the GPU.

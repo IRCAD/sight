@@ -86,7 +86,10 @@ inline static void set_minimum_size(QWidget* _widget, const settings::param_widg
 
 //-----------------------------------------------------------------------------
 
-settings::settings() noexcept = default;
+settings::settings() noexcept
+{
+    new_slot("apply_enabled", &settings::apply_enabled, this);
+}
 
 //-----------------------------------------------------------------------------
 
@@ -615,6 +618,7 @@ void settings::starting()
     this->start_listening_joystick();
 
     this->block_signals(false);
+    apply_enabled();
 }
 
 //-----------------------------------------------------------------------------
@@ -686,6 +690,7 @@ void settings::on_depends_changed(QCheckBox* _check_box, QWidget* _widget, bool 
 }
 
 //------------------------------------------------------------------------------
+
 void settings::on_depends_changed(sight::ui::qt::widget::switch_button* _switch_button, QWidget* _widget, bool _reverse)
 {
     if(!_switch_button->isEnabled())
@@ -1937,6 +1942,7 @@ void settings::create_enum_slider_widget(
 }
 
 //-----------------------------------------------------------------------------
+
 void settings::create_tickmarks_widget(
     QBoxLayout* _layout,
     const param_widget& _setup,
@@ -2497,6 +2503,13 @@ void settings::update_range(const std::string& _options, const std::string& _key
             // Otherwise, set the first value as default
             non_linear_slider->set_index(0);
         }
+
+        // The range signal also refreshes the endpoint labels, independently of data notifications.
+        guard.unblock();
+        if(!int_values.empty())
+        {
+            non_linear_slider->range_changed(int_values.front(), int_values.back());
+        }
     }
     else if(auto* const tickmarks = qobject_cast<sight::ui::qt::widget::tickmarks_slider*>(widget);
             tickmarks != nullptr)
@@ -2508,6 +2521,7 @@ void settings::update_range(const std::string& _options, const std::string& _key
 }
 
 //------------------------------------------------------------------------------
+
 void settings::update_tickmarks(sight::ui::qt::widget::tickmarks_slider* const _tickmarks, const std::string& _options)
 {
     QSignalBlocker guard(_tickmarks);
@@ -2788,6 +2802,7 @@ void settings::set_label_minimum_size(QLabel* _label, T _min, T _max, std::uint8
 }
 
 //------------------------------------------------------------------------------
+
 template<>
 void settings::set_parameter<sight::data::boolean>(const bool& _val, std::string _key)
 {
@@ -3405,4 +3420,19 @@ void settings::joystick_axis_direction_event(const sight::io::joystick::axis_dir
 
 //-----------------------------------------------------------------------------
 
-} //namespace sight::module::ui::qt
+service::connections_t settings::auto_connections() const
+{
+    return {{m_enabled, data::signals::MODIFIED, "apply_enabled"}};
+}
+
+//------------------------------------------------------------------------------
+
+void settings::apply_enabled()
+{
+    if(const auto enabled = m_enabled.lock())
+    {
+        this->set_enabled(enabled->value());
+    }
+}
+
+} // namespace sight::module::ui::qt

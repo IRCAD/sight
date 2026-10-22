@@ -326,13 +326,14 @@ void reader::clear()
 
 [[nodiscard]] bool reader::show_location()
 {
-    static auto default_location = std::make_shared<core::location::single_folder>();
+    auto default_location = std::make_shared<core::location::single_folder>();
 
     if(m_dialog_policy == dialog_policy::always
        || (m_dialog_policy == dialog_policy::once && !has_location_defined()))
     {
         sight::ui::dialog::location location_dialog;
         location_dialog.set_title(*m_window_title);
+        location_dialog.set_preferences_key(this->get_classname());
         location_dialog.set_default_location(default_location);
         location_dialog.set_option(sight::ui::dialog::location::read);
         location_dialog.set_type(sight::ui::dialog::location::folder);
@@ -362,7 +363,7 @@ void reader::clear()
 
 //------------------------------------------------------------------------------
 
-std::vector<std::pair<std::string, std::string> > reader::get_supported_extensions()
+std::vector<std::pair<std::string, std::string> > reader::get_supported_extensions() const
 {
     return {{"DICOM files", "*.dcm"}};
 }

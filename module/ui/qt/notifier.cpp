@@ -91,6 +91,9 @@ static const std::map<const std::string, const sight::ui::dialog::notification::
 
 notifier::notifier() noexcept
 {
+    new_slot("apply_config_duration", &notifier::apply_config_duration, this);
+    new_slot("apply_config_position", &notifier::apply_config_position, this);
+
     new_slot(slots::ADD_NOTIFICATION, &notifier::add_notification, this);
     new_slot(slots::CLOSE_NOTIFICATION, &notifier::close_notification, this);
     new_slot(slots::SET_ENUM_PARAMETER, &notifier::set_enum_parameter, this);
@@ -270,6 +273,9 @@ void notifier::starting()
             m_container_where_to_display_notifs = container;
         }
     }
+
+    apply_config_duration();
+    apply_config_position();
 }
 
 //-----------------------------------------------------------------------------
@@ -678,5 +684,35 @@ void notifier::clean_notifications(
 }
 
 //-----------------------------------------------------------------------------
+
+sight::service::connections_t notifier::auto_connections() const
+{
+    auto connections = sight::service::controller::auto_connections();
+    connections.push(m_config_duration, sight::data::signals::MODIFIED, "apply_config_duration");
+    connections.push(m_config_position, sight::data::signals::MODIFIED, "apply_config_position");
+    return connections;
+}
+
+//------------------------------------------------------------------------------
+
+void notifier::apply_config_duration()
+{
+    if(const auto setting = m_config_duration.lock())
+    {
+        const auto value = setting->value();
+        this->set_enum_parameter(value, "duration");
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void notifier::apply_config_position()
+{
+    if(const auto setting = m_config_position.lock())
+    {
+        const auto value = setting->value();
+        this->set_enum_parameter(value, "position");
+    }
+}
 
 } // namespace sight::module::ui::qt

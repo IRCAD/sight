@@ -1095,7 +1095,7 @@ QPoint tester::bottom_of(const QWidget* _widget)
 std::filesystem::path tester::get_image_output_path(const std::string& _scenario_name)
 {
     // Namespaced by binary, since two different `_uit` binaries may share a scenario name (e.g.
-    // "synchronization" in both ex_parameters_uit and ex_settings_uit).
+    // "synchronization" in different GUI test applications).
     static const std::string s_BINARY_NAME = boost::dll::program_location().stem().string();
     auto binary_path                       = s_image_output_path / s_BINARY_NAME;
 

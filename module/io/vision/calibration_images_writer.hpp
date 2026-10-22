@@ -61,12 +61,16 @@ public:
     ~calibration_images_writer() noexcept override = default;
 
     /// Configures the folder path.
-    void open_location_dialog() override;
 
-protected:
+    std::vector<std::pair<std::string, std::string> > get_supported_extensions() const override
+    {
+        return {{"Image files", "*" + m_file_extension}};
+    }
 
     /// Returns the folder path type.
     sight::io::service::path_type_t get_path_type() const override;
+
+protected:
 
     /// Configures the output file format.
     void configuring() override;

@@ -22,9 +22,7 @@
 
 #include "frame_writer.hpp"
 
-#include <core/location/single_folder.hpp>
-
-#include <ui/__/dialog/location.hpp>
+#include <data/frame_tl.hpp>
 
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
@@ -34,9 +32,10 @@
 namespace sight::module::io::video
 {
 
+//------------------------------------------------------------------------------
+
 frame_writer::frame_writer() noexcept :
-    writer("Choose a folder to save the frames"),
-    m_format(".tiff")
+    writer("Choose a folder to save the frames")
 {
     new_slot(slots::SAVE_FRAME, &frame_writer::save_frame, this);
     new_slot(slots::START_RECORD, &frame_writer::start_record, this);
@@ -44,13 +43,7 @@ frame_writer::frame_writer() noexcept :
     new_slot(slots::RECORD, &frame_writer::record, this);
     new_slot(slots::TOGGLE_RECORDING, &frame_writer::toggle_recording, this);
     new_slot(slots::WRITE, &frame_writer::write, this);
-    new_slot(slots::SET_FORMAT_PARAMETER, &frame_writer::set_format_parameter, this);
 }
-
-//------------------------------------------------------------------------------
-
-frame_writer::~frame_writer() noexcept =
-    default;
 
 //------------------------------------------------------------------------------
 
@@ -64,41 +57,12 @@ sight::io::service::path_type_t frame_writer::get_path_type() const
 void frame_writer::configuring()
 {
     sight::io::service::writer::configuring();
-
-    service::config_t config = this->get_config();
-
-    m_format = config.get<std::string>("format", ".tiff");
 }
 
 //------------------------------------------------------------------------------
 
 void frame_writer::starting()
 {
-}
-
-//------------------------------------------------------------------------------
-
-void frame_writer::open_location_dialog()
-{
-    static auto default_directory = std::make_shared<core::location::single_folder>();
-
-    sight::ui::dialog::location dialog_file;
-    dialog_file.set_title(*m_window_title);
-    dialog_file.set_default_location(default_directory);
-    dialog_file.set_option(ui::dialog::location::write);
-    dialog_file.set_type(ui::dialog::location::folder);
-
-    auto result = std::dynamic_pointer_cast<core::location::single_folder>(dialog_file.show());
-    if(result)
-    {
-        this->set_folder(result->get_folder());
-        default_directory->set_folder(result->get_folder().parent_path());
-        dialog_file.save_default_location(default_directory);
-    }
-    else
-    {
-        this->clear_locations();
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -131,6 +95,12 @@ void frame_writer::write(core::clock::type _timestamp)
 {
     if(m_is_recording)
     {
+        SIGHT_THROW_IF(
+            "Unsupported frame format: " + *m_format,
+            *m_format != ".tiff" && *m_format != ".jpeg" && *m_format != ".bmp" && *m_format != ".png"
+            && *m_format != ".jp2"
+        );
+
         // Retrieve dataStruct associated with this service
         const auto locked   = m_data.lock();
         const auto frame_tl = std::dynamic_pointer_cast<const data::frame_tl>(locked.get_shared());
@@ -159,7 +129,7 @@ void frame_writer::write(core::clock::type _timestamp)
                           const_cast<std::uint8_t*>(image_buffer), cv::Mat::AUTO_STEP);
 
             const auto time = static_cast<std::size_t>(_timestamp);
-            const std::string filename("img_" + std::to_string(time) + m_format);
+            const std::string filename("img_" + std::to_string(time) + *m_format);
             const std::filesystem::path path = this->get_folder() / filename;
 
             if(image.type() == CV_8UC3)
@@ -281,38 +251,11 @@ void frame_writer::record(bool _state)
 
 //------------------------------------------------------------------------------
 
-void frame_writer::set_format_parameter(std::string _val, std::string _key)
-{
-    if(_key == "format")
-    {
-        if(_val == ".tiff"
-           || _val == ".jpeg"
-           || _val == ".bmp"
-           || _val == ".png"
-           || _val == ".jp2")
-        {
-            m_format = _val;
-        }
-        else
-        {
-            SIGHT_ERROR("Value : '" + _val + "' is not supported");
-        }
-    }
-    else
-    {
-        SIGHT_ERROR("The slot key : '" + _key + "' is not handled");
-    }
-}
-
-//------------------------------------------------------------------------------
-
 service::connections_t frame_writer::auto_connections() const
 {
     service::connections_t connections;
     connections.push(sight::io::service::WRITER_DATA_KEY, data::timeline::signals::PUSHED, slots::WRITE);
     return connections;
 }
-
-//------------------------------------------------------------------------------
 
 } // namespace sight::module::io::video

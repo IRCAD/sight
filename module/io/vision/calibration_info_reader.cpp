@@ -22,8 +22,6 @@
 
 #include "calibration_info_reader.hpp"
 
-#include <core/location/single_folder.hpp>
-
 #include <data/calibration_info.hpp>
 #include <data/image.hpp>
 
@@ -34,7 +32,6 @@
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
 #include <ui/__/cursor.hpp>
-#include <ui/__/dialog/location.hpp>
 #include <ui/__/dialog/message.hpp>
 
 // cspell:ignore imread
@@ -52,32 +49,6 @@ calibration_info_reader::calibration_info_reader() noexcept :
 sight::io::service::path_type_t calibration_info_reader::get_path_type() const
 {
     return sight::io::service::folder;
-}
-
-//------------------------------------------------------------------------------
-
-void calibration_info_reader::open_location_dialog()
-{
-    static auto default_directory = std::make_shared<core::location::single_folder>();
-
-    sight::ui::dialog::location dialog_file;
-    dialog_file.set_title(*m_window_title);
-    dialog_file.set_default_location(default_directory);
-    dialog_file.set_option(ui::dialog::location::read);
-    dialog_file.set_type(ui::dialog::location::folder);
-
-    auto result = std::dynamic_pointer_cast<core::location::single_folder>(dialog_file.show());
-
-    if(result)
-    {
-        this->set_folder(result->get_folder());
-        default_directory->set_folder(result->get_folder().parent_path());
-        dialog_file.save_default_location(default_directory);
-    }
-    else
-    {
-        this->clear_locations();
-    }
 }
 
 //------------------------------------------------------------------------------

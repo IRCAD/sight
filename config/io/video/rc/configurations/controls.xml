@@ -31,8 +31,6 @@ channels - out (optional):
     cameraStoppedChannelOut:     channel on which a signal is triggered when the camera is stopped.
     loopModeToggleChannelOut:    channel on which a signal is triggered when the camera loop mode is toggled.
 
-    parameterChannelOut(ui::parameter_t, std::string): channel on which a signal is triggered when a named grabber parameter is changed.
-
     videoPositionParameterOut: channel on which a signal is triggered when the position in the video is modified during playing.
     videoDurationParameterOut: channel on which a signal is triggered when the duration of the video is modified.
 
@@ -42,7 +40,6 @@ channels - out (optional):
 
 channels - in (optional):
 
-    parameterChannelIn(ui::parameter_t, std::string) : channel on which a signal is expected to notify the grabber that a named parameter is changed.
     addROICenterChannelIn(sight::data::point):        channel on which a signal is expected to notify the grabber that a new point has been selected.
     removeROICenterChannelIn(sight::data::point):     channel on which a signal is expected to notify the grabber that a point has been remove.
 
@@ -63,8 +60,6 @@ Usage:
             <param name="cameraResumePauseChannelOut" value="..." />
             <param name="cameraStoppedChannelOut" value="..." />
             <param name="loopModeToggleChannelOut" value="..." />
-            <param name="parameterChannelIn" value="..." />
-            <param name="parameterChannelOut" value="..." />
             <param name="configuredFileOut" value="..." />
             <param name="configuredStreamOut" value="..." />
             <param name="configuredDeviceOut" value="..." />
@@ -91,9 +86,6 @@ Usage:
         <param name="cameraResumePauseChannelOut" default="cameraResumePauseChannelOut" />
         <param name="cameraStoppedChannelOut" default="cameraStoppedChannelOut" />
         <param name="loopModeToggleChannelOut" default="loopModeToggleChannelOut" />
-
-        <param name="parameterChannelIn" default="parameterChannelIn" />
-        <param name="parameterChannelOut" default="parameterChannelOut" />
 
         <param name="videoPositionParameterIn" default="videoPositionParameterIn" />
         <param name="videoPositionParameterOut" default="videoPositionParameterOut" />
@@ -259,14 +251,6 @@ Usage:
             <signal>${camera}/modified</signal>
             <slot>startVideoAct/enable</slot>
             <slot>stopVideoAct/update</slot>
-        </connect>
-
-        <connect channel="${parameterChannelIn}">
-            <slot>grabberProxySrv/set_parameter</slot>
-        </connect>
-
-        <connect channel="${parameterChannelOut}">
-            <signal>grabberProxySrv/parameter_changed</signal>
         </connect>
 
         <connect channel="${videoPositionParameterIn}">

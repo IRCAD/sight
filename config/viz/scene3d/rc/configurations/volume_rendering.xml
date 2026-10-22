@@ -14,6 +14,7 @@
         <object uid="model_visibility" type="sight::data::boolean" />
         <object uid="axis_visibility" type="sight::data::boolean" />
         <object uid="volume_parameters" type="sight::data::map" />
+        <object uid="negato_3d_transparency" type="sight::data::real" optional="true" value="0" />
 
         <param name="WID_PARENT" />
         <param name="maximized" default="false" />
@@ -25,7 +26,6 @@
         <channel name="shape_extruder_tool_disabled" />
         <channel name="shape_extruder_undo" />
         <channel name="shape_extruder_reset" />
-        <channel name="negato_3d_transparency" />
         <channel name="ruler_activation" optional="true" />
         <channel name="ruler_deactivation" optional="true" />
         <channel name="flythrough_path_activation" />
@@ -224,7 +224,7 @@
             <data series="${series_set}" />
             <data tf="${volume_tf}" />
             <data transfer_functions="${image_transfer_functions}" />
-            <config representation="negato3d" query_flags="0x40000000" interactive="true" priority="2" visible="${negato_visibility}" depth_bias="0.000001" />
+            <config representation="negato3d" query_flags="0x40000000" interactive="true" priority="2" visible="${negato_visibility}" depth_bias="0.000001" transparency="${negato_3d_transparency}" />
         </service>
 
         <service uid="landmarks_adp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::point">
@@ -365,10 +365,6 @@
 
         <connect channel="${world_coords_landmarks}">
             <slot>image_negato3d_adp/update_slices_from_world</slot>
-        </connect>
-
-        <connect channel="${negato_3d_transparency}">
-            <slot>image_negato3d_adp/set_transparency</slot>
         </connect>
 
         <connect channel="${landmarks_edit_mode}">

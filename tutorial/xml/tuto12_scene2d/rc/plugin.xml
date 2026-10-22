@@ -8,6 +8,10 @@
         <config>
             <!-- ******************************* UI declaration *********************************** -->
 
+            <object uid="spacing_editor_srv_spacing" type="sight::data::dvec2" value="10.;10." />
+            <object uid="depth_range_slider_srv_x" type="sight::data::real" value="0." />
+            <object uid="depth_range_slider_srv_y" type="sight::data::real" value="0." />
+
             <service uid="mainFrame" type="sight::module::ui::frame">
                 <gui>
                     <frame>
@@ -65,11 +69,11 @@
             </service>
 
             <service uid="gridAdp" type="sight::module::viz::scene2d::adaptor::grid2d">
-                <config xMin="-150" xMax="150" yMin="-150" yMax="150" xSpacing="10" ySpacing="10" color="#619647" zValue="2" xAxis="axe1" yAxis="axe1" />
+                <config xMin="-150" xMax="150" yMin="-150" yMax="150" color="#619647" zValue="2" xAxis="axe1" yAxis="axe1" spacing="${spacing_editor_srv_spacing}" />
             </service>
 
             <service uid="square1Adp" type="sight::module::viz::scene2d::adaptor::square">
-                <config x="0" y="0" size="15" color="#D25252" zValue="4" />
+                <config size="15" color="#D25252" zValue="4" x="${depth_range_slider_srv_x}" y="${depth_range_slider_srv_y}" />
             </service>
 
             <service uid="square2Adp" type="sight::module::viz::scene2d::adaptor::square">
@@ -86,30 +90,16 @@
 
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="spacingEditorSrv" type="sight::module::ui::qt::parameters">
-                <parameters>
-                    <param type="double2" name="Grid spacing" key="spacing" defaultValue="10." min="1." max="150." />
-                </parameters>
+            <service uid="spacingEditorSrv" type="sight::module::ui::qt::settings">
+                <item data="${spacing_editor_srv_spacing}" name="Grid spacing" key="spacing" min="1." max="150." />
             </service>
 
-            <service uid="depthRangeSliderSrv" type="sight::module::ui::qt::parameters">
-                <parameters>
-                    <param type="double" widget="slider" name="X" key="X" defaultValue="0." min="-100." max="100." />
-                    <param type="double" widget="slider" name="Y" key="Y" defaultValue="0." min="-100." max="100." />
-                </parameters>
+            <service uid="depthRangeSliderSrv" type="sight::module::ui::qt::settings">
+                <item data="${depth_range_slider_srv_x}" widget="slider" name="X" key="X" min="-100." max="100." />
+                <item data="${depth_range_slider_srv_y}" widget="slider" name="Y" key="Y" min="-100." max="100." />
             </service>
 
             <!-- ******************************* Connections ***************************************** -->
-
-            <connect>
-                <signal>spacingEditorSrv/double2_changed</signal>
-                <slot>gridAdp/set_grid_spacing</slot>
-            </connect>
-
-            <connect>
-                <signal>depthRangeSliderSrv/double_changed</signal>
-                <slot>square1Adp/set_double_parameter</slot>
-            </connect>
         </config>
     </extension>
 </plugin>

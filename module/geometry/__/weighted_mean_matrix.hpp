@@ -69,11 +69,6 @@ public:
 
     SIGHT_DECLARE_SERVICE(weighted_mean_matrix, sight::service::filter)
 
-    struct slots
-    {
-        static inline const slot_key_t SET_PARAMETER = "set_parameter";
-    };
-
     struct config
     {
         static inline const std::string WEIGHT  = "config.weight";
@@ -102,9 +97,6 @@ protected:
 
     /// Connects the input matrix modified to the update slot.
     sight::service::connections_t auto_connections() const final;
-
-    /// Handles parameters (weight, enabled) updates.
-    void set_parameter(sight::ui::parameter_t _value, std::string _key);
 
 private:
 

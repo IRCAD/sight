@@ -24,15 +24,11 @@
 
 #include "module/io/vtk/image_writer.hpp"
 
-#include <core/location/single_file.hpp>
-#include <core/location/single_folder.hpp>
-
 #include <data/image_series.hpp>
 
 #include <io/__/service/writer.hpp>
 
 #include <ui/__/cursor.hpp>
-#include <ui/__/dialog/location.hpp>
 
 namespace sight::module::io::vtk
 {
@@ -49,33 +45,6 @@ image_series_writer::image_series_writer() noexcept :
 sight::io::service::path_type_t image_series_writer::get_path_type() const
 {
     return sight::io::service::file;
-}
-
-//------------------------------------------------------------------------------
-
-void image_series_writer::open_location_dialog()
-{
-    static auto default_directory = std::make_shared<core::location::single_folder>();
-
-    sight::ui::dialog::location dialog_file;
-    dialog_file.set_title(*m_window_title);
-    dialog_file.set_default_location(default_directory);
-    dialog_file.add_filter("Vtk", "*.vtk");
-    dialog_file.add_filter("Vti", "*.vti");
-    dialog_file.add_filter("MetaImage", "*.mhd");
-    dialog_file.set_option(ui::dialog::location::write);
-
-    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialog_file.show());
-    if(result)
-    {
-        default_directory->set_folder(result->get_file().parent_path());
-        dialog_file.save_default_location(default_directory);
-        this->set_file(result->get_file());
-    }
-    else
-    {
-        this->clear_locations();
-    }
 }
 
 //------------------------------------------------------------------------------

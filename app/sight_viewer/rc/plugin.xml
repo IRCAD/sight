@@ -92,6 +92,8 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
+            <object uid="negato_3d_transparency" type="sight::data::real" value="0.0" />
+
             <service uid="main_view" type="sight::module::ui::frame">
                 <gui>
                     <frame>
@@ -624,6 +626,7 @@
                 <object name="model_visibility" uid="${model_visibility}" />
                 <object name="axis_visibility" uid="${axis_visibility}" />
                 <object name="volume_parameters" uid="${volume_parameters}" />
+                <object name="negato_3d_transparency" uid="${negato_3d_transparency}" />
                 <param name="WID_PARENT" value="scene_view" />
                 <channel name="box_widget_reset" uid="box_widget_reset" />
                 <channel name="shape_extruder_enable_tool" uid="shape_extruder_enable_tool" />
@@ -631,7 +634,6 @@
                 <channel name="shape_extruder_undo" uid="shape_extruder_undo" />
                 <channel name="shape_extruder_reset" uid="shape_extruder_reset" />
                 <channel name="world_coords_landmarks" uid="world_coords_landmarks" />
-                <channel name="negato_3d_transparency" uid="negato_3d_transparency" />
                 <channel name="ruler_activation" uid="ruler_activation" />
                 <channel name="ruler_deactivation" uid="ruler_deactivation" />
                 <channel name="flythrough_path_activation" uid="flythrough_path_activation" />
@@ -720,10 +722,8 @@
             </service>
 
             <!-- Transparency for the 3D negato -->
-            <service uid="transparency_parameter_srv" type="sight::module::ui::qt::parameters">
-                <parameters>
-                    <param type="double" name="Negatoscope opacity" key="transparency" defaultValue="0.0" min="0.0" max="1.0" reset="false" widget="slider" />
-                </parameters>
+            <service uid="transparency_parameter_srv" type="sight::module::ui::qt::settings">
+                <item data="${negato_3d_transparency}" name="Negatoscope opacity" key="transparency" min="0.0" max="1.0" reset="false" widget="slider" />
             </service>
 
             <service uid="progress_bar_srv" type="sight::module::ui::qt::progress_bar">
@@ -817,10 +817,6 @@
 
             <connect channel="shape_extruder_undo">
                 <signal>shape_extruder_undo_act/clicked</signal>
-            </connect>
-
-            <connect channel="negato_3d_transparency">
-                <signal>transparency_parameter_srv/double_changed</signal>
             </connect>
 
             <connect>

@@ -23,6 +23,7 @@
 
 #include <io/joystick/interactor.hpp>
 
+#include <data/boolean.hpp>
 #include <data/real.hpp>
 #include <data/string.hpp>
 
@@ -47,10 +48,11 @@ namespace sight::module::ui::qt
  * @brief Generic editor to interact with properties.
  *
  * It allows to setup an editor with several properties.
- * Once the user validates the properties, a signal is sent containing the key and the value.
- * It supports booleans, doubles or integer at the moment.
+ * User changes update the bound data and emit MODIFIED. External data changes refresh the matching widgets.
+ * Supported types include booleans, integers, reals, colors, strings, and two- or three-component numeric vectors.
  *
  * @section Data
+ * - \b config.enabled [sight::data::boolean] (optional): enables or disables the complete editor group.
  * - \b item.data [sight::data::object] (mandatory): value edited by the matching item.
  * - \b item.values [sight::data::string] (optional): tokenized values of the matching item.
  * - \b item.min [sight::data::real] (optional): minimum bound of the matching item.
@@ -86,7 +88,7 @@ namespace sight::module::ui::qt
  *
  * Static attributes:
  * - \b name: label to display.
- * - \b key: name used in the signal to identify the parameter.
+ * - \b key: widget identifier used by dependencies and runtime updates.
  * - \b hide_min_max (optional, boolean): allows to hide the min and max labels.
  * - \b widget (optional) : widget type, available for types 'sight::data::integer', 'sight::data::real',
  * 'sight::data::string'.
@@ -225,6 +227,8 @@ public:
 
 protected:
 
+    service::connections_t auto_connections() const override;
+
     /// Configure the editor.
     void configuring() override;
 
@@ -243,6 +247,11 @@ protected:
      * @param _event
      */
     void joystick_axis_direction_event(const sight::io::joystick::axis_direction_event& _event) final;
+
+private:
+
+    /// Observe config.enabled to enable or disable the complete settings group.
+    void apply_enabled();
 
 private Q_SLOTS:
 
@@ -539,6 +548,8 @@ private:
     };
 
     std::map<std::string, widget_joystick> m_widget_joysticks;
+
+    ptr_in<data::boolean> m_enabled {this, "config.enabled", std::nullopt};
 };
 
 //------------------------------------------------------------------------------

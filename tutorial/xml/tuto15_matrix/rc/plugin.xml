@@ -22,6 +22,8 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
+            <object uid="show_mesh_srv_bool_param" type="sight::data::boolean" value="true" />
+
             <service uid="main_frame" type="sight::module::ui::frame">
                 <gui>
                     <frame>
@@ -141,12 +143,12 @@
             <!-- Mesh adaptors -->
             <service uid="mesh1_adp" type="sight::module::viz::scene3d::adaptor::mesh" auto_connect="true">
                 <data mesh="${mesh}" />
-                <config transform="transRotMat" color="#EE2234" />
+                <config transform="transRotMat" color="#EE2234" visible="${show_mesh_srv_bool_param}" />
             </service>
 
             <service uid="mesh2_adp" type="sight::module::viz::scene3d::adaptor::mesh" auto_connect="true">
                 <data mesh="${mesh}" />
-                <config transform="rotTransMat" color="#2234EE" />
+                <config transform="rotTransMat" color="#2234EE" visible="${show_mesh_srv_bool_param}" />
             </service>
 
             <!--
@@ -217,19 +219,11 @@
                 <data output="${rotTransMatrix}" />
             </service>
 
-            <service uid="show_mesh_srv" type="sight::module::ui::qt::parameters">
-                <parameters>
-                    <param type="bool" name="Show/Hide Mesh" key="boolParam" defaultValue="true" />
-                </parameters>
+            <service uid="show_mesh_srv" type="sight::module::ui::qt::settings">
+                <item data="${show_mesh_srv_bool_param}" name="Show/Hide Mesh" key="boolParam" />
             </service>
 
             <!-- ******************************* Connections ***************************************** -->
-
-            <connect>
-                <signal>show_mesh_srv/bool_changed</signal>
-                <slot>mesh1_adp/update_visibility</slot>
-                <slot>mesh2_adp/update_visibility</slot>
-            </connect>
 
             <connect>
                 <signal>trackball_interactor_adp/started</signal>

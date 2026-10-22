@@ -14,6 +14,7 @@
         <object uid="model_visibility" type="sight::data::boolean" />
         <object uid="axis_visibility" type="sight::data::boolean" />
         <object uid="volume_parameters" type="sight::data::map" />
+        <object uid="negato_3d_transparency" type="sight::data::real" optional="true" value="0" />
 
         <param name="WID_PARENT" />
 
@@ -23,7 +24,6 @@
         <channel name="shape_extruder_undo" />
         <channel name="shape_extruder_reset" />
         <channel name="world_coords_landmarks" />
-        <channel name="negato_3d_transparency" />
         <channel name="mesh_activation" optional="true" />
         <channel name="volume_activation" optional="true" />
         <channel name="image_visibility" />
@@ -103,6 +103,7 @@
             <object name="model_visibility" uid="${model_visibility}" />
             <object name="axis_visibility" uid="${axis_visibility}" />
             <object name="volume_parameters" uid="${volume_parameters}" />
+            <object name="negato_3d_transparency" uid="${negato_3d_transparency}" />
             <param name="WID_PARENT" value="main_scene_view" />
             <param name="maximized" value="true" />
             <param name="restored" value="false" />
@@ -114,7 +115,6 @@
             <channel name="shape_extruder_undo" uid="${shape_extruder_undo}" />
             <channel name="shape_extruder_reset" uid="${shape_extruder_reset}" />
             <channel name="world_coords_landmarks" uid="${world_coords_landmarks}" />
-            <channel name="negato_3d_transparency" uid="${negato_3d_transparency}" />
             <channel name="mesh_activation" uid="${mesh_activation}" />
             <channel name="volume_activation" uid="${volume_activation}" />
             <channel name="image_visibility" uid="${image_visibility}" />

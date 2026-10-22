@@ -106,7 +106,11 @@ public:
     ~matrices_reader() noexcept override;
 
     /// Display a location dialog allowing to select the video file to save
-    void open_location_dialog() override;
+
+    std::vector<std::pair<std::string, std::string> > get_supported_extensions() const override
+    {
+        return {{"CSV files", "*.csv"}};
+    }
 
     /// Return file type (io::service::FILE)
     sight::io::service::path_type_t get_path_type() const override;

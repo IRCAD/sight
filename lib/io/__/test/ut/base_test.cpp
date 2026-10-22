@@ -54,6 +54,13 @@ public:
 
     //------------------------------------------------------------------------------
 
+    std::vector<std::pair<std::string, std::string> > get_supported_extensions() const override
+    {
+        return {{"Test files", "*.test"}};
+    }
+
+    //------------------------------------------------------------------------------
+
     void open_location_dialog() override
     {
         m_used_window_title = *m_window_title;
@@ -97,6 +104,13 @@ public:
     sight::io::service::path_type_t get_path_type() const override
     {
         return m_path_type;
+    }
+
+    //------------------------------------------------------------------------------
+
+    std::vector<std::pair<std::string, std::string> > get_supported_extensions() const override
+    {
+        return {{"Test files", "*.test"}};
     }
 
     //------------------------------------------------------------------------------
