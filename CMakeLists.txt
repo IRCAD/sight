@@ -161,10 +161,9 @@ if(UNIX)
     list(APPEND CMAKE_PREFIX_PATH ${FWCMAKE_RESOURCE_PATH}/module)
 
     list(APPEND CMAKE_FIND_ROOT_PATH ${FWCMAKE_RESOURCE_PATH}/module)
-    if(UNIX)
-        list(APPEND CMAKE_PREFIX_PATH /usr/share/OGRE/cmake/module)
-    endif()
-
+    
+    list(APPEND CMAKE_PREFIX_PATH /usr/share/OGRE/cmake/module)
+    
     set(SIGHT_EXTERNAL_LIBRARIES CACHE PATH "External libraries location")
     mark_as_advanced(SIGHT_EXTERNAL_LIBRARIES)
 
