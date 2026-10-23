@@ -65,14 +65,12 @@ void trackball_camera::starting()
 {
     sight::viz::scene3d::adaptor::init();
 
-    Ogre::Vector3 view_up_axis = interactor_3d::DEFAULT_VIEW_UP;
+    m_view_up.reset();
     if(const auto& view_up = m_view_up_matrix.const_lock(); view_up)
     {
-        const auto view_up_matrix_data = sight::viz::scene3d::utils::to_ogre_matrix(view_up.get_shared());
-        view_up_axis = Ogre::Vector3(view_up_matrix_data[0][1], view_up_matrix_data[1][1], view_up_matrix_data[2][1]);
+        const auto matrix = sight::viz::scene3d::utils::to_ogre_matrix(view_up.get_shared());
+        m_view_up = Ogre::Vector3(matrix[0][1], matrix[1][1], matrix[2][1]);
     }
-
-    m_view_up = view_up_axis;
 
     const auto layer = this->layer();
     auto interactor  = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::base>(this->get_sptr());
@@ -111,7 +109,7 @@ void trackball_camera::mouse_move_event(
     {
         if(_button == left)
         {
-            camera_rotate(_dx, _dy);
+            this->camera_rotate(_dx, _dy);
         }
         else if(_button == middle)
         {
@@ -268,8 +266,11 @@ void trackball_camera::resize_event(int _width, int _height)
 
 void trackball_camera::camera_rotate(int _dx, int _dy)
 {
-    Ogre::Camera* const camera = this->layer()->get_default_camera();
-    sight::viz::scene3d::interactor::camera_rotate(camera, _dx, _dy, m_look_at_z, m_view_up);
+    Ogre::Camera* const camera  = this->layer()->get_default_camera();
+    const Ogre::Vector3 view_up = *m_follow_view_axes
+                                  ? camera->getParentSceneNode()->getOrientation().yAxis()
+                                  : m_view_up.value_or(interactor_3d::DEFAULT_VIEW_UP);
+    interactor_3d::camera_rotate(camera, _dx, _dy, m_look_at_z, view_up);
 }
 
 // ---------------------------------------------------------------------------

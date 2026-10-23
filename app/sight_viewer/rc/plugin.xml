@@ -700,6 +700,7 @@
                 <object name="flythrough_camera_direction" uid="flythrough_camera_direction" />
                 <param name="WID_PARENT" value="scene_view" />
                 <param name="flythrough_path_group" value="${flythrough_path_group}" />
+                <param name="follow_view_axes" value="true" />
                 <channel name="box_widget_reset" uid="box_widget_reset" />
                 <channel name="shape_extruder_enable_tool" uid="shape_extruder_enable_tool" />
                 <channel name="shape_extruder_tool_disabled" uid="shape_extruder_tool_disabled" />

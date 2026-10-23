@@ -21,6 +21,7 @@
 
         <param name="WID_PARENT" />
         <param name="flythrough_path_group" default="Path" />
+        <param name="follow_view_axes" default="false" />
         <param name="maximized" default="false" />
         <param name="restored" default="true" />
 
@@ -196,6 +197,7 @@
         </service>
 
         <service uid="trackball_interactor_adp" type="sight::module::viz::scene3d::adaptor::trackball_camera">
+            <data follow_view_axes="${follow_view_axes}" />
             <config priority="0" />
         </service>
 

@@ -23,6 +23,7 @@
 
 #include <core/thread/timer.hpp>
 
+#include <data/boolean.hpp>
 #include <data/matrix4.hpp>
 #include <data/string.hpp>
 
@@ -61,8 +62,16 @@ namespace sight::module::viz::scene3d::adaptor
  * @subsection Input Input:
  * - \b data.transform [sight::data::matrix4] (optional): initial transform (registration, tracking, ...) to apply to
  * the adaptor first.
- * - \b data.view_up [sight::data::matrix4] (optional): used to extract the up vector of the camera. We only use the Y
- * axis of this transform.
+ * - \b data.view_up [sight::data::matrix4] (optional): defines the fixed axis for horizontal mouse rotation when
+ *   data.follow_view_axes is false. The matrix's Y axis (second column) is read at startup and on reset;
+ *   subsequent matrix changes are not applied until the next reset or restart. If omitted, the fixed world axis
+ *   (0, -1, 0) is used. This input has no effect when data.follow_view_axes is true.
+ * - \b data.follow_view_axes [sight::data::boolean] (optional, default=false): selects the mouse rotation reference
+ *   axes. If true, horizontal mouse rotation uses the camera's current up axis, recomputed for each rotation,
+ *   even when data.view_up is supplied. This keeps rotation relative to the view after tilting or turning the
+ *   camera upside down. If false or omitted, horizontal rotation uses data.view_up or the fixed default axis
+ *   described above. Vertical mouse rotation always uses the camera's current right axis. This input does not
+ *   change predefined camera positions or transitions between them.
  *
  * @subsection Configuration Configuration:
  * - \b priority (optional, int, default=0): interaction priority, higher priority interactions are performed first.
@@ -172,6 +181,7 @@ protected:
     /// Goes to the previous predefined position (return to last one after the first).
     void previous_position();
 
+    /// Sets a fixed up axis for mouse rotation.
     inline void set_view_up(Ogre::Vector3 _view_up);
 
     /// Returns current state of mouse rotation.
@@ -221,7 +231,7 @@ private:
     void follow_transform();
 
     /**
-     * @brief The camera's scene node will rotate around its point of interest (lookAt).
+     * @brief Rotates around the point of interest using the supplied up axis or the current view's axes.
      * @param _dx The mouse's X displacement
      * @param _dy The mouse's Y displacement
      */
@@ -254,8 +264,12 @@ private:
     /// Input transform.
     sight::data::ptr<sight::data::matrix4, sight::data::access::in> m_transform {this, "data.transform", true};
 
-    /// Matrix used to extract the up vector of the camera. We only use the Y axis of this transform.
+    /// Optional matrix whose Y axis defines a fixed up axis for mouse rotation, read at startup and reset.
     sight::data::ptr<sight::data::matrix4, sight::data::access::in> m_view_up {this, "data.view_up", true};
+
+    /// Makes mouse rotation follow the current view's axes, ignoring data.view_up.
+    sight::data::ptr<sight::data::boolean, sight::data::access::in> m_follow_view_axes
+    {this, "data.follow_view_axes", false};
 
     /// Defines if we use a fixed orientation or if we follow the orientation of the target.
     sight::data::ptr<sight::data::boolean, sight::data::access::in> m_follow_orientation {this,
@@ -299,8 +313,8 @@ private:
 
     Ogre::Matrix4 m_transform_matrix {Ogre::Matrix4::IDENTITY};
 
-    /// Up vector of the camera, required to orientate the interactor
-    Ogre::Vector3 m_view_up_vector;
+    /// Fixed up axis read from data.view_up at startup and reset, or empty to use the fixed default axis.
+    std::optional<Ogre::Vector3> m_view_up_vector;
 
     /// Current percentage for animation
     float m_percentage {0.F};

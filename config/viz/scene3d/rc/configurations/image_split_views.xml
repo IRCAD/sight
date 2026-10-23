@@ -21,6 +21,7 @@
 
         <param name="WID_PARENT" />
         <param name="flythrough_path_group" default="Path" />
+        <param name="follow_view_axes" default="false" />
 
         <channel name="box_widget_reset" />
         <channel name="shape_extruder_enable_tool" />
@@ -116,6 +117,7 @@
             <object name="flythrough_camera_direction" uid="${flythrough_camera_direction}" />
             <param name="WID_PARENT" value="main_scene_view" />
             <param name="flythrough_path_group" value="${flythrough_path_group}" />
+            <param name="follow_view_axes" value="${follow_view_axes}" />
             <param name="maximized" value="true" />
             <param name="restored" value="false" />
 
