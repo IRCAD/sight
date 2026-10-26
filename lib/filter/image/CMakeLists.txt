@@ -31,7 +31,10 @@ endif()
 
 if(ITK_VERSION_MAJOR GREATER 5 OR (ITK_VERSION_MAJOR EQUAL 5 AND ITK_VERSION_MINOR GREATER 3))
     # This is required to register all needed ITK factories
+    # The block keeps the ITK flags and C++ standard settings out, they would not match the shared precompiled header
+    block()
     include(${ITK_USE_FILE})
+    endblock()
 endif()
 
 target_link_libraries(filter_image PRIVATE "$<$<VERSION_GREATER_EQUAL:glm_VERSION,0.9.9.8>:glm::glm>" io_itk)

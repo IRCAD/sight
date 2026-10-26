@@ -182,6 +182,15 @@ void plugin::start()
         qputenv("QT_MEDIA_BACKEND", "ffmpeg");
     }
 
+#ifdef __linux__
+    // Ogre is built with GLX, so use X11, through XWayland in a Wayland session.
+    // cspell:ignore xcb
+    if(!qEnvironmentVariableIsSet("QT_QPA_PLATFORM"))
+    {
+        qputenv("QT_QPA_PLATFORM", "xcb");
+    }
+#endif
+
     core::runtime::profile::sptr profile = core::runtime::get_current_profile();
     SIGHT_ASSERT("Profile is not initialized", profile);
     int& argc   = profile->get_raw_arg_count();

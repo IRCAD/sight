@@ -1600,7 +1600,7 @@ void macro_saver::save()
                 QString(
                     "_tester.interact(std::make_unique<sight::ui::test::mouse_click>(Qt::MouseButton::%1, %2, %3));"
                 )
-                .arg(s_MOUSE_BUTTON.valueToKey(static_cast<int>(im.button))).arg(modifiers_to_string(im.modifiers))
+                .arg(s_MOUSE_BUTTON.valueToKey(im.button)).arg(modifiers_to_string(im.modifiers))
                 .arg(QTest::toString(im.from))
             );
         }
@@ -1613,7 +1613,7 @@ void macro_saver::save()
                 QString(
                     "_tester.interact(std::make_unique<sight::ui::test::mouse_double_click>(Qt::MouseButton::%1, %2, %3));"
                 )
-                .arg(s_MOUSE_BUTTON.valueToKey(static_cast<int>(im.button))).arg(modifiers_to_string(im.modifiers))
+                .arg(s_MOUSE_BUTTON.valueToKey(im.button)).arg(modifiers_to_string(im.modifiers))
                 .arg(QTest::toString(im.from))
             );
         }
@@ -1627,7 +1627,7 @@ void macro_saver::save()
                     "_tester.interact(std::make_unique<sight::ui::test::mouse_drag>(%1, %2, Qt::MouseButton::%3, %4));"
                 )
                 .arg(QTest::toString(im.from)).arg(QTest::toString(im.to))
-                .arg(s_MOUSE_BUTTON.valueToKey(static_cast<int>(im.button))).arg(modifiers_to_string(im.modifiers))
+                .arg(s_MOUSE_BUTTON.valueToKey(im.button)).arg(modifiers_to_string(im.modifiers))
             );
         }
         else if(interaction->type == mouse_wheel)
@@ -1653,7 +1653,7 @@ void macro_saver::save()
                 cpp,
                 8,
                 QString("_tester.interact(std::make_unique<sight::ui::test::keyboard_click>(Qt::Key::%1, %2));")
-                .arg(s_KEY.valueToKey(static_cast<int>(ik.key))).arg(modifiers_to_string(ik.modifiers))
+                .arg(s_KEY.valueToKey(ik.key)).arg(modifiers_to_string(ik.modifiers))
             );
         }
         else if(interaction->type == keyboard_sequence)

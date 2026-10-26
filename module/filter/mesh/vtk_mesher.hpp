@@ -47,6 +47,9 @@ namespace sight::module::filter::mesh
  * - a decimator, that reduces the number of triangles. This is the only phase that is not multithreaded and
  * unfortunately it is quite slow.
  *
+ * To retain earlier VTK behavior, the smoother uses a Hamming window and quadric decimation weights boundary
+ * constraints by edge length.
+ *
  * The service can either mesh a single value when passed as a property, or it can mesh multiple values if a <config>
  * tag is provided, allowing to specify different settings for each organ.
  *

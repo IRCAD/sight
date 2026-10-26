@@ -402,7 +402,7 @@ static void modify_fiducial(
     // Store the fiducial set part in gdcm
     if(_query.m_frame_of_reference_uid)
     {
-        _pimpl.set_value<kw::FrameOfReferenceUID>(_query.m_frame_of_reference_uid, _fiducial_set_dataset);
+        _pimpl.set_value<kw::FrameOfReferenceUID>(*_query.m_frame_of_reference_uid, _fiducial_set_dataset);
     }
 
     if(_query.m_group_name)

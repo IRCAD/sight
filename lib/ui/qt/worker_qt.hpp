@@ -43,6 +43,7 @@ namespace sight::ui::qt
 
 //-----------------------------------------------------------------------------
 
+/// Stopping the worker drains pending worker tasks and deferred Qt deletions on the GUI thread before returning.
 SIGHT_UI_QT_API sight::sptr<core::thread::worker> get_qt_worker(
     int& _argc,
     char** _argv,

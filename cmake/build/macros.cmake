@@ -1472,6 +1472,7 @@ endfunction()
 # Utility macro for sight_configure_pch: creates the pch targets and setup optimized debug options if needed
 macro(sight_create_pch_target _og)
     set(SIGHT_PCH_HEADERS
+        "${FWCMAKE_BUILD_FILES_DIR}/ciso646.hpp"
         <boost/algorithm/string.hpp>
         <boost/foreach.hpp>
         <boost/function_types/function_arity.hpp>
@@ -1575,7 +1576,12 @@ macro(sight_create_pch_target _og)
     target_precompile_headers(${SIGHT_PCH_NAME} PUBLIC ${SIGHT_PCH_HEADERS})
 
     # Boost
-    find_package(Boost QUIET COMPONENTS system date_time iostreams log log_setup REQUIRED)
+    find_package(
+        Boost QUIET
+        COMPONENTS date_time iostreams log log_setup
+        OPTIONAL_COMPONENTS system
+        REQUIRED
+    )
 
     target_link_libraries(${SIGHT_PCH_NAME} PUBLIC Boost::date_time Boost::iostreams Boost::log Boost::log_setup)
     target_compile_definitions(${SIGHT_PCH_NAME} PUBLIC BOOST_BIND_GLOBAL_PLACEHOLDERS)

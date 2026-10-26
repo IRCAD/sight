@@ -38,6 +38,7 @@
 #include <QStringList>
 #include <QTimer>
 
+#include <cstddef>
 #include <functional>
 
 namespace sight::ui::qt
@@ -59,17 +60,20 @@ public:
 
     ~worker_qt_task() override
     {
+        ++s_tasks_processed;
         m_handler();
     }
 
     static const int WORKER_QT_TASK_EVENT_TYPE;
+    static thread_local std::size_t s_tasks_processed;
 
 private:
 
     core::thread::worker::task_t m_handler;
 };
 
-const int worker_qt_task::WORKER_QT_TASK_EVENT_TYPE = QEvent::registerEventType();
+const int worker_qt_task::WORKER_QT_TASK_EVENT_TYPE        = QEvent::registerEventType();
+thread_local std::size_t worker_qt_task::s_tasks_processed = 0;
 
 /**
  * @brief Private implementation of core::thread::worker using boost::asio.
@@ -327,7 +331,20 @@ void worker_qt::set_thread_name([[maybe_unused]] const std::string& _thread_name
 
 void worker_qt::stop()
 {
-    this->post_task<void>(&QCoreApplication::quit).wait();
+    this->post_task<void>(
+        []
+        {
+            QCoreApplication::quit();
+            std::size_t processed = 0;
+            // Tasks and deferred deletions can post more tasks while Qt is delivering the current batch.
+            do
+            {
+                processed = worker_qt_task::s_tasks_processed;
+                QCoreApplication::sendPostedEvents(nullptr, QEvent::DeferredDelete);
+                QCoreApplication::sendPostedEvents(nullptr, worker_qt_task::WORKER_QT_TASK_EVENT_TYPE);
+            }
+            while(processed != worker_qt_task::s_tasks_processed);
+        }).get();
 }
 
 //------------------------------------------------------------------------------

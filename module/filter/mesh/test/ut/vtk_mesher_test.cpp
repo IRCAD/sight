@@ -131,8 +131,8 @@ TEST_SUITE("sight::module::filter::mesh::vtk_mesher")
         mesher_service->start().get();
         mesher_service->update().get();
         {
-            unsigned int number_points = 77;
-            unsigned int number_cells  = 126;
+            const unsigned int number_points = 77;
+            const unsigned int number_cells  = 126;
             REQUIRE(model_series->get_reconstruction_db().size() == std::size_t(1));
             CHECK(model_series->get_reconstruction_db()[0]->get_mesh()->num_points() == number_points);
             CHECK(model_series->get_reconstruction_db()[0]->get_mesh()->num_cells() == number_cells);
