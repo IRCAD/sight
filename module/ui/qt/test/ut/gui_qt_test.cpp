@@ -24,8 +24,41 @@
 #include <doctest/doctest.h>
 
 #include <QMainWindow>
+#include <QWidget>
 
 #include <core/thread/worker.hpp>
+
+namespace
+{
+
+constexpr auto RENDERED_WIDGET_NAME = "gui_qt_test_rendered_widget";
+
+class paint_counter final : public QWidget
+{
+public:
+
+    //------------------------------------------------------------------------------
+
+    [[nodiscard]] int paint_count() const
+    {
+        return m_paint_count;
+    }
+
+protected:
+
+    //------------------------------------------------------------------------------
+
+    void paintEvent(QPaintEvent* /*_event*/) override
+    {
+        ++m_paint_count;
+    }
+
+private:
+
+    int m_paint_count {0};
+};
+
+} // namespace
 
 TEST_SUITE("sight::module::ui::qt::gui_qt_test")
 {
@@ -86,6 +119,27 @@ TEST_SUITE("sight::module::ui::qt::gui_qt_test")
 
             CHECK(window != nullptr);
             CHECK_EQ(std::string("gui_qt_test_test_fullscreen_frame"), window->windowTitle().toStdString());
+        });
+    }
+
+    TEST_CASE_FIXTURE(sight::ui::test::gui_fixture, "render_hidden_widget")
+    {
+        test_service(
+            "sight::module::ui::frame",
+            [](const sight::service::base::sptr& /*_service*/)
+        {
+            sight::core::thread::get_default_worker()->post_task<void>(
+                []
+            {
+                // Never shown: it must be painted anyway, and stay hidden.
+                paint_counter widget;
+                widget.setObjectName(RENDERED_WIDGET_NAME);
+                widget.resize(64, 32);
+
+                CHECK(sight::ui::test::gui_fixture::render_widget(RENDERED_WIDGET_NAME));
+                CHECK_GT(widget.paint_count(), 0);
+                CHECK_FALSE(widget.isVisible());
+            }).get();
         });
     }
 }

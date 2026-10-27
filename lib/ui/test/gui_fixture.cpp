@@ -32,6 +32,7 @@
 #include <QApplication>
 #include <QMouseEvent>
 #include <QPinchGesture>
+#include <QPixmap>
 #include <QProgressBar>
 #include <QTest>
 #include <QWindow>
@@ -341,13 +342,11 @@ bool gui_fixture::click_on_button(const std::string& _name, const std::string& _
             {
                 if(!widget_ptr.isNull())
                 {
-                    if(auto* const button = qobject_cast<QAbstractButton*>(widget_ptr); button != nullptr)
+                    if(auto* const button = qobject_cast<QAbstractButton*>(widget_ptr);
+                       button != nullptr && (text.isEmpty() || button->text() == text))
                     {
-                        if(text.isEmpty() || button->text() == text)
-                        {
-                            button->click();
-                            return true;
-                        }
+                        button->click();
+                        return true;
                     }
 
                     for(auto* const button : widget_ptr->findChildren<QAbstractButton*>())
@@ -362,14 +361,12 @@ bool gui_fixture::click_on_button(const std::string& _name, const std::string& _
 
                 for(auto* const widget : qApp->allWidgets())
                 {
-                    if(auto* const button = qobject_cast<QAbstractButton*>(widget); button != nullptr)
+                    if(auto* const button = qobject_cast<QAbstractButton*>(widget);
+                       button != nullptr && (name.isEmpty() || button->objectName() == name)
+                       && (text.isEmpty() || button->text() == text))
                     {
-                        if((name.isEmpty() || button->objectName() == name)
-                           && (text.isEmpty() || button->text() == text))
-                        {
-                            button->click();
-                            return true;
-                        }
+                        button->click();
+                        return true;
                     }
 
                     for(auto* const button : widget->findChildren<QAbstractButton*>())
@@ -400,6 +397,31 @@ bool gui_fixture::click_on_button(const std::string& _name, const std::string& _
     }
 
     return false;
+}
+
+//------------------------------------------------------------------------------
+
+bool gui_fixture::render_widget(const std::string& _name)
+{
+    const auto widget_ptr = gui_fixture::find_widget(_name);
+    if(widget_ptr.isNull())
+    {
+        return false;
+    }
+
+    auto posted_task = sight::core::thread::get_default_worker()->post_task<bool>(
+        [widget_ptr]
+        {
+            // grab() lays out a hidden widget by itself, so its visibility is left untouched.
+            return !widget_ptr.isNull() && !widget_ptr->grab().isNull();
+        });
+
+    if(posted_task.wait_for(SECONDS_TO_WAIT) != std::future_status::ready)
+    {
+        return false;
+    }
+
+    return posted_task.get();
 }
 
 //------------------------------------------------------------------------------

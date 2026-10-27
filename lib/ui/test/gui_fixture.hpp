@@ -84,7 +84,7 @@ public:
             std::chrono::steady_clock::now() - start < SECONDS_TO_WAIT ; )
         {
             auto posted_task = sight::core::thread::get_default_worker()->post_task<QPointer<W> >(
-                [name]()
+                [name]
                 {
                     for(auto* const widget : qApp->allWidgets())
                     {
@@ -193,6 +193,14 @@ public:
         const std::string& _name,
         const std::string& _text = std::string()
     );
+
+    /**
+     * @brief Synchronously render a widget off-screen, without changing its visibility.
+     *
+     * This forces its paint event without relying on compositor exposure, which can be unreliable in headless tests.
+     * @return true if the widget was found and rendered.
+     */
+    SIGHT_UI_TEST_API static bool render_widget(const std::string& _name);
 
     /**
      * @brief Interact with a widget by sending it a synthetic event.
