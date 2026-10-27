@@ -54,6 +54,7 @@
 #include <OgreResourceGroupManager.h>
 
 #include <algorithm>
+#include <array>
 #include <cctype> // Needed for isspace()
 #include <filesystem>
 #include <utility>
@@ -277,7 +278,40 @@ Ogre::Root* utils::get_ogre_root()
 #ifdef _WIN32
             const auto ogre_plugins_path = ogre_lib_path.parent_path() / "plugins" / "ogre";
 #else
-            const auto ogre_plugins_path = ogre_lib_path / "OGRE";
+            // Prefer the plugins matching the linked Ogre version, then try the
+            // unversioned directory used by some distributions.
+            std::filesystem::path ogre_plugins_path;
+            const std::array<std::filesystem::path, 2> ogre_plugins_paths = {
+                std::format("{}-{}.{}", (ogre_lib_path / "OGRE").string(), OGRE_VERSION_MAJOR, OGRE_VERSION_MINOR),
+                ogre_lib_path / "OGRE"
+            };
+            for(const auto& plugins_path : ogre_plugins_paths)
+            {
+                if(!std::filesystem::is_directory(plugins_path))
+                {
+                    continue;
+                }
+
+                for(const auto& entry : std::filesystem::directory_iterator(plugins_path))
+                {
+                    const auto filename = entry.path().filename().string();
+                    if(filename.starts_with("RenderSystem_GL3Plus.so") && entry.is_regular_file())
+                    {
+                        ogre_plugins_path = plugins_path;
+                        break;
+                    }
+                }
+
+                if(!ogre_plugins_path.empty())
+                {
+                    break;
+                }
+            }
+
+            SIGHT_FATAL_IF(
+                "Failed to find RenderSystem_GL3Plus.so plugin beside " + ogre_main_name,
+                ogre_plugins_path.empty()
+            );
 #endif
 
             // Add render system plugin
