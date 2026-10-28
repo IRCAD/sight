@@ -143,9 +143,9 @@
             <service uid="warning_toolbar" type="sight::module::ui::toolbar">
                 <gui>
                     <layout style="ToolButtonTextBesideIcon">
-                        <menuItem name="Contribution A (warning in 2 zones)" />
+                        <menuItem name="Contribution A (warning in 3 zones)" />
                         <menuItem name="Remove A" />
-                        <menuItem name="Contribution B (warning in 2 zones)" />
+                        <menuItem name="Contribution B (warning in 3 zones)" />
                         <menuItem name="Remove B" />
                         <separator />
                         <menuItem name="No icon" />
@@ -181,9 +181,9 @@
             <service uid="instruction_toolbar" type="sight::module::ui::toolbar">
                 <gui>
                     <layout style="ToolButtonTextBesideIcon">
-                        <menuItem name="Contribution A (instruction in 2 zones)" />
+                        <menuItem name="Contribution A (instruction in 3 zones)" />
                         <menuItem name="Remove A" />
-                        <menuItem name="Contribution B (instruction in 2 zones)" />
+                        <menuItem name="Contribution B (instruction in 3 zones)" />
                         <menuItem name="Remove B" />
                     </layout>
                 </gui>
@@ -215,9 +215,9 @@
             <service uid="error_toolbar" type="sight::module::ui::toolbar">
                 <gui>
                     <layout style="ToolButtonTextBesideIcon">
-                        <menuItem name="Contribution A (error in 2 zones)" />
+                        <menuItem name="Contribution A (error in 3 zones)" />
                         <menuItem name="Remove A" />
-                        <menuItem name="Contribution B (error in 2 zones)" />
+                        <menuItem name="Contribution B (error in 3 zones)" />
                         <menuItem name="Remove B" />
                     </layout>
                 </gui>
@@ -234,25 +234,31 @@
             <service uid="add_error_b_act" type="sight::module::ui::action" />
             <service uid="remove_error_b_act" type="sight::module::ui::action" />
 
-            <!-- Both notification zones, stacked. -->
+            <!-- Three notification zones, stacked. -->
             <service uid="zones_view" type="sight::module::ui::view">
                 <gui>
                     <layout type="sight::ui::layout::line">
                         <orientation value="vertical" />
-                        <view proportion="1" />
-                        <view proportion="1" />
+                        <view proportion="0" />
+                        <view proportion="0" min_height="120" max_height="120" />
+                        <view proportion="0" />
+                        <spacer />
                     </layout>
                 </gui>
                 <registry>
                     <view sid="notification_zone_srv" />
+                    <view sid="fixed_height_zone_srv" />
                     <view sid="fixed_icon_zone_srv" />
                 </registry>
             </service>
 
-            <!-- Icons follow the text height by default. -->
+            <!-- Sized on its text: icons take the text height. -->
             <service uid="notification_zone_srv" type="sight::module::ui::qt::notification_zone" />
 
-            <!-- The same notifications, with icons pinned at 64 pixels instead. -->
+            <!-- The composed notifications in a 120 pixels high zone: icons take 80% of it. -->
+            <service uid="fixed_height_zone_srv" type="sight::module::ui::qt::notification_zone" />
+
+            <!-- The same, with icons pinned at 64 pixels instead. -->
             <service uid="fixed_icon_zone_srv" type="sight::module::ui::qt::notification_zone">
                 <properties notification_icon_size="64" />
             </service>
@@ -406,6 +412,7 @@
             <connect>
                 <signal>notification_composer_srv/notification_created</signal>
                 <slot>notification_zone_srv/add_notification</slot>
+                <slot>fixed_height_zone_srv/add_notification</slot>
                 <slot>fixed_icon_zone_srv/add_notification</slot>
             </connect>
 

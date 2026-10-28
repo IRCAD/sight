@@ -41,6 +41,7 @@
 #include <core/thread/worker.hpp>
 #include <utest/wait.hpp>
 
+#include <algorithm>
 #include <atomic>
 #include <chrono>
 #include <filesystem>
@@ -67,7 +68,7 @@ static std::shared_ptr<N> make_permanent(
         sight::core::notification::message::params {
         .text     = _text,
         .icon     = std::move(_icon),
-        .duration = std::chrono::milliseconds::zero()
+        .duration = std::chrono::milliseconds::zero(),
     });
 }
 
@@ -917,7 +918,7 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
             const auto information = std::make_shared<sight::core::notification::information>(
                 sight::core::notification::message::params {
                 .text     = "short lived",
-                .duration = std::chrono::milliseconds(50)
+                .duration = std::chrono::milliseconds(50),
             });
 
             sight::core::thread::get_default_worker()->post_task<void>(
@@ -959,7 +960,7 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
             const auto information = std::make_shared<sight::core::notification::information>(
                 sight::core::notification::message::params {
                 .text     = "reappearing",
-                .duration = std::chrono::milliseconds(50)
+                .duration = std::chrono::milliseconds(50),
             });
 
             const auto add_notification = [_service, information]
@@ -1013,7 +1014,7 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
             const auto information = std::make_shared<sight::core::notification::information>(
                 sight::core::notification::message::params {
                 .text     = "first contribution",
-                .duration = std::chrono::milliseconds(50)
+                .duration = std::chrono::milliseconds(50),
             });
 
             sight::core::thread::get_default_worker()->post_task<void>(
@@ -1067,7 +1068,7 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
             CHECK(_service->started());
 
             const auto error                                      = std::make_shared<sight::core::notification::error>(
-                sight::core::notification::message::params {.text = "with sound", .sound = true
+                sight::core::notification::message::params {.text = "with sound", .sound = true,
                 });
 
             sight::core::thread::get_default_worker()->post_task<void>(
@@ -1125,7 +1126,7 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
         });
     }
 
-    TEST_CASE_FIXTURE(sight::ui::test::gui_fixture, "add_notification_message_with_a_zero_icon_size_follows_the_text")
+    TEST_CASE_FIXTURE(sight::ui::test::gui_fixture, "add_notification_message_with_a_zero_icon_size_fits_the_label")
     {
         test_service(
             "sight::module::ui::qt::notification_zone",
@@ -1136,7 +1137,7 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
             {
                 sight::service::config_t config;
 
-                // A size of 0 draws the icons a text line high, which is also the default.
+                // A size of 0 takes the label height, at least the text height, which is also the default.
                 config.add("properties.<xmlattr>.notification_icon_size", "0");
 
                 _service->set_config(config);
@@ -1167,7 +1168,13 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
                 const auto* const label =
                     qobject_cast<sight::ui::qt::widget::notification_label*>(information_label.data());
                 REQUIRE(label != nullptr);
-                CHECK_EQ(label->icon_side(), QFontMetrics(label->font()).height());
+                const int available =
+                    label->contentsRect().height() * sight::ui::qt::widget::notification_label::AUTO_ICON_PERCENT / 100;
+                CHECK_EQ(label->icon_side(), std::max(QFontMetrics(label->font()).height(), available));
+
+                // The icon sits right before the text.
+                const int gap = label->text_rect().left() - (label->icon_rect().left() + label->icon_rect().width());
+                CHECK_EQ(gap, sight::ui::qt::widget::notification_label::GAP);
             }).get();
         });
     }
@@ -1306,7 +1313,7 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
             const auto information = std::make_shared<sight::core::notification::information>(
                 sight::core::notification::message::params {
                 .text     = "tick 0",
-                .duration = std::chrono::milliseconds(1000)
+                .duration = std::chrono::milliseconds(1000),
             });
 
             sight::core::thread::get_default_worker()->post_task<void>(
@@ -1378,7 +1385,7 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
             const auto pinned = std::make_shared<sight::core::notification::information>(
                 sight::core::notification::message::params {
                 .text     = "pinned",
-                .duration = std::chrono::milliseconds::zero()
+                .duration = std::chrono::milliseconds::zero(),
             });
 
             sight::core::thread::get_default_worker()->post_task<void>(

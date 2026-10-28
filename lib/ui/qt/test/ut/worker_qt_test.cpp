@@ -30,6 +30,7 @@
 #include <ui/qt/app.hpp>
 #include <ui/qt/container/toolbar.hpp>
 #include <ui/qt/layout/toolbar.hpp>
+#include <ui/qt/widget/toolbox.hpp>
 #include <ui/qt/worker_qt.hpp>
 
 #include <doctest/doctest.h>
@@ -384,6 +385,20 @@ TEST_SUITE("sight::ui::qt::worker")
         CHECK_EQ(0, std::any_cast<int>(future.get()));
     }
 } // TEST_SUITE
+
+TEST_SUITE("sight::ui::qt::widget::toolbox")
+{
+    TEST_CASE_FIXTURE(fixture, "destroy_with_pages")
+    {
+        auto* toolbox          = new sight::ui::qt::widget::toolbox();
+        QPointer<QWidget> page = new QWidget();
+        toolbox->add_item(page, "Page");
+
+        delete toolbox;
+
+        CHECK(page.isNull());
+    }
+}
 
 TEST_SUITE("sight::ui::qt::layout::toolbar")
 {

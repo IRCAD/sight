@@ -76,7 +76,7 @@ public:
         /// Absolute path of the icon, empty or unset for no icon at all.
         std::optional<std::filesystem::path> m_icon {};
 
-        /// Side, in pixels, the icon is drawn at. 0 follows the text height.
+        /// Side, in pixels, the icon is drawn at. 0 takes the available height, at least the text height.
         int m_icon_size {0};
         std::optional<std::chrono::milliseconds> m_duration {std::chrono::seconds(3)};
         std::string m_channel {};
@@ -123,7 +123,7 @@ public:
      */
     SIGHT_UI_API virtual void set_icon(std::optional<std::filesystem::path> _icon);
 
-    /// Sets the side, in pixels, the icon is drawn at. 0 follows the text height.
+    /// Sets the side, in pixels, the icon is drawn at. 0 takes the available height, at least the text height.
     SIGHT_UI_API virtual void set_icon_size(int _size);
 
     /**
@@ -178,7 +178,7 @@ public:
     /// Define the callback called when the dialog is closed
     SIGHT_UI_API virtual void set_closed_callback(std::function<void()> _f)
     {
-        m_closed_call_back = _f;
+        m_closed_call_back = std::move(_f);
     }
 
 protected:

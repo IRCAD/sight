@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #include "ui/qt/widget/toolbox.hpp"
 
-#include <core/spy_log.hpp>
-
 #include <QApplication>
 #include <QFrame>
 #include <QIcon>
@@ -37,7 +35,13 @@ namespace sight::ui::qt::widget
 {
 
 toolbox::~toolbox()
-= default;
+{
+    // Child widgets are destroyed by QWidget after this class and its members have been destroyed.
+    for(const auto& page : m_page_list)
+    {
+        disconnect(page.widget, &QWidget::destroyed, this, &toolbox::widget_destroyed);
+    }
+}
 
 //-----------------------------------------------------------------------------
 
@@ -209,7 +213,7 @@ int toolbox::insert_item(int _index, QWidget* _widget, const QString& _text)
 
     if(_index < 0 || _index >= this->m_page_list.count())
     {
-        _index = int(this->m_page_list.count());
+        _index = static_cast<int>(this->m_page_list.count());
         this->m_page_list.append(c);
         this->m_layout->addWidget(c.button);
         this->m_layout->addWidget(c.sv);
@@ -248,7 +252,7 @@ void toolbox::button_toggled(bool _checked)
 
 int toolbox::count() const
 {
-    return int(this->m_page_list.count());
+    return static_cast<int>(this->m_page_list.count());
 }
 
 //-----------------------------------------------------------------------------
@@ -315,7 +319,7 @@ QWidget* toolbox::widget(int _index) const
 int toolbox::index_of(QWidget* _widget) const
 {
     const widget::page* c = (_widget != nullptr ? this->page(_widget) : nullptr);
-    return c != nullptr ? int(this->m_page_list.indexOf(*c)) : -1;
+    return c != nullptr ? static_cast<int>(this->m_page_list.indexOf(*c)) : -1;
 }
 
 //-----------------------------------------------------------------------------

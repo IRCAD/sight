@@ -25,6 +25,8 @@
 
 #include <QFontMetrics>
 #include <QLabel>
+#include <QMessageBox>
+#include <QToolButton>
 
 #include <ui/qt/widget/notification_label.hpp>
 
@@ -37,7 +39,9 @@
 #include <core/thread/worker.hpp>
 #include <utest/wait.hpp>
 
+#include <algorithm>
 #include <chrono>
+#include <future>
 #include <thread>
 
 //------------------------------------------------------------------------------
@@ -63,7 +67,7 @@ static std::shared_ptr<N> make_permanent(
         .text     = _text,
         .icon     = std::move(_icon),
         .channel  = _channel,
-        .duration = std::chrono::milliseconds::zero()
+        .duration = std::chrono::milliseconds::zero(),
     });
 }
 
@@ -89,6 +93,28 @@ static std::optional<bool> has_icon(const QPointer<QLabel>& _label)
         }
 
         return !notification_label->icon().isNull();
+    }).get();
+}
+
+//------------------------------------------------------------------------------
+
+/// Closes the visible message box and returns its text, std::nullopt while there is none.
+static std::optional<std::string> close_message_box()
+{
+    return sight::core::thread::get_default_worker()->post_task<std::optional<std::string> >(
+        []() -> std::optional<std::string>
+    {
+        for(auto* const widget : qApp->topLevelWidgets())
+        {
+            if(auto* const box = qobject_cast<QMessageBox*>(widget); box != nullptr && box->isVisible())
+            {
+                auto text = box->text().toStdString();
+                box->accept();
+                return text;
+            }
+        }
+
+        return std::nullopt;
     }).get();
 }
 
@@ -245,6 +271,225 @@ TEST_SUITE("sight::module::ui::qt::notifier")
 
             REQUIRE(has_icon.has_value());
             CHECK(*has_icon);
+        });
+    }
+
+    TEST_CASE_FIXTURE(sight::ui::test::gui_fixture, "add_notification_places_the_icon_beside_a_short_message")
+    {
+        test_service(
+            "sight::module::ui::qt::notifier",
+            [](const sight::service::base::sptr& _service)
+        {
+            sight::core::thread::get_default_worker()->post_task<void>(
+                [_service]
+            {
+                _service->set_config(sight::service::config_t());
+                _service->configure();
+                _service->start().wait();
+            }).get();
+
+            const auto warning = make_permanent<sight::core::notification::warning>("short");
+
+            sight::core::thread::get_default_worker()->post_task<void>(
+                [_service, warning]
+            {
+                _service->slot("add_notification")->run(
+                    std::static_pointer_cast<sight::core::notification::base>(warning)
+                );
+            }).get();
+
+            const auto layout = sight::ui::test::gui_fixture::query_widget<QLabel>(
+                "NotificationDialog_Warning",
+                [](QLabel* _label)
+            {
+                const auto* const label = qobject_cast<sight::ui::qt::widget::notification_label*>(_label);
+                return std::make_tuple(label->icon_rect(), label->text_rect(), label->rect());
+            });
+
+            REQUIRE(layout.has_value());
+            const auto& [icon, text, rect] = *layout;
+            CHECK_EQ(text.left() - (icon.left() + icon.width()), sight::ui::qt::widget::notification_label::GAP);
+            CHECK_LE(std::abs((icon.left() + text.right() + 1) / 2 - rect.width() / 2), 1);
+        });
+    }
+
+    TEST_CASE_FIXTURE(sight::ui::test::gui_fixture, "add_notification_truncates_a_long_message_beside_the_icon")
+    {
+        test_service(
+            "sight::module::ui::qt::notifier",
+            [](const sight::service::base::sptr& _service)
+        {
+            sight::core::thread::get_default_worker()->post_task<void>(
+                [_service]
+            {
+                _service->set_config(sight::service::config_t());
+                _service->configure();
+                _service->start().wait();
+            }).get();
+
+            const std::string message =
+                "A long warning message, much too long to fit in the small popup, which has to be truncated "
+                "and leaves the whole text to the show more box";
+
+            const auto warning = make_permanent<sight::core::notification::warning>(message);
+
+            sight::core::thread::get_default_worker()->post_task<void>(
+                [_service, warning]
+            {
+                _service->slot("add_notification")->run(
+                    std::static_pointer_cast<sight::core::notification::base>(warning)
+                );
+            }).get();
+
+            struct popup_layout
+            {
+                int side {0};
+                int wanted {0};
+                bool overlap {true};
+                bool truncated {false};
+                bool show_more {false};
+            };
+
+            const auto layout = sight::ui::test::gui_fixture::query_widget<QLabel>(
+                "NotificationDialog_Warning",
+                [&message](QLabel* _label)
+            {
+                const auto* const label  = qobject_cast<sight::ui::qt::widget::notification_label*>(_label);
+                const auto* const button = _label->parentWidget()->findChild<QToolButton*>();
+                const int percent        = sight::ui::qt::widget::notification_label::AUTO_ICON_PERCENT;
+                const int available      = label->contentsRect().height() * percent / 100;
+
+                return popup_layout {
+                    .side      = label->icon_side(),
+                    .wanted    = std::max(QFontMetrics(label->font()).height(), available),
+                    .overlap   = label->text_rect().intersects(label->icon_rect()),
+                    .truncated = label->text().size() < static_cast<qsizetype>(message.size()),
+                    .show_more = button != nullptr && button->isVisible(),
+                };
+            });
+
+            REQUIRE(layout.has_value());
+
+            // The text was truncated leaving room for the full icon.
+            CHECK(layout->truncated);
+            CHECK(layout->show_more);
+            CHECK_FALSE(layout->overlap);
+            CHECK_EQ(layout->side, layout->wanted);
+
+            // "Show more" opens a modal box with the whole message: click without waiting, then close it.
+            auto click = sight::core::thread::get_default_worker()->post_task<void>(
+                []
+            {
+                for(auto* const widget : qApp->allWidgets())
+                {
+                    if(auto* const button = qobject_cast<QToolButton*>(widget);
+                       button != nullptr && button->isVisible() && button->text() == "...")
+                    {
+                        button->click();
+                        return;
+                    }
+                }
+            });
+
+            std::optional<std::string> shown;
+            SIGHT_TEST_WAIT((shown = close_message_box()).has_value());
+
+            CHECK_EQ(shown, std::make_optional(message));
+            CHECK_EQ(click.wait_for(std::chrono::seconds(10)), std::future_status::ready);
+        });
+    }
+
+    TEST_CASE_FIXTURE(sight::ui::test::gui_fixture, "add_notification_truncates_in_a_popup_too_narrow_for_the_text")
+    {
+        test_service(
+            "sight::module::ui::qt::notifier",
+            [](const sight::service::base::sptr& _service)
+        {
+            // The icon and the "show more" button leave no room for even "...".
+            sight::service::config_t channels;
+            channels.add_child("channel", make_channel_config("narrow", "TOP_LEFT", "infinite", "80x60", "", ""));
+
+            sight::service::config_t config;
+            config.add_child("channels", channels);
+
+            sight::core::thread::get_default_worker()->post_task<void>(
+                [_service, config]
+            {
+                _service->set_config(config);
+                _service->configure();
+                _service->start().wait();
+            }).get();
+
+            const auto warning = make_permanent<sight::core::notification::warning>(
+                "A long warning message that cannot fit in such a narrow popup",
+                "narrow"
+            );
+
+            sight::core::thread::get_default_worker()->post_task<void>(
+                [_service, warning]
+            {
+                _service->slot("add_notification")->run(
+                    std::static_pointer_cast<sight::core::notification::base>(warning)
+                );
+            }).get();
+
+            const auto show_more = sight::ui::test::gui_fixture::query_widget<QLabel>(
+                "NotificationDialog_Warning",
+                [](QLabel* _label)
+            {
+                const auto* const button = _label->parentWidget()->findChild<QToolButton*>();
+                return button != nullptr && button->isVisible();
+            });
+
+            CHECK_EQ(show_more, std::make_optional(true));
+        });
+    }
+
+    TEST_CASE_FIXTURE(sight::ui::test::gui_fixture, "add_notification_shrinks_an_explicit_icon_to_the_popup_height")
+    {
+        test_service(
+            "sight::module::ui::qt::notifier",
+            [](const sight::service::base::sptr& _service)
+        {
+            // A 64 pixels icon in a 60 pixels high popup.
+            sight::service::config_t channels;
+            channels.add_child("channel", make_channel_config("big_icon", "TOP_LEFT", "infinite", "200x60", "", ""));
+            channels.back().second.put("<xmlattr>.icon_size", "64");
+
+            sight::service::config_t config;
+            config.add_child("channels", channels);
+
+            sight::core::thread::get_default_worker()->post_task<void>(
+                [_service, config]
+            {
+                _service->set_config(config);
+                _service->configure();
+                _service->start().wait();
+            }).get();
+
+            const auto warning = make_permanent<sight::core::notification::warning>("short", "big_icon");
+
+            sight::core::thread::get_default_worker()->post_task<void>(
+                [_service, warning]
+            {
+                _service->slot("add_notification")->run(
+                    std::static_pointer_cast<sight::core::notification::base>(warning)
+                );
+            }).get();
+
+            const auto layout = sight::ui::test::gui_fixture::query_widget<QLabel>(
+                "NotificationDialog_Warning",
+                [](QLabel* _label)
+            {
+                const auto* const label = qobject_cast<sight::ui::qt::widget::notification_label*>(_label);
+                return std::make_tuple(label->icon_rect(), label->contentsRect(), label->rect());
+            });
+
+            REQUIRE(layout.has_value());
+            const auto& [icon, contents, rect] = *layout;
+            CHECK_EQ(rect.height(), 60);
+            CHECK_EQ(icon.height(), contents.height());
+            CHECK(rect.contains(icon));
         });
     }
 
@@ -462,7 +707,7 @@ TEST_SUITE("sight::module::ui::qt::notifier")
                         std::make_shared<sight::core::notification::information>(
                             sight::core::notification::message::params {
                     .text    = "on valid channel",
-                    .channel = "valid_channel"
+                    .channel = "valid_channel",
                 })
                     )
                 );
@@ -473,13 +718,13 @@ TEST_SUITE("sight::module::ui::qt::notifier")
                 std::make_optional(std::string("on valid channel"))
             );
 
-            // icon_size="0" on that channel draws the icon a text line high rather than hiding it. Both the icon
-            // and the font it is measured against are read in the UI thread, which owns them.
+            // icon_size="0" on that channel takes the popup height, at least a text line, rather than hiding the
+            // icon. Both the icon and what it is measured against are read in the UI thread, which owns them.
             struct icon_probe final
             {
                 bool has_icon {false};
                 int icon_side {0};
-                int font_height {0};
+                int expected_side {0};
             };
 
             const auto icon = sight::ui::test::gui_fixture::query_widget<QLabel>(
@@ -494,16 +739,19 @@ TEST_SUITE("sight::module::ui::qt::notifier")
                     return icon_probe {};
                 }
 
+                const int percent   = sight::ui::qt::widget::notification_label::AUTO_ICON_PERCENT;
+                const int available = notification_label->contentsRect().height() * percent / 100;
+
                 return icon_probe {
-                    .has_icon    = !notification_label->icon().isNull(),
-                    .icon_side   = notification_label->icon_side(),
-                    .font_height = QFontMetrics(notification_label->font()).height()
+                    .has_icon      = !notification_label->icon().isNull(),
+                    .icon_side     = notification_label->icon_side(),
+                    .expected_side = std::max(QFontMetrics(notification_label->font()).height(), available),
                 };
             });
 
             REQUIRE(icon.has_value());
             CHECK(icon->has_icon);
-            CHECK_EQ(icon->icon_side, icon->font_height);
+            CHECK_EQ(icon->icon_side, icon->expected_side);
         });
     }
 
@@ -596,7 +844,7 @@ TEST_SUITE("sight::module::ui::qt::notifier")
             CHECK(_service->started());
 
             const auto error                                      = std::make_shared<sight::core::notification::error>(
-                sight::core::notification::message::params {.text = "with sound", .sound = true
+                sight::core::notification::message::params {.text = "with sound", .sound = true,
                 });
 
             sight::core::thread::get_default_worker()->post_task<void>(

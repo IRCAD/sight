@@ -221,7 +221,7 @@ inline static bool check_message_length(
 {
     const auto& bounding = _metrics.boundingRect(
         _available,
-        static_cast<int>(Qt::TextWordWrap) | Qt::AlignHCenter | Qt::AlignVCenter,
+        Qt::TextWordWrap | Qt::AlignCenter,
         _message + (_is_truncated ? "..." : "")
     );
 
@@ -285,19 +285,19 @@ void notification::update()
         else
         {
             static constexpr auto s_INSTRUCTION_STYLE {
-                "background-color:#58D68D;color:white;font-weight: bold;font-size: 16px;border-radius: 10px"
+                "background-color:#58D68D;color:white;font-weight: bold;font-size: 16px;border-radius: 10px",
             };
 
             static constexpr auto s_ERROR_STYLE {
-                "background-color:#E74C3C;color:white;font-weight: bold;font-size: 16px;border-radius: 10px"
+                "background-color:#E74C3C;color:white;font-weight: bold;font-size: 16px;border-radius: 10px",
             };
 
             static constexpr auto s_INFORMATION_STYLE {
-                "background-color:#5DADE2;color:white;font-weight: bold;font-size: 16px;border-radius: 10px"
+                "background-color:#5DADE2;color:white;font-weight: bold;font-size: 16px;border-radius: 10px",
             };
 
             static constexpr auto s_WARNING_STYLE {
-                "background-color:#D9A400;color:white;font-weight: bold;font-size: 16px;border-radius: 10px"
+                "background-color:#D9A400;color:white;font-weight: bold;font-size: 16px;border-radius: 10px",
             };
 
             switch(m_notification.m_type)
@@ -335,10 +335,12 @@ void notification::update()
             SIGHT_ASSERT("Width is invalid", m_notification.m_size[0] > 0);
             SIGHT_ASSERT("Height is invalid", m_notification.m_size[1] > 0);
 
+            // The label is as high as the popup, and its icon takes room on the left of the text.
             const QRect available(
                 0,
                 0,
-                static_cast<int>(m_notification.m_size[0] - 0.1 * m_notification.m_size[0]),
+                static_cast<int>(m_notification.m_size[0] - 0.1 * m_notification.m_size[0])
+                - m_msg_box->icon_room(m_notification.m_size[1]),
                 static_cast<int>(m_notification.m_size[1] - 0.1 * m_notification.m_size[1])
             );
 
@@ -376,8 +378,8 @@ void notification::update()
                     }
                 }
 
-                // Last 1-2 steps
-                while(!check_message_length(metrics, new_available, truncated, true))
+                // Last 1-2 steps, down to "..." alone when even that does not fit.
+                while(!truncated.isEmpty() && !check_message_length(metrics, new_available, truncated, true))
                 {
                     truncated.truncate(truncated.length() - 1);
                 }
@@ -513,8 +515,8 @@ std::function<QPoint(QWidget*)> notification::compute_position()
                        const auto parent_pos_center = _parent->rect().center();
 
                        return {
-                           parent_pos_center.x() - static_cast<int>(m_notification.m_size[0] / 2),
-                           parent_pos_center.y() - static_cast<int>(m_notification.m_size[1] / 2)
+                           parent_pos_center.x() - (m_notification.m_size[0] / 2),
+                           parent_pos_center.y() - (m_notification.m_size[1] / 2)
                        };
                    };
 
@@ -526,7 +528,7 @@ std::function<QPoint(QWidget*)> notification::compute_position()
                        const int height   = static_cast<int>(m_notification.m_size[1]) + margin;
 
                        return {
-                           parent_x - static_cast<int>(m_notification.m_size[0] / 2),
+                           parent_x - (m_notification.m_size[0] / 2),
                            parent_y + margin + (height * static_cast<int>(m_index))
                        };
                    };
@@ -539,7 +541,7 @@ std::function<QPoint(QWidget*)> notification::compute_position()
                        const int height   = static_cast<int>(m_notification.m_size[1]) + margin;
 
                        return {
-                           parent_x - static_cast<int>(m_notification.m_size[0] / 2),
+                           parent_x - (m_notification.m_size[0] / 2),
                            parent_y - margin - (height * (static_cast<int>(m_index) + 1))
                        };
                    };

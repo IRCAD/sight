@@ -96,7 +96,7 @@ class acknowledger;
  * - \b m_progress_svg_path [sight::data::string]: path to the SVG icon used in progress notifications.
  * - \b m_progress_svg_size [sight::data::integer]: size of the SVG icon used in progress notifications.
  * - \b m_notification_icon_size [sight::data::integer]: side, in pixels, message and instruction icons
- *   are drawn at. 0, the default, follows the text height.
+ *   are drawn at. 0, the default, takes the available height, at least the text height.
  */
 class notification_zone final : public sight::ui::editor,
                                 public sight::core::notification::notifications_store

@@ -98,8 +98,8 @@ namespace sight::module::ui::qt
  *
  *     - \b size (optional): size of notifications in the same position.
  *
- *     - \b icon_size (optional): side, in pixels, the notification icon is drawn at. 0 follows the text
- *                   height.
+ *     - \b icon_size (optional): side, in pixels, the notification icon is drawn at. 0 takes the available
+ *                   height, at least the text height.
  *
  *     - \b closable (optional): override default which is closable for timed notification. This is mostly useful to
  *                   allow closing of permanent notification

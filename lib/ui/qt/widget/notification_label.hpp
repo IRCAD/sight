@@ -30,10 +30,11 @@ namespace sight::ui::qt::widget
 {
 
 /**
- * @brief A label drawing its icon inside its own frame.
+ * @brief A label drawing an icon right before its text, inside its own frame.
  *
- * This label paints its icon over its own frame, and reserves the room it takes so that the text, centered or not
- * and never runs under it.
+ * The icon and the text are aligned as one group, following the label alignment. QLabel still paints the text:
+ * this label only reserves the icon room on the left of its contents, measures the text and paints the icon
+ * just before it.
  */
 class SIGHT_UI_QT_CLASS_API_QT notification_label : public QLabel
 {
@@ -41,15 +42,21 @@ Q_OBJECT
 
 public:
 
+    /// Space between the icon and the text, in pixels.
+    static constexpr int GAP = 10;
+
+    /// Share of the available height an automatic icon takes, leaving some room above and below.
+    static constexpr int AUTO_ICON_PERCENT = 80;
+
     explicit notification_label(QWidget* _parent = nullptr, Qt::WindowFlags _f = Qt::WindowFlags()) :
         QLabel(_parent, _f)
     {
     }
 
-    /// Draw this icon on the left of the text. A null icon removes it.
+    /// Draw this icon before the text. A null icon removes it.
     void set_icon(const QIcon& _icon);
 
-    /// Draw the icon at this side, in pixels. 0 follows the text height.
+    /// Draw the icon at this side, in pixels. 0 takes the available height, at least the text height.
     void set_icon_size(int _size);
 
     /// The icon currently drawn, null when there is none.
@@ -58,24 +65,57 @@ public:
         return m_icon;
     }
 
-    /// The side, in pixels, the icon is actually drawn at.
+    /// The side, in pixels, the icon is actually drawn at, 0 without icon.
     [[nodiscard]] int icon_side() const;
+
+    /// Where the icon is drawn, empty without icon.
+    [[nodiscard]] QRect icon_rect() const;
+
+    /// Where the text is drawn: its horizontal extent, over the whole contents height.
+    [[nodiscard]] QRect text_rect() const;
+
+    /// Room the icon takes on the left of this label at the given height, gap included. 0 without icon.
+    [[nodiscard]] int icon_room(int _height) const;
+
+    [[nodiscard]] int heightForWidth(int _width) const override;
+    [[nodiscard]] QSize sizeHint() const override;
+    [[nodiscard]] QSize minimumSizeHint() const override;
 
 protected:
 
-    /// Draw the icon over the frame the style just painted.
     void paintEvent(QPaintEvent* _event) override;
-
-    /// Follow the text height when the style sheet changes the font.
+    void resizeEvent(QResizeEvent* _event) override;
     void changeEvent(QEvent* _event) override;
 
 private:
 
-    /// Reserve the room the icon takes on both sides, so that centered text stays centered.
+    struct placement
+    {
+        int side {0};
+        QMargins margins {};
+        QRect icon {};
+        QRect text {};
+    };
+
+    [[nodiscard]] placement compute_placement() const;
+
+    /// Apply the contents margins of the current placement.
     void update_margins();
 
-    /// Distance between the frame and the icon, in pixels.
-    static constexpr int GAP = 6;
+    /// Margins the style takes for its border and padding, which QFrame keeps in the contents margins.
+    [[nodiscard]] QMargins frame_margins(const QRect& _rect) const;
+
+    /// Size of the text laid out at this width, as QLabel lays it out.
+    [[nodiscard]] QSizeF measure_text(int _width) const;
+
+    /// Icon side wanted for this contents height, before checking that the text still fits.
+    [[nodiscard]] int wanted_side(int _height) const;
+
+    /// Width QLabel's hints must leave out: they are computed as if the icon had its smallest size.
+    [[nodiscard]] int hint_extra_width() const;
+
+    /// Height an explicit icon needs, 0 otherwise.
+    [[nodiscard]] int icon_min_height() const;
 
     QIcon m_icon;
     int m_icon_size {0};
