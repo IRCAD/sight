@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024-2025 IRCAD France
+ * Copyright (C) 2024-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -49,10 +49,32 @@ TEST_CASE("sight::module::app::profile")
     CHECK_EQ(profile->version(), std::string(PROFILE_VERSION));
     CHECK_EQ(profile->file_path(), profile_file_path);
 
-    sight::core::runtime::profile::params_container in_params {"-one", "--two"};
+    profile->set_params({});
+    CHECK_EQ(profile->get_raw_arg_count(), 0);
+    CHECK(profile->get_params().empty());
+
+    profile->set_params({profile->name()});
+    REQUIRE_EQ(profile->get_raw_arg_count(), 1);
+    CHECK_EQ(std::string(profile->get_raw_params()[0]), profile->name());
+    CHECK_EQ(profile->get_params(), sight::core::runtime::profile::params_container {profile->name()});
+
+    sight::core::runtime::profile::params_container in_params {
+        profile->name(), "-one", "--two", "input with spaces.nii.gz"
+    };
     profile->set_params(in_params);
 
     sight::core::runtime::profile::params_container params = profile->get_params();
-    CHECK_EQ(params[0], in_params[0]);
-    CHECK_EQ(params[1], in_params[1]);
+    CHECK_EQ(params, in_params);
+
+    REQUIRE_EQ(profile->get_raw_arg_count(), 4);
+    char** raw_params = profile->get_raw_params();
+    CHECK_EQ(std::string(raw_params[0]), profile->name());
+    CHECK_EQ(std::string(raw_params[1]), in_params[1]);
+    CHECK_EQ(std::string(raw_params[2]), in_params[2]);
+    CHECK_EQ(std::string(raw_params[3]), in_params[3]);
+
+    profile->set_params({profile->name()});
+    REQUIRE_EQ(profile->get_raw_arg_count(), 1);
+    CHECK_EQ(std::string(profile->get_raw_params()[0]), profile->name());
+    CHECK_EQ(profile->get_params(), sight::core::runtime::profile::params_container {profile->name()});
 }

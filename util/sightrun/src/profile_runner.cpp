@@ -356,6 +356,7 @@ int main(int argc, char* argv[])
     }
 
 #ifdef WIN32
+    // cspell: ignore NOALIGNMENTFAULTEXCEPT
     if(!enableAbortDialog || std::getenv("DISABLE_ABORT_DIALOG") != nullptr)
     {
         _set_error_mode(_OUT_TO_STDERR);
@@ -517,6 +518,8 @@ int main(int argc, char* argv[])
             perror("std::signal(SIGQUIT)");
         }
 #endif
+        // Use the profile name as argv[0] so external libraries identify the application rather than sightrun.
+        profile_args.insert(profile_args.begin(), profile->name());
         profile->set_params(profile_args);
 
         profile->start();
