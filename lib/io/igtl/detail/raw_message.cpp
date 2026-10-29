@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,15 +24,15 @@
 
 #include <boost/numeric/conversion/cast.hpp>
 
-#include <algorithm>
 #include <cstdint>
+#include <cstring>
 
 namespace sight::io::igtl::detail
 {
 
 raw_message::raw_message(std::string const& _body_type)
 {
-#if defined(OpenIGTLink_HEADER_VERSION)
+#ifdef OpenIGTLink_HEADER_VERSION
     m_SendMessageType    = _body_type;
     m_ReceiveMessageType = _body_type;
 #else
@@ -82,25 +82,40 @@ raw_message::raw_data_t& raw_message::get_message()
 
 //-----------------------------------------------------------------------------
 
+#ifdef OpenIGTLink_HEADER_VERSION
+int raw_message::CalculateContentBufferSize()
+#else
+//------------------------------------------------------------------------------
+
 int raw_message::GetBodyPackSize()
+#endif
 {
-    return boost::numeric_cast<int>(sizeof(uint32_t) + m_msg.size());
+    return boost::numeric_cast<int>(sizeof(std::uint32_t) + m_msg.size());
 }
 
 //-----------------------------------------------------------------------------
 
-int raw_message::PackBody()
-{
-    uint32_t* size = nullptr;
-    char* str      = nullptr;
+#ifdef OpenIGTLink_HEADER_VERSION
+int raw_message::PackContent()
+#else
+//------------------------------------------------------------------------------
 
+int raw_message::PackBody()
+#endif
+{
     this->AllocatePack();
-    size  = reinterpret_cast<uint32_t*>(m_Body);
-    *size = std::uint32_t(m_msg.size());
-    str   = reinterpret_cast<char*>(m_Body + sizeof(uint32_t));
-    if(*size > 0)
+#ifdef OpenIGTLink_HEADER_VERSION
+    auto* content = m_Content;
+#else
+    auto* content = m_Body;
+#endif
+
+    // Keep the native byte order of the existing custom message format.
+    const auto size = boost::numeric_cast<std::uint32_t>(m_msg.size());
+    std::memcpy(content, &size, sizeof(size));
+    if(size > 0)
     {
-        std::copy(m_msg.begin(), m_msg.end(), str);
+        std::memcpy(content + sizeof(size), m_msg.data(), m_msg.size());
     }
 
     return 1;
@@ -108,18 +123,26 @@ int raw_message::PackBody()
 
 //-----------------------------------------------------------------------------
 
-int raw_message::UnpackBody()
-{
-    uint32_t* size = nullptr;
-    char* str      = nullptr;
+#ifdef OpenIGTLink_HEADER_VERSION
+int raw_message::UnpackContent()
+#else
+//------------------------------------------------------------------------------
 
-    m_msg.clear();
-    size = reinterpret_cast<uint32_t*>(m_Body);
-    str  = reinterpret_cast<char*>(m_Body + sizeof(uint32_t));
-    if(*size > 0)
+int raw_message::UnpackBody()
+#endif
+{
+#ifdef OpenIGTLink_HEADER_VERSION
+    const auto* content = m_Content;
+#else
+    const auto* content = m_Body;
+#endif
+
+    std::uint32_t size = 0;
+    std::memcpy(&size, content, sizeof(size));
+    m_msg.resize(size);
+    if(size > 0)
     {
-        m_msg.resize(*size);
-        std::copy(str, str + *size, m_msg.begin());
+        std::memcpy(m_msg.data(), content + sizeof(size), size);
     }
 
     return 1;
