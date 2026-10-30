@@ -3,7 +3,6 @@ name: migrate-service-keys
 description: "Migrate a Sight service and all its XML usages to hierarchical data key syntax."
 argument-hint: "<path to the service .hpp> (optional, defaults to the active file)"
 ---
-
 # Migrate a service to the hierarchical data key syntax
 
 Use the repository skill at `.agents/skills/migrate-service-keys/SKILL.md` for

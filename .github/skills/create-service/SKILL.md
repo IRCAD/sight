@@ -3,7 +3,6 @@ name: create-service
 description: "Create or modify a Sight C++ service and its factory registration, XML configuration, and unit test."
 argument-hint: "<service name or .hpp path>"
 ---
-
 # Create or modify a Sight service
 
 Use the repository guidance in `AGENTS.md` and the detailed workflow in

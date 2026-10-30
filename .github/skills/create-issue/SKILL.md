@@ -3,7 +3,6 @@ name: create-issue
 description: "Create a structured GitLab issue from the selected workspace project's issue template."
 argument-hint: "[project-name]"
 ---
-
 # Create a GitLab issue from a template
 
 Use the repository skill at `.agents/skills/create-issue/SKILL.md` for

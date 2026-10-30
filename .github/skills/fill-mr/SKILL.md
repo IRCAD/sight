@@ -3,7 +3,6 @@ name: fill-mr
 description: "Fill the description of an existing GitLab merge request for the current branch in a selected workspace project."
 argument-hint: "[project-name]"
 ---
-
 # Fill an existing merge request
 
 Use the repository skill at `.agents/skills/fill-mr/SKILL.md` for the complete
