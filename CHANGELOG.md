@@ -1,3 +1,80 @@
+# sight 26.2.0
+
+## Bug fixes:
+
+### build
+
+*Ubuntu 26.04 support.*
+
+*Compatibility with libxml 2.12.*
+
+*Package standalone executables and ex_notification_zone on Windows.*
+
+The Windows fixup always resolved runtime dependencies from bin/sightrun.exe, so packaging a standalone executable failed at the dumpbin step. The launcher is now the executable itself for EXECUTABLE targets and sightrun.exe for applications. It is passed to windows_fixup.cmake per target, since this script is shared by all applications.
+
+Like on Linux, standalone executables now install their launcher script, which the installer shortcuts point to. ex_notification_zone also declares its missing sightrun dependency.
+
+### core
+
+*Make module path resolution compatible with multi-arch folders.*
+
+### ui
+
+*Desktop integration in Gnome.*
+
+*Normalize invalid integer dropdown indices.*
+
+* Reset invalid indices to zero in non-empty dropdowns and their bound data.
+* Explicitly clear empty dropdown selections with index -1.
+* Apply corrections at startup, after choices change, and after external selection updates.
+
+### viz
+
+*Downgrade GLSL version from 450 to 420 for compatibility.*
+
+*Enhance OGRE plugins path resolution for better compatibility.*
+
+## Enhancement:
+
+### build
+
+*Support for OpenCV 5.*
+
+### test
+
+*One log file per test case and attempt.*
+
+Replace the shared fwTest.log with logs in bin/test-logs/: core opens a process log at static initialization when the test main exports its sight_test_target marker, and a Doctest listener writes one log per test case execution, starting with a copy of the process prologue. Attempts are allocated by exclusive creation, so retries and concurrent runs never overwrite a log. Each CTest run starts by emptying the directory, unless SIGHT_TEST_LOG_KEEP is set, as in CI. CI uploads them and the Windows JUnit reports are fixed.
+
+### viz
+
+*Add the fly camera.*
+
+## Refactor:
+
+### io
+
+*Make raw_message compatible with IGTLink version 1 and 3.*
+
+### ui
+
+*Remove sight::module::ui::parameters service.*
+
+- Updated grid2d adaptor to use a single spacing configuration parameter instead of separate x and y spacing.
+- Refactored square adaptor to bind x and y coordinates to shared data objects, removing the need for direct parameter setting.
+- Introduced unit tests for square adaptor to verify coordinate binding functionality.
+- Enhanced image_series and negato adaptors in scene3d to support transparency configuration.
+- Updated video adaptor to utilize configuration bindings for scaling and filtering options.
+- Added unit tests for image_series adaptor to ensure transparency sharing among children.
+- Modified XML configuration files for scene2d and scene3d tutorials to reflect new configuration bindings.
+
+## New features:
+
+### viz
+
+*Create the path of fly-through camera.*
+
+
 # sight 26.1.0
 
 ## Bug fixes:
