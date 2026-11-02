@@ -69,6 +69,13 @@ public:
 
     //------------------------------------------------------------------------------
 
+    std::vector<std::pair<std::string, std::string> > get_supported_extensions() const override
+    {
+        return {{"Test files", "*.test"}};
+    }
+
+    //------------------------------------------------------------------------------
+
     void open_location_dialog() override
     {
     }

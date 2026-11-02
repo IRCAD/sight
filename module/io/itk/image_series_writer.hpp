@@ -56,7 +56,11 @@ public:
     ~image_series_writer() noexcept override = default;
 
     /// Configure using GUI.
-    void open_location_dialog() override;
+
+    std::vector<std::pair<std::string, std::string> > get_supported_extensions() const override
+    {
+        return {{"NIfTI (.nii)", "*.nii *.nii.gz"}, {"Inr (.inr.gz)", "*.inr.gz"}};
+    }
 
     /// Return managed file type, here FILE
     sight::io::service::path_type_t get_path_type() const override;

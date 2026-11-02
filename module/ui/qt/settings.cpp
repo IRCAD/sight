@@ -86,7 +86,10 @@ inline static void set_minimum_size(QWidget* _widget, const settings::param_widg
 
 //-----------------------------------------------------------------------------
 
-settings::settings() noexcept = default;
+settings::settings() noexcept
+{
+    new_slot("apply_enabled", &settings::apply_enabled, this);
+}
 
 //-----------------------------------------------------------------------------
 
@@ -615,6 +618,7 @@ void settings::starting()
     this->start_listening_joystick();
 
     this->block_signals(false);
+    apply_enabled();
 }
 
 //-----------------------------------------------------------------------------
@@ -686,6 +690,7 @@ void settings::on_depends_changed(QCheckBox* _check_box, QWidget* _widget, bool 
 }
 
 //------------------------------------------------------------------------------
+
 void settings::on_depends_changed(sight::ui::qt::widget::switch_button* _switch_button, QWidget* _widget, bool _reverse)
 {
     if(!_switch_button->isEnabled())
@@ -1758,7 +1763,7 @@ void settings::create_enum_combobox_widget(
 
         if(_setup.use_index)
         {
-            combo_box->setCurrentIndex(static_cast<int>(value));
+            this->set_combobox_index(combo_box, value);
 
             QObject::connect(
                 combo_box,
@@ -1937,6 +1942,7 @@ void settings::create_enum_slider_widget(
 }
 
 //-----------------------------------------------------------------------------
+
 void settings::create_tickmarks_widget(
     QBoxLayout* _layout,
     const param_widget& _setup,
@@ -2334,6 +2340,31 @@ double settings::get_double_slider_value(const QSlider* _slider)
 
 //------------------------------------------------------------------------------
 
+void settings::set_combobox_index(QComboBox* _combobox, std::int64_t _value)
+{
+    const QSignalBlocker blocker(_combobox);
+    if(_combobox->count() == 0)
+    {
+        _combobox->setCurrentIndex(-1);
+        return;
+    }
+
+    const bool invalid = _value < 0 || _value >= _combobox->count();
+    const auto index   = invalid ? 0 : _value;
+    _combobox->setCurrentIndex(static_cast<int>(index));
+
+    if(invalid)
+    {
+        const auto integer = data<sight::data::integer>(_combobox);
+        if(integer->value() != index)
+        {
+            update_data<sight::data::integer>(_combobox, index);
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void settings::update_range(const std::string& _options, const std::string& _key)
 {
     QObject* widget = this->get_param_widget(_key);
@@ -2387,7 +2418,7 @@ void settings::update_range(const std::string& _options, const std::string& _key
 
             if(combobox->property(qt_property::s_use_index).toBool())
             {
-                combobox->setCurrentIndex(static_cast<int>(current_value));
+                this->set_combobox_index(combobox, current_value);
             }
             else
             {
@@ -2472,6 +2503,13 @@ void settings::update_range(const std::string& _options, const std::string& _key
             // Otherwise, set the first value as default
             non_linear_slider->set_index(0);
         }
+
+        // The range signal also refreshes the endpoint labels, independently of data notifications.
+        guard.unblock();
+        if(!int_values.empty())
+        {
+            non_linear_slider->range_changed(int_values.front(), int_values.back());
+        }
     }
     else if(auto* const tickmarks = qobject_cast<sight::ui::qt::widget::tickmarks_slider*>(widget);
             tickmarks != nullptr)
@@ -2483,6 +2521,7 @@ void settings::update_range(const std::string& _options, const std::string& _key
 }
 
 //------------------------------------------------------------------------------
+
 void settings::update_tickmarks(sight::ui::qt::widget::tickmarks_slider* const _tickmarks, const std::string& _options)
 {
     QSignalBlocker guard(_tickmarks);
@@ -2763,6 +2802,7 @@ void settings::set_label_minimum_size(QLabel* _label, T _min, T _max, std::uint8
 }
 
 //------------------------------------------------------------------------------
+
 template<>
 void settings::set_parameter<sight::data::boolean>(const bool& _val, std::string _key)
 {
@@ -2945,7 +2985,7 @@ void settings::set_parameter<sight::data::integer>(const std::int64_t& _val, std
     {
         if(combobox->property(qt_property::s_use_index).toBool())
         {
-            combobox->setCurrentIndex(static_cast<int>(val));
+            this->set_combobox_index(combobox, _val);
         }
         else
         {
@@ -3380,4 +3420,19 @@ void settings::joystick_axis_direction_event(const sight::io::joystick::axis_dir
 
 //-----------------------------------------------------------------------------
 
-} //namespace sight::module::ui::qt
+service::connections_t settings::auto_connections() const
+{
+    return {{m_enabled, data::signals::MODIFIED, "apply_enabled"}};
+}
+
+//------------------------------------------------------------------------------
+
+void settings::apply_enabled()
+{
+    if(const auto enabled = m_enabled.lock())
+    {
+        this->set_enabled(enabled->value());
+    }
+}
+
+} // namespace sight::module::ui::qt

@@ -30,6 +30,7 @@
 
 #include <geometry/data/image.hpp>
 
+#include <cmath>
 #include <iostream>
 #include <ui/qt/container/widget.hpp>
 
@@ -60,6 +61,7 @@ slice_index_position_editor::slice_index_position_editor() noexcept
 }
 
 //----------------------------------------------------------------------------------------
+
 void slice_index_position_editor::configuring()
 {
     this->initialize();
@@ -111,6 +113,7 @@ void slice_index_position_editor::configuring()
 }
 
 //-------------------------------------------------------------------------------------------
+
 void slice_index_position_editor::starting()
 {
     this->create();
@@ -237,6 +240,7 @@ void slice_index_position_editor::swapping(std::string_view _key)
 }
 
 //----------------------------------------------------------------------------
+
 void slice_index_position_editor::stopping()
 {
     this->destroy();
@@ -254,6 +258,7 @@ void slice_index_position_editor::destroy_editor_container()
 }
 
 //------------------------------------------------------
+
 void slice_index_position_editor::update_slice_index(int _axial, int _frontal, int _sagittal)
 {
     if(_sagittal != m_sagittal_index
@@ -345,6 +350,7 @@ void slice_index_position_editor::update_slice_index_from_img(const sight::data:
 }
 
 //------------------------------------------------------------------------------
+
 void slice_index_position_editor::slice_index_notification(int _index)
 {
     const auto image = m_image.lock();
@@ -369,6 +375,7 @@ void slice_index_position_editor::slice_index_notification(int _index)
 }
 
 //------------------------------------------------------------------------
+
 void slice_index_position_editor::slice_label_notification()
 {
     m_label_option = (m_label_option == label_option_t::index) ? label_option_t::position : label_option_t::index;
@@ -427,6 +434,7 @@ void slice_index_position_editor::slice_label_notification()
 }
 
 //------------------------------------------------------------------------
+
 void slice_index_position_editor::update_slice_type(int _from, int _to)
 {
     if(_to == static_cast<int>(m_axis))
@@ -463,6 +471,7 @@ void slice_index_position_editor::update_slice_type_from_img(const axis_t& _type
 }
 
 //------------------------------------------------------------------------------
+
 void slice_index_position_editor::update_slider_fiducial()
 {
     if(m_label_option == label_option_t::index)
@@ -511,7 +520,16 @@ void slice_index_position_editor::update_slider_fiducial()
                         {
                             if(m_label_option == label_option_t::index)
                             {
-                                if(not point.referenced_image_sequence.referenced_frame_number.empty())
+                                if(m_axis != axis_t::axial && !point.graphic_data.empty())
+                                {
+                                    const auto& position   = point.graphic_data.front();
+                                    const auto slice_index = std::lround(
+                                        m_axis == axis_t::sagittal ? position.x : position.y
+                                    );
+                                    m_slice_selector_with_index->add_slider_position(slice_index, color);
+                                }
+                                else if(m_axis == axis_t::axial
+                                        && !point.referenced_image_sequence.referenced_frame_number.empty())
                                 {
                                     const auto slice_index =
                                         point.referenced_image_sequence.referenced_frame_number.at(0) - 1;
@@ -521,7 +539,7 @@ void slice_index_position_editor::update_slider_fiducial()
                                 else
                                 {
                                     SIGHT_ERROR(
-                                        "Cannot find referenced_frame_number for fiducial, unable to add a slider mark"
+                                        "Cannot find coordinates for fiducial, unable to add a slider mark"
                                     );
                                 }
                             }
@@ -594,6 +612,7 @@ void slice_index_position_editor::slice_type_notification(int _type)
 }
 
 //------------------------------------------------------------------------------
+
 service::connections_t slice_index_position_editor::auto_connections() const
 {
     connections_t connections;

@@ -1,7 +1,6 @@
 # Generates doxygen for all specified projects.
 # Works only with sight CMake script.
 function(doxygenGenerator)
-    include(${CMAKE_ROOT}/Modules/Documentation.cmake)
     find_package(Doxygen QUIET)
 
     if(DOXYGEN_FOUND)

@@ -25,13 +25,19 @@
 #include <data/integer.hpp>
 #include <data/string.hpp>
 
+#include <core/com/slot.hpp>
 #include <core/thread/worker.hpp>
+#include <utest/wait.hpp>
 
 #include <doctest/doctest.h>
 
 #include <QCheckBox>
 #include <QComboBox>
+#include <QLabel>
+#include <QSlider>
 
+#include <atomic>
+#include <limits>
 #include <memory>
 
 namespace sight::module::ui::qt::ut
@@ -78,6 +84,224 @@ static void add_item(
 
 TEST_SUITE("sight::module::ui::qt::settings")
 {
+    TEST_CASE_FIXTURE(sight::ui::test::gui_fixture, "settings_group_observes_enabled_data")
+    {
+        test_service(
+            "sight::module::ui::qt::settings",
+            [](const sight::service::base::sptr& _service)
+        {
+            auto enabled = std::make_shared<sight::data::boolean>(false);
+            auto value   = std::make_shared<sight::data::boolean>(true);
+            auto worker  = sight::core::thread::get_default_worker();
+            sight::service::config_t config;
+            sight::module::ui::qt::ut::add_item(config, "group_value", "bool");
+            _service->set_inout(value, "item.data", true, false, 0);
+            _service->set_input(enabled, "config.enabled", true);
+            worker->post_task<void>([&]{_service->configure(config); _service->start().get();}).get();
+            CHECK(query_widget<QCheckBox>("group_value", [](auto* _w){return _w->isEnabled();}) == false);
+            for(const bool state : {true, false, true})
+            {
+                worker->post_task<void>(
+                    [&]
+                {
+                    enabled->set_value(state);
+                    enabled->async_emit(sight::data::signals::MODIFIED);
+                }).get();
+                SIGHT_TEST_FAIL_WAIT(
+                    query_widget<QCheckBox>("group_value", [](auto* _w){return _w->isEnabled();}) == state
+                );
+                CHECK(value->value());
+            }
+
+            worker->post_task<void>([&]{_service->stop().get();}).get();
+        });
+    }
+
+    TEST_CASE_FIXTURE(sight::ui::test::gui_fixture, "non_linear_slider_observes_choices_and_external_values")
+    {
+        test_service(
+            "sight::module::ui::qt::settings",
+            [](const sight::service::base::sptr& _service)
+        {
+            auto value   = std::make_shared<sight::data::integer>(90);
+            auto choices = std::make_shared<sight::data::string>("25;50;90;120;150");
+            auto worker  = sight::core::thread::get_default_worker();
+            sight::service::config_t config;
+            sight::module::ui::qt::ut::add_item(config, "nonlin", "integer");
+            config.put("item.<xmlattr>.widget", "comboslider");
+            config.put("item.<xmlattr>.use_index", false);
+            config.put("item.<xmlattr>.values", "choices");
+            _service->set_inout(value, "item.data", true, false, 0);
+            _service->set_input(choices, "item.values", true, false, 0);
+            worker->post_task<void>([&]{_service->configure(config); _service->start().get();}).get();
+            CHECK(query_widget<QLabel>("nonlin/minValueLabel", [](auto* _w){return _w->text();}) == "25");
+            CHECK(query_widget<QLabel>("nonlin/maxValueLabel", [](auto* _w){return _w->text();}) == "150");
+            worker->post_task<void>(
+                [&]
+            {
+                choices->set_value("37;70;105;135;160");
+                choices->async_emit(sight::data::signals::MODIFIED);
+            }).get();
+            SIGHT_TEST_FAIL_WAIT(
+                query_widget<QLabel>("nonlin/minValueLabel", [](auto* _w){return _w->text();}) == "37"
+            );
+            CHECK(query_widget<QLabel>("nonlin/maxValueLabel", [](auto* _w){return _w->text();}) == "160");
+            worker->post_task<void>(
+                [&]
+            {
+                value->set_value(135);
+                value->async_emit(sight::data::signals::MODIFIED);
+            }).get();
+            SIGHT_TEST_FAIL_WAIT(
+                query_widget<QLabel>("nonlin/valueLabel", [](auto* _w){return _w->text();}) == "135"
+            );
+            worker->post_task<void>([&]{_service->stop().get();}).get();
+        });
+    }
+
+    TEST_CASE_FIXTURE(sight::ui::test::gui_fixture, "integer_combobox_normalizes_invalid_indices")
+    {
+        test_service(
+            "sight::module::ui::qt::settings",
+            [](const sight::service::base::sptr& _service)
+        {
+            auto selected = std::make_shared<sight::data::integer>(std::numeric_limits<std::int64_t>::max());
+            auto choices  = std::make_shared<sight::data::string>("Raw;Left eye;Right eye");
+            auto worker   = sight::core::thread::get_default_worker();
+            std::atomic<int> notifications {0};
+            std::atomic<bool> invalid_notification {false};
+            auto observer = sight::core::com::new_slot(
+                [&]
+            {
+                ++notifications;
+                invalid_notification = invalid_notification || selected->value() < 0;
+            });
+            observer->set_worker(worker);
+            auto connection = selected->signal(sight::data::signals::MODIFIED)->connect(observer);
+
+            sight::service::config_t config;
+            sight::module::ui::qt::ut::add_item(config, "preview", "plain_combobox");
+            config.put("item.<xmlattr>.values", "choices");
+            _service->set_inout(selected, "item.data", true, false, 0);
+            _service->set_input(choices, "item.values", true, false, 0);
+            worker->post_task<void>([&]{_service->configure(config); _service->start().get();}).get();
+            const auto combo = sight::ui::test::gui_fixture::find_widget<QComboBox>("preview");
+            REQUIRE(combo);
+            SIGHT_TEST_FAIL_WAIT(notifications >= 1);
+            worker->post_task<void>(
+                [&]
+            {
+                CHECK(selected->value() == 0);
+                CHECK(combo->currentIndex() == 0);
+                combo->setCurrentIndex(2);
+                CHECK(selected->value() == 2);
+                choices->set_value("Raw");
+                choices->async_emit(sight::data::signals::MODIFIED);
+            }).get();
+            SIGHT_TEST_FAIL_WAIT(query_widget<QComboBox>("preview", [](auto* _w){return _w->count();}) == 1);
+            worker->post_task<void>([&]{CHECK(selected->value() == 0); CHECK(combo->currentIndex() == 0);}).get();
+            CHECK_FALSE(invalid_notification);
+
+            for(const auto value : {
+                static_cast<std::int64_t>(-1),
+                static_cast<std::int64_t>(4),
+                std::numeric_limits<std::int64_t>::max()
+            })
+            {
+                worker->post_task<void>(
+                    [&]
+                {
+                    selected->set_value(value);
+                    selected->async_emit(
+                        sight::data::signals::MODIFIED
+                    );
+                }).get();
+                SIGHT_TEST_FAIL_WAIT(
+                    query_widget<QComboBox>(
+                        "preview",
+                        [&](auto*){return selected->value();}) == 0
+                );
+            }
+
+            // Restore stereo and retain a valid external selection across repeated choices notifications.
+            worker->post_task<void>(
+                [&]
+            {
+                choices->set_value("Raw;Left eye;Right eye");
+                choices->async_emit(
+                    sight::data::signals::MODIFIED
+                );
+            }).get();
+            SIGHT_TEST_FAIL_WAIT(query_widget<QComboBox>("preview", [](auto* _w){return _w->count();}) == 3);
+            worker->post_task<void>(
+                [&]
+            {
+                selected->set_value(1);
+                selected->async_emit(
+                    sight::data::signals::MODIFIED
+                );
+            }).get();
+            SIGHT_TEST_FAIL_WAIT(query_widget<QComboBox>("preview", [](auto* _w){return _w->currentIndex();}) == 1);
+            worker->post_task<void>([&]{choices->async_emit(sight::data::signals::MODIFIED);}).get();
+            worker->post_task<void>([&]{CHECK(selected->value() == 1); CHECK(combo->currentIndex() == 1);}).get();
+            CHECK(notifications < 30);
+            worker->post_task<void>(
+                [&]
+            {
+                choices->set_value("");
+                choices->async_emit(
+                    sight::data::signals::MODIFIED
+                );
+            }).get();
+            SIGHT_TEST_FAIL_WAIT(query_widget<QComboBox>("preview", [](auto* _w){return _w->count();}) == 0);
+            SIGHT_TEST_FAIL_WAIT(query_widget<QComboBox>("preview", [&](auto*){return selected->value();}) == -1);
+            worker->post_task<void>([&]{connection.disconnect(); _service->stop().get();}).get();
+        });
+    }
+
+    TEST_CASE_FIXTURE(sight::ui::test::gui_fixture, "combobox_non_index_values_remain_unchanged")
+    {
+        test_service(
+            "sight::module::ui::qt::settings",
+            [](const sight::service::base::sptr& _service)
+        {
+            auto numeric = std::make_shared<sight::data::integer>(20);
+            auto text    = std::make_shared<sight::data::string>("Beta");
+            sight::service::config_t config;
+            sight::service::config_t item;
+            item.put("<xmlattr>.data", "numeric");
+            item.put("<xmlattr>.key", "numeric");
+            item.put("<xmlattr>.name", "Numeric");
+            item.put("<xmlattr>.widget", "combobox");
+            item.put("<xmlattr>.values", "10;20");
+            item.put("<xmlattr>.use_index", false);
+            item.put("<xmlattr>.reset", false);
+            config.add_child("item", item);
+            sight::module::ui::qt::ut::add_item(config, "text", "plain_combobox");
+            _service->set_inout(numeric, "item.data", true, false, 0);
+            _service->set_inout(text, "item.data", true, false, 1);
+            auto worker = sight::core::thread::get_default_worker();
+            worker->post_task<void>([&]{_service->configure(config); _service->start().get();}).get();
+            CHECK(query_widget<QComboBox>("numeric", [](auto* _w){return _w->currentText();}) == "20");
+            CHECK(query_widget<QComboBox>("text", [](auto* _w){return _w->currentText();}) == "Beta");
+            worker->post_task<void>(
+                [&]
+            {
+                numeric->set_value(999);
+                numeric->async_emit(sight::data::signals::MODIFIED);
+                text->set_value("Missing");
+                text->async_emit(sight::data::signals::MODIFIED);
+            }).get();
+            worker->post_task<void>(
+                [&]
+            {
+                CHECK(numeric->value() == 999);
+                CHECK(text->value() == "Missing");
+                _service->stop().get();
+            }).get();
+        });
+    }
+
     TEST_CASE_FIXTURE(sight::ui::test::gui_fixture, "multi_value_and_chained_dependencies")
     {
         test_service(

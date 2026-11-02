@@ -24,10 +24,6 @@
 
 #include "video_writer.hpp"
 
-#include <core/location/single_file.hpp>
-#include <core/location/single_folder.hpp>
-
-#include <ui/__/dialog/location.hpp>
 #include <ui/__/dialog/message.hpp>
 
 #include <opencv2/imgproc.hpp>
@@ -76,30 +72,6 @@ void video_writer::starting()
 }
 
 //------------------------------------------------------------------------------
-
-void video_writer::open_location_dialog()
-{
-    static auto default_directory = std::make_shared<core::location::single_folder>();
-
-    sight::ui::dialog::location dialog_file;
-    dialog_file.set_title(*m_window_title);
-    dialog_file.set_default_location(default_directory);
-    dialog_file.add_filter("mp4", "*.mp4");
-    dialog_file.set_option(ui::dialog::location::write);
-
-    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialog_file.show());
-    if(result)
-    {
-        m_selected_extension = dialog_file.get_selected_extensions().front();
-        default_directory->set_folder(result->get_file().parent_path());
-        dialog_file.save_default_location(default_directory);
-        this->set_file(result->get_file());
-    }
-    else
-    {
-        this->clear_locations();
-    }
-}
 
 //------------------------------------------------------------------------------
 
@@ -204,7 +176,7 @@ void video_writer::save_frame(core::clock::type _timestamp)
                 if(provided_extension.empty())
                 {
                     // No extension provided, add extension of selected filter.
-                    extension_to_use = m_selected_extension;
+                    extension_to_use = this->get_selected_extension();
                     path            += extension_to_use;
                 }
                 else

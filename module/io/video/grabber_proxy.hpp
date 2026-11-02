@@ -124,7 +124,6 @@ public:
 
         static inline const key_t FWD_START_CAMERA   = "forward_start_camera";
         static inline const key_t FWD_STOP_CAMERA    = "forward_stop_camera";
-        static inline const key_t FWD_SET_PARAMETER  = "forward_set_parameter";
         static inline const key_t FWD_PRESENT_FRAME  = "forward_present_frame";
         static inline const key_t FWD_CREATE_MONITOR = "forward_create_monitor";
     };
@@ -159,10 +158,7 @@ public:
     void next_image() override;
 
     /// Set step used on readPrevious/readNext slots.
-    void set_step(int _step, std::string _key) override;
-
-    /// Sets internal parameters values.
-    void set_parameter(ui::parameter_t _value, std::string _key) final;
+    void set_step(int _step) override;
 
     /// SLOT: Requests the grabber internal settings.
     void request_settings() final;
@@ -226,9 +222,6 @@ private:
 
     /// A frame is presented in the sub-service.
     void fwd_present_frame();
-
-    /// A named parameter has been emitted in the sub-service.
-    void fwd_set_parameter(ui::parameter_t _value, std::string _key);
 
     /// A monitor has been created in the proxied service.
     void fwd_create_monitor(sight::core::notification::base::sptr _monitor);

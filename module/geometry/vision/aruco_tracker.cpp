@@ -29,7 +29,12 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/tokenizer.hpp>
 
+#include <opencv2/core/version.hpp>
+#if CV_MAJOR_VERSION < 5
 #include <opencv2/calib3d.hpp>
+#else
+#include <opencv2/objdetect/aruco_detector.hpp>
+#endif
 #include <opencv2/imgproc.hpp>
 
 //-----------------------------------------------------------------------------
@@ -178,6 +183,7 @@ void aruco_tracker::tracking(core::clock::type& _timestamp)
         const auto detector_params = this->make_detector_parameters();
 
         // Ok, let's detect
+#if CV_MAJOR_VERSION < 5
         cv::aruco::detectMarkers(
             undistort_grey,
             m_dictionary,
@@ -186,6 +192,10 @@ void aruco_tracker::tracking(core::clock::type& _timestamp)
             detector_params,
             cv::noArray()
         );
+#else
+        const cv::aruco::ArucoDetector detector(*m_dictionary, *detector_params);
+        detector.detectMarkers(undistort_grey, detected_markers, detected_markers_ids);
+#endif
 
         auto debug_frame = m_debug_frame.lock();
         if(debug_frame)

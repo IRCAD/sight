@@ -41,9 +41,6 @@ namespace sight::module::geometry::vision
  * @brief   reprojection_error Class used to compute the mean error of reprojection between 3d object points
  * and 2d image points.
  *
- * @section Slots Slots
- * - \b set_parameter(ui::parameter_t, std::string): set a parameter from the UI.
- *
  * @section XML XML Configuration
  *
  * @code{.xml}
@@ -84,8 +81,7 @@ public:
 
     struct slots
     {
-        static inline const slot_key_t COMPUTE       = "compute";
-        static inline const slot_key_t SET_PARAMETER = "set_parameter";
+        static inline const slot_key_t COMPUTE = "compute";
     };
 
     SIGHT_DECLARE_SERVICE(reprojection_error, service::controller);

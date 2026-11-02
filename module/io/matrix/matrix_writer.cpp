@@ -22,10 +22,7 @@
 
 #include "matrix_writer.hpp"
 
-#include <core/location/single_file.hpp>
-#include <core/location/single_folder.hpp>
-
-#include <ui/__/dialog/location.hpp>
+#include <data/matrix_tl.hpp>
 
 #include <filesystem>
 #include <fstream>
@@ -77,32 +74,6 @@ void matrix_writer::configuring()
 
 void matrix_writer::starting()
 {
-}
-
-//------------------------------------------------------------------------------
-
-void matrix_writer::open_location_dialog()
-{
-    static auto default_directory = std::make_shared<core::location::single_folder>();
-
-    sight::ui::dialog::location dialog_file;
-    dialog_file.set_title(*m_window_title);
-    dialog_file.set_default_location(default_directory);
-    dialog_file.set_option(ui::dialog::location::write);
-    dialog_file.set_type(ui::dialog::location::single_file);
-    dialog_file.add_filter(".csv file", "*.csv");
-
-    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialog_file.show());
-    if(result)
-    {
-        default_directory->set_folder(result->get_file().parent_path());
-        dialog_file.save_default_location(default_directory);
-        this->set_file(result->get_file());
-    }
-    else
-    {
-        this->clear_locations();
-    }
 }
 
 //------------------------------------------------------------------------------

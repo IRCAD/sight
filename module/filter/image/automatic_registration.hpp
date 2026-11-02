@@ -29,8 +29,6 @@
 
 #include <service/filter.hpp>
 
-#include <ui/__/has_parameters.hpp>
-
 namespace sight::module::filter::image
 {
 
@@ -75,8 +73,7 @@ namespace sight::module::filter::image
  * NormalizedCorrelation : works when the intensity values are within a linear transform from each other.
  * MutualInformation : most generic metric, based on entropy. Can match images with different modalities.
  */
-class automatic_registration final : public service::filter,
-                                     public ui::has_parameters
+class automatic_registration final : public service::filter
 {
 public:
 
@@ -109,15 +106,6 @@ protected:
      * - Update service when the transform matrix is modified.
      */
     connections_t auto_connections() const final;
-
-    /// Set the metric to be used. Key must be 'metric', values are the same as for the configuration.
-    void set_enum_parameter(std::string _val, std::string _key) final;
-
-    /// Set the minimum and maximum step sizes. keys are "minStep" and "maxStep".
-    void set_double_parameter(double _val, std::string _key) final;
-
-    /// Set the maximum number of iterations, key must be "maxIterations".
-    void set_int_parameter(int _val, std::string _key) final;
 
 private:
 

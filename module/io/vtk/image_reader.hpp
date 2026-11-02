@@ -74,13 +74,6 @@ public:
     SIGHT_DECLARE_SERVICE(image_reader, sight::io::service::reader);
 
     /**
-     * @brief Configure the image path with a dialogBox.
-     *
-     * This method is used to find the file path using a file selector.
-     */
-    void open_location_dialog() override;
-
-    /**
      * @brief This method is used to load an vtk image using a file path.
      * @param[in] _vtk_file file system path of vtk image
      * @param[out] _image new empty image that will contain image loaded, if reading process is a success.
@@ -93,7 +86,7 @@ public:
     );
 
     sight::io::service::path_type_t get_path_type() const override;
-    std::vector<std::pair<std::string, std::string> > get_supported_extensions() override;
+    std::vector<std::pair<std::string, std::string> > get_supported_extensions() const override;
 
 protected:
 

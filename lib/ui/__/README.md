@@ -5,18 +5,17 @@ This is the core library in _sight_ which defines the various base interface for
 ## Classes
 
 - **action_callback_base**: defines a graphical menu item with callback
-- **application**: gives access to the underlayed application part
+- **application**: gives access to the underlaid application part
 - **cursor**: defines a generic graphical cursor
-- **GuiBaseObject**: base class for all graphical objects classes
+- **object**: base class for all graphical objects classes
 - **registry**: internal mechanism: contains helpers to manage the various graphical container in a  _sight_ application.
-- **IAction**: defines the generic interface for the menu items management
+- **action**: defines the generic interface for the menu items management
 - **application**: defines the generic interface for application manipulation
 - **cursor**: defines the generic interface to define a graphical cursor
 - **dialog_editor**: defines the generic interface to define a graphical dialog editor service which creates its own container
 - **editor**: defines the generic interface to define a graphical object editor services
 - **frame**: defines the generic interface to define a frame graphical display
-- **IGuiContainer**: defines the generic interface to manage the layouts and the various displayed object container
-- **has_parameters**: generic interface meant to define basic slots to receive parameter values from signals
+- **container**: defines the generic interface to manage the layouts and the various displayed object container
 - **menu**: defines the generic interface to define a graphical menu
 - **menu_bar**: defines the generic interface to define a graphical menu bar
 - **menu_item_callback**: defines the generic interface to define a graphical menu item callback

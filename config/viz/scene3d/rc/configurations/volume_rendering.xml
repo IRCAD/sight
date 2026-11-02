@@ -14,8 +14,13 @@
         <object uid="model_visibility" type="sight::data::boolean" />
         <object uid="axis_visibility" type="sight::data::boolean" />
         <object uid="volume_parameters" type="sight::data::map" />
+        <object uid="negato_3d_transparency" type="sight::data::real" optional="true" value="0" />
+        <object uid="flythrough_camera_distance" type="sight::data::real" />
+        <object uid="flythrough_camera_speed" type="sight::data::integer" />
+        <object uid="flythrough_camera_direction" type="sight::data::integer" />
 
         <param name="WID_PARENT" />
+        <param name="flythrough_path_group" default="Path" />
         <param name="maximized" default="false" />
         <param name="restored" default="true" />
 
@@ -25,9 +30,15 @@
         <channel name="shape_extruder_tool_disabled" />
         <channel name="shape_extruder_undo" />
         <channel name="shape_extruder_reset" />
-        <channel name="negato_3d_transparency" />
         <channel name="ruler_activation" optional="true" />
         <channel name="ruler_deactivation" optional="true" />
+        <channel name="flythrough_path_activation" />
+        <channel name="flythrough_path_clear" />
+        <channel name="flythrough_path_points_available" />
+        <channel name="flythrough_path_mode_changed" />
+        <channel name="flythrough_camera_play" />
+        <channel name="flythrough_camera_pause" />
+        <channel name="flythrough_camera_interaction" optional="true" />
         <channel name="mesh_activation" optional="true" />
         <channel name="volume_activation" optional="true" />
         <channel name="image_visibility" />
@@ -44,6 +55,7 @@
 
         <object uid="snapshot" type="sight::data::image" />
         <object uid="global_camera" type="sight::data::matrix4" />
+        <object uid="fly_camera_transform" type="sight::data::matrix4" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
@@ -147,11 +159,13 @@
                     <adaptor uid="grid_adp" />
                     <adaptor uid="global_camera_adp" />
                     <adaptor uid="trackball_interactor_adp" />
+                    <adaptor uid="fly_camera_adp" />
                     <adaptor uid="picker_interactor_adp" />
                     <adaptor uid="model_series_adp" />
                     <adaptor uid="image_negato3d_adp" />
                     <adaptor uid="image_volume_adp" />
                     <adaptor uid="landmarks_adp" />
+                    <adaptor uid="path_adp" />
                     <adaptor uid="ruler_fiducial_adp" />
                     <adaptor uid="axis_adp" />
                     <adaptor uid="picked_voxel_text_adp" />
@@ -167,8 +181,18 @@
             </scene>
         </service>
 
-        <service uid="global_camera_adp" type="sight::module::viz::scene3d::adaptor::camera">
+        <service uid="camera_view_generator" type="sight::module::geometry::camera_path_to_view">
+            <data image="${image}" transform_out="${fly_camera_transform}" />
+            <config path_group="${flythrough_path_group}" distance="${flythrough_camera_distance}" speed_mm_s="${flythrough_camera_speed}" direction="${flythrough_camera_direction}" />
+        </service>
+
+        <service uid="global_camera_adp" type="sight::module::viz::scene3d::adaptor::camera" auto_connect="false">
             <data transform_out="${global_camera}" />
+        </service>
+
+        <service uid="fly_camera_adp" type="sight::module::viz::scene3d::adaptor::fly_camera">
+            <data transform_in="${fly_camera_transform}" />
+            <config priority="5" />
         </service>
 
         <service uid="trackball_interactor_adp" type="sight::module::viz::scene3d::adaptor::trackball_camera">
@@ -212,19 +236,24 @@
             <ruler>
                 <config font_size="16" query_flags="0x40000000" always_display_all="true" priority="3" radius="1.5" />
             </ruler>
-            <config autoresetcamera="true" />
+            <config autoresetcamera="true" visible="${vr_visibility}" />
         </service>
 
         <service uid="image_negato3d_adp" type="sight::module::viz::scene3d::adaptor::image_series">
             <data series="${series_set}" />
             <data tf="${volume_tf}" />
             <data transfer_functions="${image_transfer_functions}" />
-            <config representation="negato3d" query_flags="0x40000000" interactive="true" priority="2" visible="${negato_visibility}" depth_bias="0.000001" />
+            <config representation="negato3d" query_flags="0x40000000" interactive="true" priority="2" visible="${negato_visibility}" depth_bias="0.000001" transparency="${negato_3d_transparency}" />
         </service>
 
         <service uid="landmarks_adp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::point">
             <data imageSeries="${image}" />
-            <config fontSize="16" priority="4" initialGroup="Group_0" initialSize="10.0" viewDistance="allSlices" />
+            <config fontSize="16" priority="4" initialGroup="Group_0" initialSize="10.0" viewDistance="allSlices" modify="group" />
+        </service>
+
+        <service uid="path_adp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::path">
+            <data image_series="${image}" />
+            <config path_group="${flythrough_path_group}" path_color="#00FF00" fiducial_size="8.0" />
         </service>
 
         <service uid="ruler_fiducial_adp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::ruler">
@@ -357,16 +386,14 @@
             <slot>image_negato3d_adp/update_slices_from_world</slot>
         </connect>
 
-        <connect channel="${negato_3d_transparency}">
-            <slot>image_negato3d_adp/set_transparency</slot>
-        </connect>
-
         <connect channel="${landmarks_edit_mode}">
             <slot>landmarks_adp/change_edit_mode</slot>
         </connect>
 
         <connect channel="${landmarks_group_selected}">
+            <signal>path_adp/group_selected</signal>
             <slot>landmarks_adp/set_current_group</slot>
+            <slot>path_adp/set_landmark_group</slot>
         </connect>
 
         <connect channel="${remove_all_landmarks}">
@@ -383,6 +410,11 @@
 
         <connect channel="${landmarks_edit_mode_changed}">
             <signal>landmarks_adp/edit_mode_changed</signal>
+            <slot>path_adp/point_edit_mode_changed</slot>
+        </connect>
+
+        <connect channel="${flythrough_path_mode_changed}">
+            <signal>path_adp/path_edit_mode_changed</signal>
         </connect>
 
         <!-- Slide view -->
@@ -460,6 +492,39 @@
 
         <connect channel="${ruler_deactivation}">
             <signal>ruler_fiducial_adp/tool_deactivated</signal>
+        </connect>
+
+        <connect channel="${flythrough_path_activation}">
+            <slot>path_adp/select_group</slot>
+            <slot>landmarks_adp/change_edit_mode</slot>
+        </connect>
+
+        <connect channel="${flythrough_path_clear}">
+            <slot>path_adp/clear</slot>
+        </connect>
+
+        <connect channel="${flythrough_path_points_available}">
+            <signal>path_adp/points_available</signal>
+        </connect>
+
+        <connect channel="${flythrough_camera_play}">
+            <slot>camera_view_generator/play</slot>
+            <slot>path_adp/hide_group</slot>
+        </connect>
+
+        <connect channel="${flythrough_camera_pause}">
+            <signal>fly_camera_adp/interaction_disabled</signal>
+            <slot>camera_view_generator/pause</slot>
+        </connect>
+
+        <connect channel="${flythrough_camera_interaction}">
+            <slot>fly_camera_adp/set_interaction_enabled</slot>
+        </connect>
+
+        <connect>
+            <signal>path_adp/group_visibility_changed</signal>
+            <slot>landmarks_adp/set_group_visibility</slot>
+            <slot>image_volume_adp/set_group_visibility</slot>
         </connect>
 
         <update uid="shape_extruder_adp" />

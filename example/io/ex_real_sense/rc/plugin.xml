@@ -39,6 +39,24 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
+            <object uid="presets_srv_preset" type="sight::data::string" value="Default" />
+            <object uid="alignment_srv_align_to" type="sight::data::string" value="None" />
+            <object uid="infrared_emitter_srv_ir_emitter" type="sight::data::boolean" value="true" />
+            <object uid="switch_infra_to_color_srv_switch_to_ir" type="sight::data::boolean" value="false" />
+            <object uid="range_editor_srv_max_range" type="sight::data::integer" value="65535" />
+            <object uid="range_editor_srv_min_range" type="sight::data::integer" value="0" />
+            <object uid="enable_spacial_filter" type="sight::data::boolean" value="false" />
+            <object uid="enable_temporal_filter" type="sight::data::boolean" value="false" />
+            <object uid="enable_hole_filling_filter" type="sight::data::boolean" value="false" />
+            <object uid="spacial_filter_spacial_magnitude" type="sight::data::integer" value="2" />
+            <object uid="spacial_filter_spacial_smooth_alpha" type="sight::data::real" value="0.5" />
+            <object uid="spacial_filter_spacial_smooth_delta" type="sight::data::integer" value="20" />
+            <object uid="spacial_filter_spacial_hole_filling" type="sight::data::integer" value="0" />
+            <object uid="temporal_filter_temporal_smooth_alpha" type="sight::data::real" value="0.4" />
+            <object uid="temporal_filter_temporal_smooth_delta" type="sight::data::integer" value="20" />
+            <object uid="temporal_filter_temporal_persistency" type="sight::data::integer" value="2" />
+            <object uid="hole_filling_filter_hole_filling" type="sight::data::integer" value="1" />
+
             <service uid="mainFrame" type="sight::module::ui::frame">
                 <gui>
                     <frame>
@@ -382,91 +400,69 @@
 
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="presetsSrv" type="sight::module::ui::qt::parameters">
-                <parameters>
-                    <param
-                        type="enum"
-                        name="Realsense presets"
-                        key="preset"
-                        defaultValue="Default"
-                        values="Default,HighResHighAccuracy,HighResHighDensity,HighResMidDensity,MidResHighAccuracy,
-                    MidResHighDensity,MidResMidDensity,LowResHighAccuracy,LowResHighDensity,LowResMidDensity,
-                    Hand,ShortRange,BodyScan,RemoveIR"
-                    />
-                </parameters>
+            <service uid="presetsSrv" type="sight::module::ui::qt::settings">
+                <item
+                    data="${presets_srv_preset}"
+                    name="Realsense presets"
+                    key="preset"
+                    values="Default,HighResHighAccuracy,HighResHighDensity,HighResMidDensity,MidResHighAccuracy, MidResHighDensity,MidResMidDensity,LowResHighAccuracy,LowResHighDensity, LowResMidDensity,                     Hand,ShortRange,BodyScan,RemoveIR"
+                    widget="combobox"
+                />
             </service>
 
-            <service uid="alignmentSrv" type="sight::module::ui::qt::parameters">
-                <parameters>
-                    <param type="enum" name="Align frames to" key="alignTo" defaultValue="None" values="None,Color,Depth,Infrared" />
-                </parameters>
+            <service uid="alignmentSrv" type="sight::module::ui::qt::settings">
+                <item data="${alignment_srv_align_to}" name="Align frames to" key="alignTo" values="None,Color,Depth,Infrared" widget="combobox" />
             </service>
 
-            <service uid="infraredEmitterSrv" type="sight::module::ui::qt::parameters">
-                <parameters>
-                    <param type="bool" name="IR Emitter" key="IREmitter" defaultValue="true" />
-                </parameters>
+            <service uid="infraredEmitterSrv" type="sight::module::ui::qt::settings">
+                <item data="${infrared_emitter_srv_ir_emitter}" name="IR Emitter" key="IREmitter" />
             </service>
 
-            <service uid="switchInfraToColorSrv" type="sight::module::ui::qt::parameters">
-                <parameters>
-                    <param type="bool" name="Infra to Color" key="switchToIR" defaultValue="false" />
-                </parameters>
+            <service uid="switchInfraToColorSrv" type="sight::module::ui::qt::settings">
+                <item data="${switch_infra_to_color_srv_switch_to_ir}" name="Infra to Color" key="switchToIR" />
             </service>
 
-            <service uid="rangeEditorSrv" type="sight::module::ui::qt::parameters">
-                <parameters>
-                    <param type="int" name="max range" key="maxRange" defaultValue="65535" min="0" max="65535" />
-                    <param type="int" name="min range" key="minRange" defaultValue="0" min="0" max="65534" />
-                </parameters>
+            <service uid="rangeEditorSrv" type="sight::module::ui::qt::settings">
+                <item data="${range_editor_srv_max_range}" name="max range" key="maxRange" min="0" max="65535" widget="slider" />
+                <item data="${range_editor_srv_min_range}" name="min range" key="minRange" min="0" max="65534" widget="slider" />
             </service>
 
-            <service uid="enableSpacialFilterParamsSrv" type="sight::module::ui::qt::parameters">
-                <parameters>
-                    <param type="bool" name="Enable spatial Edge-Preserving filter" key="enableSpacial" defaultValue="false" />
-                </parameters>
+            <service uid="enableSpacialFilterParamsSrv" type="sight::module::ui::qt::settings">
+                <item data="${enable_spacial_filter}" name="Enable spatial Edge-Preserving filter" key="enableSpacial" />
             </service>
 
-            <service uid="enableTemporalFilterParamsSrv" type="sight::module::ui::qt::parameters">
-                <parameters>
-                    <param type="bool" name="Enable temporal filter" key="enableTemporal" defaultValue="false" />
-                </parameters>
+            <service uid="enableTemporalFilterParamsSrv" type="sight::module::ui::qt::settings">
+                <item data="${enable_temporal_filter}" name="Enable temporal filter" key="enableTemporal" />
             </service>
 
-            <service uid="enableHoleFillingFilterParamsSrv" type="sight::module::ui::qt::parameters">
-                <parameters>
-                    <param type="bool" name="Enable holes Filling filter" key="enableHolesFilling" defaultValue="false" />
-                </parameters>
+            <service uid="enableHoleFillingFilterParamsSrv" type="sight::module::ui::qt::settings">
+                <item data="${enable_hole_filling_filter}" name="Enable holes Filling filter" key="enableHolesFilling" />
             </service>
 
-            <service uid="spacialFilterParamsSrv" type="sight::module::ui::qt::parameters">
-                <parameters>
-                    <param type="int" name="Number of iterations" key="spacialMagnitude" defaultValue="2" min="1" max="5" />
-                    <param type="double" name="Smooth Alpha" key="spacialSmoothAlpha" defaultValue="0.5" min="0.25" max="1" widget="slider" />
-                    <param type="int" name="Smooth Delta" key="spacialSmoothDelta" defaultValue="20" min="1" max="50" />
-                    <param type="enum" name="Hole filling (pixels)" key="spacialHoleFilling" defaultValue="0" values="0,2,4,8,16,unlimited" />
-                </parameters>
+            <service uid="spacialFilterParamsSrv" type="sight::module::ui::qt::settings">
+                <config enabled="${enable_spacial_filter}" />
+                <item data="${spacial_filter_spacial_magnitude}" name="Number of iterations" key="spacialMagnitude" min="1" max="5" widget="slider" />
+                <item data="${spacial_filter_spacial_smooth_alpha}" name="Smooth Alpha" key="spacialSmoothAlpha" min="0.25" max="1" widget="slider" />
+                <item data="${spacial_filter_spacial_smooth_delta}" name="Smooth Delta" key="spacialSmoothDelta" min="1" max="50" widget="slider" />
+                <item data="${spacial_filter_spacial_hole_filling}" name="Hole filling (pixels)" key="spacialHoleFilling" values="0,2,4,8,16,unlimited" widget="combobox" />
             </service>
 
-            <service uid="temporalFilterParamsSrv" type="sight::module::ui::qt::parameters">
-                <parameters>
-                    <param type="double" name="Smooth Alpha" key="temporalSmoothAlpha" defaultValue="0.4" min="0" max="1" widget="slider" />
-                    <param type="int" name="Smooth Delta" key="temporalSmoothDelta" defaultValue="20" min="1" max="100" />
-                    <param
-                        type="enum"
-                        name="Persistency index"
-                        key="temporalPersistency"
-                        defaultValue="Valid_in_2/last_3"
-                        values="Disabled,Valid_in_8/8 ,Valid_in_2/last_3,Valid_in_2/last_4,Valid_in_2/8,Valid_in_1/last_2,Valid_in_1/last_5,
-                                   Valid_in_1/last_8,Persist_Indefinitely"
-                    />
-                </parameters>
+            <service uid="temporalFilterParamsSrv" type="sight::module::ui::qt::settings">
+                <config enabled="${enable_temporal_filter}" />
+                <item data="${temporal_filter_temporal_smooth_alpha}" name="Smooth Alpha" key="temporalSmoothAlpha" min="0" max="1" widget="slider" />
+                <item data="${temporal_filter_temporal_smooth_delta}" name="Smooth Delta" key="temporalSmoothDelta" min="1" max="100" widget="slider" />
+                <item
+                    data="${temporal_filter_temporal_persistency}"
+                    name="Persistency index"
+                    key="temporalPersistency"
+                    values="Disabled,Valid_in_8/8,Valid_in_2/last_3,Valid_in_2/last_4,Valid_in_2/8,Valid_in_1/last_2,Valid_in_1/last_5,Valid_in_1/last_8,Persist_Indefinitely"
+                    widget="combobox"
+                />
             </service>
 
-            <service uid="holeFillingFilterParamsSrv" type="sight::module::ui::qt::parameters">
-                <parameters>
-                    <param type="enum" name="Hole filling" key="holeFilling" defaultValue="farest_from_around" values="fill_from_left,farest_from_around,nearest_from_around" />
-                </parameters>
+            <service uid="holeFillingFilterParamsSrv" type="sight::module::ui::qt::settings">
+                <config enabled="${enable_hole_filling_filter}" />
+                <item data="${hole_filling_filter_hole_filling}" name="Hole filling" key="holeFilling" values="fill_from_left,farest_from_around,nearest_from_around" widget="combobox" />
             </service>
 
             <service uid="distanceSrv" type="sight::module::ui::qt::text_status">
@@ -483,7 +479,26 @@
 
             <!-- Manages Sense camera configuration -->
             <service uid="videoGrabberSrv" type="sight::module::io::realsense::scan">
-                <config camera_set="${RGBDCameraSet}" />
+                <config
+                    camera_set="${RGBDCameraSet}"
+                    preset="${presets_srv_preset}"
+                    align_to="${alignment_srv_align_to}"
+                    ir_emitter="${infrared_emitter_srv_ir_emitter}"
+                    switch_to_ir="${switch_infra_to_color_srv_switch_to_ir}"
+                    max_range="${range_editor_srv_max_range}"
+                    min_range="${range_editor_srv_min_range}"
+                    enable_spacial="${enable_spacial_filter}"
+                    enable_temporal="${enable_temporal_filter}"
+                    enable_holes_filling="${enable_hole_filling_filter}"
+                    spacial_magnitude="${spacial_filter_spacial_magnitude}"
+                    spacial_smooth_alpha="${spacial_filter_spacial_smooth_alpha}"
+                    spacial_smooth_delta="${spacial_filter_spacial_smooth_delta}"
+                    spacial_hole_filling="${spacial_filter_spacial_hole_filling}"
+                    temporal_smooth_alpha="${temporal_filter_temporal_smooth_alpha}"
+                    temporal_smooth_delta="${temporal_filter_temporal_smooth_delta}"
+                    temporal_persistency="${temporal_filter_temporal_persistency}"
+                    hole_filling="${hole_filling_filter_hole_filling}"
+                />
                 <timeline depth="${frameTLDepth}" />
                 <timeline image="${frameTLVideo}" />
                 <output pointcloud="${pointcloud}" />
@@ -540,7 +555,7 @@
             </service>
 
             <service uid="TFGridAdp" type="sight::module::viz::scene2d::adaptor::grid2d">
-                <config xMin="-20" xMax="5020" yMin="0.0" yMax="1.0" xSpacing="100" ySpacing="0.1" opacity="0.6" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="1" />
+                <config spacing="100;0.1" xMin="-20" xMax="5020" yMin="0.0" yMax="1.0" opacity="0.6" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="1" />
             </service>
 
             <service uid="TFAbscissaAdp" type="sight::module::viz::scene2d::adaptor::line">
@@ -683,36 +698,6 @@
                 <signal>RGBCamera/modified</signal>
                 <slot>startVideoAct/enable</slot>
                 <slot>stopVideoAct/update</slot>
-            </connect>
-
-            <connect>
-                <signal>rangeEditorSrv/parameter_changed</signal>
-                <signal>spacialFilterParamsSrv/parameter_changed</signal>
-                <signal>temporalFilterParamsSrv/parameter_changed</signal>
-                <signal>holeFillingFilterParamsSrv/parameter_changed</signal>
-                <signal>presetsSrv/parameter_changed</signal>
-                <signal>alignmentSrv/parameter_changed</signal>
-                <signal>infraredEmitterSrv/parameter_changed</signal>
-                <signal>switchInfraToColorSrv/parameter_changed</signal>
-                <signal>enableSpacialFilterParamsSrv/parameter_changed</signal>
-                <signal>enableTemporalFilterParamsSrv/parameter_changed</signal>
-                <signal>enableHoleFillingFilterParamsSrv/parameter_changed</signal>
-                <slot>videoGrabberSrv/set_parameter</slot>
-            </connect>
-
-            <connect>
-                <signal>enableSpacialFilterParamsSrv/parameter_changed</signal>
-                <slot>spacialFilterParamsSrv/set_enabled_by_param</slot>
-            </connect>
-
-            <connect>
-                <signal>enableTemporalFilterParamsSrv/parameter_changed</signal>
-                <slot>temporalFilterParamsSrv/set_enabled_by_param</slot>
-            </connect>
-
-            <connect>
-                <signal>enableHoleFillingFilterParamsSrv/parameter_changed</signal>
-                <slot>holeFillingFilterParamsSrv/set_enabled_by_param</slot>
             </connect>
 
             <connect>

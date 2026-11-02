@@ -51,19 +51,17 @@ public:
     //Destructor
     ~open_cv_reader() override;
 
-    /// configure the service using a GUI.
-    void open_location_dialog() override;
+    //------------------------------------------------------------------------------
+
+    std::vector<std::pair<std::string, std::string> > get_supported_extensions() const override
+    {
+        return {{"XML or YAML files", "*.xml *.yml *.yaml"}};
+    }
 
     /// Returns managed path type, here service manages only single file
     sight::io::service::path_type_t get_path_type() const override;
 
 protected:
-
-    /**
-     * @brief Prompt a dialog to define file location.
-     * @return boolean if a location has been choosen
-     */
-    virtual bool define_location_gui();
 
     /**
      * @brief Configures the service.

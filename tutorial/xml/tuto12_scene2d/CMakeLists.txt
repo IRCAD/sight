@@ -2,6 +2,7 @@ sight_add_target(tuto12_scene2d TYPE APP)
 
 add_dependencies(
     tuto12_scene2d
+    data
     module_app
     module_service
     module_ui

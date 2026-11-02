@@ -73,13 +73,18 @@ public:
     mesh_writer() noexcept;
     ~mesh_writer() noexcept override = default;
 
-    /**
-     * @brief Configure the mesh path.
-     *
-     * This method is used to find
-     * the file path  using a file selector.
-     */
-    void open_location_dialog() override;
+    //------------------------------------------------------------------------------
+
+    std::vector<std::pair<std::string, std::string> > get_supported_extensions() const override
+    {
+        return {
+            {"OBJ files", "*.obj"},
+            {"PLY files", "*.ply"},
+            {"STL files", "*.stl"},
+            {"VTK Legacy files", "*.vtk"},
+            {"VTK Polydata files", "*.vtp"}
+        };
+    }
 
     sight::io::service::path_type_t get_path_type() const override;
 
@@ -128,9 +133,6 @@ private:
      * @brief Mesh path .
      */
     std::filesystem::path m_fs_mesh_path;
-
-    /// Extension selected in file dialog
-    std::string m_selected_extension;
 };
 
 } // namespace sight::module::io::vtk

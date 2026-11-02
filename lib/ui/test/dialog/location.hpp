@@ -23,8 +23,6 @@
 
 #include <sight/ui/test/config.hpp>
 
-#include <core/location/single_file.hpp>
-
 #include <ui/__/dialog/location_base.hpp>
 
 #include <optional>
@@ -52,6 +50,12 @@ public:
 
     SIGHT_UI_TEST_API static const std::vector<filter_t>& get_filters();
 
+    SIGHT_UI_TEST_API static types get_type();
+
+    SIGHT_UI_TEST_API static options get_options();
+
+    SIGHT_UI_TEST_API static core::location::base::sptr get_initial_location();
+
     SIGHT_UI_TEST_API static bool clear();
 
 private:
@@ -62,6 +66,9 @@ private:
     static std::queue<std::vector<std::filesystem::path> > s_paths_list;
     static std::optional<filter_t> s_current_filter;
     static std::vector<filter_t> s_filters;
+    static types s_type;
+    static options s_options;
+    static core::location::base::sptr s_initial_location;
 };
 
 } // namespace sight::ui::test::dialog

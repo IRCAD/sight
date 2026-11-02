@@ -23,6 +23,7 @@
 
 #include <io/joystick/interactor.hpp>
 
+#include <data/boolean.hpp>
 #include <data/real.hpp>
 #include <data/string.hpp>
 
@@ -47,10 +48,11 @@ namespace sight::module::ui::qt
  * @brief Generic editor to interact with properties.
  *
  * It allows to setup an editor with several properties.
- * Once the user validates the properties, a signal is sent containing the key and the value.
- * It supports booleans, doubles or integer at the moment.
+ * User changes update the bound data and emit MODIFIED. External data changes refresh the matching widgets.
+ * Supported types include booleans, integers, reals, colors, strings, and two- or three-component numeric vectors.
  *
  * @section Data
+ * - \b config.enabled [sight::data::boolean] (optional): enables or disables the complete editor group.
  * - \b item.data [sight::data::object] (mandatory): value edited by the matching item.
  * - \b item.values [sight::data::string] (optional): tokenized values of the matching item.
  * - \b item.min [sight::data::real] (optional): minimum bound of the matching item.
@@ -86,7 +88,7 @@ namespace sight::module::ui::qt
  *
  * Static attributes:
  * - \b name: label to display.
- * - \b key: name used in the signal to identify the parameter.
+ * - \b key: widget identifier used by dependencies and runtime updates.
  * - \b hide_min_max (optional, boolean): allows to hide the min and max labels.
  * - \b widget (optional) : widget type, available for types 'sight::data::integer', 'sight::data::real',
  * 'sight::data::string'.
@@ -109,8 +111,10 @@ namespace sight::module::ui::qt
  * send value when value changed otherwise.
  * - \b min_width (optional, int) Minimum width, in device coordinates. @todo Support relative widget size.
  * - \b min_height (optional, int) Minimum height, in device coordinates. @todo Support relative widget size.
- * - \b use_index (optional, bool, default=true): for 'comboslider', whether to use the index or the value (if "false")
- * of the element.
+ * - \b use_index (optional, bool, default=true): for integer 'combobox' and 'comboslider' widgets, store the
+ *   zero-based position when true (or omitted), or the selected numeric value when false. For a 'combobox',
+ *   the numeric value is read from the displayed text, not from the value after '='. String comboboxes ignore
+ *   this attribute and store the value after '=' (or the displayed text when '=' is absent).
  * - \b joystick (optional, string): joystick alias to use for the widget. It can be 'left' or 'right'.
  * - \b joystick_axis (optional, string): joystick axes to use for the widget. It can be a combination up to three axes.
  *                                        Allowed values: 'rx', 'ry', 'rz', 'tx', 'ty', 'tz'.
@@ -120,17 +124,38 @@ namespace sight::module::ui::qt
  *   \c sight::data::string binding. Values are separated by ',', ' ', or ';'. A displayed label and its stored value
  *   can be separated with '='. For example,
  *   \c values="BLEND=imageBlend,CHECKERBOARD=imageCheckerboard" displays \c BLEND and \c CHECKERBOARD while storing
- *   \c imageBlend and \c imageCheckerboard.
+ *   \c imageBlend and \c imageCheckerboard in a bound \c sight::data::string. Integer comboboxes instead store
+ *   the position or the displayed numeric value according to \c use_index.
  * - \b min and \b max: for integer and real widgets. Each accepts either a literal numeric value or a
  *   \c sight::data::real binding. For integer widgets, the received value is converted with \c static_cast<int>.
  *
  * Literal values are read when the service starts. Bound \c sight::data::string and \c sight::data::real objects are
  * also observed: changing them and emitting \c sight::data::signals::MODIFIED refreshes the corresponding widget.
  *
+ * Combobox selection depends on the bound data type and \c use_index:
+ * - For \c sight::data::integer with \c use_index="true" or no \c use_index attribute, the data is the zero-based
+ *   index. For example, selecting "20" from \c values="10;20;30" stores 1. A valid index is preserved when the
+ *   choices change, even if the label at that position changes. For a non-empty list, a negative or out-of-range
+ *   index selects the first item and updates the bound data to 0, emitting \c MODIFIED unless signals are blocked.
+ *   This normalization applies at startup, after a choices update, and after an external data change.
+ *   An empty list has no selection and leaves the bound integer unchanged.
+ * - For \c sight::data::integer with \c use_index="false", the displayed text must be an integer. Selecting "20"
+ *   from \c values="10;20;30" stores 20. External values select the matching displayed text; if no text matches,
+ *   the selection stays as it is and the data is not normalized. After a choices update, an unmatched value leaves
+ *   the first item selected (or no selection for an empty list). A non-numeric selection converts to 0.
+ * - For \c sight::data::string, \c use_index has no effect: selecting "BLEND" from
+ *   \c values="BLEND=imageBlend;CHECKERBOARD=imageCheckerboard" stores "imageBlend".
+ *
  * @code{.xml}
  *     <!-- Static values and bounds -->
  *     <item data="${enum_value}" values="low,medium,high" />
  *     <item data="${numeric_value}" min="0" max="100" />
+ *
+ *     <!-- Integer combobox: selecting "20" stores 1 when use_index is omitted or true -->
+ *     <item data="${choice_index}" widget="combobox" values="10;20;30" />
+ *     <item data="${choice_index}" widget="combobox" values="10;20;30" use_index="true" />
+ *     <!-- Integer combobox: selecting "20" stores 20 -->
+ *     <item data="${choice_value}" widget="combobox" values="10;20;30" use_index="false" />
  *
  *     <!-- Dynamically updated values and bounds -->
  *     <item data="${enum_value}" values="${list_of_values}" />
@@ -202,6 +227,8 @@ public:
 
 protected:
 
+    service::connections_t auto_connections() const override;
+
     /// Configure the editor.
     void configuring() override;
 
@@ -220,6 +247,11 @@ protected:
      * @param _event
      */
     void joystick_axis_direction_event(const sight::io::joystick::axis_direction_event& _event) final;
+
+private:
+
+    /// Observe config.enabled to enable or disable the complete settings group.
+    void apply_enabled();
 
 private Q_SLOTS:
 
@@ -425,6 +457,14 @@ private:
     /// Updates all enum values using a tokenized string ("value1;value2").
     void update_range(const std::string& _options, const std::string& _key);
 
+    /**
+     * @brief Synchronizes an integer combobox using indices, correcting invalid indices to zero for non-empty lists.
+     * @param _combobox Combobox bound to an integer with use_index enabled.
+     * @param _value Requested index, checked before conversion to int.
+     * @note Corrections emit MODIFIED on the bound data, even while ordinary widget signals are blocked.
+     */
+    void set_combobox_index(QComboBox* _combobox, std::int64_t _value);
+
     /// @}
 
     /// Updates the minimum value of the widget associated with the given key.
@@ -508,6 +548,8 @@ private:
     };
 
     std::map<std::string, widget_joystick> m_widget_joysticks;
+
+    ptr_in<data::boolean> m_enabled {this, "config.enabled", std::nullopt};
 };
 
 //------------------------------------------------------------------------------

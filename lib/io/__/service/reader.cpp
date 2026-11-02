@@ -21,6 +21,7 @@
  ***********************************************************************/
 
 #include "io/__/service/reader.hpp"
+#include "io/__/service/detail/location_dialog.hpp"
 
 #include <core/runtime/path.hpp>
 
@@ -45,9 +46,10 @@ reader::reader(const std::string& _default_window_title) noexcept :
 }
 
 //-----------------------------------------------------------------------------
-std::vector<std::pair<std::string, std::string> > reader::get_supported_extensions()
+
+void reader::open_location_dialog()
 {
-    return {};
+    sight::io::service::detail::open_location_dialog(*this, *m_window_title, true);
 }
 
 //-----------------------------------------------------------------------------

@@ -70,7 +70,7 @@ sight::io::service::path_type_t writer::get_path_type() const
 
 //------------------------------------------------------------------------------
 
-std::vector<std::pair<std::string, std::string> > writer::get_supported_extensions()
+std::vector<std::pair<std::string, std::string> > writer::get_supported_extensions() const
 {
     std::vector<std::pair<std::string, std::string> > result;
     std::string all_wildcards;
@@ -99,39 +99,24 @@ std::vector<std::pair<std::string, std::string> > writer::get_supported_extensio
 
 void writer::open_location_dialog()
 {
-    static auto default_location = std::make_shared<core::location::single_folder>();
+    auto default_location = std::make_shared<core::location::single_folder>();
 
     sight::ui::dialog::location location_dialog;
     location_dialog.set_title(*m_window_title);
+    location_dialog.set_preferences_key(this->get_classname());
     location_dialog.set_default_location(default_location);
     location_dialog.set_option(ui::dialog::location::write);
     location_dialog.set_type(ui::dialog::location::single_file);
 
     // Will be used later to check if "All supported images" is selected
     std::string all_wildcards;
-
-    // If there is at least two backends, add "all" filter
-    if(m_mode_by_backend.size() >= 2)
+    for(const auto& [label, wildcard] : get_supported_extensions())
     {
-        for(const auto& [backend, mode] : m_mode_by_backend)
-        {
-            all_wildcards.append(sight::io::bitmap::wildcard_filter(backend).second);
-            all_wildcards.append(" ");
-        }
-
-        boost::trim(all_wildcards);
-
-        if(!all_wildcards.empty())
-        {
-            location_dialog.add_filter("All supported images", all_wildcards);
-        }
-    }
-
-    // Add other filters
-    for(const auto& [backend, mode] : m_mode_by_backend)
-    {
-        const auto& [label, wildcard] = sight::io::bitmap::wildcard_filter(backend);
         location_dialog.add_filter(label, wildcard);
+        if(label == "All supported images")
+        {
+            all_wildcards = wildcard;
+        }
     }
 
     // Show the dialog

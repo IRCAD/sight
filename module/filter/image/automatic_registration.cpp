@@ -28,8 +28,7 @@ namespace sight::module::filter::image
 //------------------------------------------------------------------------------
 
 automatic_registration::automatic_registration() :
-    filter(has_signals::signals()),
-    has_parameters(has_slots::slots())
+    filter(has_signals::signals())
 {
 }
 
@@ -139,62 +138,6 @@ service::connections_t automatic_registration::auto_connections() const
 
 //------------------------------------------------------------------------------
 
-void automatic_registration::set_enum_parameter(std::string _val, std::string _key)
-{
-    if(_key == "metric")
-    {
-        set_metric(_val);
-    }
-    else
-    {
-        SIGHT_FATAL("Key must be 'metric', unknown key :" << _key);
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void automatic_registration::set_double_parameter(double _val, std::string _key)
-{
-    if(_key == "minStep")
-    {
-        m_min_step = _val;
-    }
-    else if(_key.find("sigma_") != std::string::npos)
-    {
-        const std::uint64_t level = this->extract_level_from_parameter_name(_key);
-        m_multi_resolution_parameters[level].second = _val;
-    }
-    else if(_key == "samplingPercentage")
-    {
-        m_sampling_percentage = _val;
-    }
-    else
-    {
-        SIGHT_FATAL("Unknown key : " << _key);
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void automatic_registration::set_int_parameter(int _val, std::string _key)
-{
-    if(_key == "maxIterations")
-    {
-        SIGHT_FATAL_IF("The number of iterations must be greater than 0 !!", _val <= 0);
-        m_max_iterations = static_cast<std::uint64_t>(_val);
-    }
-    else if(_key.find("shrink_") != std::string::npos)
-    {
-        const std::uint64_t level = this->extract_level_from_parameter_name(_key);
-        m_multi_resolution_parameters[level].first = static_cast<std::size_t>(_val);
-    }
-    else
-    {
-        SIGHT_FATAL("Unknown key : " << _key);
-    }
-}
-
-//------------------------------------------------------------------------------
 std::uint64_t automatic_registration::extract_level_from_parameter_name(const std::string& _name)
 {
     // find the level

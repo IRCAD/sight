@@ -259,7 +259,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    std::vector<filter_t> get_supported_extensions() override
+    std::vector<filter_t> get_supported_extensions() const override
     {
         if(m_state.should_drop_file_support)
         {
@@ -496,7 +496,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    std::vector<filter_t> get_supported_extensions() override
+    std::vector<filter_t> get_supported_extensions() const override
     {
         if(!m_filters.empty())
         {

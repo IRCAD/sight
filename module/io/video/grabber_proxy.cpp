@@ -57,7 +57,6 @@ grabber_proxy::grabber_proxy() noexcept
     new_slot(slots::FWD_STOP_CAMERA, &grabber_proxy::fwd_stop_camera, this);
     new_slot(slots::FWD_PRESENT_FRAME, &grabber_proxy::fwd_present_frame, this);
 
-    new_slot(slots::FWD_SET_PARAMETER, &grabber_proxy::fwd_set_parameter, this);
     new_slot(slots::FWD_CREATE_MONITOR, &grabber_proxy::fwd_create_monitor, this);
 }
 
@@ -532,13 +531,6 @@ void grabber_proxy::start_camera()
 
                 m_connections.connect(
                     srv,
-                    grabber::signals::PARAMETER_CHANGED,
-                    this->get_sptr(),
-                    slots::FWD_SET_PARAMETER
-                );
-
-                m_connections.connect(
-                    srv,
                     core::notification::has_monitors::signals::NOTIFICATION_CREATED,
                     this->get_sptr(),
                     slots::FWD_CREATE_MONITOR
@@ -642,26 +634,13 @@ void grabber_proxy::next_image()
 
 //-----------------------------------------------------------------------------
 
-void grabber_proxy::set_step(int _step, std::string _key)
+void grabber_proxy::set_step(int _step)
 {
     for(auto& srv : m_services)
     {
         if(srv != nullptr)
         {
-            srv->set_parameter(_step, _key);
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void grabber_proxy::set_parameter(ui::parameter_t _value, std::string _key)
-{
-    for(auto& srv : m_services)
-    {
-        if(srv != nullptr)
-        {
-            srv->set_parameter(_value, _key);
+            srv->set_step(_step);
         }
     }
 }
@@ -772,13 +751,6 @@ void grabber_proxy::fwd_stop_camera()
 void grabber_proxy::fwd_present_frame()
 {
     this->async_emit(signals::FRAME_PRESENTED);
-}
-
-//------------------------------------------------------------------------------
-
-void grabber_proxy::fwd_set_parameter(ui::parameter_t _value, std::string _key)
-{
-    this->async_emit(grabber::signals::PARAMETER_CHANGED, _value, _key);
 }
 
 //------------------------------------------------------------------------------

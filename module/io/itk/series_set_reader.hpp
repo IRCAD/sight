@@ -75,16 +75,9 @@ public:
     series_set_reader() noexcept;
     ~series_set_reader() noexcept override = default;
 
-    /**
-     * @brief Configure the inr files path.
-     *
-     * This method is used to find the inr files path using a files selector.
-     */
-    void open_location_dialog() override;
-
     /// Returns managed file type, here FILES
     sight::io::service::path_type_t get_path_type() const override;
-    std::vector<std::pair<std::string, std::string> > get_supported_extensions() override;
+    std::vector<std::pair<std::string, std::string> > get_supported_extensions() const override;
 
 protected:
 

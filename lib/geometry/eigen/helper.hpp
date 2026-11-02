@@ -22,11 +22,10 @@
 
 #pragma once
 
+#include <Eigen/Core> // NOLINT(misc-include-cleaner)
 #include <sight/geometry/eigen/config.hpp>
 
 #include <data/matrix4.hpp>
-
-#include <Eigen/Core>
 
 namespace sight::geometry::eigen::helper
 {
@@ -80,7 +79,7 @@ eigen_matrix_t to_eigen(const std::array<T, 16>& _array)
     {
         for(unsigned int c = 0 ; c < 4 ; ++c)
         {
-            mat(r, c) = static_cast<double>(_array[std::size_t(4) * r + c]);
+            mat(r, c) = static_cast<double>(_array[static_cast<std::size_t>(4) * r + c]);
         }
     }
 

@@ -38,6 +38,7 @@
 #include <viz/scene3d/adaptor.hpp>
 
 #include <cstdint>
+#include <set>
 #include <string>
 #include <unordered_map>
 
@@ -66,6 +67,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @section Slots Slots
  * - \b set_image_visibility(string, bool): changes the visibility of the image identified by the first argument.
  *   In `negato2d` mode, making an image visible hides the other images.
+ * - \b set_group_visibility(string, bool): changes a fiducial group's visibility in volume children.
  * - \b update_clipping_box(): updates volume clipping boxes.
  * - \b reset_clipping_box(): resets every volume clipping matrix.
  * - \b update_slices_from_world(double, double, double): updates slices from a world point.
@@ -115,6 +117,8 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * @subsection Configuration Configuration
  * - \b representation (optional, volume/negato2d/negato3d, default=volume): child adaptor type.
+ * - \b config.transparency [sight::data::real] (optional, default=0): shared transparency of negato children.
+ *   The same object is bound to children created after series additions or service restarts.
  * - \b orientation (optional, axial/frontal/sagittal, default=axial): negato2d orientation.
  * - \b visible (optional, bool, default=true): global visibility combined with each image visibility.
  * - \b volume_rendering.config.pre_integration, \b volume_rendering.config.ambient_occlusion,
@@ -150,6 +154,7 @@ public:
     struct slots
     {
         static inline const slot_key_t SET_IMAGE_VISIBILITY     = "set_image_visibility";
+        static inline const slot_key_t SET_GROUP_VISIBILITY     = "set_group_visibility";
         static inline const slot_key_t UPDATE_CLIPPING_BOX      = "update_clipping_box";
         static inline const slot_key_t UPDATE_SLICES_FROM_WORLD = "update_slices_from_world";
         static inline const slot_key_t SET_SLICE_INDEX          = "set_slice_index";
@@ -188,6 +193,7 @@ private:
     };
 
     void set_image_visibility(std::string _image_id, bool _visible);
+    void set_group_visibility(std::string _group_name, bool _visible);
     void set_child_visibility(const std::string& _image_id, bool _visible);
     void update_clipping_box();
     void update_slices_from_world(double _x, double _y, double _z);
@@ -198,31 +204,6 @@ private:
     template<typename ... Args>
     void forward_to_children(const std::string& _slot, const Args& ... _args);
 
-    ptr_in<data::series_set> m_series {this, "data.series"};
-    ptr_inout<data::transfer_function> m_tf {this, "data.tf", true};
-    ptr_inout<data::map> m_image_transfer_functions {this, "data.transfer_functions", true};
-    ptr_in<data::model_series> m_extruded_meshes {this, "data.extrudedMeshes", true};
-    ptr_inout<data::map> m_extruded_meshes_by_image {this, "data.extruded_meshes_by_image", true};
-
-    ptr_in<data::boolean> m_preintegration {this, "volume_rendering.config.pre_integration", false};
-    ptr_in<data::boolean> m_ambient_occlusion {this, "volume_rendering.config.ambient_occlusion", false};
-    ptr_in<data::boolean> m_color_bleeding {this, "volume_rendering.config.color_bleeding", false};
-    ptr_in<data::boolean> m_shadows {this, "volume_rendering.config.shadows", false};
-    ptr_in<data::boolean> m_widgets {this, "volume_rendering.config.widgets", true};
-    ptr_in<data::integer> m_sampling {this, "volume_rendering.config.sampling", 512};
-    ptr_in<data::integer> m_opacity_correction {this, "volume_rendering.config.opacity_correction", 0};
-    ptr_in<data::integer> m_sat_shells_number {this, "volume_rendering.config.sat_shells_number", 4};
-    ptr_in<data::integer> m_sat_shell_radius {this, "volume_rendering.config.sat_shell_radius", 4};
-    ptr_in<data::integer> m_sat_cone_samples {this, "volume_rendering.config.sat_cone_samples", 50};
-    ptr_in<data::real> m_color_bleeding_factor {this, "volume_rendering.config.color_bleeding_factor", 1.};
-    ptr_in<data::real> m_ao_factor {this, "volume_rendering.config.ao_factor", 1.};
-    ptr_in<data::real> m_sat_cone_angle {this, "volume_rendering.config.sat_cone_angle", 0.1};
-    ptr_in<data::integer> m_sat_size_ratio {this, "volume_rendering.config.sat_size_ratio", 2};
-    ptr_in<data::boolean> m_dynamic {this, "config.dynamic", false};
-    ptr_in<data::integer> m_priority {this, "config.priority", 2};
-    ptr_in<data::boolean> m_auto_reset_camera {this, "config.autoresetcamera", true};
-    ptr_in<data::string> m_transform {this, "config.transform", {}};
-
     std::unordered_map<std::string, data::matrix4::sptr> m_clipping_matrices;
     std::unordered_map<std::string, sight::service::base::sptr> m_extruders;
     representation_t m_representation {representation_t::volume};
@@ -232,10 +213,59 @@ private:
     std::unordered_map<std::string, sight::viz::scene3d::adaptor::sptr> m_landmarks;
     std::unordered_map<std::string, sight::viz::scene3d::adaptor::sptr> m_rulers;
     std::unordered_map<std::string, bool> m_image_visibility;
+    std::set<std::string> m_hidden_groups;
     std::unordered_map<std::string, data::boolean::sptr> m_child_visibility;
     std::unordered_map<std::string, sight::viz::scene3d::adaptor::sptr> m_children;
     std::unordered_map<std::string, data::image::sptr> m_masks;
     core::com::helper::sig_slot_connection m_child_connections;
+
+    ptr_in<data::series_set> m_series {this, "data.series"};
+
+    ptr_inout<data::transfer_function> m_tf {this, "data.tf", true};
+
+    ptr_inout<data::map> m_image_transfer_functions {this, "data.transfer_functions", true};
+
+    ptr_in<data::model_series> m_extruded_meshes {this, "data.extrudedMeshes", true};
+
+    ptr_inout<data::map> m_extruded_meshes_by_image {this, "data.extruded_meshes_by_image", true};
+
+    ptr_in<data::boolean> m_preintegration {this, "volume_rendering.config.pre_integration", false};
+
+    ptr_in<data::boolean> m_ambient_occlusion {this, "volume_rendering.config.ambient_occlusion", false};
+
+    ptr_in<data::boolean> m_color_bleeding {this, "volume_rendering.config.color_bleeding", false};
+
+    ptr_in<data::boolean> m_shadows {this, "volume_rendering.config.shadows", false};
+
+    ptr_in<data::boolean> m_widgets {this, "volume_rendering.config.widgets", true};
+
+    ptr_in<data::integer> m_sampling {this, "volume_rendering.config.sampling", 512};
+
+    ptr_in<data::integer> m_opacity_correction {this, "volume_rendering.config.opacity_correction", 0};
+
+    ptr_in<data::integer> m_sat_shells_number {this, "volume_rendering.config.sat_shells_number", 4};
+
+    ptr_in<data::integer> m_sat_shell_radius {this, "volume_rendering.config.sat_shell_radius", 4};
+
+    ptr_in<data::integer> m_sat_cone_samples {this, "volume_rendering.config.sat_cone_samples", 50};
+
+    ptr_in<data::real> m_color_bleeding_factor {this, "volume_rendering.config.color_bleeding_factor", 1.};
+
+    ptr_in<data::real> m_ao_factor {this, "volume_rendering.config.ao_factor", 1.};
+
+    ptr_in<data::real> m_sat_cone_angle {this, "volume_rendering.config.sat_cone_angle", 0.1};
+
+    ptr_in<data::integer> m_sat_size_ratio {this, "volume_rendering.config.sat_size_ratio", 2};
+
+    ptr_in<data::real> m_transparency {this, "config.transparency", 0.};
+
+    ptr_in<data::boolean> m_dynamic {this, "config.dynamic", false};
+
+    ptr_in<data::integer> m_priority {this, "config.priority", 2};
+
+    ptr_in<data::boolean> m_auto_reset_camera {this, "config.autoresetcamera", true};
+
+    ptr_in<data::string> m_transform {this, "config.transform", {}};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor

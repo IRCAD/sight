@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,7 +31,12 @@
 
 #include <ceres/ceres.h>
 
-#include <opencv2/opencv.hpp>
+#include <opencv2/core/version.hpp>
+#if CV_MAJOR_VERSION >= 5
+#include <opencv2/geometry/3d.hpp>
+#else
+#include <opencv2/calib3d.hpp>
+#endif
 
 namespace sight::geometry::vision::detail
 {

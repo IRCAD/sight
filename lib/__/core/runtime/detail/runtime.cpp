@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,15 +29,11 @@
 #include "core/runtime/executable.hpp"
 #include "core/runtime/executable_factory.hpp"
 #include "core/runtime/extension.hpp"
-#include "core/runtime/plugin.hpp"
-#include "core/runtime/profile.hpp"
 
-#include <core/tools/os.hpp>
-
-#include <boost/dll.hpp>
+#include <algorithm>
+#include <boost/dll/runtime_symbol_info.hpp>
 
 #include <filesystem>
-#include <functional>
 
 namespace sight::core::runtime::detail
 {
@@ -60,26 +56,53 @@ runtime::runtime()
 
     // In most cases, we can rely on finding sight_core library and then go upward in the filesystem tree
     // The lib location looks like 'SIGHT_DIR/lib/<arch>/libsight_core.*', where arch is optional
-    const std::string core_path = boost::dll::this_line_location().generic_string();
-    const std::string lib_prefix("/" MODULE_LIB_PREFIX "/");
-    auto it = std::search(core_path.rbegin(), core_path.rend(), lib_prefix.rbegin(), lib_prefix.rend());
+    const std::filesystem::path core_path = boost::dll::this_line_location().string();
+    const auto find_prefix = [&core_path](const std::filesystem::path& _prefix)
+                             {
+                                 std::filesystem::path found_path;
+                                 bool found = false;
 
-    if(it == core_path.rend())
+                                 for(auto path_it = core_path.begin() ; path_it != core_path.end() ; ++path_it)
+                                 {
+                                     auto candidate_it = path_it;
+                                     auto prefix_it    = _prefix.begin();
+                                     while(candidate_it != core_path.end() && prefix_it != _prefix.end()
+                                           && *candidate_it == *prefix_it)
+                                     {
+                                         ++candidate_it;
+                                         ++prefix_it;
+                                     }
+
+                                     if(prefix_it == _prefix.end())
+                                     {
+                                         found_path.clear();
+                                         for(auto root_it = core_path.begin() ; root_it != path_it ; ++root_it)
+                                         {
+                                             found_path /= *root_it;
+                                         }
+
+                                         found = true;
+                                     }
+                                 }
+
+                                 return found ? found_path : std::filesystem::path {};
+                             };
+
+    std::filesystem::path install_path = find_prefix(MODULE_LIB_PREFIX);
+
+    if(install_path.empty())
     {
         // But if we link statically, for instance linking with sight_core as an object library, then
         // boost::dll::this_line_location() will return the location of the current executable
         // In this case, we know that have to locate the bin directory instead of the library directory
-        const std::string bin_prefix("/" MODULE_BIN_PREFIX "/");
-        it = std::search(core_path.rbegin(), core_path.rend(), bin_prefix.rbegin(), bin_prefix.rend());
+        install_path = find_prefix(MODULE_BIN_PREFIX);
         SIGHT_FATAL_IF(
-            "Failed to locate Sight runtime. We tried to guess it from: " + core_path,
-            it == core_path.rend()
+            "Failed to locate Sight runtime. We tried to guess it from: " + core_path.string(),
+            install_path.empty()
         );
     }
 
-    const auto dist = std::distance(it, core_path.rend());
-    const std::filesystem::path lib_path(core_path.begin(), core_path.begin() + dist - 1);
-    m_working_path = std::filesystem::weakly_canonical(lib_path.parent_path().make_preferred());
+    m_working_path = std::filesystem::weakly_canonical(install_path.make_preferred());
     SIGHT_INFO("Located Sight runtime in folder: " + m_working_path.string());
 }
 
@@ -97,7 +120,7 @@ void runtime::add_module(std::shared_ptr<module> _module)
         "Module " + _module->identifier() + " already added.",
         std::ranges::find_if(
             m_modules,
-            [&](const auto& x){return x->identifier() == _module->identifier();}) == m_modules.cend()
+            [&](const auto& _x){return _x->identifier() == _module->identifier();}) == m_modules.cend()
     );
 
     m_modules.insert(_module);
@@ -150,9 +173,9 @@ void runtime::add_modules(const std::filesystem::path& _repository)
     try
     {
         const auto&& [abs_repo_path, modules] = detail::io::module_descriptor_reader::create_modules(_repository);
-        std::for_each(
-            modules.begin(),
-            modules.end(),
+        std::ranges::for_each(
+            modules,
+
             [this](auto&& _p_h1, auto&& ...)
             {
                 add_module(std::forward<decltype(_p_h1)>(_p_h1));
@@ -373,7 +396,7 @@ std::shared_ptr<core::runtime::extension> runtime::find_extension(const std::str
 core::runtime::detail::runtime::module_container runtime::modules() const
 {
     module_container modules;
-    std::copy(m_modules.begin(), m_modules.end(), std::inserter(modules, modules.begin()));
+    std::ranges::copy(m_modules, std::inserter(modules, modules.begin()));
     return modules;
 }
 

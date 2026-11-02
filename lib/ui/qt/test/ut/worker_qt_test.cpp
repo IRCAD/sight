@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+#include <core/com/signal.hpp>
+#include <core/com/slot.hpp>
 #include <core/thread/timer.hpp>
 #include <core/thread/worker.hpp>
 
@@ -33,6 +35,7 @@
 #include <doctest/doctest.h>
 
 #include <QApplication>
+#include <QPointer>
 #include <QSharedPointer>
 #include <QTimer>
 #include <QToolBar>
@@ -159,6 +162,86 @@ TEST_SUITE("sight::ui::qt::worker")
         m_worker->get_future().get();
 
         run_basic_test_checks(handler);
+    }
+
+    TEST_CASE_FIXTURE(fixture, "stop_processes_deferred_deletions")
+    {
+        m_worker->post([]{QApplication::quit();});
+        m_worker->get_future().get();
+
+        QPointer<QWidget> widget = new QWidget();
+        widget->deleteLater();
+        REQUIRE_FALSE(widget.isNull());
+
+        const auto retained_worker = m_worker;
+        m_worker->stop();
+
+        CHECK(widget.isNull());
+        // The worker must still be alive when the deferred deletion is checked.
+        CHECK(retained_worker != nullptr);
+        CHECK(qApp != nullptr);
+    }
+
+    TEST_CASE_FIXTURE(fixture, "stop_releases_pending_wrapped_slots")
+    {
+        m_worker->post([]{QApplication::quit();});
+        m_worker->get_future().get();
+
+        bool called = false;
+        {
+            auto slot = core::com::new_slot([&called]{called = true;});
+            slot->set_worker(m_worker);
+            auto signal = std::make_shared<core::com::signal<void(int)> >();
+            signal->connect(slot);
+            signal->async_emit(1);
+        }
+
+        std::weak_ptr<core::thread::worker> weak_worker = m_worker;
+        CHECK_EQ(weak_worker.use_count(), 2);
+        m_worker->stop();
+        CHECK_EQ(weak_worker.use_count(), 1);
+        CHECK_FALSE(called);
+
+        // Clean up even if the shutdown failed to drain the pending slot.
+        m_worker->process_tasks();
+        m_worker.reset();
+        CHECK(weak_worker.expired());
+        CHECK(qApp == nullptr);
+    }
+
+    TEST_CASE_FIXTURE(fixture, "stop_drains_recursively_posted_tasks")
+    {
+        m_worker->post([]{QApplication::quit();});
+        m_worker->get_future().get();
+
+        int calls = 0;
+        QPointer<QWidget> widget;
+        m_worker->post(
+            [this, &calls, &widget]
+            {
+                ++calls;
+                m_worker->post(
+                    [&calls, &widget]
+                {
+                    ++calls;
+                    widget = new QWidget();
+                    widget->deleteLater();
+                });
+            });
+        m_worker->stop();
+        CHECK_EQ(calls, 2);
+        CHECK(widget.isNull());
+        m_worker->process_tasks();
+    }
+
+    TEST_CASE_FIXTURE(fixture, "stop_from_outside")
+    {
+        std::thread test_thread([this]{m_worker->stop();});
+
+        m_worker->get_future().get();
+        test_thread.join();
+
+        CHECK(qApp != nullptr);
     }
 
     TEST_CASE_FIXTURE(fixture, "post_from_inside")

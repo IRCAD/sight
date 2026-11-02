@@ -94,6 +94,13 @@ const std::string& location::get_title()
     return m_implementation->get_title();
 }
 
+//------------------------------------------------------------------------------
+
+void location::set_preferences_key(const std::string& _key)
+{
+    m_implementation->set_preferences_key(_key);
+}
+
 //-----------------------------------------------------------------------------
 
 void location::set_default_location(core::location::base::sptr _loc)

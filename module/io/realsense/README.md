@@ -49,19 +49,23 @@ You can achieve this in two different ways:
     <timeline depth="..." />
     <timeline image="..." />
     <output pointcloud="..." />
-    <config camera_set="..." />
-    <config preset="NAME" />
+    <config camera_set="..." preset="NAME" />
 </service>
    ```
 
 
-2. By using a SParameter (see **ex_real_sense** example for a real-case use)
+2. By using the settings editor (see **ex_real_sense** example for a real-case use)
 
 ```xml
-<service uid="presets" type="sight::module::ui::qt::parameters">
-    <parameters>
-        <param type="enum" name="Realsense presets" key="preset" defaultValue="Default" values="Default,HighResHighAccuracy, HighResHighDensity,HighResMidDensity,MidResHighAccuracy, MidResHighDensity,MidResMidDensity,LowResHighAccuracy, LowResHighDensity,LowResMidDensity,Hand,ShortRange,BodyScan,RemoveIR" />
-    </parameters>
+<object uid="preset" type="sight::data::string" value="Default" />
+<service uid="presets" type="sight::module::ui::qt::settings">
+    <item data="${preset}" name="Preset" widget="combobox" values="Default,HighResHighAccuracy" />
+</service>
+
+<!-- Bind the same preset object to the grabber. -->
+<service uid="grabber" type="sight::module::io::realsense::scan">
+    <!-- Camera and timeline bindings omitted. -->
+    <config preset="${preset}" />
 </service>
 ```
 

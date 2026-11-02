@@ -59,13 +59,19 @@ public:
     /// Constructor
     mesh_reader() noexcept;
 
-    /**
-     * @brief Configure the image path.
-     *
-     * This method is used to find
-     * the file path  using a file selector.
-     */
-    void open_location_dialog() override;
+    //------------------------------------------------------------------------------
+
+    std::vector<std::pair<std::string, std::string> > get_supported_extensions() const override
+    {
+        return {
+            {"All supported files", "*.vtk *.vtp *.obj *.ply *.stl"},
+            {"OBJ File(.obj)", "*.obj"},
+            {"PLY File(.ply)", "*.ply"},
+            {"STL File(.stl)", "*.stl"},
+            {"VTK Legacy File(.vtk)", "*.vtk"},
+            {"VTK Polydata File(.vtp)", "*.vtp"}
+        };
+    }
 
     sight::io::service::path_type_t get_path_type() const override;
 

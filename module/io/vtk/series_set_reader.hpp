@@ -69,24 +69,16 @@ class series_set_reader : public sight::io::service::reader
 {
 public:
 
+    SIGHT_DECLARE_SERVICE(series_set_reader, sight::io::service::reader);
+
     /**
      * @brief Constructor. Do nothing.
      */
     series_set_reader() noexcept;
     ~series_set_reader() noexcept override = default;
 
-    SIGHT_DECLARE_SERVICE(series_set_reader, sight::io::service::reader);
-
-    /**
-     * @brief Configure the vtk file path.
-     *
-     * This method is used to find
-     * the file path  using a file selector.
-     */
-    void open_location_dialog() override;
-
     sight::io::service::path_type_t get_path_type() const override;
-    std::vector<std::pair<std::string, std::string> > get_supported_extensions() override;
+    std::vector<std::pair<std::string, std::string> > get_supported_extensions() const override;
 
 protected:
 

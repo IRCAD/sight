@@ -46,6 +46,7 @@
 #include <vtkQuadricDecimation.h>
 #include <vtkSmartPointer.h>
 #include <vtkThreshold.h>
+#include <vtkVersionMacros.h>
 #include <vtkWindowedSincPolyDataFilter.h>
 
 namespace sight::module::filter::mesh
@@ -361,6 +362,9 @@ vtkSmartPointer<vtkPolyData> vtk_mesher::reconstruct(vtkSmartPointer<vtkImageDat
     smooth_filter->SetFeatureEdgeSmoothing(static_cast<vtkTypeBool>(*m_feature_smoothing));
     smooth_filter->SetFeatureAngle(*m_feature_angle);
     smooth_filter->SetNonManifoldSmoothing(static_cast<vtkTypeBool>(*m_non_manifold_smoothing));
+#if VTK_VERSION_NUMBER >= VTK_VERSION_CHECK(9, 4, 0)
+    smooth_filter->SetWindowFunctionToHamming();
+#endif
     // This improves stability, always on
     smooth_filter->NormalizeCoordinatesOn();
 
@@ -386,6 +390,9 @@ vtkSmartPointer<vtkPolyData> vtk_mesher::reconstruct(vtkSmartPointer<vtkImageDat
                 ) / 100.0
             );
             decimate_filter->VolumePreservationOn();
+#if VTK_VERSION_NUMBER >= VTK_VERSION_CHECK(9, 3, 0)
+            decimate_filter->WeighBoundaryConstraintsByLengthOn();
+#endif
             decimate_timer->SetFilter(decimate_filter);
             last_filter = decimate_filter;
         }

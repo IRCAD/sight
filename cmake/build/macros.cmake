@@ -343,6 +343,11 @@ macro(fw_exec SIGHT_TARGET)
             ${FWCMAKE_RESOURCE_PATH}/build/windows/template_exe.bat.in
             ${CMAKE_CURRENT_BINARY_DIR}/${${SIGHT_TARGET}_SCRIPT} @ONLY
         )
+        configure_file(
+            ${FWCMAKE_RESOURCE_PATH}/install/windows/template_exe.bat.in
+            ${CMAKE_CURRENT_BINARY_DIR}/install/${${SIGHT_TARGET}_SCRIPT} @ONLY
+        )
+        install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/install/${${SIGHT_TARGET}_SCRIPT} DESTINATION bin)
         unset(ADMIN_REQUEST)
         file(
             COPY ${CMAKE_CURRENT_BINARY_DIR}/${${SIGHT_TARGET}_SCRIPT}
@@ -408,16 +413,36 @@ macro(sight_generic_test SIGHT_TARGET)
         endif()
     endif()
 
+    # Exported by doctest_main.cpp as the sight_test_target symbol, which core looks up to open the test logs
+    set(SIGHT_TEST_TARGET_NAME "${SIGHT_TARGET}")
+
     configure_file(
         "${FWCMAKE_RESOURCE_PATH}/build/doctest_main.cpp.in" "${CMAKE_CURRENT_BINARY_DIR}/src/doctest_main.cpp"
         IMMEDIATE @ONLY
     )
+
+    # Each CTest run starts with empty test logs, unless SIGHT_TEST_LOG_KEEP is set
+    get_property(test_logs_cleaned GLOBAL PROPERTY SIGHT_TEST_LOGS_CLEANED)
+    if(NOT test_logs_cleaned)
+        set_property(GLOBAL PROPERTY SIGHT_TEST_LOGS_CLEANED ON)
+        set(clean_command "\"${CMAKE_COMMAND}\" \"-DTEST_LOGS_DIR=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/test-logs\"")
+        string(APPEND clean_command " -P \"${FWCMAKE_RESOURCE_PATH}/build/clean_test_logs.cmake\"")
+        string(REPLACE "\"" "\\\"" clean_command "${clean_command}")
+        file(WRITE "${CMAKE_BINARY_DIR}/CTestCustom.cmake" "set(CTEST_CUSTOM_PRE_TEST \"${clean_command}\")\n")
+    endif()
 
     add_executable(
         ${SIGHT_TARGET}
         ${${SIGHT_TARGET}_HEADERS} ${${SIGHT_TARGET}_SOURCES} ${CMAKE_CURRENT_BINARY_DIR}/src/doctest_main.cpp
         ${${SIGHT_TARGET}_RC_FILES} ${${SIGHT_TARGET}_CMAKE_FILES} ${${SIGHT_TARGET}_PCH_LIB}
     )
+
+    if(WIN32)
+        # The export alone is needed, not an import library
+        target_link_options(${SIGHT_TARGET} PRIVATE /NOIMPLIB /NOEXP)
+    else()
+        target_link_options(${SIGHT_TARGET} PRIVATE "LINKER:--export-dynamic-symbol=sight_test_target")
+    endif()
 
     # Do it here because add ".bin" suffix change the ${SIGHT_TARGET} (!!!)
     if(UNIX)
@@ -1160,7 +1185,7 @@ function(find_target_dependencies TARGET TARGETS_FILTER RESULT_VAR)
             list(APPEND DEPENDS ${INTERFACE_DEPENDS})
             set(DEPENDS_COPY ${DEPENDS})
             foreach(dep ${DEPENDS})
-                if(NOT ${dep} IN_LIST TARGETS_FILTER AND NOT "${dep}" MATCHES "_obj")
+                if(NOT ${dep} IN_LIST TARGETS_FILTER AND NOT "${dep}" MATCHES "_obj$")
                     list(REMOVE_ITEM DEPENDS_COPY ${dep})
                 endif()
             endforeach()
@@ -1199,7 +1224,7 @@ function(sight_create_package_targets SIGHT_COMPONENTS SIGHT_IMPORTED_COMPONENTS
 
     # Add an install target for every component
     foreach(COMPONENT ${SIGHT_COMPONENTS})
-        if(NOT ${COMPONENT} MATCHES "_obj")
+        if(NOT ${COMPONENT} MATCHES "_obj$")
             get_target_property(COMPONENT_BINARY_DIR ${COMPONENT} BINARY_DIR)
             add_custom_target(
                 ${COMPONENT}_install ${CMAKE_COMMAND} -DBUILD_TYPE=${CMAKE_BUILD_TYPE} -P
@@ -1278,7 +1303,7 @@ function(sight_create_package_targets SIGHT_COMPONENTS SIGHT_IMPORTED_COMPONENTS
         # Add a dependency on each install target of dependencies found in this project
         find_target_dependencies(${APP} "${SIGHT_COMPONENTS}" DEPENDS)
         foreach(DEP ${DEPENDS})
-            if(NOT ${DEP} MATCHES "_obj")
+            if(NOT ${DEP} MATCHES "_obj$")
                 add_dependencies(${APP}_install ${DEP}_install)
             endif()
         endforeach()
@@ -1307,7 +1332,13 @@ function(sight_create_package_targets SIGHT_COMPONENTS SIGHT_IMPORTED_COMPONENTS
             else()
                 set(SIGHT_VCPKG_ROOT_DIR "${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}")
             endif()
-            set(LAUNCHER_PATH "${CMAKE_INSTALL_BINDIR}/sightrun.exe")
+            # Standalone executables are their own launcher
+            get_target_property(APP_TYPE ${APP} SIGHT_TARGET_TYPE)
+            if("${APP_TYPE}" STREQUAL "EXECUTABLE")
+                set(LAUNCHER "$<TARGET_FILE_NAME:${APP}>")
+            else()
+                set(LAUNCHER "sightrun.exe")
+            endif()
 
             configure_file(
                 ${FWCMAKE_RESOURCE_PATH}/install/windows/windows_fixup.cmake.in ${CMAKE_BINARY_DIR}/windows_fixup.cmake
@@ -1316,7 +1347,9 @@ function(sight_create_package_targets SIGHT_COMPONENTS SIGHT_IMPORTED_COMPONENTS
             add_custom_target(
                 ${APP}_fixup
                 ${CMAKE_COMMAND}
-                -DSIGHT_RUNTIME_DEPENDENCIES_MANIFEST=${CMAKE_BINARY_DIR}/${APP}-runtime-dependencies.tsv -P
+                -DSIGHT_RUNTIME_DEPENDENCIES_MANIFEST=${CMAKE_BINARY_DIR}/${APP}-runtime-dependencies.tsv
+                -DLAUNCHER_PATH=${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR}/${LAUNCHER}
+                -P
                 ${CMAKE_BINARY_DIR}/windows_fixup.cmake
                 COMMENT "Fixup before packaging..."
             )
@@ -1377,7 +1410,7 @@ function(order_components SIGHT_UNORDERED_COMPONENTS SIGHT_ORDERED_COMPONENTS)
             # If we have dependencies, we check if all of them are not already in the ordered list
             if(dependencies)
                 foreach(dependency ${dependencies})
-                    if(NOT ${dependency} IN_LIST ordered_components AND NOT "${dependency}" MATCHES "_obj")
+                    if(NOT ${dependency} IN_LIST ordered_components AND NOT "${dependency}" MATCHES "_obj$")
                         set(resolved FALSE)
                         break()
                     endif()
@@ -1439,6 +1472,7 @@ endfunction()
 # Utility macro for sight_configure_pch: creates the pch targets and setup optimized debug options if needed
 macro(sight_create_pch_target _og)
     set(SIGHT_PCH_HEADERS
+        "${FWCMAKE_BUILD_FILES_DIR}/ciso646.hpp"
         <boost/algorithm/string.hpp>
         <boost/foreach.hpp>
         <boost/function_types/function_arity.hpp>
@@ -1542,7 +1576,12 @@ macro(sight_create_pch_target _og)
     target_precompile_headers(${SIGHT_PCH_NAME} PUBLIC ${SIGHT_PCH_HEADERS})
 
     # Boost
-    find_package(Boost QUIET COMPONENTS system date_time iostreams log log_setup REQUIRED)
+    find_package(
+        Boost QUIET
+        COMPONENTS date_time iostreams log log_setup
+        OPTIONAL_COMPONENTS system
+        REQUIRED
+    )
 
     target_link_libraries(${SIGHT_PCH_NAME} PUBLIC Boost::date_time Boost::iostreams Boost::log Boost::log_setup)
     target_compile_definitions(${SIGHT_PCH_NAME} PUBLIC BOOST_BIND_GLOBAL_PLACEHOLDERS)

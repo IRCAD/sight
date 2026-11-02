@@ -24,10 +24,6 @@ if(${CMAKE_VERSION} VERSION_GREATER "3.31.0")
     cmake_policy(SET CMP0177 NEW)
     # Stricter arguments check of add_custom_command
     cmake_policy(SET CMP0175 NEW)
-else()
-    # Use old policy for Documentation to add cache variables and find VTK documentation dependent packages.
-    # (Needed for doxygen..)
-    cmake_policy(SET CMP0106 OLD)
 endif()
 
 # On Windows, if the user doesn't specify a value,
@@ -253,12 +249,14 @@ install(FILES "${CMAKE_BINARY_DIR}/cmake/sightConfig.cmake" "${CMAKE_BINARY_DIR}
 
 # Install some files needed for the build
 install(
-    FILES "${CMAKE_SOURCE_DIR}/cmake/build/configure_file.cmake"
+    FILES "${CMAKE_SOURCE_DIR}/cmake/build/clean_test_logs.cmake"
+          "${CMAKE_SOURCE_DIR}/cmake/build/configure_file.cmake"
           "${CMAKE_SOURCE_DIR}/cmake/build/flags.cmake"
           "${FWCMAKE_RESOURCE_PATH}/build/doctest_main.cpp.in"
           "${FWCMAKE_RESOURCE_PATH}/build/doctest.cmake"
           "${FWCMAKE_RESOURCE_PATH}/build/doctestAddTests.cmake"
           "${FWCMAKE_RESOURCE_PATH}/build/pch.cpp"
+          "${FWCMAKE_RESOURCE_PATH}/build/ciso646.hpp"
           "${CMAKE_SOURCE_DIR}/cmake/build/config.hpp.in"
           "${CMAKE_SOURCE_DIR}/cmake/build/plugin_config.cmake"
           "${CMAKE_SOURCE_DIR}/cmake/build/plugin_config_command.cmake"

@@ -20,6 +20,7 @@
  *
  ***********************************************************************/
 
+#include <core/location/single_folder.hpp>
 #include <core/runtime/profile.hpp>
 #include <core/runtime/runtime.hpp>
 #include <core/tools/os.hpp>
@@ -27,6 +28,7 @@
 
 #include <io/zip/archive_reader.hpp>
 
+#include <ui/__/dialog/location_base.hpp>
 #include <ui/__/preferences.hpp>
 
 #include <boost/property_tree/json_parser.hpp>
@@ -40,6 +42,43 @@ namespace sight::ui::ut
 
 namespace
 {
+
+class test_location final : public sight::ui::dialog::location_base
+{
+public:
+
+    //------------------------------------------------------------------------------
+
+    void set_type(types /*_type*/) override
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void set_option(options /*_option*/) override
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void add_filter(const std::string& /*_filter_name*/, const std::string& /*_wildcard_list*/) override
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    sight::core::location::base::sptr show() override
+    {
+        return nullptr;
+    }
+
+    //------------------------------------------------------------------------------
+
+    filter_t get_current_filter() const override
+    {
+        return {};
+    }
+};
 
 /// Doctest constructs/destructs this fixture once per TEST_CASE_FIXTURE, playing the role a
 /// setUp()/tearDown() pair would.
@@ -137,6 +176,79 @@ TEST_SUITE("sight::ui::ut::preferences")
         boost::property_tree::json_parser::read_json(m_preferences_path.string(), from_disk);
         const auto& saved_value = from_disk.get<std::string>(string_key);
         CHECK_EQ(string_value, saved_value);
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE_FIXTURE(preferences_test, "location_preferences_are_isolated_by_key")
+    {
+        const std::string title = "Shared dialog title";
+        const auto first_path   = std::filesystem::temp_directory_path() / "first-service";
+        const auto second_path  = std::filesystem::temp_directory_path() / "second-service";
+
+        test_location first;
+        first.set_title(title);
+        first.set_preferences_key("sight::test::first_service");
+        auto first_location = std::make_shared<sight::core::location::single_folder>();
+        first_location->set_folder(first_path);
+        first.save_default_location(first_location);
+
+        test_location second;
+        second.set_title(title);
+        second.set_preferences_key("sight::test::second_service");
+        auto second_location = std::make_shared<sight::core::location::single_folder>();
+        second_location->set_folder(second_path);
+        second.save_default_location(second_location);
+
+        const auto first_default = std::dynamic_pointer_cast<sight::core::location::single_folder>(
+            first.get_default_location()
+        );
+        const auto second_default = std::dynamic_pointer_cast<sight::core::location::single_folder>(
+            second.get_default_location()
+        );
+        REQUIRE(first_default);
+        REQUIRE(second_default);
+        CHECK_EQ(first_path, first_default->get_folder());
+        CHECK_EQ(second_path, second_default->get_folder());
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE_FIXTURE(preferences_test, "location_preferences_fall_back_to_title_key")
+    {
+        const std::string title = "Legacy dialog title";
+        const auto old_path     = std::filesystem::temp_directory_path() / "legacy-service";
+
+        test_location legacy;
+        legacy.set_title(title);
+        auto legacy_location = std::make_shared<sight::core::location::single_folder>();
+        legacy_location->set_folder(old_path);
+        legacy.save_default_location(legacy_location);
+
+        test_location migrated;
+        migrated.set_title(title);
+        migrated.set_preferences_key("sight::test::migrated_service");
+        migrated.set_default_location(std::make_shared<sight::core::location::single_folder>());
+
+        const auto migrated_default = std::dynamic_pointer_cast<sight::core::location::single_folder>(
+            migrated.get_default_location()
+        );
+        REQUIRE(migrated_default);
+        CHECK_EQ(old_path, migrated_default->get_folder());
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE_FIXTURE(preferences_test, "location_preferences_disabled_use_supplied_fallback")
+    {
+        sight::ui::preferences::set_enabled(false);
+
+        test_location dialog;
+        dialog.set_title("Preferences disabled");
+        auto fallback = std::make_shared<sight::core::location::single_folder>();
+        dialog.set_default_location(fallback);
+
+        CHECK_EQ(fallback, dialog.get_default_location());
     }
 
 //------------------------------------------------------------------------------

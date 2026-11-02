@@ -33,7 +33,12 @@
 #include <io/opencv/matrix.hpp>
 #include <io/opencv/point_list.hpp>
 
+#include <opencv2/core/version.hpp>
+#if CV_MAJOR_VERSION < 5
 #include <opencv2/calib3d.hpp>
+#else
+#include <opencv2/geometry/3d.hpp>
+#endif
 #include <opencv2/core/types.hpp>
 
 #include <cstddef>

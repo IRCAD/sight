@@ -210,6 +210,13 @@
 
     <extension implements="sight::service::extension::factory">
         <type>sight::viz::scene3d::adaptor</type>
+        <service>sight::module::viz::scene3d::adaptor::fly_camera</service>
+        <object key="data.transform_in">sight::data::matrix4</object>
+        <desc>Applies a camera pose and preserves an additional manual rotation.</desc>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::viz::scene3d::adaptor</type>
         <service>sight::module::viz::scene3d::adaptor::transform</service>
         <object key="transform">sight::data::matrix4</object>
         <desc>This adaptor binds a data::matrix4 to an Ogre scene node.</desc>

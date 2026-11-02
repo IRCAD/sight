@@ -2,6 +2,14 @@
     <requirement id="sight::module::service" />
 
     <extension implements="sight::service::extension::factory">
+        <type>sight::service::base</type>
+        <service>sight::module::geometry::camera_path_to_view</service>
+        <object key="data.image">sight::data::image_series</object>
+        <object key="data.transform_out">sight::data::matrix4</object>
+        <desc>Generates a camera transform from a fiducial path.</desc>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
         <type>sight::service::controller</type>
         <service>sight::module::geometry::concatenate_matrices</service>
         <object key="data.input">sight::data::matrix4</object>

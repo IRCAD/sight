@@ -63,7 +63,14 @@ public:
     ~calibration_info_reader() noexcept override = default;
 
     /// Configures the folder path.
-    void open_location_dialog() override;
+
+    std::vector<std::pair<std::string, std::string> > get_supported_extensions() const override
+    {
+        return {{"Image files",
+            "*.bmp *.dib *.jpeg *.jpg *.jpe *.jp2 *.png *.webp *.pbm *.pgm *.ppm *.pxm *.pnm *.pfm *.sr *.ras *.tiff *.tif *.exr *.hdr *.pic"
+        }
+        };
+    }
 
     /// Returns the folder path type.
     sight::io::service::path_type_t get_path_type() const override;

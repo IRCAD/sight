@@ -22,6 +22,8 @@
 
 #pragma once
 
+#include <data/dvec2.hpp>
+
 #include <viz/scene2d/adaptor.hpp>
 
 namespace sight::module::viz::scene2d::adaptor
@@ -30,16 +32,11 @@ namespace sight::module::viz::scene2d::adaptor
 /**
  * @brief Render grid on the scene2d.
  *
- * @section Slots Slots
- * - \b set_grid_spacing(double, double, std::string) : set the grid spacing in x and y. It is intended to be connected
- * to
- * a double2Changed signal of a parameters service; the string key parameter should be set to "spacing".
- *
  * @section XML XML Configuration
  *
  * @code{.xml}
    <service uid="grid1" type="sight::module::viz::scene2d::adaptor::grid2d">
-    <config xMin="-1100" xMax="750" yMin="-0.7" yMax="1.7" xSpacing="100" ySpacing="0.1"
+    <config xMin="-1100" xMax="750" yMin="-0.7" yMax="1.7" spacing="100;0.1"
         color="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="1"/>
    </service>
    @endcode
@@ -55,8 +52,11 @@ namespace sight::module::viz::scene2d::adaptor
  *    - \b xMax (optional): Set the maximum x value of the grid.
  *    - \b yMin (optional): Set the minimum y value of the grid.
  *    - \b yMax (optional): Set the maximum y value of the grid.
- *    - \b xSpacing (optional, default value: 10): Set the grid spacing (space between 2 consecutive lines) in x.
- *    - \b ySpacing (optional, default value: 10): Set the grid spacing (space between 2 consecutive lines) in y.
+ *
+ * @subsection ConfigBindings Configuration data bindings
+ * Configuration inputs accept literals or shared data objects.
+ * Default values apply when no configuration value is provided.
+ * - \b config.spacing [sight::data::dvec2]: X and Y spacing, default (10, 10).
  */
 class grid2d : public sight::viz::scene2d::adaptor
 {
@@ -64,13 +64,8 @@ public:
 
     SIGHT_DECLARE_SERVICE(grid2d, sight::viz::scene2d::adaptor);
 
-    struct slots
-    {
-        static inline const slot_key_t SET_GRID_SPACING = "set_grid_spacing";
-    };
-
     /// Constructor, set the x and y spacing to 10
-    grid2d() noexcept;
+    grid2d() noexcept = default;
 
     /// Basic destructor, do nothing
     ~grid2d() noexcept override = default;
@@ -79,6 +74,8 @@ public:
     void process_interaction(sight::viz::scene2d::data::event& _event) override;
 
 protected:
+
+    sight::service::connections_t auto_connections() const override;
 
     void configuring() override;
 
@@ -109,11 +106,8 @@ private:
     /// Returns y-axis ending value
     float get_y_end_val() const;
 
-    /// Slot: This method is used to set the grid spacing from two double parameters.
-    void set_grid_spacing(double _x, double _y, std::string _key);
-
     /// Bounds of the grid and spacing values for each axis.
-    float m_x_min {0.F}, m_x_max {0.F}, m_y_min {0.F}, m_y_max {0.F}, m_x_spacing {10.F}, m_y_spacing {10.F};
+    float m_x_min {0.F}, m_x_max {0.F}, m_y_min {0.F}, m_y_max {0.F};
 
     /// The pen.
     QPen m_pen;
@@ -123,6 +117,9 @@ private:
 
     /// The layer.
     QGraphicsItemGroup* m_layer {nullptr};
+
+    /// Typed config.spacing configuration binding.
+    ptr_in<sight::data::dvec2> m_spacing {this, "config.spacing", {10., 10.}};
 };
 
 } // namespace sight::module::viz::scene2d::adaptor

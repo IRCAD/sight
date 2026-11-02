@@ -22,14 +22,11 @@
 
 #include "module/io/vtk/series_set_reader.hpp"
 
-#include <core/location/single_folder.hpp>
-
 #include <data/series_set.hpp>
 
 #include <io/vtk/series_set_reader.hpp>
 
 #include <ui/__/cursor.hpp>
-#include <ui/__/dialog/location.hpp>
 #include <ui/__/dialog/message.hpp>
 
 #include <filesystem>
@@ -53,48 +50,10 @@ sight::io::service::path_type_t series_set_reader::get_path_type() const
 
 //------------------------------------------------------------------------------
 
-void series_set_reader::open_location_dialog()
-{
-    static auto default_directory = std::make_shared<core::location::single_folder>();
-
-    sight::ui::dialog::location dialog_file;
-    dialog_file.set_default_location(default_directory);
-    dialog_file.set_type(ui::dialog::location::multi_files);
-    dialog_file.set_title(*m_window_title);
-    dialog_file.add_filter("All supported files", "*.mhd *.obj *.ply *.stl *.vti *.vtk *.vtp *.vtu");
-    dialog_file.add_filter("MetaImage files", "*.mhd");
-    dialog_file.add_filter("OBJ Files(.obj)", "*.obj");
-    dialog_file.add_filter("PLY Files(.ply)", "*.ply");
-    dialog_file.add_filter("STL Files(.stl)", "*.stl");
-    dialog_file.add_filter("VTI image files", "*.vti");
-    dialog_file.add_filter("VTK Legacy Files(.vtk)", "*.vtk");
-    dialog_file.add_filter("VTK Polydata Files(.vtp)", "*.vtp");
-    dialog_file.add_filter("VTU image files", "*.vtu");
-    dialog_file.set_option(ui::dialog::location::read);
-    dialog_file.set_option(ui::dialog::location::file_must_exist);
-
-    auto result = std::dynamic_pointer_cast<core::location::multiple_files>(dialog_file.show());
-    if(result)
-    {
-        const std::vector<std::filesystem::path> paths = result->get_files();
-        if(!paths.empty())
-        {
-            default_directory->set_folder(paths[0].parent_path());
-            dialog_file.save_default_location(default_directory);
-        }
-
-        this->set_files(paths);
-    }
-    else
-    {
-        this->clear_locations();
-    }
-}
-
-//------------------------------------------------------------------------------------
-std::vector<std::pair<std::string, std::string> > series_set_reader::get_supported_extensions()
+std::vector<std::pair<std::string, std::string> > series_set_reader::get_supported_extensions() const
 {
     return {
+        {"All supported files", "*.mhd *.obj *.ply *.stl *.vti *.vtk *.vtp *.vtu"},
         {"MetaImage files", "*.mhd"},
         {"OBJ Files(.obj)", "*.obj"},
         {"PLY Files(.ply)", "*.ply"},

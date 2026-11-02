@@ -234,6 +234,12 @@ void volume_render::starting()
         m_volume_renderer->set_sampling(static_cast<std::uint16_t>(*m_sampling), tf.get_shared());
     }
 
+    if(m_config.dynamic)
+    {
+        auto* new_worker = render_service->get_interactor_manager()->create_graphics_worker();
+        m_buffering_worker = std::unique_ptr<sight::viz::scene3d::graphics_worker>(new_worker);
+    }
+
     this->request_render();
 }
 
@@ -318,12 +324,12 @@ void volume_render::new_image()
     auto render_service = this->render_service();
 
     {
-        const auto image = m_image.lock();
-        const auto mask  = m_mask.lock();
-
-        if(not data::helper::medical_image::check_image_validity(image.get_shared()))
         {
-            return;
+            const auto image = m_image.lock();
+            if(not data::helper::medical_image::check_image_validity(image.get_shared()))
+            {
+                return;
+            }
         }
 
         render_service->make_current();
@@ -332,21 +338,17 @@ void volume_render::new_image()
 
         // Ignore this update to avoid flickering when loading a new image
         // We will be signaled later when either the image or the mask will be updated
-        if(image->size() != mask->size())
+
         {
-            return;
+            const auto image = m_image.lock();
+            const auto mask  = m_mask.lock();
+            if(image->size() != mask->size())
+            {
+                return;
+            }
         }
     }
     {
-        if(m_config.dynamic)
-        {
-            // Destroy the worker to wait for all pending buffering tasks to be cleared.
-            m_buffering_worker.reset();
-
-            auto* new_worker = render_service->get_interactor_manager()->create_graphics_worker();
-            m_buffering_worker = std::unique_ptr<sight::viz::scene3d::graphics_worker>(new_worker);
-        }
-
         this->update_mask();
         this->update_volume_tf();
     }
@@ -377,10 +379,7 @@ void volume_render::buffer_image()
     else
     {
         this->render_service()->make_current();
-        {
-            const auto image = m_image.lock();
-            m_volume_renderer->load_image();
-        }
+        m_volume_renderer->load_image();
         this->update_image();
     }
 }

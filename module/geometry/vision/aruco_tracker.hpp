@@ -31,7 +31,12 @@
 
 #include <io/tracking/base.hpp>
 
+#include <opencv2/core/version.hpp>
+#if CV_MAJOR_VERSION < 5
 #include <opencv2/aruco.hpp>
+#else
+#include <opencv2/objdetect/aruco_detector.hpp>
+#endif
 
 namespace sight::module::geometry::vision
 {

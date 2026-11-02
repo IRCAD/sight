@@ -7,7 +7,8 @@ else()
     # "/usr/lib/XXX" instead of "/usr/lib/x86_64-linux-gnu/XXX", making cmake to fail at the configuration stage.
     # To workaround that, we link the library manually on that platform.
     # This should be removed once the cmake files are fixed.
-    target_link_libraries(${SIGHT_TARGET}_obj PRIVATE -lniftiio -lnifti2 -lznz)
+    # No nifti2: it exports the nifti1 symbols with NIfTI-2 structures and breaks the ITK NIfTI reader when loaded first
+    target_link_libraries(${SIGHT_TARGET}_obj PRIVATE -lniftiio -lznz)
     target_include_directories(${SIGHT_TARGET}_obj PRIVATE SYSTEM /usr/include/nifti)
 endif()
 

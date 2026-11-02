@@ -59,18 +59,17 @@ class image_series_writer : public sight::io::service::writer
 {
 public:
 
-    /**
-     * @brief Constructor. Do nothing.
-     */
+    SIGHT_DECLARE_SERVICE(image_series_writer, sight::io::service::writer);
+
     image_series_writer() noexcept;
     ~image_series_writer() noexcept override = default;
 
-    SIGHT_DECLARE_SERVICE(image_series_writer, sight::io::service::writer);
+    //------------------------------------------------------------------------------
 
-    /**
-     * @brief Configure the image path.
-     */
-    void open_location_dialog() override;
+    std::vector<std::pair<std::string, std::string> > get_supported_extensions() const override
+    {
+        return {{"VTK", "*.vtk"}, {"VTI", "*.vti"}, {"MetaImage", "*.mhd"}};
+    }
 
     sight::io::service::path_type_t get_path_type() const override;
 

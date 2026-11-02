@@ -31,7 +31,8 @@ namespace sight::module::viz::scene2d::adaptor
 
 square::square() noexcept
 {
-    new_slot(slots::SET_DOUBLE_PARAMETER, &square::set_double_parameter, this);
+    new_slot("apply_config_x", &square::apply_config_x, this);
+    new_slot("apply_config_y", &square::apply_config_y, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -42,12 +43,8 @@ void square::configuring()
 
     const config_t config = this->get_config().get_child("config.<xmlattr>");
 
-    SIGHT_ASSERT("Attribute 'x' is missing", config.count("x"));
-    SIGHT_ASSERT("Attribute 'y' is missing", config.count("y"));
     SIGHT_ASSERT("Attribute 'size' is missing", config.count("size"));
 
-    m_coord.x      = config.get<double>("x");
-    m_coord.y      = config.get<double>("y");
     m_size         = config.get<std::uint32_t>("size");
     m_auto_refresh = config.get<bool>("autoRefresh", m_auto_refresh);
     m_interaction  = config.get<bool>("interaction", m_interaction);
@@ -64,7 +61,7 @@ void square::starting()
 {
     m_layer = new QGraphicsItemGroup();
 
-    m_rec = new QGraphicsRectItem(m_coord.x, m_coord.y, m_size, m_size);
+    m_rec = new QGraphicsRectItem(0., 0., m_size, m_size);
     QPen pen;
     pen.setColor(Qt::GlobalColor(Qt::black));
     m_rec->setPen(pen);
@@ -75,13 +72,14 @@ void square::starting()
     m_layer->setPos(m_x_axis->origin(), m_y_axis->origin());
     m_layer->setZValue(m_z_value);
     this->get_scene_2d_render()->get_scene()->addItem(m_layer);
+    this->updating();
 }
 
 //-----------------------------------------------------------------------------
 
 void square::updating()
 {
-    m_rec->setPos(m_coord.x, m_coord.y);
+    m_rec->setPos(*m_x, *m_y);
 }
 
 //-----------------------------------------------------------------------------
@@ -164,22 +162,28 @@ sight::viz::scene2d::vec2d_t square::coord_view_to_coord_item(
 
 //-----------------------------------------------------------------------------
 
-void square::set_double_parameter(const double _val, std::string _key)
+sight::service::connections_t square::auto_connections() const
 {
-    this->configure_params();
-    if(_key == "X")
-    {
-        m_coord.x = _val;
-    }
-    else if(_key == "Y")
-    {
-        m_coord.y = _val;
-    }
-    else
-    {
-        SIGHT_ERROR("The slot key : '" + _key + "' is not handled");
-    }
+    auto connections = sight::viz::scene2d::adaptor::auto_connections();
+    connections.push(m_x, sight::data::signals::MODIFIED, "apply_config_x");
+    connections.push(m_y, sight::data::signals::MODIFIED, "apply_config_y");
+    return connections;
+}
 
+//------------------------------------------------------------------------------
+
+void square::apply_config_x()
+{
+    if(m_auto_refresh)
+    {
+        this->updating();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void square::apply_config_y()
+{
     if(m_auto_refresh)
     {
         this->updating();

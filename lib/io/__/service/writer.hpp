@@ -34,6 +34,7 @@
 #include <service/base.hpp>
 
 #include <filesystem>
+#include <vector>
 
 namespace sight::io::service
 {
@@ -42,8 +43,8 @@ namespace sight::io::service
  * @brief Writer service API. It manages extension points definition and extension configuration
  *
  * This abstract class defines the API for all writer services. It provides the basic methods to write data to files or
- * folders. The writer service can be configured using properties. Subclasses should implement the
- * open_location_dialog(), get_path_type() and get_supported_extensions() methods. In updating(), which should perform
+ * folders. The writer service can be configured using properties. Subclasses should implement
+ * get_path_type() and get_supported_extensions() methods. In updating(), which should perform
  * the "write" from m_data object, m_write_failed must be set to the correct value.
  *
  * @section Signals Signals
@@ -132,15 +133,15 @@ public:
     //@}
 
     /**
-     * @brief Configure the image path (by default does nothing).
+     * @brief Open a dialog to select a supported file or folder location.
      *
      * This method is used to find
      * the file path  using a file selector.
      */
-    SIGHT_IO_API virtual void open_location_dialog() = 0;
+    SIGHT_IO_API virtual void open_location_dialog();
 
     /// Returns the filename extensions supported by this writer.
-    SIGHT_IO_API virtual std::vector<std::pair<std::string, std::string> > get_supported_extensions();
+    SIGHT_IO_API virtual std::vector<std::pair<std::string, std::string> > get_supported_extensions() const = 0;
 
     /**
      * @brief This method must be implemented by concrete service writers
@@ -261,6 +262,12 @@ public:
 
 protected:
 
+    /// Stores the extension selected in the generic location dialog.
+    SIGHT_IO_API void set_selected_extension(const std::vector<std::string>& _extensions);
+
+    /// Returns the extension selected in the generic location dialog.
+    SIGHT_IO_API const std::string& get_selected_extension() const;
+
     SIGHT_IO_API explicit writer(
         const std::string& _default_window_title = S_DEFAULT_WINDOW_TITLE
     ) noexcept;
@@ -316,6 +323,9 @@ private:
 
     /// Value to store file or folder paths
     io::service::locations_t m_locations;
+
+    /// Extension selected in the generic location dialog.
+    std::string m_selected_extension;
 
     /// Prefix to be inserted
     std::string m_current_prefix;

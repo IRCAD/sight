@@ -28,6 +28,11 @@
 
 #include <geometry/eigen/helper.hpp>
 
+#include <opencv2/imgproc.hpp>
+#if CV_MAJOR_VERSION >= 5
+#include <opencv2/objdetect.hpp>
+#endif
+
 #include <cmath>
 #include <thread>
 
@@ -307,7 +312,12 @@ data::point_list::sptr detect_chessboard(
     SIGHT_ASSERT("Expected 8bit pixel components, this image has: " << 8 * _img.elemSize1(), _img.elemSize1() == 1);
 
     // Ensure that we have a true depth-less 2D image.
-    const cv::Mat img2d = _img.dims == 3 ? _img.reshape(0, 2, _img.size + 1) : _img;
+    cv::Mat img2d = _img;
+    if(_img.dims == 3)
+    {
+        const int dimensions[] = {_img.size[1], _img.size[2]}; // NOLINT
+        img2d = _img.reshape(0, 2, dimensions);
+    }
 
     cv::Mat gray_img;
     if(_img.channels() == 1)

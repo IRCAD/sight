@@ -41,8 +41,8 @@ namespace sight::io::service
  * @brief Reader service API. It manages extension points definition and extension configuration
  *
  * This abstract class defines the API for all reader services. It provides the basic methods to read data from files
- * or a folder. The reader service can be configured using properties. Subclasses should implement the
- * open_location_dialog(), get_path_type() and get_supported_extensions() methods. In updating(), which should perform
+ * or a folder. The reader service can be configured using properties. Subclasses should implement
+ * get_path_type() and get_supported_extensions() methods. In updating(), which should perform
  * the "read" and updating the m_data object, m_read_failed must be set to the correct value.
  *
  * @section Slots Slots
@@ -111,16 +111,16 @@ public:
     //@{
 
     /**
-     * @brief Configure the image path (by default does nothing).
+     * @brief Open a dialog to select a supported file or folder location.
      *
      * This method is used to find the file path  using a file selector.
      */
-    SIGHT_IO_API virtual void open_location_dialog() = 0;
+    SIGHT_IO_API virtual void open_location_dialog();
 
     /**
      * @brief   returns  (filename) extension
      */
-    SIGHT_IO_API virtual std::vector<std::pair<std::string, std::string> > get_supported_extensions();
+    SIGHT_IO_API virtual std::vector<std::pair<std::string, std::string> > get_supported_extensions() const = 0;
 
     /**
      * @brief This method must be implemented by concrete service readers

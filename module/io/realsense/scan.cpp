@@ -50,23 +50,6 @@ static const std::string s_COLOR_FRAME_H = "colorH";
 static const std::string s_COLOR_FRAME_W = "colorW";
 static const std::string s_DEPTH_FRAME_H = "depthH";
 static const std::string s_DEPTH_FRAME_W = "depthW";
-static const std::string s_PRESET        = "preset";
-static const std::string s_ALIGNMENT     = "alignTo";
-
-static const std::string s_IREMITTER    = "IREmitter";
-static const std::string s_SWITCH_TO_IR = "switchToIR";
-
-static const std::string s_ENABLE_SPACIAL_FILTER       = "enableSpacial";
-static const std::string s_ENABLE_TEMPORAL_FILTER      = "enableTemporal";
-static const std::string s_ENABLE_HOLES_FILLING_FILTER = "enableHolesFilling";
-static const std::string s_SPACIAL_MAGNITUDE           = "spacialMagnitude";
-static const std::string s_SPACIAL_SMOOTH_ALPHA        = "spacialSmoothAlpha";
-static const std::string s_SPACIAL_SMOOTH_DELTA        = "spacialSmoothDelta";
-static const std::string s_SPACIAL_HOLE_FILLING        = "spacialHoleFilling";
-static const std::string s_TEMPORAL_SMOOTH_ALPHA       = "temporalSmoothAlpha";
-static const std::string s_TEMPORAL_SMOOTH_DELTA       = "temporalSmoothDelta";
-static const std::string s_TEMPORAL_PERSISTENCY        = "temporalPersistency";
-static const std::string s_HOLE_FILLING                = "holeFilling";
 
 // Determine depth value corresponding to one meter
 static const float s_METERS_TO_MMS = 1000.F;
@@ -75,6 +58,20 @@ static const float s_METERS_TO_MMS = 1000.F;
 
 scan::scan() noexcept
 {
+    new_slot(slots::APPLY_CONFIG_PRESET, &scan::apply_config_preset, this);
+    new_slot(slots::APPLY_CONFIG_ALIGN_TO, &scan::apply_config_align_to, this);
+    new_slot(slots::APPLY_CONFIG_IR_EMITTER, &scan::apply_config_ir_emitter, this);
+    new_slot(slots::APPLY_CONFIG_MAX_RANGE, &scan::apply_config_max_range, this);
+    new_slot(slots::APPLY_CONFIG_MIN_RANGE, &scan::apply_config_min_range, this);
+    new_slot(slots::APPLY_CONFIG_SPACIAL_MAGNITUDE, &scan::apply_config_spacial_magnitude, this);
+    new_slot(slots::APPLY_CONFIG_SPACIAL_SMOOTH_ALPHA, &scan::apply_config_spacial_smooth_alpha, this);
+    new_slot(slots::APPLY_CONFIG_SPACIAL_SMOOTH_DELTA, &scan::apply_config_spacial_smooth_delta, this);
+    new_slot(slots::APPLY_CONFIG_SPACIAL_HOLE_FILLING, &scan::apply_config_spacial_hole_filling, this);
+    new_slot(slots::APPLY_CONFIG_TEMPORAL_SMOOTH_ALPHA, &scan::apply_config_temporal_smooth_alpha, this);
+    new_slot(slots::APPLY_CONFIG_TEMPORAL_SMOOTH_DELTA, &scan::apply_config_temporal_smooth_delta, this);
+    new_slot(slots::APPLY_CONFIG_TEMPORAL_PERSISTENCY, &scan::apply_config_temporal_persistency, this);
+    new_slot(slots::APPLY_CONFIG_HOLE_FILLING, &scan::apply_config_hole_filling, this);
+
     new_slot(slots::CONFIGURE_RECORDING_PATH, &scan::configureRecordingPath, this);
     new_slot(slots::RECORD, &scan::record, this);
 
@@ -95,6 +92,19 @@ scan::~scan() noexcept
 void scan::starting()
 {
     m_grabbingStarted = false;
+    apply_config_preset();
+    apply_config_align_to();
+    apply_config_ir_emitter();
+    apply_config_max_range();
+    apply_config_min_range();
+    apply_config_spacial_magnitude();
+    apply_config_spacial_smooth_alpha();
+    apply_config_spacial_smooth_delta();
+    apply_config_spacial_hole_filling();
+    apply_config_temporal_smooth_alpha();
+    apply_config_temporal_smooth_delta();
+    apply_config_temporal_persistency();
+    apply_config_hole_filling();
 }
 
 //-----------------------------------------------------------------------------
@@ -104,7 +114,7 @@ void scan::stopping()
     this->stopCamera();
 
     // Clear the preset
-    m_cameraSettings.reset();
+    m_camera_settings.reset();
 }
 
 //-----------------------------------------------------------------------------
@@ -116,19 +126,13 @@ void scan::configuring()
 
     if(cfg)
     {
-        m_cameraSettings.fps = cfg->get<int>(s_FPS, m_cameraSettings.fps);
+        m_camera_settings.fps = cfg->get<int>(s_FPS, m_camera_settings.fps);
 
-        m_cameraSettings.colorW = cfg->get<int>(s_COLOR_FRAME_W, m_cameraSettings.colorW);
-        m_cameraSettings.colorH = cfg->get<int>(s_COLOR_FRAME_H, m_cameraSettings.colorH);
+        m_camera_settings.colorW = cfg->get<int>(s_COLOR_FRAME_W, m_camera_settings.colorW);
+        m_camera_settings.colorH = cfg->get<int>(s_COLOR_FRAME_H, m_camera_settings.colorH);
 
-        m_cameraSettings.depthW = cfg->get<int>(s_DEPTH_FRAME_W, m_cameraSettings.depthW);
-        m_cameraSettings.depthH = cfg->get<int>(s_DEPTH_FRAME_H, m_cameraSettings.depthH);
-
-        m_switchInfra2Color        = cfg->get<bool>(s_SWITCH_TO_IR, m_switchInfra2Color);
-        m_cameraSettings.irEmitter = cfg->get<bool>(s_IREMITTER, m_cameraSettings.irEmitter);
-
-        const std::string alignTo = cfg->get<std::string>(s_ALIGNMENT, "None");
-        this->updateAlignment(alignTo);
+        m_camera_settings.depthW = cfg->get<int>(s_DEPTH_FRAME_W, m_camera_settings.depthW);
+        m_camera_settings.depthH = cfg->get<int>(s_DEPTH_FRAME_H, m_camera_settings.depthH);
     }
 
     static const auto s_modulePath = core::runtime::get_module_resource_path("sight::module::io::realsense");
@@ -372,7 +376,7 @@ void scan::initialize(const rs2::pipeline_profile& _profile)
 
 //-----------------------------------------------------------------------------
 
-void scan::startCamera()
+void scan::start_camera()
 {
     if(m_running)
     {
@@ -458,28 +462,28 @@ void scan::startCamera()
         // Enable depth stream (16 bit values)
         cfg.enable_stream(
             RS2_STREAM_DEPTH,
-            m_cameraSettings.depthW,
-            m_cameraSettings.depthH,
+            m_camera_settings.depthW,
+            m_camera_settings.depthH,
             RS2_FORMAT_Z16,
-            m_cameraSettings.fps
+            m_camera_settings.fps
         );
 
         // Enable color stream (RGBA8 is choosen to avoid conversion to sight).
         cfg.enable_stream(
             RS2_STREAM_COLOR,
-            m_cameraSettings.colorW,
-            m_cameraSettings.colorH,
+            m_camera_settings.colorW,
+            m_camera_settings.colorH,
             RS2_FORMAT_RGBA8,
-            m_cameraSettings.fps
+            m_camera_settings.fps
         );
 
         // Enable Infrared with the same parameters as the color one.
         cfg.enable_stream(
             RS2_STREAM_INFRARED,
-            m_cameraSettings.colorW,
-            m_cameraSettings.colorH,
+            m_camera_settings.colorW,
+            m_camera_settings.colorH,
             RS2_FORMAT_RGBA8,
-            m_cameraSettings.fps
+            m_camera_settings.fps
         );
 
         // Enable recording if needed.
@@ -519,10 +523,10 @@ void scan::startCamera()
         }
 
         // Set a preset if there is one (can overwrite resolutions values).
-        if(!m_cameraSettings.presetPath.empty())
+        if(!m_camera_settings.presetPath.empty())
         {
             // load json content
-            std::ifstream json(m_cameraSettings.presetPath.string(), std::ifstream::in);
+            std::ifstream json(m_camera_settings.presetPath.string(), std::ifstream::in);
             std::string json_content((std::istreambuf_iterator<char>(json)),
                                      std::istreambuf_iterator<char>());
 
@@ -539,7 +543,7 @@ void scan::startCamera()
         // Options are read-only when playing from files.
         if(!m_playbackMode)
         {
-            depthSensor.set_option(RS2_OPTION_EMITTER_ENABLED, (m_cameraSettings.irEmitter ? 1.F : 0.F));
+            depthSensor.set_option(RS2_OPTION_EMITTER_ENABLED, (*m_ir_emitter ? 1.F : 0.F));
         }
     }
     catch(const std::exception& e)
@@ -560,7 +564,7 @@ void scan::startCamera()
 
     // Set min/max range if they parameters has changed (slot called before startCamera).
     // This works only when grabbing thread is running.
-    if(m_cameraSettings.minRange > s_MIN_DEPTH_RANGE || m_cameraSettings.maxRange < s_MAX_DEPTH_RANGE)
+    if(*m_min_range > s_MIN_DEPTH_RANGE || *m_max_range < s_MAX_DEPTH_RANGE)
     {
         this->setMinMaxRange();
     }
@@ -570,7 +574,7 @@ void scan::startCamera()
 
 //-----------------------------------------------------------------------------
 
-void scan::stopCamera()
+void scan::stop_camera()
 {
     // Grabbing thread is running
     if(m_running.exchange(false))
@@ -587,7 +591,7 @@ void scan::stopCamera()
 
         // If a preset was loaded we should hard-reset the camera,
         // If we don't some parameters are stored on the Camera ROM.
-        if(m_cameraSettings.needHardReset)
+        if(m_camera_settings.needHardReset)
         {
             // Reset the device (if preset was loaded, ...)
             m_currentDevice.hardware_reset();
@@ -606,7 +610,7 @@ void scan::stopCamera()
 
 //-----------------------------------------------------------------------------
 
-void scan::pauseCamera()
+void scan::pause_camera()
 {
     if(m_running)
     {
@@ -732,218 +736,6 @@ void scan::configureRecordingPath()
 
 //------------------------------------------------------------------------------
 
-void scan::set_parameter(ui::parameter_t _value, std::string _key)
-{
-    try
-    {
-        // BOOL
-        // IR key
-        if(_key == s_IREMITTER)
-        {
-            // Save the value in cameraSettings.
-            m_cameraSettings.irEmitter = std::get<bool>(_value);
-
-            // Change the parameter live if grabber is running, otherwise it will be changed on next startCamera.
-            if(!m_deviceID.empty() && m_running)
-            {
-                auto depthSensor = m_currentDevice.first<rs2::depth_sensor>();
-                depthSensor.set_option(RS2_OPTION_EMITTER_ENABLED, (std::get<bool>(_value) ? 1.F : 0.F));
-            }
-        }
-        else if(_key == s_SWITCH_TO_IR)
-        {
-            m_switchInfra2Color = std::get<bool>(_value);
-        }
-        else if(_key == s_ENABLE_SPACIAL_FILTER)
-        {
-            m_filterSettings.enableSpacial = std::get<bool>(_value);
-        }
-        else if(_key == s_ENABLE_TEMPORAL_FILTER)
-        {
-            m_filterSettings.enableTemporal = std::get<bool>(_value);
-        }
-        else if(_key == s_ENABLE_HOLES_FILLING_FILTER)
-        {
-            m_filterSettings.enableHolesFilling = std::get<bool>(_value);
-        }
-        else if(_key == "minRange")
-        {
-            if(std::get<int>(_value) < s_MIN_DEPTH_RANGE)
-            {
-                throw std::runtime_error("cannot set value < 0");
-            }
-
-            m_cameraSettings.minRange      = std::get<int>(_value);
-            m_cameraSettings.needHardReset = true;
-        }
-        else if(_key == "maxRange")
-        {
-            if(std::get<int>(_value) > s_MAX_DEPTH_RANGE)
-            {
-                throw std::runtime_error("cannot set value > 65535");
-            }
-
-            m_cameraSettings.maxRange      = std::get<int>(_value);
-            m_cameraSettings.needHardReset = true;
-        }
-        else if(_key == s_SPACIAL_MAGNITUDE)
-        {
-            if(std::get<int>(_value) < 1 || std::get<int>(_value) > 5)
-            {
-                throw std::runtime_error(s_SPACIAL_MAGNITUDE + " value must be in [1-5].");
-            }
-
-            m_filterSettings.spacialMagnitude = static_cast<std::uint8_t>(std::get<int>(_value));
-        }
-        else if(_key == s_SPACIAL_SMOOTH_DELTA)
-        {
-            if(std::get<int>(_value) < 1 || std::get<int>(_value) > 50)
-            {
-                throw std::runtime_error(s_SPACIAL_SMOOTH_DELTA + " value must be in [1-50].");
-            }
-
-            m_filterSettings.spacialSmoothDelta = static_cast<std::uint8_t>(std::get<int>(_value));
-        }
-        else if(_key == s_SPACIAL_HOLE_FILLING)
-        {
-            // Skip if we have the value as a string, only use the index.
-            if(std::holds_alternative<std::string>(_value))
-            {
-                return;
-            }
-
-            if(std::get<int>(_value) < 0 || std::get<int>(_value) > 5)
-            {
-                throw std::runtime_error(s_SPACIAL_HOLE_FILLING + " value must be in [0-5].");
-            }
-
-            m_filterSettings.spacialHoleFilling = static_cast<std::uint8_t>(std::get<int>(_value));
-        }
-        else if(_key == s_TEMPORAL_SMOOTH_DELTA)
-        {
-            if(std::get<int>(_value) < 1 || std::get<int>(_value) > 100)
-            {
-                throw std::runtime_error(s_TEMPORAL_SMOOTH_DELTA + " value must be in [1-100].");
-            }
-
-            m_filterSettings.temporalSmoothDelta = static_cast<std::uint8_t>(std::get<int>(_value));
-        }
-        else if(_key == s_TEMPORAL_PERSISTENCY)
-        {
-            // Skip if we have the value as a string, only use the index.
-            if(std::holds_alternative<std::string>(_value))
-            {
-                return;
-            }
-
-            if(std::get<int>(_value) < 0 || std::get<int>(_value) > 8)
-            {
-                throw std::runtime_error(s_TEMPORAL_PERSISTENCY + " value must be in [0-8].");
-            }
-
-            m_filterSettings.temporalPersistency = static_cast<std::uint8_t>(std::get<int>(_value));
-        }
-        else if(_key == s_HOLE_FILLING)
-        {
-            // Skip if we have the value as a string, only use the index.
-            if(std::holds_alternative<std::string>(_value))
-            {
-                return;
-            }
-
-            if(std::get<int>(_value) < 0 || std::get<int>(_value) > 2)
-            {
-                throw std::runtime_error(s_HOLE_FILLING + " value must be in [0-2].");
-            }
-
-            m_filterSettings.holeFilling = static_cast<std::uint8_t>(std::get<int>(_value));
-        }
-        // ENUM
-        // Change preset (advanced option).
-        else if(_key == s_PRESET)
-        {
-            // Skip value is stored as index.
-            if(std::holds_alternative<int>(_value))
-            {
-                return;
-            }
-
-            const auto presetPathToLoad = m_jsonPresets[std::get<std::string>(_value)];
-
-            if(!presetPathToLoad.empty())
-            {
-                m_cameraSettings.presetPath = presetPathToLoad;
-
-                if(!m_deviceID.empty() && m_running)
-                {
-                    // We need to restart the same camera.
-                    // Make sure no hard-reset is performed in this particular case.
-                    m_cameraSettings.needHardReset = false;
-                    this->stopCamera();
-                    this->startCamera();
-                }
-
-                // Ok now we should hard-reset if stopCamera() is called.
-                m_cameraSettings.needHardReset = true;
-            }
-            else
-            {
-                SIGHT_ERROR("Cannot load preset named: " + std::get<std::string>(_value) + ". Nothing append");
-            }
-        }
-        else if(_key == s_ALIGNMENT)
-        {
-            // Skip value is stored as index.
-            if(std::holds_alternative<int>(_value))
-            {
-                return;
-            }
-
-            if(this->updateAlignment(std::get<std::string>(_value)))
-            {
-                this->stopCamera();
-                this->startCamera();
-            }
-        }
-        // DOUBLE
-        else if(_key == s_SPACIAL_SMOOTH_ALPHA)
-        {
-            if(std::get<double>(_value) < 0.25 || std::get<double>(_value) > 1)
-            {
-                throw std::runtime_error(s_SPACIAL_SMOOTH_ALPHA + " must be in [0.25-1]");
-            }
-
-            m_filterSettings.spacialSmoothAlpha = static_cast<float>(std::get<double>(_value));
-        }
-        else if(_key == s_TEMPORAL_SMOOTH_ALPHA)
-        {
-            if(std::get<double>(_value) < 0 || std::get<double>(_value) > 1)
-            {
-                throw std::runtime_error(s_TEMPORAL_SMOOTH_ALPHA + " must be in [0-1]");
-            }
-
-            m_filterSettings.temporalSmoothAlpha = static_cast<float>(std::get<double>(_value));
-        }
-        else
-        {
-            SIGHT_ERROR("Key '" + _key + "' is not recognized.");
-        }
-
-        // Change parameters live if grabber is running, otherwise it will be changed on next call to startCamera.
-        if(!m_deviceID.empty() && m_running)
-        {
-            this->setMinMaxRange();
-        }
-    }
-    catch(const std::exception& e)
-    {
-        sight::module::io::realsense::scan::popMessageDialog("RealSense device error:" + std::string(e.what()));
-        return;
-    }
-}
-
-//-----------------------------------------------------------------------------
-
 void scan::popMessageDialog(const std::string& _message)
 {
     sight::ui::dialog::message::show(
@@ -971,9 +763,9 @@ void scan::grab()
 
     // Since RS2_STREAM_* is an enum, and DEPTH, COLOR & INFRARED are stored in this order, we can eliminate other
     // value, and default one.
-    if(m_cameraSettings.streamToAlignTo != RS2_STREAM_ANY && m_cameraSettings.streamToAlignTo < RS2_STREAM_FISHEYE)
+    if(m_camera_settings.streamToAlignTo != RS2_STREAM_ANY && m_camera_settings.streamToAlignTo < RS2_STREAM_FISHEYE)
     {
-        alignFrames   = rs2::align(m_cameraSettings.streamToAlignTo);
+        alignFrames   = rs2::align(m_camera_settings.streamToAlignTo);
         needAlignment = true;
     }
 
@@ -1006,43 +798,55 @@ void scan::grab()
             rs2::frame colorOrInfra;
 
             // push infrared in color TL if needed.
-            m_switchInfra2Color ? colorOrInfra = infra : colorOrInfra = color;
+            *m_switch_to_ir ? colorOrInfra = infra : colorOrInfra = color;
 
             // Generate the pointcloud and texture mappings
             if(depth)
             {
                 // transform depth to disparity to apply spacial and temporal filter
-                if(m_filterSettings.enableSpacial || m_filterSettings.enableTemporal)
+                if(*m_enable_spacial || *m_enable_temporal)
                 {
                     depth = depthToDisparity.process(depth);
                 }
 
-                if(m_filterSettings.enableSpacial)
+                if(*m_enable_spacial)
                 {
-                    spatialFilter.set_option(RS2_OPTION_FILTER_MAGNITUDE, m_filterSettings.spacialMagnitude);
-                    spatialFilter.set_option(RS2_OPTION_FILTER_SMOOTH_ALPHA, m_filterSettings.spacialSmoothAlpha);
-                    spatialFilter.set_option(RS2_OPTION_FILTER_SMOOTH_DELTA, m_filterSettings.spacialSmoothDelta);
-                    spatialFilter.set_option(RS2_OPTION_HOLES_FILL, m_filterSettings.spacialHoleFilling);
+                    spatialFilter.set_option(RS2_OPTION_FILTER_MAGNITUDE, static_cast<float>(*m_spacial_magnitude));
+                    spatialFilter.set_option(
+                        RS2_OPTION_FILTER_SMOOTH_ALPHA,
+                        static_cast<float>(*m_spacial_smooth_alpha)
+                    );
+                    spatialFilter.set_option(
+                        RS2_OPTION_FILTER_SMOOTH_DELTA,
+                        static_cast<float>(*m_spacial_smooth_delta)
+                    );
+                    spatialFilter.set_option(RS2_OPTION_HOLES_FILL, static_cast<float>(*m_spacial_hole_filling));
                     depth = spatialFilter.process(depth);
                 }
 
-                if(m_filterSettings.enableTemporal)
+                if(*m_enable_temporal)
                 {
-                    temporalFilter.set_option(RS2_OPTION_FILTER_SMOOTH_ALPHA, m_filterSettings.temporalSmoothAlpha);
-                    temporalFilter.set_option(RS2_OPTION_FILTER_SMOOTH_DELTA, m_filterSettings.temporalSmoothDelta);
-                    temporalFilter.set_option(RS2_OPTION_HOLES_FILL, m_filterSettings.temporalPersistency);
+                    temporalFilter.set_option(
+                        RS2_OPTION_FILTER_SMOOTH_ALPHA,
+                        static_cast<float>(*m_temporal_smooth_alpha)
+                    );
+                    temporalFilter.set_option(
+                        RS2_OPTION_FILTER_SMOOTH_DELTA,
+                        static_cast<float>(*m_temporal_smooth_delta)
+                    );
+                    temporalFilter.set_option(RS2_OPTION_HOLES_FILL, static_cast<float>(*m_temporal_persistency));
                     depth = temporalFilter.process(depth);
                 }
 
                 // transform disparity to depth
-                if(m_filterSettings.enableSpacial || m_filterSettings.enableTemporal)
+                if(*m_enable_spacial || *m_enable_temporal)
                 {
                     depth = disparityToDepth.process(depth);
                 }
 
-                if(m_filterSettings.enableHolesFilling)
+                if(*m_enable_holes_filling)
                 {
-                    holesFilter.set_option(RS2_OPTION_HOLES_FILL, m_filterSettings.holeFilling);
+                    holesFilter.set_option(RS2_OPTION_HOLES_FILL, static_cast<float>(*m_hole_filling));
                     depth = holesFilter.process(depth);
                 }
 
@@ -1115,19 +919,19 @@ bool scan::updateAlignment(const std::string& _alignTo)
 {
     if(_alignTo == "None")
     {
-        m_cameraSettings.streamToAlignTo = RS2_STREAM_COUNT; // Equivalent to No alignment.
+        m_camera_settings.streamToAlignTo = RS2_STREAM_COUNT; // Equivalent to No alignment.
     }
     else if(_alignTo == "Color")
     {
-        m_cameraSettings.streamToAlignTo = RS2_STREAM_COLOR;
+        m_camera_settings.streamToAlignTo = RS2_STREAM_COLOR;
     }
     else if(_alignTo == "Depth")
     {
-        m_cameraSettings.streamToAlignTo = RS2_STREAM_DEPTH;
+        m_camera_settings.streamToAlignTo = RS2_STREAM_DEPTH;
     }
     else if(_alignTo == "Infrared")
     {
-        m_cameraSettings.streamToAlignTo = RS2_STREAM_INFRARED;
+        m_camera_settings.streamToAlignTo = RS2_STREAM_INFRARED;
     }
     else
     {
@@ -1149,8 +953,8 @@ void scan::setMinMaxRange()
             // Use the "advanced_mode" to set DepthClampMax value.
             auto advanced_mode_dev = m_currentDevice.as<rs400::advanced_mode>();
             auto depth_table       = advanced_mode_dev.get_depth_table();
-            depth_table.depthClampMin = m_cameraSettings.minRange;
-            depth_table.depthClampMax = m_cameraSettings.maxRange;
+            depth_table.depthClampMin = static_cast<int>(*m_min_range);
+            depth_table.depthClampMax = static_cast<int>(*m_max_range);
             advanced_mode_dev.set_depth_table(depth_table);
         }
         catch(const std::exception& e)
@@ -1281,5 +1085,243 @@ void scan::onPointCloud(const rs2::points& _pc, const rs2::video_frame& _texture
 }
 
 //-----------------------------------------------------------------------------
+
+sight::service::connections_t scan::auto_connections() const
+{
+    return sight::io::service::rgbd_grabber::auto_connections()
+           + sight::service::connections_t {
+               {m_preset, sight::data::signals::MODIFIED, slots::APPLY_CONFIG_PRESET},
+               {m_align_to, sight::data::signals::MODIFIED, slots::APPLY_CONFIG_ALIGN_TO},
+               {m_ir_emitter, sight::data::signals::MODIFIED, slots::APPLY_CONFIG_IR_EMITTER},
+               {m_max_range, sight::data::signals::MODIFIED, slots::APPLY_CONFIG_MAX_RANGE},
+               {m_min_range, sight::data::signals::MODIFIED, slots::APPLY_CONFIG_MIN_RANGE},
+               {m_enable_spacial, sight::data::signals::MODIFIED, slots::APPLY_CONFIG_ENABLE_SPACIAL},
+               {m_enable_temporal, sight::data::signals::MODIFIED, slots::APPLY_CONFIG_ENABLE_TEMPORAL},
+               {m_spacial_magnitude, sight::data::signals::MODIFIED, slots::APPLY_CONFIG_SPACIAL_MAGNITUDE},
+               {m_spacial_smooth_alpha, sight::data::signals::MODIFIED, slots::APPLY_CONFIG_SPACIAL_SMOOTH_ALPHA},
+               {m_spacial_smooth_delta, sight::data::signals::MODIFIED, slots::APPLY_CONFIG_SPACIAL_SMOOTH_DELTA},
+               {m_spacial_hole_filling, sight::data::signals::MODIFIED, slots::APPLY_CONFIG_SPACIAL_HOLE_FILLING},
+               {m_temporal_smooth_alpha, sight::data::signals::MODIFIED, slots::APPLY_CONFIG_TEMPORAL_SMOOTH_ALPHA},
+               {m_temporal_smooth_delta, sight::data::signals::MODIFIED, slots::APPLY_CONFIG_TEMPORAL_SMOOTH_DELTA},
+               {m_temporal_persistency, sight::data::signals::MODIFIED, slots::APPLY_CONFIG_TEMPORAL_PERSISTENCY},
+               {m_hole_filling, sight::data::signals::MODIFIED, slots::APPLY_CONFIG_HOLE_FILLING}
+           };
+}
+
+//------------------------------------------------------------------------------
+
+void scan::apply_config_preset()
+{
+    const auto preset = *m_preset;
+    if(preset.empty())
+    {
+        return;
+    }
+
+    const auto preset_path = m_jsonPresets[preset];
+    if(preset_path.empty())
+    {
+        SIGHT_ERROR("Cannot load preset named: " + preset + ". Nothing append");
+        return;
+    }
+
+    m_camera_settings.presetPath = preset_path;
+    if(!m_deviceID.empty() && m_running)
+    {
+        try
+        {
+            // Do not reset the camera before restarting to apply the new preset.
+            m_camera_settings.needHardReset = false;
+            this->stopCamera();
+            this->startCamera();
+        }
+        catch(const std::exception& e)
+        {
+            popMessageDialog("RealSense device error:" + std::string(e.what()));
+            return;
+        }
+    }
+
+    // Reset the device if it is stopped after the preset change.
+    m_camera_settings.needHardReset = true;
+}
+
+//------------------------------------------------------------------------------
+
+void scan::apply_config_align_to()
+{
+    if(!this->updateAlignment(*m_align_to) || !m_running)
+    {
+        return;
+    }
+
+    try
+    {
+        this->stopCamera();
+        this->startCamera();
+    }
+    catch(const std::exception& e)
+    {
+        popMessageDialog("RealSense device error:" + std::string(e.what()));
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void scan::apply_config_ir_emitter()
+{
+    if(m_deviceID.empty() || !m_running)
+    {
+        return;
+    }
+
+    try
+    {
+        auto depth_sensor = m_currentDevice.first<rs2::depth_sensor>();
+        depth_sensor.set_option(RS2_OPTION_EMITTER_ENABLED, (*m_ir_emitter ? 1.F : 0.F));
+    }
+    catch(const std::exception& e)
+    {
+        popMessageDialog("RealSense device error:" + std::string(e.what()));
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void scan::apply_config_max_range()
+{
+    if(*m_max_range > s_MAX_DEPTH_RANGE)
+    {
+        popMessageDialog("RealSense device error:cannot set value > 65535");
+        return;
+    }
+
+    m_camera_settings.needHardReset = true;
+    if(!m_deviceID.empty() && m_running)
+    {
+        this->setMinMaxRange();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void scan::apply_config_min_range()
+{
+    if(*m_min_range < s_MIN_DEPTH_RANGE)
+    {
+        popMessageDialog("RealSense device error:cannot set value < 0");
+        return;
+    }
+
+    m_camera_settings.needHardReset = true;
+    if(!m_deviceID.empty() && m_running)
+    {
+        this->setMinMaxRange();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void scan::apply_config_spacial_magnitude()
+{
+    // Frame processing reads this setting directly after validation.
+
+    const auto value = static_cast<int>(*m_spacial_magnitude);
+    if(value < 1 || value > 5)
+    {
+        popMessageDialog("RealSense device error:spacialMagnitude value must be in [1-5].");
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void scan::apply_config_spacial_smooth_alpha()
+{
+    // Frame processing reads this setting directly after validation.
+
+    const auto value = static_cast<double>(*m_spacial_smooth_alpha);
+    if(value < 0.25 || value > 1.)
+    {
+        popMessageDialog("RealSense device error:spacialSmoothAlpha must be in [0.25-1]");
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void scan::apply_config_spacial_smooth_delta()
+{
+    // Frame processing reads this setting directly after validation.
+
+    const auto value = static_cast<int>(*m_spacial_smooth_delta);
+    if(value < 1 || value > 50)
+    {
+        popMessageDialog("RealSense device error:spacialSmoothDelta value must be in [1-50].");
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void scan::apply_config_spacial_hole_filling()
+{
+    // Frame processing reads this setting directly after validation.
+
+    const auto value = static_cast<int>(*m_spacial_hole_filling);
+    if(value < 0 || value > 5)
+    {
+        popMessageDialog("RealSense device error:spacialHoleFilling value must be in [0-5].");
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void scan::apply_config_temporal_smooth_alpha()
+{
+    // Frame processing reads this setting directly after validation.
+
+    const auto value = static_cast<double>(*m_temporal_smooth_alpha);
+    if(value < 0. || value > 1.)
+    {
+        popMessageDialog("RealSense device error:temporalSmoothAlpha must be in [0-1]");
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void scan::apply_config_temporal_smooth_delta()
+{
+    // Frame processing reads this setting directly after validation.
+
+    const auto value = static_cast<int>(*m_temporal_smooth_delta);
+    if(value < 1 || value > 100)
+    {
+        popMessageDialog("RealSense device error:temporalSmoothDelta value must be in [1-100].");
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void scan::apply_config_temporal_persistency()
+{
+    // Frame processing reads this setting directly after validation.
+
+    const auto value = static_cast<int>(*m_temporal_persistency);
+    if(value < 0 || value > 8)
+    {
+        popMessageDialog("RealSense device error:temporalPersistency value must be in [0-8].");
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void scan::apply_config_hole_filling()
+{
+    // Frame processing reads this setting directly after validation.
+
+    const auto value = static_cast<int>(*m_hole_filling);
+    if(value < 0 || value > 2)
+    {
+        popMessageDialog("RealSense device error:holeFilling value must be in [0-2].");
+    }
+}
 
 } // namespace sight::module::io::realsense

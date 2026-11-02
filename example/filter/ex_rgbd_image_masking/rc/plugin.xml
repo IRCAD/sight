@@ -11,30 +11,33 @@
             <!-- ******************************* Objects declaration ****************************** -->
 
             <!-- Frames timelines to manage video and depth streams  -->
-            <object uid="frameTLVideo" type="sight::data::frame_tl" />
-            <object uid="frameTLDepth" type="sight::data::frame_tl" />
+            <object uid="frame_tl_video" type="sight::data::frame_tl" />
+            <object uid="frame_tl_depth" type="sight::data::frame_tl" />
             <!-- Images extracted from the TL and used to perform image masking -->
-            <object uid="videoImage" type="sight::data::image" />
-            <object uid="depthImage" type="sight::data::image" />
-            <object uid="foregroundImage" type="sight::data::image" />
-            <object uid="offscreenImage" type="sight::data::image" />
+            <object uid="video_image" type="sight::data::image" />
+            <object uid="depth_image" type="sight::data::image" />
+            <object uid="foreground_image" type="sight::data::image" />
+            <object uid="offscreen_image" type="sight::data::image" />
             <!-- Objects related to the camera managing the calibration data -->
-            <object uid="RGBDepthCameraSet" type="sight::data::camera_set" />
-            <object uid="RGBcamera" type="sight::data::camera" deferred="true" />
-            <object uid="DepthCamera" type="sight::data::camera" deferred="true" />
+            <object uid="rgb_depth_camera_set" type="sight::data::camera_set" />
+            <object uid="rgb_camera" type="sight::data::camera" deferred="true" />
+            <object uid="depth_camera" type="sight::data::camera" deferred="true" />
             <!-- Matrices to register to mesh in the right space regarding the camera position -->
-            <object uid="registrationMatrix" type="sight::data::matrix4" />
-            <object uid="inverseMatrix" type="sight::data::matrix4" />
+            <object uid="registration_matrix" type="sight::data::matrix4" />
+            <object uid="inverse_matrix" type="sight::data::matrix4" />
             <object uid="extrinsic" type="sight::data::matrix4" deferred="true" />
             <!-- Objects related to the models loaded to perform AR -->
-            <object uid="seriesSet" type="sight::data::series_set" />
-            <object uid="modelSeries" type="sight::data::model_series" deferred="true" />
+            <object uid="series_set" type="sight::data::series_set" />
+            <object uid="model_series" type="sight::data::model_series" deferred="true" />
             <object uid="mesh" type="sight::data::mesh" deferred="true" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
             <!-- declaration of the views, menu and toolbar -->
-            <service uid="mainFrame" type="sight::module::ui::frame">
+            <object uid="enable_hole_filling_filter" type="sight::data::boolean" value="true" />
+            <object uid="masker_threshold" type="sight::data::integer" value="10" />
+
+            <service uid="main_frame" type="sight::module::ui::frame">
                 <gui>
                     <frame>
                         <name>ex_rgbd_image_masking</name>
@@ -44,24 +47,24 @@
                     <toolbar />
                 </gui>
                 <registry>
-                    <menubar sid="menuBarView" />
-                    <toolbar sid="toolbarView" />
-                    <view sid="mainView" />
+                    <menubar sid="menu_bar_view" />
+                    <toolbar sid="toolbar_view" />
+                    <view sid="main_view" />
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="sight::module::ui::menubar">
+            <service uid="menu_bar_view" type="sight::module::ui::menubar">
                 <gui>
                     <layout>
                         <menu name="File" />
                     </layout>
                 </gui>
                 <registry>
-                    <menu sid="menuView" />
+                    <menu sid="menu_view" />
                 </registry>
             </service>
 
-            <service uid="menuView" type="sight::module::ui::menu">
+            <service uid="menu_view" type="sight::module::ui::menu">
                 <gui>
                     <layout>
                         <menuItem name="Load transformation" shortcut="Ctrl+T" />
@@ -72,13 +75,13 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="loadTransformationAct" />
-                    <menuItem sid="loadMeshAct" />
-                    <menuItem sid="quitAct" />
+                    <menuItem sid="load_transformation_act" />
+                    <menuItem sid="load_mesh_act" />
+                    <menuItem sid="quit_act" />
                 </registry>
             </service>
 
-            <service uid="toolbarView" type="sight::module::ui::toolbar">
+            <service uid="toolbar_view" type="sight::module::ui::toolbar">
                 <gui>
                     <layout>
                         <editor />
@@ -96,19 +99,19 @@
                     </layout>
                 </gui>
                 <registry>
-                    <editor sid="videoSelectorSrv" />
-                    <menuItem sid="startVideoAct" />
-                    <menuItem sid="pauseVideoAct" />
-                    <menuItem sid="resumeVideoAct" />
-                    <menuItem sid="stopVideoAct" />
-                    <menuItem sid="loopVideoAct" />
-                    <menuItem sid="learnBackgroundAct" />
+                    <editor sid="video_selector_srv" />
+                    <menuItem sid="start_video_act" />
+                    <menuItem sid="pause_video_act" />
+                    <menuItem sid="resume_video_act" />
+                    <menuItem sid="stop_video_act" />
+                    <menuItem sid="loop_video_act" />
+                    <menuItem sid="learn_background_act" />
                     <menuItem sid="organ_manager_act" />
-                    <menuItem sid="showSettingsAct" />
+                    <menuItem sid="show_settings_act" />
                 </registry>
             </service>
 
-            <service uid="mainView" type="sight::module::ui::view">
+            <service uid="main_view" type="sight::module::ui::view">
                 <gui>
                     <layout type="sight::ui::layout::line">
                         <orientation value="vertical" />
@@ -117,12 +120,12 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="settingsView" />
-                    <view sid="genericSceneSrv" />
+                    <view sid="settings_view" />
+                    <view sid="generic_scene_srv" />
                 </registry>
             </service>
 
-            <service uid="settingsView" type="sight::module::ui::view">
+            <service uid="settings_view" type="sight::module::ui::view">
                 <gui>
                     <layout type="sight::ui::layout::line">
                         <orientation value="horizontal" />
@@ -132,118 +135,118 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="enableHoleFillingFilterParamSrv" />
-                    <view sid="maskerThresholdParamSrv" />
+                    <view sid="enable_hole_filling_filter_srv" />
+                    <view sid="masker_threshold_srv" />
                 </registry>
             </service>
 
             <!-- ************************************* Action ************************************ -->
 
             <!-- declaration of actions/slot callers -->
-            <service uid="quitAct" type="sight::module::ui::quit" />
+            <service uid="quit_act" type="sight::module::ui::quit" />
 
-            <service uid="loadTransformationAct" type="sight::module::ui::action" />
+            <service uid="load_transformation_act" type="sight::module::ui::action" />
 
-            <service uid="loadMeshAct" type="sight::module::ui::action" />
+            <service uid="load_mesh_act" type="sight::module::ui::action" />
 
             <!-- Start the frame grabber -->
-            <service uid="startVideoAct" type="sight::module::ui::action">
+            <service uid="start_video_act" type="sight::module::ui::action">
                 <state enabled="false" />
             </service>
 
             <!-- Pause the frame grabber -->
-            <service uid="pauseVideoAct" type="sight::module::ui::action">
+            <service uid="pause_video_act" type="sight::module::ui::action">
                 <state visible="false" />
             </service>
 
             <!-- Resume the frame grabber -->
-            <service uid="resumeVideoAct" type="sight::module::ui::action">
+            <service uid="resume_video_act" type="sight::module::ui::action">
                 <state visible="false" />
             </service>
 
             <!-- Stop the frame grabber -->
-            <service uid="stopVideoAct" type="sight::module::ui::action">
+            <service uid="stop_video_act" type="sight::module::ui::action">
                 <state enabled="false" />
             </service>
 
             <!-- Loop the frame grabber -->
-            <service uid="loopVideoAct" type="sight::module::ui::action">
+            <service uid="loop_video_act" type="sight::module::ui::action">
                 <state enabled="false" />
             </service>
 
-            <service uid="learnBackgroundAct" type="sight::module::ui::action" />
+            <service uid="learn_background_act" type="sight::module::ui::action" />
 
             <service uid="organ_manager_act" type="sight::module::ui::action" />
 
             <service uid="organ_manager_cfg" type="sight::app::config_launcher">
                 <config id="ModelSeriesManagerWindow" start="false" />
 
-                <object name="organ_manager_modelseries" uid="modelSeries" />
+                <object name="organ_manager_modelseries" uid="model_series" />
                 <param name="ICON_PATH" value="ex_rgbd_image_masking/app.ico" />
             </service>
 
-            <service uid="showSettingsAct" type="sight::module::ui::action" />
+            <service uid="show_settings_act" type="sight::module::ui::action" />
 
             <!-- ******************************* Begin Generic scene ******************************* -->
 
-            <service uid="genericSceneSrv" type="sight::viz::scene3d::render">
+            <service uid="generic_scene_srv" type="sight::viz::scene3d::render">
                 <scene render_mode="manual">
                     <background topColor="#36393E" bottomColor="#36393E" />
 
                     <layer id="video">
-                        <adaptor uid="videoAdp" />
+                        <adaptor uid="video_adp" />
                     </layer>
 
                     <layer id="default">
-                        <adaptor uid="meshAdp" />
-                        <adaptor uid="cameraAdp" />
+                        <adaptor uid="mesh_adp" />
+                        <adaptor uid="camera_adp" />
                     </layer>
 
                     <layer id="ar">
-                        <adaptor uid="videoARAdp" />
+                        <adaptor uid="video_ar_adp" />
                     </layer>
                 </scene>
             </service>
 
-            <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::video" auto_connect="true">
-                <data image="${videoImage}" />
+            <service uid="video_adp" type="sight::module::viz::scene3d::adaptor::video" auto_connect="true">
+                <data image="${video_image}" />
             </service>
 
-            <service uid="cameraAdp" type="sight::module::viz::scene3d::adaptor::camera">
-                <data transform="${inverseMatrix}" />
-                <data calibration="${RGBcamera}" />
+            <service uid="camera_adp" type="sight::module::viz::scene3d::adaptor::camera">
+                <data transform="${inverse_matrix}" />
+                <data calibration="${rgb_camera}" />
             </service>
 
-            <service uid="meshAdp" type="sight::module::viz::scene3d::adaptor::model_series" auto_connect="true">
-                <data model="${modelSeries}" />
+            <service uid="mesh_adp" type="sight::module::viz::scene3d::adaptor::model_series" auto_connect="true">
+                <data model="${model_series}" />
                 <config transform="id" autoresetcamera="false" />
             </service>
 
-            <service uid="videoARAdp" type="sight::module::viz::scene3d::adaptor::video" auto_connect="true">
-                <data image="${foregroundImage}" />
+            <service uid="video_ar_adp" type="sight::module::viz::scene3d::adaptor::video" auto_connect="true">
+                <data image="${foreground_image}" />
             </service>
 
             <!-- ******************************* Begin Generic scene ******************************* -->
 
             <!-- scene in which skin mesh will be render and fill a binary image to perform image masking -->
-            <service uid="offscreenSceneSrv" type="sight::viz::scene3d::render">
-                <inout key="offscreen" uid="offscreenImage" />
+            <service uid="offscreen_scene_srv" type="sight::viz::scene3d::render">
+                <inout key="offscreen" uid="offscreen_image" />
                 <scene width="1280" height="720">
                     <background topColor="#36393E" bottomColor="#36393E" />
 
                     <layer id="default">
-                        <adaptor uid="cameraOffscreenAdp" />
-                        <adaptor uid="meshOffscreenAdp" />
+                        <adaptor uid="camera_offscreen_adp" />
+                        <adaptor uid="mesh_offscreen_adp" />
                     </layer>
                 </scene>
             </service>
 
-            <service uid="cameraOffscreenAdp" type="sight::module::viz::scene3d::adaptor::camera" auto_connect="true">
-                <data transform="${inverseMatrix}" />
-                <data calibration="${RGBcamera}" />
+            <service uid="camera_offscreen_adp" type="sight::module::viz::scene3d::adaptor::camera" auto_connect="true">
+                <data transform="${inverse_matrix}" />
+                <data calibration="${rgb_camera}" />
             </service>
 
-            <service uid="meshOffscreenAdp" type="sight::module::viz::scene3d::adaptor::mesh" auto_connect="true">
+            <service uid="mesh_offscreen_adp" type="sight::module::viz::scene3d::adaptor::mesh" auto_connect="true">
                 <data mesh="${mesh}" />
                 <config transform="id" autoresetcamera="false" />
             </service>
@@ -251,209 +254,195 @@
             <!-- ******************************* Services ***************************************** -->
 
             <!-- Parameter to enable/disable hole filling from the RealSense grabber -->
-            <service uid="enableHoleFillingFilterParamSrv" type="sight::module::ui::qt::parameters">
-                <parameters>
-                    <param type="bool" name="Enable holes Filling filter" key="enableHolesFilling" defaultValue="true" />
-                </parameters>
+            <service uid="enable_hole_filling_filter_srv" type="sight::module::ui::qt::settings">
+                <item data="${enable_hole_filling_filter}" name="Enable holes Filling filter" key="enableHolesFilling" />
             </service>
 
             <!-- Parameter to tune the threshold value -->
-            <service uid="maskerThresholdParamSrv" type="sight::module::ui::qt::parameters">
-                <parameters>
-                    <param type="int" name="Masking threshold" key="threshold" defaultValue="10" min="0" max="50" />
-                </parameters>
+            <service uid="masker_threshold_srv" type="sight::module::ui::qt::settings">
+                <item data="${masker_threshold}" name="Masking threshold" key="threshold" min="0" max="50" widget="slider" />
             </service>
 
-            <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::camera">
-                <data camera_set="${RGBDepthCameraSet}" />
+            <service uid="video_selector_srv" type="sight::module::ui::qt::video::camera">
+                <data camera_set="${rgb_depth_camera_set}" />
                 <createCameraNumber>2</createCameraNumber>
                 <videoSupport>true</videoSupport>
             </service>
 
             <!-- To get frames from the RealSense camera -->
-            <service uid="videoGrabberSrv" type="sight::module::io::realsense::scan" worker="grabber">
-                <config camera_set="${RGBDepthCameraSet}" />
-                <timeline depth="${frameTLDepth}" />
-                <timeline image="${frameTLVideo}" />
-                <config fps="30" colorW="1280" colorH="720" depthW="1280" depthH="720" preset="Hand" alignTo="Color" />
+            <service uid="video_grabber_srv" type="sight::module::io::realsense::scan" worker="grabber">
+                <config camera_set="${rgb_depth_camera_set}" enable_holes_filling="${enable_hole_filling_filter}" fps="30" colorW="1280" colorH="720" depthW="1280" depthH="720" preset="Hand" align_to="Color" />
+                <timeline depth="${frame_tl_depth}" />
+                <timeline image="${frame_tl_video}" />
             </service>
 
             <!-- To synchronize matrix, frame and detection -->
-            <service uid="frameUpdaterSrv" type="sight::module::sync::synchronizer" worker="videoWorker" auto_connect="false">
+            <service uid="frame_updater_srv" type="sight::module::sync::synchronizer" worker="videoWorker" auto_connect="false">
                 <input>
                     <frames>
-                        <item timeline="${frameTLVideo}" />
-                        <item timeline="${frameTLDepth}" />
+                        <item timeline="${frame_tl_video}" />
+                        <item timeline="${frame_tl_depth}" />
                     </frames>
                 </input>
                 <output>
                     <frames>
-                        <item image="${videoImage}" timeline="0" />
-                        <item image="${depthImage}" timeline="1" />
+                        <item image="${video_image}" timeline="0" />
+                        <item image="${depth_image}" timeline="1" />
                     </frames>
                 </output>
             </service>
 
             <!-- Matrix (trf format) reader -->
             <!-- This matrix is used to statically register the model onto the video -->
-            <service uid="transformReaderSrv" type="sight::module::ui::io::selector">
-                <data read="${registrationMatrix}" />
+            <service uid="transform_reader_srv" type="sight::module::ui::io::selector">
+                <data read="${registration_matrix}" />
                 <selection mode="include" />
                 <addSelection service="sight::module::io::matrix::Matrix4ReaderService" />
             </service>
 
             <!-- Reader to open SeriesSet data -->
-            <service uid="meshReaderSrv" type="sight::module::ui::io::selector">
-                <data read="${seriesSet}" />
+            <service uid="mesh_reader_srv" type="sight::module::ui::io::selector">
+                <data read="${series_set}" />
             </service>
 
             <!-- Extract the ModelSeries from the loaded SeriesSet -->
-            <service uid="extractModelSeriesSrv" type="sight::module::data::get_series">
-                <in key="seriesSet" uid="seriesSet" />
+            <service uid="extract_model_series_srv" type="sight::module::data::get_series">
+                <in key="seriesSet" uid="series_set" />
                 <out group="series">
-                    <key index="0" uid="modelSeries" />
+                    <key index="0" uid="model_series" />
                 </out>
             </service>
 
             <!-- Extract mesh in the model series -->
-            <service uid="extractSkinSrv" type="sight::module::data::get_mesh">
-                <in key="modelSeries" uid="modelSeries" />
+            <service uid="extract_skin_srv" type="sight::module::data::get_mesh">
+                <in key="modelSeries" uid="model_series" />
                 <out group="mesh">
                     <key type="Skin" uid="mesh" />
                 </out>
             </service>
 
             <!-- Extract RGB intrinsic Depth intrinsic and Extrinsic matrices from a sight::data::camera_set -->
-            <service uid="extractCameraSrv" type="sight::module::data::get_camera">
+            <service uid="extract_camera_srv" type="sight::module::data::get_camera">
                 <!-- Source -->
-                <input camera_set="${RGBDepthCameraSet}" />
+                <input camera_set="${rgb_depth_camera_set}" />
                 <!-- Destination -->
-                <output camera="${DepthCamera}" index="0" />
-                <output camera="${RGBcamera}" index="1" />
+                <output camera="${depth_camera}" index="0" />
+                <output camera="${rgb_camera}" index="1" />
                 <output extrinsic="${extrinsic}" index="1" />
             </service>
 
             <!-- Use the extrinsic matrix to get back in the RGB space -->
-            <service uid="concatenateSrv" type="sight::module::geometry::concatenate_matrices">
-                <data input="${registrationMatrix}" inverse="true" />
+            <service uid="concatenate_srv" type="sight::module::geometry::concatenate_matrices">
+                <data input="${registration_matrix}" inverse="true" />
                 <data input="${extrinsic}" inverse="true" />
-                <data output="${inverseMatrix}" />
+                <data output="${inverse_matrix}" />
             </service>
 
             <!-- To extract the foreground image to display on top of meshes -->
-            <service uid="maskerSrv" type="sight::module::filter::vision::depth_image_masking" worker="masker">
-                <in key="maskImage" uid="offscreenImage" />
-                <in key="videoImage" uid="videoImage" />
-                <in key="depthImage" uid="depthImage" auto_connect="false" />
-                <inout key="foregroundImage" uid="foregroundImage" />
+            <service uid="masker_srv" type="sight::module::filter::vision::depth_image_masking" worker="masker">
+                <in key="maskImage" uid="offscreen_image" />
+                <in key="videoImage" uid="video_image" />
+                <in key="depthImage" uid="depth_image" auto_connect="false" />
+                <inout key="foregroundImage" uid="foreground_image" />
+                <config threshold="${masker_threshold}" />
             </service>
 
             <!-- ******************************* Connections ***************************************** -->
 
             <connect>
-                <signal>loadTransformationAct/clicked</signal>
-                <slot>transformReaderSrv/update</slot>
+                <signal>load_transformation_act/clicked</signal>
+                <slot>transform_reader_srv/update</slot>
             </connect>
 
             <connect>
-                <signal>loadMeshAct/clicked</signal>
-                <slot>meshReaderSrv/update</slot>
+                <signal>load_mesh_act/clicked</signal>
+                <slot>mesh_reader_srv/update</slot>
             </connect>
 
             <connect>
-                <signal>startVideoAct/clicked</signal>
-                <slot>videoGrabberSrv/start_camera</slot>
+                <signal>start_video_act/clicked</signal>
+                <slot>video_grabber_srv/start_camera</slot>
                 <slot>updater/start</slot>
             </connect>
 
             <connect>
-                <signal>pauseVideoAct/clicked</signal>
-                <slot>videoGrabberSrv/pause_camera</slot>
-                <slot>resumeVideoAct/show</slot>
-                <slot>pauseVideoAct/hide</slot>
+                <signal>pause_video_act/clicked</signal>
+                <slot>video_grabber_srv/pause_camera</slot>
+                <slot>resume_video_act/show</slot>
+                <slot>pause_video_act/hide</slot>
                 <slot>updater/stop</slot>
             </connect>
 
             <connect>
-                <signal>resumeVideoAct/clicked</signal>
-                <slot>videoGrabberSrv/pause_camera</slot>
-                <slot>resumeVideoAct/hide</slot>
-                <slot>pauseVideoAct/show</slot>
+                <signal>resume_video_act/clicked</signal>
+                <slot>video_grabber_srv/pause_camera</slot>
+                <slot>resume_video_act/hide</slot>
+                <slot>pause_video_act/show</slot>
                 <slot>updater/start</slot>
             </connect>
 
             <connect>
-                <signal>stopVideoAct/clicked</signal>
-                <slot>videoGrabberSrv/stop_camera</slot>
-                <slot>startVideoAct/show</slot>
-                <slot>resumeVideoAct/hide</slot>
-                <slot>pauseVideoAct/hide</slot>
-                <slot>stopVideoAct/disable</slot>
-                <slot>loopVideoAct/disable</slot>
-                <slot>loopVideoAct/uncheck</slot>
+                <signal>stop_video_act/clicked</signal>
+                <slot>video_grabber_srv/stop_camera</slot>
+                <slot>start_video_act/show</slot>
+                <slot>resume_video_act/hide</slot>
+                <slot>pause_video_act/hide</slot>
+                <slot>stop_video_act/disable</slot>
+                <slot>loop_video_act/disable</slot>
+                <slot>loop_video_act/uncheck</slot>
                 <slot>updater/stop</slot>
             </connect>
 
             <connect>
-                <signal>loopVideoAct/clicked</signal>
-                <slot>videoGrabberSrv/loop_video</slot>
+                <signal>loop_video_act/clicked</signal>
+                <slot>video_grabber_srv/loop_video</slot>
             </connect>
 
             <connect>
-                <signal>learnBackgroundAct/clicked</signal>
-                <slot>maskerSrv/set_background</slot>
+                <signal>learn_background_act/clicked</signal>
+                <slot>masker_srv/set_background</slot>
             </connect>
 
             <connect>
-                <signal>videoSelectorSrv/configured_file</signal>
-                <signal>videoSelectorSrv/configured_stream</signal>
-                <signal>videoSelectorSrv/configured_device</signal>
-                <slot>startVideoAct/update</slot>
+                <signal>video_selector_srv/configured_file</signal>
+                <signal>video_selector_srv/configured_stream</signal>
+                <signal>video_selector_srv/configured_device</signal>
+                <slot>start_video_act/update</slot>
             </connect>
 
             <connect>
-                <signal>videoGrabberSrv/camera_started</signal>
-                <slot>pauseVideoAct/show</slot>
-                <slot>startVideoAct/hide</slot>
-                <slot>stopVideoAct/enable</slot>
-                <slot>loopVideoAct/enable</slot>
+                <signal>video_grabber_srv/camera_started</signal>
+                <slot>pause_video_act/show</slot>
+                <slot>start_video_act/hide</slot>
+                <slot>stop_video_act/enable</slot>
+                <slot>loop_video_act/enable</slot>
             </connect>
 
             <connect>
-                <signal>RGBCamera/id_modified</signal>
-                <slot>videoGrabberSrv/stop_camera</slot>
+                <signal>rgb_camera/id_modified</signal>
+                <slot>video_grabber_srv/stop_camera</slot>
             </connect>
 
             <connect>
-                <signal>RGBCamera/modified</signal>
-                <slot>startVideoAct/enable</slot>
-                <slot>stopVideoAct/update</slot>
+                <signal>rgb_camera/modified</signal>
+                <slot>start_video_act/enable</slot>
+                <slot>stop_video_act/update</slot>
             </connect>
 
             <connect>
-                <signal>seriesSet/modified</signal>
-                <signal>seriesSet/added_objects</signal>
-                <slot>extractModelSeriesSrv/update</slot>
+                <signal>series_set/modified</signal>
+                <signal>series_set/added_objects</signal>
+                <slot>extract_model_series_srv/update</slot>
             </connect>
 
             <connect>
-                <signal>RGBDepthCameraSet/added_camera</signal>
-                <slot>extractCameraSrv/update</slot>
+                <signal>rgb_depth_camera_set/added_camera</signal>
+                <slot>extract_camera_srv/update</slot>
             </connect>
 
             <connect>
-                <signal>enableHoleFillingFilterParamSrv/parameter_changed</signal>
-                <slot>videoGrabberSrv/set_parameter</slot>
-            </connect>
-
-            <connect>
-                <signal>maskerThresholdParamSrv/int_changed</signal>
-                <slot>maskerSrv/set_threshold</slot>
-            </connect>
-
-            <connect>
-                <signal>showSettingsAct/is_checked</signal>
-                <slot>settingsView/set_visible</slot>
+                <signal>show_settings_act/is_checked</signal>
+                <slot>settings_view/set_visible</slot>
             </connect>
 
             <connect>
@@ -464,16 +453,16 @@
             <!-- ******************************* Update services ***************************************** -->
 
             <update>
-                <service uid="extractSkinSrv" />
-                <service uid="extractCameraSrv" />
-                <service uid="concatenateSrv" />
-                <service uid="enableHoleFillingFilterParamSrv" />
-                <service uid="meshAdp" />
+                <service uid="extract_skin_srv" />
+                <service uid="extract_camera_srv" />
+                <service uid="concatenate_srv" />
+                <service uid="enable_hole_filling_filter_srv" />
+                <service uid="mesh_adp" />
 
                 <sequence uid="updater" loop="true" start="false">
-                    <service uid="frameUpdaterSrv" />
-                    <service uid="maskerSrv" />
-                    <service uid="genericSceneSrv" />
+                    <service uid="frame_updater_srv" />
+                    <service uid="masker_srv" />
+                    <service uid="generic_scene_srv" />
                 </sequence>
             </update>
         </config>

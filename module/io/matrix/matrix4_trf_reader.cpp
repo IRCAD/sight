@@ -22,8 +22,6 @@
 
 #include "module/io/matrix/matrix4_trf_reader.hpp"
 
-#include <core/location/single_file.hpp>
-#include <core/location/single_folder.hpp>
 #include <core/notification/observer.hpp>
 
 #include <data/matrix4.hpp>
@@ -31,9 +29,6 @@
 #include <io/__/reader/matrix4_reader.hpp>
 #include <io/__/service/reader.hpp>
 
-#include <ui/__/dialog/location.hpp>
-
-#include <filesystem>
 #include <iostream>
 
 namespace sight::module::io::matrix
@@ -63,7 +58,7 @@ void matrix4_trf_reader::info(std::ostream& _sstream)
 
 //-----------------------------------------------------------------------------
 
-std::vector<std::pair<std::string, std::string> > matrix4_trf_reader::get_supported_extensions()
+std::vector<std::pair<std::string, std::string> > matrix4_trf_reader::get_supported_extensions() const
 {
     return {{"TRF files", "*.trf"}};
 }
@@ -79,31 +74,6 @@ void matrix4_trf_reader::starting()
 void matrix4_trf_reader::configuring()
 {
     sight::io::service::reader::configuring();
-}
-
-//-----------------------------------------------------------------------------
-
-void matrix4_trf_reader::open_location_dialog()
-{
-    static auto default_directory = std::make_shared<core::location::single_folder>();
-
-    sight::ui::dialog::location dialog_file;
-    dialog_file.set_title(*m_window_title);
-    dialog_file.set_default_location(default_directory);
-    dialog_file.add_filter("TRF files", "*.trf");
-    dialog_file.set_option(ui::dialog::location::read);
-
-    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialog_file.show());
-    if(result)
-    {
-        default_directory->set_folder(result->get_file().parent_path());
-        dialog_file.save_default_location(default_directory);
-        this->set_file(result->get_file());
-    }
-    else
-    {
-        this->clear_locations();
-    }
 }
 
 //-----------------------------------------------------------------------------

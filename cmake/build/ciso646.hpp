@@ -19,22 +19,25 @@
  *
  ***********************************************************************/
 
+// cspell:ignore Wcpp
+
 #pragma once
 
-#include <core/runtime/path.hpp>
+// Include the deprecated <ciso646> silently once, so that third-party headers including it no longer warn.
+#if __cplusplus >= 202002L && __has_include(<ciso646>)
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-W#warnings"
+#elif defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcpp"
+#endif
 
-#include <ui/test/test.hpp>
+#include <ciso646> // IWYU pragma: keep
 
-namespace sight::example::ui::ex_parameters::uit
-{
-
-/// The doctest fixture shared by all ex_parameters GUI scenarios.
-struct fixture : sight::ui::test::base
-{
-    fixture() :
-        sight::ui::test::base(sight::core::runtime::working_path() / "share/sight/ex_parameters/profile.xml")
-    {
-    }
-};
-
-} // namespace sight::example::ui::ex_parameters::uit
+#ifdef __clang__
+#pragma clang diagnostic pop
+#elif defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif
+#endif

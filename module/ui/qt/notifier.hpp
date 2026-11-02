@@ -22,6 +22,8 @@
 
 #pragma once
 
+#include <data/string.hpp>
+
 #include <core/notification/base.hpp>
 
 #include <service/controller.hpp>
@@ -102,6 +104,12 @@ namespace sight::module::ui::qt
  *     - \b closable (optional): override default which is closable for timed notification. This is mostly useful to
  *                   allow closing of permanent notification
  *
+ *
+ * @subsection ConfigBindings Configuration data bindings
+ * Configuration inputs accept literals or shared data objects.
+ * Default values apply when no configuration value is provided.
+ * - \b config.duration [sight::data::string]: duration.
+ * - \b config.position [sight::data::string]: position.
  */
 class notifier final : public service::controller
 {
@@ -136,6 +144,8 @@ public:
 
 protected:
 
+    sight::service::connections_t auto_connections() const override;
+
     /** @name Service methods ( override from service::base )
      * @{
      */
@@ -159,6 +169,10 @@ protected:
     void updating() override;
 
 private:
+
+    /// Apply settings from bound data at startup and after external modifications.
+    void apply_config_duration();
+    void apply_config_position();
 
     /// Displays a notification, creating or reusing a popup depending on its channel.
     /// @param _params notification display parameters.
@@ -232,6 +246,12 @@ private:
 
     /// Parent container ID (SID or WID), empty by default.
     std::string m_parent_container_id;
+
+    /// Typed config.duration configuration binding.
+    ptr_in<sight::data::string> m_config_duration {this, "config.duration", std::nullopt};
+
+    /// Typed config.position configuration binding.
+    ptr_in<sight::data::string> m_config_position {this, "config.position", std::nullopt};
 };
 
 } //namespace sight::module::ui::qt

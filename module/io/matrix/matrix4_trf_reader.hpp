@@ -53,22 +53,10 @@ public:
 
     matrix4_trf_reader() noexcept;
 
-    /** @name Specified reader service methods ( override from sight::io::service::reader )
-     * @{
-     */
-
-    /**
-     * @brief Configure the image path.
-     *
-     * This method is used to find
-     * the file path  using a file selector.
-     */
-    void open_location_dialog() override;
-
     /**
      * @brief   returns  (filename) extension
      */
-    std::vector<std::pair<std::string, std::string> > get_supported_extensions() override;
+    std::vector<std::pair<std::string, std::string> > get_supported_extensions() const override;
     /// @}
 
     /// Return path type managed by the service, here FILE

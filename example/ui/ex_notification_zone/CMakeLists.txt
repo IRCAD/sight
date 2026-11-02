@@ -1,6 +1,14 @@
 sight_add_target(ex_notification_zone TYPE APP REQUIRE_ADMIN OFF)
 
-add_dependencies(${SIGHT_TARGET} module_app module_service module_ui module_ui_qt module_ui_icons)
+add_dependencies(
+    ${SIGHT_TARGET}
+    sightrun
+    module_app
+    module_service
+    module_ui
+    module_ui_qt
+    module_ui_icons
+)
 
 target_link_libraries(${SIGHT_TARGET} PRIVATE service)
 

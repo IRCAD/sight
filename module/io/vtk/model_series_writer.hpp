@@ -85,6 +85,19 @@ public:
      */
     void open_location_dialog() override;
 
+    //------------------------------------------------------------------------------
+
+    std::vector<std::pair<std::string, std::string> > get_supported_extensions() const override
+    {
+        return {{"VTK Legacy", "*.vtk"
+        }, {"VTK Polydata", "*.vtp"
+            }, {"OBJ", "*.obj"
+            }, {"PLY", "*.ply"
+            }, {"STL", "*.stl"
+            }
+        };
+    }
+
     sight::io::service::path_type_t get_path_type() const override;
 
 protected:

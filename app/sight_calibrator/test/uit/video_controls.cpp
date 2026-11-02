@@ -79,10 +79,7 @@ TEST_SUITE("sight_calibrator")
                 // player.
                 /// @todo Investigate the issue and remove the following line.
 #ifndef _WIN32
-                // Loading a file only enables the Start action: nothing plays, the position stays at the beginning.
-                helper::label::exactly_match(_tester, "videoSliderSrv/currentPosition", "00:00:00");
-
-                // The current position shouldn't move while the player is paused
+                // Loading a file already starts the player: restart it, then check the position holds while paused
                 helper::video_controls::stop(_tester, "videoToolbarView");
                 helper::video_controls::start(_tester, "videoToolbarView");
                 QTest::qWait(1000);

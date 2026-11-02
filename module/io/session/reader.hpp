@@ -114,8 +114,12 @@ public:
     reader() noexcept;
     ~reader() noexcept final = default;
 
-    /// Propose to read a session data file
-    void open_location_dialog() final;
+    //------------------------------------------------------------------------------
+
+    std::vector<std::pair<std::string, std::string> > get_supported_extensions() const override
+    {
+        return {{m_extension_description, "*" + m_extension_name}};
+    }
 
     /// Returns managed path type, here service manages only single file
     sight::io::service::path_type_t get_path_type() const final

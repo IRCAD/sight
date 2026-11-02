@@ -26,7 +26,12 @@
 
 #include <doctest/doctest.h>
 
+#include <opencv2/core/version.hpp>
+#if CV_MAJOR_VERSION < 5
 #include <opencv2/calib3d.hpp>
+#else
+#include <opencv2/geometry/3d.hpp>
+#endif
 
 TEST_SUITE("sight::io::opencv::matrix")
 {
@@ -527,6 +532,4 @@ TEST_SUITE("sight::io::opencv::matrix")
             }
         }
     }
-
-//-----------------------------------------------------------------------------
 }

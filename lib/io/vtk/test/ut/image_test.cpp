@@ -126,9 +126,8 @@ static void image_to_vtk(const sight::core::type _imgtype, const std::set<int>& 
         vtk_image->GetDataDimension()
     );
 
-    std::set<int> types = _vtk_types;
     CHECK_MESSAGE(
-        types.find(vtk_image->GetScalarType()) != types.end(),
+        _vtk_types.contains(vtk_image->GetScalarType()),
         "Test failed for type ",
         _imgtype.name()
     );
@@ -494,6 +493,8 @@ TEST_SUITE("sight::io::vtk::image")
 
     TEST_CASE("mhd_writer")
     {
+        // BostonTeapot-vtk9.mhd points to BostonTeapot.zraw with a wrong size, which VTK 9.5 refuses to read
+        const std::filesystem::path input_path(sight::utest_data::dir() / "sight/image/mhd/BostonTeapot.mhd");
 #if VTK_MAJOR_VERSION >= 9
         const std::filesystem::path image_path(sight::utest_data::dir() / "sight/image/mhd/BostonTeapot-vtk9.mhd");
         const std::filesystem::path z_raw_path(sight::utest_data::dir() / "sight/image/mhd/BostonTeapot-vtk9.zraw");
@@ -523,7 +524,7 @@ TEST_SUITE("sight::io::vtk::image")
         auto image  = std::make_shared<sight::data::image>();
         auto reader = std::make_shared<sight::io::vtk::meta_image_reader>();
         reader->set_object(image);
-        reader->set_file(image_path);
+        reader->set_file(input_path);
         auto read_observer = std::make_shared<sight::core::notification::observer>("Test read");
         reader->read(read_observer);
 

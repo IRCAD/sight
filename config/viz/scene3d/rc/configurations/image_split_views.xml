@@ -14,8 +14,13 @@
         <object uid="model_visibility" type="sight::data::boolean" />
         <object uid="axis_visibility" type="sight::data::boolean" />
         <object uid="volume_parameters" type="sight::data::map" />
+        <object uid="negato_3d_transparency" type="sight::data::real" optional="true" value="0" />
+        <object uid="flythrough_camera_distance" type="sight::data::real" />
+        <object uid="flythrough_camera_speed" type="sight::data::integer" />
+        <object uid="flythrough_camera_direction" type="sight::data::integer" />
 
         <param name="WID_PARENT" />
+        <param name="flythrough_path_group" default="Path" />
 
         <channel name="box_widget_reset" />
         <channel name="shape_extruder_enable_tool" />
@@ -23,14 +28,20 @@
         <channel name="shape_extruder_undo" />
         <channel name="shape_extruder_reset" />
         <channel name="world_coords_landmarks" />
-        <channel name="negato_3d_transparency" />
         <channel name="mesh_activation" optional="true" />
         <channel name="volume_activation" optional="true" />
         <channel name="image_visibility" />
         <channel name="ruler_activation" />
         <channel name="ruler_deactivation" />
+        <channel name="flythrough_path_activation" />
+        <channel name="flythrough_path_clear" />
+        <channel name="flythrough_path_mode_changed" />
+        <channel name="flythrough_camera_play" />
+        <channel name="flythrough_camera_pause" />
+        <channel name="flythrough_camera_interaction" optional="true" />
         <channel name="landmarks_edit_mode" />
         <channel name="landmarks_group_selected" />
+        <channel name="flythrough_path_points_available" />
         <channel name="remove_all_landmarks" />
         <channel name="remove_all_rulers" />
         <channel name="visibility_rulers" />
@@ -99,7 +110,12 @@
             <object name="model_visibility" uid="${model_visibility}" />
             <object name="axis_visibility" uid="${axis_visibility}" />
             <object name="volume_parameters" uid="${volume_parameters}" />
+            <object name="negato_3d_transparency" uid="${negato_3d_transparency}" />
+            <object name="flythrough_camera_distance" uid="${flythrough_camera_distance}" />
+            <object name="flythrough_camera_speed" uid="${flythrough_camera_speed}" />
+            <object name="flythrough_camera_direction" uid="${flythrough_camera_direction}" />
             <param name="WID_PARENT" value="main_scene_view" />
+            <param name="flythrough_path_group" value="${flythrough_path_group}" />
             <param name="maximized" value="true" />
             <param name="restored" value="false" />
 
@@ -110,14 +126,20 @@
             <channel name="shape_extruder_undo" uid="${shape_extruder_undo}" />
             <channel name="shape_extruder_reset" uid="${shape_extruder_reset}" />
             <channel name="world_coords_landmarks" uid="${world_coords_landmarks}" />
-            <channel name="negato_3d_transparency" uid="${negato_3d_transparency}" />
             <channel name="mesh_activation" uid="${mesh_activation}" />
             <channel name="volume_activation" uid="${volume_activation}" />
             <channel name="image_visibility" uid="${image_visibility}" />
             <channel name="ruler_activation" uid="${ruler_activation}" />
             <channel name="ruler_deactivation" uid="${ruler_deactivation}" />
+            <channel name="flythrough_path_activation" uid="${flythrough_path_activation}" />
+            <channel name="flythrough_path_clear" uid="${flythrough_path_clear}" />
+            <channel name="flythrough_path_mode_changed" uid="${flythrough_path_mode_changed}" />
+            <channel name="flythrough_camera_play" uid="${flythrough_camera_play}" />
+            <channel name="flythrough_camera_pause" uid="${flythrough_camera_pause}" />
+            <channel name="flythrough_camera_interaction" uid="${flythrough_camera_interaction}" />
             <channel name="landmarks_edit_mode" uid="${landmarks_edit_mode}" />
             <channel name="landmarks_group_selected" uid="${landmarks_group_selected}" />
+            <channel name="flythrough_path_points_available" uid="${flythrough_path_points_available}" />
             <channel name="remove_all_landmarks" uid="${remove_all_landmarks}" />
             <channel name="remove_all_rulers" uid="${remove_all_rulers}" />
             <channel name="visibility_rulers" uid="${visibility_rulers}" />
@@ -140,6 +162,7 @@
             <channel name="image_visibility" uid="${image_visibility}" />
             <channel name="ruler_activation" uid="${ruler_activation}" />
             <channel name="ruler_deactivation" uid="${ruler_deactivation}" />
+            <channel name="flythrough_path_activation" uid="${flythrough_path_activation}" />
             <channel name="visibility_rulers" uid="${visibility_rulers}" />
             <channel name="landmarks_edit_mode" uid="${landmarks_edit_mode}" />
             <channel name="landmarks_group_selected" uid="${landmarks_group_selected}" />
@@ -161,6 +184,7 @@
             <channel name="image_visibility" uid="${image_visibility}" />
             <channel name="ruler_activation" uid="${ruler_activation}" />
             <channel name="ruler_deactivation" uid="${ruler_deactivation}" />
+            <channel name="flythrough_path_activation" uid="${flythrough_path_activation}" />
             <channel name="visibility_rulers" uid="${visibility_rulers}" />
             <channel name="landmarks_edit_mode" uid="${landmarks_edit_mode}" />
             <channel name="landmarks_group_selected" uid="${landmarks_group_selected}" />
@@ -182,6 +206,7 @@
             <channel name="image_visibility" uid="${image_visibility}" />
             <channel name="ruler_activation" uid="${ruler_activation}" />
             <channel name="ruler_deactivation" uid="${ruler_deactivation}" />
+            <channel name="flythrough_path_activation" uid="${flythrough_path_activation}" />
             <channel name="visibility_rulers" uid="${visibility_rulers}" />
             <channel name="landmarks_edit_mode" uid="${landmarks_edit_mode}" />
             <channel name="landmarks_group_selected" uid="${landmarks_group_selected}" />

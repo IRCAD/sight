@@ -22,6 +22,12 @@
 
 #pragma once
 
+#include <data/boolean.hpp>
+#include <data/integer.hpp>
+#include <data/real.hpp>
+#include <data/string.hpp>
+#include <data/ptr.hpp>
+
 #include <data/camera.hpp>
 #include <data/camera_set.hpp>
 #include <data/mesh.hpp>
@@ -57,58 +63,15 @@ namespace sight::module::io::realsense
  * - \b stop_camera()  : This slot is called to stop camera streams.
  * - \b pause_camera() : This slot is called to pause/unpause the camera streams.
  * - \b record(): This slot is called to record current device in a .bag file.
- * - \b set_bool_parameter(bool value, std::string key) : Slot called when a boolean parameter changes:
- *   - key 'switchToIR': switch the color stream by infrared stream if true.
- *   - key 'IREmitter': enable/disable the IR Emitter.
- *   - key 'enableSpacial': enable/disable spacial filter. For the documentation of the filters, please refer to
- *       https://github.com/IntelRealSense/librealsense/blob/master/doc/post-processing-filters.md
- *   - key 'enableTemporal': enable/disable temporal filter
- *   - key 'enableHolesFilling': enable/disable holes filling filter
- * - \b set_int_parameter(int value, std::string key): Slot called when a integer parameter changes:
- *   - key 'minRange' : min value of depth range (default 0)
- *   - key 'maxRange' : max value of depth range (default 65535)
- *   - key 'spacialMagnitude': set the number of iteration of the spacial filter [1-5]
- *   - key 'spacialSmoothDelta': step-size boundary. Establishes the threshold used to preserve "edges" [1-50]
- *   - key 'spacialHoleFilling': in-place heuristic symmetric hole-filling mode applied horizontally during the filter
- *        passes. Intended to rectify minor artefacts with minimal performance impact ([0-5] range mapped to
- *        [none,2,4,8,16,unlimited] pixels).
- *   - key 'temporalSmoothDelta': step-size boundary. Establishes the threshold used to preserve surfaces (edges)
- *      [1-100]
- *   - key 'temporalPersistency': A set of predefined rules (masks) that govern when missing pixels will be replace with
- *      the last valid value so that the data will remain persistent over time:
- *      - Disabled: Persistency filter is not activated and no hole filling occurs.
- *      - Valid in 8/8: Persistency activated if the pixel was valid in 8 out of the last 8 frames
- *      - Valid in 2/last 3: Activated if the pixel was valid in two out of the last 3 frames
- *      - Valid in 2/last 4: Activated if the pixel was valid in two out of the last 4 frames
- *      - Valid in 2/8: Activated if the pixel was valid in two out of the last 8 frames
- *      - Valid in 1/last 2: Activated if the pixel was valid in one of the last two frames
- *      - Valid in 1/last 5: Activated if the pixel was valid in one out of the last 5 frames
- *      - Valid in 1/last 8: Activated if the pixel was valid in one out of the last 8 frames
- *      - Persist Indefinitely: Persistency will be imposed regardless of the stored history: most aggressive filtering
- *   - key 'holeFilling':  control the data that will be used to fill the invalid pixels, [0-2] enumerated:
- *      - fill_from_left: Use the value from the left neighbor pixel to fill the hole
- *      - farest_from_around: Use the value from the neighboring pixel which is furthest away from the sensor
- *      - nearest_from_around: Use the value from the neighboring pixel closest to the sensor
- * - \b set_enum_parameter(std::string value, std::string key) : Slot called when a enumeration parameter changes:
- *   - key 'preset' : preset name to load. (see 'preset' in subsection \ref Configuration below).
- *  -  key 'alignTo': used to change the frames alignment, all frames can be aligned on (None (default), Color, Depth
- * or Infrared Streams).
- *    (see also 'alignTo is subsection \ref Configuration below).'
- * - \b set_double_parameter(double value, std::string key): Slot called when a double parameter changes:
- *   - key 'spacialSmoothAlpha': Alpha factor in an exponential moving average with Alpha=1: no filter . Alpha = 0:
- *     infinite filter [0.25-1]
- *   - key 'temporalSmoothAlpha': Alpha factor in an exponential moving average with Alpha=1: no filter . Alpha = 0:
- *     infinite filter [0-1]
- *
  * @section XML XML Configuration
  * @code{.xml}
    <service uid="videoGrabber" type ="sight::module::io::realsense::scan" auto_connect="false">
         <timeline depth="..." />
         <timeline image="..." />
         <output pointcloud="..." />
-        <config camera_set="..." />
-        <config fps="30" colorW="1280" colorH="720" depthW="1280" depthH="720" switchToIR="true/false" preset="..."
- * alignTo="Color"/>
+        <config camera_set="..." fps="30" colorW="1280" colorH="720" depthW="1280" depthH="720" switch_to_ir="false"
+ * preset="..."
+            align_to="Color"/>
         <recordFile>/path/to/the/file.bag</recordFile>
    </service>
    @endcode
@@ -169,9 +132,50 @@ namespace sight::module::io::realsense
  *   - 1920 * 1080, available fps [6, 15 ,30].
  *
  * For more convenience we set the same fps for both color and depth streams.
- *
- *
  * - \b recordFile (optional): path & filename where recording will be saved.
+ *
+ * @subsection ConfigBindings Configuration data bindings
+ * Configuration inputs accept literals or shared data objects. The values below are the defaults when no value is
+ * provided.
+ * - \b config.enable_holes_filling [sight::data::boolean]: enable filling holes in the depth image (default: false).
+ * - \b config.preset [sight::data::string]: load a named JSON preset, overriding previous resolution values
+ *   (default: empty, built-in default preset). Available presets: Default, HighResHighAccuracy, HighResHighDensity,
+ *   HighResMidDensity, MidResHighAccuracy, MidResHighDensity, MidResMidDensity, LowResHighAccuracy,
+ *   LowResHighDensity, LowResMidDensity, Hand, ShortRange, BodyScan and RemoveIR. See the videoRealsense/rc
+ *   README to add a custom preset.
+ * - \b config.align_to [sight::data::string]: align each frame to None (default), Color, Depth or Infrared.
+ * - \b config.ir_emitter [sight::data::boolean]: enable the infrared emitter (default: true).
+ * - \b config.switch_to_ir [sight::data::boolean]: send the infrared frame to the color timeline instead of the
+ *   color frame (default: false).
+ * - \b config.max_range [sight::data::integer]: maximum depth value in millimeters (default: 65535; values above
+ *   65535 are rejected).
+ * - \b config.min_range [sight::data::integer]: minimum depth value in millimeters (default: 0; negative values are
+ *   rejected).
+ * - \b config.enable_spacial [sight::data::boolean]: enable the spatial depth post-processing filter
+ *   (default: false).
+ * - \b config.enable_temporal [sight::data::boolean]: enable the temporal depth post-processing filter
+ *   (default: false).
+ * - \b config.spacial_magnitude [sight::data::integer]: number of spatial filter iterations; accepted range [1, 5]
+ *   (default: 2).
+ * - \b config.spacial_smooth_alpha [sight::data::real]: spatial filter exponential moving average factor. Alpha 1
+ *   disables smoothing; lower values increase it. Accepted range [0.25, 1] (default: 0.5).
+ * - \b config.spacial_smooth_delta [sight::data::integer]: spatial filter step-size boundary used to preserve edges;
+ *   accepted range [1, 50] (default: 20).
+ * - \b config.spacial_hole_filling [sight::data::integer]: spatial filter horizontal hole-filling mode, accepted
+ *   range [0, 5] (default: 0): none, then 2, 4, 8, 16 or unlimited pixels. This heuristic targets minor artifacts
+ *   with minimal performance impact.
+ * - \b config.temporal_smooth_alpha [sight::data::real]: temporal filter exponential moving average factor. Alpha 1
+ *   disables smoothing; lower values increase it. Accepted range [0, 1] (default: 0.4).
+ * - \b config.temporal_smooth_delta [sight::data::integer]: temporal filter step-size boundary used to preserve
+ *   surfaces and edges; accepted range [1, 100] (default: 20).
+ * - \b config.temporal_persistency [sight::data::integer]: temporal persistency rule, accepted range [0, 8]
+ *   (default: 3). Rules decide when a missing pixel reuses its last valid value: disabled; valid in 8/8; valid in 2
+ *   of the last 3, 4 or 8 frames; valid in 1 of the last 2, 5 or 8 frames; or persist indefinitely (most aggressive).
+ * - \b config.hole_filling [sight::data::integer]: choose how invalid pixels are filled, accepted values [0, 2]
+ *   (default: 1): fill from left, from the furthest neighboring pixel, or from the nearest neighboring pixel.
+ *
+ * See the RealSense post-processing filter documentation for details on the spatial and temporal filters:
+ * https://github.com/IntelRealSense/librealsense/blob/master/doc/post-processing-filters.md
  */
 
 class scan : public sight::io::service::rgbd_grabber
@@ -190,8 +194,23 @@ public:
 
     struct slots
     {
-        static inline const slot_key_t CONFIGURE_RECORDING_PATH = "configure_recording_path";
-        static inline const slot_key_t RECORD                   = "record";
+        static inline const slot_key_t CONFIGURE_RECORDING_PATH           = "configure_recording_path";
+        static inline const slot_key_t RECORD                             = "record";
+        static inline const slot_key_t APPLY_CONFIG_PRESET                = "apply_config_preset";
+        static inline const slot_key_t APPLY_CONFIG_ALIGN_TO              = "apply_config_align_to";
+        static inline const slot_key_t APPLY_CONFIG_IR_EMITTER            = "apply_config_ir_emitter";
+        static inline const slot_key_t APPLY_CONFIG_MAX_RANGE             = "apply_config_max_range";
+        static inline const slot_key_t APPLY_CONFIG_MIN_RANGE             = "apply_config_min_range";
+        static inline const slot_key_t APPLY_CONFIG_ENABLE_SPACIAL        = "apply_config_enable_spacial";
+        static inline const slot_key_t APPLY_CONFIG_ENABLE_TEMPORAL       = "apply_config_enable_temporal";
+        static inline const slot_key_t APPLY_CONFIG_SPACIAL_MAGNITUDE     = "apply_config_spacial_magnitude";
+        static inline const slot_key_t APPLY_CONFIG_SPACIAL_SMOOTH_ALPHA  = "apply_config_spacial_smooth_alpha";
+        static inline const slot_key_t APPLY_CONFIG_SPACIAL_SMOOTH_DELTA  = "apply_config_spacial_smooth_delta";
+        static inline const slot_key_t APPLY_CONFIG_SPACIAL_HOLE_FILLING  = "apply_config_spacial_hole_filling";
+        static inline const slot_key_t APPLY_CONFIG_TEMPORAL_SMOOTH_ALPHA = "apply_config_temporal_smooth_alpha";
+        static inline const slot_key_t APPLY_CONFIG_TEMPORAL_SMOOTH_DELTA = "apply_config_temporal_smooth_delta";
+        static inline const slot_key_t APPLY_CONFIG_TEMPORAL_PERSISTENCY  = "apply_config_temporal_persistency";
+        static inline const slot_key_t APPLY_CONFIG_HOLE_FILLING          = "apply_config_hole_filling";
     };
 
     SIGHT_DECLARE_SERVICE(scan, sight::io::service::rgbd_grabber);
@@ -210,10 +229,10 @@ public:
 
     /// Destructor. Calls stopCamera()
     ~scan() noexcept override;
-    ///SLOT: When "parameter_t" parameter changes
-    void set_parameter(ui::parameter_t value, std::string key) override;
 
 protected:
+
+    sight::service::connections_t auto_connections() const override;
 
     /// Starts the service, get the timelines and set the outputs.
     void starting() override;
@@ -229,6 +248,21 @@ protected:
 
 private:
 
+    /// Apply settings from bound data at startup and after external modifications.
+    void apply_config_preset();
+    void apply_config_align_to();
+    void apply_config_ir_emitter();
+    void apply_config_max_range();
+    void apply_config_min_range();
+    void apply_config_spacial_magnitude();
+    void apply_config_spacial_smooth_alpha();
+    void apply_config_spacial_smooth_delta();
+    void apply_config_spacial_hole_filling();
+    void apply_config_temporal_smooth_alpha();
+    void apply_config_temporal_smooth_delta();
+    void apply_config_temporal_persistency();
+    void apply_config_hole_filling();
+
     // Internal structures
 
     /// min and max depth range (from realsense-viewer application).
@@ -241,16 +275,13 @@ private:
      */
     struct camera_settings
     {
-        int fps               = 30;                ///< Default FPS of all streams.
-        int colorH            = 720;               ///< Default Height of color/infrared streams.
-        int colorW            = 1280;              ///< Default Width of color/infrared streams.
-        int depthH            = 720;               ///< Default Height of depth stream.
-        int depthW            = 1280;              ///< Default Width of depth stream.
-        ::fs::path presetPath = "";                ///< Path to the preset to load (default none).
-        bool irEmitter        = true;              ///< enable/disable ir emitter (default on).
-        int maxRange          = s_MAX_DEPTH_RANGE; ///< max depth range.
-        int minRange          = s_MIN_DEPTH_RANGE; ///< min depth range.
-        bool needHardReset    = false;             ///< if device needs to be hard-reset before at stop.
+        int fps               = 30;    ///< Default FPS of all streams.
+        int colorH            = 720;   ///< Default Height of color/infrared streams.
+        int colorW            = 1280;  ///< Default Width of color/infrared streams.
+        int depthH            = 720;   ///< Default Height of depth stream.
+        int depthW            = 1280;  ///< Default Width of depth stream.
+        ::fs::path presetPath = "";    ///< Path to the preset to load (default none).
+        bool needHardReset    = false; ///< if device needs to be hard-reset before at stop.
         ///If frames needs to be aligned on in a particular STREAM.
         /// Value can be RS2_STREAM_COUNT = No alignment, RS_STREAM_DEPTH, RS_STREAM_COLOR, RS_STREAM_INFRARED, others
         // values are ignored.
@@ -265,49 +296,9 @@ private:
             depthH = 720;
             depthW = 1280;
             presetPath.clear();
-            irEmitter       = true;
-            maxRange        = s_MAX_DEPTH_RANGE;
-            minRange        = s_MIN_DEPTH_RANGE;
             needHardReset   = false;
             streamToAlignTo = RS2_STREAM_COUNT;
         }
-    };
-
-    /// Store the depth frame filters settings
-    /// (see https://github.com/IntelRealSense/librealsense/blob/master/doc/post-processing-filters.md)
-    struct FilterSettings
-    {
-        bool enableSpacial {false};      ///< Enable Spatial Edge-Preserving filter
-        bool enableTemporal {false};     ///< Enable Temporal filter
-        bool enableHolesFilling {false}; ///< Enable Holes Filling filter
-
-        // spacial filter settings
-        std::uint8_t spacialMagnitude {2}; ///<  Number of filter iterations [1-5]
-        /// Alpha factor in an exponential moving average with Alpha=1 - no filter. Alpha = 0 - infinite filter [0.25-1]
-        float spacialSmoothAlpha {0.5F};
-
-        /// Step-size boundary. Establishes the threshold used to preserve "edges" [1-50]
-        std::uint8_t spacialSmoothDelta {20};
-
-        /// An in-place heuristic symmetric hole-filling mode applied horizontally during the filter passes. Intended to
-        /// rectify minor artefacts with minimal performance impact
-        /// [0-5] range mapped to [none,2,4,8,16,unlimited] pixels.
-        std::uint8_t spacialHoleFilling {0};
-
-        // temporal filter settings
-        /// Alpha factor in an exponential moving average with Alpha=1 - no filter . Alpha = 0 - infinite filter [0-1]
-        float temporalSmoothAlpha {0.4F};
-
-        /// Step-size boundary. Establishes the threshold used to preserve surfaces (edges) [1-100]
-        std::uint8_t temporalSmoothDelta {20};
-
-        /// Persistency index [0-8]: set of predefined rules (masks) that govern when missing pixels will be replace
-        /// with the last valid value so that the data will remain persistent over time.
-        std::uint8_t temporalPersistency {3};
-
-        // holes filling settings
-        /// Control the data that will be used to fill the invalid pixels [0-2]
-        std::uint8_t holeFilling {1};
     };
 
     /// On which frame map the pointcloud.
@@ -321,21 +312,21 @@ private:
     // Overriden functions/slots
 
     /// SLOT : Initializes and starts the streams. Restarts the streams if already started.
-    void startCamera() override;
+    void start_camera() override;
 
     /// SLOT : Stops to grab frames.
-    void stopCamera() override;
+    void stop_camera() override;
 
     /// SLOT : Pause the grabbing
-    void pauseCamera() override;
+    void pause_camera() override;
 
     /// Does nothing (re-implemented from grabber)
-    void toggleLoopMode() override
+    void toggle_loop_mode() override
     {
     }
 
     /// Does nothing (re-implemented from grabber)
-    void setPosition(int64_t /*position*/) override
+    void set_position(int64_t /*position*/) override
     {
     }
 
@@ -431,9 +422,6 @@ private:
     /// Struct that contains basic camera settings (fps, resolution, preset, ...).
     camera_settings m_camera_settings;
 
-    /// Struct that contains the settings to apply filter on the depth frame
-    FilterSettings m_filterSettings;
-
     /// Contain the current realsense device (needed when parameters changed live).
     rs2::device m_currentDevice;
 
@@ -448,9 +436,6 @@ private:
 
     /// True to pause the streaming, false otherwise
     std::atomic_bool m_pause {false};
-
-    /// True to push infrared frames in color TL.
-    std::atomic_bool m_switchInfra2Color {false};
 
     /// True when the first real frame has been grabbed. Set the point cloud output.
     std::atomic_bool m_grabbingStarted {false};
@@ -473,14 +458,33 @@ private:
     /// Mutex used for the Condition Variable
     std::mutex m_pauseMutex;
 
-    data::ptr<data::camera, data::access::in> m_camera {this, s_CAMERA_INPUT, true};
-
     static constexpr std::string_view s_CAMERA_SET_INOUT = "config.camera_set";
-    data::ptr<data::camera_set, data::access::inout> m_camera_set {this, s_CAMERA_SET_INOUT, true};
 
     static constexpr std::string_view s_POINTCLOUD_OUTPUT = "output.pointcloud";
-    data::ptr<data::mesh, data::access::out> m_pointCloudOutput {this, s_POINTCLOUD_OUTPUT, true};
     data::mesh::sptr m_pointCloud;
+
+    ptr_inout<sight::data::boolean> m_enable_holes_filling {this, "config.enable_holes_filling", false};
+    ptr_inout<sight::data::string> m_preset {this, "config.preset", ""};
+    ptr_inout<sight::data::string> m_align_to {this, "config.align_to", "None"};
+    ptr_inout<sight::data::boolean> m_ir_emitter {this, "config.ir_emitter", true};
+    ptr_inout<sight::data::boolean> m_switch_to_ir {this, "config.switch_to_ir", false};
+    ptr_inout<sight::data::integer> m_max_range {this, "config.max_range", s_MAX_DEPTH_RANGE};
+    ptr_inout<sight::data::integer> m_min_range {this, "config.min_range", s_MIN_DEPTH_RANGE};
+    ptr_inout<sight::data::boolean> m_enable_spacial {this, "config.enable_spacial", false};
+    ptr_inout<sight::data::boolean> m_enable_temporal {this, "config.enable_temporal", false};
+    ptr_inout<sight::data::integer> m_spacial_magnitude {this, "config.spacial_magnitude", 2};
+    ptr_inout<sight::data::real> m_spacial_smooth_alpha {this, "config.spacial_smooth_alpha", 0.5};
+    ptr_inout<sight::data::integer> m_spacial_smooth_delta {this, "config.spacial_smooth_delta", 20};
+    ptr_inout<sight::data::integer> m_spacial_hole_filling {this, "config.spacial_hole_filling", 0};
+    ptr_inout<sight::data::real> m_temporal_smooth_alpha {this, "config.temporal_smooth_alpha", 0.4};
+    ptr_inout<sight::data::integer> m_temporal_smooth_delta {this, "config.temporal_smooth_delta", 20};
+    ptr_inout<sight::data::integer> m_temporal_persistency {this, "config.temporal_persistency", 3};
+    ptr_inout<sight::data::integer> m_hole_filling {this, "config.hole_filling", 1};
+    ptr_in<data::camera> m_camera {this, s_CAMERA_INPUT, true};
+
+    ptr_inout<data::camera_set> m_camera_set {this, s_CAMERA_SET_INOUT, true};
+
+    ptr_out<data::mesh> m_pointCloudOutput {this, s_POINTCLOUD_OUTPUT, true};
 };
 
 } //namespace sight::module::io::realsense

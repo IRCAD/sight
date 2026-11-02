@@ -60,6 +60,9 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
+            <object uid="synchro_params_srv_frame_delay_0" type="sight::data::integer" value="0" />
+            <object uid="synchro_params_srv_frame_delay_1" type="sight::data::integer" value="0" />
+
             <service uid="main_frame" type="sight::module::ui::frame">
                 <gui>
                     <frame>
@@ -378,12 +381,9 @@
                 <item data="${reprojection_params}.color" name="Circle color" />
             </service>
 
-            <service uid="synchro_params_srv" type="sight::module::ui::qt::parameters">
-                <parameters>
-                    <param type="int" name="frame_tl_1 Timeshift (ms)" key="frameDelay_0" widget="spin" defaultValue="0" min="0" max="2000" />
-                    <param type="int" name="frame_tl_2 Timeshift (ms)" key="frameDelay_1" widget="spin" defaultValue="0" min="0" max="2000" />
-                    <param type="int" name="matrix Timeshift (ms)" key="matrixDelay_0" widget="spin" defaultValue="0" min="0" max="2000" />
-                </parameters>
+            <service uid="synchro_params_srv" type="sight::module::ui::qt::settings">
+                <item data="${synchro_params_srv_frame_delay_0}" name="frame_tl_1 Timeshift (ms)" key="frameDelay_0" widget="spin" min="0" max="2000" />
+                <item data="${synchro_params_srv_frame_delay_1}" name="frame_tl_2 Timeshift (ms)" key="frameDelay_1" widget="spin" min="0" max="2000" />
             </service>
 
             <!-- Gui Service to display a value in a QLabel -->
@@ -558,8 +558,8 @@
             <service uid="frame_matrix_synchronizer_srv" type="sight::module::sync::synchronizer" worker="videoWorker" auto_connect="false">
                 <input>
                     <frames>
-                        <item timeline="${frame_tl_1}" />
-                        <item timeline="${frame_tl_2}" />
+                        <item timeline="${frame_tl_1}" delay="${synchro_params_srv_frame_delay_0}" />
+                        <item timeline="${frame_tl_2}" delay="${synchro_params_srv_frame_delay_1}" />
                     </frames>
                 </input>
                 <output>
@@ -678,11 +678,6 @@
             <connect>
                 <signal>aruco_tracker_2_srv/marker_detected</signal>
                 <slot>r_axis_adp/update_visibility</slot>
-            </connect>
-
-            <connect>
-                <signal>synchro_params_srv/int_changed</signal>
-                <slot>frame_matrix_synchronizer_srv/set_delay</slot>
             </connect>
 
             <connect>

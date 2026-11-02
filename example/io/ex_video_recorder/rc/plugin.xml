@@ -21,6 +21,8 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
+            <object uid="parameters_srv_format" type="sight::data::string" value=".tiff" />
+
             <service uid="mainFrame" type="sight::module::ui::frame">
                 <gui>
                     <frame>
@@ -117,16 +119,14 @@
 
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="parametersSrv" type="sight::module::ui::qt::parameters">
-                <parameters>
-                    <param type="enum" name="Frame format" key="format" defaultValue=".tiff" values=".tiff,.jpeg,.png,.bmp,.jp2" />
-                </parameters>
+            <service uid="parametersSrv" type="sight::module::ui::qt::settings">
+                <item data="${parameters_srv_format}" name="Frame format" key="format" values=".tiff,.jpeg,.png,.bmp,.jp2" widget="combobox" />
             </service>
 
             <service uid="frameWriterSrv" type="sight::module::io::video::frame_writer" worker="frameRecordingActWorker">
                 <data write="${frameTL}" />
-                <format>.tiff</format>
                 <path base_folder="%BASE_FOLDER%" />
+                <config format="${parameters_srv_format}" />
             </service>
 
             <service uid="videoWriterSrv" type="sight::module::io::video::video_writer" worker="videoRecordingActWorker">
@@ -164,11 +164,6 @@
 
             <connect channel="camera_stopped_channel">
                 <slot>updater/stop</slot>
-            </connect>
-
-            <connect>
-                <signal>parametersSrv/enum_changed</signal>
-                <slot>frameWriterSrv/set_format_parameter</slot>
             </connect>
 
             <connect>

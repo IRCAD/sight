@@ -86,7 +86,7 @@ public:
     void open_location_dialog() final;
 
     /// Returns the supported DICOM file extension.
-    std::vector<std::pair<std::string, std::string> > get_supported_extensions() final;
+    std::vector<std::pair<std::string, std::string> > get_supported_extensions() const final;
 
     /// Returns the supported path types: DICOM files and folders.
     sight::io::service::path_type_t get_path_type() const final;
