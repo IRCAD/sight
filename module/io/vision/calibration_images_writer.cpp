@@ -95,7 +95,8 @@ void calibration_images_writer::updating()
             if(cv_img.dims == 3)
             {
                 // Ensure that we have a true depth-less 2D image.
-                cv_img = cv_img.reshape(0, 2, cv_img.size + 1);
+                const int dimensions[] = {cv_img.size[1], cv_img.size[2]}; // NOLINT
+                cv_img = cv_img.reshape(0, 2, dimensions);
             }
 
             try

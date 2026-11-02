@@ -1,6 +1,14 @@
 sight_add_target(io_opencv TYPE LIBRARY)
 
-target_link_libraries(io_opencv PUBLIC opencv_calib3d)
+find_package(OpenCV REQUIRED COMPONENTS core)
+
+if(OpenCV_VERSION VERSION_LESS "5.0")
+    find_package(OpenCV REQUIRED COMPONENTS calib3d)
+    target_link_libraries(io_opencv PUBLIC opencv_calib3d)
+else()
+    find_package(OpenCV REQUIRED COMPONENTS geometry)
+    target_link_libraries(io_opencv PUBLIC opencv_geometry)
+endif()
 
 target_link_libraries(io_opencv PUBLIC core data)
 

@@ -28,8 +28,12 @@
 #include <data/point_list.hpp>
 #include <data/vector.hpp>
 
-#include <opencv2/aruco.hpp>
+#include <opencv2/core/version.hpp>
+#if CV_MAJOR_VERSION < 5
 #include <opencv2/calib3d.hpp>
+#else
+#include <opencv2/geometry/3d.hpp>
+#endif
 
 #include <vector>
 

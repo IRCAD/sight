@@ -26,6 +26,10 @@
 
 #include <io/opencv/frame_tl.hpp>
 
+#include <opencv2/core/version.hpp>
+#if CV_MAJOR_VERSION >= 5
+#include <opencv2/features.hpp>
+#endif
 #include <opencv2/video/tracking.hpp>
 
 namespace sight::module::filter::vision

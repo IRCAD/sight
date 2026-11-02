@@ -1185,7 +1185,7 @@ function(find_target_dependencies TARGET TARGETS_FILTER RESULT_VAR)
             list(APPEND DEPENDS ${INTERFACE_DEPENDS})
             set(DEPENDS_COPY ${DEPENDS})
             foreach(dep ${DEPENDS})
-                if(NOT ${dep} IN_LIST TARGETS_FILTER AND NOT "${dep}" MATCHES "_obj")
+                if(NOT ${dep} IN_LIST TARGETS_FILTER AND NOT "${dep}" MATCHES "_obj$")
                     list(REMOVE_ITEM DEPENDS_COPY ${dep})
                 endif()
             endforeach()
@@ -1224,7 +1224,7 @@ function(sight_create_package_targets SIGHT_COMPONENTS SIGHT_IMPORTED_COMPONENTS
 
     # Add an install target for every component
     foreach(COMPONENT ${SIGHT_COMPONENTS})
-        if(NOT ${COMPONENT} MATCHES "_obj")
+        if(NOT ${COMPONENT} MATCHES "_obj$")
             get_target_property(COMPONENT_BINARY_DIR ${COMPONENT} BINARY_DIR)
             add_custom_target(
                 ${COMPONENT}_install ${CMAKE_COMMAND} -DBUILD_TYPE=${CMAKE_BUILD_TYPE} -P
@@ -1303,7 +1303,7 @@ function(sight_create_package_targets SIGHT_COMPONENTS SIGHT_IMPORTED_COMPONENTS
         # Add a dependency on each install target of dependencies found in this project
         find_target_dependencies(${APP} "${SIGHT_COMPONENTS}" DEPENDS)
         foreach(DEP ${DEPENDS})
-            if(NOT ${DEP} MATCHES "_obj")
+            if(NOT ${DEP} MATCHES "_obj$")
                 add_dependencies(${APP}_install ${DEP}_install)
             endif()
         endforeach()
@@ -1410,7 +1410,7 @@ function(order_components SIGHT_UNORDERED_COMPONENTS SIGHT_ORDERED_COMPONENTS)
             # If we have dependencies, we check if all of them are not already in the ordered list
             if(dependencies)
                 foreach(dependency ${dependencies})
-                    if(NOT ${dependency} IN_LIST ordered_components AND NOT "${dependency}" MATCHES "_obj")
+                    if(NOT ${dependency} IN_LIST ordered_components AND NOT "${dependency}" MATCHES "_obj$")
                         set(resolved FALSE)
                         break()
                     endif()
