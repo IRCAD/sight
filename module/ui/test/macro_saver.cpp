@@ -44,6 +44,18 @@ const QEvent::Type NUMBER_INPUT_MODIFICATION_TYPE = static_cast<QEvent::Type>(QE
 
 //------------------------------------------------------------------------------
 
+static const char* mouse_button_to_key(Qt::MouseButton _button)
+{
+    const static QMetaEnum s_MOUSE_BUTTON = QMetaEnum::fromType<Qt::MouseButtons>();
+#if QT_VERSION >= QT_VERSION_CHECK(6, 9, 0)
+    return s_MOUSE_BUTTON.valueToKey(static_cast<quint64>(_button));
+#else
+    return s_MOUSE_BUTTON.valueToKey(static_cast<int>(_button));
+#endif
+}
+
+//------------------------------------------------------------------------------
+
 static QString modifiers_to_string(Qt::KeyboardModifiers _modifiers)
 {
     QString res;
@@ -1589,8 +1601,7 @@ void macro_saver::save()
             current_item_id = interaction->receiver_id;
         }
 
-        const static QMetaEnum s_MOUSE_BUTTON = QMetaEnum::fromType<Qt::MouseButtons>();
-        const static QMetaEnum s_KEY          = QMetaEnum::fromType<Qt::Key>();
+        const static QMetaEnum s_KEY = QMetaEnum::fromType<Qt::Key>();
         if(interaction->type == mouse_click)
         {
             const auto& im = static_cast<post_interaction_mouse&>(*interaction);
@@ -1600,7 +1611,8 @@ void macro_saver::save()
                 QString(
                     "_tester.interact(std::make_unique<sight::ui::test::mouse_click>(Qt::MouseButton::%1, %2, %3));"
                 )
-                .arg(s_MOUSE_BUTTON.valueToKey(im.button)).arg(modifiers_to_string(im.modifiers))
+                .arg(mouse_button_to_key(im.button))
+                .arg(modifiers_to_string(im.modifiers))
                 .arg(QTest::toString(im.from))
             );
         }
@@ -1613,7 +1625,8 @@ void macro_saver::save()
                 QString(
                     "_tester.interact(std::make_unique<sight::ui::test::mouse_double_click>(Qt::MouseButton::%1, %2, %3));"
                 )
-                .arg(s_MOUSE_BUTTON.valueToKey(im.button)).arg(modifiers_to_string(im.modifiers))
+                .arg(mouse_button_to_key(im.button))
+                .arg(modifiers_to_string(im.modifiers))
                 .arg(QTest::toString(im.from))
             );
         }
@@ -1627,7 +1640,8 @@ void macro_saver::save()
                     "_tester.interact(std::make_unique<sight::ui::test::mouse_drag>(%1, %2, Qt::MouseButton::%3, %4));"
                 )
                 .arg(QTest::toString(im.from)).arg(QTest::toString(im.to))
-                .arg(s_MOUSE_BUTTON.valueToKey(im.button)).arg(modifiers_to_string(im.modifiers))
+                .arg(mouse_button_to_key(im.button))
+                .arg(modifiers_to_string(im.modifiers))
             );
         }
         else if(interaction->type == mouse_wheel)
