@@ -92,17 +92,6 @@ find_package(VTK CONFIG QUIET)
 # User options
 ########################################################################################################################
 
-if(UNIX)
-    option(SIGHT_ENABLE_GDB
-           "Test scripts will attach GDB, allowing to generate core file and print backtrace in case of crash." OFF
-    )
-    mark_as_advanced(SIGHT_ENABLE_GDB)
-
-    if(SIGHT_ENABLE_GDB)
-        find_program(GDB NAMES "gdb" REQUIRED)
-    endif()
-endif()
-
 # Use clang-tidy linter
 option(SIGHT_ENABLE_CLANG_TIDY "Enable Clang Tidy checks" OFF)
 mark_as_advanced(SIGHT_ENABLE_CLANG_TIDY)

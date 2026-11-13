@@ -32,7 +32,8 @@ lint:ubuntu-26.04:
         SIGHT_BUILD_PACKAGES: "OFF"
         SIGHT_BUILD_SDK: "OFF"
         SIGHT_ENABLE_REALSENSE: "OFF"
-        SIGHT_ENABLE_GDB: "OFF"
+        # A crashing test leaves its dump here, see doctest_main.cpp.in
+        SIGHT_TEST_DUMP_DIR: "${CI_PROJECT_DIR}/.build/test-dumps"
         TEST_DATA_REF: "7e68743ecc30b3642aa753a84af94b4130168e93"
         # An unusable test log directory must fail the tests, not hide the logs elsewhere
         SIGHT_TEST_LOG_FALLBACK_DIR: "none"
@@ -58,7 +59,6 @@ lint:ubuntu-26.04:
             -DSIGHT_DEPS_ROOT_DIRECTORY=/cache/.sight-deps
             -DSIGHT_ENABLE_REALSENSE=${SIGHT_ENABLE_REALSENSE}
             -DSIGHT_ENABLE_COVERAGE=${SIGHT_ENABLE_COVERAGE}
-            -DSIGHT_ENABLE_GDB=${SIGHT_ENABLE_GDB}
             -DSIGHT_BUILD_MANPAGES=ON
         # Touch all generated files to improve CCache performance
         - find . -type f -name '*.?pp' -o -name '*.?xx' -exec touch -t 197001010000 {} \;
@@ -116,7 +116,7 @@ lint:ubuntu-26.04:
             - .build/Documentation/Doxygen/
             - .build/packages/*.tar.zst
             - .build/coverage
-            - .build/bin/*.core
+            - .build/test-dumps/
             - .build/testImages
         reports:
             junit: .build/junit*.xml
@@ -159,7 +159,6 @@ build:ubuntu-26.04-debug-gcc:
     variables:
         BUILD_TYPE: "Debug"
         SIGHT_BUILD_SDK: "ON"
-        SIGHT_ENABLE_GDB: "ON"
         CC: "gcc"
         CXX: "g++"
     rules:
@@ -184,7 +183,6 @@ build:ubuntu-26.04-RelWithDebInfo-clang:
     variables:
         BUILD_TYPE: "RelWithDebInfo"
         SIGHT_IGNORE_UNSTABLE_TESTS: 1
-        SIGHT_ENABLE_GDB: "ON"
         SIGHT_BUILD_DOC: "ON"
         CC: "clang"
         CXX: "clang++"
@@ -295,6 +293,8 @@ deploy:apps-linux-release:
         SIGHT_TEST_LOG_FALLBACK_DIR: "none"
         # Every CTest run of a job uploads its logs
         SIGHT_TEST_LOG_KEEP: "1"
+        # A crashing test leaves its minidump here, see doctest_main.cpp.in
+        SIGHT_TEST_DUMP_DIR: "${CI_PROJECT_DIR}\\build\\test-dumps"
     stage: build
     script:
         # Print CCache statistics
@@ -358,6 +358,7 @@ deploy:apps-linux-release:
         paths:
             - build/ctest*.log
             - build/bin/test-logs/
+            - build/test-dumps/
             - build/packages/*.exe
             - build/packages/sight-*.zip
             - build/testImages

@@ -31,11 +31,15 @@
 #include <algorithm>
 #include <array>
 #include <atomic>
+#include <charconv>
 #include <cstdlib>
 #include <exception>
 #include <format>
 #include <iostream>
+#include <iterator>
+#include <limits>
 #include <optional>
+#include <ranges>
 #include <string>
 #include <utility>
 #include <vector>
@@ -50,6 +54,23 @@
 #include <QStringList>
 #endif
 
+#ifdef WIN32
+#include <windows.h>
+// After windows.h, which it needs.
+#include <crtdbg.h>
+#include <dbghelp.h>
+#pragma comment(lib, "dbghelp.lib")
+#else
+#include <fcntl.h>
+#include <sys/prctl.h>
+#include <sys/wait.h>
+#include <unistd.h>
+
+#include <cerrno>
+#include <csignal>
+#include <ctime>
+#endif
+
 // Looked up by core at its static initialization, before this executable's own: enables the per-test logs.
 #ifdef WIN32
 #define SIGHT_TEST_EXPORT __declspec(dllexport)
@@ -58,6 +79,413 @@
 #endif
 
 extern "C" SIGHT_TEST_EXPORT constinit const char sight_test_target[] = "@SIGHT_TEST_TARGET_NAME@";
+
+//------------------------------------------------------------------------------
+
+#ifdef WIN32
+#ifdef _DEBUG
+/// A debug assertion or a qFatal would open a box waiting for a click, and hold the test until its timeout. Going on
+/// after a broken assertion would pass a test that should not: it ends the process with its message.
+static int __cdecl report_and_abort(int _type, wchar_t* _message, int* /*_result*/)
+{
+    std::fwprintf(stderr, L"[sight] CRT report: %ls\n", _message);
+    std::fflush(stderr);
+    if(_type == _CRT_WARN)
+    {
+        return TRUE;
+    }
+
+    std::abort();
+}
+#endif
+
+//------------------------------------------------------------------------------
+
+/// Nothing a test does may wait for somebody: no box for a CRT report, an abort, a crash or a missing DLL.
+static void never_wait_for_a_click()
+{
+    ::SetErrorMode(::GetErrorMode() | SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX | SEM_NOOPENFILEERRORBOX);
+    _set_error_mode(_OUT_TO_STDERR);
+    _set_abort_behavior(0, _WRITE_ABORT_MSG | _CALL_REPORTFAULT);
+#ifdef _DEBUG
+    _CrtSetReportHookW2(_CRT_RPTHOOK_INSTALL, report_and_abort);
+#endif
+}
+
+//------------------------------------------------------------------------------
+
+static std::array<wchar_t, 32768> s_dump_path {};
+
+/// Save an access violation before doctest converts it to a crash report. Another handler may still recover it: each
+/// one writes the dump again, so the fatal one is kept, and a process that ends normally removes it.
+static LONG CALLBACK write_access_violation_dump(EXCEPTION_POINTERS* _exception)
+{
+    static std::atomic_flag s_writing;
+    if(_exception->ExceptionRecord->ExceptionCode != EXCEPTION_ACCESS_VIOLATION || s_writing.test_and_set())
+    {
+        return EXCEPTION_CONTINUE_SEARCH;
+    }
+
+    const auto done = [](LONG _result)
+                      {
+                          s_writing.clear();
+                          return _result;
+                      };
+
+    HANDLE const file = ::CreateFileW(s_dump_path.data(), GENERIC_WRITE, 0, nullptr, CREATE_ALWAYS, 0, nullptr);
+    if(file == INVALID_HANDLE_VALUE)
+    {
+        std::fprintf(stderr, "[sight] could not create test minidump (error %lu)\n", ::GetLastError());
+        return done(EXCEPTION_CONTINUE_SEARCH);
+    }
+
+    MINIDUMP_EXCEPTION_INFORMATION exception {::GetCurrentThreadId(), _exception, FALSE};
+    const BOOL written = ::MiniDumpWriteDump(
+        ::GetCurrentProcess(),
+        ::GetCurrentProcessId(),
+        file,
+        static_cast<MINIDUMP_TYPE>(MiniDumpWithIndirectlyReferencedMemory | MiniDumpWithThreadInfo),
+        &exception,
+        nullptr,
+        nullptr
+    );
+    if(!written)
+    {
+        std::fprintf(stderr, "[sight] could not write test minidump (error %lu)\n", ::GetLastError());
+    }
+
+    ::CloseHandle(file);
+    return done(EXCEPTION_CONTINUE_SEARCH);
+}
+
+//------------------------------------------------------------------------------
+
+/// Removes, when main returns, the dump of an access violation that was recovered. A crash never returns there: doctest
+/// ends the process with std::exit(), which leaves the objects of main alone.
+class recovered_dump_cleanup final
+{
+public:
+
+    recovered_dump_cleanup() = default;
+
+    ~recovered_dump_cleanup()
+    {
+        if(s_dump_path.front() != L'\0')
+        {
+            ::DeleteFileW(s_dump_path.data());
+        }
+    }
+
+    recovered_dump_cleanup(const recovered_dump_cleanup&)            = delete;
+    recovered_dump_cleanup(recovered_dump_cleanup&&)                 = delete;
+    recovered_dump_cleanup& operator=(const recovered_dump_cleanup&) = delete;
+    recovered_dump_cleanup& operator=(recovered_dump_cleanup&&)      = delete;
+};
+
+//------------------------------------------------------------------------------
+
+/// Install only when requested, for both unit and GUI test processes.
+static bool install_test_dump_handler()
+{
+    const wchar_t* const folder = ::_wgetenv(L"SIGHT_TEST_DUMP_DIR");
+    if(folder == nullptr || *folder == L'\0')
+    {
+        return true;
+    }
+
+    // Created here, so that a CI job only has to name it.
+    if(std::error_code error; !std::filesystem::create_directories(folder, error) && error)
+    {
+        std::cerr << "[sight] could not create the test dump directory: " << error.message() << std::endl;
+        return false;
+    }
+
+    const std::string_view target(sight_test_target);
+    const std::wstring path = std::format(
+        L"{}\\{}_{}.dmp",
+        folder,
+        std::wstring(target.begin(), target.end()),
+        ::GetCurrentProcessId()
+    );
+    if(path.size() >= s_dump_path.size())
+    {
+        std::cerr << "[sight] test minidump path is too long" << std::endl;
+        return false;
+    }
+
+    std::ranges::copy(path, s_dump_path.begin());
+    if(::AddVectoredExceptionHandler(1, write_access_violation_dump) == nullptr)
+    {
+        std::cerr << "[sight] could not install test minidump handler (error " << ::GetLastError() << ')'
+                  << std::endl;
+        return false;
+    }
+
+    return true;
+}
+
+#else
+
+/// The debugger command run on a fatal signal, built beforehand: a signal handler may only fork and exec.
+static std::vector<char*> s_crash_argv;
+
+/// Why a crash has no stack, when no debugger can give it.
+static std::string s_no_debugger;
+
+/// Holds the watcher of the debugger until this process allows it to trace: a signal handler may only read and write.
+static std::array<int, 2> s_trace_permission {-1, -1};
+
+/// A debugger that reads the debug information of a large Debug build can take minutes: it is ended after this.
+static constexpr int s_debugger_timeout_s {30};
+
+/// The signals that end a test with a crash; SIGTRAP is a failed SIGHT_ASSERT.
+static constexpr std::array s_fatal_signals {SIGSEGV, SIGBUS, SIGFPE, SIGILL, SIGABRT, SIGTRAP};
+
+//------------------------------------------------------------------------------
+
+static void write_to_stderr(std::string_view _message)
+{
+    while(!_message.empty())
+    {
+        const ssize_t written = ::write(STDERR_FILENO, _message.data(), _message.size());
+        if(written <= 0)
+        {
+            return;
+        }
+
+        _message.remove_prefix(static_cast<std::size_t>(written));
+    }
+}
+
+//------------------------------------------------------------------------------
+
+/// The watcher of the debugger, a child of the crashed process: once allowed to trace it, runs the debugger and ends
+/// it when it takes too long. The crashed process cannot do it, as the attached debugger stops all its threads.
+[[noreturn]] static void watch_debugger(pid_t _crashed)
+{
+    char allowed = 0;
+    while(::read(s_trace_permission[0], &allowed, 1) < 0 && errno == EINTR)
+    {
+    }
+
+    const pid_t debugger = ::_Fork();
+    if(debugger == 0)
+    {
+        ::execv(s_crash_argv.front(), s_crash_argv.data());
+        ::_exit(127);
+    }
+
+    timespec start {};
+    ::clock_gettime(CLOCK_MONOTONIC, &start);
+    int status = 0;
+    while(debugger > 0 && ::waitpid(debugger, &status, WNOHANG) == 0)
+    {
+        timespec now {};
+        ::clock_gettime(CLOCK_MONOTONIC, &now);
+        if(now.tv_sec - start.tv_sec >= s_debugger_timeout_s)
+        {
+            ::kill(debugger, SIGKILL);
+            while(::waitpid(debugger, &status, 0) < 0 && errno == EINTR)
+            {
+            }
+
+            // A debugger ended while attached leaves the crashed process stopped.
+            ::kill(_crashed, SIGCONT);
+            write_to_stderr("[sight] the debugger did not end within 30 s: the stack of this crash is incomplete\n");
+            break;
+        }
+
+        const timespec pause {.tv_sec = 0, .tv_nsec = 10'000'000};
+        ::nanosleep(&pause, nullptr);
+    }
+
+    ::_exit(0);
+}
+
+//------------------------------------------------------------------------------
+
+/// Print the threads of the crashing process, and save its core if a dump directory is set, from a debugger attached
+/// while the process still stands in its crash; then let the signal end the process. doctest's own handler reports
+/// the crashed test case first, then raises the signal again to this one.
+static void report_fatal_signal(int _signal)
+{
+    static std::atomic_bool s_reporting {false};
+    if(s_reporting.exchange(true))
+    {
+        // Another thread crashed meanwhile: the first report ends the process.
+        for( ; ; )
+        {
+            ::pause();
+        }
+    }
+
+    const pid_t crashed = ::getpid();
+    if(s_crash_argv.empty())
+    {
+        write_to_stderr(s_no_debugger);
+    }
+    else if(const pid_t watcher = ::_Fork(); watcher == 0)
+    {
+        watch_debugger(crashed);
+    }
+    else if(watcher > 0)
+    {
+        // Only the watcher and the debugger it starts may trace this process, and only now.
+        ::prctl(PR_SET_PTRACER, watcher, 0, 0, 0);
+        const char allowed = 1;
+        while(::write(s_trace_permission[1], &allowed, 1) < 0 && errno == EINTR)
+        {
+        }
+
+        int status = 0;
+        while(::waitpid(watcher, &status, 0) < 0 && errno == EINTR)
+        {
+        }
+
+        ::prctl(PR_SET_PTRACER, 0, 0, 0, 0);
+    }
+
+    ::signal(_signal, SIG_DFL);
+    ::raise(_signal);
+}
+
+//------------------------------------------------------------------------------
+
+/// Always installed, for both unit and GUI test processes: the stack goes to the test output, the core to
+/// SIGHT_TEST_DUMP_DIR if it is set.
+static bool install_test_dump_handler()
+{
+    // The first program of PATH named lldb, else the newest lldb-<version> (Ubuntu's names), and the first gdb.
+    std::string lldb;
+    std::string gdb;
+    int lldb_version = -1;
+    const char* const path = std::getenv("PATH");
+    for(const auto entry : std::views::split(std::string_view(path != nullptr ? path : ""), ':'))
+    {
+        std::error_code error;
+        const std::filesystem::path folder(std::string_view(entry.begin(), entry.end()));
+        for(const auto& file : std::filesystem::directory_iterator(folder, error))
+        {
+            const std::string name = file.path().filename().string();
+            if(::access(file.path().c_str(), X_OK) != 0)
+            {
+                continue;
+            }
+
+            if(name == "gdb" && gdb.empty())
+            {
+                gdb = file.path().string();
+            }
+            else if(name == "lldb" && lldb_version < std::numeric_limits<int>::max())
+            {
+                lldb         = file.path().string();
+                lldb_version = std::numeric_limits<int>::max();
+            }
+            else if(name.starts_with("lldb-"))
+            {
+                const std::string_view digits = std::string_view(name).substr(5);
+                int version                   = -1;
+                const auto [end, failure]     = std::from_chars(digits.data(), digits.data() + digits.size(), version);
+                if(failure == std::errc() && end == digits.data() + digits.size() && version > lldb_version)
+                {
+                    lldb         = file.path().string();
+                    lldb_version = version;
+                }
+            }
+        }
+    }
+
+    // lldb reads the debug information of both compilers in a second. gdb cannot read clang's, and can take minutes on a
+    // large gcc Debug build linked with lld: it only stands in for lldb with gcc.
+    const bool use_lldb = !lldb.empty();
+#ifdef __clang__
+    const bool use_gdb = false;
+    s_no_debugger = "[sight] no lldb in PATH: no stack for this crash\n";
+#else
+    const bool use_gdb = !use_lldb && !gdb.empty();
+    s_no_debugger = "[sight] neither lldb nor gdb in PATH: no stack for this crash\n";
+#endif
+
+    const char* const folder = std::getenv("SIGHT_TEST_DUMP_DIR");
+    const bool dump          = folder != nullptr && *folder != '\0';
+
+    // Created here, so that a CI job only has to name it.
+    if(std::error_code error; dump && !std::filesystem::create_directories(folder, error) && error)
+    {
+        std::cerr << "[sight] could not create the test dump directory: " << error.message() << std::endl;
+        return false;
+    }
+    const auto dump_path     = [&](std::string_view _extension)
+                               {
+                                   return (std::filesystem::path(dump ? folder : "")
+                                           / std::format("{}_{}.{}", sight_test_target, ::getpid(), _extension))
+                                          .string();
+                               };
+
+    // The strings of the command the signal handler runs.
+    static std::vector<std::string> s_crash_command;
+    const std::string pid = std::to_string(::getpid());
+    if(use_lldb)
+    {
+        // A minidump, the format of the Windows dumps.
+        s_crash_command = {
+            lldb, "--no-lldbinit", "-b", "-O", "settings set symbols.enable-external-lookup false", "-p", pid,
+            "-o", "thread backtrace all"
+        };
+        if(dump)
+        {
+            s_crash_command.insert(
+                s_crash_command.end(),
+                {"-o", "process save-core --plugin-name=minidump " + dump_path("dmp")});
+        }
+
+        s_crash_command.insert(s_crash_command.end(), {"-o", "process detach"});
+    }
+    else if(use_gdb)
+    {
+        s_crash_command = {
+            gdb, "-nx", "-batch", "-p", pid, "-ex", "set confirm off", "-ex", "set pagination off",
+            "-ex", "set print thread-events off", "-ex", "thread apply all bt"
+        };
+        if(dump)
+        {
+            // The kernel's dump filter applies: memory a library excluded stays out of the core.
+            s_crash_command.insert(s_crash_command.end(), {"-ex", "gcore " + dump_path("core")});
+        }
+
+        s_crash_command.insert(s_crash_command.end(), {"-ex", "detach"});
+    }
+
+    // Yama lets a process trace only its descendants: the crash handler allows its debugger when it runs it.
+    if(!s_crash_command.empty() && ::pipe2(s_trace_permission.data(), O_CLOEXEC) == 0)
+    {
+        std::ranges::transform(
+            s_crash_command,
+            std::back_inserter(s_crash_argv),
+            [](std::string& _argument){return _argument.data();});
+        s_crash_argv.push_back(nullptr);
+    }
+    else if(!s_crash_command.empty())
+    {
+        s_no_debugger = "[sight] could not prepare the debugger: no stack for this crash\n";
+    }
+
+    struct sigaction action {};
+    action.sa_handler = report_fatal_signal;
+    action.sa_flags   = SA_NODEFER;
+    ::sigemptyset(&action.sa_mask);
+    for(const int signal : s_fatal_signals)
+    {
+        if(::sigaction(signal, &action, nullptr) != 0)
+        {
+            std::cerr << "[sight] could not install the crash report of signal " << signal << std::endl;
+            return false;
+        }
+    }
+
+    return true;
+}
+#endif
 
 //------------------------------------------------------------------------------
 
@@ -680,6 +1108,19 @@ int main(int argc, char** argv)
     }
 
     test_log::phase("main entered");
+
+#ifdef WIN32
+    never_wait_for_a_click();
+#endif
+
+    if(!query && !install_test_dump_handler())
+    {
+        return EXIT_FAILURE;
+    }
+
+#ifdef WIN32
+    const recovered_dump_cleanup cleanup;
+#endif
 
 #if SIGHT_GUI_TEST
     // Must run before any runtime/profile/QApplication setup: a supervised run re-executes this
