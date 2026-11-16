@@ -23,6 +23,7 @@
 
 #include <data/boolean.hpp>
 #include <data/integer.hpp>
+#include <data/real.hpp>
 #include <data/string.hpp>
 
 #include <core/com/slot.hpp>
@@ -33,8 +34,10 @@
 
 #include <QCheckBox>
 #include <QComboBox>
+#include <QDoubleSpinBox>
 #include <QLabel>
 #include <QSlider>
+#include <QTest>
 
 #include <atomic>
 #include <limits>
@@ -70,7 +73,10 @@ static void add_item(
 
     if(!_depends.empty())
     {
-        item.put("<xmlattr>.depends", _depends);
+        item.put(
+            "<xmlattr>.depends",
+            _depends
+        );
         if(!_depends_value.empty())
         {
             item.put("<xmlattr>.depends_value", _depends_value);
@@ -84,6 +90,185 @@ static void add_item(
 
 TEST_SUITE("sight::module::ui::qt::settings")
 {
+    TEST_CASE_FIXTURE(sight::ui::test::gui_fixture, "combobox_icons_follow_values_and_external_selection")
+    {
+        int icon_size = 24;
+        SUBCASE("default icon size")
+        {
+        }
+        SUBCASE("custom icon size")
+        {
+            icon_size = 32;
+        }
+        test_service(
+            "sight::module::ui::qt::settings",
+            [&](const sight::service::base::sptr& _service)
+        {
+            auto mode         = std::make_shared<sight::data::string>("Rotation");
+            auto plain        = std::make_shared<sight::data::string>("Beta");
+            auto choices      = std::make_shared<sight::data::string>("Off=Off;Free=Free;Rot=Rotation");
+            const auto worker = sight::core::thread::get_default_worker();
+            sight::service::config_t config;
+            sight::module::ui::qt::ut::add_item(config, "mode", "plain_combobox");
+            config.put("item.<xmlattr>.values", "choices");
+            if(icon_size != 24)
+            {
+                config.put("item.<xmlattr>.icon_size", icon_size);
+            }
+
+            for(const auto& [value, icon] : std::vector<std::pair<std::string, std::string> > {
+                {"Off", "hand.svg"}, {"Free", "play.svg"}, {"Rotation", "disconnect.svg"
+                }
+            })
+            {
+                sight::service::config_t mapping;
+                mapping.put("<xmlattr>.value", value);
+                mapping.put("<xmlattr>.icon", "sight::module::ui::icons/" + icon);
+                config.add_child("item.item", mapping);
+            }
+
+            sight::module::ui::qt::ut::add_item(config, "plain", "plain_combobox");
+            _service->set_inout(mode, "item.data", true, false, 0);
+            _service->set_input(choices, "item.values", true, false, 0);
+            _service->set_inout(plain, "item.data", true, false, 1);
+            worker->post_task<void>([&]{_service->configure(config); _service->start().get();}).get();
+            const auto combo       = find_widget<QComboBox>("mode");
+            const auto plain_combo = find_widget<QComboBox>("plain");
+            REQUIRE_FALSE(combo.isNull());
+            REQUIRE_FALSE(plain_combo.isNull());
+            qint64 off_icon      = 0;
+            qint64 free_icon     = 0;
+            qint64 rotation_icon = 0;
+            worker->post_task<void>(
+                [&]
+            {
+                CHECK(combo->iconSize() == QSize(icon_size, icon_size));
+                CHECK(combo->currentText() == "Rot");
+                CHECK(combo->currentData().toString() == "Rotation");
+                for(int index = 0 ; index < 3 ; ++index)
+                {
+                    CHECK_FALSE(combo->itemIcon(index).isNull());
+                }
+
+                off_icon      = combo->itemIcon(0).cacheKey();
+                free_icon     = combo->itemIcon(1).cacheKey();
+                rotation_icon = combo->itemIcon(2).cacheKey();
+                CHECK(off_icon != free_icon);
+                CHECK(rotation_icon != free_icon);
+                CHECK(plain_combo->currentText() == "Beta");
+                for(int index = 0 ; index < plain_combo->count() ; ++index)
+                {
+                    CHECK(plain_combo->itemIcon(index).isNull());
+                }
+
+                combo->setCurrentIndex(1);
+                CHECK(mode->value() == "Free");
+                // A controller rejection or Resume updates this same bound value.
+                mode->set_value("Off");
+                mode->async_emit(sight::data::signals::MODIFIED);
+            }).get();
+            SIGHT_TEST_FAIL_WAIT(query_widget<QComboBox>("mode", [](auto* _w){return _w->currentText();}) == "Off");
+            worker->post_task<void>(
+                [&]
+            {
+                choices->set_value("Rot=Rotation;Off=Off;Free=Free;Other=Other");
+                choices->async_emit(sight::data::signals::MODIFIED);
+            }).get();
+            SIGHT_TEST_FAIL_WAIT(query_widget<QComboBox>("mode", [](auto* _w){return _w->count();}) == 4);
+            worker->post_task<void>(
+                [&]
+            {
+                CHECK(combo->currentData().toString() == "Off");
+                CHECK(combo->itemIcon(0).cacheKey() == rotation_icon);
+                CHECK(combo->itemIcon(1).cacheKey() == off_icon);
+                CHECK(combo->itemIcon(2).cacheKey() == free_icon);
+                CHECK(combo->itemIcon(3).isNull());
+                combo->setCurrentIndex(0);
+                CHECK(mode->value() == "Rotation");
+                _service->stop().get();
+                _service->start().get();
+            }).get();
+            CHECK(query_widget<QComboBox>("mode", [](auto* _w){return _w->currentText();}) == "Rot");
+            CHECK(query_widget<QComboBox>("mode", [](auto* _w){return _w->itemIcon(0).isNull();}) == false);
+        });
+    }
+
+    TEST_CASE_FIXTURE(sight::ui::test::gui_fixture, "real_spin_step_precision_and_read_only_survive_restart")
+    {
+        test_service(
+            "sight::module::ui::qt::settings",
+            [](const sight::service::base::sptr& _service)
+        {
+            auto value  = std::make_shared<sight::data::real>(123.4);
+            auto locked = std::make_shared<sight::data::boolean>(false);
+            auto worker = sight::core::thread::get_default_worker();
+            sight::service::config_t config;
+            sight::module::ui::qt::ut::add_item(config, "length", "real");
+            config.put("item.<xmlattr>.min", 0.);
+            config.put("item.<xmlattr>.max", 100000.);
+            config.put("item.<xmlattr>.step", 1.);
+            config.put("item.<xmlattr>.decimals", 1);
+            config.put("item.<xmlattr>.read_only", "locked");
+            _service->set_inout(value, "item.data", true, false, 0);
+            _service->set_input(locked, "item.read_only", true, false, 0);
+            worker->post_task<void>([&]{_service->configure(config); _service->start().get();}).get();
+            auto spin = find_widget<QDoubleSpinBox>("length");
+            REQUIRE_FALSE(spin.isNull());
+            worker->post_task<void>(
+                [&]
+            {
+                CHECK(spin->singleStep() == 1.);
+                CHECK(spin->decimals() == 1);
+                CHECK_FALSE(spin->isReadOnly());
+                spin->stepUp();
+                CHECK(value->value() == doctest::Approx(124.4));
+                locked->set_value(true);
+                locked->async_emit(sight::data::signals::MODIFIED);
+            }).get();
+            SIGHT_TEST_FAIL_WAIT(
+                query_widget<QDoubleSpinBox>(
+                    "length",
+                    [](auto* _w)
+            {
+                return _w->isReadOnly();
+            }) == true
+            );
+            worker->post_task<void>(
+                [&]
+            {
+                QTest::keyClick(spin, Qt::Key_Up);
+                QTest::keyClicks(spin, "999");
+                CHECK(value->value() == doctest::Approx(124.4));
+                _service->stop().get();
+                _service->start().get();
+            }).get();
+            spin = find_widget<QDoubleSpinBox>("length");
+            REQUIRE_FALSE(spin.isNull());
+            CHECK(query_widget<QDoubleSpinBox>("length", [](auto* _w){return _w->isReadOnly();}) == true);
+            worker->post_task<void>(
+                [&]
+            {
+                locked->set_value(false);
+                locked->async_emit(sight::data::signals::MODIFIED);
+            }).get();
+            SIGHT_TEST_FAIL_WAIT(
+                query_widget<QDoubleSpinBox>(
+                    "length",
+                    [](auto* _w)
+            {
+                return _w->isReadOnly();
+            }) == false
+            );
+            worker->post_task<void>(
+                [&]
+            {
+                spin->stepDown();
+                CHECK(value->value() == doctest::Approx(123.4));
+                _service->stop().get();
+            }).get();
+        });
+    }
+
     TEST_CASE_FIXTURE(sight::ui::test::gui_fixture, "settings_group_observes_enabled_data")
     {
         test_service(

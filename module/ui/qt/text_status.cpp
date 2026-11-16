@@ -74,7 +74,13 @@ void text_status::configuring()
     m_label_value = new QLabel();
     m_label_value->setObjectName(service_id);
     m_label_value->setStyleSheet(m_label_value->styleSheet() + stylesheet);
+
     m_label_value->setWordWrap(word_wrap);
+    // Wrapped values fill the row instead of sharing spare width with empty prefix/suffix labels.
+    if(word_wrap)
+    {
+        m_label_value->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+    }
 
     if(const auto label = config.get_optional<std::string>("label"); label.has_value())
     {

@@ -57,6 +57,7 @@
 #include <QStyle>
 #include <QTimer>
 #include <QToolButton>
+#include <QVariantMap>
 
 #include <string>
 #include <string_view>
@@ -81,6 +82,25 @@ inline static void set_minimum_size(QWidget* _widget, const settings::param_widg
     if(_params.min_height.has_value())
     {
         _widget->setMinimumHeight(std::max(_widget->minimumHeight(), *_params.min_height));
+    }
+}
+
+//------------------------------------------------------------------------------
+
+/// Restore optional enum icons by stored value after creating or rebuilding a combobox.
+inline static void apply_combobox_icons(QComboBox* _combobox)
+{
+    const auto icons = _combobox->property("sight_enum_icons").toMap();
+    if(icons.isEmpty())
+    {
+        return;
+    }
+
+    for(int index = 0 ; index < _combobox->count() ; ++index)
+    {
+        const auto value = _combobox->itemData(index);
+        const auto key   = value.isValid() ? value.toString() : _combobox->itemText(index);
+        _combobox->setItemIcon(index, icons.value(key).value<QIcon>());
     }
 }
 
@@ -297,26 +317,33 @@ void settings::starting()
             const double min   = min_ptr ? min_ptr->value() : 0.;
             const double max   = max_ptr ? max_ptr->value() : 1.;
 
-            const double_widget widget_double = {widget, min, max};
+            const double_widget widget_double = {
+                {widget, min, max},
+                cfg.get_optional<int>("<xmlattr>.decimals"),
+                cfg.get_optional<double>("<xmlattr>.step")
+            };
 
             const int count = (type == "sight::data::dvec3") ? 3 : (type == "sight::data::dvec2" ? 2 : 1);
 
             if(widget_type == "spin")
             {
-                reset = this->create_double_spin_widget(param_box_layout, widget_double, count, orientation);
+                reset = this->create_double_spin_widget(
+                    param_box_layout,
+                    widget_double,
+                    count,
+                    orientation
+                );
             }
             else if(widget_type == "slider")
             {
                 // TODO: this could be supported now
                 SIGHT_ASSERT(get_id() << ": Count > 1 is not supported with sliders", count == 1);
 
-                const std::uint8_t decimals = cfg.get<std::uint8_t>("<xmlattr>.decimals", 2);
-                const bool on_release       = cfg.get<bool>("<xmlattr>.emit_on_release", false);
+                const bool on_release = cfg.get<bool>("<xmlattr>.emit_on_release", false);
 
                 reset = this->create_double_slider_widget(
                     param_box_layout,
                     widget_double,
-                    decimals,
                     orientation,
                     on_release
                 );
@@ -394,7 +421,7 @@ void settings::starting()
 
             if(widget_type == "combobox")
             {
-                this->create_enum_combobox_widget(param_box_layout, widget, enum_labels, enum_keys);
+                this->create_enum_combobox_widget(param_box_layout, widget, enum_labels, enum_keys, cfg);
             }
             else if(widget_type == "comboslider")
             {
@@ -456,6 +483,8 @@ void settings::starting()
 
         if(reset != nullptr)
         {
+            param_box->setProperty("reset_button", QVariant::fromValue<QPushButton*>(reset));
+
             // Looks better under the rest
             if(orientation == Qt::Vertical)
             {
@@ -602,6 +631,11 @@ void settings::starting()
         [this](const double _value, const std::string& _key){this->update_max(_value, _key);},
         m_max_slots
     );
+    bind_item_data(
+        m_read_only,
+        [this](const bool _value, const std::string& _key){this->update_read_only(_value, _key);},
+        m_read_only_slots
+    );
 
     if(scroll_area != nullptr)
     {
@@ -637,6 +671,7 @@ void settings::stopping()
     m_values_slots.clear();
     m_min_slots.clear();
     m_max_slots.clear();
+    m_read_only_slots.clear();
     m_param_boxes.clear(); // Avoid keeping dangling pointers
     this->destroy();
 }
@@ -1277,11 +1312,13 @@ QPushButton* settings::create_double_spin_widget(
                                   return static_cast<int>(t.length());
                               };
 
-        spinbox->setDecimals(std::max({count_decimals(_setup.min), count_decimals(_setup.max), 2}));
+        spinbox->setDecimals(
+            _setup.decimals.value_or(std::max({count_decimals(_setup.min), count_decimals(_setup.max), 2}))
+        );
         spinbox->setRange(_setup.min, _setup.max);
 
         // Beware, set setSingleStep after setRange() and setDecimals() otherwise it may fail
-        spinbox->setSingleStep(std::abs(spinbox->maximum() - spinbox->minimum()) / 100.);
+        spinbox->setSingleStep(_setup.step.value_or(std::abs(spinbox->maximum() - spinbox->minimum()) / 100.));
 
         // Set value last only after setting range and decimals, otherwise the value may be truncated
 
@@ -1329,11 +1366,11 @@ QPushButton* settings::create_double_spin_widget(
 QPushButton* settings::create_double_slider_widget(
     QBoxLayout* _layout,
     const double_widget& _setup,
-    std::uint8_t _decimals,
     Qt::Orientation _orientation,
     bool _on_release
 )
 {
+    const auto decimals         = static_cast<std::uint8_t>(_setup.decimals.value_or(2));
     const auto layout_direction = _orientation == Qt::Vertical ? QBoxLayout::TopToBottom : QBoxLayout::LeftToRight;
     auto* const sub_layout      = new QBoxLayout {layout_direction};
     sub_layout->setContentsMargins(0, 0, 0, 0);
@@ -1354,7 +1391,7 @@ QPushButton* settings::create_double_slider_widget(
     const auto init_value = obj->value();
     connect_data(obj, _setup.key);
 
-    slider->setProperty("decimals", _decimals);
+    slider->setProperty("decimals", decimals);
     slider->setProperty("min", _setup.min);
     slider->setProperty("max", _setup.max);
 
@@ -1385,7 +1422,7 @@ QPushButton* settings::create_double_slider_widget(
 
     auto* const min_value_label = new QLabel();
     min_value_label->setFont(min_max_labels_font);
-    min_value_label->setText(QString::number(_setup.min, 'f', _decimals));
+    min_value_label->setText(QString::number(_setup.min, 'f', decimals));
     min_value_label->setToolTip("Minimum value.");
     min_value_label->setObjectName(QString::fromStdString(_setup.key + "/minValueLabel"));
     min_value_label->setAlignment(Qt::AlignCenter);
@@ -1393,7 +1430,7 @@ QPushButton* settings::create_double_slider_widget(
 
     auto* const max_value_label = new QLabel();
     max_value_label->setFont(min_max_labels_font);
-    max_value_label->setText(QString::number(_setup.max, 'f', _decimals));
+    max_value_label->setText(QString::number(_setup.max, 'f', decimals));
     max_value_label->setToolTip("Maximum value.");
     max_value_label->setObjectName(QString::fromStdString(_setup.key + "/maxValueLabel"));
     max_value_label->setAlignment(Qt::AlignCenter);
@@ -1401,9 +1438,9 @@ QPushButton* settings::create_double_slider_widget(
 
     auto* const value_label = new QLabel();
     value_label->setStyleSheet("QLabel { font: bold; }");
-    value_label->setText(QString::number(init_value, 'f', _decimals));
+    value_label->setText(QString::number(init_value, 'f', decimals));
     value_label->setToolTip("Current value.");
-    sight::module::ui::qt::settings::set_label_minimum_size(value_label, _setup.min, _setup.max, _decimals);
+    sight::module::ui::qt::settings::set_label_minimum_size(value_label, _setup.min, _setup.max, decimals);
     value_label->setObjectName(QString::fromStdString(_setup.key + "/valueLabel"));
     value_label->setAlignment(Qt::AlignCenter);
     value_label->setStyleSheet(qApp->styleSheet());
@@ -1702,7 +1739,8 @@ void settings::create_enum_combobox_widget(
     QBoxLayout* _layout,
     const param_widget& _setup,
     const std::vector<std::string>& _values,
-    const std::vector<std::string>& _data
+    const std::vector<std::string>& _data,
+    const service::config_t& _config
 )
 {
     auto* combo_box = new QComboBox();
@@ -1712,6 +1750,26 @@ void settings::create_enum_combobox_widget(
     combo_box->setProperty(qt_property::s_key, QString::fromStdString(_setup.key));
     combo_box->setProperty(qt_property::s_data_index, static_cast<uint>(_setup.data_index));
     combo_box->setProperty(qt_property::s_use_index, _setup.use_index);
+
+    // Keep the association on the widget so dynamic choices do not lose their icons or depend on row order.
+    QVariantMap icons;
+    for(const auto& [tag, entry] : _config)
+    {
+        if(tag == "item")
+        {
+            const auto value = entry.get<std::string>("<xmlattr>.value");
+            const auto path  = core::runtime::get_module_resource_file_path(entry.get<std::string>("<xmlattr>.icon"));
+            icons.insert(QString::fromStdString(value), QIcon(QString::fromStdString(path.string())));
+        }
+    }
+
+    if(!icons.isEmpty())
+    {
+        const auto icon_size = _config.get<int>("<xmlattr>.icon_size", 24);
+        SIGHT_THROW_IF("Combobox icon_size must be positive", icon_size <= 0);
+        combo_box->setIconSize(QSize(icon_size, icon_size));
+        combo_box->setProperty("sight_enum_icons", icons);
+    }
 
     for(int idx = 0 ; const auto& value : _values)
     {
@@ -1726,6 +1784,7 @@ void settings::create_enum_combobox_widget(
         ++idx;
     }
 
+    apply_combobox_icons(combo_box);
     _layout->addWidget(combo_box);
 
     const bool is_string = data<sight::data::string>(combo_box) != nullptr;
@@ -2401,6 +2460,8 @@ void settings::update_range(const std::string& _options, const std::string& _key
             ++idx;
         }
 
+        apply_combobox_icons(combobox);
+
         if(const auto string_obj = settings::data<sight::data::string>(combobox); string_obj)
         {
             const auto stored_value = QString::fromStdString(string_obj->value());
@@ -2731,6 +2792,30 @@ void settings::set_double_slider_range(QSlider* _slider, double _current_value)
                                                     * static_cast<double>(_slider->maximum())
         ));
         _slider->setValue(slider_val);
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void settings::update_read_only(bool _read_only, const std::string& _key)
+{
+    const auto box_key = QString::fromStdString(_key) + "_box";
+    for(const auto& box : m_param_boxes)
+    {
+        if(box->objectName() != box_key)
+        {
+            continue;
+        }
+
+        for(auto* spin : box->findChildren<QAbstractSpinBox*>())
+        {
+            spin->setReadOnly(_read_only);
+        }
+
+        if(auto* reset = box->property("reset_button").value<QPushButton*>())
+        {
+            reset->setDisabled(_read_only);
+        }
     }
 }
 

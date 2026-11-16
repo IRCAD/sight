@@ -76,6 +76,10 @@ namespace sight::module::ui::qt
                 <item value="button3" icon="..."/>
             </item>
         <item data="${...}" name="label6" key="..." widget="slider" orientation="vertical" .../>
+        <item data="${...}" name="mode" key="mode" widget="combobox" values="Off=Off;Rot=Rotation" icon_size="24">
+            <item value="Off" icon="sight::module::ui::icons/hand.svg" />
+            <item value="Rotation" icon="sight::module::ui::icons/play.svg" />
+        </item>
        </service>
    @endcode
  *
@@ -101,7 +105,18 @@ namespace sight::module::ui::qt
  *     - \b value: the enum value sent when clicking on the button.
  *     - \b label (optional, default=""): test displayed under the button.
  *     - \b icon: path to the icon to display.
- * - \b decimals (optional, default=2): number of decimals settable using a double slider.
+ * For a combobox, optional child items associate a stored \b value with an \b icon resource path.
+ * The value matches the part after '=' in \b values, or the displayed text when '=' is absent, not the row index.
+ * Icons are shown for the selected value and in the popup, and retained by value when choices change.
+ * Choices without a matching icon remain text-only; labels and order still come from \b values.
+ * - \b icon_size (optional, positive int, default=24): square combobox icon size in logical pixels when icons
+ *   are configured. Comboboxes without icon mappings retain the existing size and presentation.
+ *   Nonpositive sizes with configured icon mappings cause service startup to fail.
+ * - \b decimals (optional): decimal places for real spin boxes and sliders. Sliders default to 2;
+ *   spin boxes retain their range-derived precision when omitted.
+ * - \b step (optional, double): positive single step for real spin boxes. Defaults to 1/100 of the range.
+ * - \b read_only (optional, bool or data::boolean): prevents editing spin boxes and disables their reset button.
+ *   Bound data notifications update the lock, including when the settings service is restarted.
  * - \b reset (optional, default=true): display the reset button.
  * - \b depends (optional, string): key of the dependency.
  * - \b depends_value (optional, string): displayed value of an enum dependency; several accepted values can be
@@ -209,8 +224,13 @@ public:
         T max = T {1};
     };
 
-    using int_widget    = scalar_widget<int>;
-    using double_widget = scalar_widget<double>;
+    using int_widget = scalar_widget<int>;
+
+    struct double_widget : scalar_widget<double>
+    {
+        boost::optional<int> decimals {};
+        boost::optional<double> step {};
+    };
 
     settings() noexcept;
 
@@ -366,7 +386,6 @@ private:
     QPushButton* create_double_slider_widget(
         QBoxLayout* _layout,
         const double_widget& _setup,
-        std::uint8_t _decimals,
         Qt::Orientation _orientation,
         bool _on_release
     );
@@ -399,12 +418,13 @@ private:
         std::string _separators = ",;\n\t"
     );
 
-    /// Create a multi choice widget
+    /// Create a multi-choice widget with optional value-keyed icons and logical-pixel size from _config.
     void create_enum_combobox_widget(
         QBoxLayout* _layout,
         const param_widget& _setup,
         const std::vector<std::string>& _values,
-        const std::vector<std::string>& _data
+        const std::vector<std::string>& _data,
+        const service::config_t& _config
     );
 
     /// Create a multi choice widget with integer values
@@ -532,12 +552,19 @@ private:
     /// Optional maximum bounds associated with the settings items by their XML occurrence.
     data::ptr_vector<data::real, data::access::in> m_max {this, "item.max", std::nullopt};
 
+    /// Optional editing locks associated with spin settings by their XML occurrence.
+    data::ptr_vector<data::boolean, data::access::in> m_read_only {this, "item.read_only", std::nullopt};
+
+    /// Updates all spin boxes and the reset button belonging to the named setting.
+    void update_read_only(bool _read_only, const std::string& _key);
+
     using object_modified_t         = core::com::slot<void ()>;
     using settings_slot_container_t = std::map<std::string, sight::sptr<object_modified_t> >;
     settings_slot_container_t m_settings_slots;
     settings_slot_container_t m_values_slots;
     settings_slot_container_t m_min_slots;
     settings_slot_container_t m_max_slots;
+    settings_slot_container_t m_read_only_slots;
 
     struct widget_joystick
     {

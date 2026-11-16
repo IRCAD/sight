@@ -65,7 +65,8 @@ namespace sight::module::ui::qt
  * - \b size (optional, default="14pt") : size of the font used in the label, as supported by 'font-size' QSS attribute
  * - \b weight (optional, default="bold") : normal, bold any value supported by 'font-weight' QSS attribute
  * - \b decimals (optional, default="2") : if a sight::data::real data is provided, number of decimals to display
- * - \b word_wrap (optional, default="false") : enable/disable word wrap in the label
+ * - \b word_wrap (optional, default="false") : enable/disable word wrap in the label. Wrapped values expand
+ *   horizontally to use the available row width.
  */
 class text_status final : public QObject,
                           public sight::ui::editor
