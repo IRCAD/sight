@@ -78,11 +78,11 @@
         </service>
 
         <service uid="snapshotAdp" type="sight::module::viz::scene3d::adaptor::fragments_info">
-            <inout key="image" uid="snapshot" />
+            <data image="${snapshot}" />
         </service>
 
         <service uid="negatoCameraAdp" type="sight::module::viz::scene3d::adaptor::negato2d_camera" auto_connect="true">
-            <inout key="image" uid="${image}" />
+            <data image="${image}" />
             <config priority="0" orientation="${orientation}" />
         </service>
 
@@ -91,19 +91,18 @@
         </service>
 
         <service uid="negatoAdp" type="sight::module::viz::scene3d::adaptor::negato2d" auto_connect="true">
-            <in key="image" uid="${image}" />
-            <inout key="tf" uid="${transferFunctionDeferred}" />
+            <data image="${image}" />
+            <data tf="${transferFunctionDeferred}" />
             <config orientation="${orientation}" filtering="none" />
         </service>
 
         <service uid="ruler_fiducial_adp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::ruler" auto_connect="true">
-            <inout key="image" uid="${image}" />
-            <config font_size="32" query_flags="0x40000000" priority="3" />
-            <properties radius="1.5" />
+            <data image="${image}" />
+            <config font_size="32" query_flags="0x40000000" priority="3" radius="1.5" />
         </service>
 
         <service uid="landmarksAdp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::point" auto_connect="true">
-            <inout key="imageSeries" uid="${image}" />
+            <data imageSeries="${image}" />
             <config priority="4" />
         </service>
 
@@ -114,17 +113,17 @@
         </service>
 
         <service uid="slider_negato" type="sight::module::ui::qt::image::slice_index_position_editor" auto_connect="true">
-            <inout key="image" uid="${image}" />
+            <data image="${image}" />
             <config orientation="${orientation}" label="index" display_axis_selector="false" display_step_buttons="false" />
         </service>
 
         <service uid="distanceNegatoEditor" type="sight::module::ui::qt::metrics::Distance">
-            <inout key="image" uid="${image}" />
+            <data image="${image}" />
         </service>
 
         <!-- Write the snapshot image -->
         <service uid="imageWriterSrv" type="sight::module::io::bitmap::writer">
-            <in key="data" uid="snapshot" />
+            <data write="${snapshot}" />
             <dialog policy="always" />
             <backends enable="all" mode="best" />
         </service>

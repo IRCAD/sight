@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,34 +22,21 @@
 
 #include "module/ui/qt/calibration/calibration_info_editor.hpp"
 
-#include <core/base.hpp>
-#include <core/com/signal.hxx>
-#include <core/com/slot.hxx>
-#include <core/com/slots.hxx>
-
-#include <service/macros.hpp>
-
 #include <ui/__/dialog/message.hpp>
 #include <ui/qt/container/widget.hpp>
 
 #include <QHBoxLayout>
 
-#include <map>
-
 namespace sight::module::ui::qt::calibration
 {
-
-const core::com::slots::key_t calibration_info_editor::REMOVE_SLOT        = "remove";
-const core::com::slots::key_t calibration_info_editor::RESET_SLOT         = "reset";
-const core::com::slots::key_t calibration_info_editor::GET_SELECTION_SLOT = "get_selection";
 
 // ----------------------------------------------------------------------------
 
 calibration_info_editor::calibration_info_editor() noexcept
 {
-    new_slot(REMOVE_SLOT, &calibration_info_editor::remove, this);
-    new_slot(RESET_SLOT, &calibration_info_editor::reset, this);
-    new_slot(GET_SELECTION_SLOT, &calibration_info_editor::get_selection, this);
+    new_slot(slots::REMOVE, &calibration_info_editor::remove, this);
+    new_slot(slots::RESET, &calibration_info_editor::reset, this);
+    new_slot(slots::GET_SELECTION, &calibration_info_editor::get_selection, this);
 }
 
 // ----------------------------------------------------------------------------
@@ -75,8 +62,8 @@ void calibration_info_editor::updating()
         for( ; it1 != pl_list1.end() && it2 != pl_list2.end() ; ++it1, ++it2)
         {
             QString count_string;
-            std::size_t count1 = (*it1)->get_points().size();
-            std::size_t count2 = (*it2)->get_points().size();
+            std::size_t count1 = (*it1)->size();
+            std::size_t count2 = (*it2)->size();
 
             count_string = QString("%1. %2 and %3 elements").arg(capture_idx).arg(count1).arg(count2);
 
@@ -104,7 +91,7 @@ void calibration_info_editor::updating()
         for(const auto& it1 : pl_list1)
         {
             QString count_string;
-            std::size_t count = it1->get_points().size();
+            std::size_t count = it1->size();
             count_string = QString("%1. %2 element%3").arg(capture_idx).arg(count).arg(count > 1 ? "s" : "");
 
             m_captures_list_widget->addItem(count_string);
@@ -192,27 +179,12 @@ void calibration_info_editor::remove()
 
             cal_info1->remove_record(idx);
 
-            //Notify
-            {
-                auto sig = cal_info1->signal<data::calibration_info::removed_record_signal_t>(
-                    data::calibration_info::REMOVED_RECORD_SIG
-                );
-                core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
-                sig->async_emit();
-            }
+            cal_info1->async_emit(this, data::calibration_info::signals::REMOVED_RECORD);
 
             if(cal_info2)
             {
                 cal_info2->remove_record(idx);
-
-                //Notify
-                {
-                    auto sig = cal_info2->signal<data::calibration_info::removed_record_signal_t>(
-                        data::calibration_info::REMOVED_RECORD_SIG
-                    );
-                    core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
-                    sig->async_emit();
-                }
+                cal_info2->async_emit(this, data::calibration_info::signals::REMOVED_RECORD);
             }
         }
         this->updating();
@@ -229,28 +201,13 @@ void calibration_info_editor::reset()
     const auto cal_info2 = m_calibration_info2.lock();
 
     cal_info1->reset_records();
-
-    //Notify
-    {
-        auto sig = cal_info1->signal<data::calibration_info::reset_record_signal_t>(
-            data::calibration_info::RESET_RECORD_SIG
-        );
-        core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
-        sig->async_emit();
-    }
+    cal_info1->async_emit(this, data::calibration_info::signals::RESET_RECORD);
 
     if(cal_info2)
     {
         cal_info2->reset_records();
 
-        //Notify
-        {
-            auto sig = cal_info2->signal<data::calibration_info::reset_record_signal_t>(
-                data::calibration_info::RESET_RECORD_SIG
-            );
-            core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
-            sig->async_emit();
-        }
+        cal_info2->async_emit(this, data::calibration_info::signals::RESET_RECORD);
     }
 
     m_captures_list_widget->clear();
@@ -272,10 +229,7 @@ void calibration_info_editor::get_selection()
 
         //Notify
         {
-            auto sig = cal_info1->signal<data::calibration_info::get_record_signal_t>(
-                data::calibration_info::GET_RECORD_SIG
-            );
-            sig->async_emit(idx);
+            cal_info1->async_emit(data::calibration_info::signals::GET_RECORD, idx);
         }
     }
 }
@@ -285,8 +239,8 @@ void calibration_info_editor::get_selection()
 service::connections_t calibration_info_editor::auto_connections() const
 {
     connections_t connections;
-    connections.push(CALIBRATION_INFO_1, data::object::MODIFIED_SIG, service::slots::UPDATE);
-    connections.push(CALIBRATION_INFO_2, data::object::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(CALIBRATION_INFO_1, data::signals::MODIFIED, service::slots::UPDATE);
+    connections.push(CALIBRATION_INFO_2, data::signals::MODIFIED, service::slots::UPDATE);
     return connections;
 }
 

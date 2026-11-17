@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,16 +22,8 @@
 
 #include "server_sender.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hpp>
-#include <core/com/slots.hxx>
-
-#include <service/macros.hpp>
-
 #include <ui/__/dialog/message.hpp>
 #include <ui/__/preferences.hpp>
-
-#include <functional>
 
 namespace sight::module::io::igtl
 {
@@ -84,7 +76,7 @@ void server_sender::starting()
         m_server->start(port);
 
         m_server_future = std::async(std::launch::async, [this](auto&& ...){m_server->run_server();});
-        m_sig_connected->async_emit();
+        this->async_emit(network_sender::signals::CONNECTED);
     }
     catch(core::exception& e)
     {
@@ -112,7 +104,7 @@ void server_sender::stopping()
         }
 
         m_server_future.wait();
-        m_sig_disconnected->async_emit();
+        this->async_emit(network_sender::signals::DISCONNECTED);
     }
     catch(core::exception& e)
     {

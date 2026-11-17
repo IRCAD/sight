@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,9 +23,6 @@
 #pragma once
 
 #include "data/generic_tl.hpp"
-#include "data/generic_tl.hxx"
-#include "data/timeline/generic_object.hpp"
-#include "data/timeline/generic_object.hxx"
 
 #include <array>
 

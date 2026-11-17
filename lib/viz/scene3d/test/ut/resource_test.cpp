@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+#include <core/runtime/runtime.hpp>
+
 #include <data/image.hpp>
 #include <data/transfer_function.hpp>
 
@@ -33,9 +35,23 @@
 
 #include <OGRE/OgreRenderWindow.h>
 
+namespace
+{
+
+struct initializer
+{
+    initializer()
+    {
+        sight::core::runtime::init();
+        sight::core::runtime::load_module("sight::module::viz::scene3d::test");
+    }
+};
+
+} // namespace
+
 TEST_SUITE("sight::viz::scene3d::resource")
 {
-    TEST_CASE("texture")
+    TEST_CASE_FIXTURE(initializer, "texture")
     {
         sight::data::image::sptr image = std::make_shared<sight::data::image>();
 
@@ -76,7 +92,7 @@ TEST_SUITE("sight::viz::scene3d::resource")
         }
     }
 
-    TEST_CASE("tf")
+    TEST_CASE_FIXTURE(initializer, "tf")
     {
         {
             sight::data::transfer_function::sptr tf = sight::data::transfer_function::create_default_tf();

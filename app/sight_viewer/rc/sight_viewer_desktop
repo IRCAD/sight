@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+# Adapt the file list supplied by a Linux desktop entry to Sight Viewer's
+# repeated `--input <path>` command-line syntax. With no file, simply start
+# Sight Viewer normally.
+
+set -e
+
+script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+arguments=()
+
+for input_path in "$@"; do
+    arguments+=(--input "$input_path")
+done
+
+exec "$script_dir/sight_viewer" "${arguments[@]}"

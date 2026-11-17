@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,10 +22,7 @@
 
 #include "module/io/vtk/model_series_reader.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/location/multiple_files.hpp>
-#include <core/location/single_folder.hpp>
-#include <core/progress/observer.hpp>
+#include <core/tools/failed.hpp>
 
 #include <data/mesh.hpp>
 #include <data/model_series.hpp>
@@ -38,9 +35,7 @@
 #include <io/vtk/vtp_mesh_reader.hpp>
 
 #include <ui/__/cursor.hpp>
-#include <ui/__/dialog/location.hpp>
 #include <ui/__/dialog/message.hpp>
-#include <ui/__/dialog/progress.hpp>
 
 #include <filesystem>
 
@@ -62,43 +57,6 @@ sight::io::service::path_type_t model_series_reader::get_path_type() const
 }
 
 //-----------------------------------------------------------------------------
-
-void model_series_reader::open_location_dialog()
-{
-    static auto default_directory = std::make_shared<core::location::single_folder>();
-
-    sight::ui::dialog::location dialog_file;
-    dialog_file.set_default_location(default_directory);
-    dialog_file.set_type(ui::dialog::location::multi_files);
-    dialog_file.set_title(*m_window_title);
-    dialog_file.add_filter("All supported files", "*.vtk *.vtp *.obj *.ply *.stl");
-    dialog_file.add_filter("OBJ Files(.obj)", "*.obj");
-    dialog_file.add_filter("PLY Files(.ply)", "*.ply");
-    dialog_file.add_filter("STL Files(.stl)", "*.stl");
-    dialog_file.add_filter("VTK Legacy Files(.vtk)", "*.vtk");
-    dialog_file.add_filter("VTK Polydata Files(.vtp)", "*.vtp");
-    dialog_file.set_option(ui::dialog::location::read);
-    dialog_file.set_option(ui::dialog::location::file_must_exist);
-
-    auto result = std::dynamic_pointer_cast<core::location::multiple_files>(dialog_file.show());
-    if(result)
-    {
-        const std::vector<std::filesystem::path> paths = result->get_files();
-        if(!paths.empty())
-        {
-            default_directory->set_folder(paths[0].parent_path());
-            dialog_file.save_default_location(default_directory);
-        }
-
-        this->set_files(paths);
-    }
-    else
-    {
-        this->clear_locations();
-    }
-}
-
-//------------------------------------------------------------------------------
 
 void model_series_reader::starting()
 {
@@ -138,7 +96,7 @@ void model_series_reader::updating()
             "The object is not a '"
             + data::model_series::classname()
             + "' or '"
-            + sight::io::service::DATA_KEY
+            + sight::io::service::READER_DATA_KEY
             + "' is not correctly set.",
             model_series
         );
@@ -156,7 +114,7 @@ void model_series_reader::updating()
             data::reconstruction::sptr rec = std::make_shared<data::reconstruction>();
             rec->set_mesh(mesh);
             rec->set_is_visible(true);
-            rec->set_organ_name(file.stem().string());
+            rec->set_organ_name(file.filename().string());
             rec_db.push_back(rec);
             added_recs.push_back(rec);
         }
@@ -164,20 +122,28 @@ void model_series_reader::updating()
         cursor.set_default_cursor();
         model_series->set_reconstruction_db(rec_db);
 
-        auto sig = model_series->signal<data::model_series::reconstructions_added_signal_t>(
-            data::model_series::RECONSTRUCTIONS_ADDED_SIG
-        );
-        {
-            core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
-            sig->async_emit(added_recs);
-        }
+        model_series->async_emit(this, data::model_series::signals::RECONSTRUCTIONS_ADDED, added_recs);
     }
+}
+
+//------------------------------------------------------------------------------------
+
+std::vector<std::pair<std::string, std::string> > model_series_reader::get_supported_extensions() const
+{
+    return {
+        {"All supported files", "*.vtk *.vtp *.obj *.ply *.stl"},
+        {"OBJ Files(.obj)", "*.obj"},
+        {"PLY Files(.ply)", "*.ply"},
+        {"STL Files(.stl)", "*.stl"},
+        {"VTK Legacy Files(.vtk)", "*.vtk"},
+        {"VTK Polydata Files(.vtp)", "*.vtp"},
+    };
 }
 
 //------------------------------------------------------------------------------
 
 template<typename READER>
-static typename READER::sptr configure_reader(const std::filesystem::path& _file)
+static READER::sptr configure_reader(const std::filesystem::path& _file)
 {
     typename READER::sptr reader = std::make_shared<READER>();
     reader->set_file(_file);
@@ -222,8 +188,7 @@ void model_series_reader::load_mesh(const std::filesystem::path& _file, data::me
         );
     }
 
-    auto observer = std::make_shared<core::progress::observer>("Reading mesh from " + _file.string());
-    this->async_emit(has_monitors::signals::MONITOR_CREATED, observer->get_sptr());
+    auto observer = this->observe("Reading mesh from " + _file.string());
 
     mesh_reader->set_object(_mesh);
 

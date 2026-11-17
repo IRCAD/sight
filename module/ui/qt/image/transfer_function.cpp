@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2024 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,6 @@
 
 #include "module/ui/qt/image/transfer_function.hpp"
 
-#include <core/com/slots.hxx>
 #include <core/runtime/path.hpp>
 
 #include <data/map.hpp>
@@ -54,15 +53,12 @@ static const std::string EXPORT_ICON_CONFIG       = "exportIcon";
 static const std::string ICON_WIDTH_CONFIG        = "iconWidth";
 static const std::string ICON_HEIGHT_CONFIG       = "iconHeight";
 
-const core::com::slots::key_t UPDATE_DEFAULT_PRESET_SLOT = "updateDefaultPreset";
-const core::com::slots::key_t UPDATE_PRESETS_SLOT        = "updatePresets";
-
 //------------------------------------------------------------------------------
 
 transfer_function::transfer_function()
 {
-    new_slot(UPDATE_DEFAULT_PRESET_SLOT, &transfer_function::update_default_preset, this);
-    new_slot(UPDATE_PRESETS_SLOT, [this](){transfer_function::initialize_presets();});
+    new_slot(slots::UPDATE_DEFAULT_PRESET, &transfer_function::update_default_preset, this);
+    new_slot(slots::UPDATE_PRESETS, [this](){transfer_function::initialize_presets();});
 
     const std::filesystem::path module_path = core::runtime::get_module_resource_path(
         std::string(
@@ -86,7 +82,8 @@ void transfer_function::configuring()
     this->initialize();
 
     const config_t tree = this->get_config();
-    const auto config   = tree.get_child_optional("config");
+    m_preserve_current_tf = tree.get<bool>("config.<xmlattr>.preserve_current_tf", false);
+    const auto config = tree.get_child_optional("config");
 
     bool use_default_path = true;
     if(config)
@@ -211,8 +208,8 @@ void transfer_function::starting()
 
         if(m_icon_width > 0 && m_icon_height > 0)
         {
-            int icon_width  = int(m_icon_width);
-            int icon_height = int(m_icon_height);
+            int icon_width  = static_cast<int>(m_icon_width);
+            int icon_height = static_cast<int>(m_icon_height);
             m_delete_button->setIconSize(QSize(icon_width, icon_height));
             m_new_button->setIconSize(QSize(icon_width, icon_height));
             m_copy_button->setIconSize(QSize(icon_width, icon_height));
@@ -277,7 +274,7 @@ void transfer_function::updating()
         auto tf_lock          = data::mt::locked_ptr(new_selected_tf);
         const auto current_tf = m_current_tf.lock();
         new_selected_tf->deep_copy(current_tf.get_shared());
-        new_selected_tf->async_emit(data::object::MODIFIED_SIG);
+        new_selected_tf->async_emit(data::signals::MODIFIED);
     }
 }
 
@@ -293,16 +290,16 @@ void transfer_function::stopping()
 service::connections_t transfer_function::auto_connections() const
 {
     return {
-        {IMAGE_INPUT, data::image::MODIFIED_SIG, UPDATE_DEFAULT_PRESET_SLOT},
-        {IMAGE_INPUT, data::image::MODIFIED_SIG, service::slots::UPDATE},
-        {IMAGE_INPUT, data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE},
-        {CURRENT_INPUT, data::transfer_function::MODIFIED_SIG, service::slots::UPDATE},
-        {CURRENT_INPUT, data::transfer_function::POINTS_MODIFIED_SIG, service::slots::UPDATE},
-        {CURRENT_INPUT, data::transfer_function::WINDOWING_MODIFIED_SIG, service::slots::UPDATE},
-        {PRESETS_INOUT, data::map::MODIFIED_SIG, UPDATE_PRESETS_SLOT},
-        {PRESETS_INOUT, data::map::ADDED_OBJECTS_SIG, UPDATE_PRESETS_SLOT},
-        {PRESETS_INOUT, data::map::CHANGED_OBJECTS_SIG, UPDATE_PRESETS_SLOT},
-        {PRESETS_INOUT, data::map::REMOVED_OBJECTS_SIG, UPDATE_PRESETS_SLOT}
+        {IMAGE_INPUT, data::signals::MODIFIED, slots::UPDATE_DEFAULT_PRESET},
+        {IMAGE_INPUT, data::signals::MODIFIED, service::slots::UPDATE},
+        {IMAGE_INPUT, data::image::signals::BUFFER_MODIFIED, service::slots::UPDATE},
+        {CURRENT_INPUT, data::signals::MODIFIED, service::slots::UPDATE},
+        {CURRENT_INPUT, data::transfer_function::signals::POINTS_MODIFIED, service::slots::UPDATE},
+        {CURRENT_INPUT, data::transfer_function::signals::WINDOWING_MODIFIED, service::slots::UPDATE},
+        {PRESETS_INOUT, data::signals::MODIFIED, slots::UPDATE_PRESETS},
+        {PRESETS_INOUT, data::map::signals::ADDED_OBJECTS, slots::UPDATE_PRESETS},
+        {PRESETS_INOUT, data::map::signals::CHANGED_OBJECTS, slots::UPDATE_PRESETS},
+        {PRESETS_INOUT, data::map::signals::REMOVED_OBJECTS, slots::UPDATE_PRESETS}
     };
 }
 
@@ -310,7 +307,7 @@ service::connections_t transfer_function::auto_connections() const
 
 bool transfer_function::has_preset_name(const sight::data::map& _presets, const std::string& _name)
 {
-    return _presets.find(_name) != _presets.end();
+    return _presets.contains(_name);
 }
 
 //------------------------------------------------------------------------------
@@ -353,7 +350,7 @@ void transfer_function::initialize_presets(const std::string& _current_preset_na
             // If we specify the presets, use the internal map to save initial state
             m_tf_presets->deep_copy(opt_presets.get_shared());
 
-            if(presets.find(current_preset_name) == presets.end())
+            if(!presets.contains(current_preset_name))
             {
                 current_preset_name = presets.begin()->first;
             }
@@ -372,7 +369,7 @@ void transfer_function::initialize_presets(const std::string& _current_preset_na
                         data::transfer_function::create_default_tf(image->type());
 
                     const auto scoped_emitter = presets.scoped_emit();
-                    scoped_emitter->block(slot(UPDATE_PRESETS_SLOT));
+                    scoped_emitter->block(slot(slots::UPDATE_PRESETS));
                     presets[default_tf_name] = default_tf;
                 }
             }
@@ -382,10 +379,8 @@ void transfer_function::initialize_presets(const std::string& _current_preset_na
             {
                 // Creates the TF reader.
                 const auto tf        = std::make_shared<data::transfer_function>();
-                const auto tf_reader = sight::service::add<io::service::reader>(
-                    "sight::module::io::session::reader"
-                );
-                tf_reader->set_inout(tf, io::service::DATA_KEY);
+                const auto tf_reader = sight::service::add<io::service::reader>("sight::module::io::session::reader");
+                tf_reader->set_inout(tf, io::service::READER_DATA_KEY);
 
                 // Parse all paths contained in m_path and read basic TF.
                 for(const std::filesystem::path& dir_path : m_paths)
@@ -404,7 +399,7 @@ void transfer_function::initialize_presets(const std::string& _current_preset_na
 
                             // Add a new map for each TF path.
                             service::config_t config;
-                            config.put("file", file.string());
+                            config.add("path.<xmlattr>.file", file.string());
                             config.put("archive.<xmlattr>.format", "filesystem");
 
                             tf_reader->set_config(config);
@@ -441,6 +436,15 @@ void transfer_function::initialize_presets(const std::string& _current_preset_na
             }
         }
 
+        if(m_preserve_current_tf)
+        {
+            const auto current_tf = m_current_tf.const_lock();
+            if(current_tf && !current_tf->pieces().empty())
+            {
+                presets[current_tf->name()] = data::object::copy(current_tf.get_shared());
+            }
+        }
+
         // Update all presets in the editor.
         m_preset_combo_box->clear();
 
@@ -471,7 +475,7 @@ void transfer_function::initialize_presets(const std::string& _current_preset_na
     }
 
     int index = m_preset_combo_box->findText(QString::fromStdString(current_preset_name));
-    if(index == 1)
+    if(index < 0)
     {
         // Fallback if the previously selected TF no longer exists
         index = m_preset_combo_box->findText(QString::fromStdString(data::transfer_function::DEFAULT_TF_NAME));
@@ -514,7 +518,7 @@ void transfer_function::set_current_preset()
     if(new_selected_tf && new_selected_tf->name() != current_tf->name())
     {
         current_tf->deep_copy(new_selected_tf);
-        current_tf->async_emit(this, data::object::MODIFIED_SIG);
+        current_tf->async_emit(this, data::signals::MODIFIED);
     }
 }
 
@@ -531,9 +535,12 @@ void transfer_function::update_default_preset()
 
         (*m_tf_presets)[default_tf_name] = default_tf;
 
-        const auto current_tf = m_current_tf.lock();
-        current_tf->deep_copy(default_tf);
-        current_tf->async_emit(data::object::MODIFIED_SIG);
+        if(!m_preserve_current_tf)
+        {
+            const auto current_tf = m_current_tf.lock();
+            current_tf->deep_copy(default_tf);
+            current_tf->async_emit(data::signals::MODIFIED);
+        }
     }
 }
 
@@ -570,7 +577,7 @@ void transfer_function::delete_preset()
             sight::data::map& presets                = (opt_presets != nullptr) ? *opt_presets : *m_tf_presets;
 
             const auto scoped_emitter = presets.scoped_emit();
-            scoped_emitter->block(slot(UPDATE_PRESETS_SLOT));
+            scoped_emitter->block(slot(slots::UPDATE_PRESETS));
 
             presets.erase(selected_tf_preset_key);
 
@@ -622,7 +629,7 @@ void transfer_function::create_preset()
                 default_tf->set_name(newName);
 
                 const auto scoped_emitter = presets.scoped_emit();
-                scoped_emitter->block(slot(UPDATE_PRESETS_SLOT));
+                scoped_emitter->block(slot(slots::UPDATE_PRESETS));
                 presets[newName] = default_tf;
 
                 // Recreates presets.
@@ -691,7 +698,7 @@ void transfer_function::copy_preset()
             tf->set_name(newName);
 
             const auto scoped_emitter = presets.scoped_emit();
-            scoped_emitter->block(slot(UPDATE_PRESETS_SLOT));
+            scoped_emitter->block(slot(slots::UPDATE_PRESETS));
             presets[newName] = tf;
 
             // Recreates presets.
@@ -728,7 +735,7 @@ void transfer_function::reinitialize_presets()
         {
             // If we specify the presets, restore the initial state from the internal map
             const auto scoped_emitter = opt_presets->scoped_emit();
-            scoped_emitter->block(slot(UPDATE_PRESETS_SLOT));
+            scoped_emitter->block(slot(slots::UPDATE_PRESETS));
             opt_presets->deep_copy(m_tf_presets);
         }
     }
@@ -803,7 +810,7 @@ void transfer_function::import_preset()
 
     const auto reader = sight::service::add<io::service::reader>("sight::module::io::session::reader");
 
-    reader->set_inout(new_tf, io::service::DATA_KEY);
+    reader->set_inout(new_tf, io::service::READER_DATA_KEY);
 
     service::config_t config;
     config.put("dialog.<xmlattr>.extension", ".tf");
@@ -830,7 +837,7 @@ void transfer_function::import_preset()
             }
 
             const auto scoped_emitter = presets.scoped_emit();
-            scoped_emitter->block(slot(UPDATE_PRESETS_SLOT));
+            scoped_emitter->block(slot(slots::UPDATE_PRESETS));
             presets[preset_name] = new_tf;
             new_tf->set_name(preset_name);
 
@@ -852,7 +859,7 @@ void transfer_function::export_preset()
     const auto writer = sight::service::add<io::service::writer>("sight::module::io::session::writer");
     {
         const auto current_tf = m_current_tf.const_lock();
-        writer->set_input(current_tf.get_shared(), io::service::DATA_KEY);
+        writer->set_input(current_tf.get_shared(), io::service::WRITER_DATA_KEY);
     }
 
     service::config_t config;

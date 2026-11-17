@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,15 +24,14 @@
 
 #include <sight/io/__/config.hpp>
 
-#include <core/base.hpp>
 #include <core/object.hpp>
 
-namespace sight::core::progress
+namespace sight::core::notification
 {
 
 class observer;
 
-} // namespace sight::core::progress
+} // namespace sight::core::notification
 
 namespace sight::io::reader
 {
@@ -60,7 +59,7 @@ public:
      *
      * This method (re)inits the object given in parameter of set_object method.
      */
-    SIGHT_IO_API virtual void read(SPTR(sight::core::progress::observer) _progress) = 0;
+    SIGHT_IO_API virtual void read(sight::sptr<sight::core::notification::observer> _progress) = 0;
 
     /**
      * @brief m_object setter.
@@ -80,7 +79,7 @@ public:
 
     SIGHT_IO_API virtual std::string extension() const = 0;
 
-protected:
+private:
 
     /**
      * @brief Object result of reading process.

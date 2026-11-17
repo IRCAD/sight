@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2025 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,8 +29,6 @@
 
 #include <service/filter.hpp>
 
-#include <ui/__/has_parameters.hpp>
-
 namespace sight::module::filter::image
 {
 
@@ -44,9 +42,8 @@ namespace sight::module::filter::image
  *
  * @code{.xml}
    <service type="sight::module::filter::image::automatic_registration">
-       <in key="target" uid="..." />
-       <in key="reference" uid="..." />
-       <inout key="transform" uid="..." />
+       <input target="${...}" reference="${...}" />
+       <output transform="${...}" />
        <minStep>0.0001</minStep>
        <maxIterations>500</maxIterations>
        <metric>MeanSquare</metric>
@@ -76,8 +73,7 @@ namespace sight::module::filter::image
  * NormalizedCorrelation : works when the intensity values are within a linear transform from each other.
  * MutualInformation : most generic metric, based on entropy. Can match images with different modalities.
  */
-class automatic_registration final : public service::filter,
-                                     public ui::has_parameters
+class automatic_registration final : public service::filter
 {
 public:
 
@@ -113,15 +109,6 @@ protected:
 
 private:
 
-    /// Set the metric to be used. Key must be 'metric', values are the same as for the configuration.
-    void set_enum_parameter(std::string _val, std::string _key) final;
-
-    /// Set the minimum and maximum step sizes. keys are "minStep" and "maxStep".
-    void set_double_parameter(double _val, std::string _key) final;
-
-    /// Set the maximum number of iterations, key must be "maxIterations".
-    void set_int_parameter(int _val, std::string _key) final;
-
     /// Sets the metric, possible values are : MeanSquares, NormalizedCorrelation, MutualInformation.
     void set_metric(const std::string& _metric_name);
 
@@ -147,9 +134,9 @@ private:
     /// Percentage of samples used for registration.
     double m_sampling_percentage {};
 
-    static constexpr std::string_view TRANSFORM_INOUT = "transform";
-    static constexpr std::string_view TARGET_IN       = "target";
-    static constexpr std::string_view REFERENCE_IN    = "reference";
+    static constexpr std::string_view TRANSFORM_INOUT = "output.transform";
+    static constexpr std::string_view TARGET_IN       = "input.target";
+    static constexpr std::string_view REFERENCE_IN    = "input.reference";
 
     sight::data::ptr<sight::data::matrix4, sight::data::access::inout> m_transform {this, TRANSFORM_INOUT};
     sight::data::ptr<sight::data::image, sight::data::access::in> m_target {this, TARGET_IN};

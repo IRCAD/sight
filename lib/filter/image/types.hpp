@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -29,9 +29,9 @@ namespace sight::filter::image
 // Type for image interpolation
 enum class interpolation_t : std::uint8_t
 {
-    NEAREST,
-    LINEAR,
-    BSPLINE
+    nearest,
+    linear,
+    bspline
 };
 
 /// Convert a string to an interpolation type
@@ -40,20 +40,20 @@ inline interpolation_t string_to_interpolation(const std::string& _str)
     const std::string str = boost::algorithm::to_lower_copy(_str);
     if(str == "nearest")
     {
-        return interpolation_t::NEAREST;
+        return interpolation_t::nearest;
     }
-    else if(str == "linear")
+
+    if(str == "linear")
     {
-        return interpolation_t::LINEAR;
+        return interpolation_t::linear;
     }
-    else if(str == "bspline")
+
+    if(str == "bspline")
     {
-        return interpolation_t::BSPLINE;
+        return interpolation_t::bspline;
     }
-    else
-    {
-        throw std::runtime_error("Unknown interpolation type: " + str);
-    }
+
+    throw std::runtime_error("Unknown interpolation type: " + str);
 }
 
 } // namespace sight::filter::image

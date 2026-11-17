@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -46,11 +46,11 @@ namespace sight::module::viz::sample
  * @section XML XML Configuration
  * @code{.xml}
    <service uid="..." type="sight::module::viz::sample::mesh" >
-      <in key="mesh" uid="..." />
+    <data mesh="${...}" />
    </service>
  *
  * @subsection Input Input
- * - \b mesh [sight::data::mesh]: mesh to display.
+ * - \b data.mesh [sight::data::mesh]: mesh to display.
  */
 class mesh : public sight::ui::service
 {
@@ -58,12 +58,16 @@ public:
 
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(mesh, sight::ui::service);
-
-    static const core::com::slots::key_t UPDATE_CAM_POSITION_SLOT;
-
-    static const core::com::signals::key_t CAM_UPDATED_SIG;
-
-    using cam_updated_signal_t = core::com::signal<void (data::matrix4::sptr)>;
+    struct signals
+    {
+        using cam_updated_t = core::com::signal<void (data::matrix4::sptr)>;
+        static inline const signal_key_t CAM_UPDATED = "cam_updated";
+    };
+    struct slots
+    {
+        static inline const slot_key_t UPDATE_CAM_POSITION  = "update_cam_position";
+        static inline const slot_key_t UPDATE_CAM_TRANSFORM = "update_cam_transform";
+    };
 
     /// Creates slots and the signal.
     mesh() noexcept;
@@ -71,7 +75,7 @@ public:
     /// Destroys the service.
     ~mesh() noexcept override = default;
 
-private:
+protected:
 
     /// Checks if the input mesh is autoconnect.
     void configuring() override;
@@ -111,7 +115,7 @@ private:
     /// Stores connection with the camera transform.
     core::com::helper::sig_slot_connection m_connections;
 
-    data::ptr<data::mesh, data::access::in> m_mesh {this, "mesh"};
+    data::ptr<data::mesh, data::access::in> m_mesh {this, "data.mesh"};
 };
 
 } // namespace sight::module::viz::sample.

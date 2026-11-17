@@ -2,6 +2,7 @@
     <id>sight::config::viz::scene3d::organManager</id>
     <parameters>
         <object uid="model_series" type="sight::data::model_series" />
+        <object uid="display_models" type="sight::data::model_series" optional="true" />
 
         <param name="WID_PARENT" />
         <param name="enable_delete" default="false" />
@@ -43,6 +44,7 @@
 
         <service uid="list_organ_editor_srv" type="sight::module::ui::qt::model::model_series_list">
             <inout key="model_series" uid="${model_series}" />
+            <inout key="display_models" uid="${display_models}" optional="true" />
             <columns>
                 <organ_name />
                 <volume />

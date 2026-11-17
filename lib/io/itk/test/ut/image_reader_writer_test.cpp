@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,16 +21,12 @@
 
 #include "helper.hpp"
 
-#include <core/base.hpp>
 #include <core/os/temp_path.hpp>
-
-#include <data/helper/medical_image.hpp>
 
 #include <io/itk/inr_image_reader.hpp>
 #include <io/itk/inr_image_writer.hpp>
 #include <io/itk/jpg_image_writer.hpp>
-#include <io/itk/nifti_image_reader.hpp>
-#include <io/itk/nifti_image_writer.hpp>
+#include <io/itk/nifti.hpp>
 
 #include <utest_data/data.hpp>
 #include <utest_data/generator/image.hpp>
@@ -51,14 +47,14 @@ static void inr_read_write_check(sight::data::image::sptr _image)
     auto my_writer                   = std::make_shared<sight::io::itk::inr_image_writer>();
     my_writer->set_object(_image);
     my_writer->set_file(path);
-    auto write_observer = std::make_shared<sight::core::progress::observer>("Test write");
+    auto write_observer = std::make_shared<sight::core::notification::observer>("Test write");
     my_writer->write(write_observer);
 
     auto image2    = std::make_shared<sight::data::image>();
     auto my_reader = std::make_shared<sight::io::itk::inr_image_reader>();
     my_reader->set_object(image2);
     my_reader->set_file(path);
-    auto read_observer = std::make_shared<sight::core::progress::observer>("Test read");
+    auto read_observer = std::make_shared<sight::core::notification::observer>("Test read");
     my_reader->read(read_observer);
 
     sight::io::itk::ut::helper::round_spacing(image2);
@@ -158,7 +154,7 @@ TEST_SUITE("sight::io::itk::image_reader_writer")
         type = sight::core::type::UINT32;
         inr_stress_test_with_type(type, 5);
 
-        type = sight::core::type::FLOAT;
+        type = sight::core::type::FLOAT32;
         inr_stress_test_with_type(type, 5);
     }
 
@@ -174,15 +170,9 @@ TEST_SUITE("sight::io::itk::image_reader_writer")
             "' does not exist"
         );
 
-        auto sight_image        = std::make_shared<sight::data::image>();
-        auto sight_image_reader = std::make_shared<sight::io::itk::nifti_image_reader>();
-        sight_image_reader->set_object(sight_image);
-        sight_image_reader->set_file(sight_image_path);
-
-        {
-            auto read_observer = std::make_shared<sight::core::progress::observer>("Test read");
-            sight_image_reader->read(read_observer);
-        }
+        auto sight_image = std::make_shared<sight::data::image>();
+        CHECK_EQ(sight::io::itk::read_nifti_image("/somewhere/wrong_path.nii", sight_image), false);
+        CHECK_EQ(sight::io::itk::read_nifti_image(sight_image_path, sight_image), true);
 
         nifti_read_check(
             sight_image,
@@ -206,15 +196,8 @@ TEST_SUITE("sight::io::itk::image_reader_writer")
             "' does not exist"
         );
 
-        sight::data::image::sptr external_image                        = std::make_shared<sight::data::image>();
-        sight::io::itk::nifti_image_reader::sptr external_image_reader = std::make_shared<sight::io::itk::nifti_image_reader>();
-        external_image_reader->set_object(external_image);
-        external_image_reader->set_file(external_image_path);
-
-        {
-            auto read_observer = std::make_shared<sight::core::progress::observer>("Test read");
-            external_image_reader->read(read_observer);
-        }
+        sight::data::image::sptr external_image = std::make_shared<sight::data::image>();
+        sight::io::itk::read_nifti_image(external_image_path, external_image);
 
         nifti_read_check(
             external_image,
@@ -247,14 +230,11 @@ TEST_SUITE("sight::io::itk::image_reader_writer")
 
         sight::io::itk::ut::helper::round_orientation(image);
 
+        CHECK_EQ(sight::io::itk::write_nifti_image("/somewhere/wrong_path.nii", image), false);
+
         sight::core::os::temp_dir tmp_dir;
         const std::filesystem::path filename = tmp_dir / "image.nii";
-        auto my_writer                       = std::make_shared<sight::io::itk::nifti_image_writer>();
-
-        my_writer->set_object(image);
-        my_writer->set_file(filename);
-        auto write_observer = std::make_shared<sight::core::progress::observer>("Test write");
-        my_writer->write(write_observer);
+        CHECK_EQ(sight::io::itk::write_nifti_image(filename, image), true);
 
         CHECK_MESSAGE(
             std::filesystem::exists(filename),
@@ -267,12 +247,7 @@ TEST_SUITE("sight::io::itk::image_reader_writer")
         image2->set_window_center(image->window_center());
         image2->set_window_width(image->window_width());
 
-        auto my_reader = std::make_shared<sight::io::itk::nifti_image_reader>();
-        my_reader->set_object(image2);
-        my_reader->set_file(filename);
-
-        auto read_observer = std::make_shared<sight::core::progress::observer>("Test read");
-        my_reader->read(read_observer);
+        sight::io::itk::read_nifti_image(filename, image2);
 
         sight::io::itk::ut::helper::round_orientation(image2);
 
@@ -288,7 +263,7 @@ TEST_SUITE("sight::io::itk::image_reader_writer")
         auto my_writer = std::make_shared<sight::io::itk::jpg_image_writer>();
         my_writer->set_object(image);
         my_writer->set_folder(tmp_dir);
-        auto write_observer = std::make_shared<sight::core::progress::observer>("Test write");
+        auto write_observer = std::make_shared<sight::core::notification::observer>("Test write");
         CHECK_NOTHROW(my_writer->write(write_observer));
     }
 
@@ -307,14 +282,14 @@ TEST_SUITE("sight::io::itk::image_reader_writer")
         sight::io::itk::inr_image_reader::sptr my_reader = std::make_shared<sight::io::itk::inr_image_reader>();
         my_reader->set_object(image);
         my_reader->set_file(path_inr);
-        auto read_observer = std::make_shared<sight::core::progress::observer>("Test read");
+        auto read_observer = std::make_shared<sight::core::notification::observer>("Test read");
         my_reader->read(read_observer);
 
         sight::core::os::temp_dir tmp_dir;
         auto my_writer = std::make_shared<sight::io::itk::jpg_image_writer>();
         my_writer->set_object(image);
         my_writer->set_folder(tmp_dir);
-        auto write_observer = std::make_shared<sight::core::progress::observer>("Test write");
+        auto write_observer = std::make_shared<sight::core::notification::observer>("Test write");
         my_writer->write(write_observer);
     }
 } // TEST_SUITE

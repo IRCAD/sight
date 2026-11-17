@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,7 +44,7 @@ public:
      *
      * @param[in]   _message a string containing the failure message
      */
-    SIGHT_DATA_API exception(const std::string& _message) noexcept;
+    SIGHT_DATA_API exception(const std::string& _message) noexcept; //NOLINT(google-explicit-constructor,hicpp-explicit-conversions)
 
     /**
      * @brief   Destructor : do nothing.

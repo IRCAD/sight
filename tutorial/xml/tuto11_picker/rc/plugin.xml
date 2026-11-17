@@ -130,22 +130,22 @@
             </service>
 
             <service uid="pickerInteractorAdp" type="sight::module::viz::scene3d::adaptor::voxel_picker">
-                <in key="image" uid="image" />
+                <data image="${image}" />
                 <config mode="3D" priority="1" />
             </service>
 
             <service uid="meshAdp" type="sight::module::viz::scene3d::adaptor::mesh" auto_connect="true">
-                <in key="mesh" uid="mesh" />
+                <data mesh="${mesh}" />
             </service>
 
             <service uid="negatoAdp" type="sight::module::viz::scene3d::adaptor::negato3d" auto_connect="true">
-                <in key="image" uid="image" />
-                <inout key="tf" uid="tf" />
+                <data image="${image}" />
+                <data tf="${tf}" />
                 <config orientation="axial" interactive="true" />
             </service>
 
             <service uid="snapshotAdp" type="sight::module::viz::scene3d::adaptor::fragments_info">
-                <inout key="image" uid="snapshot" />
+                <data image="${snapshot}" />
             </service>
 
             <!-- ******************************* Services ***************************************** -->
@@ -171,23 +171,21 @@
             <service uid="pointEditorSrv" type="sight::module::ui::qt::viz::point_editor" />
 
             <service uid="meshReaderSrv" type="sight::module::ui::io::selector">
-                <inout key="data" uid="mesh" />
-                <type mode="reader" />
+                <data read="${mesh}" />
             </service>
 
             <service uid="imageReaderSrv" type="sight::module::ui::io::selector">
-                <inout key="data" uid="image" />
-                <type mode="reader" />
+                <data read="${image}" />
             </service>
 
             <service uid="sliderIndexEditorSrv" type="sight::module::ui::qt::image::slice_index_position_editor" auto_connect="true">
-                <inout key="image" uid="image" />
+                <data image="${image}" />
                 <config orientation="axial" label="index" display_axis_selector="false" display_step_buttons="false" />
             </service>
 
             <!-- Write the snapshot image -->
             <service uid="imageWriterSrv" type="sight::module::io::bitmap::writer">
-                <in key="data" uid="snapshot" />
+                <data write="${snapshot}" />
                 <dialog policy="always" />
                 <backends enable="all" mode="best" />
             </service>

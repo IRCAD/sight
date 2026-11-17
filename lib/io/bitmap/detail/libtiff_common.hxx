@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,8 +21,11 @@
 
 #pragma once
 
+#include <core/exceptionmacros.hpp>
+
 #include <tiffio.h>
 
+#include <array>
 #include <cstdarg>
 #include <cstdio>
 
@@ -31,14 +34,14 @@ namespace sight::io::bitmap::detail::tiff
 
 //------------------------------------------------------------------------------
 
-inline static int map_proc(thandle_t, void**, toff_t*)
+inline static int map_proc(thandle_t /*unused*/, void** /*unused*/, toff_t* /*unused*/)
 {
     return 0;
 }
 
 //------------------------------------------------------------------------------
 
-inline static void unmap_proc(thandle_t, void*, toff_t)
+inline static void unmap_proc(thandle_t /*unused*/, void* /*unused*/, toff_t /*unused*/)
 {
 }
 
@@ -46,13 +49,14 @@ inline static void unmap_proc(thandle_t, void*, toff_t)
 
 inline static void error_handler(const char* _module, const char* _fmt, va_list _args)
 {
-    char error_buffer[0xFFFF];
-    vsnprintf(error_buffer, sizeof(error_buffer), _fmt, _args);
+    std::array<char, 0xFFFF> error_buffer {};
+    // NOLINTNEXTLINE(cert-err33-c)
+    vsnprintf(error_buffer.data(), error_buffer.size(), _fmt, _args);
 
     std::string msg("Tiff Error: ");
     msg += _module;
     msg += ": ";
-    msg += error_buffer;
+    msg += error_buffer.data();
 
     SIGHT_THROW(msg);
 }
@@ -61,20 +65,21 @@ inline static void error_handler(const char* _module, const char* _fmt, va_list 
 
 inline static void warning_handler(const char* _module, const char* _fmt, va_list _args)
 {
-    char warning_buffer[0xFFFF];
-    vsnprintf(warning_buffer, sizeof(warning_buffer), _fmt, _args);
+    std::array<char, 0xFFFF> warning_buffer {};
+    // NOLINTNEXTLINE(cert-err33-c)
+    vsnprintf(warning_buffer.data(), warning_buffer.size(), _fmt, _args);
 
     std::string msg("Tiff Warning: ");
     msg += _module;
     msg += ": ";
-    msg += warning_buffer;
+    msg += warning_buffer.data();
 
     SIGHT_WARN(msg);
 }
 
 static const struct handler_registry final
 {
-    inline handler_registry() noexcept
+    handler_registry() noexcept
     {
         TIFFSetErrorHandler(&error_handler);
         TIFFSetWarningHandler(&warning_handler);

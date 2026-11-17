@@ -2,6 +2,7 @@ sight_add_target(ex_notifications TYPE APP)
 
 add_dependencies(
     ex_notifications
+    data
     sightrun
     module_app
     module_ui

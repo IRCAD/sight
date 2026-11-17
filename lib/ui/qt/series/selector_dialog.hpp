@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2024 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -50,7 +50,7 @@ public:
     SIGHT_UI_QT_API_QT ~selector_dialog() noexcept override;
 
     /// Returns the selected series.
-    SIGHT_UI_QT_API_QT data::series_set::sptr get_selection() const;
+    [[nodiscard]] SIGHT_UI_QT_API_QT data::series_set::sptr get_selection() const;
 
 private:
 

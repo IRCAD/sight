@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,7 +22,7 @@
 #include "file.hpp"
 
 #include <core/compare.hpp>
-#include <core/progress/observer.hpp>
+#include <core/notification/observer.hpp>
 
 #include <data/dicom/sop.hpp>
 #include <data/helper/medical_image.hpp>
@@ -44,11 +44,6 @@
 #include <gdcmScanner.h>
 #include <gdcmTagKeywords.h>
 #include <gdcmTagToVR.h>
-#include <gdcmUIDs.h>
-
-#include <glm/ext/matrix_relational.hpp>
-#include <glm/ext/matrix_transform.hpp>
-#include <glm/glm.hpp>
 
 #include <algorithm>
 
@@ -60,6 +55,9 @@ namespace sight::io::dicom::reader
 // All frames that have a z position closer than 1e-3 will be considered as the same.
 static constexpr double Z_EPSILON = 1e-3;
 
+namespace
+{
+
 struct fiducial_set_with_metadata
 {
     data::fiducials_series::fiducial_set fiducial_set;
@@ -70,6 +68,8 @@ struct fiducial_set_with_metadata
     std::string content_description;
     std::string content_creator_name;
 };
+
+} // namespace
 
 //------------------------------------------------------------------------------
 
@@ -390,10 +390,10 @@ inline static core::type compute_type(
             return core::type::INT64;
 
         case gdcm::PixelFormat::FLOAT32:
-            return core::type::FLOAT;
+            return core::type::FLOAT32;
 
         case gdcm::PixelFormat::FLOAT64:
-            return core::type::DOUBLE;
+            return core::type::FLOAT64;
 
         default:
             return core::type::NONE;
@@ -526,7 +526,7 @@ inline static std::optional<double> compute_z_spacing(const data::series& _serie
         const double position = *value;
 
         // Simplify the z position, using the EPSILON precision
-        const auto index = std::int64_t(position / Z_EPSILON);
+        const auto index = static_cast<std::int64_t>(position / Z_EPSILON);
 
         // Let the map sort the frames
         sorted_positions.insert_or_assign(index, position);
@@ -548,7 +548,8 @@ inline static std::optional<double> compute_z_spacing(const data::series& _serie
 
     const double first_spacing = std::abs(first_position - second_position);
     const double all_spacing   = std::abs(last_position - first_position);
-    const double error         = std::abs(first_spacing * double(sorted_positions.size() - 1)) - all_spacing;
+    const double error         = std::abs(first_spacing * static_cast<double>(sorted_positions.size() - 1))
+                                 - all_spacing;
 
     if(error > Z_EPSILON)
     {
@@ -598,7 +599,7 @@ inline static data::image::spacing_t compute_spacing(
 
 inline static data::image_series::sptr new_image_series(
     const data::series& _source,
-    const core::progress::observer::sptr& _progress,
+    const core::notification::observer::sptr& _progress,
     const gdcm::Image& _gdcm_image,
     const std::unique_ptr<gdcm::Rescaler>& _gdcm_rescaler,
     const std::string& _filename
@@ -724,7 +725,7 @@ inline static const char* read_gdcm_buffer(
 //------------------------------------------------------------------------------
 
 inline static bool read_buffer(
-    const core::progress::observer::sptr& _progress,
+    const core::notification::observer::sptr& _progress,
     const gdcm::Image& _gdcm_image,
     const std::unique_ptr<gdcm::Rescaler>& _gdcm_rescaler,
     std::unique_ptr<std::vector<char> >& _gdcm_instance_buffer,
@@ -770,9 +771,9 @@ inline static bool read_buffer(
             _instance_buffer + _instance_buffer_size - 1
         );
 
-        for(auto i = std::streamsize(gdcm_buffer_size) ; --i >= 0 ; )
+        for(auto i = static_cast<std::streamsize>(gdcm_buffer_size) ; --i >= 0 ; )
         {
-            const auto byte = std::uint8_t(_instance_buffer[i]);
+            const auto byte = static_cast<std::uint8_t>(_instance_buffer[i]);
 
             end_instance_buffer[0] = (byte & 0x01) != 0 ? 0xff : 0x00;
             end_instance_buffer[1] = (byte & 0x02) != 0 ? 0xff : 0x00;
@@ -1040,7 +1041,7 @@ inline static data::matrix4 compute_image_transform(
 
 inline static data::series_set::sptr read_image_instance(
     const data::series& _source,
-    const core::progress::observer::sptr& _progress,
+    const core::notification::observer::sptr& _progress,
     std::unique_ptr<std::vector<char> >& _gdcm_instance_buffer,
     std::size_t _instance                   = 0,
     data::series_set::sptr _splitted_series = nullptr
@@ -1150,6 +1151,10 @@ inline static data::series_set::sptr read_image_instance(
         {
             // Add the dataset to allow access to all DICOM attributes (not only the ones we have converted)
             image_series->set_data_set(gdcm_dataset);
+            if(image_series->get_series_description().empty())
+            {
+                image_series->set_series_description(std::filesystem::path(filename).filename().string());
+            }
 
             // Also save the file path. It could be useful to keep a link to the original file.
             image_series->set_file(filename);
@@ -1157,12 +1162,6 @@ inline static data::series_set::sptr read_image_instance(
             const auto& transform = compute_image_transform(converted_gdcm_image, image_series);
             image_series->data::image::set_origin(transform.position());
             image_series->data::image::set_orientation(transform.orientation());
-
-            ///@todo remove that once we remove field 'direction' from image_series
-            data::helper::medical_image::set_direction(
-                *image_series,
-                std::make_shared<data::matrix4>(transform.values())
-            );
 
             // Add the series to a new dataset
             if(!_splitted_series)
@@ -1197,7 +1196,7 @@ inline static data::series_set::sptr read_image_instance(
     // Compute the size
     const std::size_t instance_buffer_size =
         split ? image_series->size_in_bytes()
-              : image_series->size_in_bytes() / std::max(std::size_t(1), _source.num_instances());
+              : image_series->size_in_bytes() / std::max(static_cast<std::size_t>(1), _source.num_instances());
 
     // Read the image data and fill the image series
     if(!read_buffer(
@@ -1222,7 +1221,7 @@ inline static data::series_set::sptr read_image_instance(
 
 inline static data::series_set::sptr read_image(
     const data::series& _source,
-    const core::progress::observer::sptr& _progress
+    const core::notification::observer::sptr& _progress
 )
 {
     if(_progress && _progress->cancel_requested())
@@ -1272,7 +1271,7 @@ inline static data::series_set::sptr read_image(
 
 inline static data::series_set::sptr read_model(
     const data::series& /*unused*/,
-    const core::progress::observer::sptr& /*unused*/
+    const core::notification::observer::sptr& /*unused*/
 )
 {
     data::series_set::sptr splitted_series;
@@ -1415,7 +1414,7 @@ public:
             }
 
             // Simplify the z position, using the EPSILON precision
-            const auto index = std::int64_t(*value / Z_EPSILON);
+            const auto index = static_cast<std::int64_t>(*value / Z_EPSILON);
 
             // Let the map sort the frames
             sorter.insert_or_assign(index, instance);
@@ -1605,7 +1604,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void read(SPTR(sight::core::progress::observer) _progress)
+    void read(sight::sptr<sight::core::notification::observer> _progress)
     {
         m_progress = _progress;
 
@@ -1614,17 +1613,8 @@ public:
             !m_sorted || m_sorted->empty()
         );
 
-        // Instantiate or reuse the output series set
-        if(const auto& object = std::dynamic_pointer_cast<data::series_set>(m_reader->m_object.lock()); object)
-        {
-            m_read = object;
-            m_read->clear();
-        }
-        else
-        {
-            m_read = std::make_shared<data::series_set>();
-            m_reader->set_object(m_read);
-        }
+        m_read = std::dynamic_pointer_cast<data::series_set>(m_reader->get_object());
+        m_read->clear();
 
         std::vector<fiducial_set_with_metadata> fiducial_sets;
 
@@ -1785,7 +1775,7 @@ public:
     data::series_set::sptr m_read;
 
     /// Allows to watch for cancellation and report progress.
-    core::progress::observer::sptr m_progress;
+    core::notification::observer::sptr m_progress;
 };
 
 file::file() :
@@ -1877,7 +1867,7 @@ data::series_set::sptr file::sort()
 
 //------------------------------------------------------------------------------
 
-void file::read(sight::core::progress::observer::sptr _progress)
+void file::read(sight::core::notification::observer::sptr _progress)
 {
     if(!m_pimpl->m_sorted || m_pimpl->m_sorted->empty())
     {

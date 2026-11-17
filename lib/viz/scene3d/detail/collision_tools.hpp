@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -51,6 +51,8 @@
 // cspell: enable
 
 #include <sight/viz/scene3d/config.hpp>
+
+#include <viz/scene3d/utils.hpp>
 
 #include <Ogre.h>
 
@@ -106,10 +108,10 @@ public:
      * @param _camera The camera use to get the origin of the ray.
      * @param _mousecoords The mouse position used to get the ray destination.
      * @param _query_mask Mask used to query entities with matching flags.
-     * @return A tuple containing a boolean to specify if there was an intersection, the position of the intersection,
-     * and the intersected object.
+     * @return If there is an intersection, a struct containing the position of the intersection, the intersected
+     * object, and the distance to the intersection. Otherwise, an empty optional.
      */
-    std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> raycast_from_camera(
+    std::optional<pick_result_t> raycast_from_camera(
         Ogre::RenderWindow* _rw,
         Ogre::Camera* _camera,
         const Ogre::Vector2& _mousecoords,
@@ -121,10 +123,10 @@ public:
      * @param _point The ray origin.
      * @param _normal The ray direction.
      * @param _query_mask Mask used to query entities with matching flags.
-     * @return A tuple containing a boolean to specify if there was an intersection, the position of the intersection,
-     * and the intersected object.
+     * @return If there is an intersection, a struct containing the position of the intersection, the intersected
+     * object, and the distance to the intersection. Otherwise, an empty optional.
      */
-    [[nodiscard]] std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> raycast_from_point(
+    [[nodiscard]] std::optional<pick_result_t> raycast_from_point(
         const Ogre::Vector3& _point,
         const Ogre::Vector3& _normal,
         Ogre::uint32 _query_mask
@@ -134,10 +136,10 @@ public:
      * @brief Check for collisions with entities along a ray.
      * @param _ray The ray used to check collisions.
      * @param _query_mask   Mask used to query entities with matching flags.
-     * @return A tuple containing a boolean to specify if there was an intersection, the position of the intersection,
-     * and the intersected object.
+     * @return If there is an intersection, a struct containing the position of the intersection, the intersected
+     * object, and the distance to the intersection. Otherwise, an empty optional.
      */
-    [[nodiscard]] std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> raycast(
+    [[nodiscard]] std::optional<pick_result_t> raycast(
         const Ogre::Ray& _ray,
         Ogre::uint32 _query_mask
     ) const;

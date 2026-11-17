@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,21 +22,17 @@
 
 #pragma once
 
-#define FWCOM_SLOTBASE_HPP
-
 #include <sight/core/config.hpp>
 
-#include "core/com/util/convert_function_type.hpp"
+#include "core/base_object.hpp"
+#include "core/com/exception/bad_call.hpp"
+#include "core/exceptionmacros.hpp"
+#include "core/mt/types.hpp"
+#include "core/spy_log.hpp"
 #include "core/thread/worker.hpp"
 
-#include <core/base_object.hpp>
-#include <core/mt/types.hpp>
-#include <core/spy_log.hpp>
-
 #include <format>
-
 #include <future>
-#include <queue>
 #include <set>
 
 namespace sight::core::thread
@@ -101,14 +97,14 @@ struct SIGHT_CORE_CLASS_API slot_base : virtual core::base_object
     }
 
     /// Sets Slot's Worker.
-    void set_worker(const SPTR(core::thread::worker)& _worker)
+    void set_worker(const sight::sptr<core::thread::worker>& _worker)
     {
         core::mt::write_lock lock(m_worker_mutex);
         m_worker = _worker;
     }
 
     /// Returns Slot's Worker.
-    SPTR(core::thread::worker) get_worker() const
+    sight::sptr<core::thread::worker> get_worker() const
     {
         core::mt::read_lock lock(m_worker_mutex);
         return m_worker;
@@ -230,29 +226,314 @@ struct SIGHT_CORE_CLASS_API slot_base : virtual core::base_object
             return std::format("function_type({})", typeid(F).name());
         }
 
-        slot_base(unsigned int _arity) :
+        explicit slot_base(unsigned int _arity) :
             m_arity(_arity)
         {
         }
 
+        //NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
+
         /// Slot's signature based on typeid.
         std::string m_signature;
+
+        /// When the slot is wrapped to reduce the number of arguments in a connection, this stores a pointer
+        /// to the original slot. This is important in the mechanism used to keep the slot alive during an async call.
+        sight::wptr<slot_base> m_source_slot {};
+
+        /// Slot's Worker.
+        sight::sptr<core::thread::worker> m_worker {};
+
+        mutable core::mt::read_write_mutex m_worker_mutex;
+
+    //NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
+
+    private:
 
         /// Slot's arity.
         const unsigned int m_arity;
 
-        /// Slot's Worker.
-        SPTR(core::thread::worker) m_worker;
-
-        /// When the slot is wrapped to reduce the number of arguments in a connection, this stores a pointer
-        /// to the original slot. This is important in the mechanism used to keep the slot alive during an async call.
-        WPTR(slot_base) m_source_slot;
-
         /// Container of current connections.
-        connection_set_type m_connections;
+        connection_set_type m_connections {};
 
         mutable core::mt::read_write_mutex m_connections_mutex;
-        mutable core::mt::read_write_mutex m_worker_mutex;
 };
+
+//------------------------------------------------------------------------------
+
+template<typename A1, typename A2, typename A3>
+void slot_base::run(A1 _a1, A2 _a2, A3 _a3) const
+{
+    using slot_func_type = slot_run<void (A1, A2, A3)>;
+    const auto* fun = dynamic_cast<const slot_func_type*>(this);
+    if(fun)
+    {
+        fun->run(_a1, _a2, _a3);
+    }
+    else
+    {
+        SIGHT_INFO(
+            "Failed to run the slot with three parameters : "
+            << m_signature << " != " << slot_base::get_type_name<void(A1, A2, A3)>()
+            << ". Trying to run the slot with two parameters."
+        );
+        this->run(_a1, _a2);
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+template<typename A1, typename A2>
+void slot_base::run(A1 _a1, A2 _a2) const
+{
+    using slot_func_type = slot_run<void (A1, A2)>;
+    const auto* fun = dynamic_cast<const slot_func_type*>(this);
+    if(fun)
+    {
+        fun->run(_a1, _a2);
+    }
+    else
+    {
+        SIGHT_INFO(
+            "Failed to run the slot with two parameters : "
+            << m_signature << " != " << slot_base::get_type_name<void(A1, A2)>()
+            << ". Trying to run the slot with one parameter."
+        );
+        this->run(_a1);
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+template<typename A1>
+void slot_base::run(A1 _a1) const
+{
+    using slot_func_type = slot_run<void (A1)>;
+    const auto* fun = dynamic_cast<const slot_func_type*>(this);
+    if(fun)
+    {
+        return fun->run(_a1);
+    }
+
+    SIGHT_INFO(
+        "Failed to run the slot with one parameter : "
+        << m_signature << " != " << slot_base::get_type_name<void(A1)>()
+        << ". Trying to run the slot without parameter."
+    );
+    this->run();
+}
+
+//------------------------------------------------------------------------------
+
+template<typename R, typename A1, typename A2, typename A3>
+R slot_base::call(A1 _a1, A2 _a2, A3 _a3) const
+{
+    using slot_func_type = slot<R(A1, A2, A3)>;
+    const auto* fun = dynamic_cast<const slot_func_type*>(this);
+    if(fun)
+    {
+        return fun->call(_a1, _a2, _a3);
+    }
+
+    SIGHT_INFO(
+        "Failed to call the slot with three parameters : "
+        << m_signature << " != " << slot_base::get_type_name<R(A1, A2, A3)>()
+        << ". Trying to call the slot with two parameters."
+    );
+    return this->call<R>(_a1, _a2);
+}
+
+//-----------------------------------------------------------------------------
+
+template<typename R, typename A1, typename A2>
+R slot_base::call(A1 _a1, A2 _a2) const
+{
+    using slot_func_type = slot<R(A1, A2)>;
+    const auto* fun = dynamic_cast<const slot_func_type*>(this);
+    if(fun)
+    {
+        return fun->call(_a1, _a2);
+    }
+
+    SIGHT_INFO(
+        "Failed to call the slot with two parameters : "
+        << m_signature << " != " << slot_base::get_type_name<R(A1, A2)>()
+        << ". Trying to call the slot with one parameter."
+    );
+    return this->call<R>(_a1);
+}
+
+//-----------------------------------------------------------------------------
+
+template<typename R, typename A1>
+R slot_base::call(A1 _a1) const
+{
+    using slot_func_type = slot<R(A1)>;
+    const auto* fun = dynamic_cast<const slot_func_type*>(this);
+    if(fun)
+    {
+        return fun->call(_a1);
+    }
+
+    SIGHT_INFO(
+        "Failed to call the slot with one parameter : "
+        << m_signature << " != " << slot_base::get_type_name<R(A1)>()
+        << ". Trying to call the slot without parameter."
+    );
+    return this->call<R>();
+}
+
+//-----------------------------------------------------------------------------
+
+template<typename R>
+R slot_base::call() const
+{
+    using slot_func_type = slot<R()>;
+    const auto* fun = dynamic_cast<const slot_func_type*>(this);
+    if(fun)
+    {
+        return fun->call();
+    }
+
+    SIGHT_ERROR("Failed to call : " + m_signature + " with " + slot_base::get_type_name<R()>());
+    SIGHT_THROW_EXCEPTION(core::com::exception::bad_call("Failed to find right signature for call"));
+}
+
+//------------------------------------------------------------------------------
+
+template<typename A1, typename A2, typename A3>
+slot_base::void_shared_future_type slot_base::async_run(A1 _a1, A2 _a2, A3 _a3) const
+{
+    using slot_func_type = slot_run<void (A1, A2, A3)>;
+    const auto* fun = dynamic_cast<const slot_func_type*>(this);
+    if(fun)
+    {
+        return fun->async_run(_a1, _a2, _a3);
+    }
+
+    SIGHT_INFO(
+        "Failed to async_run the slot with three parameters : "
+        << m_signature << " != " << slot_base::get_type_name<void(A1, A2, A3)>()
+        << ". Trying to async_run the slot with two parameters."
+    );
+    return this->async_run(_a1, _a2);
+}
+
+//-----------------------------------------------------------------------------
+
+template<typename A1, typename A2>
+slot_base::void_shared_future_type slot_base::async_run(A1 _a1, A2 _a2) const
+{
+    using slot_func_type = slot_run<void (A1, A2)>;
+    const auto* fun = dynamic_cast<const slot_func_type*>(this);
+    if(fun)
+    {
+        return fun->async_run(_a1, _a2);
+    }
+
+    SIGHT_INFO(
+        "Failed to async_run the slot with two parameters : "
+        << m_signature << " != " << slot_base::get_type_name<void(A1, A2)>()
+        << ". Trying to async_run the slot with one parameter."
+    );
+    return this->async_run(_a1);
+}
+
+//-----------------------------------------------------------------------------
+
+template<typename A1>
+slot_base::void_shared_future_type slot_base::async_run(A1 _a1) const
+{
+    using slot_func_type = slot_run<void (A1)>;
+    const auto* fun = dynamic_cast<const slot_func_type*>(this);
+    if(fun)
+    {
+        return fun->async_run(_a1);
+    }
+
+    SIGHT_INFO(
+        "Failed to async_run the slot with one parameter : "
+        << m_signature << " != " << slot_base::get_type_name<void(A1)>()
+        << ". Trying to async_run the slot without parameter."
+    );
+    return this->async_run();
+}
+
+//------------------------------------------------------------------------------
+
+template<typename R, typename A1, typename A2, typename A3>
+std::shared_future<R> slot_base::async_call(A1 _a1, A2 _a2, A3 _a3) const
+{
+    using slot_func_type = slot<R(A1, A2, A3)>;
+    const auto* fun = dynamic_cast<const slot_func_type*>(this);
+    if(fun)
+    {
+        return fun->async_call(_a1, _a2, _a3);
+    }
+
+    SIGHT_INFO(
+        "Failed to asyncCall the slot with three parameters : "
+        << m_signature << " != " << slot_base::get_type_name<R(A1, A2, A3)>()
+        << ". Trying to asyncCall the slot with two parameters."
+    );
+    return this->async_call<R>(_a1, _a2);
+}
+
+//-----------------------------------------------------------------------------
+
+template<typename R, typename A1, typename A2>
+std::shared_future<R> slot_base::async_call(A1 _a1, A2 _a2) const
+{
+    using slot_func_type = slot<R(A1, A2)>;
+    const auto* fun = dynamic_cast<const slot_func_type*>(this);
+    if(fun)
+    {
+        return fun->async_call(_a1, _a2);
+    }
+
+    SIGHT_INFO(
+        "Failed to asyncCall the slot with two parameters : "
+        << m_signature << " != " << slot_base::get_type_name<R(A1, A2)>()
+        << ". Trying to asyncCall the slot with one parameter."
+    );
+    return this->async_call<R>(_a1);
+}
+
+//-----------------------------------------------------------------------------
+
+template<typename R, typename A1>
+std::shared_future<R> slot_base::async_call(A1 _a1) const
+{
+    using slot_func_type = slot<R(A1)>;
+    const auto* fun = dynamic_cast<const slot_func_type*>(this);
+    if(fun)
+    {
+        return fun->async_call(_a1);
+    }
+
+    SIGHT_INFO(
+        "Failed to asyncCall the slot with one parameters : "
+        << m_signature << " != " << slot_base::get_type_name<R(A1)>()
+        << ". Trying to asyncCall the slot without parameter."
+    );
+    return this->async_call<R>();
+}
+
+//-----------------------------------------------------------------------------
+
+template<typename R>
+std::shared_future<R> slot_base::async_call() const
+{
+    using slot_func_type = slot<R()>;
+    const auto* fun = dynamic_cast<const slot_func_type*>(this);
+    if(fun)
+    {
+        return fun->async_call();
+    }
+
+    SIGHT_ERROR("failed to asyncCall : " + m_signature + " with " + slot_base::get_type_name<R()>());
+    SIGHT_THROW_EXCEPTION(core::com::exception::bad_call("Failed to find right signature for asyncCall"));
+}
+
+//-----------------------------------------------------------------------------
 
 } // namespace sight::core::com

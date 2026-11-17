@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,11 +48,16 @@ public:
 
     SIGHT_DECLARE_SERVICE(point_editor, sight::ui::editor);
 
+    struct slots
+    {
+        static inline const slot_key_t GET_INTERACTION = "get_interaction";
+    };
+
     /// Constructor. Do nothing.
     point_editor() noexcept;
 
     /// Destructor. Do nothing.
-    ~point_editor() noexcept override;
+    ~point_editor() noexcept override = default;
 
 protected:
 

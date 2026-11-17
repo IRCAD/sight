@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024 IRCAD France
+ * Copyright (C) 2024-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -57,7 +57,7 @@ public:
     /// Destructor
     SIGHT_APP_API ~update_parallel() final = default;
 
-private:
+protected:
 
     /// Does nothing
     SIGHT_APP_API void starting() final;

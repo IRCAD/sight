@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2025 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,9 +30,11 @@
 #include <QObject>
 #include <QPointer>
 
+// NOLINTBEGIN(readability-identifier-naming)
 class QSlider;
 class QLabel;
 class QLineEdit;
+// NOLINTEND(readability-identifier-naming)
 
 namespace sight::module::ui::qt::viz
 {
@@ -101,7 +103,7 @@ protected:
     /// Updates Slider value
     void updating() final;
 
-    // Connect data::matrix4::MODIFIED_SIG to update slot
+    // Connect data::signals::MODIFIED to update slot
     connections_t auto_connections() const final;
 
     void set_translation_range(double _min, double _max);
@@ -122,7 +124,7 @@ private:
     /*
      * @brief This enum defines the transformation matrix entries indexes
      */
-    enum slider_index
+    enum slider_index : std::uint8_t
     {
         position_x = 0,
         position_y,

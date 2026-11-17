@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -29,7 +29,7 @@ namespace sight::module::data
 service::connections_t get_activity_object::auto_connections() const
 {
     return {
-        {m_activity_set, sight::data::activity_set::MODIFIED_SIG, slots::UPDATE}
+        {m_activity_set, sight::data::signals::MODIFIED, slots::UPDATE}
     };
 }
 

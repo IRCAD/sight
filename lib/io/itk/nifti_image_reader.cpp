@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2025 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,12 +21,13 @@
 
 #include "io/itk/nifti_image_reader.hpp"
 
-#include "factory/inr_image_io_factory.hpp"
+#include <core/exceptionmacros.hpp>
+
+#include <core/notification/observer.hpp>
 
 #include "io/itk/helper/progress_itk_to_fw.hpp"
 #include "io/itk/itk.hpp"
 
-#include <core/base.hpp>
 #include <core/tools/dispatcher.hpp>
 
 #include <data/image.hpp>
@@ -44,7 +45,7 @@ namespace sight::io::itk
 //// get pixel type from Header
 static const core::type& get_image_type(const std::string& _image_file_name)
 {
-    typename ::itk::NiftiImageIO::Pointer image_io = ::itk::NiftiImageIO::New();
+    ::itk::NiftiImageIO::Pointer image_io = ::itk::NiftiImageIO::New();
     image_io->SetFileName(_image_file_name.c_str());
     image_io->ReadImageInformation();
     auto itk_type = image_io->GetComponentType();
@@ -53,12 +54,12 @@ static const core::type& get_image_type(const std::string& _image_file_name)
 
 //------------------------------------------------------------------------------
 
-void nifti_image_reader::read(sight::core::progress::observer::sptr _progress)
+void nifti_image_reader::read(sight::core::notification::observer::sptr _progress)
 {
     auto do_read =
         []<class PIXELTYPE>(data::image::sptr _image,
                             const std::string& _filename,
-                            core::progress::observer::sptr _progress)
+                            core::notification::observer::sptr _progress)
         {
             SIGHT_INFO(
                 "::io::itk::NiftiImageReader::NiftiLoaderFunctor with PIXELTYPE "
@@ -66,7 +67,7 @@ void nifti_image_reader::read(sight::core::progress::observer::sptr _progress)
             );
 
             // Reader IO (*1*)
-            typename ::itk::NiftiImageIO::Pointer image_io_read = ::itk::NiftiImageIO::New();
+            ::itk::NiftiImageIO::Pointer image_io_read = ::itk::NiftiImageIO::New();
             image_io_read->SetFileName(_filename.c_str());
             image_io_read->ReadImageInformation();
 
@@ -88,9 +89,11 @@ void nifti_image_reader::read(sight::core::progress::observer::sptr _progress)
         };
 
     const std::filesystem::path file = get_file();
-    SIGHT_ASSERT("File: " << file << " doesn't exist", std::filesystem::exists(file));
-    SIGHT_ASSERT("Object expired", !m_object.expired());
-    SIGHT_ASSERT("Object null", m_object.lock());
+    SIGHT_THROW_EXCEPTION_IF(
+        core::exception("File: " + file.string() + " doesn't exist"),
+        !std::filesystem::exists(file)
+    );
+    auto object_lock = get_object();
 
     const core::type type = get_image_type(file.string());
 
@@ -98,7 +101,6 @@ void nifti_image_reader::read(sight::core::progress::observer::sptr _progress)
     using sight::core::tools::intrinsic_types;
     dispatcher<intrinsic_types, decltype(do_read)>::invoke(type, this->get_concrete_object(), file.string(), _progress);
 
-    SIGHT_ASSERT("sight::data::image is not well produced", m_object.lock());
     // Post Condition image with a pixel type
     SIGHT_ASSERT(
         "Image has an unspecified type",

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2025 IRCAD France
+ * Copyright (C) 2019-2026 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,13 +22,7 @@
 
 #include "module/ui/qt/reconstruction/organ_material_editor.hpp"
 
-#include <core/runtime/path.hpp>
-
 #include <data/material.hpp>
-#include <data/mesh.hpp>
-#include <data/reconstruction.hpp>
-
-#include <service/op.hpp>
 
 #include <ui/qt/container/widget.hpp>
 
@@ -58,7 +52,7 @@ organ_material_editor::~organ_material_editor() noexcept =
 service::connections_t organ_material_editor::auto_connections() const
 {
     connections_t connections;
-    connections.push(RECONSTRUCTION, data::object::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(RECONSTRUCTION, data::signals::MODIFIED, service::slots::UPDATE);
     return connections;
 }
 
@@ -322,11 +316,7 @@ void organ_material_editor::material_notification()
     SIGHT_ASSERT("The inout key '" << RECONSTRUCTION << "' is not defined.", !m_rec.expired());
     auto reconstruction = m_rec.lock();
 
-    data::object::modified_signal_t::sptr sig =
-        reconstruction->get_material()->signal<data::object::modified_signal_t>(
-            data::object::MODIFIED_SIG
-        );
-    sig->async_emit();
+    reconstruction->get_material()->async_emit(data::signals::MODIFIED);
 }
 
 //------------------------------------------------------------------------------

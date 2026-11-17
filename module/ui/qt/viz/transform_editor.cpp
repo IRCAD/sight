@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2025 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,16 +22,11 @@
 
 #include "module/ui/qt/viz/transform_editor.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-
 #include <geometry/data/matrix4.hpp>
 
 #include <ui/qt/container/widget.hpp>
 
-#include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
-#include <glm/mat4x4.hpp>
 
 #include <QHBoxLayout>
 #include <QLabel>
@@ -260,7 +255,7 @@ service::connections_t transform_editor::auto_connections() const
 {
     connections_t connections;
 
-    connections.push(MATRIX_INOUT, data::matrix4::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(MATRIX_INOUT, data::signals::MODIFIED, service::slots::UPDATE);
 
     return connections;
 }
@@ -310,7 +305,7 @@ void transform_editor::set_translation_range(double _min, double _max)
                 m_sliders[i].m_slider->setEnabled(true);
             }
 
-            // matrix->async_emit(this, sight::data::object::MODIFIED_SIG);
+            // matrix->async_emit(this, sight::data::signals::MODIFIED);
         }
     }
 }
@@ -343,7 +338,7 @@ void transform_editor::on_slider_changed(int /*unused*/)
         }
     }
 
-    matrix->async_emit(this, data::object::MODIFIED_SIG);
+    matrix->async_emit(this, data::signals::MODIFIED);
 }
 
 //------------------------------------------------------------------------------
@@ -384,12 +379,12 @@ void transform_editor::update_from_matrix()
 
     for(glm::length_t i = position_x, j = 0 ; i <= position_z ; i++, ++j)
     {
-        m_sliders[unsigned(i)].m_slider->setValue(static_cast<int>(translation[j]));
+        m_sliders[static_cast<unsigned>(i)].m_slider->setValue(static_cast<int>(translation[j]));
     }
 
     for(glm::length_t i = rotation_x, j = 0 ; i <= rotation_z ; i++, ++j)
     {
-        m_sliders[unsigned(i)].m_slider->setValue(static_cast<int>(glm::degrees<double>(angles[j])));
+        m_sliders[static_cast<unsigned>(i)].m_slider->setValue(static_cast<int>(glm::degrees<double>(angles[j])));
     }
 
     if(not minimal)

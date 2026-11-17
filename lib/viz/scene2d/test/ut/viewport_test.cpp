@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,8 +20,6 @@
  *
  ***********************************************************************/
 
-#include "viewport_test.hpp"
-
 #include <service/op.hpp>
 
 #include <viz/scene2d/data/parser/viewport.hpp>
@@ -29,49 +27,32 @@
 
 #include <boost/property_tree/xml_parser.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::viz::scene2d::ut::viewport_test);
+#include <doctest/doctest.h>
 
 //------------------------------------------------------------------------------
 
-namespace sight::viz::scene2d::ut
+TEST_SUITE("sight::viz::scene2d::viewport")
 {
+    TEST_CASE("parser")
+    {
+        sight::service::config_t config;
+        std::stringstream config_string(R"(<config x="-700" y="0.1" width="100" height="1.3"/>)");
+        boost::property_tree::read_xml(config_string, config);
 
-//------------------------------------------------------------------------------
+        auto parser =
+            sight::service::add<sight::viz::scene2d::data::parser::viewport>(
+                "sight::viz::scene2d::data::parser::viewport"
+            );
+        CHECK(parser->is_a("sight::viz::scene2d::data::parser::viewport"));
 
-void viewport_test::setUp()
-{
+        auto viewport = std::make_shared<sight::viz::scene2d::data::viewport>();
+
+        sight::service::object_parser::objects_t sub_objects;
+        parser->parse(config, viewport, sub_objects);
+
+        CHECK(viewport->x() == doctest::Approx(-700.).epsilon(0.00001));
+        CHECK(viewport->y() == doctest::Approx(.1).epsilon(0.00001));
+        CHECK(viewport->width() == doctest::Approx(100.).epsilon(0.00001));
+        CHECK(viewport->height() == doctest::Approx(1.3).epsilon(0.00001));
+    }
 }
-
-//------------------------------------------------------------------------------
-
-void viewport_test::tearDown()
-{
-    // Clean up after the test run.
-}
-
-//------------------------------------------------------------------------------
-
-void viewport_test::test_parser()
-{
-    service::config_t config;
-
-    std::stringstream config_string(R"(<config x="-700" y="0.1" width="100" height="1.3"/>)");
-    boost::property_tree::read_xml(config_string, config);
-
-    auto parser = sight::service::add<data::parser::viewport>("sight::viz::scene2d::data::parser::viewport");
-    CPPUNIT_ASSERT(parser->is_a("sight::viz::scene2d::data::parser::viewport"));
-
-    auto viewport = std::make_shared<sight::viz::scene2d::data::viewport>();
-
-    service::object_parser::objects_t sub_objects;
-    parser->parse(config, viewport, sub_objects);
-
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(-700., viewport->x(), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(.1, viewport->y(), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(100., viewport->width(), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.3, viewport->height(), 0.00001);
-}
-
-//------------------------------------------------------------------------------
-
-} // namespace sight::viz::scene2d::ut

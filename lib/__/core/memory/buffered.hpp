@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,8 +36,10 @@ class SIGHT_CORE_CLASS_API buffered
 {
 public:
 
+    virtual ~buffered() = default;
+
     /// Convenience method to avoid declaring a vector of locks
-    [[nodiscard]] inline std::vector<core::memory::buffer_object::lock_t> dump_lock() const
+    [[nodiscard]] std::vector<core::memory::buffer_object::lock_t> dump_lock() const
     {
         std::vector<core::memory::buffer_object::lock_t> locks;
         dump_lock_impl(locks);

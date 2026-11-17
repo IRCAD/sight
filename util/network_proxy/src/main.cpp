@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,16 +22,12 @@
 
 #include "igtlMessageBase.h"
 #include "igtlMessageHeader.h"
-#include "igtlOSUtil.h"
 
-#include <core/factory_registry.hpp>
+#include <boost/lexical_cast.hpp>
 #include <core/spy_log.hpp>
 #include <core/thread/worker.hpp>
 
 #include <io/igtl/server.hpp>
-
-#include <boost/date_time.hpp>
-#include <boost/type.hpp>
 
 #include <fstream>
 #include <functional>
@@ -58,6 +54,9 @@
  *
  */
 
+namespace
+{
+
 /**
  * @brief The configuration struct to handle message parameters
  */
@@ -71,12 +70,14 @@ struct configuration
     sight::core::thread::worker::sptr worker;
 };
 
+} // namespace
+
 /**
  * @brief Read the configuration file and initialize re-sending servers
  * @param _config_file  path to configFile
  * @return  a map
  */
-std::map<std::string, configuration> initialize(std::string _config_file)
+static std::map<std::string, configuration> initialize(std::string _config_file)
 {
     SIGHT_INFO("Reading parameters...");
 
@@ -237,7 +238,7 @@ int main(int argc, char** argv)
 
                 sight::io::igtl::server::sptr sending_server;
 
-                if(association_device_server.find(device_name) != association_device_server.end())
+                if(association_device_server.contains(device_name))
                 {
                     configuration config = association_device_server.find(device_name)->second;
                     SIGHT_INFO("Received a '" << device_type << "' named '" << device_name);

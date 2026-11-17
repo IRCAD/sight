@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "io/__/reader/gz_array_reader.hpp"
 
-#include <core/progress/observer.hpp>
+#include <core/notification/observer.hpp>
 
 #include <zlib.h>
 
@@ -34,7 +34,7 @@ namespace sight::io::reader
 
 //------------------------------------------------------------------------------
 
-void gz_array_reader::read(sight::core::progress::observer::sptr _progress)
+void gz_array_reader::read(sight::core::notification::observer::sptr _progress)
 {
     std::filesystem::path file = this->get_file();
 

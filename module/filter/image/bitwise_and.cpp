@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2025 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #include "bitwise_and.hpp"
 
-#include <core/com/signal.hxx>
-
 #include <filter/image/bitwise_and.hpp>
 
 namespace sight::module::filter::image
@@ -32,7 +30,7 @@ namespace sight::module::filter::image
 //-----------------------------------------------------------------------------
 
 bitwise_and::bitwise_and() :
-    filter(m_signals)
+    filter(has_signals::signals())
 {
 }
 
@@ -63,7 +61,7 @@ void bitwise_and::updating()
     sight::filter::image::bitwise_and(*image, *mask, *output_image);
 
     this->set_output(output_image, OUTPUTIMAGE_OUT);
-    this->async_emit(signals::COMPUTED);
+    this->async_emit(signals::SUCCEEDED);
 }
 
 //-----------------------------------------------------------------------------

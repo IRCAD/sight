@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,13 +20,10 @@
  *
  ***********************************************************************/
 
-#include "data/helper/medical_image.hpp"
-#include "data/image.hpp"
+ #include "data/helper/medical_image.hpp"
+ #include "data/image.hpp"
 
-#include "data/exception.hpp"
-#include "data/registry/macros.hpp"
-
-#include <core/com/signal.hxx>
+ #include "data/registry/macros.hpp"
 
 #include <numeric>
 
@@ -39,7 +36,7 @@ SIGHT_REGISTER_DATA(sight::data::image);
 namespace sight::data
 {
 
-auto pixel_format_to_num_components =
+static auto pixel_format_to_num_components =
     [](image::pixel_format_t _format)
     {
         static const std::array<std::size_t, image::pixel_format_t::count> s_PIXEL_FORMAT_TO_NUM_COMPONENTS =
@@ -55,28 +52,19 @@ auto pixel_format_to_num_components =
         return s_PIXEL_FORMAT_TO_NUM_COMPONENTS[_format];
     };
 
-const core::com::signals::key_t image::BUFFER_MODIFIED_SIG      = "buffer_modified";
-const core::com::signals::key_t image::LANDMARK_ADDED_SIG       = "landmarkAdded";
-const core::com::signals::key_t image::LANDMARK_REMOVED_SIG     = "landmarkRemoved";
-const core::com::signals::key_t image::LANDMARK_DISPLAYED_SIG   = "landmarkDisplayed";
-const core::com::signals::key_t image::SLICE_INDEX_MODIFIED_SIG = "sliceIndexModified";
-const core::com::signals::key_t image::SLICE_TYPE_MODIFIED_SIG  = "sliceTypeModified";
-const core::com::signals::key_t image::RULER_MODIFIED_SIG       = "ruler_modified";
-const core::com::signals::key_t image::FIDUCIAL_REMOVED_SIG     = "fiducial_removed";
-
 //------------------------------------------------------------------------------
 
 image::image() :
     m_data_array(std::make_shared<data::array>())
 {
-    new_signal<buffer_modified_signal_t>(BUFFER_MODIFIED_SIG);
-    new_signal<landmark_added_signal_t>(LANDMARK_ADDED_SIG);
-    new_signal<landmark_removed_signal_t>(LANDMARK_REMOVED_SIG);
-    new_signal<landmark_displayed_signal_t>(LANDMARK_DISPLAYED_SIG);
-    new_signal<slice_index_modified_signal_t>(SLICE_INDEX_MODIFIED_SIG);
-    new_signal<slice_type_modified_signal_t>(SLICE_TYPE_MODIFIED_SIG);
-    new_signal<ruler_modified_signal_t>(RULER_MODIFIED_SIG);
-    new_signal<fiducial_removed_signal_t>(FIDUCIAL_REMOVED_SIG);
+    new_signal<signals::buffer_modified_t>(signals::BUFFER_MODIFIED);
+    new_signal<signals::landmark_added_t>(signals::LANDMARK_ADDED);
+    new_signal<signals::landmark_removed_t>(signals::LANDMARK_REMOVED);
+    new_signal<signals::landmark_displayed_t>(signals::LANDMARK_DISPLAYED);
+    new_signal<signals::slice_index_modified_t>(signals::SLICE_INDEX_MODIFIED);
+    new_signal<signals::slice_type_modified_t>(signals::SLICE_TYPE_MODIFIED);
+    new_signal<signals::ruler_modified_t>(signals::RULER_MODIFIED);
+    new_signal<signals::fiducial_removed_t>(signals::FIDUCIAL_REMOVED);
 
     auto pl = std::make_shared<data::point_list>();
     data::helper::medical_image::set_landmarks(*this, pl);
@@ -319,7 +307,7 @@ image::iterator<char> image::begin()
 image::iterator<char> image::end()
 {
     auto itr = begin<char>();
-    itr += static_cast<typename iterator<char>::difference_type>(this->size_in_bytes());
+    itr += static_cast<iterator<char>::difference_type>(this->size_in_bytes());
     return itr;
 }
 
@@ -335,7 +323,7 @@ image::const_iterator<char> image::begin() const
 image::const_iterator<char> image::end() const
 {
     auto itr = begin<char>();
-    itr += static_cast<typename iterator<char>::difference_type>(this->size_in_bytes());
+    itr += static_cast<iterator<char>::difference_type>(this->size_in_bytes());
     return itr;
 }
 

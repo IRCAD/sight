@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,12 @@
 
 #include <boost/program_options.hpp>
 
+#include <opencv2/core/version.hpp>
+#if CV_MAJOR_VERSION < 5
 #include <opencv2/aruco.hpp>
+#else
+#include <opencv2/objdetect/aruco_detector.hpp>
+#endif
 #include <opencv2/opencv.hpp>
 
 #include <iostream>

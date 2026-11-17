@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -72,7 +72,7 @@ public:
        @endcode
      *
      */
-    SIGHT_APP_API virtual void parse(
+    SIGHT_APP_API void parse(
         const service::config_t& _cfg,
         core::object::sptr _obj,
         objects_t& _sub_objects

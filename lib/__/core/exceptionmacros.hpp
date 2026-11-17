@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,13 +23,14 @@
 #pragma once
 
 # include <boost/exception/exception.hpp>
-# include <boost/throw_exception.hpp>
 # include <boost/preprocessor/cat.hpp>
+# include <boost/throw_exception.hpp>
 
+# include "core/demangler.hpp"
 # include "core/exception.hpp"
 # include "core/spy_log.hpp"
-# include "core/demangler.hpp"
 
+//NOLINTBEGIN(cppcoreguidelines-macro-usage)
 //cspell: disable
 # define LOG_FWEXCEPTIONS 1
 
@@ -37,7 +38,7 @@
 
 # define FWCORE_EXCEPTION_PREPARE_MSG(var, msg) \
         std::stringstream var; \
-        var << msg
+        (var) << msg
 
 # define FWCORE_EXCEPTION_GETCLASSNAME(obj) \
         sight::core::demangler(typeid(obj)).get_classname()
@@ -45,7 +46,7 @@
 # define FWCORE_EXCEPTION_INFO(excep) \
         "Exception: <" \
         << FWCORE_EXCEPTION_GETCLASSNAME(excep) \
-        << ">: " << excep.what()
+        << ">: " << (excep).what()
 
 // --------------------------------------------------------------------------------
 
@@ -139,3 +140,4 @@
             FWCORE_EXCEPT_FORWARD_EXCEPTION_IF(excep, cond); \
 )
 //cspell: enable
+//NOLINTEND(cppcoreguidelines-macro-usage)

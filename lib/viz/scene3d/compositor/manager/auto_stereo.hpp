@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2025 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,7 +36,7 @@ class auto_stereo : public Ogre::MaterialManager::Listener
 public:
 
     /// Constructor, needs to know how many views are needed.
-    auto_stereo(std::uint8_t _viewpoint_number);
+    explicit auto_stereo(std::uint8_t _viewpoint_number);
 
     /// Destructor, destroys created techniques.
     ~auto_stereo() override;

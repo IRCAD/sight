@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,7 +40,10 @@
 
 #include <OgrePixelFormat.h>
 
+#include <sys/types.h>
+
 #include <algorithm>
+#include <cstdint>
 
 namespace sight::viz::scene3d
 {
@@ -88,17 +91,21 @@ plane::plane(
         m_plane_material->material()->setDepthBias(_depth_bias, 0.F);
     }
 
+    m_plane_material->material()->setDepthFunction(Ogre::CMPF_LESS_EQUAL);
+
     auto& material_mgr = Ogre::MaterialManager::getSingleton();
     if(m_border.enabled)
     {
         const auto material = material_mgr.getByName("BasicAmbient", RESOURCE_GROUP);
         m_border.material = material->clone(m_slice_plane_name + "_BorderMaterial");
+        m_border.material->setDepthFunction(Ogre::CMPF_LESS_EQUAL);
     }
 
     if(m_slices_cross.enabled)
     {
         const auto material = material_mgr.getByName("BasicAmbientVT", RESOURCE_GROUP);
         m_slices_cross.material = material->clone(m_slice_plane_name + "_OthersMaterial");
+        m_slices_cross.material->setDepthFunction(Ogre::CMPF_LESS_EQUAL);
     }
 }
 
@@ -141,7 +148,8 @@ plane::~plane()
 
 void plane::update(
     axis_t _axis,
-    const Ogre::Vector3& _spacing
+    const Ogre::Vector3& _spacing,
+    std::uint16_t _priority
 )
 {
     m_axis = _axis;
@@ -157,13 +165,12 @@ void plane::update(
 
     // Save visibility if the plane existed before
     bool visible = true;
-    if(m_scene_manager->hasEntity(m_entity_name))
+    if(m_plane_entity != nullptr)
     {
-        auto* entity = m_scene_manager->getEntity(m_entity_name);
-        SIGHT_ASSERT("Could not find entity " + m_entity_name, entity);
-        entity->detachFromParent();
-        visible = entity->isVisible();
-        m_scene_manager->destroyEntity(m_entity_name);
+        m_plane_entity->detachFromParent();
+        visible = m_plane_entity->isVisible();
+        m_scene_manager->destroyEntity(m_plane_entity);
+        m_plane_entity = nullptr;
     }
 
     Ogre::MovablePlane plane = this->set_dimensions(_spacing);
@@ -200,9 +207,10 @@ void plane::update(
     }
 
     // Entity creation.
-    Ogre::Entity* plane_entity = m_scene_manager->createEntity(m_entity_name, m_slice_plane);
-    plane_entity->setMaterial(m_plane_material->material());
-    m_plane_scene_node->attachObject(plane_entity);
+    m_plane_entity = m_scene_manager->createEntity(m_entity_name, m_slice_plane);
+    m_plane_entity->setMaterial(m_plane_material->material());
+    m_plane_scene_node->attachObject(m_plane_entity);
+    m_plane_entity->setRenderQueueGroupAndPriority(sight::viz::scene3d::rq::NEGATO_WIDGET, _priority);
 
     const int orientation_index = static_cast<int>(m_axis);
 
@@ -242,7 +250,7 @@ void plane::update(
 
         // Create the border.
         m_border.shape = m_scene_manager->createManualObject(m_slice_plane_name + "_Border");
-        m_border.shape->setRenderQueueGroup(rq::SURFACE);
+        m_border.shape->setRenderQueueGroupAndPriority(sight::viz::scene3d::rq::SURFACE, _priority);
         m_border.shape->estimateVertexCount(5);
         m_border.shape->begin(m_border.material, Ogre::RenderOperation::OT_LINE_STRIP);
 
@@ -370,7 +378,7 @@ void plane::set_visible(bool _visible)
 
 //------------------------------------------------------------------------------
 
-void plane::change_slice(const std::array<float, 3>& _slices_index)
+void plane::change_slice(const std::array<float, 3>& _slices_index, std::uint16_t _priority)
 {
     const auto current_slice = _slices_index[static_cast<std::size_t>(m_axis)];
 
@@ -408,7 +416,7 @@ void plane::change_slice(const std::array<float, 3>& _slices_index)
 
         // Create the border.
         m_slices_cross.shape = m_scene_manager->createManualObject(m_slice_plane_name + "_Others");
-        m_slices_cross.shape->setRenderQueueGroup(rq::SURFACE);
+        m_slices_cross.shape->setRenderQueueGroupAndPriority(sight::viz::scene3d::rq::SURFACE, _priority);
         m_slices_cross.shape->estimateVertexCount(4);
         m_slices_cross.shape->begin(m_slices_cross.material, Ogre::RenderOperation::OT_LINE_LIST);
 
@@ -544,26 +552,21 @@ Ogre::MovablePlane plane::set_dimensions(const Ogre::Vector3& _spacing)
 
 const Ogre::MovableObject* plane::get_movable_object() const
 {
-    if(m_scene_manager->hasEntity(m_entity_name))
-    {
-        return m_scene_manager->getEntity(m_entity_name);
-    }
-
-    return nullptr;
+    return m_plane_entity;
 }
 
 //-----------------------------------------------------------------------------
 
 void plane::set_query_flags(std::uint32_t _flags)
 {
-    m_scene_manager->getEntity(m_entity_name)->setQueryFlags(_flags);
+    m_plane_entity->setQueryFlags(_flags);
 }
 
 //-----------------------------------------------------------------------------
 
 void plane::set_render_queuer_group_and_priority(std::uint8_t _group_id, std::uint16_t _priority)
 {
-    m_scene_manager->getEntity(m_entity_name)->setRenderQueueGroupAndPriority(_group_id, _priority);
+    m_plane_entity->setRenderQueueGroupAndPriority(_group_id, _priority);
 }
 
 //-----------------------------------------------------------------------------

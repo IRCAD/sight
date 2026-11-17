@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,14 +48,14 @@ public:
      *
      * @param _t Typeinfo to demangle
      */
-    SIGHT_CORE_API demangler(const std::type_info& _t);
+    SIGHT_CORE_API explicit demangler(const std::type_info& _t);
 
     /**
      * @brief Constructor from a std::string
      *
      * @param _s string to demangle
      */
-    SIGHT_CORE_API demangler(std::string _s);
+    SIGHT_CORE_API explicit demangler(std::string _s);
 
     /**
      * @brief Constructor from any type
@@ -63,7 +63,7 @@ public:
      * @param _s object which type has to be demangled
      */
     template<typename T>
-    demangler(T& _s) :
+    explicit demangler(T& _s) :
         m_name(typeid(_s).name())
     {
     }
@@ -89,19 +89,19 @@ public:
      */
     [[nodiscard]] SIGHT_CORE_API std::string get_classname() const;
 
-protected:
-
-    /**
-     * @brief Store the name to demangle
-     */
-    const std::string m_name;
-
     /**
      * @brief Process the name to demangle and return the same string whatever the OS is.
      *
      * @return demangled string
      */
     [[nodiscard]] std::string demangle() const;
+
+private:
+
+    /**
+     * @brief Store the name to demangle
+     */
+    const std::string m_name;
 };
 
 /**

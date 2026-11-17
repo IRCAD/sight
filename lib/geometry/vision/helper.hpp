@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,8 +28,12 @@
 #include <data/point_list.hpp>
 #include <data/vector.hpp>
 
-#include <opencv2/aruco.hpp>
+#include <opencv2/core/version.hpp>
+#if CV_MAJOR_VERSION < 5
 #include <opencv2/calib3d.hpp>
+#else
+#include <opencv2/geometry/3d.hpp>
+#endif
 
 #include <vector>
 
@@ -70,7 +74,7 @@ SIGHT_GEOMETRY_VISION_API error_and_points_t compute_reprojection_error(
 SIGHT_GEOMETRY_VISION_API cv::Matx44f camera_pose_monocular(
     const std::vector<cv::Point3f>& _object_points,
     const std::vector<cv::Point2f>& _image_points,
-    const cv::Mat _camera_matrix,
+    cv::Mat _camera_matrix,
     const cv::Mat& _dist_coeffs,
     int _flag = cv::SOLVEPNP_ITERATIVE
 );
@@ -109,7 +113,7 @@ SIGHT_GEOMETRY_VISION_API cv::Matx44f camera_pose_stereo(
  * @param _center_matrix corresponding to the center of the computed sphere used to calibrate the pointing tool
  */
 SIGHT_GEOMETRY_VISION_API void calibrate_pointing_tool(
-    const sight::data::vector::csptr _matrices_vector,
+    sight::data::vector::csptr _matrices_vector,
     sight::data::matrix4::sptr _calibration_matrix,
     sight::data::matrix4::sptr _center_matrix
 );

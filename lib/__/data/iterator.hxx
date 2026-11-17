@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2024 IRCAD France
+ * Copyright (C) 2019-2026 IRCAD France
  * Copyright (C) 2019-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -73,7 +73,7 @@ constexpr FINLINE bool array_iterator<FORMAT>::operator!=(const array_iterator& 
 //------------------------------------------------------------------------------
 
 template<class FORMAT>
-inline FINLINE typename array_iterator<FORMAT>::reference array_iterator<FORMAT>::operator*() const
+inline FINLINE array_iterator<FORMAT>::reference array_iterator<FORMAT>::operator*() const
 {
 #ifdef SIGHT_DEBUG_ITERATOR
     SIGHT_ASSERT("Iterator needs to be initialized", m_current);
@@ -84,7 +84,7 @@ inline FINLINE typename array_iterator<FORMAT>::reference array_iterator<FORMAT>
 //------------------------------------------------------------------------------
 
 template<class FORMAT>
-constexpr FINLINE typename array_iterator<FORMAT>::pointer_t array_iterator<FORMAT>::operator->() const noexcept
+constexpr FINLINE array_iterator<FORMAT>::pointer_t array_iterator<FORMAT>::operator->() const noexcept
 {
     return m_current;
 }
@@ -188,7 +188,7 @@ inline FINLINE array_iterator<FORMAT>& array_iterator<FORMAT>::operator-=(differ
 //-----------------------------------------------------------------------------
 
 template<class FORMAT>
-constexpr FINLINE typename array_iterator<FORMAT>::difference_type array_iterator<FORMAT>::operator-(
+constexpr FINLINE array_iterator<FORMAT>::difference_type array_iterator<FORMAT>::operator-(
     const array_iterator& _other
 ) const noexcept
 {

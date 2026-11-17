@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,15 +28,13 @@
 
 #include <core/com/has_signals.hpp>
 #include <core/com/has_slots.hpp>
-#include <core/com/slot.hpp>
 #include <core/object.hpp>
 
 #include <data/boolean.hpp>
 #include <data/map.hpp>
-#include <data/mt/locked_ptr.hpp>
 #include <data/ptr.hpp>
 
-#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/ptree.hpp> // NOLINT(misc-include-cleaner): for config_t
 
 namespace sight::core::thread
 {
@@ -56,7 +54,7 @@ namespace detail
 
 class service;
 
-}
+} // namespace detail
 
 using config_t = boost::property_tree::ptree;
 
@@ -151,6 +149,18 @@ public:
     using slots         = service::slots;
     using signals       = service::signals;
 
+    template<typename T>
+    using ptr_in = sight::data::ptr<T, sight::data::access::in>;
+    template<typename T>
+    using ptr_out = sight::data::ptr<T, sight::data::access::out>;
+    template<typename T>
+    using ptr_inout = sight::data::ptr<T, sight::data::access::inout>;
+    template<typename T>
+    using ptr_vector_in = sight::data::ptr_vector<T, sight::data::access::in>;
+    template<typename T>
+    using ptr_vector_out = sight::data::ptr_vector<T, sight::data::access::out>;
+    template<typename T>
+    using ptr_vector_inout = sight::data::ptr_vector<T, sight::data::access::inout>;
     /**
      * @name Definition of service status
      */
@@ -158,7 +168,7 @@ public:
     //@{
 
     /// Defines all possible global status for a service, including transitions
-    enum class global_status
+    enum class global_status : std::uint8_t
     {
         started,
         /**< state after start */
@@ -172,7 +182,7 @@ public:
     };
 
     /// Defines all possible status for an update process
-    enum class updating_status
+    enum class updating_status : std::uint8_t
     {
         updating,
         /**< state during update */
@@ -180,7 +190,7 @@ public:
     };
 
     /// Defines all possible status for a configuration process
-    enum class configuration_status
+    enum class configuration_status : std::uint8_t
     {
         configuring,
         /**< state during configuration */
@@ -198,9 +208,11 @@ public:
     //@{
     using shared_future_t = std::shared_future<void>;
 
+    SIGHT_SERVICE_API ~base() override;
+
     /// Sets a worker to all service slots
-    SIGHT_SERVICE_API void set_worker(SPTR(core::thread::worker) _worker);
-    SIGHT_SERVICE_API SPTR(core::thread::worker) worker() const;
+    SIGHT_SERVICE_API void set_worker(sight::sptr<core::thread::worker> _worker);
+    SIGHT_SERVICE_API sight::sptr<core::thread::worker> worker() const;
     //@}
 
     /**
@@ -210,11 +222,18 @@ public:
     //@{
 
     /**
+     * @brief Affect the configuration, using an XML string
+     * @param[in] _config_str XML string containing the configuration
+     * @post m_configurationState == UNCONFIGURED
+     */
+    SIGHT_SERVICE_API void set_config(const std::string& _config_str);
+
+    /**
      * @brief Affect the configuration, using a boost property tree
      * @param[in] _ptree property tree
      * @post m_configurationState == UNCONFIGURED
      */
-    SIGHT_SERVICE_API void set_config(const config_t& _ptree);
+    SIGHT_SERVICE_API void set_config(const config_t& _configuration);
 
     /// Return the service configuration
     SIGHT_SERVICE_API const base::config_t& get_config() const;
@@ -230,9 +249,9 @@ public:
     /**
      * @brief Set configuration and then invoke configuring() if m_globalState == STOPPED
      * @post m_configurationState == CONFIGURED
-     * @param[in] _ptree property tree
+     * @param[in] _service_config service configuration
      */
-    SIGHT_SERVICE_API void configure(const config_t& _ptree);
+    SIGHT_SERVICE_API void configure(const config_t& _service_config);
 
     /**
      * @brief Invoke configuring() if m_globalState == STOPPED. Does nothing otherwise.
@@ -307,13 +326,12 @@ public:
      * @see base::operator<<(std::ostream & _ostream, base& _service)
      * @note Invoke base::info( std::ostream )
      */
-    SIGHT_SERVICE_API friend std::ostream& operator<<(std::ostream& _sstream, base& _service);
+    SIGHT_SERVICE_API friend std::ostream& operator<<(std::ostream& _ostream, base& _service);
     //@}
 
 protected:
 
     SIGHT_SERVICE_API base();
-    SIGHT_SERVICE_API ~base() override;
 
     /**
      * @name Interface to override
@@ -331,7 +349,7 @@ protected:
     SIGHT_SERVICE_API virtual void configuring();
 
     /// Configures the service before starting. Apply the configuration to service.
-    SIGHT_SERVICE_API virtual void configuring(const config_t&);
+    SIGHT_SERVICE_API virtual void configuring(const config_t& /*unused*/);
 
     /// Performs some processing.
     SIGHT_SERVICE_API virtual void updating() = 0;
@@ -356,7 +374,31 @@ protected:
     /**
      * @brief Called when a property is modified, only if no auto connection is provided
      */
-    SIGHT_SERVICE_API virtual void on_property_set(std::string_view);
+    SIGHT_SERVICE_API virtual void on_property_set(std::string_view /*unused*/);
+
+    /**
+     * @brief Resolves the type of the object to create when a literal value is set in the configuration.
+     *
+     * When an input or an inout is configured with a "value" attribute instead of an object "uid", the object has to
+     * be built on the fly. This method tells which data type must be instantiated for the given key.
+     *
+     * The default implementation relies on the type the matching data::ptr is templated with. It is thus enough for
+     * most services. However, it can not resolve anything for generic declarations, typically
+     * data::ptr_vector<data::object>, and returns an empty string in that case. Services owning such a declaration,
+     * like the configuration launchers, must override this method to resolve the type themselves.
+     *
+     * @warning This is called before configuring(), so an override must only rely on the raw configuration returned by
+     * get_config(), and not on members initialized in configuring().
+     *
+     * @param _key key of the input or inout being configured
+     * @param _index index of the element in the group, if the key belongs to a group
+     * @return the class name of the data to instantiate, an empty string if it can not be resolved, or std::nullopt if
+     * the service builds the object itself at a later stage.
+     */
+    SIGHT_SERVICE_API virtual std::optional<std::string> resolve_object_type(
+        std::string_view _key,
+        std::optional<std::size_t> _index = std::nullopt
+    ) const;
 
     /**
      * @brief Write information in a stream.
@@ -370,10 +412,10 @@ protected:
 private:
 
     /// Notify about a newly deferred object
-    SIGHT_SERVICE_API void notify_register_out(data::object::sptr, const std::string&) override;
+    SIGHT_SERVICE_API void notify_register_out(data::object::sptr _obj, const std::string& _id) override;
 
     /// Notify about a destroyed deferred object
-    SIGHT_SERVICE_API void notify_unregister_out(data::object::sptr, const std::string&) override;
+    SIGHT_SERVICE_API void notify_unregister_out(data::object::sptr _obj, const std::string& _id) override;
 
     friend class manager;
     friend class detail::service;
@@ -383,7 +425,7 @@ private:
     sight::data::ptr<sight::data::map, sight::data::access::inout> m_properties_map {this, "from"};
 
     /// Allows to control the automatic start of the service
-    data::property<data::boolean> m_start_property {this, "start", true};
+    data::ptr<data::boolean> m_start_property {this, "config.start", true};
 };
 
 //------------------------------------------------------------------------------
@@ -394,7 +436,7 @@ inline void base::configuring()
 
 //------------------------------------------------------------------------------
 
-inline void base::configuring(const config_t&)
+inline void base::configuring(const config_t& /*unused*/)
 {
 }
 

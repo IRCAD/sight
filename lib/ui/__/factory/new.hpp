@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,8 +26,6 @@
 
 #include "ui/__/factory.hpp"
 
-#include <string>
-
 namespace sight::ui
 {
 
@@ -37,14 +35,16 @@ namespace factory
 {
 
 template<class CLASSNAME>
-SPTR(CLASSNAME) make();
+sight::sptr<CLASSNAME> make();
 
-SIGHT_UI_API SPTR(sight::ui::object) make(const sight::ui::registry::key_t& _classname);
+SIGHT_UI_API sight::sptr<sight::ui::object> make(const sight::ui::registry::key_t& _classname);
+
+//------------------------------------------------------------------------------
 
 template<class CLASSNAME>
-SPTR(CLASSNAME) make()
+sight::sptr<CLASSNAME> make()
 {
-    SPTR(CLASSNAME) gui_obj = std::make_shared<CLASSNAME>();
+    sight::sptr<CLASSNAME> gui_obj = std::make_shared<CLASSNAME>();
     return gui_obj;
 }
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2025 IRCAD France
+ * Copyright (C) 2016-2026 IRCAD France
  * Copyright (C) 2016-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,30 +24,12 @@
 
 #include "video_writer.hpp"
 
-#include <core/com/slot.hpp>
-#include <core/com/slot.hxx>
-#include <core/com/slots.hpp>
-#include <core/com/slots.hxx>
-#include <core/location/single_file.hpp>
-#include <core/location/single_folder.hpp>
-
-#include <service/macros.hpp>
-
-#include <ui/__/dialog/location.hpp>
 #include <ui/__/dialog/message.hpp>
 
-#include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
-#include <opencv2/opencv.hpp>
 
 namespace sight::module::io::video
 {
-
-static const core::com::slots::key_t SAVE_FRAME       = "save_frame";
-static const core::com::slots::key_t START_RECORD     = "start_record";
-static const core::com::slots::key_t STOP_RECORD      = "stop_record";
-static const core::com::slots::key_t RECORD           = "record";
-static const core::com::slots::key_t TOGGLE_RECORDING = "toggle_recording";
 
 const std::string video_writer::P4_EXTENSION = ".mp4";
 const std::string video_writer::AV_C1_CODEC  = "avc1";
@@ -57,11 +39,11 @@ const std::string video_writer::AV_C1_CODEC  = "avc1";
 video_writer::video_writer() noexcept :
     writer("Choose a folder to save the video")
 {
-    new_slot(SAVE_FRAME, &video_writer::save_frame, this);
-    new_slot(START_RECORD, &video_writer::start_record, this);
-    new_slot(STOP_RECORD, &video_writer::stop_record, this);
-    new_slot(RECORD, &video_writer::record, this);
-    new_slot(TOGGLE_RECORDING, &video_writer::toggle_recording, this);
+    new_slot(slots::SAVE_FRAME, &video_writer::save_frame, this);
+    new_slot(slots::START_RECORD, &video_writer::start_record, this);
+    new_slot(slots::STOP_RECORD, &video_writer::stop_record, this);
+    new_slot(slots::RECORD, &video_writer::record, this);
+    new_slot(slots::TOGGLE_RECORDING, &video_writer::toggle_recording, this);
 }
 
 //------------------------------------------------------------------------------
@@ -91,30 +73,6 @@ void video_writer::starting()
 
 //------------------------------------------------------------------------------
 
-void video_writer::open_location_dialog()
-{
-    static auto default_directory = std::make_shared<core::location::single_folder>();
-
-    sight::ui::dialog::location dialog_file;
-    dialog_file.set_title(*m_window_title);
-    dialog_file.set_default_location(default_directory);
-    dialog_file.add_filter("mp4", "*.mp4");
-    dialog_file.set_option(ui::dialog::location::write);
-
-    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialog_file.show());
-    if(result)
-    {
-        m_selected_extension = dialog_file.get_selected_extensions().front();
-        default_directory->set_folder(result->get_file().parent_path());
-        dialog_file.save_default_location(default_directory);
-        this->set_file(result->get_file());
-    }
-    else
-    {
-        this->clear_locations();
-    }
-}
-
 //------------------------------------------------------------------------------
 
 void video_writer::stopping()
@@ -130,7 +88,7 @@ void video_writer::updating()
 
 //------------------------------------------------------------------------------
 
-void video_writer::write_buffer(int _width, int _height, CSPTR(data::frame_tl::buffer_t)_buffer)
+void video_writer::write_buffer(int _width, int _height, sight::csptr<data::frame_tl::buffer_t> _buffer)
 {
     SIGHT_ASSERT("OpenCV video writer not initialized", m_writer);
     const std::uint8_t* image_buffer = &_buffer->get_element(0);
@@ -184,7 +142,7 @@ void video_writer::save_frame(core::clock::type _timestamp)
             "The object is not a '"
             + data::frame_tl::classname()
             + "' or '"
-            + sight::io::service::DATA_KEY
+            + sight::io::service::WRITER_DATA_KEY
             + "' is not correctly set.",
             frame_tl
         );
@@ -192,7 +150,7 @@ void video_writer::save_frame(core::clock::type _timestamp)
         if(m_writer && m_writer->isOpened())
         {
             // Get the buffer of the copied timeline
-            CSPTR(data::frame_tl::buffer_t) buffer = frame_tl->get_closest_buffer(_timestamp);
+            sight::csptr<data::frame_tl::buffer_t> buffer = frame_tl->get_closest_buffer(_timestamp);
             if(buffer)
             {
                 const int width  = static_cast<int>(frame_tl->get_width());
@@ -218,7 +176,7 @@ void video_writer::save_frame(core::clock::type _timestamp)
                 if(provided_extension.empty())
                 {
                     // No extension provided, add extension of selected filter.
-                    extension_to_use = m_selected_extension;
+                    extension_to_use = this->get_selected_extension();
                     path            += extension_to_use;
                 }
                 else
@@ -268,7 +226,7 @@ void video_writer::save_frame(core::clock::type _timestamp)
                     for(const auto& old_timestamp : m_timestamps)
                     {
                         // writes the old frames used to compute the number of fps
-                        CSPTR(data::frame_tl::buffer_t) buffer = frame_tl->get_closest_buffer(old_timestamp);
+                        sight::csptr<data::frame_tl::buffer_t> buffer = frame_tl->get_closest_buffer(old_timestamp);
                         if(buffer)
                         {
                             this->write_buffer(width, height, buffer);
@@ -377,7 +335,7 @@ void video_writer::toggle_recording()
 service::connections_t video_writer::auto_connections() const
 {
     service::connections_t connections;
-    connections.push(sight::io::service::DATA_KEY, data::timeline::signals::PUSHED, SAVE_FRAME);
+    connections.push(sight::io::service::WRITER_DATA_KEY, data::timeline::signals::PUSHED, slots::SAVE_FRAME);
     return connections;
 }
 

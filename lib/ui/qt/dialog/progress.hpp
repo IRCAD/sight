@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -61,7 +61,7 @@ public:
 
     SIGHT_DECLARE_CLASS(progress, ui::dialog::progress_base, ui::factory::make<progress>);
 
-    SIGHT_UI_QT_API_QT progress(
+    SIGHT_UI_QT_API_QT explicit progress(
         const std::string& _title   = "Progression",
         const std::string& _message = std::string(86, ' ')
     );
@@ -82,7 +82,7 @@ protected Q_SLOTS:
 
     void cancel_pressed() override;
 
-protected:
+private:
 
     QString m_title;
 
@@ -90,6 +90,8 @@ protected:
     QPointer<QProgressBar> m_progressbar;
     QPointer<QPushButton> m_cancel_button;
     QPointer<QMainWindow> m_main_window;
+    ///progress bar's current value: [0-100]
+    int m_value {0};
 };
 
 } // namespace sight::ui::qt::dialog

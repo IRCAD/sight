@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2025 IRCAD France
+ * Copyright (C) 2019-2026 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,8 +26,6 @@
 
 #include <viz/scene3d/adaptor.hpp>
 
-#include <memory>
-
 namespace sight::module::viz::scene3d::adaptor
 {
 
@@ -50,19 +48,18 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service type="sight::module::viz::scene3d::adaptor::negato2d_camera" >
-        <inout key="image" uid="..." auto_connect="true" />
-        <config priority="0" layerOrderDependant="true" orientation="sagittal" margin="0.1" block_width_scaling="true"/>
+        <data image="${...}" />
+        <config priority="0" orientation="sagittal" margin="0.1" block_width_scaling="true" />
    </service>
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b image [sight::data::image](mandatory): image viewed in negato mode, used for auto connections only.
+ * - \b data.image [sight::data::image](mandatory): image viewed in negato mode, used for auto connections only.
  *      Modification signals can be used to reset the camera's position and orientation. Useless without
  *      auto_connect="true".
  *
  * @subsection Configuration Configuration:
  * - \b priority (optional, int, default=0): interaction priority, higher priority interactions are performed first.
- * - \b layerOrderDependant (optional, bool, default=true): define if interaction must take into account above layers.
  * - \b orientation (optional, sagittal/frontal/axial, default=sagittal): the camera's orientation at start.
  * - \b margin (optional, default=0.1): margin to the border of the viewport, in percentage of the highest of width
  *  or height.
@@ -77,6 +74,13 @@ public:
 
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(negato2d_camera, sight::viz::scene3d::adaptor);
+
+    struct slots
+    {
+        static inline const slot_key_t RESET_CAMERA       = "reset_camera";
+        static inline const slot_key_t RESIZE_VIEWPORT    = "resize_viewport";
+        static inline const slot_key_t CHANGE_ORIENTATION = "changeOrientation";
+    };
 
     /// Creates the service and initializes slots.
     negato2d_camera() noexcept;
@@ -186,9 +190,9 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::image::MODIFIED_SIG of s_IMAGE_INPUT to RESET_CAMERA_SLOT
-     * Connect data::image::SLICE_TYPE_MODIFIED_SIG of s_IMAGE_INPUT to CHANGE_ORIENTATION_SLOT
-     * Connect data::image::SLICE_INDEX_MODIFIED_SIG of s_IMAGE_INPUT to MOVE_BACK_SLOT
+     * Connect data::signals::MODIFIED of s_IMAGE_INPUT to RESET_CAMERA
+     * Connect data::image::signals::SLICE_TYPE_MODIFIED of s_IMAGE_INPUT to CHANGE_ORIENTATION
+     * Connect data::image::signals::SLICE_INDEX_MODIFIED of s_IMAGE_INPUT to MOVE_BACK
      */
     service::connections_t auto_connections() const final;
 
@@ -254,7 +258,7 @@ private:
     /// Handles connection with the layer.
     core::com::helper::sig_slot_connection m_layer_connection;
 
-    static constexpr std::string_view IMAGE_INOUT = "image";
+    static constexpr std::string_view IMAGE_INOUT = "data.image";
     sight::data::ptr<sight::data::image, sight::data::access::inout> m_image {this, IMAGE_INOUT};
 };
 

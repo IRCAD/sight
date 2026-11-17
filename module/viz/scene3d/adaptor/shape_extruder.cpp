@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2025 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2020-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,9 +21,6 @@
  ***********************************************************************/
 
 #include "module/viz/scene3d/adaptor/shape_extruder.hpp"
-
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
 
 #include <data/mesh.hpp>
 #include <data/reconstruction.hpp>
@@ -48,8 +45,7 @@ shape_extruder::triangle2_d::triangle2_d(
 ) :
     a(_a),
     b(_b),
-    c(_c),
-    id(s_id++)
+    c(_c)
 {
     // Matrix to rotate of 90 degree over the Z axis.
     const Ogre::Matrix3 quarter_rotation {0, -1, 0, 1, 0, 0, 0, 0, 1};
@@ -138,7 +134,7 @@ Ogre::Vector3 shape_extruder::get_cam_direction(const Ogre::Camera* const _cam)
 //-----------------------------------------------------------------------------
 
 shape_extruder::shape_extruder() noexcept :
-    service::notifier(m_signals)
+    has_notifications(has_signals::signals())
 {
     new_slot(slots::ENABLE_TOOL, &shape_extruder::enable_tool, this);
     new_slot(slots::DELETE_LAST_MESH, &shape_extruder::delete_last_mesh, this);
@@ -147,7 +143,7 @@ shape_extruder::shape_extruder() noexcept :
     new_slot(slots::RESET, &shape_extruder::reset, this);
     new_slot(slots::VALIDATE, &shape_extruder::validate, this);
 
-    new_signal<signals::tool_disabled_signal_t>(signals::TOOL_DISABLED);
+    new_signal<signals::tool_disabled_t>(signals::TOOL_DISABLED);
 }
 
 //-----------------------------------------------------------------------------
@@ -276,10 +272,30 @@ void shape_extruder::enable_tool(bool _enable)
 
 //-----------------------------------------------------------------------------
 
+data::model_series::sptr shape_extruder::get_extruded_meshes() const
+{
+    const auto image = m_image.const_lock();
+    if(const auto meshes_by_image = m_extruded_meshes_by_image.lock(); meshes_by_image&& image)
+    {
+        auto meshes = meshes_by_image->get<data::model_series>(image->get_id());
+        if(!meshes)
+        {
+            meshes                              = std::make_shared<data::model_series>();
+            (*meshes_by_image)[image->get_id()] = meshes;
+        }
+
+        return meshes;
+    }
+
+    return m_extruded_meshes.lock().get_shared();
+}
+
+//-----------------------------------------------------------------------------
+
 void shape_extruder::delete_last_mesh()
 {
     // Get the reconstruction list.
-    const auto extruded_meshes = m_extruded_meshes.lock();
+    const data::mt::locked_ptr extruded_meshes(this->get_extruded_meshes());
 
     data::model_series::reconstruction_vector_t reconstructions = extruded_meshes->get_reconstruction_db();
 
@@ -289,17 +305,17 @@ void shape_extruder::delete_last_mesh()
         extruded_meshes->set_reconstruction_db(reconstructions);
 
         // Send notification
-        this->notifier::info("Last extrusion deleted.");
+        this->inform("Last extrusion deleted.");
 
         // Send the signal.
-        auto sig = extruded_meshes->signal<data::model_series::reconstructions_removed_signal_t>(
-            data::model_series::RECONSTRUCTIONS_REMOVED_SIG
-        );
-        sig->async_emit(data::model_series::reconstruction_vector_t {reconstructions});
+        extruded_meshes->async_emit(
+            data::model_series::signals::RECONSTRUCTIONS_REMOVED,
+            data::model_series::reconstruction_vector_t {reconstructions
+            });
     }
     else
     {
-        this->notifier::failure("No extrusion to delete.");
+        this->fail("No extrusion to delete.");
     }
 }
 
@@ -329,7 +345,7 @@ void shape_extruder::undo()
 void shape_extruder::reset()
 {
     // Get the reconstruction list.
-    const auto extruded_meshes = m_extruded_meshes.lock();
+    const data::mt::locked_ptr extruded_meshes(this->get_extruded_meshes());
 
     data::model_series::reconstruction_vector_t reconstructions = extruded_meshes->get_reconstruction_db();
 
@@ -339,8 +355,7 @@ void shape_extruder::reset()
         extruded_meshes->set_reconstruction_db(reconstructions);
 
         // Send the signal.
-        auto sig = extruded_meshes->signal<data::model_series::modified_signal_t>(data::model_series::MODIFIED_SIG);
-        sig->async_emit();
+        extruded_meshes->async_emit(data::signals::MODIFIED);
     }
 }
 
@@ -530,8 +545,7 @@ void shape_extruder::validate()
 
     this->enable_tool(false);
 
-    auto sig = this->signal<signals::tool_disabled_signal_t>(signals::TOOL_DISABLED);
-    sig->async_emit();
+    this->async_emit(signals::TOOL_DISABLED);
 
     // Send a render request.
     this->request_render();
@@ -833,7 +847,7 @@ void shape_extruder::generate_extruded_mesh(const std::vector<triangle3_d>& _tri
     }
 
     // Get the reconstruction list.
-    const auto extruded_meshes = m_extruded_meshes.lock();
+    const data::mt::locked_ptr extruded_meshes(this->get_extruded_meshes());
 
     data::model_series::reconstruction_vector_t reconstructions = extruded_meshes->get_reconstruction_db();
 
@@ -847,10 +861,10 @@ void shape_extruder::generate_extruded_mesh(const std::vector<triangle3_d>& _tri
     extruded_meshes->set_reconstruction_db(reconstructions);
 
     // Send the signal.
-    auto sig = extruded_meshes->signal<data::model_series::reconstructions_added_signal_t>(
-        data::model_series::RECONSTRUCTIONS_ADDED_SIG
-    );
-    sig->async_emit(data::model_series::reconstruction_vector_t {reconstruction});
+    extruded_meshes->async_emit(
+        data::model_series::signals::RECONSTRUCTIONS_ADDED,
+        data::model_series::reconstruction_vector_t {reconstruction
+        });
 }
 
 //------------------------------------------------------------------------------

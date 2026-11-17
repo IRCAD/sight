@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <sight/core/config.hpp>
+#include <sight/utest/config.hpp>
 
 #include <stdexcept>
 #include <string>
@@ -30,11 +30,11 @@
 namespace sight::utest
 {
 
-class SIGHT_CORE_CLASS_API exception : public std::runtime_error
+class SIGHT_UTEST_CLASS_API exception : public std::runtime_error
 {
 public:
 
-    inline exception(const std::string& _err) :
+    explicit exception(const std::string& _err) :
         std::runtime_error(_err)
     {
     }

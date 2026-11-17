@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,12 @@
 
 #include "ui/qt/util/func_slot.hpp"
 
+#include <core/spy_log.hpp>
 #include <core/thread/timer.hpp>
 #include <core/thread/worker.hpp>
+#ifdef _WIN32
 #include <core/tools/os.hpp>
+#endif
 
 #include <QApplication>
 #include <QDir>
@@ -35,9 +38,13 @@
 #include <QStringList>
 #include <QTimer>
 
+#include <cstddef>
 #include <functional>
 
 namespace sight::ui::qt
+{
+
+namespace
 {
 
 class worker_qt_task : public QEvent
@@ -53,17 +60,20 @@ public:
 
     ~worker_qt_task() override
     {
+        ++s_tasks_processed;
         m_handler();
     }
 
     static const int WORKER_QT_TASK_EVENT_TYPE;
+    static thread_local std::size_t s_tasks_processed;
 
 private:
 
     core::thread::worker::task_t m_handler;
 };
 
-const int worker_qt_task::WORKER_QT_TASK_EVENT_TYPE = QEvent::registerEventType();
+const int worker_qt_task::WORKER_QT_TASK_EVENT_TYPE        = QEvent::registerEventType();
+thread_local std::size_t worker_qt_task::s_tasks_processed = 0;
 
 /**
  * @brief Private implementation of core::thread::worker using boost::asio.
@@ -100,6 +110,8 @@ public:
 
     void process_tasks(period_t _maxtime) override;
 
+    sight::sptr<core::thread::timer> create_timer() override;
+
 private:
 
     int m_argc {0};
@@ -107,27 +119,9 @@ private:
 
     QSharedPointer<QCoreApplication> m_app;
 
-    SPTR(core::thread::timer) create_timer() override;
-
     core::thread::thread_id_t m_thread_id;
     core::thread::thread_native_id_t m_thread_native_id;
 };
-
-//-----------------------------------------------------------------------------
-
-core::thread::worker::sptr get_qt_worker(
-    int& _argc,
-    char** _argv,
-    std::function<QSharedPointer<QCoreApplication>(int&, char**)> _callback,
-    const std::string& _name,
-    const std::string& _version
-)
-{
-    SPTR(worker_qt) worker = std::make_shared<worker_qt>();
-    worker->init(_argc, _argv);
-    worker->set_app(_callback(_argc, _argv), _name, _version);
-    return worker;
-}
 
 //-----------------------------------------------------------------------------
 
@@ -181,18 +175,34 @@ public:
         return m_timer_qt->isActive();
     }
 
-protected Q_SLOTS:
-
-    void call();
-
-private:
+protected:
 
     void updated_function() override;
+
+private:
 
     QPointer<QTimer> m_timer_qt;
 
     QPointer<ui::qt::util::func_slot> m_qt_func;
 };
+
+} // namespace
+
+//-----------------------------------------------------------------------------
+
+core::thread::worker::sptr get_qt_worker(
+    int& _argc,
+    char** _argv,
+    std::function<QSharedPointer<QCoreApplication>(int&, char**)> _callback,
+    const std::string& _name,
+    const std::string& _version
+)
+{
+    sight::sptr<worker_qt> worker = std::make_shared<worker_qt>();
+    worker->init(_argc, _argv);
+    worker->set_app(_callback(_argc, _argv), _name, _version);
+    return worker;
+}
 
 //------------------------------------------------------------------------------
 
@@ -321,12 +331,25 @@ void worker_qt::set_thread_name([[maybe_unused]] const std::string& _thread_name
 
 void worker_qt::stop()
 {
-    this->post_task<void>(&QCoreApplication::quit).wait();
+    this->post_task<void>(
+        []
+        {
+            QCoreApplication::quit();
+            std::size_t processed = 0;
+            // Tasks and deferred deletions can post more tasks while Qt is delivering the current batch.
+            do
+            {
+                processed = worker_qt_task::s_tasks_processed;
+                QCoreApplication::sendPostedEvents(nullptr, QEvent::DeferredDelete);
+                QCoreApplication::sendPostedEvents(nullptr, worker_qt_task::WORKER_QT_TASK_EVENT_TYPE);
+            }
+            while(processed != worker_qt_task::s_tasks_processed);
+        }).get();
 }
 
 //------------------------------------------------------------------------------
 
-SPTR(core::thread::timer) worker_qt::create_timer()
+sight::sptr<core::thread::timer> worker_qt::create_timer()
 {
     return std::make_shared<timer_qt>();
 }
@@ -349,7 +372,7 @@ void worker_qt::process_tasks()
 
 void worker_qt::process_tasks(period_t _maxtime)
 {
-    QCoreApplication::processEvents(QEventLoop::AllEvents, int(_maxtime));
+    QCoreApplication::processEvents(QEventLoop::AllEvents, static_cast<int>(_maxtime));
 }
 
 // ---------- Timer private implementation ----------
@@ -396,13 +419,6 @@ void timer_qt::stop()
 {
     core::mt::scoped_lock lock(m_mutex);
     m_timer_qt->stop();
-}
-
-//------------------------------------------------------------------------------
-
-void timer_qt::call()
-{
-    m_function();
 }
 
 //------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,15 +21,12 @@
  ***********************************************************************/
 #include "preferences_configuration.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
 #include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
 
 #include <ui/__/dialog/location.hpp>
 #include <ui/__/preferences.hpp>
 
-#include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
 
 #include <QApplication>
@@ -45,9 +42,6 @@
 namespace sight::module::ui::qt
 {
 
-const core::com::signals::key_t preferences_configuration::PARAMETERS_MODIFIED_SIG = "parameters_modified";
-const core::com::signals::key_t preferences_configuration::PREFERENCE_CHANGED_SIG  = "preference_changed";
-
 //------------------------------------------------------------------------------
 
 sight::ui::parameter_t preferences_configuration::convert_value(const preference_elt& _elt)
@@ -62,12 +56,12 @@ sight::ui::parameter_t preferences_configuration::convert_value(const preference
             return _elt.m_preference_value;
         }
 
-        case preference_t::INT:
+        case preference_t::integer:
         {
             return std::stoi(_elt.m_preference_value);
         }
 
-        case preference_t::DOUBLE:
+        case preference_t::real:
         {
             return std::stod(_elt.m_preference_value);
         }
@@ -96,8 +90,8 @@ sight::ui::parameter_t preferences_configuration::convert_value(const preference
 
 preferences_configuration::preferences_configuration() noexcept
 {
-    m_sig_parameters_modified = new_signal<parameters_modified_signal_t>(PARAMETERS_MODIFIED_SIG);
-    m_sig_preference_changed  = new_signal<changed_signal_t>(PREFERENCE_CHANGED_SIG);
+    new_signal<signals::parameters_modified_t>(signals::PARAMETERS_MODIFIED);
+    new_signal<signals::changed_t>(signals::PREFERENCE_CHANGED);
 
     new_slot(slots::REQUEST_VALUES, &preferences_configuration::request_values, this);
 }
@@ -151,14 +145,14 @@ void preferences_configuration::configuring()
         }
         else if(type == "double")
         {
-            pref.m_type = preference_t::DOUBLE;
+            pref.m_type = preference_t::real;
 
             pref.m_d_min_max.first  = cfg.second.get<double>("min", pref.m_d_min_max.first);
             pref.m_d_min_max.second = cfg.second.get<double>("max", pref.m_d_min_max.second);
         }
         else if(type == "int")
         {
-            pref.m_type = preference_t::INT;
+            pref.m_type = preference_t::integer;
 
             pref.m_i_min_max.first  = cfg.second.get<int>("min", pref.m_i_min_max.first);
             pref.m_i_min_max.second = cfg.second.get<int>("max", pref.m_i_min_max.second);
@@ -225,11 +219,11 @@ void preferences_configuration::updating()
             layout->addWidget(pref.m_check_box, index, 1);
             widget_to_reset = pref.m_check_box;
         }
-        else if(pref.m_type == preference_t::INT || pref.m_type == preference_t::DOUBLE)
+        else if(pref.m_type == preference_t::integer || pref.m_type == preference_t::real)
         {
             pref.m_line_edit = new QLineEdit();
 
-            if(pref.m_type == preference_t::INT)
+            if(pref.m_type == preference_t::integer)
             {
                 pref.m_line_edit->setValidator(new QIntValidator(pref.m_i_min_max.first, pref.m_i_min_max.second));
             }
@@ -398,7 +392,7 @@ void preferences_configuration::updating()
                 preference_update       = pref.m_preference_value != checked;
                 pref.m_preference_value = checked;
             }
-            else if(pref.m_type == preference_t::INT || pref.m_type == preference_t::DOUBLE)
+            else if(pref.m_type == preference_t::integer || pref.m_type == preference_t::real)
             {
                 int pos               = 0;
                 QLineEdit* const edit = pref.m_line_edit;
@@ -438,12 +432,12 @@ void preferences_configuration::updating()
             // Emit preferenceChanged signal with new value and preference key.
             if(preference_update)
             {
-                const auto value = this->convert_value(pref);
-                m_sig_preference_changed->async_emit(value, pref.m_preference_key);
+                const auto value = sight::module::ui::qt::preferences_configuration::convert_value(pref);
+                this->async_emit(signals::PREFERENCE_CHANGED, value, pref.m_preference_key);
             }
         }
 
-        m_sig_parameters_modified->async_emit();
+        this->async_emit(signals::PARAMETERS_MODIFIED);
     }
 }
 
@@ -462,8 +456,8 @@ void preferences_configuration::request_values()
 
     for(auto& pref : m_preferences)
     {
-        const auto value = this->convert_value(pref);
-        m_sig_preference_changed->async_emit(value, pref.m_preference_key);
+        const auto value = sight::module::ui::qt::preferences_configuration::convert_value(pref);
+        this->async_emit(signals::PREFERENCE_CHANGED, value, pref.m_preference_key);
     }
 }
 
@@ -554,8 +548,8 @@ void preferences_configuration::on_reset_to_default_value(QObject* _widget)
                     case preference_t::path:
                     case preference_t::file:
                     case preference_t::list:
-                    case preference_t::INT:
-                    case preference_t::DOUBLE:
+                    case preference_t::integer:
+                    case preference_t::real:
                         default_value = QString::fromStdString(pref.m_default_value);
                         break;
 
@@ -566,8 +560,7 @@ void preferences_configuration::on_reset_to_default_value(QObject* _widget)
                 line_edit->setText(default_value);
 
                 const sight::ui::parameter_t variant_value = default_value.toStdString();
-                auto sig                                   = this->signal<changed_signal_t>(PREFERENCE_CHANGED_SIG);
-                sig->async_emit(variant_value, pref.m_preference_key);
+                this->async_emit(signals::PREFERENCE_CHANGED, variant_value, pref.m_preference_key);
 
                 break;
             }
@@ -587,8 +580,7 @@ void preferences_configuration::on_reset_to_default_value(QObject* _widget)
                 }
 
                 const sight::ui::parameter_t variant_value = default_value.toStdString();
-                auto sig                                   = this->signal<changed_signal_t>(PREFERENCE_CHANGED_SIG);
-                sig->async_emit(variant_value, pref.m_preference_key);
+                this->async_emit(signals::PREFERENCE_CHANGED, variant_value, pref.m_preference_key);
 
                 break;
             }
@@ -604,8 +596,7 @@ void preferences_configuration::on_reset_to_default_value(QObject* _widget)
                 check_box->setChecked(check_state);
 
                 const sight::ui::parameter_t variant_value = check_state;
-                auto sig                                   = this->signal<changed_signal_t>(PREFERENCE_CHANGED_SIG);
-                sig->async_emit(variant_value, pref.m_preference_key);
+                this->async_emit(signals::PREFERENCE_CHANGED, variant_value, pref.m_preference_key);
 
                 break;
             }

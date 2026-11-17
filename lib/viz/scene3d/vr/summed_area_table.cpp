@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2024 IRCAD France
+ * Copyright (C) 2016-2026 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,19 +22,18 @@
 
 #include "viz/scene3d/vr/summed_area_table.hpp"
 
-#include "viz/scene3d/utils.hpp"
-
+#include <utility>
 #include <viz/scene3d/ogre.hpp>
 
-#include <glm/glm.hpp>
-
-#include <OGRE/OgreCompositor.h>
+#include <OGRE/OgreCompositionTargetPass.h>
 #include <OGRE/OgreCompositorChain.h>
 #include <OGRE/OgreCompositorInstance.h>
 #include <OGRE/OgreCompositorManager.h>
+#include <OGRE/OgreDepthBuffer.h>
 #include <OGRE/OgreHardwarePixelBuffer.h>
 #include <OGRE/OgreMaterial.h>
 #include <OGRE/OgreMaterialManager.h>
+#include <OGRE/OgreRenderSystem.h>
 #include <OGRE/OgreRenderTarget.h>
 #include <OGRE/OgreRenderTexture.h>
 #include <OGRE/OgreTechnique.h>
@@ -133,16 +132,18 @@ private:
 
 //-----------------------------------------------------------------------------
 
-summed_area_table::summed_area_table(std::string _parent_id, Ogre::SceneManager* _scene_manager, float _size_ratio) :
-    m_sat_size_ratio(_size_ratio),
-    m_sat_size(
-    {
-        0, 0, 0
-    }),
-    m_current_image_size({0, 0, 0}),
+summed_area_table::summed_area_table(std::string _parent_id, Ogre::SceneManager* _scene_manager) :
+    m_sat_size({0, 0, 0}),
     m_parent_id(std::move(_parent_id)),
     m_scene_manager(_scene_manager)
 {
+    auto& material_manager = Ogre::MaterialManager::getSingleton();
+    m_init_material = material_manager.getByName("summed_area_table_init", RESOURCE_GROUP)->clone(
+        m_parent_id + "_summed_area_table_init"
+    );
+    m_table_material = material_manager.getByName("summed_area_table", RESOURCE_GROUP)->clone(
+        m_parent_id + "_summed_area_table"
+    );
 }
 
 //-----------------------------------------------------------------------------
@@ -151,19 +152,43 @@ summed_area_table::~summed_area_table()
 {
     Ogre::TextureManager& texture_manager = Ogre::TextureManager::getSingleton();
 
+    if(m_table_material != nullptr)
+    {
+        Ogre::MaterialManager::getSingleton().remove(m_table_material);
+        m_table_material.reset();
+    }
+
+    if(m_init_material != nullptr)
+    {
+        Ogre::MaterialManager::getSingleton().remove(m_init_material);
+        m_init_material.reset();
+    }
+
     if(m_source_buffer != nullptr)
     {
-        texture_manager.remove(m_parent_id + SOURCE_BUFFER_NAME, viz::scene3d::RESOURCE_GROUP);
+        m_source_buffer->unload();
+        texture_manager.remove(m_source_buffer);
     }
 
     if(m_target_buffer != nullptr)
     {
-        texture_manager.remove(m_parent_id + TARGET_BUFFER_NAME, viz::scene3d::RESOURCE_GROUP);
+        m_target_buffer->unload();
+        texture_manager.remove(m_target_buffer);
     }
 
     if(m_dummy_camera != nullptr)
     {
         m_scene_manager->destroyCamera(m_dummy_camera);
+    }
+
+    if(m_init_material != nullptr)
+    {
+        Ogre::MaterialManager::getSingleton().remove(m_init_material);
+    }
+
+    if(m_table_material != nullptr)
+    {
+        Ogre::MaterialManager::getSingleton().remove(m_table_material);
     }
 
     //Members of m_listeners are freed by the manager upon destruction. Freeing them here causes a double-free.
@@ -174,18 +199,27 @@ summed_area_table::~summed_area_table()
 void summed_area_table::compute_parallel(
     const texture::sptr& _img_texture,
     const transfer_function::sptr& _gpu_tf,
-    float _sample_distance
+    float _sample_distance,
+    unsigned int _ratio
 )
 {
     SIGHT_ASSERT("imgTexture cannot be nullptr", _img_texture != nullptr);
     SIGHT_ASSERT("tf cannot be nullptr", _gpu_tf != nullptr);
+    SIGHT_ASSERT("Ratio must be greater than 0", _ratio > 0);
 
-    this->update_sat_from_texture(_img_texture);
+    const auto source_size = _img_texture->size();
+    const auto scaled_size = std::array<std::size_t, 3> {
+        source_size[0] / _ratio,
+        source_size[1] / _ratio,
+        source_size[2] / _ratio
+    };
+    SIGHT_ASSERT("Size is null", source_size[0] > 0 && source_size[1] > 0 && source_size[2] > 0);
+
+    this->resize(scaled_size);
 
     //Material (init)
     {
-        Ogre::MaterialPtr init_pass_mtl =
-            Ogre::MaterialManager::getSingleton().getByName("summed_area_table_init", RESOURCE_GROUP);
+        auto init_pass_mtl = m_init_material;
 
         if(init_pass_mtl->getNumTechniques() > 0)
         {
@@ -193,10 +227,8 @@ void summed_area_table::compute_parallel(
 
             if(technique->getNumPasses() > 0)
             {
-                Ogre::Pass* const sat_init_pass            = technique->getPass(0);
-                Ogre::TextureUnitState* const tex_3d_state = sat_init_pass->getTextureUnitState("image");
-                SIGHT_ASSERT("'image' texture unit is not found", tex_3d_state);
-                tex_3d_state->setTexture(_img_texture->get());
+                Ogre::Pass* const sat_init_pass = technique->getPass(0);
+                _img_texture->bind(sat_init_pass, "image");
 
                 auto fp_params = sat_init_pass->getFragmentProgramParameters();
                 fp_params->setNamedConstant("u_sampleDistance", _sample_distance);
@@ -254,8 +286,7 @@ void summed_area_table::compute_parallel(
 
     //Material (table)
     {
-        Ogre::MaterialPtr sat_mtl =
-            Ogre::MaterialManager::getSingleton().getByName("summed_area_table", RESOURCE_GROUP);
+        Ogre::MaterialPtr sat_mtl = m_table_material;
 
         if(sat_mtl->getNumTechniques() > 0)
         {
@@ -281,10 +312,8 @@ void summed_area_table::compute_parallel(
 
                             for(m_slice_index = 0 ; m_slice_index < depth ; ++m_slice_index)
                             {
-                                m_target_buffer->getBuffer()->getRenderTarget(static_cast<std::size_t>(m_slice_index))->
-                                update(
-                                    false
-                                );
+                                auto* target = m_target_buffer->getBuffer()->getRenderTarget(m_slice_index);
+                                target->update(false);
                             }
 
                             m_read_offset *= NB_TEXT_READS;
@@ -328,61 +357,59 @@ void summed_area_table::compute_parallel(
 
 //-----------------------------------------------------------------------------
 
-void summed_area_table::update_sat_from_texture(const texture::sptr& _img_texture)
+void summed_area_table::resize(std::array<std::size_t, 3> _sat_size)
 {
-    SIGHT_ASSERT("texture cannot be nullptr", _img_texture != nullptr);
-
-    m_current_image_size =
+    if(m_source_buffer != nullptr
+       && m_target_buffer != nullptr
+       && m_sat_size[0] == _sat_size[0]
+       && m_sat_size[1] == _sat_size[1]
+       && m_sat_size[2] == _sat_size[2])
     {
-        static_cast<std::size_t>(_img_texture->width()),
-        static_cast<std::size_t>(_img_texture->height()),
-        static_cast<std::size_t>(_img_texture->depth())
-    };
+        return;
+    }
 
-    const auto width  = static_cast<std::size_t>(static_cast<float>(m_current_image_size[0]) * m_sat_size_ratio);
-    const auto height = static_cast<std::size_t>(static_cast<float>(m_current_image_size[1]) * m_sat_size_ratio);
-    const auto depth  = static_cast<std::size_t>(static_cast<float>(m_current_image_size[2]) * m_sat_size_ratio);
+    m_sat_size = _sat_size;
 
-    m_sat_size = {width, height, depth};
-
-    this->update_buffers();
-}
-
-//-----------------------------------------------------------------------------
-
-void summed_area_table::update_sat_from_ratio(float _size_ratio)
-{
-    m_sat_size_ratio = _size_ratio;
-
-    const auto width  = static_cast<std::size_t>(static_cast<float>(m_current_image_size[0]) * m_sat_size_ratio);
-    const auto height = static_cast<std::size_t>(static_cast<float>(m_current_image_size[1]) * m_sat_size_ratio);
-    const auto depth  = static_cast<std::size_t>(static_cast<float>(m_current_image_size[2]) * m_sat_size_ratio);
-
-    m_sat_size = {width, height, depth};
-
-    this->update_buffers();
-}
-
-//-----------------------------------------------------------------------------
-
-void summed_area_table::update_buffers()
-{
     const auto width  = static_cast<Ogre::uint>(m_sat_size[0]);
     const auto height = static_cast<Ogre::uint>(m_sat_size[1]);
     const auto depth  = static_cast<Ogre::uint>(m_sat_size[2]);
 
-    Ogre::TextureManager& texture_manager = Ogre::TextureManager::getSingleton();
+    Ogre::CompositorManager& compositor_manager = Ogre::CompositorManager::getSingleton();
+    Ogre::TextureManager& texture_manager       = Ogre::TextureManager::getSingleton();
 
-    // Removes the ping pong buffers if they have to be resized
+    if(m_table_material != nullptr)
+    {
+        Ogre::MaterialManager::getSingleton().remove(m_table_material);
+        m_table_material.reset();
+    }
+
+    SIGHT_INFO(
+        "SAT texture references after compositor-chain removal source_use_count="
+        << m_source_buffer.use_count() << " target_use_count=" << m_target_buffer.use_count()
+    );
+
+    // Remove the ping-pong buffers before recreating them at the new size.
     if(m_source_buffer != nullptr)
     {
-        texture_manager.remove(m_parent_id + SOURCE_BUFFER_NAME, viz::scene3d::RESOURCE_GROUP);
+        m_source_buffer->unload();
+        texture_manager.remove(m_source_buffer);
     }
 
     if(m_target_buffer != nullptr)
     {
-        texture_manager.remove(m_parent_id + TARGET_BUFFER_NAME, viz::scene3d::RESOURCE_GROUP);
+        m_target_buffer->unload();
+        texture_manager.remove(m_target_buffer);
     }
+
+    // Release the old GPU resources before allocating their replacements.
+    m_source_buffer.reset();
+    m_target_buffer.reset();
+
+    m_listeners = {};
+
+    m_table_material = Ogre::MaterialManager::getSingleton().getByName("summed_area_table", RESOURCE_GROUP)->clone(
+        m_parent_id + "_summed_area_table"
+    );
 
     //Create the camera if this is the first call
     if(m_dummy_camera == nullptr)
@@ -419,8 +446,6 @@ void summed_area_table::update_buffers()
 
     //Update the listeners
     {
-        Ogre::CompositorManager& compositor_manager = Ogre::CompositorManager::getSingleton();
-
         //Listeners updated with the current parameters
         auto* const new_initlistener =
             new summed_area_table_init_compositor_listener(m_current_slice_depth);
@@ -437,12 +462,21 @@ void summed_area_table::update_buffers()
             //Source buffer
             {
                 Ogre::RenderTarget* const render_target = m_source_buffer->getBuffer()->getRenderTarget(slice_index);
-                Ogre::Viewport* const vp                = render_target->addViewport(m_dummy_camera);
+                render_target->setDepthBufferPool(Ogre::DepthBuffer::POOL_NO_DEPTH);
+                Ogre::Viewport* const vp = render_target->addViewport(m_dummy_camera);
 
                 vp->setOverlaysEnabled(false);
 
                 compositor_manager.addCompositor(vp, "summed_area_table_init");
                 compositor_manager.addCompositor(vp, "summed_area_table");
+
+                compositor_manager.getCompositorChain(vp)->getCompositor("summed_area_table_init")
+                ->getTechnique()->getOutputTargetPass()->getPasses()[0]
+                ->setMaterialName(m_init_material->getName());
+
+                compositor_manager.getCompositorChain(vp)->getCompositor("summed_area_table")
+                ->getTechnique()->getOutputTargetPass()->getPasses()[0]
+                ->setMaterialName(m_table_material->getName());
 
                 //Init listener
                 {
@@ -478,12 +512,21 @@ void summed_area_table::update_buffers()
             //Target buffer
             {
                 Ogre::RenderTarget* const render_target = m_target_buffer->getBuffer()->getRenderTarget(slice_index);
-                Ogre::Viewport* const vp                = render_target->addViewport(m_dummy_camera);
+                render_target->setDepthBufferPool(Ogre::DepthBuffer::POOL_NO_DEPTH);
+                Ogre::Viewport* const vp = render_target->addViewport(m_dummy_camera);
 
                 vp->setOverlaysEnabled(false);
 
                 compositor_manager.addCompositor(vp, "summed_area_table_init");
                 compositor_manager.addCompositor(vp, "summed_area_table");
+
+                compositor_manager.getCompositorChain(vp)->getCompositor("summed_area_table_init")
+                ->getTechnique()->getOutputTargetPass()->getPasses()[0]
+                ->setMaterialName(m_init_material->getName());
+
+                compositor_manager.getCompositorChain(vp)->getCompositor("summed_area_table")
+                ->getTechnique()->getOutputTargetPass()->getPasses()[0]
+                ->setMaterialName(m_table_material->getName());
 
                 //Init listener
                 {
@@ -559,11 +602,11 @@ void summed_area_table::compute_sequential(data::image::sptr _image, data::trans
 
     const auto dump_lock = _image->dump_lock();
 
-    for(int z = 0 ; z < static_cast<int>(m_sat_size[2]) ; ++z)
+    for(int z = 0 ; std::cmp_less(z, m_sat_size[2]) ; ++z)
     {
-        for(int y = 0 ; y < static_cast<int>(m_sat_size[1]) ; ++y)
+        for(int y = 0 ; std::cmp_less(y, m_sat_size[1]) ; ++y)
         {
-            for(int x = 0 ; x < static_cast<int>(m_sat_size[0]) ; ++x)
+            for(int x = 0 ; std::cmp_less(x, m_sat_size[0]) ; ++x)
             {
                 const std::int16_t img_value =
                     _image->at<std::int16_t>(

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -59,11 +59,11 @@ TEST_SUITE("sight::core::log::logger")
         std::size_t expected = 9;
         CHECK_EQ(expected, logger->count());
         expected = 3;
-        CHECK_EQ(expected, logger->count(sight::core::log::log::information));
+        CHECK_EQ(expected, logger->count(sight::core::log::log::level_t::information));
         expected = 2;
-        CHECK_EQ(expected, logger->count(sight::core::log::log::warning));
+        CHECK_EQ(expected, logger->count(sight::core::log::log::level_t::warning));
         expected = 4;
-        CHECK_EQ(expected, logger->count(sight::core::log::log::critical));
+        CHECK_EQ(expected, logger->count(sight::core::log::log::level_t::critical));
 
         // Check message values
         CHECK_EQ(info1, logger->get_log(0).get_message());
@@ -78,30 +78,30 @@ TEST_SUITE("sight::core::log::logger")
 
         // Check level types
         auto it = logger->begin();
-        CHECK_EQ(sight::core::log::log::information, (it++)->get_level());
-        CHECK_EQ(sight::core::log::log::critical, (it++)->get_level());
-        CHECK_EQ(sight::core::log::log::warning, (it++)->get_level());
-        CHECK_EQ(sight::core::log::log::information, (it++)->get_level());
-        CHECK_EQ(sight::core::log::log::critical, (it++)->get_level());
-        CHECK_EQ(sight::core::log::log::critical, (it++)->get_level());
-        CHECK_EQ(sight::core::log::log::information, (it++)->get_level());
-        CHECK_EQ(sight::core::log::log::warning, (it++)->get_level());
-        CHECK_EQ(sight::core::log::log::critical, (it++)->get_level());
+        CHECK_EQ(sight::core::log::log::level_t::information, (it++)->get_level());
+        CHECK_EQ(sight::core::log::log::level_t::critical, (it++)->get_level());
+        CHECK_EQ(sight::core::log::log::level_t::warning, (it++)->get_level());
+        CHECK_EQ(sight::core::log::log::level_t::information, (it++)->get_level());
+        CHECK_EQ(sight::core::log::log::level_t::critical, (it++)->get_level());
+        CHECK_EQ(sight::core::log::log::level_t::critical, (it++)->get_level());
+        CHECK_EQ(sight::core::log::log::level_t::information, (it++)->get_level());
+        CHECK_EQ(sight::core::log::log::level_t::warning, (it++)->get_level());
+        CHECK_EQ(sight::core::log::log::level_t::critical, (it++)->get_level());
 
         // Sort logs
         logger->sort();
 
         // Check level types
         it = logger->begin();
-        CHECK_EQ(sight::core::log::log::critical, (it++)->get_level());
-        CHECK_EQ(sight::core::log::log::critical, (it++)->get_level());
-        CHECK_EQ(sight::core::log::log::critical, (it++)->get_level());
-        CHECK_EQ(sight::core::log::log::critical, (it++)->get_level());
-        CHECK_EQ(sight::core::log::log::warning, (it++)->get_level());
-        CHECK_EQ(sight::core::log::log::warning, (it++)->get_level());
-        CHECK_EQ(sight::core::log::log::information, (it++)->get_level());
-        CHECK_EQ(sight::core::log::log::information, (it++)->get_level());
-        CHECK_EQ(sight::core::log::log::information, (it++)->get_level());
+        CHECK_EQ(sight::core::log::log::level_t::critical, (it++)->get_level());
+        CHECK_EQ(sight::core::log::log::level_t::critical, (it++)->get_level());
+        CHECK_EQ(sight::core::log::log::level_t::critical, (it++)->get_level());
+        CHECK_EQ(sight::core::log::log::level_t::critical, (it++)->get_level());
+        CHECK_EQ(sight::core::log::log::level_t::warning, (it++)->get_level());
+        CHECK_EQ(sight::core::log::log::level_t::warning, (it++)->get_level());
+        CHECK_EQ(sight::core::log::log::level_t::information, (it++)->get_level());
+        CHECK_EQ(sight::core::log::log::level_t::information, (it++)->get_level());
+        CHECK_EQ(sight::core::log::log::level_t::information, (it++)->get_level());
 
         // Clear logs
         logger->clear();

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -101,8 +101,8 @@ protected:
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
      *
-     * Connect Vector::ADDED_OBJECTS_SIG to this::service::slots::UPDATE
-     * Connect Vector::REMOVED_OBJECTS_SIG to this::service::slots::UPDATE
+     * Connect Vector::signals::ADDED_OBJECTS to this::service::slots::UPDATE
+     * Connect Vector::signals::REMOVED_OBJECTS to this::service::slots::UPDATE
      */
     connections_t auto_connections() const override;
 

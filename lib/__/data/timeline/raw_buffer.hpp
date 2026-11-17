@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,7 +37,7 @@ class SIGHT_DATA_CLASS_API raw_buffer : public data::timeline::buffer
 public:
 
     /// Constructor
-    SIGHT_DATA_API raw_buffer(
+    SIGHT_DATA_API explicit raw_buffer(
         core::clock::type _timestamp = 0,
         buffer_data_t _buffer        = nullptr,
         std::size_t _size            = 0,
@@ -45,23 +45,17 @@ public:
     );
 
     /// Destructor
-    SIGHT_DATA_API ~raw_buffer() override;
+    SIGHT_DATA_API ~raw_buffer() override = default;
 
     /// Set buffer values
     SIGHT_DATA_API void set_buffer_values(buffer_data_t _values);
-
-    /// Return buffer
-    [[nodiscard]] buffer_data_t buffer() const
-    {
-        return m_buffer;
-    }
 
     //------------------------------------------------------------------------------
 
     template<typename TYPE>
     [[nodiscard]] TYPE* buffer() const
     {
-        return reinterpret_cast<TYPE*>(m_buffer);
+        return reinterpret_cast<TYPE*>(data());
     }
 };
 

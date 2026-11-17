@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -76,7 +76,7 @@ public:
     /// Add a custom button to this dialog
     SIGHT_UI_API void add_custom_button(const std::string& _label, std::function<void()> _clicked_fn) override;
 
-protected:
+private:
 
     ui::dialog::selector_base::sptr m_implementation;
 };

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,12 +22,11 @@
 
 #pragma once
 
-#include "core/progress/has_monitors.hpp"
+#include "core/notification/has_monitors.hpp"
 
 #include <data/vector.hpp>
 
 #include <io/dimse/data/pacs_configuration.hpp>
-#include <io/dimse/series_enquirer.hpp>
 
 #include <service/controller.hpp>
 
@@ -63,25 +62,27 @@ namespace sight::module::io::dimse
  * - \b selectedSeries [sight::data::vector]: List of DICOM series to push to the PACS.
  */
 class series_pusher : public service::controller,
-                      public core::progress::has_monitors
+                      public core::notification::has_monitors
 {
 public:
+
+    struct signals
+    {
+        using started_progress_t = core::com::signal<void ()>;
+        using stopped_progress_t = core::com::signal<void ()>;
+        static inline const signal_key_t STARTED_PROGRESS = "started_progress";
+        static inline const signal_key_t STOPPED_PROGRESS = "stopped_progress";
+    };
+
+    struct slots
+    {
+        static inline const slot_key_t DISPLAY = "displayMessage";
+    };
 
     SIGHT_DECLARE_SERVICE(series_pusher, service::controller);
 
     using dicom_series_container_t = std::vector<std::shared_ptr<const data::series> >;
-
-    static const core::com::slots::key_t DISPLAY_SLOT;
-    using display_message_slot_t = core::com::slot<void (const std::string&, bool)>;
-
-    /// Signal to start the progress (bar id)
-    using started_progress_signal_t = core::com::signal<void ()>;
-    /// Signal to stop the progress (bar id)
-    using stopped_progress_signal_t = core::com::signal<void ()>;
-
-    /// Key in m_signals map of signal m_sigProgressed
-    static const core::com::signals::key_t STARTED_PROGRESS_SIG;
-    static const core::com::signals::key_t STOPPED_PROGRESS_SIG;
+    using display_message_slot_t   = core::com::slot<void (const std::string&, bool)>;
 
     /**
      * @brief Constructor
@@ -110,7 +111,7 @@ protected:
     /// Override
     void info(std::ostream& _sstream) override;
 
-protected:
+private:
 
     /**
      * @brief Check whether some series are already on the PACS
@@ -130,12 +131,6 @@ protected:
 
     /// Slot to call displayMessage method;
     display_message_slot_t::sptr m_slot_display_message;
-
-    /// Signal emitted when the bar is starting
-    started_progress_signal_t::sptr m_sig_started_progress;
-
-    /// Signal emitted when the bar is stopping
-    stopped_progress_signal_t::sptr m_sig_stopped_progress;
 
     /// Push Worker
     core::thread::worker::sptr m_push_series_worker;

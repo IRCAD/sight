@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2004-2024 IRCAD France
+ * Copyright (C) 2004-2026 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "core/spy_log.hpp"
 #include "core/timer.hpp"
 
-// Define FW_PROFILING_DISABLED before including this header if you need to disable profiling output
+// Define SIGHT_PROFILING_DISABLED before including this header if you need to disable profiling output
 
 namespace sight::core
 {
@@ -33,17 +33,17 @@ namespace sight::core
 /**
  * @brief This class holds a timer. It displays elapsed time at destruction.
  */
-class fw_profile_scope
+class sight_profile_scope
 {
 public:
 
-    fw_profile_scope(const char* _label) :
+    explicit sight_profile_scope(const char* _label) :
         m_label(_label)
     {
         m_timer.start();
     }
 
-    ~fw_profile_scope()
+    ~sight_profile_scope()
     {
         m_timer.stop();
 
@@ -59,11 +59,11 @@ public:
 /**
  * @brief This class holds a timer. It allows to compute the elapsed time between two profiling scopes.
  */
-class fw_profile_frame_timer
+class sight_profile_frame_timer
 {
 public:
 
-    fw_profile_frame_timer(double _interval) :
+    explicit sight_profile_frame_timer(double _interval) :
         m_interval(_interval)
     {
         m_timer.start();
@@ -108,18 +108,18 @@ public:
 /**
  * @brief This class holds a timer. It displays elapsed time at destruction every N seconds.
  */
-class fw_profile_scope_avg
+class sight_profile_scope_avg
 {
 public:
 
-    fw_profile_scope_avg(const char* _label, fw_profile_frame_timer& _frame_timer) :
+    sight_profile_scope_avg(const char* _label, sight_profile_frame_timer& _frame_timer) :
         m_label(_label),
         m_frame_timer(_frame_timer)
     {
         m_timer.start();
     }
 
-    ~fw_profile_scope_avg()
+    ~sight_profile_scope_avg()
     {
         m_timer.stop();
 
@@ -138,17 +138,17 @@ public:
     /// Timer label
     const char* m_label;
     /// Timer used to get the elapsed time between two profiling scopes
-    fw_profile_frame_timer& m_frame_timer;
+    sight_profile_frame_timer& m_frame_timer;
 };
 
 /**
  * @brief This class is used to compute the elapsed time between two profiling scopes.
  */
-class fw_profile_frame
+class sight_profile_frame
 {
 public:
 
-    fw_profile_frame(const char* _label, fw_profile_frame_timer& _frame_timer) :
+    sight_profile_frame(const char* _label, sight_profile_frame_timer& _frame_timer) :
         m_label(_label),
         m_frame_timer(_frame_timer)
     {
@@ -156,23 +156,23 @@ public:
         m_frame_timer.reset();
     }
 
-    ~fw_profile_frame()
+    ~sight_profile_frame()
     = default;
 
     /// Timer label
     const char* m_label;
     /// Timer used to get the elapsed time between two profiling scopes
-    fw_profile_frame_timer& m_frame_timer;
+    sight_profile_frame_timer& m_frame_timer;
 };
 
 /**
  * @brief This class is used to compute the elapsed time between two profiling scopes every N seconds.
  */
-class fw_profile_frame_avg
+class sight_profile_frame_avg
 {
 public:
 
-    fw_profile_frame_avg(const char* _label, fw_profile_frame_timer& _frame_timer) :
+    sight_profile_frame_avg(const char* _label, sight_profile_frame_timer& _frame_timer) :
         m_label(_label),
         m_frame_timer(_frame_timer)
     {
@@ -186,39 +186,49 @@ public:
         }
     }
 
-    ~fw_profile_frame_avg()
+    ~sight_profile_frame_avg()
     = default;
 
     /// Timer label
     const char* m_label;
     /// Timer used to get the elapsed time between two profiling scopes
-    fw_profile_frame_timer& m_frame_timer;
+    sight_profile_frame_timer& m_frame_timer;
 };
 
-#ifndef FW_PROFILING_DISABLED
+#ifndef SIGHT_PROFILING_DISABLED
+// NOLINTBEGIN(cppcoreguidelines-macro-usage)
+
 /// Display the elapsed time inside a code block
-#define FW_PROFILE(_label) \
-        sight::core::fw_profile_scope BOOST_PP_CAT(profiler, __LINE__)(_label);
+#define SIGHT_PROFILE(_label) \
+        sight::core::sight_profile_scope BOOST_PP_CAT(profiler, __LINE__)(_label);
 
 /// Display the elapsed time inside a code block, every N seconds
-#define FW_PROFILE_AVG(_label, interval) \
-        static sight::core::fw_profile_frame_timer BOOST_PP_CAT(frame_timer, __LINE__)(interval); \
-        sight::core::fw_profile_scope_avg BOOST_PP_CAT(profiler, __LINE__)(_label, BOOST_PP_CAT(frame_timer, __LINE__));
+#define SIGHT_PROFILE_AVG(_label, interval) \
+        static sight::core::sight_profile_frame_timer BOOST_PP_CAT(frame_timer, __LINE__)(interval); \
+        sight::core::sight_profile_scope_avg BOOST_PP_CAT( \
+            profiler, \
+            __LINE__ \
+        )(_label, BOOST_PP_CAT(frame_timer, __LINE__));
 
 /// Display the elapsed time between two calls of a code block
-#define FW_PROFILE_FRAME(_label) \
-        static sight::core::fw_profile_frame_timer BOOST_PP_CAT(frame_timer, __LINE__)(0); \
-        sight::core::fw_profile_frame BOOST_PP_CAT(profiler, __LINE__)(_label, BOOST_PP_CAT(frame_timer, __LINE__));
+#define SIGHT_PROFILE_FRAME(_label) \
+        static sight::core::sight_profile_frame_timer BOOST_PP_CAT(frame_timer, __LINE__)(0); \
+        sight::core::sight_profile_frame BOOST_PP_CAT(profiler, __LINE__)(_label, BOOST_PP_CAT(frame_timer, __LINE__));
 
 /// Display the elapsed time between two calls of a code block, every N seconds
-#define FW_PROFILE_FRAME_AVG(_label, interval) \
-        static sight::core::fw_profile_frame_timer BOOST_PP_CAT(frame_timer, __LINE__)(interval); \
-        sight::core::fw_profile_frame_avg BOOST_PP_CAT(profiler, __LINE__)(_label, BOOST_PP_CAT(frame_timer, __LINE__));
-#else // FW_PROFILING_DISABLED
-#define FW_PROFILE(_label)
-#define FW_PROFILE_AVG(_label, interval)
-#define FW_PROFILE_FRAME(_label)
-#define FW_PROFILE_FRAME_AVG(_label, interval)
-#endif // FW_PROFILING_DISABLED
+#define SIGHT_PROFILE_FRAME_AVG(_label, interval) \
+        static sight::core::sight_profile_frame_timer BOOST_PP_CAT(frame_timer, __LINE__)(interval); \
+        sight::core::sight_profile_frame_avg BOOST_PP_CAT( \
+            profiler, \
+            __LINE__ \
+        )(_label, BOOST_PP_CAT(frame_timer, __LINE__));
+#else // SIGHT_PROFILING_DISABLED
+#define SIGHT_PROFILE(_label)
+#define SIGHT_PROFILE_AVG(_label, interval)
+#define SIGHT_PROFILE_FRAME(_label)
+#define SIGHT_PROFILE_FRAME_AVG(_label, interval)
+#endif // SIGHT_PROFILING_DISABLED
+
+// NOLINTEND(cppcoreguidelines-macro-usage)
 
 } //namespace sight::core

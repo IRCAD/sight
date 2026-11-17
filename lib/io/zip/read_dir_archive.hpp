@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,7 +29,6 @@
 #include <core/macros.hpp>
 
 #include <filesystem>
-#include <fstream>
 
 namespace sight::io::zip
 {
@@ -63,7 +62,7 @@ public:
      *
      * @throw io::zip::exception::Read if file doesn't exist in archive.
      */
-    SIGHT_IO_ZIP_API SPTR(std::istream) get_file(const std::filesystem::path& _path) override;
+    SIGHT_IO_ZIP_API sight::sptr<std::istream> get_file(const std::filesystem::path& _path) override;
 
     /**
      * @brief Returns archive path.
@@ -77,7 +76,7 @@ public:
         return read_dir_archive::make(m_archive);
     }
 
-protected:
+private:
 
     std::filesystem::path m_archive;
 };

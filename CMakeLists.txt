@@ -24,10 +24,6 @@ if(${CMAKE_VERSION} VERSION_GREATER "3.31.0")
     cmake_policy(SET CMP0177 NEW)
     # Stricter arguments check of add_custom_command
     cmake_policy(SET CMP0175 NEW)
-else()
-    # Use old policy for Documentation to add cache variables and find VTK documentation dependent packages.
-    # (Needed for doxygen..)
-    cmake_policy(SET CMP0106 OLD)
 endif()
 
 # On Windows, if the user doesn't specify a value,
@@ -49,7 +45,7 @@ endif()
 
 project(
     sight
-    VERSION 25.2.0
+    VERSION 26.1.0
     DESCRIPTION "Surgical Image Guidance and Healthcare Toolkit"
     HOMEPAGE_URL "https://git.ircad.fr/sight/sight"
 )
@@ -186,10 +182,6 @@ if(UNIX)
     endif()
 endif()
 
-if(SIGHT_BUILD_TESTS)
-    find_package(CppUnit QUIET REQUIRED)
-endif()
-
 ########################################################################################################################
 # Default paths settings for libraries, module and resources
 ########################################################################################################################
@@ -249,34 +241,21 @@ configure_file(
     COPYONLY
 )
 
-configure_file(
-    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/install/linux/exec_gui_tests.sh ${CMAKE_CURRENT_BINARY_DIR}/bin/exec_gui_tests.sh
-    COPYONLY
-)
-configure_file(
-    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/install/windows/exec_gui_tests.bat
-    ${CMAKE_CURRENT_BINARY_DIR}/bin/exec_gui_tests.bat COPYONLY
-)
-
 # Install the sightConfig.cmake and sightConfigVersion.cmake
 install(FILES "${CMAKE_BINARY_DIR}/cmake/sightConfig.cmake" "${CMAKE_BINARY_DIR}/cmake/sightConfigVersion.cmake"
               "${CMAKE_SOURCE_DIR}/cmake/build/macros.cmake" DESTINATION ${FWCONFIG_PACKAGE_LOCATION} COMPONENT dev
 )
 
-# install CppUnitConfig.cmake in a module folder.
-install(FILES "${CMAKE_SOURCE_DIR}/cmake/module/CppUnitConfig.cmake" DESTINATION ${FWCONFIG_PACKAGE_LOCATION}/module
-        COMPONENT dev
-)
-
 # Install some files needed for the build
 install(
-    FILES "${CMAKE_SOURCE_DIR}/cmake/build/configure_file.cmake"
+    FILES "${CMAKE_SOURCE_DIR}/cmake/build/clean_test_logs.cmake"
+          "${CMAKE_SOURCE_DIR}/cmake/build/configure_file.cmake"
           "${CMAKE_SOURCE_DIR}/cmake/build/flags.cmake"
-          "${FWCMAKE_RESOURCE_PATH}/build/cppunit_main.cpp.in"
           "${FWCMAKE_RESOURCE_PATH}/build/doctest_main.cpp.in"
           "${FWCMAKE_RESOURCE_PATH}/build/doctest.cmake"
           "${FWCMAKE_RESOURCE_PATH}/build/doctestAddTests.cmake"
           "${FWCMAKE_RESOURCE_PATH}/build/pch.cpp"
+          "${FWCMAKE_RESOURCE_PATH}/build/ciso646.hpp"
           "${CMAKE_SOURCE_DIR}/cmake/build/config.hpp.in"
           "${CMAKE_SOURCE_DIR}/cmake/build/plugin_config.cmake"
           "${CMAKE_SOURCE_DIR}/cmake/build/plugin_config_command.cmake"
@@ -326,9 +305,6 @@ if(WIN32)
               "${CMAKE_SOURCE_DIR}/cmake/install/windows/NSIS/rc/license.rtf"
         DESTINATION ${FWCONFIG_PACKAGE_LOCATION}/install/windows/NSIS/rc/
     )
-    install(PROGRAMS "${CMAKE_SOURCE_DIR}/cmake/install/windows/exec_gui_tests.bat"
-            DESTINATION ${FWCONFIG_PACKAGE_LOCATION}/install/windows COMPONENT dev
-    )
 elseif(UNIX)
     install(
         FILES "${CMAKE_SOURCE_DIR}/cmake/build/linux/template.sh.in"
@@ -343,10 +319,6 @@ elseif(UNIX)
     )
 
     install(PROGRAMS "${CMAKE_SOURCE_DIR}/cmake/install/linux/safe-xvfb-run"
-            DESTINATION ${FWCONFIG_PACKAGE_LOCATION}/install/linux COMPONENT dev
-    )
-
-    install(PROGRAMS "${CMAKE_SOURCE_DIR}/cmake/install/linux/exec_gui_tests.sh"
             DESTINATION ${FWCONFIG_PACKAGE_LOCATION}/install/linux COMPONENT dev
     )
 

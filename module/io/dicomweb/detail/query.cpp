@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -39,7 +39,7 @@ std::string query_instance_uid(
 
     // Retrieve the SOP Instance UID
     const std::string instance_url(_pacs_server + "/instances/" + _instance_server_id);
-    const QByteArray& instance_answer = _client_qt.get(sight::io::http::request::New(instance_url));
+    const QByteArray& instance_answer = _client_qt.get(sight::io::http::request::make(instance_url));
     json_response = QJsonDocument::fromJson(instance_answer);
     const QJsonObject& instance_answer_json_obj = json_response.object();
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,8 +45,7 @@ public:
         normal       = 0,
         noecho       = 1,
         password     = 2,
-        echo_on_edit = 3,
-        DEFAULT      = normal
+        echo_on_edit = 3
     };
 
     /// Constructor. Do nothing.

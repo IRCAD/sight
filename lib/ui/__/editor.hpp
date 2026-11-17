@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,17 +42,15 @@ public:
 
     SIGHT_DECLARE_SERVICE(editor, ui::service);
 
+    /// Destructor. Do nothing.
+    ~editor() noexcept override = default;
+
 protected:
 
     /**
      * @brief   Constructor. Do nothing (Just initialize parameters).
      */
-    editor() noexcept =
-        default;
-
-    /// Destructor. Do nothing.
-    ~editor() noexcept override =
-        default;
+    editor() noexcept = default;
 };
 
 } // namespace sight::ui

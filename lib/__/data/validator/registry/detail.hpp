@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -39,7 +39,7 @@ namespace registry
 using key_t = std::string;
 using type  = core::factory_registry<std::shared_ptr<data::validator::base>(), key_t>;
 
-SIGHT_DATA_API SPTR(type) get();
+SIGHT_DATA_API sight::sptr<type> get();
 
 } // namespace registry
 

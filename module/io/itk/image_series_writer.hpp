@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,6 @@
 
 #include <io/__/service/writer.hpp>
 
-#include <filesystem>
-#include <string>
-
 namespace sight::module::io::itk
 {
 
@@ -37,12 +34,12 @@ namespace sight::module::io::itk
  *
  * @code{.xml}
    <service type="sight::module::io::itk::image_series_writer">
-       <in key="data" uid="..." />
-       <file>...</file>
+       <data write="..." />
+       <path file="..." />
    </service>
    @endcode
  * @subsection Input Input
- * - \b data [sight::data::image_series]: image series to save.
+ * - \b data.write [sight::data::image_series]: image series to save.
  * @subsection Configuration Configuration
  * - \b file (optional): path of the file to save, if it not defined, 'open_location_dialog()' should be called to
  * define
@@ -57,6 +54,16 @@ public:
     image_series_writer() noexcept;
 
     ~image_series_writer() noexcept override = default;
+
+    /// Configure using GUI.
+
+    std::vector<std::pair<std::string, std::string> > get_supported_extensions() const override
+    {
+        return {{"NIfTI (.nii)", "*.nii *.nii.gz"}, {"Inr (.inr.gz)", "*.inr.gz"}};
+    }
+
+    /// Return managed file type, here FILE
+    sight::io::service::path_type_t get_path_type() const override;
 
 protected:
 
@@ -74,12 +81,6 @@ protected:
 
     /// Override
     void info(std::ostream& _sstream) override;
-
-    /// Configure using GUI.
-    void open_location_dialog() override;
-
-    /// Return managed file type, here FILE
-    sight::io::service::path_type_t get_path_type() const override;
 };
 
 } // namespace sight::module::io::itk

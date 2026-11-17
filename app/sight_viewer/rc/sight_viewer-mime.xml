@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
+    <mime-type type="application/x-nifti">
+        <comment>NIfTI medical image</comment>
+        <glob pattern="*.nii" />
+        <glob pattern="*.nii.gz" />
+    </mime-type>
+
+    <mime-type type="application/x-inr">
+        <comment>INR medical image</comment>
+        <glob pattern="*.inr.gz" />
+        <glob pattern="*.inr" />
+    </mime-type>
+
+    <mime-type type="application/x-vtk">
+        <comment>VTK data</comment>
+        <glob pattern="*.vtk" />
+        <glob pattern="*.vtp" />
+        <glob pattern="*.vti" />
+        <glob pattern="*.vtu" />
+    </mime-type>
+
+    <mime-type type="application/x-metaimage">
+        <comment>MetaImage data</comment>
+        <glob pattern="*.mhd" />
+    </mime-type>
+
+    <mime-type type="application/x-dicom">
+        <comment>DICOM images data</comment>
+        <glob pattern="*.dcm" />
+    </mime-type>
+
+    <mime-type type="application/x-ply">
+        <comment>PLY 3D model</comment>
+        <glob pattern="*.ply" />
+    </mime-type>
+</mime-info>

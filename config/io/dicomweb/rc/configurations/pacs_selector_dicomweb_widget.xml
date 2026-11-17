@@ -95,7 +95,7 @@
         </connect>
 
         <connect channel="${pull_progress}">
-            <signal>series_puller_srv/monitor_created</signal>
+            <signal>series_puller_srv/notification_created</signal>
         </connect>
     </config>
 </extension>

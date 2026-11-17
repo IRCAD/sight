@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2025 IRCAD France
+ * Copyright (C) 2015-2026 IRCAD France
  * Copyright (C) 2015-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,11 +48,11 @@ public:
     /// new one, otherwise it wraps the existing one.
     /// @param _tf input transfer function
     /// @param _suffix_id optional suffix to the object identifier, this allows to create different copies of the object
-    SIGHT_VIZ_SCENE3D_API transfer_function(
+    SIGHT_VIZ_SCENE3D_API explicit transfer_function(
         const data::transfer_function::csptr& _tf,
         const std::string& _suffix_id = ""
     );
-    SIGHT_VIZ_SCENE3D_API ~transfer_function();
+    SIGHT_VIZ_SCENE3D_API ~transfer_function() override;
 
     /// Update the TF texture according to the transfer function data.
     SIGHT_VIZ_SCENE3D_API void update() override;

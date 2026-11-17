@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2025 IRCAD France
+ * Copyright (C) 2016-2026 IRCAD France
  * Copyright (C) 2016-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,11 +22,6 @@
 
 #include "sequencer.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-#include <core/runtime/path.hpp>
-#include <core/tools/os.hpp>
-
 #include <ui/__/dialog/message.hpp>
 #include <ui/qt/container/widget.hpp>
 
@@ -35,6 +30,7 @@
 #include <QPainter>
 #include <QPushButton>
 #include <QVBoxLayout>
+#include <utility>
 
 // cspell:ignore Roboto
 
@@ -47,6 +43,9 @@ static const std::string CLEAR_ACTIVITIES_CONFIG = "clearActivities";
 static const std::string BUTTON_WIDTH            = "buttonWidth";
 static const std::string FONT_SIZE               = "fontSize";
 static const std::string WARNING_MESSAGE         = "warning_message";
+
+namespace
+{
 
 class number_icon final : public QIcon
 {
@@ -102,6 +101,8 @@ public:
         return QPushButton::sizeHint().grownBy(QMargins(3, 0, 3, 0));
     }
 };
+
+} // namespace
 
 //------------------------------------------------------------------------------
 
@@ -189,13 +190,13 @@ void sequencer::starting()
     m_button_group->setExclusive(true);
 
     auto activity_reg = sight::activity::extension::activity::get_default();
-    for(int i = 0, last = int(m_activity_ids.size()) - 1 ; i <= last ; ++i)
+    for(int i = 0, last = static_cast<int>(m_activity_ids.size()) - 1 ; i <= last ; ++i)
     {
-        const auto info         = activity_reg->get_info(m_activity_ids[std::size_t(i)]);
+        const auto info         = activity_reg->get_info(m_activity_ids[static_cast<std::size_t>(i)]);
         const auto button_label = QString::fromStdString(
-            m_activity_names[std::size_t(i)].empty()
+            m_activity_names[static_cast<std::size_t>(i)].empty()
             ? info.title
-            : m_activity_names[std::size_t(i)]
+            : m_activity_names[static_cast<std::size_t>(i)]
         );
 
         auto* const button = new sequencer_button(button_label, m_widget);
@@ -266,7 +267,7 @@ void sequencer::updating()
         m_current_activity = this->parse_activities(*activity_set);
 
         // Enable all satisfied activities in non-linear mode
-        if(not * m_linear && activity_set->empty())
+        if(not *m_linear && activity_set->empty())
         {
             for(std::size_t i = 0 ; i < m_activity_ids.size() ; ++i)
             {
@@ -274,7 +275,7 @@ void sequencer::updating()
                 const auto& [next_ok, next_error] = sequencer::validate_activity(activity);
                 if(next_ok)
                 {
-                    this->enable_activity(int(i));
+                    this->enable_activity(static_cast<int>(i));
                 }
             }
         }
@@ -331,7 +332,7 @@ void sequencer::disable_user_warning()
 
 void sequencer::go_to_index(int _index)
 {
-    if(_index < 0 || _index >= static_cast<int>(m_activity_ids.size()))
+    if(_index < 0 || std::cmp_greater_equal(_index, m_activity_ids.size()))
     {
         SIGHT_ERROR("no activity to launch at index " << _index)
         return;
@@ -373,18 +374,18 @@ void sequencer::go_to_index(int _index)
         }
 
         // Disable all next activities (including current)
-        for(int i = _index + 1, end = int(activity_set->size()) ; i < end ; ++i)
+        for(int i = _index + 1, end = static_cast<int>(activity_set->size()) ; i < end ; ++i)
         {
             this->disable_activity(i);
         }
 
         // Remove all last activities.
-        this->remove_last_activities(*activity_set, std::size_t(_index));
+        this->remove_last_activities(*activity_set, static_cast<std::size_t>(_index));
     }
     // Store data otherwise.
     else if(m_current_activity >= 0)
     {
-        this->store_activity_data(*activity_set, std::size_t(m_current_activity));
+        this->store_activity_data(*activity_set, static_cast<std::size_t>(m_current_activity));
     }
 
     const auto new_idx = static_cast<std::size_t>(_index);
@@ -434,12 +435,12 @@ void sequencer::check_next()
     // new data can be added in the current activity during the process.
     if(m_current_activity >= 0)
     {
-        store_activity_data(*activity_set, std::size_t(m_current_activity));
+        store_activity_data(*activity_set, static_cast<std::size_t>(m_current_activity));
     }
 
     // Check if the next activity is valid (creates the activity if needed)
     // NOLINTNEXTLINE(bugprone-misplaced-widening-cast)
-    const auto next_index = std::size_t(m_current_activity + 1);
+    const auto next_index = static_cast<std::size_t>(m_current_activity + 1);
     if(next_index < m_activity_ids.size())
     {
         const auto& next_activity = this->get_activity(*activity_set, next_index, slot(service::slots::UPDATE));
@@ -447,11 +448,11 @@ void sequencer::check_next()
 
         if(ok)
         {
-            enable_activity(int(next_index));
+            enable_activity(static_cast<int>(next_index));
         }
         else
         {
-            disable_activity(int(next_index));
+            disable_activity(static_cast<int>(next_index));
             SIGHT_DEBUG(error);
         }
 
@@ -470,11 +471,11 @@ void sequencer::check_next()
 
                 if(next_ok)
                 {
-                    enable_activity(int(last_valid));
+                    enable_activity(static_cast<int>(last_valid));
                 }
                 else
                 {
-                    disable_activity(int(last_valid));
+                    disable_activity(static_cast<int>(last_valid));
                     SIGHT_DEBUG(next_error);
 
                     break;
@@ -485,7 +486,7 @@ void sequencer::check_next()
         // Disable all next activities
         while(++last_valid < activity_set->size())
         {
-            disable_activity(int(last_valid));
+            disable_activity(static_cast<int>(last_valid));
         }
     }
 }
@@ -501,12 +502,12 @@ void sequencer::validate_next()
     // new data can be added in the current activity during the process.
     if(m_current_activity >= 0)
     {
-        store_activity_data(*activity_set, std::size_t(m_current_activity));
+        store_activity_data(*activity_set, static_cast<std::size_t>(m_current_activity));
     }
 
     // Check if the next activity is valid (creates the activity if needed)
     // NOLINTNEXTLINE(bugprone-misplaced-widening-cast)
-    const auto next_index = std::size_t(m_current_activity + 1);
+    const auto next_index = static_cast<std::size_t>(m_current_activity + 1);
     if(next_index < m_activity_ids.size())
     {
         const auto& next_activity = this->get_activity(*activity_set, next_index, slot(service::slots::UPDATE));
@@ -518,7 +519,7 @@ void sequencer::validate_next()
         }
         else
         {
-            disable_activity(int(next_index));
+            disable_activity(static_cast<int>(next_index));
             SIGHT_DEBUG(error);
 
             m_next_invalid->async_emit();
@@ -539,7 +540,7 @@ void sequencer::validate_next()
 
                 if(!next_ok)
                 {
-                    disable_activity(int(last_valid));
+                    disable_activity(static_cast<int>(last_valid));
                     SIGHT_DEBUG(next_error);
 
                     break;
@@ -550,7 +551,7 @@ void sequencer::validate_next()
         // Disable all next activities
         while(++last_valid < activity_set->size())
         {
-            disable_activity(int(last_valid));
+            disable_activity(static_cast<int>(last_valid));
         }
     }
 }
@@ -601,8 +602,8 @@ void sequencer::disable_activity(int _index)
 service::connections_t sequencer::auto_connections() const
 {
     connections_t connections;
-    connections.push(ACTIVITY_SET_INOUT, data::activity_set::ADDED_OBJECTS_SIG, service::slots::UPDATE);
-    connections.push(ACTIVITY_SET_INOUT, data::activity_set::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(ACTIVITY_SET_INOUT, data::activity_set::signals::ADDED_OBJECTS, service::slots::UPDATE);
+    connections.push(ACTIVITY_SET_INOUT, data::signals::MODIFIED, service::slots::UPDATE);
     return connections;
 }
 

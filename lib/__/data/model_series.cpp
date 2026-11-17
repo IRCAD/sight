@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,12 +22,7 @@
 
 #include "data/model_series.hpp"
 
-#include <core/com/signal.hpp>
-#include <core/com/signal.hxx>
-#include <core/com/signals.hpp>
-
 #include <data/exception.hpp>
-#include <data/image.hpp>
 #include <data/reconstruction.hpp>
 #include <data/registry/macros.hpp>
 
@@ -36,16 +31,11 @@ SIGHT_REGISTER_DATA(sight::data::model_series)
 namespace sight::data
 {
 
-const core::com::signals::key_t model_series::RECONSTRUCTIONS_ADDED_SIG   = "reconstructionsAdded";
-const core::com::signals::key_t model_series::RECONSTRUCTIONS_REMOVED_SIG = "reconstructionsRemoved";
-
 model_series::model_series() :
-    has_fiducials(m_signals),
-    m_sig_reconstructions_added(std::make_shared<reconstructions_added_signal_t>()),
-    m_sig_reconstructions_removed(std::make_shared<reconstructions_removed_signal_t>())
+    has_fiducials(has_signals::signals())
 {
-    m_signals(RECONSTRUCTIONS_ADDED_SIG, m_sig_reconstructions_added)
-        (RECONSTRUCTIONS_REMOVED_SIG, m_sig_reconstructions_removed);
+    new_signal<signals::reconstructions_added_t>(signals::RECONSTRUCTIONS_ADDED);
+    new_signal<signals::reconstructions_removed_t>(signals::RECONSTRUCTIONS_REMOVED);
 }
 
 //------------------------------------------------------------------------------

@@ -9,9 +9,8 @@
 
             <!-- This is the source image for the filtering. -->
             <object uid="image1" type="sight::data::image" />
-            <!-- This is the output image for the filtering. "deferred" defines that the image is not created at the
-                 beginning, but will be created by a service. -->
-            <object uid="image2" type="sight::data::image" deferred="true" />
+            <!-- This is the output image for the filtering. -->
+            <object uid="image2" type="sight::data::image" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
@@ -104,8 +103,7 @@
 
             <!-- Reader of the input image -->
             <service uid="image_reader_srv" type="sight::module::ui::io::selector">
-                <inout key="data" uid="image1" />
-                <type mode="reader" />
+                <data read="${image1}" />
             </service>
 
             <!--
@@ -115,11 +113,9 @@
                 The two images are declared above.
              -->
             <service uid="image_filter_srv" type="sight::module::filter::image::threshold">
-                <in key="source" uid="image1" />
-                <out key="target" uid="image2" />
-                <config>
-                    <threshold>50</threshold>
-                </config>
+                <input image="${image1}" />
+                <output image="${image2}" />
+                <config lower="50" upper="255" />
             </service>
 
             <!--
@@ -129,8 +125,8 @@
                 The two images are declared above.
              -->
             <service uid="image_flipper_srv" type="sight::module::filter::image::flip">
-                <in key="source" uid="image1" />
-                <out key="target" uid="image2" />
+                <input image="${image1}" />
+                <output image="${image2}" />
             </service>
 
             <!--
@@ -138,7 +134,7 @@
                 This is the source image for the filtering.
             -->
             <service uid="image1_srv" type="sight::module::viz::sample::image">
-                <in key="image" uid="image1" />
+                <data image="${image1}" />
             </service>
 
             <!--
@@ -146,7 +142,7 @@
                 This is the output image for the filtering.
             -->
             <service uid="image2_srv" type="sight::module::viz::sample::image">
-                <in key="image" uid="image2" />
+                <data image="${image2}" />
             </service>
 
             <connect>

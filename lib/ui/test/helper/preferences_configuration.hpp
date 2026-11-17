@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -39,4 +39,4 @@ public:
     SIGHT_UI_TEST_API static void fill(tester& _tester, const std::map<std::string, std::string>& _values);
 };
 
-} // namespace sight::ui::testCore::helper
+} // namespace sight::ui::test::helper

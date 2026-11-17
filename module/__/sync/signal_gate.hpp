@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -54,14 +54,14 @@ public:
 
     SIGHT_DECLARE_SERVICE(signal_gate, sight::service::controller);
 
-    /**
-     * @name Signals API
-     * @{
-     */
-    static const core::com::signals::key_t ALL_RECEIVED_SIG;
-    using all_received_signal_t = core::com::signal<void ()>;
-    using received_signal_t     = core::com::slot<void ()>;
-    /** @} */
+    struct signals
+    {
+        /// Slot type used for signal connections
+        using received_t = core::com::slot<void ()>;
+
+        using all_received_t = core::com::signal<void ()>;
+        static inline const signal_key_t ALL_RECEIVED = "all_received";
+    };
 
     /// Constructor
     signal_gate();
@@ -91,7 +91,7 @@ private:
     /// Keep track of received signals
     std::vector<bool> m_flags;
 
-    std::vector<received_signal_t::sptr> m_waiting_slots;
+    std::vector<signals::received_t::sptr> m_waiting_slots;
 
     /// Store all internal signal connections
     core::com::helper::sig_slot_connection m_connections;

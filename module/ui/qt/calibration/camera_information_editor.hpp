@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -63,8 +63,10 @@ public:
 
     SIGHT_DECLARE_SERVICE(camera_information_editor, sight::ui::editor);
 
-    static const core::com::slots::key_t UPDATE_INFOS_SLOT;
-    using update_infos_slot_t = core::com::slot<void ()>;
+    struct slots
+    {
+        static inline const slot_key_t UPDATE_INFOS = "updateInfos";
+    };
 
     /**
      * @brief Constructor.
@@ -74,8 +76,9 @@ public:
     /**
      * @brief Destructor.
      */
-    ~camera_information_editor() noexcept override =
-        default;
+    ~camera_information_editor() noexcept override = default;
+
+protected:
 
     /**
      * @brief Configuring method : This method is used to configure the service.
@@ -98,9 +101,9 @@ public:
     {
     }
 
-protected:
-
     service::connections_t auto_connections() const override;
+
+private:
 
     /**
      * @brief Slot: Updates the informations of the intrinsic calibration.

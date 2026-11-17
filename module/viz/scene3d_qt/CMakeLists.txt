@@ -8,3 +8,7 @@ target_compile_definitions(${SIGHT_TARGET} PUBLIC "QT_NO_KEYWORDS")
 add_dependencies(${SIGHT_TARGET} module_viz_scene3d module_service module_ui_icons)
 
 target_link_libraries(${SIGHT_TARGET} PUBLIC core data io_opencv ui ui_qt viz_scene3d)
+
+if(SIGHT_BUILD_TESTS)
+    add_subdirectory(test/ut)
+endif()

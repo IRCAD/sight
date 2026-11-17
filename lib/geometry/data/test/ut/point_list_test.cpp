@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2025 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -128,24 +128,22 @@ TEST_SUITE("sight::geometry::data::point_list")
             pl1->push_back(std::make_shared<sight::data::point>(0.0F, 1.0F, 1.0F));
 
             // Reference list
-            const sight::data::point_list::container_t points1 = pl1->get_points();
-            const std::size_t size                             = points1.size();
+            const std::size_t size = pl1->size();
 
             sight::data::point_list::sptr pl2 = std::make_shared<sight::data::point_list>();
             for(std::size_t i = 0 ; i < size ; i++)
             {
-                const auto& tmp = (*points1[i]);
+                const auto& tmp = *(*pl1)[i];
                 pl2->push_back(std::make_shared<sight::data::point>(tmp[0], tmp[1], tmp[2]));
             }
 
             const auto tf1 = std::make_shared<sight::data::matrix4>();
             sight::geometry::data::point_list::transform(pl1, tf1);
 
-            const sight::data::point_list::container_t points2 = pl2->get_points();
             for(std::size_t i = 0 ; i < size ; i++)
             {
-                const auto& tmp1 = (*points1[i]);
-                const auto& tmp2 = (*points2[i]);
+                const auto& tmp1 = *(*pl1)[i];
+                const auto& tmp2 = *(*pl2)[i];
 
                 CHECK(tmp2[0] == doctest::Approx(tmp1[0]).epsilon(1e-8));
                 CHECK(tmp2[1] == doctest::Approx(tmp1[1]).epsilon(1e-8));
@@ -173,13 +171,12 @@ TEST_SUITE("sight::geometry::data::point_list")
             pl1->push_back(std::make_shared<sight::data::point>(0.0F, 1.0F, 1.0F));
 
             // Reference list
-            const sight::data::point_list::container_t points1 = pl1->get_points();
-            const std::size_t size                             = points1.size();
+            const std::size_t size = pl1->size();
 
             sight::data::point_list::sptr pl2 = std::make_shared<sight::data::point_list>();
             for(std::size_t i = 0 ; i < size ; i++)
             {
-                const auto& tmp = (*points1[i]);
+                const auto& tmp = *(*pl1)[i];
                 pl2->push_back(
                     std::make_shared<sight::data::point>(
                         tmp[0] + translation[0],
@@ -195,11 +192,10 @@ TEST_SUITE("sight::geometry::data::point_list")
             (*tf1)(2, 3) = translation[2];
             sight::geometry::data::point_list::transform(pl1, tf1);
 
-            const sight::data::point_list::container_t points2 = pl2->get_points();
             for(std::size_t i = 0 ; i < size ; i++)
             {
-                const auto& tmp1 = (*points1[i]);
-                const auto& tmp2 = (*points2[i]);
+                const auto& tmp1 = *(*pl1)[i];
+                const auto& tmp2 = *(*pl2)[i];
 
                 CHECK(tmp2[0] == doctest::Approx(tmp1[0]).epsilon(1e-8));
                 CHECK(tmp2[1] == doctest::Approx(tmp1[1]).epsilon(1e-8));
@@ -240,14 +236,12 @@ TEST_SUITE("sight::geometry::data::point_list")
 
             sight::geometry::data::point_list::transform(pl1, tf1);
 
-            const sight::data::point_list::container_t points1 = pl1->get_points();
-            std::size_t size                                   = points1.size();
-            const sight::data::point_list::container_t points2 = pl2->get_points();
+            std::size_t size = pl1->size();
 
             for(std::size_t i = 0 ; i < size ; i++)
             {
-                const auto& tmp1 = (*points1[i]);
-                const auto& tmp2 = (*points2[i]);
+                const auto& tmp1 = *(*pl1)[i];
+                const auto& tmp2 = *(*pl2)[i];
 
                 CHECK_EQ(tmp1[0], doctest::Approx(tmp2[0]).epsilon(1e-8));
                 CHECK_EQ(tmp1[1], doctest::Approx(tmp2[1]).epsilon(1e-8));
@@ -308,15 +302,12 @@ TEST_SUITE("sight::geometry::data::point_list")
             // Check that the two list are equal (re-ordered)
             // Only the last component should differ, as there is a (0,0,42) translation
             // on the first one and a (0,0,-42) translation on the second one
-            const sight::data::point_list::container_t points1 = pl1->get_points();
-            const sight::data::point_list::container_t points2 = pl2->get_points();
-
-            const std::size_t size = points1.size();
+            const std::size_t size = pl1->size();
 
             for(std::size_t i = 0 ; i < size ; i++)
             {
-                const auto& tmp1 = (*points1[i]);
-                const auto& tmp2 = (*points2[i]);
+                const auto& tmp1 = *(*pl1)[i];
+                const auto& tmp2 = *(*pl2)[i];
 
                 // Check that the last component is equal to i
                 CHECK(tmp2[0] == doctest::Approx(tmp1[0]).epsilon(1e-8));
@@ -372,16 +363,13 @@ TEST_SUITE("sight::geometry::data::point_list")
 
             // Check that the two lists are equal
             // The second one corresponds to a Z translation + a 90 degrees Y translation of the first one
-            const sight::data::point_list::container_t points1 = pl1->get_points();
-            const sight::data::point_list::container_t points2 = pl2->get_points();
-
-            const std::size_t size  = points1.size();
+            const std::size_t size  = pl1->size();
             const int nb_components = 3;
 
             for(std::size_t i = 0 ; i < size ; i++)
             {
-                const auto& tmp1 = (*points1[i]);
-                const auto& tmp2 = (*points2[i]);
+                const auto& tmp1 = *(*pl1)[i];
+                const auto& tmp2 = *(*pl2)[i];
 
                 // Compare the components
                 for(std::size_t j = 0 ; j < nb_components ; j++)

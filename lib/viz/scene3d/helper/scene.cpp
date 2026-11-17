@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2025 IRCAD France
+ * Copyright (C) 2015-2026 IRCAD France
  * Copyright (C) 2015-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,6 +24,10 @@
 
 #include "camera.hpp"
 
+#include <OgreEntity.h>
+#include <algorithm>
+#include <cmath>
+#include <limits>
 #include <stack>
 
 namespace sight::viz::scene3d::helper
@@ -59,7 +63,7 @@ Ogre::SceneNode* scene::get_node_by_id(
         const Ogre::Node::ChildNodeMap& node_children = top_node->getChildren();
         stack.pop_back();
 
-        std::copy(node_children.cbegin(), node_children.cend(), std::back_inserter(stack));
+        std::ranges::copy(node_children, std::back_inserter(stack));
     }
 
     return found_node;
@@ -85,6 +89,13 @@ Ogre::AxisAlignedBox scene::compute_bounding_box(const Ogre::SceneNode* _root_sc
         const Ogre::SceneNode::ObjectMap& entities = temp_scene_node->getAttachedObjects();
         for(auto* const movable : entities)
         {
+            auto& user          = movable->getUserObjectBindings();
+            const auto& exclude = user.getUserAny(sight::viz::scene3d::helper::scene::EXCLUDE_FROM_CAMERA_RESET_FLAG);
+            if(exclude.has_value() && any_cast<bool>(exclude))
+            {
+                continue;
+            }
+
             if(const Ogre::Entity* entity = dynamic_cast<Ogre::Entity*>(movable))
             {
                 if(entity->isVisible())
@@ -150,6 +161,14 @@ std::pair<Ogre::Vector2, Ogre::Vector2> scene::compute_bounding_rect(
         {
             return sight::viz::scene3d::helper::camera::convert_world_space_to_screen_space(_camera, _world_pos);
         });
+    if(std::ranges::any_of(
+           corners_screen_pos,
+           [](const Ogre::Vector2& _p){return !std::isfinite(_p.x) || !std::isfinite(_p.y);}))
+    {
+        constexpr auto nan = std::numeric_limits<float>::quiet_NaN();
+        return {{nan, nan}, {nan, nan}};
+    }
+
     std::array<float, s_NB_CORNERS> screen_x {};
     std::array<float, s_NB_CORNERS> screen_y {};
     for(std::size_t i = 0 ; i < corners_screen_pos.size() ; i++)

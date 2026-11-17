@@ -227,12 +227,12 @@ endif()
 # Linking
 #
 
-# -fuse-ld=gold will make use of gold linker, which is faster and allows --gdb-index
-# -fuse-ld=lld is even a lot faster but only guaranteed to be installed with clang
-add_link_options("$<$<CXX_COMPILER_ID:GNU>:-fuse-ld=gold>" "$<$<CXX_COMPILER_ID:Clang>:-fuse-ld=lld>")
+# -fuse-ld=lld is a lot faster than the default linker and allows --gdb-index
+# GCC keeps the default linker: gold is gone, and with lld gdb spends 35 s reading the GCC macro debug info
+add_link_options("$<$<CXX_COMPILER_ID:Clang>:-fuse-ld=lld>")
 
 # -Wl,--gdb-index pass the --gdb-index option to the linker to generate indexes that will speedup gdb start
-add_link_options("$<$<AND:$<CXX_COMPILER_ID:GNU,Clang>,$<CONFIG:Debug>>:-Wl,--gdb-index>")
+add_link_options("$<$<AND:$<CXX_COMPILER_ID:Clang>,$<CONFIG:Debug>>:-Wl,--gdb-index>")
 
 # General linker optimization
 add_link_options(
@@ -260,7 +260,9 @@ if(NOT TARGET coverage)
 
         string(
             CONCAT coverage_script
-                   "gcovr -j $LINUX_PARALLEL_BUILDS -r .. --filter ../lib --filter ../module --exclude '.*test.*' "
+                   # --merge-lines: gcovr >= 8.4 counts each template instance separately
+                   "gcovr -j $LINUX_PARALLEL_BUILDS -r .. --merge-lines --filter ../lib --filter ../module "
+                   "--exclude '.*test.*' "
                    "--exclude-noncode-lines --html --html-details coverage/index.html --html-theme github.dark-blue "
                    "--xml coverage/cobertura-coverage.xml --print-summary "
                    # suspicious hits are sometimes generated from big multithreaded tests

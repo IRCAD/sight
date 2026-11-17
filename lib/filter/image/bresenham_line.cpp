@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,7 +30,7 @@ namespace sight::filter::image
 //------------------------------------------------------------------------------
 
 bresenham_line::path_t bresenham_line::draw(
-    const Orientation _orientation,
+    const orientation _orientation,
     const coordinates_t& _start_coord,
     const coordinates_t& _end_coord
 )
@@ -40,17 +40,17 @@ bresenham_line::path_t bresenham_line::draw(
 
     switch(_orientation)
     {
-        case Orientation::x_axis:
+        case orientation::x_axis:
             dim0 = 1;
             dim1 = 2;
             break;
 
-        case Orientation::y_axis:
+        case orientation::y_axis:
             dim0 = 0;
             dim1 = 2;
             break;
 
-        case Orientation::z_axis:
+        case orientation::z_axis:
             dim0 = 0;
             dim1 = 1;
             break;

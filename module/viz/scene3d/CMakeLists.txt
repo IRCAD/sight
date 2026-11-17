@@ -1,3 +1,7 @@
 sight_add_target(module_viz_scene3d TYPE MODULE)
 
 target_link_libraries(module_viz_scene3d PUBLIC viz_scene3d geometry_data)
+
+if(SIGHT_BUILD_TESTS)
+    add_subdirectory(test/ut)
+endif()

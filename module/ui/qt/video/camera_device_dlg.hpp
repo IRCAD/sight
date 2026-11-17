@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "camera.hpp"
-
 #include <core/macros.hpp>
 
 #include <QComboBox>
@@ -33,7 +31,7 @@
 namespace sight::data
 {
 
-class Camera;
+class camera;
 
 } // namespace sight::data
 
@@ -55,7 +53,7 @@ public:
     /// destructor
     ~camera_device_dlg() override = default;
 
-    bool get_selected_camera(SPTR(data::camera) & _camera, std::string& _resolution_xml_option);
+    bool get_selected_camera(sight::sptr<data::camera>& _camera, std::string& _resolution_xml_option);
     // filter the list of supported resolution to extract the lowest, highest and medium resolution in relation to
     // `resolutionType`
     QSize get_resolution(

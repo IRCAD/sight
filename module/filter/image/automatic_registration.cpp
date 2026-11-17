@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2025 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,22 +22,13 @@
 
 #include "automatic_registration.hpp"
 
-#include <service/macros.hpp>
-
-#include <ui/__/dialog/progress.hpp>
-
-#include <chrono>
-#include <fstream>
-#include <iomanip>
-
 namespace sight::module::filter::image
 {
 
 //------------------------------------------------------------------------------
 
 automatic_registration::automatic_registration() :
-    filter(m_signals),
-    has_parameters(m_slots)
+    filter(has_signals::signals())
 {
 }
 
@@ -122,7 +113,7 @@ void automatic_registration::updating()
     };
     sight::filter::image::perform_automatic_registration(*target, *reference, *transform, params);
 
-    this->signal<signals::computed_t>(signals::COMPUTED)->async_emit();
+    this->async_emit(signals::SUCCEEDED);
     transform->async_emit(sight::data::signals::MODIFIED);
 }
 
@@ -137,72 +128,16 @@ void automatic_registration::stopping()
 service::connections_t automatic_registration::auto_connections() const
 {
     return {
-        {TARGET_IN, data::image::MODIFIED_SIG, service::slots::UPDATE},
-        {TARGET_IN, data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE},
-        {REFERENCE_IN, data::image::MODIFIED_SIG, service::slots::UPDATE},
-        {REFERENCE_IN, data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE},
-        {TRANSFORM_INOUT, data::matrix4::MODIFIED_SIG, service::slots::UPDATE}
+        {TARGET_IN, data::signals::MODIFIED, service::slots::UPDATE},
+        {TARGET_IN, data::image::signals::BUFFER_MODIFIED, service::slots::UPDATE},
+        {REFERENCE_IN, data::signals::MODIFIED, service::slots::UPDATE},
+        {REFERENCE_IN, data::image::signals::BUFFER_MODIFIED, service::slots::UPDATE},
+        {TRANSFORM_INOUT, data::signals::MODIFIED, service::slots::UPDATE}
     };
 }
 
 //------------------------------------------------------------------------------
 
-void automatic_registration::set_enum_parameter(std::string _val, std::string _key)
-{
-    if(_key == "metric")
-    {
-        set_metric(_val);
-    }
-    else
-    {
-        SIGHT_FATAL("Key must be 'metric', unknown key :" << _key);
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void automatic_registration::set_double_parameter(double _val, std::string _key)
-{
-    if(_key == "minStep")
-    {
-        m_min_step = _val;
-    }
-    else if(_key.find("sigma_") != std::string::npos)
-    {
-        const std::uint64_t level = this->extract_level_from_parameter_name(_key);
-        m_multi_resolution_parameters[level].second = _val;
-    }
-    else if(_key == "samplingPercentage")
-    {
-        m_sampling_percentage = _val;
-    }
-    else
-    {
-        SIGHT_FATAL("Unknown key : " << _key);
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void automatic_registration::set_int_parameter(int _val, std::string _key)
-{
-    if(_key == "maxIterations")
-    {
-        SIGHT_FATAL_IF("The number of iterations must be greater than 0 !!", _val <= 0);
-        m_max_iterations = static_cast<std::uint64_t>(_val);
-    }
-    else if(_key.find("shrink_") != std::string::npos)
-    {
-        const std::uint64_t level = this->extract_level_from_parameter_name(_key);
-        m_multi_resolution_parameters[level].first = static_cast<std::size_t>(_val);
-    }
-    else
-    {
-        SIGHT_FATAL("Unknown key : " << _key);
-    }
-}
-
-//------------------------------------------------------------------------------
 std::uint64_t automatic_registration::extract_level_from_parameter_name(const std::string& _name)
 {
     // find the level

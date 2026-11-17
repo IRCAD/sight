@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,22 +25,14 @@
 #include "module/viz/scene3d/adaptor/shader_parameter.hpp"
 #include "module/viz/scene3d/adaptor/texture.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
 #include <core/ptree.hpp>
 
 #include <data/helper/field.hpp>
 #include <data/map.hpp>
-#include <data/matrix4.hpp>
 #include <data/string.hpp>
-
-#include <service/op.hpp>
 
 #include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/helper/shading.hpp>
-#include <viz/scene3d/utils.hpp>
-
-#include <string>
 
 namespace sight::module::viz::scene3d::adaptor
 {
@@ -92,6 +84,9 @@ void material::configuring(const config_t& _config)
 
     // Make sure the representation is properly defined
     m_representation_mode = sight::data::material::string_to_representation_mode(representation_mode);
+
+    const auto options_mode = _config.get<std::string>(CONFIG + "options", "standard");
+    m_options_mode = sight::data::material::string_to_options_mode(options_mode);
 }
 
 //------------------------------------------------------------------------------
@@ -145,6 +140,7 @@ void material::starting()
         }
 
         material->set_representation_mode(m_representation_mode);
+        material->set_options_mode(m_options_mode);
 
         if(const auto material_field = material->get_field("material", nullptr); material_field != nullptr)
         {
@@ -188,12 +184,12 @@ void material::starting()
         if(m_tex_adaptor->get_texture_name().empty())
         {
             m_tex_adaptor->set_render_service(this->render_service());
-            m_tex_adaptor->set_layer_id(m_layer_id);
+            m_tex_adaptor->set_layer_id(layer_id());
         }
 
         m_texture_connection.connect(
             m_tex_adaptor,
-            module::viz::scene3d::adaptor::texture::TEXTURE_SWAPPED_SIG,
+            module::viz::scene3d::adaptor::texture::signals::TEXTURE_SWAPPED,
             this->get_sptr(),
             slots::SWAP_TEXTURE
         );
@@ -221,11 +217,11 @@ void material::starting()
 service::connections_t material::auto_connections() const
 {
     service::connections_t connections = adaptor::auto_connections();
-    connections.push(m_material_data.key(), data::material::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
-    connections.push(m_material_data.key(), data::material::ADDED_FIELDS_SIG, slots::UPDATE_FIELD);
-    connections.push(m_material_data.key(), data::material::CHANGED_FIELDS_SIG, slots::UPDATE_FIELD);
-    connections.push(m_material_data.key(), data::material::ADDED_TEXTURE_SIG, slots::ADD_TEXTURE);
-    connections.push(m_material_data.key(), data::material::REMOVED_TEXTURE_SIG, slots::REMOVE_TEXTURE);
+    connections.push(m_material_data.key(), data::signals::MODIFIED, adaptor::slots::LAZY_UPDATE);
+    connections.push(m_material_data.key(), data::signals::ADDED_FIELDS, slots::UPDATE_FIELD);
+    connections.push(m_material_data.key(), data::signals::CHANGED_FIELDS, slots::UPDATE_FIELD);
+    connections.push(m_material_data.key(), data::material::signals::ADDED_TEXTURE, slots::ADD_TEXTURE);
+    connections.push(m_material_data.key(), data::material::signals::REMOVED_TEXTURE, slots::REMOVE_TEXTURE);
     return connections;
 }
 
@@ -316,26 +312,13 @@ void material::create_shader_parameter_adaptors()
 
         sight::data::object::sptr obj;
 
-        const config_t config = this->get_config();
-
-        if(const auto inouts_cfg = config.get_child_optional("inout"); inouts_cfg.has_value())
+        for(const auto& uniform_object : m_uniform_objects)
         {
-            const auto group = inouts_cfg->get<std::string>("<xmlattr>.group", "");
-            if(group == "uniforms")
+            const auto index = uniform_object.first;
+            if(m_uniform_names[index].const_lock()->value() == constant_name)
             {
-                std::size_t i = 0;
-                for(const auto& it_cfg : boost::make_iterator_range(inouts_cfg->equal_range("key")))
-                {
-                    const auto name = it_cfg.second.get<std::string>("<xmlattr>.name");
-                    SIGHT_ASSERT("Missing 'name' tag.", !name.empty());
-
-                    if(name == constant_name)
-                    {
-                        obj = m_uniforms[i].lock().get_shared();
-                    }
-
-                    ++i;
-                }
+                obj = uniform_object.second->lock().get_shared();
+                break;
             }
         }
 
@@ -384,7 +367,7 @@ void material::create_shader_parameter_adaptors()
                 "sight::module::viz::scene3d::adaptor::shader_parameter",
                 id
             );
-        srv->set_inout(obj, "parameter", true);
+        srv->set_inout(obj, "data.parameter", true);
 
         // Naming convention for shader parameters
         srv->set_render_service(this->render_service());
@@ -394,7 +377,7 @@ void material::create_shader_parameter_adaptors()
         srv_config.add("config.<xmlattr>.shader_type", shader_type_str);
         srv_config.add("config.<xmlattr>.material_name", m_material_name);
 
-        srv->set_layer_id(m_layer_id);
+        srv->set_layer_id(layer_id());
         srv->set_config(srv_config);
         srv->configure();
         srv->start();
@@ -413,9 +396,8 @@ void material::set_texture_name(const std::string& _texture_name)
     {
         auto texture_adaptors = this->render_service()->get_adaptors<sight::module::viz::scene3d::adaptor::texture>();
         auto result           =
-            std::find_if(
-                texture_adaptors.begin(),
-                texture_adaptors.end(),
+            std::ranges::find_if(
+                texture_adaptors,
                 [_texture_name](const module::viz::scene3d::adaptor::texture::sptr& _srv)
             {
                 return _srv->get_texture_name() == _texture_name;
@@ -550,14 +532,14 @@ void material::create_texture_adaptor()
 
         m_tex_adaptor->set_id(gen_id(m_tex_adaptor->get_id()));
         m_tex_adaptor->set_render_service(this->render_service());
-        m_tex_adaptor->set_layer_id(m_layer_id);
+        m_tex_adaptor->set_layer_id(layer_id());
 
         const std::string material_name = material->get_id();
         m_tex_adaptor->set_texture_name(material_name + "_Texture");
 
         m_texture_connection.connect(
             m_tex_adaptor,
-            module::viz::scene3d::adaptor::texture::TEXTURE_SWAPPED_SIG,
+            module::viz::scene3d::adaptor::texture::signals::TEXTURE_SWAPPED,
             this->get_sptr(),
             module::viz::scene3d::adaptor::material::slots::SWAP_TEXTURE
         );

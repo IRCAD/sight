@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -63,14 +63,12 @@ public:
 
     SIGHT_DECLARE_SERVICE(calibration_info_editor, sight::ui::editor);
 
-    /**
-     * @name Slots API
-     * @{
-     */
-    static const core::com::slots::key_t REMOVE_SLOT;
-    static const core::com::slots::key_t RESET_SLOT;
-    static const core::com::slots::key_t GET_SELECTION_SLOT;
-    ///@}
+    struct slots
+    {
+        static inline const slot_key_t REMOVE        = "remove";
+        static inline const slot_key_t RESET         = "reset";
+        static inline const slot_key_t GET_SELECTION = "get_selection";
+    };
 
     calibration_info_editor() noexcept;
     ~calibration_info_editor() noexcept final = default;

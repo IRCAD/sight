@@ -47,9 +47,9 @@ TEST_SUITE("sight::data::calibration_info")
         auto pt2 = std::make_shared<sight::data::point>(4.0, 5.0, 6.0);
         auto pt3 = std::make_shared<sight::data::point>(7.0, 8.0, 9.0);
 
-        pl->get_points().push_back(pt1);
-        pl->get_points().push_back(pt2);
-        pl->get_points().push_back(pt3);
+        pl->push_back(pt1);
+        pl->push_back(pt2);
+        pl->push_back(pt3);
 
         cal_info->add_record(img, pl);
 
@@ -97,9 +97,9 @@ TEST_SUITE("sight::data::calibration_info")
         auto pt2 = std::make_shared<sight::data::point>(4.0, 5.0, 6.0);
         auto pt3 = std::make_shared<sight::data::point>(7.0, 8.0, 9.0);
 
-        pl->get_points().push_back(pt1);
-        pl->get_points().push_back(pt2);
-        pl->get_points().push_back(pt3);
+        pl->push_back(pt1);
+        pl->push_back(pt2);
+        pl->push_back(pt3);
 
         cal_info->add_record(img, pl);
 
@@ -124,9 +124,9 @@ TEST_SUITE("sight::data::calibration_info")
         auto pt2 = std::make_shared<sight::data::point>(4.0, 5.0, 6.0);
         auto pt3 = std::make_shared<sight::data::point>(7.0, 8.0, 9.0);
 
-        pl->get_points().push_back(pt1);
-        pl->get_points().push_back(pt2);
-        pl->get_points().push_back(pt3);
+        pl->push_back(pt1);
+        pl->push_back(pt2);
+        pl->push_back(pt3);
 
         cal_info1->add_record(img, pl);
 
@@ -182,23 +182,19 @@ TEST_SUITE("sight::data::calibration_info")
         auto img1 = std::make_shared<sight::data::image>();
         sight::utest_data::generator::image::generate_random_image(img1, sight::core::type::INT16);
         auto pl1 = std::make_shared<sight::data::point_list>();
-        pl1->set_points(
-            {std::make_shared<sight::data::point>(1., 2., 3.), std::make_shared<sight::data::point>(4., 5., 6.),
-             std::make_shared<sight::data::point>(.7, 8., 9.)
-            });
+        *pl1 = {std::make_shared<sight::data::point>(1., 2., 3.),
+                std::make_shared<sight::data::point>(4., 5., 6.),
+                std::make_shared<sight::data::point>(.7, 8., 9.)
+        };
         cal_info->add_record(img1, pl1);
 
         auto img2 = std::make_shared<sight::data::image>();
         sight::utest_data::generator::image::generate_random_image(img2, sight::core::type::INT16);
         auto pl2 = std::make_shared<sight::data::point_list>();
-        pl2->set_points(
-            {std::make_shared<sight::data::point>(10., 11., 12.), std::make_shared<sight::data::point>(
-                 13.,
-                 14.,
-                 15.
-             ),
-             std::make_shared<sight::data::point>(16., 17., 18.)
-            });
+        *pl2 = {std::make_shared<sight::data::point>(10., 11., 12.),
+                std::make_shared<sight::data::point>(13., 14., 15.),
+                std::make_shared<sight::data::point>(16., 17., 18.)
+        };
         cal_info->add_record(img2, pl2);
 
         CHECK_EQ(std::const_pointer_cast<const sight::data::image>(img1), cal_info->get_image(pl1));

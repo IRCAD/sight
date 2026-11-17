@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2025 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,37 +24,27 @@
 
 #include "detail/query.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-#include <core/progress/observer.hpp>
+#include <core/notification/observer.hpp>
 #include <core/thread/timer.hpp>
 
-#include <data/array.hpp>
 #include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
 #include <data/integer.hpp>
-#include <data/map.hpp>
 #include <data/series.hpp>
 #include <data/series_set.hpp>
 
-#include <io/__/service/reader.hpp>
 #include <io/dicom/helper/series.hpp>
 #include <io/dicom/reader/file.hpp>
 #include <io/http/exceptions/base.hpp>
 
-#include <service/op.hpp>
-
 #include <ui/__/dialog/message.hpp>
-#include <ui/__/preferences.hpp>
 #include <ui/qt/container/widget.hpp>
-
-#include <boost/lexical_cast.hpp>
 
 #include <QApplication>
 #include <QComboBox>
-#include <qdebug.h>
 #include <QHBoxLayout>
 #include <QMouseEvent>
+#include <qdebug.h>
 
 #include <utility>
 
@@ -66,7 +56,7 @@ namespace sight::module::io::dicomweb
 service::connections_t slice_index_dicom_puller_editor::auto_connections() const
 {
     service::connections_t connections;
-    connections.push(m_series, data::series::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(m_series, data::signals::MODIFIED, service::slots::UPDATE);
 
     return connections;
 }
@@ -254,7 +244,7 @@ void slice_index_dicom_puller_editor::read_image(sight::data::series& _series, s
     reader->set_object(reading_series);
     reader->set_files({path.string()});
 
-    auto observer = std::make_shared<sight::core::progress::observer>("Read slice");
+    auto observer = std::make_shared<sight::core::notification::observer>("Read slice");
     reader->read(observer);
 
     //Copy image
@@ -286,7 +276,7 @@ void slice_index_dicom_puller_editor::read_image(sight::data::series& _series, s
             m_sagittal_index->value()
         );
 
-        image->async_emit(data::image::MODIFIED_SIG);
+        image->async_emit(data::signals::MODIFIED);
     }
 }
 
@@ -308,7 +298,7 @@ void slice_index_dicom_puller_editor::pull_instance(sight::data::series& _series
         body.insert("Limit", 0);
 
         const std::string pacs_server("http://" + *m_server_hostname + ":" + std::to_string(*m_server_port));
-        sight::io::http::request::sptr request = sight::io::http::request::New(pacs_server + "/tools/find");
+        sight::io::http::request::sptr request = sight::io::http::request::make(pacs_server + "/tools/find");
         QByteArray series_answer;
         try
         {
@@ -330,7 +320,7 @@ void slice_index_dicom_puller_editor::pull_instance(sight::data::series& _series
         // This the series ID on the server, which may be different from the SeriesInstanceUID
         const std::string series_server_id(series_array.at(0).toString().toStdString());
         const std::string instances_url(pacs_server + "/series/" + series_server_id);
-        const QByteArray& instances_answer = m_client_qt.get(sight::io::http::request::New(instances_url));
+        const QByteArray& instances_answer = m_client_qt.get(sight::io::http::request::make(instances_url));
         json_response = QJsonDocument::fromJson(instances_answer);
         const QJsonObject& json_obj       = json_response.object();
         const QJsonArray& instances_array = json_obj["Instances"].toArray();
@@ -345,7 +335,7 @@ void slice_index_dicom_puller_editor::pull_instance(sight::data::series& _series
         try
         {
             const std::string instance_file_url(pacs_server + "/instances/" + instance_server_id + "/file");
-            m_client_qt.get_file(sight::io::http::request::New(instance_file_url), path);
+            m_client_qt.get_file(sight::io::http::request::make(instance_file_url), path);
         }
         catch(sight::io::http::exceptions::content_not_found& exception)
         {

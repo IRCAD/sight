@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2024 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,6 +34,14 @@ class network_listener : public service::controller
 {
 public:
 
+    struct signals
+    {
+        using connected_t    = core::com::signal<void ()>;
+        using disconnected_t = core::com::signal<void ()>;
+        static inline const signal_key_t CONNECTED    = "connected";
+        static inline const signal_key_t DISCONNECTED = "disconnected";
+    };
+
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(network_listener, service::controller);
 
@@ -45,22 +53,8 @@ public:
 
 protected:
 
-    /// Defines the signal's name emitted when service is connected.
-    static const core::com::signals::key_t CONNECTED_SIGNAL;
-
-    /// Defines the signal's name emitted when service is disconnected.
-    static const core::com::signals::key_t DISCONNECTED_SIGNAL;
-
     /// Does nothing.
     void updating() override;
-
-    /// Defines the signal emitted when service is connected.
-    using connected_signal_t = core::com::signal<void ()>;
-    connected_signal_t::sptr m_sig_connected;
-
-    /// Defines the signal emitted when service is disconnected.
-    using disconnect_signal_t = core::com::signal<void ()>;
-    disconnect_signal_t::sptr m_sig_disconnected;
 };
 
 } // namespace sight::module::io::igtl.

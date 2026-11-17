@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,16 +23,15 @@
 
 #include "data/model_series.hpp"
 
-#include "io/dicom/codec/nvjpeg2k.hpp"
+#ifdef SIGHT_ENABLE_NVJPEG2K
+    #include <io/bitmap/backend.hpp>
+    #include <io/dicom/codec/nvjpeg2k.hpp>
+#endif
 
-#include <core/macros.hpp>
-#include <core/progress/observer.hpp>
+#include <core/notification/observer.hpp>
 
 #include <data/fiducials_series.hpp>
-#include <data/helper/medical_image.hpp>
 #include <data/image_series.hpp>
-
-#include <io/bitmap/writer.hpp>
 
 #include <gdcmImageChangeTransferSyntax.h>
 #include <gdcmImageWriter.h>
@@ -46,6 +45,8 @@
 namespace sight::io::dicom::writer
 {
 
+static const std::string S_FIDUCIALS_FILE_EXT = "fiducials.dcm";
+
 /// Decode image orientation / position
 /// GDCM doesn't handle Enhanced US Volume (which is rather a complicated case)
 /// see @link https://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.8.24.2.html
@@ -56,19 +57,6 @@ inline static void compute_transform(
 {
     // Use the image metadata as a lower priority
     _matrix.set_position(_image_series.origin());
-
-    // Try also the magical field "direction"
-    ///@todo remove this when we get rid of the direction "field" from medical image
-    if(const auto& direction_matrix = data::helper::medical_image::get_direction(_image_series); direction_matrix)
-    {
-        for(std::size_t i = 0 ; i < 3 ; ++i)
-        {
-            for(std::size_t j = 0 ; j < 3 ; ++j)
-            {
-                _matrix(i, j) = (*direction_matrix)(i, j);
-            }
-        }
-    }
 
     // But DICOM metadata should have the highest priority !
     if(_image_series.get_ultrasound_acquisition_geometry() == data::dicom::ultrasound_acquisition_geometry_t::apex)
@@ -260,7 +248,7 @@ inline static void write_enhanced_us_volume(
             const auto z_spacing = _image_series.spacing()[2];
 
             // We need to compute the frame position from image origin and z spacing
-            for(std::size_t frame = 0, end_index = std::max(std::size_t(1), _image_series.size()[2]) ;
+            for(std::size_t frame = 0, end_index = std::max(static_cast<std::size_t>(1), _image_series.size()[2]) ;
                 frame < end_index ; ++frame)
             {
                 SIGHT_WARN_IF(
@@ -288,9 +276,9 @@ inline static void write_enhanced_us_volume(
     // Set the image dimensions
     const auto& image_sizes = _image_series.size();
     const std::array<std::uint32_t, 3> dimensions {
-        std::uint32_t(image_sizes[0]),
-        std::uint32_t(image_sizes[1]),
-        std::uint32_t(image_sizes[2])
+        static_cast<std::uint32_t>(image_sizes[0]),
+        static_cast<std::uint32_t>(image_sizes[1]),
+        static_cast<std::uint32_t>(image_sizes[2])
     };
 
     gdcm_image.SetDimensions(dimensions.data());
@@ -337,11 +325,11 @@ inline static void write_enhanced_us_volume(
             gdcm_image.SetPixelFormat(gdcm::PixelFormat::UINT64);
             break;
 
-        case core::type::FLOAT:
+        case core::type::FLOAT32:
             gdcm_image.SetPixelFormat(gdcm::PixelFormat::FLOAT32);
             break;
 
-        case core::type::DOUBLE:
+        case core::type::FLOAT64:
             gdcm_image.SetPixelFormat(gdcm::PixelFormat::FLOAT64);
             break;
 
@@ -368,7 +356,10 @@ inline static void write_enhanced_us_volume(
             break;
 
         default:
-            SIGHT_THROW("Unsupported pixel format: '" << _image_series.pixel_format() << "'");
+            SIGHT_THROW(
+                "Unsupported pixel format: '" << static_cast<unsigned int>(_image_series.pixel_format())
+                << "'"
+            );
     }
 
     // Planar Configuration is always 0 (R1G1B1 R2G2B2 ...)
@@ -390,12 +381,15 @@ inline static void write_enhanced_us_volume(
 
     pixeldata.SetByteValue(
         reinterpret_cast<const char*>(_image_series.buffer()),
-        std::uint32_t(size_in_bytes)
+        static_cast<std::uint32_t>(size_in_bytes)
     );
 
     gdcm_image.SetDataElement(pixeldata);
 
+#ifdef SIGHT_ENABLE_NVJPEG2K
     std::unique_ptr<codec::nvjpeg2k> nvjpeg2k_codec;
+#endif
+
     gdcm::ImageChangeTransferSyntax transfer_syntax_changer;
 
     switch(_transfer_syntax)
@@ -441,7 +435,7 @@ inline static void write_enhanced_us_volume(
                     SIGHT_THROW_IF(
                         "nvJPEG2000 is not available, but the support has been compiled in. "
                         "Check your nvJPEG2000 library installation",
-                        !io::bitmap::nvjpeg2k()
+                        !sight::io::bitmap::nvjpeg2k()
                     );
 
                     nvjpeg2k_codec = std::make_unique<codec::nvjpeg2k>();
@@ -560,13 +554,41 @@ static void write_spatial_fiducials(
 {
     gdcm::Writer writer;
     std::filesystem::path folder = _image_path.parent_path();
-    std::string filename         = _image_path.stem().string() + "_fiducials.dcm";
+    std::string filename         = _image_path.stem().string() + "_" + S_FIDUCIALS_FILE_EXT;
 
     writer.SetFileName((folder / filename).string().c_str());
     writer.GetFile().SetDataSet(_fiducials_series.get_data_set());
     // Dummy value else GDCM complains. TransferSyntax shouldn't be required since Fiducials aren't an image.
     writer.GetFile().GetHeader().SetDataSetTransferSyntax(gdcm::TransferSyntax::JPEG2000Lossless);
     writer.Write();
+}
+
+//------------------------------------------------------------------------------
+
+static void remove_spatial_fiducials(
+    const std::filesystem::path& _image_path
+)
+{
+    const auto fiducials_path = _image_path.parent_path() / (_image_path.stem().string() + "_" + S_FIDUCIALS_FILE_EXT);
+
+    if(std::filesystem::exists(fiducials_path))
+    {
+        std::error_code ec;
+        std::filesystem::remove(fiducials_path, ec);
+
+        if(ec)
+        {
+            SIGHT_WARN(
+                "Failed to remove fiducials file '" + fiducials_path.string() + "': " + ec.message()
+            );
+        }
+        else
+        {
+            SIGHT_DEBUG(
+                "Successfully removed fiducials file '" + fiducials_path.string() + "'"
+            );
+        }
+    }
 }
 
 /// Private Writer implementation
@@ -612,10 +634,13 @@ public:
     //------------------------------------------------------------------------------
 
     /// Allows to watch for cancellation and report progress.
-    core::progress::observer::sptr m_progress;
+    core::notification::observer::sptr m_progress;
 
     /// True to disable GPU codec
     bool m_force_cpu {false};
+
+    /// True to force DICOM (re)writing/override. If false, existing DICOM are not rewritten and only fiducials updated.
+    bool m_image_dcm_override {true};
 
     /// The overriden transfer syntax
     transfer_syntax m_transfer_syntax {transfer_syntax::sop_default};
@@ -632,7 +657,7 @@ file::~file() noexcept = default;
 
 //------------------------------------------------------------------------------
 
-void file::write(sight::core::progress::observer::sptr _progress)
+void file::write(sight::core::notification::observer::sptr _progress)
 {
     SIGHT_ASSERT("Some work have already be reported.", _progress->get_done_work_units() == 0);
     m_pimpl->m_progress = _progress;
@@ -700,41 +725,44 @@ void file::write(sight::core::progress::observer::sptr _progress)
                 return folder / basename;
             }();
 
-        if(const auto& sop_keyword = series->get_sop_keyword();
-           sop_keyword == data::dicom::sop::Keyword::EnhancedUSVolumeStorage)
+        if(m_pimpl->m_image_dcm_override)
         {
-            const auto& image_series = std::dynamic_pointer_cast<data::image_series>(series);
-
-            SIGHT_THROW_IF(
-                "The series '" + series->get_series_instance_uid() + "' is not an image series.",
-                !image_series
-            );
-
-            // Shallow copy the series (but not the pixel data !)
-            // This will allow to modify the GDCM DICOM context using series API to workaround some GDCM bugs or
-            // unimplemented features like the image origin for Enhanced US Volume
-            auto series_copy = std::make_shared<data::series>();
-            series_copy->shallow_copy(series);
-
-            write_enhanced_us_volume(
-                *image_series,
-                *series_copy,
-                filepath.string(),
-                m_pimpl->m_transfer_syntax,
-                m_pimpl->m_force_cpu
-            );
-        }
-        else
-        {
-            try
+            if(const auto& sop_keyword = series->get_sop_keyword();
+               sop_keyword == data::dicom::sop::Keyword::EnhancedUSVolumeStorage)
             {
-                SIGHT_THROW(
-                    "SOP Class '" << data::dicom::sop::get(sop_keyword).m_name << "' is not supported."
+                const auto& image_series = std::dynamic_pointer_cast<data::image_series>(series);
+
+                SIGHT_THROW_IF(
+                    "The series '" + series->get_series_instance_uid() + "' is not an image series.",
+                    !image_series
+                );
+
+                // Shallow copy the series (but not the pixel data !)
+                // This will allow to modify the GDCM DICOM context using series API to workaround some GDCM bugs or
+                // unimplemented features like the image origin for Enhanced US Volume
+                auto series_copy = std::make_shared<data::series>();
+                series_copy->shallow_copy(series);
+
+                write_enhanced_us_volume(
+                    *image_series,
+                    *series_copy,
+                    filepath.string(),
+                    m_pimpl->m_transfer_syntax,
+                    m_pimpl->m_force_cpu
                 );
             }
-            catch(const std::exception&)
+            else
             {
-                SIGHT_THROW("SOP Class ID '" << int(sop_keyword) << "' is unknown.");
+                try
+                {
+                    SIGHT_THROW(
+                        "SOP Class '" << data::dicom::sop::get(sop_keyword).m_name << "' is not supported."
+                    );
+                }
+                catch(const std::exception&)
+                {
+                    SIGHT_THROW("SOP Class ID '" << int(sop_keyword) << "' is unknown.");
+                }
             }
         }
 
@@ -750,6 +778,11 @@ void file::write(sight::core::progress::observer::sptr _progress)
 
                 write_spatial_fiducials(*fiducials, filepath);
             }
+            else
+            {
+                // Remove the fiducials file if it exists, to avoid reloading of deleted fiducials.
+                remove_spatial_fiducials(filepath);
+            }
         }
         else if(const auto& model_series = std::dynamic_pointer_cast<data::model_series>(series))
         {
@@ -763,6 +796,11 @@ void file::write(sight::core::progress::observer::sptr _progress)
 
                 write_spatial_fiducials(*fiducials, filepath);
             }
+            else
+            {
+                // Remove the fiducials file if it exists, to avoid reloading of deleted fiducials.
+                remove_spatial_fiducials(filepath);
+            }
         }
 
         m_pimpl->progress(progress_step);
@@ -775,6 +813,13 @@ void file::write(sight::core::progress::observer::sptr _progress)
 void file::force_cpu(bool _force)
 {
     m_pimpl->m_force_cpu = _force;
+}
+
+//------------------------------------------------------------------------------
+
+void file::image_dcm_override(bool _force)
+{
+    m_pimpl->m_image_dcm_override = _force;
 }
 
 //------------------------------------------------------------------------------

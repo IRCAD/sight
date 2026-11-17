@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -78,13 +78,20 @@ class chess_board_detector final : public service::controller
 {
 public:
 
+    struct signals
+    {
+        using chessboard_detected_t = core::com::signal<void (bool)>;
+        using chessboard_found_t    = core::com::signal<void ()>;
+        static inline const signal_key_t CHESSBOARD_DETECTED = "chessboard_detected";
+        static inline const signal_key_t CHESSBOARD_FOUND    = "chessboardFound";
+    };
+
+    struct slots
+    {
+        static inline const slot_key_t RECORD_POINTS = "record_points";
+    };
+
     SIGHT_DECLARE_SERVICE(chess_board_detector, sight::service::controller);
-
-    /// Signal type sent after trying to detect a chessboard in an image. Sends whether detection was successful.
-    using chessboard_detected_signal_t = core::com::signal<void (bool)>;
-
-    /// Signal type sent after a successful detection.
-    using chessboard_found_signal_t = core::com::signal<void ()>;
 
     /// Constructor
     chess_board_detector() noexcept;
@@ -116,12 +123,6 @@ private:
 
     /// Runs the detection for the given input index.
     void do_detection(std::size_t _image_index);
-
-    /// Signal emitted after detection.
-    chessboard_detected_signal_t::sptr m_sig_chessboard_detected;
-
-    /// Signal emitted if a chessboard can be seen in the image.
-    chessboard_found_signal_t::sptr m_sig_chessboard_found;
 
     /// Last detected chessboard points in each image. Null if detection failed.
     std::vector<data::point_list::sptr> m_point_lists;

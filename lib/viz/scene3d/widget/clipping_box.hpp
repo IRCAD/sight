@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2024 IRCAD France
+ * Copyright (C) 2016-2026 IRCAD France
  * Copyright (C) 2016-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -127,7 +127,7 @@ public:
 private:
 
     /// The current selection mode.
-    enum
+    enum : std::uint8_t
     {
         none,
         box,

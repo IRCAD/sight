@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,6 +23,9 @@
 #include "viz/scene3d/helper/camera.hpp"
 
 #include <OGRE/OgreViewport.h>
+
+#include <cmath>
+#include <limits>
 
 namespace sight::viz::scene3d::helper
 {
@@ -168,8 +171,8 @@ Ogre::Vector3 camera::convert_ndc_to_view_space(const Ogre::Camera& _camera, con
     Ogre::Vector4 clipping_coordinate_pixel;
     if(_camera.getProjectionType() == Ogre::ProjectionType::PT_PERSPECTIVE)
     {
-        const auto near = static_cast<float>(_camera.getNearClipDistance());
-        const auto far  = static_cast<float>(_camera.getFarClipDistance());
+        const float near = _camera.getNearClipDistance();
+        const float far  = _camera.getFarClipDistance();
         clipping_coordinate_pixel.w = static_cast<Ogre::Real>(2.0 * near * far)
                                       / (near + far + _ndc_pos.z * (near - far));
     }
@@ -200,10 +203,11 @@ Ogre::Vector2 camera::convert_world_space_to_screen_space(const Ogre::Camera& _c
     const Ogre::Matrix4& proj_mat = _camera.getProjectionMatrix();
 
     const Ogre::Vector4 result = proj_mat * view_mat * Ogre::Vector4(_world_pos, 1.0);
-    if(result.w == 0.F)
+    // On or behind the camera plane: the projection would be infinite or mirrored.
+    if(!std::isfinite(result.w) || result.w <= 0.F)
     {
-        SIGHT_ERROR("Homogenous coordinate is null, this should not happen");
-        return {0.F, 0.F};
+        constexpr auto nan = std::numeric_limits<float>::quiet_NaN();
+        return {nan, nan};
     }
 
     Ogre::Vector3 ndc_pos = result.xyz() / result.w;

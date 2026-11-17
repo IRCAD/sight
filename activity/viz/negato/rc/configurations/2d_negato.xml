@@ -98,28 +98,27 @@
         </service>
 
         <service uid="snapshot_adp" type="sight::module::viz::scene3d::adaptor::fragments_info">
-            <inout key="image" uid="snapshot" />
+            <data image="${snapshot}" />
         </service>
 
         <service uid="negato_camera_adp" type="sight::module::viz::scene3d::adaptor::negato2d_camera">
-            <inout key="image" uid="${image}" />
+            <data image="${image}" />
             <config priority="0" orientation="${orientation}" />
         </service>
 
         <service uid="negato_adp" type="sight::module::viz::scene3d::adaptor::negato2d">
-            <in key="image" uid="${image}" />
-            <inout key="tf" uid="tf" />
+            <data image="${image}" />
+            <data tf="${tf}" />
             <config orientation="${orientation}" filtering="none" />
         </service>
 
         <service uid="ruler_fiducial_adp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::ruler">
-            <inout key="image" uid="${image}" />
-            <config font_size="32" query_flags="0x40000000" priority="3" />
-            <properties radius="1.5" />
+            <data image="${image}" />
+            <config font_size="32" query_flags="0x40000000" priority="3" radius="1.5" />
         </service>
 
         <service uid="point_fiducial_adp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::point">
-            <inout key="imageSeries" uid="${image}" />
+            <data imageSeries="${image}" />
             <config priority="4" />
         </service>
 
@@ -130,13 +129,13 @@
         </service>
 
         <service uid="slider_negato" type="sight::module::ui::qt::image::slice_index_position_editor">
-            <inout key="image" uid="${image}" />
+            <data image="${image}" />
             <config orientation="${orientation}" label="index" display_axis_selector="false" display_step_buttons="false" />
         </service>
 
         <!-- Write the snapshot image -->
         <service uid="image_writer_srv" type="sight::module::io::bitmap::writer">
-            <in key="data" uid="snapshot" />
+            <data write="${snapshot}" />
             <dialog policy="always" />
             <backends enable="all" mode="best" />
         </service>

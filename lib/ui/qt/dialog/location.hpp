@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,7 +28,7 @@
 
 #include <ui/__/dialog/location_base.hpp>
 
-class QString;
+#include <QString>
 
 /**
  * @brief       The namespace sight::ui::qt contains classes which provide the implementation of the Gui using Qt
@@ -56,19 +56,20 @@ public:
     // Example ( addFilter("images","*.png *.jpg");
     SIGHT_UI_QT_API void add_filter(const std::string& _filter_name, const std::string& _wildcard_list) override;
 
-protected:
+    /// Gets the selected filter as its display name and wildcard list.
+    SIGHT_UI_QT_API filter_t get_current_filter() const override;
 
-    location::options m_style {location::none};
-    location::types m_type {location::single_file};
-    std::vector<std::pair<std::string, std::string> > m_filters;
+protected:
 
     /// helper to transform m_filters into qt encoding ("BMP and GIF files (*.bmp *.gif);;PNG files (*.png)"
     QString file_filters();
 
-    /// Gets the current extension file selection
-    SIGHT_UI_QT_API std::string get_current_selection() const override;
+private:
 
     std::string m_wildcard;
+    location::types m_type {location::single_file};
+    location::options m_style {location::none};
+    std::vector<std::pair<std::string, std::string> > m_filters;
 };
 
 } // namespace sight::ui::qt::dialog

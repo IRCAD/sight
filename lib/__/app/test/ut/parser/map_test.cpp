@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2024 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,84 +19,85 @@
  *
  ***********************************************************************/
 
-#include "map_test.hpp"
-
 #include <core/runtime/path.hpp>
 #include <core/runtime/runtime.hpp>
 
 #include <data/map.hpp>
 #include <data/string.hpp>
 
+#include <app/parser/map.hpp>
+
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::app::parser::ut::map_test);
+#include <doctest/doctest.h>
 
-namespace sight::app::parser::ut
+namespace
 {
 
-//------------------------------------------------------------------------------
-
-void map_test::setUp()
+struct fixture
 {
-    core::runtime::init();
-
-    std::filesystem::path location = core::runtime::get_resource_file_path("app_ut");
-    CPPUNIT_ASSERT(std::filesystem::exists(location));
-    core::runtime::add_modules(location);
-
-    core::runtime::load_module("sight::module::app");
-}
-
-//------------------------------------------------------------------------------
-
-void map_test::tearDown()
-{
-}
-
-//------------------------------------------------------------------------------
-
-void map_test::basic_test()
-{
-    using namespace std::literals::string_literals;
-    parser::map map_parser;
-    CPPUNIT_ASSERT(map_parser.is_a("sight::app::parser::map"));
+    fixture()
     {
-        std::stringstream xml_config;
-        xml_config << ""
-                      "  <item key=\"first\">"
-                      "    <object type=\"sight::data::string\" value=\"First\" />"
-                      "  </item>"
-                      "  <item key=\"second\">"
-                      "    <object type=\"sight::data::string\" value=\"Second\" />"
-                      "  </item>"
-                      "";
-        boost::property_tree::ptree config;
-        boost::property_tree::read_xml(xml_config, config);
+        sight::core::runtime::init();
 
-        auto map = std::make_shared<data::map>();
-        service::object_parser::objects_t sub_objects;
-        map_parser.parse(config, map, sub_objects);
-        CPPUNIT_ASSERT_EQUAL(std::size_t(2), map->size());
-        CPPUNIT_ASSERT_EQUAL("First"s, std::dynamic_pointer_cast<data::string>((*map)["first"])->get_value());
-        CPPUNIT_ASSERT_EQUAL("Second"s, std::dynamic_pointer_cast<data::string>((*map)["second"])->get_value());
+        std::filesystem::path location = sight::core::runtime::get_resource_file_path("app_ut");
+        CHECK(std::filesystem::exists(location));
+        sight::core::runtime::add_modules(location);
+
+        sight::core::runtime::load_module("sight::module::app");
     }
+};
+
+} // namespace
+TEST_SUITE("sight::app::parser::map")
+{
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE_FIXTURE(fixture, "basic_test")
     {
-        std::stringstream xml_config;
-        xml_config << ""
-                      "  <item key=\"first\" type=\"sight::data::string\" value=\"First\" />"
-                      "  <item key=\"second\" type=\"sight::data::string\" value=\"Second\" />"
-                      "";
-        boost::property_tree::ptree config;
-        boost::property_tree::read_xml(xml_config, config);
+        using namespace std::literals::string_literals;
+        sight::app::parser::map map_parser;
+        CHECK(map_parser.is_a("sight::app::parser::map"));
+        {
+            std::stringstream xml_config;
+            xml_config << ""
+                          "  <item key=\"first\">"
+                          "    <object type=\"sight::data::string\" value=\"First\" />"
+                          "  </item>"
+                          "  <item key=\"second\">"
+                          "    <object type=\"sight::data::string\" value=\"Second\" />"
+                          "  </item>"
+                          "";
+            boost::property_tree::ptree config;
+            boost::property_tree::read_xml(xml_config, config);
 
-        auto map = std::make_shared<data::map>();
-        service::object_parser::objects_t sub_objects;
-        map_parser.parse(config, map, sub_objects);
-        CPPUNIT_ASSERT_EQUAL(std::size_t(2), map->size());
-        CPPUNIT_ASSERT_EQUAL("First"s, std::dynamic_pointer_cast<data::string>((*map)["first"])->get_value());
-        CPPUNIT_ASSERT_EQUAL("Second"s, std::dynamic_pointer_cast<data::string>((*map)["second"])->get_value());
+            auto map = std::make_shared<sight::data::map>();
+            sight::service::object_parser::objects_t sub_objects;
+            map_parser.parse(config, map, sub_objects);
+            CHECK_EQ(std::size_t(2), map->size());
+            CHECK_EQ("First"s, std::dynamic_pointer_cast<sight::data::string>((*map)["first"])->get_value());
+            CHECK_EQ("Second"s, std::dynamic_pointer_cast<sight::data::string>((*map)["second"])->get_value());
+        }
+        {
+            std::stringstream xml_config;
+            xml_config << ""
+                          "  <item key=\"first\" type=\"sight::data::string\" value=\"First\" />"
+                          "  <item key=\"second\" type=\"sight::data::string\" value=\"Second\" />"
+                          "";
+            boost::property_tree::ptree config;
+            boost::property_tree::read_xml(xml_config, config);
+
+            auto map = std::make_shared<sight::data::map>();
+            sight::service::object_parser::objects_t sub_objects;
+            map_parser.parse(config, map, sub_objects);
+            CHECK_EQ(std::size_t(2), map->size());
+            CHECK_EQ("First"s, std::dynamic_pointer_cast<sight::data::string>((*map)["first"])->get_value());
+            CHECK_EQ("Second"s, std::dynamic_pointer_cast<sight::data::string>((*map)["second"])->get_value());
+        }
     }
-}
 
-} // namespace sight::app::parser::ut
+//------------------------------------------------------------------------------
+} // TEST_SUITE

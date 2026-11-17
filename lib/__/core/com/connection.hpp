@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,7 +38,7 @@ struct SIGHT_CORE_CLASS_API connection
         blocker()
         = default;
 
-        blocker(connection _connection) :
+        explicit blocker(connection _connection) :
             m_blocker(_connection.get_blocker())
         {
         }
@@ -49,15 +49,14 @@ struct SIGHT_CORE_CLASS_API connection
             m_blocker.reset();
         }
 
-        protected:
+        private:
 
             slot_connection_base::blocker_sptr_type m_blocker;
     };
 
-    connection()
-    = default;
+    connection() = default;
 
-    connection(const slot_connection_base::sptr& _connection) :
+    explicit connection(const slot_connection_base::sptr& _connection) :
         m_connection_base(_connection)
     {
     }
@@ -81,7 +80,7 @@ struct SIGHT_CORE_CLASS_API connection
     protected:
 
         /// Returns a Blocker.
-        slot_connection_base::blocker_sptr_type get_blocker()
+        [[nodiscard]] slot_connection_base::blocker_sptr_type get_blocker() const
         {
             slot_connection_base::blocker_sptr_type blocker;
             slot_connection_base::sptr connection(m_connection_base.lock());
@@ -92,6 +91,8 @@ struct SIGHT_CORE_CLASS_API connection
 
             return blocker;
         }
+
+    private:
 
         slot_connection_base::wptr m_connection_base;
 };

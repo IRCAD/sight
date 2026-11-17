@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,14 +21,6 @@
  ***********************************************************************/
 
 #include "module/ui/qt/reconstruction/representation_editor.hpp"
-
-#include <core/com/signal.hxx>
-#include <core/runtime/path.hpp>
-
-#include <data/mesh.hpp>
-
-#include <service/macros.hpp>
-#include <service/op.hpp>
 
 #include <ui/qt/container/widget.hpp>
 
@@ -365,10 +357,10 @@ void representation_editor::on_show_options(int _state)
     auto reconstruction = m_rec.lock();
 
     // In VTK backend the normals is handled by the mesh and not by the material
-    auto sig = reconstruction->signal<data::reconstruction::mesh_changed_signal_t>(
-        data::reconstruction::MESH_CHANGED_SIG
+    reconstruction->async_emit(
+        data::reconstruction::signals::MESH_CHANGED,
+        reconstruction->get_mesh()
     );
-    sig->async_emit(reconstruction->get_mesh());
 }
 
 //------------------------------------------------------------------------------
@@ -378,11 +370,7 @@ void representation_editor::notify_material()
     SIGHT_ASSERT("The inout key '" << RECONSTRUCTION << "' is not defined.", !m_rec.expired());
     auto reconstruction = m_rec.lock();
 
-    data::object::modified_signal_t::sptr sig;
-    sig = reconstruction->get_material()->signal<data::object::modified_signal_t>(
-        data::object::MODIFIED_SIG
-    );
-    sig->async_emit();
+    reconstruction->get_material()->async_emit(data::signals::MODIFIED);
 }
 
 //------------------------------------------------------------------------------
@@ -390,7 +378,7 @@ void representation_editor::notify_material()
 service::connections_t representation_editor::auto_connections() const
 {
     connections_t connections;
-    connections.push(RECONSTRUCTION, data::object::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(RECONSTRUCTION, data::signals::MODIFIED, service::slots::UPDATE);
     return connections;
 }
 

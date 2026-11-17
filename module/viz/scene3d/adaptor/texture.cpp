@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,31 +22,16 @@
 
 #include "module/viz/scene3d/adaptor/texture.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-#include <core/type.hpp>
-
 #include <data/image.hpp>
-#include <data/material.hpp>
-
-#include <service/macros.hpp>
-
-#include <viz/scene3d/ogre.hpp>
-#include <viz/scene3d/utils.hpp>
-
-#include <OGRE/OgreHardwarePixelBuffer.h>
-#include <OGRE/OgreTextureManager.h>
 
 namespace sight::module::viz::scene3d::adaptor
 {
-
-const core::com::signals::key_t texture::TEXTURE_SWAPPED_SIG = "texture_swapped";
 
 //------------------------------------------------------------------------------
 
 texture::texture() noexcept
 {
-    m_sig_texture_swapped = new_signal<texture_swapped_signal_t>(TEXTURE_SWAPPED_SIG);
+    new_signal<signals::texture_swapped_t>(signals::TEXTURE_SWAPPED);
 }
 
 //------------------------------------------------------------------------------
@@ -95,8 +80,8 @@ void texture::starting()
 service::connections_t texture::auto_connections() const
 {
     service::connections_t connections = adaptor::auto_connections();
-    connections.push(TEXTURE_INOUT, data::image::BUFFER_MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
-    connections.push(TEXTURE_INOUT, data::image::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
+    connections.push(TEXTURE_INOUT, data::image::signals::BUFFER_MODIFIED, adaptor::slots::LAZY_UPDATE);
+    connections.push(TEXTURE_INOUT, data::signals::MODIFIED, adaptor::slots::LAZY_UPDATE);
     return connections;
 }
 
@@ -113,7 +98,7 @@ void texture::updating()
         this->render_service()->make_current();
         m_texture->update();
 
-        m_sig_texture_swapped->async_emit();
+        this->async_emit(signals::TEXTURE_SWAPPED);
     }
 
     this->update_done();

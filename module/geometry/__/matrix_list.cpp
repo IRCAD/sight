@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,6 @@
 
 #include "module/geometry/__/matrix_list.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-
 #include <iomanip>
 
 namespace sight::module::geometry
@@ -32,21 +29,13 @@ namespace sight::module::geometry
 
 //-----------------------------------------------------------------------------
 
-static const core::com::signals::key_t MATRIX_ADDED_SIG   = "matrixAdded";
-static const core::com::signals::key_t MATRIX_REMOVED_SIG = "matrixRemoved";
-
-static const core::com::slots::key_t SELECT_MATRIX_SLOT = "selectMatrix";
-static const core::com::slots::key_t REMOVE_MATRIX_SLOT = "removeMatrix";
-
-//-----------------------------------------------------------------------------
-
 matrix_list::matrix_list() noexcept
 {
-    new_signal<matrix_added_signal_t>(MATRIX_ADDED_SIG);
-    new_signal<matrix_removed_signal_t>(MATRIX_REMOVED_SIG);
+    new_signal<signals::matrix_added_t>(signals::MATRIX_ADDED);
+    new_signal<signals::matrix_removed_t>(signals::MATRIX_REMOVED);
 
-    new_slot(SELECT_MATRIX_SLOT, &matrix_list::select_matrix, this);
-    new_slot(REMOVE_MATRIX_SLOT, &matrix_list::remove_matrix, this);
+    new_slot(slots::SELECT_MATRIX, &matrix_list::select_matrix, this);
+    new_slot(slots::REMOVE_MATRIX, &matrix_list::remove_matrix, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -91,7 +80,7 @@ void matrix_list::updating()
 {
     // Get the computed matrix from input group vector
     data::vector::sptr computed_vector;
-    if(m_input_vector.size() > 0)
+    if(!m_input_vector.empty())
     {
         for(std::size_t i = 0 ; i < m_input_vector.size() ; ++i)
         {
@@ -113,9 +102,7 @@ void matrix_list::updating()
 
             computed_vector->push_back(computed_matrix);
             this->set_output(computed_vector, VECTOR_INOUT, i);
-            auto sig = computed_vector->signal<data::vector::added_signal_t>
-                           (data::vector::ADDED_OBJECTS_SIG);
-            sig->async_emit(computed_vector->get_content());
+            computed_vector->async_emit(data::vector::signals::ADDED_OBJECTS, computed_vector->get_content());
         }
     }
 
@@ -150,8 +137,7 @@ void matrix_list::updating()
 
     // push the selected matrix
     this->select_matrix(index);
-
-    this->signal<matrix_added_signal_t>(MATRIX_ADDED_SIG)->async_emit(index, str);
+    this->async_emit(signals::MATRIX_ADDED, index, str);
 }
 
 //-----------------------------------------------------------------------------
@@ -162,10 +148,13 @@ void matrix_list::select_matrix(int _index)
     {
         auto selected_matrix = m_selected_vector[i].lock();
         auto output_vector   = m_output_vector[i].lock();
-        selected_matrix->deep_copy(std::dynamic_pointer_cast<data::matrix4>((*output_vector)[std::size_t(_index)]));
+        selected_matrix->deep_copy(
+            std::dynamic_pointer_cast<data::matrix4>(
+                (*output_vector)[static_cast<std::size_t>(_index)]
+            )
+        );
 
-        auto sig = selected_matrix->signal<data::matrix4::modified_signal_t>(data::matrix4::MODIFIED_SIG);
-        sig->async_emit();
+        selected_matrix->async_emit(data::signals::MODIFIED);
     }
 }
 
@@ -173,19 +162,16 @@ void matrix_list::select_matrix(int _index)
 
 void matrix_list::remove_matrix(int _index)
 {
-    if(m_input_vector.size() > 0)
+    if(!m_input_vector.empty())
     {
         for(std::size_t i = 0 ; i < m_input_vector.size() ; ++i)
         {
             auto output_vector = m_output_vector[i].lock();
             output_vector->erase(output_vector->begin() + _index);
-
-            auto sig = output_vector->signal<data::vector::removed_signal_t>
-                           (data::vector::REMOVED_OBJECTS_SIG);
-            sig->async_emit(output_vector->get_content());
+            output_vector->async_emit(data::vector::signals::REMOVED_OBJECTS, output_vector->get_content());
         }
 
-        this->signal<matrix_removed_signal_t>(MATRIX_REMOVED_SIG)->async_emit(_index);
+        this->async_emit(signals::MATRIX_REMOVED, _index);
     }
 }
 

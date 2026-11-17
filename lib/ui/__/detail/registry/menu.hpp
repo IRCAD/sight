@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,11 +22,9 @@
 
 #pragma once
 
-#include <sight/ui/__/config.hpp>
-
-#include "ui/__/action_callback_base.hpp"
 #include "ui/__/container/menu.hpp"
 #include "ui/__/container/menu_item.hpp"
+#include "ui/__/menu_item_callback.hpp"
 #include "ui/__/object.hpp"
 
 namespace sight::ui::detail::registry
@@ -101,7 +99,7 @@ public:
      *  - \<menuItem sid="item1"  /\> : define the service of the menuItem to add in the menu.
      *   - \b sid  (mandatory): the service identifier.
      */
-    virtual void initialize(const ui::config_t&);
+    virtual void initialize(const ui::config_t& /*_configuration*/);
 
     /**
      * @brief manages action service associated with menuItem of menu.
@@ -153,7 +151,7 @@ public:
         return m_callbacks;
     }
 
-protected:
+private:
 
     using sid_menu_map_t = std::map<std::string, unsigned int>;
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,6 @@
 
 #include <io/__/service/writer.hpp>
 
-#include <filesystem>
-
 namespace sight::module::io::matrix
 {
 
@@ -38,11 +36,11 @@ namespace sight::module::io::matrix
  *
  * @code{.xml}
    <service type="sight::module::io::matrix::matrix4writer_service">
-       <in key="data" uid="..." />
+       <data write="..." />
    </service>
    @endcode
  * @subsection Input Input
- * - \b data [sight::data::matrix4]: matrix to save.
+ * - \b data.write [sight::data::matrix4]: matrix to save.
  */
 class matrix4_trf_writer : public sight::io::service::writer
 {
@@ -55,17 +53,12 @@ public:
 
     matrix4_trf_writer() noexcept;
 
-    /** @name Specified writer service methods ( override from sight::io::service::writer )
-     * @{
-     */
+    //------------------------------------------------------------------------------
 
-    /**
-     * @brief Configure the matrix path.
-     *
-     * This method is used to find
-     * the file path  using a file selector.
-     */
-    void open_location_dialog() override;
+    std::vector<std::pair<std::string, std::string> > get_supported_extensions() const override
+    {
+        return {{"TRF files", "*.trf"}};
+    }
 
     /// Return path type managed by the service, here FILE
     sight::io::service::path_type_t get_path_type() const override;

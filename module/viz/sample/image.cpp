@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2024 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -92,8 +92,8 @@ void image::starting()
     negato_config.put("config.<xmlattr>.interactive", "true");
     m_negato_srv = sight::service::add("sight::module::viz::scene3d::adaptor::negato3d");
     m_negato_srv->set_config(negato_config);
-    m_negato_srv->set_input(image.get_shared(), "image", true);
-    m_negato_srv->set_inout(m_tf, "tf", true);
+    m_negato_srv->set_input(image.get_shared(), "data.image", true);
+    m_negato_srv->set_inout(m_tf, "data.tf", true);
     m_negato_srv->set_id(this->get_id() + "negato3DAdaptor");
     m_negato_srv->configure();
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024-2025 IRCAD France
+ * Copyright (C) 2024-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include <core/progress/has_monitors.hpp>
+#include <core/notification/has_monitors.hpp>
 
 #include <data/boolean.hpp>
 #include <data/image.hpp>
@@ -51,32 +51,31 @@ namespace sight::module::filter::image
  * @section XML XML Configuration
  * @code{.xml}
    <service type="sight::module::filter::image::propagator">
-       <in key="image_in" uid="..." />
-       <in key="seeds" uid="..." />
-       <inout key="image_out" uid="..." />
-       <inout key="samples_out" uid="..." />
+       <input image="${...}" seeds="${...}" />
+       <output image="${...}" sample="${...}" mask_filled="${...}" />
        <config value="1" radius="50" overwrite="true" mode="min" />
    </service>
    @endcode
  *
  * @subsection Input Input
- * - \b image_in [sight::data::image]: The background image, whose values we read from during propagation.
- * - \b seeds [sight::data::point_list]: List of world coordinates points used to start the propagation.
+ * - \b input.image [sight::data::image]: The background image, whose values we read from during propagation.
+ * - \b input.seeds [sight::data::point_list]: List of world coordinates points used to start the propagation.
  *
  * @subsection In-Out In-Out
- * - \b image_out [sight::data::image]: The output image, in which we will draw.
- * - \b samples_out [sight::data::image]: A 1D output image, in which the raw voxels values traversed during the
+ * - \b output.image [sight::data::image]: The output image, in which we will draw.
+ * - \b output.sample [sight::data::image]: A 1D output image, in which the raw voxels values traversed during the
  * propagation are stored. It may be used to perform statistics on the collected samples, for instance.
  *
- * @subsection Properties Properties
- * - \b value (optional) : The initial value used in the output image. Default 1.
- * - \b radius(optional) : The maximum propagation distance. Infinity by default.
- * - \b overwrite (optional) : The overwrite mode. true by default.
- * - \b mode (optional) : Propagation mode. Possible values are 'min', 'max', 'minmax' and 'stddev'. 'min' by default.
+ * @subsection Configuration Configuration
+ * - \b config.value (optional) : The initial value used in the output image. Default 1.
+ * - \b config.radius (optional) : The maximum propagation distance. Infinity by default.
+ * - \b config.overwrite (optional) : The overwrite mode. true by default.
+ * - \b config.mode (optional) : Propagation mode. Possible values are 'min', 'max', 'minmax' and 'stddev'. 'min' by
+ * default.
  *  'stddev' stands for standar deviation, in this case the min is set to mean - stddev and mex to mean + stddev.
  */
 class propagator : public service::filter,
-                   public sight::core::progress::has_monitors
+                   public sight::core::notification::has_monitors
 {
 public:
 
@@ -84,8 +83,8 @@ public:
 
     struct slots final
     {
-        static inline const sight::core::com::slots::key_t CLEAR     = "clear";
-        static inline const sight::core::com::slots::key_t PROPAGATE = "propagate";
+        static inline const slot_key_t CLEAR     = "clear";
+        static inline const slot_key_t PROPAGATE = "propagate";
     };
 
     /// Initializes slots signals and member variables.
@@ -118,8 +117,8 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::image::MODIFIED_SIG of s_IMAGE_IN to service::slots::UPDATE
-     * Connect data::point_list::MODIFIED_SIG of s_SEEDS_IN to slots::PROPAGATE
+     * Connect data::signals::MODIFIED of s_IMAGE_IN to service::slots::UPDATE
+     * Connect data::signals::MODIFIED of s_SEEDS_IN to slots::PROPAGATE
      */
     connections_t auto_connections() const override;
 
@@ -127,21 +126,25 @@ private:
 
     using coordinates_t = sight::filter::image::min_max_propagation::coordinates_t;
 
-    static constexpr std::string_view IMAGE_IN      = "image_in";
-    static constexpr std::string_view SEEDS_IN      = "seeds";
-    static constexpr std::string_view IMAGE_INOUT   = "image_out";
-    static constexpr std::string_view SAMPLES_INOUT = "samples_out";
+    static constexpr std::string_view IMAGE_IN      = "input.image";
+    static constexpr std::string_view SEEDS_IN      = "input.seeds";
+    static constexpr std::string_view IMAGE_INOUT   = "output.image";
+    static constexpr std::string_view SAMPLES_INOUT = "output.sample";
 
     sight::data::ptr<sight::data::image, sight::data::access::in> m_image_in {this, IMAGE_IN};
     sight::data::ptr<sight::data::point_list, sight::data::access::in> m_seeds_in {this, SEEDS_IN};
     sight::data::ptr<sight::data::image> m_image_out {this, IMAGE_INOUT, false};
     sight::data::ptr<sight::data::image> m_samples_out {this, SAMPLES_INOUT, true};
-    sight::data::ptr<sight::data::boolean> m_mask_filled_out {this, "mask_filled_out", true};
+    sight::data::ptr<sight::data::boolean, sight::data::access::out> m_mask_filled_out {
+        this, "output.mask_filled", std::nullopt
+    };
 
-    sight::data::property<sight::data::real> m_radius {this, "radius", 25.0};
-    sight::data::property<sight::data::integer> m_value {this, "value", 1};
-    sight::data::property<sight::data::boolean> m_overwrite {this, "overwrite", true};
-    sight::data::property<sight::data::string> m_mode {this, "mode", std::string("minmax")};
+    sight::data::ptr<sight::data::real, sight::data::access::in> m_radius {this, "config.radius", 25.0};
+    sight::data::ptr<sight::data::integer, sight::data::access::in> m_value {this, "config.value", 1};
+    sight::data::ptr<sight::data::boolean, sight::data::access::in> m_overwrite {this, "config.overwrite", true};
+    sight::data::ptr<sight::data::string, sight::data::access::in> m_mode {
+        this, "config.mode", std::string("minmax")
+    };
 };
 
 } // namespace sight::module::filter::image.

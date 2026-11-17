@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,20 +22,14 @@
 
 #include "service/registerer.hpp"
 
-#include <core/com/slots.hxx>
-
 namespace sight::service
 {
 
 // -----------------------------------------------------------------------------
 
-const core::com::slots::key_t registerer::COMPUTE_REGISTRATION_SLOT = "compute_registration";
-
-// ----------------------------------------------------------------------------
-
 registerer::registerer() noexcept
 {
-    new_slot(COMPUTE_REGISTRATION_SLOT, &registerer::compute_registration, this);
+    new_slot(slots::COMPUTE_REGISTRATION, &registerer::compute_registration, this);
 }
 
 // ----------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,8 +23,6 @@
 
 #include "common.hxx"
 
-#include <cuda.h>
-#include <nppi.h>
 #include <nvjpeg.h>
 
 // cspell:ignore nvjpeg BGRI RGBI NOLINTNEXTLINE
@@ -100,7 +98,7 @@ public:
         SIGHT_THROW_IF("The stream cannot be read.", stream_size <= 0);
 
         // Allocate input buffer
-        const auto input_buffer_size = std::size_t(stream_size);
+        const auto input_buffer_size = static_cast<std::size_t>(stream_size);
         if(m_input_buffer.size() < input_buffer_size)
         {
             m_input_buffer.resize(input_buffer_size);
@@ -118,8 +116,8 @@ public:
         const std::optional<std::reference_wrapper<data::image> >& _image,
         const std::uint8_t* const _input,
         std::size_t _input_size,
-        std::uint8_t* const _output,
-        flag /*_flag*/
+        std::uint8_t* const _output, // NOLINT(misc-unused-parameters)
+        flag                         /*_flag*/
     ) final
     {
         // Decode JPEG metadata
@@ -145,10 +143,10 @@ public:
                 );
 
                 return std::make_tuple(
-                    std::size_t(components),
+                    static_cast<std::size_t>(components),
                     subsampling,
-                    std::size_t(widths[0]),
-                    std::size_t(heights[0])
+                    static_cast<std::size_t>(widths[0]),
+                    static_cast<std::size_t>(heights[0])
                 );
             }();
 

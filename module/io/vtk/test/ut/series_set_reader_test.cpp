@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,163 +20,170 @@
  *
  ***********************************************************************/
 
-#include "series_set_reader_test.hpp"
-
-#include <core/tools/system.hpp>
-
 #include <data/image.hpp>
 #include <data/image_series.hpp>
 #include <data/mesh.hpp>
 #include <data/model_series.hpp>
 #include <data/reconstruction.hpp>
-#include <data/series.hpp>
 #include <data/series_set.hpp>
+#include <io/__/service/reader.hpp>
+#include <ui/test/dialog/location.hpp>
 
 #include <service/op.hpp>
 
 #include <utest_data/data.hpp>
 
-#include <boost/property_tree/xml_parser.hpp>
+#include <doctest/doctest.h>
 
 #include <filesystem>
 
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::io::vtk::ut::series_set_reader_test);
-
-static const double EPSILON = 0.00001;
-
-namespace sight::module::io::vtk::ut
+TEST_SUITE("sight::module::io::vtk::series_set_reader")
 {
+//------------------------------------------------------------------------------
+
+    TEST_CASE("series_set_reader")
+    {
+        const std::filesystem::path image_file = sight::utest_data::dir() / "sight/image/vtk/img.vtk";
+        const std::filesystem::path mesh_file  = sight::utest_data::dir() / "sight/mesh/vtk/sphere.vtk";
+
+        CHECK(
+            std::filesystem::exists(image_file)
+        );
+
+        CHECK(
+            std::filesystem::exists(mesh_file)
+        );
+
+        sight::service::config_t reader_srv_cfg;
+        reader_srv_cfg.add(
+            "path.<xmlattr>.file",
+            image_file.string() + ";" + mesh_file.string() + ";" + mesh_file.string()
+        );
+
+        auto series_set = std::make_shared<sight::data::series_set>();
+
+        sight::service::base::sptr srv = sight::service::add("sight::module::io::vtk::series_set_reader");
+
+        CHECK(srv);
+
+        srv->set_inout(series_set, "data.read");
+        srv->set_config(reader_srv_cfg);
+        srv->configure();
+        srv->start().get();
+        srv->update().get();
+        srv->stop().get();
+        sight::service::remove(srv);
+
+        // Data expected
+        // NOLINTNEXTLINE(modernize-use-std-numbers)
+        const sight::data::image::spacing_t spacing_expected = {1.732, 1.732, 3.2};
+        const sight::data::image::origin_t origin_expected   = {34.64, 86.6, 56};
+        const sight::data::image::size_t size_expected       = {230, 170, 58};
+
+        CHECK_EQ(std::size_t(2), series_set->size());
+
+        sight::data::image_series::sptr image_series =
+            std::dynamic_pointer_cast<sight::data::image_series>(series_set->at(0));
+        sight::data::model_series::sptr model_series =
+            std::dynamic_pointer_cast<sight::data::model_series>(series_set->at(1));
+        CHECK(image_series);
+        CHECK(model_series);
+
+        // Data read.
+        const sight::data::image::spacing_t spacing_read = image_series->spacing();
+        const sight::data::image::spacing_t origin_read  = image_series->origin();
+        const sight::data::image::size_t size_read       = image_series->size();
+
+        CHECK_EQ(spacing_expected.size(), spacing_read.size());
+        CHECK_EQ(origin_expected.size(), origin_read.size());
+        CHECK_EQ(size_expected.size(), size_read.size());
+
+        CHECK_EQ(spacing_expected[0], spacing_read[0]);
+        CHECK_EQ(spacing_expected[1], spacing_read[1]);
+        CHECK_EQ(spacing_expected[2], spacing_read[2]);
+
+        CHECK_EQ(origin_expected[0], origin_read[0]);
+        CHECK_EQ(origin_expected[1], origin_read[1]);
+        CHECK_EQ(origin_expected[2], origin_read[2]);
+
+        CHECK_EQ(size_expected[0], size_read[0]);
+        CHECK_EQ(size_expected[1], size_read[1]);
+        CHECK_EQ(size_expected[2], size_read[2]);
+
+        CHECK_EQ(std::size_t(2), model_series->get_reconstruction_db().size());
+
+        sight::data::reconstruction::sptr rec1 = model_series->get_reconstruction_db()[0];
+        sight::data::reconstruction::sptr rec2 = model_series->get_reconstruction_db()[1];
+        sight::data::mesh::sptr mesh1          = rec1->get_mesh();
+        sight::data::mesh::sptr mesh2          = rec2->get_mesh();
+
+        CHECK_EQ((sight::data::mesh::size_t) 720, mesh1->num_cells());
+        CHECK_EQ((sight::data::mesh::size_t) 362, mesh1->num_points());
+
+        CHECK(*mesh1 == *mesh2);
+    }
 
 //------------------------------------------------------------------------------
 
-void series_set_reader_test::setUp()
-{
-    // Set up context before running a test.
-}
+    TEST_CASE("merge_series_set_reader")
+    {
+        const std::filesystem::path image_file = sight::utest_data::dir() / "sight/image/vtk/img.vtk";
+
+        CHECK(
+            std::filesystem::exists(image_file)
+        );
+
+        sight::service::config_t reader_srv_cfg;
+        reader_srv_cfg.add("path.<xmlattr>.file", image_file.string());
+
+        auto image_series = std::make_shared<sight::data::image_series>();
+        auto series_set   = std::make_shared<sight::data::series_set>();
+        series_set->push_back(image_series);
+
+        sight::service::base::sptr srv = sight::service::add("sight::module::io::vtk::series_set_reader");
+
+        CHECK(srv);
+
+        srv->set_inout(series_set, "data.read");
+        srv->set_config(reader_srv_cfg);
+        srv->configure();
+        srv->start().get();
+        srv->update().get();
+        srv->stop().get();
+        sight::service::remove(srv);
+
+        CHECK_EQ(std::size_t(1), series_set->size());
+    }
 
 //------------------------------------------------------------------------------
 
-void series_set_reader_test::tearDown()
-{
-    // Clean up after the test run.
-}
+    TEST_CASE("open_location_dialog")
+    {
+        const auto file1 = std::filesystem::temp_directory_path() / "image.vtk";
+        const auto file2 = std::filesystem::temp_directory_path() / "mesh.vtp";
 
-//------------------------------------------------------------------------------
+        CHECK(sight::ui::test::dialog::location::clear());
 
-void series_set_reader_test::test_series_set_reader()
-{
-    const std::filesystem::path image_file = utest_data::dir() / "sight/image/vtk/img.vtk";
-    const std::filesystem::path mesh_file  = utest_data::dir() / "sight/mesh/vtk/sphere.vtk";
+        sight::ui::test::dialog::location::set_paths({file1, file2});
 
-    CPPUNIT_ASSERT_MESSAGE(
-        "The file '" + image_file.string() + "' does not exist",
-        std::filesystem::exists(image_file)
-    );
+        auto reader = sight::service::add<sight::io::service::reader>(
+            "sight::module::io::vtk::series_set_reader"
+        );
 
-    CPPUNIT_ASSERT_MESSAGE(
-        "The file '" + mesh_file.string() + "' does not exist",
-        std::filesystem::exists(mesh_file)
-    );
+        REQUIRE(reader);
 
-    service::config_t reader_srv_cfg;
-    reader_srv_cfg.add("file", image_file.string());
-    service::config_t file2_cfg;
-    reader_srv_cfg.add("file", mesh_file.string());
-    reader_srv_cfg.add("file", mesh_file.string());
+        reader->configure();
 
-    auto series_set = std::make_shared<data::series_set>();
+        CHECK_NOTHROW(reader->open_location_dialog());
 
-    service::base::sptr srv = service::add("sight::module::io::vtk::series_set_reader");
+        const auto& files = reader->get_files();
 
-    CPPUNIT_ASSERT_MESSAGE("Create series_set_reader failed", srv);
+        REQUIRE_EQ(files.size(), std::size_t(2));
+        CHECK_EQ(files[0], file1);
+        CHECK_EQ(files[1], file2);
 
-    srv->set_inout(series_set, "data");
-    srv->set_config(reader_srv_cfg);
-    srv->configure();
-    srv->start().wait();
-    srv->update().wait();
-    srv->stop().wait();
-    service::remove(srv);
+        sight::service::remove(reader);
 
-    // Data expected
-    // NOLINTNEXTLINE(modernize-use-std-numbers)
-    const data::image::spacing_t spacing_expected = {1.732, 1.732, 3.2};
-    const data::image::origin_t origin_expected   = {34.64, 86.6, 56};
-    const data::image::size_t size_expected       = {230, 170, 58};
-
-    CPPUNIT_ASSERT_EQUAL(std::size_t(2), series_set->size());
-
-    data::image_series::sptr image_series = std::dynamic_pointer_cast<data::image_series>(series_set->at(0));
-    data::model_series::sptr model_series = std::dynamic_pointer_cast<data::model_series>(series_set->at(1));
-    CPPUNIT_ASSERT_MESSAGE("ImageSeries dynamicCast failed", image_series);
-    CPPUNIT_ASSERT_MESSAGE("ModelSeries dynamicCast failed", model_series);
-
-    // Data read.
-    const data::image::spacing_t spacing_read = image_series->spacing();
-    const data::image::spacing_t origin_read  = image_series->origin();
-    const data::image::size_t size_read       = image_series->size();
-
-    CPPUNIT_ASSERT_EQUAL(spacing_expected.size(), spacing_read.size());
-    CPPUNIT_ASSERT_EQUAL(origin_expected.size(), origin_read.size());
-    CPPUNIT_ASSERT_EQUAL(size_expected.size(), size_read.size());
-
-    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect spacing on x", spacing_expected[0], spacing_read[0], EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect spacing on y", spacing_expected[1], spacing_read[1], EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect spacing on z", spacing_expected[2], spacing_read[2], EPSILON);
-
-    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect origin on x", origin_expected[0], origin_read[0], EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect origin on y", origin_expected[1], origin_read[1], EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect origin on z", origin_expected[2], origin_read[2], EPSILON);
-
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect size on x", size_expected[0], size_read[0]);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect size on y", size_expected[1], size_read[1]);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect size on z", size_expected[2], size_read[2]);
-
-    CPPUNIT_ASSERT_EQUAL(std::size_t(2), model_series->get_reconstruction_db().size());
-
-    data::reconstruction::sptr rec1 = model_series->get_reconstruction_db()[0];
-    data::reconstruction::sptr rec2 = model_series->get_reconstruction_db()[1];
-    data::mesh::sptr mesh1          = rec1->get_mesh();
-    data::mesh::sptr mesh2          = rec2->get_mesh();
-
-    CPPUNIT_ASSERT_EQUAL((data::mesh::size_t) 720, mesh1->num_cells());
-    CPPUNIT_ASSERT_EQUAL((data::mesh::size_t) 362, mesh1->num_points());
-
-    CPPUNIT_ASSERT(*mesh1 == *mesh2);
-}
-
-//------------------------------------------------------------------------------
-
-void series_set_reader_test::test_merge_series_set_reader()
-{
-    const std::filesystem::path image_file = utest_data::dir() / "sight/image/vtk/img.vtk";
-
-    CPPUNIT_ASSERT_MESSAGE(
-        "The file '" + image_file.string() + "' does not exist",
-        std::filesystem::exists(image_file)
-    );
-
-    service::config_t reader_srv_cfg;
-    reader_srv_cfg.add("file", image_file.string());
-
-    auto image_series = std::make_shared<data::image_series>();
-    auto series_set   = std::make_shared<data::series_set>();
-    series_set->push_back(image_series);
-
-    service::base::sptr srv = service::add("sight::module::io::vtk::series_set_reader");
-
-    CPPUNIT_ASSERT_MESSAGE("Create series_set_reader failed", srv);
-
-    srv->set_inout(series_set, "data");
-    srv->set_config(reader_srv_cfg);
-    srv->configure();
-    srv->start().wait();
-    srv->update().wait();
-    srv->stop().wait();
-    service::remove(srv);
-
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
-}
-
-} // namespace sight::module::io::vtk::ut
+        CHECK(sight::ui::test::dialog::location::clear());
+    }
+} // TEST_SUITE

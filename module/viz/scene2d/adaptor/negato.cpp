@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,15 +22,9 @@
 
 #include "module/viz/scene2d/adaptor/negato.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slot.hxx>
-#include <core/com/slots.hxx>
-
 #include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
 #include <data/transfer_function.hpp>
-
-#include <service/macros.hpp>
 
 #include <viz/scene2d/graphics_view.hpp>
 
@@ -42,23 +36,17 @@
 namespace sight::module::viz::scene2d::adaptor
 {
 
-static const core::com::slots::key_t UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
-static const core::com::slots::key_t UPDATE_SLICE_TYPE_SLOT  = "updateSliceType";
-static const core::com::slots::key_t UPDATE_BUFFER_SLOT      = "updateBuffer";
-static const core::com::slots::key_t UPDATE_VISIBILITY_SLOT  = "update_visibility";
-static const core::com::slots::key_t UPDATE_TF_SLOT          = "update_tf";
-
 namespace med_helper = data::helper::medical_image;
 
 //-----------------------------------------------------------------------------
 
 negato::negato() noexcept
 {
-    new_slot(UPDATE_SLICE_INDEX_SLOT, &negato::update_slice_index, this);
-    new_slot(UPDATE_SLICE_TYPE_SLOT, &negato::update_slice_type, this);
-    new_slot(UPDATE_BUFFER_SLOT, &negato::update_buffer, this);
-    new_slot(UPDATE_VISIBILITY_SLOT, &negato::update_visibility, this);
-    new_slot(UPDATE_TF_SLOT, &negato::update_tf, this);
+    new_slot(slots::UPDATE_SLICE_INDEX, &negato::update_slice_index, this);
+    new_slot(slots::UPDATE_SLICE_TYPE, &negato::update_slice_type, this);
+    new_slot(slots::UPDATE_BUFFER, &negato::update_buffer, this);
+    new_slot(slots::UPDATE_VISIBILITY, &negato::update_visibility, this);
+    new_slot(slots::UPDATE_TF, &negato::update_tf, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -273,7 +261,13 @@ QImage* negato::create_q_image()
 
     // Place m_pixmapItem
     m_pixmap_item->resetTransform();
-    m_pixmap_item->setTransform(QTransform::fromScale(q_image_spacing[0], q_image_spacing[1]), true);
+    m_pixmap_item->setTransform(
+        QTransform::fromScale(
+            q_image_spacing[0],
+            q_image_spacing[1]
+        ),
+        true
+    );
     m_pixmap_item->setPos(q_image_origin[0], q_image_origin[1]);
 
     // Force bounding box recomputing ( Qt bug )
@@ -294,11 +288,14 @@ void negato::starting()
 
     auto image = m_image.lock();
 
-    m_axial_index   = std::max(0, int(med_helper::get_slice_index(*image, med_helper::axis_t::axial).value_or(0)));
+    m_axial_index = std::max(
+        0,
+        static_cast<int>(med_helper::get_slice_index(*image, med_helper::axis_t::axial).value_or(0))
+    );
     m_frontal_index =
-        std::max(0, int(med_helper::get_slice_index(*image, med_helper::axis_t::frontal).value_or(0)));
+        std::max(0, static_cast<int>(med_helper::get_slice_index(*image, med_helper::axis_t::frontal).value_or(0)));
     m_sagittal_index =
-        std::max(0, int(med_helper::get_slice_index(*image, med_helper::axis_t::sagittal).value_or(0)));
+        std::max(0, static_cast<int>(med_helper::get_slice_index(*image, med_helper::axis_t::sagittal).value_or(0)));
 
     m_pixmap_item = new QGraphicsPixmapItem();
     m_pixmap_item->setShapeMode(QGraphicsPixmapItem::BoundingRectShape);
@@ -531,7 +528,7 @@ void negato::change_image_min_max_from_coord(
     // Send signal
     tf->set_window(new_img_window);
     tf->set_level(new_img_level);
-    tf->async_emit(this, data::transfer_function::WINDOWING_MODIFIED_SIG, new_img_window, new_img_level);
+    tf->async_emit(this, data::transfer_function::signals::WINDOWING_MODIFIED, new_img_window, new_img_level);
 }
 
 //------------------------------------------------------------------------------
@@ -539,13 +536,13 @@ void negato::change_image_min_max_from_coord(
 service::connections_t negato::auto_connections() const
 {
     return {
-        {IMAGE_IN, data::image::MODIFIED_SIG, service::slots::UPDATE},
-        {IMAGE_IN, data::image::SLICE_TYPE_MODIFIED_SIG, UPDATE_SLICE_INDEX_SLOT},
-        {IMAGE_IN, data::image::SLICE_INDEX_MODIFIED_SIG, UPDATE_SLICE_TYPE_SLOT},
-        {IMAGE_IN, data::image::BUFFER_MODIFIED_SIG, UPDATE_BUFFER_SLOT},
-        {TF_INOUT, data::transfer_function::MODIFIED_SIG, UPDATE_TF_SLOT},
-        {TF_INOUT, data::transfer_function::POINTS_MODIFIED_SIG, UPDATE_TF_SLOT},
-        {TF_INOUT, data::transfer_function::WINDOWING_MODIFIED_SIG, UPDATE_TF_SLOT}
+        {IMAGE_IN, data::signals::MODIFIED, service::slots::UPDATE},
+        {IMAGE_IN, data::image::signals::SLICE_TYPE_MODIFIED, slots::UPDATE_SLICE_INDEX},
+        {IMAGE_IN, data::image::signals::SLICE_INDEX_MODIFIED, slots::UPDATE_SLICE_TYPE},
+        {IMAGE_IN, data::image::signals::BUFFER_MODIFIED, slots::UPDATE_BUFFER},
+        {TF_INOUT, data::signals::MODIFIED, slots::UPDATE_TF},
+        {TF_INOUT, data::transfer_function::signals::POINTS_MODIFIED, slots::UPDATE_TF},
+        {TF_INOUT, data::transfer_function::signals::WINDOWING_MODIFIED, slots::UPDATE_TF}
     };
 }
 

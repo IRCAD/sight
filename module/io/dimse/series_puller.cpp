@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,7 @@
 
 #include "series_puller.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-#include <core/progress/observer.hpp>
+#include <core/notification/observer.hpp>
 
 #include <data/series_set.hpp>
 
@@ -33,28 +31,20 @@
 #include <io/dimse/exceptions/base.hpp>
 #include <io/dimse/helper/series.hpp>
 #include <io/dimse/series_enquirer.hpp>
-
-#include <service/extension/config.hpp>
+#include <io/dimse/series_retriever.hpp>
 
 #include <cstddef>
-#include <sstream>
 
 namespace sight::module::io::dimse
 {
 
-static const core::com::signals::key_t STARTED_PROGRESS_SIG = "progress_started";
-static const core::com::signals::key_t STOPPED_PROGRESS_SIG = "progress_stopped";
-
-static const core::com::slots::key_t REMOVE_SERIES_SLOT = "removeSeries";
-
 series_puller::series_puller() noexcept :
-    service::notifier(m_signals),
-    has_monitors(m_signals)
+    has_monitors(has_signals::signals())
 {
-    m_sig_progress_started = this->new_signal<progress_started_signal_t>(STARTED_PROGRESS_SIG);
-    m_sig_progress_stopped = this->new_signal<progress_stopped_signal_t>(STOPPED_PROGRESS_SIG);
+    this->new_signal<signals::progress_started_t>(signals::STARTED_PROGRESS);
+    this->new_signal<signals::progress_stopped_t>(signals::STOPPED_PROGRESS);
 
-    new_slot(REMOVE_SERIES_SLOT, &series_puller::remove_series, this);
+    new_slot(slots::REMOVE_SERIES, &series_puller::remove_series, this);
 }
 
 //------------------------------------------------------------------------------
@@ -79,7 +69,7 @@ void series_puller::updating()
 
     if(selected_series->empty())
     {
-        this->notifier::info("No series selected");
+        this->inform("No series selected");
     }
     else
     {
@@ -146,18 +136,17 @@ void series_puller::pull_series()
     // Pull series.
     if(!pull_series_vector.empty())
     {
-        this->notifier::info("Downloading series...");
+        this->inform("Downloading series...");
 
         // Notify Progress Dialog.
-        m_sig_progress_started->async_emit();
+        this->async_emit(signals::STARTED_PROGRESS);
 
         // Retrieve informations.
         const auto pacs_config = m_config.lock();
 
         auto series_enquirer = std::make_shared<sight::io::dimse::series_enquirer>();
 
-        auto progress = std::make_shared<core::progress::observer>("Pull DICOM Series", m_instance_count);
-        this->async_emit(core::progress::has_monitors::signals::MONITOR_CREATED, progress->get_sptr());
+        auto progress = this->observe("Pull DICOM Series", false, nullptr, m_instance_count);
 
         // Initialize connection.
         try
@@ -175,7 +164,7 @@ void series_puller::pull_series()
         catch(const sight::io::dimse::exceptions::base& e)
         {
             SIGHT_ERROR("Unable to establish a connection with the PACS: " + std::string(e.what()));
-            this->notifier::failure("Unable to connect to the PACS");
+            this->fail("Unable to connect to the PACS");
             return;
         }
 
@@ -226,7 +215,7 @@ void series_puller::pull_series()
         catch(const sight::io::dimse::exceptions::base& e)
         {
             SIGHT_ERROR("Unable to execute query to the PACS: " + std::string(e.what()));
-            this->notifier::failure("Unable to execute query");
+            this->fail("Unable to execute query");
             success = false;
         }
 
@@ -242,23 +231,23 @@ void series_puller::pull_series()
     }
     else
     {
-        this->notifier::info("Series already downloaded");
+        this->inform("Series already downloaded");
         return;
     }
 
     // Read series if there is no error.
     if(success)
     {
-        this->notifier::success("Series downloaded");
+        this->inform("Series downloaded");
         this->read_local_series(selected_series_vector);
     }
     else
     {
-        this->notifier::failure("Series download failed");
+        this->fail("Series download failed");
     }
 
     // Notify Progress Dialog.
-    m_sig_progress_stopped->async_emit();
+    this->async_emit(signals::STOPPED_PROGRESS);
 }
 
 //------------------------------------------------------------------------------
@@ -277,7 +266,7 @@ void series_puller::read_local_series(dicom_series_container_t _selected_series)
         const auto& type = series->get_dicom_type();
         if(type == sight::data::series::dicom_t::image)
         {
-            this->notifier::info("Unable to read the modality '" + series->get_modality_string() + "'");
+            this->inform("Unable to read the modality '" + series->get_modality_string() + "'");
             return;
         }
 
@@ -292,7 +281,7 @@ void series_puller::read_local_series(dicom_series_container_t _selected_series)
                 return _already_loaded_series->get_series_instance_uid() == selected_series_uid;
             }) == dest_series_set->cend())
         {
-            this->notifier::info("Reading series...");
+            this->inform("Reading series...");
 
             // Clear temporary series.
             m_series_set->clear();
@@ -302,13 +291,13 @@ void series_puller::read_local_series(dicom_series_container_t _selected_series)
             reader->set_object(m_series_set);
             reader->set_folder({path.string()});
 
-            auto observer = std::make_shared<sight::core::progress::observer>("Read image series");
+            auto observer = this->make_notification<sight::core::notification::observer>("Read image series");
             reader->read(observer);
 
             // Merge series.
             if(!m_series_set->empty())
             {
-                this->notifier::success("Series read");
+                this->inform("Series read");
 
                 // Add the series to the local series vector.
                 m_local_series.insert(selected_series_uid);
@@ -318,7 +307,7 @@ void series_puller::read_local_series(dicom_series_container_t _selected_series)
             }
             else
             {
-                this->notifier::failure("Failed to read series");
+                this->fail("Failed to read series");
             }
         }
     }
@@ -335,7 +324,7 @@ void series_puller::remove_series(data::series_set::container_t _removed_series)
         {
             if(m_local_series.erase(series->get_series_instance_uid()) > 0)
             {
-                this->notifier::info("Local series deleted");
+                this->inform("Local series deleted");
             }
         }
     }
@@ -346,7 +335,7 @@ void series_puller::remove_series(data::series_set::container_t _removed_series)
 service::connections_t series_puller::auto_connections() const
 {
     connections_t connections;
-    connections.push(SERIES_SET_INOUT, data::series_set::REMOVED_OBJECTS_SIG, REMOVE_SERIES_SLOT);
+    connections.push(SERIES_SET_INOUT, data::series_set::signals::REMOVED_OBJECTS, slots::REMOVE_SERIES);
 
     return connections;
 }

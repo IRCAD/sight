@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,16 +24,12 @@
 
 #include "module/ui/qt/video/camera_device_dlg.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
 #include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
 #include <core/ptree.hpp>
 #include <core/runtime/path.hpp>
 
 #include <data/object.hpp>
-
-#include <service/macros.hpp>
 
 #include <ui/__/dialog/input.hpp>
 #include <ui/__/dialog/location.hpp>
@@ -54,15 +50,6 @@
 namespace sight::module::ui::qt::video
 {
 
-static const core::com::signals::key_t CONFIGURED_CAMERAS_SIG = "configured_cameras";
-static const core::com::signals::key_t CONFIGURED_DEVICE_SIG  = "configured_device";
-static const core::com::signals::key_t CONFIGURED_FILE_SIG    = "configured_file";
-static const core::com::signals::key_t CONFIGURED_STREAM_SIG  = "configured_stream";
-
-static const core::com::slots::key_t CONFIGURE_DEVICE_SLOT = "configureDevice";
-static const core::com::slots::key_t CONFIGURE_FILE_SLOT   = "configureFile";
-static const core::com::slots::key_t CONFIGURE_STREAM_SLOT = "configureStream";
-
 static const std::string USE_ABSOLUTE_PATH           = "useAbsolutePath";
 static const std::string CREATE_CAMERA_NUMBER_CONFIG = "createCameraNumber";
 static const std::string LABEL_CONFIG                = "label";
@@ -73,15 +60,15 @@ const std::string camera::RESOLUTION_PREF_KEY = "camera_resolution";
 //------------------------------------------------------------------------------
 
 camera::camera() :
-    m_sig_configured_cameras(new_signal<configured_signal_t>(CONFIGURED_CAMERAS_SIG))
+    m_sig_configured_cameras(new_signal<configured_t>(signals::CONFIGURED_CAMERAS))
 {
-    new_signal<configured_signal_t>(CONFIGURED_DEVICE_SIG);
-    new_signal<configured_signal_t>(CONFIGURED_FILE_SIG);
-    new_signal<configured_signal_t>(CONFIGURED_STREAM_SIG);
+    new_signal<configured_t>(signals::CONFIGURED_DEVICE);
+    new_signal<configured_t>(signals::CONFIGURED_FILE);
+    new_signal<configured_t>(signals::CONFIGURED_STREAM);
 
-    new_slot(CONFIGURE_DEVICE_SLOT, &camera::on_choose_device, this);
-    new_slot(CONFIGURE_FILE_SLOT, &camera::on_choose_file, this);
-    new_slot(CONFIGURE_STREAM_SLOT, &camera::on_choose_stream, this);
+    new_slot(slots::CONFIGURE_DEVICE, &camera::on_choose_device, this);
+    new_slot(slots::CONFIGURE_FILE, &camera::on_choose_file, this);
+    new_slot(slots::CONFIGURE_STREAM, &camera::on_choose_stream, this);
 }
 
 //------------------------------------------------------------------------------
@@ -172,12 +159,7 @@ void camera::starting()
             {
                 auto camera = std::make_shared<data::camera>();
                 camera_set->add_camera(camera);
-
-                const auto sig = camera_set->signal<data::camera_set::added_camera_signal_t>(
-                    data::camera_set::ADDED_CAMERA_SIG
-                );
-
-                sig->async_emit(camera);
+                camera_set->async_emit(data::camera_set::signals::ADDED_CAMERA, camera);
             }
 
             SIGHT_INFO("No camera data in the CameraSet, " << m_num_create_cameras << " will be created.");
@@ -318,11 +300,11 @@ void camera::on_choose_file()
                 static const std::set<std::string> s_DEPTH_FOLDERS = {{"d", "D", "depth", "Depth", "DEPTH"}};
                 static const std::set<std::string> s_COLOR_FOLDERS = {{"c", "C", "color", "Color", "COLOR", "RGB"}};
 
-                if(s_DEPTH_FOLDERS.find(cur_dir.string()) != s_DEPTH_FOLDERS.end())
+                if(s_DEPTH_FOLDERS.contains(cur_dir.string()))
                 {
                     video_path = find_valid_image_path(s_COLOR_FOLDERS);
                 }
-                else if(s_COLOR_FOLDERS.find(cur_dir.string()) != s_COLOR_FOLDERS.end())
+                else if(s_COLOR_FOLDERS.contains(cur_dir.string()))
                 {
                     video_path = find_valid_image_path(s_DEPTH_FOLDERS);
                 }
@@ -379,11 +361,9 @@ void camera::on_choose_file()
                 camera->set_camera_source(data::camera::file);
                 camera->set_video_file(video_path.string());
             }
-            const data::camera::modified_signal_t::sptr sig =
-                camera->signal<data::camera::modified_signal_t>(data::camera::MODIFIED_SIG);
-            sig->async_emit();
+            camera->async_emit(data::signals::MODIFIED);
 
-            this->signal<configured_signal_t>(CONFIGURED_FILE_SIG)->async_emit();
+            this->async_emit(signals::CONFIGURED_FILE);
         }
     }
 
@@ -410,11 +390,9 @@ void camera::on_choose_stream()
                 camera->set_camera_source(data::camera::stream);
                 camera->set_stream_url(streamSource);
             }
-            const data::camera::modified_signal_t::sptr sig =
-                camera->signal<data::camera::modified_signal_t>(data::camera::MODIFIED_SIG);
-            sig->async_emit();
+            camera->async_emit(data::signals::MODIFIED);
 
-            this->signal<configured_signal_t>(CONFIGURED_STREAM_SIG)->async_emit();
+            this->async_emit(signals::CONFIGURED_STREAM);
         }
     }
 
@@ -478,11 +456,8 @@ void camera::on_choose_device()
 
             if(is_selected)
             {
-                const data::camera::modified_signal_t::sptr sig =
-                    camera->signal<data::camera::modified_signal_t>(data::camera::MODIFIED_SIG);
-                sig->async_emit();
-
-                this->signal<configured_signal_t>(CONFIGURED_DEVICE_SIG)->async_emit();
+                camera->async_emit(data::signals::MODIFIED);
+                this->async_emit(signals::CONFIGURED_DEVICE);
             }
             else if(m_preference_mode)
             {

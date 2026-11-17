@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -64,7 +64,7 @@ public:
     constexpr exporter() = default;
 
     /// Destructor
-    inline ~exporter() noexcept override = default;
+    ~exporter() noexcept override = default;
 
 protected:
 

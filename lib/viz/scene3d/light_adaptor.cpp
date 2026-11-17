@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -53,8 +53,8 @@ viz::scene3d::light_adaptor::sptr light_adaptor::create_light_adaptor(
     SIGHT_ASSERT("The factory process to create an light_adaptor failed.", light_adaptor);
     SIGHT_ASSERT("The light adaptor must be registered with existing data objects.", _diffuse && _specular);
 
-    light_adaptor->set_inout(_diffuse, "diffuseColor");
-    light_adaptor->set_inout(_specular, "specularColor");
+    light_adaptor->set_inout(_diffuse, "data.diffuseColor");
+    light_adaptor->set_inout(_specular, "data.specularColor");
 
     return light_adaptor;
 }

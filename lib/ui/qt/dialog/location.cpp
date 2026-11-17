@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,14 +28,12 @@
 #include <core/location/single_folder.hpp>
 
 #include <ui/__/dialog/location.hpp>
-#include <ui/__/macros.hpp>
 
 #include <QApplication>
 #include <QFileDialog>
 #include <QString>
 
 #include <filesystem>
-#include <functional>
 
 namespace sight::ui::qt::dialog
 {
@@ -116,7 +114,7 @@ core::location::base::sptr location::show()
             else if(m_type == ui::dialog::location::multi_files)
             {
                 std::vector<std::filesystem::path> paths;
-                paths.reserve(size_t(selected_files.size()));
+                paths.reserve(static_cast<size_t>(selected_files.size()));
                 for(const QString& file : selected_files)
                 {
                     paths.emplace_back(file.toStdString());
@@ -198,18 +196,18 @@ QString location::file_filters()
 
 //------------------------------------------------------------------------------
 
-std::string location::get_current_selection() const
+location::filter_t location::get_current_filter() const
 {
-    for(auto&& [filterName, rawWildcards] : m_filters)
+    for(const auto& filter : m_filters)
     {
-        const std::string& available_filters = filterName + " (" + rawWildcards + ")";
+        const std::string& available_filters = filter.first + " (" + filter.second + ")";
         if(m_wildcard == available_filters)
         {
-            return rawWildcards;
+            return filter;
         }
     }
 
-    SIGHT_THROW("No filter found for wildcard '" + m_wildcard + "'");
+    SIGHT_THROW("No filter found for selection '" + m_wildcard + "'");
 }
 
 //------------------------------------------------------------------------------

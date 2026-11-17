@@ -17,3 +17,7 @@ target_link_libraries(
 )
 
 add_dependencies(${SIGHT_TARGET} module_ui_qt)
+
+if(SIGHT_BUILD_TESTS)
+    add_subdirectory(test/ut)
+endif()

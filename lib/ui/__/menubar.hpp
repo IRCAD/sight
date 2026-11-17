@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,6 @@
 
 #include <sight/ui/__/config.hpp>
 
-#include "ui/__/container/widget.hpp"
 #include "ui/__/layout/menubar_manager.hpp"
 
 #include <service/base.hpp>
@@ -37,7 +36,7 @@ namespace detail::registry
 
 class menubar;
 
-}
+} // namespace detail::registry
 /**
  * @brief   Defines the service interface managing the menu bar.
  */
@@ -47,6 +46,8 @@ public:
 
     SIGHT_DECLARE_SERVICE(menubar, service::base);
 
+    SIGHT_UI_API ~menubar() override = default;
+
     /// Method called when a menu service is stopping
     SIGHT_UI_API void menu_service_stopping(std::string _menu_srv_sid);
 
@@ -55,8 +56,7 @@ public:
 
 protected:
 
-    SIGHT_UI_API menubar()           = default;
-    SIGHT_UI_API ~menubar() override = default;
+    SIGHT_UI_API menubar() = default;
 
     /**
      * @brief Initialize the layout and registry managers.
@@ -103,7 +103,7 @@ private:
     void initialize_layout_manager(const ui::config_t& _layout_config);
 
     ui::layout::menubar_manager::sptr m_layout_manager;
-    SPTR(ui::detail::registry::menubar) m_registry;
+    sight::sptr<ui::detail::registry::menubar> m_registry;
 
     /// Flag to hide or disable the menu if the service is stopped
     bool m_hide_menus {false};

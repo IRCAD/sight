@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,6 @@
 
 #include "copy.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/signals.hpp>
-
 namespace sight::module::data
 {
 
@@ -33,11 +30,6 @@ namespace sight::module::data
 void copy::configuring()
 {
     const auto& config = this->get_config();
-    SIGHT_ASSERT("One 'in' tag is required.", config.get_optional<std::string>("in").has_value());
-
-    [[maybe_unused]] const auto inout_cfg = config.get_optional<std::string>("inout");
-    [[maybe_unused]] const auto out_cfg   = config.get_optional<std::string>("out");
-    SIGHT_ASSERT("One 'inout' or one 'out' tag is required.", inout_cfg.has_value() + out_cfg.has_value());
 
     if(const auto mode_config = config.get_optional<std::string>("mode"); mode_config.has_value())
     {
@@ -85,50 +77,28 @@ void copy::updating()
 
 void copy::stopping()
 {
-    // Unregister output
-    m_out_target = nullptr;
 }
 
 //-----------------------------------------------------------------------------
 
 void copy::make_copy()
 {
-    // Check if we use inout or output.
-    bool create = false;
+    const auto num_sources                  = m_sources.size();
+    [[maybe_unused]] const auto num_targets = m_targets.size();
+
+    SIGHT_ASSERT("Source and target groups must have the same number of objects.", num_sources == num_targets);
+
+    // Copy each source to the corresponding target by index
+    for(std::size_t i = 0 ; i < num_sources ; ++i)
     {
-        const auto target_lock = m_target.lock();
-        if(!target_lock)
+        const auto source = m_sources[i].lock();
+        const auto target = m_targets[i].lock();
+
+        if(source && target)
         {
-            create = true;
+            target->deep_copy(source.get_shared());
+            target->async_emit(this, sight::data::signals::MODIFIED);
         }
-    }
-
-    // Extract the object.
-    const auto source_object = m_source.lock();
-
-    sight::data::object::csptr source = source_object.get_shared();
-
-    if(source)
-    {
-        const auto set_output_data =
-            [&]()
-            {
-                if(create)
-                {
-                    // Set the data as output.
-                    sight::data::object::sptr target = sight::data::object::copy(source);
-                    m_out_target = target;
-                }
-                else
-                {
-                    // Copy the object to the inout.
-                    const auto target = m_target.lock();
-                    target->deep_copy(source);
-                    target->async_emit(this, sight::data::object::MODIFIED_SIG);
-                }
-            };
-
-        set_output_data();
     }
 }
 

@@ -2,9 +2,18 @@
     <requirement id="sight::module::service" />
 
     <extension implements="sight::service::extension::factory">
+        <type>sight::service::base</type>
+        <service>sight::module::geometry::camera_path_to_view</service>
+        <object key="data.image">sight::data::image_series</object>
+        <object key="data.transform_out">sight::data::matrix4</object>
+        <desc>Generates a camera transform from a fiducial path.</desc>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
         <type>sight::service::controller</type>
         <service>sight::module::geometry::concatenate_matrices</service>
-        <object>sight::data::matrix4</object>
+        <object key="data.input">sight::data::matrix4</object>
+        <object key="data.output">sight::data::matrix4</object>
         <desc>This service concatenates N matrices together.</desc>
     </extension>
     <extension implements="sight::service::extension::factory">
@@ -48,15 +57,19 @@
     <extension implements="sight::service::extension::factory">
         <type>sight::service::controller</type>
         <service>sight::module::geometry::switch_matrices</service>
-        <object>sight::data::matrix4</object>
+        <object key="data.input">sight::data::matrix4</object>
+        <object key="data.output">sight::data::matrix4</object>
+        <object key="data.index">sight::data::integer</object>
         <desc>This service switch between several matrices.</desc>
     </extension>
 
     <extension implements="sight::service::extension::factory">
         <type>sight::service::filter</type>
         <service>sight::module::geometry::weighted_mean_matrix</service>
-        <object key="raw">sight::data::matrix4</object>
-        <object key="damped">sight::data::matrix4</object>
+        <object key="data.raw">sight::data::matrix4</object>
+        <object key="data.damped">sight::data::matrix4</object>
+        <object key="config.enabled">sight::data::boolean</object>
+        <object key="config.weight">sight::data::real</object>
         <desc>Average (by using a weighted mean) the input matrix through time</desc>
     </extension>
 </plugin>

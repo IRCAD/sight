@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,14 +30,14 @@ const pulse_progress_base::factory_registry_key_t pulse_progress_base::REGISTRY_
 
 //-----------------------------------------------------------------------------
 
-void pulse_progress_base::set_stuff(Stuff _stuff)
+void pulse_progress_base::set_stuff(stuff _stuff)
 {
     m_stuff = _stuff;
 }
 
 //-----------------------------------------------------------------------------
 
-void pulse_progress_base::set_frequency(MilliSecond _frequency)
+void pulse_progress_base::set_frequency(millisecond _frequency)
 {
     m_frequency = _frequency;
 }

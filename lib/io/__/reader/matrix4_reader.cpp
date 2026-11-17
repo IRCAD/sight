@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "core/exceptionmacros.hpp"
 
-#include <core/progress/observer.hpp>
+#include <core/notification/observer.hpp>
 
 #include <cmath>
 #include <filesystem>
@@ -37,7 +37,7 @@ namespace sight::io::reader
 
 //------------------------------------------------------------------------------
 
-void matrix4_reader::read(sight::core::progress::observer::sptr _progress)
+void matrix4_reader::read(sight::core::notification::observer::sptr _progress)
 {
     std::filesystem::path file = this->get_file();
 

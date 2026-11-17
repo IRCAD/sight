@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,7 +29,6 @@
 #include <core/macros.hpp>
 
 #include <filesystem>
-#include <fstream>
 
 namespace sight::io::zip
 {
@@ -63,7 +62,7 @@ public:
      *
      * @note Creates all parent directories of the path in archive.
      */
-    SIGHT_IO_ZIP_API SPTR(std::ostream) create_file(const std::filesystem::path& _path) override;
+    SIGHT_IO_ZIP_API sight::sptr<std::ostream> create_file(const std::filesystem::path& _path) override;
 
     /**
      * @brief Writes source file in archive. If possible, creates hard link otherwise copy source file in archive.
@@ -88,7 +87,7 @@ public:
      */
     [[nodiscard]] SIGHT_IO_ZIP_API std::filesystem::path get_archive_path() const override;
 
-protected:
+private:
 
     std::filesystem::path m_archive;
 };

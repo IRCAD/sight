@@ -1,4 +1,6 @@
 <plugin id="ut_validator">
+    <extension-point id="sight::activity::extension" schema="activity/activity.xsd" />
+
     <extension implements="sight::activity::extension">
         <id>TestValidator0</id>
         <title>Title Test0</title>
@@ -30,7 +32,7 @@
             </requirement>
             <requirement name="vectorImage" type="sight::data::image_series" minOccurs="2" maxOccurs="*" container="vector">
                 <desc>Some image series...</desc>
-                <validator>sight::activity::validator::image_properties</validator>
+                <validator id="sight::activity::validator::image_properties" />
             </requirement>
             <requirement name="vectorModel" type="sight::data::model_series" minOccurs="2" maxOccurs="*" container="vector">
                 <desc>

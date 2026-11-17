@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,8 +27,6 @@
 #include <utest_data/generator/image.hpp>
 
 #include <doctest/doctest.h>
-
-#include <sstream>
 
 //------------------------------------------------------------------------------
 
@@ -67,11 +65,11 @@ static void test_roi_apply(const sight::core::type _image_type, const sight::cor
 
     auto begin      = roi->begin();
     const auto end  = roi->end();
-    const auto part = std::int64_t((end - begin) / 3);
+    const auto part = static_cast<std::int64_t>((end - begin) / 3);
 
     // keep random values in 1/3 of the image (else fill with 0)
-    std::fill(begin, begin + part, std::int8_t(0));
-    std::fill(end - part, end, std::int8_t(0));
+    std::fill(begin, begin + part, static_cast<std::int8_t>(0));
+    std::fill(end - part, end, static_cast<std::int8_t>(0));
 
     // apply roi and check
     sight::filter::image::apply_roi(img_roi_applied, roi);
@@ -131,48 +129,48 @@ TEST_SUITE("sight::filter::image::image")
         test_roi_apply(sight::core::type::UINT32, sight::core::type::UINT32);
 
         // float and double disabled : randomization generate some <nan>
-        // test_roi_apply(sight:: core::type::INT8, sight::core::type::FLOAT );
-        // test_roi_apply(sight:: core::type::INT16 , sight::core::type::FLOAT );
-        // test_roi_apply(sight:: core::type::INT32 , sight::core::type::FLOAT );
-        // test_roi_apply(sight:: core::type::UINT8 , sight::core::type::FLOAT );
-        // test_roi_apply(sight:: core::type::UINT16, sight::core::type::FLOAT );
-        // test_roi_apply(sight:: core::type::UINT32, sight::core::type::FLOAT );
-        // test_roi_apply(sight:: core::type::FLOAT , sight::core::type::INT8 );
-        // test_roi_apply(sight:: core::type::FLOAT , sight::core::type::INT16 );
-        // test_roi_apply(sight:: core::type::FLOAT , sight::core::type::INT32 );
-        // test_roi_apply(sight:: core::type::FLOAT , sight::core::type::UINT8 );
-        // test_roi_apply(sight:: core::type::FLOAT , sight::core::type::UINT16);
-        // test_roi_apply(sight:: core::type::FLOAT , sight::core::type::UINT32);
-        // test_roi_apply(sight:: core::type::FLOAT , sight::core::type::FLOAT );
+        // test_roi_apply(sight:: core::type::INT8, sight::core::type::FLOAT32 );
+        // test_roi_apply(sight:: core::type::INT16 , sight::core::type::FLOAT32 );
+        // test_roi_apply(sight:: core::type::INT32 , sight::core::type::FLOAT32 );
+        // test_roi_apply(sight:: core::type::UINT8 , sight::core::type::FLOAT32 );
+        // test_roi_apply(sight:: core::type::UINT16, sight::core::type::FLOAT32 );
+        // test_roi_apply(sight:: core::type::UINT32, sight::core::type::FLOAT32 );
+        // test_roi_apply(sight:: core::type::FLOAT32 , sight::core::type::INT8 );
+        // test_roi_apply(sight:: core::type::FLOAT32 , sight::core::type::INT16 );
+        // test_roi_apply(sight:: core::type::FLOAT32 , sight::core::type::INT32 );
+        // test_roi_apply(sight:: core::type::FLOAT32 , sight::core::type::UINT8 );
+        // test_roi_apply(sight:: core::type::FLOAT32 , sight::core::type::UINT16);
+        // test_roi_apply(sight:: core::type::FLOAT32 , sight::core::type::UINT32);
+        // test_roi_apply(sight:: core::type::FLOAT32 , sight::core::type::FLOAT32 );
         //
         //#ifndef DEBUG // double disabled from default dispatcher type list in debug mode
-        // test_roi_apply(sight:: core::type::INT8, sight::core::type::DOUBLE);
-        // test_roi_apply(sight:: core::type::INT16 , sight::core::type::DOUBLE);
-        // test_roi_apply(sight:: core::type::INT32 , sight::core::type::DOUBLE);
-        // test_roi_apply(sight:: core::type::UINT8 , sight::core::type::DOUBLE);
-        // test_roi_apply(sight:: core::type::UINT16, sight::core::type::DOUBLE);
-        // test_roi_apply(sight:: core::type::UINT32, sight::core::type::DOUBLE);
-        // test_roi_apply(sight:: core::type::FLOAT , sight::core::type::DOUBLE);
-        // test_roi_apply(sight:: core::type::DOUBLE, sight::core::type::INT8 );
-        // test_roi_apply(sight:: core::type::DOUBLE, sight::core::type::INT16 );
-        // test_roi_apply(sight:: core::type::DOUBLE, sight::core::type::INT32 );
-        // test_roi_apply(sight:: core::type::DOUBLE, sight::core::type::UINT8 );
-        // test_roi_apply(sight:: core::type::DOUBLE, sight::core::type::UINT16);
-        // test_roi_apply(sight:: core::type::DOUBLE, sight::core::type::UINT32);
-        // test_roi_apply(sight:: core::type::DOUBLE, sight::core::type::FLOAT );
-        // test_roi_apply(sight:: core::type::DOUBLE, sight::core::type::DOUBLE);
+        // test_roi_apply(sight:: core::type::INT8, sight::core::type::FLOAT64);
+        // test_roi_apply(sight:: core::type::INT16 , sight::core::type::FLOAT64);
+        // test_roi_apply(sight:: core::type::INT32 , sight::core::type::FLOAT64);
+        // test_roi_apply(sight:: core::type::UINT8 , sight::core::type::FLOAT64);
+        // test_roi_apply(sight:: core::type::UINT16, sight::core::type::FLOAT64);
+        // test_roi_apply(sight:: core::type::UINT32, sight::core::type::FLOAT64);
+        // test_roi_apply(sight:: core::type::FLOAT32 , sight::core::type::FLOAT64);
+        // test_roi_apply(sight:: core::type::FLOAT64, sight::core::type::INT8 );
+        // test_roi_apply(sight:: core::type::FLOAT64, sight::core::type::INT16 );
+        // test_roi_apply(sight:: core::type::FLOAT64, sight::core::type::INT32 );
+        // test_roi_apply(sight:: core::type::FLOAT64, sight::core::type::UINT8 );
+        // test_roi_apply(sight:: core::type::FLOAT64, sight::core::type::UINT16);
+        // test_roi_apply(sight:: core::type::FLOAT64, sight::core::type::UINT32);
+        // test_roi_apply(sight:: core::type::FLOAT64, sight::core::type::FLOAT32 );
+        // test_roi_apply(sight:: core::type::FLOAT64, sight::core::type::FLOAT64);
         //#endif
 
         // 64 bit type not supported by dynamic_t/Dispatcher
-        // test_roi_apply(sight:: core::type::UINT64, sight::core::type::DOUBLE);
-        // test_roi_apply(sight:: core::type::INT64 , sight::core::type::DOUBLE);
-        // test_roi_apply(sight:: core::type::DOUBLE, sight::core::type::INT64 );
-        // test_roi_apply(sight:: core::type::DOUBLE, sight::core::type::UINT64);
+        // test_roi_apply(sight:: core::type::UINT64, sight::core::type::FLOAT64);
+        // test_roi_apply(sight:: core::type::INT64 , sight::core::type::FLOAT64);
+        // test_roi_apply(sight:: core::type::FLOAT64, sight::core::type::INT64 );
+        // test_roi_apply(sight:: core::type::FLOAT64, sight::core::type::UINT64);
         //
-        // test_roi_apply(sight:: core::type::INT64 , sight::core::type::FLOAT );
-        // test_roi_apply(sight:: core::type::UINT64, sight::core::type::FLOAT );
-        // test_roi_apply(sight:: core::type::FLOAT , sight::core::type::INT64 );
-        // test_roi_apply(sight:: core::type::FLOAT , sight::core::type::UINT64);
+        // test_roi_apply(sight:: core::type::INT64 , sight::core::type::FLOAT32 );
+        // test_roi_apply(sight:: core::type::UINT64, sight::core::type::FLOAT32 );
+        // test_roi_apply(sight:: core::type::FLOAT32 , sight::core::type::INT64 );
+        // test_roi_apply(sight:: core::type::FLOAT32 , sight::core::type::UINT64);
         //
         // test_roi_apply(sight:: core::type::INT8, sight::core::type::INT64 );
         // test_roi_apply(sight:: core::type::INT8, sight::core::type::UINT64);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,20 +43,20 @@ public:
     SIGHT_DECLARE_CLASS(raw_buffer_tl, timeline::base);
 
     /// Destructor
-    inline ~raw_buffer_tl() noexcept override = default;
+    ~raw_buffer_tl() noexcept override = default;
 
     /**
      * @brief Return the closest buffer to the given timestamp
      * @param _timestamp timestamp used to find the closest buffer
      * @param _direction direction to find the closest buffer (PAST, FUTURE, BOTH)
      */
-    SIGHT_DATA_API virtual CSPTR(timeline::raw_buffer) get_closest_buffer(
+    SIGHT_DATA_API virtual sight::csptr<timeline::raw_buffer> get_closest_buffer(
         core::clock::type _timestamp,
         timeline::direction_t _direction = timeline::both
     ) const;
 
     /// Return the buffer matching the specified timestamp, returns NULL if object is not found
-    SIGHT_DATA_API virtual CSPTR(timeline::raw_buffer) get_buffer(core::clock::type _timestamp)
+    SIGHT_DATA_API virtual sight::csptr<timeline::raw_buffer> get_buffer(core::clock::type _timestamp)
     const;
 
     /// Initialize the size of the pool buffer.
@@ -67,17 +67,17 @@ public:
      * @note This buffer memory is managed by the pool.
      * @warning This buffer is not registered in the timeline. You must call pushObject() to register it.
      */
-    SIGHT_DATA_API SPTR(timeline::object) create_object(core::clock::type _timestamp) override;
+    SIGHT_DATA_API sight::sptr<timeline::object> create_object(core::clock::type _timestamp) override;
 
     /**
      * @brief Return a new buffer_t with the given timestamp.
      * @note This buffer memory is managed by the pool.
      * @warning This buffer is not registered in the timeline. You must call pushObject() to register it.
      */
-    SIGHT_DATA_API SPTR(timeline::raw_buffer) create_buffer(core::clock::type _timestamp);
+    SIGHT_DATA_API sight::sptr<timeline::raw_buffer> create_buffer(core::clock::type _timestamp);
 
     /// Check if the type of an object is compatible with this timeline
-    SIGHT_DATA_API bool is_object_valid(const CSPTR(timeline::object)& _obj) const override;
+    SIGHT_DATA_API bool is_object_valid(const sight::csptr<timeline::object>& _obj) const override;
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy

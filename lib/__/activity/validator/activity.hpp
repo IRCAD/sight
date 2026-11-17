@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2024 IRCAD France
+ * Copyright (C) 2016-2026 IRCAD France
  * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,8 +25,6 @@
 #include <sight/activity/config.hpp>
 
 #include "activity/validator/base.hpp"
-
-#include <core/base.hpp>
 
 #include <data/activity.hpp>
 
@@ -54,7 +52,7 @@ public:
     /// Does nothing.
     SIGHT_ACTIVITY_API return_t validate(
         const extension::activity_info& /*activity_info*/,
-        const CSPTR(data::vector)&
+        const sight::csptr<data::vector>&
         /*currentSelection*/
     ) const override
     {
@@ -68,25 +66,27 @@ public:
      * @brief Performs the validation of the given activity data.
      * @return pair <isValid, errorMsg> : errorMsg is empty if the data are valid else it contains detailed error.
      */
-    SIGHT_ACTIVITY_API virtual return_t validate(const CSPTR(data::activity)& _activity) const = 0;
+    SIGHT_ACTIVITY_API virtual return_t validate(const sight::csptr<data::activity>& _activity) const = 0;
 
     /**
      * @brief Checks if all the required data are present in the activity.
      * @return pair <isValid, errorMsg> : errorMsg is empty if the data are valid else it contains the list of missing
      *         (or not valid) data.
      */
-    static SIGHT_ACTIVITY_API return_t check_requirements(const CSPTR(data::activity)& _activity);
+    static SIGHT_ACTIVITY_API return_t check_requirements(const sight::csptr<data::activity>& _activity);
 
     /**
      * @brief Calls the object validator if it is defined.
      * @param _object object to validate
      * @param _validator_impl implementation of the validator to apply (if it is empty, check is assumed as valid).
+     * @param _config configuration to pass to the validator (if needed)
      * @return pair <isValid, errorMsg> : errorMsg is empty if the object is valid else it contains the detailed error.
      * @see activity::validator::object
      */
     static SIGHT_ACTIVITY_API return_t check_object(
-        const CSPTR(data::object)& _object,
-        const std::string& _validator_impl
+        const sight::csptr<data::object>& _object,
+        const std::string& _validator_impl,
+        const extension::config_t& _config
     );
 };
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2024 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,6 +23,7 @@
 #pragma once
 
 #include <data/helper/medical_image.hpp>
+#include <data/tools/picking_info.hpp>
 
 #include <viz/scene3d/adaptor.hpp>
 
@@ -37,7 +38,7 @@ namespace sight::module::viz::scene3d::adaptor
  * a picking on all scene meshes. This one picks only on an image and computes exactly the intersection between the
  * picking coordinates, and image slices.
  *
- * In 3D mode, it's useless to connect data::image::SLICE_TYPE_MODIFIED_SIG of s_IMAGE_INPUT to SLICETYPE_SLOT.
+ * In 3D mode, it's useless to connect data::image::signals::SLICE_TYPE_MODIFIED of s_IMAGE_INPUT to SLICETYPE.
  * (auto connection to true), it's only used in 2D mode.
  *
  * @section Signals Signals
@@ -49,18 +50,16 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  * @code{.xml}
         <service type="sight::module::viz::scene3d::adaptor::voxel_picker">
-            <in key="image" uid="..." />
-            <config priority="2" orientation="sagittal" mode="2D" layerOrderDependant="true"
-                moveOnPick="false" />
+            <data image="${...}" />
+            <config priority="2" orientation="sagittal" mode="2D" moveOnPick="false" />
        </service>
    @endcode
  *
  * @subsection Input Input:
- * - \b image [sight::data::image]: image to pick.
+ * - \b data.image [sight::data::image]: image to pick.
  *
  * @subsection Configuration Configuration:
  * - \b priority (optional, int, default=0): picking priority, higher priority interactions are performed first.
- * - \b layerOrderDependant (optional, bool, default=true): define if interaction must take into account above layers.
  * - \b orientation (optional, sagittal/frontal/axial, default=sagittal): orientation of the image.
  * - \b mode (optional, 2D/3D, default=2D): in 2D, the ray is intersected with the current image slice.
  *                                          In 3D, the ray intersects each slices and returns the nearest one.
@@ -71,6 +70,17 @@ class voxel_picker final :
     public sight::viz::scene3d::interactor::base
 {
 public:
+
+    struct signals
+    {
+        using picked_t = core::com::signal<void (data::tools::picking_info)>;
+        static inline const signal_key_t PICKED = "picked";
+    };
+
+    struct slots
+    {
+        static inline const slot_key_t SLICE_TYPE = "sliceType";
+    };
 
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(voxel_picker, sight::viz::scene3d::adaptor);
@@ -99,7 +109,7 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::image::SLICE_TYPE_MODIFIED_SIG of s_IMAGE_INPUT to SLICETYPE_SLOT
+     * Connect data::image::signals::SLICE_TYPE_MODIFIED of s_IMAGE_INPUT to SLICETYPE
      */
     service::connections_t auto_connections() const final;
 
@@ -137,7 +147,7 @@ private:
      */
     std::pair<bool, Ogre::Vector3> compute_ray_image_intersection(
         const Ogre::Ray& _ray,
-        const data::image::csptr _image,
+        data::image::csptr _image,
         const Ogre::Vector3& _origin,
         const Ogre::Vector3& _spacing
     );
@@ -151,16 +161,10 @@ private:
     /// Determines the execution order of the picking interactor.
     int m_priority {2};
 
-    /// Defines if the interaction must take into account above layers.
-    bool m_layer_order_dependant {true};
-
     /// Defines if the image slices indexes will be updated with the picked position.
     bool m_move_on_pick {false};
 
-    /// Defines the signal sent on picking events.
-    core::com::signal<void(data::tools::picking_info)>::sptr m_picked_sig;
-
-    static constexpr std::string_view IMAGE_INPUT = "image";
+    static constexpr std::string_view IMAGE_INPUT = "data.image";
     sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, IMAGE_INPUT};
 };
 

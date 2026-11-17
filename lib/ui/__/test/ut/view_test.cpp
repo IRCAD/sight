@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2025 IRCAD France
+ * Copyright (C) 2016-2026 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,17 +20,20 @@
  *
  ***********************************************************************/
 
-#include "view_test.hpp"
-
 #include <ui/__/detail/registry/view.hpp>
 
 #include <boost/property_tree/xml_parser.hpp>
 
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::ui::ut::view_test);
+#include <doctest/doctest.h>
 
 namespace sight::ui::ut
 {
+
+namespace
+{
+
+/// Forward-declared so test_view can grant it (and only it) access to its protected members.
+struct view_test;
 
 class test_view : public ui::detail::registry::view
 {
@@ -47,22 +50,13 @@ public:
     friend view_test;
 };
 
-//------------------------------------------------------------------------------
-
-void view_test::setUp()
+/// Holds the test body as a static method, so it can be named in the friend declaration above -
+/// a TEST_CASE body cannot be, since doctest expands it into an anonymous function.
+struct view_test
 {
-}
+    //------------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
-
-void view_test::tearDown()
-{
-}
-
-//------------------------------------------------------------------------------
-
-void view_test::configuring_test()
-{
+    static void configuring_test()
     {
         auto view = std::make_shared<test_view>("view");
 
@@ -83,18 +77,28 @@ void view_test::configuring_test()
 
         view->initialize(config);
 
-        CPPUNIT_ASSERT(view->m_sids.find("view1") != view->m_sids.end());
-        CPPUNIT_ASSERT(view->m_sids.find("view2") != view->m_sids.end());
-        CPPUNIT_ASSERT(view->m_sids.find("slideView1") != view->m_sids.end());
-        CPPUNIT_ASSERT(view->m_sids.find("view3") != view->m_sids.end());
-        CPPUNIT_ASSERT(view->m_sids.find("slideView2") != view->m_sids.end());
-        CPPUNIT_ASSERT(view->m_sids.find("view4") == view->m_sids.end());
-        CPPUNIT_ASSERT(view->m_sids.find("slideView3") == view->m_sids.end());
-        CPPUNIT_ASSERT_EQUAL(std::string("myMenu"), view->m_menu_bar_sid.first);
-        CPPUNIT_ASSERT_EQUAL(std::string("myToolBar"), view->m_tool_bar_sid.first);
+        CHECK(view->m_sids.find("view1") != view->m_sids.end());
+        CHECK(view->m_sids.find("view2") != view->m_sids.end());
+        CHECK(view->m_sids.find("slideView1") != view->m_sids.end());
+        CHECK(view->m_sids.find("view3") != view->m_sids.end());
+        CHECK(view->m_sids.find("slideView2") != view->m_sids.end());
+        CHECK(view->m_sids.find("view4") == view->m_sids.end());
+        CHECK(view->m_sids.find("slideView3") == view->m_sids.end());
+        CHECK_EQ(std::string("myMenu"), view->m_menu_bar_sid.first);
+        CHECK_EQ(std::string("myToolBar"), view->m_tool_bar_sid.first);
     }
-}
+};
 
+} // namespace
+
+TEST_SUITE("sight::ui::ut::view")
+{
 //------------------------------------------------------------------------------
+
+    TEST_CASE("configuring_test")
+    {
+        view_test::configuring_test();
+    }
+} // TEST_SUITE
 
 } // namespace sight::ui::ut

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -56,10 +56,6 @@ void cursor::set_cursor(ui::cursor_base::state_t _cursor, bool _set_overriden_as
 
         case cursor_base::closed_hand:
             qt_cursor.setShape(Qt::ClosedHandCursor);
-            break;
-
-        case cursor_base::DEFAULT:
-            qt_cursor.setShape(Qt::BusyCursor);
             break;
     }
 

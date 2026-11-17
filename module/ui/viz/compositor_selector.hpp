@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,18 +52,12 @@ public:
 
     SIGHT_DECLARE_SERVICE(compositor_selector, sight::ui::editor);
 
-    /** @} */
+    struct slots
+    {
+        static inline const slot_key_t INIT_COMPOSITOR_LIST = "initCompositorList";
+    };
 
-    /**
-     * @name Slots API
-     * @{
-     */
     using init_layer_slot_t = core::com::slot<void (sight::viz::scene3d::layer::sptr)>;
-
-    /// Slot: Populate the list of available compositors for the selected layer
-    static const core::com::slots::key_t INIT_COMPOSITOR_LIST_SLOT;
-
-    /** @} */
 
     /// Constructor.
     compositor_selector() noexcept;

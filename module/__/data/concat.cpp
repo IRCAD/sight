@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,13 +21,13 @@
 
 #include "concat.hpp"
 
-#include <boost/format.hpp>
+#include <boost/format.hpp> // NOLINT(misc-include-cleaner)
 
 namespace sight::module::data
 {
 
 concat::concat() :
-    service::filter(m_signals)
+    service::filter(has_signals::signals())
 {
 }
 
@@ -36,7 +36,7 @@ concat::concat() :
 service::connections_t concat::auto_connections() const
 {
     return {
-        {m_fragments, sight::data::object::MODIFIED_SIG, slots::UPDATE}
+        {m_fragments, sight::data::signals::MODIFIED, slots::UPDATE}
     };
 }
 
@@ -97,7 +97,7 @@ void concat::updating()
         auto target = m_target.lock();
         target->from_string(result);
 
-        target->async_emit(this, sight::data::object::MODIFIED_SIG);
+        target->async_emit(this, sight::data::signals::MODIFIED);
     }
 }
 

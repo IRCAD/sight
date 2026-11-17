@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,89 +20,68 @@
  *
  ***********************************************************************/
 
-#include "projection_test.hpp"
-
 #include <filter/vision/projection.hpp>
+
+#include <doctest/doctest.h>
 
 #include <cmath>
 
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::filter::vision::ut::projection_test);
-
-namespace sight::filter::vision::ut
+TEST_SUITE("sight::filter::vision::projection")
 {
-
-//------------------------------------------------------------------------------
-
-void projection_test::setUp()
-{
-}
-
-//------------------------------------------------------------------------------
-
-void projection_test::tearDown()
-{
-}
-
-//------------------------------------------------------------------------------
-
-void projection_test::projection()
-{
+    TEST_CASE("point")
     {
-        const std::size_t p_x   = 42;
-        const std::size_t p_y   = 53;
-        const std::size_t depth = 155;
+        {
+            const std::size_t p_x   = 42;
+            const std::size_t p_y   = 53;
+            const std::size_t depth = 155;
 
-        const std::size_t width  = 640;
-        const std::size_t height = 480;
-        const double cx          = 321.3;
-        const double cy          = 239.3;
-        const double fx          = 565.53;
-        const double fy          = 563.25;
+            const std::size_t width  = 640;
+            const std::size_t height = 480;
+            const double cx          = 321.3;
+            const double cy          = 239.3;
+            const double fx          = 565.53;
+            const double fy          = 563.25;
 
-        double x = NAN;
-        double y = NAN;
-        double z = NAN;
-        filter::vision::project_pixel(p_x, p_y, static_cast<double>(depth), cx, cy, fx, fy, x, y, z);
-        std::size_t p_x2 = 0;
-        std::size_t p_y2 = 0;
-        bool success     = filter::vision::project_point(x, y, z, cx, cy, fx, fy, width, height, p_x2, p_y2);
+            double x = NAN;
+            double y = NAN;
+            double z = NAN;
+            sight::filter::vision::project_pixel(p_x, p_y, static_cast<double>(depth), cx, cy, fx, fy, x, y, z);
+            std::size_t p_x2 = 0;
+            std::size_t p_y2 = 0;
+            bool success     = sight::filter::vision::project_point(x, y, z, cx, cy, fx, fy, width, height, p_x2, p_y2);
 
-        CPPUNIT_ASSERT(success);
-        CPPUNIT_ASSERT_EQUAL(p_x, p_x2);
-        CPPUNIT_ASSERT_EQUAL(p_y, p_y2);
+            CHECK(success);
+            CHECK_EQ(p_x, p_x2);
+            CHECK_EQ(p_y, p_y2);
 
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(depth * (p_x - cx) / fx, x, 0.0001);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(depth * (p_y - cy) / fy, y, 0.0001);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(double(depth), z, 0.0001);
-    }
+            CHECK(double(depth * (p_x - cx) / fx) == doctest::Approx(x).epsilon(0.0001));
+            CHECK(double(depth * (p_y - cy) / fy) == doctest::Approx(y).epsilon(0.0001));
+            CHECK(double(depth) == doctest::Approx(z).epsilon(0.0001));
+        }
 
-    {
-        const double x = 63.45;
-        const double y = 25.4;
-        const double z = 156;
+        {
+            const double x = 63.45;
+            const double y = 25.4;
+            const double z = 156;
 
-        const std::size_t width  = 640;
-        const std::size_t height = 480;
-        const double cx          = 321.3;
-        const double cy          = 239.3;
-        const double fx          = 565.53;
-        const double fy          = 563.25;
+            const std::size_t width  = 640;
+            const std::size_t height = 480;
+            const double cx          = 321.3;
+            const double cy          = 239.3;
+            const double fx          = 565.53;
+            const double fy          = 563.25;
 
-        std::size_t p_x = 0;
-        std::size_t p_y = 0;
-        bool success    = filter::vision::project_point(x, y, z, cx, cy, fx, fy, width, height, p_x, p_y);
-        CPPUNIT_ASSERT(success);
-        double x2 = NAN;
-        double y2 = NAN;
-        double z2 = NAN;
-        filter::vision::project_pixel(p_x, p_y, z, cx, cy, fx, fy, x2, y2, z2);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(x, x2, 0.1);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(y, y2, 0.1);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(z, z2, 0.001);
+            std::size_t p_x = 0;
+            std::size_t p_y = 0;
+            bool success    = sight::filter::vision::project_point(x, y, z, cx, cy, fx, fy, width, height, p_x, p_y);
+            CHECK(success);
+            double x2 = NAN;
+            double y2 = NAN;
+            double z2 = NAN;
+            sight::filter::vision::project_pixel(p_x, p_y, z, cx, cy, fx, fy, x2, y2, z2);
+            CHECK(x == doctest::Approx(x2).epsilon(0.1));
+            CHECK(y == doctest::Approx(y2).epsilon(0.1));
+            CHECK(z == doctest::Approx(z2).epsilon(0.001));
+        }
     }
 }
-
-//------------------------------------------------------------------------------
-
-} // namespace sight::filter::vision::ut

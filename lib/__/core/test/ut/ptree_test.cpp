@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -103,5 +103,24 @@ TEST_SUITE("sight::core::ptree")
             value = sight::core::ptree::get_and_deprecate(config, "test.new", "test.miss", "X.Y", 0);
             CHECK_EQ(0, value);
         }
+    }
+
+    TEST_CASE("merge")
+    {
+        boost::property_tree::ptree destination;
+        destination.put("configuration.existing", "destination");
+        destination.put("configuration.keep", "true");
+
+        boost::property_tree::ptree source;
+        source.put("configuration.existing", "source");
+        source.put("configuration.added", "source");
+        source.put("new_branch.value", "source");
+
+        sight::core::ptree::merge(destination, source);
+
+        CHECK_EQ("destination", destination.get<std::string>("configuration.existing"));
+        CHECK_EQ("true", destination.get<std::string>("configuration.keep"));
+        CHECK_EQ("source", destination.get<std::string>("configuration.added"));
+        CHECK_EQ("source", destination.get<std::string>("new_branch.value"));
     }
 }

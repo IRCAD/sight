@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,6 @@
 
 #include <core/com/connection.hpp>
 #include <core/memory/buffer_manager.hpp>
-#include <core/tools/failed.hpp>
 
 #include <ui/__/editor.hpp>
 
@@ -118,7 +117,7 @@ private:
     /// Editor to show few memory information
     QTableView* m_info_editor {};
 
-    SPTR(update_slot_t) m_update_slot;
+    sight::sptr<update_slot_t> m_update_slot;
 
     /// Manage connection between buffManager updated signal and onUpdate method
     core::com::connection m_connection;

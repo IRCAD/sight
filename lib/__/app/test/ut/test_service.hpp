@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include <core/com/has_slots.hpp>
 #include <core/com/signal.hpp>
-#include <core/com/signal.hxx>
 
+#include <data/boolean.hpp>
 #include <data/dvec3.hpp>
 #include <data/generic.hpp>
 #include <data/image.hpp>
@@ -52,31 +52,9 @@ public:
     static const std::string NOT_DEFINED;
 
     SIGHT_DECLARE_SERVICE(test_service, service::base);
-    test_service() noexcept =
-        default;
+    test_service() noexcept = default;
 
-    ~test_service() noexcept override =
-        default;
-
-    //------------------------------------------------------------------------------
-
-    void configuring() override
-    {
-        const config_t cfg = this->get_config();
-        m_option = cfg.get(OPTION_KEY, NOT_DEFINED);
-    }
-
-    void starting() override;
-    //------------------------------------------------------------------------------
-
-    void stopping() final;
-    void updating() override;
-    //------------------------------------------------------------------------------
-
-    void info(std::ostream& _sstream) override
-    {
-        _sstream << "test_service";
-    }
+    ~test_service() noexcept override = default;
 
     /// return true if the service is updated with update() method
     bool is_updated() const
@@ -138,6 +116,27 @@ public:
 
 protected:
 
+    //------------------------------------------------------------------------------
+
+    void configuring() override
+    {
+        const config_t cfg = this->get_config();
+        m_option = cfg.get(OPTION_KEY, NOT_DEFINED);
+    }
+
+    void starting() override;
+    //------------------------------------------------------------------------------
+
+    void stopping() final;
+    void updating() override;
+    //------------------------------------------------------------------------------
+
+    void info(std::ostream& _sstream) override
+    {
+        _sstream << "test_service";
+    }
+
+    // NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
     bool m_is_updated {false};
     bool m_is_updated2 {false};
     bool m_is_updated_message {false};
@@ -145,6 +144,7 @@ protected:
     unsigned int m_start_order {0};
     unsigned int m_update_order {0};
     std::string m_option {UNCONFIGURED};
+    // NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 };
 
 /**
@@ -158,20 +158,20 @@ public:
 
     struct signals
     {
-        static inline const core::com::signals::key_t SIG_1    = "signal1";
-        static inline const core::com::signals::key_t MSG_SENT = "msgSent";
+        static inline const signal_key_t SIG_1    = "signal1";
+        static inline const signal_key_t MSG_SENT = "msgSent";
 
         using int_sent_t = core::com::signal<void (int)>;
         using msg_sent_t = core::com::signal<void (const std::string&)>;
     };
     struct slots
     {
-        static inline const core::com::slots::key_t UPDATE2 = "update2";
-        static inline const core::com::slots::key_t SLOT_1  = "slot1";
+        static inline const slot_key_t UPDATE2 = "update2";
+        static inline const slot_key_t SLOT_1  = "slot1";
     };
 
     /// Type of signal
-    using int_sent_signal_t = core::com::signal<void (int)>;
+    using int_sent_t = core::com::signal<void (int)>;
 
     //-------------------------------------------------------------------------
 
@@ -186,20 +186,6 @@ public:
     //-------------------------------------------------------------------------
     ~test_srv() noexcept override =
         default;
-
-    //-------------------------------------------------------------------------
-    void starting() final
-    {
-        test_service::starting();
-    }
-
-    //-------------------------------------------------------------------------
-
-    void updating() final
-    {
-        test_service::updating();
-        m_is_updated = true;
-    }
 
     //-------------------------------------------------------------------------
     void receive_slot()
@@ -228,13 +214,6 @@ public:
     }
 
     //-------------------------------------------------------------------------
-    void swapping(std::string_view _key) final
-    {
-        m_swapped_object_key = _key;
-        m_swapped_object     = this->input(_key).lock().get_shared();
-    }
-
-    //-------------------------------------------------------------------------
 
     const std::string& get_swapped_object_key() const
     {
@@ -248,21 +227,44 @@ public:
         return m_swapped_object;
     }
 
+protected:
+
     //-------------------------------------------------------------------------
 
     connections_t auto_connections() const override
     {
         return {
-            {"data", data::object::MODIFIED_SIG, service::slots::UPDATE},
-            {"data1", data::object::MODIFIED_SIG, service::slots::UPDATE},
-            {"data2", data::object::MODIFIED_SIG, service::slots::UPDATE},
-            {"data3", data::object::MODIFIED_SIG, service::slots::UPDATE},
-            {"data4", data::object::MODIFIED_SIG, service::slots::UPDATE},
-            {"data5", data::object::MODIFIED_SIG, service::slots::UPDATE},
-            {"dataGroup", data::object::MODIFIED_SIG, service::slots::UPDATE},
-            {"dataGroup0", data::object::MODIFIED_SIG, service::slots::UPDATE},
-            {"dataGroup1", data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE}
+            {"data", data::signals::MODIFIED, service::slots::UPDATE},
+            {"data1", data::signals::MODIFIED, service::slots::UPDATE},
+            {"data2", data::signals::MODIFIED, service::slots::UPDATE},
+            {"data3", data::signals::MODIFIED, service::slots::UPDATE},
+            {"data4", data::signals::MODIFIED, service::slots::UPDATE},
+            {"data5", data::signals::MODIFIED, service::slots::UPDATE},
+            {"dataGroup", data::signals::MODIFIED, service::slots::UPDATE},
+            {"dataGroup0", data::signals::MODIFIED, service::slots::UPDATE},
+            {"dataGroup1", data::image::signals::BUFFER_MODIFIED, service::slots::UPDATE}
         };
+    }
+
+    //-------------------------------------------------------------------------
+    void starting() final
+    {
+        test_service::starting();
+    }
+
+    //-------------------------------------------------------------------------
+
+    void updating() final
+    {
+        test_service::updating();
+        m_is_updated = true;
+    }
+
+    //-------------------------------------------------------------------------
+    void swapping(std::string_view _key) final
+    {
+        m_swapped_object_key = _key;
+        m_swapped_object     = this->input(_key).lock().get_shared();
     }
 
 //-------------------------------------------------------------------------
@@ -346,13 +348,15 @@ public:
 
     SIGHT_DECLARE_SERVICE(test2_inputs_v2, app::ut::test_srv);
 
+protected:
+
     //-------------------------------------------------------------------------
 
     connections_t auto_connections() const override
     {
         return {
-            {"data1", data::object::MODIFIED_SIG, service::slots::UPDATE},
-            {"data2", data::object::MODIFIED_SIG, slots::SLOT_1},
+            {"data1", data::signals::MODIFIED, service::slots::UPDATE},
+            {"data2", data::signals::MODIFIED, slots::SLOT_1},
         };
     }
 
@@ -406,14 +410,16 @@ public:
 
     SIGHT_DECLARE_SERVICE(test3_inouts_v2, app::ut::test_srv);
 
+protected:
+
     //-------------------------------------------------------------------------
 
     connections_t auto_connections() const override
     {
         return {
-            {"data1", data::object::MODIFIED_SIG, service::slots::UPDATE},
-            {"data2", data::object::MODIFIED_SIG, slots::SLOT_1},
-            {"data3", data::object::MODIFIED_SIG, slots::SLOT_1},
+            {"data1", data::signals::MODIFIED, service::slots::UPDATE},
+            {"data2", data::signals::MODIFIED, slots::SLOT_1},
+            {"data3", data::signals::MODIFIED, slots::SLOT_1},
         };
     }
 
@@ -443,14 +449,16 @@ public:
 
     SIGHT_DECLARE_SERVICE(test1_input1_opt_input1_opt_in_out, app::ut::test_srv);
 
+protected:
+
     //-------------------------------------------------------------------------
 
     connections_t auto_connections() const override
     {
         connections_t connections;
-        connections.push("data1", data::object::MODIFIED_SIG, service::slots::UPDATE);
-        connections.push("data2", data::object::MODIFIED_SIG, slots::SLOT_1);
-        connections.push("data3", data::object::MODIFIED_SIG, slots::SLOT_1);
+        connections.push("data1", data::signals::MODIFIED, service::slots::UPDATE);
+        connections.push("data2", data::signals::MODIFIED, slots::SLOT_1);
+        connections.push("data3", data::signals::MODIFIED, slots::SLOT_1);
         return connections;
     }
 
@@ -529,6 +537,8 @@ public:
     test_service_with_data() noexcept = default;
     ~test_service_with_data() noexcept override = default;
 
+protected:
+
     //------------------------------------------------------------------------------
 
     void configuring() override
@@ -546,9 +556,55 @@ public:
     void stopping() override;
     void updating() override;
 
+public:
+
     data::ptr<data::object, data::access::in> m_input {this, "input"};
     data::ptr_vector<data::integer, data::access::inout> m_inout_group {this, "inoutGroup"};
     data::ptr<data::object, data::access::out> m_output {this, "output", true};
+};
+
+class test_service_with_typed_data : public service::base
+{
+public:
+
+    SIGHT_DECLARE_SERVICE(test_service_with_typed_data, service::base);
+    test_service_with_typed_data() noexcept = default;
+    ~test_service_with_typed_data() noexcept override = default;
+
+protected:
+
+    //------------------------------------------------------------------------------
+
+    void configuring() override
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void starting() override
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void stopping() override
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void updating() override
+    {
+    }
+
+public:
+
+    data::ptr<data::boolean, data::access::in> m_flag {this, "flag"};
+    data::ptr<data::dvec3, data::access::inout> m_position {this, "position"};
+
+    /// Declared with a default value, so it can be omitted in the configuration.
+    data::ptr<data::integer, data::access::in> m_threshold {this, "threshold", 50};
+    data::ptr<data::integer, data::access::inout> m_offset {this, "offset", -3};
 };
 
 class test_service_with_properties : public service::base
@@ -558,6 +614,18 @@ public:
     SIGHT_DECLARE_SERVICE(test_service_with_properties, service::base);
     test_service_with_properties() noexcept = default;
     ~test_service_with_properties() noexcept override = default;
+
+    //------------------------------------------------------------------------------
+
+    void set_integer(std::int64_t _value)
+    {
+        auto int_prop = m_int_prop.lock();
+        *int_prop     = _value;
+
+        int_prop->async_emit(this, data::signals::MODIFIED);
+    }
+
+protected:
 
     //------------------------------------------------------------------------------
 
@@ -604,20 +672,13 @@ public:
     connections_t auto_connections() const override
     {
         return {
-            {m_vec_prop, data::object::MODIFIED_SIG, service::slots::UPDATE}
+            {m_vec_prop, data::signals::MODIFIED, service::slots::UPDATE}
         };
     }
 
-    //------------------------------------------------------------------------------
+public:
 
-    void set_integer(std::int64_t _value)
-    {
-        auto int_prop = m_int_prop.lock();
-        *int_prop     = _value;
-
-        int_prop->async_emit(this, data::object::MODIFIED_SIG);
-    }
-
+    // NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
     data::property<data::integer> m_int_prop {this, "integer", 42};
     data::property<data::string> m_string_prop {this, "string", {"default_value"}};
     data::property<data::dvec3> m_vec_prop {this, "vec", {12.123, 56.0, 78.56}};
@@ -625,6 +686,54 @@ public:
     bool m_emit_signal {false};
     std::size_t m_signal_count {0U};
     std::string_view m_callback_called_parameter {};
+    // NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
+};
+
+/// Declares hierarchical keys, so that the XML configuration can mirror their structure.
+class test_service_with_nested_keys : public service::base
+{
+public:
+
+    SIGHT_DECLARE_SERVICE(test_service_with_nested_keys, service::base);
+    test_service_with_nested_keys() noexcept = default;
+    ~test_service_with_nested_keys() noexcept override = default;
+
+protected:
+
+    //------------------------------------------------------------------------------
+
+    void configuring() override
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void starting() override
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void stopping() override
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void updating() override
+    {
+    }
+
+public:
+
+    // NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
+    data::ptr<data::object, data::access::in> m_source {this, "image.source"};
+    data::ptr<data::object, data::access::inout> m_target {this, "image.target", true};
+    data::property<data::integer> m_threshold {this, "config.threshold", 5};
+    data::property<data::string> m_label {this, "config.label", {"default_label"}};
+    data::ptr_vector<data::string, data::access::in> m_tracker_ip {this, "config.tracker.ip"};
+    data::ptr_vector<data::integer, data::access::in> m_tracker_port {this, "config.tracker.port"};
+    // NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 };
 
 } // namespace sight::app::ut

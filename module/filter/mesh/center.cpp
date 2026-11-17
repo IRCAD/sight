@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -29,7 +29,7 @@ namespace sight::module::filter::mesh
 //------------------------------------------------------------------------------
 
 center::center() :
-    filter(m_signals)
+    filter(has_signals::signals())
 {
 }
 
@@ -68,7 +68,7 @@ void center::updating()
         });
 
     matrix->async_emit(data::signals::MODIFIED);
-    this->async_emit(signals::COMPUTED);
+    this->async_emit(signals::SUCCEEDED);
 }
 
 //------------------------------------------------------------------------------
@@ -81,7 +81,7 @@ void center::stopping()
 
 service::connections_t center::auto_connections() const
 {
-    return {{m_mesh, data::mesh::MODIFIED_SIG, service::slots::UPDATE}};
+    return {{m_mesh, data::signals::MODIFIED, service::slots::UPDATE}};
 }
 
 //------------------------------------------------------------------------------

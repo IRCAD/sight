@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -27,7 +27,6 @@
 
 #include <core/location/single_file.hpp>
 
-#include <data/container.hpp>
 #include <data/image.hpp>
 
 #include <io/__/reader/generic_object_reader.hpp>
@@ -39,7 +38,7 @@ namespace sight::io::bitmap::detail
 
 class reader_impl;
 
-}
+} // namespace sight::io::bitmap::detail
 
 namespace sight::io::bitmap
 {
@@ -72,7 +71,7 @@ public:
     SIGHT_IO_BITMAP_API ~reader() final;
 
     /// Main writing method from generic_object_reader
-    SIGHT_IO_BITMAP_API void read(SPTR(sight::core::progress::observer) _progress) final;
+    SIGHT_IO_BITMAP_API void read(sight::sptr<sight::core::notification::observer> _progress) final;
 
     /// Specialized reading method that allows to specify the backend
     /// @arg _backend: the backend to use. Can be LIBJPEG, LIBTIFF, LIBPNG, OPENJPEG or, if available, NVJPEG and
@@ -100,10 +99,10 @@ public:
     ///      NVJPEG2K. DEFAULT is LIBTIFF. "*_J2K" variant are
     ///      JPEG2000 "stream", without normal meta-data and is only useful for DICOM
     SIGHT_IO_BITMAP_API void read(
-        const std::uint8_t* const _input,
+        const std::uint8_t* _input,
         std::size_t _input_size,
-        backend _backend            = backend::libtiff,
-        std::uint8_t* const _output = nullptr
+        backend _backend      = backend::libtiff,
+        std::uint8_t* _output = nullptr
     );
 
     /// Return the extension to use, by default, or the one from file set by single_file::set_file(), if valid

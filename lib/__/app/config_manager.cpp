@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -28,7 +28,7 @@ namespace sight::app
 
 //-----------------------------------------------------------------------------
 
-SPTR(config_manager) config_manager::make()
+sight::sptr<config_manager> config_manager::make()
 {
     return std::make_shared<app::detail::config_manager>();
 }

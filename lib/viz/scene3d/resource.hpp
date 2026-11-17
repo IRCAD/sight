@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2024 IRCAD France
+ * Copyright (C) 2015-2026 IRCAD France
  * Copyright (C) 2015-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,6 +37,8 @@ namespace sight::viz::scene3d
 template<class OBJECT, class RESOURCE, class IMPL>
 class SIGHT_VIZ_SCENE3D_CLASS_API resource : public boost::noncopyable
 {
+resource() = default;
+
 public:
 
     using sptr = std::shared_ptr<IMPL>;
@@ -54,7 +56,8 @@ public:
 protected:
 
     /// Shared resource
-    std::shared_ptr<RESOURCE> m_resource;
+    std::shared_ptr<RESOURCE> m_resource; //NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
+    friend IMPL;
 };
 
 //-----------------------------------------------------------------------------

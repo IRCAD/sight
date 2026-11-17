@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -56,9 +56,9 @@ public:
      * @param _parent : the parent widget that will contain collapsible widget.
      */
     SIGHT_UI_QT_API_QT collapsible_section(
-        const QString& _title         = "",
-        const int _animation_duration = DEFAULT_DURATION,
-        QWidget* _parent              = 0
+        const QString& _title   = "",
+        int _animation_duration = DEFAULT_DURATION,
+        QWidget* _parent        = nullptr
     );
 
     /// Set layout inside the collapsible section with the desired content.
@@ -80,6 +80,11 @@ public Q_SLOTS:
 
     /// Trigger the unfold/fold on the collapsible section
     void toggle(bool _expanded);
+
+Q_SIGNALS:
+
+    /// Emitted when the unfold/fold animation has finished.
+    void animation_finished();
 
 private:
 

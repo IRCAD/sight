@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -59,19 +59,32 @@ unsigned int generic_object_base::get_present_element_num() const
 
 bool generic_object_base::is_present(unsigned int _index) const
 {
-    return (m_presence_mask & (uint64_t(1) << _index)) != 0U;
+    return (m_presence_mask & (static_cast<uint64_t>(1) << _index)) != 0U;
 }
 
 //-----------------------------------------------------------------------------
 
-uint64_t generic_object_base::get_mask() const
+void generic_object_base::set_present(unsigned int _index)
+{
+    uint64_t old_mask = m_presence_mask;
+    m_presence_mask |= (static_cast<uint64_t>(1) << _index);
+
+    if(old_mask != m_presence_mask)
+    {
+        ++m_num_present;
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+uint64_t generic_object_base::mask() const
 {
     return m_presence_mask;
 }
 
 //-----------------------------------------------------------------------------
 
-unsigned int generic_object_base::get_max_element_num() const
+unsigned int generic_object_base::max_element_num() const
 {
     return m_max_element_num;
 }
@@ -80,7 +93,7 @@ unsigned int generic_object_base::get_max_element_num() const
 
 std::size_t generic_object_base::get_element_size() const
 {
-    return m_size / m_max_element_num;
+    return size() / m_max_element_num;
 }
 
 //-----------------------------------------------------------------------------

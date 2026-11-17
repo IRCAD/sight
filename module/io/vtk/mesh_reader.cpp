@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,10 +22,7 @@
 
 #include "module/io/vtk/mesh_reader.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/location/single_file.hpp>
-#include <core/location/single_folder.hpp>
-#include <core/progress/observer.hpp>
+#include <core/tools/failed.hpp>
 
 #include <io/vtk/mesh_reader.hpp>
 #include <io/vtk/obj_mesh_reader.hpp>
@@ -34,7 +31,6 @@
 #include <io/vtk/vtp_mesh_reader.hpp>
 
 #include <ui/__/cursor.hpp>
-#include <ui/__/dialog/location.hpp>
 #include <ui/__/dialog/message.hpp>
 
 #include <filesystem>
@@ -54,37 +50,6 @@ sight::io::service::path_type_t mesh_reader::get_path_type() const
 mesh_reader::mesh_reader() noexcept :
     reader("Choose a vtk file to load Mesh")
 {
-}
-
-//------------------------------------------------------------------------------
-
-void mesh_reader::open_location_dialog()
-{
-    static auto default_directory = std::make_shared<core::location::single_folder>();
-
-    sight::ui::dialog::location dialog_file;
-    dialog_file.set_title(*m_window_title);
-    dialog_file.set_default_location(default_directory);
-    dialog_file.add_filter("All supported files", "*.vtk *.vtp *.obj *.ply *.stl");
-    dialog_file.add_filter("OBJ File(.obj)", "*.obj");
-    dialog_file.add_filter("PLY File(.ply)", "*.ply");
-    dialog_file.add_filter("STL File(.stl)", "*.stl");
-    dialog_file.add_filter("VTK Legacy File(.vtk)", "*.vtk");
-    dialog_file.add_filter("VTK Polydata File(.vtp)", "*.vtp");
-    dialog_file.set_option(ui::dialog::location::read);
-    dialog_file.set_option(ui::dialog::location::file_must_exist);
-
-    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialog_file.show());
-    if(result)
-    {
-        default_directory->set_folder(result->get_file().parent_path());
-        dialog_file.save_default_location(default_directory);
-        this->set_file(result->get_file());
-    }
-    else
-    {
-        this->clear_locations();
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -116,7 +81,7 @@ void mesh_reader::info(std::ostream& _sstream)
 //------------------------------------------------------------------------------
 
 template<typename READER>
-static typename READER::sptr configure_reader(const std::filesystem::path& _file)
+static READER::sptr configure_reader(const std::filesystem::path& _file)
 {
     typename READER::sptr reader = std::make_shared<READER>();
     reader->set_file(_file);
@@ -137,7 +102,7 @@ bool mesh_reader::load_mesh(const std::filesystem::path& _vtk_file)
         "The object is not a '"
         + data::mesh::classname()
         + "' or '"
-        + sight::io::service::DATA_KEY
+        + sight::io::service::READER_DATA_KEY
         + "' is not correctly set.",
         mesh
     );
@@ -175,8 +140,7 @@ bool mesh_reader::load_mesh(const std::filesystem::path& _vtk_file)
         );
     }
 
-    auto observer = std::make_shared<core::progress::observer>("Reading " + _vtk_file.string() + " file");
-    this->async_emit(has_monitors::signals::MONITOR_CREATED, observer->get_sptr());
+    auto observer = this->observe("Reading " + _vtk_file.string() + " file");
 
     mesh_reader->set_object(mesh);
 
@@ -249,12 +213,7 @@ void mesh_reader::notification_of_update()
     const auto locked = m_data.lock();
     const auto mesh   = std::dynamic_pointer_cast<data::mesh>(locked.get_shared());
 
-    data::object::modified_signal_t::sptr sig;
-    sig = mesh->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-    {
-        core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
-        sig->async_emit();
-    }
+    mesh->async_emit(this, data::signals::MODIFIED);
 }
 
 //------------------------------------------------------------------------------

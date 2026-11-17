@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024-2025 IRCAD France
+ * Copyright (C) 2024-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,8 +23,6 @@
 
 #include "detail/update_registry.hpp"
 
-#include <future>
-
 namespace sight::app
 {
 
@@ -32,12 +30,14 @@ namespace sight::app
 
 void update_sequence::starting()
 {
-    if(!m_parent.empty())
+    this->reset_stop_request();
+
+    if(!this->parent().empty())
     {
-        app::register_updater(m_parent, this->get_sptr());
+        app::register_updater(this->parent(), this->get_sptr());
     }
 
-    if(m_loop)
+    if(this->loop())
     {
         this->updating();
     }
@@ -47,9 +47,9 @@ void update_sequence::starting()
 
 void update_sequence::stopping()
 {
-    if(!m_parent.empty())
+    if(!this->parent().empty())
     {
-        app::unregister_updater(m_parent);
+        app::unregister_updater(this->parent());
     }
 }
 
@@ -62,10 +62,10 @@ void update_sequence::updating()
     std::set<std::string> is_going_to_be_started;
     std::set<std::string> is_going_to_be_stopped;
 
-    for(const auto& element : m_elements)
+    for(const auto& element : this->elements())
     {
         sight::service::base::sptr srv;
-        if(element.type == type_t::SERVICE)
+        if(element.type == type_t::service)
         {
             srv = std::dynamic_pointer_cast<sight::service::base>(sight::core::id::get_object(element.uid));
         }
@@ -135,21 +135,26 @@ void update_sequence::updating()
         }
     }
 
-    std::ranges::for_each(
-        services,
-        [this](const auto& _srv)
-        {
-            if(this->worker() == _srv.first->worker())
-            {
-                _srv.first->slot(_srv.second)->run();
-            }
-            else
-            {
-                _srv.first->slot(_srv.second)->async_run().wait();
-            }
-        });
+    using namespace std::chrono_literals;
 
-    if(m_loop)
+    for(const auto& srv : services)
+    {
+        if(this->stop_requested())
+        {
+            return;
+        }
+
+        if(this->worker() == srv.first->worker())
+        {
+            srv.first->slot(srv.second)->run();
+        }
+        else
+        {
+            const auto future = srv.first->slot(srv.second)->async_run();
+        }
+    }
+
+    if(this->loop() && !this->stop_requested())
     {
         this->slot(service::base::slots::UPDATE)->async_run();
     }

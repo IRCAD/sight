@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,9 +20,9 @@
  *
  ***********************************************************************/
 
-#include "undo_redo_manager_test.hpp"
-
 #include <ui/history/undo_redo_manager.hpp>
+
+#include <doctest/doctest.h>
 
 #include <algorithm>
 #include <memory>
@@ -30,10 +30,7 @@
 #include <utility>
 #include <vector>
 
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::ui::history::ut::undo_redo_manager_test);
-
-namespace sight::ui::history::ut
+namespace
 {
 
 struct command_info
@@ -50,7 +47,7 @@ struct command_info
 
 using command_log = std::vector<command_info>;
 
-class bogus_command : public command
+class bogus_command : public sight::ui::history::command
 {
 public:
 
@@ -93,208 +90,197 @@ public:
     std::size_t m_size;
 };
 
+} // namespace
+
+TEST_SUITE("sight::ui::history")
+{
 //------------------------------------------------------------------------------
 
-void undo_redo_manager_test::setUp()
-{
-}
-
-//------------------------------------------------------------------------------
-
-void undo_redo_manager_test::tearDown()
-{
-}
-
-//------------------------------------------------------------------------------
-
-void undo_redo_manager_test::manager_enqueue_test()
-{
-    ui::history::undo_redo_manager undo_redo_manager;
-    command_log log;
-
-    CPPUNIT_ASSERT_EQUAL(std::size_t(0), undo_redo_manager.get_command_count());
-
-    // Check that undo and redo fail on an empty history.
-    CPPUNIT_ASSERT_EQUAL(false, undo_redo_manager.undo());
-    CPPUNIT_ASSERT_EQUAL(false, undo_redo_manager.redo());
-
-    bogus_command::sptr test_cmd0 = std::make_shared<bogus_command>(bogus_command("testCmd0", log));
-
-    undo_redo_manager.enqueue(test_cmd0);
-
-    // Ensure the element was added.
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), undo_redo_manager.get_command_count());
-
-    // Add 99 commands to the command history.
-    for(int i = 1 ; i < 100 ; ++i)
+    TEST_CASE("manager_enqueue")
     {
-        bogus_command::sptr test_cmd_x =
-            std::make_shared<bogus_command>(bogus_command("testCmd" + std::to_string(i), log));
+        sight::ui::history::undo_redo_manager undo_redo_manager;
+        command_log log;
 
-        undo_redo_manager.enqueue(test_cmd_x);
+        CHECK_EQ(std::size_t(0), undo_redo_manager.get_command_count());
+
+        // Check that undo and redo fail on an empty history.
+        CHECK_EQ(false, undo_redo_manager.undo());
+        CHECK_EQ(false, undo_redo_manager.redo());
+
+        bogus_command::sptr test_cmd0 = std::make_shared<bogus_command>(bogus_command("testCmd0", log));
+
+        undo_redo_manager.enqueue(test_cmd0);
 
         // Ensure the element was added.
-        CPPUNIT_ASSERT_EQUAL(std::size_t(i + 1), undo_redo_manager.get_command_count());
-    }
+        CHECK_EQ(std::size_t(1), undo_redo_manager.get_command_count());
 
-    // Undo 50 commands in the history.
-    for(int i = 0 ; i < 50 ; ++i)
-    {
-        CPPUNIT_ASSERT_EQUAL(true, undo_redo_manager.undo());
+        // Add 99 commands to the command history.
+        for(int i = 1 ; i < 100 ; ++i)
+        {
+            bogus_command::sptr test_cmd_x =
+                std::make_shared<bogus_command>(bogus_command("testCmd" + std::to_string(i), log));
 
-        // The history size should not change.
-        CPPUNIT_ASSERT_EQUAL(std::size_t(100), undo_redo_manager.get_command_count());
+            undo_redo_manager.enqueue(test_cmd_x);
 
-        command_info& last_log = log.back();
+            // Ensure the element was added.
+            CHECK_EQ(std::size_t(i + 1), undo_redo_manager.get_command_count());
+        }
 
-        // Check if the last undo command was logged.
-        CPPUNIT_ASSERT(last_log.command_name == "testCmd" + std::to_string(99 - i));
-        CPPUNIT_ASSERT(last_log.action_name == "undo");
-    }
+        // Undo 50 commands in the history.
+        for(int i = 0 ; i < 50 ; ++i)
+        {
+            CHECK_EQ(true, undo_redo_manager.undo());
 
-    // Enqueue a command at the current history position. (50)
-    // All commands beyond this point are dropped.
-    bogus_command::sptr enqueue_cmd = std::make_shared<bogus_command>(bogus_command("enqueueCmd", log));
+            // The history size should not change.
+            CHECK_EQ(std::size_t(100), undo_redo_manager.get_command_count());
 
-    undo_redo_manager.enqueue(enqueue_cmd);
+            command_info& last_log = log.back();
 
-    CPPUNIT_ASSERT_EQUAL(std::size_t(51), undo_redo_manager.get_command_count());
+            // Check if the last undo command was logged.
+            CHECK(last_log.command_name == "testCmd" + std::to_string(99 - i));
+            CHECK(last_log.action_name == "undo");
+        }
 
-    // Redo the last command, this should fail.
-    CPPUNIT_ASSERT_EQUAL(false, undo_redo_manager.redo());
+        // Enqueue a command at the current history position. (50)
+        // All commands beyond this point are dropped.
+        bogus_command::sptr enqueue_cmd = std::make_shared<bogus_command>(bogus_command("enqueueCmd", log));
 
-    // Undo the "enqueueCmd".
-    CPPUNIT_ASSERT_EQUAL(true, undo_redo_manager.undo());
+        undo_redo_manager.enqueue(enqueue_cmd);
 
-    command_info& last_log = log.back();
+        CHECK_EQ(std::size_t(51), undo_redo_manager.get_command_count());
 
-    CPPUNIT_ASSERT(last_log.command_name == "enqueueCmd");
-    CPPUNIT_ASSERT(last_log.action_name == "undo");
+        // Redo the last command, this should fail.
+        CHECK_EQ(false, undo_redo_manager.redo());
 
-    // Redo the "enqueueCmd".
-    CPPUNIT_ASSERT_EQUAL(true, undo_redo_manager.redo());
-
-    last_log = log.back();
-
-    CPPUNIT_ASSERT(last_log.command_name == "enqueueCmd");
-    CPPUNIT_ASSERT(last_log.action_name == "redo");
-}
-
-//------------------------------------------------------------------------------
-
-void undo_redo_manager_test::manager_memory_size_test()
-{
-    const std::size_t maxmemory = 10;
-    const std::size_t cmdsize   = 2;
-
-    ui::history::undo_redo_manager undo_redo_manager(maxmemory);
-    command_log log;
-
-    for(int i = 0 ; i < 5 ; ++i)
-    {
-        bogus_command::sptr test_cmd_i =
-            std::make_shared<bogus_command>(bogus_command("testCmd" + std::to_string(i), log, cmdsize));
-
-        undo_redo_manager.enqueue(test_cmd_i);
-
-        // Ensure all the commands where added.
-        CPPUNIT_ASSERT_EQUAL(std::size_t(i + 1), undo_redo_manager.get_command_count());
-    }
-
-    bogus_command::sptr test_cmd_i =
-        std::make_shared<bogus_command>(bogus_command("testCmd5", log, cmdsize));
-
-    undo_redo_manager.enqueue(test_cmd_i);
-
-    CPPUNIT_ASSERT_EQUAL(maxmemory, undo_redo_manager.get_history_size());
-    CPPUNIT_ASSERT_EQUAL(maxmemory / cmdsize, undo_redo_manager.get_command_count());
-
-    // Undo all commands to find them in the log.
-    for(int i = 5 ; i > 0 ; --i)
-    {
-        CPPUNIT_ASSERT_EQUAL(true, undo_redo_manager.undo());
+        // Undo the "enqueueCmd".
+        CHECK_EQ(true, undo_redo_manager.undo());
 
         command_info& last_log = log.back();
 
-        CPPUNIT_ASSERT(last_log.command_name == "testCmd" + std::to_string(i));
+        CHECK(last_log.command_name == "enqueueCmd");
+        CHECK(last_log.action_name == "undo");
+
+        // Redo the "enqueueCmd".
+        CHECK_EQ(true, undo_redo_manager.redo());
+
+        last_log = log.back();
+
+        CHECK(last_log.command_name == "enqueueCmd");
+        CHECK(last_log.action_name == "redo");
     }
-
-    // Assert that "testCmd0" has been removed from the history.
-    auto it = std::find_if(log.begin(), log.end(), [](command_info& _info){return _info.command_name == "testCmd0";});
-
-    CPPUNIT_ASSERT(it == log.end());
-}
 
 //------------------------------------------------------------------------------
 
-void undo_redo_manager_test::manager_command_count_test()
-{
-    const std::size_t maxmemory = 10000;
-    const std::size_t maxelt    = 5;
-    const std::size_t cmdsize   = 2;
-
-    ui::history::undo_redo_manager undo_redo_manager(maxmemory, maxelt);
-    command_log log;
-
-    for(int i = 0 ; i < 5 ; ++i)
+    TEST_CASE("manager_memory_size")
     {
+        const std::size_t maxmemory = 10;
+        const std::size_t cmdsize   = 2;
+
+        sight::ui::history::undo_redo_manager undo_redo_manager(maxmemory);
+        command_log log;
+
+        for(int i = 0 ; i < 5 ; ++i)
+        {
+            bogus_command::sptr test_cmd_i =
+                std::make_shared<bogus_command>(bogus_command("testCmd" + std::to_string(i), log, cmdsize));
+
+            undo_redo_manager.enqueue(test_cmd_i);
+
+            // Ensure all the commands where added.
+            CHECK_EQ(std::size_t(i + 1), undo_redo_manager.get_command_count());
+        }
+
         bogus_command::sptr test_cmd_i =
-            std::make_shared<bogus_command>(bogus_command("testCmd" + std::to_string(i), log, cmdsize));
+            std::make_shared<bogus_command>(bogus_command("testCmd5", log, cmdsize));
 
         undo_redo_manager.enqueue(test_cmd_i);
 
-        // Ensure all the commands where added.
-        CPPUNIT_ASSERT_EQUAL(std::size_t(i + 1), undo_redo_manager.get_command_count());
+        CHECK_EQ(maxmemory, undo_redo_manager.get_history_size());
+        CHECK_EQ(maxmemory / cmdsize, undo_redo_manager.get_command_count());
+
+        // Undo all commands to find them in the log.
+        for(int i = 5 ; i > 0 ; --i)
+        {
+            CHECK_EQ(true, undo_redo_manager.undo());
+
+            command_info& last_log = log.back();
+
+            CHECK(last_log.command_name == "testCmd" + std::to_string(i));
+        }
+
+        // Assert that "testCmd0" has been removed from the history.
+        auto it = std::ranges::find_if(log, [](command_info& _info){return _info.command_name == "testCmd0";});
+
+        CHECK(it == log.end());
     }
-
-    bogus_command::sptr test_cmd_i =
-        std::make_shared<bogus_command>(bogus_command("testCmd5", log, cmdsize));
-
-    undo_redo_manager.enqueue(test_cmd_i);
-
-    CPPUNIT_ASSERT_EQUAL(maxelt, undo_redo_manager.get_command_count());
-
-    // Undo all commands to find them in the log.
-    for(int i = 5 ; i > 0 ; --i)
-    {
-        CPPUNIT_ASSERT_EQUAL(true, undo_redo_manager.undo());
-
-        command_info& last_log = log.back();
-
-        CPPUNIT_ASSERT(last_log.command_name == "testCmd" + std::to_string(i));
-    }
-
-    // Assert that "testCmd0" has been removed from the history.
-    auto it = std::find_if(log.begin(), log.end(), [](command_info& _info){return _info.command_name == "testCmd0";});
-
-    CPPUNIT_ASSERT(it == log.end());
-}
 
 //------------------------------------------------------------------------------
 
-void undo_redo_manager_test::manager_clear_queue_test()
-{
-    ui::history::undo_redo_manager undo_redo_manager;
-    command_log log;
-
-    for(int i = 0 ; i < 5 ; ++i)
+    TEST_CASE("manager_command_count")
     {
+        const std::size_t maxmemory = 10000;
+        const std::size_t maxelt    = 5;
+        const std::size_t cmdsize   = 2;
+
+        sight::ui::history::undo_redo_manager undo_redo_manager(maxmemory, maxelt);
+        command_log log;
+
+        for(int i = 0 ; i < 5 ; ++i)
+        {
+            bogus_command::sptr test_cmd_i =
+                std::make_shared<bogus_command>(bogus_command("testCmd" + std::to_string(i), log, cmdsize));
+
+            undo_redo_manager.enqueue(test_cmd_i);
+
+            // Ensure all the commands where added.
+            CHECK_EQ(std::size_t(i + 1), undo_redo_manager.get_command_count());
+        }
+
         bogus_command::sptr test_cmd_i =
-            std::make_shared<bogus_command>(bogus_command("testCmd" + std::to_string(i), log));
+            std::make_shared<bogus_command>(bogus_command("testCmd5", log, cmdsize));
 
         undo_redo_manager.enqueue(test_cmd_i);
 
-        // Ensure all the commands where added.
-        CPPUNIT_ASSERT_EQUAL(std::size_t(i + 1), undo_redo_manager.get_command_count());
+        CHECK_EQ(maxelt, undo_redo_manager.get_command_count());
+
+        // Undo all commands to find them in the log.
+        for(int i = 5 ; i > 0 ; --i)
+        {
+            CHECK_EQ(true, undo_redo_manager.undo());
+
+            command_info& last_log = log.back();
+
+            CHECK(last_log.command_name == "testCmd" + std::to_string(i));
+        }
+
+        // Assert that "testCmd0" has been removed from the history.
+        auto it = std::ranges::find_if(log, [](command_info& _info){return _info.command_name == "testCmd0";});
+
+        CHECK(it == log.end());
     }
-
-    undo_redo_manager.clear();
-
-    CPPUNIT_ASSERT_EQUAL(std::size_t(0), undo_redo_manager.get_command_count());
-
-    CPPUNIT_ASSERT_EQUAL(false, undo_redo_manager.undo());
-}
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::ui::history::ut
+    TEST_CASE("manager_clear_queue")
+    {
+        sight::ui::history::undo_redo_manager undo_redo_manager;
+        command_log log;
+
+        for(int i = 0 ; i < 5 ; ++i)
+        {
+            bogus_command::sptr test_cmd_i =
+                std::make_shared<bogus_command>(bogus_command("testCmd" + std::to_string(i), log));
+
+            undo_redo_manager.enqueue(test_cmd_i);
+
+            // Ensure all the commands where added.
+            CHECK_EQ(std::size_t(i + 1), undo_redo_manager.get_command_count());
+        }
+
+        undo_redo_manager.clear();
+
+        CHECK_EQ(std::size_t(0), undo_redo_manager.get_command_count());
+
+        CHECK_EQ(false, undo_redo_manager.undo());
+    }
+} // TEST_SUITE

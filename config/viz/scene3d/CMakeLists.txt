@@ -6,6 +6,7 @@ add_dependencies(
     config_viz_scene2d
     data
     module_data
+    module_geometry
     module_filter_image
     module_service
     module_io_bitmap

@@ -27,14 +27,14 @@
 
 #include <doctest/doctest.h>
 
-TEST_SUITE("sight::data::validator::ut")
+TEST_SUITE("sight::data::validator")
 {
     namespace factory = sight::data::validator::factory;
     using sight::data::validator::base;
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("test_validator")
+    TEST_CASE("stereo_camera")
     {
         auto validator = factory::make("sight::data::validator::camera_set::stereo_camera");
         CHECK(validator);
@@ -109,4 +109,4 @@ TEST_SUITE("sight::data::validator::ut")
     }
 
 //------------------------------------------------------------------------------
-} // TEST_SUITE("sight::data::validator::ut")
+} // TEST_SUITE("sight::data::validator")

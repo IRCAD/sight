@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2025 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -72,7 +72,7 @@ public:
     );
 
     /// Constructor, should never be called directly.
-    grid_proxy_geometry(const Ogre::String& _name);
+    explicit grid_proxy_geometry(const Ogre::String& _name);
 
     /// Destructor, frees resources if they have been allocated.
     SIGHT_VIZ_SCENE3D_API ~grid_proxy_geometry() override;

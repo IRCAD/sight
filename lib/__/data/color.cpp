@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,11 +20,13 @@
  *
  ***********************************************************************/
 
-#include "data/color.hpp"
+#include "color.hpp"
 
-#include "data/registry/macros.hpp"
+#include "registry/macros.hpp"
 
-#include <data/tools/color.hpp>
+#include "tools/color.hpp"
+
+#include <core/compound_types.hpp>
 
 #include <regex>
 
@@ -126,9 +128,9 @@ void color::from_string(const std::string& _value)
 
 //------------------------------------------------------------------------------
 
-void color::set_rgba(const std::string& _value)
+void color::set_rgba(const std::string& _hexa_color)
 {
-    from_string(_value);
+    from_string(_hexa_color);
 }
 
 } // namespace sight::data

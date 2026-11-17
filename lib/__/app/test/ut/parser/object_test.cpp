@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2024 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,62 +19,62 @@
  *
  ***********************************************************************/
 
-#include "object_test.hpp"
-
 #include <core/runtime/path.hpp>
 #include <core/runtime/runtime.hpp>
 
 #include <data/string.hpp>
 
+#include <app/parser/object.hpp>
+
 #include <boost/property_tree/ptree.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::app::parser::ut::object_test);
+#include <doctest/doctest.h>
 
-namespace sight::app::parser::ut
+namespace
 {
+
+struct fixture
+{
+    fixture()
+    {
+        sight::core::runtime::init();
+
+        std::filesystem::path location = sight::core::runtime::get_resource_file_path("app_ut");
+        CHECK(std::filesystem::exists(location));
+        sight::core::runtime::add_modules(location);
+
+        sight::core::runtime::load_module("sight::module::app");
+    }
+};
+
+} // namespace
+TEST_SUITE("sight::app::parser::Object")
+{
+//------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
 
-void object_test::setUp()
-{
-    core::runtime::init();
+    TEST_CASE_FIXTURE(fixture, "basic_test")
+    {
+        using namespace std::literals::string_literals;
 
-    std::filesystem::path location = core::runtime::get_resource_file_path("app_ut");
-    CPPUNIT_ASSERT(std::filesystem::exists(location));
-    core::runtime::add_modules(location);
+        boost::property_tree::ptree ptree;
+        ptree.put("item.<xmlattr>.key", "data");
+        ptree.put("item.object.<xmlattr>.uid", "hello_world");
+        ptree.put("item.object.<xmlattr>.type", "sight::data::string");
+        ptree.put("item.object.value", "Hello world");
+        auto object = std::make_shared<sight::data::string>();
 
-    core::runtime::load_module("sight::module::app");
-}
+        sight::app::parser::object object_parser;
+        CHECK(object_parser.is_a("sight::app::parser::object"));
 
+        sight::service::object_parser::objects_t sub_objects;
+        object_parser.parse(ptree, object, sub_objects);
+        CHECK(std::dynamic_pointer_cast<sight::data::string>(object->get_field("data")) != nullptr);
+        CHECK_EQ(
+            "Hello world"s,
+            std::dynamic_pointer_cast<sight::data::string>(object->get_field("data"))->get_value()
+        );
+    }
 //------------------------------------------------------------------------------
-
-void object_test::tearDown()
-{
-}
-
-//------------------------------------------------------------------------------
-
-void object_test::basic_test()
-{
-    using namespace std::literals::string_literals;
-
-    boost::property_tree::ptree ptree;
-    ptree.put("item.<xmlattr>.key", "data");
-    ptree.put("item.object.<xmlattr>.uid", "hello_world");
-    ptree.put("item.object.<xmlattr>.type", "sight::data::string");
-    ptree.put("item.object.value", "Hello world");
-    auto object = std::make_shared<data::string>();
-
-    parser::object object_parser;
-    CPPUNIT_ASSERT(object_parser.is_a("sight::app::parser::object"));
-
-    service::object_parser::objects_t sub_objects;
-    object_parser.parse(ptree, object, sub_objects);
-    CPPUNIT_ASSERT(std::dynamic_pointer_cast<data::string>(object->get_field("data")) != nullptr);
-    CPPUNIT_ASSERT_EQUAL(
-        "Hello world"s,
-        std::dynamic_pointer_cast<data::string>(object->get_field("data"))->get_value()
-    );
-}
-
-} // namespace sight::app::parser::ut
+} // TEST_SUITE

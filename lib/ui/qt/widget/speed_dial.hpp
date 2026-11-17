@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -41,7 +41,7 @@ Q_PROPERTY(int animation_duration MEMBER m_animation_duration READ animation_dur
 
 public:
 
-    enum class direction
+    enum class direction : std::uint8_t
     {
         up,
         right,
@@ -49,8 +49,8 @@ public:
         left
     };
 
-    static inline constexpr int DEFAULT_SPACING            = 10;
-    static inline constexpr int DEFAULT_ANIMATION_DURATION = 250;
+    static constexpr int DEFAULT_SPACING            = 10;
+    static constexpr int DEFAULT_ANIMATION_DURATION = 250;
 
     SIGHT_UI_QT_API_QT explicit speed_dial(
         direction _direction    = direction::down,

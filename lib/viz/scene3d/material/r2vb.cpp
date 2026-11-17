@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,7 +23,6 @@
 
 #include "viz/scene3d/helper/shading.hpp"
 
-#include <viz/scene3d/layer.hpp>
 #include <viz/scene3d/mesh.hpp>
 #include <viz/scene3d/ogre.hpp>
 
@@ -65,7 +64,7 @@ void r2vb::set_shading(data::material::shading_t _shading_mode)
     this->clean_generated_techniques();
 
     // Iterate through each technique found in the material and switch the shading mode
-    const Ogre::Material::Techniques& techniques = m_material->getTechniques();
+    const Ogre::Material::Techniques& techniques = material()->getTechniques();
     for(auto* const tech : techniques)
     {
         SIGHT_ASSERT("technique is not set", tech);
@@ -121,7 +120,7 @@ void r2vb::set_shading(data::material::shading_t _shading_mode)
                     // Ogre packs texture unit indices so we can't use spare indices
                     ogre_pass->getGeometryProgramParameters()->setNamedConstant(
                         "u_colorPrimitiveTexture",
-                        int(unit_state_count - 1)
+                        static_cast<int>(unit_state_count - 1)
                     );
                 }
             }

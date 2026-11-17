@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,7 +32,7 @@ namespace sight::io::zip::exception
 /// read exception.
 struct read : core::exception
 {
-    inline read(const std::string& _err, const std::int32_t _error_code = -1) :
+    explicit read(const std::string& _err, const std::int32_t _error_code = -1) :
         core::exception(_err),
         m_error_code(_error_code)
     {
@@ -43,7 +43,7 @@ struct read : core::exception
 
 struct bad_password : read
 {
-    inline bad_password(const std::string& _err, const std::int32_t _error_code = -1) :
+    explicit bad_password(const std::string& _err, const std::int32_t _error_code = -1) :
         read(_err, _error_code)
     {
     }

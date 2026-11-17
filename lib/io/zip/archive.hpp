@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -54,7 +54,7 @@ public:
         filesystem = 0,         /// Use the filesystem to store files.
         compatible = 2,         /// Store files in a ZIP archive, with old deflate algorithm
         optimized  = 3,         /// Store files in a ZIP archive, with zstd algorithm
-        DEFAULT    = optimized, /// Default behavior if nothing is set
+        standard   = optimized, /// Default behavior if nothing is set
         invalid    = 255        /// Used for error management
     };
 
@@ -97,7 +97,7 @@ public:
 
         if(_archive_format.empty() || _archive_format == "default")
         {
-            return archive_format::DEFAULT;
+            return archive_format::standard;
         }
 
         // Error case
@@ -105,12 +105,12 @@ public:
     }
 
     /// Returns the path of the archive
-    inline const std::filesystem::path& get_archive_path() const;
+    [[nodiscard]] inline const std::filesystem::path& get_archive_path() const;
 
 protected:
 
     /// Constructor
-    SIGHT_IO_ZIP_API archive(const std::filesystem::path& _archive_path);
+    SIGHT_IO_ZIP_API explicit archive(const std::filesystem::path& _archive_path);
 
 private:
 

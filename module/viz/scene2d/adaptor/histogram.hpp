@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -69,8 +69,15 @@ public:
 
     SIGHT_DECLARE_SERVICE(histogram, sight::viz::scene2d::adaptor);
 
+    struct slots
+    {
+        static inline const slot_key_t IMAGE_CHANGE = "imageChange";
+    };
+
     histogram() noexcept;
     ~histogram() noexcept override;
+
+    void process_interaction(sight::viz::scene2d::data::event& _event) override;
 
 protected:
 
@@ -79,13 +86,11 @@ protected:
     void updating() override;
     void stopping() override;
 
-    void process_interaction(sight::viz::scene2d::data::event& _event) override;
-
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
      *
-     * Connect histogram::MODIFIED_SIG to this::service::slots::UPDATE
+     * Connect data::signals::MODIFIED to this::service::slots::IMAGE_CHANGE
      */
     service::connections_t auto_connections() const override;
 

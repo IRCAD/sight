@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -98,19 +98,21 @@ public:
 
     /**
      * @brief Instantiates the plane mesh and entity.
+     * @param _axis the plane orientation.
+     * @param _spacing the image spacing, used to set the plane dimensions and position.
+     * @param _priority the render priority for this plane, should be between 0 and 65535, used to set the render
+     * queue priority of the plane entity.
      */
-    SIGHT_VIZ_SCENE3D_API void update(
-        axis_t _axis,
-        const Ogre::Vector3& _spacing
-    );
+    SIGHT_VIZ_SCENE3D_API void update(axis_t _axis, const Ogre::Vector3& _spacing, std::uint16_t _priority);
 
     /**
      * @brief Handles the slice plane move.
      *     - in 2D, it will convert the position in unit floating value and call the fragment shader.
      *     - in 3D, it will also move the scene node in space.
      * @param _slices_index the image slices indexes.
+     * @param _priority the render priority for this plane, should be between 0 and 65535, used to set the render
      */
-    SIGHT_VIZ_SCENE3D_API void change_slice(const std::array<float, 3>& _slices_index);
+    SIGHT_VIZ_SCENE3D_API void change_slice(const std::array<float, 3>& _slices_index, std::uint16_t _priority);
 
     /**
      * @brief Sets the plane's opacity.
@@ -206,6 +208,9 @@ private:
 
     /// Defines a strings needed to initialize mesh, scenenode, etc.
     std::string m_slice_plane_name;
+
+    /// Defines the entity name.
+    Ogre::Entity* m_plane_entity {nullptr};
 
     /// Defines the entity name. used to recover this from the Ogre entityManager.
     std::string m_entity_name;

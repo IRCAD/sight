@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,19 +42,21 @@ namespace sight::module::io::vtk
  * Service writing a VTK Mesh using the fwVtkIO lib.
  *
  * @section Signals Signals
- * - \b monitor_created(SPTR(core::progress::monitor)): emitted to display a progress bar while the image is written,
+ * - \b notification_created(core::notification::base::sptr): emitted to display a progress bar while the
+ * image is
+ * written,
  * it should be connected to a progress bar
  *
  * @section XML XML Configuration
  *
  * @code{.xml}
    <service type="sight::module::io::vtk::mesh_writer">
-       <in key="data" uid="..." />
-       <file>...</file>
+       <data write="..." />
+       <path file="..." />
    </service>
    @endcode
  * @subsection Input Input
- * - \b data [sight::data::mesh]: mesh to save.
+ * - \b data.write [sight::data::mesh]: mesh to save.
  * @subsection Configuration Configuration
  * - \b file (optional): path of the file to save, if it is not defined, 'open_location_dialog()' should be called to
  * define the path.
@@ -71,17 +73,22 @@ public:
     mesh_writer() noexcept;
     ~mesh_writer() noexcept override = default;
 
-    /**
-     * @brief Configure the mesh path.
-     *
-     * This method is used to find
-     * the file path  using a file selector.
-     */
-    void open_location_dialog() override;
+    //------------------------------------------------------------------------------
 
-protected:
+    std::vector<std::pair<std::string, std::string> > get_supported_extensions() const override
+    {
+        return {
+            {"OBJ files", "*.obj"},
+            {"PLY files", "*.ply"},
+            {"STL files", "*.stl"},
+            {"VTK Legacy files", "*.vtk"},
+            {"VTK Polydata files", "*.vtp"}
+        };
+    }
 
     sight::io::service::path_type_t get_path_type() const override;
+
+protected:
 
     /**
      * @brief Starting method.
@@ -126,9 +133,6 @@ private:
      * @brief Mesh path .
      */
     std::filesystem::path m_fs_mesh_path;
-
-    /// Extension selected in file dialog
-    std::string m_selected_extension;
 };
 
 } // namespace sight::module::io::vtk

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -26,12 +26,6 @@ namespace sight::module::data
 
 //-----------------------------------------------------------------------------
 
-void reset::configuring(const config_t& /*_config*/)
-{
-}
-
-//-----------------------------------------------------------------------------
-
 void reset::starting()
 {
 }
@@ -40,12 +34,27 @@ void reset::starting()
 
 void reset::updating()
 {
-    const auto target = m_target.lock();
-    SIGHT_ASSERT("Object empty, can't reset it.", target);
+    this->reset_targets();
+}
 
-    const auto empty_object = sight::data::factory::make(target->get_classname());
-    target->deep_copy(empty_object);
-    target->async_emit(sight::data::object::MODIFIED_SIG);
+//-----------------------------------------------------------------------------
+
+void reset::reset_targets()
+{
+    const auto num_targets = m_targets.size();
+
+    // Reset each target object
+    for(size_t i = 0 ; i < num_targets ; ++i)
+    {
+        const auto target = m_targets[i].lock();
+
+        if(target)
+        {
+            const auto empty_object = sight::data::factory::make(target->get_classname());
+            target->deep_copy(empty_object);
+            target->async_emit(this, sight::data::signals::MODIFIED);
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------

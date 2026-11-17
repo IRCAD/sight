@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -78,7 +78,7 @@ public:
 protected:
 
     /// Container.
-    ui::container::widget::sptr m_container;
+    ui::container::widget::sptr m_container; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
 };
 
 } // namespace sight::ui::builder

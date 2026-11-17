@@ -2,14 +2,14 @@ sight_add_target(tuto04_signal_slot TYPE APP)
 
 add_dependencies(
     tuto04_signal_slot
-    sightrun
-    module_app
-    module_ui_qt
     data
+    module_app
+    module_io_vtk
     module_service
     module_ui
-    module_io_vtk
+    module_ui_qt
     module_viz_sample
+    sightrun
 )
 
 # Allow dark theme via module_ui_qt

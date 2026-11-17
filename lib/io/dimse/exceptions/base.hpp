@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,7 +40,7 @@ public:
      * @brief Constructor
      * @param[in] _message Exception message
      */
-    SIGHT_IO_DIMSE_API base(const std::string& _message);
+    SIGHT_IO_DIMSE_API explicit base(const std::string& _message);
 
     /// Destructor
     SIGHT_IO_DIMSE_API ~base() noexcept override;

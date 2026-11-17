@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2024 IRCAD France
+ * Copyright (C) 2019-2026 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,6 @@
 
 #include "transform_depth_map2mm.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-
 #include <data/image.hpp>
 
 namespace sight::module::filter::vision
@@ -33,7 +30,7 @@ namespace sight::module::filter::vision
 //------------------------------------------------------------------------------
 
 transform_depth_map2mm::transform_depth_map2mm() :
-    filter(m_signals)
+    filter(has_signals::signals())
 {
 }
 
@@ -105,8 +102,8 @@ void transform_depth_map2mm::updating()
         *depth_buffer_out_itr = static_cast<std::uint16_t>((*depth_buffer_in_itr) * scale);
     }
 
-    scaled_frame->signal<data::image::modified_signal_t>(data::image::MODIFIED_SIG)->async_emit();
-    this->signal<signals::computed_t>(signals::COMPUTED)->async_emit();
+    scaled_frame->async_emit(data::signals::MODIFIED);
+    this->async_emit(signals::SUCCEEDED);
 }
 
 //-----------------------------------------------------------------------------

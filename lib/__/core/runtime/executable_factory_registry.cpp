@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,9 @@
 
 #include "core/runtime/executable_factory_registry.hpp"
 
-#include "core/runtime/detail/module.hpp"
-#include "core/runtime/detail/runtime.hpp"
+#include <core/runtime/detail/module.hpp>
+#include <core/runtime/detail/runtime.hpp>
+#include <core/spy_log.hpp>
 
 namespace sight::core::runtime
 {

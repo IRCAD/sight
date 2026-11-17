@@ -1,4 +1,4 @@
-sight_add_target(io_http_ut TYPE DOCTEST)
+sight_add_target(io_http_ut TYPE TEST)
 
 find_package(Qt6 QUIET COMPONENTS Network REQUIRED)
 target_link_libraries(${SIGHT_TARGET} PRIVATE Qt6::Network)

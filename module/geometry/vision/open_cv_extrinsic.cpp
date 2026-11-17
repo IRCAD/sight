@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #include "open_cv_extrinsic.hpp"
 
-#include <core/com/slots.hxx>
-
 #include <data/calibration_info.hpp>
 #include <data/camera.hpp>
 #include <data/camera_set.hpp>
@@ -32,10 +30,12 @@
 
 #include <io/opencv/matrix.hpp>
 
-#include <ui/__/preferences.hpp>
-
+#include <opencv2/core/version.hpp>
+#if CV_MAJOR_VERSION < 5
 #include <opencv2/calib3d.hpp>
-#include <opencv2/core.hpp>
+#else
+#include <opencv2/calib.hpp>
+#endif
 
 namespace sight::module::geometry::vision
 {
@@ -76,9 +76,9 @@ void open_cv_extrinsic::updating()
         std::vector<std::vector<cv::Point3f> > object_points;
 
         std::vector<cv::Point3f> points;
-        for(unsigned int y = 0 ; y < static_cast<unsigned int>(*m_height - 1) ; ++y)
+        for(std::uint32_t y = 0 ; std::cmp_less(y, *m_height - 1) ; ++y)
         {
-            for(unsigned int x = 0 ; x < static_cast<unsigned int>(*m_width - 1) ; ++x)
+            for(std::uint32_t x = 0 ; std::cmp_less(x, *m_width - 1) ; ++x)
             {
                 points.emplace_back(
                     static_cast<float>(x * m_square_size.value()),
@@ -109,7 +109,7 @@ void open_cv_extrinsic::updating()
                 std::vector<cv::Point2f> img_point1;
                 std::vector<cv::Point2f> img_point2;
 
-                for(data::point::csptr point : pt_list1->get_points())
+                for(data::point::csptr point : *pt_list1)
                 {
                     SIGHT_ASSERT("point is null", point);
                     img_point1.emplace_back(
@@ -119,7 +119,7 @@ void open_cv_extrinsic::updating()
                     );
                 }
 
-                for(data::point::csptr point : pt_list2->get_points())
+                for(data::point::csptr point : *pt_list2)
                 {
                     SIGHT_ASSERT("point is null", point);
                     img_point2.emplace_back(
@@ -203,15 +203,12 @@ void open_cv_extrinsic::updating()
         rotation_matrix.copyTo(cv4x4(cv::Rect(0, 0, 3, 3)));
         translation_vector.copyTo(cv4x4(cv::Rect(3, 0, 1, 3)));
 
-        io::opencv::matrix::copy_from_cv(cv4x4, matrix);
+        io::opencv::matrix::copy_from_cv(cv4x4, *matrix);
 
         cam_series->set_extrinsic_matrix(m_cam_index, matrix);
         cam_series->set_calibration_error(err);
 
-        auto sig = cam_series->signal<data::camera_set::extrinsic_calibrated_signal_t>(
-            data::camera_set::EXTRINSIC_CALIBRATED_SIG
-        );
-        sig->async_emit();
+        cam_series->async_emit(data::camera_set::signals::EXTRINSIC_CALIBRATED);
 
         // Export matrix if needed.
         m_matrix = matrix;

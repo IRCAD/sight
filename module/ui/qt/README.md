@@ -116,3 +116,9 @@ add_dependencies(my_target module_ui_qt ... )
 ### XML
 
 Please consult the [doxygen](https://sight.pages.ircad.fr/sight) of each service to learn more about its use in XML configurations.
+
+### Qt Multimedia backend
+
+The Qt UI plugin selects Qt's FFmpeg Multimedia backend by default when `QT_MEDIA_BACKEND` is not set. To use another
+backend, set `QT_MEDIA_BACKEND` before launching the application. Ensure the selected backend is included in the Qt
+deployment.

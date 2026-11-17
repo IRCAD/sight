@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,7 @@
 
 #include "series_pusher.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-#include <core/progress/observer.hpp>
+#include <core/notification/observer.hpp>
 
 #include <data/series.hpp>
 
@@ -32,32 +30,24 @@
 #include <io/dicom/writer/file.hpp>
 #include <io/dimse/exceptions/base.hpp>
 #include <io/dimse/helper/series.hpp>
+#include <io/dimse/series_enquirer.hpp>
 
 #include <ui/__/dialog/message.hpp>
-
-#include <dcmtk/dcmdata/dcistrmb.h>
 
 namespace sight::module::io::dimse
 {
 
 //------------------------------------------------------------------------------
 
-const core::com::slots::key_t series_pusher::DISPLAY_SLOT = "displayMessage";
-
-const core::com::signals::key_t series_pusher::STARTED_PROGRESS_SIG = "started_progress";
-const core::com::signals::key_t series_pusher::STOPPED_PROGRESS_SIG = "stopped_progress";
-
-//------------------------------------------------------------------------------
-
 series_pusher::series_pusher() noexcept :
-    has_monitors(m_signals)
+    has_monitors(has_signals::signals())
 {
     // Internal slots
-    m_slot_display_message = new_slot(DISPLAY_SLOT, &series_pusher::display_message);
+    m_slot_display_message = new_slot(slots::DISPLAY, &series_pusher::display_message);
 
     // Public signals
-    m_sig_started_progress = new_signal<started_progress_signal_t>(STARTED_PROGRESS_SIG);
-    m_sig_stopped_progress = new_signal<stopped_progress_signal_t>(STOPPED_PROGRESS_SIG);
+    new_signal<signals::started_progress_t>(signals::STARTED_PROGRESS);
+    new_signal<signals::stopped_progress_t>(signals::STOPPED_PROGRESS);
 }
 
 //------------------------------------------------------------------------------
@@ -234,7 +224,7 @@ bool series_pusher::check_series_on_pacs()
 
         // Set pushing boolean to false
         m_is_pushing = false;
-        m_sig_stopped_progress->async_emit();
+        this->async_emit(signals::STOPPED_PROGRESS);
     }
 
     return result;
@@ -250,7 +240,7 @@ void series_pusher::push_series()
     try
     {
         // List of dicom slice that must be pushed
-        std::vector<CSPTR(DcmDataset)> dicom_container;
+        std::vector<sight::csptr<DcmDataset> > dicom_container;
 
         // Connect to PACS
         for(const auto& series : *series_vector)
@@ -264,7 +254,7 @@ void series_pusher::push_series()
             writer->set_object(writing_series);
             writer->set_folder({path.string()});
 
-            auto observer = std::make_shared<sight::core::progress::observer>("Write");
+            auto observer = this->make_notification<sight::core::notification::observer>("Write");
             writer->write(observer);
         }
 
@@ -276,11 +266,7 @@ void series_pusher::push_series()
 
         const auto pacs_configuration = m_config.lock();
 
-        auto progress = std::make_shared<core::progress::observer>(
-            "Push DICOM Series",
-            m_instance_count
-        );
-        this->async_emit(core::progress::has_monitors::signals::MONITOR_CREATED, progress->get_sptr());
+        auto progress = this->observe("Push DICOM Series", false, nullptr, m_instance_count);
 
         // Initialize enquirer
         series_enquirer->initialize(
@@ -291,9 +277,10 @@ void series_pusher::push_series()
             pacs_configuration->get_move_application_title(),
             progress
         );
+
         // Connect from PACS
         series_enquirer->connect();
-        m_sig_started_progress->async_emit();
+        this->async_emit(signals::STARTED_PROGRESS);
 
         // Push series
         series_enquirer->push_series(dicom_container);
@@ -326,7 +313,7 @@ void series_pusher::display_message(const std::string& _message, bool _error)
     sight::ui::dialog::message message_box;
     message_box.set_title((_error ? "Error" : "Information"));
     message_box.set_message(_message);
-    message_box.set_icon(_error ? (ui::dialog::message::critical) : (ui::dialog::message::info));
+    message_box.set_icon(_error ? ui::dialog::message::critical : ui::dialog::message::info);
     message_box.add_button(ui::dialog::message::ok);
     message_box.show();
 }

@@ -26,7 +26,7 @@
 
 #include <doctest/doctest.h>
 
-TEST_SUITE("sight::data::tools::ut")
+TEST_SUITE("sight::data::tools::color")
 {
 //------------------------------------------------------------------------------
 
@@ -60,4 +60,4 @@ TEST_SUITE("sight::data::tools::ut")
         const std::string str_color5 = "#45a564928";
         CHECK_THROWS_AS(sight::data::tools::color::hexa_string_to_rgba(str_color5, color3), sight::core::exception);
     }
-} // TEST_SUITE("sight::data::tools::ut")
+} // TEST_SUITE("sight::data::tools")

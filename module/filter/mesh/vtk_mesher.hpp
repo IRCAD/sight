@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <core/progress/has_monitors.hpp>
+#include <core/notification/has_monitors.hpp>
 
 #include <data/boolean.hpp>
 #include <data/image_series.hpp>
@@ -31,7 +31,6 @@
 #include <data/real.hpp>
 
 #include <service/filter.hpp>
-#include <service/notifier.hpp>
 
 #include <vtkImageData.h>
 #include <vtkPolyData.h>
@@ -48,6 +47,9 @@ namespace sight::module::filter::mesh
  * - a decimator, that reduces the number of triangles. This is the only phase that is not multithreaded and
  * unfortunately it is quite slow.
  *
+ * To retain earlier VTK behavior, the smoother uses a Hamming window and quadric decimation weights boundary
+ * constraints by edge length.
+ *
  * The service can either mesh a single value when passed as a property, or it can mesh multiple values if a <config>
  * tag is provided, allowing to specify different settings for each organ.
  *
@@ -58,35 +60,38 @@ namespace sight::module::filter::mesh
  * @section XML XML Configuration
  * @code{.xml}
    <service type="sight::module::filter::mesh::vtk_mesher" >
-       <in key="image_series" uid="..."/>
-       <inout key="model_series" uid="..." />
+       <data input_image="${image}" output_model="${result_image}" />
        <config mode="add" />
            <organ name="Vessels" type="Liver" value="1" color="#ff00ff" />
            <organ name="Kidney" type="" value="254" color="#ff00ffe0" />
        </config>
-        <properties pass_band="0.0001" percent_reduction="0"/>
+       <smoothing pass_band="0.0001" />
+       <decimation reduction="0" />
     </service>
     @endcode
  *
  * @subsection Input Input
- * - \b image_series [sight::data::image_series] : image used to generate the output mesh
+ * - \b data.input_image [sight::data::image_series] : image used to generate the output mesh
  * @subsection InOut InOut
- * - \b model_series [sight::data::model_series]: mesh generated from ImageSeries
+ * - \b data.output_model [sight::data::model_series]: mesh generated from ImageSeries
  * @subsection Properties Properties
- * - \b value: Voxel value used to determine what should considered as a mesh, unless working in config
- * - \b flying_edges: Use flying edges algorithm instead of marching cubes.
- * - \b pass_band:  Set the passband value for the windowed sinc filter.
- * - \b boundary_smoothing: Turn on/off the smoothing of points on the boundary of the mesh.
- * - \b non_manifold_smoothing: Smooth non-manifold points.
- * - \b feature_smoothing: Turn on/off smoothing points along sharp interior edges.
- * - \b feature_angle: Specify the feature angle for sharp edge identification (requires feature_smoothing to be on)
- * - \b num_iterations: Specify the number of iterations (i.e., the degree of the polynomial approximating the windowed
+ * - \b mesh.value: Voxel value used to determine what should considered as a mesh, unless working in config
+ * - \b algorithm.flying_edges: Use flying edges algorithm instead of marching cubes.
+ * - \b smoothing.pass_band: Set the passband value for the windowed sinc filter.
+ * - \b smoothing.boundary: Turn on/off the smoothing of points on the boundary of the mesh.
+ * - \b smoothing.non_manifold: Smooth non-manifold points.
+ * - \b smoothing.feature: Turn on/off smoothing points along sharp interior edges.
+ * - \b smoothing.feature_angle: Specify the feature angle for sharp edge identification (requires feature_smoothing to
+ * be on)
+ * - \b smoothing.iterations: Specify the number of iterations (i.e., the degree of the polynomial approximating the
+ * windowed
  * sinc function).
- * - \b percent_reduction: Specify the desired reduction in the total number of polygons (e.g., if
+ * - \b decimation.reduction: Specify the desired reduction in the total number of polygons (e.g., if
  *      TargetReduction is set to 90, this filter will try to reduce the data set to 10% of its original size).
  *      Beware, this operation can be quite slow and proportional to this setting.
- * - \b preserve_topology:  Turn on/off whether to preserve the topology of the original mesh when reducing the number
- * - \b quadric_reduction:  Improve decimation quality but increases the time by around 15%. However, it also acts as
+ * - \b decimation.preserve_topology: Turn on/off whether to preserve the topology of the original mesh when reducing
+ * the number
+ * - \b decimation.quadric: Improve decimation quality but increases the time by around 15%. However, it also acts as
  * wonderful smoothing tool and if used with the faster flying_edges mesher, overall, this can provide faster results
  * for the same quality.
  * @subsection Configuration Configuration
@@ -107,20 +112,11 @@ namespace sight::module::filter::mesh
  */
 
 class vtk_mesher : public service::filter,
-                   public sight::service::notifier,
-                   public sight::core::progress::has_monitors
+                   public sight::core::notification::has_monitors
 {
 public:
 
     SIGHT_DECLARE_SERVICE(vtk_mesher, sight::service::filter);
-
-    struct signals
-    {
-        static inline const signal_key_t COMPLETED = "completed";
-        static inline const signal_key_t FAILED    = "failed";
-
-        using empty_t = sight::core::com::signal<void ()>;
-    };
 
     vtk_mesher() noexcept;
     ~vtk_mesher() noexcept override = default;
@@ -147,29 +143,32 @@ private:
 
     enum class mode_t : std::uint8_t
     {
-        ADD,
-        REPLACE
+        add,
+        replace
     };
-    mode_t m_mode {mode_t::ADD};
+    mode_t m_mode {mode_t::add};
 
     /// Input image mask
-    sight::data::ptr<sight::data::image_series, sight::data::access::in> m_image {this, "image_series"};
+    sight::data::ptr<sight::data::image_series, sight::data::access::in> m_input_image {this, "data.input_image"};
     /// Output segmentation
-    sight::data::ptr<sight::data::model_series, sight::data::access::inout> m_model {this, "model_series"};
+    sight::data::ptr<sight::data::model_series, sight::data::access::inout> m_output_model {this, "data.output_model"};
 
-    /// Expose the pass-band, since it provides the biggest control over smoothing
+    sight::data::ptr<data::integer, sight::data::access::in> m_value {this, "label.value", 1};
+    sight::data::ptr<data::boolean, sight::data::access::in> m_flying_edges {this, "algorithm.flying_edges", false};
+    sight::data::ptr<data::boolean, sight::data::access::in> m_boundary_smoothing {this, "smoothing.boundary", false};
+    sight::data::ptr<data::boolean, sight::data::access::in> m_non_manifold_smoothing {this, "smoothing.non_manifold",
+                                                                                       true
+    };
+    sight::data::ptr<data::boolean, sight::data::access::in> m_feature_smoothing {this, "smoothing.feature", false};
+    sight::data::ptr<data::real, sight::data::access::in> m_pass_band {this, "smoothing.pass_band", 0.01};
+    sight::data::ptr<data::real, sight::data::access::in> m_feature_angle {this, "smoothing.feature_angle", 120.};
+    sight::data::ptr<data::integer, sight::data::access::in> m_iterations {this, "smoothing.iterations", 50};
 
-    data::property<data::boolean> m_boundary_smoothing {this, "boundary_smoothing", false};
-    data::property<data::boolean> m_non_manifold_smoothing {this, "non_manifold_smoothing", true};
-    data::property<data::boolean> m_feature_smoothing {this, "feature_smoothing", false};
-    data::property<data::boolean> m_preserve_topology {this, "preserve_topology", false};
-    data::property<data::boolean> m_use_flying_edges {this, "flying_edges", false};
-    data::property<data::integer> m_value {this, "value", 1};
-    data::property<data::integer> m_num_iterations {this, "num_iterations", 50};
-    data::property<data::boolean> m_quadric_reduction {this, "quadric_reduction", true};
-    data::property<data::real> m_reduction {this, "percent_reduction", 0.};
-    data::property<sight::data::real> m_pass_band {this, "pass_band", 0.01};
-    data::property<data::real> m_feature_angle {this, "feature_angle", 120.};
+    sight::data::ptr<data::boolean, sight::data::access::in> m_preserve_topology {this, "decimation.preserve_topology",
+                                                                                  false
+    };
+    sight::data::ptr<data::boolean, sight::data::access::in> m_quadric_reduction {this, "decimation.quadric", true};
+    sight::data::ptr<data::real, sight::data::access::in> m_percent_reduction {this, "decimation.reduction", 0.0};
 };
 
 } // namespace sight::module::filter::mesh

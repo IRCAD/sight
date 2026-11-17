@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,6 +34,36 @@
 
 #include <cstddef>
 #include <fstream>
+
+namespace
+{
+
+class dummy_memory_monitor_tools
+{
+public:
+
+    //------------------------------------------------------------------------------
+
+    static std::uint64_t get_free_system_memory()
+    {
+        return s_free_system_memory;
+    }
+
+    //------------------------------------------------------------------------------
+
+    static void set_free_system_memory(std::uint64_t _new_memory)
+    {
+        s_free_system_memory = _new_memory;
+    }
+
+private:
+
+    static std::uint64_t s_free_system_memory;
+};
+
+std::uint64_t dummy_memory_monitor_tools::s_free_system_memory = 1024L * 1024;
+
+} // namespace
 
 TEST_SUITE("sight::core::memory::buffer_malloc_policy")
 {
@@ -165,7 +195,7 @@ TEST_SUITE("sight::core::memory::buffer_malloc_policy")
             }
             sight::core::memory::buffer_object::sptr bo2 = std::make_shared<sight::core::memory::buffer_object>();
             SIGHT_INFO(manager->to_string().get());
-            bo->reallocate(size * std::size_t(2));
+            bo->reallocate(size * static_cast<std::size_t>(2));
             {
                 sight::core::memory::buffer_object::lock_t lock(bo->lock());
                 SIGHT_INFO(manager->to_string().get());
@@ -242,7 +272,7 @@ TEST_SUITE("sight::core::memory::buffer_malloc_policy")
         CHECK_EQ(zero, stats.total_dumped);
         *static_cast<char*>(bo->lock().buffer()) = '!';
 
-        manager->dump_buffer(bo->get_buffer_pointer()).wait();
+        manager->dump_buffer(bo->get_buffer_pointer()).get();
         stats = manager->get_buffer_stats().get();
         CHECK_EQ(sizeof(char), stats.total_managed);
         CHECK_EQ(sizeof(char), stats.total_dumped);
@@ -253,7 +283,7 @@ TEST_SUITE("sight::core::memory::buffer_malloc_policy")
         fs >> x;
         CHECK_EQ('!', x);
 
-        manager->restore_buffer(bo->get_buffer_pointer()).wait();
+        manager->restore_buffer(bo->get_buffer_pointer()).get();
         stats = manager->get_buffer_stats().get();
         CHECK_EQ(sizeof(char), stats.total_managed);
         CHECK_EQ(zero, stats.total_dumped);
@@ -264,33 +294,6 @@ TEST_SUITE("sight::core::memory::buffer_malloc_policy")
         CHECK_EQ(zero, stats.total_managed);
         CHECK_EQ(zero, stats.total_dumped);
     }
-
-//------------------------------------------------------------------------------
-
-    class dummy_memory_monitor_tools
-    {
-    public:
-
-        //------------------------------------------------------------------------------
-
-        static std::uint64_t get_free_system_memory()
-        {
-            return s_free_system_memory;
-        }
-
-        //------------------------------------------------------------------------------
-
-        static void set_free_system_memory(std::uint64_t _new_memory)
-        {
-            s_free_system_memory = _new_memory;
-        }
-
-    private:
-
-        static std::uint64_t s_free_system_memory;
-    };
-
-    std::uint64_t dummy_memory_monitor_tools::s_free_system_memory = 1024L * 1024;
 
 //------------------------------------------------------------------------------
 

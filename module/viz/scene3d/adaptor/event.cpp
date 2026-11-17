@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,19 +21,15 @@
 
 #include "event.hpp"
 
-#include <core/com/signal_base.hpp>
-#include <core/com/signals.hpp>
-
 #include <viz/scene3d/window_interactor.hpp>
-
-#include <boost/algorithm/string.hpp>
 
 namespace sight::module::viz::scene3d::adaptor
 {
 
-const core::com::signals::key_t event::TRIGGERED = "triggered";
-
 using interaction_info = sight::viz::scene3d::window_interactor::interaction_info;
+
+namespace
+{
 
 enum class mouse_buttons : std::uint8_t
 {
@@ -43,23 +39,25 @@ enum class mouse_buttons : std::uint8_t
     right  = 0 << 3
 };
 
+} // namespace
+
 //------------------------------------------------------------------------------
 
-std::uint8_t& operator|=(std::uint8_t& _a, mouse_buttons _b)
+static std::uint8_t& operator|=(std::uint8_t& _a, mouse_buttons _b)
 {
     return _a |= static_cast<std::uint8_t>(_b);
 }
 
 //------------------------------------------------------------------------------
 
-std::uint8_t operator&(std::uint8_t _a, mouse_buttons _b)
+static std::uint8_t operator&(std::uint8_t _a, mouse_buttons _b)
 {
     return _a & static_cast<std::uint8_t>(_b);
 }
 
 event::event()
 {
-    new_signal<triggered_signal_t>(TRIGGERED);
+    new_signal<signals::triggered_t>(signals::TRIGGERED);
 }
 
 //------------------------------------------------------------------------------
@@ -137,7 +135,7 @@ void event::mouse_move_event(mouse_button _button, modifier _mods, int _x, int _
         info.y                = _y;
         info.dx               = _dx;
         info.dy               = _dy;
-        signal<triggered_signal_t>(TRIGGERED)->async_emit(info);
+        async_emit(signals::TRIGGERED, info);
     }
 }
 
@@ -154,7 +152,7 @@ void event::wheel_event(modifier _mods, double _angle_delta, int _x, int _y)
         info.delta            = _angle_delta;
         info.x                = _x;
         info.y                = _y;
-        signal<triggered_signal_t>(TRIGGERED)->async_emit(info);
+        async_emit(signals::TRIGGERED, info);
     }
 }
 
@@ -171,7 +169,7 @@ void event::button_release_event(mouse_button _button, modifier _mods, int _x, i
         info.modifiers        = _mods;
         info.x                = _x;
         info.y                = _y;
-        signal<triggered_signal_t>(TRIGGERED)->async_emit(info);
+        async_emit(signals::TRIGGERED, info);
     }
 }
 
@@ -188,7 +186,7 @@ void event::button_press_event(mouse_button _button, modifier _mods, int _x, int
         info.modifiers        = _mods;
         info.x                = _x;
         info.y                = _y;
-        signal<triggered_signal_t>(TRIGGERED)->async_emit(info);
+        async_emit(signals::TRIGGERED, info);
     }
 }
 
@@ -205,7 +203,7 @@ void event::button_double_press_event(mouse_button _button, modifier _mods, int 
         info.modifiers        = _mods;
         info.x                = _x;
         info.y                = _y;
-        signal<triggered_signal_t>(TRIGGERED)->async_emit(info);
+        async_emit(signals::TRIGGERED, info);
     }
 }
 
@@ -222,7 +220,7 @@ void event::key_press_event(int _key, modifier _mods, int _mouse_x, int _mouse_y
         info.modifiers        = _mods;
         info.x                = _mouse_x;
         info.y                = _mouse_y;
-        signal<triggered_signal_t>(TRIGGERED)->async_emit(info);
+        async_emit(signals::TRIGGERED, info);
     }
 }
 
@@ -239,7 +237,7 @@ void event::key_release_event(int _key, modifier _mods, int _mouse_x, int _mouse
         info.modifiers        = _mods;
         info.x                = _mouse_x;
         info.y                = _mouse_y;
-        signal<triggered_signal_t>(TRIGGERED)->async_emit(info);
+        async_emit(signals::TRIGGERED, info);
     }
 }
 
@@ -254,7 +252,7 @@ void event::resize_event(int _width, int _height)
         info.interaction_type = interaction_type;
         info.x                = _width;
         info.y                = _height;
-        signal<triggered_signal_t>(TRIGGERED)->async_emit(info);
+        async_emit(signals::TRIGGERED, info);
     }
 }
 
@@ -270,7 +268,7 @@ void event::pinch_gesture_event(double _scale_factor, int _center_x, int _center
         info.delta            = _scale_factor;
         info.x                = _center_x;
         info.y                = _center_y;
-        signal<triggered_signal_t>(TRIGGERED)->async_emit(info);
+        async_emit(signals::TRIGGERED, info);
     }
 }
 
@@ -287,7 +285,7 @@ void event::pan_gesture_move_event(int _x, int _y, int _dx, int _dy)
         info.y                = _y;
         info.dx               = _dx;
         info.dy               = _dy;
-        signal<triggered_signal_t>(TRIGGERED)->async_emit(info);
+        async_emit(signals::TRIGGERED, info);
     }
 }
 
@@ -304,7 +302,7 @@ void event::pan_gesture_release_event(int _x, int _y, int _dx, int _dy)
         info.y                = _y;
         info.dx               = _dx;
         info.dy               = _dy;
-        signal<triggered_signal_t>(TRIGGERED)->async_emit(info);
+        async_emit(signals::TRIGGERED, info);
     }
 }
 
@@ -319,7 +317,7 @@ void event::long_tap_gesture_event(int _x, int _y)
         info.interaction_type = interaction_type;
         info.x                = _x;
         info.y                = _y;
-        signal<triggered_signal_t>(TRIGGERED)->async_emit(info);
+        async_emit(signals::TRIGGERED, info);
     }
 }
 

@@ -35,9 +35,11 @@ if("${spec}" MATCHES .)
 endif()
 
 # Horrible build of environment variables, one for the discovery, one for the execution
+# Use path_list_prepend for discovery so configured paths (vcpkg, build output) take
+# precedence over system-installed libraries and avoid DLL version mismatches on Windows.
 foreach(PATH ${TEST_ENV})
-    set(DISCOVERY_ENV --modify PATH=path_list_append:${PATH} ${DISCOVERY_ENV})
-    set(EXECUTION_ENV ${EXECUTION_ENV} ENVIRONMENT_MODIFICATION PATH=path_list_append:${PATH})
+    set(DISCOVERY_ENV --modify PATH=path_list_prepend:${PATH} ${DISCOVERY_ENV})
+    set(EXECUTION_ENV ${EXECUTION_ENV} ENVIRONMENT_MODIFICATION PATH=path_list_prepend:${PATH})
 endforeach()
 
 if(WIN32)
@@ -66,21 +68,34 @@ string(REPLACE "\n" ";" output "${output}")
 # Parse output
 foreach(line ${output})
     if(NOT "${line}" MATCHES
-       "<TestCase name=\"([A-Za-z0-9:_]*)\" (testsuite=\"([A-Za-z0-9:_]*)\" )?filename=\"([/\\_A-Za-z0-9\\.:\\-]*)\" line=\"([0-9]*)\""
+       "<TestCase name=\"([ A-Za-z0-9:_]*)\" (testsuite=\"([ A-Za-z0-9:_]*)\" )?filename=\"([ /\\_A-Za-z0-9\\.:\\-]*)\" line=\"([0-9]*)\""
     )
         continue()
     endif()
     set(test ${CMAKE_MATCH_1})
     if(NOT ${CMAKE_MATCH_3} STREQUAL "")
-        set(prefix "${CMAKE_MATCH_3}::")
+        set(suite "${CMAKE_MATCH_3}")
+        set(prefix "${suite}::")
     endif()
     set(FILENAME ${CMAKE_MATCH_4})
     set(LINE_NUMBER ${CMAKE_MATCH_5})
 
+    if("${prefix}${test}" MATCHES ".* .*" )
+        message(FATAL_ERROR "Test case '${prefix}${test}' contains spaces, please stick to snake_case.")
+    endif()
+
     # use escape commas to handle properly test cases with commas inside the name
     string(REPLACE "," "\\," test_name ${test})
     # ...and add to script
-    add_command(add_test "${prefix}${test}${suffix}" "${TEST_EXECUTABLE}" "--test-case=${test_name}" ${extra_args})
+    add_command(add_test "${prefix}${test}${suffix}" "${TEST_EXECUTABLE}" "--test-case=${test_name}" "--test-suite=${suite}" ${extra_args})
+
+    # LABELS must be built as a single "LABELS;value1;value2" fragment so it can be spliced into
+    # the PROPERTIES list below regardless of whether ADD_LABELS was requested.
+    set(labels)
+    if(add_labels)
+        set(labels LABELS ${add_labels})
+    endif()
+
     if(WIN32)
         add_command(
             set_tests_properties
@@ -91,6 +106,8 @@ foreach(line ${output})
             DEF_SOURCE_LINE
             "${FILENAME}:${LINE_NUMBER}"
             "${EXECUTION_ENV}"
+            ${properties}
+            ${labels}
         )
     else()
         add_command(
@@ -101,11 +118,15 @@ foreach(line ${output})
             "${TEST_WORKING_DIR}"
             DEF_SOURCE_LINE
             "${FILENAME}:${LINE_NUMBER}"
+            ${properties}
+            ${labels}
         )
     endif()
+
+    # Append before clearing prefix: prefix is part of the test name we just registered.
+    list(APPEND tests "${prefix}${test}${suffix}")
     unset(labels)
     unset(prefix)
-    list(APPEND tests "${prefix}${test}${suffix}")
 endforeach()
 
 # Create a list of all discovered tests, which users may use to e.g. set

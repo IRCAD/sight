@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,16 +24,10 @@
 
 #include "service/detail/service.hpp"
 #include "service/manager.hpp"
-#include "service/registry.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slot.hxx>
-#include <core/com/slots.hxx>
-#include <core/runtime/helper.hpp>
 #include <core/thread/worker.hpp>
 
-#include <functional>
-#include <regex>
+#include <boost/property_tree/xml_parser.hpp>
 
 namespace sight::service
 {
@@ -153,7 +147,7 @@ base::~base() = default;
 void base::set_worker(core::thread::worker::sptr _worker)
 {
     m_pimpl->m_worker = _worker;
-    core::com::has_slots::m_slots.set_worker(m_pimpl->m_worker);
+    core::com::has_slots::slots().set_worker(m_pimpl->m_worker);
 }
 
 //-----------------------------------------------------------------------------
@@ -161,6 +155,17 @@ void base::set_worker(core::thread::worker::sptr _worker)
 core::thread::worker::sptr base::worker() const
 {
     return m_pimpl->m_worker;
+}
+
+//------------------------------------------------------------------------------
+
+void base::set_config(const std::string& _config_str)
+{
+    std::stringstream xml_config;
+    xml_config << _config_str;
+    config_t config;
+    boost::property_tree::read_xml(xml_config, config);
+    set_config(config);
 }
 
 //-----------------------------------------------------------------------------
@@ -294,6 +299,19 @@ connections_t base::auto_connections() const
 
 void base::on_property_set(std::string_view /*unused*/)
 {
+}
+
+//------------------------------------------------------------------------------
+
+std::optional<std::string> base::resolve_object_type(std::string_view _key, std::optional<std::size_t>/*_index*/) const
+{
+    const auto& container = this->container();
+    if(const auto it = container.find({_key, {}}); it != container.end())
+    {
+        return it->second->default_object_type();
+    }
+
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -60,12 +60,12 @@ using light_factory_t      = core::factory_registry<std::shared_ptr<viz::scene3d
 using text_factory_t       = core::factory_registry<std::shared_ptr<viz::scene3d::text>(const std::shared_ptr<sight::viz::scene3d::layer>&),
                                                     key_t>;
 
-SIGHT_VIZ_SCENE3D_API SPTR(type) get();
-SIGHT_VIZ_SCENE3D_API SPTR(offscreen_mgr_t) get_offscreen_mgr();
-SIGHT_VIZ_SCENE3D_API SPTR(interactor_factory_t) get_interactor_registry();
-SIGHT_VIZ_SCENE3D_API SPTR(camera_factory_t) get_camera_registry();
-SIGHT_VIZ_SCENE3D_API SPTR(light_factory_t) get_light_registry();
-SIGHT_VIZ_SCENE3D_API SPTR(text_factory_t) get_text_registry();
+SIGHT_VIZ_SCENE3D_API sight::sptr<type> get();
+SIGHT_VIZ_SCENE3D_API sight::sptr<offscreen_mgr_t> get_offscreen_mgr();
+SIGHT_VIZ_SCENE3D_API sight::sptr<interactor_factory_t> get_interactor_registry();
+SIGHT_VIZ_SCENE3D_API sight::sptr<camera_factory_t> get_camera_registry();
+SIGHT_VIZ_SCENE3D_API sight::sptr<light_factory_t> get_light_registry();
+SIGHT_VIZ_SCENE3D_API sight::sptr<text_factory_t> get_text_registry();
 
 } // namespace registry
 

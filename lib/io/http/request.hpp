@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,10 +52,9 @@ public:
     /**
      * @brief Construct a new Request with given url.
      */
-    SIGHT_IO_HTTP_API request(std::string _url);
+    SIGHT_IO_HTTP_API explicit request(std::string _url);
 
-    ~request() override
-    = default;
+    ~request() override = default;
 
     /**  @} */
 
@@ -66,7 +65,7 @@ public:
      *
      * @return  the newly created Request object
      */
-    SIGHT_IO_HTTP_API static request::sptr New(const std::string& _url);
+    SIGHT_IO_HTTP_API static request::sptr make(const std::string& _url);
 
     /**
      * @brief add element in the request header

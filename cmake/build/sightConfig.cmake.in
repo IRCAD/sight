@@ -40,19 +40,8 @@ if(NOT SIGHT_CONFIGURED)
             ${CMAKE_BINARY_DIR}/bin/safe-xvfb-run
             COPYONLY
         )
-        configure_file(
-            ${FWCMAKE_RESOURCE_PATH}/install/linux/exec_gui_tests.sh
-            ${CMAKE_BINARY_DIR}/bin/exec_gui_tests.sh
-            COPYONLY
-        )
         list(APPEND CMAKE_PREFIX_PATH /usr/share/OGRE/cmake/module)
         list(APPEND CMAKE_PREFIX_PATH ${FWCMAKE_RESOURCE_PATH}/module)
-    else()
-        configure_file(
-            ${FWCMAKE_RESOURCE_PATH}/install/windows/exec_gui_tests.bat
-            ${CMAKE_BINARY_DIR}/bin/exec_gui_tests.bat
-            COPYONLY
-        )
     endif()
 
     set(FW_INSTALL_PATH_SUFFIX "${PROJECT_NAME}")
@@ -70,8 +59,6 @@ if(NOT SIGHT_CONFIGURED)
     file(TO_CMAKE_PATH "${sight_DIR}/../../../" Sight_DEFINE_DIR)
 
     set_external_libraries_dir()
-
-    find_package(CppUnit REQUIRED)
 
     foreach(sight_comp ${SIGHT_SUPPORTED_COMPONENTS})
         if(NOT ${sight_comp} MATCHES "_obj")

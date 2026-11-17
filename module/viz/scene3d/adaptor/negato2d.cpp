@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,14 +22,10 @@
 
 #include "module/viz/scene3d/adaptor/negato2d.hpp"
 
-#include <core/com/signals.hpp>
-#include <core/com/slots.hxx>
 #include <core/ptree.hpp>
 
 #include <data/helper/medical_image.hpp>
-#include <data/image.hpp>
 
-#include <viz/scene3d/ogre.hpp>
 #include <viz/scene3d/utils.hpp>
 
 #include <OgreSceneNode.h>
@@ -99,12 +95,12 @@ void negato2d::change_slice_type(int _from, int _to)
         this->render_service()->make_current();
 
         const auto spacing = sight::viz::scene3d::utils::get_ogre_spacing(*image);
-        m_planes[0].first->update(m_planes[0].second, spacing);
+        m_planes[0].first->update(m_planes[0].second, spacing, this->priority());
 
         // Update threshold if necessary
         this->update_tf();
 
-        m_planes[0].first->change_slice(m_current_slice_index);
+        m_planes[0].first->change_slice(m_current_slice_index, this->priority());
 
         this->request_render();
     }
@@ -146,8 +142,7 @@ void negato2d::button_press_event(mouse_button _button, modifier /*_mods*/, int 
     else if(_button == mouse_button::right && interactor_3d::base::is_in_layer(
                 _x,
                 _y,
-                this->layer(),
-                m_layer_order_dependant
+                this->layer()
     ))
     {
         const auto tf = m_tf.const_lock();
@@ -170,7 +165,7 @@ void negato2d::button_release_event(mouse_button /*_button*/, modifier /*_mods*/
 {
     m_picked = false;
     m_picking_cross->set_visible(false);
-    this->signal<signals::picked_voxel_t>(signals::PICKED_VOXEL)->async_emit("");
+    this->async_emit(signals::PICKED_VOXEL, std::string());
 }
 
 //------------------------------------------------------------------------------
@@ -194,7 +189,7 @@ void negato2d::pick_intensity(int _x, int _y)
 
     if(result.has_value())
     {
-        if(m_planes[0].first->get_movable_object() == result->first && m_planes[0].first != nullptr)
+        if(m_planes[0].first != nullptr && m_planes[0].first->get_movable_object() == result->object)
         {
             m_picked = true;
             const auto image = m_image.lock();
@@ -204,12 +199,12 @@ void negato2d::pick_intensity(int _x, int _y)
                 return;
             }
 
-            const auto cross_lines = m_planes[0].first->compute_cross(result->second, *image);
+            const auto cross_lines = m_planes[0].first->compute_cross(result->position, *image);
 
             m_picking_cross->update(cross_lines[0], cross_lines[1], cross_lines[2], cross_lines[3]);
 
-            const auto picking_text = sight::viz::scene3d::utils::pick_image(*image, result->second);
-            this->signal<signals::picked_voxel_t>(signals::PICKED_VOXEL)->async_emit(picking_text);
+            const auto picking_text = sight::viz::scene3d::utils::pick_image(*image, result->position);
+            this->async_emit(signals::PICKED_VOXEL, picking_text);
 
             this->request_render();
         }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,8 +26,6 @@
 
 #include "data/registry/detail.hpp"
 
-#include <string>
-
 namespace sight::data
 {
 
@@ -36,12 +34,14 @@ class object;
 namespace factory
 {
 
-SIGHT_DATA_API SPTR(data::object) make(const data::registry::key_t& _classname);
+SIGHT_DATA_API sight::sptr<data::object> make(const data::registry::key_t& _classname);
+
+//------------------------------------------------------------------------------
 
 template<class CLASSNAME>
-SPTR(CLASSNAME) make()
+sight::sptr<CLASSNAME> make()
 {
-    SPTR(CLASSNAME) obj = std::make_shared<CLASSNAME>();
+    sight::sptr<CLASSNAME> obj = std::make_shared<CLASSNAME>();
     return obj;
 }
 

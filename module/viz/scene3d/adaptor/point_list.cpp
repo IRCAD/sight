@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,21 +26,11 @@
 
 #include "viz/scene3d/ogre.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
 #include <core/ptree.hpp>
 
-#include <data/string.hpp>
-
-#include <service/macros.hpp>
-#include <service/op.hpp>
-
 #include <viz/scene3d/helper/scene.hpp>
-#include <viz/scene3d/r2vb_renderable.hpp>
 #include <viz/scene3d/render.hpp>
 
-#include <OGRE/OgreAxisAlignedBox.h>
-#include <OGRE/OgreTechnique.h>
 #include <OGRE/OgreTextureManager.h>
 
 #include <cstdint>
@@ -188,14 +178,14 @@ void point_list::starting()
 service::connections_t point_list::auto_connections() const
 {
     service::connections_t connections = adaptor::auto_connections();
-    connections.push(m_point_list, data::point_list::POINT_ADDED_SIG, adaptor::slots::LAZY_UPDATE);
-    connections.push(m_point_list, data::point_list::POINT_REMOVED_SIG, adaptor::slots::LAZY_UPDATE);
-    connections.push(m_point_list, data::point_list::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
+    connections.push(m_point_list, data::point_list::signals::POINT_ADDED, adaptor::slots::LAZY_UPDATE);
+    connections.push(m_point_list, data::point_list::signals::POINT_REMOVED, adaptor::slots::LAZY_UPDATE);
+    connections.push(m_point_list, data::signals::MODIFIED, adaptor::slots::LAZY_UPDATE);
 
-    connections.push(m_points, data::object::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
+    connections.push(m_points, data::signals::MODIFIED, adaptor::slots::LAZY_UPDATE);
 
-    connections.push(m_mesh, data::mesh::VERTEX_MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
-    connections.push(m_mesh, data::mesh::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
+    connections.push(m_mesh, data::mesh::signals::VERTEX_MODIFIED, adaptor::slots::LAZY_UPDATE);
+    connections.push(m_mesh, data::signals::MODIFIED, adaptor::slots::LAZY_UPDATE);
 
     return connections;
 }
@@ -254,7 +244,7 @@ void point_list::updating()
                 [&tmp_list](const auto& _x)
                 {
                     const auto point = _x.second->const_lock();
-                    tmp_list->get_points().push_back(std::const_pointer_cast<sight::data::point>(point.get_shared()));
+                    tmp_list->push_back(std::const_pointer_cast<sight::data::point>(point.get_shared()));
                 });
             this->update_mesh(tmp_list);
         }
@@ -292,7 +282,7 @@ void point_list::create_label(const data::point_list::csptr& _point_list)
     auto render_srv          = this->render_service();
     std::size_t i            = 0;
     std::string label_number = std::to_string(i);
-    for(const auto& point : _point_list->get_points())
+    for(const auto& point : *_point_list)
     {
         const auto label = point->get_label();
         if(!label.empty())
@@ -345,7 +335,7 @@ void point_list::update_mesh(const data::point_list::csptr& _point_list)
 
     detach_and_destroy_entity();
 
-    const std::size_t ui_num_vertices = _point_list->get_points().size();
+    const std::size_t ui_num_vertices = _point_list->size();
     if(ui_num_vertices == 0)
     {
         SIGHT_DEBUG("Empty mesh");
@@ -372,6 +362,14 @@ void point_list::update_mesh(const data::point_list::csptr& _point_list)
         m_entity = m_mesh_geometry->create_entity(*scene_mgr);
         m_entity->setVisible(visible());
         m_entity->setQueryFlags(m_query_flags);
+
+        if(*m_exclude_from_camera_reset)
+        {
+            m_entity->getUserObjectBindings().setUserAny(
+                sight::viz::scene3d::helper::scene::EXCLUDE_FROM_CAMERA_RESET_FLAG,
+                true
+            );
+        }
     }
 
     //------------------------------------------
@@ -391,7 +389,7 @@ void point_list::update_mesh(const data::point_list::csptr& _point_list)
 
     if(m_auto_reset_camera)
     {
-        this->render_service()->reset_camera_coordinates(m_layer_id);
+        this->render_service()->reset_camera_coordinates(layer_id());
     }
 }
 
@@ -446,7 +444,7 @@ void point_list::update_mesh(const data::mesh::csptr& _mesh)
 
     if(m_auto_reset_camera)
     {
-        this->render_service()->reset_camera_coordinates(m_layer_id);
+        this->render_service()->reset_camera_coordinates(layer_id());
     }
 }
 
@@ -461,29 +459,33 @@ void point_list::update_material_adaptor(const std::string& _mesh_id)
             m_material_adaptor = this->register_service<module::viz::scene3d::adaptor::material>(
                 "sight::module::viz::scene3d::adaptor::material"
             );
-            m_material_adaptor->set_inout(m_material, "material", true);
+            m_material_adaptor->set_inout(m_material, "data.material", true);
 
             SIGHT_ASSERT("Template name empty", !m_material_template_name.empty());
 
             config_t material_adp_config;
             material_adp_config.put("config.<xmlattr>.material_template", m_material_template_name);
 
-            if(!m_uniforms.empty())
+            if(!m_uniform_objects.empty())
             {
                 std::size_t i = 0;
-                for(const auto& uniform_data : m_uniforms)
+                for(const auto& uniform_object : m_uniform_objects)
                 {
-                    m_material_adaptor->set_inout(uniform_data.second->lock().get_shared(), "uniforms", true, {}, i++);
-                }
-
-                const auto config = this->get_config();
-                if(const auto inouts_cfg = config.get_child_optional("inout"); inouts_cfg.has_value())
-                {
-                    const auto group = inouts_cfg->get<std::string>("<xmlattr>.group");
-                    if(group == "uniforms")
-                    {
-                        material_adp_config.add_child("inout", inouts_cfg.value());
-                    }
+                    const auto index = i++;
+                    m_material_adaptor->set_inout(
+                        uniform_object.second->lock().get_shared(),
+                        "uniform.object",
+                        true,
+                        {},
+                        index
+                    );
+                    m_material_adaptor->set_input(
+                        m_uniform_names[index].lock().get_shared(),
+                        "uniform.name",
+                        true,
+                        {},
+                        index
+                    );
                 }
             }
 
@@ -494,7 +496,7 @@ void point_list::update_material_adaptor(const std::string& _mesh_id)
             m_material_adaptor->set_id(gen_id(m_material_adaptor->get_id()));
             m_material_adaptor->set_material_name(mtl_name);
             m_material_adaptor->set_render_service(this->render_service());
-            m_material_adaptor->set_layer_id(m_layer_id);
+            m_material_adaptor->set_layer_id(layer_id());
             m_material_adaptor->set_material_template_name(m_material_template_name);
 
             m_material_adaptor->start();

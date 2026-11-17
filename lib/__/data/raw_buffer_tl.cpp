@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,8 +26,6 @@
 
 #include <data/exception.hpp>
 #include <data/registry/macros.hpp>
-
-#include <functional>
 
 SIGHT_REGISTER_DATA(sight::data::raw_buffer_tl);
 
@@ -60,7 +58,7 @@ void raw_buffer_tl::deep_copy(const object::csptr& _source, const std::unique_pt
 
     for(const auto& elt : other->m_timeline)
     {
-        SPTR(data::timeline::raw_buffer) tl_obj = this->create_buffer(elt.first);
+        sight::sptr<data::timeline::raw_buffer> tl_obj = this->create_buffer(elt.first);
         tl_obj->deep_copy(*elt.second);
         m_timeline.insert(timeline_t::value_type(elt.first, tl_obj));
     }
@@ -70,20 +68,20 @@ void raw_buffer_tl::deep_copy(const object::csptr& _source, const std::unique_pt
 
 //------------------------------------------------------------------------------
 
-CSPTR(data::timeline::raw_buffer) raw_buffer_tl::get_closest_buffer(
+sight::csptr<data::timeline::raw_buffer> raw_buffer_tl::get_closest_buffer(
     core::clock::type _timestamp,
     timeline::direction_t _direction
 ) const
 {
-    CSPTR(data::timeline::object) buffer = this->get_closest_object(_timestamp, _direction);
+    sight::csptr<data::timeline::object> buffer = this->get_closest_object(_timestamp, _direction);
     return std::dynamic_pointer_cast<const data::timeline::raw_buffer>(buffer);
 }
 
 //------------------------------------------------------------------------------
 
-CSPTR(data::timeline::raw_buffer) raw_buffer_tl::get_buffer(core::clock::type _timestamp) const
+sight::csptr<data::timeline::raw_buffer> raw_buffer_tl::get_buffer(core::clock::type _timestamp) const
 {
-    CSPTR(data::timeline::object) buffer = this->get_object(_timestamp);
+    sight::csptr<data::timeline::object> buffer = this->get_object(_timestamp);
     return std::dynamic_pointer_cast<const data::timeline::raw_buffer>(buffer);
 }
 
@@ -96,14 +94,14 @@ void raw_buffer_tl::init_pool_size(std::size_t _size)
 
 //------------------------------------------------------------------------------
 
-SPTR(data::timeline::object) raw_buffer_tl::create_object(core::clock::type _timestamp)
+sight::sptr<data::timeline::object> raw_buffer_tl::create_object(core::clock::type _timestamp)
 {
     return this->create_buffer(_timestamp);
 }
 
 //------------------------------------------------------------------------------
 
-SPTR(data::timeline::raw_buffer) raw_buffer_tl::create_buffer(core::clock::type _timestamp)
+sight::sptr<data::timeline::raw_buffer> raw_buffer_tl::create_buffer(core::clock::type _timestamp)
 {
     return std::make_shared<data::timeline::raw_buffer>(
         _timestamp,
@@ -114,9 +112,9 @@ SPTR(data::timeline::raw_buffer) raw_buffer_tl::create_buffer(core::clock::type 
 
 //------------------------------------------------------------------------------
 
-bool raw_buffer_tl::is_object_valid(const CSPTR(data::timeline::object)& _obj) const
+bool raw_buffer_tl::is_object_valid(const sight::csptr<data::timeline::object>& _obj) const
 {
-    CSPTR(data::timeline::raw_buffer) src_obj =
+    sight::csptr<data::timeline::raw_buffer> src_obj =
         std::dynamic_pointer_cast<const data::timeline::raw_buffer>(_obj);
     return src_obj != nullptr;
 }

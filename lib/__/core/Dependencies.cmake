@@ -1,4 +1,9 @@
-find_package(Boost QUIET COMPONENTS system date_time iostreams log log_setup REQUIRED)
+find_package(
+    Boost QUIET
+    COMPONENTS date_time iostreams log log_setup
+    OPTIONAL_COMPONENTS system
+    REQUIRED
+)
 find_package(LibXml2 QUIET REQUIRED)
 find_package(OpenSSL COMPONENTS Crypto)
 

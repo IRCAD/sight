@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -56,8 +56,8 @@ namespace sight::viz::scene3d
     </service>
    @endcode
  *
- * @subsection Configuration Configuration:
- * - \b visible (optional, bool, default=true): the visibility of the adaptor.
+ * @subsection Input Input:
+ * - \b config.visible [sight::data::boolean] (optional, default=true): the visibility of the adaptor.
  */
 class SIGHT_VIZ_SCENE3D_CLASS_API adaptor :
     public service::base,
@@ -68,6 +68,9 @@ friend class render;
 
 public:
 
+    /// Destroys the adaptor.
+    SIGHT_VIZ_SCENE3D_API ~adaptor() noexcept override = default;
+
     /// Helper function to generate unique identifiers for children objects
     std::string gen_id(const std::string_view& _name) const
     {
@@ -75,7 +78,7 @@ public:
     }
 
     /// Configuration helper string that stores "config.<xmlattr>."
-    SIGHT_VIZ_SCENE3D_API static const std::string CONFIG;
+    SIGHT_VIZ_SCENE3D_API static inline const std::string CONFIG = "config.<xmlattr>.";
 
     /// Generates default methods.
     SIGHT_DECLARE_CLASS(adaptor, service::base);
@@ -110,23 +113,23 @@ public:
     /// Returns the visibility of the adaptor.
     SIGHT_VIZ_SCENE3D_API bool visible() const;
 
+    /// Sets the visibility of the adaptor.
+    SIGHT_VIZ_SCENE3D_API virtual void set_visible(bool _visible);
+
 protected:
 
     struct slots
     {
-        static inline const core::com::slots::key_t APPLY_VISIBILITY  = "apply_visibility";
-        static inline const core::com::slots::key_t UPDATE_VISIBILITY = "update_visibility";
-        static inline const core::com::slots::key_t TOGGLE_VISIBILITY = "toggle_visibility";
-        static inline const core::com::slots::key_t SHOW              = "show";
-        static inline const core::com::slots::key_t HIDE              = "hide";
-        static inline const core::com::slots::key_t LAZY_UPDATE       = "lazy_update";
+        static inline const slot_key_t APPLY_VISIBILITY  = "apply_visibility";
+        static inline const slot_key_t UPDATE_VISIBILITY = "update_visibility";
+        static inline const slot_key_t TOGGLE_VISIBILITY = "toggle_visibility";
+        static inline const slot_key_t SHOW              = "show";
+        static inline const slot_key_t HIDE              = "hide";
+        static inline const slot_key_t LAZY_UPDATE       = "lazy_update";
     };
 
     /// Initializes slots.
     SIGHT_VIZ_SCENE3D_API adaptor() noexcept;
-
-    /// Destroys the adaptor.
-    SIGHT_VIZ_SCENE3D_API ~adaptor() noexcept override = default;
 
     /**
      * @brief Write information in a stream.
@@ -163,14 +166,13 @@ protected:
     /// SLOT: hides the adaptor.
     SIGHT_VIZ_SCENE3D_API void hide();
 
-    /// Sets the visibility of the adaptor.
-    SIGHT_VIZ_SCENE3D_API virtual void set_visible(bool _visible);
-
     /// Connects the properties signals, this must be explicitly called by children classes.
     SIGHT_VIZ_SCENE3D_API service::connections_t auto_connections() const override;
 
     /// Calls updating when the update is required
     SIGHT_VIZ_SCENE3D_API void do_update() final;
+
+private:
 
     /// Defines the layer ID:
     std::string m_layer_id;
@@ -181,13 +183,11 @@ protected:
     /// Contains the t=render service which this adaptor is attached.
     viz::scene3d::render::wptr m_render_service;
 
-private:
-
     /// Ensure visibility changes are applied when rendering is requested.
     bool m_visibility_applied {true};
 
     /// Enables the adaptor visibility.
-    sight::data::property<sight::data::boolean> m_visible {this, "visible", true};
+    sight::data::ptr<sight::data::boolean, sight::data::access::in> m_visible {this, "config.visible", true};
 };
 
 //------------------------------------------------------------------------------

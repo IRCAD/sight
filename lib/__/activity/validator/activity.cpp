@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2025 IRCAD France
+ * Copyright (C) 2016-2026 IRCAD France
  * Copyright (C) 2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -62,7 +62,11 @@ validator::return_t activity::check_requirements(const data::activity::csptr& _a
             }
             else
             {
-                validator::return_t val = sight::activity::validator::activity::check_object(obj, req.validator);
+                validator::return_t val = sight::activity::validator::activity::check_object(
+                    obj,
+                    req.validator,
+                    req.validator_config
+                );
                 if(!val.first)
                 {
                     validation.first   = false;
@@ -119,7 +123,8 @@ validator::return_t activity::check_requirements(const data::activity::csptr& _a
                     {
                         validator::return_t val = sight::activity::validator::activity::check_object(
                             vector,
-                            req.validator
+                            req.validator,
+                            req.validator_config
                         );
                         if(!val.first)
                         {
@@ -200,7 +205,9 @@ validator::return_t activity::check_requirements(const data::activity::csptr& _a
                     {
                         validator::return_t val = sight::activity::validator::activity::check_object(
                             current_map,
-                            req.validator
+                            req.validator,
+                            req.validator_config
+
                         );
                         if(!val.first)
                         {
@@ -220,7 +227,8 @@ validator::return_t activity::check_requirements(const data::activity::csptr& _a
 
 validator::return_t activity::check_object(
     const data::object::csptr& _object,
-    const std::string& _validator_impl
+    const std::string& _validator_impl,
+    const extension::config_t& _config
 )
 {
     sight::activity::validator::return_t validation;
@@ -237,6 +245,7 @@ validator::return_t activity::check_object(
         /// Process object validator
         if(auto validator = sight::data::validator::factory::make(_validator_impl); validator)
         {
+            validator->configure(_config);
             validation = validator->validate(_object);
         }
         else

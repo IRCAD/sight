@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,15 +22,10 @@
 
 #include "open_cv_writer.hpp"
 
-#include <core/location/single_file.hpp>
-#include <core/location/single_folder.hpp>
-
 #include <data/camera_set.hpp>
 
-#include <ui/__/dialog/location.hpp>
-
-#include <opencv2/core.hpp>
-
+#include <opencv2/core/mat.hpp>
+#include <opencv2/core/persistence.hpp>
 #include <sstream>
 
 namespace sight::module::io::vision
@@ -50,48 +45,7 @@ void open_cv_writer::configuring()
     sight::io::service::writer::configuring();
 }
 
-//----------------------------------------------------------------------------
-
-void open_cv_writer::open_location_dialog()
-{
-    this->define_location_gui();
-}
-
-//----------------------------------------------------------------------------
-
-bool open_cv_writer::define_location_gui()
-{
-    bool ok = false;
-
-    // Ask user for the file path
-    static auto default_directory = std::make_shared<core::location::single_folder>();
-
-    sight::ui::dialog::location dialog_file;
-    dialog_file.set_title(*m_window_title);
-    dialog_file.set_default_location(default_directory);
-    dialog_file.set_option(ui::dialog::location::write);
-    dialog_file.set_type(ui::dialog::location::single_file);
-    dialog_file.add_filter("XML file", "*.xml");
-    dialog_file.add_filter("YAML file", "*.yaml *.yml");
-
-    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialog_file.show());
-
-    if(result)
-    {
-        this->set_file(result->get_file());
-        default_directory->set_folder(result->get_file().parent_path());
-        dialog_file.save_default_location(default_directory);
-        ok = true;
-    }
-    else
-    {
-        this->clear_locations();
-    }
-
-    return ok;
-}
-
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 void open_cv_writer::starting()
 {
@@ -110,8 +64,9 @@ void open_cv_writer::updating()
     bool use_dialog = false;
     if(!this->has_location_defined())
     {
-        use_dialog = this->define_location_gui();
-        if(!use_dialog)
+        this->open_location_dialog();
+        use_dialog = true;
+        if(!this->has_location_defined())
         {
             m_write_failed = true;
             return;

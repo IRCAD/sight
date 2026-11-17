@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,27 +29,20 @@
 #include "viz/scene3d/helper/camera.hpp"
 #include "viz/scene3d/light_adaptor.hpp"
 #include "viz/scene3d/ogre.hpp"
+#include "viz/scene3d/utils.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
 #include <core/thread/worker.hpp>
 
 #include <data/tools/color.hpp>
 
-#include <service/registry.hpp>
-
 #include <boost/tokenizer.hpp>
 
-#include <OGRE/Ogre.h>
 #include <OGRE/OgreAxisAlignedBox.h>
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreColourValue.h>
 #include <OGRE/OgreCompositorManager.h>
-#include <OGRE/OgreEntity.h>
-#include <OGRE/OgreException.h>
 #include <OGRE/OgreGpuProgramManager.h>
 #include <OGRE/OgreLight.h>
-#include <OGRE/OgreManualObject.h>
 #include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgreRectangle2D.h>
 #include <OGRE/OgreSceneManager.h>
@@ -58,19 +51,11 @@
 
 #include <cmath>
 #include <memory>
-#include <stack>
 
 namespace sight::viz::scene3d
 {
 
 //-----------------------------------------------------------------------------
-
-const core::com::signals::key_t layer::INIT_LAYER_SIG           = "layerInitialized";
-const core::com::signals::key_t layer::RESIZE_LAYER_SIG         = "layerResized";
-const core::com::signals::key_t layer::CAMERA_RANGE_UPDATED_SIG = "CameraRangeUpdated";
-
-const core::com::slots::key_t layer::INTERACTION_SLOT  = "interaction";
-const core::com::slots::key_t layer::RESET_CAMERA_SLOT = "reset_camera";
 
 //-----------------------------------------------------------------------------
 
@@ -80,14 +65,14 @@ const std::string layer::DEFAULT_CAMERA_NODE_NAME = "CameraNode";
 
 //-----------------------------------------------------------------------------
 
-struct layer::LayerCameraListener : public Ogre::Camera::Listener
+struct layer::layer_camera_listener : public Ogre::Camera::Listener
 {
     layer* m_layer {nullptr};
     int m_frame_id {0};
 
     //------------------------------------------------------------------------------
 
-    explicit LayerCameraListener(layer* _renderer) :
+    explicit layer_camera_listener(layer* _renderer) :
         m_layer(_renderer)
     {
     }
@@ -143,12 +128,12 @@ struct layer::LayerCameraListener : public Ogre::Camera::Listener
 
 layer::layer()
 {
-    new_signal<init_layer_signal_t>(INIT_LAYER_SIG);
-    new_signal<resize_layer_signal_t>(RESIZE_LAYER_SIG);
-    new_signal<camera_updated_signal_t>(CAMERA_RANGE_UPDATED_SIG);
+    new_signal<signals::init_layer_t>(signals::INIT_LAYER);
+    new_signal<signals::resize_layer_t>(signals::RESIZE_LAYER);
+    new_signal<signals::camera_updated_t>(signals::CAMERA_RANGE_UPDATED);
 
-    new_slot(INTERACTION_SLOT, &layer::interaction, this);
-    new_slot(RESET_CAMERA_SLOT, &layer::reset_camera_coordinates, this);
+    new_slot(slots::INTERACTION, &layer::interaction, this);
+    new_slot(slots::RESET_CAMERA, &layer::reset_camera_coordinates, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -292,7 +277,10 @@ void layer::create_scene()
         "Width and height should be strictly positive",
         viewport->getActualWidth() > 0 && viewport->getActualHeight() > 0
     );
-    m_camera->setAspectRatio(Ogre::Real(viewport->getActualWidth()) / Ogre::Real(viewport->getActualHeight()));
+    m_camera->setAspectRatio(
+        static_cast<Ogre::Real>(viewport->getActualWidth())
+        / static_cast<Ogre::Real>(viewport->getActualHeight())
+    );
 
     // Creating Camera scene Node
     auto* const root_scene_node = m_scene_manager->getRootSceneNode();
@@ -334,7 +322,7 @@ void layer::create_scene()
         m_light_adaptor->start();
     }
 
-    m_camera_listener = new LayerCameraListener(this);
+    m_camera_listener = new layer_camera_listener(this);
     m_camera->addListener(m_camera_listener);
 
     // Setup transparency compositors
@@ -362,7 +350,7 @@ void layer::create_scene()
 
     m_scene_created = true;
 
-    this->signal<init_layer_signal_t>(INIT_LAYER_SIG)->async_emit(this->get_sptr());
+    this->async_emit(signals::INIT_LAYER, this->get_sptr());
 }
 
 // ----------------------------------------------------------------------------
@@ -474,8 +462,7 @@ void layer::interaction(viz::scene3d::window_interactor::interaction_info _info)
 
         case viz::scene3d::window_interactor::interaction_info::resize:
         {
-            auto sig = this->signal<resize_layer_signal_t>(RESIZE_LAYER_SIG);
-            sig->async_emit(_info.x, _info.y);
+            this->async_emit(signals::RESIZE_LAYER, _info.x, _info.y);
 
             this->for_all_interactors(
                 [&_info](const interactor::base::sptr& _i)
@@ -595,7 +582,7 @@ void layer::set_order(int _order)
 
 void layer::set_worker(const core::thread::worker::sptr& _worker)
 {
-    core::com::has_slots::m_slots.set_worker(_worker);
+    core::com::has_slots::slots().set_worker(_worker);
 }
 
 // ----------------------------------------------------------------------------
@@ -618,7 +605,7 @@ void layer::set_render_service(const viz::scene3d::render::sptr& _service)
 
 void layer::add_interactor(const viz::scene3d::interactor::base::sptr& _interactor, int _priority)
 {
-    using pair_t = typename decltype(m_interactors)::value_type;
+    using pair_t = decltype(m_interactors)::value_type;
     const pair_t pair = std::make_pair(_priority, _interactor);
 
     const auto is_pair = [&pair](const pair_t& _p)
@@ -627,7 +614,7 @@ void layer::add_interactor(const viz::scene3d::interactor::base::sptr& _interact
                          };
 
     // Add the interactor if it doesn't already exit.
-    if(std::none_of(m_interactors.begin(), m_interactors.end(), is_pair))
+    if(std::ranges::none_of(m_interactors, is_pair))
     {
         m_interactors.insert(pair);
     }
@@ -637,12 +624,12 @@ void layer::add_interactor(const viz::scene3d::interactor::base::sptr& _interact
 
 void layer::remove_interactor(const viz::scene3d::interactor::base::sptr& _interactor)
 {
-    const auto interactor_equal = [&_interactor](typename decltype(m_interactors)::value_type _i)
+    const auto interactor_equal = [&_interactor](decltype(m_interactors)::value_type _i)
                                   {
                                       return _i.second.lock() == _interactor;
                                   };
 
-    const auto it = std::find_if(m_interactors.cbegin(), m_interactors.cend(), interactor_equal);
+    const auto it = std::ranges::find_if(m_interactors, interactor_equal);
 
     if(it != m_interactors.end())
     {
@@ -772,6 +759,42 @@ void layer::reset_camera_coordinates()
             // Set the position of the camera
             cam_node->setPosition((world_bounding_box.getCenter() + bounding_box_length * direction));
         }
+
+        if(m_camera_orthographic && m_camera->getProjectionType() != Ogre::PT_PERSPECTIVE)
+        {
+            // To compute the needed orthographic height,
+            // one needs to apply the camera transformation on the world bounding box.
+            auto transformed_bb = world_bounding_box;
+            Ogre::Matrix3 camera_transform;
+
+            // We inverse the orientation because it's being applied to an object in the world coordinate system.
+            m_camera->getRealOrientation().Inverse().ToRotationMatrix(camera_transform);
+
+            transformed_bb.transform(Ogre::Matrix4(camera_transform));
+
+            Ogre::Real margin = 0.1F;
+
+            // Use height as the difference on y coordinates.
+            const auto x1 = transformed_bb.getMinimum().x;
+            const auto x2 = transformed_bb.getMaximum().x;
+            Ogre::Real w  = x2 - x1;
+
+            const auto y1 = transformed_bb.getMinimum().y;
+            const auto y2 = transformed_bb.getMaximum().y;
+            Ogre::Real h  = y2 - y1;
+
+            const Ogre::Viewport* const viewport = get_viewport();
+            SIGHT_ASSERT("The current viewport cannot be retrieved.", viewport);
+
+            if(w / h > static_cast<float>(viewport->getActualWidth()) / static_cast<float>(viewport->getActualHeight()))
+            {
+                m_camera->setOrthoWindowWidth(w + w * margin);
+            }
+            else
+            {
+                m_camera->setOrthoWindowHeight(h + h * margin);
+            }
+        }
     }
 }
 
@@ -852,29 +875,7 @@ void layer::reset_camera_clipping_range() const
         auto far  = std::max(min_far, max_near);
 
         // Yeah, it's a kind of a magic number here.
-        auto min_space = 15.F;
-
-        if(m_camera_orthographic && m_camera->getProjectionType() != Ogre::PT_PERSPECTIVE)
-        {
-            min_space = 2.F;
-
-            // To compute the needed orthographic height,
-            // one needs to apply the camera transformation on the world bounding box.
-            auto transformed_bb = world_bounding_box;
-            Ogre::Matrix3 camera_transform;
-
-            // We inverse the orientation because it's being applied to an object in the world coordinate system.
-            m_camera->getRealOrientation().Inverse().ToRotationMatrix(camera_transform);
-
-            transformed_bb.transform(Ogre::Matrix4(camera_transform));
-
-            // Use height as the difference on y coordinates.
-            const auto y1     = transformed_bb.getMinimum().y;
-            const auto y2     = transformed_bb.getMaximum().y;
-            Ogre::Real h      = y2 - y1;
-            Ogre::Real margin = 0.1F;
-            m_camera->setOrthoWindowHeight(h + h * margin);
-        }
+        auto min_space = (m_camera_orthographic && m_camera->getProjectionType() != Ogre::PT_PERSPECTIVE) ? 2.F : 15.F;
 
         // Give ourselves a little breathing room, with a minimum depending on the projection type
         auto space = std::max((far - near) * 0.05F, min_space);
@@ -885,9 +886,8 @@ void layer::reset_camera_clipping_range() const
         near = std::max(near, 0.1F);
 
         const auto& chain            = this->get_compositor_chain();
-        const auto sao_compositor_it = std::find_if(
-            chain.begin(),
-            chain.end(),
+        const auto sao_compositor_it = std::ranges::find_if(
+            chain,
             [](const auto& _compositor)
             {
                 return _compositor.first == "SAO";
@@ -906,7 +906,7 @@ void layer::reset_camera_clipping_range() const
 
         if(far != prev_far)
         {
-            this->signal<camera_updated_signal_t>(CAMERA_RANGE_UPDATED_SIG)->async_emit();
+            this->async_emit(signals::CAMERA_RANGE_UPDATED);
         }
     }
 }
@@ -1082,18 +1082,18 @@ void layer::restart_adaptors()
     std::vector<service::base::wptr> sub_adaptors;
     for(auto& adapt : adaptors)
     {
-        SPTR(service::has_services) has_services = std::dynamic_pointer_cast<service::has_services>(adapt);
+        sight::sptr<service::has_services> has_services = std::dynamic_pointer_cast<service::has_services>(adapt);
         if(has_services != nullptr)
         {
             const auto& sub_services = has_services->get_registered_services();
-            std::copy(sub_services.begin(), sub_services.end(), std::back_inserter(sub_adaptors));
+            std::ranges::copy(sub_services, std::back_inserter(sub_adaptors));
         }
     }
 
     // Subadaptors should be started/stopped by their parent. Remove them from the list.
     for(const auto& sub_srv : sub_adaptors)
     {
-        auto it = std::find(adaptors.begin(), adaptors.end(), sub_srv.lock());
+        auto it = std::ranges::find(adaptors, sub_srv.lock());
 
         if(it != adaptors.end())
         {
@@ -1165,14 +1165,14 @@ Ogre::Matrix4 layer::get_camera_proj_mat(const uint8_t _camera_idx) const
     if(m_stereo_mode == viz::scene3d::compositor::core::stereo_mode_t::autostereo_5)
     {
         const float eye_angle = 0.02321F;
-        const float angle     = eye_angle * (-2.F + float(_camera_idx));
+        const float angle     = eye_angle * (-2.F + static_cast<float>(_camera_idx));
 
         extrinsic_transform = viz::scene3d::helper::camera::compute_frustum_shear_transform(*m_camera, angle);
     }
     else if(m_stereo_mode == viz::scene3d::compositor::core::stereo_mode_t::autostereo_8)
     {
         const float eye_angle = 0.01625F;
-        const float angle     = eye_angle * (-3.5F + float(_camera_idx));
+        const float angle     = eye_angle * (-3.5F + static_cast<float>(_camera_idx));
 
         extrinsic_transform = viz::scene3d::helper::camera::compute_frustum_shear_transform(*m_camera, angle);
     }

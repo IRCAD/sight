@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2024 IRCAD France
+ * Copyright (C) 2016-2026 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,7 +31,6 @@
 #include <viz/scene3d/transfer_function.hpp>
 
 #include <OGRE/OgreSceneManager.h>
-#include <OGRE/OgreTexture.h>
 
 namespace sight::viz::scene3d::vr
 {
@@ -44,13 +43,9 @@ class SIGHT_VIZ_SCENE3D_CLASS_API summed_area_table
 public:
 
     /// Constructor, creates an SAT with the given resolution.
-    SIGHT_VIZ_SCENE3D_API summed_area_table(
-        std::string _parent_id,
-        Ogre::SceneManager* _scene_manager,
-        float _size_ratio = 0.25F
-    );
+    SIGHT_VIZ_SCENE3D_API summed_area_table(std::string _parent_id, Ogre::SceneManager* _scene_manager);
 
-    /// Destructor, does nothing.
+    /// Destructor, releases the internal GPU resources and materials.
     SIGHT_VIZ_SCENE3D_API ~summed_area_table();
 
     /// Computes the SAT sequentially on the CPU based on the given image and TF.
@@ -60,7 +55,8 @@ public:
     SIGHT_VIZ_SCENE3D_API void compute_parallel(
         const texture::sptr& _img_texture,
         const viz::scene3d::transfer_function::sptr& _gpu_tf,
-        float _sample_distance
+        float _sample_distance,
+        unsigned int _ratio
     );
 
     /// Returns the texture holding the SAT.
@@ -69,11 +65,8 @@ public:
     /// Returns the texture used as a ping-pong buffer during SAT computation allowing it to be repurposed.
     [[nodiscard]] SIGHT_VIZ_SCENE3D_API Ogre::TexturePtr get_spare_texture() const;
 
-    /// Updates the current size of the image according to the passed texture and updates the SAT
-    SIGHT_VIZ_SCENE3D_API void update_sat_from_texture(const texture::sptr& _img_texture);
-
-    /// Updates the SAT size ratio and updates the SAT.
-    SIGHT_VIZ_SCENE3D_API void update_sat_from_ratio(float _size_ratio);
+    /// Updates the current size of the image, and thus the internal buffers for computing the SAT
+    SIGHT_VIZ_SCENE3D_API void resize(std::array<std::size_t, 3> _sat_size);
 
 private:
 
@@ -90,25 +83,22 @@ private:
         summed_area_table_compositor_listener* table = nullptr;
     };
 
-    /// Creates the buffers and initializes the SAT.
-    void update_buffers();
-
     listeners_t m_listeners {};
-
-    /// SAT size ratio used to computes its resolution.
-    float m_sat_size_ratio;
 
     /// SAT resolution. It's computed thanks to the configured ratio and the associated image size.
     data::image::size_t m_sat_size;
-
-    /// Current image size used to resize the SAT in case of a ratio change.
-    data::image::size_t m_current_image_size;
 
     /// texture used as source during SAT GPU computation, holds the result at the end.
     Ogre::TexturePtr m_source_buffer {nullptr};
 
     /// texture used as target during SAT GPU computation.
     Ogre::TexturePtr m_target_buffer {nullptr};
+
+    /// Material used by the initialization compositor.
+    Ogre::MaterialPtr m_init_material {nullptr};
+
+    /// Material used by the SAT compositor.
+    Ogre::MaterialPtr m_table_material {nullptr};
 
     /// Prefix used to name the buffers.
     std::string m_parent_id;

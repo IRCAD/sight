@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2025 IRCAD France
+ * Copyright (C) 2019-2026 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,14 +36,14 @@ namespace sight::module::io::vision
  *
  * @code{.xml}
    <service uid="..." type="sight::module::io::vision::calibration_images_writer">
-       <in key="data" uid="..." />
+       <data write="..." />
        <format>.tiff</format>
-       <folder>...</folder>
+       <path folder="..." />
    </service>
    @endcode
  *
  * @subsection Input Input
- * - \b data [sight::data::calibration_info]: images to write.
+ * - \b data.write [sight::data::calibration_info]: images to write.
  * @subsection Configuration Configuration
  * - \b format (optional, values=.jpeg|.ppm|.png|.bmp|.tiff, default=.tiff): output file format.
  * - \b folder (optional): directory in which the files should be written.
@@ -61,12 +61,16 @@ public:
     ~calibration_images_writer() noexcept override = default;
 
     /// Configures the folder path.
-    void open_location_dialog() override;
 
-protected:
+    std::vector<std::pair<std::string, std::string> > get_supported_extensions() const override
+    {
+        return {{"Image files", "*" + m_file_extension}};
+    }
 
     /// Returns the folder path type.
     sight::io::service::path_type_t get_path_type() const override;
+
+protected:
 
     /// Configures the output file format.
     void configuring() override;

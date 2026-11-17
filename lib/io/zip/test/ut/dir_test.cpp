@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,8 +20,6 @@
  *
  ***********************************************************************/
 
-#include "dir_test.hpp"
-
 #include <core/os/temp_path.hpp>
 
 #include <io/zip/read_dir_archive.hpp>
@@ -29,78 +27,60 @@
 
 #include <utest_data/data.hpp>
 
+#include <doctest/doctest.h>
+
 #include <filesystem>
 
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::zip::ut::dir_test);
-
-namespace sight::io::zip::ut
+TEST_SUITE("sight::io::zip::dir")
 {
+    TEST_CASE("write_read_file")
+    {
+        sight::core::os::temp_dir tmp_dir;
 
-//------------------------------------------------------------------------------
+        auto writer = std::make_shared<sight::io::zip::write_dir_archive>(tmp_dir);
+        auto reader = std::make_shared<sight::io::zip::read_dir_archive>(tmp_dir);
 
-void dir_test::setUp()
-{
-    // Set up context before running a test.
-}
+        const std::filesystem::path test_file = "test.txt";
 
-//------------------------------------------------------------------------------
+        // Test that create_file doesn't throw
+        CHECK_NOTHROW(writer->create_file(test_file));
 
-void dir_test::tearDown()
-{
-    // Clean up after the test run.
-}
+        // Test that get_file doesn't throw
+        CHECK_NOTHROW(reader->get_file(test_file));
+    }
 
-//------------------------------------------------------------------------------
+    TEST_CASE("write_dir")
+    {
+        sight::core::os::temp_dir tmp_dir;
 
-void dir_test::write_read_file_test()
-{
-    core::os::temp_dir tmp_dir;
+        auto writer = std::make_shared<sight::io::zip::write_dir_archive>(tmp_dir);
 
-    auto writer = std::make_shared<write_dir_archive>(tmp_dir);
-    auto reader = std::make_shared<read_dir_archive>(tmp_dir);
+        const std::filesystem::path test_dir = "test";
 
-    const std::filesystem::path test_file = "test.txt";
+        // Test that create_dir doesn't throw
+        CHECK_NOTHROW(writer->create_dir(test_dir));
 
-    CPPUNIT_ASSERT_NO_THROW(writer->create_file(test_file));
+        CHECK(std::filesystem::exists(tmp_dir / test_dir));
+    }
 
-    CPPUNIT_ASSERT_NO_THROW(reader->get_file(test_file));
-}
+    TEST_CASE("put_file")
+    {
+        sight::core::os::temp_dir tmp_dir;
 
-//------------------------------------------------------------------------------
+        auto writer = std::make_shared<sight::io::zip::write_dir_archive>(tmp_dir);
 
-void dir_test::write_dir_test()
-{
-    core::os::temp_dir tmp_dir;
+        //cspell: ignore makao
+        const std::filesystem::path test_file = sight::utest_data::dir() / "sight/image/jpg/makao01.jpg";
+        CHECK_MESSAGE(
+            std::filesystem::exists(test_file),
+            "The file '",
+            test_file.string(),
+            "' does not exist"
+        );
 
-    auto writer = std::make_shared<write_dir_archive>(tmp_dir);
+        // Test that put_file doesn't throw
+        CHECK_NOTHROW(writer->put_file(test_file, "image.jpg"));
 
-    const std::filesystem::path test_dir = "test";
-
-    CPPUNIT_ASSERT_NO_THROW(writer->create_dir(test_dir));
-
-    CPPUNIT_ASSERT(std::filesystem::exists(tmp_dir / test_dir));
-}
-
-//------------------------------------------------------------------------------
-
-void dir_test::put_file_test()
-{
-    core::os::temp_dir tmp_dir;
-
-    auto writer = std::make_shared<write_dir_archive>(tmp_dir);
-
-    const std::filesystem::path test_dir = "test";
-    //cspell: ignore makao
-    const std::filesystem::path test_file = utest_data::dir() / "sight/image/jpg/makao01.jpg";
-    CPPUNIT_ASSERT_MESSAGE(
-        "The file '" + test_file.string() + "' does not exist",
-        std::filesystem::exists(test_file)
-    );
-
-    CPPUNIT_ASSERT_NO_THROW(writer->put_file(test_file, "image.jpg"));
-
-    CPPUNIT_ASSERT(std::filesystem::exists(tmp_dir / "image.jpg"));
-}
-
-} // namespace sight::io::zip::ut
+        CHECK(std::filesystem::exists(tmp_dir / "image.jpg"));
+    }
+} // TEST_SUITE

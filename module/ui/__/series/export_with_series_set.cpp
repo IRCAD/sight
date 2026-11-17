@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,11 +22,6 @@
 
 #include "export_with_series_set.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hpp>
-#include <core/com/slots.hxx>
-#include <core/progress/monitor.hpp>
-
 #include <data/series_set.hpp>
 
 #include <io/__/service/io_types.hpp>
@@ -34,20 +29,20 @@
 #include <service/extension/config.hpp>
 #include <service/op.hpp>
 
-#include <ui/__/cursor.hpp>
-
 namespace sight::module::ui::series
 {
-
-static const core::com::slots::key_t FORWARD_MONITOR_SLOT = "forwardmonitor";
 
 //------------------------------------------------------------------------------
 
 export_with_series_set::export_with_series_set() noexcept :
-    has_monitors(m_signals),
+    has_monitors(has_signals::signals()),
     m_io_selector_srv_config("IOSelectorServiceConfigVRRenderReader")
 {
-    m_slot_forward_monitor = new_slot(FORWARD_MONITOR_SLOT, &export_with_series_set::forward_monitor, this);
+    m_slot_forward_notification = new_slot(
+        slots::FORWARD_NOTIFICATION,
+        &export_with_series_set::forward_notification,
+        this
+    );
 }
 
 //------------------------------------------------------------------------------
@@ -101,15 +96,13 @@ void export_with_series_set::updating()
     // Init and execute the service
     service::base::sptr io_selector_srv;
     io_selector_srv = service::add("sight::module::ui::io::selector");
-    io_selector_srv->set_inout(local_series_set, io::service::DATA_KEY);
+    io_selector_srv->set_inout(local_series_set, io::service::READER_DATA_KEY);
 
     io_selector_srv->set_worker(this->worker());
 
-    const auto monitor_signal =
-        this->signal<has_monitors::signals::monitor_created_t>(has_monitors::signals::MONITOR_CREATED);
-    if(monitor_signal)
+    if(const auto signal = this->signal(has_notifications::signals::NOTIFICATION_CREATED); signal)
     {
-        monitor_signal->connect(m_slot_forward_monitor);
+        signal->connect(m_slot_forward_notification);
     }
 
     io_selector_srv->set_config(io_cfg);
@@ -139,11 +132,9 @@ void export_with_series_set::stopping()
 
 //------------------------------------------------------------------------------
 
-void export_with_series_set::forward_monitor(core::progress::monitor::sptr _monitor)
+void export_with_series_set::forward_notification(core::notification::base::sptr _notification)
 {
-    const auto monitor_signal =
-        this->signal<has_monitors::signals::monitor_created_t>(has_monitors::signals::MONITOR_CREATED);
-    monitor_signal->emit(_monitor);
+    this->emit(has_notifications::signals::NOTIFICATION_CREATED, _notification);
 }
 
 } // namespace sight::module::ui::series

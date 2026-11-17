@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,7 +23,6 @@
 #include "shader_parameter_editor.hpp"
 
 #include <data/material.hpp>
-#include <data/mesh.hpp>
 #include <data/reconstruction.hpp>
 
 #include <service/op.hpp>
@@ -46,7 +45,7 @@ void shader_parameter_editor::starting()
     {
         const auto rec                = m_reconstruction.lock();
         data::material::sptr material = rec->get_material();
-        m_connections.connect(material, data::material::MODIFIED_SIG, this->get_sptr(), service::slots::UPDATE);
+        m_connections.connect(material, data::signals::MODIFIED, this->get_sptr(), service::slots::UPDATE);
     }
 
     this->create();
@@ -129,7 +128,7 @@ void shader_parameter_editor::update_gui_info()
     sight::viz::scene3d::adaptor::sptr mat_service;
     for(const auto& srv : srv_vec)
     {
-        if(srv->inout("material").lock()->get_id() == reconstruction->get_material()->get_id())
+        if(srv->inout("data.material").lock()->get_id() == reconstruction->get_material()->get_id())
         {
             mat_service = std::dynamic_pointer_cast<sight::viz::scene3d::adaptor>(srv);
             break;
@@ -197,11 +196,11 @@ void shader_parameter_editor::update_gui_info()
             auto param_config  = module::ui::viz::helper::parameter_editor::create_config(param_adaptor);
 
             const auto obj = param_adaptor->inout(sight::viz::scene3d::parameter_adaptor::PARAMETER_INOUT).lock();
-            editor_service->set_inout(obj.get_shared(), "keys", true, false, i++);
+            editor_service->set_inout(obj.get_shared(), "item.data", true, false, i++);
 
             if(!param_config.empty())
             {
-                editor_config.add_child("ui.item", param_config);
+                editor_config.add_child("item", param_config);
             }
         }
     }

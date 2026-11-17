@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,12 +21,6 @@
  ***********************************************************************/
 
 #include "io/zip/write_dir_archive.hpp"
-
-#include "io/zip/exception/write.hpp"
-
-#include <core/exceptionmacros.hpp>
-
-#include <boost/iostreams/stream_buffer.hpp>
 
 #include <filesystem>
 #include <fstream>
@@ -53,7 +47,7 @@ write_dir_archive::~write_dir_archive()
 
 //-----------------------------------------------------------------------------
 
-SPTR(std::ostream) write_dir_archive::create_file(const std::filesystem::path& _path)
+sight::sptr<std::ostream> write_dir_archive::create_file(const std::filesystem::path& _path)
 {
     const std::filesystem::path file        = m_archive / _path;
     const std::filesystem::path parent_file = file.parent_path();
@@ -62,7 +56,7 @@ SPTR(std::ostream) write_dir_archive::create_file(const std::filesystem::path& _
         std::filesystem::create_directories(parent_file);
     }
 
-    SPTR(std::ofstream) os = std::make_shared<std::ofstream>();
+    sight::sptr<std::ofstream> os = std::make_shared<std::ofstream>();
     os->open(file.string().c_str(), std::fstream::binary | std::fstream::out | std::fstream::trunc);
     return os;
 }

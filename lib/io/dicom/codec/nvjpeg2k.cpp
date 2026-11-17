@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -60,10 +60,10 @@ static inline core::type gdcm_to_sight_pf(const gdcm::PixelFormat& _pf)
             return core::type::INT64;
 
         case gdcm::PixelFormat::FLOAT32:
-            return core::type::FLOAT;
+            return core::type::FLOAT32;
 
         case gdcm::PixelFormat::FLOAT64:
-            return core::type::DOUBLE;
+            return core::type::FLOAT64;
 
         default:
             return core::type::NONE;
@@ -138,7 +138,7 @@ bool nvjpeg2k::Code(gdcm::DataElement const& _in, gdcm::DataElement& _out)
     for(std::size_t z = 0, end = dims[2] ; z < end ; ++z)
     {
         // Compute the address of the current frame
-        const char* in_frame = in_pointer + (z * std::size_t(frame_size));
+        const char* in_frame = in_pointer + (z * static_cast<std::size_t>(frame_size));
 
         // We change the buffer address of the image to avoid unneeded copy
         image->set_buffer(
@@ -162,7 +162,7 @@ bool nvjpeg2k::Code(gdcm::DataElement const& _in, gdcm::DataElement& _out)
 
         // Add the encoded frame to the sequence
         gdcm::Fragment frag;
-        frag.SetByteValue(reinterpret_cast<char*>(output_buffer.data()), std::uint32_t(output_size));
+        frag.SetByteValue(reinterpret_cast<char*>(output_buffer.data()), static_cast<std::uint32_t>(output_size));
         sq->AddFragment(frag);
     }
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2025 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,7 @@
 #include <viz/scene3d/ogre.hpp>
 #include <viz/scene3d/utils.hpp>
 
-#define FW_PROFILING_DISABLED
+#define SIGHT_PROFILING_DISABLED
 #include <core/profiling.hpp>
 
 #include <geometry/data/mesh.hpp>
@@ -38,7 +38,6 @@
 #include <OgreMesh.h>
 #include <OgreMeshManager.h>
 #include <OgreSceneManager.h>
-#include <OgreSceneNode.h>
 #include <OgreSubMesh.h>
 #include <OgreTextureManager.h>
 
@@ -60,7 +59,7 @@ static void copy_indices(
     const data::mesh& _mesh
 )
 {
-    FW_PROFILE_AVG("copyIndices", 5);
+    SIGHT_PROFILE_AVG("copyIndices", 5);
 
     T* cells = static_cast<T*>(_cells);
 
@@ -179,7 +178,7 @@ void mesh::bind_layer(
     // Allocate the buffer if it necessary.
     if(!bind->isBufferBound(m_binding[_binding]) || ui_prev_num_vertices < ui_num_vertices)
     {
-        FW_PROFILE_AVG("REALLOC LAYER", 5);
+        SIGHT_PROFILE_AVG("REALLOC LAYER", 5);
 
         // Allocate color buffer of the requested number of vertices (vertexCount) and bytes per vertex (offset)
         auto usage =
@@ -265,10 +264,10 @@ void mesh::update_mesh(const data::mesh::csptr& _mesh, bool _points_only)
 
     if(prev_num_vertices < num_vertices)
     {
-        FW_PROFILE("REALLOC MESH");
+        SIGHT_PROFILE("REALLOC MESH");
 
         // We need to reallocate
-        m_ogre_mesh->sharedVertexData->vertexCount = Ogre::uint32(num_vertices);
+        m_ogre_mesh->sharedVertexData->vertexCount = static_cast<Ogre::uint32>(num_vertices);
 
         // Allocate vertex buffer of the requested number of vertices (vertexCount)
         // and bytes per vertex (offset)
@@ -304,7 +303,7 @@ void mesh::update_mesh(const data::mesh::csptr& _mesh, bool _points_only)
     else
     {
         // We don't reallocate, we keep the same vertex buffers and only update the number of vertices
-        m_ogre_mesh->sharedVertexData->vertexCount = Ogre::uint32(num_vertices);
+        m_ogre_mesh->sharedVertexData->vertexCount = static_cast<Ogre::uint32>(num_vertices);
     }
 
     //------------------------------------------
@@ -316,7 +315,7 @@ void mesh::update_mesh(const data::mesh::csptr& _mesh, bool _points_only)
     const bool indices_prev32_bits = prev_num_vertices >= (1 << 16);
     const bool has_primitive_color = _mesh->has<attribute::cell_colors>();
     {
-        FW_PROFILE_AVG("REALLOC INDEX", 5);
+        SIGHT_PROFILE_AVG("REALLOC INDEX", 5);
 
         const data::mesh::cell_type_t cell_type      = _mesh->cell_type();
         const data::mesh::cell_type_t prev_cell_type = m_cell_type;
@@ -449,10 +448,8 @@ void mesh::update_mesh(const data::mesh::csptr& _mesh, bool _points_only)
 
 void mesh::update_mesh(const data::point_list::csptr& _point_list)
 {
-    auto points = _point_list->get_points();
-
     /// The values in this table refer to vertices in the above table
-    std::size_t ui_num_vertices = points.size();
+    std::size_t ui_num_vertices = _point_list->size();
     SIGHT_DEBUG("Vertices #" << ui_num_vertices);
 
     m_layout = m_layout & ~attribute::point_normals;
@@ -476,10 +473,10 @@ void mesh::update_mesh(const data::point_list::csptr& _point_list)
 
     if(ui_prev_num_vertices < ui_num_vertices)
     {
-        FW_PROFILE("REALLOC MESH");
+        SIGHT_PROFILE("REALLOC MESH");
 
         // We need to reallocate
-        m_ogre_mesh->sharedVertexData->vertexCount = Ogre::uint32(ui_num_vertices);
+        m_ogre_mesh->sharedVertexData->vertexCount = static_cast<Ogre::uint32>(ui_num_vertices);
 
         // Allocate vertex buffer of the requested number of vertices (vertexCount)
         // and bytes per vertex (offset)
@@ -509,7 +506,7 @@ void mesh::update_mesh(const data::point_list::csptr& _point_list)
     else
     {
         // We don't reallocate, we keep the same vertex buffers and only update the number of vertices
-        m_ogre_mesh->sharedVertexData->vertexCount = Ogre::uint32(ui_num_vertices);
+        m_ogre_mesh->sharedVertexData->vertexCount = static_cast<Ogre::uint32>(ui_num_vertices);
     }
 
     if(m_sub_mesh == nullptr)
@@ -624,7 +621,7 @@ std::pair<bool, std::vector<r2vb_renderable*> > mesh::update_r2vb(
 
 void mesh::update_vertices(const data::mesh::csptr& _mesh)
 {
-    FW_PROFILE_AVG("UPDATE VERTICES", 5);
+    SIGHT_PROFILE_AVG("UPDATE VERTICES", 5);
 
     // Getting Vertex Buffer
     Ogre::VertexBufferBinding* bind                   = m_ogre_mesh->sharedVertexData->vertexBufferBinding;
@@ -651,7 +648,7 @@ void mesh::update_vertices(const data::mesh::csptr& _mesh)
         using position_t = data::mesh::position_t;
         using normal_t   = data::mesh::normal_t;
         {
-            FW_PROFILE_AVG("UPDATE POS AND NORMALS", 5);
+            SIGHT_PROFILE_AVG("UPDATE POS AND NORMALS", 5);
             auto* __restrict p_pos = static_cast<position_t*>(p_vertex);
             for(const auto& p : _mesh->crange<data::iterator::point::xyz>())
             {
@@ -731,7 +728,7 @@ void mesh::update_vertices(const data::mesh::csptr& _mesh)
 
 void mesh::update_vertices(const data::point_list::csptr& _point_list)
 {
-    FW_PROFILE_AVG("UPDATE VERTICES", 5);
+    SIGHT_PROFILE_AVG("UPDATE VERTICES", 5);
 
     // Getting Vertex Buffer
     Ogre::VertexBufferBinding* bind                   = m_ogre_mesh->sharedVertexData->vertexBufferBinding;
@@ -754,14 +751,13 @@ void mesh::update_vertices(const data::point_list::csptr& _point_list)
     point_t y_max = std::numeric_limits<point_t>::lowest();
     point_t z_max = std::numeric_limits<point_t>::lowest();
 
-    const auto& points           = _point_list->get_points();
-    const std::size_t num_points = points.size();
+    const std::size_t num_points = _point_list->size();
 
     {
-        FW_PROFILE_AVG("UPDATE BBOX", 5);
+        SIGHT_PROFILE_AVG("UPDATE BBOX", 5);
         for(std::size_t i = 0 ; i < num_points ; ++i)
         {
-            const auto& point = *points[i];
+            const auto& point = *(*_point_list)[i];
             const auto& pt0   = point[0];
             x_min = std::min(x_min, pt0);
             x_max = std::max(x_max, pt0);
@@ -777,10 +773,10 @@ void mesh::update_vertices(const data::point_list::csptr& _point_list)
     }
     {
         auto* __restrict p_pos = static_cast<float*>(p_vertex);
-        FW_PROFILE_AVG("UPDATE POS", 5);
+        SIGHT_PROFILE_AVG("UPDATE POS", 5);
         for(std::size_t i = 0 ; i < num_points ; ++i)
         {
-            const auto& point = *points[i];
+            const auto& point = *(*_point_list)[i];
             p_pos[0] = static_cast<float>(point[0]);
             p_pos[1] = static_cast<float>(point[1]);
             p_pos[2] = static_cast<float>(point[2]);
@@ -847,7 +843,7 @@ void mesh::update_vertices(const data::point_list::csptr& _point_list)
 
 void mesh::update_colors(const data::mesh::csptr& _mesh)
 {
-    FW_PROFILE_AVG("UPDATE COLORS", 5);
+    SIGHT_PROFILE_AVG("UPDATE COLORS", 5);
 
     Ogre::VertexBufferBinding* bind = m_ogre_mesh->sharedVertexData->vertexBufferBinding;
     SIGHT_ASSERT("Invalid vertex buffer binding", bind);
@@ -886,7 +882,12 @@ void mesh::update_colors(const data::mesh::csptr& _mesh)
             }
         }
 
-        if(!m_per_primitive_color_texture)
+        const std::size_t width = std::min(MAX_TEXTURE_SIZE, num_indices_total);
+        const auto height       = static_cast<std::size_t>(std::floor(num_indices_total / MAX_TEXTURE_SIZE) + 1);
+
+        if(!m_per_primitive_color_texture
+           || m_per_primitive_color_texture->getWidth() != width
+           || m_per_primitive_color_texture->getHeight() != height)
         {
             static std::uint64_t i = 0;
             m_per_primitive_color_texture_name = "PerCellColorTexture_" + std::to_string(i++);
@@ -897,12 +898,9 @@ void mesh::update_colors(const data::mesh::csptr& _mesh)
             );
         }
 
-        const std::size_t width = std::min(MAX_TEXTURE_SIZE, num_indices_total);
-        const auto height       = static_cast<std::size_t>(std::floor(num_indices_total / MAX_TEXTURE_SIZE) + 1);
-
         if(m_per_primitive_color_texture->getWidth() != width || m_per_primitive_color_texture->getHeight() != height)
         {
-            FW_PROFILE_AVG("REALLOC COLORS_CELL", 5);
+            SIGHT_PROFILE_AVG("REALLOC COLORS_CELL", 5);
 
             // It would be better to use PF_BYTE_RGB when we have 3 components but for some reason it doesn't work
             // Probably something related to alignment or a bug in Ogre
@@ -986,7 +984,7 @@ void mesh::update_tex_coords(const data::mesh::csptr& _mesh)
     {
         bind_layer(_mesh, texcoord, Ogre::VES_TEXTURE_COORDINATES, Ogre::VET_FLOAT2);
 
-        FW_PROFILE_AVG("UPDATE TexCoords", 5);
+        SIGHT_PROFILE_AVG("UPDATE TexCoords", 5);
 
         Ogre::VertexBufferBinding* bind               = m_ogre_mesh->sharedVertexData->vertexBufferBinding;
         Ogre::HardwareVertexBufferSharedPtr uv_buffer = bind->getBuffer(m_binding[texcoord]);

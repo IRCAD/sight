@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -26,15 +26,20 @@
 namespace sight::sight_viewer::uit
 {
 
+/// The doctest fixture shared by all sight_viewer GUI scenarios.
 class test : public sight::ui::test::base
 {
 public:
 
-    std::filesystem::path get_profile_path() override;
+    test();
 
     static void open_file(
         sight::ui::test::tester& _tester,
         const std::string& _format,
+        const std::filesystem::path& _path
+    );
+    static void open_folder(
+        sight::ui::test::tester& _tester,
         const std::filesystem::path& _path
     );
     static void save_snapshot(sight::ui::test::tester& _tester, const std::filesystem::path& _path);

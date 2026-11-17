@@ -28,7 +28,7 @@
 
 #include <doctest/doctest.h>
 
-TEST_SUITE("sight::data::validator::ut")
+TEST_SUITE("sight::data::validator::model_series::contain_one_skin")
 {
     namespace factory = sight::data::validator::factory;
     using sight::data::validator::base;
@@ -36,7 +36,7 @@ TEST_SUITE("sight::data::validator::ut")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("test_validator")
+    TEST_CASE("single_object")
     {
         auto validator = factory::make("sight::data::validator::model_series::contain_one_skin");
         CHECK(validator);
@@ -123,7 +123,7 @@ TEST_SUITE("sight::data::validator::ut")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("test_validator_with_vector")
+    TEST_CASE("vector")
     {
         auto validator = factory::make("sight::data::validator::model_series::contain_one_skin");
         CHECK(validator);
@@ -244,7 +244,7 @@ TEST_SUITE("sight::data::validator::ut")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("test_validator_with_map")
+    TEST_CASE("map")
     {
         auto validator = factory::make("sight::data::validator::model_series::contain_one_skin");
         CHECK(validator);
@@ -373,4 +373,4 @@ TEST_SUITE("sight::data::validator::ut")
     }
 
 //------------------------------------------------------------------------------
-} // TEST_SUITE("sight::data::validator::ut")
+} // TEST_SUITE("sight::data::validator")

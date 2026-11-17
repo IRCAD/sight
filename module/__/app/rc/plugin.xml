@@ -124,6 +124,12 @@
     </extension>
 
     <extension implements="sight::service::extension::factory">
+        <type>sight::service::object_parser</type>
+        <service>sight::app::parser::material</service>
+        <object>sight::data::material</object>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
         <type>sight::app::updater</type>
         <service>sight::app::update_sequence</service>
         <desc>This service triggers a signal each time all configured signals are received. Once it triggers the signal</desc>

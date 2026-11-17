@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,12 +33,12 @@ namespace sight::module::io::vision
  * @section XML XML Configuration
  * @code{.xml}
        <service uid="..." type="sight::module::io::vision::open_cv_writer" >
-           <in key="data" uid="..." />
+           <data write="..." />
        </service>
  * @endcode
  *
  * @subsection Input Input
- * - \b data [sight::data::camera_set]: data to save.
+ * - \b data.write [sight::data::camera_set]: data to save.
  *
  * An Example of the xml structure:
  * @code{.xml}
@@ -86,16 +86,17 @@ public:
     //Destructor
     ~open_cv_writer() override = default;
 
+    /// Returns managed path type, here service manages only single file
+    sight::io::service::path_type_t get_path_type() const override;
+
+    //------------------------------------------------------------------------------
+
+    std::vector<std::pair<std::string, std::string> > get_supported_extensions() const override
+    {
+        return {{"XML files", "*.xml"}, {"YAML files", "*.yaml *.yml"}};
+    }
+
 protected:
-
-    /// configure the service using GUI.
-    void open_location_dialog() override;
-
-    /**
-     * @brief Prompt a dialog to define file location.
-     * @return boolean if a location has been choosen
-     */
-    virtual bool define_location_gui();
 
     /**
      * @brief Configures the service.
@@ -110,9 +111,6 @@ protected:
 
     /// Removes connections
     void stopping() override;
-
-    /// Returns managed path type, here service manages only single file
-    sight::io::service::path_type_t get_path_type() const override;
 };
 
 } //namespace sight::module::io::vision

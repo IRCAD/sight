@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,8 +30,7 @@
 
 #include <QObject>
 #include <QPointer>
-
-class QPushButton;
+#include <QPushButton>
 
 namespace sight::module::ui::qt::viz
 {
@@ -48,6 +47,12 @@ class snapshot_editor : public QObject,
 Q_OBJECT
 
 public:
+
+    struct signals
+    {
+        using snapped_t = core::com::signal<void (std::string)>;
+        static inline const signal_key_t SNAPPED = "snapped";
+    };
 
     SIGHT_DECLARE_SERVICE(snapshot_editor, sight::ui::editor);
 
@@ -95,20 +100,6 @@ protected Q_SLOTS:
 private:
 
     static std::string request_file_name();
-
-    /**
-     * @name Signals
-     * @{
-     */
-
-    /// Type of signal to snap shot
-    using snapped_signal_t = core::com::signal<void (std::string)>;
-    static const core::com::signals::key_t SNAPPED_SIG;
-
-    snapped_signal_t::sptr m_sig_snapped; ///< snap shot signal
-    /**
-     * @}
-     */
 
     QPointer<QPushButton> m_snap_button;
 };

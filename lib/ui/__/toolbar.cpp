@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,13 +25,8 @@
 #include "ui/__/action.hpp"
 #include "ui/__/menu_item_callback.hpp"
 
-#include <core/com/slot.hxx>
-#include <core/com/slots.hxx>
-#include <core/id.hpp>
 #include <core/thread/worker.hpp>
-#include <core/thread/worker.hxx>
 
-#include <service/macros.hpp>
 #include <service/op.hpp>
 
 namespace sight::ui
@@ -42,7 +37,6 @@ namespace sight::ui
 toolbar::toolbar()
 {
     new_slot(slots::SET_VISIBLE, &toolbar::set_visible, this);
-    new_slot(slots::SET_VISIBLE_BY_PARAM, &toolbar::set_visible_by_parameter, this);
     new_slot(slots::SHOW, &toolbar::show, this);
     new_slot(slots::HIDE, &toolbar::hide, this);
     new_slot(slots::SET_ENABLED, &toolbar::set_enabled, this);
@@ -255,17 +249,6 @@ void toolbar::set_visible(bool _is_visible)
 bool toolbar::visible() const
 {
     return m_layout_manager->visible();
-}
-
-//-----------------------------------------------------------------------------
-
-void toolbar::set_visible_by_parameter(ui::parameter_t _is_visible)
-{
-    // Only consider boolean alternative, skip all other type of the variant.
-    if(std::holds_alternative<bool>(_is_visible))
-    {
-        this->set_visible(std::get<bool>(_is_visible));
-    }
 }
 
 //-----------------------------------------------------------------------------

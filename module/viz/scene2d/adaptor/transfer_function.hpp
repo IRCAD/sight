@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2024 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -79,11 +79,32 @@ public:
 
     SIGHT_DECLARE_SERVICE(transfer_function, sight::viz::scene2d::adaptor);
 
+    struct slots
+    {
+        static inline const slot_key_t UPDATE_TF = "update_tf";
+    };
+
     /// Creates the adaptor.
     transfer_function() noexcept;
 
     /// Destroys the adaptor.
     ~transfer_function() noexcept override;
+
+    /**
+     * @brief Filters the event to call the right methods from mouse informations.
+     * @param _event the 2D scene event.
+     *
+     * The following actions are available:
+     * - Left mouse click: selects a new current TF or move the current clicked TF point.
+     * - Left mouse double click: adds a new TF point to the current TF or open a color dialog
+     *                            to change the current clicked TF point.
+     * - Middle mouse click: adjusts the transfer function level and window by moving
+     *                       the mouse up/down and left/right respectively.
+     * - Right mouse click: remove the current clicked TF point or open a context menu
+     *                      to manage multiple actions which are 'delete', 'add ramp', 'clamp' or 'linear'.
+     * - Wheel move: updates the whole current TF opacity.
+     */
+    void process_interaction(sight::viz::scene2d::data::event& _event) override;
 
 protected:
 
@@ -101,13 +122,13 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect sight::viz::scene2d::data::viewport::MODIFIED_SIG of s_VIEWPORT_INPUT to
+     * Connect sight::data::signals::MODIFIED of s_VIEWPORT_INPUT to
      * module::viz::scene2d::adaptor::transfer_function::service::slots::UPDATE.
-     * Connect data::object::MODIFIED_SIG of s_TF_POOL_INOUT to
+     * Connect data::signals::MODIFIED of s_TF_POOL_INOUT to
+     * module::viz::scene2d::adaptor::transfer_function::UPDATE_TF.
+     * Connect data::transfer_function::signals::WINDOWING_MODIFIED of s_TF_POOL_INOUT to
      * module::viz::scene2d::adaptor::transfer_function::service::slots::UPDATE.
-     * Connect data::map::ADDED_OBJECTS_SIGof s_TF_POOL_INOUT to
-     * module::viz::scene2d::adaptor::transfer_function::service::slots::UPDATE.
-     * Connect data::map::REMOVED_OBJECTS_SIG of s_TF_POOL_INOUT to
+     * Connect data::transfer_function::signals::POINTS_MODIFIED of s_TF_POOL_INOUT to
      * module::viz::scene2d::adaptor::transfer_function::service::slots::UPDATE.
      */
     connections_t auto_connections() const override;
@@ -152,7 +173,7 @@ private:
     void destroy_tf_points();
 
     /// Creates a piece view from a TF, fills basic data and creates graphic points.
-    piece_view* create_piece_view(const data::transfer_function_piece::sptr _tf, int _z_index);
+    piece_view* create_piece_view(data::transfer_function_piece::sptr _tf, int _z_index);
 
     /// Creates the gradient of each piece view and stores it in each element of @ref m_pieceView.
     void create_tf_polygons();
@@ -222,22 +243,6 @@ private:
      * @return A list of pieceView.
      */
     std::vector<piece_view*> get_matching_piece_view(const sight::viz::scene2d::data::event& _event) const;
-
-    /**
-     * @brief Filters the event to call the right methods from mouse informations.
-     * @param _event the 2D scene event.
-     *
-     * The following actions are available:
-     * - Left mouse click: selects a new current TF or move the current clicked TF point.
-     * - Left mouse double click: adds a new TF point to the current TF or open a color dialog
-     *                            to change the current clicked TF point.
-     * - Middle mouse click: adjusts the transfer function level and window by moving
-     *                       the mouse up/down and left/right respectively.
-     * - Right mouse click: remove the current clicked TF point or open a context menu
-     *                      to manage multiple actions which are 'delete', 'add ramp', 'clamp' or 'linear'.
-     * - Wheel move: updates the whole current TF opacity.
-     */
-    void process_interaction(sight::viz::scene2d::data::event& _event) override;
 
     /**
      * @brief Finds the nearest pieceView and set it a the current one.
@@ -355,7 +360,7 @@ private:
      * @brief Adds a new TF to the map and re draw the scene.
      * @param _tf the new TF to add.
      */
-    void add_new_tf(const data::transfer_function_piece::sptr _tf);
+    void add_new_tf(data::transfer_function_piece::sptr _tf);
 
     /**
      * @brief Adds a left ramp pieceView and update the map.

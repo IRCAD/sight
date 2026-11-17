@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,9 +43,8 @@ namespace sight::module::filter::image
  *
  * @code{.xml}
    <service uid="..." type="sight::module::filter::image::SFastRegistration">
-       <in key="source" uid="..." />
-       <in key="target" uid="..." />
-       <in key="transform" uid="..." />
+       <input fixed="${...}" moving="${...}" />
+       <output transform="${...}" />
    </service>
  * @endcode
  *
@@ -109,9 +108,9 @@ protected:
 
 private:
 
-    sight::data::ptr<sight::data::image, sight::data::access::in> m_source {this, "fixed"};
-    sight::data::ptr<sight::data::image, sight::data::access::in> m_target {this, "moving"};
-    sight::data::ptr<sight::data::matrix4, sight::data::access::inout> m_transform {this, "transform"};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_source {this, "input.fixed"};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_target {this, "input.moving"};
+    sight::data::ptr<sight::data::matrix4, sight::data::access::inout> m_transform {this, "output.transform"};
 };
 
 } // namespace sight::module::filter::image

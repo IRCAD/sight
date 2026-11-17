@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2025 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,6 @@
  ***********************************************************************/
 
 #include "data/has_data.hpp"
-
-#include <core/com/signal.hxx>
 
 #include <data/ptr.hpp>
 
@@ -159,6 +157,33 @@ void has_data::unregister_ptr(base_ptr* _data)
 const has_data::container_t& has_data::container() const
 {
     return m_data_container;
+}
+
+//------------------------------------------------------------------------------
+
+key_info_map_t has_data::keys() const
+{
+    key_info_map_t keys;
+
+    for(const auto& [key, ptr] : m_data_container)
+    {
+        // Entries with an index are the individual elements of a group, they share the group properties.
+        if(key.second.has_value())
+        {
+            continue;
+        }
+
+        keys.emplace(
+            std::string(key.first),
+            key_info {
+                .access   = ptr->access(),
+                .optional = ptr->optional(),
+                .group    = ptr->is_group(),
+                .property = dynamic_cast<const data::property_base*>(ptr) != nullptr
+            });
+    }
+
+    return keys;
 }
 
 //-----------------------------------------------------------------------------

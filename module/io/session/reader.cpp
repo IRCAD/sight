@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2025 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,19 +23,15 @@
 
 #include "module/io/session/reader.hpp"
 
-#include <core/com/signal.hxx>
 #include <core/crypto/password_keeper.hpp>
 #include <core/crypto/secure_string.hpp>
-#include <core/location/single_folder.hpp>
-#include <core/progress/observer.hpp>
-#include <core/tools/system.hpp>
+#include <core/notification/observer.hpp>
 
 #include <io/session/session_reader.hpp>
 #include <io/zip/exception/read.hpp>
 
 #include <ui/__/cursor.hpp>
 #include <ui/__/dialog/input.hpp>
-#include <ui/__/dialog/location.hpp>
 #include <ui/__/dialog/message.hpp>
 
 namespace sight::module::io::session
@@ -46,8 +42,7 @@ using core::crypto::secure_string;
 using sight::io::zip::archive;
 
 reader::reader() noexcept :
-    sight::io::service::reader("Choose a session file"),
-    notifier(m_signals)
+    sight::io::service::reader("Choose a session file")
 {
     new_signal<signals::session_path_t>(signals::SESSION_LOADED);
     new_signal<signals::session_path_t>(signals::SESSION_LOADING_FAILED);
@@ -130,7 +125,7 @@ void reader::configuring()
         }
         else if(format == "archive")
         {
-            m_archive_format = archive::archive_format::DEFAULT;
+            m_archive_format = archive::archive_format::standard;
         }
         else
         {
@@ -195,8 +190,8 @@ void reader::updating()
 
     try
     {
-        auto observer = std::make_shared<core::progress::observer>("Reading " + filepath.string() + " file");
-        this->async_emit(has_monitors::signals::MONITOR_CREATED, observer->get_sptr());
+        auto observer = this->make_notification<core::notification::observer>("Reading " + filepath.string() + " file");
+        this->emit_notification_created(observer);
 
         observer->done_work(10);
 
@@ -227,7 +222,7 @@ void reader::updating()
         m_password_retry = 0;
 
         // Signal that we successfully read this file
-        this->signal<signals::session_path_t>(signals::SESSION_LOADED)->async_emit(filepath);
+        this->async_emit(signals::SESSION_LOADED, filepath);
     }
     catch(sight::io::zip::exception::bad_password&)
     {
@@ -252,7 +247,7 @@ void reader::updating()
         }
 
         // Signal that we failed to read this file
-        this->signal<signals::session_path_t>(signals::SESSION_LOADING_FAILED)->async_emit(filepath);
+        this->async_emit(signals::SESSION_LOADING_FAILED, filepath);
     }
     catch(const std::exception& e)
     {
@@ -265,16 +260,16 @@ void reader::updating()
         //     sight::ui::dialog::message::critical
         // );
 
-        this->notifier::failure(e.what());
+        this->fail(e.what());
 
         // Signal that we failed to read this file
-        this->signal<signals::session_path_t>(signals::SESSION_LOADING_FAILED)->async_emit(filepath);
+        this->async_emit(signals::SESSION_LOADING_FAILED, filepath);
     }
     catch(...)
     {
         // Handle the error.
         SIGHT_ERROR("Reading process aborted");
-        this->notifier::failure("Reading process aborted");
+        this->fail("Reading process aborted");
         // FIXME: due to modal message popups, eventLoop may by flushed and introduced race-conditions.
         // sight::ui::dialog::message::show(
         //     "Session reader aborted",
@@ -283,40 +278,7 @@ void reader::updating()
         // );
 
         // Signal that we failed to read this file
-        this->signal<signals::session_path_t>(signals::SESSION_LOADING_FAILED)->async_emit(filepath);
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void reader::open_location_dialog()
-{
-    static auto default_location = std::make_shared<core::location::single_folder>();
-
-    sight::ui::dialog::location location_dialog;
-    location_dialog.set_title(*m_window_title);
-    location_dialog.set_default_location(default_location);
-    location_dialog.set_option(ui::dialog::location::read);
-    location_dialog.set_option(ui::dialog::location::file_must_exist);
-    location_dialog.set_type(ui::dialog::location::single_file);
-    location_dialog.add_filter(m_extension_description, "*" + m_extension_name);
-
-    // Show the dialog
-    const auto result = std::dynamic_pointer_cast<core::location::single_file>(location_dialog.show());
-
-    if(result)
-    {
-        const auto& filepath = result->get_file();
-        set_file(filepath);
-        m_extension_name = location_dialog.get_selected_extensions().front();
-
-        // Save default location for later use
-        default_location->set_folder(filepath.parent_path());
-        location_dialog.save_default_location(default_location);
-    }
-    else
-    {
-        clear_locations();
+        this->async_emit(signals::SESSION_LOADING_FAILED, filepath);
     }
 }
 

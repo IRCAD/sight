@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,11 +22,8 @@
 
 #include "compositor_selector.hpp"
 
-#include <core/com/slots.hxx>
+#include <algorithm>
 
-#include <data/map.hpp>
-
-#include <service/macros.hpp>
 #include <service/registry.hpp>
 
 #include <ui/qt/container/widget.hpp>
@@ -45,15 +42,13 @@ namespace sight::module::ui::viz
 
 using sight::viz::scene3d::layer;
 
-const core::com::slots::key_t compositor_selector::INIT_COMPOSITOR_LIST_SLOT = "initCompositorList";
-
 static const std::string COMPOSITOR_RESOURCEGROUP_NAME = "compositorsPostFX";
 
 //------------------------------------------------------------------------------
 
 compositor_selector::compositor_selector() noexcept
 {
-    new_slot(INIT_COMPOSITOR_LIST_SLOT, &compositor_selector::init_compositor_list, this);
+    new_slot(slots::INIT_COMPOSITOR_LIST, &compositor_selector::init_compositor_list, this);
 }
 
 //------------------------------------------------------------------------------
@@ -192,9 +187,9 @@ void compositor_selector::refresh_renderers()
 
             m_connections.connect(
                 layer_map.second,
-                layer::INIT_LAYER_SIG,
+                layer::signals::INIT_LAYER,
                 this->get_sptr(),
-                INIT_COMPOSITOR_LIST_SLOT
+                slots::INIT_COMPOSITOR_LIST
             );
         }
     }
@@ -251,9 +246,9 @@ void compositor_selector::check_enabled_compositors()
                 QListWidgetItem* current_compositor = m_compositor_chain->item(i);
                 std::string current_compositor_name = current_compositor->text().toStdString();
 
-                auto layer_compositor = std::find_if(
-                    m_layer_compositor_chain.begin(),
-                    m_layer_compositor_chain.end(),
+                auto layer_compositor = std::ranges::find_if(
+                    m_layer_compositor_chain,
+
                     [&current_compositor_name](const auto& _compositor)
                     {
                         return _compositor.first == current_compositor_name;
@@ -287,9 +282,9 @@ void compositor_selector::uncheck_compositors()
 
 bool compositor_selector::is_enabled_compositor(const std::string& _compositor_name)
 {
-    auto layer_compositor = std::find_if(
-        m_layer_compositor_chain.begin(),
-        m_layer_compositor_chain.end(),
+    auto layer_compositor = std::ranges::find_if(
+        m_layer_compositor_chain,
+
         [&_compositor_name](const auto& _compositor)
         {
             return _compositor.first == _compositor_name;

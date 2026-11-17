@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,298 +19,279 @@
  *
  ***********************************************************************/
 
-#include "plane_test.hpp"
-
 #include <geometry/__/plane.hpp>
+
+#include <doctest/doctest.h>
 
 #include <glm/glm.hpp>
 
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::geometry::data::ut::plane_test);
-
-namespace sight::geometry::data::ut
+TEST_SUITE("sight::geometry::plane")
 {
-
-static const double EPSILON = 1e-5;
+    static const double EPSILON = 1e-5;
 
 //------------------------------------------------------------------------------
 
-void plane_test::setUp()
-{
-    // Set up context before running a test.
-}
-
-//------------------------------------------------------------------------------
-
-void plane_test::tearDown()
-{
-    // Clean up after the test run.
-}
-
-//------------------------------------------------------------------------------
-
-void plane_test::check_get_plane()
-{
-    const glm::dvec3 plan_pt1 = {1.0, 0.0, 0.0};
-    const glm::dvec3 plan_pt2 = {0.0, 0.0, 1.0};
-    const glm::dvec3 plan_pt3 = {0.0, 2.0, 1.0};
-
-    plane_t plane1    = geometry::get_plane(plan_pt1, plan_pt2, plan_pt3);
-    glm::dvec3 normal = geometry::get_normal(plane1);
-
-    plane_t plane2 = geometry::get_plane(normal, plan_pt1);
-
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane1[0], plane2[0], std::numeric_limits<double>::epsilon());
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane1[1], plane2[1], std::numeric_limits<double>::epsilon());
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane1[2], plane2[2], std::numeric_limits<double>::epsilon());
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane1[3], plane2[3], std::numeric_limits<double>::epsilon());
-}
-
-//------------------------------------------------------------------------------
-
-void plane_test::check_set_plane()
-{
-    const double plan_p1_x = 0.0;
-    const double plan_p1_y = 0.0;
-    const double plan_p1_z = 2.5;
-
-    const double plan_p2_x = 1.0;
-    const double plan_p2_y = 0.0;
-    const double plan_p2_z = 0.5;
-
-    const double plan_p3_x = 1.0;
-    const double plan_p3_y = 1.0;
-    const double plan_p3_z = -0.5;
-
-    const glm::dvec3 plan_pt1 = {plan_p1_x, plan_p1_y, plan_p1_z};
-    const glm::dvec3 plan_pt2 = {plan_p2_x, plan_p2_y, plan_p2_z};
-    const glm::dvec3 plan_pt3 = {plan_p3_x, plan_p3_y, plan_p3_z};
-
-    glm::dvec3 normal     = {0.8164965, 0.408248290, 0.408248290};
-    const double distance = 1.02062072;
-
-    plane_t plane;
-    geometry::set_plane(plane, plan_pt1, plan_pt2, plan_pt3);
-
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane[0], normal[0], EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane[1], normal[1], EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane[2], normal[2], EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane[3], distance, EPSILON);
-}
-
-//------------------------------------------------------------------------------
-
-void plane_test::check_distance()
-{
-    const double distance = 10.25;
-
-    plane_t plane;
-    geometry::set_distance(plane, distance);
-    CPPUNIT_ASSERT_EQUAL(geometry::get_distance(plane), distance);
-}
-
-//------------------------------------------------------------------------------
-
-void plane_test::check_normal()
-{
-    const double plan_p1_x = 0.0;
-    const double plan_p1_y = 0.0;
-    const double plan_p1_z = 2.5;
-
-    const double plan_p2_x = 1.0;
-    const double plan_p2_y = 0.0;
-    const double plan_p2_z = 0.5;
-
-    const double plan_p3_x = 1.0;
-    const double plan_p3_y = 1.0;
-    const double plan_p3_z = -0.5;
-
-    const glm::dvec3 plan_pt1 = {plan_p1_x, plan_p1_y, plan_p1_z};
-    const glm::dvec3 plan_pt2 = {plan_p2_x, plan_p2_y, plan_p2_z};
-    const glm::dvec3 plan_pt3 = {plan_p3_x, plan_p3_y, plan_p3_z};
-
-    glm::dvec3 normal  = {0.8164965, 0.408248290, 0.408248290};
-    glm::dvec3 normal2 = {2.0, 1.5, 1.0};
-    normal2 = glm::normalize(normal2);
-
-    plane_t plane;
-    geometry::set_plane(plane, plan_pt1, plan_pt2, plan_pt3);
-    glm::dvec3 plane_normal = geometry::get_normal(plane);
-
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane_normal[0], normal[0], EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane_normal[1], normal[1], EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane_normal[2], normal[2], EPSILON);
-
-    geometry::set_normal(plane, normal2);
-    glm::dvec3 plane_normal2 = geometry::get_normal(plane);
-
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane_normal2[0], normal2[0], EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane_normal2[1], normal2[1], EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane_normal2[2], normal2[2], EPSILON);
-}
-
-//------------------------------------------------------------------------------
-
-void plane_test::check_intersect()
-{
-    const glm::dvec3 plan_pt1 = {0.0, 0.0, 0.0};
-    const glm::dvec3 plan_pt2 = {2.0, 0.0, 0.0};
-    const glm::dvec3 plan_pt3 = {0.0, 2.0, 0.0};
-    plane_t plane;
-    geometry::set_plane(plane, plan_pt1, plan_pt2, plan_pt3);
-
-    const glm::dvec3 line_pos = {1.0, 2.0, 4.0};
+    TEST_CASE("get_plane")
     {
-        const glm::dvec3 line_direction = {0.0, 0.0, 4.0}; // ==> intersection in (0.0, 0.0, 0.0)
-        const line_t line               = {line_pos, line_pos + line_direction};
+        const glm::dvec3 plan_pt1 = {1.0, 0.0, 0.0};
+        const glm::dvec3 plan_pt2 = {0.0, 0.0, 1.0};
+        const glm::dvec3 plan_pt3 = {0.0, 2.0, 1.0};
 
-        const auto intersect = geometry::intersect(plane, line);
+        sight::geometry::plane_t plane1 = sight::geometry::get_plane(plan_pt1, plan_pt2, plan_pt3);
+        glm::dvec3 normal               = sight::geometry::get_normal(plane1);
 
-        CPPUNIT_ASSERT(intersect.has_value());
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(intersect.value()[0], 1.0, std::numeric_limits<double>::epsilon());
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(intersect.value()[1], 2.0, std::numeric_limits<double>::epsilon());
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(intersect.value()[2], 0.0, std::numeric_limits<double>::epsilon());
+        sight::geometry::plane_t plane2 = sight::geometry::get_plane(normal, plan_pt1);
+
+        CHECK(plane1[0] == doctest::Approx(plane2[0]).epsilon(std::numeric_limits<double>::epsilon()));
+        CHECK(plane1[1] == doctest::Approx(plane2[1]).epsilon(std::numeric_limits<double>::epsilon()));
+        CHECK(plane1[2] == doctest::Approx(plane2[2]).epsilon(std::numeric_limits<double>::epsilon()));
+        CHECK(plane1[3] == doctest::Approx(plane2[3]).epsilon(std::numeric_limits<double>::epsilon()));
     }
-    {
-        const glm::dvec3 line_direction = {12.0, 0.0, 0.0}; // ==> intersection in (0.0, 0.0, 0.0)
-        const line_t line               = {line_pos, line_pos + line_direction};
 
-        const auto intersect = geometry::intersect(plane, line);
-        CPPUNIT_ASSERT(not intersect.has_value());
+//------------------------------------------------------------------------------
+
+    TEST_CASE("set_plane")
+    {
+        const double plan_p1_x = 0.0;
+        const double plan_p1_y = 0.0;
+        const double plan_p1_z = 2.5;
+
+        const double plan_p2_x = 1.0;
+        const double plan_p2_y = 0.0;
+        const double plan_p2_z = 0.5;
+
+        const double plan_p3_x = 1.0;
+        const double plan_p3_y = 1.0;
+        const double plan_p3_z = -0.5;
+
+        const glm::dvec3 plan_pt1 = {plan_p1_x, plan_p1_y, plan_p1_z};
+        const glm::dvec3 plan_pt2 = {plan_p2_x, plan_p2_y, plan_p2_z};
+        const glm::dvec3 plan_pt3 = {plan_p3_x, plan_p3_y, plan_p3_z};
+
+        glm::dvec3 normal     = {0.8164965, 0.408248290, 0.408248290};
+        const double distance = 1.02062072;
+
+        sight::geometry::plane_t plane;
+        sight::geometry::set_plane(plane, plan_pt1, plan_pt2, plan_pt3);
+
+        CHECK(plane[0] == doctest::Approx(normal[0]).epsilon(EPSILON));
+        CHECK(plane[1] == doctest::Approx(normal[1]).epsilon(EPSILON));
+        CHECK(plane[2] == doctest::Approx(normal[2]).epsilon(EPSILON));
+        CHECK(plane[3] == doctest::Approx(distance).epsilon(EPSILON));
     }
-}
 
 //------------------------------------------------------------------------------
 
-void plane_test::check_intersect_ray()
-{
-    const glm::dvec3 plan_pt1 = {0.0, 0.0, 0.0};
-    const glm::dvec3 plan_pt2 = {2.0, 0.0, 0.0};
-    const glm::dvec3 plan_pt3 = {0.0, 2.0, 0.0};
-    plane_t plane;
-    geometry::set_plane(plane, plan_pt1, plan_pt2, plan_pt3);
-
-    const glm::dvec3 line_pos = {1.0, 2.0, 4.0};
+    TEST_CASE("distance")
     {
-        const glm::dvec3 line_direction = {0.0, 0.0, 1.0};
-        const ray_t line                = {line_pos, line_direction};
+        const double distance = 10.25;
 
-        const auto intersect = geometry::intersect_ray(plane, line);
-
-        CPPUNIT_ASSERT(intersect.has_value());
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(intersect.value()[0], 1.0, std::numeric_limits<double>::epsilon());
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(intersect.value()[1], 2.0, std::numeric_limits<double>::epsilon());
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(intersect.value()[2], 0.0, std::numeric_limits<double>::epsilon());
+        sight::geometry::plane_t plane;
+        sight::geometry::set_distance(plane, distance);
+        CHECK_EQ(sight::geometry::get_distance(plane), distance);
     }
-    {
-        const glm::dvec3 line_direction = {1.0, 0.0, 0.0};
-        const ray_t line                = {line_pos, line_direction};
 
-        const auto intersect = geometry::intersect_ray(plane, line);
-        CPPUNIT_ASSERT(not intersect.has_value());
+//------------------------------------------------------------------------------
+
+    TEST_CASE("normal")
+    {
+        const double plan_p1_x = 0.0;
+        const double plan_p1_y = 0.0;
+        const double plan_p1_z = 2.5;
+
+        const double plan_p2_x = 1.0;
+        const double plan_p2_y = 0.0;
+        const double plan_p2_z = 0.5;
+
+        const double plan_p3_x = 1.0;
+        const double plan_p3_y = 1.0;
+        const double plan_p3_z = -0.5;
+
+        const glm::dvec3 plan_pt1 = {plan_p1_x, plan_p1_y, plan_p1_z};
+        const glm::dvec3 plan_pt2 = {plan_p2_x, plan_p2_y, plan_p2_z};
+        const glm::dvec3 plan_pt3 = {plan_p3_x, plan_p3_y, plan_p3_z};
+
+        glm::dvec3 normal  = {0.8164965, 0.408248290, 0.408248290};
+        glm::dvec3 normal2 = {2.0, 1.5, 1.0};
+        normal2 = glm::normalize(normal2);
+
+        sight::geometry::plane_t plane;
+        sight::geometry::set_plane(plane, plan_pt1, plan_pt2, plan_pt3);
+        glm::dvec3 plane_normal = sight::geometry::get_normal(plane);
+
+        CHECK(plane_normal[0] == doctest::Approx(normal[0]).epsilon(EPSILON));
+        CHECK(plane_normal[1] == doctest::Approx(normal[1]).epsilon(EPSILON));
+        CHECK(plane_normal[2] == doctest::Approx(normal[2]).epsilon(EPSILON));
+
+        sight::geometry::set_normal(plane, normal2);
+        glm::dvec3 plane_normal2 = sight::geometry::get_normal(plane);
+
+        CHECK(plane_normal2[0] == doctest::Approx(normal2[0]).epsilon(EPSILON));
+        CHECK(plane_normal2[1] == doctest::Approx(normal2[1]).epsilon(EPSILON));
+        CHECK(plane_normal2[2] == doctest::Approx(normal2[2]).epsilon(EPSILON));
     }
-}
 
 //------------------------------------------------------------------------------
 
-void plane_test::check_is_in_half_space()
-{
-    const double plan_p1_x = 1.0;
-    const double plan_p1_y = 0.0;
-    const double plan_p1_z = 0.0;
-
-    const double plan_p2_x = 0.0;
-    const double plan_p2_y = 0.0;
-    const double plan_p2_z = 1.0;
-
-    const double plan_p3_x = 0.0;
-    const double plan_p3_y = 2.0;
-    const double plan_p3_z = 1.0;
-
-    const glm::dvec3 point1   = {1.0, 0.0, 1.0};
-    const glm::dvec3 plan_pt1 = {plan_p1_x, plan_p1_y, plan_p1_z};
-    const glm::dvec3 plan_pt2 = {plan_p2_x, plan_p2_y, plan_p2_z};
-    const glm::dvec3 plan_pt3 = {plan_p3_x, plan_p3_y, plan_p3_z};
-    plane_t plane;
-    geometry::set_plane(plane, plan_pt1, plan_pt2, plan_pt3);
-    glm::dvec3 normal        = geometry::get_normal(plane);
-    double distance          = geometry::get_distance(plane);
-    const plane_t plane_test = {normal[0], normal[1], normal[2], distance};
-
-    bool result = geometry::is_in_half_space(plane_test, point1);
-
-    CPPUNIT_ASSERT_EQUAL(false, result);
-}
-
-//------------------------------------------------------------------------------
-
-void plane_test::check_offset()
-{
-    static constexpr double s_OFFSET = 0.3;
-
-    const double plan_p1_x = 0.0;
-    const double plan_p1_y = 0.0;
-    const double plan_p1_z = 2.5;
-
-    const double plan_p2_x = 1.0;
-    const double plan_p2_y = 0.0;
-    const double plan_p2_z = 0.5;
-
-    const double plan_p3_x = 1.0;
-    const double plan_p3_y = 1.0;
-    const double plan_p3_z = -0.5;
-
-    const glm::dvec3 plan_pt1 = {plan_p1_x, plan_p1_y, plan_p1_z};
-    const glm::dvec3 plan_pt2 = {plan_p2_x, plan_p2_y, plan_p2_z};
-    const glm::dvec3 plan_pt3 = {plan_p3_x, plan_p3_y, plan_p3_z};
-    plane_t plane;
-    geometry::set_plane(plane, plan_pt1, plan_pt2, plan_pt3);
-
-    geometry::offset(plane, s_OFFSET);
-    double offset = geometry::get_distance(plane);
-
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.320620, offset, EPSILON);
-}
-
-//------------------------------------------------------------------------------
-
-void plane_test::check_transform()
-{
-    const glm::dvec3 normal_res = {0.83205, -0.55470, 0.0};
-    const double distance_res   = -0.028691;
-
-    const glm::dvec3 normal = {4.0, 3.0, 2.0};
-    const glm::dvec3 point  = {0.0, 0.0, 0.5};
-
-    plane_t plane = geometry::get_plane(normal, point);
-
-    const glm::dmat4 matrice =
+    TEST_CASE("intersect")
     {
-        1.0, 0.0, 1.0, 3.0,
-        -1.0, 0.0, 0.0, 5.0,
-        0.0, 0.0, 0.0, 2.0,
-        0.0, 0.0, 0.0, 1.0
-    };
+        const glm::dvec3 plan_pt1 = {0.0, 0.0, 0.0};
+        const glm::dvec3 plan_pt2 = {2.0, 0.0, 0.0};
+        const glm::dvec3 plan_pt3 = {0.0, 2.0, 0.0};
+        sight::geometry::plane_t plane;
+        sight::geometry::set_plane(plane, plan_pt1, plan_pt2, plan_pt3);
 
-    geometry::transform(plane, matrice);
+        const glm::dvec3 line_pos = {1.0, 2.0, 4.0};
+        {
+            const glm::dvec3 line_direction    = {0.0, 0.0, 4.0}; // ==> intersection in (0.0, 0.0, 0.0)
+            const sight::geometry::line_t line = {line_pos, line_pos + line_direction};
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane[0], normal_res[0], EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane[1], normal_res[1], EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane[2], normal_res[2], EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane[3], distance_res, EPSILON);
-}
+            const auto intersect = sight::geometry::intersect(plane, line);
+
+            CHECK(intersect.has_value());
+            CHECK(intersect.value()[0] == doctest::Approx(1.0).epsilon(std::numeric_limits<double>::epsilon()));
+            CHECK(intersect.value()[1] == doctest::Approx(2.0).epsilon(std::numeric_limits<double>::epsilon()));
+            CHECK(intersect.value()[2] == doctest::Approx(0.0).epsilon(std::numeric_limits<double>::epsilon()));
+        }
+        {
+            const glm::dvec3 line_direction    = {12.0, 0.0, 0.0}; // ==> intersection in (0.0, 0.0, 0.0)
+            const sight::geometry::line_t line = {line_pos, line_pos + line_direction};
+
+            const auto intersect = sight::geometry::intersect(plane, line);
+            CHECK(not intersect.has_value());
+        }
+    }
 
 //------------------------------------------------------------------------------
 
-void plane_test::check_operator()
-{
-    plane_t plane1 = {1.0, 0.0, 1.0, 3.0};
-    plane_t plane2 = plane1;
+    TEST_CASE("intersect_ray")
+    {
+        const glm::dvec3 plan_pt1 = {0.0, 0.0, 0.0};
+        const glm::dvec3 plan_pt2 = {2.0, 0.0, 0.0};
+        const glm::dvec3 plan_pt3 = {0.0, 2.0, 0.0};
+        sight::geometry::plane_t plane;
+        sight::geometry::set_plane(plane, plan_pt1, plan_pt2, plan_pt3);
 
-    bool test = (plane1 == plane2);
-    CPPUNIT_ASSERT_EQUAL(test, true);
-}
+        const glm::dvec3 line_pos = {1.0, 2.0, 4.0};
+        {
+            const glm::dvec3 line_direction   = {0.0, 0.0, 1.0};
+            const sight::geometry::ray_t line = {line_pos, line_direction};
+
+            const auto intersect = sight::geometry::intersect_ray(plane, line);
+
+            CHECK(intersect.has_value());
+            CHECK(intersect.value()[0] == doctest::Approx(1.0).epsilon(std::numeric_limits<double>::epsilon()));
+            CHECK(intersect.value()[1] == doctest::Approx(2.0).epsilon(std::numeric_limits<double>::epsilon()));
+            CHECK(intersect.value()[2] == doctest::Approx(0.0).epsilon(std::numeric_limits<double>::epsilon()));
+        }
+        {
+            const glm::dvec3 line_direction   = {1.0, 0.0, 0.0};
+            const sight::geometry::ray_t line = {line_pos, line_direction};
+
+            const auto intersect = sight::geometry::intersect_ray(plane, line);
+            CHECK(not intersect.has_value());
+        }
+    }
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::geometry::data::ut
+    TEST_CASE("is_in_half_space")
+    {
+        const double plan_p1_x = 1.0;
+        const double plan_p1_y = 0.0;
+        const double plan_p1_z = 0.0;
+
+        const double plan_p2_x = 0.0;
+        const double plan_p2_y = 0.0;
+        const double plan_p2_z = 1.0;
+
+        const double plan_p3_x = 0.0;
+        const double plan_p3_y = 2.0;
+        const double plan_p3_z = 1.0;
+
+        const glm::dvec3 point1   = {1.0, 0.0, 1.0};
+        const glm::dvec3 plan_pt1 = {plan_p1_x, plan_p1_y, plan_p1_z};
+        const glm::dvec3 plan_pt2 = {plan_p2_x, plan_p2_y, plan_p2_z};
+        const glm::dvec3 plan_pt3 = {plan_p3_x, plan_p3_y, plan_p3_z};
+        sight::geometry::plane_t plane;
+        sight::geometry::set_plane(plane, plan_pt1, plan_pt2, plan_pt3);
+        glm::dvec3 normal                         = sight::geometry::get_normal(plane);
+        double distance                           = sight::geometry::get_distance(plane);
+        const sight::geometry::plane_t plane_test = {normal[0], normal[1], normal[2], distance};
+
+        bool result = sight::geometry::is_in_half_space(plane_test, point1);
+
+        CHECK_EQ(false, result);
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("offset")
+    {
+        static constexpr double s_OFFSET = 0.3;
+
+        const double plan_p1_x = 0.0;
+        const double plan_p1_y = 0.0;
+        const double plan_p1_z = 2.5;
+
+        const double plan_p2_x = 1.0;
+        const double plan_p2_y = 0.0;
+        const double plan_p2_z = 0.5;
+
+        const double plan_p3_x = 1.0;
+        const double plan_p3_y = 1.0;
+        const double plan_p3_z = -0.5;
+
+        const glm::dvec3 plan_pt1 = {plan_p1_x, plan_p1_y, plan_p1_z};
+        const glm::dvec3 plan_pt2 = {plan_p2_x, plan_p2_y, plan_p2_z};
+        const glm::dvec3 plan_pt3 = {plan_p3_x, plan_p3_y, plan_p3_z};
+        sight::geometry::plane_t plane;
+        sight::geometry::set_plane(plane, plan_pt1, plan_pt2, plan_pt3);
+
+        sight::geometry::offset(plane, s_OFFSET);
+        double offset = sight::geometry::get_distance(plane);
+
+        CHECK(1.320620 == doctest::Approx(offset).epsilon(EPSILON));
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("transform")
+    {
+        const glm::dvec3 normal_res = {0.83205, -0.55470, 0.0};
+        const double distance_res   = -0.028691;
+
+        const glm::dvec3 normal = {4.0, 3.0, 2.0};
+        const glm::dvec3 point  = {0.0, 0.0, 0.5};
+
+        sight::geometry::plane_t plane = sight::geometry::get_plane(normal, point);
+
+        const glm::dmat4 matrice =
+        {
+            1.0, 0.0, 1.0, 3.0,
+            -1.0, 0.0, 0.0, 5.0,
+            0.0, 0.0, 0.0, 2.0,
+            0.0, 0.0, 0.0, 1.0
+        };
+
+        sight::geometry::transform(plane, matrice);
+
+        CHECK(plane[0] == doctest::Approx(normal_res[0]).epsilon(EPSILON));
+        CHECK(plane[1] == doctest::Approx(normal_res[1]).epsilon(EPSILON));
+        CHECK(plane[2] == doctest::Approx(normal_res[2]).epsilon(EPSILON));
+        CHECK(plane[3] == doctest::Approx(distance_res).epsilon(EPSILON));
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("operator")
+    {
+        sight::geometry::plane_t plane1 = {1.0, 0.0, 1.0, 3.0};
+        sight::geometry::plane_t plane2 = plane1;
+
+        bool test = (plane1 == plane2);
+        CHECK_EQ(test, true);
+    }
+
+//------------------------------------------------------------------------------
+}

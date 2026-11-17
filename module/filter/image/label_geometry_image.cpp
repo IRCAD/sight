@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,6 @@
 
 #include "module/filter/image/label_geometry_image.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-
 #include <data/helper/medical_image.hpp>
 
 #include <filter/image/labeling.hpp>
@@ -34,14 +31,12 @@
 namespace sight::module::filter::image
 {
 
-const core::com::slots::key_t UPDATE_SELECTED_POINT_LIST = "updateSelectedPointList";
-
 //-----------------------------------------------------------------------------
 
 label_geometry_image::label_geometry_image() :
-    filter(m_signals)
+    filter(has_signals::signals())
 {
-    new_slot(UPDATE_SELECTED_POINT_LIST, &label_geometry_image::update_selected_point_list, this);
+    new_slot(slots::UPDATE_SELECTED_POINT_LIST, &label_geometry_image::update_selected_point_list, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -92,12 +87,14 @@ void label_geometry_image::updating()
     {
         data::point_list::sptr landmarks = data::helper::medical_image::get_landmarks(*image);
 
-        SIGHT_ASSERT("landmarks not instanced", landmarks);
+        SIGHT_ASSERT(
+            "landmarks not instanced",
+            landmarks
+        );
 
-        for(const auto& point : landmarks->get_points())
+        for(const auto& point : *landmarks)
         {
-            auto sig = image->signal<data::image::landmark_added_signal_t>(data::image::LANDMARK_ADDED_SIG);
-            sig->async_emit(point);
+            image->async_emit(data::image::signals::LANDMARK_ADDED, point);
         }
     }
     else
@@ -105,7 +102,7 @@ void label_geometry_image::updating()
         this->update_selected_point_list("1", "");
     }
 
-    this->signal<signals::computed_t>(signals::COMPUTED)->async_emit();
+    this->async_emit(signals::SUCCEEDED);
 }
 
 //-----------------------------------------------------------------------------
@@ -131,12 +128,12 @@ void label_geometry_image::update_selected_point_list(std::string _value, std::s
 
     data::point_list::sptr selected_point_list = m_l_point_list_centroids.at(index_plane);
 
-    for(std::size_t id_point = 0 ; id_point < selected_point_list->get_points().size() ; ++id_point)
+    for(std::size_t id_point = 0 ; id_point < selected_point_list->size() ; ++id_point)
     {
-        selected_point_list->get_points().at(id_point)->set_label(std::to_string(id_point));
+        selected_point_list->at(id_point)->set_label(std::to_string(id_point));
     }
 
-    this->set_output(m_l_point_list_centroids.at(index_plane), "pointList");
+    this->set_output(m_l_point_list_centroids.at(index_plane), "output.point_list");
 }
 
 //-----------------------------------------------------------------------------

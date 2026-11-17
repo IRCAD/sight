@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2025 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,27 +24,13 @@
 
 #include "detail/query.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-#include <core/progress/observer.hpp>
-#include <core/tools/system.hpp>
-
-#include <data/image_series.hpp>
-
 #include <io/dicom/helper/series.hpp>
 #include <io/dicom/reader/file.hpp>
 #include <io/http/exceptions/base.hpp>
 #include <io/http/helper/series.hpp>
 #include <io/http/request.hpp>
 
-#include <service/extension/config.hpp>
-#include <service/op.hpp>
-
 #include <ui/__/dialog/message.hpp>
-#include <ui/__/dialog/progress.hpp>
-#include <ui/__/preferences.hpp>
-
-#include <qdebug.h>
 
 #include <algorithm>
 #include <filesystem>
@@ -55,7 +41,7 @@ namespace sight::module::io::dicomweb
 //------------------------------------------------------------------------------
 
 series_puller::series_puller() noexcept :
-    has_monitors(m_signals)
+    has_monitors(has_signals::signals())
 {
 }
 
@@ -171,8 +157,7 @@ void series_puller::pull_series()
         // Pull series
         if(!pull_series_vector.empty())
         {
-            auto progress = std::make_shared<core::progress::observer>("Pull series", instance_count);
-            this->async_emit(core::progress::has_monitors::signals::MONITOR_CREATED, progress->get_sptr());
+            auto progress = this->observe("Pull series", false, nullptr, instance_count);
 
             std::size_t done = 0;
             /// GET
@@ -193,9 +178,7 @@ void series_puller::pull_series()
                 const std::string pacs_server("http://" + *m_server_hostname + ":" + std::to_string(*m_server_port));
 
                 /// Orthanc "/tools/find" route. POST a JSON to get all Series corresponding to the SeriesInstanceUID.
-                sight::io::http::request::sptr request = sight::io::http::request::New(
-                    pacs_server + "/tools/find"
-                );
+                sight::io::http::request::sptr request = sight::io::http::request::make(pacs_server + "/tools/find");
                 QByteArray series_answer;
                 try
                 {
@@ -223,8 +206,7 @@ void series_puller::pull_series()
 
                     /// GET all Instances by Series.
                     const std::string& instances_url(std::string(pacs_server) + "/series/" + series_uid);
-                    const QByteArray& instances_answer =
-                        m_client_qt.get(sight::io::http::request::New(instances_url));
+                    const QByteArray& instances_answer = m_client_qt.get(sight::io::http::request::make(instances_url));
                     json_response = QJsonDocument::fromJson(instances_answer);
                     const QJsonObject& json_obj       = json_response.object();
                     const QJsonArray& instances_array = json_obj["Instances"].toArray();
@@ -251,7 +233,7 @@ void series_puller::pull_series()
                         );
                         try
                         {
-                            m_client_qt.get_file(sight::io::http::request::New(instance_url), path);
+                            m_client_qt.get_file(sight::io::http::request::make(instance_url), path);
                         }
                         catch(sight::io::http::exceptions::content_not_found& exception)
                         {
@@ -325,8 +307,7 @@ void series_puller::read_local_series(dicom_series_container_t _selected_series)
             reader->set_object(dest_series_set.get_shared());
             reader->set_folder({path.string()});
 
-            auto observer = std::make_shared<sight::core::progress::observer>("Read image series");
-            this->async_emit(core::progress::has_monitors::signals::MONITOR_CREATED, observer->get_sptr());
+            auto observer = this->observe("Read image series");
             reader->read(observer);
 
             // Merge series

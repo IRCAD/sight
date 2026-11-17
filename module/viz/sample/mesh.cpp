@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2025 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #include "module/viz/sample/mesh.hpp"
 
-#include <core/com/slots.hxx>
-
 #include <service/op.hpp>
 
 #include <ui/__/registry.hpp>
@@ -32,19 +30,14 @@
 namespace sight::module::viz::sample
 {
 
-const core::com::slots::key_t mesh::UPDATE_CAM_POSITION_SLOT   = "update_cam_position";
-static const core::com::slots::key_t UPDATE_CAM_TRANSFORM_SLOT = "update_cam_transform";
-
-const core::com::signals::key_t mesh::CAM_UPDATED_SIG = "cam_updated";
-
 //------------------------------------------------------------------------------
 
 mesh::mesh() noexcept
 {
-    new_slot(UPDATE_CAM_POSITION_SLOT, &mesh::update_cam_position, this);
-    new_slot(UPDATE_CAM_TRANSFORM_SLOT, &mesh::update_cam_transform, this);
+    new_slot(slots::UPDATE_CAM_POSITION, &mesh::update_cam_position, this);
+    new_slot(slots::UPDATE_CAM_TRANSFORM, &mesh::update_cam_transform, this);
 
-    new_signal<cam_updated_signal_t>(CAM_UPDATED_SIG);
+    new_signal<signals::cam_updated_t>(signals::CAM_UPDATED);
 }
 
 //------------------------------------------------------------------------------
@@ -98,20 +91,21 @@ void mesh::starting()
     mesh_cfg.put("config.<xmlattr>.autoresetcamera", true);
     m_mesh_srv = sight::service::add("sight::module::viz::scene3d::adaptor::mesh");
     m_mesh_srv->set_config(mesh_cfg);
-    m_mesh_srv->set_input(std::const_pointer_cast<data::object>(mesh->get_const_sptr()), "mesh", true);
+    m_mesh_srv->set_input(std::const_pointer_cast<data::object>(mesh->get_const_sptr()), "data.mesh", true);
     m_mesh_srv->set_id(this->get_id() + "meshAdaptor");
     m_mesh_srv->configure();
 
     m_camera_transform = std::make_shared<data::matrix4>();
     m_connections.connect(
         m_camera_transform,
-        data::object::MODIFIED_SIG,
+        data::signals::MODIFIED,
         this->get_sptr(),
-        UPDATE_CAM_TRANSFORM_SLOT
+        "update_cam_transform"
     );
 
     m_camera_srv = sight::service::add("sight::module::viz::scene3d::adaptor::camera");
-    m_camera_srv->set_inout(m_camera_transform->get_sptr(), "transform", true);
+    m_camera_srv->set_input(m_camera_transform->get_sptr(), "data.transform_in", true);
+    m_camera_srv->set_inout(m_camera_transform->get_sptr(), "data.transform_out", true);
     m_camera_srv->set_id(this->get_id() + "cameraAdaptor");
     m_camera_srv->configure();
 
@@ -166,7 +160,7 @@ void mesh::update_cam_position(data::matrix4::sptr _transform)
 
 void mesh::update_cam_transform()
 {
-    this->async_emit(this, CAM_UPDATED_SIG, m_camera_transform);
+    this->async_emit(this, signals::CAM_UPDATED, m_camera_transform);
 }
 
 //------------------------------------------------------------------------------

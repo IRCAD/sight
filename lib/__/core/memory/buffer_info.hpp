@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,8 +32,6 @@
 #include <core/logic_stamp.hpp>
 #include <core/macros.hpp>
 
-#include <filesystem>
-
 namespace sight::core::memory
 {
 
@@ -47,7 +45,7 @@ struct SIGHT_CORE_CLASS_API buffer_info
     SIGHT_CORE_API void clear();
     //------------------------------------------------------------------------------
 
-    std::int64_t lock_count() const
+    [[nodiscard]] std::int64_t lock_count() const
     {
         return lock_counter.use_count();
     }
@@ -65,7 +63,7 @@ struct SIGHT_CORE_CLASS_API buffer_info
     core::logic_stamp last_access;
     core::memory::buffer_allocation_policy::sptr buffer_policy;
 
-    SPTR(core::memory::stream::in::factory) istream_factory;
+    sight::sptr<core::memory::stream::in::factory> istream_factory;
 };
 
 } // namespace sight::core::memory

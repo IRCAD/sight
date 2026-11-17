@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -40,7 +40,7 @@ non_linear_slider::non_linear_slider(QWidget* _parent) :
         &QAbstractSlider::valueChanged,
         [this](int _v)
         {
-            Q_EMIT value_changed(m_values[std::size_t(_v)]);
+            Q_EMIT value_changed(m_values[static_cast<std::size_t>(_v)]);
         });
 }
 
@@ -55,18 +55,26 @@ void non_linear_slider::set_orientation(Qt::Orientation _orientation)
 
 void non_linear_slider::set_values(const std::vector<int>& _values)
 {
-    SIGHT_ASSERT("The values list should be sorted", std::ranges::is_sorted(_values));
-    m_values = _values;
-    m_slider->setRange(0, static_cast<int>(_values.size() - 1));
-    m_slider->setValue(0);
-    Q_EMIT range_changed(_values.front(), _values.back());
-    Q_EMIT value_changed(value());
+    if(not _values.empty())
+    {
+        SIGHT_ASSERT("The values list should be sorted", std::ranges::is_sorted(_values));
+        m_values = _values;
+        m_slider->setRange(0, static_cast<int>(_values.size() - 1));
+        m_slider->setValue(0);
+        Q_EMIT range_changed(_values.front(), _values.back());
+        Q_EMIT value_changed(value());
+    }
 }
 
 //------------------------------------------------------------------------------
 
 void non_linear_slider::set_value(int _value)
 {
+    if(m_values.empty())
+    {
+        set_values({_value});
+    }
+
     if(auto it = std::ranges::find(m_values, _value); it != m_values.end())
     {
         m_slider->setValue(static_cast<int>(std::distance(m_values.begin(), it)));

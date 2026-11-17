@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,22 +22,15 @@
 
 #include "network_listener.hpp"
 
-#include <core/com/signal.hxx>
-
-#include <service/macros.hpp>
-
 namespace sight::module::io::igtl
 {
 
-const core::com::signals::key_t network_listener::CONNECTED_SIGNAL    = "connected";
-const core::com::signals::key_t network_listener::DISCONNECTED_SIGNAL = "disconnected";
-
 //-----------------------------------------------------------------------------
 
-network_listener::network_listener() :
-    m_sig_connected(new_signal<connected_signal_t>(CONNECTED_SIGNAL)),
-    m_sig_disconnected(new_signal<disconnect_signal_t>(DISCONNECTED_SIGNAL))
+network_listener::network_listener()
 {
+    new_signal<signals::connected_t>(signals::CONNECTED);
+    new_signal<signals::disconnected_t>(signals::DISCONNECTED);
 }
 
 //-----------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,10 +22,6 @@
 
 #include "module/viz/scene2d/adaptor/viewport_range_selector.hpp"
 
-#include <core/com/signal.hpp>
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-
 #include <data/helper/medical_image.hpp>
 
 #include <viz/scene2d/data/init_qt_pen.hpp>
@@ -41,13 +37,11 @@ static const std::string INITIAL_WIDTH_CONFIG = "initialWidth";
 static const std::string INITIAL_POS_CONFIG   = "initialPos";
 static const std::string COLOR_CONFIG         = "color";
 
-static const core::com::slots::key_t UPDATE_VIEWPORT_SLOT = "updateViewport";
-
 //---------------------------------------------------------------------------------------------------------------
 
 viewport_range_selector::viewport_range_selector()
 {
-    new_slot(UPDATE_VIEWPORT_SLOT, [this]{this->update_viewport(false);});
+    new_slot(slots::UPDATE_VIEWPORT, [this]{this->update_viewport(false);});
 }
 
 //------------------------------------------------------------------------------
@@ -70,10 +64,10 @@ void viewport_range_selector::configuring()
 service::connections_t viewport_range_selector::auto_connections() const
 {
     return {
-        {SELECTED_VIEWPORT_INOUT, sight::viz::scene2d::data::viewport::MODIFIED_SIG, service::slots::UPDATE},
-        {IMAGE_INPUT, sight::data::image::MODIFIED_SIG, service::slots::UPDATE},
-        {IMAGE_INPUT, sight::data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE},
-        {TF_INPUT, sight::data::transfer_function::POINTS_MODIFIED_SIG, UPDATE_VIEWPORT_SLOT}
+        {SELECTED_VIEWPORT_INOUT, sight::data::signals::MODIFIED, service::slots::UPDATE},
+        {IMAGE_INPUT, sight::data::signals::MODIFIED, service::slots::UPDATE},
+        {IMAGE_INPUT, sight::data::image::signals::BUFFER_MODIFIED, service::slots::UPDATE},
+        {TF_INPUT, sight::data::transfer_function::signals::POINTS_MODIFIED, slots::UPDATE_VIEWPORT}
     };
 }
 
@@ -185,12 +179,12 @@ void viewport_range_selector::update_viewport(bool _signal_selected_viewport)
     viewport->set_width(m_max - m_min);
     this->get_scene_2d_render()->get_view()->update_from_viewport(*viewport);
 
-    viewport->async_emit(this, data::object::MODIFIED_SIG);
+    viewport->async_emit(this, data::signals::MODIFIED);
 
     if(_signal_selected_viewport)
     {
         auto selected_viewport = m_selected_viewport.lock();
-        selected_viewport->async_emit(this, data::object::MODIFIED_SIG);
+        selected_viewport->async_emit(this, data::signals::MODIFIED);
     }
 
     m_click_catch_range = static_cast<int>(m_max - m_min) / 100;
@@ -354,7 +348,7 @@ void viewport_range_selector::process_interaction(sight::viz::scene2d::data::eve
             this->update_viewport_from_shutter(rect.x(), rect.y(), rect.width(), rect.height());
             {
                 auto selected_viewport = m_selected_viewport.lock();
-                selected_viewport->async_emit(this, data::object::MODIFIED_SIG);
+                selected_viewport->async_emit(this, data::signals::MODIFIED);
             }
         }
     }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2024 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -660,10 +660,9 @@ struct is_pair<
 /// @param _b right floating point number to compare
 template<
     typename T1,
-    typename T2,
-    typename std::enable_if_t<std::is_floating_point<T1>::value && std::is_floating_point<T2>::value>* = nullptr
->
-constexpr static bool is_equal(T1 _a, T2 _b, T1 e = std::numeric_limits<T1>::epsilon())
+    typename T2>
+constexpr static bool is_equal(T1 _a, T2 _b, T1 _e = std::numeric_limits<T1>::epsilon())
+requires(std::is_floating_point_v<T1>&& std::is_floating_point_v<T2>)
 {
     if constexpr(std::is_same_v<T1, T2>)
     {
@@ -687,14 +686,14 @@ constexpr static bool is_equal(T1 _a, T2 _b, T1 e = std::numeric_limits<T1>::eps
         }
 
         const T1 abs_diff = std::abs(_a - _b);
-        if(abs_diff <= e)
+        if(abs_diff <= _e)
         {
             // This manage the case where we are near zero
             return true;
         }
 
         // Otherwise, use a scaled epsilon
-        return abs_diff <= e* std::max(std::abs(_a), std::abs(_b));
+        return abs_diff <= _e* std::max(std::abs(_a), std::abs(_b));
     }
     else if constexpr(std::is_same_v<T1, float>|| std::is_same_v<T2, float>)
     {
@@ -703,7 +702,7 @@ constexpr static bool is_equal(T1 _a, T2 _b, T1 e = std::numeric_limits<T1>::eps
             static_cast<float>(_a),
             static_cast<float>(_b),
             std::max(
-                static_cast<float>(e),
+                static_cast<float>(_e),
                 std::numeric_limits<float>::epsilon()
             )
         );
@@ -715,7 +714,7 @@ constexpr static bool is_equal(T1 _a, T2 _b, T1 e = std::numeric_limits<T1>::eps
             static_cast<double>(_a),
             static_cast<double>(_b),
             std::max(
-                static_cast<double>(e),
+                static_cast<double>(_e),
                 std::numeric_limits<double>::epsilon()
             )
         );
@@ -727,20 +726,19 @@ constexpr static bool is_equal(T1 _a, T2 _b, T1 e = std::numeric_limits<T1>::eps
 /// @param _b right number to compare
 template<
     typename T1,
-    typename T2,
-    typename std::enable_if_t<
-        !is_pair<T1>::value
-        && !is_pair<T2>::value
-        && !is_container<T1>::value
-        && !is_container<T2>::value
-        && !is_dereferenceable<T1>::value
-        && !is_weak_ptr<T1>::value
-        && !std::is_pointer_v<T2>
-        && !is_weak_ptr<T2>::value
-        && (!std::is_floating_point_v<T1>|| !std::is_floating_point_v<T2>)
-    >* = nullptr
->
+    typename T2>
 constexpr static bool is_equal(const T1& _a, const T2& _b)
+requires(
+    !is_pair<T1>::value
+    && !is_pair<T2>::value
+    && !is_container<T1>::value
+    && !is_container<T2>::value
+    && !is_dereferenceable<T1>::value
+    && !is_weak_ptr<T1>::value
+    && !std::is_pointer_v<T2>
+    && !is_weak_ptr<T2>::value
+    && (!std::is_floating_point_v<T1>|| !std::is_floating_point_v<T2>)
+)
 {
     if constexpr(std::is_integral_v<T1>&& std::is_floating_point_v<T2>)
     {
@@ -761,10 +759,9 @@ constexpr static bool is_equal(const T1& _a, const T2& _b)
 /// @param _b right pair to compare
 template<
     typename T1,
-    typename T2,
-    typename std::enable_if_t<is_pair<T1>::value && is_pair<T2>::value>* = nullptr
->
+    typename T2>
 constexpr static bool is_equal(T1 _a, T2 _b)
+requires(is_pair<T1>::value && is_pair<T2>::value)
 {
     return is_equal(_a.first, _b.first) && is_equal(_a.second, _b.second);
 }
@@ -774,10 +771,9 @@ constexpr static bool is_equal(T1 _a, T2 _b)
 /// @param _b right weak pointer to compare
 template<
     typename T1,
-    typename T2,
-    typename std::enable_if_t<is_weak_ptr<T1>::value || is_weak_ptr<T2>::value>* = nullptr
->
+    typename T2>
 constexpr static bool is_equal(T1 _a, T2 _b)
+requires(is_weak_ptr<T1>::value || is_weak_ptr<T2>::value)
 {
     // Manage weak_ptr cases
     if constexpr(is_weak_ptr<T1>::value)
@@ -802,10 +798,9 @@ constexpr static bool is_equal(T1 _a, T2 _b)
 /// @param _b right pointer to compare
 template<
     typename T1,
-    typename T2,
-    typename std::enable_if_t<is_dereferenceable<T1>::value && is_dereferenceable<T2>::value>* = nullptr
->
+    typename T2>
 constexpr static bool is_equal(T1 _a, T2 _b)
+requires(is_dereferenceable<T1>::value && is_dereferenceable<T2>::value)
 {
     // c++ forbids to compare pointers to different types
     if constexpr(std::is_same_v<T1, T2>)
@@ -835,10 +830,9 @@ constexpr static bool is_equal(T1 _a, T2 _b)
 /// @param _b right container to compare
 template<
     typename T1,
-    typename T2,
-    typename std::enable_if_t<is_container_ordered<T1>::value && is_container_ordered<T2>::value>* = nullptr
->
+    typename T2>
 constexpr static bool is_equal(const T1& _a, const T2& _b)
+requires(is_container_ordered<T1>::value && is_container_ordered<T2>::value)
 {
     if(_a.size() != _b.size())
     {
@@ -879,15 +873,14 @@ constexpr static bool is_equal(const T1& _a, const T2& _b)
 /// @param _b right map to compare
 template<
     typename T1,
-    typename T2,
-    typename std::enable_if_t<
-        is_container_unordered_associative<T1>::value
-        && is_container_unordered_associative<T2>::value
-        && ((is_map_like<T1>::value && is_map_like<T2>::value)
-            || (is_set_like<T1>::value && is_set_like<T2>::value))
-    >* = nullptr
->
+    typename T2>
 constexpr static bool is_equal(const T1& _a, const T2& _b)
+requires(
+    is_container_unordered_associative<T1>::value
+    && is_container_unordered_associative<T2>::value
+    && ((is_map_like<T1>::value && is_map_like<T2>::value)
+        || (is_set_like<T1>::value && is_set_like<T2>::value))
+)
 {
     if(_a.size() != _b.size())
     {
@@ -940,10 +933,9 @@ constexpr static bool is_equal(const T1& _a, const T2& _b)
 /// @param _b right floating point number to compare
 template<
     typename T1,
-    typename T2,
-    typename std::enable_if_t<std::is_floating_point_v<T1>&& std::is_floating_point_v<T2> >* = nullptr
->
+    typename T2>
 constexpr static bool is_less(T1 _a, T2 _b)
+requires(std::is_floating_point_v<T1>&& std::is_floating_point_v<T2>)
 {
     if constexpr(std::is_same_v<T1, T2>)
     {
@@ -988,10 +980,9 @@ constexpr static bool is_less(T1 _a, T2 _b)
 /// @param _b right floating point number to compare
 template<
     typename T1,
-    typename T2,
-    typename std::enable_if_t<std::is_floating_point_v<T1>&& std::is_floating_point_v<T2> >* = nullptr
->
+    typename T2>
 constexpr static bool is_greater(T1 _a, T2 _b)
+requires(std::is_floating_point_v<T1>&& std::is_floating_point_v<T2>)
 {
     if constexpr(std::is_same_v<T1, T2>)
     {

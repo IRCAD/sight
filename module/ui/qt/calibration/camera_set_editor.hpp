@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -64,20 +64,15 @@ public:
 
     SIGHT_DECLARE_SERVICE(camera_set_editor, sight::ui::editor);
 
-    static const core::com::slots::key_t UPDATE_INFOS_SLOT;
-    using update_infos_slot_t = core::com::slot<void ()>;
-
-    /**
-     * @brief Constructor.
-     */
-    camera_set_editor() noexcept;
-
-    /**
-     * @brief Destructor.
-     */
-    ~camera_set_editor() noexcept
+    struct slots
     {
-    }
+        static inline const slot_key_t UPDATE_INFOS = "updateInformations";
+    };
+
+    camera_set_editor() noexcept;
+    ~camera_set_editor() noexcept override = default;
+
+protected:
 
     /**
      * @brief Configuring method : This method is used to configure the service.
@@ -101,13 +96,13 @@ public:
     {
     }
 
-protected:
-
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
      */
     service::connections_t auto_connections() const override;
+
+private:
 
     /**
      * @brief Slot: Updates the informations of the intrinsic calibration.
@@ -124,7 +119,7 @@ protected:
     QVector<QPointer<QLabel> > m_matrix_labels; ///< Labels for matrix's elements
 
     /// Index of the camera in camera_set used to display extrinsic matrix.
-    std::size_t m_cam_index;
+    std::size_t m_cam_index {1};
 
     data::ptr<data::camera_set, data::access::in> m_camera_set {this, "camera_set"};
 };

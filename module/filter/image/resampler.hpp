@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2025 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <data/boolean.hpp>
 #include <data/image.hpp>
 #include <data/matrix4.hpp>
 #include <data/string.hpp>
@@ -41,18 +42,16 @@ namespace sight::module::filter::image
  *
  * @code{.xml}
    <service uid="..." type="sight::module::filter::image::resampler">
-       <in key="imageIn" uid="..." auto_connect="true" />
-       <in key="transform" uid="..." />
-       <in key="target" uid="..." />
-       <inout key="imageOut" uid="..." />
+       <input image="${...}" transform="${...}" target="${...}" />
+       <output image="${...}" />
    </service>
    @endcode
  * @subsection Input Input
- * - \b imageIn [sight::data::image]: image to resample.
+ * - \b input.image [sight::data::image]: image to resample.
  * - \b transform [sight::data::matrix4]: Transform to apply.
  * - \b target [sight::data::image] (optional): target image defining the size, spacing and origin of the output.
  * @subsection In-Out In-Out
- * - \b imageOut [sight::data::image]: New resampled image.
+ * - \b output.image [sight::data::image]: New resampled image.
  */
 class resampler final : public service::filter
 {
@@ -91,17 +90,22 @@ protected:
 
 private:
 
-    static constexpr std::string_view IMAGE_IN     = "imageIn";
-    static constexpr std::string_view IMAGE_INOUT  = "imageOut";
-    static constexpr std::string_view TARGET_IN    = "target";
-    static constexpr std::string_view TRANSFORM_IN = "transform";
+    static constexpr std::string_view IMAGE_IN     = "input.image";
+    static constexpr std::string_view IMAGE_INOUT  = "output.image";
+    static constexpr std::string_view TARGET_IN    = "input.target";
+    static constexpr std::string_view TRANSFORM_IN = "input.transform";
 
     sight::data::ptr<sight::data::image, sight::data::access::in> m_image_in {this, IMAGE_IN};
     sight::data::ptr<sight::data::image, sight::data::access::inout> m_image_out {this, IMAGE_INOUT};
     sight::data::ptr<sight::data::image, sight::data::access::in> m_target_in {this, TARGET_IN, true};
     sight::data::ptr<sight::data::matrix4, sight::data::access::in> m_transform_in {this, TRANSFORM_IN};
 
-    sight::data::property<sight::data::string> m_interpolation {this, "interpolation", std::string("LINEAR")};
+    sight::data::ptr<sight::data::string, sight::data::access::in> m_interpolation {
+        this, "config.interpolation", std::string("LINEAR")
+    };
+    sight::data::ptr<sight::data::boolean, sight::data::access::in> m_pre_transform {
+        this, "config.pre_transform", false
+    };
 };
 
 } // namespace sight::module::filter::image

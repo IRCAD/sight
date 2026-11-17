@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,33 +28,33 @@ namespace sight::core::tools
 {
 
 /**
- * This method converts an value of type TYPEIN to an value of type TYPEOUT.
- * If TYPEIN is a floating point type and TYPEOUT is a integral type then
+ * This method converts an value of type TYPE_IN to an value of type TYPE_OUT.
+ * If TYPE_IN is a floating point type and TYPE_OUT is a integral type then
  * it rounds float number to nearest integer (returns 3 for 3.1f, 5 for 4.5f).
  *
  * Be careful: there is not range checking, overflow is not detected (silent overflow policy)
  *
- * @param _value to cast (and rounds if is a floating point type) in TYPEOUT
+ * @param _value to cast (and rounds if is a floating point type) in TYPE_OUT
  * @return casted and rounded value.
  */
-template<typename TYPEOUT, typename TYPEIN>
-TYPEOUT numeric_round_cast(const TYPEIN& _value)
+template<typename TYPE_OUT, typename TYPE_IN>
+TYPE_OUT numeric_round_cast(const TYPE_IN& _value)
 {
-    typedef boost::numeric::conversion_traits<TYPEOUT, TYPEIN> traits_type;
-    typedef boost::numeric::silent_overflow_handler overflow_handler_type;
-    typedef boost::numeric::RoundEven<typename traits_type::source_type> round_even_type;
-    typedef boost::numeric::raw_converter<traits_type> converter_type;
-    typedef boost::numeric::UseInternalRangeChecker range_checker_type;
+    using traits_type           = boost::numeric::conversion_traits<TYPE_OUT, TYPE_IN>;
+    using overflow_handler_type = boost::numeric::silent_overflow_handler;
+    using round_even_type       = boost::numeric::RoundEven<typename traits_type::source_type>;
+    using converter_type        = boost::numeric::raw_converter<traits_type>;
+    using range_checker_type    = boost::numeric::UseInternalRangeChecker;
 
-    typedef boost::numeric::converter<
-            TYPEOUT,
-            TYPEIN,
-            traits_type,
-            overflow_handler_type,
-            round_even_type,
-            converter_type,
-            range_checker_type
-    > round_cast_type;
+    using round_cast_type = boost::numeric::converter<
+        TYPE_OUT,
+        TYPE_IN,
+        traits_type,
+        overflow_handler_type,
+        round_even_type,
+        converter_type,
+        range_checker_type
+    >;
 
     return round_cast_type::convert(_value);
 }

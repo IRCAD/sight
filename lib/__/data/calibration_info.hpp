@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -56,17 +56,20 @@ public:
      * @name Signals API
      * @{
      */
-    SIGHT_DATA_API static const core::com::signals::key_t ADDED_RECORD_SIG;
-    using added_record_signal_t = core::com::signal<void ()>;
+    struct signals
+    {
+        static const inline signal_key_t ADDED_RECORD = "added_record";
+        using added_record_t = core::com::signal<void ()>;
 
-    SIGHT_DATA_API static const core::com::signals::key_t REMOVED_RECORD_SIG;
-    using removed_record_signal_t = core::com::signal<void ()>;
+        static const inline signal_key_t REMOVED_RECORD = "removed_record";
+        using removed_record_t = core::com::signal<void ()>;
 
-    SIGHT_DATA_API static const core::com::signals::key_t RESET_RECORD_SIG;
-    using reset_record_signal_t = core::com::signal<void ()>;
+        static const inline signal_key_t RESET_RECORD = "reset_record";
+        using reset_record_t = core::com::signal<void ()>;
 
-    SIGHT_DATA_API static const core::com::signals::key_t GET_RECORD_SIG;
-    using get_record_signal_t = core::com::signal<void (std::size_t)>;
+        static const inline signal_key_t GET_RECORD = "get_record";
+        using get_record_t = core::com::signal<void (std::size_t)>;
+    };
 
     /**
      * @}
@@ -155,20 +158,12 @@ public:
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;
 
-protected:
+private:
 
     ///List of Image
     std::list<image::sptr> m_image_container;
     ///List of pointList
     std::list<point_list::sptr> m_point_list_container_t;
-    ///added record signal
-    added_record_signal_t::sptr m_sig_added_record;
-    /// removed record signal
-    removed_record_signal_t::sptr m_sig_removed_record;
-    ///reset records signal
-    reset_record_signal_t::sptr m_sig_reset_record;
-    ///get record signal
-    get_record_signal_t::sptr m_sig_get_record;
 };
 
 } // namespace sight::data

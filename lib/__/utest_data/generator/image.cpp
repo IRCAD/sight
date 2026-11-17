@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,7 +28,6 @@
 #include <data/helper/medical_image.hpp>
 
 #include <glm/ext/matrix_transform.hpp>
-#include <glm/glm.hpp>
 
 #include <ctime>
 #include <random>
@@ -99,11 +98,11 @@ inline static void randomize_iterable(I& _iterable, std::uint32_t _seed = 0)
     {
         randomize<std::int64_t>(_iterable, _seed);
     }
-    else if(type == core::type::FLOAT)
+    else if(type == core::type::FLOAT32)
     {
         randomize<float>(_iterable, _seed);
     }
-    else if(type == core::type::DOUBLE)
+    else if(type == core::type::FLOAT64)
     {
         randomize<double>(_iterable, _seed);
     }
@@ -160,9 +159,9 @@ void image::generate_random_image(data::image::sptr _image, core::type _type, st
     size[2] = static_cast<data::image::size_t::value_type>(safe_rand() % s_SIZE + 2);
 
     data::image::spacing_t spacing;
-    spacing[0] = (safe_rand() % s_DOUBLE_SIZE + 1) / double(s_SIZE);
-    spacing[1] = (safe_rand() % s_DOUBLE_SIZE + 1) / double(s_SIZE);
-    spacing[2] = (safe_rand() % s_DOUBLE_SIZE + 1) / double(s_SIZE);
+    spacing[0] = (safe_rand() % s_DOUBLE_SIZE + 1) / static_cast<double>(s_SIZE);
+    spacing[1] = (safe_rand() % s_DOUBLE_SIZE + 1) / static_cast<double>(s_SIZE);
+    spacing[2] = (safe_rand() % s_DOUBLE_SIZE + 1) / static_cast<double>(s_SIZE);
     _image->set_spacing(spacing);
 
     data::image::origin_t origin;
@@ -171,9 +170,25 @@ void image::generate_random_image(data::image::sptr _image, core::type _type, st
     origin[2] = (safe_rand() % s_DOUBLE_SIZE - s_SIZE) / (s_SIZE / 10.);
     _image->set_origin(origin);
 
-    auto rotate_x     = glm::rotate(glm::dmat4(1), glm::radians(double(safe_rand() % 360)), glm::dvec3(1, 0, 0));
-    auto rotate_x_y   = glm::rotate(rotate_x, glm::radians(double(safe_rand() % 360)), glm::dvec3(0, 1, 0));
-    auto rotate_x_y_z = glm::rotate(rotate_x_y, glm::radians(double(safe_rand() % 360)), glm::dvec3(0, 0, 1));
+    auto rotate_x = glm::rotate(
+        glm::dmat4(1),
+        glm::radians(static_cast<double>(safe_rand() % 360)),
+        glm::dvec3(
+            1,
+            0,
+            0
+        )
+    );
+    auto rotate_x_y = glm::rotate(
+        rotate_x,
+        glm::radians(static_cast<double>(safe_rand() % 360)),
+        glm::dvec3(0, 1, 0)
+    );
+    auto rotate_x_y_z = glm::rotate(
+        rotate_x_y,
+        glm::radians(static_cast<double>(safe_rand() % 360)),
+        glm::dvec3(0, 0, 1)
+    );
 
     _image->set_orientation(
         {rotate_x_y_z[0][0], rotate_x_y_z[1][0], rotate_x_y_z[2][0],
@@ -185,8 +200,8 @@ void image::generate_random_image(data::image::sptr _image, core::type _type, st
 
     randomize_image(_image, _seed);
 
-    _image->set_window_width({(safe_rand() % s_DOUBLE_SIZE) / double(s_SIZE / 10.) + 1});
-    _image->set_window_center({(safe_rand() % s_DOUBLE_SIZE - s_SIZE) / double(s_SIZE / 10.)});
+    _image->set_window_width({(safe_rand() % s_DOUBLE_SIZE) / (s_SIZE / 10.) + 1});
+    _image->set_window_center({(safe_rand() % s_DOUBLE_SIZE - s_SIZE) / (s_SIZE / 10.)});
 
     sight::data::helper::medical_image::check_image_slice_index(*_image);
 }

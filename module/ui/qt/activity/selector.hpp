@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2024 IRCAD France
+ * Copyright (C) 2016-2026 IRCAD France
  * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -73,6 +73,14 @@ Q_OBJECT
 
 public:
 
+    struct signals
+    {
+        using activity_id_selected_t = core::com::signal<void (std::string)>;
+        using load_requested_t       = core::com::signal<void ()>;
+        static inline const signal_key_t ACTIVITY_ID_SELECTED = "activity_id_selected";
+        static inline const signal_key_t LOAD_REQUESTED       = "load_requested";
+    };
+
     SIGHT_DECLARE_SERVICE(selector, sight::ui::editor);
 
     /// Constructor. Do nothing.
@@ -80,18 +88,6 @@ public:
 
     /// Destructor. Do nothing.
     ~selector() noexcept override;
-
-    /**
-     * @name Signals API
-     * @{
-     */
-    static const core::com::signals::key_t ACTIVITY_ID_SELECTED_SIG;
-    using activity_id_selected_signal_t = core::com::signal<void (std::string)>;
-
-    static const core::com::signals::key_t LOAD_REQUESTED_SIG;
-    using load_requested_signal_t = core::com::signal<void ()>;
-
-    /// @}
 
 protected:
 

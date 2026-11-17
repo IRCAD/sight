@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2025 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -64,6 +64,17 @@ class transform_depth_tl2mm : public service::filter
 public:
 
     SIGHT_DECLARE_SERVICE(transform_depth_tl2mm, service::filter);
+
+    struct signals
+    {
+        using computed_t = core::com::signal<void ()>;
+        static inline const signal_key_t COMPUTED = "computed";
+    };
+
+    struct slots
+    {
+        static inline const slot_key_t COMPUTE = "compute";
+    };
 
     /**
      * @brief transform_depth_tl2mm constructor.

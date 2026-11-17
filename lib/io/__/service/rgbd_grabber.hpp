@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,7 +43,7 @@ public:
      * @name Data API
      * @{
      */
-    static constexpr std::string_view s_DEPTHTL_INOUT = "depth_tl";
+    static constexpr std::string_view S_DEPTHTL_INOUT = "timeline.depth";
     /** @} */
 
     /// Constructor.
@@ -54,7 +54,8 @@ public:
 
 protected:
 
-    data::ptr<data::frame_tl, data::access::inout> m_depth {this, s_DEPTHTL_INOUT, true};
+    /// NOLINTNEXTLINE(cppcoreguidelines-non-private-member-variables-in-classes)
+    data::ptr<data::frame_tl, data::access::inout> m_depth {this, S_DEPTHTL_INOUT, true};
 };
 
 } //namespace sight::io::service

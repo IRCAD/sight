@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2025 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -68,7 +68,7 @@ TEST_SUITE("sight::filter::image::line_drawer")
             sight::filter::image::line_drawer drawer(image, nullptr);
 
             sight::filter::image::image_diff diff = drawer.draw(
-                sight::filter::image::bresenham_line::Orientation::z_axis,
+                sight::filter::image::bresenham_line::orientation::z_axis,
                 point,
                 point,
                 val,
@@ -116,7 +116,7 @@ TEST_SUITE("sight::filter::image::line_drawer")
 
             sight::filter::image::line_drawer drawer(image, nullptr);
 
-            drawer.draw(sight::filter::image::bresenham_line::Orientation::z_axis, point, point, val, thickness);
+            drawer.draw(sight::filter::image::bresenham_line::orientation::z_axis, point, point, val, thickness);
 
             {
                 const std::int16_t res_value = image->at<std::int16_t>(point[0], point[1], point[2]);
@@ -284,7 +284,7 @@ TEST_SUITE("sight::filter::image::line_drawer")
             sight::filter::image::line_drawer drawer(image, nullptr);
 
             sight::filter::image::image_diff diff = drawer.draw(
-                sight::filter::image::bresenham_line::Orientation::z_axis,
+                sight::filter::image::bresenham_line::orientation::z_axis,
                 point,
                 point,
                 val,
@@ -412,7 +412,7 @@ TEST_SUITE("sight::filter::image::line_drawer")
 
             sight::filter::image::line_drawer drawer(image, nullptr);
 
-            drawer.draw(sight::filter::image::bresenham_line::Orientation::z_axis, point, point, val, thickness);
+            drawer.draw(sight::filter::image::bresenham_line::orientation::z_axis, point, point, val, thickness);
 
             {
                 const std::int16_t res_value = image->at<std::int16_t>(point[0], point[1], point[2]);

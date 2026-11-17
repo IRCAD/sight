@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,6 @@
 
 #include "images_substract.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/spy_log.hpp>
-
 #include <filter/image/substract.hpp>
 
 #include <ui/__/dialog/message.hpp>
@@ -35,7 +32,7 @@ namespace sight::module::filter::image
 //------------------------------------------------------------------------------
 
 images_substract::images_substract() :
-    filter(m_signals)
+    filter(has_signals::signals())
 {
 }
 
@@ -77,7 +74,7 @@ void images_substract::updating()
         if(is_same_size)
         {
             sight::filter::image::substract(*image1, *image2, *image_result);
-            image_result->async_emit(data::object::MODIFIED_SIG);
+            image_result->async_emit(data::signals::MODIFIED);
         }
         else
         {

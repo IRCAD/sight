@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,11 +22,15 @@
 
 #include "data/object.hpp"
 
+#include "core/compare.hpp"
+#include "core/spy_log.hpp"
+
 #include "data/factory/new.hpp"
 
-#include <core/com/signal.hxx>
-
-#include <functional>
+#include <algorithm>
+#include <iterator>
+#include <memory>
+#include <utility>
 
 namespace sight::data
 {
@@ -35,10 +39,10 @@ namespace sight::data
 
 object::object()
 {
-    new_signal<modified_signal_t>(signals::MODIFIED);
-    new_signal<added_fields_signal_t>(signals::ADDED_FIELDS);
-    new_signal<changed_fields_signal_t>(signals::CHANGED_FIELDS);
-    new_signal<removed_fields_signal_t>(signals::REMOVED_FIELDS);
+    new_signal<signals::modified_t>(signals::MODIFIED);
+    new_signal<signals::added_fields_t>(signals::ADDED_FIELDS);
+    new_signal<signals::changed_fields_t>(signals::CHANGED_FIELDS);
+    new_signal<signals::removed_fields_t>(signals::REMOVED_FIELDS);
 }
 
 //------------------------------------------------------------------------------
@@ -67,9 +71,8 @@ const object::field_map_t& object::get_fields() const
 object::field_name_vector_t object::get_field_names() const
 {
     field_name_vector_t names;
-    std::transform(
-        m_fields.begin(),
-        m_fields.end(),
+    std::ranges::transform(
+        m_fields,
         std::back_inserter(names),
         [](const auto& _e){return _e.first;});
     return names;
@@ -181,6 +184,13 @@ bool object::operator==(const object& _other) const noexcept
 bool object::operator!=(const object& _other) const noexcept
 {
     return !(*this == _other);
+}
+
+//------------------------------------------------------------------------------
+
+void object::swap(object::sptr _source) noexcept
+{
+    m_fields.swap(_source->m_fields);
 }
 
 } // namespace sight::data

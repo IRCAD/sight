@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,26 +30,13 @@
 #include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
 
-#include <vtkCell.h>
-#include <vtkCellType.h>
-#include <vtkDataArray.h>
-#include <vtkDataSetAttributes.h>
 #include <vtkFileOutputWindow.h>
 #include <vtkImageData.h>
-#include <vtkImageExport.h>
 #include <vtkImageImport.h>
-#include <vtkLookupTable.h>
 #include <vtkMatrix3x3.h>
 #include <vtkMatrix4x4.h>
-#include <vtkPointData.h>
-#include <vtkPoints.h>
-#include <vtkPolyData.h>
-#include <vtkPolyDataNormals.h>
-#include <vtkPolyDataWriter.h>
-#include <vtkSetGet.h>
 #include <vtkSmartPointer.h>
 #include <vtkType.h>
-#include <vtkUnstructuredGrid.h>
 
 // Ugly hack because of a "bug" in GCC 13.2 caused by two copy constructors that specify template parameters.
 #ifdef __GNUC__
@@ -67,7 +54,6 @@
 #include <cstring>
 #include <ctime>
 #include <numeric>
-#include <stdexcept>
 
 namespace sight::io::vtk
 {
@@ -90,7 +76,9 @@ static bool init_vtk_log_file()
     const auto& vtk_log         = core::tools::os::get_user_cache_dir(profile_name) / "VTK.log";
 
     // TODO: Gather all .log file together in Session.
-    vtkSmartPointer<vtkFileOutputWindow> outwin = vtkFileOutputWindow::New();
+    // Note: We use a raw pointer here because SetInstance() increments the reference count.
+    // After SetInstance(), we must call Delete() to balance the reference count.
+    vtkFileOutputWindow* outwin = vtkFileOutputWindow::New();
 
     // MSVC doesn't have std::filesystem::path::c_str()
     const auto& vtk_log_string = vtk_log.string();
@@ -101,6 +89,9 @@ static bool init_vtk_log_file()
     outwin->DisplayText(header.c_str());
 
     vtkFileOutputWindow::SetInstance(outwin);
+
+    // Delete our reference - SetInstance() has already incremented the ref count
+    outwin->Delete();
 
     return true;
 }
@@ -154,8 +145,8 @@ const type_translator::to_vtk_map_t type_translator::TO_VTK = {
     {core::type::UINT32, VTK_UNSIGNED_INT},
     {core::type::INT64, VTK_LONG_LONG},
     {core::type::UINT64, VTK_UNSIGNED_LONG_LONG},
-    {core::type::FLOAT, VTK_FLOAT},
-    {core::type::DOUBLE, VTK_DOUBLE}
+    {core::type::FLOAT32, VTK_FLOAT},
+    {core::type::FLOAT64, VTK_DOUBLE}
 };
 
 const type_translator::from_vtk_map_t type_translator::FROM_VTK = {
@@ -168,8 +159,8 @@ const type_translator::from_vtk_map_t type_translator::FROM_VTK = {
     {VTK_UNSIGNED_SHORT, core::type::UINT16},
     {VTK_INT, core::type::INT32},
     {VTK_UNSIGNED_INT, core::type::UINT32},
-    {VTK_FLOAT, core::type::FLOAT},
-    {VTK_DOUBLE, core::type::DOUBLE},
+    {VTK_FLOAT, core::type::FLOAT32},
+    {VTK_DOUBLE, core::type::FLOAT64},
     {VTK_LONG_LONG, core::type::INT64},
     {VTK_UNSIGNED_LONG_LONG, core::type::UINT64},
 

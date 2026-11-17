@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -72,4 +72,4 @@ public:
     SIGHT_UI_TEST_API static void value_equals(tester& _tester, const selector& _spin_box, int _expected);
 };
 
-} // namespace sight::ui::testCore::helper
+} // namespace sight::ui::test::helper

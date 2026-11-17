@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -108,7 +108,7 @@ I world_to_image(const sight::data::image& _image, const W& _world, bool _round 
         glm::dvec4::value_type(_world[0]),
         glm::dvec4::value_type(_world[1]),
         glm::dvec4::value_type(_world[2]),
-        glm::dvec4::value_type(1)
+        static_cast<glm::dvec4::value_type>(1)
     };
 
     const glm::dmat4 transform = world_to_image_transform(_image);
@@ -146,7 +146,7 @@ W image_to_world(const sight::data::image& _image, const I& _voxel)
         glm::dvec4::value_type(_voxel[0]),
         glm::dvec4::value_type(_voxel[1]),
         glm::dvec4::value_type(_voxel[2]),
-        glm::dvec4::value_type(1)
+        static_cast<glm::dvec4::value_type>(1)
     };
 
     const glm::dmat4 transform = image_to_world_transform(_image);
@@ -174,7 +174,7 @@ std::optional<std::int64_t> get_fiducial_slice_index(
     const auto point_in_image = world_to_image(_image, _point, true);
     const auto slice_index    = point_in_image[_axis];
 
-    if(slice_index < 0 || slice_index >= std::int64_t(_image.size()[_axis]))
+    if(slice_index < 0 || slice_index >= static_cast<std::int64_t>(_image.size()[_axis]))
     {
         return std::nullopt;
     }

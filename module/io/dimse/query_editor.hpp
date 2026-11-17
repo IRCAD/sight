@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2025 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,14 +22,12 @@
 
 #pragma once
 
+#include <core/notification/has_notifications.hpp>
 #include <core/thread/worker.hpp>
 
 #include <data/series_set.hpp>
 
 #include <io/dimse/data/pacs_configuration.hpp>
-#include <io/dimse/series_enquirer.hpp>
-
-#include <service/notifier.hpp>
 
 #include <ui/__/editor.hpp>
 
@@ -71,7 +69,7 @@ namespace sight::module::io::dimse
 class query_editor final :
     public QObject,
     public sight::ui::editor,
-    private sight::service::notifier
+    public sight::core::notification::has_notifications
 {
 Q_OBJECT;
 

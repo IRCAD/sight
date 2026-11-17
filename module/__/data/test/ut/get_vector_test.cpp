@@ -19,25 +19,19 @@
  *
  ***********************************************************************/
 
-#include <core/runtime/runtime.hpp>
-
 #include <data/image_series.hpp>
 #include <data/model_series.hpp>
 #include <data/vector.hpp>
 
 #include <service/op.hpp>
 
-#include <boost/property_tree/xml_parser.hpp>
-
 #include <doctest/doctest.h>
-
-#include <sstream>
 
 TEST_SUITE("sight::module::data::get_vector")
 {
 //------------------------------------------------------------------------------
 
-    TEST_CASE("extracts_element_from_vector")
+    TEST_CASE("extract_elements")
     {
         auto vector = std::make_shared<sight::data::vector>();
 
@@ -69,31 +63,28 @@ TEST_SUITE("sight::module::data::get_vector")
         CHECK_EQ(static_cast<size_t>(6), vector->size());
         CHECK_EQ(index_0_id, series1->get_id());
 
-        sight::service::config_t config;
-        std::stringstream config_string;
-        config_string
-        << "<out group=\"objects\">"
-           "<key index=\"0\" uid=\"modelSeries\"/>"
-           "<key index=\"3\" uid=\"modelSeries1\"/>"
-           "</out>";
-        boost::property_tree::read_xml(config_string, config);
+        const std::string config =
+            "<out group='objects'>"
+            "<key index='0' uid='modelSeries'/>"
+            "<key index='3' uid='modelSeries1'/>"
+            "</out>";
         get_vector->set_config(config);
         get_vector->set_input(vector, "vector");
         get_vector->configure();
-        get_vector->start().wait();
-        get_vector->update().wait();
+        get_vector->start().get();
+        get_vector->update().get();
 
         CHECK_EQ(get_vector->output("objects", 0).lock()->get_id(), index_0_id);
         CHECK_EQ(get_vector->output("objects", 1).lock()->get_id(), index_3_id);
 
         vector->clear();
 
-        get_vector->update().wait();
+        get_vector->update().get();
 
         CHECK(get_vector->output("objects", 0).lock() == nullptr);
         CHECK(get_vector->output("objects", 1).lock() == nullptr);
 
-        get_vector->stop().wait();
+        get_vector->stop().get();
         sight::service::remove(get_vector);
     }
 
@@ -104,20 +95,17 @@ TEST_SUITE("sight::module::data::get_vector")
         sight::service::base::sptr get_vector = sight::service::add("sight::module::data::get_vector");
         CHECK(get_vector->is_a("sight::module::data::get_vector"));
 
-        sight::service::config_t config;
-        std::stringstream config_string;
-        config_string
-        << "<out group=\"vector\">"
-           "<key index=\"0\" uid=\"modelSeries\"/>"
-           "<key index=\"3\" uid=\"modelSeries1\"/>"
-           "</out>";
-        boost::property_tree::read_xml(config_string, config);
+        const std::string config =
+            "<out group='vector'>"
+            "<key index='0' uid='modelSeries'/>"
+            "<key index='3' uid='modelSeries1'/>"
+            "</out>";
         get_vector->set_config(config);
         get_vector->set_input(nullptr, "vector");
-        get_vector->start().wait();
+        get_vector->start().get();
         CHECK_THROWS_AS(get_vector->update().get(), sight::data::exception);
 
-        get_vector->stop().wait();
+        get_vector->stop().get();
         sight::service::remove(get_vector);
     }
 

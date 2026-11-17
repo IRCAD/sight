@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -72,11 +72,11 @@ template<class single_or_seq, class key_type_or_key_type_container>
 bool is_mapping(const key_type_or_key_type_container& _type)
 {
     namespace mpl = boost::mpl;
-    typedef BOOST_DEDUCED_TYPENAME mpl::if_<
-            mpl::is_sequence<single_or_seq>,
-            is_mapping_multi_mplhelper<single_or_seq, key_type_or_key_type_container>,
-            is_mapping_single_mplhelper<single_or_seq, key_type_or_key_type_container>
-    >::type type_x;
+    using type_x  = BOOST_DEDUCED_TYPENAME mpl::if_<
+        mpl::is_sequence<single_or_seq>,
+        is_mapping_multi_mplhelper<single_or_seq, key_type_or_key_type_container>,
+        is_mapping_single_mplhelper<single_or_seq, key_type_or_key_type_container>
+                    >::type;
     return type_x::evaluate(_type);
 }
 
@@ -123,8 +123,8 @@ struct empty_list_mapping
     //------------------------------------------------------------------------------
 
     static bool evaluate(
-        [[maybe_unused]] typename key_type_container::const_iterator& _begin,
-        [[maybe_unused]] typename key_type_container::const_iterator& _end
+        [[maybe_unused]] key_type_container::const_iterator& _begin,
+        [[maybe_unused]] key_type_container::const_iterator& _end
 )
     {
         assert(_begin == _end); // assertion fails iff TypeList & key_t container does not have the same size
@@ -142,8 +142,8 @@ struct
 is_mapping_multi_mplhelper
 {
     static bool evaluate(
-        typename key_type_container::const_iterator& _begin,
-        typename key_type_container::const_iterator& _end
+        key_type_container::const_iterator& _begin,
+        key_type_container::const_iterator& _end
     );
 
     //------------------------------------------------------------------------------
@@ -169,20 +169,20 @@ is_mapping_multi_mplhelper
 
 template<class TSEQ, class key_type_container>
 bool is_mapping_multi_mplhelper<TSEQ, key_type_container>::evaluate(
-    typename key_type_container::const_iterator& _begin,
-    typename key_type_container::const_iterator& _end
+    key_type_container::const_iterator& _begin,
+    key_type_container::const_iterator& _end
 )
 {
     namespace mpl = boost::mpl;
 
-    typedef BOOST_DEDUCED_TYPENAME mpl::front<TSEQ>::type head;
-    typedef BOOST_DEDUCED_TYPENAME mpl::pop_front<TSEQ>::type tail;
+    using head = BOOST_DEDUCED_TYPENAME mpl::front<TSEQ>::type;
+    using tail = BOOST_DEDUCED_TYPENAME mpl::pop_front<TSEQ>::type;
 
-    typedef BOOST_DEDUCED_TYPENAME mpl::if_<
-            mpl::empty<tail>,
-            empty_list_mapping<key_type_container>,
-            is_mapping_multi_mplhelper<tail, key_type_container>
-    >::type type_x;
+    using type_x = BOOST_DEDUCED_TYPENAME mpl::if_<
+        mpl::empty<tail>,
+        empty_list_mapping<key_type_container>,
+        is_mapping_multi_mplhelper<tail, key_type_container>
+                   >::type;
 
     bool first_key_is_ok = is_mapping<head>(*_begin); // call a isMapping with a single key
 

@@ -41,7 +41,7 @@ TEST_SUITE("sight::data::point_list")
 
         CHECK_NOTHROW(pl2->shallow_copy(pl1));
 
-        CHECK_EQ(pl1->get_points()[0], pl2->get_points()[0]);
+        CHECK_EQ((*pl1)[0], (*pl2)[0]);
     }
 
 //------------------------------------------------------------------------------
@@ -53,17 +53,15 @@ TEST_SUITE("sight::data::point_list")
 
         pl1->push_back(point1);
 
-        sight::data::point::sptr point2 = pl1->get_points()[0];
+        sight::data::point::sptr point2 = (*pl1)[0];
 
         CHECK_EQ((*point1)[0], (*point2)[0]);
         CHECK_EQ((*point1)[1], (*point2)[1]);
         CHECK_EQ((*point1)[2], (*point2)[2]);
 
-        sight::data::point_list::container_t& container = pl1->get_points();
-
-        CHECK_EQ((*point1)[0], (*container[0])[0]);
-        CHECK_EQ((*point1)[1], (*container[0])[1]);
-        CHECK_EQ((*point1)[2], (*container[0])[2]);
+        CHECK_EQ((*point1)[0], (*(*pl1)[0])[0]);
+        CHECK_EQ((*point1)[1], (*(*pl1)[0])[1]);
+        CHECK_EQ((*point1)[2], (*(*pl1)[0])[2]);
     }
 
 //------------------------------------------------------------------------------
@@ -78,15 +76,13 @@ TEST_SUITE("sight::data::point_list")
         vec.push_back(point1);
         vec.push_back(point2);
 
-        CHECK_NOTHROW(pl1->set_points(vec));
-
-        sight::data::point_list::container_t& container = pl1->get_points();
+        CHECK_NOTHROW(*pl1 = vec);
 
         for(unsigned p = 0 ; p < vec.size() ; ++p)
         {
             for(unsigned int i = 0 ; i < 3 ; ++i)
             {
-                CHECK_EQ((*vec[p])[i], (*container[p])[i]);
+                CHECK_EQ((*vec[p])[i], (*(*pl1)[p])[i]);
             }
         }
     }
@@ -106,13 +102,11 @@ TEST_SUITE("sight::data::point_list")
         CHECK_NOTHROW(pl1->push_back(point1));
         CHECK_NOTHROW(pl1->push_back(point2));
 
-        sight::data::point_list::container_t& container = pl1->get_points();
-
         for(unsigned p = 0 ; p < vec.size() ; ++p)
         {
             for(unsigned int i = 0 ; i < 3 ; ++i)
             {
-                CHECK_EQ((*vec[p])[i], (*container[p])[i]);
+                CHECK_EQ((*vec[p])[i], (*(*pl1)[p])[i]);
             }
         }
     }
@@ -135,14 +129,14 @@ TEST_SUITE("sight::data::point_list")
 
             // remove the first
             std::size_t size = nb_points;
-            while(!pl->get_points().empty())
+            while(!pl->empty())
             {
                 pl->remove(0);
-                CHECK_EQ(--size, pl->get_points().size());
+                CHECK_EQ(--size, pl->size());
             }
         }
 
-        CHECK_EQ(static_cast<std::size_t>(0), pl->get_points().size());
+        CHECK_EQ(static_cast<std::size_t>(0), pl->size());
 
         // Remove last
         {
@@ -155,15 +149,15 @@ TEST_SUITE("sight::data::point_list")
 
             // remove the last
             std::size_t size = nb_points;
-            while(!pl->get_points().empty())
+            while(!pl->empty())
             {
-                const std::size_t index = pl->get_points().size() - 1;
+                const std::size_t index = pl->size() - 1;
                 pl->remove(index);
-                CHECK_EQ(--size, pl->get_points().size());
+                CHECK_EQ(--size, pl->size());
             }
         }
 
-        CHECK_EQ(static_cast<std::size_t>(0), pl->get_points().size());
+        CHECK_EQ(static_cast<std::size_t>(0), pl->size());
 
         // Check that the correct one is removed
         {
@@ -175,13 +169,13 @@ TEST_SUITE("sight::data::point_list")
             }
 
             std::size_t size = nb_points;
-            while(!pl->get_points().empty())
+            while(!pl->empty())
             {
                 const std::size_t index = size / 2;
-                const auto ref          = pl->get_points()[index];
+                const auto ref          = (*pl)[index];
                 pl->remove(index);
-                CHECK_EQ(--size, pl->get_points().size());
-                for(const auto& p : pl->get_points())
+                CHECK_EQ(--size, pl->size());
+                for(const auto& p : *pl)
                 {
                     CHECK((*ref)[0] != (*p)[0]);
                 }
@@ -196,9 +190,9 @@ TEST_SUITE("sight::data::point_list")
         const std::size_t nb_points      = 42;
         sight::data::point_list::sptr pl = std::make_shared<sight::data::point_list>();
 
-        CHECK(pl->get_points().empty());
+        CHECK(pl->empty());
         pl->clear();
-        CHECK(pl->get_points().empty());
+        CHECK(pl->empty());
 
         // Build a list
         for(std::size_t i = 0 ; i < nb_points ; i++)
@@ -207,8 +201,8 @@ TEST_SUITE("sight::data::point_list")
             pl->push_back(p);
         }
 
-        CHECK(pl->get_points().size() == nb_points);
+        CHECK(pl->size() == nb_points);
         pl->clear();
-        CHECK(pl->get_points().empty());
+        CHECK(pl->empty());
     }
 } // TEST_SUITE("sight::data::point_list")

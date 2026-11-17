@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,32 +28,24 @@ namespace sight::module::data
 {
 
 /**
- * @brief This service copies an object and updates its own object or the defined target.
+ * @brief This service copies one or several objects into the defined targets.
  * It can either copy the data when starting or when updating (default).
  *
  * @section XML XML Configuration
  * @code{.xml}
        <service uid="..." type="sight::module::data::copy" >
-           <in key="source" uid="..." />
-           <inout key="target" uid="..." />
-           <mode>copyOnStart</mode>
-       </service>
-
-       <service uid="..." type="sight::module::data::copy" >
-           <in key="source" uid="..." />
-           <out key="outTarget" uid="..." />
+           <data source="..." target="..." />
+           <data source="..." target="..." />
+           <data source="..." target="..." />
            <mode>copyOnStart</mode>
        </service>
    @endcode
  *
  * @subsection Input Input
- * - \b source [sight::data::object]: define the source object to copy.
+ * - \b data.source [sight::data::object]: define the source objects to copy.
  *
  * @subsection In-Out In-Out
- * - \b target [sight::data::object]: define the target object to update, can't be used with Output.
- *
- * @subsection Output Output
- * - \b target [sight::data::object]: define the target object to create, can't be used with In-Out.
+ * - \b data.target [sight::data::object]: define the target objects to update.
  *
  * @subsection Configuration Configuration
  * - \b mode (optional) : The service can copy the data either when starting ("copyOnStart") or when
@@ -83,7 +75,7 @@ protected:
     /// Calls copy() if the mode if UPDATE.
     void updating() final;
 
-    /// Sets the output to null.
+    /// Does nothing.
     void stopping() final;
 
 private:
@@ -94,15 +86,14 @@ private:
         update
     };
 
-    /// Copies the object to the output.
+    /// Copies each source into the target of the same index.
     void make_copy();
 
     /// Determines when the data is copied (start or update)
     mode_t m_mode {mode_t::update};
 
-    sight::data::ptr<sight::data::object, sight::data::access::in> m_source {this, "source"};
-    sight::data::ptr<sight::data::object, sight::data::access::inout> m_target {this, "target", true};
-    sight::data::ptr<sight::data::object, sight::data::access::out> m_out_target {this, "outTarget"};
+    sight::data::ptr_vector<sight::data::object, sight::data::access::in> m_sources {this, "data.source"};
+    sight::data::ptr_vector<sight::data::object, sight::data::access::inout> m_targets {this, "data.target"};
 };
 
 } // namespace sight::module::data.

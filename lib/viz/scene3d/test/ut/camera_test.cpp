@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2025 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,21 +24,31 @@
 
 #include "viz/scene3d/utils.hpp"
 
-#include <utest/filter.hpp>
+#include <core/runtime/runtime.hpp>
 
 #include <viz/scene3d/helper/camera.hpp>
 #include <viz/scene3d/window_manager.hpp>
 
 #include <doctest/doctest.h>
 
-#include <OgreLogManager.h>
 #include <OgreMatrix4.h>
 #include <OgreRenderWindow.h>
-#include <OgreViewport.h>
 
 #include <limits>
-#include <tuple>
-#include <vector>
+
+namespace
+{
+
+struct initializer
+{
+    initializer()
+    {
+        sight::core::runtime::init();
+        sight::core::runtime::load_module("sight::module::viz::scene3d::test");
+    }
+};
+
+} // namespace
 
 //------------------------------------------------------------------------------
 
@@ -104,7 +114,7 @@ TEST_SUITE("sight::viz::scene3d::camera")
         compare_matrix(expected, actual);
     }
 
-    TEST_CASE("convert_pixel_to_world_space")
+    TEST_CASE_FIXTURE(initializer, "convert_pixel_to_world_space")
     {
         auto* const root          = sight::viz::scene3d::utils::get_ogre_root();
         auto* const scene_manager = root->createSceneManager("DefaultSceneManager", "TestSceneManager");
@@ -174,7 +184,7 @@ TEST_SUITE("sight::viz::scene3d::camera")
         root->destroySceneManager(scene_manager);
     }
 
-    TEST_CASE("convert_world_space_to_screen_space")
+    TEST_CASE_FIXTURE(initializer, "convert_world_space_to_screen_space")
     {
         auto* const root          = sight::viz::scene3d::utils::get_ogre_root();
         auto* const scene_manager = root->createSceneManager("DefaultSceneManager", "TestSceneManager");
@@ -199,16 +209,31 @@ TEST_SUITE("sight::viz::scene3d::camera")
         camera->setProjectionType(Ogre::ProjectionType::PT_PERSPECTIVE);
 
         {
-            const Ogre::Vector3 standard_point(-4.F, 4.F, 3.F);
+            const Ogre::Vector3 standard_point(-4.F, 4.F, -3.F);
             const Ogre::Vector2 projected_point =
                 sight::viz::scene3d::helper::camera::convert_world_space_to_screen_space(
                     *camera,
                     standard_point
                 );
 
-            const Ogre::Vector2 point(341.4213F, 421.8951F);
+            // Mirror of (-4, 4, 3): the clip coordinates are the same, w changes sign.
+            const Ogre::Vector2 point(
+                static_cast<float>(render_window->getWidth()) - 341.4213F,
+                static_cast<float>(render_window->getHeight()) - 421.8951F
+            );
             CHECK(doctest::Approx(projected_point[0]).epsilon(0.0001) == point[0]);
             CHECK(doctest::Approx(projected_point[1]).epsilon(0.0001) == point[1]);
+        }
+
+        // Points behind or on the camera plane can't be projected.
+        for(const auto& hidden_point : {Ogre::Vector3(-4.F, 4.F, 3.F), Ogre::Vector3(-4.F, 4.F, 0.F)})
+        {
+            const Ogre::Vector2 projected_point =
+                sight::viz::scene3d::helper::camera::convert_world_space_to_screen_space(
+                    *camera,
+                    hidden_point
+                );
+            CHECK(projected_point.isNaN());
         }
 
         camera->setProjectionType(Ogre::ProjectionType::PT_ORTHOGRAPHIC);
@@ -224,6 +249,26 @@ TEST_SUITE("sight::viz::scene3d::camera")
             const Ogre::Vector2 point(99.4444F, 83.8888F);
             CHECK(doctest::Approx(projected_point[0]).epsilon(0.0001) == point[0]);
             CHECK(doctest::Approx(projected_point[1]).epsilon(0.0001) == point[1]);
+        }
+
+        // Finite point far along a diagonal view axis: w overflows to infinity while x and y stay finite (a wide FOV
+        // keeps the x projection factor below 1).
+        {
+            camera->setProjectionType(Ogre::ProjectionType::PT_PERSPECTIVE);
+            camera->setFOVy(Ogre::Degree(120));
+            auto* const diagonal_node = scene_manager->getRootSceneNode()->createChildSceneNode();
+            diagonal_node->yaw(Ogre::Degree(45));
+            diagonal_node->attachObject(camera);
+
+            const float far_coord               = -0.9F * std::numeric_limits<float>::max();
+            const Ogre::Vector2 projected_point =
+                sight::viz::scene3d::helper::camera::convert_world_space_to_screen_space(
+                    *camera,
+                    Ogre::Vector3(far_coord, 0.F, far_coord)
+                );
+            CHECK(projected_point.isNaN());
+
+            diagonal_node->detachObject(camera);
         }
 
         render_window->removeViewport(0);

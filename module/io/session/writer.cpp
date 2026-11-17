@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2025 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,18 +23,14 @@
 
 #include "module/io/session/writer.hpp"
 
-#include <core/com/signal.hxx>
 #include <core/crypto/secure_string.hpp>
-#include <core/location/single_folder.hpp>
 #include <core/os/temp_path.hpp>
-#include <core/progress/aggregator.hpp>
 #include <core/tools/system.hpp>
 
 #include <io/session/session_writer.hpp>
 
 #include <ui/__/cursor.hpp>
 #include <ui/__/dialog/input.hpp>
-#include <ui/__/dialog/location.hpp>
 #include <ui/__/dialog/message.hpp>
 
 using sight::core::crypto::password_keeper;
@@ -191,20 +187,18 @@ void writer::updating()
             return global_password;
         }();
 
-    auto write_progress = std::make_shared<core::progress::observer>("Writing " + temp_file.string() + " file");
+    auto write_progress = this->make_notification<core::notification::observer>(
+        "Writing " + temp_file.string()
+        + " file"
+    );
 
-    auto rename_progress = std::make_shared<core::progress::observer>(
+    auto rename_progress = this->make_notification<core::notification::observer>(
         "Rename file" + temp_file.string() + " to " + filepath.string() + "."
     );
 
-    core::progress::aggregator::sptr progress = std::make_shared<core::progress::aggregator>(
-        filepath.string()
-        + " writer"
-    );
-    progress->add(write_progress);
-    progress->add(rename_progress);
+    auto progress = this->aggregate(filepath.string() + " writer", write_progress, rename_progress);
     progress->set_cancelable(false);
-    this->async_emit(has_monitors::signals::MONITOR_CREATED, progress->get_sptr());
+
     try
     {
         write_progress->done_work(10);
@@ -261,34 +255,9 @@ void writer::updating()
 
 //-----------------------------------------------------------------------------
 
-void writer::open_location_dialog()
+std::vector<std::pair<std::string, std::string> > writer::get_supported_extensions() const
 {
-    static auto default_location = std::make_shared<core::location::single_folder>();
-
-    sight::ui::dialog::location location_dialog;
-    location_dialog.set_title(*m_window_title);
-    location_dialog.set_default_location(default_location);
-    location_dialog.set_option(ui::dialog::location::write);
-    location_dialog.set_type(ui::dialog::location::single_file);
-    location_dialog.add_filter(m_extension_description, "*" + m_extension_name);
-
-    // Show the dialog
-    const auto result = std::dynamic_pointer_cast<core::location::single_file>(location_dialog.show());
-
-    if(result)
-    {
-        const auto& filepath = result->get_file();
-        set_file(filepath);
-        m_extension_name = location_dialog.get_selected_extensions().front();
-
-        // Save default location for later use
-        default_location->set_folder(filepath.parent_path());
-        location_dialog.save_default_location(default_location);
-    }
-    else
-    {
-        clear_locations();
-    }
+    return {{m_extension_description, "*" + m_extension_name}};
 }
 
 //-----------------------------------------------------------------------------

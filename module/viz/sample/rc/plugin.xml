@@ -5,14 +5,14 @@
     <extension implements="sight::service::extension::factory">
         <type>sight::ui::container</type>
         <service>sight::module::viz::sample::image</service>
-        <object key="image">sight::data::image</object>
+        <object key="data.image">sight::data::image</object>
         <desc>Render a 3D negatoscope of a medical image.</desc>
     </extension>
 
     <extension implements="sight::service::extension::factory">
         <type>sight::ui::container</type>
         <service>sight::module::viz::sample::mesh</service>
-        <object key="mesh">sight::data::mesh</object>
+        <object key="data.mesh">sight::data::mesh</object>
         <desc>Render a 3D mesh.</desc>
     </extension>
 </plugin>

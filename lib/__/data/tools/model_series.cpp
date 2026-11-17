@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,9 +21,6 @@
  ***********************************************************************/
 
 #include "data/tools/model_series.hpp"
-
-#include <core/com/signal.hxx>
-#include <core/spy_log.hpp>
 
 namespace sight::data::tools
 {
@@ -46,13 +43,9 @@ void model_series::add_mesh(
 
     add_reconstruction(_model_series, reconstruction_quad_mesh);
 
-    auto sig = _model_series->signal<data::model_series::reconstructions_added_signal_t>(
-        data::model_series::RECONSTRUCTIONS_ADDED_SIG
-    );
-
     data::model_series::reconstruction_vector_t reconstructions_vector;
     reconstructions_vector.push_back(reconstruction_quad_mesh);
-    sig->async_emit(reconstructions_vector);
+    _model_series->async_emit(data::model_series::signals::RECONSTRUCTIONS_ADDED, reconstructions_vector);
 }
 
 //------------------------------------------------------------------------------
@@ -94,7 +87,7 @@ void model_series::add_reconstruction(
     SIGHT_THROW_IF("Reconstruction is invalid.", _rec == nullptr);
     SIGHT_THROW_IF(
         "Reconstruction already exists in model_series.",
-        std::find(rec_db.begin(), rec_db.end(), _rec) != rec_db.end()
+        std::ranges::find(rec_db, _rec) != rec_db.end()
     );
 
     rec_db.push_back(_rec);

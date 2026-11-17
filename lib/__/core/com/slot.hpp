@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,8 @@
 
 #pragma once
 
-#define FWCOM_SLOT_HPP
-
 #include "core/com/slot_call.hpp"
+#include "core/com/util/auto_bind.hpp"
 #include "core/function.hpp"
 
 #include <functional>
@@ -62,7 +61,7 @@ public:
     using function_t     = std::function<signature_type>;
 
     template<typename FUNCTOR>
-    slot(FUNCTOR _f) :
+    explicit slot(FUNCTOR _f) :
         slot<R(A ...)>(),
         m_func(std::move(_f))
     {
@@ -85,7 +84,7 @@ public:
         return m_func(_a ...);
     }
 
-protected:
+private:
 
     function_t m_func;
 };
@@ -100,22 +99,92 @@ public:
     using signature_type = R(A ...);
     using function_t     = std::function<signature_type>;
 
-    template<typename F> slot(SPTR(slot_run<F>)_slot);
+    template<typename F>
+    explicit slot(sight::sptr<slot_run<F> > _slot);
 
-    template<typename F> slot(SPTR(slot<F>)_slot);
+    template<typename F>
+    explicit slot(sight::sptr<slot<F> > _slot);
 };
 
 //-----------------------------------------------------------------------------
 
 template<typename F, typename, typename ... bindings>
-SPTR(slot<typename core::com::util::convert_function_type<F>::type>) new_slot(F _f, bindings ... _bindings);
+sight::sptr<slot<typename core::com::util::convert_function_type<F>::type> > new_slot(F _f, bindings ... _bindings);
 
 //-----------------------------------------------------------------------------
 
 // Prototype used for lambdas functions
 template<typename F, typename>
-SPTR(slot<core::lambda_to_function_t<F> >) new_slot(F _f);
+sight::sptr<slot<core::lambda_to_function_t<F> > > new_slot(F _f);
 
 //-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+
+template<typename R, typename ... A>
+slot<R(A ...)>::slot() :
+    slot_call<R(A ...)>()
+{
+    // 'this->' is needed by gcc 4.2
+    //NOLINTNEXTLINE(cppcoreguidelines-prefer-member-initializer)
+    this->slot_base::m_signature = slot_base::get_type_name<R(A ...)>();
+}
+
+//-----------------------------------------------------------------------------
+
+template<typename R, typename ... A>
+template<typename F>
+slot<slot<R(A ...)> >::slot(sight::sptr<slot_run<F> > _slot) :
+    core::com::slot<function_t>(
+        core::com::util::auto_bind<
+            signature_type,
+            boost::function_types::function_arity<F>::value
+        >::wrap(&slot_run<F>::run, _slot.get()))
+{
+    static_assert(std::is_same_v<void, R>);
+    this->set_worker(_slot->get_worker());
+    this->m_source_slot = _slot;
+}
+
+//-----------------------------------------------------------------------------
+
+template<typename R, typename ... A>
+template<typename F>
+slot<slot<R(A ...)> >::slot(sight::sptr<slot<F> > _slot) :
+    core::com::slot<function_t>(
+        core::com::util::auto_bind<
+            signature_type,
+            boost::function_types::function_arity<F>::value
+        >::wrap(&core::com::slot<F>::call, _slot.get()))
+{
+    this->set_worker(_slot->get_worker());
+    this->m_source_slot = _slot;
+}
+
+//-----------------------------------------------------------------------------
+
+template<typename F, std::enable_if_t<std::is_function_v<typename core::com::util::convert_function_type<F>::type>,
+                                      bool> = true,
+         typename ... BINDING>
+sight::sptr<slot<typename core::com::util::convert_function_type<F>::type> > new_slot(F _f, BINDING ... _binding)
+{
+#ifdef _DEBUG
+    constexpr bool has_valid_nb_args = (sizeof...(_binding) < 2);
+    SIGHT_ASSERT("Too many arguments", has_valid_nb_args);
+#endif
+    using function_t = std::function<typename core::com::util::convert_function_type<F>::type>;
+    function_t func = core::com::util::autobind(_f, _binding ...);
+    return std::make_shared<slot<function_t> >(func);
+}
+
+//-----------------------------------------------------------------------------
+
+template<typename F>
+sight::sptr<slot<core::lambda_to_function_t<F> > > new_slot(F _f)
+requires(!std::is_function_v<typename core::com::util::convert_function_type<F>::type>)
+{
+    auto fn = lambda_to_function(_f);
+    return std::make_shared<sight::core::com::slot<core::lambda_to_function_t<F> > >(fn);
+}
 
 } // namespace sight::core::com

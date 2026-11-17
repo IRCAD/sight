@@ -56,6 +56,9 @@ Last, sight_viewer can also connect directly to a PACS, and then request, downlo
 **\--log-fatal**
 :   Set log level to fatal.
 
+**\-i arg**, **\--input arg**
+:   Set the filename of the image to upload.
+
 # BUGS
 
 For community support, see GitHub Issues: <https://github.com/IRCAD/Sight/issues>.

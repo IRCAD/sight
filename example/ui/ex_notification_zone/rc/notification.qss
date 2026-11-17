@@ -1,0 +1,37 @@
+
+
+#notification_label_instruction
+{
+    background-color: #51566b;
+    color: rgb(255, 255, 255);
+    font-weight: bold;
+    font-size: 40px;
+    border-radius: 4px;
+}
+
+#notification_label_information
+{
+    background-color: #51AF3B;
+    color: rgb(255, 255, 255);
+    font-weight: bold;
+    font-size: 40px;
+    border-radius: 4px;
+}
+
+#notification_label_warning
+{
+    background-color: #D9A400;
+    color: rgb(255, 255, 255);
+    font-weight: bold;
+    font-size: 40px;
+    border-radius: 4px;
+}
+
+#notification_label_error
+{
+    background-color: #BA292A;
+    color: rgb(255, 255, 255);
+    font-weight: bold;
+    font-size: 40px;
+    border-radius: 4px;
+}

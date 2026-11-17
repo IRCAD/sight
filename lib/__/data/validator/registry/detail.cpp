@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -26,9 +26,16 @@
 namespace sight::data::validator::registry
 {
 
+namespace
+{
+
 struct data_validator_registry_instantiator_tag {};
 
-SPTR(type) get()
+} // namespace
+
+//------------------------------------------------------------------------------
+
+sight::sptr<type> get()
 {
     using instantiator_t = core::lazy_instantiator<type, data_validator_registry_instantiator_tag>;
     return instantiator_t::get_instance();

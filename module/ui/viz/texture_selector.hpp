@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,7 +29,7 @@
 #include <QObject>
 #include <QPointer>
 
-class QPushButton;
+class QPushButton; // NOLINT(readability-identifier-naming)
 
 namespace sight::module::ui::viz
 {

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2025 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,7 +21,6 @@
 
 #include "viz/scene3d/detail/tf_manager.hpp"
 
-#include "viz/scene3d/ogre.hpp"
 #include "viz/scene3d/utils.hpp"
 
 #ifdef WIN32
@@ -31,8 +30,11 @@
 
 #include <GL/gl.h>
 
+#include <glm/ext/vector_uint4_sized.hpp>
+
 #include <OGRE/OgreHardwarePixelBuffer.h>
-#include <OGRE/OgreTextureManager.h>
+
+#include <utility>
 
 namespace sight::viz::scene3d::detail
 {
@@ -57,7 +59,7 @@ tf_loader::return_t tf_loader::load(const sight::data::transfer_function& _tf, O
     const value_t min = std::min(tf_wl_min_max.second, tf_wl_min_max.first);
     const value_t max = std::max(tf_wl_min_max.second, tf_wl_min_max.first);
 
-    const value_t range = std::min(max - min + 1, value_t(_texture->getWidth()));
+    const value_t range = std::min(max - min + 1, static_cast<value_t>(_texture->getWidth()));
 
     if(_tf.resample_to_max_texture_size())
     {
@@ -67,7 +69,7 @@ tf_loader::return_t tf_loader::load(const sight::data::transfer_function& _tf, O
     {
         texture_size = static_cast<std::uint32_t>(max - min + 1);
 
-        if(texture_size > static_cast<std::uint32_t>(max_texture_size))
+        if(std::cmp_greater(texture_size, max_texture_size))
         {
             SIGHT_ERROR("Invalid texture size.");
         }
@@ -122,9 +124,9 @@ tf_loader::return_t tf_loader::load(const sight::data::transfer_function& _tf, O
 
         tf_window =
             Ogre::Vector3(
-                float(min - intensity_step),
-                float(max + intensity_step),
-                float((max - min) / _texture->getWidth())
+                static_cast<float>(min - intensity_step),
+                static_cast<float>(max + intensity_step),
+                static_cast<float>((max - min) / _texture->getWidth())
             );
     }
     else
@@ -152,9 +154,9 @@ tf_loader::return_t tf_loader::load(const sight::data::transfer_function& _tf, O
 
         tf_window =
             Ogre::Vector3(
-                float(min),
-                float(max),
-                float((max - min + 1) / _texture->getWidth())
+                static_cast<float>(min),
+                static_cast<float>(max),
+                static_cast<float>((max - min + 1) / _texture->getWidth())
             );
     }
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -125,7 +125,7 @@ buffer_manager::stream_info buffer_object::get_stream_info() const
 //------------------------------------------------------------------------------
 
 void buffer_object::set_istream_factory(
-    const SPTR(core::memory::stream::in::factory)& _factory,
+    const sight::sptr<core::memory::stream::in::factory>& _factory,
     size_t _size,
     const std::filesystem::path& _source_file,
     core::memory::file_format_type _format,

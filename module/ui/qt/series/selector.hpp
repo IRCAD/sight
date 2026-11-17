@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -46,7 +46,7 @@ namespace sight::module::ui::qt::series
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="sight::module::ui::qt::series::selector">
-        <inout key="seriesSet" uid="..." />
+        <inout key="series_set" uid="..." />
         <inout key="selection" uid="..." />
         <icons>
             <icon series="..." icon="..." />
@@ -83,6 +83,22 @@ public:
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(selector, sight::ui::editor);
 
+    struct signals
+    {
+        using series_double_clicked_t = core::com::signal<void (std::shared_ptr<data::series>)>;
+
+        static inline const signal_key_t SERIES_DOUBLE_CLICKED = "series_double_clicked";
+    };
+
+    struct slots
+    {
+        using series_sptr_t = core::com::slot<void (data::series::sptr)>;
+        using container_t   = core::com::slot<void (data::series_set::container_t)>;
+
+        static inline const slot_key_t ADD_SERIES    = "addSeries";
+        static inline const slot_key_t REMOVE_SERIES = "removeSeries";
+    };
+
     /// Creates the signal and slots.
     selector();
 
@@ -101,8 +117,8 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::series_set::ADDED_OBJECTS_SIG of s_SERIES_SET_INOUT to ADD_SERIES_SLOT
-     * Connect data::series_set::REMOVED_OBJECTS_SIG of s_SERIES_SET_INOUT to REMOVE_SERIES_SLOT
+     * Connect data::series_set::signals::ADDED_OBJECTS of s_SERIES_SET_INOUT to ADD_SERIES
+     * Connect data::series_set::signals::REMOVED_OBJECTS of s_SERIES_SET_INOUT to REMOVE_SERIES
      */
     connections_t auto_connections() const override;
 
@@ -141,7 +157,7 @@ private:
 
     using remove_series_slot_t = core::com::slot<void (data::series_set::container_t)>;
 
-    using series_double_clicked_signal_t = core::com::signal<void (std::shared_ptr<data::series>)>;
+    using series_double_clicked_t = core::com::signal<void (std::shared_ptr<data::series>)>;
 
     /// SLOT: adds series into the selector.
     void add_series(data::series_set::container_t _added_series);
@@ -156,7 +172,7 @@ private:
     QPointer<sight::ui::qt::series::selector> m_selector_widget {nullptr};
 
     /// Contains the signal emitted when there is a double click on a series.
-    series_double_clicked_signal_t::sptr m_sig_series_double_clicked {nullptr};
+    signals::series_double_clicked_t::sptr m_sig_series_double_clicked {nullptr};
 
     /// Stores a map containing the specified icons for a series (map\<series classname, icon path\>).
     sight::ui::qt::series::selector::series_icon_t m_series_icons;
@@ -180,7 +196,7 @@ private:
     std::string m_displayed_columns =
         "PatientName/SeriesInstanceUID,PatientSex,PatientBirthDate/Icon,Modality,StudyDescription/SeriesDescription,StudyDate/SeriesDate,StudyTime/SeriesTime,PatientAge,BodyPartExamined,PatientPositionString,ContrastBolusAgent,AcquisitionTime,ContrastBolusStartTime";
 
-    static constexpr std::string_view SERIES_SET = "seriesSet";
+    static constexpr std::string_view SERIES_SET = "series_set";
     static constexpr std::string_view SELECTION  = "selection";
 
     data::ptr<data::series_set, data::access::inout> m_series_set {this, SERIES_SET};

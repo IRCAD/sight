@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,11 +25,11 @@
 #include "core/runtime/detail/module.hpp"
 #include "core/runtime/detail/profile/activater.hpp"
 #include "core/runtime/detail/runtime.hpp"
-#include "core/runtime/extension.hpp"
 
 #include <algorithm>
 #include <cstring>
 #include <functional>
+#include <ranges>
 
 namespace sight::core::runtime::detail::profile
 {
@@ -48,7 +48,7 @@ profile::~profile()
 
 //------------------------------------------------------------------------------
 
-void profile::add(SPTR(activater)_activater)
+void profile::add(sight::sptr<activater> _activater)
 {
     m_activaters.push_back(_activater);
 }
@@ -74,7 +74,7 @@ void profile::add_stopper(const std::string& _identifier, int _priority)
 
 void profile::start()
 {
-    std::for_each(m_activaters.begin(), m_activaters.end(), [](auto& _activater){_activater->apply();});
+    std::ranges::for_each(m_activaters, [](auto& _activater){_activater->apply();});
 
     // Check validity of extension
 
@@ -137,9 +137,9 @@ void profile::set_run_callback(run_callback_type _callback)
 
 void profile::stop()
 {
-    std::for_each(
-        m_stoppers.rbegin(),
-        m_stoppers.rend(),
+    std::ranges::for_each(
+        std::views::reverse(m_stoppers),
+
         [](auto& _s)
         {
             auto identifier = _s.second;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,14 +25,7 @@
 #include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
 
-#include <data/string.hpp>
-
-#include <service/base.hpp>
-#include <service/registry.hpp>
-
 #include <ui/__/preferences.hpp>
-
-#include <boost/algorithm/string.hpp>
 
 namespace sight::ui::dialog
 {
@@ -55,6 +48,27 @@ inline static std::string get_frame_key(const std::string& _title)
 inline static std::string get_file_key(const std::string& _title)
 {
     return get_frame_key(_title) + "." + location_base::DLG_DEFAULT_FILE;
+}
+
+//------------------------------------------------------------------------------
+
+inline static std::string get_preferences_frame_key(const std::string& _key)
+{
+    return std::string(location_base::SOFTWARE_UI) + "." + _key;
+}
+
+//------------------------------------------------------------------------------
+
+inline static std::string get_preferences_file_key(const std::string& _key)
+{
+    return get_preferences_frame_key(_key) + "." + location_base::DLG_DEFAULT_FILE;
+}
+
+//------------------------------------------------------------------------------
+
+inline static std::string get_preferences_directory_key(const std::string& _key)
+{
+    return get_preferences_frame_key(_key) + "." + location_base::DLG_DEFAULT_DIRECTORY;
 }
 
 //------------------------------------------------------------------------------
@@ -90,6 +104,13 @@ const std::string& location_base::get_title()
 
 //------------------------------------------------------------------------------
 
+void location_base::set_preferences_key(const std::string& _key)
+{
+    m_preferences_key = _key;
+}
+
+//------------------------------------------------------------------------------
+
 void location_base::set_default_location(core::location::base::sptr _loc)
 {
     m_default_locaction = _loc;
@@ -100,12 +121,15 @@ void location_base::set_default_location(core::location::base::sptr _loc)
 core::location::base::sptr location_base::get_default_location()
 {
     core::location::base::sptr location;
+    const std::string preference_key = m_preferences_key.empty() ? get_title() : m_preferences_key;
 
     try
     {
         ui::preferences preferences;
 
-        if(const auto& default_file = preferences.get_optional<std::filesystem::path>(get_file_key(get_title()));
+        if(const auto& default_file = preferences.get_optional<std::filesystem::path>(
+               get_preferences_file_key(preference_key)
+        );
            default_file)
         {
             auto single_file = std::make_shared<core::location::single_file>();
@@ -113,11 +137,33 @@ core::location::base::sptr location_base::get_default_location()
             location = single_file;
         }
         else if(const auto& default_directory =
-                    preferences.get_optional<std::filesystem::path>(get_directory_key(get_title())); default_directory)
+                    preferences.get_optional<std::filesystem::path>(
+                        get_preferences_directory_key(preference_key)
+                    ); default_directory)
         {
             auto single_directory = std::make_shared<core::location::single_folder>();
             single_directory->set_folder(*default_directory);
             location = single_directory;
+        }
+
+        // Migrate legacy title-based preferences only when no service-specific value exists.
+        if(!location && !m_preferences_key.empty() && m_preferences_key != get_title())
+        {
+            if(const auto& default_file = preferences.get_optional<std::filesystem::path>(get_file_key(get_title()));
+               default_file)
+            {
+                auto single_file = std::make_shared<core::location::single_file>();
+                single_file->set_file(*default_file);
+                location = single_file;
+            }
+            else if(const auto& default_directory =
+                        preferences.get_optional<std::filesystem::path>(get_directory_key(get_title()));
+                    default_directory)
+            {
+                auto single_directory = std::make_shared<core::location::single_folder>();
+                single_directory->set_folder(*default_directory);
+                location = single_directory;
+            }
         }
     }
     catch(const ui::preferences_disabled&)
@@ -145,11 +191,13 @@ void location_base::save_default_location(core::location::base::sptr _loc)
 
             if(auto single_file = std::dynamic_pointer_cast<core::location::single_file>(_loc))
             {
-                preferences.put(get_file_key(get_title()), single_file->get_file());
+                const std::string preference_key = m_preferences_key.empty() ? get_title() : m_preferences_key;
+                preferences.put(get_preferences_file_key(preference_key), single_file->get_file());
             }
             else if(auto single_directory = std::dynamic_pointer_cast<core::location::single_folder>(_loc))
             {
-                preferences.put(get_directory_key(get_title()), single_directory->get_folder());
+                const std::string preference_key = m_preferences_key.empty() ? get_title() : m_preferences_key;
+                preferences.put(get_preferences_directory_key(preference_key), single_directory->get_folder());
             }
         }
         catch(const ui::preferences_disabled&)
@@ -157,6 +205,13 @@ void location_base::save_default_location(core::location::base::sptr _loc)
             // Nothing to do..
         }
     }
+}
+
+//------------------------------------------------------------------------------
+
+std::string location_base::get_current_selection() const
+{
+    return get_current_filter().second;
 }
 
 //------------------------------------------------------------------------------

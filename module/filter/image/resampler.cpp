@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2025 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,12 +22,7 @@
 
 #include "resampler.hpp"
 
-#include <core/com/signal.hpp>
-#include <core/com/signal.hxx>
-
 #include <filter/image/resampler.hpp>
-
-#include <service/macros.hpp>
 
 namespace sight::module::filter::image
 {
@@ -35,7 +30,7 @@ namespace sight::module::filter::image
 //------------------------------------------------------------------------------
 
 resampler::resampler() :
-    filter(m_signals)
+    filter(has_signals::signals())
 {
 }
 
@@ -69,11 +64,12 @@ void resampler::updating()
         in_img.get_shared(),
         out_img.get_shared(),
         transform.get_shared(),
+        *m_pre_transform,
         std::make_tuple(target->size(), target->origin(), target->orientation(), target->spacing(), interp)
     );
 
-    this->async_emit(signals::COMPUTED);
-    out_img->async_emit(data::image::BUFFER_MODIFIED_SIG);
+    this->async_emit(signals::SUCCEEDED);
+    out_img->async_emit(data::signals::MODIFIED);
 }
 
 //------------------------------------------------------------------------------
@@ -87,9 +83,9 @@ void resampler::stopping()
 service::connections_t resampler::auto_connections() const
 {
     service::connections_t connections;
-    connections.push(IMAGE_IN, data::image::MODIFIED_SIG, service::slots::UPDATE);
-    connections.push(IMAGE_IN, data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE);
-    connections.push(TRANSFORM_IN, data::matrix4::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(IMAGE_IN, data::signals::MODIFIED, service::slots::UPDATE);
+    connections.push(IMAGE_IN, data::image::signals::BUFFER_MODIFIED, service::slots::UPDATE);
+    connections.push(TRANSFORM_IN, data::signals::MODIFIED, service::slots::UPDATE);
 
     return connections;
 }

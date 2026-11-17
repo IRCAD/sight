@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2025 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -59,6 +59,7 @@ namespace sight::module::ui::qt::metrics
  *
  * @section Signals Signals
  * - \b group_selected(std::string groupName): triggered when a new group is selected from the editor
+ * - \b group_removed_from_editor(): emitted when the last group is deleted from the editor.
  *
  * @section XML XML Configuration
  *
@@ -79,8 +80,8 @@ namespace sight::module::ui::qt::metrics
  * point to the landmarks
  *
  *  @subsection In-Out In-Out
- * - \b imageSeries [sight::data::image_series]: the imageSeries structure on which this editor is working.
- *  Either landmarks or imageSeries parameter must be set.
+ * - \b image_series [sight::data::image_series]: the image_series structure on which this editor is working.
+ *  Either landmarks or image_series parameter must be set.
  * - \b currentLandmark [sight::data::point]: (optional) the coordinates of the currently selected landmark.
  *  It is updated when a new landmark is created, or when a double click is made on an existing landmark.
  *
@@ -90,6 +91,7 @@ namespace sight::module::ui::qt::metrics
  * - \b opacity (optional, default="1.0"): default opacity of created landmarks.
  * - \b advanced (optional, default="false"): if "true", use the advanced mode displaying point information
  *      and groups with multiple points.
+ * - \b excluded_group (optional): DICOM fiducial group kept out of the landmarks table.
  */
 class landmarks final : public QObject,
                         public sight::ui::editor
@@ -100,11 +102,39 @@ public:
 
     SIGHT_DECLARE_SERVICE(landmarks, sight::ui::editor);
 
+    struct signals
+    {
+        using world_coordinates_t = core::com::signal<void (double, double, double)>;
+        static inline const signal_key_t SEND_WORLD_COORD = "send_world_coord";
+
+        using group_selected_t = core::com::signal<void (std::string)>;
+        static inline const signal_key_t GROUP_SELECTED = "group_selected";
+
+        /// Emitted when the last group is deleted from the editor.
+        using groups_removed_from_editor_t = core::com::signal<void ()>;
+        static inline const signal_key_t GROUPS_REMOVED_FROM_EDITOR = "groups_removed_from_editor";
+    };
+
+    struct slots
+    {
+        static inline const slot_key_t ADD_POINT      = "add_point";
+        static inline const slot_key_t MODIFY_POINT   = "modifyPoint";
+        static inline const slot_key_t SELECT_POINT   = "selectPoint";
+        static inline const slot_key_t DESELECT_POINT = "deselectPoint";
+        static inline const slot_key_t REMOVE_POINT   = "removePoint";
+        static inline const slot_key_t ADD_GROUP      = "add_group";
+        static inline const slot_key_t REMOVE_GROUP   = "remove_group";
+        static inline const slot_key_t MODIFY_GROUP   = "modifyGroup";
+        static inline const slot_key_t RENAME_GROUP   = "rename_group";
+    };
+
     /// Initializes slots.
     landmarks() noexcept;
 
     /// Destroys the service.
     ~landmarks() noexcept final = default;
+
+protected:
 
     /// Configures the service.
     void configuring() final;
@@ -118,17 +148,13 @@ public:
      */
     connections_t auto_connections() const final;
 
-    /// Signal send when double clicked on a landmark, send its world coordinates;
-    static const core::com::signals::key_t SEND_WORLD_COORD;
-    using world_coordinates_signal_t = core::com::signal<void (double, double, double)>;
-    static const core::com::signals::key_t GROUP_SELECTED;
-    using group_selected_signal_t = core::com::signal<void (std::string)>;
-
     /// Resets the interface content and create connections between widgets and this service.
     void updating() final;
 
     /// Destroys the layout.
     void stopping() final;
+
+private:
 
     /// Called when a color button is clicked.
     void on_color_button();
@@ -333,12 +359,15 @@ public:
     /// Sets the text displayed at the top of this editor.
     std::string m_text;
 
-    static constexpr std::string_view IMAGE_SERIES_INOUT     = "imageSeries";
+    static constexpr std::string_view IMAGE_SERIES_INOUT     = "image_series";
     static constexpr std::string_view MATRIX_IN              = "matrix";
     static constexpr std::string_view CURRENT_LANDMARK_INOUT = "currentLandmark";
     data::ptr<data::matrix4, sight::data::access::in> m_matrix {this, MATRIX_IN, true};
     data::ptr<data::image_series, sight::data::access::inout> m_image_series {this, IMAGE_SERIES_INOUT};
     data::ptr<data::point, sight::data::access::inout> m_current_landmark {this, CURRENT_LANDMARK_INOUT, true};
+
+    /// @brief The name of the group that should be excluded from the landmarks editor.
+    std::string m_excluded_group;
 
     /// Used to generate random color
     std::uniform_real_distribution<float> m_distributor {0.0F, 1.0F};

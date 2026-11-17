@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -35,7 +35,7 @@ class selector
 {
 public:
 
-    enum class type
+    enum class type : std::uint8_t
     {
         from_main,
         from_dialog,
@@ -45,7 +45,7 @@ public:
         dialog
     };
 
-    using Data = std::variant<std::string, std::pair<std::string, std::string> >;
+    using data_t = std::variant<std::string, std::pair<std::string, std::string> >;
 
     /**
      * Implicit constructor from a string. Equivalent to selector::fromMain. @see fromMain
@@ -104,7 +104,7 @@ public:
      *
      * @returns A copy of this
      */
-    SIGHT_UI_TEST_API selector with_timeout(int _timeout) const;
+    [[nodiscard]] SIGHT_UI_TEST_API selector with_timeout(int _timeout) const;
 
     /**
      * Adds a new condition for the object to meet
@@ -131,30 +131,30 @@ public:
      *
      * @returns The description of the object
      */
-    SIGHT_UI_TEST_API std::string get_description(const tester& _tester) const;
+    [[nodiscard]] SIGHT_UI_TEST_API std::string get_description(const tester& _tester) const;
 
     //------------------------------------------------------------------------------
 
-    SIGHT_UI_TEST_API enum type type() const
+    [[nodiscard]] SIGHT_UI_TEST_API enum type type() const
     {
         return m_type;
     }
 
     //------------------------------------------------------------------------------
 
-    SIGHT_UI_TEST_API Data data() const
+    [[nodiscard]] SIGHT_UI_TEST_API data_t data() const
     {
         return m_data;
     }
 
 private:
 
-    selector(enum type _type, Data _data);
+    selector(enum type _type, data_t _data);
 
     enum type m_type;
-    Data m_data;
+    data_t m_data;
     int m_timeout = tester::DEFAULT_TIMEOUT;
     std::vector<std::function<bool(QObject*)> > m_conditions;
 };
 
-} // namespace sight::ui
+} // namespace sight::ui::test::helper

@@ -19,5 +19,4 @@ add_dependencies(
     module_geometry
     module_sync
     module_data
-    module_navigation_calibration
 )

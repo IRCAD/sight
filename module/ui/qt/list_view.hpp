@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -55,6 +55,22 @@ Q_OBJECT
 
 public:
 
+    struct signals
+    {
+        using item_added_t          = core::com::signal<void (int)>;
+        using item_removed_t        = core::com::signal<void (int)>;
+        using item_double_clicked_t = core::com::signal<void (int)>;
+        static inline const signal_key_t ITEM_ADDED          = "itemAdded";
+        static inline const signal_key_t ITEM_REMOVED        = "itemRemoved";
+        static inline const signal_key_t ITEM_DOUBLE_CLICKED = "itemDoubleClicked";
+    };
+
+    struct slots
+    {
+        static inline const slot_key_t INSERT_ITEM = "insertItem";
+        static inline const slot_key_t REMOVE_ITEM = "removeItem";
+    };
+
     SIGHT_DECLARE_SERVICE(list_view, sight::ui::editor);
 
     /// Constructor. Do nothing.
@@ -63,41 +79,16 @@ public:
     /// Destructor. Do nothing.
     ~list_view() noexcept override;
 
-    /**@name Signals API
-     * @{
-     */
-
-    static const core::com::signals::key_t ITEM_ADDED_SIG;
-    using item_added_signal_t = core::com::signal<void (int)>;
-
-    static const core::com::signals::key_t ITEM_REMOVED_SIG;
-    using item_removed_signal_t = core::com::signal<void (int)>;
-
-    static const core::com::signals::key_t ITEM_DOUBLE_CLICKED_SIG;
-    using item_double_clicked_signal_t = core::com::signal<void (int)>;
-
-    /** @} */
-
-    /**
-     * @name Slots API
-     * @{
-     */
-
-    static const core::com::slots::key_t INSERT_ITEM_SLOT;
-    static const core::com::slots::key_t REMOVE_ITEM_SLOT;
-
     /// SLOT : Called to insert an item at index.
     void insert_item(int _index, std::string _value);
 
     /// SLOT : Called to remove the item at the index position.
     void remove_item(int _index);
 
-    ///@}
-
-protected:
-
     /// used to catch the del key released event
     bool eventFilter(QObject* _watched, QEvent* _event) override;
+
+protected:
 
     /// Installs the layout
     void starting() override;

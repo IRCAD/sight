@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,8 +23,6 @@
 #include "ui/__/layout/menu_manager.hpp"
 
 #include <core/runtime/path.hpp>
-
-#include <boost/range/iterator_range_core.hpp>
 
 namespace sight::ui::layout
 {
@@ -61,7 +59,7 @@ void menu_manager::initialize(const ui::config_t& _configuration)
                 const std::string& special_action_name = action.value();
                 if(special_action_name == "DEFAULT")
                 {
-                    info.m_type = DEFAULT;
+                    info.m_type = standard;
                 }
                 else if(special_action_name == "QUIT")
                 {
@@ -74,10 +72,6 @@ void menu_manager::initialize(const ui::config_t& _configuration)
                 else if(special_action_name == "HELP")
                 {
                     info.m_type = help;
-                }
-                else if(special_action_name == "NEW")
-                {
-                    info.m_type = NEW;
                 }
                 else
                 {

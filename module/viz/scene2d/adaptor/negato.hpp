@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -72,22 +72,40 @@ public:
 
     SIGHT_DECLARE_SERVICE(negato, sight::viz::scene2d::adaptor);
 
+    struct signals
+    {
+        static inline const signal_key_t SLICE_INDEX_CHANGED = "slice_index_changed";
+    };
+
+    struct slots
+    {
+        static inline const slot_key_t UPDATE_SLICE_INDEX = "updateSliceIndex";
+        static inline const slot_key_t UPDATE_SLICE_TYPE  = "updateSliceType";
+        static inline const slot_key_t UPDATE_BUFFER      = "updateBuffer";
+        static inline const slot_key_t UPDATE_VISIBILITY  = "update_visibility";
+        static inline const slot_key_t UPDATE_TF          = "update_tf";
+    };
+
+    /// Creates the service.
     negato() noexcept;
 
+    /// Destroys the service.
     ~negato() noexcept override;
 
-    /**
-     * @brief Returns proposals to connect service slots to associated object signals,
-     * this method is used for obj/srv auto connection
-     *
-     * Connect image::MODIFIED_SIG to this::service::slots::UPDATE
-     * Connect image::SLICE_INDEX_MODIFIED_SIG to this::UPDATE_SLICE_INDEX_SLOT
-     * Connect image::SLICE_TYPE_MODIFIED_SIG to this::UPDATE_SLICE_TYPE_SLOT
-     * Connect image::BUFFER_MODIFIED_SIG to this::UPDATE_BUFFER_SLOT
-     */
-    service::connections_t auto_connections() const override;
+    void process_interaction(sight::viz::scene2d::data::event& _event) override;
 
 protected:
+
+    /**
+     * @brief Proposals to connect service slots to associated object signals.
+     * @return A map of each proposed connection.
+     *
+     * Connect data::signals::MODIFIED to this::service::slots::UPDATE
+     * Connect image::signals::SLICE_TYPE_MODIFIED to this::UPDATE_SLICE_INDEX
+     * Connect image::signals::SLICE_INDEX_MODIFIED to this::UPDATE_SLICE_TYPE
+     * Connect image::signals::BUFFER_MODIFIED to this::UPDATE_BUFFER
+     */
+    service::connections_t auto_connections() const override;
 
     void configuring() override;
 
@@ -96,8 +114,6 @@ protected:
     void updating() override;
 
     void stopping() override;
-
-    void process_interaction(sight::viz::scene2d::data::event& _event) override;
 
     /// Slot: updates the TF
     void update_tf();

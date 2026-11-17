@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2025 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2020-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,10 @@
 
 #pragma once
 
+#include <data/matrix4.hpp>
+
 #include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/material/standard.hpp>
-#include <viz/scene3d/transformable.hpp>
 
 namespace sight::module::viz::scene3d::adaptor
 {
@@ -38,13 +39,13 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::adaptor::orientation_marker" auto_connect="true">
-        <in key="matrix" uid="..." />
+        <data matrix="${...}" />
         <config resource="..." depth="-32.0" />
     </service>
    @endcode
  *
  * @subsection Input Input
- *  - \b matrix [sight::data::matrix4]: matrix to follow (usually camera Matrix).
+ *  - \b data.matrix [sight::data::matrix4]: matrix to follow (usually camera Matrix).
  * @subsection Configuration Configuration:
  * - \b resource (optional, string): name of the resource to use for the marker.
  * - \b depth (optional, float): value of depth (z) where marker will be positioned, greater value to zoom-in , lower
@@ -64,6 +65,9 @@ public:
     /// Destructor
     ~orientation_marker() noexcept final = default;
 
+    /// Sets the visibility of the adaptor
+    void set_visible(bool _visible) final;
+
 protected:
 
     /// Configures the service's parameters
@@ -77,9 +81,6 @@ protected:
 
     /// Unregisters child services
     void stopping() final;
-
-    /// Sets the visibility of the adaptor
-    void set_visible(bool _visible) final;
 
     /// Connects input matrix MODIFIED to UPDATE slot.
     service::connections_t auto_connections() const final;
@@ -104,7 +105,7 @@ private:
     /// Z coordinate of marker position, increase to zoom in, decrease to zoom out.
     float m_marker_depth = -32.F;
 
-    static constexpr std::string_view MATRIX_IN = "matrix";
+    static constexpr std::string_view MATRIX_IN = "data.matrix";
     sight::data::ptr<sight::data::matrix4, sight::data::access::in> m_matrix {this, MATRIX_IN};
 };
 

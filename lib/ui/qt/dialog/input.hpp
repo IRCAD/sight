@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -70,6 +70,7 @@ public:
 
 protected:
 
+    //NOLINTBEGIN (misc-non-private-member-variables-in-classes)
     /// Dialog title
     std::string m_title;
 
@@ -80,7 +81,8 @@ protected:
     std::string m_input;
 
     /// Echo mode
-    input::echo_mode m_echo_mode {input::echo_mode::DEFAULT};
+    input::echo_mode m_echo_mode {input::echo_mode::normal};
+    //NOLINTEND (misc-non-private-member-variables-in-classes)
 };
 
 } // namespace sight::ui::qt::dialog

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,7 +23,6 @@
 #include "ui/__/dialog/location.hpp"
 
 #include <core/thread/worker.hpp>
-#include <core/thread/worker.hxx>
 
 namespace sight::ui::dialog
 {
@@ -95,6 +94,13 @@ const std::string& location::get_title()
     return m_implementation->get_title();
 }
 
+//------------------------------------------------------------------------------
+
+void location::set_preferences_key(const std::string& _key)
+{
+    m_implementation->set_preferences_key(_key);
+}
+
 //-----------------------------------------------------------------------------
 
 void location::set_default_location(core::location::base::sptr _loc)
@@ -121,6 +127,13 @@ void location::save_default_location(core::location::base::sptr _loc)
 std::string location::get_current_selection() const
 {
     return m_implementation->get_current_selection();
+}
+
+//-----------------------------------------------------------------------------
+
+location::filter_t location::get_current_filter() const
+{
+    return m_implementation->get_current_filter();
 }
 
 //-----------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -28,15 +28,18 @@
 namespace sight::io::joystick
 {
 
+namespace
+{
+
 /// This structure is used to ensure that SDL is correctly terminated when the program exits, even in case of crashes.
-static struct event_loop_keeper
+struct event_loop_keeper
 {
     ~event_loop_keeper()
     {
         std::unique_lock lock(mutex);
 
         // We need to perform special action if shutdown() is not called due to unexpected scalar destruction
-        // If we are there, like when CPPUnit test breaks at start, the main thread is already dead (at least on linux).
+        // If we are there, like when a test breaks at start, the main thread is already dead (at least on linux).
         if(event_loop)
         {
             event_loop->internal_stop();
@@ -46,6 +49,8 @@ static struct event_loop_keeper
     std::mutex mutex;
     std::shared_ptr<detail::event_loop> event_loop;
 } s_event_loop_keeper;
+
+} // namespace
 
 //------------------------------------------------------------------------------
 

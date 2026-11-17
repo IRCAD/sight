@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2024 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,6 +34,14 @@ class network_sender : public service::controller
 {
 public:
 
+    struct signals
+    {
+        using connected_t    = core::com::signal<void ()>;
+        using disconnected_t = core::com::signal<void ()>;
+        static inline const signal_key_t CONNECTED    = "connected";
+        static inline const signal_key_t DISCONNECTED = "disconnected";
+    };
+
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(network_sender, service::controller);
 
@@ -45,12 +53,6 @@ public:
 
 protected:
 
-    /// Defines the signal's name emitted when service is connected.
-    static const core::com::signals::key_t CONNECTED_SIGNAL;
-
-    /// Defines the signal's name emitted when service is disconnected.
-    static const core::com::signals::key_t DISCONNECTED_SIGNAL;
-
     /**
      * @brief Sends input objects
      * @pre The service must be started.
@@ -61,7 +63,7 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::object::MODIFIED_SIG to service::slots::UPDATE.
+     * Connect data::signals::MODIFIED to service::slots::UPDATE.
      */
     connections_t auto_connections() const override;
 
@@ -71,15 +73,9 @@ protected:
      */
     virtual void send_object(const data::object::csptr& _obj, std::size_t _index) = 0;
 
-    /// Defines the signal emitted when service is connected.
-    using connected_signal_t = core::com::signal<void ()>;
-    connected_signal_t::sptr m_sig_connected;
-
-    /// Defines the signal emitted when service is disconnected.
-    using disconnect_signal_t = core::com::signal<void ()>;
-    disconnect_signal_t::sptr m_sig_disconnected;
-
     static constexpr std::string_view OBJECTS_INPUT = "objects";
+
+    // NOLINTNEXTLINE(cppcoreguidelines-non-private-member-variables-in-classes)
     data::ptr_vector<data::object, sight::data::access::in> m_objects {this, OBJECTS_INPUT};
 };
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2025 IRCAD France
+ * Copyright (C) 2019-2026 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,15 +22,6 @@
 
 #include "manage_point_list.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-
-#include <data/string.hpp>
-
-#include <boost/algorithm/string.hpp>
-
-#include <glm/mat4x4.hpp>
-#include <glm/vec4.hpp>
 namespace sight::module::geometry
 {
 
@@ -83,19 +74,7 @@ void manage_point_list::updating()
     }
 
     const data::point::sptr new_point = std::make_shared<data::point>();
-    const auto matrix                 = m_transform.lock();
-    if(matrix)
-    {
-        const glm::dmat4x4 mat = sight::geometry::data::to_glm_mat(*matrix);
-
-        const glm::dvec4 point          = {(*input_position)[3], (*input_position)[7], (*input_position)[11], 1.0};
-        const glm::dvec4 modified_point = mat * point;
-        *new_point = {modified_point[0], modified_point[1], modified_point[2]};
-    }
-    else
-    {
-        *new_point = {(*input_position)[3], (*input_position)[7], (*input_position)[11]};
-    }
+    *new_point = {(*input_position)[3], (*input_position)[7], (*input_position)[11]};
 
     this->add_point(new_point);
 }
@@ -113,20 +92,7 @@ void manage_point_list::pick(data::tools::picking_info _info) const
     if(_info.m_modifier_mask == m_modifier)
     {
         const data::point::sptr new_point = std::make_shared<data::point>();
-
-        const auto matrix = m_transform.lock();
-        if(matrix)
-        {
-            const glm::dvec4 picked_point = {_info.m_world_pos[0], _info.m_world_pos[1], _info.m_world_pos[2], 1.0};
-            const glm::dmat4x4 mat        = sight::geometry::data::to_glm_mat(*matrix);
-
-            const glm::dvec4 modified_picked_point = mat * picked_point;
-            *new_point = {modified_picked_point[0], modified_picked_point[1], modified_picked_point[2]};
-        }
-        else
-        {
-            *new_point = {_info.m_world_pos[0], _info.m_world_pos[1], _info.m_world_pos[2]};
-        }
+        *new_point = {_info.m_world_pos[0], _info.m_world_pos[1], _info.m_world_pos[2]};
 
         if(_info.m_event_id == data::tools::picking_info::event::mouse_left_up)
         {
@@ -147,18 +113,18 @@ void manage_point_list::add_point(const data::point::sptr _point) const
 
     if(m_label)
     {
-        const auto counter = point_list->get_points().size();
+        const auto counter = point_list->size();
         _point->set_label(std::to_string(counter));
     }
 
     point_list->push_back(_point);
-    point_list->async_emit(data::point_list::POINT_ADDED_SIG, _point);
+    point_list->async_emit(data::point_list::signals::POINT_ADDED, _point);
 
-    if(m_max != 0 && point_list->get_points().size() > m_max)
+    if(m_max != 0 && point_list->size() > m_max)
     {
-        const data::point::sptr removed_point = point_list->get_points().front();
+        const data::point::sptr removed_point = point_list->front();
         point_list->remove(0);
-        point_list->async_emit(data::point_list::POINT_REMOVED_SIG, removed_point);
+        point_list->async_emit(data::point_list::signals::POINT_REMOVED, removed_point);
     }
 }
 
@@ -174,7 +140,7 @@ void manage_point_list::remove_point(const data::point::csptr _point) const
 
         if(point_res != nullptr)
         {
-            point_list->async_emit(data::point_list::POINT_REMOVED_SIG, point_res);
+            point_list->async_emit(data::point_list::signals::POINT_REMOVED, point_res);
         }
     }
 }
@@ -184,14 +150,11 @@ void manage_point_list::remove_point(const data::point::csptr _point) const
 void manage_point_list::clear() const
 {
     const auto point_list = m_point_list.lock();
-
-    using pl_container_t = data::point_list::container_t;
-    const pl_container_t container = point_list->get_points();
     point_list->clear();
 
-    for(const auto& point : container)
+    for(const auto& point : *point_list)
     {
-        point_list->async_emit(data::point_list::POINT_REMOVED_SIG, point);
+        point_list->async_emit(data::point_list::signals::POINT_REMOVED, point);
     }
 }
 

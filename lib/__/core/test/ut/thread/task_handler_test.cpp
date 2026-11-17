@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,14 +20,11 @@
  *
  ***********************************************************************/
 
-#include <core/spy_log.hpp>
-#include <core/thread/task_handler.hpp>
 #include <core/thread/worker.hpp>
 
 #include <doctest/doctest.h>
 
 #include <exception>
-#include <iostream>
 #include <thread>
 
 TEST_SUITE("sight::core::thread::task_handler")

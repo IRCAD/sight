@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,17 +24,67 @@
 #include "core/com/exception/bad_slot.hpp"
 
 #include <core/com/signal.hpp>
-#include <core/com/signal.hxx>
-#include <core/com/slot.hpp>
-#include <core/com/slot.hxx>
-#include <core/thread/worker.hpp>
 
-#include <boost/date_time/posix_time/posix_time.hpp>
+#include <core/com/slot.hpp>
+
+#include <core/thread/worker.hpp>
 
 #include <doctest/doctest.h>
 
 #include <string>
 #include <thread>
+
+namespace
+{
+
+struct signal_test_class
+{
+    //------------------------------------------------------------------------------
+
+    void method0()
+    {
+        m_method0 = true;
+    }
+
+    //------------------------------------------------------------------------------
+
+    void method00()
+    {
+        m_method00 = true;
+    }
+
+    //------------------------------------------------------------------------------
+
+    float method1(float _f)
+    {
+        m_method1 = true;
+        return 2 * _f;
+    }
+
+    //------------------------------------------------------------------------------
+
+    float method2(float _f, int /*unused*/)
+    {
+        m_method2 = true;
+        return 2 * _f;
+    }
+
+    //------------------------------------------------------------------------------
+
+    float method3(float _f, double /*unused*/, std::string /*unused*/)
+    {
+        m_method3 = true;
+        return 2 * _f;
+    }
+
+    bool m_method00 {false};
+    bool m_method0 {false};
+    bool m_method1 {false};
+    bool m_method2 {false};
+    bool m_method3 {false};
+};
+
+} // namespace
 
 TEST_SUITE("sight::core::com::signal")
 {
@@ -66,58 +116,6 @@ TEST_SUITE("sight::core::com::signal")
             CHECK(sig);
         }
     }
-
-//-----------------------------------------------------------------------------
-
-    struct signal_test_class
-    {
-        signal_test_class()
-        = default;
-
-        //------------------------------------------------------------------------------
-
-        void method0()
-        {
-            m_method0 = true;
-        }
-
-        //------------------------------------------------------------------------------
-
-        void method00()
-        {
-            m_method00 = true;
-        }
-
-        //------------------------------------------------------------------------------
-
-        float method1(float _f)
-        {
-            m_method1 = true;
-            return 2 * _f;
-        }
-
-        //------------------------------------------------------------------------------
-
-        float method2(float _f, int /*unused*/)
-        {
-            m_method2 = true;
-            return 2 * _f;
-        }
-
-        //------------------------------------------------------------------------------
-
-        float method3(float _f, double /*unused*/, std::string /*unused*/)
-        {
-            m_method3 = true;
-            return 2 * _f;
-        }
-
-        bool m_method00 {false};
-        bool m_method0 {false};
-        bool m_method1 {false};
-        bool m_method2 {false};
-        bool m_method3 {false};
-    };
 
 //-----------------------------------------------------------------------------
 

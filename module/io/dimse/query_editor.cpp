@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2025 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,8 +28,7 @@
 
 #include <io/dimse/exceptions/base.hpp>
 #include <io/dimse/helper/series.hpp>
-
-#include <service/macros.hpp>
+#include <io/dimse/series_enquirer.hpp>
 
 #include <ui/qt/container/widget.hpp>
 
@@ -55,7 +54,7 @@ static const std::string ICON_HEIGHT_CONFIG = "height";
 //------------------------------------------------------------------------------
 
 query_editor::query_editor() noexcept :
-    sight::service::notifier(m_signals)
+    has_notifications(has_signals::signals())
 {
 }
 
@@ -104,7 +103,7 @@ void query_editor::starting()
         m_search_button->setIcon(QIcon(QString::fromStdString(m_icon_path.string())));
         if(m_icon_width > 0 && m_icon_height > 0)
         {
-            m_search_button->setIconSize(QSize(int(m_icon_width), int(m_icon_height)));
+            m_search_button->setIconSize(QSize(static_cast<int>(m_icon_width), static_cast<int>(m_icon_height)));
         }
     }
 
@@ -272,7 +271,7 @@ void query_editor::execute_query_async()
     }
     else
     {
-        this->notifier::info("Already querying");
+        this->inform("Already querying");
         return;
     }
 }
@@ -301,7 +300,7 @@ void query_editor::execute_query()
     catch(const sight::io::dimse::exceptions::base& e)
     {
         SIGHT_ERROR("Can't establish a connection with the PACS: " + std::string(e.what()));
-        this->notifier::failure("Can't connect to the PACS");
+        this->fail("Can't connect to the PACS");
         m_is_querying = false;
         return;
     }
@@ -514,7 +513,7 @@ void query_editor::execute_query()
     catch(const sight::io::dimse::exceptions::base& e)
     {
         SIGHT_ERROR("Can't execute query to the PACS: " + std::string(e.what()));
-        this->notifier::failure("Can't execute query");
+        this->fail("Can't execute query");
     }
 
     if(series_enquirer->is_connected_to_pacs())

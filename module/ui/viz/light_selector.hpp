@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -64,6 +64,17 @@ Q_OBJECT
 
 public:
 
+    struct signals
+    {
+        using light_selected_t = core::com::signal<void (sight::viz::scene3d::light_adaptor::sptr)>;
+        static inline const signal_key_t LIGHT_SELECTED = "light_selected";
+    };
+
+    struct slots
+    {
+        static inline const slot_key_t INIT_LIGHT_LIST = "initLightList";
+    };
+
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(light_selector, sight::ui::editor);
 
@@ -122,8 +133,6 @@ private Q_SLOTS:
     void on_un_check_all_check_box();
 
 private:
-
-    using light_selected_signal_t = core::com::signal<void (sight::viz::scene3d::light_adaptor::sptr)>;
 
     /// Checks or unchecks all item in m_lightsList.
     void on_check_all_boxes(bool _visible);

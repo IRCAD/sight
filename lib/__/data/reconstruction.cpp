@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,31 +28,21 @@
 #include "data/mesh.hpp"
 #include "data/registry/macros.hpp"
 
-#include <core/base.hpp>
-#include <core/com/signal.hpp>
-#include <core/com/signal.hxx>
-#include <core/com/signals.hpp>
-
 SIGHT_REGISTER_DATA(sight::data::reconstruction);
 namespace sight::data
 {
 
 const double reconstruction::NO_COMPUTED_MASK_VOLUME = -1.;
 
-const core::com::signals::key_t reconstruction::MESH_CHANGED_SIG        = "meshModified";
-const core::com::signals::key_t reconstruction::VISIBILITY_MODIFIED_SIG = "visibilityModified";
-
 //------------------------------------------------------------------------------
 
 reconstruction::reconstruction() :
 
     m_material(data::factory::make<data::material>()),
-    m_computed_mask_volume(reconstruction::NO_COMPUTED_MASK_VOLUME),
-    m_sig_mesh_changed(std::make_shared<mesh_changed_signal_t>()),
-    m_sig_visibility_modified(std::make_shared<visibility_modified_signal_t>())
+    m_computed_mask_volume(reconstruction::NO_COMPUTED_MASK_VOLUME)
 {
-    m_signals(MESH_CHANGED_SIG, m_sig_mesh_changed)
-        (VISIBILITY_MODIFIED_SIG, m_sig_visibility_modified);
+    new_signal<signals::mesh_changed_t>(signals::MESH_CHANGED);
+    new_signal<signals::visibility_modified_t>(signals::VISIBILITY_MODIFIED);
 }
 
 //------------------------------------------------------------------------------
@@ -76,6 +66,7 @@ void reconstruction::shallow_copy(const object::csptr& _source)
     m_material = other->m_material;
     m_image    = other->m_image;
     m_mesh     = other->m_mesh;
+    m_label    = other->m_label;
 
     m_computed_mask_volume = other->m_computed_mask_volume;
 
@@ -99,6 +90,7 @@ void reconstruction::deep_copy(const object::csptr& _source, const std::unique_p
     m_b_is_visible     = other->m_b_is_visible;
     m_s_organ_name     = other->m_s_organ_name;
     m_s_structure_type = other->m_s_structure_type;
+    m_label            = other->m_label;
 
     m_material = data::object::copy(other->m_material, _cache);
     m_image    = data::object::copy(other->m_image, _cache);
@@ -117,6 +109,7 @@ bool reconstruction::operator==(const reconstruction& _other) const noexcept
        || m_s_organ_name != _other.m_s_organ_name
        || m_s_structure_type != _other.m_s_structure_type
        || m_computed_mask_volume != _other.m_computed_mask_volume
+       || m_label != _other.m_label
        || !core::is_equal(m_material, _other.m_material)
        || !core::is_equal(m_image, _other.m_image)
        || !core::is_equal(m_mesh, _other.m_mesh))

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,21 +24,14 @@
 
 #include "module/viz/scene3d/adaptor/negato3d.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-
-#include <data/boolean.hpp>
 #include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
-#include <data/tools/color.hpp>
 
 #include <geometry/data/image.hpp>
 
 #include <viz/scene3d/ogre.hpp>
 #include <viz/scene3d/utils.hpp>
 
-#include <OGRE/OgreCamera.h>
-#include <OGRE/OgreSceneNode.h>
 #include <OGRE/OgreVector.h>
 
 #include <algorithm>
@@ -111,7 +104,7 @@ void negato3d::set_visible(bool _visible)
         });
     if(m_auto_reset_camera)
     {
-        this->render_service()->reset_camera_coordinates(m_layer_id);
+        this->render_service()->reset_camera_coordinates(layer_id());
     }
 
     this->request_render();
@@ -203,7 +196,7 @@ void negato3d::button_release_event(mouse_button /*_button*/, modifier /*_mods*/
     }
 
     m_picking_cross->set_visible(false);
-    this->signal<signals::picked_voxel_t>(signals::PICKED_VOXEL)->async_emit("");
+    this->async_emit(signals::PICKED_VOXEL, std::string());
     this->set_planes_query_flags(m_query_flags); // Make all planes pickable again.
 }
 
@@ -235,10 +228,16 @@ void negato3d::move_slices(int _x, int _y)
         const auto picked_voxel = geometry::data::world_to_image(*image, picked_pt, true, true);
 
         image->async_emit(
-            data::image::SLICE_INDEX_MODIFIED_SIG,
-            int(picked_voxel[2]),
-            int(picked_voxel[1]),
-            int(picked_voxel[0])
+            data::image::signals::SLICE_INDEX_MODIFIED,
+            static_cast<int>(picked_voxel[2]),
+            static_cast<int>(picked_voxel[1]),
+            static_cast<int>(picked_voxel[0])
+        );
+
+        image->async_emit(
+            sight::data::signals::CHANGED_FIELDS,
+            sight::data::fields_container_t(),
+            sight::data::fields_container_t()
         );
     }
 }
@@ -285,13 +284,13 @@ std::optional<Ogre::Vector3> negato3d::get_picked_slices(int _x, int _y)
 
     if(result.has_value())
     {
-        const auto is_picked = [&result](const auto& _p){return _p.first->get_movable_object() == result->first;};
+        const auto is_picked = [&result](const auto& _p){return _p.first->get_movable_object() == result->object;};
         const auto it = std::ranges::find_if(m_planes, is_picked); // NOLINT(readability-qualified-auto,llvm-qualified-auto)
 
         if(it != m_planes.cend())
         {
             m_picked_plane = it->first;
-            return result->second;
+            return result->position;
         }
     }
 

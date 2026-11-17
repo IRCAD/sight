@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,22 +26,17 @@
 #include "core/runtime/detail/extension_point.hpp"
 #include "core/runtime/detail/io/validator.hpp"
 #include "core/runtime/detail/module.hpp"
-#include "core/runtime/extension.hpp"
 #include "core/runtime/path.hpp"
 #include "core/runtime/runtime.hpp"
 
-#include <core/runtime/helper.hpp>
-
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/algorithm/string/trim.hpp>
-#include <boost/dll.hpp>
+#include <boost/dll/runtime_symbol_info.hpp>
 
 #include <libxml/parser.h>
 #include <libxml/xinclude.h>
 
 #include <filesystem>
-#include <iostream>
-#include <sstream>
 #include <string>
 
 namespace sight::core::runtime::detail::io
@@ -90,7 +85,7 @@ std::pair<std::filesystem::path, module_descriptor_reader::module_container> mod
         {
             try
             {
-                SPTR(module) module = module_descriptor_reader::create_module(_path);
+                sight::sptr<module> module = module_descriptor_reader::create_module(_path);
                 if(module)
                 {
                     modules.push_back(module);
@@ -518,7 +513,7 @@ std::string module_descriptor_reader::process_requirement(xmlNodePtr _node)
     }
 
     // Do some sanity checking.
-    if(identifier.length() == 0)
+    if(identifier.empty())
     {
         throw runtime_exception("Invalid attribute.");
     }

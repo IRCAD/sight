@@ -3,11 +3,9 @@ This config displays the editors to manage the ModelSeries: show/hide reconstruc
 
 Example
 <service uid="..." type="sight::app::config_launcher">
-    <properties config="ModelSeriesManagerView" />
-    <inout group="object">
-        <key name="organ_manager_modelseries" uid="..." />
-    </inout>
-    <parameter replace="WID_PARENT" by="modelManagerView" />
+    <config id="ModelSeriesManagerView" />
+    <object name="organ_manager_modelseries" uid="..." />
+    <param name="WID_PARENT" value="modelManagerView" />
 </service>
 -->
 <extension implements="sight::app::extension::config">

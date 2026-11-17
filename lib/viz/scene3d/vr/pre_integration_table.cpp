@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #include "viz/scene3d/vr/pre_integration_table.hpp"
 
-#include <core/memory/buffer_manager.hpp>
-#include <core/memory/buffer_object.hpp>
 #include <core/profiling.hpp>
 
 #include <viz/scene3d/ogre.hpp>
@@ -82,7 +80,7 @@ void pre_integration_table::image_update(
     float _sampling_rate
 )
 {
-    FW_PROFILE("TF Init")
+    SIGHT_PROFILE("TF Init")
     {
         Ogre::PixelFormat pixel_format = viz::scene3d::utils::get_pixel_format_ogre(*_img);
 
@@ -168,11 +166,11 @@ void pre_integration_table::tf_update(const data::transfer_function::csptr& _tf,
         return;
     }
 
-    FW_PROFILE("PreIntegration")
+    SIGHT_PROFILE("PreIntegration")
     {
         glm::vec4 tmp(0.F);
 
-        for(int k = 0 ; k < static_cast<int>(m_texture_size) ; ++k)
+        for(int k = 0 ; std::cmp_less(k, m_texture_size) ; ++k)
         {
             data::transfer_function::value_t value              = k + m_value_interval.first;
             data::transfer_function::color_t interpolated_color = _tf->sample(value);
@@ -192,11 +190,11 @@ void pre_integration_table::tf_update(const data::transfer_function::csptr& _tf,
         // Inverse of the sampling accounted by the TF.
         const float sampling_adjustment_factor = 200.F;
 
-        // NOLINTNEXTLINE(clang-diagnostic-unknown-pragmas)
         #pragma omp parallel for schedule(dynamic)
+        // NOLINTNEXTLINE(modernize-use-integer-sign-comparison)
         for(int sb = 0 ; sb < static_cast<int>(m_texture_size) ; ++sb)
         {
-            for(int sf = 0 ; sf < static_cast<int>(m_texture_size) ; ++sf)
+            for(int sf = 0 ; std::cmp_less(sf, m_texture_size) ; ++sf)
             {
                 glm::vec4 res(0.F);
 
@@ -230,10 +228,14 @@ void pre_integration_table::tf_update(const data::transfer_function::csptr& _tf,
                 res = glm::clamp(res, 0.F, 1.F);
 
                 m_table[static_cast<unsigned>(sb) * m_texture_size + static_cast<unsigned>(sf)] = {
-                    static_cast<uint8_t>(res.b * 255.F),
-                    static_cast<uint8_t>(res.g * 255.F),
-                    static_cast<uint8_t>(res.r * 255.F),
-                    static_cast<uint8_t>(res.a * 255.F)
+                    .b                                                                          =
+                        static_cast<uint8_t>(res.b * 255.F),
+                    .g =
+                        static_cast<uint8_t>(res.g * 255.F),
+                    .r =
+                        static_cast<uint8_t>(res.r * 255.F),
+                    .a =
+                        static_cast<uint8_t>(res.a * 255.F)
                 };
             }
         }

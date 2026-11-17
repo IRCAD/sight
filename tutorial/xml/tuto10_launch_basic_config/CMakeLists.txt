@@ -2,16 +2,15 @@ sight_add_target(tuto10_launch_basic_config TYPE APP)
 
 add_dependencies(
     tuto10_launch_basic_config
-    sightrun
-    module_app
-    module_ui
-    module_ui_qt
     data
-    module_service
-    module_ui
+    module_app
     module_io_matrix
     module_io_vtk
+    module_service
+    module_ui
+    module_ui_qt
     module_viz_sample
+    sightrun
 )
 
 # Allow dark theme via module_ui_qt

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -81,9 +81,12 @@ public:
      * @name Signals
      * @{
      */
-    /// Signal emitted when plane is selected/deselected
-    using selected_signal_t = core::com::signal<void (bool)>;
-    SIGHT_DATA_API static const core::com::signals::key_t SELECTED_SIG;
+    struct signals
+    {
+        /// Signal emitted when plane is selected/deselected
+        using selected_t = core::com::signal<void (bool)>;
+        static const inline signal_key_t SELECTED = "selected";
+    };
 /**
  * @}
  */
@@ -108,7 +111,7 @@ public:
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;
 
-protected:
+private:
 
     //! Points container
     point_container m_v_points;

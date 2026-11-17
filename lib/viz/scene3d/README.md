@@ -72,12 +72,11 @@ Contains helpers classes and functions.
 
 ### interactor
 
-Contains interface and classes for interactions, clippingBox, trackball interactor and mesh picking.
+Contains interface and classes for interactions, clippingBox, and custom interactors.
 
 - **clipping_box_interactor**: Picks volume rendering widgets and updates clipping cube.
 - **base**: interface implementation for all the interaction with the mouse
-- **mesh_picker_interactor**: runs picking queries when the user clicks in the scene.
-- **trackball_interactor**: trackball camera interactions. Lets the user move the camera around a point of interest when moving the mouse.
+
 
 ### overlay
 

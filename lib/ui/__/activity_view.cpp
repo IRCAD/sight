@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,30 +24,18 @@
 
 #include "ui/__/dialog/message.hpp"
 
-#include <activity/validator/activity.hpp>
-#include <activity/validator/base.hpp>
+#include <boost/range/iterator_range_core.hpp>
 
-#include <core/com/slot.hpp>
-#include <core/com/slot.hxx>
-#include <core/com/slots.hxx>
-#include <core/tools/date_and_time.hpp>
-#include <core/tools/uuid.hpp>
-
-#include <data/map.hpp>
-#include <data/string.hpp>
-
-#include <service/macros.hpp>
+#include <algorithm>
 
 namespace sight::ui
 {
-
-const core::com::slots::key_t activity_view::LAUNCH_ACTIVITY_SLOT = "launch_activity";
 
 //-----------------------------------------------------------------------------
 
 activity_view::activity_view()
 {
-    new_slot(LAUNCH_ACTIVITY_SLOT, &activity_view::launch_activity, this);
+    new_slot(slots::LAUNCH_ACTIVITY, &activity_view::launch_activity, this);
 }
 
 //------------------------------------------------------------------------------
@@ -59,9 +47,9 @@ void activity_view::configuring()
     const config_t config = this->get_config();
 
     sight::activity::launcher::in_out_map_t inout_map;
-    std::for_each(
-        m_data.begin(),
-        m_data.end(),
+    std::ranges::for_each(
+        m_data,
+
         [&inout_map](const auto& _p)
         {
             const auto obj = _p.second->lock();
@@ -70,7 +58,32 @@ void activity_view::configuring()
                 inout_map.push_back(obj->get_id());
             }
         });
-    this->parse_configuration(config, inout_map);
+
+    // Objects declared with the hierarchical syntax keep their position, unbound ones leave an empty slot
+    sight::activity::launcher::in_out_map_t bound_data_ids;
+    std::size_t data_index = 0;
+    for([[maybe_unused]] const auto& _ : boost::make_iterator_range(config.equal_range("data")))
+    {
+        const auto obj = this->inout(m_data_uids.key(), data_index++).lock();
+        bound_data_ids.emplace_back(obj != nullptr ? obj->get_id() : std::string());
+    }
+
+    this->parse_configuration(config, inout_map, bound_data_ids);
+}
+
+//------------------------------------------------------------------------------
+
+std::optional<std::string> activity_view::resolve_object_type(
+    std::string_view _key,
+    std::optional<std::size_t> _index
+) const
+{
+    if(_index.has_value() && _key == m_data.key())
+    {
+        return std::nullopt;
+    }
+
+    return service::base::resolve_object_type(_key, _index);
 }
 
 //------------------------------------------------------------------------------

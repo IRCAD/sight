@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2025 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,16 +48,16 @@ public:
     using sptr = std::shared_ptr<mesh>;
     using wptr = std::weak_ptr<mesh>;
 
-    enum buffer_binding
+    enum buffer_binding : std::uint8_t
     {
         position_normal = 0,
         colour          = 1,
         texcoord        = 2,
-        num_bindings
+        num_bindings    = 3
     };
 
     /// Constructor
-    SIGHT_VIZ_SCENE3D_API mesh(const std::string& _name);
+    SIGHT_VIZ_SCENE3D_API explicit mesh(const std::string& _name);
 
     /// Destructor
     SIGHT_VIZ_SCENE3D_API ~mesh();
@@ -110,10 +110,10 @@ public:
 
     SIGHT_VIZ_SCENE3D_API void invalidate_r2vb();
 
-    data::mesh::attribute layout() const;
+    [[nodiscard]] data::mesh::attribute layout() const;
 
-    const std::string& per_primitive_color_texture_name() const;
-    const Ogre::AxisAlignedBox& bounds() const;
+    [[nodiscard]] const std::string& per_primitive_color_texture_name() const;
+    [[nodiscard]] const Ogre::AxisAlignedBox& bounds() const;
 
 private:
 

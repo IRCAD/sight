@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,15 +21,11 @@
 
 #include "writer.hpp"
 
-#include <core/com/signal.hxx>
 #include <core/location/single_folder.hpp>
-#include <core/tools/system.hpp>
 
 #include <ui/__/cursor.hpp>
 #include <ui/__/dialog/location.hpp>
 #include <ui/__/dialog/message.hpp>
-
-#include <boost/algorithm/string.hpp>
 
 #include <algorithm>
 
@@ -74,41 +70,53 @@ sight::io::service::path_type_t writer::get_path_type() const
 
 //------------------------------------------------------------------------------
 
+std::vector<std::pair<std::string, std::string> > writer::get_supported_extensions() const
+{
+    std::vector<std::pair<std::string, std::string> > result;
+    std::string all_wildcards;
+
+    for(const auto& [backend, mode] : m_mode_by_backend)
+    {
+        const auto filter = sight::io::bitmap::wildcard_filter(backend);
+        if(!all_wildcards.empty())
+        {
+            all_wildcards += ' ';
+        }
+
+        all_wildcards += filter.second;
+        result.push_back(filter);
+    }
+
+    if(result.size() >= 2)
+    {
+        result.insert(result.begin(), {"All supported images", all_wildcards});
+    }
+
+    return result;
+}
+
+//------------------------------------------------------------------------------
+
 void writer::open_location_dialog()
 {
-    static auto default_location = std::make_shared<core::location::single_folder>();
+    auto default_location = std::make_shared<core::location::single_folder>();
 
     sight::ui::dialog::location location_dialog;
     location_dialog.set_title(*m_window_title);
+    location_dialog.set_preferences_key(this->get_classname());
     location_dialog.set_default_location(default_location);
     location_dialog.set_option(ui::dialog::location::write);
     location_dialog.set_type(ui::dialog::location::single_file);
 
     // Will be used later to check if "All supported images" is selected
     std::string all_wildcards;
-
-    // If there is at least two backends, add "all" filter
-    if(m_mode_by_backend.size() >= 2)
+    for(const auto& [label, wildcard] : get_supported_extensions())
     {
-        for(const auto& [backend, mode] : m_mode_by_backend)
-        {
-            all_wildcards.append(sight::io::bitmap::wildcard_filter(backend).second);
-            all_wildcards.append(" ");
-        }
-
-        boost::trim(all_wildcards);
-
-        if(!all_wildcards.empty())
-        {
-            location_dialog.add_filter("All supported images", all_wildcards);
-        }
-    }
-
-    // Add other filters
-    for(const auto& [backend, mode] : m_mode_by_backend)
-    {
-        const auto& [label, wildcard] = sight::io::bitmap::wildcard_filter(backend);
         location_dialog.add_filter(label, wildcard);
+        if(label == "All supported images")
+        {
+            all_wildcards = wildcard;
+        }
     }
 
     // Show the dialog
@@ -211,7 +219,7 @@ void writer::configuring()
     m_mode_by_backend.insert_or_assign(sight::io::bitmap::backend::libpng, mode);
     m_mode_by_backend.insert_or_assign(sight::io::bitmap::backend::libtiff, mode);
 
-#if defined(SIGHT_ENABLE_NVJPEG)
+#ifdef SIGHT_ENABLE_NVJPEG
     if(sight::io::bitmap::nvjpeg())
     {
         m_mode_by_backend.insert_or_assign(sight::io::bitmap::backend::nvjpeg, mode);
@@ -231,7 +239,7 @@ void writer::configuring()
         m_mode_by_backend.insert_or_assign(sight::io::bitmap::backend::libjpeg, mode);
     }
 
-#if defined(SIGHT_ENABLE_NVJPEG2K)
+#ifdef SIGHT_ENABLE_NVJPEG2K
     if(sight::io::bitmap::nvjpeg2k())
     {
         m_mode_by_backend.insert_or_assign(sight::io::bitmap::backend::nvjpeg2k, mode);
@@ -291,9 +299,9 @@ void writer::updating()
             // If the user selected a specific backend, it must match the one given by the file extension.
             SIGHT_THROW(
                 "Backend mismatch: "
-                << std::uint8_t(m_selected_backend)
+                << static_cast<unsigned int>(std::uint8_t(m_selected_backend))
                 << " != "
-                << std::uint8_t(backend_from_extension)
+                << static_cast<unsigned int>(std::uint8_t(backend_from_extension))
             );
         }
     }
@@ -346,8 +354,7 @@ void writer::updating()
 
     SIGHT_THROW_IF("The file '" << file_path << "' is an existing folder.", std::filesystem::is_directory(file_path));
 
-    const auto write_progress = std::make_shared<core::progress::observer>("Writing '" + file_path.string() + "' file");
-    this->async_emit(has_monitors::signals::MONITOR_CREATED, write_progress->get_sptr());
+    const auto write_progress = this->observe("Writing '" + file_path.string() + "' file");
 
     try
     {

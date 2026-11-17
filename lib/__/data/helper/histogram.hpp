@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2024 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -25,6 +25,7 @@
 
 #include <data/image.hpp>
 
+#include <utility>
 #include <vector>
 
 namespace sight::data::helper
@@ -41,7 +42,7 @@ public:
     using histogram_t = std::vector<double>;
 
     histogram(sight::data::image::csptr _image) :
-        m_image(_image)
+        m_image(std::move(_image))
     {
     }
 

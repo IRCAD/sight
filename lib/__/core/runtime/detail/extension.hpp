@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include <sight/core/config.hpp>
-
 #include "core/runtime/extension.hpp"
 
 #include <libxml/tree.h>
@@ -32,8 +30,6 @@
 
 namespace sight::core::runtime::detail
 {
-
-class module;
 
 /**
  * @brief   Defines the extension class.
@@ -45,7 +41,7 @@ public:
     /**
      * @brief   Defines the validity states of an extension
      */
-    enum validity
+    enum validity : std::uint8_t
     {
         unknown_validity, ///< The extension has not been validated.
         valid,            ///< The extension passed the validation.
@@ -74,7 +70,7 @@ public:
     ~extension() final;
 
     /// @copydoc core::runtime::extension::get_config
-    const core::runtime::config_t& get_config() const final;
+    [[nodiscard]] const core::runtime::config_t& get_config() const final;
 
     /**
      * @brief   Retrieves the xml node that represents the extension

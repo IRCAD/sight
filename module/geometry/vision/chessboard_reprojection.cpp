@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2025 IRCAD France
+ * Copyright (C) 2019-2026 IRCAD France
  * Copyright (C) 2019-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,6 @@
 
 #include "core/spy_log.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-
 #include <data/helper/medical_image.hpp>
 
 #include <geometry/vision/helper.hpp>
@@ -36,32 +33,28 @@
 #include <io/opencv/matrix.hpp>
 #include <io/opencv/point_list.hpp>
 
-#include <service/macros.hpp>
-
-#include <ui/__/preferences.hpp>
-
+#include <opencv2/core/version.hpp>
+#if CV_MAJOR_VERSION < 5
 #include <opencv2/calib3d.hpp>
+#else
+#include <opencv2/geometry/3d.hpp>
+#endif
 #include <opencv2/core/types.hpp>
-#include <opencv2/opencv.hpp>
 
 #include <cstddef>
+#include <opencv2/imgproc.hpp>
 
 namespace sight::module::geometry::vision
 {
-
-static const core::com::signals::key_t ERROR_COMPUTED_SIG = "error_computed";
-
-static const core::com::slots::key_t TOGGLE_DISTORTION_SLOT       = "toggle_distortion";
-static const core::com::slots::key_t UPDATE_CHESSBOARD_MODEL_SLOT = "update_chessboard_model";
 
 //-----------------------------------------------------------------------------
 
 chessboard_reprojection::chessboard_reprojection()
 {
-    new_slot(TOGGLE_DISTORTION_SLOT, &chessboard_reprojection::toggle_distortion, this);
-    new_slot(UPDATE_CHESSBOARD_MODEL_SLOT, &chessboard_reprojection::update_chessboard_model, this);
+    new_slot(slots::TOGGLE_DISTORTION, &chessboard_reprojection::toggle_distortion, this);
+    new_slot(slots::UPDATE_CHESSBOARD_MODEL, &chessboard_reprojection::update_chessboard_model, this);
 
-    m_error_computed_sig = new_signal<error_computed_t>(ERROR_COMPUTED_SIG);
+    new_signal<signals::error_computed_t>(signals::ERROR_COMPUTED);
 }
 
 //-----------------------------------------------------------------------------
@@ -94,7 +87,7 @@ void chessboard_reprojection::updating()
     const auto detected_chessboard = m_detected_chessboard.lock();
     SIGHT_ASSERT("Missing 'detectedChessboard'.", detected_chessboard);
 
-    if(detected_chessboard->get_points().empty())
+    if(detected_chessboard->empty())
     {
         return;
     }
@@ -115,7 +108,7 @@ void chessboard_reprojection::updating()
 
     // Cast Point2d to Point2f ...
     std::vector<cv::Point2f> detected_points_f;
-    std::copy(detected_pts.begin(), detected_pts.end(), std::back_inserter(detected_points_f));
+    std::ranges::copy(detected_pts, std::back_inserter(detected_points_f));
 
     double rmse = -1.;
     std::vector<cv::Point2f> reprojected_pts;
@@ -125,7 +118,7 @@ void chessboard_reprojection::updating()
         const auto transform = m_transform.lock();
         SIGHT_ASSERT("Missing 'transform'.", transform);
 
-        io::opencv::matrix::copy_to_cv(transform.get_shared(), rvec, tvec);
+        io::opencv::matrix::copy_to_cv(*transform, rvec, tvec);
 
         std::tie(rmse, reprojected_pts) = sight::geometry::vision::helper::compute_reprojection_error(
             m_chessboard_model_3d,
@@ -136,7 +129,7 @@ void chessboard_reprojection::updating()
             distortion_coefficients
         );
 
-        m_error_computed_sig->async_emit(rmse);
+        async_emit(signals::ERROR_COMPUTED, rmse);
     }
 
     const auto video_image = m_video_image.lock();
@@ -242,10 +235,7 @@ void chessboard_reprojection::updating()
 
         if(drawing_enabled)
         {
-            auto sig =
-                video_image->signal<data::image::buffer_modified_signal_t>(data::image::BUFFER_MODIFIED_SIG);
-
-            sig->async_emit();
+            video_image->async_emit(data::image::signals::BUFFER_MODIFIED);
         }
     }
 }
@@ -269,11 +259,11 @@ void chessboard_reprojection::update_chessboard_model()
 {
     const auto chessboard_model = m_chessboard_model.lock();
     SIGHT_ASSERT("Missing 'chessboard_model'.", chessboard_model);
-    SIGHT_ASSERT("chessboard_model doesn't contain any points", !chessboard_model->get_points().empty());
+    SIGHT_ASSERT("chessboard_model doesn't contain any points", !chessboard_model->empty());
     m_chessboard_model_3d.clear();
-    m_chessboard_model_3d.resize(chessboard_model->get_points().size());
+    m_chessboard_model_3d.resize(chessboard_model->size());
     std::size_t i = 0;
-    for(const auto& pt : chessboard_model->get_points())
+    for(const auto& pt : *chessboard_model)
     {
         cv::Point3f pt3d;
         pt3d.x                   = static_cast<float>((*pt)[0]);
@@ -289,11 +279,11 @@ void chessboard_reprojection::update_chessboard_model()
 service::connections_t chessboard_reprojection::auto_connections() const
 {
     return {
-        {TRANSFORM_INPUT, data::matrix4::MODIFIED_SIG, service::slots::UPDATE},
-        {DETECTED_CHESSBOARD_INPUT, data::point_list::MODIFIED_SIG, service::slots::UPDATE},
-        {CAMERA_INPUT, data::camera::INTRINSIC_CALIBRATED_SIG, service::slots::UPDATE},
-        {CAMERA_INPUT, data::camera::MODIFIED_SIG, service::slots::UPDATE},
-        {CHESSBOARD_MODEL, data::point_list::MODIFIED_SIG, UPDATE_CHESSBOARD_MODEL_SLOT}
+        {TRANSFORM_INPUT, data::signals::MODIFIED, service::slots::UPDATE},
+        {DETECTED_CHESSBOARD_INPUT, data::signals::MODIFIED, service::slots::UPDATE},
+        {CAMERA_INPUT, data::camera::signals::INTRINSIC_CALIBRATED, service::slots::UPDATE},
+        {CAMERA_INPUT, data::signals::MODIFIED, service::slots::UPDATE},
+        {CHESSBOARD_MODEL, data::signals::MODIFIED, slots::UPDATE_CHESSBOARD_MODEL}
     };
 }
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -48,6 +48,13 @@ sight::data::validator::return_t filled::validate(const data::object::csptr& _ob
             validation = {false, "Image is empty."};
         }
     }
+    else if(const auto mesh = std::dynamic_pointer_cast<const data::mesh>(_object); mesh)
+    {
+        if(mesh->num_points() == 0)
+        {
+            validation = {false, "Mesh is empty."};
+        }
+    }
     else if(const auto model_series = std::dynamic_pointer_cast<const data::model_series>(_object); model_series)
     {
         if(model_series->get_reconstruction_db().empty())
@@ -57,7 +64,7 @@ sight::data::validator::return_t filled::validate(const data::object::csptr& _ob
     }
     else if(const auto point_list = std::dynamic_pointer_cast<const data::point_list>(_object); point_list)
     {
-        if(point_list->get_points().empty())
+        if(point_list->empty())
         {
             validation = {false, "Point list is empty."};
         }

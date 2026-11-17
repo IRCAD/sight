@@ -172,16 +172,11 @@ macro(init_project PRJ_NAME PRJ_TYPE)
          "${PRJ_SOURCE_DIR}/*.cu"
     )
 
-    if(NOT "${PRJ_TYPE}" STREQUAL "TEST" AND NOT "${PRJ_TYPE}" STREQUAL "DOCTEST" AND NOT "${PRJ_TYPE}" STREQUAL
-                                                                                      "GUI_TEST"
-    )
-        list(FILTER SOURCES EXCLUDE REGEX "/test/api")
+    if(NOT "${PRJ_TYPE}" STREQUAL "TEST" AND NOT "${PRJ_TYPE}" STREQUAL "GUI_TEST")
         list(FILTER SOURCES EXCLUDE REGEX "/test/detail")
         list(FILTER SOURCES EXCLUDE REGEX "/test/mut")
-        list(FILTER SOURCES EXCLUDE REGEX "/test/ui")
         list(FILTER SOURCES EXCLUDE REGEX "/test/uit")
         list(FILTER SOURCES EXCLUDE REGEX "/test/ut")
-        list(FILTER SOURCES EXCLUDE REGEX "/test/tu") # Normally obsolete
     endif()
 
     list(APPEND ${SIGHT_TARGET}_HEADERS ${HEADERS})
@@ -348,6 +343,11 @@ macro(fw_exec SIGHT_TARGET)
             ${FWCMAKE_RESOURCE_PATH}/build/windows/template_exe.bat.in
             ${CMAKE_CURRENT_BINARY_DIR}/${${SIGHT_TARGET}_SCRIPT} @ONLY
         )
+        configure_file(
+            ${FWCMAKE_RESOURCE_PATH}/install/windows/template_exe.bat.in
+            ${CMAKE_CURRENT_BINARY_DIR}/install/${${SIGHT_TARGET}_SCRIPT} @ONLY
+        )
+        install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/install/${${SIGHT_TARGET}_SCRIPT} DESTINATION bin)
         unset(ADMIN_REQUEST)
         file(
             COPY ${CMAKE_CURRENT_BINARY_DIR}/${${SIGHT_TARGET}_SCRIPT}
@@ -369,12 +369,20 @@ macro(fw_exec SIGHT_TARGET)
     set_target_properties(${SIGHT_TARGET} PROPERTIES FOLDER "exec")
 endmacro()
 
-# Generic operations for a test based on the CppUnit framework
+# Generic operations shared by sight_test() and sight_gui_test(), both based on doctest
 macro(sight_generic_test SIGHT_TARGET)
     set(options)
-    set(oneValueArgs REQUIRE_X DOCTEST)
+    set(oneValueArgs REQUIRE_X GUI)
     set(multiValueArgs)
-    cmake_parse_arguments(FWCPPUNITTEST "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+    cmake_parse_arguments(SIGHT_GENERIC_TEST_ARG "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
+    # Substituted into doctest_main.cpp.in: enables the self-supervision code path (re-executing
+    # the binary once per test case when more than one is selected) for GUI tests only.
+    if(SIGHT_GENERIC_TEST_ARG_GUI)
+        set(SIGHT_GUI_TEST 1)
+    else()
+        set(SIGHT_GUI_TEST 0)
+    endif()
 
     if(SIGHT_ENABLE_PCH AND MSVC AND NOT ${SIGHT_TARGET}_DISABLE_PCH)
         set(${SIGHT_TARGET}_PCH_LIB $<TARGET_OBJECTS:${${SIGHT_TARGET}_PCH_TARGET}>)
@@ -387,7 +395,7 @@ macro(sight_generic_test SIGHT_TARGET)
         if("${TARGET_TYPE}" STREQUAL "MODULE")
             string(REPLACE "_" "::" BASE_MODULE ${BASE_TARGET})
 
-            # This variable is used in cppunit_main.cpp to automatically load the module of the test
+            # This variable is used in doctest_main.cpp to automatically load the module of the test
             set(TESTED_MODULE "${PROJECT_NAME}::${BASE_MODULE}")
             set(TESTED_MODULE_PATH "${SIGHT_MODULE_RC_PREFIX}")
         endif()
@@ -405,33 +413,35 @@ macro(sight_generic_test SIGHT_TARGET)
         endif()
     endif()
 
-    if(FWCPPUNITTEST_DOCTEST)
-        configure_file(
-            "${FWCMAKE_RESOURCE_PATH}/build/doctest_main.cpp.in" "${CMAKE_CURRENT_BINARY_DIR}/src/doctest_main.cpp"
-            IMMEDIATE @ONLY
-        )
+    # Exported by doctest_main.cpp as the sight_test_target symbol, which core looks up to open the test logs
+    set(SIGHT_TEST_TARGET_NAME "${SIGHT_TARGET}")
 
-        add_executable(
-            ${SIGHT_TARGET}
-            ${${SIGHT_TARGET}_HEADERS} ${${SIGHT_TARGET}_SOURCES} ${CMAKE_CURRENT_BINARY_DIR}/src/doctest_main.cpp
-            ${${SIGHT_TARGET}_RC_FILES} ${${SIGHT_TARGET}_CMAKE_FILES} ${${SIGHT_TARGET}_PCH_LIB}
-        )
+    configure_file(
+        "${FWCMAKE_RESOURCE_PATH}/build/doctest_main.cpp.in" "${CMAKE_CURRENT_BINARY_DIR}/src/doctest_main.cpp"
+        IMMEDIATE @ONLY
+    )
+
+    # Each CTest run starts with empty test logs, unless SIGHT_TEST_LOG_KEEP is set
+    get_property(test_logs_cleaned GLOBAL PROPERTY SIGHT_TEST_LOGS_CLEANED)
+    if(NOT test_logs_cleaned)
+        set_property(GLOBAL PROPERTY SIGHT_TEST_LOGS_CLEANED ON)
+        set(clean_command "\"${CMAKE_COMMAND}\" \"-DTEST_LOGS_DIR=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/test-logs\"")
+        string(APPEND clean_command " -P \"${FWCMAKE_RESOURCE_PATH}/build/clean_test_logs.cmake\"")
+        string(REPLACE "\"" "\\\"" clean_command "${clean_command}")
+        file(WRITE "${CMAKE_BINARY_DIR}/CTestCustom.cmake" "set(CTEST_CUSTOM_PRE_TEST \"${clean_command}\")\n")
+    endif()
+
+    add_executable(
+        ${SIGHT_TARGET}
+        ${${SIGHT_TARGET}_HEADERS} ${${SIGHT_TARGET}_SOURCES} ${CMAKE_CURRENT_BINARY_DIR}/src/doctest_main.cpp
+        ${${SIGHT_TARGET}_RC_FILES} ${${SIGHT_TARGET}_CMAKE_FILES} ${${SIGHT_TARGET}_PCH_LIB}
+    )
+
+    if(WIN32)
+        # The export alone is needed, not an import library
+        target_link_options(${SIGHT_TARGET} PRIVATE /NOIMPLIB /NOEXP)
     else()
-        configure_file(
-            "${FWCMAKE_RESOURCE_PATH}/build/cppunit_main.cpp.in" "${CMAKE_CURRENT_BINARY_DIR}/src/cppunit_main.cpp"
-            IMMEDIATE @ONLY
-        )
-
-        add_executable(
-            ${SIGHT_TARGET}
-            ${FWCPPUNITTEST_UNPARSED_ARGUMENTS}
-            ${${SIGHT_TARGET}_HEADERS}
-            ${${SIGHT_TARGET}_SOURCES}
-            ${CMAKE_CURRENT_BINARY_DIR}/src/cppunit_main.cpp
-            ${${SIGHT_TARGET}_RC_FILES}
-            ${${SIGHT_TARGET}_CMAKE_FILES}
-            ${${SIGHT_TARGET}_PCH_LIB}
-        )
+        target_link_options(${SIGHT_TARGET} PRIVATE "LINKER:--export-dynamic-symbol=sight_test_target")
     endif()
 
     # Do it here because add ".bin" suffix change the ${SIGHT_TARGET} (!!!)
@@ -508,99 +518,31 @@ macro(sight_generic_test SIGHT_TARGET)
     endif()
 endmacro()
 
-# Create a GUI test
+# Create a GUI test.
+# Identical to sight_test(), except that it requires a graphical environment and tags its tests
+# with the "gui" CTest label. One CTest entry is generated per doctest test case, so each GUI
+# scenario runs in its own process.
 macro(sight_gui_test SIGHT_TARGET)
-    sight_generic_test(${SIGHT_TARGET} REQUIRE_X ON)
+    sight_generic_test(${SIGHT_TARGET} REQUIRE_X ON GUI ON)
 
-    target_link_libraries(${SIGHT_TARGET} PRIVATE CppUnit)
+    target_link_libraries(${SIGHT_TARGET} PRIVATE doctest::doctest)
 
-    # Set test command
-    if(UNIX)
-        set(SCRIPT_SUFFIX "sh")
-    else()
-        set(SCRIPT_SUFFIX "bat")
-    endif()
-    add_test(NAME "${SIGHT_TEST_SCRIPT}" COMMAND ${CMAKE_BINARY_DIR}/bin/exec_gui_tests.${SCRIPT_SUFFIX}
-                                                 ${SIGHT_TEST_SCRIPT} WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+    # Mandatory for VSCode to trace the test location and debug it from the IDE.
+    sight_doctest_discover_tests(
+        ${SIGHT_TARGET}
+        TEST_SCRIPT
+        ${CMAKE_BINARY_DIR}/bin/${SIGHT_TEST_SCRIPT}
+        WORKING_DIRECTORY
+        ${CMAKE_BINARY_DIR}/bin
+        TEST_ENV
+        "${SIGHT_VCPKG_RUNTIME_DIR}"
+        "${FW_SIGHT_EXTERNAL_LIBRARIES_DIR}"
+        ADD_LABELS
+        gui
+        PROPERTIES
+        TIMEOUT
+        300
     )
-
-    if(WIN32)
-        # Set path to avoid using a launcher
-        set(TEST_ENV "${SIGHT_VCPKG_RUNTIME_DIR};${FW_SIGHT_EXTERNAL_LIBRARIES_DIR}")
-        foreach(PATH ${TEST_ENV})
-            set(EXECUTION_ENV "${EXECUTION_ENV}" PATH=path_list_append:${PATH})
-        endforeach()
-        # DEF_SOURCE_LINE mandatory for VSCode to trace the test location and debug it from the IDE
-        set_tests_properties(
-            "${SIGHT_TEST_SCRIPT}" PROPERTIES DEF_SOURCE_LINE "${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt:1"
-                                              ENVIRONMENT_MODIFICATION "${EXECUTION_ENV}"
-        )
-    else()
-        # DEF_SOURCE_LINE mandatory for VSCode to trace the test location and debug it from the IDE
-        set_tests_properties(
-            "${SIGHT_TEST_SCRIPT}" PROPERTIES DEF_SOURCE_LINE "${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt:1"
-        )
-    endif()
-    unset(SCRIPT_SUFFIX)
-    unset(SIGHT_TEST_SCRIPT)
-endmacro()
-
-# Create a unit test
-macro(fw_test SIGHT_TARGET)
-    set(options)
-    set(oneValueArgs
-        TYPE
-        PCH
-        START
-        PRIORITY
-        CONSOLE
-        OBJECT_LIBRARY
-        WARNINGS_AS_ERRORS
-        UNIQUE
-        FAST_DEBUG
-        REQUIRE_X
-    )
-    set(multiValueArgs)
-    cmake_parse_arguments(SIGHT_CPPUNIT "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
-
-    if(EXISTS "${${SIGHT_TARGET}_DIR}/ui")
-        list(FILTER ${SIGHT_TARGET}_HEADERS EXCLUDE REGEX "/ui/")
-        list(FILTER ${SIGHT_TARGET}_SOURCES EXCLUDE REGEX "/ui/")
-    endif()
-
-    sight_generic_test(${SIGHT_TARGET} REQUIRE_X ${SIGHT_CPPUNIT_REQUIRE_X})
-
-    target_link_libraries(${SIGHT_TARGET} PRIVATE CppUnit)
-
-    # Set test command
-    if(TESTS_XML_OUTPUT)
-        add_test(NAME "${SIGHT_TEST_SCRIPT}" COMMAND "${CMAKE_BINARY_DIR}/bin/${SIGHT_TEST_SCRIPT} --xml"
-                 WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
-        )
-    else()
-        add_test(NAME "${SIGHT_TEST_SCRIPT}" COMMAND "${CMAKE_BINARY_DIR}/bin/${SIGHT_TEST_SCRIPT}"
-                 WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
-        )
-    endif()
-
-    if(WIN32)
-        # Set path to avoid using a launcher
-        set(TEST_ENV "${SIGHT_VCPKG_RUNTIME_DIR};${FW_SIGHT_EXTERNAL_LIBRARIES_DIR}")
-        foreach(PATH ${TEST_ENV})
-            set(EXECUTION_ENV "${EXECUTION_ENV}" PATH=path_list_append:${PATH})
-        endforeach()
-        # DEF_SOURCE_LINE mandatory for VSCode to trace the test location and debug it from the IDE
-        set_tests_properties(
-            "${SIGHT_TEST_SCRIPT}" PROPERTIES DEF_SOURCE_LINE "${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt:1"
-                                              ENVIRONMENT_MODIFICATION "${EXECUTION_ENV}"
-        )
-    else()
-        # DEF_SOURCE_LINE mandatory for VSCode to trace the test location and debug it from the IDE
-        set_tests_properties(
-            "${SIGHT_TEST_SCRIPT}" PROPERTIES DEF_SOURCE_LINE "${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt:1"
-        )
-    endif()
-    unset(SIGHT_TEST_SCRIPT)
 endmacro()
 
 # Create a unit test
@@ -619,16 +561,28 @@ macro(sight_test SIGHT_TARGET)
         REQUIRE_X
     )
     set(multiValueArgs)
-    cmake_parse_arguments(SIGHT_CPPUNIT "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+    cmake_parse_arguments(SIGHT_TEST_ARG "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
     if(EXISTS "${${SIGHT_TARGET}_DIR}/ui")
         list(FILTER ${SIGHT_TARGET}_HEADERS EXCLUDE REGEX "/ui/")
         list(FILTER ${SIGHT_TARGET}_SOURCES EXCLUDE REGEX "/ui/")
     endif()
 
-    sight_generic_test(${SIGHT_TARGET} REQUIRE_X ${SIGHT_CPPUNIT_REQUIRE_X} DOCTEST ON)
+    sight_generic_test(${SIGHT_TARGET} REQUIRE_X ${SIGHT_TEST_ARG_REQUIRE_X})
 
     target_link_libraries(${SIGHT_TARGET} PRIVATE doctest::doctest)
+
+    # Labels let CI select tests by target, since test names no longer contain the target name
+    set(SIGHT_TEST_LABELS)
+    if(${SIGHT_TARGET} MATCHES "_mut$")
+        list(APPEND SIGHT_TEST_LABELS manual)
+    endif()
+    if(${SIGHT_TARGET} MATCHES "dicom")
+        list(APPEND SIGHT_TEST_LABELS dicom)
+    endif()
+    if(SIGHT_TEST_LABELS)
+        set(SIGHT_TEST_LABELS ADD_LABELS ${SIGHT_TEST_LABELS})
+    endif()
 
     # Mandatory for VSCode to trace the test location and debug it from the IDE
     sight_doctest_discover_tests(
@@ -640,6 +594,7 @@ macro(sight_test SIGHT_TARGET)
         TEST_ENV
         "${SIGHT_VCPKG_RUNTIME_DIR}"
         "${FW_SIGHT_EXTERNAL_LIBRARIES_DIR}"
+        ${SIGHT_TEST_LABELS}
     )
 endmacro()
 
@@ -752,7 +707,12 @@ macro(fw_lib SIGHT_TARGET OBJECT_LIBRARY)
         )
 
         if(WIN32)
-            install(FILES $<TARGET_PDB_FILE:${SIGHT_TARGET}> DESTINATION ${CMAKE_INSTALL_BINDIR} OPTIONAL)
+            install(
+                FILES $<TARGET_PDB_FILE:${SIGHT_TARGET}>
+                DESTINATION ${CMAKE_INSTALL_BINDIR}
+                CONFIGURATIONS Debug RelWithDebInfo
+                OPTIONAL
+            )
         endif()
 
         # Add all targets to the build-tree export set
@@ -1102,8 +1062,6 @@ macro(sight_add_target)
     elseif("${SIGHT_TARGET_TYPE}" STREQUAL "MODULE")
         fw_module(${SIGHT_TARGET} ${SIGHT_TARGET_TYPE} OFF)
     elseif("${SIGHT_TARGET_TYPE}" STREQUAL "TEST")
-        fw_test(${SIGHT_TARGET} REQUIRE_X ${SIGHT_TARGET_REQUIRE_X} "${OPTIONS}")
-    elseif("${SIGHT_TARGET_TYPE}" STREQUAL "DOCTEST")
         sight_test(${SIGHT_TARGET} REQUIRE_X ${SIGHT_TARGET_REQUIRE_X} "${OPTIONS}")
     elseif("${SIGHT_TARGET_TYPE}" STREQUAL "GUI_TEST")
         sight_gui_test(${SIGHT_TARGET} "${OPTIONS}")
@@ -1129,12 +1087,12 @@ macro(sight_add_target)
         get_target_property(TARGET_TYPE ${SIGHT_TARGET} TYPE)
         # Skip libraries without code
         if(NOT "${TARGET_TYPE}" STREQUAL "INTERFACE_LIBRARY")
-            fw_manage_warnings(${SIGHT_TARGET})
+            sight_configure_warnings(${SIGHT_TARGET})
         endif()
 
         # Forward the flag on the object library if it is used
         if(SIGHT_TARGET_OBJECT_LIBRARY)
-            fw_manage_warnings(${SIGHT_TARGET}_obj)
+            sight_configure_warnings(${SIGHT_TARGET}_obj)
         endif()
     endif()
 
@@ -1170,21 +1128,25 @@ macro(sight_generate_profile TARGET)
 endmacro()
 
 # Treat warnings as errors if requested
-#   to activate "warning as errors", simply write in the Properties.cmake of your project:
-#   set(WARNINGS_AS_ERRORS ON)
-macro(fw_manage_warnings PROJECT)
-    if(MSVC)
-        if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 19.14)
-            # wd4996: deprecated declaration will be displayed as warning and not errors
-            target_compile_options(${PROJECT} PRIVATE /WX /wd4996)
-        else()
-            message(WARNING "Your version of MSVC is too old to use WARNINGS_AS_ERRORS.")
-        endif()
-    endif()
-
-    # deprecated declaration will be displayed as warning and not errors
+# - deprecated declaration will be displayed as warning and not errors
+# - C4211 (nonstandard extension used: redefined extern to static) is disabled for CUDA: nvcc's generated
+#   device-function registration stubs (*.cudafe1.stub.c) trigger it under MSVC, it's not something we can
+#   fix in our own .cu files
+# - enabled by default on all projects, and strongly recommended to not disable it
+# - if really necessary, you can disable them by defining sight_add_target(foo TYPE ... WARNINGS_AS_ERRORS OFF)
+macro(sight_configure_warnings PROJECT)
     target_compile_options(
-        ${PROJECT} PRIVATE "$<$<CXX_COMPILER_ID:GNU,Clang>:-Werror;-Wno-error=deprecated-declarations>"
+        ${PROJECT}
+        PRIVATE "$<$<AND:$<CXX_COMPILER_ID:GNU,Clang>,$<COMPILE_LANGUAGE:C,CXX>>:"
+                "-Werror;-Wno-error=deprecated-declarations>"
+                "$<$<AND:$<CXX_COMPILER_ID:GNU,Clang>,$<COMPILE_LANGUAGE:CUDA>>:"
+                "--Werror;all-warnings;-Xcompiler=-Werror,-Wno-error=deprecated-declarations>"
+                "$<$<AND:$<CXX_COMPILER_ID:MSVC>,$<COMPILE_LANGUAGE:C,CXX>>:/WX;/wd4996>"
+                # /wd4211: nvcc generates host-side registration stubs for __global__ kernels defined in an
+                # anonymous namespace that redeclare them with a different linkage, triggering a false positive
+                # MSVC warning in the nvcc-generated code itself (not in our sources).
+                "$<$<AND:$<CXX_COMPILER_ID:MSVC>,$<COMPILE_LANGUAGE:CUDA>>:-Xcompiler=/WX;-Xcompiler=/wd4996;"
+                "-Xcompiler=/wd4211>"
     )
 
     if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
@@ -1197,14 +1159,13 @@ macro(fw_manage_warnings PROJECT)
         endif()
 
         if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 13)
-            # disable specific buggy warnings with GCC12, see https://gcc.gnu.org/bugzilla/show_bug.cgi?id=105329
+            # disable specific buggy warnings with GCC13, see https://gcc.gnu.org/bugzilla/show_bug.cgi?id=105329
             target_compile_options(
                 ${PROJECT} PRIVATE "$<$<CONFIG:Release,RelWithDebInfo,MinSizeRel>:"
                                    "-Wno-stringop-overread;-Wno-error=nonnull>"
             )
         endif()
     endif()
-
 endmacro()
 
 # Find link and manual dependencies for a target
@@ -1224,7 +1185,7 @@ function(find_target_dependencies TARGET TARGETS_FILTER RESULT_VAR)
             list(APPEND DEPENDS ${INTERFACE_DEPENDS})
             set(DEPENDS_COPY ${DEPENDS})
             foreach(dep ${DEPENDS})
-                if(NOT ${dep} IN_LIST TARGETS_FILTER AND NOT "${dep}" MATCHES "_obj")
+                if(NOT ${dep} IN_LIST TARGETS_FILTER AND NOT "${dep}" MATCHES "_obj$")
                     list(REMOVE_ITEM DEPENDS_COPY ${dep})
                 endif()
             endforeach()
@@ -1263,7 +1224,7 @@ function(sight_create_package_targets SIGHT_COMPONENTS SIGHT_IMPORTED_COMPONENTS
 
     # Add an install target for every component
     foreach(COMPONENT ${SIGHT_COMPONENTS})
-        if(NOT ${COMPONENT} MATCHES "_obj")
+        if(NOT ${COMPONENT} MATCHES "_obj$")
             get_target_property(COMPONENT_BINARY_DIR ${COMPONENT} BINARY_DIR)
             add_custom_target(
                 ${COMPONENT}_install ${CMAKE_COMMAND} -DBUILD_TYPE=${CMAKE_BUILD_TYPE} -P
@@ -1342,7 +1303,7 @@ function(sight_create_package_targets SIGHT_COMPONENTS SIGHT_IMPORTED_COMPONENTS
         # Add a dependency on each install target of dependencies found in this project
         find_target_dependencies(${APP} "${SIGHT_COMPONENTS}" DEPENDS)
         foreach(DEP ${DEPENDS})
-            if(NOT ${DEP} MATCHES "_obj")
+            if(NOT ${DEP} MATCHES "_obj$")
                 add_dependencies(${APP}_install ${DEP}_install)
             endif()
         endforeach()
@@ -1355,7 +1316,6 @@ function(sight_create_package_targets SIGHT_COMPONENTS SIGHT_IMPORTED_COMPONENTS
                 ${APP}_install_plugins
                 ${CMAKE_COMMAND}
                 -DDEPENDS="${DEPENDS}"
-                -DBUILD_TYPE=${CMAKE_BUILD_TYPE}
                 -DQT_PLUGINS_SOURCE_DIR="${Qt6_DIR}/../..$<$<CONFIG:Debug>:/debug>/Qt6/plugins"
                 -DPLUGINS_DESTINATION="${CMAKE_INSTALL_BINDIR}/.."
                 -DOGRE_PLUGINS_SOURCE_DIR="${OGRE_PLUGIN_DIR}/../..$<$<CONFIG:Debug>:/debug>/plugins"
@@ -1371,16 +1331,26 @@ function(sight_create_package_targets SIGHT_COMPONENTS SIGHT_IMPORTED_COMPONENTS
                 set(SIGHT_VCPKG_ROOT_DIR "${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/debug")
             else()
                 set(SIGHT_VCPKG_ROOT_DIR "${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}")
-                set(EXCLUDE_PATTERN ".*/debug/.*")
             endif()
-            set(LAUNCHER_PATH "${CMAKE_INSTALL_BINDIR}/sightrun.exe")
+            # Standalone executables are their own launcher
+            get_target_property(APP_TYPE ${APP} SIGHT_TARGET_TYPE)
+            if("${APP_TYPE}" STREQUAL "EXECUTABLE")
+                set(LAUNCHER "$<TARGET_FILE_NAME:${APP}>")
+            else()
+                set(LAUNCHER "sightrun.exe")
+            endif()
 
             configure_file(
                 ${FWCMAKE_RESOURCE_PATH}/install/windows/windows_fixup.cmake.in ${CMAKE_BINARY_DIR}/windows_fixup.cmake
                 @ONLY
             )
             add_custom_target(
-                ${APP}_fixup ${CMAKE_COMMAND} -P ${CMAKE_BINARY_DIR}/windows_fixup.cmake
+                ${APP}_fixup
+                ${CMAKE_COMMAND}
+                -DSIGHT_RUNTIME_DEPENDENCIES_MANIFEST=${CMAKE_BINARY_DIR}/${APP}-runtime-dependencies.tsv
+                -DLAUNCHER_PATH=${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR}/${LAUNCHER}
+                -P
+                ${CMAKE_BINARY_DIR}/windows_fixup.cmake
                 COMMENT "Fixup before packaging..."
             )
             add_dependencies(${APP}_fixup ${APP}_install ${APP}_install_plugins)
@@ -1440,7 +1410,7 @@ function(order_components SIGHT_UNORDERED_COMPONENTS SIGHT_ORDERED_COMPONENTS)
             # If we have dependencies, we check if all of them are not already in the ordered list
             if(dependencies)
                 foreach(dependency ${dependencies})
-                    if(NOT ${dependency} IN_LIST ordered_components AND NOT "${dependency}" MATCHES "_obj")
+                    if(NOT ${dependency} IN_LIST ordered_components AND NOT "${dependency}" MATCHES "_obj$")
                         set(resolved FALSE)
                         break()
                     endif()
@@ -1502,6 +1472,7 @@ endfunction()
 # Utility macro for sight_configure_pch: creates the pch targets and setup optimized debug options if needed
 macro(sight_create_pch_target _og)
     set(SIGHT_PCH_HEADERS
+        "${FWCMAKE_BUILD_FILES_DIR}/ciso646.hpp"
         <boost/algorithm/string.hpp>
         <boost/foreach.hpp>
         <boost/function_types/function_arity.hpp>
@@ -1605,7 +1576,12 @@ macro(sight_create_pch_target _og)
     target_precompile_headers(${SIGHT_PCH_NAME} PUBLIC ${SIGHT_PCH_HEADERS})
 
     # Boost
-    find_package(Boost QUIET COMPONENTS system date_time iostreams log log_setup REQUIRED)
+    find_package(
+        Boost QUIET
+        COMPONENTS date_time iostreams log log_setup
+        OPTIONAL_COMPONENTS system
+        REQUIRED
+    )
 
     target_link_libraries(${SIGHT_PCH_NAME} PUBLIC Boost::date_time Boost::iostreams Boost::log Boost::log_setup)
     target_compile_definitions(${SIGHT_PCH_NAME} PUBLIC BOOST_BIND_GLOBAL_PLACEHOLDERS)

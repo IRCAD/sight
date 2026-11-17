@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,7 +41,7 @@ public:
     SIGHT_DECLARE_CLASS(message_base, ui::object);
 
     /// Icon type
-    enum icons
+    enum icons : std::uint8_t
     {
         critical,
         warning,
@@ -51,7 +51,7 @@ public:
     };
 
     /// Buttons type
-    enum buttons
+    enum buttons : std::uint8_t
     {
         nobutton = 0, // invalid
 

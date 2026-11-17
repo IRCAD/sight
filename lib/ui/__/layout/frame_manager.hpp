@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,9 +44,9 @@ public:
     SIGHT_DECLARE_CLASS(frame_manager, ui::object);
 
     /// Defines all possible style for a frame
-    enum style
+    enum style : std::uint8_t
     {
-        DEFAULT,
+        standard,
         stay_on_top,
         modal,
         fullscreen,
@@ -151,8 +151,8 @@ public:
         return m_container;
     }
 
-    using CloseCallback = std::function<void ()>;
-    SIGHT_UI_API virtual void set_close_callback(CloseCallback _fct);
+    using close_callback = std::function<void ()>;
+    SIGHT_UI_API virtual void set_close_callback(close_callback _fct);
 
 protected:
 
@@ -180,9 +180,11 @@ protected:
 
     /**  @} */
 
+    /// NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
     ui::container::widget::sptr m_frame;
     ui::container::widget::sptr m_container;
-    CloseCallback m_close_callback;
+    close_callback m_close_callback;
+    /// NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 
     SIGHT_UI_API void read_config();
 

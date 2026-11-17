@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2025 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #include "solve_pnp.hpp"
-
-#include <core/com/signal.hxx>
 
 #include <geometry/vision/helper.hpp>
 
@@ -57,8 +55,8 @@ void solve_pnp::compute_registration(core::clock::type /*timestamp*/)
     auto fw_matrix = m_matrix.lock();
 
     // ignore if no detected points or if sizes do not match.
-    const bool points_2d_empty = fw_points2d->get_points().empty();
-    const bool points_equals   = fw_points2d->get_points().size() == fw_points3d->get_points().size();
+    const bool points_2d_empty = fw_points2d->empty();
+    const bool points_equals   = fw_points2d->size() == fw_points3d->size();
 
     if(!points_equals)
     {
@@ -70,7 +68,7 @@ void solve_pnp::compute_registration(core::clock::type /*timestamp*/)
         return;
     }
 
-    const std::size_t number_of_points = fw_points2d->get_points().size();
+    const std::size_t number_of_points = fw_points2d->size();
 
     float shift_x = 0.F;
     float shift_y = 0.F;
@@ -87,7 +85,7 @@ void solve_pnp::compute_registration(core::clock::type /*timestamp*/)
     for(std::size_t i = 0 ; i < number_of_points ; ++i)
     {
         // 2d
-        data::point::csptr p2d = fw_points2d->get_points()[i];
+        data::point::csptr p2d = (*fw_points2d)[i];
         cv::Point2f cv_p2d;
 
         cv_p2d.x = static_cast<float>((*p2d)[0]) - shift_x;
@@ -96,7 +94,7 @@ void solve_pnp::compute_registration(core::clock::type /*timestamp*/)
         points2d[i] = cv_p2d;
 
         // 3d
-        data::point::csptr p3d = fw_points3d->get_points()[i];
+        data::point::csptr p3d = (*fw_points3d)[i];
         cv::Point3f cv_p3d;
 
         cv_p3d.x = static_cast<float>((*p3d)[0]);
@@ -120,12 +118,11 @@ void solve_pnp::compute_registration(core::clock::type /*timestamp*/)
     }
 
     data::matrix4::sptr matrix = std::make_shared<data::matrix4>();
-    io::opencv::matrix::copy_from_cv(cv_mat, matrix);
+    io::opencv::matrix::copy_from_cv(cv_mat, *matrix);
 
     fw_matrix->deep_copy(matrix);
 
-    const auto sig = fw_matrix->signal<data::matrix4::modified_signal_t>(data::matrix4::MODIFIED_SIG);
-    sig->async_emit();
+    fw_matrix->async_emit(data::signals::MODIFIED);
 }
 
 //-----------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,15 +21,13 @@
 
 #include "matrix_to_point.hpp"
 
-#include <core/com/signal.hxx>
-
 namespace sight::module::geometry
 {
 
 //-----------------------------------------------------------------------------
 
 matrix_to_point::matrix_to_point() :
-    filter(m_signals)
+    filter(has_signals::signals())
 {
 }
 
@@ -67,8 +65,8 @@ void matrix_to_point::updating()
         point->set_label(*m_label);
     }
 
-    point->async_emit(data::point::MODIFIED_SIG);
-    this->async_emit(signals::COMPUTED);
+    point->async_emit(data::signals::MODIFIED);
+    this->async_emit(signals::SUCCEEDED);
 }
 
 //-----------------------------------------------------------------------------

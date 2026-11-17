@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,6 +26,7 @@
 #include "core/runtime/detail/io/validator.hpp"
 #include "core/runtime/detail/runtime.hpp"
 #include "core/runtime/module.hpp"
+#include <core/spy_log.hpp>
 
 #include <libxml/xmlstring.h>
 

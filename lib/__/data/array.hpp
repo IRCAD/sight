@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -642,7 +642,7 @@ inline const T& array::at(const std::size_t& _offset) const
 template<typename T>
 inline array::iterator<T> array::begin()
 {
-    return iterator<T>(static_cast<typename iterator<T>::pointer_t>(buffer()));
+    return iterator<T>(static_cast<iterator<T>::pointer_t>(buffer()));
 }
 
 //------------------------------------------------------------------------------
@@ -651,7 +651,7 @@ template<typename T>
 inline array::iterator<T> array::end()
 {
     auto itr = begin<T>();
-    itr += static_cast<typename iterator<T>::difference_type>(this->size_in_bytes() / sizeof(T));
+    itr += static_cast<iterator<T>::difference_type>(this->size_in_bytes() / sizeof(T));
     return itr;
 }
 
@@ -660,7 +660,7 @@ inline array::iterator<T> array::end()
 template<typename T>
 inline array::const_iterator<T> array::begin() const
 {
-    return const_iterator<T>(static_cast<typename const_iterator<T>::pointer_t>(buffer()));
+    return const_iterator<T>(static_cast<const_iterator<T>::pointer_t>(buffer()));
 }
 
 //------------------------------------------------------------------------------
@@ -669,7 +669,7 @@ template<typename T>
 inline array::const_iterator<T> array::end() const
 {
     auto itr = begin<T>();
-    itr += static_cast<typename const_iterator<T>::difference_type>(this->size_in_bytes() / sizeof(T));
+    itr += static_cast<const_iterator<T>::difference_type>(this->size_in_bytes() / sizeof(T));
     return itr;
 }
 
@@ -678,7 +678,7 @@ inline array::const_iterator<T> array::end() const
 template<typename T>
 inline array::const_iterator<T> array::cbegin() const
 {
-    return const_iterator<T>(static_cast<typename const_iterator<T>::pointer_t>(buffer()));
+    return const_iterator<T>(static_cast<const_iterator<T>::pointer_t>(buffer()));
 }
 
 //------------------------------------------------------------------------------
@@ -687,7 +687,7 @@ template<typename T>
 inline array::const_iterator<T> array::cend() const
 {
     auto itr = begin<T>();
-    itr += static_cast<typename const_iterator<T>::difference_type>(this->size_in_bytes() / sizeof(T));
+    itr += static_cast<const_iterator<T>::difference_type>(this->size_in_bytes() / sizeof(T));
     return itr;
 }
 

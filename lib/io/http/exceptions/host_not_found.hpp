@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,7 +39,7 @@ public:
     /**
      * @name Constructor/Destructor.
      * @{ */
-    SIGHT_IO_HTTP_API host_not_found(const std::string& _message);
+    SIGHT_IO_HTTP_API explicit host_not_found(const std::string& _message);
     ~host_not_found() noexcept override;
     /**  @} */
 };

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,28 +20,16 @@
  ***********************************************************************/
 
 #include "timestamp_signal.hpp"
-
-#include <core/com/signal.hxx>
-
-#include <service/macros.hpp>
-
-#include <ui/__/dialog/message.hpp>
-
-#include <boost/date_time.hpp>
+#include <boost/date_time/gregorian/formatters.hpp>
 
 namespace sight::module::ui::com
 {
 
 //-----------------------------------------------------------------------------
 
-static const core::com::signals::key_t TRIGGERED_SIG           = "triggered";
-static const core::com::signals::key_t TRIGGERED_AS_STRING_SIG = "triggered_as_string";
-
-//-----------------------------------------------------------------------------
-
 timestamp_signal::timestamp_signal() noexcept :
-    m_sig_triggered(new_signal<triggered_signal_t_t>(TRIGGERED_SIG)),
-    m_sig_triggered_as_string(new_signal<triggered_as_string_signal_t>(TRIGGERED_AS_STRING_SIG))
+    m_sig_triggered(new_signal<signals::triggered_t>(signals::TRIGGERED)),
+    m_sig_triggered_as_string(new_signal<signals::triggered_as_string_t>(signals::TRIGGERED_AS_STRING))
 {
 }
 

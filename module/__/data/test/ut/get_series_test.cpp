@@ -19,18 +19,12 @@
  *
  ***********************************************************************/
 
-#include <core/runtime/runtime.hpp>
-
 #include <data/model_series.hpp>
 #include <data/series_set.hpp>
 
 #include <service/op.hpp>
 
-#include <boost/property_tree/xml_parser.hpp>
-
 #include <doctest/doctest.h>
-
-#include <sstream>
 
 TEST_SUITE("sight::module::data::get_series")
 {
@@ -76,24 +70,21 @@ TEST_SUITE("sight::module::data::get_series")
         CHECK_EQ(series2, (*series_set)[1]);
         CHECK_EQ(series3, (*series_set)[2]);
         CHECK_EQ(index_0_id, series1->get_id());
-        sight::service::config_t config;
-        std::stringstream config_string;
-        config_string
-        << "<out group=\"series\">"
-           "<key index=\"0\" uid=\"modelSeries\"/>"
-           "<key index=\"3\" uid=\"modelSeries1\"/>"
-           "</out>";
-        boost::property_tree::read_xml(config_string, config);
+        const std::string config =
+            "<out group='series'>"
+            "<key index='0' uid='modelSeries'/>"
+            "<key index='3' uid='modelSeries1'/>"
+            "</out>";
         get_series->set_config(config);
         get_series->set_input(series_set, "seriesSet");
         get_series->configure();
-        get_series->start().wait();
-        get_series->update().wait();
+        get_series->start().get();
+        get_series->update().get();
 
         CHECK_EQ(index_0_id, get_series->output("series", 0).lock()->get_id());
         CHECK_EQ(index_3_id, get_series->output("series", 1).lock()->get_id());
 
-        get_series->stop().wait();
+        get_series->stop().get();
 
         sight::service::remove(get_series);
     }
@@ -106,19 +97,16 @@ TEST_SUITE("sight::module::data::get_series")
         sight::service::base::sptr get_series = sight::service::add("sight::module::data::get_series");
         CHECK(get_series->is_a("sight::module::data::get_series"));
 
-        sight::service::config_t config;
-        std::stringstream config_string;
-        config_string
-        << "<out group=\"series\">"
-           "<key index=\"0\" uid=\"modelSeries\"/>"
-           "<key index=\"3\" uid=\"modelSeries1\"/>"
-           "</out>";
-        boost::property_tree::read_xml(config_string, config);
+        const std::string config =
+            "<out group='series'>"
+            "<key index='0' uid='modelSeries'/>"
+            "<key index='3' uid='modelSeries1'/>"
+            "</out>";
         get_series->set_config(config);
         get_series->set_input(nullptr, "seriesSet");
-        get_series->start().wait();
+        get_series->start().get();
         CHECK_THROWS_AS(get_series->update().get(), sight::data::exception);
-        get_series->stop().wait();
+        get_series->stop().get();
         sight::service::remove(get_series);
     }
 

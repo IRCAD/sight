@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,56 +21,50 @@
 
 // cspell:ignore Arent
 
-#include "related_study_test.hpp"
-
 #include <activity/validator/base.hpp>
 
 #include <data/series.hpp>
 #include <data/vector.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::activity::validator::ut::related_study_test);
+#include <doctest/doctest.h>
 
-namespace sight::activity::validator::ut
+TEST_SUITE("sight::activity::validator::related_study")
 {
+//------------------------------------------------------------------------------
+
+    TEST_CASE("studies_are_related")
+    {
+        auto validator = sight::activity::validator::factory::make("sight::activity::validator::related_study");
+        CHECK(validator);
+
+        auto series1 = std::make_shared<sight::data::series>();
+        series1->set_study_instance_uid("These studies look related");
+        auto series2 = std::make_shared<sight::data::series>();
+        series2->set_study_instance_uid("These studies look related");
+
+        auto vector = std::make_shared<sight::data::vector>();
+        vector->push_back(series1);
+        vector->push_back(series2);
+
+        CHECK(validator->validate(sight::activity::extension::activity_info {}, vector).first);
+    }
 
 //------------------------------------------------------------------------------
 
-void related_study_test::studies_are_related_test()
-{
-    activity::validator::base::sptr validator =
-        activity::validator::factory::make("sight::activity::validator::related_study");
-    CPPUNIT_ASSERT(validator);
+    TEST_CASE("studies_arent_related")
+    {
+        auto validator = sight::activity::validator::factory::make("sight::activity::validator::related_study");
+        CHECK(validator);
 
-    auto series1 = std::make_shared<data::series>();
-    series1->set_study_instance_uid("These studies look related");
-    auto series2 = std::make_shared<data::series>();
-    series2->set_study_instance_uid("These studies look related");
+        auto series1 = std::make_shared<sight::data::series>();
+        series1->set_study_instance_uid("My study is better than yours");
+        auto series2 = std::make_shared<sight::data::series>();
+        series2->set_study_instance_uid("Well, in any case our studies aren't related");
 
-    auto vector = std::make_shared<data::vector>();
-    vector->push_back(series1);
-    vector->push_back(series2);
+        auto vector = std::make_shared<sight::data::vector>();
+        vector->push_back(series1);
+        vector->push_back(series2);
 
-    CPPUNIT_ASSERT(validator->validate(activity::extension::activity_info {}, vector).first);
+        CHECK(!validator->validate(sight::activity::extension::activity_info {}, vector).first);
+    }
 }
-
-//------------------------------------------------------------------------------
-
-void related_study_test::studies_arent_related_test()
-{
-    activity::validator::base::sptr validator =
-        activity::validator::factory::make("sight::activity::validator::related_study");
-    CPPUNIT_ASSERT(validator);
-
-    auto series1 = std::make_shared<data::series>();
-    series1->set_study_instance_uid("My study is better than yours");
-    auto series2 = std::make_shared<data::series>();
-    series2->set_study_instance_uid("Well, in any case our studies aren't related");
-
-    auto vector = std::make_shared<data::vector>();
-    vector->push_back(series1);
-    vector->push_back(series2);
-
-    CPPUNIT_ASSERT(!validator->validate(activity::extension::activity_info {}, vector).first);
-}
-
-} // namespace sight::activity::validator::ut

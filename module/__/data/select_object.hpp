@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -51,19 +51,17 @@ public:
 
     SIGHT_DECLARE_SERVICE(select_object, service::controller);
 
+    struct slots
+    {
+        static inline const slot_key_t ADD    = "add";
+        static inline const slot_key_t REMOVE = "remove";
+    };
+
     /// Constructor.  Do nothing.
     select_object() noexcept;
 
     /// Destructor. Do nothing.
     ~select_object() noexcept override;
-
-    /**
-     * @name Slots
-     * @{
-     */
-    static const core::com::slots::key_t ADD_SLOT;
-    static const core::com::slots::key_t REMOVE_SLOT;
-    /// @}
 
 protected:
 

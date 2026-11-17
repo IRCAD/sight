@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2025 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -37,7 +37,7 @@ namespace sight::core::crypto
 template<std::uint32_t S, std::uint32_t A = 16807UL, std::uint32_t C = 0UL, std::uint32_t M = (1UL << 31) - 1>
 struct linear_generator
 {
-    static const std::uint32_t STATE = ((std::uint64_t) S * A + C) % M;
+    static const std::uint32_t STATE = (static_cast<std::uint64_t>(S * A + C)) % M;
     static const std::uint32_t VALUE = STATE;
     using next = linear_generator<STATE>;
     struct split
@@ -76,7 +76,7 @@ struct concat<st_list<SL ...>, st_list<SR ...> >
 };
 
 template<typename TL, typename TR>
-using concat_t = typename concat<TL, TR>::type;
+using concat_t = concat<TL, TR>::type;
 
 // Count from zero to n-1
 template<std::size_t s>
@@ -92,7 +92,7 @@ struct count<0>
 };
 
 template<std::size_t s>
-using count_t = typename count<s>::type;
+using count_t = count<s>::type;
 
 // Get a scrambled character of a string
 template<std::uint32_t seed, std::size_t index, std::size_t N>
@@ -177,7 +177,7 @@ public:
     {
     }
 
-    operator sight::core::crypto::secure_string() const
+    explicit operator sight::core::crypto::secure_string() const
     {
         std::array<char, N> plain_text;
         for(std::size_t i = 0 ; i < N ; ++i)
@@ -199,14 +199,16 @@ std::ostream& operator<<(std::ostream& _s, const sight::core::crypto::obfuscated
     return _s;
 }
 
-#define RNG_SEED ((__TIME__[7] - '0') * 1 + (__TIME__[6] - '0') * 10 \
-                  + (__TIME__[4] - '0') * 60 + (__TIME__[3] - '0') * 600 \
-                  + (__TIME__[1] - '0') * 3600 + (__TIME__[0] - '0') * 36000) \
-        + (__LINE__ * 100000)
+// NOLINTBEGIN(cppcoreguidelines-macro-usage)
+#define RNG_SEED (((__TIME__[7] - '0') * 1 + (__TIME__[6] - '0') * 10 \
+                   + (__TIME__[4] - '0') * 60 + (__TIME__[3] - '0') * 600 \
+                   + (__TIME__[1] - '0') * 3600 + (__TIME__[0] - '0') * 36000) \
+                  + (__LINE__ * 100000))
 
 #define OBFUSCATED_STR(STR) \
         sight::core::crypto::obfuscated_string<RNG_SEED, \
                                                sizeof(STR)> {sight::core::crypto::to_array<char, sizeof(STR)>(STR) \
         }
+// NOLINTEND(cppcoreguidelines-macro-usage)
 
 } // namespace sight::core::crypto

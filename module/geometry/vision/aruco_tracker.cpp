@@ -1,0 +1,338 @@
+/************************************************************************
+ *
+ * Copyright (C) 2014-2026 IRCAD France
+ * Copyright (C) 2014-2021 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
+
+#include "aruco_tracker.hpp"
+
+#include <io/opencv/camera.hpp>
+#include <io/opencv/image.hpp>
+
+#include <boost/foreach.hpp>
+#include <boost/lexical_cast.hpp>
+#include <boost/tokenizer.hpp>
+
+#include <opencv2/core/version.hpp>
+#if CV_MAJOR_VERSION < 5
+#include <opencv2/calib3d.hpp>
+#else
+#include <opencv2/objdetect/aruco_detector.hpp>
+#endif
+#include <opencv2/imgproc.hpp>
+
+//-----------------------------------------------------------------------------
+
+namespace sight::module::geometry::vision
+{
+
+//-----------------------------------------------------------------------------
+
+aruco_tracker::aruco_tracker() noexcept
+{
+    new_signal<signals::detection_done_t>(signals::DETECTION_DONE);
+    new_signal<signals::marker_detected_t>(signals::MARKER_DETECTED);
+
+    // For now only original aruco markers are used
+    m_dictionary =
+        cv::makePtr<cv::aruco::Dictionary>(cv::aruco::getPredefinedDictionary(cv::aruco::DICT_ARUCO_ORIGINAL));
+}
+
+//-----------------------------------------------------------------------------
+
+service::connections_t aruco_tracker::auto_connections() const
+{
+    return {
+    };
+}
+
+//-----------------------------------------------------------------------------
+
+void aruco_tracker::configuring(const config_t& _config)
+{
+    this->sight::io::tracking::base<io::tracking::sensor_t>::configuring(_config);
+
+    const auto& track_cfg = _config.get_child("track");
+
+    // NOLINTNEXTLINE(bugprone-branch-clone)
+    BOOST_FOREACH(const auto& elt, track_cfg.equal_range("marker"))
+    {
+        const auto& cfg           = elt.second;
+        const auto markers_id_str = cfg.get<std::string>("<xmlattr>.id");
+        boost::tokenizer<> tok(markers_id_str);
+        marker_id_t markers_id;
+        for(const auto& it : tok)
+        {
+            const int id = boost::lexical_cast<int>(it);
+            markers_id.push_back(id);
+        }
+
+        m_markers.push_back(markers_id);
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void aruco_tracker::starting()
+{
+    set_tracking(true);
+}
+
+//-----------------------------------------------------------------------------
+
+void aruco_tracker::stopping()
+{
+    m_is_initialized = false;
+    set_tracking(false);
+}
+
+//-----------------------------------------------------------------------------
+
+void aruco_tracker::updating()
+{
+    // When working with a frame (newest design), we do not rely on the timestamp
+    // So we can just send the current one.
+    // When removing timelines from the service then we could get rid of it
+    auto timestamp = core::clock::get_time_in_milli_sec();
+    this->tracking(timestamp);
+}
+
+//-----------------------------------------------------------------------------
+
+void aruco_tracker::tracking(core::clock::type& _timestamp)
+{
+    if(!m_is_initialized)
+    {
+        const auto ar_cam = m_camera.lock();
+
+        std::tie(m_camera_params.intrinsic, m_camera_params.size, m_camera_params.distorsion) =
+            io::opencv::camera::copy_to_cv(ar_cam.get_shared());
+
+        m_is_initialized = true;
+    }
+
+    cv::Mat in_image;
+    auto frame = m_frame.lock();
+    if(frame)
+    {
+        in_image = io::opencv::image::move_to_cv(frame.get_shared());
+    }
+
+    if(!in_image.empty())
+    {
+        // Check number of components of image.
+        const auto nb_of_components = in_image.channels();
+
+        cv::Mat grey;
+        if(nb_of_components == 4) // RGBA or BGRA.
+        {
+            cv::cvtColor(in_image, grey, cv::COLOR_BGRA2GRAY);
+        }
+        else if(nb_of_components == 3) // RGB or BGR.
+        {
+            cv::cvtColor(in_image, grey, cv::COLOR_BGR2GRAY);
+        }
+        else if(nb_of_components == 1) // Grey level.
+        {
+            grey = in_image;
+        }
+        // Discard "exotic" values of components (0, 2, > 4).
+        else
+        {
+            SIGHT_ERROR(
+                "Invalid number of components ( " + std::to_string(nb_of_components) + " ) for : '"
+                << FRAME_INPUT << "' (accepted values are 1, 3 or 4). "
+            );
+
+            return;
+        }
+
+        bool found_marker = false;
+        std::vector<std::vector<cv::Point2f> > detected_markers;
+        std::vector<int> detected_markers_ids;
+
+        cv::Mat undistort_grey;
+        {
+            const auto ar_cam = m_camera.lock();
+            if(ar_cam->get_is_calibrated())
+            {
+                cv::undistort(grey, undistort_grey, m_camera_params.intrinsic, m_camera_params.distorsion);
+            }
+            else
+            {
+                undistort_grey = grey;
+            }
+        }
+
+        const auto detector_params = this->make_detector_parameters();
+
+        // Ok, let's detect
+#if CV_MAJOR_VERSION < 5
+        cv::aruco::detectMarkers(
+            undistort_grey,
+            m_dictionary,
+            detected_markers,
+            detected_markers_ids,
+            detector_params,
+            cv::noArray()
+        );
+#else
+        const cv::aruco::ArucoDetector detector(*m_dictionary, *detector_params);
+        detector.detectMarkers(undistort_grey, detected_markers, detected_markers_ids);
+#endif
+
+        auto debug_frame = m_debug_frame.lock();
+        if(debug_frame)
+        {
+            debug_frame->resize(frame->size(), core::type::UINT8, data::image::rgba);
+            cv::Mat debug_image = io::opencv::image::move_to_cv(debug_frame.get_shared());
+
+            if(*m_debug_mode)
+            {
+                // Since drawDetectedMarkers does not handle four-channel cv::Mat, draw into a separate BGR image.
+                cv::Mat annotations(debug_image.rows, debug_image.cols, CV_8UC3, cv::Scalar::all(0));
+                cv::aruco::drawDetectedMarkers(annotations, detected_markers, detected_markers_ids);
+                cv::cvtColor(annotations, debug_image, cv::COLOR_BGR2BGRA);
+
+                // Keep the background transparent so the annotations can be superimposed on the source image.
+                cv::Mat alpha;
+                cv::cvtColor(annotations, alpha, cv::COLOR_BGR2GRAY);
+                cv::threshold(alpha, alpha, 0, 255, cv::THRESH_BINARY);
+                std::vector<cv::Mat> channels;
+                cv::split(debug_image, channels);
+                channels[3] = alpha;
+                cv::merge(channels, debug_image);
+            }
+            else
+            {
+                debug_image.setTo(cv::Scalar::all(0));
+            }
+
+            debug_frame->async_emit(data::signals::MODIFIED);
+        }
+
+        std::size_t tag_tl_index = 0;
+        for(const auto& markers_id : m_markers)
+        {
+            for(const auto& marker_id : markers_id)
+            {
+                for(unsigned int i = 0 ; i < detected_markers_ids.size() ; i++)
+                {
+                    if(detected_markers_ids[i] == marker_id)
+                    {
+                        found_marker = true;
+
+                        // Push matrix
+                        auto marker_map = m_marker_map[tag_tl_index].lock();
+                        SIGHT_ASSERT("Marker map not found", marker_map);
+
+                        data::marker_map::marker_t marker;
+                        marker.resize(4);
+                        for(std::size_t j = 0 ; j < 4 ; ++j)
+                        {
+                            marker[j][0] = detected_markers[i][j].x;
+                            marker[j][1] = detected_markers[i][j].y;
+                        }
+
+                        marker_map->set_marker(std::to_string(marker_id), marker);
+                    }
+                }
+            }
+
+            auto marker_map = m_marker_map[tag_tl_index].lock();
+            // Always send the signal even if we did not find anything.
+            // This allows to keep updating the whole processing pipeline.
+            marker_map->async_emit(data::signals::MODIFIED);
+
+            this->async_emit(signals::MARKER_DETECTED, found_marker);
+
+            ++tag_tl_index;
+        }
+
+        // Emit
+        this->async_emit(signals::DETECTION_DONE, _timestamp);
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+cv::Ptr<cv::aruco::DetectorParameters> aruco_tracker::make_detector_parameters() const
+{
+    auto detector_params = cv::makePtr<cv::aruco::DetectorParameters>();
+
+    int max_iterations = static_cast<int>(*m_corner_refinement_max_iterations);
+    if(max_iterations <= 0)
+    {
+        max_iterations = 1;
+        SIGHT_ERROR("Tried to set cornerRefinementMaxIterations <=0, let it set to " << max_iterations);
+    }
+
+    detector_params->cornerRefinementMaxIterations = max_iterations;
+
+    double min_accuracy = *m_corner_refinement_min_accuracy;
+    if(min_accuracy <= 0.)
+    {
+        min_accuracy = 0.01;
+        SIGHT_ERROR("Tried to set cornerRefinementMinAccuracy <=0, let it set to " << min_accuracy);
+    }
+
+    detector_params->cornerRefinementMinAccuracy = min_accuracy;
+    detector_params->cornerRefinementWinSize     = static_cast<int>(*m_corner_refinement_win_size);
+    detector_params->cornerRefinementMethod      = *m_corner_refinement
+                                                   ? cv::aruco::CornerRefineMethod::CORNER_REFINE_SUBPIX
+                                                   : cv::aruco::CornerRefineMethod::CORNER_REFINE_NONE;
+    int min_size = static_cast<int>(*m_adaptive_th_win_size_min);
+    int max_size = static_cast<int>(*m_adaptive_th_win_size_max);
+    if(min_size < 3)
+    {
+        min_size = 3;
+        SIGHT_ERROR("Tried to set adaptive_thresh_win_size_min < 3, let it set to 3");
+    }
+
+    if(max_size <= min_size)
+    {
+        max_size = min_size + 1;
+        SIGHT_ERROR(
+            "Tried to set adaptive_thresh_win_size_max <= adaptive_thresh_win_size_min, let it set to " << max_size
+        );
+    }
+
+    detector_params->adaptiveThreshWinSizeMin              = min_size;
+    detector_params->adaptiveThreshWinSizeMax              = max_size;
+    detector_params->adaptiveThreshWinSizeStep             = static_cast<int>(*m_adaptive_th_win_size_step);
+    detector_params->adaptiveThreshConstant                = *m_adaptive_th_constant;
+    detector_params->minMarkerPerimeterRate                = *m_min_marker_perimeter_rate;
+    detector_params->maxMarkerPerimeterRate                = *m_max_marker_perimeter_rate;
+    detector_params->polygonalApproxAccuracyRate           = *m_polygonal_approx_accuracy_rate;
+    detector_params->minCornerDistanceRate                 = *m_min_corner_distance_rate;
+    detector_params->minDistanceToBorder                   = static_cast<int>(*m_min_distance_to_border);
+    detector_params->minMarkerDistanceRate                 = *m_min_marker_distance_rate;
+    detector_params->markerBorderBits                      = static_cast<int>(*m_marker_border_bits);
+    detector_params->perspectiveRemovePixelPerCell         = static_cast<int>(*m_perspective_remove_pixel_per_cell);
+    detector_params->perspectiveRemoveIgnoredMarginPerCell = *m_perspective_remove_ignored_margin_per_cell;
+    detector_params->maxErroneousBitsInBorderRate          = *m_max_erroneous_bits_in_border_rate;
+    detector_params->minOtsuStdDev                         = *m_min_otsu_std_dev;
+    detector_params->errorCorrectionRate                   = *m_error_correction_rate;
+
+    return detector_params;
+}
+
+//-----------------------------------------------------------------------------
+
+} // namespace sight::module::geometry::vision

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,18 +22,14 @@
 
 #include "viz/scene3d/adaptor.hpp"
 
-#include <core/com/slots.hxx>
-
-#include <service/macros.hpp>
 #include <service/registry.hpp>
 
 #include <viz/scene3d/registry/adaptor.hpp>
-#include <viz/scene3d/utils.hpp>
+
+#include <algorithm>
 
 namespace sight::viz::scene3d
 {
-
-const std::string adaptor::CONFIG = "config.<xmlattr>.";
 
 //------------------------------------------------------------------------------
 
@@ -62,12 +58,6 @@ void adaptor::configure_params()
     const config_t config = this->get_config();
     m_cfg_layer_id = config.get<std::string>("config.<xmlattr>.layer", "");
 
-    if(auto properties = config.get_child_optional("properties"); not properties.has_value())
-    {
-        const auto visible = m_visible.lock();
-        *visible = config.get<bool>("config.<xmlattr>.visible", true);
-    }
-
     SIGHT_WARN_IF(
         "In [" + this->get_id() + "] adaptor, specifying a layer is now deprecated. "
                                   "Please place the adaptor in the layer tag in the render scene configuration.",
@@ -87,9 +77,9 @@ void adaptor::init()
         auto layer_cfg = registry[this->get_id()];
 
         auto result =
-            std::find_if(
-                services_vector.begin(),
-                services_vector.end(),
+            std::ranges::find_if(
+                services_vector,
+
                 [layer_cfg](const service::base::sptr& _srv)
             {
                 return _srv->get_id() == layer_cfg.render;
@@ -175,10 +165,6 @@ void adaptor::request_render()
 
 void adaptor::update_visibility(bool _visible)
 {
-    {
-        const auto visible = m_visible.lock();
-        *visible = _visible;
-    }
     m_visibility_applied = false;
     this->set_visible(_visible);
 }
@@ -202,7 +188,7 @@ bool adaptor::visible() const
 
 void adaptor::toggle_visibility()
 {
-    this->update_visibility(not * m_visible);
+    this->update_visibility(not *m_visible);
 }
 
 //------------------------------------------------------------------------------
@@ -230,7 +216,7 @@ void adaptor::set_visible(bool /*unused*/)
 
 service::connections_t adaptor::auto_connections() const
 {
-    return {{m_visible, data::object::MODIFIED_SIG, slots::APPLY_VISIBILITY}};
+    return {{m_visible, data::signals::MODIFIED, slots::APPLY_VISIBILITY}};
 }
 
 //-----------------------------------------------------------------------------

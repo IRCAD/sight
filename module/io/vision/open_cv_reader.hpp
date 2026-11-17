@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,11 +33,11 @@ namespace sight::module::io::vision
  * @section XML XML Configuration
  * @code{.xml}
        <service uid="..." type="sight::module::io::vision::open_cv_reader" >
-           <inout key="data" uid="..." />
+           <data read="..." />
        </service>
  * @endcode
  * @subsection In-Out In-Out
- * - \b data [sight::data::camera_set]: object to read
+ * - \b data.read [sight::data::camera_set]: object to read
  */
 class open_cv_reader : public sight::io::service::reader
 {
@@ -51,16 +51,17 @@ public:
     //Destructor
     ~open_cv_reader() override;
 
+    //------------------------------------------------------------------------------
+
+    std::vector<std::pair<std::string, std::string> > get_supported_extensions() const override
+    {
+        return {{"XML or YAML files", "*.xml *.yml *.yaml"}};
+    }
+
+    /// Returns managed path type, here service manages only single file
+    sight::io::service::path_type_t get_path_type() const override;
+
 protected:
-
-    /// configure the service using a GUI.
-    void open_location_dialog() override;
-
-    /**
-     * @brief Prompt a dialog to define file location.
-     * @return boolean if a location has been choosen
-     */
-    virtual bool define_location_gui();
 
     /**
      * @brief Configures the service.
@@ -75,9 +76,6 @@ protected:
 
     /// Removes connections
     void stopping() override;
-
-    /// Returns managed path type, here service manages only single file
-    sight::io::service::path_type_t get_path_type() const override;
 };
 
 } //namespace sight::module::io::vision

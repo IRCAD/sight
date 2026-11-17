@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2025 IRCAD France
+ * Copyright (C) 2019-2026 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,20 +45,17 @@ namespace sight::module::geometry
  * @section XML XML Configuration
  * @code{.xml}
         <service uid="..." type="sight::module::geometry::manage_point_list">
-            <in key="transform" uid="..." />
-            <inout key="point_list" uid="..." />
+            <input position="${position}" />
+            <output point_list="${point_list}" />
             <config max="0" removable="true" label="false" tolerance="10.0" modifier="CTRL"/>
        </service>
    @endcode
  *
  * @subsection Input Input:
- * - \b position [sight::data::matrix4](optional): source transform to listen.
+ * - \b input.position [sight::data::matrix4](optional): source transform to listen.
  *
  * @subsection In-Out In-Out:
- * - \b point_list [sight::data::point_list]: Target point list.
- *
- * @subsection Input Input:
- * - \b transform [sight::data::matrix4](optional): Transformation applied to picked positions.
+ * - \b output.point_list [sight::data::point_list]: Target point list.
  *
  * @subsection Configuration Configuration:
  * - \b max (optional, std::size_t, default=0): set the maximum number of points contained in the point list, if it's 0,
@@ -75,8 +72,8 @@ public:
 
     struct slots
     {
-        static inline const core::com::slots::key_t PICK  = "pick";
-        static inline const core::com::slots::key_t CLEAR = "clear";
+        static inline const slot_key_t PICK  = "pick";
+        static inline const slot_key_t CLEAR = "clear";
     };
 
     /// Generates default methods as New, dynamicCast, ...
@@ -88,7 +85,7 @@ public:
     /// Destroys the service.
     ~manage_point_list() noexcept final = default;
 
-private:
+protected:
 
     /// Configures the service.
     void configuring(const config_t& _config) final;
@@ -102,6 +99,8 @@ private:
     /// Does nothing.
     void stopping() final;
 
+private:
+
     /**
      * @brief SLOT: Add or remove a point from picking information.
      * @param _info picking information.
@@ -112,13 +111,13 @@ private:
      * @brief Adds a point in the point list
      * @param _point the point added to the list.
      */
-    void add_point(const data::point::sptr _point) const;
+    void add_point(data::point::sptr _point) const;
 
     /**
      * @brief Removes a point from the point list.
      * @param _point the point removed from the list.
      */
-    void remove_point(const data::point::csptr _point) const;
+    void remove_point(data::point::csptr _point) const;
 
     /// SLOT: Clears the point list.
     void clear() const;
@@ -138,9 +137,8 @@ private:
     /// Key modifier when picking a point
     data::tools::picking_info::modifier m_modifier {data::tools::picking_info::modifier::none};
 
-    data::ptr<data::matrix4, sight::data::access::in> m_position {this, "position"};
-    data::ptr<data::matrix4, sight::data::access::in> m_transform {this, "transform", true};
-    data::ptr<data::point_list, sight::data::access::inout> m_point_list {this, "point_list"};
+    data::ptr<data::matrix4, sight::data::access::in> m_position {this, "input.position"};
+    data::ptr<data::point_list, sight::data::access::inout> m_point_list {this, "output.point_list"};
 };
 
 } // namespace sight::module::geometry

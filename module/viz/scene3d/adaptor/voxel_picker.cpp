@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2024 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,10 +22,6 @@
 
 #include "module/viz/scene3d/adaptor/voxel_picker.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/signals.hpp>
-#include <core/com/slots.hxx>
-
 #include <data/helper/medical_image.hpp>
 
 #include <viz/scene3d/helper/camera.hpp>
@@ -34,17 +30,13 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-const core::com::slots::key_t SLICE_TYPE_SLOT = "sliceType";
-
-static const core::com::signals::key_t PICKED_SIG = "picked";
-
 //-----------------------------------------------------------------------------
 
 voxel_picker::voxel_picker() noexcept
 {
-    new_slot(SLICE_TYPE_SLOT, &voxel_picker::change_slice_type, this);
+    new_slot(slots::SLICE_TYPE, &voxel_picker::change_slice_type, this);
 
-    m_picked_sig = new_signal<core::com::signal<void(data::tools::picking_info)> >(PICKED_SIG);
+    new_signal<signals::picked_t>(signals::PICKED);
 }
 
 //-----------------------------------------------------------------------------
@@ -55,14 +47,12 @@ void voxel_picker::configuring()
 
     const config_t config = this->get_config();
 
-    static const std::string s_PRIORITY_CONFIG              = CONFIG + "priority";
-    static const std::string s_ORIENTATION_CONFIG           = CONFIG + "orientation";
-    static const std::string s_MODE_CONFIG                  = CONFIG + "mode";
-    static const std::string s_LAYER_ORDER_DEPENDANT_CONFIG = CONFIG + "layerOrderDependant";
-    static const std::string s_MOVE_ON_PICK_CONFIG          = CONFIG + "moveOnPick";
+    static const std::string s_PRIORITY_CONFIG     = CONFIG + "priority";
+    static const std::string s_ORIENTATION_CONFIG  = CONFIG + "orientation";
+    static const std::string s_MODE_CONFIG         = CONFIG + "mode";
+    static const std::string s_MOVE_ON_PICK_CONFIG = CONFIG + "moveOnPick";
 
-    m_priority              = config.get<int>(s_PRIORITY_CONFIG, m_priority);
-    m_layer_order_dependant = config.get<bool>(s_LAYER_ORDER_DEPENDANT_CONFIG, m_layer_order_dependant);
+    m_priority = static_cast<int>(config.get<bool>(s_PRIORITY_CONFIG, m_priority != 0));
 
     const std::string orientation = config.get<std::string>(s_ORIENTATION_CONFIG, "sagittal");
     SIGHT_ASSERT(
@@ -104,7 +94,7 @@ void voxel_picker::starting()
 service::connections_t voxel_picker::auto_connections() const
 {
     service::connections_t connections = adaptor::auto_connections();
-    connections.push(IMAGE_INPUT, data::image::SLICE_TYPE_MODIFIED_SIG, SLICE_TYPE_SLOT);
+    connections.push(IMAGE_INPUT, data::image::signals::SLICE_TYPE_MODIFIED, slots::SLICE_TYPE);
 
     return connections;
 }
@@ -145,9 +135,9 @@ void voxel_picker::pick(mouse_button _button, modifier _mod, int _x, int _y, boo
 {
     if(_button == mouse_button::left)
     {
-        if(auto layer = m_layer.lock())
+        if(auto layer = this->layer())
         {
-            if(!sight::module::viz::scene3d::adaptor::voxel_picker::is_in_layer(_x, _y, layer, m_layer_order_dependant))
+            if(!sight::module::viz::scene3d::adaptor::voxel_picker::is_in_layer(_x, _y, layer))
             {
                 return;
             }
@@ -211,10 +201,7 @@ void voxel_picker::pick(mouse_button _button, modifier _mod, int _x, int _y, boo
                     const int sagittal_idx = static_cast<int>((info.m_world_pos[0] - origin[0]) / spacing[0]);
                     const int frontal_idx  = static_cast<int>((info.m_world_pos[1] - origin[1]) / spacing[1]);
                     const int axial_idx    = static_cast<int>((info.m_world_pos[2] - origin[2]) / spacing[2]);
-                    const auto sig         = image->signal<data::image::slice_index_modified_signal_t>(
-                        data::image::SLICE_INDEX_MODIFIED_SIG
-                    );
-                    sig->async_emit(axial_idx, frontal_idx, sagittal_idx);
+                    image->async_emit(data::image::signals::SLICE_INDEX_MODIFIED, axial_idx, frontal_idx, sagittal_idx);
                 }
             }
 
@@ -223,8 +210,7 @@ void voxel_picker::pick(mouse_button _button, modifier _mod, int _x, int _y, boo
                 info.m_modifier_mask |= data::tools::picking_info::shift;
             }
 
-            // Emit the picking info.
-            m_picked_sig->async_emit(info);
+            async_emit(signals::PICKED, info);
 
             // Cancel further interactors on the same layer.
             this->layer()->cancel_further_interaction();
@@ -253,10 +239,10 @@ std::pair<bool, Ogre::Vector3> voxel_picker::compute_ray_image_intersection(
     const Ogre::Vector3& _spacing
 )
 {
-    namespace imHelper = data::helper::medical_image;
-    const auto axial_idx    = imHelper::get_slice_index(*_image, imHelper::axis_t::axial).value_or(0);
-    const auto frontal_idx  = imHelper::get_slice_index(*_image, imHelper::axis_t::frontal).value_or(0);
-    const auto sagittal_idx = imHelper::get_slice_index(*_image, imHelper::axis_t::sagittal).value_or(0);
+    namespace im_helper = data::helper::medical_image;
+    const auto axial_idx    = im_helper::get_slice_index(*_image, im_helper::axis_t::axial).value_or(0);
+    const auto frontal_idx  = im_helper::get_slice_index(*_image, im_helper::axis_t::frontal).value_or(0);
+    const auto sagittal_idx = im_helper::get_slice_index(*_image, im_helper::axis_t::sagittal).value_or(0);
 
     const auto axial_index    = static_cast<Ogre::Real>(axial_idx);
     const auto frontal_index  = static_cast<Ogre::Real>(frontal_idx);

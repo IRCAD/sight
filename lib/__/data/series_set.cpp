@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2024 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,10 +21,10 @@
 
 #include "series_set.hpp"
 
-#include "data/container.hpp"
 #include "data/registry/macros.hpp"
 
-#include <core/com/signal.hxx>
+#include <algorithm>
+#include <ranges>
 
 SIGHT_REGISTER_DATA(sight::data::series_set);
 
@@ -59,6 +59,41 @@ bool series_set::operator==(const series_set& _other) const noexcept
 bool series_set::operator!=(const series_set& _other) const noexcept
 {
     return base_class_t::operator!=(_other);
+}
+
+//------------------------------------------------------------------------------
+
+std::size_t series_set::append_unique(const series_set& _source)
+{
+    std::size_t duplicate_count = 0;
+    for(const auto& candidate : _source)
+    {
+        const std::size_t instance_count = candidate ? candidate->num_instances() : 0;
+        const bool already_loaded        = instance_count > 0 && std::ranges::any_of(
+            *this,
+            [&candidate, instance_count](const series::sptr& _loaded)
+            {
+                return _loaded
+                       && _loaded->get_classname() == candidate->get_classname()
+                       && _loaded->num_instances() == instance_count
+                       && std::ranges::all_of(
+                    std::views::iota(std::size_t {0}, instance_count),
+                    [&candidate, &_loaded](std::size_t _instance)
+                {
+                    return _loaded->get_file(_instance) == candidate->get_file(_instance);
+                });
+            });
+        if(!already_loaded)
+        {
+            this->push_back(candidate);
+        }
+        else
+        {
+            ++duplicate_count;
+        }
+    }
+
+    return duplicate_count;
 }
 
 //------------------------------------------------------------------------------

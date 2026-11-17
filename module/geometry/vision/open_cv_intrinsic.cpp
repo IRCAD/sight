@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,19 +22,17 @@
 
 #include "open_cv_intrinsic.hpp"
 
-#include <core/com/slots.hxx>
-
 #include <io/opencv/matrix.hpp>
 
-#include <ui/__/preferences.hpp>
-
+#include <opencv2/core/version.hpp>
+#if CV_MAJOR_VERSION < 5
 #include <opencv2/calib3d.hpp>
-#include <opencv2/core.hpp>
+#else
+#include <opencv2/calib.hpp>
+#endif
 
 namespace sight::module::geometry::vision
 {
-
-static const core::com::slots::key_t UPDATE_CHESSBOARD_SIZE_SLOT = "update_chessboard_size";
 
 //------------------------------------------------------------------------------
 
@@ -68,9 +66,9 @@ void open_cv_intrinsic::updating()
         std::vector<std::vector<cv::Point3f> > object_points;
 
         std::vector<cv::Point3f> points;
-        for(unsigned int y = 0 ; y < static_cast<unsigned int>(*m_height - 1) ; ++y)
+        for(std::uint32_t y = 0 ; std::cmp_less(y, *m_height - 1) ; ++y)
         {
-            for(unsigned int x = 0 ; x < static_cast<unsigned int>(*m_width - 1) ; ++x)
+            for(std::uint32_t x = 0 ; std::cmp_less(x, *m_width - 1) ; ++x)
             {
                 points.emplace_back(
                     static_cast<float>(x * m_square_size.value()),
@@ -86,7 +84,7 @@ void open_cv_intrinsic::updating()
         {
             std::vector<cv::Point2f> dst;
 
-            for(data::point::csptr point : capture->get_points())
+            for(data::point::csptr point : *capture)
             {
                 SIGHT_ASSERT("point is null", point);
                 dst.emplace_back(
@@ -117,13 +115,10 @@ void open_cv_intrinsic::updating()
             {
                 data::matrix4::sptr mat_3d = std::make_shared<data::matrix4>();
 
-                io::opencv::matrix::copy_from_cv(rvecs.at(index), tvecs.at(index), mat_3d);
+                io::opencv::matrix::copy_from_cv(rvecs.at(index), tvecs.at(index), *mat_3d);
 
                 pose_camera->push_back(mat_3d);
-                auto sig = pose_camera->signal<data::vector::added_signal_t>(
-                    data::vector::ADDED_OBJECTS_SIG
-                );
-                sig->async_emit(pose_camera->get_content());
+                pose_camera->async_emit(data::vector::signals::ADDED_OBJECTS, pose_camera->get_content());
             }
         }
 
@@ -144,8 +139,7 @@ void open_cv_intrinsic::updating()
 
         cam->set_is_calibrated(true);
 
-        auto sig = cam->signal<data::camera::intrinsic_calibrated_signal_t>(data::camera::INTRINSIC_CALIBRATED_SIG);
-        sig->async_emit();
+        cam->async_emit(data::camera::signals::INTRINSIC_CALIBRATED);
     }
 }
 

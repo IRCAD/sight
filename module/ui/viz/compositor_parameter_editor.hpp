@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -50,19 +50,16 @@ public:
 
     SIGHT_DECLARE_SERVICE(compositor_parameter_editor, sight::ui::editor);
 
+    struct slots
+    {
+        static inline const slot_key_t UPDATE_COMPOSITOR = "updateCompositor";
+    };
+
     /// Constructor.
     compositor_parameter_editor() noexcept;
 
     /// Destructor. Destroy UI
     ~compositor_parameter_editor() noexcept override;
-
-    /**
-     * @name Slots API
-     * @{
-     */
-    /// Slot: update the interface.
-    static const core::com::slots::key_t UPDATE_COMPOSITOR_SLOT;
-/** @} */
 
 protected:
 

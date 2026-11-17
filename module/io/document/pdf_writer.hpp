@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2025 IRCAD France
+ * Copyright (C) 2016-2026 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,8 +25,6 @@
 #include <data/image.hpp>
 
 #include <io/__/service/writer.hpp>
-
-#include <ui/qt/container/widget.hpp>
 
 #include <QPdfWriter>
 
@@ -73,6 +71,7 @@ public:
     using containers_i_ds_t = std::vector<std::string>;
 
     SIGHT_DECLARE_SERVICE(pdf_writer, sight::io::service::writer);
+
     /**
      * @brief Constructor : does nothing
      */
@@ -82,6 +81,16 @@ public:
      * @brief Destructor
      */
     ~pdf_writer() noexcept override = default;
+
+    //------------------------------------------------------------------------------
+
+    std::vector<std::pair<std::string, std::string> > get_supported_extensions() const override
+    {
+        return {{"PDF files", "*.pdf"}};
+    }
+
+    /// Returns managed path type, here service manages only single file
+    sight::io::service::path_type_t get_path_type() const override;
 
 protected:
 
@@ -113,14 +122,6 @@ protected:
     void configuring() override;
 
     /**
-     * @brief Configure the image path.
-     *
-     * This method is used to set the file path of the PDF to write.
-     *
-     */
-    void open_location_dialog() override;
-
-    /**
      * @brief Updating method. Creates a new PDF.
      *
      * Loops over the containers list and the images list. Creates a new A4 page for each,
@@ -138,9 +139,6 @@ protected:
      */
     void info(std::ostream& _sstream) override;
     /// @}
-
-    /// Returns managed path type, here service manages only single file
-    sight::io::service::path_type_t get_path_type() const override;
 
 private:
 

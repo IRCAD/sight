@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2025 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #include "service/filter.hpp"
 
-#include <core/com/signal.hxx>
-
 namespace sight::service
 {
 
@@ -31,7 +29,8 @@ namespace sight::service
 
 filter::filter(core::com::signals& _signals)
 {
-    _signals(signals::COMPUTED, std::make_shared<signals::computed_t>());
+    _signals(signals::SUCCEEDED, std::make_shared<signals::computed_t>());
+    _signals(signals::FAILED, std::make_shared<signals::computed_t>());
 }
 
 //-----------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,12 +22,10 @@
 
 #pragma once
 
+#include <core/notification/has_notifications.hpp>
 #include <core/thread/worker.hpp>
 
 #include <io/dimse/data/pacs_configuration.hpp>
-#include <io/dimse/series_enquirer.hpp>
-
-#include <service/notifier.hpp>
 
 #include <ui/__/editor.hpp>
 
@@ -36,8 +34,6 @@
 #include <QPointer>
 #include <QPushButton>
 #include <QSpinBox>
-
-#include <filesystem>
 
 namespace sight::module::io::dimse
 {
@@ -62,7 +58,7 @@ namespace sight::module::io::dimse
  */
 class pacs_configuration_editor : public QObject,
                                   public sight::ui::editor,
-                                  private sight::service::notifier
+                                  public sight::core::notification::has_notifications
 {
 Q_OBJECT;
 
@@ -70,6 +66,11 @@ public:
 
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(pacs_configuration_editor, sight::ui::editor);
+
+    struct slots
+    {
+        static inline const slot_key_t SHOW_DIALOG = "showDialog";
+    };
 
     /// Creates the service.
     pacs_configuration_editor() noexcept;
@@ -104,7 +105,7 @@ private:
      * @param _title title of the dialog.
      * @param _message message of the dialog.
      */
-    static void show_dialog(const std::string _title, const std::string _message);
+    static void show_dialog(std::string _title, std::string _message);
 
     /// Contains the AET of the SCU (client name) editor.
     QPointer<QLineEdit> m_scu_app_entity_title_edit;

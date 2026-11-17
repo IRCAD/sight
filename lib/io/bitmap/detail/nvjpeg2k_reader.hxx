@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,8 +23,7 @@
 
 #include "common.hxx"
 
-#include <cuda.h>
-#include <nppi.h>
+#include <npp.h> // NOLINT(misc-include-cleaner)
 #include <nvjpeg2k.h>
 
 // cspell:ignore nvjpeg nvjpeg2k nppi bitstream LRCP NOLINTNEXTLINE
@@ -95,6 +94,7 @@ public:
     void read(data::image& _image, std::istream& _istream, flag _flag) final
     {
         // Get input size
+
         _istream.seekg(0, std::ios::end);
         const auto stream_size = _istream.tellg();
         _istream.seekg(0, std::ios::beg);
@@ -102,7 +102,7 @@ public:
         SIGHT_THROW_IF("The stream cannot be read.", stream_size <= 0);
 
         // Allocate input buffer
-        const auto input_buffer_size = std::size_t(stream_size);
+        const auto input_buffer_size = static_cast<std::size_t>(stream_size);
         if(m_input_buffer.size() < input_buffer_size)
         {
             m_input_buffer.resize(input_buffer_size);
@@ -120,8 +120,8 @@ public:
         const std::optional<std::reference_wrapper<data::image> >& _image,
         const std::uint8_t* const _input,
         std::size_t _input_size,
-        std::uint8_t* const _output,
-        flag /*_flag*/
+        std::uint8_t* const  _output, // NOLINT(misc-unused-parameters)
+        flag                          /*_flag*/
     ) final
     {
         // Initialize JPEG2000 stream
@@ -250,6 +250,7 @@ public:
         {
             // Use nppi to convert planar to interleaved
             // Realloc if GPU packed buffer is smaller
+            // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
             const std::size_t new_packed_size = _image.has_value() ? _image->get().size_in_bytes() : output_size;
             if(m_packed_size < new_packed_size)
             {
@@ -262,12 +263,15 @@ public:
                 m_packed_size = new_packed_size;
             }
 
-            const NppiSize nppi_size {.width = int(image_info.image_width), .height = int(image_info.image_height)};
+            const NppiSize nppi_size {.width = static_cast<int>(image_info.image_width),
+                                      .height = static_cast<int>(image_info.image_height)
+            };
 
             if(output_image.pixel_type == NVJPEG2K_UINT8)
             {
-                auto* out_buffer  = reinterpret_cast<Npp8u*>(m_packed_gpu_buffer);
-                const int in_step = int(image_info.image_width) * int(sizeof(Npp8u));
+                auto* out_buffer = reinterpret_cast<Npp8u*>(m_packed_gpu_buffer);
+                // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
+                const int in_step = static_cast<int>(image_info.image_width) * static_cast<int>(sizeof(Npp8u));
 
                 if(image_info.num_components == 3)
                 {
@@ -313,8 +317,9 @@ public:
             }
             else
             {
-                auto* out_buffer  = reinterpret_cast<Npp16u*>(m_packed_gpu_buffer);
-                const int in_step = int(image_info.image_width) * int(sizeof(Npp16u));
+                auto* out_buffer = reinterpret_cast<Npp16u*>(m_packed_gpu_buffer);
+                // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
+                const int in_step = static_cast<int>(image_info.image_width) * static_cast<int>(sizeof(Npp16u));
 
                 if(image_info.num_components == 3)
                 {

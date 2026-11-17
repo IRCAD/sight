@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,10 +26,8 @@
 
 #include <core/spy_log.hpp>
 
-#include <opencv2/core.hpp>
-
+#include <opencv2/core/mat.hpp>
 #include <random>
-#include <type_traits>
 
 namespace sight::io::opencv::ut
 {
@@ -39,6 +37,7 @@ namespace sight::io::opencv::ut
 template<typename T>
 struct getCvFormat;
 
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define DECLARE_CV_FORMAT(_TYPE, _CVTYPE1, _CVTYPE2, _CVTYPE3, _CVTYPE4) \
         template<> \
         struct getCvFormat<_TYPE> \
@@ -79,7 +78,7 @@ cv::Mat gen_cv_image(
     }
     else
     {
-        cv_size.push_back(static_cast<int>(1));
+        cv_size.push_back(1);
     }
 
     cv_size.push_back(static_cast<int>(_w));
@@ -94,7 +93,7 @@ cv::Mat gen_cv_image(
 //------------------------------------------------------------------------------
 
 template<std::integral T>
-static const std::vector<T> gen_image_buffer(std::size_t _w, std::size_t _h, std::size_t _d, std::uint8_t _num_channels)
+static std::vector<T> gen_image_buffer(std::size_t _w, std::size_t _h, std::size_t _d, std::uint8_t _num_channels)
 {
     const std::size_t image_size = _w * (_h == 0 ? 1 : _h) * (_d == 0 ? 1 : _d) * _num_channels;
     std::vector<T> buffer;
@@ -118,7 +117,7 @@ static const std::vector<T> gen_image_buffer(std::size_t _w, std::size_t _h, std
 //------------------------------------------------------------------------------
 
 template<std::floating_point T>
-static const std::vector<T> gen_image_buffer(std::size_t _w, std::size_t _h, std::size_t _d, std::uint8_t _num_channels)
+static std::vector<T> gen_image_buffer(std::size_t _w, std::size_t _h, std::size_t _d, std::uint8_t _num_channels)
 {
     const std::size_t image_size = _w * (_h == 0 ? 1 : _h) * (_d == 0 ? 1 : _d) * _num_channels;
     std::vector<T> buffer;

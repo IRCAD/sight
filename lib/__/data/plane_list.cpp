@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,26 +25,18 @@
 #include "data/exception.hpp"
 #include "data/registry/macros.hpp"
 
-#include <core/base.hpp>
-#include <core/com/signal.hpp>
-#include <core/com/signal.hxx>
-
 SIGHT_REGISTER_DATA(sight::data::plane_list);
 
 namespace sight::data
 {
 
-const core::com::signals::key_t plane_list::PLANE_ADDED_SIG         = "planeAdded";
-const core::com::signals::key_t plane_list::PLANE_REMOVED_SIG       = "planeRemoved";
-const core::com::signals::key_t plane_list::VISIBILITY_MODIFIED_SIG = "visibilityModified";
-
 //------------------------------------------------------------------------------
 
 plane_list::plane_list()
 {
-    new_signal<plane_added_signal_t>(PLANE_ADDED_SIG);
-    new_signal<plane_removed_signal_t>(PLANE_REMOVED_SIG);
-    new_signal<visibility_modified_signal_t>(VISIBILITY_MODIFIED_SIG);
+    new_signal<signals::plane_added_t>(signals::PLANE_ADDED);
+    new_signal<signals::plane_removed_t>(signals::PLANE_REMOVED);
+    new_signal<signals::visibility_modified_t>(signals::VISIBILITY_MODIFIED);
 }
 
 //------------------------------------------------------------------------------

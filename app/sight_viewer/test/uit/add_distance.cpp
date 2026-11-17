@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2025 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,74 +19,97 @@
  *
  ***********************************************************************/
 
-#include "add_distance.hpp"
+#include "test.hpp"
 
 #include <ui/test/helper/button.hpp>
 #include <ui/test/helper/scene3d.hpp>
 
 #include <utest_data/data.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::sight_viewer::uit::add_distance);
+#include <doctest/doctest.h>
 
 namespace sight::sight_viewer::uit
 {
 
+TEST_SUITE("sight_viewer")
+{
 //------------------------------------------------------------------------------
 
-void add_distance::test()
-{
-    namespace helper = sight::ui::test::helper;
+    TEST_CASE_FIXTURE(test, "add_distance")
+    {
+        namespace helper = sight::ui::test::helper;
 
-    const std::string test_name               = "sightViewerAddDistanceTest";
-    const std::string image_name              = test_name + ".png";
-    const std::filesystem::path snapshot_path = sight::ui::test::tester::get_image_output_path() / image_name;
-    std::filesystem::remove(snapshot_path);
+        const std::string test_name               = "sightViewerAddDistanceTest";
+        const std::string image_name              = test_name + ".png";
+        const std::filesystem::path snapshot_path = sight::ui::test::tester::get_image_output_path(test_name)
+                                                    / image_name;
+        std::filesystem::remove(snapshot_path);
 
-    const std::filesystem::path reference_path = utest_data::dir() / "sight/ui/sight_viewer" / image_name;
+        const std::filesystem::path reference_path = utest_data::dir() / "sight/ui/sight_viewer" / image_name;
 
-    start(
-        test_name,
-        [&snapshot_path, &reference_path](sight::ui::test::tester& _tester)
-        {
-            open_file(
-                _tester,
-                "Nifti or Inr images",
-                utest_data::dir() / "sight/image/inr/image.inr.gz"
-            );
-            reset_negatos(_tester);
+        const std::string failure_message = start(
+            test_name,
+            [&snapshot_path, &reference_path](sight::ui::test::tester& _tester)
+            {
+                open_file(
+                    _tester,
+                    "Inr (.inr) (*.inr *.inr.gz)",
+                    utest_data::dir() / "sight/image/inr/image.inr.gz"
+                );
+                reset_negatos(_tester);
 
-            // We want to hide the volume, we must click on the Show/hide volume button to achieve this
-            helper::button::push(_tester, "toolbar_view/Show/hide volume");
+                // We want to hide the volume, we must click on the Show/hide volume button to achieve this
+                helper::button::push(_tester, "top_toolbar_left/volume");
 
-            // Activate the add distance mode
-            helper::button::push(_tester, "toolbar_view/Add/Edit distance");
+                // Activate the add distance mode
+                helper::button::push(_tester, "parameter_toolbar_view/Annotation");
+                helper::button::push(_tester, "annotation_tools_toolbar/Add / edit distance");
 
-            // Add distance
-            _tester.take(
-                "ogre scene",
-                [&_tester]() -> QObject* {return _tester.get_main_window()->findChild<QWidget*>("scene_srv");});
-            _tester.interact(std::make_unique<sight::ui::test::mouse_drag>(QPoint(150, 250), QPoint(300, 250)));
+                // Add distance
+                helper::selector::from_parent("top_scenes_view/1", "scene_srv").select(_tester);
+                _tester.interact(
+                    std::make_unique<sight::ui::test::mouse_drag>(
+                        QPoint(259, 250),
+                        QPoint(409, 250)
+                    )
+                );
 
-            // Modify the distance by moving one extremity
-            _tester.take(
-                "ogre scene",
-                [&_tester]() -> QObject* {return _tester.get_main_window()->findChild<QWidget*>("scene_srv");});
-            _tester.interact(std::make_unique<sight::ui::test::mouse_drag>(QPoint(300, 250), QPoint(300, 300)));
+                // Modify the second extremity
+                helper::selector::from_parent("top_scenes_view/1", "scene_srv").select(_tester);
+                _tester.interact(
+                    std::make_unique<sight::ui::test::mouse_drag>(
+                        QPoint(409, 250),
+                        QPoint(409, 300)
+                    )
+                );
 
-            // Modify the distance by moving one extremity
-            _tester.take(
-                "ogre scene",
-                [&_tester]() -> QObject* {return _tester.get_main_window()->findChild<QWidget*>("scene_srv");});
-            _tester.interact(std::make_unique<sight::ui::test::mouse_drag>(QPoint(150, 250), QPoint(310, 310)));
+                // Modify the first extremity
+                helper::selector::from_parent("top_scenes_view/1", "scene_srv").select(_tester);
+                _tester.interact(
+                    std::make_unique<sight::ui::test::mouse_drag>(
+                        QPoint(259, 250),
+                        QPoint(419, 310)
+                    )
+                );
 
-            // The image appears small, zoom in with the mouse to make it bigger
-            helper::scene3d::zoom(_tester, "scene_srv", 7);
+                // The image appears small, zoom in with the mouse to make it bigger
+                helper::scene3d::zoom(
+                    _tester,
+                    helper::selector::from_parent("top_scenes_view/1", "scene_srv"),
+                    7
+                );
 
-            save_snapshot(_tester, snapshot_path);
-            compare_images(snapshot_path, reference_path);
-        },
-        true
-    );
-}
+                save_snapshot(_tester, snapshot_path);
+                compare_images(snapshot_path, reference_path);
+            },
+            true
+        );
+
+        // Runs on the main thread, after start() has returned: the only doctest assertion for
+        // this scenario. See sight::ui::test::base::start().
+        INFO(failure_message);
+        REQUIRE(failure_message.empty());
+    }
+} // TEST_SUITE
 
 } // namespace sight::sight_viewer::uit

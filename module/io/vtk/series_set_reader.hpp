@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include <data/mesh.hpp>
 
 #include <io/__/service/reader.hpp>
 
@@ -45,28 +43,33 @@ namespace sight::module::io::vtk
  * Accepted extensions: *.vtk *.vtp *.vti *.mhd *.vtu *.obj *.ply *.stl
  *
  * @section Signals Signals
- * - \b monitor_created(SPTR(core::progress::monitor)): emitted to display a progress bar while the image is loading,
+ * - \b notification_created(core::notification::base::sptr): emitted to display a progress bar while the
+ * image is
+ * loading,
  * it should be connected to a progress bar
  *
  * @section XML XML Configuration
  *
  * @code{.xml}
    <service type="sight::module::io::vtk::series_set_reader">
-      <inout key="data" uid="..." />
-      <file>...</file>
-      <file>...</file>
-      <file>...</file>
+      <data read="..." />
+      <path file="..." />
+      <path file="..." />
+      <path file="..." />
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b data [sight::data::series_set]: series_set to load.
+ * - \b data.read [sight::data::series_set]: series_set to load.
  * @subsection Configuration Configuration
  * - \b file (optional): path of the files to load, if it is not defined, 'open_location_dialog()' should be called to
  * define the path.
+ * - \b config.append (optional, default=false): appends data instead of replacing the current series set.
  */
 class series_set_reader : public sight::io::service::reader
 {
 public:
+
+    SIGHT_DECLARE_SERVICE(series_set_reader, sight::io::service::reader);
 
     /**
      * @brief Constructor. Do nothing.
@@ -74,19 +77,10 @@ public:
     series_set_reader() noexcept;
     ~series_set_reader() noexcept override = default;
 
-    SIGHT_DECLARE_SERVICE(series_set_reader, sight::io::service::reader);
-
-    /**
-     * @brief Configure the vtk file path.
-     *
-     * This method is used to find
-     * the file path  using a file selector.
-     */
-    void open_location_dialog() override;
+    sight::io::service::path_type_t get_path_type() const override;
+    std::vector<std::pair<std::string, std::string> > get_supported_extensions() const override;
 
 protected:
-
-    sight::io::service::path_type_t get_path_type() const override;
 
     /**
      * @brief Starting method.
@@ -137,8 +131,10 @@ private:
      */
     void load_series_set(
         const std::vector<std::filesystem::path>& _vtk_files,
-        const SPTR(data::series_set)& _series_set
+        const sight::sptr<data::series_set>& _series_set
     );
+
+    bool m_append {false};
 };
 
 } // namespace sight::module::io::vtk

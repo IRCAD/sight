@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2025 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,7 +19,7 @@
  *
  ***********************************************************************/
 
-#include "axial_negato.hpp"
+#include "test.hpp"
 
 #include <ui/test/helper/button.hpp>
 #include <ui/test/helper/line_edit.hpp>
@@ -27,83 +27,105 @@
 
 #include <utest_data/data.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::sight_viewer::uit::axial_negato);
+#include <doctest/doctest.h>
 
 namespace sight::sight_viewer::uit
 {
 
+TEST_SUITE("sight_viewer")
+{
 //------------------------------------------------------------------------------
 
-void axial_negato::test()
-{
-    namespace helper = sight::ui::test::helper;
+    TEST_CASE_FIXTURE(test, "axial_negato")
+    {
+        namespace helper = sight::ui::test::helper;
 
-    const std::string test_name               = "sightViewerAxialNegatoTest";
-    const std::string image_name              = test_name + ".png";
-    const std::filesystem::path snapshot_path = sight::ui::test::tester::get_image_output_path() / image_name;
-    std::filesystem::remove(snapshot_path);
+        const std::string test_name               = "sightViewerAxialNegatoTest";
+        const std::string image_name              = test_name + ".png";
+        const std::filesystem::path snapshot_path = sight::ui::test::tester::get_image_output_path(test_name)
+                                                    / image_name;
+        std::filesystem::remove(snapshot_path);
 
-    const std::filesystem::path reference_path = utest_data::dir() / "sight/ui/sight_viewer" / image_name;
+        const std::filesystem::path reference_path = utest_data::dir() / "sight/ui/sight_viewer" / image_name;
 
-    start(
-        test_name,
-        [&snapshot_path, &reference_path](sight::ui::test::tester& _tester)
-        {
-            open_file(
-                _tester,
-                "Nifti or Inr images",
-                utest_data::dir() / "sight/image/inr/image.inr.gz"
-            );
+        const std::string failure_message = start(
+            test_name,
+            [&snapshot_path, &reference_path](sight::ui::test::tester& _tester)
+            {
+                open_file(
+                    _tester,
+                    "Inr (.inr) (*.inr *.inr.gz)",
+                    utest_data::dir() / "sight/image/inr/image.inr.gz"
+                );
 
-            // We want to hide the volume, we must click on the Show/hide volume button to achieve this
-            helper::button::push(_tester, "toolbar_view/Show/hide volume");
+                // We want to hide the volume, we must click on the Show/hide volume button to achieve this
+                helper::button::push(_tester, "top_toolbar_left/volume");
 
-            // Then we want to display the negato views, we must click on the restore button from the 3d scene toolbar
-            helper::button::push(_tester, "top_toolbar_view/Restore");
+                // Then we want to display the negato views, we must click on the restore button from the 3d scene
+                // toolbar
+                helper::button::push(_tester, "top_toolbar_view/Restore");
 
-            helper::line_edit::match(_tester, helper::selector::from_parent("top_scenes_view/1", "Label"), "67 / 133");
+                helper::line_edit::match(
+                    _tester,
+                    helper::selector::from_parent("top_scenes_view/0", "Label"),
+                    "67 / 133"
+                );
 
-            // For the test to work, we must first reset all negatos to 0
-            reset_negatos(_tester);
+                // For the test to work, we must first reset all negatos to 0
+                reset_negatos(_tester);
 
-            helper::line_edit::match(_tester, helper::selector::from_parent("top_scenes_view/1", "Label"), "0 / 133");
+                helper::line_edit::match(
+                    _tester,
+                    helper::selector::from_parent("top_scenes_view/0", "Label"),
+                    "0 / 133"
+                );
 
-            // We want to move the negato, we must click in the negato slider to do that
-            helper::slider::set(
-                _tester,
-                helper::selector::from_parent("top_scenes_view/1", "negato_slicer_srv"),
-                133
-            );
+                // We want to move the negato, we must click in the negato slider to do that
+                helper::slider::set(
+                    _tester,
+                    helper::selector::from_parent("top_scenes_view/0", "negato_slicer_srv"),
+                    133
+                );
 
-            save_snapshot(_tester, snapshot_path);
+                save_snapshot(_tester, snapshot_path);
 
-            compare_images(snapshot_path, reference_path);
+                compare_images(snapshot_path, reference_path);
 
-            helper::line_edit::match(_tester, helper::selector::from_parent("top_scenes_view/1", "Label"), "133 / 133");
+                helper::line_edit::match(
+                    _tester,
+                    helper::selector::from_parent("top_scenes_view/0", "Label"),
+                    "133 / 133"
+                );
 
-            helper::button::push(_tester, helper::selector::from_parent("top_scenes_view/1", "LabelButton"));
+                helper::button::push(_tester, helper::selector::from_parent("top_scenes_view/0", "LabelButton"));
 
-            // we should observe the position of index 133 at QLineEdit after click.
-            helper::line_edit::match(
-                _tester,
-                helper::selector::from_parent("top_scenes_view/1", "Label"),
-                "S : 212.80 mm"
-            );
+                // we should observe the position of index 133 at QLineEdit after click.
+                helper::line_edit::match(
+                    _tester,
+                    helper::selector::from_parent("top_scenes_view/0", "Label"),
+                    "S : 212.80 mm"
+                );
 
-            helper::slider::set(
-                _tester,
-                helper::selector::from_parent("top_scenes_view/1", "negato_slicer_srv"),
-                12
-            );
+                helper::slider::set(
+                    _tester,
+                    helper::selector::from_parent("top_scenes_view/0", "negato_slicer_srv"),
+                    12
+                );
 
-            helper::line_edit::match(
-                _tester,
-                helper::selector::from_parent("top_scenes_view/1", "Label"),
-                "S : 19.20 mm"
-            );
-        },
-        true
-    );
-}
+                helper::line_edit::match(
+                    _tester,
+                    helper::selector::from_parent("top_scenes_view/0", "Label"),
+                    "S : 19.20 mm"
+                );
+            },
+            true
+        );
+
+        // Runs on the main thread, after start() has returned: the only doctest assertion for
+        // this scenario. See sight::ui::test::base::start().
+        INFO(failure_message);
+        REQUIRE(failure_message.empty());
+    }
+} // TEST_SUITE
 
 } // namespace sight::sight_viewer::uit

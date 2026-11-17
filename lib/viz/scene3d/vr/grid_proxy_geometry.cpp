@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2025 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,7 +21,6 @@
  ***********************************************************************/
 #include "viz/scene3d/vr/grid_proxy_geometry.hpp"
 
-#include "viz/scene3d/factory/r2vb_renderable.hpp"
 #include "viz/scene3d/ogre.hpp"
 
 #include <OGRE/OgreDepthBuffer.h>
@@ -31,11 +30,11 @@
 #include <OGRE/OgreMesh.h>
 #include <OGRE/OgreMeshManager.h>
 #include <OGRE/OgreRenderTexture.h>
-#include <OGRE/OgreRoot.h>
 #include <OGRE/OgreSubMesh.h>
 #include <OGRE/OgreTechnique.h>
 #include <OGRE/OgreTextureManager.h>
 
+#include <utility>
 #include <vector>
 
 namespace sight::viz::scene3d::vr
@@ -92,6 +91,11 @@ grid_proxy_geometry::~grid_proxy_geometry()
 {
     this->detachFromParent(); //Safety
 
+    Ogre::MaterialManager& material_manager = Ogre::MaterialManager::getSingleton();
+    material_manager.remove(core::id::join(this->getName(), "RayEntryPoints"), RESOURCE_GROUP);
+    material_manager.remove(this->getName() + "_VolumeBricksGrid", RESOURCE_GROUP);
+    material_manager.remove(this->getName() + "_VolumeBricks", RESOURCE_GROUP);
+
     if(m_r2vb_source != nullptr)
     {
         Ogre::MeshPtr mesh = m_r2vb_source->getMesh();
@@ -104,7 +108,13 @@ grid_proxy_geometry::~grid_proxy_geometry()
 
     if(m_grid_texture != nullptr)
     {
+        for(std::size_t slice_index = 0 ; slice_index < m_grid_texture->getDepth() ; ++slice_index)
+        {
+            m_grid_texture->getBuffer()->getRenderTarget(slice_index)->removeAllViewports();
+        }
+
         Ogre::TextureManager::getSingleton().remove(m_grid_texture->getHandle());
+        m_grid_texture.reset();
     }
 
     if(m_grid_viewport_camera != nullptr)
@@ -258,7 +268,7 @@ void grid_proxy_geometry::setup_grid()
             Ogre::TU_RENDERTARGET
         );
 
-        for(unsigned i = 0 ; i < static_cast<unsigned>(m_grid_size[2]) ; ++i)
+        for(unsigned i = 0 ; std::cmp_less(i, m_grid_size[2]) ; ++i)
         {
             Ogre::RenderTexture* rt = m_grid_texture->getBuffer()->getRenderTarget(i);
             rt->setDepthBufferPool(Ogre::DepthBuffer::POOL_NO_DEPTH);
@@ -275,7 +285,7 @@ void grid_proxy_geometry::setup_grid()
 
         Ogre::VertexData* mesh_vtx_data = r2vb_src_mesh->getSubMesh(0)->vertexData;
 
-        mesh_vtx_data->vertexCount = Ogre::uint32(m_grid_size[0] * m_grid_size[1] * m_grid_size[2]);
+        mesh_vtx_data->vertexCount = static_cast<Ogre::uint32>(m_grid_size[0] * m_grid_size[1] * m_grid_size[2]);
 
         Ogre::HardwareVertexBufferSharedPtr vtx_buffer =
             Ogre::HardwareBufferManager::getSingleton().createVertexBuffer(
@@ -330,9 +340,9 @@ void grid_proxy_geometry::setup_grid()
             m_geom_generator_pass->getGeometryProgramParameters();
 
         const std::vector<int> image_size = {{
-            int(m_3d_image_texture->width()),
-            int(m_3d_image_texture->height()),
-            int(m_3d_image_texture->depth())
+            static_cast<int>(m_3d_image_texture->width()),
+            static_cast<int>(m_3d_image_texture->height()),
+            static_cast<int>(m_3d_image_texture->depth())
         }
         };
 
@@ -363,7 +373,7 @@ void grid_proxy_geometry::compute_grid()
     Ogre::GpuProgramParametersSharedPtr params = m_grid_computing_pass->getFragmentProgramParameters();
     m_gpu_tf.lock()->bind(m_grid_computing_pass, TF_TEXUNIT_NAME, params);
 
-    for(unsigned i = 0 ; i < static_cast<unsigned>(m_grid_size[2]) ; ++i)
+    for(unsigned i = 0 ; std::cmp_less(i, m_grid_size[2]) ; ++i)
     {
         Ogre::RenderTexture* rt = m_grid_texture->getBuffer()->getRenderTarget(i);
 
@@ -379,7 +389,7 @@ void grid_proxy_geometry::compute_grid()
         );
     }
 
-    m_grid_render_op.vertexData->vertexCount = Ogre::uint32(count);
+    m_grid_render_op.vertexData->vertexCount = static_cast<Ogre::uint32>(count);
     m_grid_render_op.operationType           = Ogre::RenderOperation::OT_POINT_LIST;
 
     this->manual_update();

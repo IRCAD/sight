@@ -26,24 +26,18 @@
 
 #include <service/op.hpp>
 
-#include <boost/property_tree/xml_parser.hpp>
-
-#include <doctest/doctest.h>
+#include <utest/service_fixture.hpp>
 
 namespace
 {
 
-class service_fixture
+class service_fixture : public sight::utest::service_fixture
 {
 public:
 
-    service_fixture()
+    service_fixture() :
+        sight::utest::service_fixture("sight::module::data::get_point")
     {
-        // Create service
-        srv = sight::service::add("sight::module::data::get_point");
-        CHECK(srv);
-        CHECK(srv->is_a("sight::module::data::get_point"));
-
         // Create data
         image = std::make_shared<sight::data::image_series>();
         CHECK(image);
@@ -67,19 +61,6 @@ public:
 
     //------------------------------------------------------------------------------
 
-    ~service_fixture()
-    {
-        if(srv->started())
-        {
-            srv->stop().get();
-        }
-
-        sight::service::remove(srv);
-    }
-
-    //------------------------------------------------------------------------------
-
-    sight::service::base::sptr srv;
     sight::data::image_series::sptr image;
     sight::data::point::sptr point0;
     sight::data::point::sptr point1;
@@ -94,24 +75,21 @@ TEST_SUITE("sight::module::data::get_point")
 
     TEST_CASE_FIXTURE(service_fixture, "extracts_point_by_index")
     {
-        sight::service::config_t config;
-        std::stringstream config_string;
-        config_string
-        << R"(<inout group="points">)"
-           R"(<key group="test_group_2" index="1" uid="output_point0"/>)"
-           R"(<key group="test_group_1" index="0" uid="output_point1"/>)"
-           R"(<key group="test_group_1" index="1" uid="output_point2"/>)"
-           R"(</inout>)";
-        boost::property_tree::read_xml(config_string, config);
+        const std::string config =
+            "<inout group='points'>"
+            "<key group='test_group_2' index='1' uid='output_point0'/>"
+            "<key group='test_group_1' index='0' uid='output_point1'/>"
+            "<key group='test_group_1' index='1' uid='output_point2'/>"
+            "</inout>";
 
-        srv->set_config(config);
-        srv->set_input(image, "image");
-        srv->set_inout(point0, "points", false, false, 0);
-        srv->set_inout(point1, "points", false, false, 1);
-        srv->set_inout(point2, "points", false, false, 2);
-        srv->configure();
-        srv->start().get();
-        CHECK_NOTHROW(srv->update().get());
+        m_service->set_config(config);
+        m_service->set_input(image, "image");
+        m_service->set_inout(point0, "points", false, false, 0);
+        m_service->set_inout(point1, "points", false, false, 1);
+        m_service->set_inout(point2, "points", false, false, 2);
+        m_service->configure();
+        m_service->start().get();
+        CHECK_NOTHROW(m_service->update().get());
 
         CHECK((sight::data::point({8.0, 9.0, -20.0}) == *point0));
         CHECK((sight::data::point({1.0, 80.0, 2.0}) == *point1));
@@ -122,24 +100,21 @@ TEST_SUITE("sight::module::data::get_point")
 
     TEST_CASE_FIXTURE(service_fixture, "extracts_point_with_index_out_of_bound")
     {
-        sight::service::config_t config;
-        std::stringstream config_string;
-        config_string
-        << R"(<inout group="points">)"
-           R"(<key group="test_group_1" index="1" uid="output_point0"/>)"
-           R"(<key group="test_group_1" index="122" uid="output_point1"/>)"
-           R"(<key group="test_group_1" index="0" uid="output_point2"/>)"
-           R"(</inout>)";
-        boost::property_tree::read_xml(config_string, config);
+        const std::string config =
+            "<inout group='points'>"
+            "<key group='test_group_1' index='1' uid='output_point0'/>"
+            "<key group='test_group_1' index='122' uid='output_point1'/>"
+            "<key group='test_group_1' index='0' uid='output_point2'/>"
+            "</inout>";
 
-        srv->set_config(config);
-        srv->set_input(image, "image");
-        srv->set_inout(point0, "points", false, false, 0);
-        srv->set_inout(point1, "points", false, false, 1);
-        srv->set_inout(point2, "points", false, false, 2);
-        srv->configure();
-        srv->start().get();
-        CHECK_THROWS_AS(srv->update().get(), sight::core::exception);
+        m_service->set_config(config);
+        m_service->set_input(image, "image");
+        m_service->set_inout(point0, "points", false, false, 0);
+        m_service->set_inout(point1, "points", false, false, 1);
+        m_service->set_inout(point2, "points", false, false, 2);
+        m_service->configure();
+        m_service->start().get();
+        CHECK_THROWS_AS(m_service->update().get(), sight::core::exception);
 
         CHECK((sight::data::point({-1.0, 5.0, -2.0}) == *point0));
         CHECK((sight::data::point({0.0, 0.0, 0.0}) == *point1)); // Failed starting from there
@@ -150,24 +125,21 @@ TEST_SUITE("sight::module::data::get_point")
 
     TEST_CASE_FIXTURE(service_fixture, "extracts_point_with_unknown_group")
     {
-        sight::service::config_t config;
-        std::stringstream config_string;
-        config_string
-        << R"(<inout group="points">)"
-           R"(<key group="test_group_1" index="1" uid="output_point0"/>)"
-           R"(<key group="unknown" index="2" uid="output_point1"/>)"
-           R"(<key group="test_group_1" index="0" uid="output_point2"/>)"
-           R"(</inout>)";
-        boost::property_tree::read_xml(config_string, config);
+        const std::string config =
+            "<inout group='points'>"
+            "<key group='test_group_1' index='1' uid='output_point0'/>"
+            "<key group='unknown' index='2' uid='output_point1'/>"
+            "<key group='test_group_1' index='0' uid='output_point2'/>"
+            "</inout>";
 
-        srv->set_config(config);
-        srv->set_input(image, "image");
-        srv->set_inout(point0, "points", false, false, 0);
-        srv->set_inout(point1, "points", false, false, 1);
-        srv->set_inout(point2, "points", false, false, 2);
-        srv->configure();
-        srv->start().get();
-        CHECK_THROWS_AS(srv->update().get(), sight::core::exception);
+        m_service->set_config(config);
+        m_service->set_input(image, "image");
+        m_service->set_inout(point0, "points", false, false, 0);
+        m_service->set_inout(point1, "points", false, false, 1);
+        m_service->set_inout(point2, "points", false, false, 2);
+        m_service->configure();
+        m_service->start().get();
+        CHECK_THROWS_AS(m_service->update().get(), sight::core::exception);
 
         CHECK((sight::data::point({-1.0, 5.0, -2.0}) == *point0));
         CHECK((sight::data::point({0.0, 0.0, 0.0}) == *point1)); // Failed starting from there

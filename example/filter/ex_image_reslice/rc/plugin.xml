@@ -143,20 +143,14 @@
             </service>
 
             <service uid="center_editor_srv" type="sight::module::ui::qt::settings">
-                <inout group="keys">
-                    <key uid="center_reslice" />
-                </inout>
-                <ui scrollable="false">
-                    <item name="Center the reslice" />
-                </ui>
+                <config scrollable="false" />
+                <item data="${center_reslice}" name="Center the reslice" />
             </service>
 
             <service uid="concatenate_matrices" type="sight::module::geometry::concatenate_matrices">
-                <in group="matrix">
-                    <key uid="axial_matrix" />
-                    <key uid="axial_to_frontal_matrix" />
-                </in>
-                <inout key="output" uid="frontal_matrix" />
+                <data input="${axial_matrix}" />
+                <data input="${axial_to_frontal_matrix}" />
+                <data output="${frontal_matrix}" />
             </service>
 
             <!-- ************************************* Action ************************************ -->
@@ -190,7 +184,7 @@
             </service>
 
             <service uid="origin_transform_adp" type="sight::module::viz::scene3d::adaptor::transform">
-                <inout key="transform" uid="id_matrix" />
+                <data transform="${id_matrix}" />
                 <config transform="id_matrix" />
             </service>
 
@@ -203,82 +197,76 @@
             </service>
 
             <service uid="3d_negato_adp" type="sight::module::viz::scene3d::adaptor::negato3d">
-                <in key="image" uid="input_image" />
-                <inout key="tf" uid="tf" />
+                <data image="${input_image}" />
+                <data tf="${tf}" />
                 <config orientation="axial" interactive="true" />
             </service>
 
             <service uid="image_axis_adp" type="sight::module::viz::scene3d::adaptor::axis">
-                <in key="image" uid="input_image" />
+                <data image="${input_image}" />
                 <config visible="true" origin="true" originColor="#0000FF" label="false" />
             </service>
 
             <service uid="reslice_axial_negato_adp" type="sight::module::viz::scene3d::adaptor::negato2d">
-                <in key="image" uid="axial_slice" />
-                <inout key="tf" uid="tf" />
+                <data image="${axial_slice}" />
+                <data tf="${tf}" />
                 <config orientation="axial" filtering="linear" border="false" interactive="false" cross="false" />
             </service>
 
             <service uid="axial_slice_axis_adp" type="sight::module::viz::scene3d::adaptor::axis">
-                <in key="image" uid="axial_slice" />
+                <data image="${axial_slice}" />
                 <config visible="true" origin="true" originColor="#FF0000" label="false" />
             </service>
 
             <service uid="reslice_frontal_negato_adp" type="sight::module::viz::scene3d::adaptor::negato2d">
-                <in key="image" uid="frontal_slice" />
-                <inout key="tf" uid="tf" />
+                <data image="${frontal_slice}" />
+                <data tf="${tf}" />
                 <config orientation="axial" filtering="linear" border="false" interactive="false" cross="false" />
             </service>
 
             <service uid="frontal_slice_axis_adp" type="sight::module::viz::scene3d::adaptor::axis">
-                <in key="image" uid="frontal_slice" />
+                <data image="${frontal_slice}" />
                 <config visible="true" origin="true" originColor="#00FF00" label="false" />
             </service>
 
             <!-- ******************************* In-plane negato view ******************************* -->
 
             <service uid="axial_negato_cfg" type="sight::app::config_launcher">
-                <properties config="ex_image_reslice::reslice_view" />
-                <parameter replace="WID_PARENT" by="axial_negato_view" />
-                <inout group="object">
-                    <key name="image" uid="${input_image}" />
-                    <key name="mask" uid="${input_mask}" />
-                    <key name="slice" uid="${axial_slice}" />
-                    <key name="tf" uid="${tf}" />
-                    <key name="mask_slice" uid="${axial_mask_slice}" />
-                    <key name="mask_tf" uid="${mask_tf}" />
-                    <key name="reslice_matrix" uid="${axial_matrix}" />
-                    <key name="center" uid="${center_reslice}" />
-                </inout>
+                <config id="ex_image_reslice::reslice_view" />
+                <object name="image" uid="${input_image}" />
+                <object name="mask" uid="${input_mask}" />
+                <object name="slice" uid="${axial_slice}" />
+                <object name="tf" uid="${tf}" />
+                <object name="mask_slice" uid="${axial_mask_slice}" />
+                <object name="mask_tf" uid="${mask_tf}" />
+                <object name="reslice_matrix" uid="${axial_matrix}" />
+                <object name="center" uid="${center_reslice}" />
+                <param name="WID_PARENT" value="axial_negato_view" />
             </service>
 
             <!-- ******************************* Frontal negato view ******************************* -->
 
             <service uid="frontal_negato_cfg" type="sight::app::config_launcher">
-                <properties config="ex_image_reslice::reslice_view" />
-                <parameter replace="WID_PARENT" by="frontal_negato_view" />
-                <inout group="object">
-                    <key name="image" uid="${input_image}" />
-                    <key name="mask" uid="${input_mask}" />
-                    <key name="slice" uid="${frontal_slice}" />
-                    <key name="tf" uid="${tf}" />
-                    <key name="mask_slice" uid="${frontal_mask_slice}" />
-                    <key name="mask_tf" uid="${mask_tf}" />
-                    <key name="reslice_matrix" uid="${frontal_matrix}" />
-                    <key name="center" uid="${center_reslice}" />
-                </inout>
+                <config id="ex_image_reslice::reslice_view" />
+                <object name="image" uid="${input_image}" />
+                <object name="mask" uid="${input_mask}" />
+                <object name="slice" uid="${frontal_slice}" />
+                <object name="tf" uid="${tf}" />
+                <object name="mask_slice" uid="${frontal_mask_slice}" />
+                <object name="mask_tf" uid="${mask_tf}" />
+                <object name="reslice_matrix" uid="${frontal_matrix}" />
+                <object name="center" uid="${center_reslice}" />
+                <param name="WID_PARENT" value="frontal_negato_view" />
             </service>
 
             <!-- ******************************* Services ***************************************** -->
 
             <service uid="read_image_srv" type="sight::module::ui::io::selector">
-                <inout key="data" uid="input_image" />
-                <type mode="reader" />
+                <data read="${input_image}" />
             </service>
 
             <service uid="read_mask_srv" type="sight::module::ui::io::selector">
-                <inout key="data" uid="input_mask" />
-                <type mode="reader" />
+                <data read="${input_mask}" />
             </service>
 
             <!-- ******************************* Connections ***************************************** -->

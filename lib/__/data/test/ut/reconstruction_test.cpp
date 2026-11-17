@@ -117,6 +117,7 @@ TEST_SUITE("sight::data::reconstruction")
         TEST(set_structure_type("2"));
         TEST(set_image(std::make_shared<sight::data::image>()));
         TEST(set_mesh(std::make_shared<sight::data::mesh>()));
+        TEST(set_label(234));
         auto material = std::make_shared<sight::data::material>();
         material->set_ambient(std::make_shared<sight::data::color>(3.F, 4.F, 5.F));
         material->set_diffuse(std::make_shared<sight::data::color>(6.F, 7.F, 8.F));

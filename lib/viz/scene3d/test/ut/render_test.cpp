@@ -26,8 +26,6 @@
 
 #include <viz/scene3d/render.hpp>
 
-#include <boost/property_tree/xml_parser.hpp>
-
 #include <doctest/doctest.h>
 
 TEST_SUITE("sight::viz::scene3d::render")
@@ -39,15 +37,13 @@ TEST_SUITE("sight::viz::scene3d::render")
             auto offscreen  = std::make_shared<sight::data::image>();
             auto render_srv = sight::service::add<sight::viz::scene3d::render>("sight::viz::scene3d::render");
 
-            sight::service::config_t config;
-            std::stringstream config_string;
-            config_string << R"(<inout key="offscreen" uid="dummy" />)"
-            << R"(<scene render_mode="auto">)"
-               R"( <background color="#36393E" />)"
-               R"( <layer id="default" />)"
-               R"(</scene>)";
+            const std::string config =
+                "<inout key='offscreen' uid='dummy' />"
+                "<scene render_mode='auto'>"
+                "<background color='#36393E' />"
+                "<layer id='default' />"
+                "</scene>";
 
-            boost::property_tree::read_xml(config_string, config);
             render_srv->set_config(config);
             render_srv->set_inout(offscreen, "offscreen");
             render_srv->configure();
@@ -57,20 +53,18 @@ TEST_SUITE("sight::viz::scene3d::render")
             sight::service::remove(render_srv);
         }
 
-        SUBCASE("manual mode")
+        SUBCASE("manual_mode")
         {
             auto offscreen  = std::make_shared<sight::data::image>();
             auto render_srv = sight::service::add<sight::viz::scene3d::render>("sight::viz::scene3d::render");
 
-            sight::service::config_t config;
-            std::stringstream config_string;
-            config_string << R"(<inout key="offscreen" uid="dummy" />)"
-            << R"(<scene render_mode="manual">)"
-               R"( <background color="#36393E" />)"
-               R"( <layer id="default" />)"
-               R"(</scene>)";
+            const std::string config =
+                "<inout key='offscreen' uid='dummy' />"
+                "<scene render_mode='manual'>"
+                "<background color='#36393E' />"
+                "<layer id='default' />"
+                "</scene>";
 
-            boost::property_tree::read_xml(config_string, config);
             render_srv->set_config(config);
             render_srv->set_inout(offscreen, "offscreen");
             render_srv->configure();
@@ -80,20 +74,18 @@ TEST_SUITE("sight::viz::scene3d::render")
             sight::service::remove(render_srv);
         }
 
-        SUBCASE("default mode (no render_mode attribute)")
+        SUBCASE("default_mode (no render_mode attribute)")
         {
             auto offscreen  = std::make_shared<sight::data::image>();
             auto render_srv = sight::service::add<sight::viz::scene3d::render>("sight::viz::scene3d::render");
 
-            sight::service::config_t config;
-            std::stringstream config_string;
-            config_string << R"(<inout key="offscreen" uid="dummy" />)"
-            << R"(<scene>)"
-               R"( <background color="#36393E" />)"
-               R"( <layer id="default" />)"
-               R"(</scene>)";
+            const std::string config =
+                "<inout key='offscreen' uid='dummy' />"
+                "<scene>"
+                "<background color='#36393E' />"
+                "<layer id='default' />"
+                "</scene>";
 
-            boost::property_tree::read_xml(config_string, config);
             render_srv->set_config(config);
             render_srv->set_inout(offscreen, "offscreen");
             render_srv->configure();
@@ -106,20 +98,18 @@ TEST_SUITE("sight::viz::scene3d::render")
 
     TEST_CASE("configure_background")
     {
-        SUBCASE("background with single color")
+        SUBCASE("background_with_single_color")
         {
             auto offscreen  = std::make_shared<sight::data::image>();
             auto render_srv = sight::service::add<sight::viz::scene3d::render>("sight::viz::scene3d::render");
 
-            sight::service::config_t config;
-            std::stringstream config_string;
-            config_string << R"(<inout key="offscreen" uid="dummy" />)"
-            << R"(<scene>)"
-               R"( <background color="#FF0000" />)"
-               R"( <layer id="default" />)"
-               R"(</scene>)";
+            const std::string config =
+                "<inout key='offscreen' uid='dummy' />"
+                "<scene>"
+                "<background color='#FF0000' />"
+                "<layer id='default' />"
+                "</scene>";
 
-            boost::property_tree::read_xml(config_string, config);
             render_srv->set_config(config);
             render_srv->set_inout(offscreen, "offscreen");
             render_srv->configure();
@@ -127,20 +117,18 @@ TEST_SUITE("sight::viz::scene3d::render")
             sight::service::remove(render_srv);
         }
 
-        SUBCASE("background with gradient colors")
+        SUBCASE("background_with_gradient_colors")
         {
             auto offscreen  = std::make_shared<sight::data::image>();
             auto render_srv = sight::service::add<sight::viz::scene3d::render>("sight::viz::scene3d::render");
 
-            sight::service::config_t config;
-            std::stringstream config_string;
-            config_string << R"(<inout key="offscreen" uid="dummy" />)"
-            << R"(<scene>)"
-               R"( <background top_color="#FF0000" bottom_color="#0000FF" />)"
-               R"( <layer id="default" />)"
-               R"(</scene>)";
+            const std::string config =
+                "<inout key='offscreen' uid='dummy' />"
+                "<scene>"
+                "<background top_color='#FF0000' bottom_color='#0000FF' />"
+                "<layer id='default' />"
+                "</scene>";
 
-            boost::property_tree::read_xml(config_string, config);
             render_srv->set_config(config);
             render_srv->set_inout(offscreen, "offscreen");
             render_srv->configure();
@@ -148,20 +136,18 @@ TEST_SUITE("sight::viz::scene3d::render")
             sight::service::remove(render_srv);
         }
 
-        SUBCASE("background with scales")
+        SUBCASE("background_with_scales")
         {
             auto offscreen  = std::make_shared<sight::data::image>();
             auto render_srv = sight::service::add<sight::viz::scene3d::render>("sight::viz::scene3d::render");
 
-            sight::service::config_t config;
-            std::stringstream config_string;
-            config_string << R"(<inout key="offscreen" uid="dummy" />)"
-            << R"(<scene>)"
-               R"( <background top_color="#FF0000" bottom_color="#0000FF" top_scale="0.3" bottom_scale="0.7" />)"
-               R"( <layer id="default" />)"
-               R"(</scene>)";
+            const std::string config =
+                "<inout key='offscreen' uid='dummy' />"
+                "<scene>"
+                "<background top_color='#FF0000' bottom_color='#0000FF' top_scale='0.3' bottom_scale='0.7' />"
+                "<layer id='default' />"
+                "</scene>";
 
-            boost::property_tree::read_xml(config_string, config);
             render_srv->set_config(config);
             render_srv->set_inout(offscreen, "offscreen");
             render_srv->configure();
@@ -169,20 +155,18 @@ TEST_SUITE("sight::viz::scene3d::render")
             sight::service::remove(render_srv);
         }
 
-        SUBCASE("background with material")
+        SUBCASE("background_with_material")
         {
             auto offscreen  = std::make_shared<sight::data::image>();
             auto render_srv = sight::service::add<sight::viz::scene3d::render>("sight::viz::scene3d::render");
 
-            sight::service::config_t config;
-            std::stringstream config_string;
-            config_string << R"(<inout key="offscreen" uid="dummy" />)"
-            << R"(<scene>)"
-               R"( <background material="CustomMaterial" />)"
-               R"( <layer id="default" />)"
-               R"(</scene>)";
+            const std::string config =
+                "<inout key='offscreen' uid='dummy' />"
+                "<scene>"
+                "<background material='CustomMaterial' />"
+                "<layer id='default' />"
+                "</scene>";
 
-            boost::property_tree::read_xml(config_string, config);
             render_srv->set_config(config);
             render_srv->set_inout(offscreen, "offscreen");
             render_srv->configure();
@@ -198,15 +182,13 @@ TEST_SUITE("sight::viz::scene3d::render")
             auto offscreen  = std::make_shared<sight::data::image>();
             auto render_srv = sight::service::add<sight::viz::scene3d::render>("sight::viz::scene3d::render");
 
-            sight::service::config_t config;
-            std::stringstream config_string;
-            config_string << R"(<inout key="offscreen" uid="dummy" />)"
-            << R"(<scene>)"
-               R"( <background color="#000000" />)"
-               R"( <layer id="default" />)"
-               R"(</scene>)";
+            const std::string config =
+                "<inout key='offscreen' uid='dummy' />"
+                "<scene>"
+                "<background color='#000000' />"
+                "<layer id='default' />"
+                "</scene>";
 
-            boost::property_tree::read_xml(config_string, config);
             render_srv->set_config(config);
             render_srv->set_inout(offscreen, "offscreen");
             render_srv->configure();
@@ -214,22 +196,20 @@ TEST_SUITE("sight::viz::scene3d::render")
             sight::service::remove(render_srv);
         }
 
-        SUBCASE("multiple layers")
+        SUBCASE("multiple_layers")
         {
             auto offscreen  = std::make_shared<sight::data::image>();
             auto render_srv = sight::service::add<sight::viz::scene3d::render>("sight::viz::scene3d::render");
 
-            sight::service::config_t config;
-            std::stringstream config_string;
-            config_string << R"(<inout key="offscreen" uid="dummy" />)"
-            << R"(<scene>)"
-               R"( <background color="#000000" />)"
-               R"( <layer id="layer1" />)"
-               R"( <layer id="layer2" />)"
-               R"( <layer id="layer3" />)"
-               R"(</scene>)";
+            const std::string config =
+                "<inout key='offscreen' uid='dummy' />"
+                "<scene>"
+                "<background color='#000000' />"
+                "<layer id='layer1' />"
+                "<layer id='layer2' />"
+                "<layer id='layer3' />"
+                "</scene>";
 
-            boost::property_tree::read_xml(config_string, config);
             render_srv->set_config(config);
             render_srv->set_inout(offscreen, "offscreen");
             render_srv->configure();
@@ -237,20 +217,18 @@ TEST_SUITE("sight::viz::scene3d::render")
             sight::service::remove(render_srv);
         }
 
-        SUBCASE("layer with transparency")
+        SUBCASE("layer_with_transparency")
         {
             auto offscreen  = std::make_shared<sight::data::image>();
             auto render_srv = sight::service::add<sight::viz::scene3d::render>("sight::viz::scene3d::render");
 
-            sight::service::config_t config;
-            std::stringstream config_string;
-            config_string << R"(<inout key="offscreen" uid="dummy" />)"
-            << R"(<scene>)"
-               R"( <background color="#000000" />)"
-               R"( <layer id="default" transparency="DepthPeeling" numPeels="8" />)"
-               R"(</scene>)";
+            const std::string config =
+                "<inout key='offscreen' uid='dummy' />"
+                "<scene>"
+                "<background color='#000000' />"
+                "<layer id='default' transparency='DepthPeeling' numPeels='8' />"
+                "</scene>";
 
-            boost::property_tree::read_xml(config_string, config);
             render_srv->set_config(config);
             render_srv->set_inout(offscreen, "offscreen");
             render_srv->configure();
@@ -258,20 +236,18 @@ TEST_SUITE("sight::viz::scene3d::render")
             sight::service::remove(render_srv);
         }
 
-        SUBCASE("layer with stereo mode")
+        SUBCASE("layer_with_stereo_mode")
         {
             auto offscreen  = std::make_shared<sight::data::image>();
             auto render_srv = sight::service::add<sight::viz::scene3d::render>("sight::viz::scene3d::render");
 
-            sight::service::config_t config;
-            std::stringstream config_string;
-            config_string << R"(<inout key="offscreen" uid="dummy" />)"
-            << R"(<scene>)"
-               R"( <background color="#000000" />)"
-               R"( <layer id="default" stereoMode="AutoStereo5" />)"
-               R"(</scene>)";
+            const std::string config =
+                "<inout key='offscreen' uid='dummy' />"
+                "<scene>"
+                "<background color='#000000' />"
+                "<layer id='default' stereoMode='AutoStereo5' />"
+                "</scene>";
 
-            boost::property_tree::read_xml(config_string, config);
             render_srv->set_config(config);
             render_srv->set_inout(offscreen, "offscreen");
             render_srv->configure();
@@ -279,22 +255,20 @@ TEST_SUITE("sight::viz::scene3d::render")
             sight::service::remove(render_srv);
         }
 
-        SUBCASE("layer with viewport configuration")
+        SUBCASE("layer_with_viewport configuration")
         {
             auto offscreen  = std::make_shared<sight::data::image>();
             auto render_srv = sight::service::add<sight::viz::scene3d::render>("sight::viz::scene3d::render");
 
-            sight::service::config_t config;
-            std::stringstream config_string;
-            config_string << R"(<inout key="offscreen" uid="dummy" />)"
-            << R"(<scene>)"
-               R"( <background color="#000000" />)"
-               R"( <layer id="default">)"
-               R"(  <viewport hOffset="0.1" vOffset="0.2" width="0.5" height="0.8" hAlign="center" vAlign="bottom" />)"
-               R"( </layer>)"
-               R"(</scene>)";
+            const std::string config =
+                "<inout key='offscreen' uid='dummy' />"
+                "<scene>"
+                "<background color='#000000' />"
+                "<layer id='default'>"
+                "<viewport hOffset='0.1' vOffset='0.2' width='0.5' height='0.8' hAlign='center' vAlign='bottom' />"
+                "</layer>"
+                "</scene>";
 
-            boost::property_tree::read_xml(config_string, config);
             render_srv->set_config(config);
             render_srv->set_inout(offscreen, "offscreen");
             render_srv->configure();
@@ -302,20 +276,18 @@ TEST_SUITE("sight::viz::scene3d::render")
             sight::service::remove(render_srv);
         }
 
-        SUBCASE("layer without default light")
+        SUBCASE("layer_without_default light")
         {
             auto offscreen  = std::make_shared<sight::data::image>();
             auto render_srv = sight::service::add<sight::viz::scene3d::render>("sight::viz::scene3d::render");
 
-            sight::service::config_t config;
-            std::stringstream config_string;
-            config_string << R"(<inout key="offscreen" uid="dummy" />)"
-            << R"(<scene>)"
-               R"( <background color="#000000" />)"
-               R"( <layer id="default" defaultLight="false" />)"
-               R"(</scene>)";
+            const std::string config =
+                "<inout key='offscreen' uid='dummy' />"
+                "<scene>"
+                "<background color='#000000' />"
+                "<layer id='default' defaultLight='false' />"
+                "</scene>";
 
-            boost::property_tree::read_xml(config_string, config);
             render_srv->set_config(config);
             render_srv->set_inout(offscreen, "offscreen");
             render_srv->configure();
@@ -323,20 +295,18 @@ TEST_SUITE("sight::viz::scene3d::render")
             sight::service::remove(render_srv);
         }
 
-        SUBCASE("layer with compositors")
+        SUBCASE("layer_with_compositors")
         {
             auto offscreen  = std::make_shared<sight::data::image>();
             auto render_srv = sight::service::add<sight::viz::scene3d::render>("sight::viz::scene3d::render");
 
-            sight::service::config_t config;
-            std::stringstream config_string;
-            config_string << R"(<inout key="offscreen" uid="dummy" />)"
-            << R"(<scene>)"
-               R"( <background color="#000000" />)"
-               R"( <layer id="default" compositors="Bloom;Motion Blur" />)"
-               R"(</scene>)";
+            const std::string config =
+                "<inout key='offscreen' uid='dummy' />"
+                "<scene>"
+                "<background color='#000000' />"
+                "<layer id='default' compositors='Bloom;Motion Blur' />"
+                "</scene>";
 
-            boost::property_tree::read_xml(config_string, config);
             render_srv->set_config(config);
             render_srv->set_inout(offscreen, "offscreen");
             render_srv->configure();
@@ -344,23 +314,21 @@ TEST_SUITE("sight::viz::scene3d::render")
             sight::service::remove(render_srv);
         }
 
-        SUBCASE("layer with adaptors")
+        SUBCASE("layer_with_adaptors")
         {
             auto offscreen  = std::make_shared<sight::data::image>();
             auto render_srv = sight::service::add<sight::viz::scene3d::render>("sight::viz::scene3d::render");
 
-            sight::service::config_t config;
-            std::stringstream config_string;
-            config_string << R"(<inout key="offscreen" uid="dummy" />)"
-            << R"(<scene>)"
-               R"( <background color="#000000" />)"
-               R"( <layer id="default">)"
-               R"(  <adaptor uid="adaptor1" />)"
-               R"(  <adaptor uid="adaptor2" />)"
-               R"( </layer>)"
-               R"(</scene>)";
+            const std::string config =
+                "<inout key='offscreen' uid='dummy' />"
+                "<scene>"
+                "<background color='#000000' />"
+                "<layer id='default'>"
+                "<adaptor uid='adaptor1' />"
+                "<adaptor uid='adaptor2' />"
+                "</layer>"
+                "</scene>";
 
-            boost::property_tree::read_xml(config_string, config);
             render_srv->set_config(config);
             render_srv->set_inout(offscreen, "offscreen");
             render_srv->configure();
@@ -376,15 +344,13 @@ TEST_SUITE("sight::viz::scene3d::render")
             auto offscreen  = std::make_shared<sight::data::image>();
             auto render_srv = sight::service::add<sight::viz::scene3d::render>("sight::viz::scene3d::render");
 
-            sight::service::config_t config;
-            std::stringstream config_string;
-            config_string << R"(<inout key="offscreen" uid="dummy" />)"
-            << R"(<scene width="1920" height="1080">)"
-               R"( <background color="#000000" />)"
-               R"( <layer id="default" />)"
-               R"(</scene>)";
+            const std::string config =
+                "<inout key='offscreen' uid='dummy' />"
+                "<scene width='1920' height='1080'>"
+                "<background color='#000000' />"
+                "<layer id='default' />"
+                "</scene>";
 
-            boost::property_tree::read_xml(config_string, config);
             render_srv->set_config(config);
             render_srv->set_inout(offscreen, "offscreen");
             render_srv->configure();
@@ -397,15 +363,13 @@ TEST_SUITE("sight::viz::scene3d::render")
             auto offscreen  = std::make_shared<sight::data::image>();
             auto render_srv = sight::service::add<sight::viz::scene3d::render>("sight::viz::scene3d::render");
 
-            sight::service::config_t config;
-            std::stringstream config_string;
-            config_string << R"(<inout key="offscreen" uid="dummy" />)"
-            << R"(<scene width="800" height="600" flip="true">)"
-               R"( <background color="#000000" />)"
-               R"( <layer id="default" />)"
-               R"(</scene>)";
+            const std::string config =
+                "<inout key='offscreen' uid='dummy' />"
+                "<scene width='800' height='600' flip='true'>"
+                "<background color='#000000' />"
+                "<layer id='default' />"
+                "</scene>";
 
-            boost::property_tree::read_xml(config_string, config);
             render_srv->set_config(config);
             render_srv->set_inout(offscreen, "offscreen");
             render_srv->configure();
@@ -419,15 +383,13 @@ TEST_SUITE("sight::viz::scene3d::render")
         auto offscreen  = std::make_shared<sight::data::image>();
         auto render_srv = sight::service::add<sight::viz::scene3d::render>("sight::viz::scene3d::render");
 
-        sight::service::config_t config;
-        std::stringstream config_string;
-        config_string << R"(<inout key="offscreen" uid="dummy" />)"
-        << R"(<scene fullscreen="true">)"
-           R"( <background color="#000000" />)"
-           R"( <layer id="default" />)"
-           R"(</scene>)";
+        const std::string config =
+            "<inout key='offscreen' uid='dummy' />"
+            "<scene fullscreen='true'>"
+            "<background color='#000000' />"
+            "<layer id='default' />"
+            "</scene>";
 
-        boost::property_tree::read_xml(config_string, config);
         render_srv->set_config(config);
         render_srv->set_inout(offscreen, "offscreen");
         render_srv->configure();
@@ -440,23 +402,21 @@ TEST_SUITE("sight::viz::scene3d::render")
         auto offscreen  = std::make_shared<sight::data::image>();
         auto render_srv = sight::service::add<sight::viz::scene3d::render>("sight::viz::scene3d::render");
 
-        sight::service::config_t config;
-        std::stringstream config_string;
-        config_string << R"(<inout key="offscreen" uid="dummy" />)"
-        << R"(<scene width="1280" height="720" flip="false" fullscreen="false" render_mode="auto">)"
-           R"( <background top_color="#336699" bottom_color="#003366" top_scale="0.25" bottom_scale="0.75" />)"
-           R"( <layer id="main" transparency="DepthPeeling" numPeels="6" defaultLight="true" compositors="HDR">)"
-           R"(  <viewport hOffset="0" vOffset="0" width="0.75" height="1.0" hAlign="left" vAlign="top" />)"
-           R"(  <adaptor uid="mainAdaptor1" />)"
-           R"(  <adaptor uid="mainAdaptor2" />)"
-           R"( </layer>)"
-           R"( <layer id="overlay" defaultLight="false">)"
-           R"(  <viewport hOffset="0" vOffset="0" width="0.25" height="0.25" hAlign="right" vAlign="top" />)"
-           R"(  <adaptor uid="overlayAdaptor" />)"
-           R"( </layer>)"
-           R"(</scene>)";
+        const std::string config =
+            "<inout key='offscreen' uid='dummy' />"
+            "<scene width='1280' height='720' flip='false' fullscreen='false' render_mode='auto'>"
+            "<background top_color='#336699' bottom_color='#003366' top_scale='0.25' bottom_scale='0.75' />"
+            "<layer id='main' transparency='DepthPeeling' numPeels='6' defaultLight='true' compositors='HDR'>"
+            "<viewport hOffset='0' vOffset='0' width='0.75' height='1.0' hAlign='left' vAlign='top' />"
+            "<adaptor uid='mainAdaptor1' />"
+            "<adaptor uid='mainAdaptor2' />"
+            "</layer>"
+            "<layer id='overlay' defaultLight='false'>"
+            "<viewport hOffset='0' vOffset='0' width='0.25' height='0.25' hAlign='right' vAlign='top' />"
+            "<adaptor uid='overlayAdaptor' />"
+            "</layer>"
+            "</scene>";
 
-        boost::property_tree::read_xml(config_string, config);
         render_srv->set_config(config);
         render_srv->set_inout(offscreen, "offscreen");
         render_srv->configure();

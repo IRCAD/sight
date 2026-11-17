@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,7 +34,7 @@ template<typename R>
 struct task_handler
 {
     /// Constructor, moves task.
-    task_handler(std::packaged_task<R>& _task);
+    explicit task_handler(std::packaged_task<R>& _task);
 
     /// Copy constructor, moves task.
     task_handler(const task_handler& _that);

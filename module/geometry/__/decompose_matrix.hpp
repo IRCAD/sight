@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2024 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -87,9 +87,11 @@ protected:
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
      *
-     * Connect Object::MODIFIED_SIG to service::slots::UPDATE
+     * Connect data::signals::MODIFIED to service::slots::UPDATE
      */
     connections_t auto_connections() const override;
+
+private:
 
     static constexpr std::string_view SOURCE_INPUT      = "source";
     static constexpr std::string_view TRANSLATION_INOUT = "translation";

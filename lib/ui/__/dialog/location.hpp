@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,8 +25,6 @@
 #include <sight/ui/__/config.hpp>
 
 #include "ui/__/dialog/location_base.hpp"
-
-#include <core/base.hpp>
 
 namespace sight::ui::dialog
 {
@@ -75,6 +73,9 @@ public:
     /// Returns the title for the dialog
     SIGHT_UI_API const std::string& get_title() override;
 
+    /// Set the key used to store the default location in preferences.
+    SIGHT_UI_API void set_preferences_key(const std::string& _key) override;
+
     /// Set the initial location for the dialog
     SIGHT_UI_API void set_default_location(core::location::base::sptr _loc) override;
 
@@ -87,7 +88,10 @@ public:
     /// Gets the current extension file selection
     SIGHT_UI_API std::string get_current_selection() const override;
 
-protected:
+    /// Gets the selected filter as its display name and wildcard list.
+    SIGHT_UI_API filter_t get_current_filter() const override;
+
+private:
 
     ui::dialog::location_base::sptr m_implementation;
 };

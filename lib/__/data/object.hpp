@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,10 +27,8 @@
 #include "data/factory/new.hpp"
 #include "data/registry/detail.hpp"
 
-#include <core/base.hpp>
 #include <core/com/has_signals.hpp>
 #include <core/com/signal.hpp>
-#include <core/compare.hpp>
 #include <core/mt/types.hpp>
 #include <core/object.hpp>
 
@@ -42,25 +40,25 @@ namespace sight::data
 
 class object;
 
-using fields_container_t = std::map<std::string, SPTR(object)>;
+using fields_container_t = std::map<std::string, sight::sptr<object> >;
 
 // Generic signals
 struct signals
 {
-    using modified_t = core::com::signal<void ()>;
-    static const inline core::com::signals::key_t MODIFIED = "modified";
+    using modified_t = sight::core::com::signal<void ()>;
+    static const inline sight::core::com::signals::key_t MODIFIED = "modified";
 
     /// Type of signal when objects are added
-    using added_fields_t = core::com::signal<void (fields_container_t)>;
-    static const inline core::com::signals::key_t ADDED_FIELDS = "addedFields";
+    using added_fields_t = sight::core::com::signal<void (fields_container_t)>;
+    static const inline sight::core::com::signals::key_t ADDED_FIELDS = "addedFields";
 
     /// Type of signal when objects are changed (newObjects, oldObjects)
-    using changed_fields_t = core::com::signal<void (fields_container_t, fields_container_t)>;
-    static const inline core::com::signals::key_t CHANGED_FIELDS = "changedFields";
+    using changed_fields_t = sight::core::com::signal<void (fields_container_t, fields_container_t)>;
+    static const inline sight::core::com::signals::key_t CHANGED_FIELDS = "changedFields";
 
     /// Type of signal when objects are removed
-    using removed_fields_t = core::com::signal<void (fields_container_t)>;
-    static const inline core::com::signals::key_t REMOVED_FIELDS = "removedFields";
+    using removed_fields_t = sight::core::com::signal<void (fields_container_t)>;
+    static const inline sight::core::com::signals::key_t REMOVED_FIELDS = "removedFields";
 };
 
 namespace mt
@@ -107,21 +105,6 @@ public:
      * @name Signals
      * @{
      */
-    // For backward compatibility - this is duplicated for now because of a runtime error with GCC/Clang mix
-    using modified_signal_t = signals::modified_t;
-    static const inline signal_key_t MODIFIED_SIG = "modified";
-
-    /// Type of signal when objects are added
-    using added_fields_signal_t = signals::added_fields_t;
-    static const inline signal_key_t ADDED_FIELDS_SIG = "addedFields";
-
-    /// Type of signal when objects are changed (newObjects, oldObjects)
-    using changed_fields_signal_t = signals::changed_fields_t;
-    static const inline signal_key_t CHANGED_FIELDS_SIG = "changedFields";
-
-    /// Type of signal when objects are removed
-    using removed_fields_signal_t = signals::removed_fields_t;
-    static const inline signal_key_t REMOVED_FIELDS_SIG = "removedFields";
     /**
      * @}
      */
@@ -149,7 +132,7 @@ public:
      * @return pointer to corresponding field, nullptr if field is not found.
      */
     template<typename DATA_TYPE>
-    SPTR(DATA_TYPE) get_field(const field_name_t& _name) const;
+    sight::sptr<DATA_TYPE> get_field(const field_name_t& _name) const;
 
     /**
      * @brief Returns a pointer of corresponding field.
@@ -158,7 +141,7 @@ public:
      * @return pointer to corresponding field, defaultValue if field is not found.
      */
     template<typename DATA_TYPE>
-    SPTR(DATA_TYPE) get_field(const field_name_t& _name, SPTR(DATA_TYPE) _default_value) const;
+    sight::sptr<DATA_TYPE> get_field(const field_name_t& _name, sight::sptr<DATA_TYPE> _default_value) const;
 
     /**
      * @brief Returns a pointer of corresponding field. If field did not exist, it is set to defaultValue if
@@ -168,7 +151,7 @@ public:
      * @return pointer to corresponding field.
      */
     template<typename DATA_TYPE>
-    SPTR(DATA_TYPE) set_default_field(const field_name_t& _name, SPTR(DATA_TYPE) _default_value);
+    sight::sptr<DATA_TYPE> set_default_field(const field_name_t& _name, sight::sptr<DATA_TYPE> _default_value);
 
     /**
      * @brief Returns fields map.
@@ -222,20 +205,20 @@ public:
     );
 
     template<typename DATA_TYPE>
-    static SPTR(DATA_TYPE) copy(
-        const CSPTR(DATA_TYPE) & _source,
+    static sight::sptr<DATA_TYPE> copy(
+        const sight::csptr<DATA_TYPE>& _source,
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     );
 
     template<typename DATA_TYPE>
-    static SPTR(DATA_TYPE) copy(
-        const SPTR(DATA_TYPE) & _source,
+    static sight::sptr<DATA_TYPE> copy(
+        const sight::sptr<DATA_TYPE>& _source,
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     );
     /** @} */
 
     /// Returns the object's mutex.
-    inline core::mt::read_write_mutex& get_mutex() const
+    core::mt::read_write_mutex& get_mutex() const
     {
         return m_mutex;
     }
@@ -257,9 +240,14 @@ public:
     /// Returns a timestamp to know when the object was last modified
     inline std::uint64_t last_modified() const noexcept;
 
+    /// Swaps the content of this object with the one of the source object. This method shall not throw any exception.
+    SIGHT_DATA_API void swap(object::sptr _source) noexcept;
+
 protected:
 
     SIGHT_DATA_API object();
+
+private:
 
     /// Description allows to distinguish between different instances of the same class
     std::string m_description;
@@ -282,14 +270,24 @@ private:
     SIGHT_DATA_API inline void set_modified() noexcept;
 };
 
+//------------------------------------------------------------------------------
+
 template<typename DATA_TYPE>
-SPTR(DATA_TYPE) object::copy(const CSPTR(DATA_TYPE) & _source, const std::unique_ptr<deep_copy_cache_t>& _cache)
+sight::sptr<DATA_TYPE> object::copy(
+    const sight::csptr<DATA_TYPE>& _source,
+    const std::unique_ptr<deep_copy_cache_t>& _cache
+)
 {
     return std::dynamic_pointer_cast<DATA_TYPE>(object::copy(object::csptr(_source), _cache));
 }
 
+//------------------------------------------------------------------------------
+
 template<typename DATA_TYPE>
-SPTR(DATA_TYPE) object::copy(const SPTR(DATA_TYPE) & _source, const std::unique_ptr<deep_copy_cache_t>& _cache)
+sight::sptr<DATA_TYPE> object::copy(
+    const sight::sptr<DATA_TYPE>& _source,
+    const std::unique_ptr<deep_copy_cache_t>& _cache
+)
 {
     return std::dynamic_pointer_cast<DATA_TYPE>(object::copy(object::csptr(_source), _cache));
 }
@@ -297,31 +295,31 @@ SPTR(DATA_TYPE) object::copy(const SPTR(DATA_TYPE) & _source, const std::unique_
 //-----------------------------------------------------------------------------
 
 template<typename DATA_TYPE>
-SPTR(DATA_TYPE) object::get_field(const field_name_t& _name) const
+sight::sptr<DATA_TYPE> object::get_field(const field_name_t& _name) const
 {
     object::sptr field;
-    field                  = this->get_field(_name, field);
-    SPTR(DATA_TYPE) result = std::dynamic_pointer_cast<DATA_TYPE>(field);
+    field = this->get_field(_name, field);
+    sight::sptr<DATA_TYPE> result = std::dynamic_pointer_cast<DATA_TYPE>(field);
     return result;
 }
 
 //-----------------------------------------------------------------------------
 
 template<typename DATA_TYPE>
-SPTR(DATA_TYPE) object::get_field(const field_name_t& _name, SPTR(DATA_TYPE) _default_value) const
+sight::sptr<DATA_TYPE> object::get_field(const field_name_t& _name, sight::sptr<DATA_TYPE> _default_value) const
 {
     object::sptr field = _default_value;
-    field                  = this->get_field(_name, field);
-    SPTR(DATA_TYPE) result = std::dynamic_pointer_cast<DATA_TYPE>(field);
+    field = this->get_field(_name, field);
+    sight::sptr<DATA_TYPE> result = std::dynamic_pointer_cast<DATA_TYPE>(field);
     return result;
 }
 
 //-----------------------------------------------------------------------------
 
 template<typename DATA_TYPE>
-SPTR(DATA_TYPE) object::set_default_field(const field_name_t& _name, SPTR(DATA_TYPE) _default_value)
+sight::sptr<DATA_TYPE> object::set_default_field(const field_name_t& _name, sight::sptr<DATA_TYPE> _default_value)
 {
-    SPTR(DATA_TYPE) result = get_field<DATA_TYPE>(_name);
+    sight::sptr<DATA_TYPE> result = get_field<DATA_TYPE>(_name);
     if(!result && _default_value)
     {
         result = _default_value;

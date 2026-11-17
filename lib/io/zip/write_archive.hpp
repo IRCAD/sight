@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,7 +47,7 @@ public:
      * @param _path file in archive.
      * @return output stream of file entry in archive.
      */
-    virtual SPTR(std::ostream) create_file(const std::filesystem::path& _path) = 0;
+    virtual sight::sptr<std::ostream> create_file(const std::filesystem::path& _path) = 0;
 
     /**
      * @brief Writes source file in archive.

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,18 +22,15 @@
 
 #pragma once
 
-#include <core/progress/has_monitors.hpp>
+#include <core/notification/has_monitors.hpp>
 
 #include <data/series_set.hpp>
 #include <data/vector.hpp>
 
-#include <io/__/service/reader.hpp>
 #include <io/dimse/data/pacs_configuration.hpp>
-#include <io/dimse/series_retriever.hpp>
 
 #include <service/controller.hpp>
 #include <service/has_services.hpp>
-#include <service/notifier.hpp>
 
 namespace sight::module::io::dimse
 {
@@ -63,10 +60,22 @@ namespace sight::module::io::dimse
  */
 class series_puller final : public service::controller,
                             public service::has_services,
-                            private service::notifier,
-                            public core::progress::has_monitors
+                            public core::notification::has_monitors
 {
 public:
+
+    struct signals
+    {
+        using progress_started_t = core::com::signal<void ()>;
+        using progress_stopped_t = core::com::signal<void ()>;
+        static inline const signal_key_t STARTED_PROGRESS = "progress_started";
+        static inline const signal_key_t STOPPED_PROGRESS = "progress_stopped";
+    };
+
+    struct slots
+    {
+        static inline const slot_key_t REMOVE_SERIES = "removeSeries";
+    };
 
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(series_puller, sight::service::controller);
@@ -78,6 +87,14 @@ public:
     ~series_puller() noexcept override = default;
 
 protected:
+
+    /**
+     * @brief Proposals to connect service slots to associated object signals.
+     * @return A map of each proposed connection.
+     *
+     * Connects data::series_set::signals::REMOVED_OBJECTS of s_SERIES_SET_INOUT to REMOVE_SERIES (removeSeries)
+     */
+    connections_t auto_connections() const override;
 
     /// Configures the service.
     void configuring() override;
@@ -93,18 +110,8 @@ protected:
 
 private:
 
-    /**
-     * @brief Proposals to connect service slots to associated object signals.
-     * @return A map of each proposed connection.
-     *
-     * Connects data::series_set::REMOVED_OBJECTS_SIG of s_SERIES_SET_INOUT to REMOVE_SERIES_SLOT (removeSeries)
-     */
-    connections_t auto_connections() const override;
-
-    using dicom_series_container_t  = data::series_set::container_t;
-    using read_dicom_slot_t         = core::com::slot<void (dicom_series_container_t)>;
-    using progress_started_signal_t = core::com::signal<void ()>;
-    using progress_stopped_signal_t = core::com::signal<void ()>;
+    using dicom_series_container_t = data::series_set::container_t;
+    using read_dicom_slot_t        = core::com::slot<void (dicom_series_container_t)>;
 
     /// Pulls series from the PACS.
     void pull_series();
@@ -132,12 +139,6 @@ private:
 
     /// Contains the series_set where the DICOM reader sets its output.
     data::series_set::sptr m_series_set {nullptr};
-
-    /// Contains the signal emitted when the progress bar is started.
-    progress_started_signal_t::sptr m_sig_progress_started {nullptr};
-
-    /// Contains the signal emitted when the progress bar is stopped.
-    progress_stopped_signal_t::sptr m_sig_progress_stopped {nullptr};
 
     /// Stores local series.
     std::set<std::string> m_local_series;

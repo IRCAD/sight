@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,7 @@
 
 #pragma once
 
-#include "core/base.hpp"
-#include "core/clock.hpp"
+#include "base_object.hpp"
 
 namespace sight::core
 {
@@ -46,8 +45,7 @@ public:
      * @name Constructor/Destructor
      * @{ */
 
-    logic_stamp()
-    = default;
+    logic_stamp() = default;
 
     /**  @} */
 
@@ -59,7 +57,7 @@ public:
     /**
      * @return LogicStamp's current value
      */
-    logic_stamp_type get_logic_stamp() const
+    [[nodiscard]] logic_stamp_type get_logic_stamp() const
     {
         return this->m_modified_logical_time;
     }
@@ -87,7 +85,7 @@ public:
     /**
      * @brief Cast operator for LogicStamp.
      */
-    operator logic_stamp_type() const
+    operator logic_stamp_type() const //NOLINT(google-explicit-constructor,hicpp-explicit-conversions)
     {
         return this->m_modified_logical_time;
     }

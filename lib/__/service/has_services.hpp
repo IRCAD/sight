@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,6 +44,9 @@ public:
 
     using service_vector_t = std::vector<std::weak_ptr<service::base> >;
 
+    /// Destructor
+    SIGHT_SERVICE_API virtual ~has_services() noexcept;
+
     /**
      * @brief Get all subservices linked to this service
      * @return The vector of linked services
@@ -54,22 +57,19 @@ public:
      * @brief Return a specific registered service
      * @param[in] _id Identifier of the service
      */
-    [[nodiscard]] SIGHT_SERVICE_API CSPTR(service::base) get_registered_service(const core::id::type& _id) const;
+    [[nodiscard]] SIGHT_SERVICE_API sight::csptr<service::base> get_registered_service(const core::id::type& _id) const;
 
 protected:
 
     /// Constructor
     SIGHT_SERVICE_API has_services() noexcept;
 
-    /// Destructor
-    SIGHT_SERVICE_API virtual ~has_services() noexcept;
-
     /**
      * @brief Register a new service linked to this service
      * @param[in] _impl_type Type of the service
      * @param[in] _id Optional identifier of the service
      */
-    SIGHT_SERVICE_API SPTR(service::base) register_service(
+    SIGHT_SERVICE_API sight::sptr<service::base> register_service(
         const std::string& _impl_type,
         const std::string& _id = ""
     );
@@ -80,7 +80,7 @@ protected:
      * @param[in] _id Optional identifier of the service
      */
     template<class T>
-    SPTR(T) register_service(const std::string& _impl_type, const std::string& _id = "");
+    sight::sptr<T> register_service(const std::string& _impl_type, const std::string& _id = "");
 
     /**
      * @brief Unregister a specific service
@@ -116,7 +116,7 @@ inline const has_services::service_vector_t& has_services::get_registered_servic
 //------------------------------------------------------------------------------
 
 template<class T>
-SPTR(T) has_services::register_service(const std::string& _impl_type, const std::string& _id)
+sight::sptr<T> has_services::register_service(const std::string& _impl_type, const std::string& _id)
 {
     auto srv = service::add<T>(_impl_type, _id);
     m_sub_services.push_back(srv);

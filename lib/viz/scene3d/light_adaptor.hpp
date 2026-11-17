@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -63,7 +63,7 @@ public:
     {
     public:
 
-        registry(std::string _functor_key)
+        explicit registry(std::string _functor_key)
         {
             viz::scene3d::registry::get_light_registry()->add_factory(
                 _functor_key,
@@ -102,9 +102,9 @@ public:
 
     /**
      * @brief Destroys a light adaptor.
-     * @param _light_manager the light adaptor to unregister.
+     * @param _light_adaptor the light adaptor to unregister.
      */
-    SIGHT_VIZ_SCENE3D_API static void destroy_light_adaptor(light_adaptor::sptr _light_manager);
+    SIGHT_VIZ_SCENE3D_API static void destroy_light_adaptor(light_adaptor::sptr _light_adaptor);
 
     /// Does nothing.
     SIGHT_VIZ_SCENE3D_API light_adaptor();
@@ -209,11 +209,6 @@ public:
      * @return True if the visual feedback is activated.
      */
     SIGHT_VIZ_SCENE3D_API virtual bool is_visual_feedback_on() const = 0;
-
-protected:
-
-    data::ptr<data::color, data::access::inout> m_diffuse {this, "diffuseColor"};
-    data::ptr<data::color, data::access::inout> m_specular {this, "specularColor"};
 };
 
 } // namespace sight::viz::scene3d

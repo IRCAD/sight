@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,14 +20,13 @@
  *
  ***********************************************************************/
 
-#include "transfer_function_test.hpp"
-
 #include <data/transfer_function.hpp>
 
 #include <io/vtk/helper/transfer_function.hpp>
 
 #include <doctest/doctest.h>
 
+#include <array>
 #include <cmath>
 
 TEST_SUITE("sight::io::vtk::transfer_function")

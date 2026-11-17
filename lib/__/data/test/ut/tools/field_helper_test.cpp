@@ -20,21 +20,16 @@
  *
  ***********************************************************************/
 
-#include <core/com/signal.hpp>
-#include <core/com/signal.hxx>
-#include <core/com/slot.hpp>
-#include <core/com/slot.hxx>
-
 #include <data/helper/field.hpp>
 #include <data/string.hpp>
 
 #include <doctest/doctest.h>
 
-TEST_SUITE("sight::data::tools::ut")
+TEST_SUITE("sight::data::tools::field_helper")
 {
 //------------------------------------------------------------------------------
 
-    TEST_CASE("test_helper")
+    TEST_CASE("helper")
     {
         const std::string field_i_d1 = "FIELD_ID1";
         const std::string field_i_d2 = "FIELD_ID2";
@@ -67,7 +62,7 @@ TEST_SUITE("sight::data::tools::ut")
 
         auto slot_added = sight::core::com::new_slot(fn_add);
         slot_added->set_worker(worker);
-        auto sig_added = obj->signal<sight::data::object::added_fields_signal_t>(sight::data::object::ADDED_FIELDS_SIG);
+        auto sig_added = obj->signal<sight::data::signals::added_fields_t>(sight::data::signals::ADDED_FIELDS);
         sig_added->connect(slot_added);
 
         unsigned int num_removed_notif = 0;
@@ -86,7 +81,7 @@ TEST_SUITE("sight::data::tools::ut")
         auto slot_removed = sight::core::com::new_slot(fn_remove);
         slot_removed->set_worker(worker);
         auto sig_removed =
-            obj->signal<sight::data::object::removed_fields_signal_t>(sight::data::object::REMOVED_FIELDS_SIG);
+            obj->signal<sight::data::signals::removed_fields_t>(sight::data::signals::REMOVED_FIELDS);
         sig_removed->connect(slot_removed);
 
         unsigned int num_changed_notif = 0;
@@ -107,7 +102,7 @@ TEST_SUITE("sight::data::tools::ut")
         auto slot_changed = sight::core::com::new_slot(fn_change);
         slot_changed->set_worker(worker);
         auto sig_changed =
-            obj->signal<sight::data::object::changed_fields_signal_t>(sight::data::object::CHANGED_FIELDS_SIG);
+            obj->signal<sight::data::signals::changed_fields_t>(sight::data::signals::CHANGED_FIELDS);
         sig_changed->connect(slot_changed);
 
         auto clear_arrays = [&]()
@@ -261,4 +256,4 @@ TEST_SUITE("sight::data::tools::ut")
     }
 
 //------------------------------------------------------------------------------
-} // TEST_SUITE("sight::data::tools::ut")
+} // TEST_SUITE("sight::data::tools")

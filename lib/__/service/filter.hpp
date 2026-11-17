@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2025 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,7 +35,8 @@ namespace sight::service
  * @brief   This interface defines operator service API.
 
  * @section Signals Signals
- * - \b computed() : Emitted when something was computed.
+ * - \b succeeded() : Emitted when the operation succeeded.
+ * - \b failed() : Emitted when the operation failed.
  */
 class SIGHT_SERVICE_CLASS_API filter : public service::base
 {
@@ -46,13 +47,12 @@ public:
     struct signals
     {
         using computed_t = core::com::signal<void ()>;
-        static inline const core::com::signals::key_t COMPUTED = "computed";
+        static inline const signal_key_t SUCCEEDED = "succeeded";
+        static inline const signal_key_t FAILED    = "failed";
     };
 
-protected:
-
     /// filter constructor.
-    SIGHT_SERVICE_API filter(core::com::signals& _signals);
+    explicit SIGHT_SERVICE_API filter(core::com::signals& _signals);
 
     /// filter destructor.
     SIGHT_SERVICE_API ~filter() override = default;

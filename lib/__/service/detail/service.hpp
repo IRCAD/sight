@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2025 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include <sight/service/config.hpp>
 
 #include "service/base.hpp"
 #include "service/detail/service_connection.hpp"
@@ -50,7 +48,7 @@ public:
     using config_t        = sight::service::config_t;
     using packaged_task_t = std::packaged_task<void ()>;
 
-    service(sight::service::base& _service);
+    explicit service(sight::service::base& _service);
     ~service();
 
     /**
@@ -61,7 +59,7 @@ public:
     void set_config(const config_t& _config);
 
     /// Returns the service configuration
-    const sight::service::config_t& get_config() const;
+    [[nodiscard]] const sight::service::config_t& get_config() const;
 
     // Configures the service
     void configure();
@@ -85,10 +83,14 @@ public:
     void auto_disconnect();
 
     /// Returns a boolean to indicate if the service is autoconnected
-    bool is_auto_connected() const;
+    [[nodiscard]] bool is_auto_connected() const;
 
     /// Returns a boolean to indicate if the object at the given key is optional
-    bool is_key_optional(const std::string& _key) const;
+    [[nodiscard]] bool is_key_optional(const std::string& _key) const;
+
+    /// Builds the inputs and inouts declared with a literal value instead of an object uid.
+    /// Such objects are not created by the application configuration, so the service owns them, like the properties.
+    void create_value_objects();
 
     /// Connections with data and other services, connected at start, and disconnected at stop
     service_connection m_connections;
@@ -97,7 +99,7 @@ public:
     config_t m_configuration;
 
     /// Associated worker
-    SPTR(core::thread::worker) m_worker;
+    sight::sptr<core::thread::worker> m_worker;
 
     /**
      * @brief Defines the current global status of the service.
@@ -123,9 +125,10 @@ public:
     /// Reference to the service
     sight::service::base& m_service;
 
-    /// List of created properties during configuring in order to keep them alive
-    using properties_t = std::vector<sight::data::object::sptr>;
-    properties_t m_created_properties;
+    /// List of objects created during configuring, in order to keep them alive. This holds the properties as well as
+    /// the inputs and inouts declared with a literal value instead of an object uid.
+    using created_objects_t = std::vector<sight::data::object::sptr>;
+    created_objects_t m_created_objects;
 
     /// Tells if the service is auto-connected or not. Could be reevaluated but normally safe to store.
     bool m_auto_connected {false};

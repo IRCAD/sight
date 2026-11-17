@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #include "test_service.hpp"
 
-#include <core/com/slots.hxx>
-
 #include <data/object.hpp>
 
 #include <service/macros.hpp>
@@ -36,7 +34,12 @@ SIGHT_REGISTER_SERVICE(sight::service::ut::test_srv, sight::service::ut::test2_i
 SIGHT_REGISTER_SERVICE(sight::service::ut::test_srv, sight::service::ut::test1_input1_opt_input1_opt_in_out);
 SIGHT_REGISTER_SERVICE(sight::service::ut::test_srv, sight::service::ut::test3_inouts_v2);
 SIGHT_REGISTER_SERVICE(sight::service::base, sight::service::ut::test_service_with_data);
+SIGHT_REGISTER_SERVICE(sight::service::base, sight::service::ut::test_parallel_groups_1);
+SIGHT_REGISTER_SERVICE(sight::service::base, sight::service::ut::test_parallel_groups_2);
+SIGHT_REGISTER_SERVICE(sight::service::base, sight::service::ut::test_optional_group);
 SIGHT_REGISTER_SERVICE(sight::service::base, sight::service::ut::test1_property);
+SIGHT_REGISTER_SERVICE(sight::service::base, sight::service::ut::test1_value);
+SIGHT_REGISTER_SERVICE(sight::service::base, sight::service::ut::test1_path_property);
 
 namespace sight::service::ut
 {

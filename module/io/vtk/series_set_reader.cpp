@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,18 +22,12 @@
 
 #include "module/io/vtk/series_set_reader.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/location/single_folder.hpp>
-#include <core/progress/observer.hpp>
-
 #include <data/series_set.hpp>
 
 #include <io/vtk/series_set_reader.hpp>
 
 #include <ui/__/cursor.hpp>
-#include <ui/__/dialog/location.hpp>
 #include <ui/__/dialog/message.hpp>
-#include <ui/__/dialog/progress.hpp>
 
 #include <filesystem>
 
@@ -56,42 +50,19 @@ sight::io::service::path_type_t series_set_reader::get_path_type() const
 
 //------------------------------------------------------------------------------
 
-void series_set_reader::open_location_dialog()
+std::vector<std::pair<std::string, std::string> > series_set_reader::get_supported_extensions() const
 {
-    static auto default_directory = std::make_shared<core::location::single_folder>();
-
-    sight::ui::dialog::location dialog_file;
-    dialog_file.set_default_location(default_directory);
-    dialog_file.set_type(ui::dialog::location::multi_files);
-    dialog_file.set_title(*m_window_title);
-    dialog_file.add_filter("All supported files", "*.vtk *.vtp *.vti *.mhd *.vtu *.obj *.ply *.stl");
-    dialog_file.add_filter("MetaImage files", "*.mhd");
-    dialog_file.add_filter("OBJ Files(.obj)", "*.obj");
-    dialog_file.add_filter("PLY Files(.ply)", "*.ply");
-    dialog_file.add_filter("STL Files(.stl)", "*.stl");
-    dialog_file.add_filter("VTI image files", "*.vti");
-    dialog_file.add_filter("VTK Legacy Files(.vtk)", "*.vtk");
-    dialog_file.add_filter("VTK Polydata Files(.vtp)", "*.vtp");
-    dialog_file.add_filter("VTU image files", "*.vtu");
-    dialog_file.set_option(ui::dialog::location::read);
-    dialog_file.set_option(ui::dialog::location::file_must_exist);
-
-    auto result = std::dynamic_pointer_cast<core::location::multiple_files>(dialog_file.show());
-    if(result)
-    {
-        const std::vector<std::filesystem::path> paths = result->get_files();
-        if(!paths.empty())
-        {
-            default_directory->set_folder(paths[0].parent_path());
-            dialog_file.save_default_location(default_directory);
-        }
-
-        this->set_files(paths);
-    }
-    else
-    {
-        this->clear_locations();
-    }
+    return {
+        {"All supported files", "*.mhd *.obj *.ply *.stl *.vti *.vtk *.vtp *.vtu"},
+        {"MetaImage files", "*.mhd"},
+        {"OBJ Files(.obj)", "*.obj"},
+        {"PLY Files(.ply)", "*.ply"},
+        {"STL Files(.stl)", "*.stl"},
+        {"VTI image files", "*.vti"},
+        {"VTK Legacy Files(.vtk)", "*.vtk"},
+        {"VTK Polydata Files(.vtp)", "*.vtp"},
+        {"VTU image files", "*.vtu"}
+    };
 }
 
 //------------------------------------------------------------------------------
@@ -111,6 +82,11 @@ void series_set_reader::stopping()
 void series_set_reader::configuring()
 {
     sight::io::service::reader::configuring();
+
+    if(const auto config = this->get_config().get_child_optional("config.<xmlattr>"); config)
+    {
+        m_append = config->get("append", false);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -133,8 +109,7 @@ void series_set_reader::load_series_set(
     reader->set_object(_series_set);
     reader->set_files(_vtk_files);
 
-    auto observer = std::make_shared<core::progress::observer>("Reading series set from vtk files");
-    this->async_emit(has_monitors::signals::MONITOR_CREATED, observer->get_sptr());
+    auto observer = this->observe("Reading series set from vtk files");
 
     try
     {
@@ -173,30 +148,43 @@ void series_set_reader::updating()
     if(this->has_location_defined())
     {
         // Retrieve dataStruct associated with this service
-        const auto locked     = m_data.lock();
-        const auto series_set = std::dynamic_pointer_cast<data::series_set>(locked.get_shared());
-
-        SIGHT_ASSERT(
-            "The object is not a '"
-            + data::series_set::classname()
-            + "' or '"
-            + sight::io::service::DATA_KEY
-            + "' is not correctly set.",
-            series_set
-        );
+        const auto locked = m_data.lock();
 
         auto local_series_set = std::make_shared<data::series_set>();
 
         sight::ui::busy_cursor cursor;
-
         this->load_series_set(this->get_files(), local_series_set);
 
         if(!m_read_failed)
         {
+            const auto series_set = std::dynamic_pointer_cast<data::series_set>(locked.get_shared());
+
+            SIGHT_ASSERT(
+                "The object is not a '"
+                + data::series_set::classname()
+                + "' or '"
+                + sight::io::service::READER_DATA_KEY
+                + "' is not correctly set.",
+                series_set
+            );
             const auto scoped_emitter = series_set->scoped_emit();
 
-            series_set->clear();
-            series_set->shallow_copy(local_series_set);
+            if(m_append)
+            {
+                const std::size_t duplicate_count = series_set->append_unique(*local_series_set);
+                if(duplicate_count > 0)
+                {
+                    this->warn(
+                        duplicate_count == 1
+                        ? "This mesh or image is already loaded."
+                        : std::to_string(duplicate_count) + " meshes or images are already loaded."
+                    );
+                }
+            }
+            else
+            {
+                series_set->shallow_copy(local_series_set);
+            }
         }
     }
 }

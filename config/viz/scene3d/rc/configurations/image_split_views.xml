@@ -3,31 +3,46 @@
     <parameters>
         <object uid="model_series" type="sight::data::model_series" deferred="true" />
         <object uid="image" type="sight::data::image_series" deferred="true" />
-        <object uid="volume_tf" type="sight::data::transfer_function" />
-        <object uid="extruded_model_series" type="sight::data::model_series" />
+        <object uid="series_set" type="sight::data::series_set" />
+        <object uid="volume_tf" type="sight::data::transfer_function" deferred="true" />
+        <object uid="image_transfer_functions" type="sight::data::map" optional="true" />
+        <object uid="extruded_meshes" type="sight::data::model_series" />
+        <object uid="extruded_meshes_by_image" type="sight::data::map" optional="true" />
 
         <object uid="vr_visibility" type="sight::data::boolean" />
         <object uid="negato_visibility" type="sight::data::boolean" />
         <object uid="model_visibility" type="sight::data::boolean" />
         <object uid="axis_visibility" type="sight::data::boolean" />
+        <object uid="volume_parameters" type="sight::data::map" />
+        <object uid="negato_3d_transparency" type="sight::data::real" optional="true" value="0" />
+        <object uid="flythrough_camera_distance" type="sight::data::real" />
+        <object uid="flythrough_camera_speed" type="sight::data::integer" />
+        <object uid="flythrough_camera_direction" type="sight::data::integer" />
 
         <param name="WID_PARENT" />
+        <param name="flythrough_path_group" default="Path" />
+        <param name="follow_view_axes" default="false" />
 
-        <channel name="vr_bool_param" />
-        <channel name="vr_int_param" />
-        <channel name="vr_double_param" />
-        <channel name="box_widget_visibility" />
         <channel name="box_widget_reset" />
         <channel name="shape_extruder_enable_tool" />
         <channel name="shape_extruder_tool_disabled" />
         <channel name="shape_extruder_undo" />
         <channel name="shape_extruder_reset" />
         <channel name="world_coords_landmarks" />
-        <channel name="negato_3d_transparency" />
+        <channel name="mesh_activation" optional="true" />
+        <channel name="volume_activation" optional="true" />
+        <channel name="image_visibility" />
         <channel name="ruler_activation" />
         <channel name="ruler_deactivation" />
+        <channel name="flythrough_path_activation" />
+        <channel name="flythrough_path_clear" />
+        <channel name="flythrough_path_mode_changed" />
+        <channel name="flythrough_camera_play" />
+        <channel name="flythrough_camera_pause" />
+        <channel name="flythrough_camera_interaction" optional="true" />
         <channel name="landmarks_edit_mode" />
         <channel name="landmarks_group_selected" />
+        <channel name="flythrough_path_points_available" />
         <channel name="remove_all_landmarks" />
         <channel name="remove_all_rulers" />
         <channel name="visibility_rulers" />
@@ -39,10 +54,10 @@
 
         <service uid="main_view" type="sight::module::ui::view">
             <gui>
-                <layout type="sight::ui::layout::line">
+                <layout type="sight::ui::layout::line" spacing="2">
                     <orientation value="vertical" />
-                    <view proportion="0" spacing="2" />
-                    <view proportion="0" spacing="2" />
+                    <view proportion="0" />
+                    <view proportion="0" />
                 </layout>
             </gui>
             <registry>
@@ -54,24 +69,24 @@
 
         <service uid="top_scenes_view" type="sight::module::ui::view">
             <gui>
-                <layout type="sight::ui::layout::line">
+                <layout type="sight::ui::layout::line" spacing="2">
                     <orientation value="horizontal" />
-                    <view proportion="1" minWidth="0" visible="true" />
-                    <view proportion="1" minWidth="0" visible="false" spacing="2" />
+                    <view proportion="1" min_width="0" visible="false" />
+                    <view proportion="1" min_width="0" visible="true" />
                 </layout>
             </gui>
             <registry>
-                <view wid="main_scene_view" />
                 <view wid="axial_scene_view" />
+                <view wid="main_scene_view" />
             </registry>
         </service>
 
         <service uid="bottom_scenes_view" type="sight::module::ui::view">
             <gui>
-                <layout type="sight::ui::layout::line">
+                <layout type="sight::ui::layout::line" spacing="2">
                     <orientation value="horizontal" />
-                    <view proportion="1" minWidth="0" visible="false" />
-                    <view proportion="1" minWidth="0" visible="false" spacing="2" />
+                    <view proportion="1" min_width="0" visible="false" />
+                    <view proportion="1" min_width="0" visible="false" />
                 </layout>
             </gui>
             <registry>
@@ -83,37 +98,50 @@
         <!-- ******************************* Begin 3D scene ******************************* -->
 
         <service uid="main_scene_cfg" type="sight::app::config_launcher">
-            <properties config="sight::config::viz::scene3d::volumeRendering" />
-            <inout group="object">
-                <key name="model_series" uid="${model_series}" optional="true" />
-                <key name="image" uid="${image}" optional="true" />
-                <key name="volume_tf" uid="${volume_tf}" />
-                <key name="extruded_model_series" uid="${extruded_model_series}" />
-                <key name="vr_visibility" uid="${vr_visibility}" />
-                <key name="negato_visibility" uid="${negato_visibility}" />
-                <key name="model_visibility" uid="${model_visibility}" />
-                <key name="axis_visibility" uid="${axis_visibility}" />
-            </inout>
+            <config id="sight::config::viz::scene3d::volumeRendering" />
+            <object name="model_series" uid="${model_series}" optional="true" />
+            <object name="image" uid="${image}" optional="true" />
+            <object name="series_set" uid="${series_set}" />
+            <object name="volume_tf" uid="${volume_tf}" optional="true" />
+            <object name="image_transfer_functions" uid="${image_transfer_functions}" optional="true" />
+            <object name="extruded_meshes" uid="${extruded_meshes}" />
+            <object name="extruded_meshes_by_image" uid="${extruded_meshes_by_image}" optional="true" />
+            <object name="vr_visibility" uid="${vr_visibility}" />
+            <object name="negato_visibility" uid="${negato_visibility}" />
+            <object name="model_visibility" uid="${model_visibility}" />
+            <object name="axis_visibility" uid="${axis_visibility}" />
+            <object name="volume_parameters" uid="${volume_parameters}" />
+            <object name="negato_3d_transparency" uid="${negato_3d_transparency}" />
+            <object name="flythrough_camera_distance" uid="${flythrough_camera_distance}" />
+            <object name="flythrough_camera_speed" uid="${flythrough_camera_speed}" />
+            <object name="flythrough_camera_direction" uid="${flythrough_camera_direction}" />
             <param name="WID_PARENT" value="main_scene_view" />
+            <param name="flythrough_path_group" value="${flythrough_path_group}" />
+            <param name="follow_view_axes" value="${follow_view_axes}" />
             <param name="maximized" value="true" />
             <param name="restored" value="false" />
 
             <channel name="toggle_view_visibility" uid="toggle_scene_3d_visibility" />
-            <channel name="vr_bool_param" uid="${vr_bool_param}" />
-            <channel name="vr_int_param" uid="${vr_int_param}" />
-            <channel name="vr_double_param" uid="${vr_double_param}" />
-            <channel name="box_widget_visibility" uid="${box_widget_visibility}" />
             <channel name="box_widget_reset" uid="${box_widget_reset}" />
             <channel name="shape_extruder_enable_tool" uid="${shape_extruder_enable_tool}" />
             <channel name="shape_extruder_tool_disabled" uid="${shape_extruder_tool_disabled}" />
             <channel name="shape_extruder_undo" uid="${shape_extruder_undo}" />
             <channel name="shape_extruder_reset" uid="${shape_extruder_reset}" />
             <channel name="world_coords_landmarks" uid="${world_coords_landmarks}" />
-            <channel name="negato_3d_transparency" uid="${negato_3d_transparency}" />
+            <channel name="mesh_activation" uid="${mesh_activation}" />
+            <channel name="volume_activation" uid="${volume_activation}" />
+            <channel name="image_visibility" uid="${image_visibility}" />
             <channel name="ruler_activation" uid="${ruler_activation}" />
             <channel name="ruler_deactivation" uid="${ruler_deactivation}" />
+            <channel name="flythrough_path_activation" uid="${flythrough_path_activation}" />
+            <channel name="flythrough_path_clear" uid="${flythrough_path_clear}" />
+            <channel name="flythrough_path_mode_changed" uid="${flythrough_path_mode_changed}" />
+            <channel name="flythrough_camera_play" uid="${flythrough_camera_play}" />
+            <channel name="flythrough_camera_pause" uid="${flythrough_camera_pause}" />
+            <channel name="flythrough_camera_interaction" uid="${flythrough_camera_interaction}" />
             <channel name="landmarks_edit_mode" uid="${landmarks_edit_mode}" />
             <channel name="landmarks_group_selected" uid="${landmarks_group_selected}" />
+            <channel name="flythrough_path_points_available" uid="${flythrough_path_points_available}" />
             <channel name="remove_all_landmarks" uid="${remove_all_landmarks}" />
             <channel name="remove_all_rulers" uid="${remove_all_rulers}" />
             <channel name="visibility_rulers" uid="${visibility_rulers}" />
@@ -123,18 +151,20 @@
         <!-- ************************************* 2D Negato views ************************************ -->
 
         <service uid="axial_negato_cfg" type="sight::app::config_launcher">
-            <properties config="sight::config::viz::scene3d::negato2d" />
-            <inout group="object">
-                <key name="image" uid="${image}" optional="true" />
-                <key name="transfer_function" uid="${volume_tf}" />
-                <key name="fiducial_size" uid="${fiducial_size}" />
-            </inout>
+            <config id="sight::config::viz::scene3d::negato2d" />
+            <object name="image" uid="${image}" optional="true" />
+            <object name="series_set" uid="${series_set}" />
+            <object name="transfer_function" uid="${volume_tf}" optional="true" />
+            <object name="image_transfer_functions" uid="${image_transfer_functions}" optional="true" />
+            <object name="fiducial_size" uid="${fiducial_size}" />
             <param name="WID_PARENT" value="axial_scene_view" />
             <param name="slice_index" value="axial" />
             <channel name="world_coords_landmarks" uid="world_coords_landmarks" />
             <channel name="toggle_view_visibility" uid="toggle_axial_visibility" />
+            <channel name="image_visibility" uid="${image_visibility}" />
             <channel name="ruler_activation" uid="${ruler_activation}" />
             <channel name="ruler_deactivation" uid="${ruler_deactivation}" />
+            <channel name="flythrough_path_activation" uid="${flythrough_path_activation}" />
             <channel name="visibility_rulers" uid="${visibility_rulers}" />
             <channel name="landmarks_edit_mode" uid="${landmarks_edit_mode}" />
             <channel name="landmarks_group_selected" uid="${landmarks_group_selected}" />
@@ -143,18 +173,20 @@
         </service>
 
         <service uid="sagittal_negato_cfg" type="sight::app::config_launcher">
-            <properties config="sight::config::viz::scene3d::negato2d" />
-            <inout group="object">
-                <key name="image" uid="${image}" optional="true" />
-                <key name="transfer_function" uid="${volume_tf}" />
-                <key name="fiducial_size" uid="${fiducial_size}" />
-            </inout>
+            <config id="sight::config::viz::scene3d::negato2d" />
+            <object name="image" uid="${image}" optional="true" />
+            <object name="series_set" uid="${series_set}" />
+            <object name="transfer_function" uid="${volume_tf}" optional="true" />
+            <object name="image_transfer_functions" uid="${image_transfer_functions}" optional="true" />
+            <object name="fiducial_size" uid="${fiducial_size}" />
             <param name="WID_PARENT" value="sagittal_scene_view" />
             <param name="slice_index" value="sagittal" />
             <channel name="world_coords_landmarks" uid="world_coords_landmarks" />
             <channel name="toggle_view_visibility" uid="toggle_sagittal_visibility" />
+            <channel name="image_visibility" uid="${image_visibility}" />
             <channel name="ruler_activation" uid="${ruler_activation}" />
             <channel name="ruler_deactivation" uid="${ruler_deactivation}" />
+            <channel name="flythrough_path_activation" uid="${flythrough_path_activation}" />
             <channel name="visibility_rulers" uid="${visibility_rulers}" />
             <channel name="landmarks_edit_mode" uid="${landmarks_edit_mode}" />
             <channel name="landmarks_group_selected" uid="${landmarks_group_selected}" />
@@ -163,18 +195,20 @@
         </service>
 
         <service uid="frontal_negato_cfg" type="sight::app::config_launcher">
-            <properties config="sight::config::viz::scene3d::negato2d" />
-            <inout group="object">
-                <key name="image" uid="${image}" optional="true" />
-                <key name="transfer_function" uid="${volume_tf}" />
-                <key name="fiducial_size" uid="${fiducial_size}" />
-            </inout>
+            <config id="sight::config::viz::scene3d::negato2d" />
+            <object name="image" uid="${image}" optional="true" />
+            <object name="series_set" uid="${series_set}" />
+            <object name="transfer_function" uid="${volume_tf}" optional="true" />
+            <object name="image_transfer_functions" uid="${image_transfer_functions}" optional="true" />
+            <object name="fiducial_size" uid="${fiducial_size}" />
             <param name="WID_PARENT" value="frontal_scene_view" />
             <param name="slice_index" value="frontal" />
             <channel name="world_coords_landmarks" uid="world_coords_landmarks" />
             <channel name="toggle_view_visibility" uid="toggle_frontal_visibility" />
+            <channel name="image_visibility" uid="${image_visibility}" />
             <channel name="ruler_activation" uid="${ruler_activation}" />
             <channel name="ruler_deactivation" uid="${ruler_deactivation}" />
+            <channel name="flythrough_path_activation" uid="${flythrough_path_activation}" />
             <channel name="visibility_rulers" uid="${visibility_rulers}" />
             <channel name="landmarks_edit_mode" uid="${landmarks_edit_mode}" />
             <channel name="landmarks_group_selected" uid="${landmarks_group_selected}" />

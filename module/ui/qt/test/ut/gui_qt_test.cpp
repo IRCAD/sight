@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
- * Copyright (C) 2012-2020 IHU Strasbourg
+ * Copyright (C) 2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,103 +19,127 @@
  *
  ***********************************************************************/
 
-#include "gui_qt_test.hpp"
+#include <ui/test/gui_fixture.hpp>
 
-#include <data/string.hpp>
+#include <doctest/doctest.h>
 
-#include <service/op.hpp>
-
-#include <QApplication>
 #include <QMainWindow>
+#include <QWidget>
 
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::ui::qt::ut::gui_qt_test);
+#include <core/thread/worker.hpp>
 
-namespace sight::module::ui::qt::ut
+namespace
 {
 
-//------------------------------------------------------------------------------
+constexpr auto RENDERED_WIDGET_NAME = "gui_qt_test_rendered_widget";
 
-void gui_qt_test::setUp()
+class paint_counter final : public QWidget
 {
-    // Set up context before running a test.
-}
+public:
 
-//------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------
 
-void gui_qt_test::tearDown()
+    [[nodiscard]] int paint_count() const
+    {
+        return m_paint_count;
+    }
+
+protected:
+
+    //------------------------------------------------------------------------------
+
+    void paintEvent(QPaintEvent* /*_event*/) override
+    {
+        ++m_paint_count;
+    }
+
+private:
+
+    int m_paint_count {0};
+};
+
+} // namespace
+
+TEST_SUITE("sight::module::ui::qt::gui_qt_test")
 {
-    // Clean up after the test run.
-}
+    TEST_CASE_FIXTURE(sight::ui::test::gui_fixture, "default_frame")
+    {
+        test_service(
+            "sight::module::ui::frame",
+            [](const sight::service::base::sptr& _service)
+        {
+            sight::core::thread::get_default_worker()->post_task<void>(
+                [_service]
+            {
+                sight::service::config_t frame_config;
+                frame_config.put("gui.frame.name", "guiQtUnitTest");
+                frame_config.put("gui.frame.min_size.<xmlattr>.width", "800");
+                frame_config.put("gui.frame.min_size.<xmlattr>.height", "600");
 
-//------------------------------------------------------------------------------
+                _service->set_config(frame_config);
+                _service->configure();
+                _service->start().wait();
+            }).get();
 
-#define ASSERT_NOT_NULL(expr) if((expr) == nullptr){throw std::runtime_error(#expr " is null.");}
+            const auto window = sight::ui::test::gui_fixture::find_widget<QMainWindow>("guiQtUnitTest");
 
-//------------------------------------------------------------------------------
+            CHECK(window != nullptr);
+            CHECK_EQ(std::string("guiQtUnitTest"), window->windowTitle().toStdString());
+        });
+    }
 
-void gui_qt_test::test_default_frame()
-{
-    data::string::sptr object = std::make_shared<data::string>();
-
-    service::config_t frame_config;
-
-    frame_config.put("gui.frame.name", "guiQtUnitTest");
-    frame_config.put("gui.frame.min_size.<xmlattr>.width", "800");
-    frame_config.put("gui.frame.min_size.<xmlattr>.height", "600");
-
-    service::base::sptr srv = service::add("sight::module::ui::frame");
-    ASSERT_NOT_NULL(srv);
-
-    srv->set_config(frame_config);
-    srv->configure();
-    srv->start();
-
-    auto* window = qobject_cast<QMainWindow*>(qApp->activeWindow());
-
-    ASSERT_NOT_NULL(qApp);
-    ASSERT_NOT_NULL(qApp->activeWindow());
-    ASSERT_NOT_NULL(window);
-    CPPUNIT_ASSERT_EQUAL(std::string("guiQtUnitTest"), window->windowTitle().toStdString());
-
-    srv->stop();
-    service::unregister_service(srv);
-}
-
-//------------------------------------------------------------------------------
-
-void gui_qt_test::test_fullscreen_frame()
-{
-    data::string::sptr object = std::make_shared<data::string>();
-
-    service::config_t frame_config;
-
-    frame_config.put("gui.frame.name", "gui_qt_test_test_fullscreen_frame");
-    frame_config.put("gui.frame.min_size.<xmlattr>.width", "800");
-    frame_config.put("gui.frame.min_size.<xmlattr>.height", "600");
+    TEST_CASE_FIXTURE(sight::ui::test::gui_fixture, "fullscreen_frame")
+    {
+        test_service(
+            "sight::module::ui::frame",
+            [](const sight::service::base::sptr& _service)
+        {
+            sight::core::thread::get_default_worker()->post_task<void>(
+                [_service]
+            {
+                sight::service::config_t frame_config;
+                frame_config.put("gui.frame.name", "gui_qt_test_test_fullscreen_frame");
+                frame_config.put("gui.frame.min_size.<xmlattr>.width", "800");
+                frame_config.put("gui.frame.min_size.<xmlattr>.height", "600");
 #ifndef _WIN32
-    frame_config.put("gui.frame.style.<xmlattr>.mode", "FULLSCREEN");
+                frame_config.put("gui.frame.style.<xmlattr>.mode", "FULLSCREEN");
 #else
-    frame_config.put("gui.frame.style.<xmlattr>.mode", "FRAMELESS");
+                frame_config.put("gui.frame.style.<xmlattr>.mode", "FRAMELESS");
 #endif
-    frame_config.put("gui.frame.screen.<xmlattr>.index", "0");
+                frame_config.put("gui.frame.screen.<xmlattr>.index", "0");
 
-    service::base::sptr srv = service::add("sight::module::ui::frame");
-    ASSERT_NOT_NULL(srv);
+                _service->set_config(frame_config);
+                _service->configure();
+                _service->start().wait();
+            }).get();
 
-    srv->set_config(frame_config);
-    srv->configure();
-    srv->start();
+            const auto window = sight::ui::test::gui_fixture::find_widget<QMainWindow>(
+                "gui_qt_test_test_fullscreen_frame"
+            );
 
-    auto* window = qobject_cast<QMainWindow*>(qApp->activeWindow());
+            CHECK(window != nullptr);
+            CHECK_EQ(std::string("gui_qt_test_test_fullscreen_frame"), window->windowTitle().toStdString());
+        });
+    }
 
-    ASSERT_NOT_NULL(qApp);
-    ASSERT_NOT_NULL(qApp->activeWindow());
-    ASSERT_NOT_NULL(window);
-    CPPUNIT_ASSERT_EQUAL(std::string("guiQtUnitTest"), window->windowTitle().toStdString());
+    TEST_CASE_FIXTURE(sight::ui::test::gui_fixture, "render_hidden_widget")
+    {
+        test_service(
+            "sight::module::ui::frame",
+            [](const sight::service::base::sptr& /*_service*/)
+        {
+            sight::core::thread::get_default_worker()->post_task<void>(
+                []
+            {
+                // Never shown: it must be painted anyway, and stay hidden.
+                paint_counter widget;
+                widget.setObjectName(RENDERED_WIDGET_NAME);
+                widget.resize(64, 32);
 
-    srv->stop();
-    service::unregister_service(srv);
+                CHECK(sight::ui::test::gui_fixture::render_widget(RENDERED_WIDGET_NAME));
+                CHECK_GT(widget.paint_count(), 0);
+                CHECK_FALSE(widget.isVisible());
+            }).get();
+        });
+    }
 }
-
-} // namespace sight::module::ui::qt::ut

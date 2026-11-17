@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,18 +23,14 @@
 #include "module/io/vtk/model_series_obj_writer.hpp"
 
 #include <core/location/single_folder.hpp>
-#include <core/tools/uuid.hpp>
 
-#include <data/mesh.hpp>
 #include <data/model_series.hpp>
-#include <data/reconstruction.hpp>
 
 #include <io/vtk/model_series_obj_writer.hpp>
 
 #include <ui/__/cursor.hpp>
 #include <ui/__/dialog/location.hpp>
 #include <ui/__/dialog/message.hpp>
-#include <ui/__/dialog/progress.hpp>
 
 #include <filesystem>
 
@@ -59,10 +55,11 @@ sight::io::service::path_type_t model_series_obj_writer::get_path_type() const
 
 void model_series_obj_writer::open_location_dialog()
 {
-    static auto default_directory = std::make_shared<core::location::single_folder>();
+    auto default_directory = std::make_shared<core::location::single_folder>();
 
     sight::ui::dialog::location dialog;
     dialog.set_title(*m_window_title);
+    dialog.set_preferences_key(this->get_classname());
     dialog.set_default_location(default_directory);
     dialog.set_option(ui::dialog::location::write);
     dialog.set_type(ui::dialog::location::folder);
@@ -143,7 +140,7 @@ void model_series_obj_writer::updating()
             "The object is not a '"
             + data::model_series::classname()
             + "' or '"
-            + sight::io::service::DATA_KEY
+            + sight::io::service::WRITER_DATA_KEY
             + "' is not correctly set.",
             model_series
         );
@@ -155,8 +152,10 @@ void model_series_obj_writer::updating()
         sight::ui::cursor cursor;
         cursor.set_cursor(ui::cursor_base::busy);
 
-        auto observer = std::make_shared<core::progress::observer>("Writing models in " + this->get_folder().string());
-        this->async_emit(has_monitors::signals::MONITOR_CREATED, observer->get_sptr());
+        auto observer = this->observe(
+            "Writing models in "
+            + this->get_folder().string()
+        );
 
         try
         {

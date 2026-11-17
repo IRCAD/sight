@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -86,7 +86,11 @@ void validator::initialize_context()
     ); schema_parser_context != nullptr)
     {
         // Set the structured error callback
-        xmlSchemaSetParserStructuredErrors(schema_parser_context.get(), validator::error_handler, this);
+        xmlSchemaSetParserStructuredErrors(
+            schema_parser_context.get(),
+            reinterpret_cast<xmlStructuredErrorFunc>(validator::error_handler),
+            this
+        );
 
         // Load XML schema content
         if(!m_schema)
@@ -105,7 +109,11 @@ void validator::initialize_context()
         )))
         {
             // Set the structured error callback
-            xmlSchemaSetValidStructuredErrors(m_schema_valid_context.get(), validator::error_handler, this);
+            xmlSchemaSetValidStructuredErrors(
+                m_schema_valid_context.get(),
+                reinterpret_cast<xmlStructuredErrorFunc>(validator::error_handler),
+                this
+            );
         }
     }
     else

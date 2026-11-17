@@ -1,4 +1,4 @@
-sight_add_target(io_vtk_ut TYPE DOCTEST)
+sight_add_target(io_vtk_ut TYPE TEST)
 
 # This is required because of VTK-m double alias definition.
 # We should remove this if VTK-m is finally unneeded

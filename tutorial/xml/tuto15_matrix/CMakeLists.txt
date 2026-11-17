@@ -2,18 +2,17 @@ sight_add_target(tuto15_matrix TYPE APP)
 
 add_dependencies(
     tuto15_matrix
-    sightrun
+    data
     module_app
+    module_geometry
+    module_io_matrix
+    module_io_vtk
+    module_service
     module_ui
     module_ui_qt
     module_viz_scene3d
     module_viz_scene3d_qt
-    data
-    module_service
-    module_ui
-    module_io_matrix
-    module_io_vtk
-    module_geometry
+    sightrun
 )
 
 # Allow dark theme via module_ui_qt

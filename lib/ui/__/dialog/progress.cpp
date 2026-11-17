@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,8 +23,6 @@
 #include "ui/__/dialog/progress.hpp"
 
 #include <core/thread/worker.hpp>
-
-#include <functional>
 
 namespace sight::ui::dialog
 {
@@ -101,7 +99,7 @@ void progress::operator()(float _percent, std::string _msg)
 
 //-----------------------------------------------------------------------------
 
-void progress::set_cancel_callback(core::progress::cancel_callback_t _callback)
+void progress::set_cancel_callback(core::notification::cancel_callback_t _callback)
 {
     core::thread::get_default_worker()->post_task<void>(
         [&]

@@ -22,6 +22,21 @@ QFrame
     background: transparent;
 }
 
+QFrame[sight_card_type="image_card"]
+{
+    border: 1px solid rgba(255, 255, 255, 10%);
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 10%);
+}
+
+QLineEdit[sight_card_field="true"],
+QFrame[sight_card_field="true"]
+{
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 10%);
+    padding: 3px;
+}
+
 QDialog
 {
     border: none;
@@ -1377,7 +1392,7 @@ QProgressBar::chunk
 /********************** Notification Popups *****************************/
 /************************************************************************/
 
-#NotificationDialog_Success
+#NotificationDialog_Instruction
 {
     background-color: rgb(119, 183, 103);
     color: rgb(255, 255, 255);
@@ -1386,7 +1401,7 @@ QProgressBar::chunk
     border-radius: 4px;
 }
 
-#NotificationDialog_Failure
+#NotificationDialog_Error
 {
     background-color: rgb(255, 107, 104);
     color: rgb(255, 255, 255);
@@ -1395,9 +1410,18 @@ QProgressBar::chunk
     border-radius: 4px;
 }
 
-#NotificationDialog_Info
+#NotificationDialog_Information
 {
     background-color: rgb(104, 151, 187);
+    color: rgb(255, 255, 255);
+    font-weight: bold;
+    font-size: 16px;
+    border-radius: 4px;
+}
+
+#NotificationDialog_Warning
+{
+    background-color: #D98C22;
     color: rgb(255, 255, 255);
     font-weight: bold;
     font-size: 16px;

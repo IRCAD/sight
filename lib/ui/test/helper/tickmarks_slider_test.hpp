@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -27,8 +27,6 @@
 
 #include <ui/test/tester.hpp>
 
-#include <cppunit/extensions/HelperMacros.h>
-
 #include <QApplication>
 #include <QLabel>
 #include <QSlider>
@@ -40,7 +38,7 @@ class tickmarks_slider_test
 {
 public:
 
-    enum class position
+    enum class position : std::uint8_t
     {
         top,
         right,
@@ -51,13 +49,13 @@ public:
     struct mouse_drag
     {
         mouse_drag(
-            const QPoint& from,
-            const QPoint& to,
-            Qt::MouseButton button
+            const QPoint& _from,
+            const QPoint& _to,
+            Qt::MouseButton _button
         ) :
-            m_from(from),
-            m_to(to),
-            m_button(button)
+            m_from(_from),
+            m_to(_to),
+            m_button(_button)
         {
         }
 
@@ -72,9 +70,14 @@ public:
         tester& _tester,
         const selector& _slider,
         tickmarks_slider_test::position _pos,
-        int = 1
+        int _times = 1
     );
-    SIGHT_UI_TEST_API static  void check_value(tester& _tester, const selector& _slider, int _expected);
+
+    SIGHT_UI_TEST_API static  void check_value(tester& _tester, const selector& _slider, const std::string& _expected);
+
+    SIGHT_UI_TEST_API static void set_current_text(tester& _tester, const selector& _slider, const std::string& _text);
+
+    SIGHT_UI_TEST_API static void set_current_tick(tester& _tester, const selector& _slider, int _tick);
 };
 
-}
+} // namespace sight::ui::test::helper

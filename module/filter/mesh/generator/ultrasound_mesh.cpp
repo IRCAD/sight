@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2025 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,14 +22,9 @@
 
 #include "module/filter/mesh/generator/ultrasound_mesh.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-
 #include <geometry/data/mesh.hpp>
 
 #include <boost/math/constants/constants.hpp>
-
-#include <glm/vec3.hpp>
 
 namespace sight::module::filter::mesh::generator
 {
@@ -41,9 +36,6 @@ static const char* s_angle       = "angle";
 static const char* s_width       = "width";
 static const char* s_delta_depth = "deltaDepth";
 static const char* s_shape       = "shape";
-
-static const core::com::slots::key_t SET_INT_PARAMETER_SLOT  = "set_int_parameter";
-static const core::com::slots::key_t SET_BOOL_PARAMETER_SLOT = "set_bool_parameter";
 
 static const std::string RESOLUTION_X_CONFIG    = "resolutionX";
 static const std::string RESOLUTION_Y_CONFIG    = "resolutionY";
@@ -57,8 +49,8 @@ static const std::string IS_CONVEX_SHAPE_CONFIG = "isConvexShape";
 
 ultrasound_mesh::ultrasound_mesh() noexcept
 {
-    new_slot(SET_INT_PARAMETER_SLOT, &ultrasound_mesh::set_int_parameter, this);
-    new_slot(SET_BOOL_PARAMETER_SLOT, &ultrasound_mesh::set_bool_parameter, this);
+    new_slot(slots::SET_INT_PARAMETER, &ultrasound_mesh::set_int_parameter, this);
+    new_slot(slots::SET_BOOL_PARAMETER, &ultrasound_mesh::set_bool_parameter, this);
 }
 
 // -----------------------------------------------------------------------------
@@ -120,11 +112,11 @@ void ultrasound_mesh::update_mesh_position()
     // compute delta angle
     const double theta_init  = (90. - m_angle / 2.) * boost::math::constants::pi<double>() / 180.;
     const double theta_end   = (90. + m_angle / 2.) * boost::math::constants::pi<double>() / 180.;
-    const double delta_theta = (theta_end - theta_init) / (double(m_resolution_x) - 1.);
+    const double delta_theta = (theta_end - theta_init) / (static_cast<double>(m_resolution_x) - 1.);
 
     // compute delta lengths
-    const double d_depth = m_depth / (double(m_resolution_y) - 1.);
-    const double d_width = m_width / (double(m_resolution_x) - 1.);
+    const double d_depth = m_depth / (static_cast<double>(m_resolution_y) - 1.);
+    const double d_width = m_width / (static_cast<double>(m_resolution_x) - 1.);
 
     const glm::dvec3 center_position = {0., 0., 0.};
     const glm::dvec3 direction       = {0., 1., 0.};
@@ -138,14 +130,14 @@ void ultrasound_mesh::update_mesh_position()
         glm::dvec3 center_live;
         if(m_shape)
         {
-            const double angle_live = theta_init + delta_theta * double(m_resolution_x - width_grid - 1);
+            const double angle_live = theta_init + delta_theta * static_cast<double>(m_resolution_x - width_grid - 1);
             direction_live = std::cos(angle_live) * normal + std::sin(angle_live) * direction;
             center_live    = center_position;
         }
         else
         {
             direction_live = direction;
-            center_live    = center_position + (width_grid * d_width - double(m_width) / 2.F) * normal;
+            center_live    = center_position + (width_grid * d_width - static_cast<double>(m_width) / 2.F) * normal;
         }
 
         for(unsigned int depth_grid = 0 ;
@@ -172,8 +164,8 @@ void ultrasound_mesh::create_quad_mesh(const data::mesh::sptr& _mesh) const
     const std::size_t num_quads        = (width - 1) * (height - 1);
 
     _mesh->resize(
-        data::mesh::size_t(num_points_total),
-        data::mesh::size_t(num_quads),
+        static_cast<data::mesh::size_t>(num_points_total),
+        static_cast<data::mesh::size_t>(num_quads),
         data::mesh::cell_type_t::quad,
         data::mesh::attribute::point_tex_coords
         | data::mesh::attribute::point_normals
@@ -197,8 +189,8 @@ void ultrasound_mesh::create_quad_mesh(const data::mesh::sptr& _mesh) const
             p.y             = *points_in++;
             p.z             = *points_in++;
 
-            tex.u = data::mesh::texcoord_t(i) / static_cast<data::mesh::texcoord_t>(width - 1);
-            tex.v = data::mesh::texcoord_t(j) / static_cast<data::mesh::texcoord_t>(height - 1);
+            tex.u = static_cast<data::mesh::texcoord_t>(i) / static_cast<data::mesh::texcoord_t>(width - 1);
+            tex.v = static_cast<data::mesh::texcoord_t>(j) / static_cast<data::mesh::texcoord_t>(height - 1);
             ++points_itr;
         }
     }
@@ -208,9 +200,9 @@ void ultrasound_mesh::create_quad_mesh(const data::mesh::sptr& _mesh) const
     {
         for(std::size_t j = 0 ; j < height - 1 ; ++j)
         {
-            const auto idx1               = data::mesh::cell_t(j + i * height);
+            const auto idx1               = static_cast<data::mesh::cell_t>(j + i * height);
             const data::mesh::cell_t idx2 = idx1 + 1;
-            const auto idx4               = data::mesh::cell_t(idx1 + height);
+            const auto idx4               = static_cast<data::mesh::cell_t>(idx1 + height);
             const data::mesh::cell_t idx3 = idx4 + 1;
 
             cells_itr->pt[0] = idx1;
@@ -224,9 +216,7 @@ void ultrasound_mesh::create_quad_mesh(const data::mesh::sptr& _mesh) const
 
     geometry::data::mesh::generate_point_normals(_mesh);
 
-    const auto sig = _mesh->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-    core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
-    sig->async_emit();
+    _mesh->async_emit(this, data::signals::MODIFIED);
 }
 
 // -----------------------------------------------------------------------------
@@ -253,10 +243,7 @@ void ultrasound_mesh::update_quad_mesh(const data::mesh::sptr& _mesh)
         }
     }
 
-    const auto sig = _mesh->signal<data::mesh::signal_t>(
-        data::mesh::VERTEX_MODIFIED_SIG
-    );
-    sig->async_emit();
+    _mesh->async_emit(data::mesh::signals::VERTEX_MODIFIED);
 }
 
 // -----------------------------------------------------------------------------

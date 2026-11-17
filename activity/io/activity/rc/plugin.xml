@@ -49,8 +49,7 @@
         </parameters>
         <config>
             <service uid="export_selection" type="sight::module::ui::io::selector">
-                <inout key="data" uid="${series}" />
-                <type mode="writer" />
+                <data write="${series}" />
                 <selection mode="exclude" />
                 <addSelection service="sight::module::io::session::writer" />
             </service>
@@ -66,8 +65,7 @@
         </parameters>
         <config>
             <service uid="exportSelection" type="sight::module::ui::io::selector">
-                <inout key="data" uid="${modelSeries}" />
-                <type mode="writer" />
+                <data write="${modelSeries}" />
                 <selection mode="include" />
                 <addSelection service="sight::module::io::dicom::surface_segmentation_writer" />
             </service>
@@ -82,7 +80,6 @@
         <service>sight::module::ui::io::selector</service>
         <desc>IOSelectorService config for SeriesSet reader</desc>
         <config>
-            <type mode="reader" />
             <selection mode="exclude" />
             <addSelection service="sight::module::io::session::reader" />
             <addSelection service="sight::module::io::matrix::SAttachmentSeriesReader" />
@@ -95,7 +92,6 @@
         <service>sight::module::ui::io::selector</service>
         <desc>Session SeriesSet reader.</desc>
         <config>
-            <type mode="reader" />
             <selection mode="include" />
             <addSelection service="sight::module::io::session::reader" />
             <config id="SightDataConfig" service="sight::module::io::session::reader" />
@@ -108,7 +104,6 @@
         <service>sight::module::ui::io::selector</service>
         <desc>Session SeriesSet writer.</desc>
         <config>
-            <type mode="writer" />
             <selection mode="include" />
             <addSelection service="sight::module::io::session::writer" />
             <config id="SightDataConfig" service="sight::module::io::session::writer" />
@@ -121,7 +116,6 @@
         <service>sight::module::ui::io::selector</service>
         <desc>IOSelectorService config for SeriesSet reader</desc>
         <config>
-            <type mode="reader" />
             <selection mode="exclude" />
             <addSelection service="sight::module::io::matrix::SAttachmentSeriesReader" />
             <config id="SightDataConfig" service="sight::module::io::session::reader" />
@@ -143,7 +137,6 @@
         <service>sight::module::ui::io::selector</service>
         <desc>Activity reader</desc>
         <config>
-            <type mode="reader" />
             <selection mode="include" />
             <addSelection service="sight::module::io::session::reader" />
             <config id="sight::module::io::activity::default_session_reader" service="sight::module::io::session::reader" />
@@ -155,7 +148,6 @@
         <service>sight::module::ui::io::selector</service>
         <desc>Activity writer</desc>
         <config>
-            <type mode="writer" />
             <selection mode="include" />
             <addSelection service="sight::module::io::session::writer" />
             <config id="sight::module::io::activity::default_session_writer" service="sight::module::io::session::writer" />

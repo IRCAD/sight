@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2024 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -49,10 +49,8 @@ namespace sight::module::filter::image
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="sight::module::filter::image::image_extruder">
-        <in key="meshes" uid="..." />
-        <in key="image" uid="..." />
-        <in key="transform" uid="..." />
-        <inout key="mask" uid="..." />
+        <input meshes="${...}" image="${...}" transform="${...}" />
+        <output mask="${...}" />
     </service>
    @endcode
  *
@@ -71,13 +69,31 @@ public:
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(image_extruder, sight::service::filter);
 
+    struct slots
+    {
+        static inline const slot_key_t ADD_RECONSTRUCTIONS = "addReconstructions";
+    };
+
     /// Initializes the slot.
     image_extruder();
 
     /// Destroys the service.
     ~image_extruder() override;
 
-private:
+protected:
+
+    /**
+     * @brief Proposals to connect service slots to associated object signals.
+     * @return A map of each proposed connection.
+     *
+     * Connect data::signals::MODIFIED of s_MESHES_INPUT to service::slots::UPDATE.
+     * Connect data::model_series::signals::RECONSTRUCTIONS_ADDED of s_MESHES_INPUT to ADD_RECONSTRUCTIONS.
+     * Connect data::model_series::signals::RECONSTRUCTIONS_REMOVED of s_MESHES_INPUT to service::slots::UPDATE.
+     * Connect data::signals::MODIFIED of s_TRANSFORM_INPUT to service::slots::UPDATE.
+     * Connect data::signals::MODIFIED of s_IMAGE_INPUT to service::slots::UPDATE.
+     * Connect data::image::signals::BUFFER_MODIFIED of s_IMAGE_INPUT to service::slots::UPDATE.
+     */
+    connections_t auto_connections() const override;
 
     /// Does nothing.
     void configuring() override;
@@ -85,32 +101,21 @@ private:
     /// Starts the service.
     void starting() override;
 
-    /**
-     * @brief Proposals to connect service slots to associated object signals.
-     * @return A map of each proposed connection.
-     *
-     * Connect data::model_series::MODIFIED_SIG of s_MESHES_INPUT to service::slots::UPDATE.
-     * Connect data::model_series::RECONSTRUCTIONS_ADDED_SIG of s_MESHES_INPUT to ADD_RECONSTRUCTIONS_SLOT.
-     * Connect data::model_series::RECONSTRUCTIONS_REMOVED_SIG of s_MESHES_INPUT to service::slots::UPDATE.
-     * Connect data::matrix4::MODIFIED_SIG of s_TRANSFORM_INPUT to service::slots::UPDATE.
-     * Connect data::image::MODIFIED_SIG of s_IMAGE_INPUT to service::slots::UPDATE.
-     * Connect data::image::BUFFER_MODIFIED_SIG of s_IMAGE_INPUT to service::slots::UPDATE.
-     */
-    connections_t auto_connections() const override;
-
     /// Extrudes all mesh of the model series from the image.
     void updating() override;
 
     /// Stops the services.
     void stopping() override;
 
+private:
+
     /// SLOT: called when reconstructions are added to the model series.
     void add_reconstructions(data::model_series::reconstruction_vector_t _reconstructions) const;
 
-    static constexpr std::string_view MESHES_INPUT    = "meshes";
-    static constexpr std::string_view IMAGE_INPUT     = "image";
-    static constexpr std::string_view TRANSFORM_INPUT = "transform";
-    static constexpr std::string_view IMAGE_INOUT     = "mask";
+    static constexpr std::string_view MESHES_INPUT    = "input.meshes";
+    static constexpr std::string_view IMAGE_INPUT     = "input.image";
+    static constexpr std::string_view TRANSFORM_INPUT = "input.transform";
+    static constexpr std::string_view IMAGE_INOUT     = "output.mask";
 
     sight::data::ptr<sight::data::model_series, sight::data::access::in> m_meshes {this, MESHES_INPUT};
     sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, IMAGE_INPUT};

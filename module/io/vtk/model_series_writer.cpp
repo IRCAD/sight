@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,12 +22,11 @@
 
 #include "module/io/vtk/model_series_writer.hpp"
 
-#include <core/com/signal.hxx>
 #include <core/location/single_folder.hpp>
+#include <core/tools/failed.hpp>
 
 #include <data/mesh.hpp>
 #include <data/model_series.hpp>
-#include <data/reconstruction.hpp>
 
 #include <io/vtk/mesh_writer.hpp>
 #include <io/vtk/obj_mesh_writer.hpp>
@@ -39,8 +38,6 @@
 #include <ui/__/dialog/location.hpp>
 #include <ui/__/dialog/message.hpp>
 #include <ui/__/dialog/selector.hpp>
-
-#include <boost/algorithm/string.hpp>
 
 #include <algorithm>
 #include <filesystem>
@@ -66,10 +63,11 @@ sight::io::service::path_type_t model_series_writer::get_path_type() const
 
 void model_series_writer::open_location_dialog()
 {
-    static auto default_directory = std::make_shared<core::location::single_folder>();
+    auto default_directory = std::make_shared<core::location::single_folder>();
 
     sight::ui::dialog::location dialog;
     dialog.set_title(*m_window_title);
+    dialog.set_preferences_key(this->get_classname());
     dialog.set_default_location(default_directory);
     dialog.set_option(ui::dialog::location::write);
     dialog.set_type(ui::dialog::location::folder);
@@ -107,11 +105,10 @@ void model_series_writer::open_location_dialog()
             // Ask user to select extension
             // Create a map with description that will be displayed to user, and extensions.
             std::map<std::string, std::string> description_to_extension;
-            description_to_extension["VTK Legacy (*.vtk)"]                = ".vtk";
-            description_to_extension["VTK Polydata (*.vtp"]               = ".vtp";
-            description_to_extension["OBJ Wavefront Object (*.obj)"]      = ".obj";
-            description_to_extension["PLY Polygonal File Format (*.ply)"] = ".ply";
-            description_to_extension["STL StereoLithograpy (*.stl)"]      = ".stl";
+            for(const auto& [description, wildcard] : get_supported_extensions())
+            {
+                description_to_extension[description] = wildcard.substr(1);
+            }
 
             // Fill the descriptions vector with map keys.
             std::vector<std::string> descriptions;
@@ -186,7 +183,7 @@ void model_series_writer::info(std::ostream& _sstream)
 //------------------------------------------------------------------------------
 
 template<typename WRITER>
-static typename WRITER::sptr configure_writer(const std::filesystem::path& _filename)
+static WRITER::sptr configure_writer(const std::filesystem::path& _filename)
 {
     typename WRITER::sptr writer = std::make_shared<WRITER>();
     writer->set_file(_filename);
@@ -229,8 +226,11 @@ void model_series_writer::write_mesh(const std::filesystem::path& _filename, con
         );
     }
 
-    auto observer = std::make_shared<core::progress::observer>("Writing models in " + this->get_folder().string());
-    this->async_emit(has_monitors::signals::MONITOR_CREATED, observer->get_sptr());
+    auto observer = this->make_notification<core::notification::observer>(
+        "Writing models in "
+        + this->get_folder().string()
+    );
+    this->emit_notification_created(observer);
 
     mesh_writer->set_object(_mesh);
     mesh_writer->write(observer);
@@ -252,7 +252,7 @@ void model_series_writer::updating()
             "The object is not a '"
             + data::model_series::classname()
             + "' or '"
-            + sight::io::service::DATA_KEY
+            + sight::io::service::WRITER_DATA_KEY
             + "' is not correctly set.",
             model_series
         );

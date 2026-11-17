@@ -1,4 +1,5 @@
 <plugin id="sight::config::viz::scene3d">
+    <requirement id="sight::module::geometry" />
     <requirement id="sight::module::service" />
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::viz::scene3d" />

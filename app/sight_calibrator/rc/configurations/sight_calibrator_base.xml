@@ -123,19 +123,19 @@
         <!-- ************************************* Services ************************************ -->
 
         <service uid="dataSetReaderSrv" type="sight::module::ui::io::selector" config="SDBSessionReaderIOSelectorConfig">
-            <inout key="data" uid="dataSet" />
+            <data read="${dataSet}" />
         </service>
 
         <service uid="dataSetWriterSrv" type="sight::module::ui::io::selector" config="SDBSessionWriterIOSelectorConfig">
-            <inout key="data" uid="dataSet" />
+            <data write="${dataSet}" />
         </service>
 
         <service uid="activitySetReaderSrv" type="sight::module::ui::io::selector" config="ActivityReaderConfig">
-            <inout key="data" uid="activitySet" />
+            <data read="${activitySet}" />
         </service>
 
         <service uid="activitySetWriterSrv" type="sight::module::ui::io::selector" config="ActivityWriterConfig">
-            <inout key="data" uid="activitySet" />
+            <data write="${activitySet}" />
         </service>
 
         <!-- ******************************* Connections ***************************************** -->

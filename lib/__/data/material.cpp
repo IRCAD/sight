@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,9 +25,6 @@
 #include "data/exception.hpp"
 #include "data/registry/macros.hpp"
 
-#include <core/com/signal.hpp>
-#include <core/com/signal.hxx>
-
 SIGHT_REGISTER_DATA(sight::data::material);
 
 namespace sight::data
@@ -35,15 +32,12 @@ namespace sight::data
 
 //------------------------------------------------------------------------------
 
-const core::com::signals::key_t material::ADDED_TEXTURE_SIG   = "addedTexture";
-const core::com::signals::key_t material::REMOVED_TEXTURE_SIG = "removedTexture";
-
 //------------------------------------------------------------------------------
 
 material::material()
 {
-    new_signal<added_texture_signal_t>(ADDED_TEXTURE_SIG);
-    new_signal<removed_texture_signal_t>(REMOVED_TEXTURE_SIG);
+    new_signal<signals::added_texture_t>(signals::ADDED_TEXTURE);
+    new_signal<signals::removed_texture_t>(signals::REMOVED_TEXTURE);
 }
 
 //------------------------------------------------------------------------------
@@ -179,7 +173,7 @@ bool material::operator!=(const material& _other) const noexcept
 
 //------------------------------------------------------------------------------
 
-material::representation_t material::string_to_representation_mode(std::string _str)
+material::representation_t material::string_to_representation_mode(const std::string& _str)
 {
     material::representation_t representation_mode = data::material::surface;
 
@@ -211,6 +205,42 @@ material::representation_t material::string_to_representation_mode(std::string _
     }
 
     return representation_mode;
+}
+
+//------------------------------------------------------------------------------
+
+material::options_t material::string_to_options_mode(const std::string& _str)
+{
+    material::options_t options_mode = data::material::options_t::standard;
+
+    const auto lower_str = boost::to_lower_copy(_str);
+
+    if(lower_str == "standard")
+    {
+        options_mode = data::material::options_t::standard;
+    }
+    else if(lower_str == "normals")
+    {
+        options_mode = data::material::options_t::normals;
+    }
+    else if(lower_str == "cells_normals")
+    {
+        options_mode = data::material::options_t::cells_normals;
+    }
+    else if(lower_str == "selected")
+    {
+        options_mode = data::material::options_t::selected;
+    }
+    else
+    {
+        SIGHT_ERROR(
+            "Value: " + _str + " is not valid for 'options_mode'."
+                               " Accepted values are: standard/normals/cells_normals/selected."
+                               "'options_mode' is reset to default value (standard). "
+        );
+    }
+
+    return options_mode;
 }
 
 } //namespace sight::data

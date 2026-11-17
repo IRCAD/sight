@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,64 +20,34 @@
  *
  ***********************************************************************/
 
-#include "sig_slot_connection_test.hpp"
-
 #include "slots_signals_stuff.hpp"
 
-#include <core/com/helper/sig_slot_connection.hpp>
-
-#include <service/macros.hpp>
 #include <service/registry.hpp>
 
-#include <utest/exception.hpp>
+#include <doctest/doctest.h>
 
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::service::ut::sig_slot_connection_test);
-
-namespace sight::service::ut
+TEST_SUITE("sight::service::sig_slot_connection")
 {
+    TEST_CASE("basic")
+    {
+        auto buffer_data = std::make_shared<sight::service::ut::buffer>();
 
-//------------------------------------------------------------------------------
+        auto show_test_srv = sight::service::factory::make<sight::service::ut::show_test>();
+        sight::service::register_service(show_test_srv);
+        show_test_srv->set_inout(buffer_data, sight::service::ut::basic_srv::BUFFER_INOUT, true);
+        show_test_srv->set_worker(sight::core::thread::get_default_worker());
 
-void sig_slot_connection_test::setUp()
-{
-    // Set up context before running a test.
+        buffer_data->async_emit(sight::data::signals::MODIFIED);
+        CHECK_EQ(0, show_test_srv->m_receive_count);
+
+        show_test_srv->start().get();
+        buffer_data->async_emit(sight::data::signals::MODIFIED);
+        show_test_srv->stop().get();
+        CHECK_EQ(1, show_test_srv->m_receive_count);
+
+        buffer_data->async_emit(sight::data::signals::MODIFIED);
+        CHECK_EQ(1, show_test_srv->m_receive_count);
+
+        sight::service::unregister_service(show_test_srv);
+    }
 }
-
-//------------------------------------------------------------------------------
-
-void sig_slot_connection_test::tearDown()
-{
-    // Clean up after the test run.
-}
-
-//------------------------------------------------------------------------------
-
-void sig_slot_connection_test::basic_test()
-{
-    auto buffer_data = std::make_shared<buffer>();
-
-    s_show_test::sptr show_test_srv = service::factory::make<s_show_test>();
-    service::register_service(show_test_srv);
-    show_test_srv->set_inout(buffer_data, basic_srv::BUFFER_INOUT, true);
-    show_test_srv->set_worker(core::thread::get_default_worker());
-
-    data::object::modified_signal_t::sptr sig =
-        buffer_data->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-    sig->async_emit();
-    CPPUNIT_ASSERT_EQUAL(0, show_test_srv->m_receive_count);
-
-    show_test_srv->start().wait();
-    sig->async_emit();
-    show_test_srv->stop().wait();
-    CPPUNIT_ASSERT_EQUAL(1, show_test_srv->m_receive_count);
-
-    sig->async_emit();
-    CPPUNIT_ASSERT_EQUAL(1, show_test_srv->m_receive_count);
-
-    service::unregister_service(show_test_srv);
-}
-
-//------------------------------------------------------------------------------
-
-} // namespace sight::service::ut

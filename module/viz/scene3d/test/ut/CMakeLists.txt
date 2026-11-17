@@ -1,0 +1,4 @@
+sight_add_target(module_viz_scene3d_ut TYPE TEST REQUIRE_X ON)
+
+target_link_libraries(module_viz_scene3d_ut PUBLIC core data service viz_scene3d)
+add_dependencies(module_viz_scene3d_ut module_viz_scene3d module_viz_scene3d_qt module_viz_scene3d_test module_ui_qt)

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2025 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,7 +20,7 @@
  ***********************************************************************/
 
 #include <core/com/slot.hpp>
-#include <core/com/slot.hxx>
+
 #include <core/os/temp_path.hpp>
 
 #include <data/string.hpp>
@@ -84,7 +84,7 @@ inline static void basic_test(const bool _raw = false)
 
         // Set data input
         auto in_string = std::make_shared<sight::data::string>(expected);
-        writer->set_input(in_string, sight::io::service::DATA_KEY);
+        writer->set_input(in_string, sight::io::service::WRITER_DATA_KEY);
 
         // Set file output
         writer->set_file(tmp_file);
@@ -94,9 +94,9 @@ inline static void basic_test(const bool _raw = false)
         writer->configure();
 
         // Execute the writer sight::service
-        writer->start().wait();
-        writer->update().wait();
-        writer->stop().wait();
+        writer->start().get();
+        writer->update().get();
+        writer->stop().get();
 
         // Cleanup
         sight::service::unregister_service(writer);
@@ -116,7 +116,7 @@ inline static void basic_test(const bool _raw = false)
 
         // Set data output
         auto out_string = std::make_shared<sight::data::string>();
-        reader->set_inout(out_string, sight::io::service::DATA_KEY);
+        reader->set_inout(out_string, sight::io::service::READER_DATA_KEY);
 
         // Set file input
         reader->set_file(tmp_file);
@@ -149,9 +149,9 @@ inline static void basic_test(const bool _raw = false)
         reader->configure();
 
         // Execute the writer sight::service
-        reader->start().wait();
-        reader->update().wait();
-        reader->stop().wait();
+        reader->start().get();
+        reader->update().get();
+        reader->stop().get();
 
         // Cleanup
         sight::service::unregister_service(reader);
@@ -232,7 +232,7 @@ TEST_SUITE("sight::module::io::session")
 
             // Set data output
             auto out_string = std::make_shared<sight::data::string>();
-            reader->set_inout(out_string, sight::io::service::DATA_KEY);
+            reader->set_inout(out_string, sight::io::service::READER_DATA_KEY);
 
             // Set file input
             reader->set_file(tmp_file);
@@ -265,9 +265,9 @@ TEST_SUITE("sight::module::io::session")
             reader->configure();
 
             // Execute the writer sight::service
-            reader->start().wait();
-            reader->update().wait();
-            reader->stop().wait();
+            reader->start().get();
+            reader->update().get();
+            reader->stop().get();
 
             // Cleanup
             sight::service::unregister_service(reader);
@@ -311,7 +311,7 @@ TEST_SUITE("sight::module::io::session")
 
             // Set data input
             auto in_string = std::make_shared<sight::data::string>(expected);
-            writer->set_input(in_string, sight::io::service::DATA_KEY);
+            writer->set_input(in_string, sight::io::service::WRITER_DATA_KEY);
 
             // Configure the writer sight::service
             auto config = setup_config(false);
@@ -320,12 +320,12 @@ TEST_SUITE("sight::module::io::session")
             writer->configure();
 
             // Execute the writer sight::service
-            writer->start().wait();
+            writer->start().get();
 
             sight::ui::test::dialog::location::set_paths({tmp_file});
 
-            writer->update().wait();
-            writer->stop().wait();
+            writer->update().get();
+            writer->stop().get();
 
             // Cleanup
             sight::service::unregister_service(writer);
@@ -347,7 +347,7 @@ TEST_SUITE("sight::module::io::session")
 
             // Set data output
             auto out_string = std::make_shared<sight::data::string>();
-            reader->set_inout(out_string, sight::io::service::DATA_KEY);
+            reader->set_inout(out_string, sight::io::service::READER_DATA_KEY);
 
             // Configure the reader sight::service
             auto config = setup_config(true);
@@ -356,12 +356,12 @@ TEST_SUITE("sight::module::io::session")
             reader->configure();
 
             // Execute the writer sight::service
-            reader->start().wait();
+            reader->start().get();
 
             sight::ui::test::dialog::location::set_paths({tmp_file});
 
-            reader->update().wait();
-            reader->stop().wait();
+            reader->update().get();
+            reader->stop().get();
 
             // Cleanup
             sight::service::unregister_service(reader);
@@ -389,7 +389,7 @@ TEST_SUITE("sight::module::io::session")
 
             // Set data input
             auto in_string = std::make_shared<sight::data::string>(expected);
-            writer->set_input(in_string, sight::io::service::DATA_KEY);
+            writer->set_input(in_string, sight::io::service::WRITER_DATA_KEY);
 
             // Set file output
             writer->set_file(tmp_file);
@@ -401,12 +401,12 @@ TEST_SUITE("sight::module::io::session")
             writer->configure();
 
             // Execute the writer sight::service
-            writer->start().wait();
+            writer->start().get();
 
             sight::ui::test::dialog::input::push_input("case-sensitive");
 
-            writer->update().wait();
-            writer->stop().wait();
+            writer->update().get();
+            writer->stop().get();
 
             // Cleanup
             sight::service::unregister_service(writer);
@@ -428,7 +428,7 @@ TEST_SUITE("sight::module::io::session")
 
             // Set data output
             auto out_string = std::make_shared<sight::data::string>();
-            reader->set_inout(out_string, sight::io::service::DATA_KEY);
+            reader->set_inout(out_string, sight::io::service::READER_DATA_KEY);
 
             // Set file input
             reader->set_file(tmp_file);
@@ -440,7 +440,7 @@ TEST_SUITE("sight::module::io::session")
             reader->configure();
 
             // Execute the writer sight::service
-            reader->start().wait();
+            reader->start().get();
 
             sight::ui::test::dialog::input::push_input("Oops");
             sight::ui::test::dialog::message::push_action(sight::ui::test::dialog::message::retry);
@@ -450,8 +450,8 @@ TEST_SUITE("sight::module::io::session")
             sight::ui::test::dialog::message::push_action(sight::ui::test::dialog::message::retry);
             sight::ui::test::dialog::input::push_input("case-sensitive");
 
-            reader->update().wait();
-            reader->stop().wait();
+            reader->update().get();
+            reader->stop().get();
 
             // Cleanup
             sight::service::unregister_service(reader);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2025 IRCAD France
+ * Copyright (C) 2016-2026 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,14 +22,8 @@
 
 #include "pdf_writer.hpp"
 
-#include <core/location/single_file.hpp>
-#include <core/location/single_folder.hpp>
-#include <core/thread/worker.hpp>
-
 #include <data/iterator/types.hpp>
 
-#include <ui/__/dialog/location.hpp>
-#include <ui/__/dialog/message.hpp>
 #include <ui/__/registry.hpp>
 #include <ui/qt/container/widget.hpp>
 
@@ -64,32 +58,6 @@ void pdf_writer::configuring()
     {
         const auto uid = container.second.get<std::string>("<xmlattr>.uid");
         m_containers_i_ds.push_back(uid);
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void pdf_writer::open_location_dialog()
-{
-    static auto default_directory = std::make_shared<core::location::single_folder>();
-
-    sight::ui::dialog::location dialog_file;
-    dialog_file.set_title(*m_window_title);
-    dialog_file.set_default_location(default_directory);
-    dialog_file.add_filter("pdf", "*.pdf");
-
-    dialog_file.set_option(ui::dialog::location::write);
-
-    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialog_file.show());
-    if(result)
-    {
-        default_directory->set_folder(result->get_file().parent_path());
-        dialog_file.save_default_location(default_directory);
-        this->set_file(result->get_file());
-    }
-    else
-    {
-        this->clear_locations();
     }
 }
 
@@ -132,7 +100,7 @@ void pdf_writer::updating()
         }
         for(auto& future : futures_q_image)
         {
-            QImage image_to_draw = future.get();
+            const QImage& image_to_draw = future.get();
             images_to_scale.push_back(image_to_draw);
         }
 
@@ -241,7 +209,7 @@ QImage pdf_writer::convert_fw_image_to_q_image(const data::image& _fw_image)
         const unsigned int size = static_cast<unsigned int>(width * height) * 4;
         for(unsigned int idx = 0 ; idx < size ; idx += 4, ++image_itr)
         {
-            q_image_buffer[idx + 3] = (255 & 0xFF);
+            q_image_buffer[idx + 3] = 0xFF;
             q_image_buffer[idx + 2] = (image_itr->r & 0xFF);
             q_image_buffer[idx + 1] = (image_itr->g & 0xFF);
             q_image_buffer[idx + 0] = (image_itr->b & 0xFF);

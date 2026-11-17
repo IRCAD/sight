@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,6 +24,7 @@
 
 #include <viz/scene3d/window_interactor.hpp>
 
+#include <OGRE/OgreTexture.h> // NOLINT(misc-include-cleaner)
 #include <QOffscreenSurface>
 #include <QOpenGLContext>
 

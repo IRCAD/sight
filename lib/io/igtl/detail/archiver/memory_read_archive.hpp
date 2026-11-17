@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,11 +22,11 @@
 
 #pragma once
 
+#include <memory>
 #include <sight/io/igtl/config.hpp>
 
 #include <core/macros.hpp>
 
-#include <io/zip/exception/read.hpp>
 #include <io/zip/read_archive.hpp>
 
 #include <archive.h>
@@ -36,7 +36,6 @@
 // see https://developercommunity.visualstudio.com/t/error:-C4702-with-external:w0/1696694
 #pragma warning(disable : 4702)
 #endif // _MSC_VER
-#include <boost/iostreams/categories.hpp>
 
 #include <map>
 #include <vector>
@@ -71,7 +70,7 @@ public:
      * @throw io::zip::exception::Read if file doesn't exist in archive.
      * @throw io::zip::exception::Read if cannot retrieve file in archive.
      */
-    SIGHT_IO_IGTL_API SPTR(std::istream) get_file(const std::filesystem::path& _path) override;
+    SIGHT_IO_IGTL_API sight::sptr<std::istream> get_file(const std::filesystem::path& _path) override;
 
     /**
      * @brief Returns archive path.
@@ -87,7 +86,7 @@ public:
      */
     [[nodiscard]] read_archive::sptr clone() const override
     {
-        return SPTR(memory_read_archive)(new memory_read_archive(m_buffer, m_size));
+        return std::make_shared<memory_read_archive>(m_buffer, m_size);
     }
 
 private:
@@ -111,7 +110,7 @@ private:
     struct archive* m_archive;
 
     /// stream created when unarchive is done
-    std::map<std::string, SPTR(std::istream)> m_streams;
+    std::map<std::string, sight::sptr<std::istream> > m_streams;
 
     /// buffer read size in memory(huge because we have to read in memory, big buffer should be efficient)
     static const int BUFFER_READ_SIZE = 20000;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,13 +29,6 @@
 #include <string>
 #include <vector>
 
-// FIXME
-#ifndef WIN32
-    #define OVERRIDE_ON_LINUX override
-#else
-    #define OVERRIDE_ON_LINUX
-#endif
-
 namespace sight::io::igtl::detail
 {
 
@@ -49,7 +42,7 @@ public:
 
     using self_t        = raw_message;
     using superclass    = ::igtl::MessageBase;
-    using Pointer       = ::igtl::SmartPointer<self_t>;
+    using Pointer       = ::igtl::SmartPointer<self_t>; // NOLINT(readability-identifier-naming)
     using const_pointer = ::igtl::SmartPointer<const self_t>;
     using raw_data_t    = std::vector<char>;
 
@@ -92,16 +85,19 @@ public:
      */
     SIGHT_IO_IGTL_API static raw_message::Pointer New(std::string const& _body_type);
 
-private:
+protected:
 
-    /// Override
-    int GetBodyPackSize() OVERRIDE_ON_LINUX; // FIXME
-
-    /// Override
-    int PackBody() OVERRIDE_ON_LINUX; // FIXME
-
-    /// Override
-    int UnpackBody() OVERRIDE_ON_LINUX; // FIXME
+#ifdef OpenIGTLink_HEADER_VERSION
+    /// OpenIGTLink 3 separates message content from the extended header and metadata.
+    int CalculateContentBufferSize() override;
+    int PackContent() override;
+    int UnpackContent() override;
+#else
+    /// Serialization hooks used by older OpenIGTLink versions.
+    int GetBodyPackSize() override;
+    int PackBody() override;
+    int UnpackBody() override;
+#endif
 
 private:
 

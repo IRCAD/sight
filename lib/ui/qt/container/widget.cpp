@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,14 +22,11 @@
 
 #include "ui/qt/container/widget.hpp"
 
-#include <core/macros.hpp>
-
-#include <qapplication.h>
 #include <QDockWidget>
-#include <qeventloop.h>
-#include <qmainwindow.h>
+#include <QGraphicsBlurEffect>
 #include <QMainWindow>
 #include <QTimer>
+#include <qmainwindow.h>
 
 namespace sight::ui::qt::container
 {
@@ -169,6 +166,21 @@ void widget::set_enabled(bool _is_enabled)
         }
 
         root->setEnabled(_is_enabled);
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void widget::set_blurred(bool _is_blurred)
+{
+    if(_is_blurred)
+    {
+        auto* const blur_effect = new QGraphicsBlurEffect(m_container);
+        m_container->setGraphicsEffect(blur_effect);
+    }
+    else
+    {
+        m_container->setGraphicsEffect(nullptr);
     }
 }
 

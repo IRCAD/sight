@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,7 +40,7 @@ public:
     {
     }
 
-    region_threader(std::size_t _nb_thread, bool _capped = true) :
+    explicit region_threader(std::size_t _nb_thread, bool _capped = true) :
         m_nb_thread(std::min(_capped ? std::thread::hardware_concurrency() : std::numeric_limits<std::size_t>::max(),
                              (_nb_thread > 1) ? _nb_thread : 1))
     {
@@ -91,7 +91,7 @@ public:
         return m_nb_thread;
     }
 
-protected:
+private:
 
     const std::size_t m_nb_thread;
 };

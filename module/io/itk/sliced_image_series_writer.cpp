@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,20 +24,15 @@
 
 #include "module/io/itk/image_writer.hpp"
 
-#include <core/base.hpp>
 #include <core/location/single_folder.hpp>
 
-#include <data/image.hpp>
 #include <data/image_series.hpp>
 
 #include <io/__/service/writer.hpp>
 
-#include <service/macros.hpp>
-
 #include <ui/__/cursor.hpp>
 #include <ui/__/dialog/location.hpp>
 #include <ui/__/dialog/message.hpp>
-#include <ui/__/dialog/progress.hpp>
 
 namespace sight::module::io::itk
 {
@@ -65,10 +60,11 @@ void sliced_image_series_writer::configuring()
 
 void sliced_image_series_writer::open_location_dialog()
 {
-    static auto default_directory = std::make_shared<core::location::single_folder>();
+    auto default_directory = std::make_shared<core::location::single_folder>();
 
     sight::ui::dialog::location dialog;
     dialog.set_title(*m_window_title);
+    dialog.set_preferences_key(this->get_classname());
     dialog.set_default_location(default_directory);
     dialog.set_option(ui::dialog::location::write);
     dialog.set_type(ui::dialog::location::folder);
@@ -135,10 +131,10 @@ void sliced_image_series_writer::updating()
     {
         const auto data         = m_data.lock();
         const auto image_series = std::dynamic_pointer_cast<const data::image_series>(data.get_shared());
-        SIGHT_ASSERT("The input key '" + sight::io::service::DATA_KEY + "' is not correctly set.", image_series);
+        SIGHT_ASSERT("The input key '" + sight::io::service::WRITER_DATA_KEY + "' is not correctly set.", image_series);
 
         sight::ui::busy_cursor cursor;
-        auto progress = std::make_shared<sight::core::progress::observer>("Saving image series");
+        auto progress = this->make_notification<sight::core::notification::observer>("Saving image series");
         image_writer::save_image(this->get_folder(), image_series, progress);
         m_write_failed = false;
     }

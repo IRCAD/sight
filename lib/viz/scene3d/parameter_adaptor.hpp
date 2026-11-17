@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2025 IRCAD France
+ * Copyright (C) 2016-2026 IRCAD France
  * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,7 +40,7 @@ public:
 
     SIGHT_DECLARE_CLASS(parameter_adaptor, viz::scene3d::adaptor);
 
-    SIGHT_VIZ_SCENE3D_API static constexpr std::string_view PARAMETER_INOUT = "parameter";
+    SIGHT_VIZ_SCENE3D_API static constexpr std::string_view PARAMETER_INOUT = "data.parameter";
 
     SIGHT_VIZ_SCENE3D_API parameter_adaptor() noexcept = default;
     SIGHT_VIZ_SCENE3D_API ~parameter_adaptor() noexcept override = default;
@@ -76,6 +76,8 @@ protected:
 
     /// Connect the input parameter modified signal to this service update slot.
     SIGHT_VIZ_SCENE3D_API service::connections_t auto_connections() const override;
+
+private:
 
     /// Parameter name
     std::string m_param_name;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,126 +20,205 @@
  *
  ***********************************************************************/
 
-#include "config_update_test.hpp"
-
 #include "helper.hpp"
-#include "test_service.hpp"
 #include "test_services.hpp"
 
-#include <core/com/signal.hpp>
-#include <core/com/signal.hxx>
-#include <core/com/slot.hxx>
-#include <core/runtime/helper.hpp>
 #include <core/runtime/path.hpp>
 #include <core/runtime/runtime.hpp>
+#include <core/thread/worker.hpp>
 #include <core/time_stamp.hpp>
 
-#include <data/boolean.hpp>
-#include <data/image.hpp>
-#include <data/string.hpp>
-
 #include <service/extension/config.hpp>
-#include <service/registry.hpp>
 
 #include <utest/wait.hpp>
 
+#include <doctest/doctest.h>
+
 #include <filesystem>
+#include <future>
 #include <ranges>
+#include <thread>
 
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::app::ut::config_update_test);
-
-namespace sight::app::ut
+namespace
 {
 
-//------------------------------------------------------------------------------
-
-void config_update_test::setUp()
+struct fixture
 {
-    // Set up context before running a test.
-    core::runtime::init();
-
-    std::filesystem::path location = core::runtime::get_resource_file_path("app_ut");
-    CPPUNIT_ASSERT(std::filesystem::exists(location));
-
-    core::runtime::add_modules(location);
-    core::runtime::load_module("sight::module::app");
-    core::runtime::load_module("config_update_test");
-
-    auto app_config = app::extension::config::get();
-    app_config->clear_registry();
-    app_config->parse_plugin_infos();
-
-    auto srv_config = sight::service::extension::config::get_default();
-    srv_config->clear_registry();
-    srv_config->parse_plugin_infos();
-}
-
-//------------------------------------------------------------------------------
-
-void config_update_test::tearDown()
-{
-    // Clean up after the test run.
-    if(m_app_config_mgr)
+    fixture()
     {
-        // If everything went well, the manager should have been destroyed
-        // This means a test failed, thus we need to clean everything properly, otherwise
-        // We will get an assert from the destructor and we will not get the cppunit report in the console
-        m_app_config_mgr->stop_and_destroy();
-        m_app_config_mgr = nullptr;
+        // Set up context before running a test.
+        sight::core::runtime::init();
+
+        std::filesystem::path location = sight::core::runtime::get_resource_file_path("app_ut");
+        CHECK(std::filesystem::exists(location));
+
+        sight::core::runtime::add_modules(location);
+        sight::core::runtime::load_module("sight::module::app");
+        sight::core::runtime::load_module("config_update_test");
+
+        auto app_config = sight::app::extension::config::get();
+        app_config->clear_registry();
+        app_config->parse_plugin_infos();
+
+        auto srv_config = sight::service::extension::config::get_default();
+        srv_config->clear_registry();
+        srv_config->parse_plugin_infos();
     }
-}
 
-//------------------------------------------------------------------------------
-
-const auto TEST_SERVICE =
-    [](unsigned int _i)
+    ~fixture()
     {
-        core::object::sptr service = core::id::get_object("test" + std::to_string(_i) + "_srv");
-        auto srv                   = std::dynamic_pointer_cast<sight::app::ut::test_order_srv>(service);
-        CPPUNIT_ASSERT_EQUAL(true, srv->started());
-        SIGHT_TEST_WAIT(srv->update_order() == _i);
-        CPPUNIT_ASSERT_EQUAL(_i, srv->update_order());
-    };
-
-//------------------------------------------------------------------------------
-
-void config_update_test::simple_sequence_test()
-{
-    test_order_srv::s_ORDER = 1;
-    m_app_config_mgr        = app::ut::launch_app_config_mgr("sequence_cfg_test");
-
-    for(const auto i : std::views::iota(1U, 4U))
-    {
-        TEST_SERVICE(i);
+        // Clean up after the test run.
+        if(m_app_config_mgr)
+        {
+            // If everything went well, the manager should have been destroyed
+            // This means a test failed, thus we need to clean everything properly, otherwise
+            // we will get an assert from the destructor and we will not get the doctest report in the console
+            m_app_config_mgr->stop_and_destroy();
+            m_app_config_mgr = nullptr;
+        }
     }
+
+    sight::app::config_manager::sptr m_app_config_mgr;
+};
+
+} // namespace
+
+//------------------------------------------------------------------------------
+
+// Launch on the default worker like an application does: from another thread, a STARTED slot queued there
+// during the launch deadlocks on the manager mutex.
+static sight::app::config_manager::sptr launch_on_default_worker(const std::string& _name)
+{
+    return sight::core::thread::get_default_worker()->post_task<sight::app::config_manager::sptr>(
+        [&_name]{return sight::app::ut::launch_app_config_mgr(_name);}).get();
 }
 
 //------------------------------------------------------------------------------
 
-void config_update_test::imbricated_sequence_test()
+TEST_SUITE("sight::app::config_update")
 {
-    test_order_srv::s_ORDER = 1;
-    m_app_config_mgr        = app::ut::launch_app_config_mgr("imbricated_sequence_cfg_test");
+//------------------------------------------------------------------------------
 
-    for(const auto i : std::views::iota(1U, 7U))
+    const auto TEST_SERVICE =
+        [](unsigned int _i)
+        {
+            sight::core::object::sptr service = sight::core::id::get_object("test" + std::to_string(_i) + "_srv");
+            auto srv                          = std::dynamic_pointer_cast<sight::app::ut::test_order_srv>(service);
+            CHECK_EQ(true, srv->started());
+            SIGHT_TEST_WAIT(srv->update_order() == _i);
+            CHECK_EQ(_i, srv->update_order());
+        };
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE_FIXTURE(fixture, "simple_sequence")
     {
-        TEST_SERVICE(i);
+        sight::app::ut::test_order_srv::s_order = 1;
+        m_app_config_mgr                        = launch_on_default_worker("sequence_cfg_test");
+
+        for(const auto i : std::views::iota(1U, 4U))
+        {
+            TEST_SERVICE(i);
+        }
     }
-}
 
 //------------------------------------------------------------------------------
 
-void config_update_test::mutiple_config_sequence_test()
-{
-    test_order_srv::s_ORDER = 1;
-    m_app_config_mgr        = app::ut::launch_app_config_mgr("mutiple_config_sequence_cfg_test");
+    TEST_CASE_FIXTURE(fixture, "sequence_worker")
+    {
+        m_app_config_mgr = sight::app::ut::launch_app_config_mgr("sequence_worker_cfg_test");
 
-    TEST_SERVICE(1);
-    TEST_SERVICE(4);
-    TEST_SERVICE(7);
-}
+        auto updater = std::dynamic_pointer_cast<sight::service::base>(
+            sight::core::id::get_object("updater")
+        );
+        REQUIRE(updater != nullptr);
+        CHECK_NE(updater->worker(), sight::core::thread::get_default_worker());
+    }
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::app::ut
+    TEST_CASE_FIXTURE(fixture, "shutdown_updater_before_services")
+    {
+        sight::app::ut::test_shutdown_updater::reset();
+        sight::app::ut::test_shutdown_service::reset();
+        m_app_config_mgr = sight::app::ut::launch_app_config_mgr("shutdown_order_cfg_test");
+
+        auto stop_future = std::async(
+            std::launch::async,
+            [this](){m_app_config_mgr->stop_and_destroy();});
+
+        SIGHT_TEST_WAIT(sight::app::ut::test_shutdown_updater::is_stopping());
+        CHECK(sight::app::ut::test_shutdown_updater::is_stopping());
+        CHECK_FALSE(sight::app::ut::test_shutdown_service::is_stopping());
+
+        sight::app::ut::test_shutdown_updater::release();
+        CHECK_EQ(stop_future.wait_for(std::chrono::seconds(2)), std::future_status::ready);
+        stop_future.get();
+        m_app_config_mgr.reset();
+
+        CHECK(sight::app::ut::test_shutdown_service::stopped_after_updater());
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE_FIXTURE(fixture, "interrupt_update_wait_on_stop_request")
+    {
+        sight::app::ut::test_blocking_update_service::reset();
+        m_app_config_mgr = sight::app::ut::launch_app_config_mgr("interrupt_update_wait_cfg_test");
+
+        const auto updater = std::dynamic_pointer_cast<sight::app::updater>(
+            sight::core::id::get_object("updater")
+        );
+        REQUIRE(updater != nullptr);
+
+        const auto update_future = updater->update();
+        SIGHT_TEST_WAIT(sight::app::ut::test_blocking_update_service::is_updating());
+
+        auto stop_future = std::async(
+            std::launch::async,
+            [this](){m_app_config_mgr->stop_and_destroy();});
+
+        const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(2);
+        while(!updater->stopped() && std::chrono::steady_clock::now() < deadline)
+        {
+            std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        }
+
+        CHECK(updater->stopped());
+
+        sight::app::ut::test_blocking_update_service::release();
+        CHECK_EQ(update_future.wait_for(std::chrono::seconds(2)), std::future_status::ready);
+        update_future.get();
+        CHECK_EQ(stop_future.wait_for(std::chrono::seconds(2)), std::future_status::ready);
+        stop_future.get();
+        m_app_config_mgr.reset();
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE_FIXTURE(fixture, "imbricated_sequence")
+    {
+        sight::app::ut::test_order_srv::s_order = 1;
+        m_app_config_mgr                        = launch_on_default_worker("imbricated_sequence_cfg_test");
+
+        for(const auto i : std::views::iota(1U, 7U))
+        {
+            TEST_SERVICE(i);
+        }
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE_FIXTURE(fixture, "mutiple_config_sequence")
+    {
+        sight::app::ut::test_order_srv::s_order = 1;
+        m_app_config_mgr                        =
+            launch_on_default_worker("multiple_config_sequence_cfg_test");
+
+        TEST_SERVICE(1);
+        TEST_SERVICE(4);
+        TEST_SERVICE(7);
+    }
+
+//------------------------------------------------------------------------------
+} // TEST_SUITE

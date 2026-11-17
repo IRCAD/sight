@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,11 +26,10 @@
 
 #include <ui/__/dialog/message_base.hpp>
 
+#include <QPushButton>
 #include <QVector>
 
 #include <string>
-
-class QPushButton;
 
 namespace sight::ui::qt::dialog
 {
@@ -69,6 +68,7 @@ public:
 
 protected:
 
+    //NOLINTBEGIN (misc-non-private-member-variables-in-classes)
     /// Dialog title
     std::string m_title;
 
@@ -86,6 +86,8 @@ protected:
 
     /// Stores custom buttons
     QVector<QPushButton*> m_custom_buttons;
+
+    //NOLINTEND (misc-non-private-member-variables-in-classes)
 };
 
 } // namespace sight::ui::qt::dialog

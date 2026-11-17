@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,14 +22,10 @@
 
 #include "server_listener.hpp"
 
-#include <core/com/signal.hxx>
-
-#include <service/macros.hpp>
+#include <algorithm>
 
 #include <ui/__/dialog/message.hpp>
 #include <ui/__/preferences.hpp>
-
-#include <functional>
 
 namespace sight::module::io::igtl
 {
@@ -79,7 +75,7 @@ void server_listener::starting()
         m_server->start(port);
 
         m_server_future = std::async(std::launch::async, [this](auto&& ...){m_server->run_server();});
-        m_sig_connected->async_emit();
+        this->async_emit(network_listener::signals::CONNECTED);
         m_receive_future = std::async(std::launch::async, [this](auto&& ...){receive_object();});
     }
     catch(core::exception& e)
@@ -109,7 +105,7 @@ void server_listener::stopping()
 
         m_server_future.wait();
         m_receive_future.wait();
-        m_sig_disconnected->async_emit();
+        this->async_emit(network_listener::signals::DISCONNECTED);
     }
     catch(core::exception& e)
     {
@@ -137,9 +133,9 @@ void server_listener::receive_object()
             {
                 if(receive_object)
                 {
-                    const std::string device_name = device_names_receive[client];
+                    const std::string& device_name = device_names_receive[client];
 
-                    const auto& iter = std::find(m_device_names.begin(), m_device_names.end(), device_name);
+                    const auto& iter = std::ranges::find(m_device_names, device_name);
                     if(iter != m_device_names.end())
                     {
                         const auto index_receive_object = std::distance(m_device_names.begin(), iter);
@@ -148,9 +144,7 @@ void server_listener::receive_object()
 
                         obj->shallow_copy(receive_object);
 
-                        data::object::modified_signal_t::sptr sig;
-                        sig = obj->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-                        sig->async_emit();
+                        obj->async_emit(data::signals::MODIFIED);
                     }
                 }
 

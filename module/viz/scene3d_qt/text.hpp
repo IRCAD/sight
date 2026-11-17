@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,7 +31,7 @@
 namespace sight::module::viz::scene3d_qt
 {
 
-class NodeListener;
+class node_listener;
 
 /**
  * @brief Class used to display overlay text.
@@ -96,6 +96,9 @@ private:
     /// Set the style according to the object properties
     void adjust_style();
 
+    /// Shows the text only if it is requested visible and its node can be projected on screen.
+    void update_visibility();
+
     /// Contains the displayed stats in the overlay.
     QPointer<QLineEdit> m_text;
     // QPointer<QLabel> m_text;
@@ -122,7 +125,13 @@ private:
     QString m_font_family;
 
     /// To update the text position according to a scene node
-    NodeListener* m_node_listener {};
+    node_listener* m_node_listener {};
+
+    /// Visibility requested with set_visible().
+    bool m_visible {true};
+
+    /// False when the attached node lies on or behind the camera plane.
+    bool m_projectable {true};
 
     using resize_layer_slot_t = core::com::slot<void (int, int)>;
     resize_layer_slot_t::sptr m_resize_slot;

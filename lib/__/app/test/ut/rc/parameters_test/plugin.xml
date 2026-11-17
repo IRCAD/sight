@@ -7,6 +7,9 @@
             <param name="param1" value="value1" />
             <param name="param2" value="value2" />
         </parameters>
+        <cli>
+            <param name="input" option="input,i" />
+        </cli>
     </extension>
 
     <extension implements="sight::app::extension::parameters">

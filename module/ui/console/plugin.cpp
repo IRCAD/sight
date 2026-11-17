@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,8 @@
 
 #include "plugin.hpp"
 
-#include <core/runtime/profile/profile.hpp>
+#include <core/runtime/profile.hpp>
 #include <core/thread/worker.hpp>
-#include <core/thread/worker.hxx>
 
 namespace sight::module::ui::console
 {

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2025 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,12 +22,11 @@
 #include "test.hpp"
 
 #include <core/runtime/path.hpp>
-#include <core/runtime/runtime.hpp>
 
 #include <ui/test/helper/button.hpp>
+#include <ui/test/helper/combo_box.hpp>
 #include <ui/test/helper/file_dialog.hpp>
 #include <ui/test/helper/select.hpp>
-#include <ui/test/helper/selector_dialog.hpp>
 #include <ui/test/helper/slider.hpp>
 
 #include <array>
@@ -39,10 +38,9 @@ namespace helper = sight::ui::test::helper;
 
 //------------------------------------------------------------------------------
 
-std::filesystem::path test::get_profile_path()
+test::test() :
+    sight::ui::test::base(sight::core::runtime::working_path() / "share/sight/sight_viewer/profile.xml")
 {
-    const std::filesystem::path cwd = sight::core::runtime::working_path();
-    return cwd / "share/sight/sight_viewer/profile.xml";
 }
 
 //------------------------------------------------------------------------------
@@ -53,31 +51,70 @@ void test::open_file(
     const std::filesystem::path& _path
 )
 {
-    // Click on the "Load series" button
-    helper::button::push(_tester, "toolbar_view/Load series");
+    // Click on the "Load Files" button
+    helper::button::push(_tester, "data_tools_row_1/Load Files");
 
-    // Once we clicked the button, a selection window should appear. We select the format we want.
-    helper::selector_dialog::select(_tester, _format);
+    // Select the file extension directly in the file dialog.
+    helper::combo_box::select(
+        _tester,
+        helper::selector::from_dialog("fileTypeCombo"),
+        _format
+    );
+    helper::combo_box::value_equals(
+        _tester,
+        helper::selector::from_dialog("fileTypeCombo"),
+        _format
+    );
 
-    // Fill the file dialog, tap PATH
+    // Fill the file dialog.
     helper::file_dialog::fill(_tester, _path);
 
-    // Ensure the image loading is started, otherwise it will hang the test.
-    QTest::qWait(1000);
-
-    if(_format == "DICOM" || _format == "Nifti or Inr images")
+    if(_format == "Inr (.inr) (*.inr *.inr.gz)" || _format == "NIfTI (.nii) (*.nii *.nii.gz)")
     {
-        // The Show/hide volume button becomes enabled when the image effectively shows up.
         helper::button::wait_for_clickability(
             _tester,
-            helper::selector("toolbar_view/Show/hide volume").with_timeout(sight::ui::test::tester::DEFAULT_TIMEOUT * 5)
+            helper::selector("top_toolbar_left/volume").with_timeout(
+                sight::ui::test::tester::DEFAULT_TIMEOUT * 5
+            )
         );
     }
-    else if(_format == "VTK")
+    else if(_format == "VTK Legacy Files(.vtk) (*.vtk)")
     {
         // The Show/hide mesh button becomes enabled when the image is loaded.
-        helper::button::wait_for_clickability(_tester, "toolbar_view/Show/hide mesh");
+        helper::button::wait_for_clickability(_tester, "top_toolbar_left/mesh");
     }
+}
+
+//-------------------------------------------------------
+void test::open_folder(
+    sight::ui::test::tester& _tester,
+    const std::filesystem::path& _path
+)
+{
+    // sight::ui::test::tester::fail() throws tester_assertion_failed, which base::start() catches on the
+    // scenario thread. A doctest assertion must not be used here, since open_folder() runs on that thread.
+    if(!std::filesystem::is_directory(_path))
+    {
+        sight::ui::test::tester::fail("The DICOM test directory does not exist");
+    }
+
+    helper::button::push(
+        _tester,
+        "data_tools_row_1/Load DICOM Folders"
+    );
+
+    helper::file_dialog::fill(
+        _tester,
+        _path
+    );
+
+    // Loading the 512x512x404 DICOM volume can exceed 50 seconds on a busy CI runner.
+    helper::button::wait_for_clickability(
+        _tester,
+        helper::selector("top_toolbar_left/volume").with_timeout(
+            sight::ui::test::tester::DEFAULT_TIMEOUT * 18
+        )
+    );
 }
 
 //------------------------------------------------------------------------------
@@ -97,15 +134,24 @@ void test::save_snapshot(sight::ui::test::tester& _tester, const std::filesystem
         sight::ui::test::tester::DEFAULT_TIMEOUT*2
     );
     // ...and the image should be valid.
-    bool ok = QTest::qWaitFor([&_path]() -> bool {return !QImage(QString::fromStdString(_path.string())).isNull();});
-    CPPUNIT_ASSERT_MESSAGE("The writer didn't finish writing", ok);
+    bool ok = QTest::qWaitFor(
+        [&_path]() -> bool
+        {
+            return !QImage(QString::fromStdString(_path.string())).isNull();
+        },
+        sight::ui::test::tester::DEFAULT_TIMEOUT* 2
+    );
+    if(!ok)
+    {
+        sight::ui::test::tester::fail("The writer didn't finish writing");
+    }
 }
 
 //------------------------------------------------------------------------------
 
 void test::reset_negatos(sight::ui::test::tester& _tester)
 {
-    const std::array negatos {"top_scenes_view/1", "bottom_scenes_view/0", "bottom_scenes_view/1"};
+    const std::array negatos {"top_scenes_view/0", "bottom_scenes_view/0", "bottom_scenes_view/1"};
     for(std::string parent : negatos)
     {
         helper::slider::set(_tester, helper::selector::from_parent(parent, "negato_slicer_srv"), 0);

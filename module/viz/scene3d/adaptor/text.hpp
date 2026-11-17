@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2024 IRCAD France
+ * Copyright (C) 2019-2026 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,7 +43,7 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * @code{.xml}
     <service type="sight::module::viz::scene3d::adaptor::text">
-        <in key="object" uid="..." />
+        <data object="${...}" />
         <config fontSize="32" hAlign="right" vAlign="bottom" color="#ff3396" />
     </service>
    @endcode
@@ -58,7 +58,7 @@ namespace sight::module::viz::scene3d::adaptor
    @endcode
  *
  * @subsection Input Input:
- * - \b object (optional): "GenericField" object that can be casted to a text string.
+ * - \b data.object [sight::data::object] (optional): "GenericField" object that can be casted to a text string.
  *
  * @subsection Configuration Configuration:
  * - \b color (optional, hexadecimal, default=#FFFFFF): the color and opacity of the text.
@@ -82,6 +82,12 @@ public:
 
     /// Destroys the adaptor.
     ~text() noexcept final = default;
+
+    struct slots
+    {
+        static inline const slot_key_t SET_TEXT  = "set_text";
+        static inline const slot_key_t SET_COLOR = "set_color";
+    };
 
 protected:
 
@@ -141,7 +147,7 @@ private:
     /// Defines the true_t font source file.
     std::string m_font_source {"DejaVuSans.ttf"};
 
-    static constexpr std::string_view OBJECT_INPUT = "object";
+    static constexpr std::string_view OBJECT_INPUT = "data.object";
     sight::data::ptr<sight::data::object, sight::data::access::in> m_object {this, OBJECT_INPUT};
 };
 

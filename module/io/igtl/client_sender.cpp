@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,10 +22,7 @@
 
 #include "client_sender.hpp"
 
-#include <core/com/signal.hxx>
 #include <core/tools/failed.hpp>
-
-#include <service/macros.hpp>
 
 #include <ui/__/dialog/message.hpp>
 #include <ui/__/preferences.hpp>
@@ -92,7 +89,7 @@ void client_sender::starting()
             const auto hostname = preferences.delimited_get<std::string>(m_hostname_config);
 
             m_client.connect(hostname, port);
-            m_sig_connected->async_emit();
+            this->async_emit(network_sender::signals::CONNECTED);
         }
         catch(core::exception& ex)
         {
@@ -114,7 +111,7 @@ void client_sender::stopping()
             m_client.disconnect();
         }
 
-        m_sig_disconnected->async_emit();
+        this->async_emit(network_sender::signals::DISCONNECTED);
     }
     catch(core::exception& e)
     {

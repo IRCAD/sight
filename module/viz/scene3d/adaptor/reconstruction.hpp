@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,6 +27,7 @@
 #include <core/com/slot.hpp>
 
 #include <data/reconstruction.hpp>
+#include <data/string.hpp>
 
 #include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/material/standard.hpp>
@@ -54,17 +55,16 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service type="sight::module::viz::scene3d::adaptor::reconstruction">
-        <in key="reconstruction" uid="..." />
-        <inout group="uniforms">
-            <key uid="..." name="u_uniform_name" />
-       </inout>
+        <data reconstruction="${...}" />
+            <uniform object="${...}" name="..." />
         <config transform="..." autoresetcamera="true" query_flags="0x40000000" />
    </service>
    @endcode
  *
  * @subsection Input Input:
- * - \b reconstruction [sight::data::reconstruction]: reconstruction to display.
- * - \b uniforms: list of data to bind to material uniforms.
+ * - \b data.reconstruction [sight::data::reconstruction]: reconstruction to display.
+ * - \b uniform.object [sight::data::object]: data to bind to a material uniform.
+ * - \b uniform.name [sight::data::string]: name of the material uniform associated with the object.
  *
  * @subsection Configuration Configuration:
  * - \b transform (optional, string, default=""): the transformation matrix to associate to the adaptor.
@@ -112,6 +112,12 @@ public:
      */
     module::viz::scene3d::adaptor::mesh::sptr get_mesh_adaptor();
 
+    /**
+     * @brief Sets the reconstruction visibility.
+     * @param _visible the visibility status of the reconstruction.
+     */
+    void set_visible(bool _visible) final;
+
 protected:
 
     /// Configures the adaptor.
@@ -124,7 +130,7 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::reconstruction::MESH_CHANGED_SIG of s_RECONSTRUCTION_INPUT to adaptor::slots::LAZY_UPDATE
+     * Connect data::reconstruction::signals::MESH_CHANGED of s_RECONSTRUCTION_INPUT to adaptor::slots::LAZY_UPDATE
      */
     service::connections_t auto_connections() const final;
 
@@ -133,12 +139,6 @@ protected:
 
     /// Updates the mesh adaptor according to the reconstruction or creates it if it hasn't been yet.
     void updating() final;
-
-    /**
-     * @brief Sets the reconstruction visibility.
-     * @param _visible the visibility status of the reconstruction.
-     */
-    void set_visible(bool _visible) final;
 
 private:
 
@@ -166,9 +166,10 @@ private:
     /// Defines the mask used for picking request.
     std::uint32_t m_query_flags {Ogre::SceneManager::ENTITY_TYPE_MASK};
 
-    static constexpr std::string_view RECONSTRUCTION_INPUT = "reconstruction";
+    static constexpr std::string_view RECONSTRUCTION_INPUT = "data.reconstruction";
     data::ptr<data::reconstruction, data::access::in> m_reconstruction {this, RECONSTRUCTION_INPUT};
-    data::ptr_vector<data::object, data::access::inout> m_uniforms {this, "uniforms", true};
+    data::ptr_vector<data::object, data::access::inout> m_uniform_objects {this, "uniform.object", true};
+    data::ptr_vector<data::string, data::access::in> m_uniform_names {this, "uniform.name", std::nullopt};
 };
 
 //------------------------------------------------------------------------------

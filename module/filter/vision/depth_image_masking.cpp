@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2024 IRCAD France
+ * Copyright (C) 2020-2026 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,26 +22,19 @@
 
 #include "depth_image_masking.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
-
 #include <io/opencv/image.hpp>
 
-#include <service/macros.hpp>
+#include <opencv2/imgproc.hpp>
 
 namespace sight::module::filter::vision
 {
 
-static const core::com::slots::key_t SET_BACKGROUND_SLOT = "set_background";
-static const core::com::slots::key_t SET_THRESHOLD_SLOT  = "set_threshold";
-
 // ------------------------------------------------------------------------------
 
 depth_image_masking::depth_image_masking() noexcept :
-    filter(m_signals)
+    filter(has_signals::signals())
 {
-    new_slot(SET_BACKGROUND_SLOT, &depth_image_masking::set_background, this);
-    new_slot(SET_THRESHOLD_SLOT, &depth_image_masking::set_threshold, this);
+    new_slot(slots::SET_BACKGROUND, &depth_image_masking::set_background, this);
 }
 
 // ------------------------------------------------------------------------------
@@ -68,7 +61,7 @@ service::connections_t depth_image_masking::auto_connections() const
 {
     connections_t connections;
 
-    connections.push(DEPTH_IMAGE_KEY, data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(DEPTH_IMAGE_KEY, data::image::signals::BUFFER_MODIFIED, service::slots::UPDATE);
 
     return connections;
 }
@@ -90,7 +83,8 @@ void depth_image_masking::updating()
         cv::Mat cv_masked_depth;
         cv_depth_image.copyTo(cv_masked_depth, m_cv_mask_image);
 
-        cv::Mat cv_foreground_image = (cv_masked_depth < (m_cv_depth_mask_image - m_threshold));
+        cv::Mat cv_foreground_image = (cv_masked_depth
+                                       < (m_cv_depth_mask_image - static_cast < double > (*m_threshold)));
 
         cv::Mat morph_elem = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(7, 7));
         cv::dilate(cv_foreground_image, cv_foreground_image, morph_elem);
@@ -104,12 +98,9 @@ void depth_image_masking::updating()
 
         io::opencv::image::copy_from_cv(*foreground_image, cv_masked_video);
 
-        const auto sig = foreground_image->signal<data::image::buffer_modified_signal_t>(
-            data::image::BUFFER_MODIFIED_SIG
-        );
-        sig->async_emit();
+        foreground_image->async_emit(data::image::signals::BUFFER_MODIFIED);
 
-        this->signal<signals::computed_t>(signals::COMPUTED)->async_emit();
+        this->async_emit(signals::SUCCEEDED);
     }
 }
 
@@ -145,13 +136,6 @@ void depth_image_masking::set_background()
 
         cv_depth_image.copyTo(m_cv_depth_mask_image, m_cv_mask_image);
     }
-}
-
-// ------------------------------------------------------------------------------
-
-void depth_image_masking::set_threshold(int _threshold)
-{
-    m_threshold = _threshold;
 }
 
 // ------------------------------------------------------------------------------

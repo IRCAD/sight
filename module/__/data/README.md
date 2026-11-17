@@ -6,7 +6,8 @@ This module contains contains several interfaces for data management in XML conf
 
 - **copy**: copies an object and updates its own objects or the defined target.
 - **insert_fiducials**: inserts fiducials from a fiducials_series into an image_series.
-- **manage**: manages an object (add/swap/remove) into a container object (map, vector, series_set).
+- **manage**: manages objects (add/swap/remove) in a container object (map, vector, series_set). Its `add` slot
+  also merges the contents of a source `series_set` into a target `series_set`.
 - **SeriesSignals**: emits a signal for each added series (the signal contains the added series)
 - **select_object**: registers/unregister the object given by the slots.
 - **SGetImage**: extracts an image from a image series.

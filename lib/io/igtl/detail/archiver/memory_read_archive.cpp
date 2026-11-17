@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,18 +22,21 @@
 
 #include "io/igtl/detail/archiver/memory_read_archive.hpp"
 
+#include <algorithm>
 #include <io/zip/exception/read.hpp>
 
 #include <archive_entry.h>
 
 #include <boost/iostreams/stream.hpp>
 
-#include <algorithm>
 #include <array>
 #include <memory>
 #include <utility>
 
 namespace sight::io::igtl::detail::archiver
+{
+
+namespace
 {
 
 /**
@@ -76,6 +79,8 @@ private:
     buffer_cs_ptr m_content;
 };
 
+} // namespace
+
 //-----------------------------------------------------------------------------
 
 std::streamsize memory_archive_source::read(char* _s, std::streamsize _n)
@@ -83,16 +88,17 @@ std::streamsize memory_archive_source::read(char* _s, std::streamsize _n)
     std::size_t old_read_index = 0;
     std::size_t end_index      = 0;
 
-    end_index = std::size_t(std::int64_t(m_read_index) + _n);
-    if(end_index > m_content->size())
-    {
-        end_index = m_content->size();
-    }
+    end_index = static_cast<std::size_t>(static_cast<std::int64_t>(m_read_index) + _n);
+    end_index = std::min(end_index, m_content->size());
 
-    std::copy(m_content->begin() + std::int64_t(m_read_index), m_content->begin() + std::int64_t(end_index), _s);
+    std::copy(
+        m_content->begin() + static_cast<std::int64_t>(m_read_index),
+        m_content->begin() + static_cast<std::int64_t>(end_index),
+        _s
+    );
     old_read_index = m_read_index;
     m_read_index   = end_index;
-    return std::int64_t(end_index - old_read_index);
+    return static_cast<std::int64_t>(end_index - old_read_index);
 }
 
 //-----------------------------------------------------------------------------
@@ -102,8 +108,6 @@ memory_read_archive::memory_read_archive(const char* _buffer, const std::size_t 
     m_buffer(_buffer),
     m_archive(archive_read_new())
 {
-    SPTR(boost::iostreams::stream<memory_archive_source>) is;
-    std::string filename;
     struct archive_entry* entry = nullptr;
     buffer_s_ptr file_content;
 
@@ -122,9 +126,9 @@ memory_read_archive::memory_read_archive(const char* _buffer, const std::size_t 
     while((archive_read_next_header(m_archive, &entry)) == ARCHIVE_OK)
     {
         file_content = std::make_shared<std::vector<char> >();
-        filename     = std::string(archive_entry_pathname(entry));
+        const auto filename = std::string(archive_entry_pathname(entry));
         this->read_entry(file_content);
-        is                  = std::make_shared<boost::iostreams::stream<memory_archive_source> >(file_content);
+        auto is = std::make_shared<boost::iostreams::stream<memory_archive_source> >(file_content);
         m_streams[filename] = is;
     }
 
@@ -157,9 +161,9 @@ memory_read_archive::~memory_read_archive()
 
 //-----------------------------------------------------------------------------
 
-SPTR(std::istream) memory_read_archive::get_file(const std::filesystem::path& _path)
+sight::sptr<std::istream> memory_read_archive::get_file(const std::filesystem::path& _path)
 {
-    if(m_streams.find(_path.string()) != m_streams.end())
+    if(m_streams.contains(_path.string()))
     {
         return m_streams[_path.string()];
     }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,63 +19,70 @@
  *
  ***********************************************************************/
 
-#include "double_click_on_scene.hpp"
+#include "test.hpp"
 
 #include <QAction>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::sight_viewer::uit::double_click_on_scene);
+#include <doctest/doctest.h>
 
 namespace sight::sight_viewer::uit
 {
 
+TEST_SUITE("sight_viewer")
+{
 //------------------------------------------------------------------------------
 
-void double_click_on_scene::test()
-{
-    start(
-        "double_click_on_scene",
-        [](sight::ui::test::tester& _tester)
-        {
-            // Initial situation: the 3D scene is maximized
-            _tester.take(
-                std::to_string(__LINE__) + ": ogre scene",
-                [&_tester]() -> QObject* {return _tester.get_main_window()->findChild<QWidget*>("scene_srv");});
-
-            QSize size;
-
-            _tester.doubt<QWidget*>(
-                std::to_string(__LINE__) + ": Get initial maximized size",
-                [&size](QWidget* _obj)
+    TEST_CASE_FIXTURE(test, "double_click_on_scene")
+    {
+        const std::string failure_message = start(
+            "double_click_on_scene",
+            [](sight::ui::test::tester& _tester)
             {
-                size = _obj->size();
-                return size.isValid();
-            });
+                // Initial situation: the 3D scene is maximized
+                _tester.take("main 3D view", "top_scenes_view/1");
+                _tester.yields(std::to_string(__LINE__) + ": ogre scene", "scene_srv");
 
-            // Double click on the main scene
-            _tester.interact(std::make_unique<sight::ui::test::mouse_double_click>());
+                QSize size;
 
-            // The 3D scene is restored
-            _tester.doubt<QWidget*>(
-                std::to_string(__LINE__) + ": Check current size < initial size",
-                [&size](QWidget* _obj)
-            {
-                const auto& current_size = _obj->size();
-                return current_size.width() * current_size.height() < size.width() * size.height();
-            });
+                _tester.doubt<QWidget*>(
+                    std::to_string(__LINE__) + ": Get initial maximized size",
+                    [&size](QWidget* _obj)
+                {
+                    size = _obj->size();
+                    return size.isValid();
+                });
 
-            // Double click on the main scene
-            _tester.interact(std::make_unique<sight::ui::test::mouse_double_click>());
+                // Double click on the main scene
+                _tester.interact(std::make_unique<sight::ui::test::mouse_double_click>());
 
-            // The 3D scene is maximized again
-            _tester.doubt<QWidget*>(
-                std::to_string(__LINE__) + ": Check current size == initial size",
-                [&size](QWidget* _obj)
-            {
-                return size == _obj->size();
-            });
-        },
-        true
-    );
-}
+                // The 3D scene is restored
+                _tester.doubt<QWidget*>(
+                    std::to_string(__LINE__) + ": Check current size < initial size",
+                    [&size](QWidget* _obj)
+                {
+                    const auto& current_size = _obj->size();
+                    return current_size.width() * current_size.height() < size.width() * size.height();
+                });
+
+                // Double click on the main scene
+                _tester.interact(std::make_unique<sight::ui::test::mouse_double_click>());
+
+                // The 3D scene is maximized again
+                _tester.doubt<QWidget*>(
+                    std::to_string(__LINE__) + ": Check current size == initial size",
+                    [&size](QWidget* _obj)
+                {
+                    return size == _obj->size();
+                });
+            },
+            true
+        );
+
+        // Runs on the main thread, after start() has returned: the only doctest assertion for
+        // this scenario. See sight::ui::test::base::start().
+        INFO(failure_message);
+        REQUIRE(failure_message.empty());
+    }
+} // TEST_SUITE
 
 } // namespace sight::sight_viewer::uit

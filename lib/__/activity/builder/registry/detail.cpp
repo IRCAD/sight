@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,9 +27,16 @@
 namespace sight::activity::builder::registry
 {
 
+namespace
+{
+
 struct activities_builder_registry_instantiator_tag {};
 
-SPTR(type) get()
+} // namespace
+
+//------------------------------------------------------------------------------
+
+sight::sptr<type> get()
 {
     using instantiator_t = core::lazy_instantiator<type, activities_builder_registry_instantiator_tag>;
     return instantiator_t::get_instance();

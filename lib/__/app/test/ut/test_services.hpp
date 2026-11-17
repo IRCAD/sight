@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,13 +22,12 @@
 
 #pragma once
 
-#include <core/base.hpp>
+#include <app/updater.hpp>
 
 #include <data/image.hpp>
 
-#include <service/macros.hpp>
-
-#include <cppunit/extensions/HelperMacros.h>
+#include <condition_variable>
+#include <mutex>
 
 namespace sight::app::ut
 {
@@ -42,8 +41,7 @@ public:
 
     SIGHT_DECLARE_SERVICE(test_config_service, service::base);
 
-    ~test_config_service() noexcept override =
-        default;
+    ~test_config_service() noexcept override = default;
 
     /// return true if the service is updated with updating() method
     bool is_updated() const
@@ -84,7 +82,7 @@ protected:
         _sstream << "TestConfigService";
     }
 
-    bool m_is_updated {false};
+    bool m_is_updated {false}; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
 };
 
 /**
@@ -98,6 +96,8 @@ public:
 
     ~test1_image() noexcept override =
         default;
+
+protected:
 
     //------------------------------------------------------------------------------
 
@@ -124,6 +124,8 @@ public:
         m_is_updated = true;
     }
 
+public:
+
     data::ptr<data::image, data::access::in> m_input {this, "data", true};
 };
 
@@ -136,7 +138,7 @@ public:
 
     SIGHT_DECLARE_SERVICE(test_order_srv, service::base);
 
-    static unsigned int s_ORDER;
+    static unsigned int s_order;
 
     //------------------------------------------------------------------------------
 
@@ -144,7 +146,16 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void configuring(const config_t&) final
+    unsigned int update_order() const
+    {
+        return m_update_order;
+    }
+
+protected:
+
+    //------------------------------------------------------------------------------
+
+    void configuring(const config_t& /*unused*/) final
     {
     }
 
@@ -164,19 +175,10 @@ public:
 
     void updating() final
     {
-        m_update_order = s_ORDER++;
+        m_update_order = s_order++;
     }
 
-    //------------------------------------------------------------------------------
-
-    unsigned int update_order() const
-    {
-        return m_update_order;
-    }
-
-protected:
-
-    unsigned int m_update_order {0};
+    unsigned int m_update_order {0}; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
 };
 
 class test_reset_order_srv final : public service::base
@@ -189,9 +191,13 @@ public:
 
     ~test_reset_order_srv() noexcept final = default;
 
+//------------------------------------------------------------------------------
+
+protected:
+
     //------------------------------------------------------------------------------
 
-    void configuring(const config_t&) final
+    void configuring(const config_t& /*unused*/) final
     {
     }
 
@@ -211,8 +217,229 @@ public:
 
     void updating() final
     {
-        test_order_srv::s_ORDER = 1;
+        test_order_srv::s_order = 1;
     }
+};
+
+/**
+ * @brief Service used to verify that updaters stop before the services they drive.
+ */
+class test_shutdown_updater final : public app::updater
+{
+public:
+
+    SIGHT_DECLARE_SERVICE(test_shutdown_updater, app::updater);
+
+    //------------------------------------------------------------------------------
+
+    static void reset()
+    {
+        std::scoped_lock lock(s_mutex);
+        s_stopping = false;
+        s_stopped  = false;
+        s_release  = false;
+    }
+
+    //------------------------------------------------------------------------------
+
+    static bool is_stopping()
+    {
+        std::scoped_lock lock(s_mutex);
+        return s_stopping;
+    }
+
+    //------------------------------------------------------------------------------
+
+    static bool is_stopped()
+    {
+        std::scoped_lock lock(s_mutex);
+        return s_stopped;
+    }
+
+    //------------------------------------------------------------------------------
+
+    static void release()
+    {
+        {
+            std::scoped_lock lock(s_mutex);
+            s_release = true;
+        }
+
+        s_condition.notify_all();
+    }
+
+protected:
+
+    //------------------------------------------------------------------------------
+
+    void starting() final
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void stopping() final
+    {
+        std::unique_lock lock(s_mutex);
+        s_stopping = true;
+        s_condition.notify_all();
+        s_condition.wait(lock, []{return s_release;});
+        s_stopped = true;
+    }
+
+    //------------------------------------------------------------------------------
+
+    void updating() final
+    {
+    }
+
+private:
+
+    inline static std::condition_variable s_condition;
+    inline static std::mutex s_mutex;
+    inline static bool s_stopping {false};
+    inline static bool s_stopped {false};
+    inline static bool s_release {false};
+};
+
+/**
+ * @brief Service used to verify that it is stopped after its updater.
+ */
+class test_shutdown_service final : public service::base
+{
+public:
+
+    SIGHT_DECLARE_SERVICE(test_shutdown_service, service::base);
+
+    //------------------------------------------------------------------------------
+
+    static void reset()
+    {
+        std::scoped_lock lock(s_mutex);
+        s_stopped_after_updater = false;
+        s_stopping              = false;
+    }
+
+    //------------------------------------------------------------------------------
+
+    static bool is_stopping()
+    {
+        std::scoped_lock lock(s_mutex);
+        return s_stopping;
+    }
+
+    //------------------------------------------------------------------------------
+
+    static bool stopped_after_updater()
+    {
+        std::scoped_lock lock(s_mutex);
+        return s_stopped_after_updater;
+    }
+
+protected:
+
+    //------------------------------------------------------------------------------
+
+    void configuring(const config_t& /*unused*/) final
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void starting() final
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void stopping() final
+    {
+        std::scoped_lock lock(s_mutex);
+        s_stopping              = true;
+        s_stopped_after_updater = test_shutdown_updater::is_stopped();
+    }
+
+    //------------------------------------------------------------------------------
+
+    void updating() final
+    {
+    }
+
+private:
+
+    inline static std::mutex s_mutex;
+    inline static bool s_stopping {false};
+    inline static bool s_stopped_after_updater {false};
+};
+
+/**
+ * @brief Service whose update is held until explicitly released.
+ */
+class test_blocking_update_service final : public service::base
+{
+public:
+
+    SIGHT_DECLARE_SERVICE(test_blocking_update_service, service::base);
+
+    //------------------------------------------------------------------------------
+
+    static void reset()
+    {
+        std::scoped_lock lock(s_mutex);
+        s_updating = false;
+        s_release  = false;
+    }
+
+    //------------------------------------------------------------------------------
+
+    static bool is_updating()
+    {
+        std::scoped_lock lock(s_mutex);
+        return s_updating;
+    }
+
+    //------------------------------------------------------------------------------
+
+    static void release()
+    {
+        {
+            std::scoped_lock lock(s_mutex);
+            s_release = true;
+        }
+
+        s_condition.notify_all();
+    }
+
+protected:
+
+    //------------------------------------------------------------------------------
+
+    void starting() final
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void stopping() final
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void updating() final
+    {
+        std::unique_lock lock(s_mutex);
+        s_updating = true;
+        s_condition.notify_all();
+        s_condition.wait(lock, []{return s_release;});
+    }
+
+private:
+
+    inline static std::condition_variable s_condition;
+    inline static std::mutex s_mutex;
+    inline static bool s_updating {false};
+    inline static bool s_release {false};
 };
 
 } // namespace sight::app::ut

@@ -22,8 +22,6 @@
 
 #include "text_status.hpp"
 
-#include <core/com/slots.hxx>
-
 #include <data/real.hpp>
 
 #include <ui/qt/container/widget.hpp>
@@ -33,21 +31,14 @@
 namespace sight::module::ui::qt
 {
 
-static const core::com::slots::key_t SET_DOUBLE_PARAMETER_SLOT = "set_double_parameter";
-static const core::com::slots::key_t SET_INT_PARAMETER_SLOT    = "set_int_parameter";
-static const core::com::slots::key_t SET_BOOL_PARAMETER_SLOT   = "set_bool_parameter";
-static const core::com::slots::key_t SET_STRING_PARAMETER_SLOT = "set_string_parameter";
-
-//-----------------------------------------------------------------------------
-
 text_status::text_status() :
     m_label_static_text(new QLabel()),
     m_suffix_value(new QLabel())
 {
-    new_slot(SET_DOUBLE_PARAMETER_SLOT, &text_status::set_double_parameter, this);
-    new_slot(SET_INT_PARAMETER_SLOT, &text_status::set_int_parameter, this);
-    new_slot(SET_BOOL_PARAMETER_SLOT, &text_status::set_bool_parameter, this);
-    new_slot(SET_STRING_PARAMETER_SLOT, &text_status::set_string_parameter, this);
+    new_slot(slots::SET_DOUBLE_PARAMETER, &text_status::set_double_parameter, this);
+    new_slot(slots::SET_INT_PARAMETER, &text_status::set_int_parameter, this);
+    new_slot(slots::SET_BOOL_PARAMETER, &text_status::set_bool_parameter, this);
+    new_slot(slots::SET_STRING_PARAMETER, &text_status::set_string_parameter, this);
 }
 
 //------------------------------------------------------------------------------
@@ -83,7 +74,13 @@ void text_status::configuring()
     m_label_value = new QLabel();
     m_label_value->setObjectName(service_id);
     m_label_value->setStyleSheet(m_label_value->styleSheet() + stylesheet);
+
     m_label_value->setWordWrap(word_wrap);
+    // Wrapped values fill the row instead of sharing spare width with empty prefix/suffix labels.
+    if(word_wrap)
+    {
+        m_label_value->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+    }
 
     if(const auto label = config.get_optional<std::string>("label"); label.has_value())
     {
@@ -123,7 +120,7 @@ void text_status::starting()
 service::connections_t text_status::auto_connections() const
 {
     service::connections_t connections;
-    connections.push(STRING_INPUT, data::object::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(STRING_INPUT, data::signals::MODIFIED, service::slots::UPDATE);
 
     return connections;
 }

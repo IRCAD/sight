@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,10 +37,10 @@ class SIGHT_CORE_CLASS_API base_object : public std::enable_shared_from_this<bas
 public:
 
     SIGHT_DECLARE_CLASS(base_object);
+    SIGHT_CORE_API virtual ~base_object();
 
 protected:
 
-    SIGHT_CORE_API virtual ~base_object();
     using std::enable_shared_from_this<base_object>::shared_from_this;
 };
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024 IRCAD France
+ * Copyright (C) 2024-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,8 +23,6 @@
 
 #include "detail/update_registry.hpp"
 
-#include <data/object.hpp>
-
 #include <boost/thread/futures/wait_for_all.hpp>
 
 namespace sight::app
@@ -34,9 +32,11 @@ namespace sight::app
 
 void update_parallel::starting()
 {
-    if(!m_parent.empty())
+    this->reset_stop_request();
+
+    if(!this->parent().empty())
     {
-        app::register_updater(m_parent, this->get_sptr());
+        app::register_updater(this->parent(), this->get_sptr());
     }
 }
 
@@ -44,9 +44,9 @@ void update_parallel::starting()
 
 void update_parallel::stopping()
 {
-    if(!m_parent.empty())
+    if(!this->parent().empty())
     {
-        app::unregister_updater(m_parent);
+        app::unregister_updater(this->parent());
     }
 }
 
@@ -55,10 +55,10 @@ void update_parallel::stopping()
 void update_parallel::updating()
 {
     std::vector<std::pair<sight::service::base::sptr, std::string> > services;
-    for(const auto& element : m_elements)
+    for(const auto& element : this->elements())
     {
         sight::service::base::sptr srv;
-        if(element.type == type_t::SERVICE)
+        if(element.type == type_t::service)
         {
             srv = std::dynamic_pointer_cast<sight::service::base>(sight::core::id::get_object(element.uid));
         }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2025 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,19 +22,9 @@
 
 #include "module/ui/qt/metrics/landmarks.hpp"
 
-#include <core/com/signal.hpp>
-#include <core/com/signal.hxx>
-#include <core/com/slot.hpp>
-#include <core/com/slot.hxx>
-#include <core/com/slots.hpp>
-#include <core/com/slots.hxx>
-
+#include <QHBoxLayout>
 #include <data/fiducials_series.hpp>
-#include <data/helper/fiducials_series.hpp>
 #include <data/image_series.hpp>
-
-#include <geometry/data/matrix4.hpp>
-
 #include <ui/qt/container/widget.hpp>
 
 #include <QColorDialog>
@@ -81,12 +71,14 @@ struct fiducials_group
     point_container_t m_points;
 };
 
+} // namespace
+
 /**
  * Get a fiducial set as a structure
  * @param _group_name The name of the group to fetch
  * @return The fiducial set as a structure
  */
-[[nodiscard]] std::optional<fiducials_group> get_group(
+[[nodiscard]] static std::optional<fiducials_group> get_group(
     const data::image_series& _image_series,
     const std::string& _group_name
 )
@@ -140,47 +132,34 @@ struct fiducials_group
     return group;
 }
 
-} // namespace
-
 //------------------------------------------------------------------------------
 
 static const char* s_group_property_name = "group";
 static const int GROUP_NAME_ROLE         = Qt::UserRole + 1;
 
-static const core::com::slots::key_t ADD_POINT_SLOT      = "add_point";
-static const core::com::slots::key_t MODIFY_POINT_SLOT   = "modifyPoint";
-static const core::com::slots::key_t SELECT_POINT_SLOT   = "selectPoint";
-static const core::com::slots::key_t DESELECT_POINT_SLOT = "deselectPoint";
-static const core::com::slots::key_t REMOVE_POINT_SLOT   = "removePoint";
-static const core::com::slots::key_t ADD_GROUP_SLOT      = "add_group";
-static const core::com::slots::key_t REMOVE_GROUP_SLOT   = "remove_group";
-static const core::com::slots::key_t MODIFY_GROUP_SLOT   = "modifyGroup";
-static const core::com::slots::key_t RENAME_GROUP_SLOT   = "rename_group";
-
-static const std::string SIZE_CONFIG     = "size";
-static const std::string OPACITY_CONFIG  = "opacity";
-static const std::string ADVANCED_CONFIG = "advanced";
-static const std::string TEXT_CONFIG     = "text";
-
-const core::com::signals::key_t landmarks::SEND_WORLD_COORD = "send_world_coord";
-const core::com::signals::key_t landmarks::GROUP_SELECTED   = "group_selected";
+static const std::string SIZE_CONFIG           = "size";
+static const std::string OPACITY_CONFIG        = "opacity";
+static const std::string ADVANCED_CONFIG       = "advanced";
+static const std::string TEXT_CONFIG           = "text";
+static const std::string EXCLUDED_GROUP_CONFIG = "excluded_group";
 
 //------------------------------------------------------------------------------
 
 landmarks::landmarks() noexcept
 {
-    new_slot(ADD_POINT_SLOT, &landmarks::add_point, this);
-    new_slot(MODIFY_POINT_SLOT, &landmarks::modify_point, this);
-    new_slot(SELECT_POINT_SLOT, &landmarks::select_point, this);
-    new_slot(DESELECT_POINT_SLOT, &landmarks::deselect_point, this);
-    new_slot(ADD_GROUP_SLOT, &landmarks::add_group, this);
-    new_slot(REMOVE_POINT_SLOT, &landmarks::remove_point, this);
-    new_slot(REMOVE_GROUP_SLOT, &landmarks::remove_group, this);
-    new_slot(MODIFY_GROUP_SLOT, &landmarks::modify_group, this);
-    new_slot(RENAME_GROUP_SLOT, &landmarks::rename_group, this);
+    new_slot(slots::ADD_POINT, &landmarks::add_point, this);
+    new_slot(slots::MODIFY_POINT, &landmarks::modify_point, this);
+    new_slot(slots::SELECT_POINT, &landmarks::select_point, this);
+    new_slot(slots::DESELECT_POINT, &landmarks::deselect_point, this);
+    new_slot(slots::ADD_GROUP, &landmarks::add_group, this);
+    new_slot(slots::REMOVE_POINT, &landmarks::remove_point, this);
+    new_slot(slots::REMOVE_GROUP, &landmarks::remove_group, this);
+    new_slot(slots::MODIFY_GROUP, &landmarks::modify_group, this);
+    new_slot(slots::RENAME_GROUP, &landmarks::rename_group, this);
 
-    new_signal<world_coordinates_signal_t>(SEND_WORLD_COORD);
-    new_signal<group_selected_signal_t>(GROUP_SELECTED);
+    new_signal<signals::world_coordinates_t>(signals::SEND_WORLD_COORD);
+    new_signal<signals::group_selected_t>(signals::GROUP_SELECTED);
+    new_signal<signals::groups_removed_from_editor_t>(signals::GROUPS_REMOVED_FROM_EDITOR);
 }
 
 //------------------------------------------------------------------------------
@@ -205,7 +184,8 @@ void landmarks::configuring()
 
     m_advanced_mode = config.get<bool>(ADVANCED_CONFIG, false);
 
-    m_text = config.get<std::string>(TEXT_CONFIG, m_text);
+    m_text           = config.get<std::string>(TEXT_CONFIG, m_text);
+    m_excluded_group = config.get<std::string>(EXCLUDED_GROUP_CONFIG, "");
 }
 
 //------------------------------------------------------------------------------
@@ -259,7 +239,6 @@ void landmarks::starting()
     grid_layout->addWidget(m_opacity_slider, 2, 1);
     grid_layout->addWidget(shape_label, 3, 0);
     grid_layout->addWidget(m_shape_selector, 3, 1);
-    grid_layout->addWidget(m_remove_button, 4, 1);
 
     m_group_editor_widget = new QWidget();
     m_group_editor_widget->setLayout(grid_layout);
@@ -272,12 +251,17 @@ void landmarks::starting()
         layout->addWidget(helper_text_label);
     }
 
+    layout->addWidget(m_tree_widget);
+    auto* const buttons_layout = new QHBoxLayout();
+
     if(m_advanced_mode)
     {
-        layout->addWidget(m_new_group_button);
+        buttons_layout->addWidget(m_new_group_button);
     }
 
-    layout->addWidget(m_tree_widget);
+    buttons_layout->addWidget(m_remove_button);
+
+    layout->addLayout(buttons_layout);
     layout->addWidget(m_group_editor_widget);
     m_group_editor_widget->setDisabled(true);
 
@@ -296,7 +280,7 @@ void landmarks::starting()
 
     this->updating();
 
-    SIGHT_ASSERT("'imageSeries' parameter must be set.", m_image_series.const_lock() != nullptr);
+    SIGHT_ASSERT("'image_series' parameter must be set.", m_image_series.const_lock() != nullptr);
     if(auto image_series = m_image_series.lock())
     {
         image_series->get_fiducials()->set_group_names_for_point_fiducials();
@@ -309,16 +293,16 @@ service::connections_t landmarks::auto_connections() const
 {
     connections_t connections;
 
-    connections.push(IMAGE_SERIES_INOUT, data::image_series::MODIFIED_SIG, service::slots::UPDATE);
-    connections.push(IMAGE_SERIES_INOUT, data::has_fiducials::signals::POINT_ADDED, ADD_POINT_SLOT);
-    connections.push(IMAGE_SERIES_INOUT, data::has_fiducials::signals::POINT_MODIFIED, MODIFY_POINT_SLOT);
-    connections.push(IMAGE_SERIES_INOUT, data::has_fiducials::signals::POINT_SELECTED, SELECT_POINT_SLOT);
-    connections.push(IMAGE_SERIES_INOUT, data::has_fiducials::signals::POINT_DESELECTED, DESELECT_POINT_SLOT);
-    connections.push(IMAGE_SERIES_INOUT, data::has_fiducials::signals::GROUP_ADDED, ADD_GROUP_SLOT);
-    connections.push(IMAGE_SERIES_INOUT, data::has_fiducials::signals::GROUP_REMOVED, REMOVE_GROUP_SLOT);
-    connections.push(IMAGE_SERIES_INOUT, data::has_fiducials::signals::POINT_REMOVED, REMOVE_POINT_SLOT);
-    connections.push(IMAGE_SERIES_INOUT, data::has_fiducials::signals::GROUP_MODIFIED, MODIFY_GROUP_SLOT);
-    connections.push(IMAGE_SERIES_INOUT, data::has_fiducials::signals::GROUP_RENAMED, RENAME_GROUP_SLOT);
+    connections.push(IMAGE_SERIES_INOUT, data::signals::MODIFIED, service::slots::UPDATE);
+    connections.push(IMAGE_SERIES_INOUT, data::has_fiducials::signals::POINT_ADDED, slots::ADD_POINT);
+    connections.push(IMAGE_SERIES_INOUT, data::has_fiducials::signals::POINT_MODIFIED, slots::MODIFY_POINT);
+    connections.push(IMAGE_SERIES_INOUT, data::has_fiducials::signals::POINT_SELECTED, slots::SELECT_POINT);
+    connections.push(IMAGE_SERIES_INOUT, data::has_fiducials::signals::POINT_DESELECTED, slots::DESELECT_POINT);
+    connections.push(IMAGE_SERIES_INOUT, data::has_fiducials::signals::GROUP_ADDED, slots::ADD_GROUP);
+    connections.push(IMAGE_SERIES_INOUT, data::has_fiducials::signals::GROUP_REMOVED, slots::REMOVE_GROUP);
+    connections.push(IMAGE_SERIES_INOUT, data::has_fiducials::signals::POINT_REMOVED, slots::REMOVE_POINT);
+    connections.push(IMAGE_SERIES_INOUT, data::has_fiducials::signals::GROUP_MODIFIED, slots::MODIFY_GROUP);
+    connections.push(IMAGE_SERIES_INOUT, data::has_fiducials::signals::GROUP_RENAMED, slots::RENAME_GROUP);
 
     return connections;
 }
@@ -337,6 +321,11 @@ void landmarks::updating()
 
         for(const auto& name : image_series->get_fiducials()->get_point_fiducials_group_names())
         {
+            if(name == m_excluded_group)
+            {
+                continue;
+            }
+
             this->add_group(name);
             this->add_point(name);
         }
@@ -391,8 +380,8 @@ void landmarks::on_color_button()
         const std::string group_name = color_button->property(s_group_property_name).value<QString>().toStdString();
 
         sight::vec4f_t color = {
-            float(color_qt.red()) / 255.F, float(color_qt.green()) / 255.F,
-            float(color_qt.blue()) / 255.F, float(color_qt.alpha()) / 255.F
+            static_cast<float>(color_qt.red()) / 255.F, static_cast<float>(color_qt.green()) / 255.F,
+            static_cast<float>(color_qt.blue()) / 255.F, static_cast<float>(color_qt.alpha()) / 255.F
         };
 
         {
@@ -408,7 +397,7 @@ void landmarks::on_color_button()
             image_series->get_fiducials()->set_color(fiducial_set->second, color);
             image_series->async_emit(this, data::has_fiducials::signals::GROUP_MODIFIED, group_name);
         }
-        m_opacity_slider->setValue(static_cast<int>(color[3] * float(m_opacity_slider->maximum())));
+        m_opacity_slider->setValue(static_cast<int>(color[3] * static_cast<float>(m_opacity_slider->maximum())));
     }
 }
 
@@ -431,6 +420,10 @@ void landmarks::on_group_name_edited(QTreeWidgetItem* _item, int _column)
             QMessageBox msg_box(QMessageBox::Warning, "No group name", msg, QMessageBox::Ok);
             msg_box.exec();
 
+            _item->setText(0, old_group_name);
+        }
+        else if(new_group_name.toStdString() == m_excluded_group)
+        {
             _item->setText(0, old_group_name);
         }
         else if(old_group_name != new_group_name)
@@ -577,18 +570,18 @@ void landmarks::on_selection_changed(QTreeWidgetItem* _current, QTreeWidgetItem*
             shape_text = group->m_shape == shape::cube ? "Cube" : "Sphere";
             opacity    = group->m_color[3];
 
-            signal<group_selected_signal_t>(GROUP_SELECTED)->async_emit(group_name);
+            async_emit(signals::GROUP_SELECTED, group_name);
         }
 
         // Set widget values
         m_size_slider->setValue(size);
         m_visibility_checkbox->setChecked(visible);
         m_shape_selector->setCurrentText(shape_text);
-        m_opacity_slider->setValue(static_cast<int>(opacity * float(m_opacity_slider->maximum())));
+        m_opacity_slider->setValue(static_cast<int>(opacity * static_cast<float>(m_opacity_slider->maximum())));
     }
     else
     {
-        signal<group_selected_signal_t>(GROUP_SELECTED)->async_emit("");
+        async_emit(signals::GROUP_SELECTED, "");
     }
 
     m_group_editor_widget->setDisabled(_current == nullptr);
@@ -652,7 +645,8 @@ void landmarks::update_current_landmark(sight::vec3d_t& _world_coord) const
         " Send world coordinates [" << _world_coord[0] << ", " << _world_coord[1]
         << ", " << _world_coord[2] << " ]"
     );
-    this->signal<world_coordinates_signal_t>(SEND_WORLD_COORD)->async_emit(
+    this->async_emit(
+        signals::SEND_WORLD_COORD,
         _world_coord[0],
         _world_coord[1],
         _world_coord[2]
@@ -663,7 +657,7 @@ void landmarks::update_current_landmark(sight::vec3d_t& _world_coord) const
     if(current_landmark)
     {
         *current_landmark = _world_coord;
-        current_landmark->async_emit(sight::data::object::MODIFIED_SIG);
+        current_landmark->async_emit(sight::data::signals::MODIFIED);
     }
 }
 
@@ -819,7 +813,7 @@ void landmarks::on_remove_selection()
     {
         const int top_level_index = m_tree_widget->indexOfTopLevelItem(item);
 
-        auto image_series = m_image_series.lock();
+        const auto image_series = m_image_series.lock();
         SIGHT_ASSERT(std::quoted(IMAGE_SERIES_INOUT) << " does not exists.", image_series != nullptr);
 
         if(m_advanced_mode && top_level_index == -1) // Delete point
@@ -838,12 +832,16 @@ void landmarks::on_remove_selection()
         else
         {
             const std::string& group_name = item->text(0).toStdString();
-
             image_series->get_fiducials()->remove_group(group_name);
 
             delete m_tree_widget->takeTopLevelItem(top_level_index);
 
             image_series->async_emit(this, data::has_fiducials::signals::GROUP_REMOVED, group_name);
+
+            if(m_tree_widget->topLevelItemCount() == 0)
+            {
+                this->async_emit(signals::GROUPS_REMOVED_FROM_EDITOR);
+            }
         }
 
         m_tree_widget->setCurrentItem(nullptr);
@@ -857,6 +855,11 @@ void landmarks::on_remove_selection()
 
 void landmarks::add_point(std::string _group_name) const
 {
+    if(_group_name == m_excluded_group)
+    {
+        return;
+    }
+
     if(m_advanced_mode)
     {
         m_tree_widget->blockSignals(true);
@@ -901,6 +904,11 @@ void landmarks::add_point(std::string _group_name) const
 
 void landmarks::add_group(std::string _name) const
 {
+    if(_name == m_excluded_group)
+    {
+        return;
+    }
+
     QColor color;
     {
         const auto image_series = m_image_series.const_lock();
@@ -937,6 +945,11 @@ void landmarks::add_group(std::string _name) const
 
 void landmarks::remove_group(std::string _name) const
 {
+    if(_name == m_excluded_group)
+    {
+        return;
+    }
+
     try
     {
         QTreeWidgetItem* const item = get_group_item(_name);
@@ -957,6 +970,11 @@ void landmarks::remove_group(std::string _name) const
 
 void landmarks::remove_point(std::string _group_name, std::size_t _index) const
 {
+    if(_group_name == m_excluded_group)
+    {
+        return;
+    }
+
     m_tree_widget->blockSignals(true);
 
     QTreeWidgetItem* const item = get_group_item(_group_name);
@@ -972,6 +990,11 @@ void landmarks::remove_point(std::string _group_name, std::size_t _index) const
 
 void landmarks::rename_group(std::string _old_name, std::string _new_name) const
 {
+    if(_old_name == m_excluded_group)
+    {
+        return;
+    }
+
     m_tree_widget->blockSignals(true);
 
     const QString qt_new_name   = QString::fromStdString(_new_name);
@@ -989,6 +1012,11 @@ void landmarks::rename_group(std::string _old_name, std::string _new_name) const
 
 void landmarks::modify_group(std::string _name) const
 {
+    if(_name == m_excluded_group)
+    {
+        return;
+    }
+
     QTreeWidgetItem* const item = get_group_item(_name);
 
     item->setText(0, _name.c_str());
@@ -1030,7 +1058,7 @@ void landmarks::modify_group(std::string _name) const
         m_shape_selector->setCurrentText(shape_text);
 
         const float opacity = group.m_color[3];
-        m_opacity_slider->setValue(static_cast<int>(opacity * float(m_opacity_slider->maximum())));
+        m_opacity_slider->setValue(static_cast<int>(opacity * static_cast<float>(m_opacity_slider->maximum())));
     }
 }
 
@@ -1038,6 +1066,11 @@ void landmarks::modify_group(std::string _name) const
 
 void landmarks::modify_point(std::string _group_name, std::size_t _index) const
 {
+    if(_group_name == m_excluded_group)
+    {
+        return;
+    }
+
     if(m_advanced_mode)
     {
         auto const item_list = m_tree_widget->findItems(QString::fromStdString(_group_name), Qt::MatchExactly);
@@ -1075,6 +1108,11 @@ void landmarks::modify_point(std::string _group_name, std::size_t _index) const
 
 void landmarks::select_point(std::string _group_name, std::size_t _index) const
 {
+    if(_group_name == m_excluded_group)
+    {
+        return;
+    }
+
     m_tree_widget->blockSignals(true);
 
     QTreeWidgetItem* current_item = get_group_item(_group_name);
@@ -1117,7 +1155,7 @@ void landmarks::select_point(std::string _group_name, std::size_t _index) const
     m_size_slider->setValue(size);
     m_visibility_checkbox->setChecked(visible);
     m_shape_selector->setCurrentText(shape_text);
-    m_opacity_slider->setValue(static_cast<int>(opacity * float(m_opacity_slider->maximum())));
+    m_opacity_slider->setValue(static_cast<int>(opacity * static_cast<float>(m_opacity_slider->maximum())));
 
     m_group_editor_widget->setEnabled(true);
     m_tree_widget->blockSignals(false);
@@ -1125,8 +1163,13 @@ void landmarks::select_point(std::string _group_name, std::size_t _index) const
 
 //------------------------------------------------------------------------------
 
-void landmarks::deselect_point(std::string /*unused*/, std::size_t /*unused*/) const
+void landmarks::deselect_point(std::string _group_name, std::size_t /*unused*/) const
 {
+    if(_group_name == m_excluded_group)
+    {
+        return;
+    }
+
     m_tree_widget->blockSignals(true);
     m_tree_widget->setCurrentItem(nullptr);
     m_group_editor_widget->setDisabled(true);

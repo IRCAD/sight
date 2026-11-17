@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2025 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,12 +32,12 @@
 
 #include <vector>
 
-namespace sight::core::progress
+namespace sight::core::notification
 {
 
 class observer;
 
-} // namespace sight::core::progress
+} // namespace sight::core::notification
 
 namespace sight::io::vtk
 {
@@ -47,8 +47,8 @@ namespace sight::io::vtk
  *
  * Read a Bitmap image using the VTK library
  */
-class bitmap_image_reader : public reader::generic_object_reader<data::image>,
-                            public core::location::single_file
+class SIGHT_IO_VTK_CLASS_API bitmap_image_reader : public reader::generic_object_reader<data::image>,
+                                                   public core::location::single_file
 {
 public:
 
@@ -60,7 +60,7 @@ public:
     SIGHT_IO_VTK_API bitmap_image_reader();
 
     //! @brief Reading operator.
-    SIGHT_IO_VTK_API void read(SPTR(sight::core::progress::observer) _progress) override;
+    SIGHT_IO_VTK_API void read(sight::sptr<sight::core::notification::observer> _progress) override;
 
     /// @return The available file extensions for loading bitmap images.
     SIGHT_IO_VTK_API std::string extension() const override;

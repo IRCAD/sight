@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2025 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include <data/image_series.hpp>
-
 #include <io/__/service/reader.hpp>
 
 #include <filesystem>
@@ -37,40 +35,37 @@ namespace sight::module::io::vtk
  * Service reading an image series using the fwVtkIO lib.
  *
  * @section Signals Signals
- * - \b monitor_created(SPTR(core::progress::monitor)): emitted to display a progress bar while the image is loading,
+ * - \b notification_created(core::notification::base::sptr): emitted to display a progress bar while the
+ * image is
+ * loading,
  * it should be connected to a progress bar
  *
  * @section XML Configuration
  * @code{.xml}
     <service uid="..." type="sight::module::io::vtk::image_series_reader">
-        <inout key="data" uid="imageSeries" />
-        <file>@path/to/file</file>
+        <data read="${imageSeries}" />
+        <path file="@path/to/file" />
     </service>
  * @endcode
  *
  * @subsection In-Out In-Out
- * - \b data [sight::data::image_series]: ImageSeries containing read image
+ * - \b data.read [sight::data::image_series]: ImageSeries containing read image
  *
  */
 class image_series_reader : public sight::io::service::reader
 {
 public:
 
-    /**
-     * @brief Constructor. Do nothing.
-     */
-    image_series_reader() noexcept;
-
     SIGHT_DECLARE_SERVICE(image_series_reader, sight::io::service::reader);
 
-    /**
-     * @brief Configure the image path.
-     */
-    void open_location_dialog() override;
+    image_series_reader() noexcept;
+    ~image_series_reader() noexcept override = default;
 
-protected:
+    std::vector<std::pair<std::string, std::string> > get_supported_extensions() const override;
 
     sight::io::service::path_type_t get_path_type() const override;
+
+protected:
 
     /**
      * @brief Starting method.

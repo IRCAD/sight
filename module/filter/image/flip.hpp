@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,6 @@
 
 #pragma once
 
-#include <core/com/signal.hpp>
-#include <core/com/slots.hpp>
-
 #include <data/image.hpp>
 
 #include <service/filter.hpp>
@@ -44,52 +41,55 @@ namespace sight::module::filter::image
  *
  * @code{.xml}
        <service type="sight::module::filter::image::flip">
-           <in key="source" uid="..." auto_connect="true" />
-           <out key="target" uid="..." />
+           <input image="${...}" />
+           <output image="${...}" />
        </service>
    @endcode
  * @subsection Input Input
- * - \b source [sight::data::image]: image to flip.
- * @subsection Output Output:
- * - \b target [sight::data::image]: New flipped image.
+ * - \b input.image [sight::data::image]: image to flip.
+ * @subsection In-Out In-Out:
+ * - \b output.image [sight::data::image]: New flipped image.
  */
-class flip : public service::filter
+class flip final : public service::filter
 {
 public:
 
     SIGHT_DECLARE_SERVICE(flip, sight::service::filter);
 
-    static const core::com::slots::key_t FLIP_AXIS_X_SLOT;
-    static const core::com::slots::key_t FLIP_AXIS_Y_SLOT;
-    static const core::com::slots::key_t FLIP_AXIS_Z_SLOT;
+    struct slots
+    {
+        static inline const slot_key_t FLIP_AXIS_X = "flip_axis_x";
+        static inline const slot_key_t FLIP_AXIS_Y = "flip_axis_y";
+        static inline const slot_key_t FLIP_AXIS_Z = "flip_axis_z";
+    };
 
     /// Constructor, does nothing.
     flip();
 
     /// Destructor, does nothing.
-    ~flip() override = default;
+    ~flip() final = default;
 
 protected:
 
     /// Configures the service.
-    void configuring() override;
+    void configuring() final;
 
     /// Does nothing.
-    void starting() override;
+    void starting() final;
 
     /// Does nothing.
-    void stopping() override;
+    void stopping() final;
 
     /// Apply the flip operator.
-    void updating() override;
+    void updating() final;
 
     /**
      * @brief Signal-slot auto-connection proposals
      *
-     * Connect image::MODIFIED_SIG to this::service::slots::UPDATE
-     * Connect image::BUFFER_MODIFIED_SIG to this::service::slots::UPDATE
+     * Connect data::signals::MODIFIED to this::service::slots::UPDATE
+     * Connect image::signals::BUFFER_MODIFIED to this::service::slots::UPDATE
      */
-    connections_t auto_connections() const override;
+    connections_t auto_connections() const final;
 
 private:
 
@@ -105,11 +105,8 @@ private:
     // Store whether to flip or not one of the 3 axis
     std::array<bool, 3> m_flip_axes {{false, false, false}};
 
-    static constexpr std::string_view IMAGE_IN  = "source";
-    static constexpr std::string_view IMAGE_OUT = "target";
-
-    sight::data::ptr<sight::data::image, sight::data::access::in> m_source {this, IMAGE_IN};
-    sight::data::ptr<sight::data::image, sight::data::access::out> m_target {this, IMAGE_OUT};
+    ptr_in<sight::data::image> m_source {this, "input.image"};
+    ptr_inout<sight::data::image> m_target {this, "output.image"};
 };
 
 } // namespace sight::module::filter::image

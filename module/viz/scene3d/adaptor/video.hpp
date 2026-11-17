@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,13 +22,15 @@
 
 #pragma once
 
+#include <data/boolean.hpp>
+
+#include <data/color.hpp>
 #include <data/point_list.hpp>
 
 #include <viz/scene3d/adaptor.hpp>
+#include <viz/scene3d/material/generic.hpp>
 #include <viz/scene3d/texture.hpp>
 #include <viz/scene3d/transfer_function.hpp>
-
-#include <OGRE/OgreTexture.h>
 
 namespace sight::module::viz::scene3d::adaptor
 {
@@ -43,25 +45,25 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b hide(): hides the video.
  * - \b update_tf(): updates the displayed transfer function.
  * - \b update_pl(): updates the displayed point list.
- * - \b set_filtering(bool): toggles between nearest (false) and bilinear (true) filtering.
- * - \b scale(bool): displays the video at its original size (false) or scales the video to the viewport size (true).
  *
  * @section XML XML Configuration
  * @code{.xml}
     <service type="sight::module::viz::scene3d::adaptor::video" auto_connect="true" >
-        <in key="image" uid="..." />
-        <in key="tf" uid="..." />
+        <data image="${...}" />
+        <data tf="${...}" />
         <config texture_name="videoFrame" />
     </service>
    @endcode
  *
  * @subsection Input Input:
- * - \b image [sight::data::image]: frame displayed.
- * - \b tf [sight::data::transfer_function] (optional): a transfer function that can be applied to the video.
- * - \b pointList [sight::data::point_list] (optional): point list to display (coordinates must be in the image space).
+ * - \b data.image [sight::data::image]: frame displayed.
+ * - \b data.tf [sight::data::transfer_function] (optional): a transfer function that can be applied to the video.
+ * - \b data.pointList [sight::data::point_list] (optional): point list to display (coordinates must be in the image
+ * space).
+ *
+ * - \b config.visible [sight::data::boolean] (optional, default=true): the visibility of the adaptor.
  *
  * @subsection Configuration Configuration:
- * - \b visible (optional, bool, default=true): the visibility of the adaptor.
  * - \b material_template (optional, string, default='Billboard_Default'): the name of the base Ogre material for the
  *      internally created material.
  * - \b texture_name (optional, string, default=""): the name of the Ogre texture the mesh will use.
@@ -71,12 +73,20 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b radius (optional, float, default=1.f): billboard radius.
  * - \b displayLabel (optional, bool, default=false): display the label points (default = false).
  * - \b labelColor (optional, hexadecimal, default=0xFFFFFF): color of the label in hexadecimal.
- * - \b color (optional, hexadecimal, default=#FFFFFFFF): color of the texture in hexadecimal.
+ * - \b point_color (optional, hexadecimal, default=#FFFFFFFF): color of the points in hexadecimal.
  * - \b fixedSize (optional, bool, default=false): if true, the billboard will have a fixed size in screen space.
  * - \b query_flags (optional, uint32, default=0x40000000): Picking flags. Points can be picked by pickers with a
  *      matching mask.
  * - \b fontSource (optional, string, default=DejaVuSans.ttf): true_t font (*.ttf) source file.
  * - \b fontSize (optional, unsigned int, default=16): font size in points.
+ *
+ * - \b config.color [sight::data::color] (optional, default=#FFFFFFFF): color of the texture in hexadecimal.
+ *
+ * @subsection ConfigBindings Configuration data bindings
+ * Configuration inputs accept literals or shared data objects.
+ * Default values apply when no configuration value is provided.
+ * - \b config.scaling [sight::data::boolean]: scaling.
+ * - \b config.filtering [sight::data::boolean]: filtering.
  */
 class video final : public sight::viz::scene3d::adaptor
 {
@@ -87,11 +97,10 @@ public:
 
     struct slots
     {
-        inline static const core::com::slots::key_t UPDATE_IMAGE  = "update_image";
-        inline static const core::com::slots::key_t UPDATE_TF     = "update_tf";
-        inline static const core::com::slots::key_t UPDATE_PL     = "update_pl";
-        inline static const core::com::slots::key_t SET_FILTERING = "set_filtering";
-        inline static const core::com::slots::key_t SCALE         = "scale";
+        inline static const slot_key_t UPDATE_IMAGE = "update_image";
+        inline static const slot_key_t UPDATE_TF    = "update_tf";
+        inline static const slot_key_t UPDATE_PL    = "update_pl";
+        inline static const slot_key_t UPDATE_COLOR = "update_color";
     };
 
     /// Creates the adaptor an initialize slots.
@@ -99,6 +108,12 @@ public:
 
     /// Destroys the adaptor.
     ~video() noexcept final = default;
+
+    /**
+     * @brief Sets the video visibility.
+     * @param _visible the visibility status of the video.
+     */
+    void set_visible(bool _visible) final;
 
 protected:
 
@@ -112,11 +127,11 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::image::MODIFIED_SIG of s_IMAGE_INPUT to service::slots::UPDATE
-     * Connect data::image::BUFFER_MODIFIED_SIG of s_IMAGE_INPUT to service::slots::UPDATE
-     * Connect data::transfer_function::MODIFIED_SIG of s_TF_INPUT to :UPDATE_TF_SLOT
-     * Connect data::transfer_function::POINTS_MODIFIED_SIG of s_TF_INPUT to UPDATE_TF_SLOT
-     * Connect data::transfer_function::WINDOWING_MODIFIED_SIG of s_TF_INPUT to UPDATE_TF_SLOT
+     * Connect data::signals::MODIFIED of s_IMAGE_INPUT to service::slots::UPDATE
+     * Connect data::image::signals::BUFFER_MODIFIED of s_IMAGE_INPUT to service::slots::UPDATE
+     * Connect data::signals::MODIFIED of s_TF_INPUT to :UPDATE_TF
+     * Connect data::transfer_function::signals::POINTS_MODIFIED of s_TF_INPUT to UPDATE_TF
+     * Connect data::transfer_function::signals::WINDOWING_MODIFIED of s_TF_INPUT to UPDATE_TF
      */
     service::connections_t auto_connections() const final;
 
@@ -126,13 +141,11 @@ protected:
     /// Removes the actor from the renderer
     void stopping() final;
 
-    /**
-     * @brief Sets the video visibility.
-     * @param _visible the visibility status of the video.
-     */
-    void set_visible(bool _visible) final;
-
 private:
+
+    /// Apply settings from bound data at startup and after external modifications.
+    void apply_config_scaling();
+    void apply_config_filtering();
 
     ///@brief Internal wrapper holding config defines.
     struct config
@@ -145,7 +158,7 @@ private:
         static inline const std::string RADIUS            = CONFIG + "radius";
         static inline const std::string DISPLAY_LABEL     = CONFIG + "displayLabel";
         static inline const std::string LABEL_COLOR       = CONFIG + "labelColor";
-        static inline const std::string COLOR             = CONFIG + "color";
+        static inline const std::string POINT_COLOR       = CONFIG + "point_color";
         static inline const std::string FIXED_SIZE        = CONFIG + "fixedSize";
         static inline const std::string QUERY             = CONFIG + "query_flags";
         static inline const std::string FONT_SOURCE       = CONFIG + "fontSource";
@@ -158,11 +171,8 @@ private:
     /// SLOTS: updates 2D coordinates of the pointlist from image space (bottom left) to video space (center center).
     void update_pl();
 
-    /// SLOTS: whether to use or not bilinear filtering
-    void set_filtering(bool /*filtering*/);
-
-    /// SLOTS: whether to scale or not the video to occupy the whole viewport
-    void scale(bool /*value*/);
+    /// SLOTS: updates the color of the video.
+    void update_color();
 
     /// Updates the current texture filtering option
     void update_texture_filtering();
@@ -174,7 +184,7 @@ private:
     sight::viz::scene3d::texture::sptr m_texture;
 
     /// Contains the Ogre material used to display the video plane.
-    Ogre::MaterialPtr m_material;
+    sight::viz::scene3d::material::generic::uptr m_material;
 
     /// Contains the Ogre mesh used to display the video plane.
     Ogre::MeshPtr m_mesh;
@@ -218,12 +228,6 @@ private:
     /// Defines the attached texture adaptor UID used by the point list.
     std::string m_texture_name;
 
-    /// Defines whether of not the video texture will use bilinear filtering
-    bool m_filtering {false};
-
-    /// Defines whether the video is scaled to the viewport or displayed at its original size.
-    bool m_scaling {true};
-
     /// Whether an update to the current plane is required due to a scaling change or not
     bool m_force_plane_update {false};
 
@@ -237,7 +241,7 @@ private:
     std::string m_label_color;
 
     /// Defines the color of points.
-    std::string m_color;
+    std::string m_point_color;
 
     /// Defines if billboard will have a fixed size in screen space.
     std::string m_fixed_size;
@@ -253,14 +257,22 @@ private:
 
     enum class update_flags : std::uint8_t
     {
-        IMAGE,
-        TF,
-        POINT_LIST
+        image,
+        tf,
+        point_list
     };
 
-    sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, "image"};
-    sight::data::ptr<sight::data::transfer_function, sight::data::access::in> m_tf {this, "tf", true};
-    sight::data::ptr<sight::data::point_list, sight::data::access::in> m_pl {this, "pointList", true};
+    ptr_in<sight::data::image> m_image {this, "data.image"};
+    ptr_in<sight::data::transfer_function> m_tf {this, "data.tf", true};
+    ptr_in<sight::data::point_list> m_pl {this, "data.pointList", true};
+
+    ptr_in<sight::data::color> m_color {this, "config.color", {1.0, 1.0, 1.0, 1.0}};
+
+    /// Typed config.scaling configuration binding.
+    ptr_in<sight::data::boolean> m_scaling {this, "config.scaling", true};
+
+    /// Typed config.filtering configuration binding.
+    ptr_in<sight::data::boolean> m_filtering {this, "config.filtering", false};
 };
 
-} // namespace sight::module::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor

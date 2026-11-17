@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2025 IRCAD France
+ * Copyright (C) 2019-2026 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,16 +24,9 @@
 
 #include "module/viz/scene3d/adaptor/transform.hpp"
 
-#include <core/com/slots.hxx>
-
-#include <data/tools/color.hpp>
-
 #include <viz/scene3d/helper/manual_object.hpp>
-#include <viz/scene3d/helper/scene.hpp>
 #include <viz/scene3d/ogre.hpp>
 #include <viz/scene3d/render.hpp>
-
-#include <OgreNode.h>
 
 namespace sight::module::viz::scene3d::adaptor
 {
@@ -43,8 +36,8 @@ namespace sight::module::viz::scene3d::adaptor
 service::connections_t vector::auto_connections() const
 {
     return {
-        {m_length, data::object::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE},
-        {m_color, data::object::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE}
+        {m_length, data::signals::MODIFIED, adaptor::slots::LAZY_UPDATE},
+        {m_color, data::signals::MODIFIED, adaptor::slots::LAZY_UPDATE}
     };
 }
 

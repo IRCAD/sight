@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,26 +19,18 @@
  *
  ***********************************************************************/
 
-#include "reader_test.hpp"
-
-#include <core/tools/system.hpp>
-#include <core/tools/uuid.hpp>
-
 #include <data/image.hpp>
 
 #include <io/__/service/reader.hpp>
 #include <io/bitmap/backend.hpp>
-#include <io/bitmap/reader.hpp>
 
 #include <service/op.hpp>
 
 #include <utest_data/data.hpp>
-#include <utest_data/generator/image.hpp>
 
 // cspell:ignore nvjpeg sreader
 
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::io::bitmap::ut::reader_test);
+#include <doctest/doctest.h>
 
 namespace sight::module::io::bitmap::ut
 {
@@ -52,18 +44,18 @@ inline static void runreader(
 )
 {
     service::base::sptr sreader = service::add("sight::module::io::bitmap::reader");
-    CPPUNIT_ASSERT_MESSAGE(std::string("Failed to create service 'sight::module::io::bitmap::reader'"), sreader);
-    sreader->set_inout(_image, "data");
+    CHECK_MESSAGE(sreader, std::string("Failed to create service 'sight::module::io::bitmap::reader'"));
+    sreader->set_inout(_image, "data.read");
 
-    CPPUNIT_ASSERT_NO_THROW(sreader->set_config(_config));
-    CPPUNIT_ASSERT_NO_THROW(sreader->configure());
-    CPPUNIT_ASSERT_NO_THROW(sreader->start().get());
-    CPPUNIT_ASSERT_NO_THROW(sreader->update().get());
-    CPPUNIT_ASSERT_NO_THROW(sreader->stop().get());
+    CHECK_NOTHROW(sreader->set_config(_config));
+    CHECK_NOTHROW(sreader->configure());
+    CHECK_NOTHROW(sreader->start().get());
+    CHECK_NOTHROW(sreader->update().get());
+    CHECK_NOTHROW(sreader->stop().get());
     service::remove(sreader);
 
     // Check the result...
-    CPPUNIT_ASSERT_EQUAL(
+    CHECK_EQ(
         _should_fail,
         std::dynamic_pointer_cast<sight::io::service::reader>(sreader)->has_failed()
     );
@@ -82,65 +74,56 @@ inline static void test_enable(data::image::sptr _actual_image, bool _gpu_requir
 
         // Add file
         service::config_t config;
-        config.add("file", filepath.string());
+        config.add("path.<xmlattr>.file", filepath.string());
         config.add("gpu_required", _gpu_required);
 
         // Run the service
         runreader(config, _actual_image);
 
         // Only test if the image exists. Conformance tests are already done in the reader
-        CPPUNIT_ASSERT(_actual_image);
+        CHECK(_actual_image);
 
         const auto& sizes = _actual_image->size();
-        CPPUNIT_ASSERT(sizes[0] > 0 && sizes[1] > 0 && sizes[2] == 0);
+        CHECK(sizes[0] > 0);
+        CHECK(sizes[1] > 0);
+        CHECK(sizes[2] == 0);
     }
 }
 
-//------------------------------------------------------------------------------
-
-void reader_test::setUp()
+TEST_SUITE("sight::module::io::bitmap::reader")
 {
-}
-
-//------------------------------------------------------------------------------
-
-void reader_test::tearDown()
-{
-}
-
-//------------------------------------------------------------------------------
-
-void reader_test::basic_test()
-{
-    const auto& filename = "wild" + sight::io::bitmap::extensions(sight::io::bitmap::backend::libtiff).front();
-    const auto& filepath = utest_data::dir() / "sight" / "image" / "bitmap" / filename;
-
-    service::config_t config;
-    config.add("file", filepath.string());
-
-    auto actual_image = std::make_shared<sight::data::image>();
-    runreader(config, actual_image);
-
-    // Only test if the image exists. Conformance tests are already done in the reader
-    CPPUNIT_ASSERT(actual_image);
-
-    const auto& sizes = actual_image->size();
-    CPPUNIT_ASSERT(sizes[0] > 0 && sizes[1] > 0 && sizes[2] == 0);
-}
-
-//------------------------------------------------------------------------------
-
-void reader_test::config_test()
-{
+    TEST_CASE("basic")
     {
+        const auto& filename = "wild" + sight::io::bitmap::extensions(sight::io::bitmap::backend::libtiff).front();
+        const auto& filepath = utest_data::dir() / "sight" / "image" / "bitmap" / filename;
+
+        service::config_t config;
+        config.add("path.<xmlattr>.file", filepath.string());
+
         auto actual_image = std::make_shared<sight::data::image>();
-        test_enable(actual_image, false);
+        runreader(config, actual_image);
+
+        // Only test if the image exists. Conformance tests are already done in the reader
+        CHECK(actual_image);
+
+        const auto& sizes = actual_image->size();
+        CHECK(sizes[0] > 0);
+        CHECK(sizes[1] > 0);
+        CHECK(sizes[2] == 0);
     }
 
-    if(sight::io::bitmap::nvjpeg())
+    TEST_CASE("config")
     {
-        auto actual_image = std::make_shared<sight::data::image>();
-        test_enable(actual_image, true);
+        {
+            auto actual_image = std::make_shared<sight::data::image>();
+            test_enable(actual_image, false);
+        }
+
+        if(sight::io::bitmap::nvjpeg())
+        {
+            auto actual_image = std::make_shared<sight::data::image>();
+            test_enable(actual_image, true);
+        }
     }
 }
 

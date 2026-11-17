@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2024 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,8 +21,6 @@
 
 #pragma once
 
-#include <sight/viz/scene3d/config.hpp>
-
 #include <data/transfer_function.hpp>
 
 #include <viz/scene3d/detail/resource_manager.hpp>
@@ -37,7 +35,7 @@ class tf_loader
 public:
 
     using return_t = Ogre::Vector3;
-    static return_t load(const sight::data::transfer_function&, Ogre::Texture*);
+    static return_t load(const sight::data::transfer_function& /*_tf*/, Ogre::Texture* /*_texture*/);
 };
 
 //---------------------------------------------------------------------

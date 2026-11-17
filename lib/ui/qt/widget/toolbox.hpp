@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -85,7 +85,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    inline bool operator==(const page& _other) const
+    bool operator==(const page& _other) const
     {
         return widget == _other.widget;
     }
@@ -101,7 +101,7 @@ Q_OBJECT
 
 public:
 
-    SIGHT_UI_QT_API_QT toolbox(QWidget* _parent = nullptr, QColor icon_color = "#000000");
+    SIGHT_UI_QT_API_QT toolbox(QWidget* _parent = nullptr, QColor _icon_color = "#000000");
     SIGHT_UI_QT_API_QT ~toolbox() override;
 
     SIGHT_UI_QT_API_QT int add_item(QWidget* _widget, const QString& _text);

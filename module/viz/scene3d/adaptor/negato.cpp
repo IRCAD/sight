@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,16 +21,11 @@
 
 #include "module/viz/scene3d/adaptor/negato.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
 #include <core/ptree.hpp>
 
 #include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
 
-#include <service/macros.hpp>
-
-#include <viz/scene3d/ogre.hpp>
 #include <viz/scene3d/utils.hpp>
 
 #include <OgreSceneNode.h>
@@ -45,15 +40,16 @@ namespace sight::module::viz::scene3d::adaptor
 service::connections_t negato::auto_connections() const
 {
     service::connections_t connections = {
-        {m_image, data::image::MODIFIED_SIG, slots::UPDATE_IMAGE},
-        {m_image, data::image::BUFFER_MODIFIED_SIG, slots::UPDATE_IMAGE_BUFFER},
-        {m_image, data::image::SLICE_TYPE_MODIFIED_SIG, slots::SLICE_TYPE},
-        {m_image, data::image::SLICE_INDEX_MODIFIED_SIG, slots::SLICE_INDEX},
-        {m_tf, data::transfer_function::MODIFIED_SIG, slots::UPDATE_TF},
-        {m_tf, data::transfer_function::POINTS_MODIFIED_SIG, slots::UPDATE_TF},
-        {m_tf, data::transfer_function::WINDOWING_MODIFIED_SIG, slots::UPDATE_TF},
-        {m_mask, data::image::MODIFIED_SIG, slots::UPDATE_MASK},
-        {m_mask, data::image::BUFFER_MODIFIED_SIG, slots::UPDATE_MASK}
+        {m_image, data::signals::MODIFIED, slots::UPDATE_IMAGE},
+        {m_image, data::image::signals::BUFFER_MODIFIED, slots::UPDATE_IMAGE_BUFFER},
+        {m_image, data::image::signals::SLICE_TYPE_MODIFIED, slots::SLICE_TYPE},
+        {m_image, data::image::signals::SLICE_INDEX_MODIFIED, slots::SLICE_INDEX},
+        {m_tf, data::signals::MODIFIED, slots::UPDATE_TF},
+        {m_tf, data::transfer_function::signals::POINTS_MODIFIED, slots::UPDATE_TF},
+        {m_tf, data::transfer_function::signals::WINDOWING_MODIFIED, slots::UPDATE_TF},
+        {m_mask, data::signals::MODIFIED, slots::UPDATE_MASK},
+        {m_mask, data::image::signals::BUFFER_MODIFIED, slots::UPDATE_MASK},
+        {m_transparency, data::signals::MODIFIED, "apply_transparency"}
     };
     return connections + adaptor::auto_connections();
 }
@@ -62,11 +58,12 @@ service::connections_t negato::auto_connections() const
 
 negato::negato() noexcept
 {
+    new_slot("apply_transparency", &negato::apply_transparency, this);
     // Auto-connected slots
-    new_slot(slots::UPDATE_IMAGE, [this](){lazy_update(update_flags::IMAGE);});
-    new_slot(slots::UPDATE_IMAGE_BUFFER, [this](){lazy_update(update_flags::IMAGE_BUFFER);});
-    new_slot(slots::UPDATE_TF, [this](){lazy_update(update_flags::TF);});
-    new_slot(slots::UPDATE_MASK, [this](){lazy_update(update_flags::MASK);});
+    new_slot(slots::UPDATE_IMAGE, [this](){lazy_update(update_flags::image);});
+    new_slot(slots::UPDATE_IMAGE_BUFFER, [this](){lazy_update(update_flags::image_buffer);});
+    new_slot(slots::UPDATE_TF, [this](){lazy_update(update_flags::tf);});
+    new_slot(slots::UPDATE_MASK, [this](){lazy_update(update_flags::mask);});
 
     // Interaction slots
     new_slot(slots::SLICE_TYPE, &negato::change_slice_type, this);
@@ -125,7 +122,6 @@ void negato::configuring(const config_t& _config)
     m_enable_alpha = _config.get<bool>(s_TF_ALPHA_CONFIG, m_enable_alpha);
     m_border       = _config.get<bool>(s_BORDER_CONFIG, m_border);
     m_interactive  = _config.get<bool>(s_INTERACTIVE_CONFIG, m_interactive);
-    m_priority     = _config.get<int>(s_PRIORITY_CONFIG, m_priority);
 
     const std::string transform_id =
         _config.get<std::string>(sight::viz::scene3d::transformable::TRANSFORM_CONFIG, gen_id("transform"));
@@ -163,13 +159,13 @@ void negato::starting()
 
     if(m_auto_reset_camera)
     {
-        this->render_service()->reset_camera_coordinates(m_layer_id);
+        this->render_service()->reset_camera_coordinates(layer_id());
     }
 
     if(m_interactive)
     {
         auto interactor = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::base>(this->get_sptr());
-        this->layer()->add_interactor(interactor, m_priority);
+        this->layer()->add_interactor(interactor, static_cast<int>(*m_priority));
 
         m_picking_cross = std::make_unique<sight::viz::scene3d::picking_cross>(
             this->get_id(),
@@ -215,19 +211,19 @@ void negato::stopping()
 
 void negato::updating()
 {
-    if(update_needed(update_flags::IMAGE))
+    if(update_needed(update_flags::image))
     {
         this->update_image(true);
     }
-    else if(update_needed(update_flags::IMAGE_BUFFER))
+    else if(update_needed(update_flags::image_buffer))
     {
         this->update_image(false);
     }
-    else if(update_needed(update_flags::TF))
+    else if(update_needed(update_flags::tf))
     {
         this->update_tf();
     }
-    else if(update_needed(update_flags::MASK))
+    else if(update_needed(update_flags::mask))
     {
         this->update_mask();
     }
@@ -271,16 +267,20 @@ void negato::update_image(bool _new)
     int frontal_idx  = 0;
     int sagittal_idx = 0;
     {
-        const auto image = m_image.lock();
-
-        if(!data::helper::medical_image::check_image_validity(image.get_shared()))
         {
-            return;
+            const auto image = m_image.lock();
+
+            if(!data::helper::medical_image::check_image_validity(image.get_shared()))
+            {
+                std::ranges::for_each(m_planes, [](auto& _p){_p.first.reset();});
+                return;
+            }
         }
 
         // Update the texture
         m_3d_ogre_texture->update();
 
+        const auto image = m_image.lock();
         if(_new)
         {
             const auto mask = m_mask.lock();
@@ -322,17 +322,30 @@ void negato::update_image(bool _new)
             // Fits the planes to the new texture
             for(const auto& plane : m_planes)
             {
-                plane.first->update(plane.second, spacing);
+                plane.first->update(plane.second, spacing, this->priority());
                 plane.first->set_query_flags(m_query_flags);
-                plane.first->set_render_queuer_group_and_priority(sight::viz::scene3d::rq::NEGATO_WIDGET, 0);
+                plane.first->set_entity_opacity(1.F - static_cast<float>(*m_transparency));
+                SIGHT_ERROR_IF(
+                    "Priority is too high, should be less than 65535",
+                    *m_priority >= 0xFFFF
+                );
             }
 
             // Update Slice
             namespace medical_image = data::helper::medical_image;
 
-            axial_idx    = std::max(0, int(medical_image::get_slice_index(*image, axis_t::axial).value_or(0)));
-            frontal_idx  = std::max(0, int(medical_image::get_slice_index(*image, axis_t::frontal).value_or(0)));
-            sagittal_idx = std::max(0, int(medical_image::get_slice_index(*image, axis_t::sagittal).value_or(0)));
+            axial_idx = std::max(
+                0,
+                static_cast<int>(medical_image::get_slice_index(*image, axis_t::axial).value_or(0))
+            );
+            frontal_idx = std::max(
+                0,
+                static_cast<int>(medical_image::get_slice_index(*image, axis_t::frontal).value_or(0))
+            );
+            sagittal_idx = std::max(
+                0,
+                static_cast<int>(medical_image::get_slice_index(*image, axis_t::sagittal).value_or(0))
+            );
         }
     }
 
@@ -349,39 +362,43 @@ void negato::update_image(bool _new)
 
 void negato::change_slice_index(int _axial_index, int _frontal_index, int _sagittal_index)
 {
-    const auto image = m_image.lock();
-
-    if(!data::helper::medical_image::check_image_validity(image.get_shared()))
     {
-        return;
-    }
+        const auto image = m_image.lock();
 
-    this->render_service()->make_current();
-
-    auto img_size = image->size();
-
-    // Sometimes, the image can contain only one slice,
-    // it results into a division by 0 when the range is transformed between [0-1].
-    // So we increase the image size to 2 to divide by 1.
-    img_size[0] = img_size[0] == 1 ? 2 : img_size[0];
-    img_size[1] = img_size[1] == 1 ? 2 : img_size[1];
-    img_size[2] = img_size[2] == 1 ? 2 : img_size[2];
-
-    m_current_slice_index = {
-        static_cast<float>(_sagittal_index) / (static_cast<float>(img_size[0] - 1)),
-        static_cast<float>(_frontal_index) / (static_cast<float>(img_size[1] - 1)),
-        static_cast<float>(_axial_index) / (static_cast<float>(img_size[2] - 1))
-    };
-
-    for(auto& plane : m_planes)
-    {
-        if(plane.first)
+        if(!data::helper::medical_image::check_image_validity(image.get_shared()))
         {
-            plane.first->change_slice(m_current_slice_index);
+            return;
+        }
+
+        this->render_service()->make_current();
+
+        auto img_size = image->size();
+
+        // Sometimes, the image can contain only one slice,
+        // it results into a division by 0 when the range is transformed between [0-1].
+        // So we increase the image size to 2 to divide by 1.
+        img_size[0] = img_size[0] == 1 ? 2 : img_size[0];
+        img_size[1] = img_size[1] == 1 ? 2 : img_size[1];
+        img_size[2] = img_size[2] == 1 ? 2 : img_size[2];
+
+        m_current_slice_index = {
+            static_cast<float>(_sagittal_index) / (static_cast<float>(img_size[0] - 1)),
+            static_cast<float>(_frontal_index) / (static_cast<float>(img_size[1] - 1)),
+            static_cast<float>(_axial_index) / (static_cast<float>(img_size[2] - 1))
+        };
+
+        for(auto& plane : m_planes)
+        {
+            if(plane.first)
+            {
+                plane.first->change_slice(m_current_slice_index, this->priority());
+            }
         }
     }
 
-    this->signal<signals::slice_index_changed_t>(signals::SLICE_INDEX_CHANGED)->emit();
+    // Here we cheat a bit by sending synchronously to ensure that the new slice index is taken into account by
+    // potential other negatos, before rendering the new slice. Otherwise we would suffer from a flickering effect.
+    this->emit(this, signals::SLICE_INDEX_CHANGED, _axial_index, _frontal_index, _sagittal_index);
 
     this->request_render();
 }
@@ -404,8 +421,7 @@ void negato::update_slices_from_world(double _x, double _y, double _z)
         return;
     }
 
-    const auto sig = image->signal<data::image::slice_index_modified_signal_t>(data::image::SLICE_INDEX_MODIFIED_SIG);
-    sig->async_emit(slice_idx[2], slice_idx[1], slice_idx[0]);
+    image->async_emit(data::image::signals::SLICE_INDEX_MODIFIED, slice_idx[2], slice_idx[1], slice_idx[0]);
 }
 
 //------------------------------------------------------------------------------
@@ -428,6 +444,8 @@ void negato::update_tf()
                 }
             });
     }
+
+    this->request_render();
 }
 
 //------------------------------------------------------------------------------
@@ -446,10 +464,25 @@ void negato::update_windowing(double _dw, double _dl)
             tf->set_level(new_level);
         }
 
-        tf->async_emit(data::transfer_function::WINDOWING_MODIFIED_SIG, new_window, new_level);
+        tf->async_emit(data::transfer_function::signals::WINDOWING_MODIFIED, new_window, new_level);
     }
 }
 
 //-----------------------------------------------------------------------------
+
+void negato::apply_transparency()
+{
+    this->render_service()->make_current();
+    const float opacity = 1.F - static_cast<float>(*m_transparency);
+    for(const auto& plane : m_planes)
+    {
+        if(plane.first)
+        {
+            plane.first->set_entity_opacity(opacity);
+        }
+    }
+
+    this->request_render();
+}
 
 } // namespace sight::module::viz::scene3d::adaptor.

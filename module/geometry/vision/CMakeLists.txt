@@ -1,11 +1,11 @@
 sight_add_target(module_geometry_vision TYPE MODULE)
 
 find_package(
-    OpenCV QUIET REQUIRED COMPONENTS opencv_calib3d opencv_imgproc opencv_imgcodecs
-    OPTIONAL_COMPONENTS opencv_cudawarping opencv_cudaimgproc
+    OpenCV QUIET REQUIRED COMPONENTS opencv_imgproc opencv_imgcodecs OPTIONAL_COMPONENTS opencv_cudawarping
+                                                                                         opencv_cudaimgproc
 )
 
-target_link_libraries(module_geometry_vision PRIVATE opencv_calib3d opencv_imgproc opencv_imgcodecs)
+target_link_libraries(module_geometry_vision PRIVATE opencv_imgproc opencv_imgcodecs)
 
 if(DEFINED OpenCV_COMPUTE_CAPABILITIES)
     option(DISTORSION_CUDA_SUPPORT "Use Cuda to distort/undistort images" OFF)
@@ -16,9 +16,18 @@ if(DEFINED OpenCV_COMPUTE_CAPABILITIES)
     endif()
 endif()
 
-add_dependencies(module_geometry_vision data module_service)
+add_dependencies(module_geometry_vision module_service)
 
-target_link_libraries(module_geometry_vision PUBLIC geometry_vision core data ui service io_opencv)
+target_link_libraries(
+    module_geometry_vision
+    PUBLIC geometry_vision
+           core
+           data
+           ui
+           service
+           io_opencv
+           io_tracking
+)
 
 if(SIGHT_BUILD_TESTS)
     add_subdirectory(test/ut)

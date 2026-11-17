@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -51,13 +51,12 @@ public:
     using registry_key_t = std::string;
     using callbacks_t    = std::vector<ui::menu_item_callback::sptr>;
 
-    enum action_t
+    enum action_t : std::uint8_t
     {
-        DEFAULT,
+        standard,
         quit,
         about,
         help,
-        NEW,
         separator
     };
 
@@ -76,7 +75,7 @@ public:
         std::filesystem::path m_icon;
         bool m_is_checkable {false};
         bool m_is_radio {false};
-        action_t m_type {DEFAULT};
+        action_t m_type {standard};
         bool m_is_separator {false};
         bool m_is_menu {false};
     };
@@ -126,11 +125,11 @@ public:
        @endcode
      * This method analyzes the gui section of the configuration.
      * - \<layout\> (mandatory) : give the list of the menu item that will appear in the menu.
-     * - \<menuItem name="My item 1" shortcut="1" style="check" specialAction="NEW" /\> :
+     * - \<menuItem name="My item 1" shortcut="1" style="check" specialAction="ABOUT" /\> :
      *  - \b name (mandatory) : give the name of the menu item that will appear in the interface.
      *  - \b shortcut : give the shortcut for this menu item.
      *  - \b style {check|radio} : give the style of the menu item.
-     *  - \b specialAction {DEFAULT | QUIT | NEW | ABOUT | HELP}: specify a pre define action. If it isn't define the
+     *  - \b specialAction {DEFAULT | QUIT | ABOUT | HELP}: specify a pre define action. If it isn't define the
      * value is DEFAULT.
      *   - \b icon : give the path of the icon file
      * - \<menu name="My menu" /\> :
@@ -180,6 +179,8 @@ protected:
      */
     SIGHT_UI_API virtual void destroy_actions();
 
+    // NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
+
     /// All actions managed by this layout.
     std::vector<ui::container::menu_item::sptr> m_menu_items;
 
@@ -191,6 +192,8 @@ protected:
 
     /// Callbacks associate with menu items
     callbacks_t m_callbacks;
+
+    // NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 };
 
 } // namespace sight::ui::layout

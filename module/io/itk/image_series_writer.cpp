@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,18 +24,11 @@
 
 #include "image_writer.hpp"
 
-#include <core/location/single_file.hpp>
-#include <core/location/single_folder.hpp>
-
-#include <data/image.hpp>
 #include <data/image_series.hpp>
 
 #include <io/__/service/writer.hpp>
 
 #include <ui/__/cursor.hpp>
-#include <ui/__/dialog/location.hpp>
-#include <ui/__/dialog/message.hpp>
-#include <ui/__/dialog/progress.hpp>
 
 namespace sight::module::io::itk
 {
@@ -57,32 +50,6 @@ sight::io::service::path_type_t image_series_writer::get_path_type() const
 void image_series_writer::configuring()
 {
     sight::io::service::writer::configuring();
-}
-
-//------------------------------------------------------------------------------
-
-void image_series_writer::open_location_dialog()
-{
-    static auto default_directory = std::make_shared<core::location::single_folder>();
-
-    sight::ui::dialog::location dialog_file;
-    dialog_file.set_title(*m_window_title);
-    dialog_file.set_default_location(default_directory);
-    dialog_file.add_filter("NIfTI (.nii)", "*.nii *.nii.gz");
-    dialog_file.add_filter("Inr (.inr.gz)", "*.inr.gz");
-    dialog_file.set_option(ui::dialog::location::write);
-
-    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialog_file.show());
-    if(result)
-    {
-        this->set_file(result->get_file());
-        default_directory->set_folder(result->get_file().parent_path());
-        dialog_file.save_default_location(default_directory);
-    }
-    else
-    {
-        this->clear_locations();
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -115,13 +82,13 @@ void image_series_writer::updating()
         const auto data         = m_data.lock();
         const auto image_series = std::dynamic_pointer_cast<const data::image_series>(data.get_shared());
         SIGHT_ASSERT(
-            "The input key '" + sight::io::service::DATA_KEY + "' is not correctly set.",
+            "The input key '" + sight::io::service::WRITER_DATA_KEY + "' is not correctly set.",
             image_series
         );
 
         sight::ui::busy_cursor cursor;
 
-        auto write_observer = std::make_shared<sight::core::progress::observer>("Saving images... ");
+        auto write_observer = this->make_notification<sight::core::notification::observer>("Saving images... ");
         image_writer::save_image(this->get_file(), image_series, write_observer);
         m_write_failed = false;
     }

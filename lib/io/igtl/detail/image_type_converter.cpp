@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,14 +36,14 @@ image_type_converter::type_converter_map_t image_type_converter::init_type_conve
 {
     type_converter_map_t convert_map;
 
-    convert_map[core::type::INT8]   = ::igtl::ImageMessage::TYPE_INT8;
-    convert_map[core::type::UINT8]  = ::igtl::ImageMessage::TYPE_UINT8;
-    convert_map[core::type::INT16]  = ::igtl::ImageMessage::TYPE_INT16;
-    convert_map[core::type::UINT16] = ::igtl::ImageMessage::TYPE_UINT16;
-    convert_map[core::type::INT32]  = ::igtl::ImageMessage::TYPE_INT32;
-    convert_map[core::type::UINT32] = ::igtl::ImageMessage::TYPE_UINT32;
-    convert_map[core::type::FLOAT]  = ::igtl::ImageMessage::TYPE_FLOAT32;
-    convert_map[core::type::DOUBLE] = ::igtl::ImageMessage::TYPE_FLOAT64;
+    convert_map[core::type::INT8]    = ::igtl::ImageMessage::TYPE_INT8;
+    convert_map[core::type::UINT8]   = ::igtl::ImageMessage::TYPE_UINT8;
+    convert_map[core::type::INT16]   = ::igtl::ImageMessage::TYPE_INT16;
+    convert_map[core::type::UINT16]  = ::igtl::ImageMessage::TYPE_UINT16;
+    convert_map[core::type::INT32]   = ::igtl::ImageMessage::TYPE_INT32;
+    convert_map[core::type::UINT32]  = ::igtl::ImageMessage::TYPE_UINT32;
+    convert_map[core::type::FLOAT32] = ::igtl::ImageMessage::TYPE_FLOAT32;
+    convert_map[core::type::FLOAT64] = ::igtl::ImageMessage::TYPE_FLOAT64;
     return convert_map;
 }
 

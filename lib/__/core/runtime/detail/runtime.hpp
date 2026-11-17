@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,12 +22,10 @@
 
 #pragma once
 
-#include <sight/core/config.hpp>
-
-#include "core/base.hpp"
 #include "core/runtime/detail/extension.hpp"
 #include "core/runtime/executable_factory.hpp"
 #include "core/runtime/plugin.hpp"
+#include <core/macros.hpp>
 
 #include <regex>
 #include <set>
@@ -92,7 +90,7 @@ public:
      *
      * @return      a shared pointer to the found module or null if none
      */
-    [[nodiscard]] SPTR(core::runtime::module) find_module(const std::string& _identifier) const;
+    [[nodiscard]] sight::sptr<core::runtime::module> find_module(const std::string& _identifier) const;
 
     /**
      * @brief   Create an instance of the given executable object type.
@@ -118,7 +116,7 @@ public:
     [[nodiscard]] std::shared_ptr<core::runtime::extension> find_extension(const std::string& _identifier) const;
 
     /// Return all modules known by the runtime
-    module_container modules() const;
+    [[nodiscard]] module_container modules() const;
 
     /// Get the path where libraries, modules and share folder are located.
     [[nodiscard]] std::filesystem::path working_path() const;
@@ -221,9 +219,9 @@ public:
     void unregister_extension(std::shared_ptr<detail::extension> _extension);
 
     /// Retrieves the extension collection.
-    extension_container extensions() const;
-    extension_iterator extensions_begin() const;
-    extension_iterator extensions_end() const;
+    [[nodiscard]] extension_container extensions() const;
+    [[nodiscard]] extension_iterator extensions_begin() const;
+    [[nodiscard]] extension_iterator extensions_end() const;
     //@}
 
     /**

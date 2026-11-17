@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,7 +21,8 @@
 
 #pragma once
 
-#include "writer_impl.hxx"
+#include "common.hxx"
+#include "io/bitmap/writer.hpp"
 
 #include <png.h>
 
@@ -115,7 +116,7 @@ public:
                         return PNG_COLOR_TYPE_GRAY;
 
                     default:
-                        SIGHT_THROW(NAME << " - Unsupported pixel format: " << pixel_format);
+                        SIGHT_THROW(NAME << " - Unsupported pixel format: " << static_cast<unsigned int>(pixel_format));
                 }
             }();
 
@@ -126,9 +127,9 @@ public:
         png_set_IHDR(
             keeper.m_png,
             keeper.m_png_info,
-            png_uint_32(image_width),
-            png_uint_32(image_height),
-            int(type.size() * 8),
+            static_cast<png_uint_32>(image_width),
+            static_cast<png_uint_32>(image_height),
+            static_cast<int>(type.size() * 8),
             png_format,
             PNG_INTERLACE_NONE,
             PNG_COMPRESSION_TYPE_DEFAULT,
@@ -193,8 +194,8 @@ public:
 
         if constexpr(std::is_base_of_v<std::ostream, O>)
         {
-            png_set_write_fn(keeper.m_png, &_output, write_callback, 0);
-            png_write_png(keeper.m_png, keeper.m_png_info, transform, NULL);
+            png_set_write_fn(keeper.m_png, &_output, write_callback, nullptr);
+            png_write_png(keeper.m_png, keeper.m_png_info, transform, nullptr);
         }
         else if constexpr(std::is_same_v<std::uint8_t*, O>
                           || std::is_same_v<std::uint8_t**, O>
@@ -202,8 +203,8 @@ public:
         {
             std::stringstream ss;
 
-            png_set_write_fn(keeper.m_png, &ss, 0, 0);
-            png_write_png(keeper.m_png, keeper.m_png_info, transform, NULL);
+            png_set_write_fn(keeper.m_png, &ss, nullptr, nullptr);
+            png_write_png(keeper.m_png, keeper.m_png_info, transform, nullptr);
 
             // Zero copy string conversion, work only with C++20
             const std::string output_buffer = std::move(ss).str();
@@ -245,7 +246,7 @@ private:
     static void write_callback(png_structp _png_ptr, png_bytep _data, png_size_t _length)
     {
         auto* ostream = reinterpret_cast<std::ostream*>(png_get_io_ptr(_png_ptr));
-        ostream->write(reinterpret_cast<char*>(_data), std::streamsize(_length));
+        ostream->write(reinterpret_cast<char*>(_data), static_cast<std::streamsize>(_length));
     }
 
     //------------------------------------------------------------------------------

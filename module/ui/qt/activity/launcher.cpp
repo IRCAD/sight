@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,18 +28,14 @@
 #include <activity/validator/activity.hpp>
 #include <activity/validator/base.hpp>
 
+#include <algorithm>
 #include <app/config_manager.hpp>
 
-#include <core/com/signal.hxx>
-#include <core/com/slots.hxx>
 #include <core/runtime/runtime.hpp>
 
 #include <data/activity.hpp>
 
-#include <service/extension/config.hpp>
-
 #include <ui/__/dialog/message.hpp>
-#include <ui/__/dialog/selector.hpp>
 
 #include <boost/foreach.hpp>
 
@@ -56,13 +52,6 @@ Q_DECLARE_METATYPE(sight::activity::extension::activity_info)
 namespace sight::module::ui::qt::activity
 {
 
-//------------------------------------------------------------------------------
-
-const core::com::slots::key_t launcher::LAUNCH_SERIES_SLOT      = "launch_series";
-const core::com::slots::key_t launcher::LAUNCH_ACTIVITY_SLOT    = "launch_activity";
-const core::com::slots::key_t launcher::UPDATE_STATE_SLOT       = "update_state";
-const core::com::signals::key_t launcher::ACTIVITY_LAUNCHED_SIG = "activity_launched";
-
 using sight::activity::extension::activity;
 using sight::activity::extension::activity_info;
 using sight::activity::message;
@@ -72,12 +61,13 @@ using sight::activity::validator::base;
 //------------------------------------------------------------------------------
 
 launcher::launcher() noexcept :
-    m_sig_activity_launched(new_signal<activity_launched_signal_t>(ACTIVITY_LAUNCHED_SIG)),
     m_mode("message")
 {
-    new_slot(LAUNCH_SERIES_SLOT, &launcher::launch_series, this);
-    new_slot(LAUNCH_ACTIVITY_SLOT, &launcher::launch_activity, this);
-    new_slot(UPDATE_STATE_SLOT, &launcher::update_state, this);
+    new_signal<signals::activity_launched_t>(signals::ACTIVITY_LAUNCHED);
+
+    new_slot(slots::LAUNCH_SERIES, &launcher::launch_series, this);
+    new_slot(slots::LAUNCH_ACTIVITY, &launcher::launch_activity, this);
+    new_slot(slots::UPDATE_STATE, &launcher::update_state, this);
 }
 
 //------------------------------------------------------------------------------
@@ -261,7 +251,7 @@ launcher::activity_infos_t launcher::get_enabled_activities(const activity_infos
 
         for(const auto& info : _infos)
         {
-            auto key_it = std::find(m_keys.begin(), m_keys.end(), info.id);
+            auto key_it = std::ranges::find(m_keys, info.id);
 
             if((key_it != m_keys.end() && is_include_mode) || (key_it == m_keys.end() && !is_include_mode))
             {
@@ -299,7 +289,7 @@ void launcher::updating()
             }
             else
             {
-                info = this->show(infos);
+                info = sight::module::ui::qt::activity::launcher::show(infos);
             }
 
             if(!info.id.empty())
@@ -335,7 +325,7 @@ void launcher::update_state()
         {
             const bool is_include_mode = m_filter_mode == "include";
 
-            auto key_it = std::find(m_keys.begin(), m_keys.end(), as->get_activity_config_id());
+            auto key_it = std::ranges::find(m_keys, as->get_activity_config_id());
 
             is_enabled = ((key_it != m_keys.end()) != is_include_mode);
 
@@ -353,7 +343,7 @@ void launcher::update_state()
     else
     {
         activity_info::data_count_t data_count;
-        data_count = activity::get_default()->get_data_count(selection.get_shared());
+        data_count = sight::activity::extension::activity::get_data_count(selection.get_shared());
         if(m_filter_mode.empty() && data_count.size() == 1)
         {
             data::object::sptr obj = selection->front();
@@ -429,7 +419,7 @@ void launcher::build_activity(
 
     if(m_mode == "message")
     {
-        m_sig_activity_launched->async_emit(msg);
+        this->async_emit(signals::ACTIVITY_LAUNCHED, msg);
     }
     else
     {
@@ -492,7 +482,7 @@ bool launcher::launch_as(const data::vector::csptr& _selection)
 {
     bool launch_as = false;
     activity_info::data_count_t data_count;
-    data_count = activity::get_default()->get_data_count(_selection);
+    data_count = sight::activity::extension::activity::get_data_count(_selection);
     if(data_count.size() == 1)
     {
         for(const data::object::sptr& obj : *_selection)
@@ -520,7 +510,7 @@ void launcher::launch_series(data::series::sptr _series)
     selection->push_back(_series);
     activity_infos_t infos = activity::get_default()->get_infos(selection);
 
-    if(m_quick_launch.find(_series->get_classname()) != m_quick_launch.end())
+    if(m_quick_launch.contains(_series->get_classname()))
     {
         std::string activity_id = m_quick_launch[_series->get_classname()];
         SIGHT_ASSERT(
@@ -576,7 +566,7 @@ void launcher::launch_activity(data::activity::sptr _activity)
         }
     }
 
-    m_sig_activity_launched->async_emit(message(_activity, info, m_parameters));
+    this->async_emit(signals::ACTIVITY_LAUNCHED, message(_activity, info, m_parameters));
 }
 
 //------------------------------------------------------------------------------
@@ -585,8 +575,8 @@ service::connections_t launcher::auto_connections() const
 {
     connections_t connections;
 
-    connections.push(SERIES, data::vector::ADDED_OBJECTS_SIG, UPDATE_STATE_SLOT);
-    connections.push(SERIES, data::vector::REMOVED_OBJECTS_SIG, UPDATE_STATE_SLOT);
+    connections.push(SERIES, data::vector::signals::ADDED_OBJECTS, slots::UPDATE_STATE);
+    connections.push(SERIES, data::vector::signals::REMOVED_OBJECTS, slots::UPDATE_STATE);
 
     return connections;
 }

@@ -13,6 +13,7 @@ Contains services that implement some computer vision algorithms, notably to cal
 - **pose_from2d**: computes the 3d pose of a, object using 2d points.
 - **reprojection_error**: computes the mean error of reprojection between 3d object points.
 - **solve_pnp**: estimates the object pose given a set of object points, their corresponding image projections.
+- **aruco_tracker**: tracks multiple tags with ArUco.
 
 ## How to use it
 

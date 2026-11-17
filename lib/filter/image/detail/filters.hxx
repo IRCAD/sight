@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2025 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -66,16 +66,16 @@ void bug_work_around_labeling(
 //------------------------------------------------------------------------------
 
 template<typename IMAGE_TYPE, unsigned int DIM>
-typename itk::Image<std::uint8_t, DIM>::Pointer threshold(
+itk::Image<std::uint8_t, DIM>::Pointer threshold(
     typename itk::Image<IMAGE_TYPE, DIM>::Pointer _image,
     IMAGE_TYPE _lower_threshold,
     IMAGE_TYPE _upper_threshold
 )
 {
     // ITK threshold
-    typedef itk::BinaryThresholdImageFilter<itk::Image<IMAGE_TYPE, DIM>,
-                                            itk::Image<std::uint8_t, DIM> > BinaryThresholdImageFilter;
-    typename BinaryThresholdImageFilter::Pointer threshold_filter = BinaryThresholdImageFilter::New();
+    using binary_threshold_image_filter = itk::BinaryThresholdImageFilter<itk::Image<IMAGE_TYPE, DIM>,
+                                                                          itk::Image<std::uint8_t, DIM> >;
+    typename binary_threshold_image_filter::Pointer threshold_filter = binary_threshold_image_filter::New();
     threshold_filter->SetInput(_image);
     threshold_filter->SetInsideValue(std::numeric_limits<std::uint8_t>::max());
     threshold_filter->SetOutsideValue(std::numeric_limits<std::uint8_t>::min());
@@ -89,7 +89,7 @@ typename itk::Image<std::uint8_t, DIM>::Pointer threshold(
 //------------------------------------------------------------------------------
 
 template<typename IMAGE_TYPE, unsigned int DIM>
-typename itk::Image<IMAGE_TYPE, DIM>::Pointer median(
+itk::Image<IMAGE_TYPE, DIM>::Pointer median(
     typename itk::Image<IMAGE_TYPE, DIM>::Pointer _image,
     std::size_t _x,
     std::size_t _y,
@@ -97,11 +97,11 @@ typename itk::Image<IMAGE_TYPE, DIM>::Pointer median(
 )
 {
     // ITK median filter
-    typedef itk::Image<IMAGE_TYPE, DIM> image_t;
-    typedef itk::MedianImageFilter<image_t, image_t> MedianImageFilter;
-    typename MedianImageFilter::Pointer median_filter = MedianImageFilter::New();
+    using image_t             = itk::Image<IMAGE_TYPE, DIM>;
+    using median_image_filter = itk::MedianImageFilter<image_t, image_t>;
+    typename median_image_filter::Pointer median_filter = median_image_filter::New();
 
-    typename MedianImageFilter::radius_t radius;
+    typename median_image_filter::radius_t radius;
     radius[0] = _x;
     radius[1] = _y;
     radius[2] = _z;
@@ -116,7 +116,7 @@ typename itk::Image<IMAGE_TYPE, DIM>::Pointer median(
 //------------------------------------------------------------------------------
 
 template<typename IMAGE_TYPE, unsigned int DIM>
-typename itk::Image<std::uint8_t, DIM>::Pointer labeling(
+itk::Image<std::uint8_t, DIM>::Pointer labeling(
     typename itk::Image<IMAGE_TYPE, DIM>::Pointer _image,
     unsigned int _num_labels
 )
@@ -133,7 +133,7 @@ typename itk::Image<std::uint8_t, DIM>::Pointer labeling(
     filter_cc->SetFullyConnected(true);
     filter_cc->Update();
 
-    typename label_image_t::Pointer labeled_img = filter_cc->GetOutput();
+    label_image_t::Pointer labeled_img = filter_cc->GetOutput();
     bug_work_around_labeling(_image, labeled_img, 0); // (*)
 
     // Relabels connected component filter
@@ -143,7 +143,7 @@ typename itk::Image<std::uint8_t, DIM>::Pointer labeling(
     relabel_filter->Update();
 
     // Output
-    auto img_out = relabel_filter->GetOutput();
+    auto* img_out = relabel_filter->GetOutput();
     for(auto& pixel : itk::ImageRegionRange<label_image_t>(*img_out))
     {
         bool is_pixel = pixel != itk::NumericTraits<IMAGE_TYPE>::Zero;
@@ -161,7 +161,7 @@ typename itk::Image<std::uint8_t, DIM>::Pointer labeling(
 //------------------------------------------------------------------------------
 
 template<typename IMAGE_TYPE, unsigned int DIM>
-typename itk::Image<IMAGE_TYPE, DIM>::Pointer closing(
+itk::Image<IMAGE_TYPE, DIM>::Pointer closing(
     typename itk::Image<IMAGE_TYPE, DIM>::Pointer _image,
     std::size_t _x,
     std::size_t _y,
@@ -171,13 +171,13 @@ typename itk::Image<IMAGE_TYPE, DIM>::Pointer closing(
     // ITK median filter
     using image_t               = itk::Image<IMAGE_TYPE, DIM>;
     using structuring_element_t = itk::BinaryBallStructuringElement<IMAGE_TYPE, 3>;
-    using ITKFilterType         = itk::GrayscaleMorphologicalClosingImageFilter<image_t, image_t,
+    using itk_filter_type       = itk::GrayscaleMorphologicalClosingImageFilter<image_t, image_t,
                                                                                 structuring_element_t>;
     typename image_t::Pointer itk_output_image;
-    typename ITKFilterType::Pointer filter = ITKFilterType::New();
+    typename itk_filter_type::Pointer filter = itk_filter_type::New();
 
-    typename ITKFilterType::Pointer::ObjectType::KernelType structuring_element;
-    typename ITKFilterType::Pointer::ObjectType::KernelType::size_t size;
+    typename itk_filter_type::Pointer::ObjectType::KernelType structuring_element;
+    typename itk_filter_type::Pointer::ObjectType::KernelType::size_t size;
     size[0] = _x;
     size[1] = _y;
     size[2] = _z;
@@ -195,21 +195,21 @@ typename itk::Image<IMAGE_TYPE, DIM>::Pointer closing(
 //------------------------------------------------------------------------------
 
 template<typename IMAGE_TYPE, unsigned int DIM>
-typename itk::Image<IMAGE_TYPE, DIM>::Pointer fill_hole_2d(
+itk::Image<IMAGE_TYPE, DIM>::Pointer fill_hole_2d(
     typename itk::Image<IMAGE_TYPE, DIM>::Pointer _image,
     unsigned int _direction,
     IMAGE_TYPE _foreground
 )
 {
-    using Image3D = itk::Image<IMAGE_TYPE, DIM>;
-    using Image2D = itk::Image<IMAGE_TYPE, 2>;
+    using image3_d = itk::Image<IMAGE_TYPE, DIM>;
+    using image2_d = itk::Image<IMAGE_TYPE, 2>;
     std::uint64_t nb_planes = _image->GetBufferedRegion().GetSize(_direction);
 
     for(std::uint64_t plane = 0 ; plane < nb_planes ; ++plane)
     {
         itk::ImageRegion<3> region_to_extract = _image->GetBufferedRegion();
 
-        auto extractor = itk::ExtractImageFilter<Image3D, Image2D>::New();
+        auto extractor = itk::ExtractImageFilter<image3_d, image2_d>::New();
 
         // extracts plane along other "direction"
         region_to_extract.SetSize(_direction, 0);
@@ -221,19 +221,19 @@ typename itk::Image<IMAGE_TYPE, DIM>::Pointer fill_hole_2d(
         extractor->Update();
 
         auto image_2d  = extractor->GetOutput();
-        auto fill_hole = itk::BinaryFillholeImageFilter<Image2D>::New();
+        auto fill_hole = itk::BinaryFillholeImageFilter<image2_d>::New();
 
         fill_hole->set_input(image_2d);
         fill_hole->SetForegroundValue(_foreground);
         fill_hole->SetFullyConnected(true);
         fill_hole->Update();
 
-        itk::ImageRegionConstIterator<Image2D> img_2d_it(fill_hole->GetOutput(),
-                                                         fill_hole->GetOutput()->GetBufferedRegion());
+        itk::ImageRegionConstIterator<image2_d> img_2d_it(fill_hole->GetOutput(),
+                                                          fill_hole->GetOutput()->GetBufferedRegion());
 
         // creates a non "empty" region
         region_to_extract.SetSize(_direction, 1);
-        itk::ImageRegionIterator<Image3D> img_3d_it(_image, region_to_extract);
+        itk::ImageRegionIterator<image3_d> img_3d_it(_image, region_to_extract);
         img_3d_it.GoToBegin();
         img_2d_it.GoToBegin();
         while(img_3d_it.IsAtEnd() == false)

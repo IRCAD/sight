@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -54,6 +54,12 @@ class stereo_toggler : public sight::ui::action
 {
 public:
 
+    struct signals
+    {
+        using stereo_active_t = core::com::signal<void (bool)>;
+        static inline const signal_key_t STEREO_ACTIVE = "stereoActive";
+    };
+
     SIGHT_DECLARE_SERVICE(stereo_toggler, sight::ui::action);
 
     /// Constructor.
@@ -78,17 +84,13 @@ protected:
 
 private:
 
-    using stereo_mode_t       = sight::viz::scene3d::compositor::core::stereo_mode_t;
-    using stereo_active_sig_t = core::com::signal<void (bool)>;
+    using stereo_mode_t = sight::viz::scene3d::compositor::core::stereo_mode_t;
 
     /// layer in which we enable/disable stereo.
     std::string m_layer_id;
 
     /// Mode that is toggled.
     sight::viz::scene3d::compositor::core::stereo_mode_t m_stereo_mode {stereo_mode_t::none};
-
-    /// Sent at each update, notifies if stereo is enabled.
-    stereo_active_sig_t::sptr m_stereo_active_sig;
 };
 
 } // namespace sight::module::ui::viz

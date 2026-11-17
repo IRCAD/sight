@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -49,21 +49,22 @@ namespace sight::app
  *
  * @code{.xml}
         <service type="sight::app::config_launcher" >
-            <properties config="..." />
-            <inout group="object">
-                <key name="object1" uid="..." />
-                <key name="object2" uid="..." />
-                ...
-            </inout>
-            <parameter replace="channel" by="changeValueChannel" />
-            <parameter replace="service" by="serviceUid" />
+            <config id="..." />
+            <object name="object1" uid="..." />
+            <object name="object2" uid="..." optional="true" />
+            <object name="object3" value="..." />
+            <param name="WID_PARENT" value="..." />
+            <channel name="channel1" uid="..." />
         </service>
    @endcode
+ *
  * @subsection Properties Properties:
  * - \b config [sight::data::string]: identifier of the configuration to launch.
  * @subsection In-Out In-Out:
  * - \b data [sight::data::object]: \b key specifies the name of the parameter in the target configuration and \b uid
- * identifies the objects whose uid are passed as value of the parameter.
+ * identifies the objects whose uid are passed as value of the parameter. Alternatively, \b value gives a literal
+ * value, and the object is then built and owned by this service. Its type is resolved from the declaration of the
+ * matching object in the sub-configuration, when the service starts. The configuration may thus be chosen at runtime.
  * @subsection Configuration Configuration:
  * - \b parameter: \b replace specifies the name of the parameter in the target configuration and \b by the value of
  * this parameter.
@@ -95,6 +96,10 @@ protected:
     /// Configures the service
     void configuring(const config_t& _config) override;
 
+    /// Defers the creation of the objects declared with a literal value, until the sub-configuration is known
+    std::optional<std::string> resolve_object_type(std::string_view _key, std::optional<std::size_t> _index)
+    const override;
+
     /// Starts the config
     void starting() override;
 
@@ -117,14 +122,24 @@ private:
     /// Name of the channel used to connect stopConfig slot to the config frame closing.
     std::string m_proxy_channel;
 
-    /// Input data to pass to the configuration - DEPRECATED
-    data::ptr_vector<data::object, data::access::inout> m_data {this, app::helper::config_launcher::DATA_GROUP};
+    /// Names of the objects passed to the configuration, with the hierarchical syntax
+    data::ptr_vector<data::string, data::access::in> m_object_names {
+        this, app::helper::config_launcher::OBJECT_NAME_GROUP
+    };
 
-    /// Input data to pass to the configuration
-    data::ptr_vector<data::object, data::access::inout> m_object {this, app::helper::config_launcher::OBJECT_GROUP};
+    /// Objects passed to the configuration, with the hierarchical syntax. They may be deferred.
+    data::ptr_vector<data::object, data::access::inout> m_object_uids {
+        this, app::helper::config_launcher::OBJECT_UID_GROUP
+    };
 
     /// Input data to pass to the configuration
     data::property<data::string> m_config_id {this, "config", {}};
+
+    /// Identifier of the configuration to launch, with the hierarchical syntax
+    data::ptr<data::string> m_nested_config_id {this, "config.id", {}};
+
+    /// Returns the configuration identifier, whatever the syntax used to declare it
+    [[nodiscard]] std::string config_id() const;
 };
 
 } // namespace sight::app

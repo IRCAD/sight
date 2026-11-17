@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,7 +41,7 @@ class SIGHT_DATA_CLASS_API object
 public:
 
     /// Constructor
-    SIGHT_DATA_API object(core::clock::type _timestamp = 0);
+    SIGHT_DATA_API explicit object(core::clock::type _timestamp = 0);
 
     /// Destructor
     SIGHT_DATA_API virtual ~object();
@@ -50,7 +50,7 @@ public:
     SIGHT_DATA_API virtual void deep_copy(const object& _source);
 
     /// Return timestamp
-    [[nodiscard]] core::clock::type get_timestamp() const
+    [[nodiscard]] core::clock::type timestamp() const
     {
         return m_timestamp;
     }
@@ -61,7 +61,7 @@ public:
     SIGHT_DATA_API bool operator!=(const object& _other) const noexcept;
     /// @}
 
-protected:
+private:
 
     /// Timestamp
     core::clock::type m_timestamp;

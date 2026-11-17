@@ -7,4 +7,14 @@ target_compile_definitions(${SIGHT_TARGET} PUBLIC "QT_NO_KEYWORDS")
 
 add_dependencies(${SIGHT_TARGET} module_service module_ui module_ui_qt module_app)
 
-target_link_libraries(${SIGHT_TARGET} PUBLIC utest utest_data core data service ui_qt)
+target_link_libraries(
+    ${SIGHT_TARGET}
+    PUBLIC utest
+           utest_data
+           core
+           data
+           io
+           service
+           ui_qt
+           ui_test
+)

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2025 IRCAD France
+ * Copyright (C) 2015-2026 IRCAD France
  * Copyright (C) 2015-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,7 +36,7 @@ namespace sight::data::tools
 /// Structure to store picking information
 struct  picking_info
 {
-    enum modifier
+    enum modifier : std::uint8_t
     {
         none  = 0,
         ctrl  = 1,
@@ -66,10 +66,9 @@ struct  picking_info
     /// Viewport size in pixels
     sight::vec2d_t m_viewport_size {};
 
-    /// Id of the cell
-    int m_cell_id = -1;
     /// Id of the closest point
-    int m_closest_point_id = -1;
+    std::int64_t m_closest_index_id = -1;
+
     /// Mouse event
     event m_event_id = event::mouse_left_up;
     /// Modifier mask

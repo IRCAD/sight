@@ -10,7 +10,7 @@
     <extension implements="sight::service::extension::factory">
         <type>sight::io::service::reader</type>
         <service>sight::module::io::vision::calibration_info_reader</service>
-        <object key="data">sight::data::calibration_info</object>
+        <object key="data.read">sight::data::calibration_info</object>
         <desc>Read calibration input datasets.</desc>
     </extension>
 

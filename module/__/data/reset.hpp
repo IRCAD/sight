@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -28,16 +28,18 @@ namespace sight::module::data
 
 /**
  * @brief This service resets an object using the default constructor.
+ * It resets one or several objects using the "data.target" group.
  *
  * @section XML XML Configuration
  * @code{.xml}
    <service uid="..." type="sight::module::data::reset" >
-    <inout key="target" uid="..." />
+       <data target="..." />
+       <data target="..." />
    </service>
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b target [sight::data::object]: define the target object to reset.
+ * - \b data.target [sight::data::object]: define the target objects to reset.
  */
 class reset final : public service::controller
 {
@@ -53,21 +55,21 @@ public:
 
 protected:
 
-    //// Configures the service
-    void configuring(const config_t& _config) final;
-
     /// Does nothing.
     void starting() final;
 
-    /// Resets the object
+    /// Resets the object(s)
     void updating() final;
 
-    /// Sets the output to null.
+    /// Does nothing.
     void stopping() final;
 
 private:
 
-    sight::data::ptr<sight::data::object, sight::data::access::inout> m_target {this, "target", true};
+    /// Resets the target objects.
+    void reset_targets();
+
+    sight::data::ptr_vector<sight::data::object, sight::data::access::inout> m_targets {this, "data.target"};
 };
 
 } // namespace sight::module::data.

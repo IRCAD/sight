@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2025 IRCAD France
+ * Copyright (C) 2022-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -27,12 +27,27 @@
 #include <data/object.hpp>
 #include <data/ptr_access.hpp>
 
+#include <map>
 #include <optional>
+#include <string>
 
 namespace sight::data
 {
 
 class base_ptr;
+
+/// Describes a data key declared with a data::ptr, a data::ptr_vector or a data::property.
+struct key_info
+{
+    data::access access {data::access::in};
+    bool optional {false};
+    /// True when the key was declared with a data::ptr_vector.
+    bool group {false};
+    /// True when the key was declared with a data::property.
+    bool property {false};
+};
+
+using key_info_map_t = std::map<std::string, key_info, std::less<> >;
 
 //------------------------------------------------------------------------------
 
@@ -82,7 +97,7 @@ public:
      * @param _index optional index of the data to retrieve.
      * @return data object, nullptr if not found.
      */
-    SIGHT_DATA_API data::object::csptr object(
+    [[nodiscard]] SIGHT_DATA_API data::object::csptr object(
         std::string_view _key,
         data::access _access,
         std::optional<std::size_t> _index = {}) const;
@@ -134,6 +149,9 @@ public:
         std::string_view _key,
         std::optional<std::size_t> _index = {});
 
+    /// Returns the description of all the data keys declared by this owner.
+    [[nodiscard]] SIGHT_DATA_API key_info_map_t keys() const;
+
 protected:
 
     /**
@@ -181,7 +199,7 @@ protected:
     SIGHT_DATA_API void reset_all_out();
 
     using container_t = std::map<std::pair<std::string_view, std::optional<std::size_t> >, base_ptr*>;
-    SIGHT_DATA_API const container_t& container() const;
+    [[nodiscard]] SIGHT_DATA_API const container_t& container() const;
 
 private:
 
@@ -192,7 +210,7 @@ private:
     friend class ptr_vector;
 
     /// Finds a registered pointer, asserts if not found
-    auto find_object(std::string_view, data::object::csptr _obj) const;
+    [[nodiscard]] auto find_object(std::string_view /*_key*/, data::object::csptr _obj) const;
     /// Registers a pointer
     void register_ptr(std::string_view _key, base_ptr* _data, std::optional<std::size_t> _index = 0);
     /// Unregisters a pointer
@@ -266,8 +284,8 @@ inline data::mt::weak_ptr<DATATYPE> has_data::output(std::string_view _key, std:
 
 inline auto has_data::find_object(std::string_view _key, data::object::csptr _obj) const
 {
-    auto data     = m_data_container.find({_key, {}});
-    const auto id = _obj ? " and id '" + _obj->get_id() + "'" : "";
+    auto data                      = m_data_container.find({_key, {}});
+    [[maybe_unused]] const auto id = _obj ? " and id '" + _obj->get_id() + "'" : "";
     SIGHT_ASSERT("Can not find any declared data::ptr with key '" << _key << "'" << id, data != m_data_container.end());
     return data;
 }

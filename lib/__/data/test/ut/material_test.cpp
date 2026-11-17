@@ -103,7 +103,7 @@ TEST_SUITE("sight::data::material")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("misc")
+    TEST_CASE("string_to_representation_mode")
     {
         // Valid values
         CHECK_EQ(
@@ -131,6 +131,45 @@ TEST_SUITE("sight::data::material")
         CHECK_EQ(
             sight::data::material::string_to_representation_mode("Points"),
             sight::data::material::representation_t::surface
+        );
+    }
+
+    TEST_CASE("string_to_options_mode")
+    {
+        // Valid values
+        CHECK_EQ(
+            sight::data::material::string_to_options_mode("Standard"),
+            sight::data::material::options_t::standard
+        );
+        CHECK_EQ(
+            sight::data::material::string_to_options_mode("standard"),
+            sight::data::material::options_t::standard
+        );
+        CHECK_EQ(
+            sight::data::material::string_to_options_mode("Normals"),
+            sight::data::material::options_t::normals
+        );
+        CHECK_EQ(
+            sight::data::material::string_to_options_mode("NORMALS"),
+            sight::data::material::options_t::normals
+        );
+        CHECK_EQ(
+            sight::data::material::string_to_options_mode("cells_normals"),
+            sight::data::material::options_t::cells_normals
+        );
+        CHECK_EQ(
+            sight::data::material::string_to_options_mode("selected"),
+            sight::data::material::options_t::selected
+        );
+
+        // Invalid values
+        CHECK_EQ(
+            sight::data::material::string_to_options_mode("Normal"),
+            sight::data::material::options_t::standard
+        );
+        CHECK_EQ(
+            sight::data::material::string_to_options_mode("WireframesOnSurface"),
+            sight::data::material::options_t::standard
         );
     }
 } // TEST_SUITE("sight::data::material")

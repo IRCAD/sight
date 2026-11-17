@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -79,7 +79,7 @@ public:
     /**
      * @brief Cast operator for TimeStamp.
      */
-    SIGHT_CORE_API operator time_stamp_type() const
+    SIGHT_CORE_API explicit operator time_stamp_type() const
     {
         return this->m_modified_time;
     }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2026 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,13 +22,14 @@
 
 #pragma once
 
+#include <cstdint>
 namespace sight::viz::scene3d::compositor
 {
 
 /// OIT (Order Independent Transparency) techniques supported
-enum transparency_technique
+enum transparency_technique : std::uint8_t
 {
-    DEFAULT,
+    DEFAULT, //NOLINT(readability-identifier-naming)
     depthpeeling,
     dualdepthpeeling,
     weightedblendedoit,

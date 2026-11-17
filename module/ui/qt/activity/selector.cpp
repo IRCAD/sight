@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2025 IRCAD France
+ * Copyright (C) 2016-2026 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,25 +24,10 @@
 
 #include "selector.hpp"
 
-#include <activity/builder/base.hpp>
-#include <activity/validator/base.hpp>
+#include <algorithm>
 
-#include <core/com/signal.hpp>
-#include <core/com/signal.hxx>
-#include <core/com/slot.hpp>
-#include <core/com/slots.hpp>
-#include <core/com/slots.hxx>
 #include <core/runtime/path.hpp>
 
-#include <data/activity.hpp>
-#include <data/map.hpp>
-#include <data/string.hpp>
-#include <data/vector.hpp>
-
-#include <service/macros.hpp>
-
-#include <ui/__/dialog/message.hpp>
-#include <ui/__/dialog/selector.hpp>
 #include <ui/qt/container/widget.hpp>
 
 #include <boost/foreach.hpp>
@@ -62,15 +47,10 @@ namespace sight::module::ui::qt::activity
 
 //------------------------------------------------------------------------------
 
-const core::com::signals::key_t selector::ACTIVITY_ID_SELECTED_SIG = "activity_id_selected";
-const core::com::signals::key_t selector::LOAD_REQUESTED_SIG       = "load_requested";
-
-//------------------------------------------------------------------------------
-
 selector::selector() noexcept
 {
-    new_signal<activity_id_selected_signal_t>(ACTIVITY_ID_SELECTED_SIG);
-    new_signal<load_requested_signal_t>(LOAD_REQUESTED_SIG);
+    new_signal<signals::activity_id_selected_t>(signals::ACTIVITY_ID_SELECTED);
+    new_signal<signals::load_requested_t>(signals::LOAD_REQUESTED);
 }
 
 //------------------------------------------------------------------------------
@@ -233,13 +213,11 @@ void selector::on_clicked(int _id)
 {
     if(_id == 0)
     {
-        auto sig = this->signal<load_requested_signal_t>(LOAD_REQUESTED_SIG);
-        sig->async_emit();
+        this->async_emit(signals::LOAD_REQUESTED);
     }
     else
     {
-        auto sig = this->signal<activity_id_selected_signal_t>(ACTIVITY_ID_SELECTED_SIG);
-        sig->async_emit(m_activities_info[static_cast<std::size_t>(_id)].id);
+        this->async_emit(signals::ACTIVITY_ID_SELECTED, m_activities_info[static_cast<std::size_t>(_id)].id);
     }
 }
 
@@ -255,7 +233,7 @@ selector::activity_infos_t selector::get_enabled_activities(const activity_infos
 
         for(const auto& info : _infos)
         {
-            auto key_it = std::find(m_keys.begin(), m_keys.end(), info.id);
+            auto key_it = std::ranges::find(m_keys, info.id);
 
             if((key_it != m_keys.end() && is_include_mode) || (key_it == m_keys.end() && !is_include_mode))
             {

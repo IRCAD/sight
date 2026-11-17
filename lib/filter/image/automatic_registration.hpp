@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2025 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,10 +47,10 @@ struct registration_params_t
 };
 
 SIGHT_FILTER_IMAGE_API void perform_automatic_registration(
-    const data::image& target,
-    const data::image& reference,
-    data::matrix4& transform,
-    const registration_params_t& params
+    const data::image& _target,
+    const data::image& _reference,
+    data::matrix4& _transform,
+    const registration_params_t& _params
 );
 
 } // namespace sight::filter::image

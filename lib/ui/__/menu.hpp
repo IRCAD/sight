@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,7 +37,7 @@ namespace detail::registry
 
 class menu;
 
-}
+} // namespace detail::registry
 
 /**
  * @brief   Defines the service interface managing the menu.
@@ -47,6 +47,8 @@ class SIGHT_UI_CLASS_API menu : public service::base
 public:
 
     SIGHT_DECLARE_SERVICE(menu, service::base);
+
+    SIGHT_UI_API ~menu() override = default;
 
     /// Method called when an action service is stopping
     SIGHT_UI_API void action_service_stopping(std::string _action_srv_sid);
@@ -64,8 +66,6 @@ public:
     SIGHT_UI_API void action_service_set_visible(std::string _action_srv_sid, bool _is_visible);
 
 protected:
-
-    SIGHT_UI_API ~menu() override = default;
 
     /**
      * @brief Initialize the layout and registry managers.
@@ -122,7 +122,7 @@ private:
     void initialize_layout_manager(const ui::config_t& _layout_config);
 
     ui::layout::menu_manager::sptr m_layout_manager;
-    SPTR(ui::detail::registry::menu) m_registry;
+    sight::sptr<ui::detail::registry::menu> m_registry;
 
     /// Flag to hide or disable the actions if the service is stopped
     bool m_hide_actions {false};

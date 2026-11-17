@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,7 +28,6 @@
 #include "core/memory/buffer_manager.hpp"
 
 #include <filesystem>
-#include <istream>
 #include <type_traits>
 
 namespace sight::core::memory
@@ -99,10 +98,13 @@ public:
     {
     public:
 
-        using buffer_t = typename std::conditional_t<std::is_const_v<T>, const void*, void*>;
+        using buffer_t = std::conditional_t<std::is_const_v<T>, const void*, void*>;
 
+        //NOLINTBEGIN(google-explicit-constructor,hicpp-explicit-conversions)
         lock_base() = default;
-        inline ~lock_base()
+
+        // NOLINTNEXTLINE(modernize-use-equals-default,hicpp-use-equals-default)
+        ~lock_base()
         {
             // Resetting the counter in the destructor **BEFORE** resetting buffer_object shared pointer is required !
             // Otherwise, the lock count assert in the destruction of the buffer, in
@@ -117,7 +119,7 @@ public:
          *
          * @param _bo buffer_object to lock
          */
-        lock_base(const SPTR(T)& _bo) :
+        lock_base(const sight::sptr<T>& _bo) :
             m_count(_bo->m_count.lock()),
             m_buffer_object(_bo)
         {
@@ -132,10 +134,12 @@ public:
             }
         }
 
+        //NOLINTEND(google-explicit-constructor,hicpp-explicit-conversions)
+
         /**
          * @brief Returns buffer_object's buffer pointer
          */
-        [[nodiscard]] typename lock_base<T>::buffer_t buffer() const
+        [[nodiscard]] lock_base<T>::buffer_t buffer() const
         {
             return m_buffer_object->m_buffer;
         }
@@ -149,13 +153,13 @@ public:
             m_buffer_object.reset();
         }
 
-    protected:
+    private:
 
         buffer_object::counter_type m_count;
         // Using a shared_ptr allows to keep the buffer alive until the lock is destroyed,
         // otherwise we would raise the lock count assert in the destruction of the buffer,
         // in BufferManager::::unregisterBufferImpl()
-        SPTR(T) m_buffer_object;
+        sight::sptr<T> m_buffer_object {};
     };
 
     /**
@@ -172,7 +176,7 @@ public:
      *
      * Register the buffer to an existing buffer manager.
      */
-    SIGHT_CORE_API buffer_object(bool _auto_delete = false);
+    SIGHT_CORE_API buffer_object(bool _auto_delete = false); //NOLINT(google-explicit-constructor,hicpp-explicit-conversions)
 
     /**
      * @brief buffer_object destructor
@@ -313,7 +317,7 @@ public:
      * @param _policy Buffer allocation policy
      */
     SIGHT_CORE_API void set_istream_factory(
-        const SPTR(core::memory::stream::in::factory)& _factory,
+        const sight::sptr<core::memory::stream::in::factory>& _factory,
         size_t _size,
         const std::filesystem::path& _source_file                   = "",
         core::memory::file_format_type _format                      = core::memory::other,
@@ -328,7 +332,7 @@ public:
 
     /// @}
 
-protected:
+private:
 
     core::memory::buffer_manager::buffer_t m_buffer {nullptr};
 

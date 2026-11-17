@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,29 +29,35 @@
 #include "viz/scene3d/factory/r2vb_renderable.hpp"
 #include "viz/scene3d/helper/camera.hpp"
 #include "viz/scene3d/layer.hpp"
-#include "viz/scene3d/ogre.hpp"
 #include "viz/scene3d/vr/grid_proxy_geometry.hpp"
 
+#include <core/memory/byte_size.hpp>
 #include <core/os/temp_path.hpp>
 #include <core/runtime/path.hpp>
 #include <core/spy_log.hpp>
 #include <core/tools/os.hpp>
 
-#include <data/helper/medical_image.hpp>
-
 #include <geometry/data/image.hpp>
 
+#include <OGRE/OgreCompositorManager.h>
+#include <OGRE/OgreHighLevelGpuProgramManager.h>
 #include <OGRE/OgreMaterialManager.h>
+#include <OGRE/OgreMeshManager.h>
+#include <OGRE/OgreRenderSystem.h>
+#include <OGRE/OgreResourceManager.h>
+#include <OGRE/OgreSceneManager.h>
+#include <OGRE/OgreTextureManager.h>
 
 #include <OgreConfigFile.h>
 #include <OgreException.h>
 #include <OgreHardwarePixelBuffer.h>
 #include <OgreResourceGroupManager.h>
-#include <OgreTextureManager.h>
 
 #include <algorithm>
+#include <array>
 #include <cctype> // Needed for isspace()
 #include <filesystem>
+#include <utility>
 
 namespace sight::viz::scene3d
 {
@@ -63,6 +69,80 @@ static std::set<std::string> s_ogre_plugins;
 viz::scene3d::factory::r2vb_renderable* utils::s_r2vb_renderable_factory            = nullptr;
 viz::scene3d::vr::grid_proxy_geometry_factory* utils::s_grid_proxy_geometry_factory = nullptr;
 viz::scene3d::compositor::manager::oit* utils::s_oit_manager                        = nullptr;
+
+//------------------------------------------------------------------------------
+
+void utils::log_resources(
+    Ogre::ResourceManager& _manager,
+    const std::string& _manager_name,
+    const std::string& _parent_id,
+    const std::string& _stage
+)
+{
+    std::size_t resource_count        = 0;
+    std::size_t parent_resource_count = 0;
+
+    Ogre::ResourceManager::ResourceMapIterator iterator = _manager.getResourceIterator();
+    while(iterator.hasMoreElements())
+    {
+        Ogre::ResourcePtr resource = iterator.getNext();
+        ++resource_count;
+
+        if(resource->getName().find(_parent_id) != std::string::npos)
+        {
+            ++parent_resource_count;
+            SIGHT_INFO(
+                "Ogre resource [" << _stage << "] manager=" << _manager_name << " name='" << resource->getName()
+                << "' size="
+                << core::memory::byte_size(resource->getSize()).get_human_readable_size(
+                    core::memory::byte_size::si
+                )
+            );
+        }
+    }
+
+    SIGHT_INFO(
+        "Ogre resources [" << _stage << "] manager=" << _manager_name << " count=" << resource_count
+        << " parent_count=" << parent_resource_count << " memory="
+        << core::memory::byte_size(_manager.getMemoryUsage()).get_human_readable_size(
+            core::memory::byte_size::si
+        )
+    );
+}
+
+//------------------------------------------------------------------------------
+
+void utils::log_ogre_resources(
+    Ogre::SceneManager& _scene_manager,
+    const std::string& _parent_id,
+    const std::string& _stage
+)
+{
+    utils::log_resources(Ogre::TextureManager::getSingleton(), "textures", _parent_id, _stage);
+    utils::log_resources(Ogre::MaterialManager::getSingleton(), "materials", _parent_id, _stage);
+    utils::log_resources(Ogre::MeshManager::getSingleton(), "meshes", _parent_id, _stage);
+    utils::log_resources(Ogre::CompositorManager::getSingleton(), "compositors", _parent_id, _stage);
+    utils::log_resources(Ogre::HighLevelGpuProgramManager::getSingleton(), "gpu_programs", _parent_id, _stage);
+
+    std::size_t camera_count        = 0;
+    std::size_t parent_camera_count = 0;
+    for(const auto& camera_entry : _scene_manager.getCameras())
+    {
+        Ogre::Camera* const camera = camera_entry.second;
+        ++camera_count;
+
+        if(camera->getName().find(_parent_id) != std::string::npos)
+        {
+            ++parent_camera_count;
+            SIGHT_INFO("Ogre camera [" << _stage << "] name='" << camera->getName() << "'");
+        }
+    }
+
+    SIGHT_INFO(
+        "Ogre rendering objects [" << _stage << "] cameras=" << camera_count
+        << " parent_cameras=" << parent_camera_count
+    );
+}
 
 //------------------------------------------------------------------------------
 
@@ -85,9 +165,8 @@ void utils::load_resources()
 
     // Ensure we always load the resources of this library first, since other may reuse our programs or shaders
     std::list<std::string> module_with_resources_names;
-    std::copy(
-        s_module_with_resources_names.begin(),
-        s_module_with_resources_names.end(),
+    std::ranges::copy(
+        s_module_with_resources_names,
         std::back_inserter(module_with_resources_names)
     );
     module_with_resources_names.emplace_front("sight::viz::scene3d");
@@ -196,10 +275,43 @@ Ogre::Root* utils::get_ogre_root()
 
             // Find the ogre plugins path
 
-#if defined(_WIN32)
+#ifdef _WIN32
             const auto ogre_plugins_path = ogre_lib_path.parent_path() / "plugins" / "ogre";
 #else
-            const auto ogre_plugins_path = ogre_lib_path / "OGRE";
+            // Prefer the plugins matching the linked Ogre version, then try the
+            // unversioned directory used by some distributions.
+            std::filesystem::path ogre_plugins_path;
+            const std::array<std::filesystem::path, 2> ogre_plugins_paths = {
+                std::format("{}-{}.{}", (ogre_lib_path / "OGRE").string(), OGRE_VERSION_MAJOR, OGRE_VERSION_MINOR),
+                ogre_lib_path / "OGRE"
+            };
+            for(const auto& plugins_path : ogre_plugins_paths)
+            {
+                if(!std::filesystem::is_directory(plugins_path))
+                {
+                    continue;
+                }
+
+                for(const auto& entry : std::filesystem::directory_iterator(plugins_path))
+                {
+                    const auto filename = entry.path().filename().string();
+                    if(filename.starts_with("RenderSystem_GL3Plus.so") && entry.is_regular_file())
+                    {
+                        ogre_plugins_path = plugins_path;
+                        break;
+                    }
+                }
+
+                if(!ogre_plugins_path.empty())
+                {
+                    break;
+                }
+            }
+
+            SIGHT_FATAL_IF(
+                "Failed to find RenderSystem_GL3Plus.so plugin beside " + ogre_main_name,
+                ogre_plugins_path.empty()
+            );
 #endif
 
             // Add render system plugin
@@ -300,7 +412,7 @@ void utils::destroy_ogre_root()
 
 //------------------------------------------------------------------------------
 
-void utils::convert_from_ogre_texture(Ogre::TexturePtr _texture, const data::image::sptr _image, bool _flip)
+void utils::convert_from_ogre_texture(Ogre::TexturePtr _texture, const data::image::sptr& _image, bool _flip)
 {
     SIGHT_ASSERT("texture is null", _texture);
     SIGHT_ASSERT("image is null", _image);
@@ -399,7 +511,7 @@ Ogre::PixelFormat utils::get_pixel_format_ogre(const data::image& _image)
             return Ogre::PF_L16;
         }
 
-        if(pixel_type == core::type::FLOAT)
+        if(pixel_type == core::type::FLOAT32)
         {
             // float
             return Ogre::PF_FLOAT32_R;
@@ -434,7 +546,7 @@ Ogre::PixelFormat utils::get_pixel_format_ogre(const data::image& _image)
             return Ogre::PF_R8G8_SNORM;
         }
 
-        if(pixel_type == core::type::FLOAT)
+        if(pixel_type == core::type::FLOAT32)
         {
             // float
             return Ogre::PF_FLOAT32_GR;
@@ -480,12 +592,12 @@ Ogre::PixelFormat utils::get_pixel_format_ogre(const data::image& _image)
         return number_of_component == 3 ? Ogre::PF_R32G32B32_SINT : Ogre::PF_R32G32B32A32_SINT;
     }
 
-    if(pixel_type == core::type::FLOAT)
+    if(pixel_type == core::type::FLOAT32)
     {
         return number_of_component == 3 ? Ogre::PF_FLOAT32_RGB : Ogre::PF_FLOAT32_RGBA;
     }
 
-    if(pixel_type == core::type::DOUBLE)
+    if(pixel_type == core::type::FLOAT64)
     {
         SIGHT_FATAL("Pixel format not handled.");
     }
@@ -625,7 +737,7 @@ std::pair<core::type, enum data::image::pixel_format_t> utils::get_pixel_format_
         case Ogre::PF_FLOAT32_R:
         case Ogre::PF_FLOAT32_RGB:
         case Ogre::PF_FLOAT32_RGBA:
-            pixel_type = core::type::FLOAT;
+            pixel_type = core::type::FLOAT32;
             break;
 
         default:
@@ -761,7 +873,7 @@ Ogre::Vector3i utils::world_to_slices(const data::image& _image, const Ogre::Vec
 
     for(std::size_t i = 0 ; i < sizes.size() ; ++i)
     {
-        if(voxel[int(i)] < 0 || voxel[int(i)] >= int(sizes[i]))
+        if(voxel[static_cast<int>(i)] < 0 || std::cmp_greater_equal(voxel[static_cast < int > (i)], sizes[i]))
         {
             SIGHT_THROW_EXCEPTION(core::exception("Point is outside image boundaries"));
         }
@@ -776,7 +888,7 @@ Ogre::Vector3i utils::world_to_slices(const data::image& _image, const Ogre::Vec
 
 //------------------------------------------------------------------------------
 
-std::optional<std::pair<Ogre::MovableObject*, Ogre::Vector3> > utils::pick_object(
+std::optional<pick_result_t> utils::pick_object(
     int _x,
     int _y,
     std::uint32_t _query_mask,
@@ -790,15 +902,15 @@ std::optional<std::pair<Ogre::MovableObject*, Ogre::Vector3> > utils::pick_objec
 
     viz::scene3d::detail::collision_tools tool(_layer, _query_mask);
 
-    auto&& [entityFound, rayIntersect, selectedObject, _] = tool.raycast(vp_ray, _query_mask);
+    auto result = tool.raycast(vp_ray, _query_mask);
 
-    if(entityFound)
+    if(result.has_value())
     {
-        SIGHT_DEBUG("Entity find and intersect at " << rayIntersect << "(WS)");
+        SIGHT_DEBUG("Entity find and intersect at " << result->position << "(WS)");
 
         if(_shift_toward_camera)
         {
-            rayIntersect -= vp_ray.getDirection() * 0.01F;
+            result->position -= vp_ray.getDirection() * 0.01F;
         }
     }
     else
@@ -806,7 +918,7 @@ std::optional<std::pair<Ogre::MovableObject*, Ogre::Vector3> > utils::pick_objec
         return std::nullopt;
     }
 
-    return std::make_optional(std::make_pair(selectedObject, rayIntersect));
+    return result;
 }
 
 //------------------------------------------------------------------------------
@@ -818,9 +930,9 @@ std::string utils::pick_image(
 {
     const auto picked_voxel = geometry::data::world_to_image(_image, _position, true, true);
     const auto intensity    = _image.get_pixel_as_string(
-        data::image::index_t(picked_voxel[0]),
-        data::image::index_t(picked_voxel[1]),
-        data::image::index_t(picked_voxel[2])
+        static_cast<data::image::index_t>(picked_voxel[0]),
+        static_cast<data::image::index_t>(picked_voxel[1]),
+        static_cast<data::image::index_t>(picked_voxel[2])
     );
 
     return "(" + std::to_string(picked_voxel[0]) + ", "
@@ -845,6 +957,7 @@ bool utils::make_paths_absolute(
     for(std::string line ; std::getline(_input, line) ; )
     {
         // Remove all whitespace from the line.
+        // NOLINTNEXTLINE(modernize-use-ranges)
         line.erase(std::remove_if(line.begin(), line.end(), isspace), line.end());
 
         // Skip comments, go to the next line.

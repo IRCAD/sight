@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -86,7 +86,7 @@ protected:
     SIGHT_UI_API virtual void destroy_sub_views();
 
     /// All sub containers managed by this layout.
-    std::vector<ui::container::widget::sptr> m_sub_views;
+    std::vector<ui::container::widget::sptr> m_sub_views; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
 };
 
 } // namespace sight::ui::layout

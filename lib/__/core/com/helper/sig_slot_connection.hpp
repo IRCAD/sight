@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -72,7 +72,7 @@ public:
     /// Disconnect all registered connections and clear m_connections
     SIGHT_CORE_API void disconnect();
 
-protected:
+private:
 
     /// Connections storage
     using connection_container_t = std::list<core::com::connection>;

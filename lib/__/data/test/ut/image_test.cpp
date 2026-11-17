@@ -20,22 +20,17 @@
  *
  ***********************************************************************/
 
-#include <core/memory/stream/in/raw.hpp>
 #include <core/profiling.hpp>
-#include <core/tools/system.hpp>
 
 #include <data/image.hpp>
 #include <data/iterator.hpp>
-#include <data/reconstruction.hpp>
 
 #include <utest_data/generator/image.hpp>
 
 #include <doctest/doctest.h>
 
 #include <algorithm>
-#include <exception>
 #include <iostream>
-#include <map>
 #include <ostream>
 #include <vector>
 
@@ -43,7 +38,7 @@ TEST_SUITE("sight::data::image")
 {
 //------------------------------------------------------------------------------
 
-    TEST_CASE("test_getter_setter")
+    TEST_CASE("getter_setter")
     {
         const sight::data::image::spacing_t spacing         = {2.5, 2.6};
         const sight::data::image::origin_t origin           = {2.7, 2.8};
@@ -70,7 +65,7 @@ TEST_SUITE("sight::data::image")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("test_allocation")
+    TEST_CASE("allocation")
     {
         const sight::core::type type              = sight::core::type::INT16;
         const sight::data::image::size_t img_size = {14, 15, 26};
@@ -96,7 +91,7 @@ TEST_SUITE("sight::data::image")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("test_reallocation")
+    TEST_CASE("reallocation")
     {
         const sight::core::type typ_e1              = sight::core::type::INT16;
         const sight::core::type typ_e2              = sight::core::type::INT64;
@@ -148,7 +143,7 @@ TEST_SUITE("sight::data::image")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("test_set_get_pixel")
+    TEST_CASE("set_get_pixel")
     {
         sight::data::image::sptr img = std::make_shared<sight::data::image>();
 
@@ -238,7 +233,7 @@ TEST_SUITE("sight::data::image")
                 CHECK_EQ(*iter_img1, *iter_img2);
             }
         }
-        std::fill(img->begin(), img->end(), std::int8_t(0));
+        std::fill(img->begin(), img->end(), static_cast<std::int8_t>(0));
 
         for(const auto& element : *img)
         {
@@ -269,7 +264,7 @@ TEST_SUITE("sight::data::image")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("test_set_get_pixel_rgba")
+    TEST_CASE("set_get_pixel_rgba")
     {
         sight::data::image::sptr img = std::make_shared<sight::data::image>();
 
@@ -386,7 +381,7 @@ TEST_SUITE("sight::data::image")
                 CHECK_EQ(iter_img1->a, iter_img2->a);
             }
         }
-        std::fill(img->begin(), img->end(), std::int8_t(0));
+        std::fill(img->begin(), img->end(), static_cast<std::int8_t>(0));
 
         for(const auto& element : *img)
         {
@@ -417,7 +412,7 @@ TEST_SUITE("sight::data::image")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("test_iterator")
+    TEST_CASE("iterator")
     {
         sight::data::image::sptr img = std::make_shared<sight::data::image>();
 
@@ -486,7 +481,7 @@ TEST_SUITE("sight::data::image")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("test_rgb_iterator")
+    TEST_CASE("rgb_iterator")
     {
         sight::data::image::sptr img = std::make_shared<sight::data::image>();
 
@@ -582,7 +577,7 @@ TEST_SUITE("sight::data::image")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("test_bgr_iterator")
+    TEST_CASE("bgr_iterator")
     {
         sight::data::image::sptr img = std::make_shared<sight::data::image>();
 
@@ -636,7 +631,7 @@ TEST_SUITE("sight::data::image")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("test_bgra_iterator")
+    TEST_CASE("bgra_iterator")
     {
         sight::data::image::sptr img = std::make_shared<sight::data::image>();
 
@@ -696,7 +691,7 @@ TEST_SUITE("sight::data::image")
 
 //------------------------------------------------------------------------------
 
-    TEST_CASE("test_rgba_iterator")
+    TEST_CASE("rgba_iterator")
     {
         sight::data::image::sptr img = std::make_shared<sight::data::image>();
 
@@ -827,22 +822,22 @@ TEST_SUITE("sight::data::image")
         // Here the std::vector will always be faster than our iterator because the STL internally optimizes the loop
         // iteration with a memmove instead. We can't achieve this on our own, we don't have access to std::__niter
         {
-            FW_PROFILE("std::copy - ImageIterator");
+            SIGHT_PROFILE("std::copy - ImageIterator");
             std::copy(begin1, end1, begin2);
         }
         {
-            FW_PROFILE("std::copy - std::vector");
+            SIGHT_PROFILE("std::copy - std::vector");
             std::ranges::copy(std_vector_image, std_vector_image2.begin());
         }
 
         // Here is the real test, we expect to have comparable timings with the STL when have a real loop on both sides
         auto fn = [](auto& _x){_x.r = _x.r + 2; _x.g = _x.g + 8; _x.a = _x.a + 2; _x.b = _x.b + 7;};
         {
-            FW_PROFILE("std::for_each - ImageIterator");
+            SIGHT_PROFILE("std::for_each - ImageIterator");
             std::for_each(begin2, end2, fn);
         }
         {
-            FW_PROFILE("std::for_each - std::vector");
+            SIGHT_PROFILE("std::for_each - std::vector");
             std::ranges::for_each(std_vector_image, fn);
         }
 
@@ -853,21 +848,15 @@ TEST_SUITE("sight::data::image")
 
         auto fn2 = [](auto& _pix){_pix.r = _pix.r + 2; _pix.g = _pix.g + 8; _pix.a = _pix.a + 2; _pix.b = _pix.b + 7;};
         {
-            FW_PROFILE("std::for_each - image_iterator");
+            SIGHT_PROFILE("std::for_each - image_iterator");
             std::for_each(begin3, end3, fn2);
         }
-
-        // {
-        //     FW_PROFILE("std::fill - image_iterator");
-        //     sight::data::RGBA16 zero = {0, 0, 0, 0};
-        //     std::fill(begin3, end3, zero);
-        // }
 
         auto begin5 = img->cbegin<sight::data::iterator::rgba16>();
         auto end5   = img->cend<sight::data::iterator::rgba16>();
 
         {
-            FW_PROFILE("std::copy - image_iterator");
+            SIGHT_PROFILE("std::copy - image_iterator");
             std::copy(begin5, end5, begin3);
         }
     }
@@ -928,7 +917,7 @@ TEST_SUITE("sight::data::image")
             const sight::data::image::origin_t origin {1., 1., 0.};
             const sight::data::image::orientation_t orientation {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6};
             const sight::data::image::spacing_t spacing {10., 10., 0.};
-            const auto type   = sight::core::type::FLOAT;
+            const auto type   = sight::core::type::FLOAT32;
             const auto format = sight::data::image::pixel_format_t::gray_scale;
 
             sight::utest_data::generator::image::generate_image(
@@ -1000,8 +989,12 @@ TEST_SUITE("sight::data::image")
 
     TEST_CASE("equality")
     {
-        static constexpr std::array s_WHITE_PIXEL {std::uint8_t(0), std::uint8_t(0), std::uint8_t(0)};
-        static constexpr std::array s_BLACK_PIXEL {std::uint8_t(255), std::uint8_t(255), std::uint8_t(255)};
+        static constexpr std::array s_WHITE_PIXEL {static_cast<std::uint8_t>(0), static_cast<std::uint8_t>(0),
+                                                   static_cast<std::uint8_t>(0)
+        };
+        static constexpr std::array s_BLACK_PIXEL {static_cast<std::uint8_t>(255), static_cast<std::uint8_t>(255),
+                                                   static_cast<std::uint8_t>(255)
+        };
         auto image1 = std::make_shared<sight::data::image>();
         auto image2 = std::make_shared<sight::data::image>();
 

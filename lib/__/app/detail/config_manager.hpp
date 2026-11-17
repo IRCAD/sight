@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2025 IRCAD France
+ * Copyright (C) 2015-2026 IRCAD France
  * Copyright (C) 2015-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,20 +22,14 @@
 
 #pragma once
 
-#include <sight/app/config.hpp>
-
 #include "app/config_manager.hpp"
 #include "app/helper/config.hpp"
 
 #include "core/com/helper/proxy_connections.hpp"
 
 #include "service/base.hpp"
-#include "service/extension/config.hpp"
 
 #include <core/com/has_slots.hpp>
-#include <core/com/helper/sig_slot_connection.hpp>
-
-#include <boost/property_tree/ptree.hpp>
 
 #include <string>
 #include <unordered_map>
@@ -67,11 +61,26 @@ public:
     SIGHT_DECLARE_CLASS(config_manager, app::config_manager);
 
     SIGHT_ALLOW_SHARED_FROM_THIS()
+
+    struct slots
+    {
+        using object_t = core::com::slot<void (data::object::sptr, const std::string&)>;
+        using void_t   = core::com::slot<void ()>;
+
+        static inline const slot_key_t ADD_OBJECTS        = "addObject";
+        static inline const slot_key_t REMOVE_OBJECTS     = "removeObjects";
+        static inline const slot_key_t ADD_STARTED_SRV    = "add_started_service";
+        static inline const slot_key_t REMOVE_STARTED_SRV = "remove_started_service";
+    };
+
     /// Creates slots.
     config_manager();
 
     /// Does nothing.
     ~config_manager() override;
+
+    /// Set configuration
+    void set_config(const config_t& _cfg) override;
 
     /**
      * @brief Sets configuration.
@@ -140,15 +149,15 @@ private:
     /// Destroyes all created services
     void destroy_created_services();
 
-    void process_start_items(const core::runtime::config_t&);
+    void process_start_items(const core::runtime::config_t& /*_element*/);
 
     void process_update_items();
 
     /// Parses objects section and create objects.
-    void create_objects(const core::runtime::config_t&);
+    void create_objects(const core::runtime::config_t& /*_cfg_elem*/);
 
     /// Parses services and create all the services that can be instantiated.
-    void create_services(const core::runtime::config_t&);
+    void create_services(const core::runtime::config_t& /*_cfg_elem*/);
 
     /// Creates a single service from its configuration.
     service::base::sptr create_service(const detail::service_config& _srv_config);
@@ -186,7 +195,7 @@ private:
         const proxy_connections_t& _proxy_cfg,
         const std::string& _key       = "",
         data::object::csptr _hint_obj = nullptr
-    );
+    ) const;
 
     void destroy_proxies();
 
@@ -263,9 +272,12 @@ private:
 
     /// Configuration element built to start updaters
     service::config_t m_srv_auto_start;
+
+    /// XML Configuration tree
+    core::runtime::config_t m_cfg_elem;
 };
 
-// ------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 inline std::string config_manager::msg_head() const
 {

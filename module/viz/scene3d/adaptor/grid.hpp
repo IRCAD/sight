@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -45,10 +45,12 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::adaptor::grid">
-        <config transform="transformUID" size="30" dashLength="2.5" color="#0000FF" elevation="200"/>
-        <properties position="pos_vector" orientation="orientation_vector" />
+        <config transform="transformUID" size="30" dashLength="2.5" color="#0000FF" elevation="200"
+ * position="pos_vector" orientation="orientation_vector" />
     </service>
    @endcode
+ *
+ * - \b config.visible [sight::data::boolean] (optional, default=true): the visibility of the adaptor.
  *
  * @subsection Configuration Configuration:
  * - \b transform (optional, string, default=""): the name of the Ogre transform node where to attach the mesh, as it
@@ -56,7 +58,6 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b size (optional, float, default=50.0): size of a side of the grid, in mm.
  * - \b dashLength (optional, float, default=2.5): length of a dash, in mm.
  * - \b color (optional, hexadecimal, default=#FFFFFFFF): color of the grid lines.
- * - \b visible (optional, bool, default=true): the visibility of the adaptor.
  *
  *  * @subsection properties properties:
  *  - \b position (optional, data::dvec3): if set, the grid will be move to this position (x, y, z in mm).
@@ -70,8 +71,19 @@ public:
 
     SIGHT_DECLARE_SERVICE(grid, sight::viz::scene3d::adaptor);
 
+    struct slots
+    {
+        static inline const slot_key_t UPDATE_LENGTH = "updateSize";
+    };
+
     grid() noexcept;
     ~grid() noexcept override = default;
+
+    /**
+     * @brief Sets the line visibility.
+     * @param _visible the visibility status of the line.
+     */
+    void set_visible(bool _visible) override;
 
 protected:
 
@@ -86,12 +98,6 @@ protected:
 
     /// Deletes the mesh after unregistering the service, and shutting down connections
     void stopping() override;
-
-    /**
-     * @brief Sets the line visibility.
-     * @param _visible the visibility status of the line.
-     */
-    void set_visible(bool _visible) override;
 
 private:
 
@@ -137,8 +143,11 @@ private:
     struct camera_listener;
     camera_listener* m_camera_listener {nullptr};
 
-    sight::data::property<sight::data::dvec3> m_position {this, "position", {0.0, 0.0, 0.0}};
-    sight::data::property<sight::data::dvec3> m_orientation {this, "orientation", {0.0, 0.0, 0.0}};
+    sight::data::ptr<sight::data::dvec3, sight::data::access::in> m_position {this, "config.position", {0.0, 0.0, 0.0}};
+    sight::data::ptr<sight::data::dvec3, sight::data::access::in> m_orientation {this, "config.orientation",
+                                                                                 {0.0, 0.0, 0.0
+                                                                                 }
+    };
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.
