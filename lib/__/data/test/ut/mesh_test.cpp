@@ -413,7 +413,12 @@ TEST_SUITE("sight::data::mesh")
             mesh->num_points(),
             mesh->num_cells(),
             sight::data::mesh::cell_type_t::quad,
-            sight::data::mesh::attribute::point_colors | sight::data::mesh::attribute::point_tex_coords
+            sight::data::mesh::attribute::point_normals
+            | sight::data::mesh::attribute::point_colors
+            | sight::data::mesh::attribute::point_tex_coords
+            | sight::data::mesh::attribute::cell_normals
+            | sight::data::mesh::attribute::cell_colors
+            | sight::data::mesh::attribute::cell_tex_coords
         );
 
         for(sight::data::mesh::size_t i = 0 ; i < mesh->num_points() ; ++i)
@@ -494,13 +499,14 @@ TEST_SUITE("sight::data::mesh")
             }
 
             {
-                const auto cell_itr           = mesh->zip_range<cell::quad, cell::rgba, cell::uv>().begin();
-                const auto cell_itr_copy_mesh = shallow_copy_mesh->zip_range<cell::quad, cell::rgba,
-                                                                             cell::uv>().begin();
+                const auto cell_itr      = mesh->zip_range<cell::quad, cell::nxyz, cell::rgba, cell::uv>().begin();
+                const auto cell_itr_copy =
+                    shallow_copy_mesh->zip_range<cell::quad, cell::nxyz, cell::rgba, cell::uv>().begin();
 
-                const auto& [i1, c1, t1] = *cell_itr;
-                const auto& [i2, c2, t2] = *cell_itr_copy_mesh;
+                const auto& [i1, n1, c1, t1] = *cell_itr;
+                const auto& [i2, n2, c2, t2] = *cell_itr_copy;
                 CHECK_EQ((i1.pt).data(), (i2.pt).data());
+                CHECK_EQ(&n1.nx, &n2.nx);
                 CHECK_EQ(&c1.r, &c2.r);
                 CHECK_EQ(&t1.u, &t2.u);
             }
@@ -1380,6 +1386,7 @@ TEST_SUITE("sight::data::mesh")
     }
 
 //-----------------------------------------------------------------------------
+
     TEST_CASE("bounding_box")
     {
         auto mesh = std::make_shared<sight::data::mesh>();

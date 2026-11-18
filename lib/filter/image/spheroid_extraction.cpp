@@ -20,8 +20,6 @@
  *
  ***********************************************************************/
 
-#if HAS_ITK_REVIEW_MODULE
-
 #include "filter/image/spheroid_extraction.hpp"
 
 #include <core/tools/dispatcher.hpp>
@@ -31,9 +29,14 @@
 #include <itkBinaryThresholdImageFilter.h>
 #include <itkConnectedComponentImageFilter.h>
 #include <itkImage.h>
-#include <itkLabelGeometryImageFilter.h>
+#include <itkLabelImageToShapeLabelMapFilter.h>
+
+#include <cmath>
 
 namespace sight::filter::image
+{
+
+namespace
 {
 
 struct spheroid_extractor
@@ -54,8 +57,8 @@ struct spheroid_extractor
     template<class PIXELTYPE>
     void operator()(parameters& _params)
     {
-        using image_t        = typename itk::Image<PIXELTYPE, 3>;
-        using binary_image_t = typename itk::Image<std::uint16_t, 3>;
+        using image_t        = itk::Image<PIXELTYPE, 3>;
+        using binary_image_t = itk::Image<std::uint16_t, 3>;
 
         auto input_image = io::itk::move_to_itk<image_t>(_params.input_image);
 
@@ -79,28 +82,32 @@ struct spheroid_extractor
         cc->FullyConnectedOn();
         cc->Update();
 
-        using label_stats_filter_t = itk::LabelGeometryImageFilter<binary_image_t, image_t>;
-        auto label_geometry_filter = label_stats_filter_t::New();
+        auto shape_filter = itk::LabelImageToShapeLabelMapFilter<binary_image_t>::New();
 
-        label_geometry_filter->SetInput(cc->GetOutput());
-        label_geometry_filter->SetIntensityInput(input_image);
-        label_geometry_filter->Update();
+        shape_filter->SetInput(cc->GetOutput());
+        shape_filter->SetBackgroundValue(0);
+        shape_filter->ComputePerimeterOff();
+        shape_filter->Update();
 
-        auto labels = label_geometry_filter->GetLabels();
+        const auto* const label_map = shape_filter->GetOutput();
 
-        SIGHT_DEBUG("Number of labels : " << label_geometry_filter->GetNumberOfLabels());
+        SIGHT_DEBUG("Number of labels : " << label_map->GetNumberOfLabelObjects());
 
-        for(auto labels_it = labels.begin() ; labels_it != labels.end() ; ++labels_it)
+        for(const auto& label_object : label_map->GetLabelObjects())
         {
-            auto label_value = *labels_it;
-
             const double radius_mean     = (_params.radius_max + _params.radius_min) / 2.;
             const double mean_elongation = (_params.elongation_max + _params.elongation_min) / 2.;
             const double radius_std      = (_params.radius_max - _params.radius_min) / 6.;
             const double elongation_std  = (_params.elongation_max - _params.elongation_min) / 6.;
 
-            const double e         = label_geometry_filter->GetElongation(label_value);
-            const auto axes_length = label_geometry_filter->GetAxesLength(label_value);
+            // Axes and elongation defined like the deprecated itk::LabelGeometryImageFilter
+            auto axes_length = label_object->GetPrincipalMoments();
+            for(auto& axis : axes_length)
+            {
+                axis = 4. * std::sqrt(axis);
+            }
+
+            const double e = axes_length[2] / axes_length[0];
 
             SIGHT_DEBUG("Elongation" << e);
             SIGHT_DEBUG("Axes length" << axes_length);
@@ -121,21 +128,16 @@ struct spheroid_extractor
 
             if(mahalanobis_distance < criteria_threshold)
             {
-                const auto centroid_point = label_geometry_filter->GetCentroid(label_value);
+                const auto& centroid = label_object->GetCentroid();
 
-                std::array<double, 3> real_point_coords {};
-                for(std::uint8_t i = 0 ; i < 3 ; ++i)
-                {
-                    real_point_coords[i] = double(centroid_point[i]) * input_image->GetSpacing()[i]
-                                           + input_image->GetOrigin()[i];
-                }
-
-                data::point::sptr point = std::make_shared<data::point>(real_point_coords);
+                data::point::sptr point = std::make_shared<data::point>(centroid[0], centroid[1], centroid[2]);
                 _params.output_point_list->push_back(point);
             }
         }
     }
 };
+
+} // namespace
 
 //------------------------------------------------------------------------------
 
@@ -168,5 +170,3 @@ data::point_list::sptr spheroid_extraction::extract(
 }
 
 } // namespace sight::filter::image.
-
-#endif // ITK_VERSION_MAJOR == 4 || (ITK_VERSION_MAJOR >= 5 && ITK_VERSION_MINOR >= 3)

@@ -88,7 +88,8 @@ public:
     constexpr array_iterator(pointer_t _begin);
     array_iterator(const array_iterator<T>& _other)     = default;
     array_iterator(array_iterator<T>&& _other) noexcept = default;
-    template<bool isConst = std::is_const_v<T>, typename = std::enable_if_t<isConst> >
+    template<bool isConst = std::is_const_v<T> >
+    requires isConst
     constexpr array_iterator(const array_iterator<std::remove_const_t<T> >& _other);
     // NOLINTEND(google-explicit-constructor,hicpp-explicit-conversions)
 

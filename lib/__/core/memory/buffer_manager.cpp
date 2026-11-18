@@ -241,7 +241,7 @@ void buffer_manager::reallocate_buffer_impl(buffer_manager::buffer_ptr_t _buffer
     {
         if(info.loaded)
         {
-            info.buffer_policy->reallocate(*_buffer_ptr, _new_size);
+            info.buffer_policy->reallocate(*_buffer_ptr, _new_size, info.size);
         }
         else
         {
@@ -497,7 +497,7 @@ bool buffer_manager::restore_buffer(
         }
         else
         {
-            _info.buffer_policy->reallocate(*_buffer_ptr, _alloc_size);
+            _info.buffer_policy->reallocate(*_buffer_ptr, _alloc_size, _info.size);
         }
 
         char* char_buf  = static_cast<char*>(*_buffer_ptr);

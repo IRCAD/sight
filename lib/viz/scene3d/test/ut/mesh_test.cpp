@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2025 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -110,5 +110,14 @@ TEST_SUITE("sight::viz::scene3d::helper::mesh")
             delete[] p_dest_alloc;
             delete[] p_src_alloc;
         }
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("copy_colors_of_no_point")
+    {
+        // Nothing is read or written: a mesh without points gives no buffer.
+        sight::viz::scene3d::helper::mesh::copy_colors(nullptr, nullptr, 0, 3);
+        sight::viz::scene3d::helper::mesh::copy_colors(nullptr, nullptr, 0, 4);
     }
 }

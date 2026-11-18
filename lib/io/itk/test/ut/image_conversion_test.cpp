@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,16 +22,19 @@
 
 #include "helper.hpp"
 
-#include <core/base.hpp>
+#include <core/memory/buffer_manager.hpp>
 #include <core/tools/random/generator.hpp>
 
-#include <data/object.hpp>
-
 #include <io/itk/itk.hpp>
+
+#include <itkImage.h>
 
 #include <utest_data/generator/image.hpp>
 
 #include <doctest/doctest.h>
+
+#include <cstddef>
+#include <cstdint>
 
 using sight::core::tools::random::safe_rand;
 
@@ -67,8 +70,84 @@ static void stress_test_for_a_type()
     }
 }
 
+/// Takes the buffer of an itk::Image, then dumps, restores and resizes it: each step reallocates it with its policy,
+/// which must keep its content and its size.
+template<class TYPE>
+static void check_taken_buffer()
+{
+    using image_t = ::itk::Image<TYPE, 3>;
+
+    const auto itk_image = image_t::New();
+    typename image_t::SizeType size;
+    size.Fill(4);
+    itk_image->SetRegions(size);
+    itk_image->Allocate();
+    constexpr std::size_t element_count = 64;
+    for(std::size_t index = 0 ; index < element_count ; ++index)
+    {
+        itk_image->GetBufferPointer()[index] = static_cast<TYPE>(index);
+    }
+
+    const auto check_content =
+        [](const sight::data::image& _image, std::size_t _count)
+        {
+            const auto* const buffer = static_cast<const TYPE*>(_image.buffer());
+            for(std::size_t index = 0 ; index < _count ; ++index)
+            {
+                REQUIRE_EQ(buffer[index], static_cast<TYPE>(index));
+            }
+        };
+
+    sight::data::image image;
+    sight::io::itk::move_from_itk<image_t>(itk_image, image, true);
+    {
+        const auto lock = image.dump_lock();
+        check_content(image, element_count);
+    }
+
+    // The buffer manager destroys it and allocates another one, through the same policy.
+    const auto manager = sight::core::memory::buffer_manager::get();
+    manager->dump_buffer(image.get_buffer_object()->get_buffer_pointer()).get();
+    {
+        const auto lock = image.dump_lock();
+        check_content(image, element_count);
+    }
+
+    const auto type = sight::core::type::get<TYPE>();
+    {
+        const auto lock = image.dump_lock();
+        image.resize({8, 8, 8}, type, sight::data::image::gray_scale);
+        CHECK_EQ(image.get_buffer_object()->size(), 512 * sizeof(TYPE));
+        check_content(image, element_count);
+
+        image.resize({2, 2, 2}, type, sight::data::image::gray_scale);
+        CHECK_EQ(image.get_buffer_object()->size(), 8 * sizeof(TYPE));
+        check_content(image, 8);
+    }
+
+    // After a resize too, the policy still knows the size it has to keep.
+    manager->dump_buffer(image.get_buffer_object()->get_buffer_pointer()).get();
+    {
+        const auto lock = image.dump_lock();
+        check_content(image, 8);
+        image.resize({3, 3, 3}, type, sight::data::image::gray_scale);
+        check_content(image, 8);
+    }
+}
+
+//-----------------------------------------------------------------------------
+
 TEST_SUITE("sight::io::itk::image_conversion")
 {
+    TEST_CASE("resizes_dumps_and_frees_a_buffer_taken_from_itk")
+    {
+        check_taken_buffer<std::uint8_t>();
+        check_taken_buffer<std::int16_t>();
+        check_taken_buffer<float>();
+    }
+
+    //-------------------------------------------------------------------------
+
     TEST_CASE("conversion")
     {
         // create Image

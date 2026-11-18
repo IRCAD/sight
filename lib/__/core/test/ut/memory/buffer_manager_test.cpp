@@ -143,7 +143,7 @@ TEST_SUITE("sight::core::memory::buffer_malloc_policy")
         CHECK(bo->is_empty());
         CHECK(bo->lock().buffer() == nullptr);
 
-        bo->allocate(size, std::make_shared<sight::core::memory::buffer_new_policy>());
+        bo->allocate(size, std::make_shared<sight::core::memory::buffer_new_policy<> >());
 
         CHECK(!bo->is_empty());
         CHECK_EQ(static_cast<sight::core::memory::buffer_object::size_t>(size), bo->size());
@@ -205,7 +205,7 @@ TEST_SUITE("sight::core::memory::buffer_malloc_policy")
             bo1->allocate(size);
             bo2->allocate(size);
             char* buff = new char [size];
-            bo->set_buffer(buff, size, std::make_shared<sight::core::memory::buffer_new_policy>());
+            bo->set_buffer(buff, size, std::make_shared<sight::core::memory::buffer_new_policy<> >());
             SIGHT_INFO(manager->to_string().get());
 
             {
@@ -233,7 +233,7 @@ TEST_SUITE("sight::core::memory::buffer_malloc_policy")
         sight::core::memory::buffer_object::sptr bo1           = std::make_shared<sight::core::memory::buffer_object>();
         sight::core::memory::buffer_object::sptr bo2           = std::make_shared<sight::core::memory::buffer_object>();
         sight::core::memory::buffer_allocation_policy::sptr p1 = std::make_shared<sight::core::memory::buffer_malloc_policy>();
-        sight::core::memory::buffer_allocation_policy::sptr p2 = std::make_shared<sight::core::memory::buffer_new_policy>();
+        sight::core::memory::buffer_allocation_policy::sptr p2 = std::make_shared<sight::core::memory::buffer_new_policy<> >();
         bo1->allocate(sizeof(int), p1);
         bo2->allocate(sizeof(std::int64_t), p2);
         void* b1 = bo1->lock().buffer();

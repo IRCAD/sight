@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -94,52 +94,6 @@ void buffer_malloc_policy::reallocate(
 void buffer_malloc_policy::destroy(buffer_t& _buffer)
 {
     free(_buffer); // NOLINT(cppcoreguidelines-no-malloc,hicpp-no-malloc)
-    _buffer = nullptr;
-}
-
-//------------------------------------------------------------------------------
-
-void buffer_new_policy::allocate(
-    buffer_t& _buffer,
-    buffer_allocation_policy::size_type _size
-)
-{
-    try
-    {
-        if(_size > 0)
-        {
-            _buffer = new char [_size];
-        }
-    }
-    catch(std::bad_alloc& ba)
-    {
-        SIGHT_THROW_EXCEPTION_MSG(
-            core::memory::exception::memory,
-            "bad_alloc caught: " << ba.what()
-        );
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void buffer_new_policy::reallocate(
-    buffer_t& _buffer,
-    buffer_allocation_policy::size_type _size
-)
-{
-    SIGHT_NOT_USED(_buffer);
-    SIGHT_NOT_USED(_size);
-    SIGHT_THROW_EXCEPTION_MSG(
-        core::memory::exception::memory,
-        "Reallocation not managed for buffer allocated with 'new' operator."
-    );
-}
-
-//------------------------------------------------------------------------------
-
-void buffer_new_policy::destroy(buffer_t& _buffer)
-{
-    delete[] static_cast<char*>(_buffer);
     _buffer = nullptr;
 }
 

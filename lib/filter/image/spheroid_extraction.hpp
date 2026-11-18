@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2026 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #pragma once
 
-#if HAS_ITK_REVIEW_MODULE
-
 #include <sight/filter/image/config.hpp>
 
 #include <data/image.hpp>
@@ -43,22 +41,20 @@ public:
      * @brief Extracts spheres centers in an image with a given radius and above a given intensity value.
      * @param[in] _image image in which to search for spheres
      * @param[in] _threshold minimum intensity value of the spheres
-     * @param[in] _radiusMin minimum sphere radius
-     * @param[in] _radiusMax maximum sphere radius
-     * @param[in] _elongationMin minimum elongation to recognize a sphere, perfect spheres have an elongation of one.
-     * @param[in] _elongationMax maximum elongation to recognize a sphere, perfect spheres have an elongation of one.
+     * @param[in] _radius_min minimum sphere radius, in image units
+     * @param[in] _radius_max maximum sphere radius, in image units
+     * @param[in] _elongation_min minimum elongation to recognize a sphere, perfect spheres have an elongation of one.
+     * @param[in] _elongation_max maximum elongation to recognize a sphere, perfect spheres have an elongation of one.
      * @return detected spheres' center
      */
     SIGHT_FILTER_IMAGE_API static data::point_list::sptr extract(
         const data::image::csptr& _image,
         double _threshold,
-        double _radiusMin,
-        double _radiusMax,
-        double _elongationMin,
-        double _elongationMax
+        double _radius_min,
+        double _radius_max,
+        double _elongation_min,
+        double _elongation_max
     );
 };
 
 } // namespace sight::filter::image.
-
-#endif // HAS_ITK_REVIEW_MODULE

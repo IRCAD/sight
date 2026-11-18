@@ -117,7 +117,7 @@ TEST_SUITE("sight::ui::history")
 
         const auto dump_lock = image->dump_lock();
 
-        sight::filter::image::image_diff diff(image->type().size() * 64);
+        sight::filter::image::image_diff diff(image->type().size());
 
         std::uint8_t newvalue = 1;
 

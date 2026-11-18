@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,12 +26,10 @@
 
 #include <utest/wait.hpp>
 
-#include <boost/thread/thread.hpp>
-
 #include <doctest/doctest.h>
 
-#include <chrono>
-#include <functional>
+#include <array>
+#include <cstdint>
 #include <limits>
 #include <thread>
 #include <type_traits>
@@ -121,7 +119,7 @@ TEST_SUITE("sight::core::memory::buffer_object")
         CHECK(bo->is_empty());
         CHECK(bo->lock().buffer() == nullptr);
 
-        bo->allocate(size, std::make_shared<sight::core::memory::buffer_new_policy>());
+        bo->allocate(size, std::make_shared<sight::core::memory::buffer_new_policy<> >());
 
         CHECK(!bo->is_empty());
         CHECK_EQ(static_cast<sight::core::memory::buffer_object::size_t>(size), bo->size());
@@ -197,6 +195,42 @@ TEST_SUITE("sight::core::memory::buffer_object")
 
 //------------------------------------------------------------------------------
 
+    TEST_CASE("reallocate_external_buffers_with_a_shared_new_policy")
+    {
+        auto policy = std::make_shared<sight::core::memory::buffer_new_policy<std::int32_t> >();
+        auto first  = std::make_shared<sight::core::memory::buffer_object>();
+        auto second = std::make_shared<sight::core::memory::buffer_object>();
+
+        first->set_buffer(new std::int32_t[4] {1, 2, 3, 4}, 4 * sizeof(std::int32_t), policy, true);
+        second->set_buffer(new std::int32_t[2] {5, 6}, 2 * sizeof(std::int32_t), policy, true);
+
+        first->reallocate(8 * sizeof(std::int32_t));
+        {
+            const auto lock    = first->lock();
+            const auto* values = static_cast<const std::int32_t*>(lock.buffer());
+            for(std::size_t i = 0 ; i < 4 ; ++i)
+            {
+                CHECK_EQ(values[i], static_cast<std::int32_t>(i + 1));
+            }
+        }
+
+        second->reallocate(sizeof(std::int32_t));
+        {
+            const auto lock = second->lock();
+            CHECK_EQ(*static_cast<const std::int32_t*>(lock.buffer()), 5);
+        }
+
+        first->reallocate(2 * sizeof(std::int32_t));
+        {
+            const auto lock    = first->lock();
+            const auto* values = static_cast<const std::int32_t*>(lock.buffer());
+            CHECK_EQ(values[0], 1);
+            CHECK_EQ(values[1], 2);
+        }
+    }
+
+//------------------------------------------------------------------------------
+
     TEST_CASE("allocate_zero")
     {
         const std::size_t size                      = 100000;
@@ -245,14 +279,15 @@ TEST_SUITE("sight::core::memory::buffer_object")
     {
         sight::core::memory::buffer_object::sptr bo = std::make_shared<sight::core::memory::buffer_object>();
 
-        boost::thread_group group;
-
-        group.create_thread([bo](auto&& ...){stress_lock(bo, 800, 600);});
-        group.create_thread([bo](auto&& ...){stress_lock(bo, 600, 800);});
-        group.create_thread([bo](auto&& ...){stress_lock(bo, 452, 692);});
-        group.create_thread([bo](auto&& ...){stress_lock(bo, 253, 345);});
-
-        group.join_all();
+        {
+            // Joined at the end of the scope.
+            std::array<std::jthread, 4> threads {
+                std::jthread([bo]{stress_lock(bo, 800, 600);}),
+                std::jthread([bo]{stress_lock(bo, 600, 800);}),
+                std::jthread([bo]{stress_lock(bo, 452, 692);}),
+                std::jthread([bo]{stress_lock(bo, 253, 345);})
+            };
+        }
 
         SIGHT_TEST_WAIT(bo->lock_count() == 0);
         CHECK_EQ(static_cast<std::int64_t>(0), bo->lock_count());

@@ -42,7 +42,8 @@ constexpr FINLINE array_iterator<FORMAT>::array_iterator(pointer_t _begin) :
 //------------------------------------------------------------------------------
 
 template<class FORMAT>
-template<bool isConst, typename>
+template<bool isConst>
+requires isConst
 constexpr FINLINE array_iterator<FORMAT>::array_iterator(
     const array_iterator<std::remove_const_t<FORMAT> >& _other
 ) :

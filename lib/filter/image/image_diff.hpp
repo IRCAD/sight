@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2025 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,6 +25,8 @@
 #include <sight/filter/image/config.hpp>
 
 #include <data/image.hpp>
+
+#include <cstring>
 
 namespace sight::filter::image
 {
@@ -117,7 +119,10 @@ private:
 
 data::image::index_t image_diff::get_element_diff_index(std::size_t _elt_index) const
 {
-    return *reinterpret_cast<const data::image::index_t*>(&m_buffer[_elt_index * m_elt_size]);
+    // The elements of the buffer are not aligned: memcpy() compiles to the same single load as a cast would.
+    data::image::index_t index {};
+    std::memcpy(&index, &m_buffer[_elt_index * m_elt_size], sizeof(index));
+    return index;
 }
 
 } // namespace sight::filter::image

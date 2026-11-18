@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2026 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,6 +25,7 @@
 #include "core/spy_log.hpp"
 
 #include <cstdint>
+#include <cstring>
 
 namespace sight::viz::scene3d::helper
 {
@@ -38,13 +39,20 @@ void mesh::copy_colors(
     std::size_t _num_components
 )
 {
+    // The 3 components case below counts on a last point.
+    if(_num_points == 0)
+    {
+        return;
+    }
+
     if(_num_components == 3)
     {
         for(unsigned int i = 0 ; i < (_num_points - 1) ; ++i)
         {
             // Fastest way to copy tested so far, take 1.0 in alpha as default
-            Ogre::RGBA argb = 0xFF000000;
-            argb    |= *reinterpret_cast<const Ogre::RGBA*>(_src);
+            Ogre::RGBA rgb = 0;
+            std::memcpy(&rgb, _src, sizeof(rgb));
+            Ogre::RGBA argb = 0xFF000000 | rgb;
             *_dest++ = argb;
             _src    += 3;
         }

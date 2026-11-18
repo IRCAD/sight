@@ -24,10 +24,13 @@
 
 #pragma once
 
+#include <core/memory/buffer_allocation_policy.hpp>
+
 #include <data/helper/medical_image.hpp>
 
-#include <itkImage.h>
 #include <itkImageRegion.h>
+
+#include <memory>
 
 namespace sight::io::itk
 {
@@ -104,7 +107,10 @@ void move_from_itk(
             pixel_type,
             v_size,
             data::image::gray_scale,
-            std::make_shared<core::memory::buffer_malloc_policy>()
+            // The container of ITK allocates its pixels with new[]: they must be freed with their type.
+            std::make_shared<core::memory::buffer_new_policy<typename ITKIMAGE::PixelContainer::Element> >(
+                _itk_image->GetPixelContainer()->Size() * sizeof(typename ITKIMAGE::PixelContainer::Element)
+            )
         );
         /// itk image release its management buffer. dataImage must now deal memory
         _itk_image->GetPixelContainer()->SetContainerManageMemory(false);

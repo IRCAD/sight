@@ -27,6 +27,9 @@
 
 #include <doctest/doctest.h>
 
+#include <cmath>
+#include <type_traits>
+
 //------------------------------------------------------------------------------
 
 template<typename INPUT, typename OUTPUT>
@@ -55,6 +58,17 @@ static void test_cast_conversion(
     );
 
     const auto in_dump_lock = image_in->dump_lock();
+
+    // Converting a value out of the range of its target is undefined: keep them in range of the narrowest type.
+    /* *INDENT-OFF* */
+    if constexpr(std::is_floating_point_v<INPUT> && std::is_integral_v<OUTPUT>)
+    /* *INDENT-ON* */
+    {
+        for(auto& value : image_in->template range<INPUT>())
+        {
+            value = std::fmod(std::abs(value), INPUT(100));
+        }
+    }
 
     auto image_out = sight::filter::image::cast_to(*image_in, _output_type);
 
@@ -205,6 +219,4 @@ TEST_SUITE("sight::filter::image::cast")
         CHECK_EQ(image_out->size()[1], 0);
         CHECK_EQ(image_out->size()[2], 0);
     }
-
-//------------------------------------------------------------------------------
 } // TEST_SUITE("sight::filter::image::cast")

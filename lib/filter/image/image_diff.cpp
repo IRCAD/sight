@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2026 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,7 +44,7 @@ void image_diff::add_diff(const image_diff& _diff)
     const std::size_t new_size = old_size + _diff.size();
 
     m_buffer.reserve(new_size);
-    std::copy(_diff.m_buffer.begin(), _diff.m_buffer.end(), std::back_inserter(m_buffer));
+    std::ranges::copy(_diff.m_buffer, std::back_inserter(m_buffer));
 }
 
 //-----------------------------------------------------------------------------
@@ -127,7 +127,7 @@ image_diff::element_t image_diff::get_element(std::size_t _index) const
 {
     element_t elt {};
 
-    elt.m_index = *reinterpret_cast<const data::image::index_t*>(&m_buffer[_index * m_elt_size]);
+    elt.m_index = get_element_diff_index(_index);
 
     elt.m_old_value = &m_buffer[_index * m_elt_size + sizeof(data::image::index_t)];
     elt.m_new_value = &m_buffer[_index * m_elt_size + sizeof(data::image::index_t) + m_img_elt_size];

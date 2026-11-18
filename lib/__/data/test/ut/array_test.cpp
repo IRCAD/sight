@@ -76,7 +76,7 @@ TEST_SUITE("sight::data::array")
             false,
             size,
             sight::core::type::UINT16,
-            std::make_shared<sight::core::memory::buffer_new_policy>()
+            std::make_shared<sight::core::memory::buffer_new_policy<> >()
         );
 
         CHECK_EQ(static_cast<std::size_t>(2), array->element_size_in_bytes());
@@ -713,6 +713,4 @@ TEST_SUITE("sight::data::array")
             CHECK_EQ(i + 1, array->at<std::uint32_t>(i));
         }
     }
-
-//-----------------------------------------------------------------------------
 } // TEST_SUITE("sight::data::array")
