@@ -918,7 +918,7 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
             const auto information = std::make_shared<sight::core::notification::information>(
                 sight::core::notification::message::params {
                 .text     = "short lived",
-                .duration = std::chrono::milliseconds(50),
+                .duration = std::chrono::seconds(2),
             });
 
             sight::core::thread::get_default_worker()->post_task<void>(
@@ -960,7 +960,7 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
             const auto information = std::make_shared<sight::core::notification::information>(
                 sight::core::notification::message::params {
                 .text     = "reappearing",
-                .duration = std::chrono::milliseconds(50),
+                .duration = std::chrono::seconds(2),
             });
 
             const auto add_notification = [_service, information]
@@ -1014,7 +1014,7 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
             const auto information = std::make_shared<sight::core::notification::information>(
                 sight::core::notification::message::params {
                 .text     = "first contribution",
-                .duration = std::chrono::milliseconds(50),
+                .duration = std::chrono::seconds(2),
             });
 
             sight::core::thread::get_default_worker()->post_task<void>(
@@ -1355,7 +1355,7 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
                 sight::service::config_t config;
 
                 // Shortened so that the control notification below closes without slowing the test down.
-                config.add("properties.<xmlattr>.information_duration", "50");
+                config.add("properties.<xmlattr>.information_duration", "2000");
 
                 _service->set_config(config);
                 _service->configure();
@@ -1400,7 +1400,7 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
                 sight::ui::test::gui_fixture::find_widget<QLabel>("notification_label_information");
             CHECK(!pinned_label.isNull());
 
-            std::this_thread::sleep_for(std::chrono::milliseconds(300));
+            std::this_thread::sleep_for(std::chrono::milliseconds(2500));
 
             CHECK(!pinned_label.isNull());
 

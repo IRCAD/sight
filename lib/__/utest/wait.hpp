@@ -32,9 +32,19 @@
 #include <chrono> // NOLINT(misc-include-cleaner): used inside the macros below
 #include <thread> // NOLINT(misc-include-cleaner): used inside the macros below
 
+namespace sight::utest
+{
+
+/// How long a test waits at most for a condition. It only stops a test that hangs: the wait ends as soon as the
+/// condition holds, so a long value does not slow a test down, even on a busy machine.
+/// Not named WAIT_TIMEOUT: the Windows headers define that name as a macro.
+inline constexpr std::chrono::milliseconds MAX_WAIT {30000};
+
+} // namespace sight::utest
+
 // NOLINTBEGIN(cppcoreguidelines-macro-usage)
 
-// Wait at worst 1s for a given condition
+// Waits until a condition holds, at most the given time in milliseconds, or sight::utest::MAX_WAIT by default.
 #define SIGHT_TEST_WAIT(cond, ...) \
         sight::core::time_stamp BOOST_PP_CAT(timeStamp, __LINE__); \
         BOOST_PP_CAT( \
@@ -43,7 +53,7 @@
         ).set_life_period( \
             BOOST_PP_IF( \
                 BOOST_PP_IS_EMPTY(__VA_ARGS__), \
-                2000, \
+                static_cast<sight::core::time_stamp::time_stamp_type>(sight::utest::MAX_WAIT.count()), \
                 BOOST_PP_VARIADIC_ELEM(0, __VA_ARGS__) \
             ) \
         ); \
@@ -55,6 +65,7 @@
 
 #define SIGHT_TEST_CHECK CHECK
 
+// Same as SIGHT_TEST_WAIT, then checks the condition.
 #define SIGHT_TEST_FAIL_WAIT(cond, ...) \
         sight::core::time_stamp BOOST_PP_CAT(timeStamp, __LINE__); \
         BOOST_PP_CAT( \
@@ -63,7 +74,7 @@
         ).set_life_period( \
             BOOST_PP_IF( \
                 BOOST_PP_IS_EMPTY(__VA_ARGS__), \
-                10000, \
+                static_cast<sight::core::time_stamp::time_stamp_type>(sight::utest::MAX_WAIT.count()), \
                 BOOST_PP_VARIADIC_ELEM(0, __VA_ARGS__) \
             ) \
         ); \

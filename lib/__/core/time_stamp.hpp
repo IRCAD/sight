@@ -22,8 +22,11 @@
 
 #pragma once
 
-#include "core/base.hpp"
+#include "core/base_object.hpp"
 #include "core/clock.hpp"
+#include "core/macros.hpp"
+
+#include <sight/core/config.hpp>
 
 namespace sight::core
 {
@@ -44,12 +47,14 @@ public:
     using time_stamp_type = core::clock::type;
 
     /**
-     * @brief Update the timestamp to the current EPOCH time
+     * @brief Update the timestamp to the current time of a monotonic clock, in milliseconds: a duration measured on
+     * the wall clock would follow its corrections.
      */
     SIGHT_CORE_API void modified();
 
     /**
-     * @return TimeStamp's current value
+     * @return TimeStamp's current value, on a monotonic clock: only comparable with another time_stamp, it is no date
+     * and has no relation to the Unix epoch.
      */
     SIGHT_CORE_API time_stamp_type get_time_stamp() const
     {
@@ -110,10 +115,7 @@ public:
      * @return True if more than m_lifePeriod milliseconds are elapsed from
      * TimeStamp value
      */
-    SIGHT_CORE_API bool period_expired() const
-    {
-        return (core::clock::get_time_in_milli_sec() - this->m_modified_time) > m_life_period;
-    }
+    SIGHT_CORE_API bool period_expired() const;
 
 private:
 

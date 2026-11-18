@@ -62,6 +62,7 @@ public:
     }
 
     //------------------------------------------------------------------------------
+
     void init_standard_in_out()
     {
         // create and set the input TL
@@ -787,7 +788,7 @@ TEST_SUITE("sight::module::sync::synchronizer")
             "   <item matrix='matrix0' timeline='0' index='1' send_status='true' />"
             "   <item matrix='matrix1' timeline='0' index='0' />"
             "</matrices></output>"
-            "<config legacy_auto_sync='true' />";
+            "<config />";
 
         srv->set_config(config_string);
         srv->configure();
@@ -821,12 +822,20 @@ TEST_SUITE("sight::module::sync::synchronizer")
             srv->signal("synchronization_done")->connect(slot_synchronization_done);
 
         add_matrix_to_matrix_tl(matrix_tl_1, {0, 1, 2}, 1);
+        srv->slot("request_sync")->run();
+        srv->slot("try_sync")->run();
         SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 1);
         add_matrix_to_matrix_tl(matrix_tl_1, {0, 1, 2}, 2);
+        srv->slot("request_sync")->run();
+        srv->slot("try_sync")->run();
         SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 2);
         add_matrix_to_matrix_tl(matrix_tl_1, {0, 1, 2}, 4);
+        srv->slot("request_sync")->run();
+        srv->slot("try_sync")->run();
         SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 4);
         add_matrix_to_matrix_tl(matrix_tl_1, {0, 1, 2}, 6);
+        srv->slot("request_sync")->run();
+        srv->slot("try_sync")->run();
         SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 6);
 
         //The value in the matrix is  timestamp*10 + element_Index
@@ -850,7 +859,7 @@ TEST_SUITE("sight::module::sync::synchronizer")
             "    <item matrix='matrix3' timeline='1' index='1' />"
             "    <item matrix='matrix4' timeline='0' index='2' />"
             "</matrices></output>"
-            "<config legacy_auto_sync='true' />";
+            "<config />";
 
         srv->set_config(config_string);
         srv->configure();
@@ -896,9 +905,13 @@ TEST_SUITE("sight::module::sync::synchronizer")
 
         add_matrix_to_matrix_tl(matrix_tl_1, {0, 1, 2}, 1);
         add_matrix_to_matrix_tl(matrix_tl_2, {0, 1, 2}, 1);
+        srv->slot("request_sync")->run();
+        srv->slot("try_sync")->run();
         SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 1);
         add_matrix_to_matrix_tl(matrix_tl_1, {0, 1, 2}, 3);
         add_matrix_to_matrix_tl(matrix_tl_2, {0, 1, 2}, 2);
+        srv->slot("request_sync")->run();
+        srv->slot("try_sync")->run();
         SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 2);
 
         //The value in the matrix is  timestamp*10 + element_Index
@@ -920,7 +933,7 @@ TEST_SUITE("sight::module::sync::synchronizer")
             "<output><frames>"
             "    <item image='frame' send_status='true' />"
             "</frames></output>"
-            "<config legacy_auto_sync='true' />";
+            "<config />";
 
         srv->set_config(config_string);
         srv->configure();
@@ -965,15 +978,21 @@ TEST_SUITE("sight::module::sync::synchronizer")
             srv->signal("synchronization_done")->connect(slot_synchronization_done);
 
         add_frame_to_frame_tl(frame_tl, 1);
+        srv->slot("request_sync")->run();
+        srv->slot("try_sync")->run();
         SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 1);
         check_frame(frame, 1);
 
         add_frame_to_frame_tl(frame_tl, 2);
+        srv->slot("request_sync")->run();
+        srv->slot("try_sync")->run();
         SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 2);
         check_frame(frame, 2);
 
         add_frame_to_frame_tl(frame_tl, 4);
         add_frame_to_frame_tl(frame_tl, 6);
+        srv->slot("request_sync")->run();
+        srv->slot("try_sync")->run();
         SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 6);
         check_frame(frame, 6);
 
@@ -994,7 +1013,7 @@ TEST_SUITE("sight::module::sync::synchronizer")
             "    <item image='frame4' timeline='1' send_status='false' />"
             "    <item image='frame11' timeline='0' send_status='true' />"
             "</frames></output>"
-            "<config legacy_auto_sync='true' />";
+            "<config />";
 
         srv->set_config(config_string);
         srv->configure();
@@ -1092,11 +1111,15 @@ TEST_SUITE("sight::module::sync::synchronizer")
         add_frame_to_frame_tl(frame_tl_1, 1);
         add_frame_to_frame_tl(frame_tl_4, 1);
         add_frame_to_frame_tl(frame_tl_6, 1);
+        srv->slot("request_sync")->run();
+        srv->slot("try_sync")->run();
         SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 1);
 
         add_frame_to_frame_tl(frame_tl_1, 4);
         add_frame_to_frame_tl(frame_tl_4, 5);
         add_frame_to_frame_tl(frame_tl_6, 6);
+        srv->slot("request_sync")->run();
+        srv->slot("try_sync")->run();
         SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 4);
 
         check_frame(frame1, 4);
@@ -1132,7 +1155,7 @@ TEST_SUITE("sight::module::sync::synchronizer")
             "    <item matrix='matrix3' timeline='1' index='1' />"
             "    <item matrix='matrix4' timeline='0' index='2' />"
             "</matrices></output>"
-            "<config tolerance='500' legacy_auto_sync='true' />";
+            "<config tolerance='500' />";
 
         srv->set_config(config_string);
         srv->configure();
@@ -1251,10 +1274,14 @@ TEST_SUITE("sight::module::sync::synchronizer")
 
         add_frame_to_frame_tl(frame_tl_1, 1);
         add_matrix_to_matrix_tl(matrix_tl_1, {0, 1, 2}, 1);
+        srv->slot("request_sync")->run();
+        srv->slot("try_sync")->run();
         SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 1);
 
         add_frame_to_frame_tl(frame_tl_1, 2);
         add_matrix_to_matrix_tl(matrix_tl_1, {0, 1, 2}, 2);
+        srv->slot("request_sync")->run();
+        srv->slot("try_sync")->run();
         SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 2);
 
         check_frame(frame1, 2);
@@ -1285,6 +1312,8 @@ TEST_SUITE("sight::module::sync::synchronizer")
 
         add_frame_to_frame_tl(frame_tl_1, 5);
         add_matrix_to_matrix_tl(matrix_tl_1, {0, 1, 2}, 5);
+        srv->slot("request_sync")->run();
+        srv->slot("try_sync")->run();
         SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 3);
 
         check_frame(frame1, 2);
@@ -1302,6 +1331,8 @@ TEST_SUITE("sight::module::sync::synchronizer")
         add_frame_to_frame_tl(frame_tl_6, 6);
         add_matrix_to_matrix_tl(matrix_tl_1, {0, 1, 2}, 6);
         add_matrix_to_matrix_tl(matrix_tl_2, {0, 1, 2}, 6);
+        srv->slot("request_sync")->run();
+        srv->slot("try_sync")->run();
         SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 6);
 
         check_frame(frame1, 6);
@@ -1577,7 +1608,7 @@ TEST_SUITE("sight::module::sync::synchronizer")
             "<output><matrices>"
             "    <item matrix='matrix0' />"
             "</matrices></output>"
-            "<config tolerance='5' legacy_auto_sync='true' />";
+            "<config tolerance='5' />";
 
         srv->set_config(config_string);
         srv->configure();
@@ -1609,6 +1640,8 @@ TEST_SUITE("sight::module::sync::synchronizer")
         add_frame_to_frame_tl(m_frame_tl_1, 4);
         add_frame_to_frame_tl(m_frame_tl_2, 4);
         add_matrix_to_matrix_tl(m_matrix_tl_1, 4);
+        srv->slot("request_sync")->run();
+        srv->slot("try_sync")->run();
         SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 4);
         check_frame(m_frame1, 2);
         check_frame(m_frame2, 4);
@@ -1618,6 +1651,8 @@ TEST_SUITE("sight::module::sync::synchronizer")
         add_frame_to_frame_tl(m_frame_tl_1, 5);
         add_frame_to_frame_tl(m_frame_tl_2, 5);
         add_matrix_to_matrix_tl(m_matrix_tl_1, 5);
+        srv->slot("request_sync")->run();
+        srv->slot("try_sync")->run();
         SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 5);
         check_frame(m_frame1, 3);
         check_frame(m_frame2, 5);
@@ -1634,6 +1669,8 @@ TEST_SUITE("sight::module::sync::synchronizer")
         add_frame_to_frame_tl(m_frame_tl_1, 6);
         add_frame_to_frame_tl(m_frame_tl_2, 6);
         add_matrix_to_matrix_tl(m_matrix_tl_1, 6);
+        srv->slot("request_sync")->run();
+        srv->slot("try_sync")->run();
         SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 6);
         check_frame(m_frame1, 5);
         check_frame(m_frame2, 6);
@@ -1646,6 +1683,8 @@ TEST_SUITE("sight::module::sync::synchronizer")
         add_frame_to_frame_tl(m_frame_tl_1, 7);
         add_frame_to_frame_tl(m_frame_tl_2, 7);
         add_matrix_to_matrix_tl(m_matrix_tl_1, 7);
+        srv->slot("request_sync")->run();
+        srv->slot("try_sync")->run();
         SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 7);
         check_frame(m_frame1, 7);
         check_frame(m_frame2, 7);

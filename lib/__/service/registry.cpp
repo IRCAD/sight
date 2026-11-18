@@ -74,8 +74,8 @@ public:
 
     //@{
 
-    /// @brief Returns all services
-    const service_vector_t& get_services() const;
+    /// @brief Returns a copy of all services, taken under the lock: other threads register theirs meanwhile
+    service_vector_t get_services() const;
     /**
      * @brief Return a container with all services of type SERVICE registered in m_container
      * @note Services may be associated to different object
@@ -163,8 +163,9 @@ object_service::service_vector_t object_service::get_services(const std::string&
 
 //------------------------------------------------------------------------------
 
-const service::service_vector_t& object_service::get_services() const
+service::service_vector_t object_service::get_services() const
 {
+    core::mt::read_lock lock(m_container_mutex);
     return m_services;
 }
 
@@ -184,7 +185,7 @@ std::string get_registry_information()
 
 //------------------------------------------------------------------------------
 
-const service::service_vector_t& get_services()
+service::service_vector_t get_services()
 {
     return service::get()->get_services();
 }

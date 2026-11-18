@@ -23,6 +23,7 @@
 #include "core/thread/timer.hpp"
 #include "core/thread/worker.hpp"
 
+#include <core/spy_log.hpp>
 #include <core/time_stamp.hpp>
 
 #include <boost/asio/deadline_timer.hpp>

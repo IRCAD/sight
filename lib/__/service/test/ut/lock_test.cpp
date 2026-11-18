@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+#include <core/mt/types.hpp>
+
 #include <data/image.hpp>
 #include <data/integer.hpp>
 #include <data/mesh.hpp>
@@ -31,6 +33,7 @@
 #include <service/op.hpp>
 
 #include <utest/service_fixture.hpp>
+#include <utest/wait.hpp>
 #include <utest_data/generator/image.hpp>
 
 #include <doctest/doctest.h>
@@ -40,6 +43,24 @@
 #include <future>
 #include <mutex>
 #include <thread>
+
+//------------------------------------------------------------------------------
+
+/// Whether an access needing a dump lock is refused. The worker of the buffer manager keeps its copy of the lock
+/// counter until it drops the finished task, so a buffer stays locked for a moment after its last lock is released.
+template<class ACCESS>
+static bool is_refused(ACCESS _access)
+{
+    try
+    {
+        _access();
+        return false;
+    }
+    catch(const sight::data::exception&)
+    {
+        return true;
+    }
+}
 
 //------------------------------------------------------------------------------
 
@@ -304,6 +325,7 @@ TEST_SUITE("sight::service::lock")
             CHECK_NOTHROW(image->buffer());
         }
 
+        SIGHT_TEST_WAIT(is_refused([&]{static_cast<void>(image->buffer());}));
         CHECK_THROWS_AS(image->buffer(), sight::data::exception);
 
         sight::data::mesh::sptr mesh = std::make_shared<sight::data::mesh>();
@@ -341,6 +363,7 @@ TEST_SUITE("sight::service::lock")
             CHECK_NOTHROW(mesh->set_point_color(ids[2], color));
         }
 
+        SIGHT_TEST_WAIT(is_refused([&]{static_cast<void>(mesh->push_point(0.F, 0.F, 0.F));}));
         CHECK_THROWS_AS(mesh->push_point(0.F, 0.F, 0.F), sight::data::exception);
     }
 
@@ -392,20 +415,20 @@ TEST_SUITE("sight::service::lock")
 
             // t2 holds the write lock and has not been allowed to finish yet.
             CHECK_EQ(false, m_locked_srv->m_stopped.load());
+            CHECK_FALSE(sight::core::mt::write_lock(output->get_mutex(), boost::try_to_lock).owns_lock());
 
-            std::promise<void> output_lock_attempted;
+            // Resolved before t2 is released: a stopped service resets its outputs.
+            auto weak_output = m_locked_srv->output<sight::data::integer>(locked_srv::OUTPUT);
             std::atomic_bool output_lock_completed {false};
             std::thread t3(
                 [&]
                 {
-                output_lock_attempted.set_value();
-                auto shared_output = m_locked_srv->output<sight::data::integer>(locked_srv::OUTPUT).lock();
+                auto shared_output = weak_output.lock();
                 shared_output->set_value(666);
                 output_lock_completed = true;
                 });
 
-            // t3 has started trying to acquire the lock, which t2 still holds.
-            output_lock_attempted.get_future().wait();
+            // Whenever t3 runs, it cannot get the lock that t2 still holds.
             CHECK_FALSE(output_lock_completed.load());
 
             m_locked_srv->release_output_lock();

@@ -26,19 +26,13 @@
 
 #include "core/memory/buffer_allocation_policy.hpp"
 #include "core/memory/buffer_manager.hpp"
+#include "core/memory/stream/in/factory.hpp"
 
 #include <filesystem>
 #include <type_traits>
 
 namespace sight::core::memory
 {
-
-namespace stream::in
-{
-
-class factory;
-
-} // namespace stream::in
 
 /**
  * @brief   Define Base class for Sight buffers
@@ -120,13 +114,13 @@ public:
          * @param _bo buffer_object to lock
          */
         lock_base(const sight::sptr<T>& _bo) :
-            m_count(_bo->m_count.lock()),
             m_buffer_object(_bo)
         {
             SIGHT_ASSERT("Can't lock NULL object", _bo);
 
             core::mt::scoped_lock lock(_bo->m_lock_dump_mutex);
 
+            m_count = _bo->m_count.lock();
             if(!m_count)
             {
                 m_count      = _bo->m_buffer_manager->lock_buffer(&(_bo->m_buffer)).get();
@@ -275,6 +269,7 @@ public:
      */
     std::int64_t lock_count() const
     {
+        core::mt::scoped_lock lock(m_lock_dump_mutex);
         return m_count.use_count();
     }
 

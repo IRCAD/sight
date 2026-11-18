@@ -35,6 +35,12 @@
 
 #include <service/base.hpp>
 
+#include <atomic>
+#include <mutex>
+#include <string>
+#include <utility>
+#include <vector>
+
 namespace sight::app::ut
 {
 
@@ -59,19 +65,19 @@ public:
     /// return true if the service is updated with update() method
     bool is_updated() const
     {
-        return m_is_updated;
+        return m_is_updated.load();
     }
 
     /// return true if the update2() slot has been called
     bool is_updated2() const
     {
-        return m_is_updated2;
+        return m_is_updated2.load();
     }
 
     /// return true if the service is updated with update(msg) method
     bool is_updated_message() const
     {
-        return m_is_updated_message;
+        return m_is_updated_message.load();
     }
 
     /// return true if the service is updated with update() method
@@ -137,9 +143,9 @@ protected:
     }
 
     // NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
-    bool m_is_updated {false};
-    bool m_is_updated2 {false};
-    bool m_is_updated_message {false};
+    std::atomic_bool m_is_updated {false};
+    std::atomic_bool m_is_updated2 {false};
+    std::atomic_bool m_is_updated_message {false};
     bool m_raise_exception {false};
     unsigned int m_start_order {0};
     unsigned int m_update_order {0};
@@ -611,9 +617,41 @@ class test_service_with_properties : public service::base
 {
 public:
 
+    struct observations
+    {
+        std::size_t updates {0};
+        std::vector<std::string> properties {};
+        std::size_t emitted {0};
+    };
+
     SIGHT_DECLARE_SERVICE(test_service_with_properties, service::base);
     test_service_with_properties() noexcept = default;
     ~test_service_with_properties() noexcept override = default;
+
+    //------------------------------------------------------------------------------
+
+    [[nodiscard]] observations read_observations() const
+    {
+        const std::scoped_lock lock(m_observations_mutex);
+        return m_observations;
+    }
+
+    //------------------------------------------------------------------------------
+
+    void reset_observations()
+    {
+        const std::scoped_lock lock(m_observations_mutex);
+        m_observations = {};
+    }
+
+    //------------------------------------------------------------------------------
+
+    /// Allow one re-emission, so a broken self-connection is observable without an infinite loop.
+    void emit_on_next_integer_property()
+    {
+        const std::scoped_lock lock(m_observations_mutex);
+        m_emit_signal = true;
+    }
 
     //------------------------------------------------------------------------------
 
@@ -649,22 +687,26 @@ protected:
 
     void updating() override
     {
-        m_slot_called = true;
+        const std::scoped_lock lock(m_observations_mutex);
+        ++m_observations.updates;
     }
 
     //------------------------------------------------------------------------------
 
     void on_property_set(std::string_view _key) override
     {
-        m_callback_called_parameter = _key;
-        if(_key == "integer")
         {
-            if(m_emit_signal)
+            const std::scoped_lock lock(m_observations_mutex);
+            m_observations.properties.emplace_back(_key);
+            if(_key != "integer" || !std::exchange(m_emit_signal, false))
             {
-                set_integer(*m_int_prop);
-                ++m_signal_count;
+                return;
             }
         }
+
+        set_integer(*m_int_prop);
+        const std::scoped_lock lock(m_observations_mutex);
+        ++m_observations.emitted;
     }
 
     //------------------------------------------------------------------------------
@@ -682,11 +724,13 @@ public:
     data::property<data::integer> m_int_prop {this, "integer", 42};
     data::property<data::string> m_string_prop {this, "string", {"default_value"}};
     data::property<data::dvec3> m_vec_prop {this, "vec", {12.123, 56.0, 78.56}};
-    bool m_slot_called {false};
+// NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
+
+private:
+
+    mutable std::mutex m_observations_mutex;
+    observations m_observations;
     bool m_emit_signal {false};
-    std::size_t m_signal_count {0U};
-    std::string_view m_callback_called_parameter {};
-    // NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 };
 
 /// Declares hierarchical keys, so that the XML configuration can mirror their structure.

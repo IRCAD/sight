@@ -23,14 +23,17 @@
 #include "test_service.hpp"
 
 #include <data/integer.hpp>
-#include <data/real.hpp>
 
 #include <service/base.hpp>
 #include <service/extension/factory.hpp>
-#include <service/op.hpp>
 #include <service/registry.hpp>
 
 #include <doctest/doctest.h>
+
+#include <atomic>
+#include <cstddef>
+#include <thread>
+#include <vector>
 
 TEST_SUITE("sight::service::registry")
 {
@@ -114,5 +117,51 @@ TEST_SUITE("sight::service::registry")
         sight::service::unregister_service(service1);
         services_by_type = sight::service::get_services(srv_type);
         CHECK(services_by_type.empty());
+    }
+
+    TEST_CASE("copies_all_services_while_another_thread_registers")
+    {
+        // A worker of the application, as the one of an io selector, adds and removes its own services meanwhile.
+        constexpr std::size_t batch = 8;
+        std::atomic_bool done {false};
+        std::thread registering(
+            [&done]
+            {
+            std::vector<sight::service::base::sptr> services;
+            for(int round = 0 ; round < 2000 ; ++round)
+            {
+                for(std::size_t index = 0 ; index < batch ; ++index)
+                {
+                    services.push_back(
+                        sight::service::extension::factory::get()->create("sight::service::ut::test_no_data")
+                    );
+                    sight::service::register_service(services.back());
+                }
+
+                for(const auto& service : services)
+                {
+                    sight::service::unregister_service(service);
+                }
+
+                services.clear();
+            }
+
+            done = true;
+            });
+
+        std::size_t inconsistent = 0;
+        while(!done)
+        {
+            const sight::service::service_vector_t services = sight::service::get_services();
+            for(const auto& service : services)
+            {
+                inconsistent += service == nullptr || !service->stopped() ? 1 : 0;
+            }
+
+            inconsistent += services.size() > batch ? 1 : 0;
+        }
+
+        registering.join();
+        CHECK(inconsistent == 0);
     }
 }

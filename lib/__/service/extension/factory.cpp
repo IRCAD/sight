@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,13 +25,11 @@
 #include "service/base.hpp"
 
 #include <core/lazy_instantiator.hpp>
-#include <core/runtime/helper.hpp>
 #include <core/runtime/runtime.hpp>
 
 #include <data/exception.hpp>
 
 #include <algorithm>
-#include <functional>
 #include <vector>
 
 namespace sight::service::extension
@@ -322,13 +320,6 @@ void factory::print_info_map(const srv_reg_container_t& _src)
 
         SIGHT_DEBUG_IF("  - module = " << srv_reg.second.module->identifier(), srv_reg.second.module);
         SIGHT_DEBUG_IF("  - module = ( no module registered )", !srv_reg.second.module);
-
-        SIGHT_DEBUG_IF(
-            "  - name after creation = "
-            << srv_reg.second.factory()->get_classname(),
-            srv_reg.second.factory
-        );
-        SIGHT_DEBUG_IF("  - name after creation = ( no factory registered )", !srv_reg.second.factory);
     }
 }
 

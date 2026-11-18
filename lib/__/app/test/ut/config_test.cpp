@@ -46,7 +46,13 @@
 
 #include <doctest/doctest.h>
 
+#include <atomic>
+#include <chrono>
 #include <filesystem>
+#include <future>
+#include <memory>
+#include <string>
+#include <vector>
 
 //------------------------------------------------------------------------------
 
@@ -83,6 +89,7 @@ static sight::service::config_t build_config()
 }
 
 //------------------------------------------------------------------------------
+
 namespace
 {
 
@@ -136,10 +143,64 @@ TEST_SUITE("sight::app::config")
 {
 //------------------------------------------------------------------------------
 
+    /// Waits until the worker of a service has run every task posted so far. A signal posts the slots it calls before
+    /// it returns: after an emission, this waits for them, with no fixed delay.
+    static inline void flush_service_worker(sight::service::base& _srv)
+    {
+        auto barrier = _srv.worker()->post_barrier();
+        REQUIRE(barrier.wait_for(sight::utest::MAX_WAIT) == std::future_status::ready);
+    }
+
+//------------------------------------------------------------------------------
+
+    /// A service is started before it connects its data, in the same task on its worker: a signal emitted as soon as it
+    /// reports started would be lost.
     static inline void wait_service_started(const std::string& _srv)
     {
-        auto service = sight::core::id::get_object(_srv);
-        SIGHT_TEST_WAIT(service != nullptr && std::dynamic_pointer_cast<sight::service::base>(service)->started());
+        // The service may not exist yet: look it up at each attempt.
+        const auto service = [&_srv]
+                             {
+                                 return std::dynamic_pointer_cast<sight::service::base>(
+                                     sight::core::id::get_object(_srv)
+                                 );
+                             };
+        const auto started = [&service]
+                             {
+                                 const auto found = service();
+                                 return found != nullptr && found->started();
+                             };
+        SIGHT_TEST_WAIT(started());
+        REQUIRE(started());
+        flush_service_worker(*service());
+    }
+
+//------------------------------------------------------------------------------
+
+    static inline void check_property_signal(
+        sight::app::ut::test_service_with_properties& _srv,
+        const sight::data::object& _source,
+        std::size_t _updates,
+        const std::vector<std::string>& _properties,
+        bool _reemit = false
+)
+    {
+        // Earlier signals may still be queued for this service.
+        flush_service_worker(_srv);
+        _srv.reset_observations();
+        if(_reemit)
+        {
+            _srv.emit_on_next_integer_property();
+        }
+
+        _source.async_emit(sight::data::signals::MODIFIED);
+        flush_service_worker(_srv);
+        // The first callback can itself enqueue work behind the first barrier.
+        flush_service_worker(_srv);
+
+        const auto actual = _srv.read_observations();
+        CHECK_EQ(actual.updates, _updates);
+        CHECK(actual.properties == _properties);
+        CHECK_EQ(actual.emitted, _reemit ? std::size_t(1) : std::size_t(0));
     }
 
 //------------------------------------------------------------------------------
@@ -248,6 +309,7 @@ TEST_SUITE("sight::app::config")
             sight::core::object::sptr gn_srv1 = sight::core::id::get_object("TestService1Uid");
             auto srv1                         = std::dynamic_pointer_cast<sight::app::ut::test_service>(gn_srv1);
             CHECK(srv1 != nullptr);
+            SIGHT_TEST_WAIT(sight::service::base::global_status::started == srv1->status());
             CHECK_EQ(sight::service::base::global_status::started, srv1->status());
         }
 
@@ -256,10 +318,12 @@ TEST_SUITE("sight::app::config")
             sight::core::object::sptr gn_srv2 = sight::core::id::get_object("TestService2Uid");
             auto srv2                         = std::dynamic_pointer_cast<sight::service::base>(gn_srv2);
             CHECK(srv2 != nullptr);
+            SIGHT_TEST_WAIT(sight::service::base::global_status::started == srv2->status());
             CHECK_EQ(sight::service::base::global_status::started, srv2->status());
             srv2->stop().get();
             CHECK_EQ(sight::service::base::global_status::stopped, srv2->status());
             srv2->start().get();
+            SIGHT_TEST_WAIT(sight::service::base::global_status::started == srv2->status());
             CHECK_EQ(sight::service::base::global_status::started, srv2->status());
         }
 
@@ -268,6 +332,7 @@ TEST_SUITE("sight::app::config")
             sight::core::object::sptr gn_srv3 = sight::core::id::get_object("TestService3Uid");
             auto srv3                         = std::dynamic_pointer_cast<sight::service::base>(gn_srv3);
             CHECK(srv3 != nullptr);
+            SIGHT_TEST_WAIT(sight::service::base::global_status::started == srv3->status());
             CHECK_EQ(sight::service::base::global_status::started, srv3->status());
         }
 
@@ -292,6 +357,7 @@ TEST_SUITE("sight::app::config")
                 auto gn_srv4 = sight::core::id::get_object("TestService4Uid");
                 auto srv4    = std::dynamic_pointer_cast<sight::service::base>(gn_srv4);
                 CHECK(srv4 != nullptr);
+                SIGHT_TEST_WAIT(sight::service::base::global_status::started == srv4->status());
                 CHECK_EQ(sight::service::base::global_status::started, srv4->status());
             }
 
@@ -314,6 +380,7 @@ TEST_SUITE("sight::app::config")
                 auto gn_srv4 = sight::core::id::get_object("TestService4Uid");
                 auto srv4    = std::dynamic_pointer_cast<sight::service::base>(gn_srv4);
                 CHECK(srv4 != nullptr);
+                SIGHT_TEST_WAIT(sight::service::base::global_status::started == srv4->status());
                 CHECK_EQ(sight::service::base::global_status::started, srv4->status());
             }
         }
@@ -340,6 +407,7 @@ TEST_SUITE("sight::app::config")
                 auto gn_srv5 = sight::core::id::get_object("TestService5Uid");
                 auto srv5    = std::dynamic_pointer_cast<sight::service::base>(gn_srv5);
                 CHECK(srv5 != nullptr);
+                SIGHT_TEST_WAIT(sight::service::base::global_status::started == srv5->status());
                 CHECK_EQ(sight::service::base::global_status::started, srv5->status());
             }
 
@@ -369,6 +437,7 @@ TEST_SUITE("sight::app::config")
                 auto gn_srv5 = sight::core::id::get_object("TestService5Uid");
                 auto srv5    = std::dynamic_pointer_cast<sight::app::ut::test_srv>(gn_srv5);
                 CHECK(srv5 != nullptr);
+                SIGHT_TEST_WAIT(sight::service::base::global_status::started == srv5->status());
                 CHECK_EQ(sight::service::base::global_status::started, srv5->status());
 
                 // We have started, yet we may not have been updated, so wait for it just in case
@@ -395,6 +464,7 @@ TEST_SUITE("sight::app::config")
                 auto gn_srv5 = sight::core::id::get_object("TestService5Uid");
                 auto srv5    = std::dynamic_pointer_cast<sight::service::base>(gn_srv5);
                 CHECK(srv5 != nullptr);
+                SIGHT_TEST_WAIT(sight::service::base::global_status::started == srv5->status());
                 CHECK_EQ(sight::service::base::global_status::started, srv5->status());
             }
 
@@ -410,6 +480,7 @@ TEST_SUITE("sight::app::config")
                 auto gn_srv5 = sight::core::id::get_object("TestService5Uid");
                 auto srv5    = std::dynamic_pointer_cast<sight::service::base>(gn_srv5);
                 CHECK(srv5 != nullptr);
+                SIGHT_TEST_WAIT(sight::service::base::global_status::started == srv5->status());
                 CHECK_EQ(sight::service::base::global_status::started, srv5->status());
             }
         }
@@ -433,24 +504,28 @@ TEST_SUITE("sight::app::config")
             sight::core::object::sptr gn_srv1 = sight::core::id::get_object("TestService1Uid");
             auto srv1                         = std::dynamic_pointer_cast<sight::app::ut::test_service>(gn_srv1);
             CHECK(srv1 != nullptr);
+            SIGHT_TEST_WAIT(sight::service::base::global_status::started == srv1->status());
             CHECK_EQ(sight::service::base::global_status::started, srv1->status());
             CHECK(!srv1->is_updated());
 
             sight::core::object::sptr gn_srv2 = sight::core::id::get_object("TestService2Uid");
             auto srv2                         = std::dynamic_pointer_cast<sight::app::ut::test_service>(gn_srv2);
             CHECK(srv2 != nullptr);
+            SIGHT_TEST_WAIT(sight::service::base::global_status::started == srv2->status());
             CHECK_EQ(sight::service::base::global_status::started, srv2->status());
             CHECK(!srv2->is_updated());
 
             sight::core::object::sptr gn_srv3 = sight::core::id::get_object("TestService3Uid");
             auto srv3                         = std::dynamic_pointer_cast<sight::app::ut::test_srv>(gn_srv3);
             CHECK(srv3 != nullptr);
+            SIGHT_TEST_WAIT(sight::service::base::global_status::started == srv3->status());
             CHECK_EQ(sight::service::base::global_status::started, srv3->status());
             CHECK(!srv3->is_updated());
             CHECK(!srv3->get_received());
 
             data1->async_emit(sight::data::signals::MODIFIED);
-            SIGHT_TEST_WAIT(srv2->is_updated() && srv3->is_updated());
+            flush_service_worker(*srv2);
+            flush_service_worker(*srv3);
             CHECK(!srv1->is_updated());
             CHECK(srv2->is_updated());
             CHECK(srv3->is_updated());
@@ -463,7 +538,8 @@ TEST_SUITE("sight::app::config")
             CHECK(!srv3->is_updated());
 
             data2->async_emit(sight::data::signals::MODIFIED);
-            SIGHT_TEST_WAIT(srv2->is_updated() && srv3->get_received());
+            flush_service_worker(*srv2);
+            flush_service_worker(*srv3);
             CHECK(!srv1->is_updated());
             CHECK(srv2->is_updated());
             CHECK(!srv3->is_updated());
@@ -497,12 +573,14 @@ TEST_SUITE("sight::app::config")
                 sight::core::object::sptr gn_srv4 = sight::core::id::get_object("TestService4Uid");
                 auto srv4                         = std::dynamic_pointer_cast<sight::app::ut::test_service>(gn_srv4);
                 CHECK(srv4 != nullptr);
+                SIGHT_TEST_WAIT(sight::service::base::global_status::started == srv4->status());
                 CHECK_EQ(sight::service::base::global_status::started, srv4->status());
                 CHECK(!srv4->is_updated());
 
                 sight::core::object::sptr gn_srv5 = sight::core::id::get_object("TestService5Uid");
                 auto srv5                         = std::dynamic_pointer_cast<sight::app::ut::test_srv>(gn_srv5);
                 CHECK(srv5 != nullptr);
+                SIGHT_TEST_WAIT(sight::service::base::global_status::started == srv5->status());
                 CHECK_EQ(sight::service::base::global_status::started, srv5->status());
 
                 CHECK(!srv4->is_updated());
@@ -510,7 +588,7 @@ TEST_SUITE("sight::app::config")
                 CHECK(!srv5->get_received());
 
                 data3->async_emit(sight::data::signals::MODIFIED);
-                SIGHT_TEST_WAIT(srv5->get_received());
+                flush_service_worker(*srv5);
 
                 CHECK(!srv4->is_updated());
                 CHECK(!srv5->is_updated());
@@ -539,12 +617,14 @@ TEST_SUITE("sight::app::config")
                 sight::core::object::sptr gn_srv4 = sight::core::id::get_object("TestService4Uid");
                 auto srv4                         = std::dynamic_pointer_cast<sight::app::ut::test_service>(gn_srv4);
                 CHECK(srv4 != nullptr);
+                SIGHT_TEST_WAIT(sight::service::base::global_status::started == srv4->status());
                 CHECK_EQ(sight::service::base::global_status::started, srv4->status());
                 CHECK(!srv4->is_updated());
 
                 sight::core::object::sptr gn_srv5 = sight::core::id::get_object("TestService5Uid");
                 auto srv5                         = std::dynamic_pointer_cast<sight::app::ut::test_srv>(gn_srv5);
                 CHECK(srv5 != nullptr);
+                SIGHT_TEST_WAIT(sight::service::base::global_status::started == srv5->status());
                 CHECK_EQ(sight::service::base::global_status::started, srv5->status());
 
                 CHECK(!srv4->is_updated());
@@ -552,7 +632,7 @@ TEST_SUITE("sight::app::config")
                 CHECK(!srv5->get_received());
 
                 data3->async_emit(sight::data::signals::MODIFIED);
-                SIGHT_TEST_WAIT(srv5->get_received());
+                flush_service_worker(*srv5);
                 CHECK(srv5->get_received());
 
                 CHECK(!srv4->is_updated());
@@ -560,7 +640,7 @@ TEST_SUITE("sight::app::config")
                 CHECK(srv5->get_received());
 
                 data1->async_emit(sight::data::signals::MODIFIED);
-                SIGHT_TEST_WAIT(srv5->is_updated());
+                flush_service_worker(*srv5);
 
                 CHECK(srv5->is_updated());
             }
@@ -589,12 +669,14 @@ TEST_SUITE("sight::app::config")
         sight::core::object::sptr gn_srv1 = sight::core::id::get_object("TestService1Uid");
         auto srv1                         = std::dynamic_pointer_cast<sight::app::ut::test_service>(gn_srv1);
         CHECK(srv1 != nullptr);
+        SIGHT_TEST_WAIT(sight::service::base::global_status::started == srv1->status());
         CHECK_EQ(sight::service::base::global_status::started, srv1->status());
         CHECK(!srv1->is_updated());
 
         sight::core::object::sptr gn_srv2 = sight::core::id::get_object("TestService2Uid");
         auto srv2                         = std::dynamic_pointer_cast<sight::app::ut::test_service>(gn_srv2);
         CHECK(srv2 != nullptr);
+        SIGHT_TEST_WAIT(sight::service::base::global_status::started == srv2->status());
         CHECK_EQ(sight::service::base::global_status::started, srv2->status());
         CHECK(!srv2->is_updated());
 
@@ -602,11 +684,13 @@ TEST_SUITE("sight::app::config")
         auto srv4                         = std::dynamic_pointer_cast<sight::app::ut::test_service>(gn_srv4);
         CHECK(srv4 != nullptr);
         SIGHT_TEST_WAIT(sight::service::base::global_status::started == srv4->status());
+        SIGHT_TEST_WAIT(sight::service::base::global_status::started == srv4->status());
         CHECK_EQ(sight::service::base::global_status::started, srv4->status());
 
         // Check connection
         data1->async_emit(sight::data::signals::MODIFIED);
-        SIGHT_TEST_WAIT(srv1->is_updated() && srv2->is_updated());
+        flush_service_worker(*srv1);
+        flush_service_worker(*srv2);
 
         CHECK(srv1->is_updated());
         CHECK(srv2->is_updated());
@@ -635,7 +719,7 @@ TEST_SUITE("sight::app::config")
         auto data4 = std::dynamic_pointer_cast<sight::data::object>(sight::core::id::get_object("data4Id"));
         CHECK(data4 != nullptr);
         data4->async_emit(sight::data::signals::MODIFIED);
-        SIGHT_TEST_WAIT(srv2->is_updated());
+        flush_service_worker(*srv2);
 
         CHECK(srv2->is_updated());
 
@@ -654,6 +738,7 @@ TEST_SUITE("sight::app::config")
             auto srv3                         = std::dynamic_pointer_cast<sight::app::ut::test_service>(gn_srv3);
             CHECK(srv3 != nullptr);
             SIGHT_TEST_WAIT(sight::service::base::global_status::started == srv3->status());
+            SIGHT_TEST_WAIT(sight::service::base::global_status::started == srv3->status());
             CHECK_EQ(sight::service::base::global_status::started, srv3->status());
             srv2->reset_is_updated();
             CHECK(!srv2->is_updated());
@@ -665,7 +750,8 @@ TEST_SUITE("sight::app::config")
             CHECK(!srv4->is_updated2());
 
             data1->async_emit(sight::data::signals::MODIFIED);
-            SIGHT_TEST_WAIT(srv2->is_updated() && srv3->is_updated());
+            flush_service_worker(*srv2);
+            flush_service_worker(*srv3);
 
             CHECK(srv2->is_updated());
             CHECK(srv3->is_updated());
@@ -676,7 +762,8 @@ TEST_SUITE("sight::app::config")
             CHECK(!srv3->is_updated());
 
             data2->async_emit(sight::data::signals::MODIFIED);
-            SIGHT_TEST_WAIT(srv1->is_updated() && srv3->is_updated());
+            flush_service_worker(*srv1);
+            flush_service_worker(*srv3);
 
             CHECK(srv1->is_updated());
             CHECK(srv3->is_updated());
@@ -688,7 +775,8 @@ TEST_SUITE("sight::app::config")
             CHECK(!srv3->is_updated());
 
             data4->async_emit(sight::data::signals::MODIFIED);
-            SIGHT_TEST_WAIT(srv2->is_updated() && srv3->is_updated());
+            flush_service_worker(*srv2);
+            flush_service_worker(*srv3);
 
             CHECK(srv2->is_updated());
             CHECK(srv3->is_updated());
@@ -700,7 +788,8 @@ TEST_SUITE("sight::app::config")
             CHECK(!srv3->is_updated());
 
             data3->async_emit(sight::data::signals::MODIFIED);
-            SIGHT_TEST_WAIT(srv2->is_updated() && srv3->is_updated());
+            flush_service_worker(*srv2);
+            flush_service_worker(*srv3);
 
             CHECK(srv2->is_updated());
             CHECK(srv3->is_updated());
@@ -721,13 +810,13 @@ TEST_SUITE("sight::app::config")
         srv2->reset_is_updated();
         CHECK(!srv2->is_updated());
         data1->async_emit(sight::data::signals::MODIFIED);
-        SIGHT_TEST_WAIT(srv2->is_updated());
+        flush_service_worker(*srv2);
         CHECK(srv2->is_updated());
 
         srv1->reset_is_updated();
         CHECK(!srv1->is_updated());
         data2->async_emit(sight::data::signals::MODIFIED);
-        SIGHT_TEST_WAIT(srv1->is_updated());
+        flush_service_worker(*srv1);
         CHECK(srv1->is_updated());
 
         // Check connection data4 -> srv2
@@ -735,7 +824,7 @@ TEST_SUITE("sight::app::config")
         CHECK(!srv2->is_updated());
 
         data4->async_emit(sight::data::signals::MODIFIED);
-        SIGHT_TEST_WAIT(srv2->is_updated());
+        flush_service_worker(*srv2);
 
         CHECK(srv2->is_updated());
 
@@ -754,6 +843,7 @@ TEST_SUITE("sight::app::config")
             sight::core::object::sptr gn_srv3 = sight::core::id::get_object("TestService3Uid");
             auto srv3                         = std::dynamic_pointer_cast<sight::app::ut::test_service>(gn_srv3);
             CHECK(srv3 != nullptr);
+            SIGHT_TEST_WAIT(sight::service::base::global_status::started == srv3->status());
             CHECK_EQ(sight::service::base::global_status::started, srv3->status());
             srv2->reset_is_updated();
             CHECK(!srv2->is_updated());
@@ -764,7 +854,8 @@ TEST_SUITE("sight::app::config")
             CHECK(!srv4->is_updated2());
 
             data1->async_emit(sight::data::signals::MODIFIED);
-            SIGHT_TEST_WAIT(srv2->is_updated() && srv3->is_updated());
+            flush_service_worker(*srv2);
+            flush_service_worker(*srv3);
 
             CHECK(srv2->is_updated());
             CHECK(srv3->is_updated());
@@ -775,7 +866,8 @@ TEST_SUITE("sight::app::config")
             CHECK(!srv3->is_updated());
 
             data2->async_emit(sight::data::signals::MODIFIED);
-            SIGHT_TEST_WAIT(srv1->is_updated() && srv3->is_updated());
+            flush_service_worker(*srv1);
+            flush_service_worker(*srv3);
 
             CHECK(srv1->is_updated());
             CHECK(srv3->is_updated());
@@ -787,7 +879,8 @@ TEST_SUITE("sight::app::config")
             CHECK(!srv3->is_updated());
 
             data4->async_emit(sight::data::signals::MODIFIED);
-            SIGHT_TEST_WAIT(srv2->is_updated() && srv3->is_updated());
+            flush_service_worker(*srv2);
+            flush_service_worker(*srv3);
 
             CHECK(srv2->is_updated());
             CHECK(srv3->is_updated());
@@ -799,7 +892,8 @@ TEST_SUITE("sight::app::config")
             CHECK(!srv3->is_updated());
 
             data3->async_emit(sight::data::signals::MODIFIED);
-            SIGHT_TEST_WAIT(srv2->is_updated() && srv3->is_updated());
+            flush_service_worker(*srv2);
+            flush_service_worker(*srv3);
 
             CHECK(srv2->is_updated());
             CHECK(srv3->is_updated());
@@ -819,6 +913,7 @@ TEST_SUITE("sight::app::config")
                 sight::core::object::sptr gn_srv5 = sight::core::id::get_object("TestService5Uid");
                 auto srv5                         = std::dynamic_pointer_cast<sight::app::ut::test_service>(gn_srv5);
                 CHECK(srv5 != nullptr);
+                SIGHT_TEST_WAIT(sight::service::base::global_status::started == srv5->status());
                 CHECK_EQ(sight::service::base::global_status::started, srv5->status());
 
                 {
@@ -853,6 +948,7 @@ TEST_SUITE("sight::app::config")
                 sight::core::object::sptr gn_srv5 = sight::core::id::get_object("TestService5Uid");
                 auto srv5                         = std::dynamic_pointer_cast<sight::app::ut::test_service>(gn_srv5);
                 CHECK(srv5 != nullptr);
+                SIGHT_TEST_WAIT(sight::service::base::global_status::started == srv5->status());
                 CHECK_EQ(sight::service::base::global_status::started, srv5->status());
 
                 {
@@ -909,12 +1005,13 @@ TEST_SUITE("sight::app::config")
         sight::core::object::sptr gn_srv1 = sight::core::id::get_object("TestService1Uid");
         auto srv1                         = std::dynamic_pointer_cast<sight::app::ut::test_srv>(gn_srv1);
         CHECK(srv1 != nullptr);
+        SIGHT_TEST_WAIT(sight::service::base::global_status::started == srv1->status());
         CHECK_EQ(sight::service::base::global_status::started, srv1->status());
         CHECK(!srv1->is_updated());
 
         // Check connection
         data1->async_emit(sight::data::signals::MODIFIED);
-        SIGHT_TEST_WAIT(srv1->is_updated());
+        flush_service_worker(*srv1);
 
         CHECK(srv1->is_updated());
         srv1->reset_is_updated();
@@ -942,7 +1039,7 @@ TEST_SUITE("sight::app::config")
         // Check no connection with data 2
         CHECK(!srv1->is_updated());
         data2->async_emit(sight::data::signals::MODIFIED);
-        SIGHT_TEST_WAIT(!srv1->is_updated());
+        flush_service_worker(*srv1);
         CHECK(!srv1->is_updated());
 
         // Create data 3 and 4
@@ -957,22 +1054,24 @@ TEST_SUITE("sight::app::config")
             && !srv1->input("data4").expired()
             && srv1->input("data3").lock() == data3
             && srv1->input("data4").lock() == data4
+            && srv1->status() == sight::service::base::global_status::started
         );
 
         CHECK(srv1->input("data3").lock() == data3);
         CHECK(srv1->input("data4").lock() == data4);
+        SIGHT_TEST_WAIT(sight::service::base::global_status::started == srv1->status());
         CHECK_EQ(sight::service::base::global_status::started, srv1->status());
 
         // Check connection with data 3
         srv1->reset_is_updated();
         data3->async_emit(sight::data::signals::MODIFIED);
-        SIGHT_TEST_WAIT(srv1->is_updated());
+        flush_service_worker(*srv1);
         CHECK(srv1->is_updated());
 
         // Check connection with data 4
         srv1->reset_is_updated();
         data4->async_emit(sight::data::signals::MODIFIED);
-        SIGHT_TEST_WAIT(srv1->is_updated());
+        flush_service_worker(*srv1);
         CHECK(srv1->is_updated());
 
         // Remove data 2 and 3
@@ -985,17 +1084,14 @@ TEST_SUITE("sight::app::config")
         CHECK(srv1->input("data2").expired());
 
         gen_data_srv->set_output(nullptr, "out3");
-        SIGHT_TEST_WAIT(
-            !srv1->input(
-                "data3"
-            ).expired() && srv1->input("data3").lock() == nullptr
-        );
+        SIGHT_TEST_WAIT(srv1->input("data3").expired());
 
         SIGHT_TEST_WAIT("data3" == srv1->get_swapped_object_key());
         CHECK_EQ(std::string("data3"), srv1->get_swapped_object_key());
         CHECK(nullptr == srv1->get_swapped_object());
         CHECK(srv1->input("data3").expired());
 
+        SIGHT_TEST_WAIT(sight::service::base::global_status::started == srv1->status());
         CHECK_EQ(sight::service::base::global_status::started, srv1->status());
 
         // Create data 3
@@ -1008,6 +1104,7 @@ TEST_SUITE("sight::app::config")
 
         CHECK(srv1->input("data2").expired());
         CHECK(srv1->input("data3").lock() == data3);
+        SIGHT_TEST_WAIT(sight::service::base::global_status::started == srv1->status());
         CHECK_EQ(sight::service::base::global_status::started, srv1->status());
 
         // =================================================================================================================
@@ -1027,6 +1124,7 @@ TEST_SUITE("sight::app::config")
             CHECK(gn_srv2 != nullptr);
             auto srv2 = std::dynamic_pointer_cast<sight::app::ut::test_srv>(gn_srv2);
             CHECK(srv2 != nullptr);
+            SIGHT_TEST_WAIT(sight::service::base::global_status::started == srv2->status());
             CHECK_EQ(sight::service::base::global_status::started, srv2->status());
             CHECK(!srv2->is_updated());
 
@@ -1038,16 +1136,13 @@ TEST_SUITE("sight::app::config")
             // Check connection with data 4
             srv2->reset_is_updated();
             data4->async_emit(sight::data::signals::MODIFIED);
-            SIGHT_TEST_WAIT(srv2->is_updated());
+            flush_service_worker(*srv2);
 
             // Remove data 3 and 4
             gen_data_srv->set_output(nullptr, "out3");
             gen_data_srv->set_output(nullptr, "out4");
 
-            SIGHT_TEST_WAIT(
-                !srv2->input("data3").expired()
-                && srv2->input("data4").expired()
-            );
+            SIGHT_TEST_WAIT(srv2->input("data3").expired() && srv2->input("data4").expired());
 
             CHECK(srv2->input("data1").lock() == data5);
             CHECK(srv2->input("data2").expired());
@@ -1081,6 +1176,7 @@ TEST_SUITE("sight::app::config")
             auto gn_srv2 = sight::core::id::get_object("TestService2Uid");
             auto srv2    = std::dynamic_pointer_cast<sight::app::ut::test_srv>(gn_srv2);
             CHECK(srv2 != nullptr);
+            SIGHT_TEST_WAIT(sight::service::base::global_status::started == srv2->status());
             CHECK_EQ(sight::service::base::global_status::started, srv2->status());
             CHECK(!srv2->is_updated());
 
@@ -1092,7 +1188,7 @@ TEST_SUITE("sight::app::config")
             // Check connection with data 3
             srv2->reset_is_updated();
             data3->async_emit(sight::data::signals::MODIFIED);
-            SIGHT_TEST_WAIT(srv2->is_updated());
+            flush_service_worker(*srv2);
             CHECK(srv2->is_updated());
 
             // Create data 2
@@ -1115,7 +1211,7 @@ TEST_SUITE("sight::app::config")
             srv2->reset_is_updated();
             CHECK(!srv2->is_updated());
             data2b->async_emit(sight::data::signals::MODIFIED);
-            SIGHT_TEST_WAIT(!srv2->is_updated());
+            flush_service_worker(*srv2);
             CHECK(!srv2->is_updated());
 
             // Overwrite data 2 with a new data generated by an another service
@@ -1200,6 +1296,7 @@ TEST_SUITE("sight::app::config")
             gn_srv1 = sight::core::id::get_object("TestService1Uid");
             auto srv1 = std::dynamic_pointer_cast<sight::app::ut::test1_input1_input_group>(gn_srv1);
             CHECK(srv1 != nullptr);
+            SIGHT_TEST_WAIT(sight::service::base::global_status::started == srv1->status());
             CHECK_EQ(sight::service::base::global_status::started, srv1->status());
             CHECK(!srv1->is_updated());
 
@@ -1212,7 +1309,7 @@ TEST_SUITE("sight::app::config")
             CHECK(!srv1->is_updated());
             data2b->async_emit(sight::data::signals::MODIFIED);
 
-            SIGHT_TEST_WAIT(srv1->is_updated());
+            flush_service_worker(*srv1);
             CHECK(srv1->is_updated());
 
             // Create data 3
@@ -1221,8 +1318,8 @@ TEST_SUITE("sight::app::config")
             srv1->reset_is_updated();
 
             // Create a slot to wait for the swap to be completed
-            bool srv1_swapped = false;
-            auto swapped_slot = sight::core::com::new_slot([&](){srv1_swapped = true;});
+            auto srv1_swapped = std::make_shared<std::atomic_bool>(false);
+            auto swapped_slot = sight::core::com::new_slot([srv1_swapped]{srv1_swapped->store(true);});
             swapped_slot->set_worker(sight::core::thread::get_default_worker());
             sight::core::com::connection connection =
                 srv1->signal(sight::service::signals::SWAPPED)->connect(swapped_slot);
@@ -1243,12 +1340,12 @@ TEST_SUITE("sight::app::config")
             CHECK(srv1->input("dataGroup", 1).lock() == data3);
             CHECK(2 == srv1->m_input_group.size());
 
-            SIGHT_TEST_WAIT(srv1_swapped);
-            CHECK(srv1_swapped);
+            SIGHT_TEST_WAIT(srv1_swapped->load());
+            REQUIRE(srv1_swapped->load());
 
             // Check connection with data 3
             data3->async_emit(sight::data::signals::MODIFIED);
-            SIGHT_TEST_WAIT(srv1->is_updated());
+            flush_service_worker(*srv1);
             CHECK(srv1->is_updated());
 
             connection.disconnect();
@@ -1269,17 +1366,13 @@ TEST_SUITE("sight::app::config")
             sight::core::object::sptr gn_srv2 = sight::core::id::get_object("TestService2Uid");
             auto srv2                         = std::dynamic_pointer_cast<sight::app::ut::test2_input_groups>(gn_srv2);
             CHECK(srv2 != nullptr);
+            SIGHT_TEST_WAIT(sight::service::base::global_status::started == srv2->status());
             CHECK_EQ(sight::service::base::global_status::started, srv2->status());
             CHECK(!srv2->is_updated());
 
+            // data3 belongs to dataGroup1; dataGroup0 no longer has its second entry, data2 that was just removed.
             SIGHT_TEST_WAIT(
-                !srv2->input(
-                    "dataGroup0",
-                    1
-                ).expired() && srv2->input(
-                    "dataGroup0",
-                    1
-                ).lock() == data3
+                srv2->input("dataGroup1", 0).lock() == data3 && srv2->input("dataGroup0", 1).expired()
             );
 
             CHECK_EQ(std::size_t(1), srv2->m_input1.size());
@@ -1294,32 +1387,34 @@ TEST_SUITE("sight::app::config")
             // Check connection with data 1
             srv2->reset_is_updated();
             data1->async_emit(sight::data::signals::MODIFIED);
-            SIGHT_TEST_WAIT(srv2->is_updated());
+            flush_service_worker(*srv2);
             CHECK(srv2->is_updated());
 
             // Check no connection with data 3
             srv2->reset_is_updated();
             data3->async_emit(sight::data::signals::MODIFIED);
-            SIGHT_TEST_WAIT(!srv2->is_updated());
+            // Needed: without it, an update could still be queued and the check below would prove nothing.
+            flush_service_worker(*srv2);
             CHECK(!srv2->is_updated());
 
             // Check connection with data 4
             srv2->reset_is_updated();
             data4->async_emit(sight::data::signals::MODIFIED);
-            SIGHT_TEST_WAIT(srv2->is_updated(), 2500);
+            flush_service_worker(*srv2);
             CHECK(!srv2->is_updated());
             data4->async_emit(sight::data::image::signals::BUFFER_MODIFIED);
-            SIGHT_TEST_WAIT(srv2->is_updated());
+            flush_service_worker(*srv2);
             CHECK(srv2->is_updated());
 
             // Check no connection with data 5
             srv2->reset_is_updated();
             data5->async_emit(sight::data::signals::MODIFIED);
-            SIGHT_TEST_WAIT(!srv2->is_updated());
+            // Needed: without it, an update could still be queued and the check below would prove nothing.
+            flush_service_worker(*srv2);
             CHECK(!srv2->is_updated());
 
             data5->async_emit(sight::data::image::signals::BUFFER_MODIFIED);
-            SIGHT_TEST_WAIT(srv2->is_updated(), 2500);
+            flush_service_worker(*srv2);
             CHECK(!srv2->is_updated());
         }
 
@@ -1341,14 +1436,15 @@ TEST_SUITE("sight::app::config")
             gn_srv3 = sight::core::id::get_object("TestService3Uid");
             auto srv3 = std::dynamic_pointer_cast<sight::app::ut::test1_input1_input_group>(gn_srv3);
             CHECK(srv3 != nullptr);
+            SIGHT_TEST_WAIT(sight::service::base::global_status::started == srv3->status());
             CHECK_EQ(sight::service::base::global_status::started, srv3->status());
 
             CHECK(srv3->input("dataGroup", 0).lock() == data6);
             CHECK(srv3->input("dataGroup", 1).lock() == data7);
-
-            gen_data_srv->m_out_group[0] = nullptr;
         }
         {
+            // The configuration manager asserts that nobody holds a service it destroys: release it first.
+            gen_data_srv->m_out_group[0] = nullptr;
             SIGHT_TEST_WAIT(false == sight::core::id::exist("TestService3Uid"));
 
             auto gn_srv3 = sight::core::id::get_object("TestService3Uid");
@@ -1476,14 +1572,14 @@ TEST_SUITE("sight::app::config")
 
         data1_sub_srv->async_emit(sight::data::signals::MODIFIED);
 
-        SIGHT_TEST_WAIT(srv1->is_updated());
+        flush_service_worker(*srv1);
         CHECK(srv1->is_updated());
 
         CHECK(!srv_in_sub_config->is_updated());
 
         data2->async_emit(sight::data::signals::MODIFIED);
 
-        SIGHT_TEST_WAIT(srv_in_sub_config->is_updated());
+        flush_service_worker(*srv_in_sub_config);
         CHECK(srv_in_sub_config->is_updated());
     }
 
@@ -1920,23 +2016,14 @@ TEST_SUITE("sight::app::config")
             {
                 auto int_object =
                     std::dynamic_pointer_cast<sight::data::object>(sight::core::id::get_object("integer_object"));
-                CHECK(int_object != nullptr);
-                int_object->async_emit(sight::data::signals::MODIFIED);
-
-                SIGHT_TEST_WAIT(srv->m_slot_called);
-                CHECK_EQ(false, srv->m_slot_called);
-                CHECK_EQ(std::string_view("integer"), srv->m_callback_called_parameter);
+                REQUIRE(int_object != nullptr);
+                check_property_signal(*srv, *int_object, 0, {"integer"});
             }
-            srv->m_callback_called_parameter = "";
             {
                 auto vec_object =
                     std::dynamic_pointer_cast<sight::data::object>(sight::core::id::get_object("vec_object"));
-                CHECK(vec_object != nullptr);
-                vec_object->async_emit(sight::data::signals::MODIFIED);
-
-                SIGHT_TEST_WAIT(srv->m_slot_called);
-                CHECK_EQ(true, srv->m_slot_called);
-                CHECK_EQ(std::string_view(), srv->m_callback_called_parameter);
+                REQUIRE(vec_object != nullptr);
+                check_property_signal(*srv, *vec_object, 1, {});
             }
         }
         {
@@ -1953,29 +2040,17 @@ TEST_SUITE("sight::app::config")
             CHECK_EQ(std::string("bye"), *srv->m_string_prop);
             CHECK(sight::vec3d_t({64, -94, -21.467}) == *srv->m_vec_prop);
 
-            srv->m_slot_called = false;
-            CHECK_EQ(false, srv->m_slot_called);
-
-            srv->m_callback_called_parameter = "";
             {
                 auto int_object =
                     std::dynamic_pointer_cast<sight::data::object>(sight::core::id::get_object("integer_object"));
-                CHECK(int_object != nullptr);
-                int_object->async_emit(sight::data::signals::MODIFIED);
-
-                SIGHT_TEST_WAIT(srv->m_slot_called);
-                CHECK_EQ(false, srv->m_slot_called);
-                CHECK_EQ(std::string_view(), srv->m_callback_called_parameter);
+                REQUIRE(int_object != nullptr);
+                check_property_signal(*srv, *int_object, 0, {});
             }
             {
                 auto vec_object =
                     std::dynamic_pointer_cast<sight::data::object>(sight::core::id::get_object("vec_object"));
-                CHECK(vec_object != nullptr);
-                vec_object->async_emit(sight::data::signals::MODIFIED);
-
-                SIGHT_TEST_WAIT(srv->m_slot_called);
-                CHECK_EQ(true, srv->m_slot_called);
-                CHECK_EQ(std::string_view(), srv->m_callback_called_parameter);
+                REQUIRE(vec_object != nullptr);
+                check_property_signal(*srv, *vec_object, 1, {});
             }
         }
         {
@@ -1992,30 +2067,20 @@ TEST_SUITE("sight::app::config")
             CHECK_EQ(std::string("default_value"), *srv->m_string_prop);
             CHECK(sight::vec3d_t({-0.6, 2.41, 78}) == *srv->m_vec_prop);
 
-            CHECK_EQ(false, srv->m_slot_called);
-
             auto map_object =
                 std::dynamic_pointer_cast<sight::data::map>(sight::core::id::get_object("properties_map"));
-            CHECK(map_object != nullptr);
+            REQUIRE(map_object != nullptr);
 
             // "vec" is connected thus only the slot is called
             {
-                (*map_object)["vec"]->async_emit(sight::data::signals::MODIFIED);
-
-                SIGHT_TEST_WAIT(srv->m_slot_called);
-                CHECK_EQ(true, srv->m_slot_called);
-                CHECK_EQ(std::string_view(), srv->m_callback_called_parameter);
+                REQUIRE((*map_object)["vec"] != nullptr);
+                check_property_signal(*srv, *(*map_object)["vec"], 1, {});
             }
-
-            srv->m_slot_called = false;
 
             // "integer" is not connected thus only the callback is called
             {
-                (*map_object)["integer"]->async_emit(sight::data::signals::MODIFIED);
-
-                SIGHT_TEST_WAIT(srv->m_slot_called);
-                CHECK_EQ(false, srv->m_slot_called);
-                CHECK_EQ(std::string_view("integer"), srv->m_callback_called_parameter);
+                REQUIRE((*map_object)["integer"] != nullptr);
+                check_property_signal(*srv, *(*map_object)["integer"], 0, {"integer"});
             }
         }
         {
@@ -2024,21 +2089,14 @@ TEST_SUITE("sight::app::config")
                 std::dynamic_pointer_cast<sight::app::ut::test_service_with_properties>(service);
             CHECK(srv != nullptr);
             CHECK_EQ(true, srv->started());
-            srv->m_slot_called = false;
-
             CHECK_EQ(std::int64_t(45), *srv->m_int_prop);
             {
                 auto map_object =
                     std::dynamic_pointer_cast<sight::data::map>(sight::core::id::get_object("properties_map"));
-                CHECK(map_object != nullptr);
-                (*map_object)["integer"]->async_emit(sight::data::signals::MODIFIED);
-
-                SIGHT_TEST_WAIT(srv->m_slot_called);
-                CHECK_EQ(false, srv->m_slot_called);
-
-                CHECK_EQ(std::string_view("integer"), srv->m_callback_called_parameter);
+                REQUIRE(map_object != nullptr);
+                REQUIRE((*map_object)["integer"] != nullptr);
+                check_property_signal(*srv, *(*map_object)["integer"], 0, {"integer"});
             }
-            srv->m_callback_called_parameter = "";
         }
         {
             sight::core::object::sptr service = sight::core::id::get_object("test_service_map_object_props_2");
@@ -2046,21 +2104,14 @@ TEST_SUITE("sight::app::config")
                 std::dynamic_pointer_cast<sight::app::ut::test_service_with_properties>(service);
             CHECK(srv != nullptr);
             CHECK_EQ(true, srv->started());
-            srv->m_slot_called = false;
-
             CHECK_EQ(std::int64_t(45), *srv->m_int_prop);
             {
                 auto map_object =
                     std::dynamic_pointer_cast<sight::data::map>(sight::core::id::get_object("properties_map"));
-                CHECK(map_object != nullptr);
-                (*map_object)["integer"]->async_emit(sight::data::signals::MODIFIED);
-
-                SIGHT_TEST_WAIT(srv->m_slot_called);
-                CHECK_EQ(false, srv->m_slot_called);
-
-                CHECK_EQ(std::string_view("integer"), srv->m_callback_called_parameter);
+                REQUIRE(map_object != nullptr);
+                REQUIRE((*map_object)["integer"] != nullptr);
+                check_property_signal(*srv, *(*map_object)["integer"], 0, {"integer"});
             }
-            srv->m_callback_called_parameter = "";
         }
     }
 
@@ -2076,24 +2127,13 @@ TEST_SUITE("sight::app::config")
                 std::dynamic_pointer_cast<sight::app::ut::test_service_with_properties>(service);
             CHECK(srv != nullptr);
             CHECK_EQ(true, srv->started());
-            srv->m_slot_called = false;
-            srv->m_emit_signal = true;
-
             CHECK_EQ(std::int64_t(23), *srv->m_int_prop);
             {
                 auto int_object =
                     std::dynamic_pointer_cast<sight::data::object>(sight::core::id::get_object("integer_object"));
-                CHECK(int_object != nullptr);
-                int_object->async_emit(sight::data::signals::MODIFIED);
-
-                SIGHT_TEST_WAIT(srv->m_slot_called);
-                CHECK_EQ(false, srv->m_slot_called);
-
-                CHECK_EQ(std::string_view("integer"), srv->m_callback_called_parameter);
-                // Verify we did not enter an infinite loop
-                CHECK_EQ(std::size_t(1), srv->m_signal_count);
+                REQUIRE(int_object != nullptr);
+                check_property_signal(*srv, *int_object, 0, {"integer"}, true);
             }
-            srv->m_callback_called_parameter = "";
         }
     }
 
@@ -2203,6 +2243,7 @@ TEST_SUITE("sight::app::config")
             auto gn_srv3 = sight::core::id::get_object("test3_srv");
             auto srv3    = std::dynamic_pointer_cast<sight::service::base>(gn_srv3);
             CHECK(srv3 != nullptr);
+            SIGHT_TEST_WAIT(sight::service::base::global_status::started == srv3->status());
             CHECK_EQ(sight::service::base::global_status::started, srv3->status());
 
             {
@@ -2335,6 +2376,4 @@ TEST_SUITE("sight::app::config")
         CHECK(doctest::Approx(0.) == values[14]);
         CHECK(doctest::Approx(1.) == values[15]);
     }
-
-//------------------------------------------------------------------------------
 } // namespace sight::app::ut

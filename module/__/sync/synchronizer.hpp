@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include <core/thread/timer.hpp>
+#include <core/clock.hpp>
 
 #include <data/boolean.hpp>
 #include <data/frame_tl.hpp>
@@ -132,9 +132,6 @@ namespace sight::module::sync
  *  (default: false).
  *
  * @subsection Configuration Configuration
- * - \b config.legacy_auto_sync : defines if the service should run the synchronization automatically (every 15 ms)
- * or be handled through slots. This option is only to support previous configurations, and
- * should not be set to "true" in new configurations (default: false).
  * - \b config.tolerance : defines the maximum distance between two frames (default: 500).
  *      If a timeline exceeds this tolerance it will not be synchronized (default: true).
  */
@@ -188,8 +185,7 @@ public:
         static inline const std::string MATRIX_INDEX       = "output.matrices.item.index";
         static inline const std::string MATRIX_SEND_STATUS = "output.matrices.item.send_status";
 
-        static inline const std::string TOLERANCE         = "config.<xmlattr>.tolerance";
-        static inline const std::string LEGACY_AUTO_SYNCH = "config.<xmlattr>.legacy_auto_sync";
+        static inline const std::string TOLERANCE = "config.<xmlattr>.tolerance";
     };
 
     /// Internal wrapper used for out variable association with TLs
@@ -364,38 +360,6 @@ private:
     /// @brief vector which store the input/output variable associations for frames and matrix
     std::vector<out_var_parameter> m_frame_out_var_parameters {};
     std::vector<out_var_parameter> m_matrix_out_var_parameters {};
-
-    ///Synchronisation timing mechanism has two possible behaviour differentiated through m_legacyAutoSync
-    // => m_legacyAutoSync = true
-    //    The synchronisation is expected to be called automatically.
-    //    The duration between two synchronizations is stored in m_timeStep.
-    //    As this is an automated internal mechanism, and to prevent the confusion with grabbing
-    //    framerate, this value should not be exposed.
-    //    To do this, a timer mechanism is started to synchronize at the given frequency.
-    //
-    //    THIS SHOULD NOT BE USED IN NEW CONFIGURATION.
-    //
-    //=> m_legacyAutoSync = false
-    //    The synchronisation is done when it is called through a slot
-    //    This allows to have a stronger control on the frame/matrix dispatching rate
-    //
-    // For both cases, the synchronization is done when the synch method is called,
-    // and when some data have been updated.
-    // The coordination with the data arrival is handled through an updateMask.
-    // The mask changes value when a data is updated (through the updating and autoConnection )
-    // And it changes back when the synchronisation method is called.
-
-    // specify if the synchronization is called automatically or only when the slot synchronize is called.
-    bool m_legacy_auto_sync {false};
-
-    /// Timer used for the update
-    core::thread::timer::sptr m_timer;
-
-    /// Timer worker thread
-    core::thread::worker::sptr m_worker;
-
-    /// Time step used for the update, in ms
-    unsigned int m_time_step {15};
 
     /// Tolerance to take into account matrix
     core::clock::type m_tolerance {500.};

@@ -21,6 +21,7 @@
 
 #include <core/notification/information.hpp>
 #include <core/notification/notifications_store.hpp>
+#include <core/thread/worker.hpp>
 
 #include <utest/wait.hpp>
 
@@ -104,7 +105,8 @@ TEST_SUITE("sight::core::notification::notifications_store")
         notification->set_text("after");
         notification->finish();
 
-        SIGHT_TEST_WAIT(store->m_changed > 0 || store->m_finished > 0);
+        // The callbacks run on the default worker: once it has run every task posted so far, none can come later.
+        sight::core::thread::wait_default_barrier();
         CHECK_EQ(store->m_changed, 0);
         CHECK_EQ(store->m_finished, 0);
     }
@@ -123,13 +125,14 @@ TEST_SUITE("sight::core::notification::notifications_store")
 
         notification->set_text("after");
 
-        // The hooks must fire once, not once per watch(): wait for a second call that must never come.
-        SIGHT_TEST_WAIT(store->m_changed > 1);
+        // The hooks must fire once, not once per watch(). The callbacks run on the default worker: once it has run
+        // every task posted so far, all calls are counted.
+        sight::core::thread::wait_default_barrier();
         CHECK_EQ(store->m_changed, 1);
 
         notification->finish();
 
-        SIGHT_TEST_WAIT(store->m_finished > 1);
+        sight::core::thread::wait_default_barrier();
         CHECK_EQ(store->m_finished, 1);
     }
 }

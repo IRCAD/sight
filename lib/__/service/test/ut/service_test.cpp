@@ -27,8 +27,11 @@
 #include <core/thread/worker.hpp>
 #include <core/time_stamp.hpp>
 
+#include <data/has_data.hpp>
+#include <data/integer.hpp>
 #include <data/map.hpp>
 #include <data/object.hpp>
+#include <data/ptr.hpp>
 
 #include <service/extension/factory.hpp>
 #include <service/op.hpp>
@@ -36,6 +39,9 @@
 #include <utest/wait.hpp>
 
 #include <doctest/doctest.h>
+
+#include <memory>
+#include <string>
 
 namespace
 {
@@ -135,6 +141,41 @@ test_service_signals::~test_service_signals()
 }
 
 } // namespace sight::service::ut
+
+namespace
+{
+
+/// Deletes the pointer of a group as soon as it is notified of the removal of its object, as the configuration manager
+/// does from its own thread.
+struct removing_holder final : public sight::data::has_data
+{
+    using sight::data::has_data::set_deferred_id;
+
+    // NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
+    sight::data::ptr_vector<sight::data::object, sight::data::access::out> group {this, "group"};
+    std::string registered;
+    std::string unregistered;
+    // NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
+
+    private:
+
+        //------------------------------------------------------------------------------
+
+        void notify_register_out(sight::data::object::sptr /*_obj*/, const std::string& _id) final
+        {
+            registered = _id;
+        }
+
+        //------------------------------------------------------------------------------
+
+        void notify_unregister_out(sight::data::object::sptr /*_obj*/, const std::string& _id) final
+        {
+            unregistered = _id;
+            reset_object("group", 0);
+        }
+};
+
+} // namespace
 
 //------------------------------------------------------------------------------
 
@@ -1067,4 +1108,32 @@ TEST_SUITE("sight::service::service")
     }
 
 //------------------------------------------------------------------------------
+
+    TEST_CASE("an_output_is_not_used_after_notifying_its_removal")
+    {
+        removing_holder holder;
+        holder.set_deferred_id("group", "object_id", 0);
+
+        holder.group[0] = std::make_shared<sight::data::integer>();
+        CHECK(holder.registered == "object_id");
+        CHECK(holder.group.size() == 1);
+
+        holder.group[0] = nullptr;
+        CHECK(holder.unregistered == "object_id");
+        CHECK(holder.group.size() == 0); // NOLINT(readability-container-size-empty)
+    }
+
+    //------------------------------------------------------------------------------
+
+    TEST_CASE("an_output_is_not_used_after_notifying_its_replacement")
+    {
+        removing_holder holder;
+        holder.set_deferred_id("group", "object_id", 0);
+        holder.group[0] = std::make_shared<sight::data::integer>();
+
+        holder.registered.clear();
+        holder.group[0] = std::make_shared<sight::data::integer>();
+        CHECK(holder.unregistered == "object_id");
+        CHECK(holder.registered == "object_id");
+    }
 } // end TEST_SUITE

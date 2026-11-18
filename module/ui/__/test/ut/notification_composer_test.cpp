@@ -341,7 +341,8 @@ TEST_SUITE("sight::module::ui::notification_composer")
             );
         }
 
-        SIGHT_TEST_WAIT(!m_emitted.empty());
+        // What the service emits is collected on m_worker: once it has run every task posted so far, nothing came.
+        m_worker->wait_barrier();
         CHECK(m_emitted.empty());
     }
 
@@ -459,8 +460,9 @@ TEST_SUITE("sight::module::ui::notification_composer")
         run("next");
         run("show_current");
 
-        // Nothing more was emitted: the sequence is over.
-        SIGHT_TEST_WAIT(m_emitted.size() > 1);
+        // Nothing more was emitted: the sequence is over. What the service emits is collected on m_worker: once it has
+        // run every task posted so far, everything emitted is counted.
+        m_worker->wait_barrier();
         CHECK_EQ(m_emitted.size(), std::size_t(1));
     }
 

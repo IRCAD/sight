@@ -30,6 +30,7 @@
 
 #include <functional>
 #include <optional>
+#include <string>
 #include <string_view>
 #include <type_traits>
 #include <utility>
@@ -368,22 +369,21 @@ protected:
         bool _signal                        = false
     ) final
     {
+        // Notified of the removal of an object, the configuration manager deletes a pointer of a group from its own
+        // thread: notify last, with copies, since this pointer can no longer be used from then on.
+        [[maybe_unused]] sight::data::object::sptr previous;
+        [[maybe_unused]] std::string deferred_id;
+        [[maybe_unused]] has_data* const holder = m_holder;
         if constexpr(ACCESS == data::access::out)
         {
             if(_signal)
             {
-                const auto ptr = this->lock();
-                if(ptr)
+                if(const auto ptr = this->lock(); ptr)
                 {
-                    if(!m_deferred_id.empty())
-                    {
-                        m_holder->notify_unregister_out(ptr.get_shared(), m_deferred_id);
-                    }
-                    else
-                    {
-                        SIGHT_WARN("Object id is empty");
-                    }
+                    previous = ptr.get_shared();
                 }
+
+                deferred_id = m_deferred_id;
             }
         }
 
@@ -411,19 +411,21 @@ protected:
             {
                 m_optional = _optional.value();
             }
+        }
 
-            if constexpr(ACCESS == data::access::out)
+        if constexpr(ACCESS == data::access::out)
+        {
+            if(_signal)
             {
-                if(_signal)
+                SIGHT_WARN_IF("Object id is empty", deferred_id.empty() && (previous != nullptr || _obj != nullptr));
+                if(!deferred_id.empty() && previous != nullptr)
                 {
-                    if(!m_deferred_id.empty())
-                    {
-                        m_holder->notify_register_out(_obj, m_deferred_id);
-                    }
-                    else
-                    {
-                        SIGHT_WARN("Object id is empty");
-                    }
+                    holder->notify_unregister_out(previous, deferred_id);
+                }
+
+                if(!deferred_id.empty() && _obj != nullptr)
+                {
+                    holder->notify_register_out(_obj, deferred_id);
                 }
             }
         }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,14 +22,33 @@
 
 #include "core/time_stamp.hpp"
 
+#include <chrono>
+
 namespace sight::core
 {
 
 //------------------------------------------------------------------------------
 
+/// Milliseconds on a monotonic clock: a period measured on the wall clock follows its corrections (NTP).
+static time_stamp::time_stamp_type now_in_milli_sec()
+{
+    return std::chrono::duration<time_stamp::time_stamp_type, std::milli>(
+        std::chrono::steady_clock::now().time_since_epoch()
+    ).count();
+}
+
+//------------------------------------------------------------------------------
+
 void time_stamp::modified()
 {
-    m_modified_time = core::clock::get_time_in_milli_sec();
+    m_modified_time = now_in_milli_sec();
+}
+
+//------------------------------------------------------------------------------
+
+bool time_stamp::period_expired() const
+{
+    return (now_in_milli_sec() - this->m_modified_time) > m_life_period;
 }
 
 } //namespace sight::core

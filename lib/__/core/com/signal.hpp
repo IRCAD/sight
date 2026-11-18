@@ -131,6 +131,10 @@ struct SIGHT_CORE_CLASS_API signal<R(A ...)>: signal_base
 
     private:
 
+        /// Calls a function with each connected slot.
+        template<typename F>
+        void for_each_connected_slot(F _function) const;
+
         /// Connected slots.
         slot_container_t m_slots {};
 
@@ -202,15 +206,7 @@ void signal<R(A ...)>::disconnect_all()
 template<typename R, typename ... A>
 void signal<R(A ...)>::emit(A ... _a) const
 {
-    core::mt::read_lock lock(m_connections_mutex);
-
-    for(const auto& slot : m_slots)
-    {
-        if(slot->first)
-        {
-            slot->second.lock()->run(_a ...);
-        }
-    }
+    for_each_connected_slot([&_a ...](const auto& _slot){_slot->run(_a ...);});
 }
 
 //-----------------------------------------------------------------------------
@@ -218,22 +214,31 @@ void signal<R(A ...)>::emit(A ... _a) const
 template<typename R, typename ... A>
 void signal<R(A ...)>::async_emit(A ... _a) const
 {
-    // We hold the slots alive in case they are destroyed during the emission
-    // If we don't do this, we could end up with a deadlock on m_connectionsMutex
-    // because of the automatic disconnection from this signal
-    // With this vector, we ensure the potential destruction occurs outside the scope of the mutex
-    std::vector<sight::sptr<slot_run_type> > keep_slots_alive;
-    {
-        core::mt::read_lock lock(m_connections_mutex);
+    for_each_connected_slot([&_a ...](const auto& _slot){_slot->async_run(_a ...);});
+}
 
-        for(const auto& slot : m_slots)
+//-----------------------------------------------------------------------------
+
+template<typename R, typename ... A>
+template<typename F>
+void signal<R(A ...)>::for_each_connected_slot(F _function) const
+{
+    // We hold the slots alive in case they are destroyed during the emission
+    // If we don't do this, we could end up with a deadlock on m_connections_mutex
+    // because of the automatic disconnection from this signal
+    // With this vector, we ensure the potential destruction occurs outside the scope of the mutex:
+    // it is declared before the lock, so it is destroyed after the lock is released.
+    // A slot already being destroyed is still connected, but can no longer be locked: it is skipped.
+    std::vector<sight::sptr<slot_run_type> > keep_slots_alive;
+    core::mt::read_lock lock(m_connections_mutex);
+    keep_slots_alive.reserve(m_slots.size());
+
+    for(const auto& slot : m_slots)
+    {
+        const auto& kept = keep_slots_alive.emplace_back(slot->second.lock());
+        if(slot->first && kept)
         {
-            if(slot->first)
-            {
-                auto slot_ptr = slot->second.lock();
-                keep_slots_alive.push_back(slot_ptr);
-                slot_ptr->async_run(_a ...);
-            }
+            _function(kept);
         }
     }
 }

@@ -140,6 +140,37 @@ public:
     template<typename R, typename CALLABLE>
     std::shared_future<R> post_task(CALLABLE _f);
 
+    /**
+     * @brief Posts an empty task, to wait for the tasks posted before it.
+     *
+     * The worker runs its tasks in order: when the returned future is ready, every task posted before it is done.
+     * Called from the thread of the worker itself, it waits for nothing: the future is ready at once.
+     *
+     * @code{.cpp}
+     * signal->async_emit(); // queues the connected slots on their worker
+     * if(worker->post_barrier().wait_for(std::chrono::seconds(30)) != std::future_status::ready)
+     * {
+     *     // the worker is stuck
+     * }
+     * @endcode
+     *
+     * @return the future of the empty task.
+     */
+    [[nodiscard]] std::shared_future<void> post_barrier();
+
+    /**
+     * @brief Waits until every task posted before this call has run: post_barrier().get().
+     *
+     * The wait has no time limit: to give up after a while, use post_barrier() and wait on its future. Called from the
+     * thread of the worker itself, it returns at once.
+     *
+     * @code{.cpp}
+     * signal->async_emit();     // queues the connected slots on their worker
+     * worker->wait_barrier();   // returns once these slots have run
+     * @endcode
+     */
+    void wait_barrier();
+
     /// Returns the worker's thread id
     [[nodiscard]] SIGHT_CORE_API virtual thread_id_t get_thread_id() const = 0;
 
@@ -275,6 +306,36 @@ std::shared_future<R> worker::post_task(TASK _f)
     }
 
     return future;
+}
+
+//------------------------------------------------------------------------------
+
+inline std::shared_future<void> worker::post_barrier()
+{
+    return this->post_task<void>([]{});
+}
+
+//------------------------------------------------------------------------------
+
+inline void worker::wait_barrier()
+{
+    this->post_barrier().get();
+}
+
+//------------------------------------------------------------------------------
+
+/// worker::post_barrier() on the default worker.
+inline std::shared_future<void> post_default_barrier()
+{
+    return get_default_worker()->post_barrier();
+}
+
+//------------------------------------------------------------------------------
+
+/// worker::wait_barrier() on the default worker.
+inline void wait_default_barrier()
+{
+    get_default_worker()->wait_barrier();
 }
 
 } // namespace sight::core::thread

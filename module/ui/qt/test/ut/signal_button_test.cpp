@@ -33,6 +33,9 @@
 #include <QApplication>
 #include <QPointer>
 
+#include <atomic>
+#include <memory>
+
 namespace sight::module::ui::qt::ut
 {
 
@@ -77,12 +80,13 @@ public:
     {
         signal_button_test_context context(m_child_uid);
 
-        bool called = false;
+        // Shared: if this test gives up waiting, the slot still runs after it.
+        auto called = std::make_shared<std::atomic_bool>(false);
 
         auto slot = sight::core::com::new_slot(
-            [&]()
+            [called]()
                 {
-                    called = true;
+                    *called = true;
                 });
 
         slot->set_worker(m_worker);
@@ -100,8 +104,8 @@ public:
             }
         }
 
-        SIGHT_TEST_WAIT(called);
-        CHECK_EQ(true, called);
+        SIGHT_TEST_WAIT(called->load());
+        CHECK(called->load());
     }
 
 private:

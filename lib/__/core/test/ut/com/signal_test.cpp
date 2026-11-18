@@ -31,11 +31,73 @@
 
 #include <doctest/doctest.h>
 
+#include <atomic>
+#include <chrono>
+#include <condition_variable>
+#include <cstdlib>
+#include <functional>
+#include <iostream>
+#include <memory>
+#include <mutex>
+#include <stdexcept>
 #include <string>
 #include <thread>
+#include <utility>
 
 namespace
 {
+
+using signal_test_signal = sight::core::com::signal<void ()>;
+
+namespace
+{
+
+/// Ends the process when a test is stuck: a deadlock of the test's own threads cannot be unwound.
+class hang_watch final
+{
+public:
+
+    explicit hang_watch(std::string _what) :
+        m_what(std::move(_what)),
+        m_watch(
+            [this]
+            {
+                std::unique_lock lock(m_mutex);
+                if(!m_done.wait_for(lock, std::chrono::minutes(5), [this]{return m_finished;}))
+                {
+                    std::cerr << "deadlock: " << m_what << std::endl;
+                    std::_Exit(EXIT_FAILURE);
+                }
+            })
+    {
+    }
+
+    hang_watch(const hang_watch&)            = delete;
+    hang_watch(hang_watch&&)                 = delete;
+    hang_watch& operator=(const hang_watch&) = delete;
+    hang_watch& operator=(hang_watch&&)      = delete;
+
+    ~hang_watch()
+    {
+        {
+            const std::scoped_lock lock(m_mutex);
+            m_finished = true;
+        }
+
+        m_done.notify_all();
+        m_watch.join();
+    }
+
+private:
+
+    std::string m_what;
+    std::mutex m_mutex;
+    std::condition_variable m_done;
+    bool m_finished {false};
+    std::thread m_watch;
+};
+
+} // namespace
 
 struct signal_test_class
 {
@@ -85,6 +147,42 @@ struct signal_test_class
 };
 
 } // namespace
+
+/// While a thread emits, slots keep being connected and destroyed: a destroyed slot stays in the signal until the end
+/// of its destruction, which disconnects it.
+static void destroy_slots_during_emissions(
+    int _slots,
+    const sight::core::thread::worker::sptr& _worker,
+    const std::function<void(const signal_test_signal&)>& _emit
+)
+{
+    const auto signal = std::make_shared<signal_test_signal>();
+    std::atomic_bool stopped {false};
+    std::thread emitter(
+        [&signal, &stopped, &_emit]
+        {
+        while(!stopped)
+        {
+            _emit(*signal);
+
+            // Holding the read lock in a tight loop would starve the connections.
+            std::this_thread::yield();
+        }
+        });
+
+    for(int i = 0 ; i < _slots ; ++i)
+    {
+        const auto slot = sight::core::com::new_slot([]{});
+        slot->set_worker(_worker);
+        signal->connect(slot);
+    }
+
+    stopped = true;
+    emitter.join();
+    CHECK(signal->num_connections() == 0);
+}
+
+//------------------------------------------------------------------------------
 
 TEST_SUITE("sight::core::com::signal")
 {
@@ -476,7 +574,7 @@ TEST_SUITE("sight::core::com::signal")
 
         sig->async_emit(21.0F, 42.0, "async_emit");
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        worker->wait_barrier();
 
         CHECK(test_object.m_method0);
         CHECK(test_object.m_method1);
@@ -557,6 +655,89 @@ TEST_SUITE("sight::core::com::signal")
 
 //-----------------------------------------------------------------------------
 
+    TEST_CASE("does_not_deadlock_when_a_failing_slot_loses_its_last_reference")
+    {
+        // A deadlock here would hold the test until its timeout: it fails at once, with its name.
+        const hang_watch watch("a slot destroyed under the lock of its signal");
+
+        const auto signal = std::make_shared<signal_test_signal>();
+        std::shared_ptr<sight::core::com::slot<void()> > slot;
+        slot = sight::core::com::new_slot(
+            std::function<void()>(
+                [&slot]
+        {
+            // The emission holds the last reference when it unwinds.
+            slot.reset();
+            throw std::runtime_error("the slot failed");
+        })
+        );
+        const auto connection = signal->connect(slot);
+
+        CHECK_THROWS_AS(signal->emit(), std::runtime_error);
+        CHECK(signal->num_connections() == 0);
+    }
+
+    //------------------------------------------------------------------------------
+
+    TEST_CASE("does_not_deadlock_when_a_blocked_slot_loses_its_last_reference")
+    {
+        const hang_watch watch("a blocked slot destroyed under the lock of its signal");
+
+        const auto signal = std::make_shared<signal_test_signal>();
+        std::atomic_bool stopped {false};
+        std::thread emitter(
+            [&signal, &stopped]
+            {
+            while(!stopped)
+            {
+                signal->emit();
+                std::this_thread::yield();
+            }
+            });
+
+        // The emission looks at a blocked slot too, and may be the last to release it.
+        for(int i = 0 ; i < 20000 ; ++i)
+        {
+            const auto slot = sight::core::com::new_slot([]{});
+            {
+                // A blocker must end before its connection, which ends with the slot.
+                const sight::core::com::connection::blocker blocker(signal->connect(slot));
+                std::this_thread::yield();
+            }
+        }
+
+        stopped = true;
+        emitter.join();
+        CHECK(signal->num_connections() == 0);
+    }
+
+    //------------------------------------------------------------------------------
+
+    TEST_CASE("emit_while_a_slot_is_destroyed")
+    {
+        const auto worker = sight::core::thread::worker::make();
+        destroy_slots_during_emissions(5000, worker, [](const signal_test_signal& _signal){_signal.emit();});
+        worker->stop();
+    }
+
+    //------------------------------------------------------------------------------
+
+    TEST_CASE("async_emit_while_a_slot_is_destroyed")
+    {
+        const auto worker = sight::core::thread::worker::make();
+        destroy_slots_during_emissions(
+            5000,
+            worker,
+            [&worker](const signal_test_signal& _signal)
+        {
+            _signal.async_emit();
+            worker->wait_barrier();
+        });
+        worker->stop();
+    }
+
+    //------------------------------------------------------------------------------
+
     TEST_CASE("async_emit")
     {
         sight::core::com::connection connection;
@@ -577,7 +758,7 @@ TEST_SUITE("sight::core::com::signal")
 
             CHECK_EQ((std::size_t) 1, sig->num_connections());
             sig->async_emit();
-            std::this_thread::sleep_for(std::chrono::seconds(1));
+            worker->wait_barrier();
 
             CHECK(test_object.m_method0);
         }
@@ -600,7 +781,7 @@ TEST_SUITE("sight::core::com::signal")
             CHECK_EQ((std::size_t) 1, sig->num_connections());
 
             sig->async_emit(21.0F);
-            std::this_thread::sleep_for(std::chrono::seconds(1));
+            worker->wait_barrier();
 
             CHECK(test_object.m_method1);
         }
@@ -623,7 +804,7 @@ TEST_SUITE("sight::core::com::signal")
             CHECK_EQ((std::size_t) 1, sig->num_connections());
 
             sig->async_emit(21.0F, 42);
-            std::this_thread::sleep_for(std::chrono::seconds(1));
+            worker->wait_barrier();
 
             CHECK(test_object.m_method2);
         }
@@ -646,7 +827,7 @@ TEST_SUITE("sight::core::com::signal")
             CHECK_EQ((std::size_t) 1, sig->num_connections());
 
             sig->async_emit(21.0F, 42.0, "emit");
-            std::this_thread::sleep_for(std::chrono::seconds(1));
+            worker->wait_barrier();
 
             CHECK(test_object.m_method3);
         }

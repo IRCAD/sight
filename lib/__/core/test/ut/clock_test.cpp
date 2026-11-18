@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,34 +23,44 @@
 
 #include <doctest/doctest.h>
 
-#include <thread>
+#include <chrono>
+
+//------------------------------------------------------------------------------
+
+template<typename Unit>
+static double since_epoch(std::chrono::system_clock::time_point _time)
+{
+    return static_cast<double>(std::chrono::duration_cast<Unit>(_time.time_since_epoch()).count());
+}
 
 TEST_SUITE("sight::core::clock")
 {
+    // The wall clock can be corrected at any time (NTP), so a duration slept is no bound on its progress: each value
+    // lies between two readings of the system clock taken around it.
     TEST_CASE("get_time_in_sec")
     {
-        const std::uint16_t time = 1;
-        const double start       = sight::core::clock::get_time_in_sec();
-        std::this_thread::sleep_for(std::chrono::seconds(time));
-        const double end = sight::core::clock::get_time_in_sec();
-        CHECK((end - start) >= static_cast<double>(time));
+        const auto before = std::chrono::system_clock::now();
+        const double time = sight::core::clock::get_time_in_sec();
+        const auto after  = std::chrono::system_clock::now();
+        CHECK(time >= since_epoch<std::chrono::seconds>(before));
+        CHECK(time <= since_epoch<std::chrono::seconds>(after));
     }
 
     TEST_CASE("get_time_in_milli_sec")
     {
-        const std::uint16_t time = 1000;
-        const double start       = sight::core::clock::get_time_in_milli_sec();
-        std::this_thread::sleep_for(std::chrono::milliseconds(time));
-        const double end = sight::core::clock::get_time_in_milli_sec();
-        CHECK((end - start) >= static_cast<double>(time));
+        const auto before = std::chrono::system_clock::now();
+        const double time = sight::core::clock::get_time_in_milli_sec();
+        const auto after  = std::chrono::system_clock::now();
+        CHECK(time >= since_epoch<std::chrono::milliseconds>(before));
+        CHECK(time <= since_epoch<std::chrono::milliseconds>(after));
     }
 
     TEST_CASE("get_time_in_micro_sec")
     {
-        const unsigned time = 1000000;
-        const double start  = sight::core::clock::get_time_in_micro_sec();
-        std::this_thread::sleep_for(std::chrono::microseconds(time));
-        const double end = sight::core::clock::get_time_in_micro_sec();
-        CHECK((end - start) >= static_cast<double>(time));
+        const auto before = std::chrono::system_clock::now();
+        const double time = sight::core::clock::get_time_in_micro_sec();
+        const auto after  = std::chrono::system_clock::now();
+        CHECK(time >= since_epoch<std::chrono::microseconds>(before));
+        CHECK(time <= since_epoch<std::chrono::microseconds>(after));
     }
 }

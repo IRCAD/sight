@@ -94,8 +94,6 @@ void synchronizer::configuring()
 {
     const auto cfg = this->get_config();
 
-    m_legacy_auto_sync = cfg.get<bool>(config_key::LEGACY_AUTO_SYNCH, m_legacy_auto_sync);
-
     m_tolerance = cfg.get<core::clock::type>(config_key::TOLERANCE, m_tolerance);
 }
 
@@ -143,17 +141,6 @@ void synchronizer::starting()
             )
         );
     }
-
-    SIGHT_ASSERT("No valid worker for timer.", this->worker());
-    if(m_legacy_auto_sync)
-    {
-        m_worker = sight::core::thread::worker::make();
-        m_timer  = m_worker->create_timer();
-        const auto duration = std::chrono::milliseconds(m_time_step);
-        m_timer->set_function([this](auto&& ...){synchronize();});
-        m_timer->set_duration(duration);
-        m_timer->start();
-    }
 }
 
 // ----------------------------------------------------------------------------
@@ -167,13 +154,6 @@ void synchronizer::updating()
 
 void synchronizer::stopping()
 {
-    if(m_legacy_auto_sync)
-    {
-        m_timer->stop();
-        m_timer.reset();
-        m_worker->stop();
-        m_worker.reset();
-    }
 }
 
 // ----------------------------------------------------------------------------

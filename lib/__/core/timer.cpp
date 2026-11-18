@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,10 +22,20 @@
 
 #include "core/timer.hpp"
 
-#include <cstdlib>
+#include <chrono>
 
 namespace sight::core
 {
+
+//------------------------------------------------------------------------------
+
+/// Microseconds on a monotonic clock: a duration measured on the wall clock follows its corrections (NTP).
+static clock::type now_in_micro_sec()
+{
+    return std::chrono::duration<clock::type, std::micro>(std::chrono::steady_clock::now().time_since_epoch()).count();
+}
+
+//------------------------------------------------------------------------------
 
 timer::timer()
 {
@@ -39,7 +49,7 @@ void timer::start()
     m_stopped = false;
 
     m_cumul_time_in_micro_sec += m_end_time_in_micro_sec - m_start_time_in_micro_sec;
-    m_start_time_in_micro_sec  = core::clock::get_time_in_micro_sec();
+    m_start_time_in_micro_sec  = now_in_micro_sec();
 }
 
 //------------------------------------------------------------------------------
@@ -48,7 +58,7 @@ void timer::stop()
 {
     m_stopped = true;
 
-    m_end_time_in_micro_sec = core::clock::get_time_in_micro_sec();
+    m_end_time_in_micro_sec = now_in_micro_sec();
 }
 
 //------------------------------------------------------------------------------
@@ -77,7 +87,7 @@ core::clock::type timer::get_elapsed_time_in_micro_sec() const
     auto end_time_in_micro_sec = m_end_time_in_micro_sec;
     if(!m_stopped)
     {
-        end_time_in_micro_sec = core::clock::get_time_in_micro_sec();
+        end_time_in_micro_sec = now_in_micro_sec();
     }
 
     return m_cumul_time_in_micro_sec + (end_time_in_micro_sec - m_start_time_in_micro_sec);

@@ -36,8 +36,8 @@ using service_vector_t = std::set<sight::sptr<service::base> >;
 /// Returns a list of all registered services
 SIGHT_SERVICE_API std::string get_registry_information();
 
-/// Returns a container with all registered services of a given type
-SIGHT_SERVICE_API const service::service_vector_t& get_services();
+/// Returns a copy of all registered services, consistent while other threads register or remove theirs
+SIGHT_SERVICE_API service::service_vector_t get_services();
 
 /// Returns a container with all registered services of a given type
 SIGHT_SERVICE_API service_vector_t get_services(const std::string& _service_type);
@@ -65,7 +65,7 @@ SIGHT_SERVICE_API void unregister_service(sight::sptr<service::base> _service);
 template<class SERVICE>
 std::set<sight::sptr<SERVICE> > get_services()
 {
-    const auto& all_services = get_services();
+    const auto all_services = get_services();
     std::set<sight::sptr<SERVICE> > services;
 
     for(const auto& srv : all_services)

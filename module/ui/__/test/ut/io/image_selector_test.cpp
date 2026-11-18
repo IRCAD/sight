@@ -855,8 +855,8 @@ TEST_SUITE("sight::module::ui::io::image_selector")
             {},
             true
         );
-        core::thread::get_default_worker()->post_task<void>([]{}).get();
-        m_selector_worker->post_task<void>([]{}).get();
+        core::thread::wait_default_barrier();
+        m_selector_worker->wait_barrier();
 
         *input_path = first_path.string();
         m_selector->update().get();
@@ -1464,7 +1464,7 @@ TEST_SUITE("sight::module::ui::io::image_selector")
 
         CHECK_NOTHROW(m_selector->configure());
         CHECK_NOTHROW(m_selector->start().get());
-        core::thread::get_default_worker()->post_task<void>([]{}).get();
+        core::thread::wait_default_barrier();
 
         const auto selected_file = std::filesystem::temp_directory_path()
                                    / ("sight_selector_config_"

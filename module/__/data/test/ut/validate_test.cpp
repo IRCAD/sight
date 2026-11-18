@@ -118,7 +118,7 @@ TEST_SUITE("sight::module::data::validate")
             string->set_value("expected");
             REQUIRE_NOTHROW(m_service->update().get());
 
-            SIGHT_TEST_WAIT(invalid.has_value());
+            SIGHT_TEST_WAIT(valid.has_value());
             SIGHT_TEST_WAIT(is_valid.has_value());
             SIGHT_TEST_WAIT(is_invalid.has_value());
 
@@ -427,6 +427,4 @@ TEST_SUITE("sight::module::data::validate")
             CHECK_EQ(false, invalid_prop->value());
         }
     }
-
-//------------------------------------------------------------------------------
 } // TEST_SUITE("sight::module::data::validate")
