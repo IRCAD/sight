@@ -121,6 +121,7 @@ void synchronizer::starting()
 
     m_frame_out_var_parameters.clear();
     m_frame_out_var_parameters.reserve(m_frames.size());
+    m_last_frame_timestamps.assign(m_frames.size(), std::nullopt);
     for(std::size_t index = 0 ; index < m_frames.size() ; ++index)
     {
         m_frame_out_var_parameters.push_back(
@@ -344,43 +345,57 @@ void synchronizer::copy_frame_from_tl_to_output(
             const std::size_t frame_out_index         = output_var_param.out_var_index;
             const unsigned int frame_tl_element_index = output_var_param.tl_element_index;
 
+            if(m_last_frame_timestamps[frame_out_index] == buffer->timestamp())
+            {
+                continue;
+            }
+
+            if(!buffer->is_present(frame_tl_element_index))
+            {
+                SIGHT_ERROR("Missing frame timeline element " << frame_tl_element_index);
+                continue;
+            }
+
+            const auto* frame_buff = &buffer->get_element(frame_tl_element_index);
+            const auto frame_bytes = frame_tl_size[0] * frame_tl_size[1]
+                                     * frame_tl_num_components* frame_tl_type.size();
             const auto frame = m_frames[frame_out_index].lock();
             SIGHT_ASSERT("image with index '" << frame_out_index << "' does not exist", frame);
 
-            // Check if frame dimensions have changed
-            if(frame_tl_size != frame->size() || frame_tl_num_components != frame->num_components())
+            enum data::image::pixel_format_t format
             {
-                enum data::image::pixel_format_t format
-                {
-                    data::image::undefined
-                };
-                switch(frame_tl_pixel_format)
-                {
-                    case data::frame_tl::pixel_format::gray_scale:
-                        format = data::image::gray_scale;
-                        break;
+                data::image::undefined
+            };
+            switch(frame_tl_pixel_format)
+            {
+                case data::frame_tl::pixel_format::gray_scale:
+                    format = data::image::gray_scale;
+                    break;
 
-                    case data::frame_tl::pixel_format::rgb:
-                        format = data::image::rgb;
-                        break;
+                case data::frame_tl::pixel_format::rgb:
+                    format = data::image::rgb;
+                    break;
 
-                    case data::frame_tl::pixel_format::bgr:
-                        format = data::image::bgr;
-                        break;
+                case data::frame_tl::pixel_format::bgr:
+                    format = data::image::bgr;
+                    break;
 
-                    case data::frame_tl::pixel_format::rgba:
-                        format = data::image::rgba;
-                        break;
+                case data::frame_tl::pixel_format::rgba:
+                    format = data::image::rgba;
+                    break;
 
-                    case data::frame_tl::pixel_format::bgra:
-                        format = data::image::bgra;
-                        break;
+                case data::frame_tl::pixel_format::bgra:
+                    format = data::image::bgra;
+                    break;
 
-                    default:
-                        SIGHT_ERROR("FrameTL pixel format undefined");
-                        return;
-                }
+                default:
+                    SIGHT_ERROR("FrameTL pixel format undefined");
+                    return;
+            }
 
+            if(frame_tl_size != frame->size() || frame_tl_num_components != frame->num_components()
+               || frame_tl_type != frame->type() || format != frame->pixel_format())
+            {
                 frame->resize(frame_tl_size, frame_tl_type, format);
                 const data::image::origin_t origin = {0., 0., 0.};
                 frame->set_origin(origin);
@@ -400,13 +415,13 @@ void synchronizer::copy_frame_from_tl_to_output(
                 image_series->set_frame_acquisition_time_point(_synchronization_timestamp, 0);
             }
 
-            const std::uint8_t* frame_buff = &buffer->get_element(frame_tl_element_index);
-            auto iter                      = frame->begin<std::uint8_t>();
-            std::memcpy(&*iter, frame_buff, buffer->size());
+            auto iter = frame->begin<std::uint8_t>();
+            std::memcpy(&*iter, frame_buff, frame_bytes);
 
             // Notify
 
             frame->async_emit(data::image::signals::BUFFER_MODIFIED);
+            m_last_frame_timestamps[frame_out_index] = buffer->timestamp();
         }
     }
     else
@@ -546,6 +561,7 @@ void synchronizer::send_matrix_var_status(const std::vector<std::size_t>& _synch
 void synchronizer::reset_timeline()
 {
     m_last_time_stamp = 0.;
+    std::ranges::fill(m_last_frame_timestamps, std::nullopt);
 }
 
 //-----------------------------------------------------------------------------
@@ -562,6 +578,7 @@ void synchronizer::set_frame_binding(
         {
             output_var_param.tl_index         = _tl_index;
             output_var_param.tl_element_index = _element_index;
+            m_last_frame_timestamps[_output_var_index].reset();
             return;
         }
     }

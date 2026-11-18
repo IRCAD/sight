@@ -26,12 +26,15 @@
 #include <core/mt/types.hpp>
 #include <core/thread/timer.hpp>
 
+#include <data/boolean.hpp>
 #include <data/camera.hpp>
+#include <data/frame_tl.hpp>
 
 #include <io/__/service/grabber.hpp>
 
 #include <opencv2/videoio.hpp>
 
+#include <chrono>
 #include <filesystem>
 
 namespace sight::data
@@ -92,6 +95,10 @@ namespace sight::module::io::video
  * @subsection In-Out In-Out
  * - \b timeline.image [sight::data::frame_tl]: timeline where to extract the video frames.
  * @subsection Configuration Configuration
+ * - \b config.reject_duplicates [sight::data::boolean]: reject consecutive byte-identical frames before timeline
+ * insertion (default: false). Accepts a literal or a boolean object for live switching.
+ * - \b config.profile_duplicates [sight::data::boolean]: log comparison total/average milliseconds and rejected-frame
+ * count every five seconds and at camera stop (default: false).
  * - \b fps (optional) : target playback frame rate when playing an image sequence (default: 30).
  * - \b useTimelapse (optional): if true, the difference between two image's timestamps will be use as timer duration,
  *      the 'fps' value will be ignore.
@@ -188,6 +195,27 @@ private:
 
     /// Updates the image if zoom is requested
     void update_zoom(cv::Mat _image);
+
+    void push_frame(
+        data::frame_tl& _timeline,
+        const std::shared_ptr<data::frame_tl::buffer_t>& _buffer,
+        const cv::Mat& _image
+    );
+    void report_duplicate_statistics() const;
+
+    data::ptr<data::boolean, data::access::in> m_reject_duplicates {
+        this, "config.reject_duplicates", data::boolean(false)
+    };
+    data::ptr<data::boolean, data::access::in> m_profile_duplicates {
+        this, "config.profile_duplicates", data::boolean(false)
+    };
+    std::shared_ptr<const data::frame_tl::buffer_t> m_previous_frame;
+    cv::Size m_previous_size;
+    int m_previous_type {-1};
+    std::size_t m_compared_frames {0};
+    std::size_t m_duplicate_frames {0};
+    double m_comparison_total_ms {0.};
+    std::chrono::steady_clock::time_point m_last_profile_report;
 
     /// State of the loop mode.
     bool m_loop_video {false};

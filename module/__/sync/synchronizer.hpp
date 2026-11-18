@@ -32,6 +32,8 @@
 
 #include <service/synchronizer.hpp>
 
+#include <chrono>
+
 namespace sight::module::sync
 {
 
@@ -365,6 +367,9 @@ private:
     core::clock::type m_tolerance {500.};
 
     core::clock::type m_last_time_stamp {0.};
+
+    /// Timestamp of the last frame buffer kept for each output image; never changed by rejection.
+    std::vector<std::optional<core::clock::type> > m_last_frame_timestamps;
 
     bool m_locked {false};
 

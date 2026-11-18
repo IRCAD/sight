@@ -280,12 +280,61 @@ public:
     }
 };
 
+class frame_fixture : public fixture
+{
+public:
+
+    frame_fixture()
+    {
+        init_standard_in_out();
+        m_frame1 = std::make_shared<sight::data::image_series>();
+        srv->set_inout(m_frame1, "output.frames.item.image", false, false, 0);
+    }
+
+    //------------------------------------------------------------------------------
+
+    void start()
+    {
+        srv->configure();
+        srv->start().get();
+    }
+
+    //------------------------------------------------------------------------------
+
+    void push(double _timestamp, std::uint8_t _value)
+    {
+        auto buffer      = m_frame_tl_1->create_buffer(_timestamp);
+        auto* bytes      = buffer->add_element(0);
+        const auto count = m_frame_tl_1->get_width() * m_frame_tl_1->get_height()
+                           * m_frame_tl_1->num_components() * m_frame_tl_1->type().size();
+        std::memset(bytes, _value, count);
+        m_frame_tl_1->push_object(buffer);
+        srv->update().get();
+    }
+
+    //------------------------------------------------------------------------------
+
+    [[nodiscard]] std::optional<std::chrono::system_clock::time_point> published_time() const
+    {
+        return std::dynamic_pointer_cast<sight::data::image_series>(m_frame1)->get_frame_acquisition_time_point(0);
+    }
+};
+
 } // namespace
 
 //------------------------------------------------------------------------------
 
 TEST_SUITE("sight::module::sync::synchronizer")
 {
+    TEST_CASE_FIXTURE(frame_fixture, "publishes_identical_pixels_from_distinct_buffers")
+    {
+        start();
+        push(1., 42);
+        const auto first_time = published_time();
+        push(2., 42);
+        CHECK_NE(published_time(), first_time);
+    }
+
     TEST_CASE_FIXTURE(simple_fixture, "single_frame_tl_population")
     {
         sight::core::clock::type last_timestamp_synch = 0;
@@ -346,6 +395,36 @@ TEST_SUITE("sight::module::sync::synchronizer")
         check_frame(m_frame1, 0);
         check_frame(m_frame2, 0);
         check_matrix(m_matrix1, 3);
+    }
+
+    TEST_CASE_FIXTURE(simple_fixture, "does_not_copy_the_same_frame_twice")
+    {
+        add_frame_to_frame_tl(m_frame_tl_1, 3);
+
+        std::atomic_size_t modified_count {0};
+        auto slot_frame_modified = sight::core::com::new_slot([&modified_count](){++modified_count;});
+        slot_frame_modified->set_worker(sight::core::thread::get_default_worker());
+        auto frame_modified_connection = m_frame1->signal(sight::data::image::signals::BUFFER_MODIFIED)->connect(
+            slot_frame_modified
+        );
+
+        sight::core::clock::type last_timestamp_synch = 0;
+        auto slot_synchronization_done                = sight::core::com::new_slot(
+            [&last_timestamp_synch](sight::core::clock::type _timestamp)
+        {
+            last_timestamp_synch = _timestamp;
+        });
+        slot_synchronization_done->set_worker(sight::core::thread::get_default_worker());
+        auto synch_done_connection = srv->signal("synchronization_done")->connect(slot_synchronization_done);
+
+        add_matrix_to_matrix_tl(m_matrix_tl_1, 2);
+        srv->update().get();
+        SIGHT_TEST_FAIL_WAIT(modified_count == 1);
+
+        add_matrix_to_matrix_tl(m_matrix_tl_1, 4);
+        srv->update().get();
+        SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == 3);
+        CHECK_EQ(modified_count.load(), 1);
     }
 
     TEST_CASE_FIXTURE(simple_fixture, "basic_synchronisation")

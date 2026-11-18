@@ -133,6 +133,7 @@ imagehlp
 imax
 imin
 imshow
+imread
 imwrite
 in
 inexistence

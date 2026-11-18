@@ -33,6 +33,7 @@
 
 #include <chrono>
 #include <cmath>
+#include <cstring>
 #include <filesystem>
 #include <regex>
 #include <utility>
@@ -116,6 +117,12 @@ void frame_grabber::start_camera()
         // Do not reset if we are already started
         return;
     }
+
+    m_previous_frame.reset();
+    m_compared_frames     = 0;
+    m_duplicate_frames    = 0;
+    m_comparison_total_ms = 0.;
+    m_last_profile_report = std::chrono::steady_clock::now();
 
     const auto camera = m_camera.lock();
 
@@ -215,6 +222,72 @@ void frame_grabber::stop_camera()
     }
 
     m_is_initialized = false;
+    if(*m_profile_duplicates && m_compared_frames > 0)
+    {
+        this->report_duplicate_statistics();
+    }
+
+    m_previous_frame.reset();
+    m_compared_frames = 0;
+}
+
+// -----------------------------------------------------------------------------
+
+void frame_grabber::push_frame(
+    data::frame_tl& _timeline,
+    const std::shared_ptr<data::frame_tl::buffer_t>& _buffer,
+    const cv::Mat& _image
+)
+{
+    bool duplicate     = false;
+    const bool profile = *m_profile_duplicates;
+    if(*m_reject_duplicates && m_previous_frame
+       && m_previous_size == _image.size() && m_previous_type == _image.type())
+    {
+        const auto start = profile ? std::chrono::steady_clock::now() : std::chrono::steady_clock::time_point {};
+        duplicate = std::memcmp(
+            &m_previous_frame->get_element(0),
+            &_buffer->get_element(0),
+            _image.total() * _image.elemSize()
+                    ) == 0;
+        if(profile)
+        {
+            ++m_compared_frames;
+            m_comparison_total_ms += std::chrono::duration<double, std::milli>(
+                std::chrono::steady_clock::now() - start
+            ).count();
+        }
+
+        m_duplicate_frames += duplicate ? 1 : 0;
+    }
+
+    if(profile && std::chrono::steady_clock::now() - m_last_profile_report >= std::chrono::seconds(5))
+    {
+        this->report_duplicate_statistics();
+        m_last_profile_report = std::chrono::steady_clock::now();
+    }
+
+    if(!duplicate)
+    {
+        // Retain the last published buffer even while rejection is disabled, without copying its pixels.
+        m_previous_frame = _buffer;
+        m_previous_size  = _image.size();
+        m_previous_type  = _image.type();
+        _timeline.push_object(_buffer);
+        _timeline.async_emit(data::timeline::signals::PUSHED, _buffer->timestamp());
+    }
+}
+
+// -----------------------------------------------------------------------------
+
+void frame_grabber::report_duplicate_statistics() const
+{
+    const auto average_ms = m_compared_frames
+                            == 0 ? 0. : m_comparison_total_ms / static_cast<double>(m_compared_frames);
+    SIGHT_INFO(
+        "Frame duplicate comparison [" << this->get_id() << "]: total_ms=" << m_comparison_total_ms
+        << ", average_ms=" << average_ms << ", rejected_frames=" << m_duplicate_frames
+    );
 }
 
 // -----------------------------------------------------------------------------
@@ -666,9 +739,7 @@ void frame_grabber::grab_video()
                 image.copyTo(img_out);
             }
 
-            frame_tl->push_object(buffer_out);
-
-            frame_tl->async_emit(data::timeline::signals::PUSHED, timestamp);
+            this->push_frame(*frame_tl, buffer_out, img_out);
         }
 
         if(m_loop_video)
@@ -747,9 +818,7 @@ void frame_grabber::grab_image()
                 image.copyTo(img_out);
             }
 
-            frame_tl->push_object(buffer_out);
-
-            frame_tl->async_emit(data::timeline::signals::PUSHED, timestamp);
+            this->push_frame(*frame_tl, buffer_out, img_out);
 
             const double t1           = core::clock::get_time_in_milli_sec();
             const double elapsed_time = t1 - t0;
@@ -775,6 +844,7 @@ void frame_grabber::grab_image()
                     if(m_loop_video)
                     {
                         frame_tl->clear_timeline();
+                        m_previous_frame.reset();
                         m_image_count = 0;
                         core::thread::timer::time_duration_t duration = std::chrono::milliseconds(1000 / m_fps);
                         m_timer->set_duration(duration);
@@ -804,6 +874,7 @@ void frame_grabber::grab_image()
     {
         const auto frame_tl = m_frame.lock();
         frame_tl->clear_timeline();
+        m_previous_frame.reset();
         m_image_count = 0;
     }
 }
