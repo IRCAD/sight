@@ -18,6 +18,8 @@ cmake_policy(SET CMP0141 NEW)
 if(${CMAKE_VERSION} VERSION_GREATER "3.31.0")
     # Use new policy for removed FindBoost module
     cmake_policy(SET CMP0167 NEW)
+    # Also for packages that reset their policies before finding Boost (VTK, ITK)
+    set(CMAKE_POLICY_DEFAULT_CMP0167 NEW)
     # Use new policy for empty string variable after a single-value keyword
     cmake_policy(SET CMP0174 NEW)
     # Use new policy for normalized install() DESTINATION paths

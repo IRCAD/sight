@@ -200,24 +200,24 @@ bool logger::show()
     // Connect buttons
     QObject::connect(ok_button, SIGNAL(clicked()), m_dialog, SLOT(accept()));
     QObject::connect(cancel_button, SIGNAL(clicked()), m_dialog, SLOT(reject()));
-    QObject::connect(checkbox, &QCheckBox::stateChanged, this, &logger::display_logs);
+    QObject::connect(checkbox, &QCheckBox::toggled, this, &logger::display_logs);
 
     // Show dialog and return result
     bool result = m_dialog->exec() != 0;
 
     // Disconnect buttons
-    QObject::disconnect(checkbox, &QCheckBox::stateChanged, this, &logger::display_logs);
+    QObject::disconnect(checkbox, &QCheckBox::toggled, this, &logger::display_logs);
 
     return result;
 }
 
 //------------------------------------------------------------------------------
 
-void logger::display_logs(int _state)
+void logger::display_logs(bool _checked)
 {
     int width = m_dialog->size().width();
 
-    if(_state != 0)
+    if(_checked)
     {
         m_log_table_widget->show();
     }

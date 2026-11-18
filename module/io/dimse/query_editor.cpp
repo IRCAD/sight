@@ -212,7 +212,7 @@ void query_editor::starting()
 
         // Connect signals.
         QObject::connect(m_patient_name_edit, &QLineEdit::returnPressed, this, &query_editor::execute_query_async);
-        QObject::connect(birth_date_enabler, &QCheckBox::stateChanged, this, &query_editor::enable_birth_date_edit);
+        QObject::connect(birth_date_enabler, &QCheckBox::toggled, this, &query_editor::enable_birth_date_edit);
         QObject::connect(m_patient_uid_edit, &QLineEdit::returnPressed, this, &query_editor::execute_query_async);
         QObject::connect(m_series_uid_edit, &QLineEdit::returnPressed, this, &query_editor::execute_query_async);
         QObject::connect(
@@ -543,9 +543,9 @@ void query_editor::update_series_set(const data::series_set::container_t& _serie
 
 //------------------------------------------------------------------------------
 
-void query_editor::enable_birth_date_edit(int _enable)
+void query_editor::enable_birth_date_edit(bool _enable)
 {
-    m_birth_date_edit->setEnabled(_enable != 0);
+    m_birth_date_edit->setEnabled(_enable);
 }
 
 } // namespace sight::module::io::dimse

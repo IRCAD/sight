@@ -341,7 +341,7 @@ void landmarks::updating()
     );
     QObject::connect(m_size_slider.data(), &QSlider::valueChanged, this, &landmarks::on_size_changed);
     QObject::connect(m_opacity_slider.data(), &QSlider::valueChanged, this, &landmarks::on_opacity_changed);
-    QObject::connect(m_visibility_checkbox.data(), &QCheckBox::stateChanged, this, &landmarks::on_visibility_changed);
+    QObject::connect(m_visibility_checkbox.data(), &QCheckBox::toggled, this, &landmarks::on_visibility_changed);
     QObject::connect(m_shape_selector.data(), &QComboBox::currentTextChanged, this, &landmarks::on_shape_changed);
     QObject::connect(m_remove_button.data(), &QPushButton::clicked, this, &landmarks::on_remove_selection);
     QObject::connect(m_new_group_button.data(), &QPushButton::clicked, this, &landmarks::on_add_new_group);
@@ -729,7 +729,7 @@ void landmarks::on_opacity_changed(int _new_opacity)
 
 //------------------------------------------------------------------------------
 
-void landmarks::on_visibility_changed(int _visibility)
+void landmarks::on_visibility_changed(bool _visibility)
 {
     std::string group_name;
     if(current_selection(group_name))
@@ -744,7 +744,7 @@ void landmarks::on_visibility_changed(int _visibility)
             return;
         }
 
-        image_series->get_fiducials()->set_visibility(fiducial_set->second, static_cast<bool>(_visibility));
+        image_series->get_fiducials()->set_visibility(fiducial_set->second, _visibility);
 
         image_series->async_emit(this, data::has_fiducials::signals::GROUP_MODIFIED, group_name);
     }

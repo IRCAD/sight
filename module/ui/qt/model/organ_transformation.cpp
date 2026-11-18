@@ -21,8 +21,8 @@
  ***********************************************************************/
 
 #include "organ_transformation.hpp"
-#include "data/helper/field.hpp"
 
+#include <data/helper/field.hpp>
 #include <data/mesh.hpp>
 #include <data/reconstruction.hpp>
 #include <geometry/data/matrix4.hpp>
@@ -89,7 +89,7 @@ void organ_transformation::starting()
     QObject::connect(m_reset_button, &QPushButton::clicked, this, &self_t::on_reset_click);
     QObject::connect(m_save_button, &QPushButton::clicked, this, &self_t::on_save_click);
     QObject::connect(m_load_button, &QPushButton::clicked, this, &self_t::on_load_click);
-    QObject::connect(m_select_all_check_box, &QCheckBox::stateChanged, this, &self_t::on_select_all_changed);
+    QObject::connect(m_select_all_check_box, &QCheckBox::toggled, this, &self_t::on_select_all_changed);
 
     layout_group_box->addWidget(m_select_all_check_box, 0);
     layout_group_box->addWidget(m_reconstruction_list_box, 1);
@@ -111,7 +111,7 @@ void organ_transformation::stopping()
     QObject::disconnect(m_reset_button, &QPushButton::clicked, this, &self_t::on_reset_click);
     QObject::disconnect(m_save_button, &QPushButton::clicked, this, &self_t::on_save_click);
     QObject::disconnect(m_load_button, &QPushButton::clicked, this, &self_t::on_load_click);
-    QObject::disconnect(m_select_all_check_box, &QCheckBox::stateChanged, this, &self_t::on_select_all_changed);
+    QObject::disconnect(m_select_all_check_box, &QCheckBox::toggled, this, &self_t::on_select_all_changed);
 
     this->destroy();
 }
@@ -285,12 +285,12 @@ void organ_transformation::on_load_click()
 
 //------------------------------------------------------------------------------
 
-void organ_transformation::on_select_all_changed(int _state)
+void organ_transformation::on_select_all_changed(bool _checked)
 {
     const auto p_map          = m_map.lock();
     const auto scoped_emitter = p_map->scoped_emit();
 
-    if(_state == Qt::Checked)
+    if(_checked)
     {
         m_reconstruction_list_box->setEnabled(false);
 
@@ -301,7 +301,7 @@ void organ_transformation::on_select_all_changed(int _state)
             p_map->insert({rec->get_organ_name(), rec->get_mesh()});
         }
     }
-    else if(_state == Qt::Unchecked)
+    else
     {
         m_reconstruction_list_box->setEnabled(true);
 

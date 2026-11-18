@@ -59,6 +59,10 @@
 #include <QToolButton>
 #include <QVariantMap>
 
+#include <algorithm>
+#include <cmath>
+#include <iomanip>
+#include <limits>
 #include <string>
 #include <string_view>
 #include <utility>
@@ -116,6 +120,24 @@ settings::settings() noexcept
 void settings::configuring()
 {
     this->initialize();
+
+    // A real slider moves by steps of 10^-decimals over [0, INT_MAX]: 10 decimals cannot cover a range of 1.
+    for(const auto& [element, item] : this->get_config())
+    {
+        const auto decimals = element == "item" ? item.get_optional<int>("<xmlattr>.decimals") : boost::none;
+        if(!decimals)
+        {
+            continue;
+        }
+
+        const bool slider = item.get<std::string>("<xmlattr>.widget", "") == "slider";
+        const int maximum = slider ? std::numeric_limits<int>::digits10 : std::numeric_limits<int>::max();
+        SIGHT_THROW_IF(
+            get_id() << ": the decimals of " << std::quoted(item.get<std::string>("<xmlattr>.key", ""))
+            << " must be between 0 and " << maximum << ", not " << *decimals,
+            *decimals != std::clamp(*decimals, 0, maximum)
+        );
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -545,7 +567,7 @@ void settings::starting()
                 {
                     QObject::connect(
                         check_box,
-                        &QCheckBox::stateChanged,
+                        &QCheckBox::toggled,
                         this,
                         [ = ]{on_depends_changed(check_box, widget, depends_reverse);});
                     on_depends_changed(check_box, widget, depends_reverse);
@@ -685,7 +707,7 @@ bool settings::eventFilter(QObject* _watched, QEvent* _event)
         auto* check_box = qobject_cast<QCheckBox*>(_watched);
         if(check_box != nullptr)
         {
-            check_box->stateChanged(check_box->isChecked() ? Qt::Checked : Qt::Unchecked);
+            check_box->toggled(check_box->isChecked());
         }
 
         auto* switch_button = qobject_cast<sight::ui::qt::widget::switch_button*>(_watched);
@@ -1148,12 +1170,10 @@ QPushButton* settings::create_bool_widget(
         // Forward to the Sight signal
         QObject::connect(
             checkbox,
-            &QCheckBox::stateChanged,
-            [this, checkbox](int _value)
+            &QCheckBox::toggled,
+            [this, checkbox](bool _checked)
             {
-                const bool checked = _value == Qt::Checked;
-
-                update_data<sight::data::boolean>(checkbox, checked);
+                update_data<sight::data::boolean>(checkbox, _checked);
             });
 
         // Reset button
@@ -2739,17 +2759,10 @@ void settings::update_max(const double _max, const std::string& _key)
 
 void settings::set_double_slider_range(QSlider* _slider, double _current_value)
 {
-    const double min            = _slider->property("min").toDouble();
-    const double max            = _slider->property("max").toDouble();
-    const std::uint8_t decimals = static_cast<std::uint8_t>(_slider->property("decimals").toUInt());
-    int max_slider_value        = 1;
-    for(std::uint8_t i = 0 ; i < decimals ; ++i)
-    {
-        max_slider_value *= 10;
-    }
-
+    const double min         = _slider->property("min").toDouble();
+    const double max         = _slider->property("max").toDouble();
+    const int decimals       = _slider->property("decimals").toInt();
     const double value_range = max - min;
-    max_slider_value = static_cast<int>(max_slider_value * value_range);
 
     // The slider's maximum internal range is [0; 2 147 483 647]
     // We could technically extend this range by setting the minimum to std::numeric_limits<int>::min()
@@ -2757,18 +2770,18 @@ void settings::set_double_slider_range(QSlider* _slider, double _current_value)
     QSignalBlocker guard(_slider);
     _slider->setMinimum(0);
 
-    const std::string key = _slider->property(qt_property::s_key).toString().toStdString();
+    // Counted in a double, which holds the steps of any range: past INT_MAX, the slider moves by larger steps.
+    constexpr double max_steps = std::numeric_limits<int>::max();
+    const double steps         = std::pow(10., decimals) * value_range;
+    const std::string key      = _slider->property(qt_property::s_key).toString().toStdString();
     SIGHT_ERROR_IF(
         ": The requested value range for " << std::quoted(
             key
         ) << " is too large to be handled by a double slider. "
              "Please reduce your range, the number of decimals or use a 'spin' widget.",
-        max_slider_value < std::numeric_limits<double>::epsilon()
+        steps > max_steps
     );
-    if(max_slider_value < std::numeric_limits<double>::epsilon())
-    {
-        max_slider_value = 1.;
-    }
+    const int max_slider_value = steps >= 1. ? static_cast<int>(std::min(steps, max_steps)) : 1;
 
     _slider->setMaximum(max_slider_value);
 

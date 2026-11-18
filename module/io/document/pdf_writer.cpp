@@ -215,7 +215,11 @@ QImage pdf_writer::convert_fw_image_to_q_image(const data::image& _fw_image)
             q_image_buffer[idx + 0] = (image_itr->b & 0xFF);
         }
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 9, 0)
+        return q_image.flipped(Qt::Vertical);
+#else
         return q_image.mirrored(false, true);
+#endif
     }
 
     return {};

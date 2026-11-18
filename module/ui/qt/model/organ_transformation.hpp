@@ -29,19 +29,16 @@
 
 #include <ui/__/editor.hpp>
 
+#include <QCheckBox>
+#include <QComboBox>
+#include <QListWidget>
+#include <QListWidgetItem>
 #include <QObject>
 #include <QPointer>
+#include <QPushButton>
 
 #include <map>
 #include <string>
-
-// NOLINTBEGIN(readability-identifier-naming)
-class QListWidget;
-class QPushButton;
-class QListWidgetItem;
-class QComboBox;
-class QCheckBox;
-// NOLINTEND(readability-identifier-naming)
 
 namespace sight::module::ui::qt::model
 {
@@ -103,7 +100,7 @@ private Q_SLOTS:
     void on_load_click();
 
     /// Slot to check all the organs of the list
-    void on_select_all_changed(int _state);
+    void on_select_all_changed(bool _checked);
 
 private:
 

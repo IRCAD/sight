@@ -106,7 +106,7 @@ void model_series_list::starting()
         m_show_check_box->setObjectName(service_id + "/" + m_show_check_box->text());
         m_show_check_box->setToolTip(tr("Show or hide all organs"));
         layout_button->addWidget(m_show_check_box, 0);
-        QObject::connect(m_show_check_box, &QCheckBox::stateChanged, this, &self_t::on_show_reconstructions);
+        QObject::connect(m_show_check_box, &QCheckBox::toggled, this, &self_t::on_show_reconstructions);
 
         m_check_all_button = new QPushButton(tr("Check all"));
         m_check_all_button->setObjectName(service_id + "/" + m_check_all_button->text());
@@ -188,7 +188,7 @@ void model_series_list::stopping()
 {
     if(m_enable_hide_all)
     {
-        QObject::disconnect(m_show_check_box, &QCheckBox::stateChanged, this, &self_t::on_show_reconstructions);
+        QObject::disconnect(m_show_check_box, &QCheckBox::toggled, this, &self_t::on_show_reconstructions);
         QObject::disconnect(m_check_all_button, &QPushButton::clicked, this, &self_t::on_check_all_check_box);
         QObject::disconnect(m_un_check_all_button, &QPushButton::clicked, this, &self_t::on_un_check_all_check_box);
     }
@@ -332,24 +332,22 @@ void model_series_list::on_organ_choice_visibility(QTreeWidgetItem* _item, int /
 
 //------------------------------------------------------------------------------
 
-void model_series_list::on_show_reconstructions(int _state)
+void model_series_list::on_show_reconstructions(bool _checked)
 {
-    const bool visible = static_cast<bool>(_state);
-
-    m_check_all_button->setEnabled(!visible);
-    m_un_check_all_button->setEnabled(!visible);
-    m_tree->setEnabled(!visible);
+    m_check_all_button->setEnabled(!_checked);
+    m_un_check_all_button->setEnabled(!_checked);
+    m_tree->setEnabled(!_checked);
 
     {
         auto model_series = m_model_series.lock();
         data::helper::field helper(model_series.get_shared());
-        helper.add_or_swap("ShowReconstructions", std::make_shared<data::boolean>(_state == Qt::Unchecked));
+        helper.add_or_swap("ShowReconstructions", std::make_shared<data::boolean>(!_checked));
     }
 
     if(auto display_models = m_display_models.lock(); display_models)
     {
         data::helper::field helper(display_models.get_shared());
-        helper.add_or_swap("ShowReconstructions", std::make_shared<data::boolean>(_state == Qt::Unchecked));
+        helper.add_or_swap("ShowReconstructions", std::make_shared<data::boolean>(!_checked));
     }
 }
 

@@ -24,9 +24,7 @@
 
 #include <data/image_series.hpp>
 #include <data/matrix4.hpp>
-#include <data/mt/locked_ptr.hpp>
 #include <data/point.hpp>
-#include <data/tools/picking_info.hpp>
 
 #include <ui/__/editor.hpp>
 
@@ -206,7 +204,7 @@ private:
      * @brief Called when a group's visibility is turned on or off.
      * @param _visibility the visibility status
      */
-    void on_visibility_changed(int _visibility);
+    void on_visibility_changed(bool _visibility);
 
     /**
      * @brief Called when the landmarks' shape is changed for a group.

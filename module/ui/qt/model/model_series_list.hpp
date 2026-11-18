@@ -23,26 +23,19 @@
 #pragma once
 
 #include <core/com/signal.hpp>
-#include <core/com/signals.hpp>
 #include <core/com/slot.hpp>
-#include <core/com/slots.hpp>
-#include <core/tools/failed.hpp>
 
 #include <data/model_series.hpp>
-#include <data/reconstruction.hpp>
 
 #include <ui/__/editor.hpp>
 
+#include <QCheckBox>
+#include <QListWidgetItem>
 #include <QObject>
 #include <QPointer>
 #include <QPushButton>
-
-// NOLINTBEGIN(readability-identifier-naming)
-class QTreeWidget;
-class QCheckBox;
-class QListWidgetItem;
-class QTreeWidgetItem;
-// NOLINTEND(readability-identifier-naming)
+#include <QTreeWidget>
+#include <QTreeWidgetItem>
 
 namespace sight::module::ui::qt::model
 {
@@ -182,7 +175,7 @@ private Q_SLOTS:
     static void on_current_item_changed(QTreeWidgetItem* _current, int _column);
 
     /// Shows reconstructions, called when m_showCheckBox is clicked.
-    void on_show_reconstructions(int _state);
+    void on_show_reconstructions(bool _checked);
 
     /// Shows a reconstruction, called when new current item is setted in m_organChoice.
     static void on_organ_choice_visibility(QTreeWidgetItem* _item, int /*unused*/);

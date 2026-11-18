@@ -44,9 +44,27 @@ else()
     message(STATUS "Download test data for commit @" ${COMMIT_SHORT_ID})
 
     set(SIGHT_DATA_ARCHIVE_API "https://git.ircad.fr/api/v4/projects/700/repository/archive.zip?sha=${COMMIT_SHORT_ID}")
-    execute_process(COMMAND ${CURL_CMD} -k ${SIGHT_DATA_ARCHIVE_API} -o ${SIGHT_DATA_REF}.zip)
+    execute_process(
+        COMMAND ${CURL_CMD} -k --fail -s -S ${SIGHT_DATA_ARCHIVE_API} -o ${SIGHT_DATA_REF}.zip
+        RESULT_VARIABLE CURL_RESULT
+    )
+    if(NOT CURL_RESULT EQUAL 0)
+        file(REMOVE "${SIGHT_DATA_REF}.zip")
+        message(FATAL_ERROR "Download of the test data failed: ${CURL_RESULT}")
+    endif()
 
-    file(ARCHIVE_EXTRACT INPUT "${SIGHT_DATA_REF}.zip" DESTINATION "${OUTPUT_FOLDER}")
+    # Extract aside, then rename: an interrupted extraction must never be taken for the data of this commit
+    set(STAGING_FOLDER ${SIGHT_DATA_FOLDER}.partial)
+    file(REMOVE_RECURSE "${STAGING_FOLDER}")
+    file(ARCHIVE_EXTRACT INPUT "${SIGHT_DATA_REF}.zip" DESTINATION "${STAGING_FOLDER}")
+    file(REMOVE "${SIGHT_DATA_REF}.zip")
+    file(GLOB EXTRACTED_FOLDER LIST_DIRECTORIES true "${STAGING_FOLDER}/*")
+    list(LENGTH EXTRACTED_FOLDER EXTRACTED_COUNT)
+    if(NOT EXTRACTED_COUNT EQUAL 1)
+        message(FATAL_ERROR "The test data archive must hold one folder, not ${EXTRACTED_COUNT}")
+    endif()
+    file(RENAME "${EXTRACTED_FOLDER}" "${SIGHT_DATA_FOLDER}")
+    file(REMOVE_RECURSE "${STAGING_FOLDER}")
 endif()
 
 message(STATUS "Test data available in")

@@ -575,4 +575,59 @@ TEST_SUITE("sight::module::ui::qt::settings")
             CHECK_EQ(enabled("leaf"), false);
         });
     }
+
+    TEST_CASE_FIXTURE(sight::ui::test::gui_fixture, "refuses_decimals_a_widget_cannot_show")
+    {
+        test_service(
+            "sight::module::ui::qt::settings",
+            [](const sight::service::base::sptr& _service)
+        {
+            const auto value = std::make_shared<sight::data::real>(0.5);
+            _service->set_inout(value, "item.data", true, false, 0);
+            const auto configure = [&_service](const std::string& _widget, int _decimals)
+                                   {
+                                       sight::service::config_t config;
+                                       sight::module::ui::qt::ut::add_item(config, "length", "real");
+                                       config.put("item.<xmlattr>.widget", _widget);
+                                       config.put("item.<xmlattr>.decimals", _decimals);
+                                       sight::core::thread::get_default_worker()->post_task<void>(
+                                           [_service, config]{_service->configure(config);}).get();
+                                   };
+
+            CHECK_THROWS_WITH(configure("slider", -1), doctest::Contains("must be between 0 and 9, not -1"));
+            CHECK_THROWS_WITH(configure("slider", 10), doctest::Contains("must be between 0 and 9, not 10"));
+            CHECK_THROWS_WITH(configure("spin", -1), doctest::Contains("not -1"));
+            CHECK_NOTHROW(configure("slider", 9));
+            CHECK_NOTHROW(configure("spin", 10));
+        });
+    }
+
+    TEST_CASE_FIXTURE(sight::ui::test::gui_fixture, "a_real_slider_too_fine_for_its_range_moves_by_larger_steps")
+    {
+        test_service(
+            "sight::module::ui::qt::settings",
+            [](const sight::service::base::sptr& _service)
+        {
+            auto value = std::make_shared<sight::data::real>(500.);
+            sight::service::config_t config;
+            sight::module::ui::qt::ut::add_item(config, "length", "real");
+            config.put("item.<xmlattr>.widget", "slider");
+            config.put("item.<xmlattr>.min", 0.);
+            config.put("item.<xmlattr>.max", 1000.);
+            config.put("item.<xmlattr>.decimals", 9);
+            _service->set_inout(value, "item.data", true, false, 0);
+            sight::core::thread::get_default_worker()->post_task<void>(
+                [&]{_service->configure(config); _service->start().get();}).get();
+
+            const auto slider = find_widget<QSlider>("length");
+            REQUIRE_FALSE(slider.isNull());
+            sight::core::thread::get_default_worker()->post_task<void>(
+                [slider]
+            {
+                // 10^9 steps per unit over 1000 units are more than an int counts: the slider keeps its whole range.
+                CHECK(slider->maximum() == std::numeric_limits<int>::max());
+                CHECK(slider->value() > 0);
+            }).get();
+        });
+    }
 }

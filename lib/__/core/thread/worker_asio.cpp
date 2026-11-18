@@ -26,9 +26,9 @@
 #include <core/spy_log.hpp>
 #include <core/time_stamp.hpp>
 
-#include <boost/asio/deadline_timer.hpp>
 #include <boost/asio/io_context.hpp>
 #include <boost/asio/post.hpp>
+#include <boost/asio/steady_timer.hpp>
 
 #include <thread>
 
@@ -157,7 +157,7 @@ protected:
 private:
 
     /// Timer object.
-    boost::asio::deadline_timer m_timer;
+    boost::asio::steady_timer m_timer;
 
     /// Time to wait until timer's expiration.
     time_duration_t m_duration;
@@ -341,9 +341,7 @@ void timer_asio::stop()
 void timer_asio::rearm_no_lock(time_duration_t _duration)
 {
     this->cancel_no_lock();
-    boost::posix_time::time_duration d =
-        boost::posix_time::microseconds(std::chrono::duration_cast<std::chrono::microseconds>(_duration).count());
-    m_timer.expires_from_now(d);
+    m_timer.expires_after(std::chrono::duration_cast<std::chrono::steady_clock::duration>(_duration));
     m_timer.async_wait(
         [shared_this = this->get_sptr()](const boost::system::error_code& _ec)
         {

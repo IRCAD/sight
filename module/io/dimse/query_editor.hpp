@@ -164,9 +164,9 @@ private Q_SLOTS:
 
     /**
      * @brief Enables the birth date editor.
-     * @param _enable value used as a boolean.
+     * @param _enable whether the editor is enabled.
      */
-    void enable_birth_date_edit(int _enable);
+    void enable_birth_date_edit(bool _enable);
 
 private:
 

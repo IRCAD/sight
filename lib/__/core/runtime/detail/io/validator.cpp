@@ -23,8 +23,7 @@
 #include "validator.hpp"
 
 #include "core/runtime/runtime_exception.hpp"
-
-#include <core/base.hpp>
+#include "core/spy_log.hpp"
 
 #include <boost/property_tree/xml_parser.hpp>
 
@@ -177,7 +176,7 @@ bool validator::validate(xmlNodePtr _node)
     {
         xmlBufferPtr buffer = xmlBufferCreate();
         xmlNodeDump(buffer, _node->doc, _node, 1, 1);
-        SIGHT_WARN("Validator::validation NOK, node :\n " << buffer->content);
+        SIGHT_WARN("Validator::validation NOK, node :\n " << xmlBufferContent(buffer));
         xmlBufferFree(buffer);
         SIGHT_WARN("Validator::validation NOK, xsd = " << get_xsd_content());
         SIGHT_ERROR("Validator::validation NOK, error log = " << get_error_log());

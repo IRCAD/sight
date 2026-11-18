@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,8 +29,6 @@
 #include <QDialog>
 #include <QPointer>
 #include <QTableWidget>
-
-#include <vector>
 
 namespace sight::ui::qt::dialog
 {
@@ -79,9 +77,9 @@ protected Q_SLOTS:
 
     /**
      * @brief Slot called when the user wants to display the logs
-     * @param[in] _state Checkbox state
+     * @param[in] _checked whether the checkbox is checked
      */
-    void display_logs(int _state);
+    void display_logs(bool _checked);
 
 private:
 

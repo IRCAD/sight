@@ -111,13 +111,13 @@ TEST_SUITE("sight::module::ui::qt::series::select_dialog")
             series_set->push_back(image);
             const auto selector_it = std::ranges::find_if(
                 _services,
-                [](const auto& _service)
+                [](const sight::service::base::sptr& _service)
             {
                 return _service->is_a("sight::module::ui::qt::series::select_dialog");
             });
             const auto editor_it = std::ranges::find_if(
                 _services,
-                [](const auto& _service)
+                [](const sight::service::base::sptr& _service)
             {
                 return _service->is_a("sight::module::ui::qt::image::transfer_function");
             });

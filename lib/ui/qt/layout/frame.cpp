@@ -135,7 +135,10 @@ void frame::create_frame()
         // This is needed to avoid crash in many tests when we call qApp->activeWindow()
         // qApp->setActiveWindow() is deprecated and QWindow::activateWindow() should be used, but unfortunately
         // qApp->activeWindow() will return nullptr the time to process the activation, and will break the tests.
+        QT_WARNING_PUSH
+        QT_WARNING_DISABLE_DEPRECATED
         qApp->setActiveWindow(m_qt_window);
+        QT_WARNING_POP
     }
 
     if(frame_info.m_style == ui::layout::frame_manager::stay_on_top)
