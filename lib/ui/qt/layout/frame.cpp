@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,9 +21,10 @@
  ***********************************************************************/
 
 #include "ui/qt/layout/frame.hpp"
+
+#include "ui/qt/container/widget.hpp"
 #include "ui/qt/main_frame.hpp"
 
-#include <core/base.hpp>
 #include <core/enum_flag_operators.hxx>
 
 #include <ui/__/macros.hpp>
@@ -34,8 +35,8 @@
 #include <QScreen>
 #include <QShortcut>
 #include <QStyle>
-#include <QWindow>
 #include <QTimer>
+#include <QWindow>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -90,7 +91,7 @@ void frame::create_frame()
         m_qt_window->setProperty("class", QString::fromStdString(*frame_info.m_qss_class));
     }
 
-    ui::qt::main_frame::CloseCallback fct = [this](auto&& ...){on_close_frame();};
+    ui::qt::main_frame::close_callback_t fct = [this](auto&& ...){on_close_frame();};
     mainframe->set_close_callback(fct);
 
     // cspell: ignore QWIDGETSIZE

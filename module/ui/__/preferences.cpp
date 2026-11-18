@@ -21,9 +21,14 @@
 
 #include "preferences.hpp"
 
-#include <core/time_stamp.hpp>
-
 #include <data/string_serializable.hpp>
+
+#include <ui/__/preferences.hpp>
+
+#include <algorithm>
+#include <chrono>
+#include <iterator>
+#include <vector>
 
 namespace sight::module::ui
 {
@@ -102,7 +107,7 @@ void preferences::starting()
     }
     catch(const sight::ui::preferences_disabled& /*e*/)
     {
-        // Nothing to do...
+        // Preferences are disabled.
     }
 }
 
@@ -110,69 +115,31 @@ void preferences::starting()
 
 void preferences::updating()
 {
-    /// Timer used to delay the write of preferences and avoid to spam disk I/O
+    // Delay saving by one second to avoid repeated disk writes during rapid changes.
     auto timer = m_timer_worker->create_timer();
 
     core::mt::write_lock lock(m_timers_mutex);
-    m_timers[++m_last_timer_id] = timer;
+    const int timer_id = ++m_last_timer_id;
+    m_timers[timer_id] = timer;
     timer->set_duration(std::chrono::milliseconds(1000));
     timer->set_one_shot(true);
 
     timer->set_function(
-        [this, timer_id = m_last_timer_id]()
+        [this, timer_id]()
         {
-            // Only saves if this is the last timer
+            // Only the latest timer saves the preferences.
             if(timer_id == m_last_timer_id)
             {
+                // Keep the timer alive while writing, if stopping() has not already removed it.
                 core::mt::read_lock lock(m_timers_mutex);
-                auto timer = m_timers[timer_id];
+                const auto found = m_timers.find(timer_id);
+                const auto timer = found != m_timers.end() ? found->second : nullptr;
 
-                try
-                {
-                    sight::ui::preferences preferences;
-
-                    std::ranges::for_each(
-                        m_preferences,
-                        [&](const auto& _x)
-                    {
-                        const auto obj         = _x.second->const_lock();
-                        auto serializable_data =
-                            std::dynamic_pointer_cast<const sight::data::string_serializable>(obj.get_shared());
-
-                        if(serializable_data)
-                        {
-                            preferences.put(obj->base_id(), serializable_data->to_string());
-                        }
-                        else
-                        {
-                            auto map = std::dynamic_pointer_cast<const sight::data::map>(obj.get_shared());
-                            if(map)
-                            {
-                                std::ranges::for_each(
-                                    *map,
-                                    [&preferences, id = map->base_id()](const auto& _x)
-                                {
-                                    auto data =
-                                        std::dynamic_pointer_cast<const sight::data::string_serializable>(_x.second);
-                                    preferences.put(core::id::join(id, _x.first), data->to_string());
-                                });
-                            }
-                            else
-                            {
-                                SIGHT_ASSERT("Object is not a string serializable nor a map", serializable_data);
-                            }
-                        }
-                    });
-                }
-                catch(const sight::ui::preferences_disabled& /*e*/)
-                {
-                    // Nothing to do...
-                }
-
+                write();
                 m_last_timer_id = -1;
             }
 
-            core::mt::read_lock write(m_timers_mutex);
+            core::mt::write_lock lock(m_timers_mutex);
             m_timers.erase(timer_id);
         });
     timer->start();
@@ -180,21 +147,79 @@ void preferences::updating()
 
 //-----------------------------------------------------------------------------
 
+void preferences::write()
+{
+    try
+    {
+        sight::ui::preferences preferences;
+
+        std::ranges::for_each(
+            m_preferences,
+            [&](const auto& _x)
+            {
+                const auto obj         = _x.second->const_lock();
+                auto serializable_data =
+                    std::dynamic_pointer_cast<const sight::data::string_serializable>(obj.get_shared());
+
+                if(serializable_data)
+                {
+                    preferences.put(obj->base_id(), serializable_data->to_string());
+                }
+                else
+                {
+                    auto map = std::dynamic_pointer_cast<const sight::data::map>(obj.get_shared());
+                    if(map)
+                    {
+                        std::ranges::for_each(
+                            *map,
+                            [&preferences, id = map->base_id()](const auto& _x)
+                        {
+                            auto data =
+                                std::dynamic_pointer_cast<const sight::data::string_serializable>(_x.second);
+                            preferences.put(core::id::join(id, _x.first), data->to_string());
+                        });
+                    }
+                    else
+                    {
+                        SIGHT_ASSERT("Object is not a string serializable nor a map", serializable_data);
+                    }
+                }
+            });
+    }
+    catch(const sight::ui::preferences_disabled& /*e*/)
+    {
+        // Preferences are disabled.
+    }
+}
+
+//-----------------------------------------------------------------------------
+
 void preferences::stopping()
 {
-    // Let a chance to write if we close the app very fast
-    sight::core::time_stamp time_stamp;
-    time_stamp.set_life_period(1000);
-    time_stamp.modified();
-    while(!m_timers.empty() && !time_stamp.period_expired())
+    // Take the timers out under the lock, and keep them alive until the worker has stopped: stopping the worker waits
+    // for a callback still running, which takes the lock to erase its timer, and nothing else guarantees that its timer
+    // outlives that callback.
+    std::vector<sight::core::thread::timer::sptr> timers;
     {
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        core::mt::write_lock lock(m_timers_mutex);
+        std::ranges::transform(m_timers, std::back_inserter(timers), [](const auto& _t){return _t.second;});
+        m_timers.clear();
     }
 
-    std::ranges::for_each(m_timers, [](const auto& _t){_t.second->stop();});
-    m_timers.clear();
+    std::ranges::for_each(timers, [](const auto& _t){_t->stop();});
     m_timer_worker->stop();
+
+    // Destroy the timers before their worker, as they depend on its context.
+    timers.clear();
     m_timer_worker.reset();
+
+    // Save pending changes before stopping.
+    if(m_last_timer_id != -1)
+    {
+        write();
+        m_last_timer_id = -1;
+    }
+
     m_map_keys_connections.disconnect();
 }
 

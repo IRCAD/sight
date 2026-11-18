@@ -28,6 +28,7 @@
 
 #include <ui/qt/app.hpp>
 #include <ui/qt/worker_qt.hpp>
+#include <ui/test/qt_application.hpp>
 
 #include <doctest/doctest.h>
 
@@ -83,6 +84,8 @@ namespace
 
 struct client_qt_test_fixture
 {
+    // Before the worker: its application keeps references to them.
+    sight::ui::test::qt_arguments m_arguments {"ClientQtTest"};
     // application thread
     sight::core::thread::worker::sptr m_worker;
     // HTTP client
@@ -94,17 +97,6 @@ struct client_qt_test_fixture
 
     client_qt_test_fixture()
     {
-        // Set up context before running a test.
-        static std::string arg1 = "ClientQtTest";
-#ifdef __linux
-        static std::string arg2 = "-platform";
-        static std::string arg3 = "offscreen";
-        static std::array argv {arg1.data(), arg2.data(), arg3.data(), static_cast<char*>(nullptr)};
-#else
-        static std::array argv {arg1.data(), static_cast<char*>(nullptr)};
-#endif
-        static int argc = static_cast<int>(argv.size() - 1);
-
         if(qApp == nullptr)
         {
             std::function<QSharedPointer<QCoreApplication>(int&, char**)> callback =
@@ -112,7 +104,7 @@ struct client_qt_test_fixture
                 {
                     return QSharedPointer<QApplication>(new sight::ui::qt::app(_argc, _argv, false));
                 };
-            m_worker = sight::ui::qt::get_qt_worker(argc, argv.data(), callback, "", "");
+            m_worker = sight::ui::qt::get_qt_worker(m_arguments.argc(), m_arguments.argv(), callback, "", "");
         }
 
         m_server.moveToThread(&m_thread);

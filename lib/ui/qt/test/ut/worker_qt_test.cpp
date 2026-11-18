@@ -32,6 +32,7 @@
 #include <ui/qt/layout/toolbar.hpp>
 #include <ui/qt/widget/toolbox.hpp>
 #include <ui/qt/worker_qt.hpp>
+#include <ui/test/qt_application.hpp>
 
 #include <doctest/doctest.h>
 
@@ -42,7 +43,6 @@
 #include <QToolBar>
 #include <QWidget>
 
-#include <array>
 #include <functional>
 #include <thread>
 
@@ -92,17 +92,6 @@ struct fixture
 {
     fixture()
     {
-        // Set up context before running a test.
-        static std::string arg1 = "worker_qt_test";
-#ifdef __linux
-        static std::string arg2 = "-platform";
-        static std::string arg3 = "offscreen";
-        std::array argv         = {arg1.data(), arg2.data(), arg3.data(), static_cast<char*>(nullptr)};
-#else
-        std::array argv = {arg1.data(), static_cast<char*>(nullptr)};
-#endif
-        int argc = static_cast<int>(argv.size() - 1);
-
         CHECK(qApp == nullptr);
         std::function<QSharedPointer<QCoreApplication>(int&, char**)> callback =
             [](int& _argc, char** _argv)
@@ -114,7 +103,7 @@ struct fixture
 #endif
                 return QSharedPointer<sight::ui::qt::app>(new sight::ui::qt::app(_argc, _argv, gui_enabled));
             };
-        m_worker = sight::ui::qt::get_qt_worker(argc, argv.data(), callback, "", "");
+        m_worker = sight::ui::qt::get_qt_worker(m_arguments.argc(), m_arguments.argv(), callback, "", "");
 
         CHECK(qApp != nullptr);
     }
@@ -125,6 +114,8 @@ struct fixture
         CHECK(qApp == nullptr);
     }
 
+    // Before the worker: its application keeps references to them.
+    sight::ui::test::qt_arguments m_arguments {"worker_qt_test"};
     sight::core::thread::worker::sptr m_worker;
 };
 

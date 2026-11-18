@@ -22,6 +22,8 @@
 
 #pragma once
 
+#include "module/ui/qt/sound_player.hpp"
+
 #include <data/string.hpp>
 
 #include <core/notification/base.hpp>
@@ -29,8 +31,6 @@
 #include <service/controller.hpp>
 
 #include <ui/__/dialog/notification.hpp>
-
-#include <QMediaPlayer>
 
 namespace sight::module::ui::qt
 {
@@ -203,7 +203,7 @@ private:
     /// Default message (if message in slot are empty), the default message can be configured in xml.
     std::string m_default_message {"Notification"};
 
-    std::unique_ptr<QMediaPlayer> m_sound;
+    sound_player m_sound;
 
     struct configuration final
     {

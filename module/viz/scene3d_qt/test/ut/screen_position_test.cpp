@@ -21,14 +21,14 @@
 
 #include <module/viz/scene3d_qt/screen_position.hpp>
 
+#include <ui/test/qt_application.hpp>
+
 #include <doctest/doctest.h>
 
 #include <QApplication>
 
-#include <array>
 #include <limits>
-#include <memory>
-#include <string>
+#include <optional>
 
 // cspell: ignore QWIDGETSIZE_MAX
 
@@ -46,23 +46,13 @@ struct app_fixture
 {
     app_fixture()
     {
-        static std::string arg0 = "screen_position_test";
-#ifdef __linux
-        static std::string arg1 = "-platform";
-        static std::string arg2 = "offscreen";
-        static std::array argv {arg0.data(), arg1.data(), arg2.data(), static_cast<char*>(nullptr)};
-#else
-        static std::array argv {arg0.data(), static_cast<char*>(nullptr)};
-#endif
-        static int argc = static_cast<int>(argv.size() - 1);
-
         if(qApp == nullptr)
         {
-            app = std::make_unique<QApplication>(argc, argv.data());
+            app.emplace("screen_position_test");
         }
     }
 
-    std::unique_ptr<QApplication> app;
+    std::optional<sight::ui::test::qt_application> app;
 };
 
 /// A 100x20 popup in a 400x300 parent, and a helper building a rect from logical coordinates, as place_near() divides

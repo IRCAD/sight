@@ -5,4 +5,4 @@ target_link_libraries(${SIGHT_TARGET} PRIVATE Qt6::Network)
 set_target_properties(${SIGHT_TARGET} PROPERTIES AUTOMOC TRUE)
 target_compile_definitions(${SIGHT_TARGET} PRIVATE "QT_NO_KEYWORDS")
 
-target_link_libraries(${SIGHT_TARGET} PRIVATE io_http core ui_qt utest_data data)
+target_link_libraries(${SIGHT_TARGET} PRIVATE io_http core ui_qt ui_test utest_data data)

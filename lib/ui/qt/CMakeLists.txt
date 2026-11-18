@@ -13,4 +13,5 @@ target_link_libraries(${SIGHT_TARGET} PUBLIC core data ui service)
 
 if(SIGHT_BUILD_TESTS)
     add_subdirectory(test/ut)
+    add_subdirectory(test/ut_native)
 endif(SIGHT_BUILD_TESTS)

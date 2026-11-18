@@ -21,6 +21,8 @@
 
 #pragma once
 
+#include "module/ui/qt/sound_player.hpp"
+
 #include <core/notification/base.hpp>
 #include <core/notification/instruction.hpp>
 #include <core/notification/message.hpp>
@@ -33,7 +35,6 @@
 #include <ui/qt/widget/progress_bar.hpp>
 
 #include <QLabel>
-#include <QMediaPlayer>
 #include <QPointer>
 #include <QStackedWidget>
 #include <QTimer>
@@ -189,7 +190,7 @@ private:
 
     std::map<QWidget*, page> m_pages;
 
-    std::unique_ptr<QMediaPlayer> m_sound;
+    sound_player m_sound;
 
     /// Recompute and apply top-most page (message, type property, visibility) and emit signal
     void refresh_top();
@@ -217,7 +218,7 @@ private:
     [[nodiscard]] int resolve_duration_ms(const sight::core::notification::message::sptr& _message) const;
 
     /// Play the sound associated with the given notification's type.
-    void play_sound(const sight::core::notification::base::sptr& _notification) const;
+    void play_sound(const sight::core::notification::base::sptr& _notification);
 
     sight::data::property<sight::data::integer> m_information_duration {this, "information_duration", 3000};
     sight::data::property<sight::data::integer> m_warning_duration {this, "warning_duration", 3000};

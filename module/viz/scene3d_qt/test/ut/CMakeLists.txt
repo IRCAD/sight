@@ -7,4 +7,4 @@ target_include_directories(${SIGHT_TARGET} PRIVATE ${PROJECT_SOURCE_DIR})
 
 add_dependencies(${SIGHT_TARGET} module_viz_scene3d_qt)
 
-target_link_libraries(${SIGHT_TARGET} PUBLIC core viz_scene3d)
+target_link_libraries(${SIGHT_TARGET} PUBLIC core viz_scene3d ui_test)

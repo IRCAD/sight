@@ -23,6 +23,8 @@
 
 #include "detail/event_loop.hpp"
 
+#include <core/spy_log.hpp>
+
 #include <mutex>
 
 namespace sight::io::joystick
@@ -69,7 +71,17 @@ void init()
 void shutdown()
 {
     std::unique_lock lock(s_event_loop_keeper.mutex);
-    s_event_loop_keeper.event_loop.reset();
+
+    if(s_event_loop_keeper.event_loop)
+    {
+        // Stopped, the loop has no tick left to hold it: it goes here, with its last reference.
+        s_event_loop_keeper.event_loop->stop();
+        SIGHT_ASSERT(
+            "The joystick event loop is still referenced",
+            s_event_loop_keeper.event_loop.use_count() == 1
+        );
+        s_event_loop_keeper.event_loop.reset();
+    }
 }
 
 } // namespace sight::io::joystick

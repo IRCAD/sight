@@ -25,7 +25,13 @@
 
 #include <doctest/doctest.h>
 
-#include <SDL2/SDL.h>
+#include <SDL2/SDL_events.h>
+#include <SDL2/SDL_joystick.h>
+
+#include <memory>
+
+// The interactors of these tests are only called through their base class.
+// NOLINTBEGIN(misc-override-with-different-visibility)
 
 namespace
 {
@@ -35,6 +41,26 @@ struct friendly_event_loop : public sight::io::joystick::detail::event_loop
 {
     using sight::io::joystick::detail::event_loop::make;
     using sight::io::joystick::detail::event_loop::instance;
+};
+
+/// The event loop of a test, stopped at its end: no tick holds it then, and it goes with this last reference.
+struct test_event_loop
+{
+    test_event_loop()                                  = default;
+    test_event_loop(const test_event_loop&)            = delete;
+    test_event_loop& operator=(const test_event_loop&) = delete;
+    test_event_loop(test_event_loop&&)                 = delete;
+    test_event_loop& operator=(test_event_loop&&)      = delete;
+
+    ~test_event_loop()
+    {
+        loop->stop();
+        CHECK(loop.use_count() == 1);
+        loop.reset();
+        CHECK(!friendly_event_loop::instance());
+    }
+
+    std::shared_ptr<sight::io::joystick::detail::event_loop> loop {friendly_event_loop::make()};
 };
 
 } // namespace
@@ -51,10 +77,10 @@ TEST_SUITE("sight::io::joystick")
             static constexpr auto s_VIRTUAL_NAME = "Virtual Flight Stick";
 
             // Create the event loop
-            auto event_loop = friendly_event_loop::make();
+            const test_event_loop event_loop;
 
             // The instance should be a singleton
-            CHECK(event_loop == friendly_event_loop::instance());
+            CHECK(event_loop.loop == friendly_event_loop::instance());
 
             struct interactor final : public sight::io::joystick::interactor
             {
@@ -78,7 +104,7 @@ TEST_SUITE("sight::io::joystick")
                 {
                     std::cerr << "Device " << _event.device->name << " [" << _event.device->index
                     << "]: axis_motion_event["
-                    << int(_event.axis) << ", " << _event.value << "]" << std::endl;
+                    << static_cast<int>(_event.axis) << ", " << _event.value << "]" << std::endl;
 
                     if(_event.device->name == s_VIRTUAL_NAME)
                     {
@@ -99,7 +125,7 @@ TEST_SUITE("sight::io::joystick")
 
                     std::cerr << "Device " << _event.device->name << " [" << _event.device->index
                     << "]: axis_direction_event["
-                    << int(_event.axis) << ", " << (direction) << "]" << std::endl;
+                    << static_cast<int>(_event.axis) << ", " << direction << "]" << std::endl;
 
                     if(_event.device->name == s_VIRTUAL_NAME)
                     {
@@ -113,7 +139,7 @@ TEST_SUITE("sight::io::joystick")
                 {
                     std::cerr << "Device " << _event.device->name << " [" << _event.device->index
                     << "]: hat_motion_event["
-                    << int(_event.hat) << ", " << int(_event.value) << "]" << std::endl;
+                    << static_cast<int>(_event.hat) << ", " << static_cast<int>(_event.value) << "]" << std::endl;
 
                     if(_event.device->name == s_VIRTUAL_NAME)
                     {
@@ -127,7 +153,7 @@ TEST_SUITE("sight::io::joystick")
                 {
                     std::cerr << "Device " << _event.device->name << " [" << _event.device->index
                     << "]: ball_motion_event["
-                    << int(_event.ball) << ", " << _event.x << ", " << _event.y << "]" << std::endl;
+                    << static_cast<int>(_event.ball) << ", " << _event.x << ", " << _event.y << "]" << std::endl;
                 }
 
                 //------------------------------------------------------------------------------
@@ -135,7 +161,8 @@ TEST_SUITE("sight::io::joystick")
                 void joystick_button_pressed_event(const sight::io::joystick::button_event& _event) final
                 {
                     std::cerr << "Device " << _event.device->name << " [" << _event.device->index
-                    << "]: button_pressed_event[" << int(_event.button) << ", " << int(_event.state) << "]"
+                    << "]: button_pressed_event[" << static_cast<int>(_event.button) << ", "
+                    << static_cast<int>(_event.state) << "]"
                     << std::endl;
 
                     if(_event.device->name == s_VIRTUAL_NAME)
@@ -149,7 +176,8 @@ TEST_SUITE("sight::io::joystick")
                 void joystick_button_released_event(const sight::io::joystick::button_event& _event) final
                 {
                     std::cerr << "Device " << _event.device->name << " [" << _event.device->index
-                    << "]: button_released_event[" << int(_event.button) << ", " << int(_event.state) << "]"
+                    << "]: button_released_event[" << static_cast<int>(_event.button) << ", "
+                    << static_cast<int>(_event.state) << "]"
                     << std::endl;
 
                     if(_event.device->name == s_VIRTUAL_NAME)
@@ -287,7 +315,7 @@ TEST_SUITE("sight::io::joystick")
             //SIGHT_TEST_WAIT(false, 100000);
         }
 
-        // The instance should not be recreated, as the original one has expired
+        // Stopped and released, the event loop is gone at once: no tick held it.
         CHECK(!friendly_event_loop::instance());
     }
 
@@ -297,7 +325,7 @@ TEST_SUITE("sight::io::joystick")
         static constexpr auto s_VIRTUAL_NAME = "Virtual Flight Stick";
 
         // Create the event loop
-        auto event_loop = friendly_event_loop::make();
+        const test_event_loop event_loop;
 
         struct interactor final : public sight::io::joystick::interactor
         {
@@ -389,7 +417,7 @@ TEST_SUITE("sight::io::joystick")
         static constexpr auto s_VIRTUAL_NAME = "Virtual Flight Stick";
 
         // Create the event loop
-        auto event_loop = friendly_event_loop::make();
+        const test_event_loop event_loop;
 
         struct interactor final : public sight::io::joystick::interactor
         {
@@ -473,3 +501,5 @@ TEST_SUITE("sight::io::joystick")
         SDL_JoystickSetVirtualAxis(virtual_joystick, 0, 0);
     }
 } // TEST_SUITE
+
+// NOLINTEND(misc-override-with-different-visibility)

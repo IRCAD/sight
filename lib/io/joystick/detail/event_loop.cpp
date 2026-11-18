@@ -305,13 +305,29 @@ event_loop::~event_loop()
 {
     if(m_timer)
     {
-        // Be sure to be on the main thread.
-        sight::core::thread::get_default_worker()->post_task<void>(
-            [this]
-            {
-                this->internal_stop();
-            }).get();
+        stop();
     }
+}
+
+//------------------------------------------------------------------------------
+
+void event_loop::stop()
+{
+    {
+        std::unique_lock lock(m_mutex);
+        if(!m_timer)
+        {
+            return;
+        }
+    }
+
+    // The timer and its ticks belong to the default worker. On its thread, both tasks run at once: no tick is in
+    // progress there, and a queued one finds the loop stopped.
+    const auto worker = sight::core::thread::get_default_worker();
+    worker->post_task<void>([this]{internal_stop();}).get();
+
+    // Stopping a timer does not cancel a queued tick: it ends here.
+    worker->post_task<void>([]{}).get();
 }
 
 //------------------------------------------------------------------------------
@@ -325,6 +341,15 @@ void event_loop::loop()
     if(!instance)
     {
         return;
+    }
+
+    // A tick queued before the loop stopped: SDL has quit.
+    {
+        std::unique_lock lock(instance->m_mutex);
+        if(!instance->m_timer)
+        {
+            return;
+        }
     }
 
     SDL_Event event;
@@ -1057,6 +1082,12 @@ void event_loop::remove_interactor(const interactor* const  _interactor, [[maybe
 void event_loop::internal_stop()
 {
     std::unique_lock lock(m_mutex);
+
+    // Stopped already, by stop() or by a quit event.
+    if(!m_timer)
+    {
+        return;
+    }
 
     // Stop the timer and close all the connected controllers
     m_timer->stop();

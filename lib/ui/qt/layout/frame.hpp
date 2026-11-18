@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,20 +24,13 @@
 
 #include <sight/ui/qt/config.hpp>
 
-#include "ui/qt/container/widget.hpp"
-
-#include <core/base.hpp>
-
 #include <ui/__/layout/frame_manager.hpp>
 
+#include <QMainWindow>
 #include <QObject>
 #include <QPoint>
 #include <QPointer>
-
-QT_BEGIN_NAMESPACE
-class QMainWindow;
-class QShortcut;
-QT_END_NAMESPACE
+#include <QShortcut>
 
 namespace sight::ui::qt::layout
 {

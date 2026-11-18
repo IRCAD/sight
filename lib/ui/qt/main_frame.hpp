@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -49,8 +49,13 @@ public:
     /// @brief Destructor.
     SIGHT_UI_QT_API_QT ~main_frame() noexcept override = default;
 
-    using CloseCallback = std::function<void ()>;
-    SIGHT_UI_QT_API_QT void set_close_callback(CloseCallback _fct);
+    using close_callback_t = std::function<void ()>;
+    SIGHT_UI_QT_API_QT void set_close_callback(close_callback_t _fct);
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 8, 0)
+    /// Makes the window an OpenGL one before it is first shown, see showEvent().
+    SIGHT_UI_QT_API_QT void setVisible(bool _visible) override;
+#endif
 
 protected:
 
@@ -60,7 +65,7 @@ protected:
 
 private:
 
-    CloseCallback m_fct_close_callback;
+    close_callback_t m_fct_close_callback;
 
     bool m_first_show {false};
 };

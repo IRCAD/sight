@@ -86,6 +86,14 @@ public:
     void set_joystick_alias(std::int32_t _id, joystick_t _alias);
 
     /**
+     * @brief Stop the event loop: no tick runs once it returns, so only its owners hold it.
+     *
+     * Called by the owner of the last reference before releasing it, which then destroys the loop in its own thread.
+     * Does nothing when the loop is stopped already.
+     */
+    void stop();
+
+    /**
      * @brief Stop the event loop and close all the connected controllers, in the current thread
      *
      * @warning This function is only used for a specific case (unexpected exception/abort in a test). This is mostly

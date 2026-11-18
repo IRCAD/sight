@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -27,6 +27,8 @@ namespace sight::io::joystick
 {
 
 SIGHT_IO_JOYSTICK_API void init();
+/// Stops the event loop, then destroys it in the calling thread. From another thread than the default worker, waits
+/// for a tick in progress or queued; on that worker's thread, none is in progress, and a queued one does nothing.
 SIGHT_IO_JOYSTICK_API void shutdown();
 
 } // namespace sight::io::joystick

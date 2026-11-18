@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,10 +22,6 @@
 
 #include "main_frame.hpp"
 
-#include <core/base.hpp>
-
-#include <ui/__/dialog/message.hpp>
-
 #include <QCloseEvent>
 #include <QGuiApplication>
 #include <QLayout>
@@ -37,7 +33,7 @@ namespace sight::ui::qt
 
 //------------------------------------------------------------------------------
 
-void main_frame::set_close_callback(CloseCallback _fct)
+void main_frame::set_close_callback(close_callback_t _fct)
 {
     m_fct_close_callback = _fct;
 }
@@ -60,7 +56,7 @@ void main_frame::showEvent(QShowEvent* _event)
     // window is visible making a flickering effect.
     /// @see https://doc.qt.io/qt-6/qopenglwidget.html#limitations-and-other-considerations
     /// @note With Qt 6.8.2, we can call window->setSurfaceType(QSurface::OpenGLSurface)
-    /// @note With Qt 6.4.x (Ubuntu 22.04), we must use an uglier hack, add/remove a dummy QOpenGLWidget to the layout
+#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
     if(!m_first_show)
     {
         if(auto* const window = this->windowHandle();
@@ -68,20 +64,40 @@ void main_frame::showEvent(QShowEvent* _event)
            && window->surfaceType() != QSurface::OpenGLSurface
            && qApp->platformName() != "offscreen")
         {
-                #if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
             window->setSurfaceType(QSurface::OpenGLSurface);
-                #else
+        }
+
+        m_first_show = true;
+    }
+#endif
+
+    QMainWindow::showEvent(_event);
+}
+
+//------------------------------------------------------------------------------
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 8, 0)
+void main_frame::setVisible(bool _visible)
+{
+    // Before Qt 6.8, a dummy QOpenGLWidget makes the window an OpenGL one, and recreates the native window. Done in
+    // showEvent(), on a visible window, that took a modal frame out of the modal windows of Qt 6.4: do it before.
+    if(_visible && !m_first_show && qApp->platformName() != "offscreen")
+    {
+        static_cast<void>(this->winId());
+        if(auto* const window = this->windowHandle();
+           window != nullptr && window->surfaceType() != QSurface::OpenGLSurface)
+        {
             QOpenGLWidget dummy;
             this->setCentralWidget(&dummy);
             this->takeCentralWidget();
-                #endif
         }
 
         m_first_show = true;
     }
 
-    QMainWindow::showEvent(_event);
+    QMainWindow::setVisible(_visible);
 }
+#endif
 
 //------------------------------------------------------------------------------
 

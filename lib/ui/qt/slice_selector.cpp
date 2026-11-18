@@ -88,6 +88,7 @@ public:
     }
 
     //-------------------------------------------------------------------------------
+
     void set_digits_position(double _value)
     {
         std::ostringstream stream;
@@ -231,6 +232,26 @@ public:
         update();
     }
 
+    //------------------------------------------------------------------------------
+
+    /// A style sheet sizing the handle without a min-width makes the minimum length -1: a narrow layout then takes all
+    /// the room of the slider first, and leaves nothing to see or drag.
+    [[nodiscard]] QSize minimumSizeHint() const override
+    {
+        QSize size       = QSlider::minimumSizeHint();
+        const QSize hint = sizeHint();
+        if(orientation() == Qt::Horizontal)
+        {
+            size.setWidth(std::max(size.width(), hint.width()));
+        }
+        else
+        {
+            size.setHeight(std::max(size.height(), hint.height()));
+        }
+
+        return size;
+    }
+
 protected:
 
     //------------------------------------------------------------------------------
@@ -303,6 +324,7 @@ public:
 
     using QProxyStyle::QProxyStyle;
     //------------------------------------------------------------------------------
+
     [[nodiscard]] int styleHint(
         QStyle::StyleHint _hint,
         const QStyleOption* _option    = nullptr,
@@ -520,6 +542,7 @@ slice_selector::~slice_selector() noexcept
 }
 
 //------------------------------------------------------------------------------
+
 void slice_selector::set_index_digits(std::uint8_t _index_digits)
 {
     auto* slice_index_widget = static_cast<slice_text_editor*>(m_slice_index_text.data());
@@ -529,6 +552,7 @@ void slice_selector::set_index_digits(std::uint8_t _index_digits)
 }
 
 //-----------------------------------------------------------------------------
+
 void slice_selector::clear_slider_index()
 {
     if(auto* const slider = dynamic_cast<custom_slider*>(m_slider.data()); slider != nullptr)
@@ -538,6 +562,7 @@ void slice_selector::clear_slider_index()
 }
 
 //-----------------------------------------------------------------------------
+
 void slice_selector::clear_slider_position()
 {
     if(auto* const slider_position = dynamic_cast<custom_slider*>(m_slice_position_slider.data());
@@ -548,6 +573,7 @@ void slice_selector::clear_slider_position()
 }
 
 //-----------------------------------------------------------------------------
+
 void slice_selector::add_slider_position(std::int64_t _position, const QColor& _color)
 {
     if(auto* const m_slider_widget = static_cast<custom_slider*>(m_slider.data()); m_slider_widget != nullptr)
@@ -558,12 +584,14 @@ void slice_selector::add_slider_position(std::int64_t _position, const QColor& _
 }
 
 //------------------------------------------------
+
 void slice_selector::set_change_label_callback(change_label_callback_t _fct_label)
 {
     m_fct_change_label_callback = _fct_label;
 }
 
 //------------------------------------------------------------------------------
+
 void slice_selector::add_position_slider(std::double_t _position, const QColor& _color)
 {
     if(auto* const m_slider_widget = static_cast<custom_slider*>(m_slice_position_slider.data());
@@ -575,6 +603,7 @@ void slice_selector::add_position_slider(std::double_t _position, const QColor& 
 }
 
 //------------------------------------------------------------------------------
+
 void slice_selector::set_position_digits(double _pos_digits)
 {
     if(m_slice_index_text != nullptr)
@@ -593,6 +622,7 @@ void slice_selector::set_position_digits(double _pos_digits)
 }
 
 //-------------------------------------------------------------------------------
+
 void slice_selector::set_slice_range(int _min, int _max)
 {
     if(m_slider != nullptr)
@@ -620,12 +650,14 @@ void slice_selector::set_slice_value(int _index)
 }
 
 //--------------------------------------------------------------------------------
+
 void slice_selector::set_prefix(const std::string& _orientation_prefix)
 {
     this->m_orientation_prefix = _orientation_prefix;
 }
 
 //-------------------------------------------------------------------------------
+
 void slice_selector::update_label()
 {
     m_fct_change_label_callback();
@@ -660,6 +692,7 @@ void slice_selector::set_position_value(int _index)
 }
 
 //-------------------------------------------------------------------------------
+
 void slice_selector::set_position_text(double _position_index)
 {
     std::stringstream ss;
@@ -677,6 +710,7 @@ void slice_selector::set_position_text(double _position_index)
 }
 
 //---------------------------------------------------------------------------------------
+
 void slice_selector::set_image_info(double _origin, double _spacing)
 {
     m_origin = _origin;
@@ -685,6 +719,7 @@ void slice_selector::set_image_info(double _origin, double _spacing)
 }
 
 //------------------------------------------------------------------------------
+
 void slice_selector::set_position_range(double _min, double _max)
 {
     if(m_slice_position_slider != nullptr)
@@ -737,6 +772,7 @@ void slice_selector::set_change_type_callback(change_type_callback_t _fct_type)
 }
 
 //------------------------------------------------------------------------------
+
 void slice_selector::set_enable(bool _enable)
 {
     if(!m_slice_type.isNull())
@@ -756,6 +792,7 @@ void slice_selector::set_enable(bool _enable)
 }
 
 //-----------------------------------------------------------------------------
+
 void slice_selector::set_enabled(bool _enable)
 {
     if(!m_slice_type.isNull())
@@ -775,6 +812,7 @@ void slice_selector::set_enabled(bool _enable)
 }
 
 //------------------------------------------------------------------------------
+
 void slice_selector::on_slice_type_change(int _index)
 {
     m_fct_change_type_callback(_index);

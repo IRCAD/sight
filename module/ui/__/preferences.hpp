@@ -27,7 +27,8 @@
 
 #include <service/controller.hpp>
 
-#include <ui/__/preferences.hpp>
+#include <atomic>
+#include <map>
 
 namespace sight::module::ui
 {
@@ -83,6 +84,9 @@ protected:
 
 private:
 
+    /// Writes the values of the preferences
+    void write();
+
     /// Used when we bind widgets to data
     data::ptr_vector<data::object, data::access::inout> m_preferences {this, "keys"};
 
@@ -93,7 +97,7 @@ private:
     core::mt::read_write_mutex m_timers_mutex;
 
     /// Timer index to ensure we will only write after we stop to receive modifications
-    int m_last_timer_id {-1};
+    std::atomic_int m_last_timer_id {-1};
 
     /// Manual connections from object modifications to update slot when we pass maps
     core::com::helper::sig_slot_connection m_map_keys_connections;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -30,7 +30,8 @@
 
 //------------------------------------------------------------------------------
 
-template<typename T, typename = typename std::enable_if_t<std::is_enum<T>::value, T> >
+template<typename T>
+requires std::is_enum_v<T>
 constexpr T operator|(T _lhs, T _rhs)
 {
     return static_cast<T>(static_cast<std::underlying_type_t<T> >(_lhs)
@@ -39,7 +40,8 @@ constexpr T operator|(T _lhs, T _rhs)
 
 //------------------------------------------------------------------------------
 
-template<typename T, typename = typename std::enable_if_t<std::is_enum<T>::value, T> >
+template<typename T>
+requires std::is_enum_v<T>
 constexpr T operator&(T _lhs, T _rhs)
 {
     return static_cast<T>(static_cast<std::underlying_type_t<T> >(_lhs)
@@ -48,7 +50,8 @@ constexpr T operator&(T _lhs, T _rhs)
 
 //------------------------------------------------------------------------------
 
-template<typename T, typename = typename std::enable_if_t<std::is_enum<T>::value, T> >
+template<typename T>
+requires std::is_enum_v<T>
 constexpr T operator^(T _lhs, T _rhs)
 {
     return static_cast<T>(static_cast<std::underlying_type_t<T> >(_lhs)
@@ -57,7 +60,8 @@ constexpr T operator^(T _lhs, T _rhs)
 
 //------------------------------------------------------------------------------
 
-template<typename T, typename = typename std::enable_if_t<std::is_enum<T>::value, T> >
+template<typename T>
+requires std::is_enum_v<T>
 constexpr T operator~(T _rhs)
 {
     return static_cast<T>(~static_cast<std::underlying_type_t<T> >(_rhs));
@@ -65,7 +69,8 @@ constexpr T operator~(T _rhs)
 
 //------------------------------------------------------------------------------
 
-template<typename T, typename = typename std::enable_if_t<std::is_enum<T>::value, T> >
+template<typename T>
+requires std::is_enum_v<T>
 constexpr T& operator|=(T& _lhs, const T& _rhs)
 {
     return _lhs = _lhs | _rhs;
@@ -73,7 +78,8 @@ constexpr T& operator|=(T& _lhs, const T& _rhs)
 
 //------------------------------------------------------------------------------
 
-template<typename T, typename = typename std::enable_if_t<std::is_enum<T>::value, T> >
+template<typename T>
+requires std::is_enum_v<T>
 constexpr T& operator&=(T& _lhs, const T& _rhs)
 {
     return _lhs = _lhs & _rhs;
@@ -81,7 +87,8 @@ constexpr T& operator&=(T& _lhs, const T& _rhs)
 
 //------------------------------------------------------------------------------
 
-template<typename T, typename = typename std::enable_if_t<std::is_enum<T>::value, T> >
+template<typename T>
+requires std::is_enum_v<T>
 constexpr T& operator^=(T& _lhs, const T& _rhs)
 {
     return _lhs = _lhs ^ _rhs;
