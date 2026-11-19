@@ -26,6 +26,7 @@
 
 #include <ui/__/dialog/location.hpp>
 #include <ui/__/preferences.hpp>
+#include <ui/qt/naming.hpp>
 
 #include <boost/tokenizer.hpp>
 
@@ -39,6 +40,9 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QWidget>
+
+#include <string_view>
+
 namespace sight::module::ui::qt
 {
 
@@ -190,10 +194,14 @@ void preferences_configuration::updating()
     // Preferences may have been updated after start or last update.
     this->update_from_preferences();
 
-    const QString service_id = QString::fromStdString(base_id());
+    const std::string dialog_name = base_id() + "/dialog";
+    const auto name_dialog_part = [&dialog_name](std::string_view _part)
+                                  {
+                                      return QString::fromStdString(dialog_name + "/" + std::string(_part));
+                                  };
 
     QDialog dialog;
-    dialog.setObjectName("preferences_configuration");
+    sight::ui::qt::detail::set_name(dialog, QString::fromStdString(dialog_name));
     QPointer<QGridLayout> layout = new QGridLayout();
 
     int index = 0;
@@ -206,7 +214,7 @@ void preferences_configuration::updating()
         if(pref.m_type == preference_t::text || pref.m_type == preference_t::list)
         {
             pref.m_line_edit = new QLineEdit();
-            pref.m_line_edit->setObjectName(pref.m_preference_key.c_str());
+            sight::ui::qt::detail::set_name(*pref.m_line_edit, name_dialog_part(pref.m_preference_key));
             pref.m_line_edit->setText(QString::fromStdString(pref.m_preference_value));
             layout->addWidget(pref.m_line_edit, index, 1);
             widget_to_reset = pref.m_line_edit;
@@ -214,7 +222,7 @@ void preferences_configuration::updating()
         else if(pref.m_type == preference_t::checkbox)
         {
             pref.m_check_box = new QCheckBox();
-            pref.m_check_box->setObjectName(pref.m_preference_key.c_str());
+            sight::ui::qt::detail::set_name(*pref.m_check_box, name_dialog_part(pref.m_preference_key));
             pref.m_check_box->setChecked(pref.m_preference_value == "true");
             layout->addWidget(pref.m_check_box, index, 1);
             widget_to_reset = pref.m_check_box;
@@ -238,7 +246,7 @@ void preferences_configuration::updating()
                 );
             }
 
-            pref.m_line_edit->setObjectName(pref.m_preference_key.c_str());
+            sight::ui::qt::detail::set_name(*pref.m_line_edit, name_dialog_part(pref.m_preference_key));
             pref.m_line_edit->setText(QString::fromStdString(pref.m_preference_value));
 
             layout->addWidget(pref.m_line_edit, index, 1);
@@ -273,11 +281,15 @@ void preferences_configuration::updating()
         else if(pref.m_type == preference_t::path)
         {
             pref.m_line_edit = new QLineEdit();
-            pref.m_line_edit->setObjectName(pref.m_preference_key.c_str());
+            sight::ui::qt::detail::set_name(*pref.m_line_edit, name_dialog_part(pref.m_preference_key));
             pref.m_line_edit->setText(QString::fromStdString(pref.m_preference_value));
             layout->addWidget(pref.m_line_edit, index, 1);
             widget_to_reset = pref.m_line_edit;
             QPointer<QPushButton> directory_selector = new QPushButton("...");
+            sight::ui::qt::detail::set_name(
+                *directory_selector,
+                name_dialog_part(pref.m_preference_key + "/browse")
+            );
             layout->addWidget(directory_selector, index, 2);
             QObject::connect(
                 directory_selector.data(),
@@ -290,11 +302,15 @@ void preferences_configuration::updating()
         else if(pref.m_type == preference_t::file)
         {
             pref.m_line_edit = new QLineEdit();
-            pref.m_line_edit->setObjectName(pref.m_preference_key.c_str());
+            sight::ui::qt::detail::set_name(*pref.m_line_edit, name_dialog_part(pref.m_preference_key));
             pref.m_line_edit->setText(QString::fromStdString(pref.m_preference_value));
             layout->addWidget(pref.m_line_edit, index, 1);
             widget_to_reset = pref.m_line_edit;
             QPointer<QPushButton> directory_selector = new QPushButton("...");
+            sight::ui::qt::detail::set_name(
+                *directory_selector,
+                name_dialog_part(pref.m_preference_key + "/browse")
+            );
             layout->addWidget(directory_selector, index, 2);
             QObject::connect(
                 directory_selector.data(),
@@ -307,7 +323,7 @@ void preferences_configuration::updating()
         else if(pref.m_type == preference_t::combobox)
         {
             pref.m_combo_box = new QComboBox();
-            pref.m_combo_box->setObjectName(pref.m_preference_key.c_str());
+            sight::ui::qt::detail::set_name(*pref.m_combo_box, name_dialog_part(pref.m_preference_key));
             for(const std::string& value : pref.m_values)
             {
                 pref.m_combo_box->addItem(QString::fromStdString(value));
@@ -333,6 +349,10 @@ void preferences_configuration::updating()
 
         QPointer<QPushButton> default_selector = new QPushButton("R");
 
+        sight::ui::qt::detail::set_name(
+            *default_selector,
+            name_dialog_part(pref.m_preference_key + "/reset")
+        );
         default_selector->setFocusPolicy(Qt::NoFocus);
         default_selector->setToolTip("Reset this preference value to default");
         default_selector->setMaximumWidth(30);
@@ -354,9 +374,9 @@ void preferences_configuration::updating()
     }
 
     QPointer<QPushButton> cancel_button = new QPushButton("Cancel");
-    cancel_button->setObjectName(cancel_button->text());
+    sight::ui::qt::detail::set_name(*cancel_button, name_dialog_part("cancel"));
     QPointer<QPushButton> ok_button = new QPushButton("OK");
-    ok_button->setObjectName(ok_button->text());
+    sight::ui::qt::detail::set_name(*ok_button, name_dialog_part("ok"));
     ok_button->setDefault(true);
 
     QPointer<QHBoxLayout> button_layout = new QHBoxLayout();

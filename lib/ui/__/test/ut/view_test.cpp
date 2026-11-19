@@ -20,20 +20,23 @@
  *
  ***********************************************************************/
 
+#include "named_widget.hpp"
+
 #include <ui/__/detail/registry/view.hpp>
 
 #include <boost/property_tree/xml_parser.hpp>
 
 #include <doctest/doctest.h>
 
+#include <string>
+#include <string_view>
+#include <utility>
+
 namespace sight::ui::ut
 {
 
 namespace
 {
-
-/// Forward-declared so test_view can grant it (and only it) access to its protected members.
-struct view_test;
 
 class test_view : public ui::detail::registry::view
 {
@@ -47,7 +50,8 @@ public:
 
     ~test_view() override = default;
 
-    friend view_test;
+    // Only this test reaches the protected members.
+    friend struct view_test;
 };
 
 /// Holds the test body as a static method, so it can be named in the friend declaration above -
@@ -91,6 +95,31 @@ struct view_test
 
 } // namespace
 
+//------------------------------------------------------------------------------
+
+/// Returns the names a view gives to its sid and wid sub-views.
+static std::pair<std::string, std::string> managed_names(
+    const std::string& _view,
+    std::string_view _sid,
+    std::string_view _wid
+)
+{
+    std::stringstream xml_config;
+    xml_config << "<registry><view sid=\"" << _sid << "\"/><view wid=\"" << _wid << "\"/></registry>";
+    boost::property_tree::ptree config;
+    boost::property_tree::read_xml(xml_config, config);
+
+    auto view = std::make_shared<test_view>(_view);
+    view->initialize(config.get_child("registry"));
+
+    auto sid_widget = std::make_shared<named_widget>();
+    auto wid_widget = std::make_shared<named_widget>();
+    view->manage({sid_widget, wid_widget});
+    view->unmanage();
+
+    return {sid_widget->m_name, wid_widget->m_name};
+}
+
 TEST_SUITE("sight::ui::ut::view")
 {
 //------------------------------------------------------------------------------
@@ -98,6 +127,48 @@ TEST_SUITE("sight::ui::ut::view")
     TEST_CASE("configuring_test")
     {
         view_test::configuring_test();
+    }
+
+    TEST_CASE("names_a_service_only_when_its_parent_does_not")
+    {
+        const auto needs_own_name =
+            [](std::string_view _xml, std::string_view _name)
+            {
+                std::stringstream xml_config;
+                xml_config << "<registry>" << _xml << "</registry>";
+                boost::property_tree::ptree config;
+                boost::property_tree::read_xml(xml_config, config);
+
+                test_view view("view");
+                view.initialize(config.get_child("registry"));
+                return view.needs_own_name(_name);
+            };
+
+        // A <view sid="..."/> of the parent view gives it its name.
+        CHECK_FALSE(needs_own_name("", "viewer_srv"));
+        CHECK(needs_own_name(R"(<parent wid="scene_view"/>)", "viewer_srv"));
+
+        // The wid already bears that name, also when a launched configuration qualifies it.
+        CHECK_FALSE(needs_own_name(R"(<parent wid="scene_view"/>)", "scene_view"));
+        CHECK_FALSE(needs_own_name(R"(<parent wid="config-1-scene_view"/>)", "scene_view"));
+        CHECK(needs_own_name(R"(<parent wid="config-1-scene_view"/>)", "viewer_srv"));
+    }
+
+    //------------------------------------------------------------------------------
+
+    TEST_CASE("names_sub_views_after_their_xml_id")
+    {
+        const std::pair<std::string, std::string> xml_names {"child_srv", "child_view"};
+        CHECK(managed_names("view", "child_srv", "child_view") == xml_names);
+
+        // Ids qualified by a launched configuration instance keep their XML uid only.
+        CHECK(
+            managed_names(
+                "sight::config::viz::scene3d::volumeRendering-12-view",
+                "sight::config::viz::scene3d::volumeRendering-12-child_srv",
+                "sight::config::viz::scene3d::volumeRendering-12-child_view"
+            ) == xml_names
+        );
     }
 } // TEST_SUITE
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2025-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,12 +21,10 @@
 
 #include "switch_button.hpp"
 
-#include <core/spy_log.hpp>
-
 #include <QAbstractButton>
+#include <QPaintEvent>
 #include <QPainter>
 #include <QPainterPath>
-#include <QPaintEvent>
 #include <QParallelAnimationGroup>
 #include <QPropertyAnimation>
 #include <QRect>
@@ -41,7 +39,6 @@ switch_button::switch_button(QWidget* _parent) :
     m_current_thumb_color(isChecked() ? m_thumb_color_on : m_thumb_color_off)
 {
     setCheckable(true);
-    setObjectName("switch_button");
     setProperty("class", "switch_button");
 
     connect(
@@ -55,6 +52,7 @@ switch_button::switch_button(QWidget* _parent) :
 }
 
 //---------------------------------------------------------------------------
+
 Qt::CheckState switch_button::check_state() const
 {
     return isChecked() ? Qt::Checked : Qt::Unchecked;
@@ -121,24 +119,28 @@ void switch_button::paintEvent(QPaintEvent* /*e*/)
 }
 
 //-------------------------------------------------------
+
 QColor switch_button::current_track_color() const
 {
     return m_current_track_color;
 }
 
 //------------------------------------------------------
+
 QColor switch_button::current_thumb_color() const
 {
     return m_current_thumb_color;
 }
 
 //------------------------------------------------------
+
 QColor switch_button::current_icon_color() const
 {
     return m_current_icon_color;
 }
 
 //-------------------------------------------------------
+
 void switch_button::set_current_track_color(const QColor& _color)
 {
     m_current_track_color = _color;
@@ -146,6 +148,7 @@ void switch_button::set_current_track_color(const QColor& _color)
 }
 
 //-------------------------------------------------------
+
 void switch_button::set_current_thumb_color(const QColor& _color)
 {
     m_current_thumb_color = _color;
@@ -153,6 +156,7 @@ void switch_button::set_current_thumb_color(const QColor& _color)
 }
 
 //-------------------------------------------------------
+
 void switch_button::set_current_icon_color(const QColor& _color)
 {
     m_current_icon_color = _color;
@@ -160,18 +164,21 @@ void switch_button::set_current_icon_color(const QColor& _color)
 }
 
 //-------------------------------------------------------
+
 QColor switch_button::track_color_off() const
 {
     return m_track_color_off;
 }
 
 //-------------------------------------------------------
+
 QColor switch_button::icon_color_off() const
 {
     return m_icon_color_off;
 }
 
 //-------------------------------------------------------
+
 void switch_button::set_track_color_off(const QColor& _color)
 {
     m_track_color_off = _color;
@@ -184,6 +191,7 @@ void switch_button::set_track_color_off(const QColor& _color)
 }
 
 //--------------------------------------------------------
+
 void switch_button::set_thumb_color_off(const QColor& _color)
 {
     m_thumb_color_off = _color;
@@ -196,6 +204,7 @@ void switch_button::set_thumb_color_off(const QColor& _color)
 }
 
 //---------------------------------------------------------
+
 void switch_button::set_icon_color_off(const QColor& _color)
 {
     m_icon_color_off = _color;
@@ -208,6 +217,7 @@ void switch_button::set_icon_color_off(const QColor& _color)
 }
 
 //-------------------------------------------------------
+
 void switch_button::set_icons(const QIcon& _on, const QIcon& _off)
 {
     m_icon_on  = _on;
@@ -216,12 +226,14 @@ void switch_button::set_icons(const QIcon& _on, const QIcon& _off)
 }
 
 //-------------------------------------------------------
+
 QColor switch_button::thumb_color_on() const
 {
     return m_thumb_color_on;
 }
 
 //------------------------------------------------------
+
 QColor switch_button::thumb_color_off() const
 {
     return m_thumb_color_off;
@@ -235,6 +247,7 @@ QColor switch_button::track_color_on() const
 }
 
 //-------------------------------------------------------
+
 void switch_button::set_track_color_on(const QColor& _color)
 {
     m_track_color_on = _color;
@@ -247,12 +260,14 @@ void switch_button::set_track_color_on(const QColor& _color)
 }
 
 //-------------------------------------------------------
+
 QColor switch_button::icon_color_on() const
 {
     return m_icon_color_on;
 }
 
 //-------------------------------------------------------
+
 void switch_button::set_icon_color_on(const QColor& _color)
 {
     m_icon_color_on = _color;
@@ -265,6 +280,7 @@ void switch_button::set_icon_color_on(const QColor& _color)
 }
 
 //-------------------------------------------------------
+
 void switch_button::set_thumb_color_on(const QColor& _color)
 {
     m_thumb_color_on = _color;
@@ -296,6 +312,7 @@ void switch_button::set_check_state(const Qt::CheckState& _state)
 }
 
 //---------------------------------------------------------
+
 void switch_button::mousePressEvent(QMouseEvent* _event)
 {
     if(_event->button() == Qt::LeftButton)
@@ -336,6 +353,7 @@ void switch_button::mousePressEvent(QMouseEvent* _event)
 }
 
 //-------------------------------------------------------
+
 void switch_button::set_offset(int _offset)
 {
     m_offset = _offset;
@@ -343,6 +361,7 @@ void switch_button::set_offset(int _offset)
 }
 
 //------------------------------------------------------
+
 void switch_button::resizeEvent(QResizeEvent* _event)
 {
     QAbstractButton::resizeEvent(_event);
@@ -357,6 +376,7 @@ void switch_button::resizeEvent(QResizeEvent* _event)
 }
 
 //--------------------------------------------------------
+
 int switch_button::offset() const
 {
     return m_offset;

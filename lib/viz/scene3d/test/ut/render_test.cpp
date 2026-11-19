@@ -19,17 +19,31 @@
  *
  ***********************************************************************/
 
-#include <core/runtime/runtime.hpp>
-
-#include <service/macros.hpp>
 #include <service/op.hpp>
 
 #include <viz/scene3d/render.hpp>
 
 #include <doctest/doctest.h>
 
+#ifdef WIN32
+#include <cstdlib>
+#include <string_view>
+#endif
+
 TEST_SUITE("sight::viz::scene3d::render")
 {
+    TEST_CASE("leaves_the_foreground_of_the_user_alone")
+    {
+#ifdef WIN32
+        // Its render window needs a real display: its own desktop, unless a developer asks to watch the run.
+        // NOLINTNEXTLINE(concurrency-mt-unsafe): nothing here writes the environment.
+        const char* const variable     = std::getenv("SIGHT_UI_TEST_VISIBLE");
+        const std::string_view visible = variable != nullptr ? variable : "";
+        // NOLINTNEXTLINE(concurrency-mt-unsafe): nothing here writes the environment.
+        CHECK((std::getenv("SIGHT_GUI_TEST_DESKTOP") != nullptr || (!visible.empty() && visible != "0")));
+#endif
+    }
+
     TEST_CASE("configure_render_mode")
     {
         SUBCASE("auto mode")

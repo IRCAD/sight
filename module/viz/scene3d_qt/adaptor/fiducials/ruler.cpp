@@ -39,6 +39,8 @@
 #include <module/viz/scene3d_qt/screen_position.hpp>
 #include <module/viz/scene3d_qt/window_interactor.hpp>
 
+#include <ui/qt/naming.hpp>
+
 namespace sight::module::viz::scene3d_qt::adaptor::fiducials
 {
 
@@ -1217,7 +1219,11 @@ void ruler::button_release_event(mouse_button _button, modifier /*_mods*/, int /
                     ));
                     m_bin_button = new QPushButton(s_TRASH_BIN_ICON, "", parent_widget);
                     const std::string service_id = base_id();
-                    m_bin_button->setObjectName(QString::fromStdString(service_id) + "/binButton");
+                    sight::ui::qt::detail::set_part_name(
+                        *m_bin_button,
+                        QString::fromStdString(service_id),
+                        QStringLiteral("bin_button")
+                    );
                     m_bin_button->setCursor(Qt::ArrowCursor);
                     m_bin_button->adjustSize();
                     if(m_bin_button->width() < 40)

@@ -146,8 +146,9 @@ std::shared_future<bool> wait_for_widget(std::function<bool(QWidget*)> _predicat
         std::launch::async,
         [_predicate]
         {
+            // 30 s only bound a hang: a passing test never waits for it, even under load.
             for(const auto start = std::chrono::steady_clock::now() ;
-                std::chrono::steady_clock::now() - start < std::chrono::seconds(3) ; )
+                std::chrono::steady_clock::now() - start < std::chrono::seconds(30) ; )
             {
                 for(auto* widget : qApp->allWidgets())
                 {

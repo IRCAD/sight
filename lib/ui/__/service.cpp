@@ -129,6 +129,11 @@ void service::create()
 
             ui::container::widget::sptr container = m_container_builder->get_container();
 
+            if(const std::string name = base_id(); m_view_registry->needs_own_name(name))
+            {
+                container->set_name(name);
+            }
+
             if(m_view_layout_manager_is_created)
             {
                 if(m_has_tool_bar)
@@ -264,7 +269,7 @@ void service::initialize_slide_view_builder(const ui::config_t& _slide_view_conf
 
 ui::container::widget::sptr service::get_container()
 {
-    return m_container_builder->get_container();
+    return m_container_builder == nullptr ? nullptr : m_container_builder->get_container();
 }
 
 //-----------------------------------------------------------------------------

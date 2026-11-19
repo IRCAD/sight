@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,7 +21,9 @@
  ***********************************************************************/
 
 #include "ui/qt/container/toolbar.hpp"
+#include "ui/qt/layout/object_name.hpp"
 #include "ui/qt/layout/toolbar.hpp"
+#include "ui/qt/naming.hpp"
 
 #include "ui/qt/action_callback.hpp"
 #include "ui/qt/container/menu.hpp"
@@ -32,13 +34,10 @@
 #include <ui/qt/widget/accordion_menu.hpp>
 
 #include <QActionGroup>
-#include <qboxlayout.h>
 #include <QMenu>
 #include <QTimer>
 #include <QToolBar>
 #include <QToolButton>
-
-#include <functional>
 
 SIGHT_REGISTER_GUI(sight::ui::qt::layout::toolbar, sight::ui::layout::toolbar_manager::REGISTRY_KEY);
 
@@ -55,7 +54,7 @@ void toolbar::create_layout(ui::container::toolbar::sptr _parent, const std::str
     const QString q_id = QString::fromStdString(_id);
 
     QToolBar* tool_bar = m_parent->get_qt_tool_bar();
-    tool_bar->setObjectName(q_id);
+    ui::qt::detail::set_name(*tool_bar, q_id);
 
     if(m_style == "ToolButtonTextOnly")
     {
@@ -83,6 +82,7 @@ void toolbar::create_layout(ui::container::toolbar::sptr _parent, const std::str
     [[maybe_unused]] unsigned int menu_item_index = 0;
     for(ui::layout::toolbar_manager::action_info& action_info : m_action_info)
     {
+        const QString object_name = detail::composed_object_name(q_id, QString::fromStdString(action_info.m_name));
         if(action_info.m_accordion == ui::layout::toolbar_manager::accordion::no)
         {
             accordion_layout = nullptr;
@@ -98,7 +98,7 @@ void toolbar::create_layout(ui::container::toolbar::sptr _parent, const std::str
             if(action_info.m_size > 0)
             {
                 auto* widget = new QWidget(tool_bar);
-                widget->setObjectName(q_id + '/' + action_info.m_name.c_str());
+                ui::qt::detail::set_name(*widget, object_name);
                 widget->setMinimumWidth(action_info.m_size);
                 tool_bar->addWidget(widget);
             }
@@ -131,7 +131,7 @@ void toolbar::create_layout(ui::container::toolbar::sptr _parent, const std::str
             menu->set_qt_menu(qt_menu);
 
             auto* tool_button = new QToolButton(tool_bar);
-            tool_button->setObjectName(q_id + '/' + action_info.m_name.c_str());
+            ui::qt::detail::set_name(*tool_button, object_name);
             if(tool_bar->orientation() == Qt::Horizontal)
             {
                 tool_button->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
@@ -144,7 +144,6 @@ void toolbar::create_layout(ui::container::toolbar::sptr _parent, const std::str
             tool_button->setMenu(qt_menu);
             tool_button->setPopupMode(QToolButton::InstantPopup);
             tool_button->setText(QString::fromStdString(action_info.m_name));
-            tool_button->setObjectName(q_id + '/' + action_info.m_name.c_str());
 
             if(!action_info.m_icon.empty())
             {
@@ -169,7 +168,7 @@ void toolbar::create_layout(ui::container::toolbar::sptr _parent, const std::str
         {
             ui::qt::container::widget::sptr container = ui::qt::container::widget::make();
             auto* widget                              = new QWidget(tool_bar);
-            widget->setObjectName(q_id + '/' + action_info.m_name.c_str());
+            ui::qt::detail::set_name(*widget, object_name);
             container->set_qt_container(widget);
 
             if(tool_bar->orientation() == Qt::Horizontal)
@@ -263,7 +262,7 @@ void toolbar::create_layout(ui::container::toolbar::sptr _parent, const std::str
                 }
             }
 
-            action->setObjectName(q_id + '/' + action_info.m_name.c_str());
+            ui::qt::detail::set_name(*action, object_name);
             action->setCheckable(action_info.m_is_checkable || action_info.m_is_radio);
 
             if(action_info.m_is_radio)

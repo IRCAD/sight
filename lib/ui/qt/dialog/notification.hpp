@@ -244,10 +244,10 @@ private:
 /**
  * @brief Defines a notification popup.
  *
- * Example of how to customize the style of the popups (You need to refers to their names):
+ * Example of how to customize the style of the popups by their `class` property:
  *
  * @code{.qss}
- #NotificationDialog_Instruction
+ * *[class="notification_dialog_instruction"]
     {
         background-color:#58D68D;
         color:white;
@@ -255,7 +255,7 @@ private:
         font-size: 16px;
     }
 
- #NotificationDialog_Error
+ * *[class="notification_dialog_error"]
     {
         background-color:#E74C3C;
         color:white;
@@ -263,7 +263,7 @@ private:
         font-size: 16px;
     }
 
- #NotificationDialog_Information
+ * *[class="notification_dialog_information"]
     {
         background-color:#5DADE2;
         color:white;
@@ -271,14 +271,14 @@ private:
         font-size: 16px;
     }
 
- #NotificationDialog_Warning
+ * *[class="notification_dialog_warning"]
     {
         background-color:#D9A400;
         color:white;
         font-weight: bold;
         font-size: 16px;
     }
-   @endcode
+ * @endcode
  *
  */
 class SIGHT_UI_QT_CLASS_API notification : public ui::dialog::notification_base

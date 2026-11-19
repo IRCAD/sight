@@ -122,8 +122,6 @@ void slice_index_position_editor::starting()
         this->get_container()
     );
 
-    const QString service_id = QString::fromStdString(base_id());
-
     auto* layout = new QVBoxLayout();
     sight::ui::qt::slice_selector::change_index_callback_t fct_index = [this](int _index)
                                                                        {
@@ -153,7 +151,6 @@ void slice_index_position_editor::starting()
 
     m_slice_selector_with_index->setProperty("class", "slice_selector");
     m_slice_selector_with_index->set_enabled(false);
-    m_slice_selector_with_index->setObjectName(service_id);
 
     m_slice_selector_with_index->set_change_index_callback(fct_index);
     m_slice_selector_with_index->set_change_type_callback(fct_type);
@@ -390,8 +387,6 @@ void slice_index_position_editor::slice_label_notification()
 
     qt_container->set_layout(layout);
 
-    const QString service_id = QString::fromStdString(base_id());
-
     if(m_label_option == label_option_t::index)
     {
         m_slice_selector_with_index = new sight::ui::qt::slice_selector(
@@ -423,8 +418,6 @@ void slice_index_position_editor::slice_label_notification()
     m_slice_selector_with_index->set_change_label_callback(fct_label);
     m_slice_selector_with_index->set_type_selection(m_axis);
     m_slice_selector_with_index->set_prefix(s_orientation_prefix_map.at(m_axis));
-
-    m_slice_selector_with_index->setObjectName(service_id);
 
     layout->addWidget(m_slice_selector_with_index);
 

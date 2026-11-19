@@ -23,6 +23,7 @@
 #include "module/ui/qt/calibration/camera_information_editor.hpp"
 
 #include <ui/qt/container/widget.hpp>
+#include <ui/qt/namer.hpp>
 
 #include <QBoxLayout>
 #include <QGridLayout>
@@ -50,11 +51,8 @@ void camera_information_editor::configuring()
 
 void camera_information_editor::starting()
 {
-    const QString service_id = QString::fromStdString(base_id());
-
     sight::ui::service::create();
     auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(get_container());
-    qt_container->get_qt_container()->setObjectName(service_id);
 
     auto* main_layout = new QBoxLayout(QBoxLayout::TopToBottom);
     main_layout->setAlignment(Qt::AlignTop | Qt::AlignLeft);
@@ -62,13 +60,12 @@ void camera_information_editor::starting()
     auto* grid_layout = new QGridLayout();
     auto* desc        = new QLabel("description: ");
     m_description = new QLabel();
-    m_description->setObjectName(service_id + "/description");
     grid_layout->addWidget(desc, 0, 0);
     grid_layout->addWidget(m_description, 0, 1);
 
     auto* title_layout = new QBoxLayout(QBoxLayout::LeftToRight);
     m_is_calibrated = new QLabel();
-    m_is_calibrated->setObjectName(service_id + "/isCalibrated");
+    sight::ui::qt::name_part(*m_is_calibrated, "is_calibrated");
     title_layout->addWidget(m_is_calibrated);
 
     auto* info_layout = new QGridLayout;
@@ -78,32 +75,19 @@ void camera_information_editor::starting()
     main_layout->addLayout(title_layout);
     main_layout->addLayout(info_layout);
 
-    m_width = new QLabel();
-    m_width->setObjectName(service_id + "/width");
+    m_width  = new QLabel();
     m_height = new QLabel();
-    m_height->setObjectName(service_id + "/height");
-    m_cx = new QLabel();
-    m_cx->setObjectName(service_id + "/cx");
-    m_cy = new QLabel();
-    m_cy->setObjectName(service_id + "/cy");
-    m_fx = new QLabel();
-    m_fx->setObjectName(service_id + "/fx");
-    m_fy = new QLabel();
-    m_fy->setObjectName(service_id + "/fy");
-    m_k1 = new QLabel();
-    m_k1->setObjectName(service_id + "/k1");
-    m_k2 = new QLabel();
-    m_k2->setObjectName(service_id + "/k2");
-    m_p1 = new QLabel();
-    m_p1->setObjectName(service_id + "/p1");
-    m_p2 = new QLabel();
-    m_p2->setObjectName(service_id + "/p2");
-    m_k3 = new QLabel();
-    m_k3->setObjectName(service_id + "/k3");
-    m_skew = new QLabel();
-    m_skew->setObjectName(service_id + "/skew");
-    m_error = new QLabel();
-    m_error->setObjectName(service_id + "/error");
+    m_cx     = new QLabel();
+    m_cy     = new QLabel();
+    m_fx     = new QLabel();
+    m_fy     = new QLabel();
+    m_k1     = new QLabel();
+    m_k2     = new QLabel();
+    m_p1     = new QLabel();
+    m_p2     = new QLabel();
+    m_k3     = new QLabel();
+    m_skew   = new QLabel();
+    m_error  = new QLabel();
 
     info_layout->addWidget(m_width, 0, 0);
     info_layout->addWidget(m_height, 0, 1);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,8 +26,9 @@
 
 #include "ui/__/layout/view.hpp"
 
-#include <core/base.hpp>
+#include <core/macros.hpp>
 
+#include <cstdint>
 #include <list>
 
 namespace sight::ui::layout
@@ -43,7 +44,7 @@ public:
     SIGHT_DECLARE_CLASS(line, ui::layout::view);
 
     /// Defines all possible orientation for a LineLayout
-    enum orientation
+    enum orientation : std::uint8_t
     {
         vertical,
         horizontal
@@ -136,7 +137,8 @@ public:
 
     //------------------------------------------------------------------------------
 
-    int get_spacing()
+    /// The spacing between the views, in pixels; -1 keeps the one of the style.
+    int get_spacing() const
     {
         return m_spacing;
     }

@@ -19,65 +19,68 @@
  *
  ***********************************************************************/
 
-#include "test.hpp"
+#include "helper.hpp"
 
-#include <ui/test/helper/scene3d.hpp>
+#include <ui/test/detail/image.hpp>
+#include <ui/test/gui_test.hpp>
 
-#include <utest_data/data.hpp>
+#include <QImage>
 
-#include <doctest/doctest.h>
+#include <filesystem>
+#include <stdexcept>
 
 namespace sight::sight_viewer::uit
 {
 
-TEST_SUITE("sight_viewer")
+using namespace std::chrono_literals;
+using ui::test::detail::qt_path;
+
+/// Clicks the real Snapshot button and returns the image it writes, once complete.
+static QImage save_snapshot(ui::test::scenario& _ui, const std::filesystem::path& _snapshot)
 {
+    std::filesystem::create_directories(_snapshot.parent_path());
+    _ui.click("top_toolbar_view/Snapshot");
+    _ui.choose_file(_snapshot);
+    return _ui.read_png(_snapshot, 60s);
+}
+
 //------------------------------------------------------------------------------
 
-    TEST_CASE_FIXTURE(test, "zoom_out")
+/// Snapshot omits the on-screen background and overlays, so it has its own reference of a fixed size.
+static void expect_snapshot(
+    const QImage& _saved,
+    const std::filesystem::path& _reference,
+    const std::filesystem::path& _output
+)
+{
+    const QImage expected(qt_path(_reference));
+    if(expected.isNull())
     {
-        namespace helper = sight::ui::test::helper;
-
-        const std::string test_name  = "sightViewerZoomOutTest";
-        const std::string image_name = test_name + ".png";
-        const std::filesystem::path snapshot_path(sight::ui::test::tester::get_image_output_path(test_name)
-                                                  / image_name);
-        if(std::filesystem::exists(snapshot_path))
-        {
-            std::filesystem::remove(snapshot_path);
-        }
-
-        const std::filesystem::path reference_path(utest_data::dir() / "sight/ui/sight_viewer" / image_name);
-
-        const std::string failure_message = start(
-            test_name,
-            [&snapshot_path, &reference_path](sight::ui::test::tester& _tester)
-            {
-                open_file(
-                    _tester,
-                    "VTK Legacy Files(.vtk) (*.vtk)",
-                    utest_data::dir() / "sight/mesh/vtk/sphere.vtk"
-                );
-
-                // Drag the mouse to zoom out
-                helper::scene3d::zoom(
-
-                    _tester,
-                    helper::selector::from_parent("top_scenes_view/1", "scene_srv"),
-                    -7
-                );
-                save_snapshot(_tester, snapshot_path);
-
-                compare_images(snapshot_path, reference_path);
-            },
-            true
-        );
-
-        // Runs on the main thread, after start() has returned: the only doctest assertion for
-        // this scenario. See sight::ui::test::base::start().
-        INFO(failure_message);
-        REQUIRE(failure_message.empty());
+        throw std::runtime_error("the Snapshot reference cannot be read");
     }
-} // TEST_SUITE
+
+    const auto metrics = ui::test::detail::compare_images(_saved, expected, {});
+    if(!metrics.matches())
+    {
+        ui::test::detail::save_image(expected, _output / "snapshot-expected.png");
+        ui::test::detail::save_image(
+            ui::test::detail::image_difference(_saved, expected),
+            _output / "snapshot-diff.png"
+        );
+        throw std::runtime_error("Snapshot differs from its reference: " + metrics.describe());
+    }
+}
+
+//------------------------------------------------------------------------------
+
+SIGHT_GUI_TEST_CASE("zoom_out")
+{
+    ui.expect_image_changes(MAIN_SCENE, [&]{open_mesh(ui);});
+    ui.expect_image_changes(MAIN_SCENE, [&]{ui.wheel(MAIN_SCENE, -7);});
+    const auto snapshot = save_snapshot(ui, ui.output_directory() / "snapshot.png");
+
+    ui.expect_image(MAIN_SCENE, reference("zoom_out"));
+    expect_snapshot(snapshot, reference("zoom_out_snapshot"), ui.output_directory());
+}
 
 } // namespace sight::sight_viewer::uit

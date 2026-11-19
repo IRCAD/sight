@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,6 +21,8 @@
 
 #include "speed_dial.hpp"
 
+#include "ui/qt/naming.hpp"
+
 #include <core/spy_log.hpp>
 
 #include <QEvent>
@@ -40,7 +42,7 @@ speed_dial::speed_dial(enum direction _direction, int _spacing, int _animation_d
 {
     setEnabled(false);
     setCheckable(true);
-    m_actions_container->setObjectName(objectName() + "Actions");
+    ui::qt::detail::bind_part_name(*m_actions_container, *this, u"actions");
     infect(_parent);
     QObject::connect(this, &QPushButton::clicked, this, &speed_dial::toggle_fold);
     QObject::connect(
@@ -52,13 +54,6 @@ speed_dial::speed_dial(enum direction _direction, int _spacing, int _animation_d
             {
                 m_actions_container->hide();
             }
-        });
-    QObject::connect(
-        this,
-        &QObject::objectNameChanged,
-        [this](QString)
-        {
-            m_actions_container->setObjectName(objectName() + "Actions");
         });
 }
 
@@ -457,7 +452,7 @@ speed_dial::animations speed_dial::compute_positions() const
         i++;
     }
 
-    return {container_rect, actions_positions};
+    return {.container_rect = container_rect, .actions_positions = actions_positions};
 }
 
 } // namespace sight::ui::qt::widget

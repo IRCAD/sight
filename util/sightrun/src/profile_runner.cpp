@@ -267,7 +267,6 @@ int main(int argc, char* argv[])
     );
 
     // Hidden options
-    bool macro_mode = false;
 #ifdef WIN32
     bool enableAbortDialog = true;
 #endif
@@ -276,8 +275,6 @@ int main(int argc, char* argv[])
     hidden.add_options()
     ("profile", po::value(&profile_file)->default_value("profile.xml"), "Profile file")
     ("profile-args", po::value(&profile_args)->multitoken(), "Profile args")
-    ("macro", po::value(&macro_mode)->implicit_value(true)->zero_tokens(), "Enable macro mode")
-    ("no-macro", po::value(&macro_mode)->implicit_value(false)->zero_tokens(), "Disable macro mode")
 #ifdef WIN32
     ("abort-dialog", po::value(&enableAbortDialog)->implicit_value(true)->zero_tokens(), "Enable abort dialog")
     ("no-abort-dialog", po::value(&enableAbortDialog)->implicit_value(false)->zero_tokens(), "Disable abort dialog")
@@ -523,20 +520,10 @@ int main(int argc, char* argv[])
         profile->set_params(profile_args);
 
         profile->start();
-        if(macro_mode)
-        {
-            sight::core::runtime::load_module("sight::module::ui::test");
-        }
-
         profile->run();
         if(g_signal_status == 0)
         {
             profile->stop();
-        }
-
-        if(macro_mode)
-        {
-            sight::core::runtime::unload_module("sight::module::ui::test");
         }
     }
     catch(const std::exception& e)

@@ -19,81 +19,30 @@
  *
  ***********************************************************************/
 
-#include "test.hpp"
+#include "helper.hpp"
 
-#include <ui/test/helper/button.hpp>
-#include <ui/test/helper/scene3d.hpp>
-#include <ui/test/helper/slider.hpp>
-
-#include <utest_data/data.hpp>
-
-#include <doctest/doctest.h>
+#include <ui/test/gui_test.hpp>
 
 namespace sight::sight_viewer::uit
 {
 
-TEST_SUITE("sight_viewer")
+using ui::test::at;
+
+SIGHT_GUI_TEST_CASE("sagittal_negato")
 {
-//------------------------------------------------------------------------------
+    open_image(ui);
+    const auto alone = ui.read(MAIN_SCENE, &QWidget::size);
 
-    TEST_CASE_FIXTURE(test, "sagittal_negato")
-    {
-        namespace helper = sight::ui::test::helper;
+    // The camera turns to face this negato.
+    ui.expect_image_changes(MAIN_SCENE, [&]{ui.drag(MAIN_SCENE, at(0.01, 0.5), at(0.26, 0.5));});
+    ui.click("top_toolbar_left/volume");
+    ui.click("top_toolbar_view/Restore");
 
-        const std::string test_name               = "sightViewerSagittalNegatoTest";
-        const std::string image_name              = test_name + ".png";
-        const std::filesystem::path snapshot_path = sight::ui::test::tester::get_image_output_path(test_name)
-                                                    / image_name;
-        std::filesystem::remove(snapshot_path);
-
-        const std::filesystem::path reference_path = utest_data::dir() / "sight/ui/sight_viewer" / image_name;
-
-        const std::string failure_message = start(
-            test_name,
-            [&snapshot_path, &reference_path](sight::ui::test::tester& _tester)
-            {
-                open_file(
-                    _tester,
-                    "Inr (.inr) (*.inr *.inr.gz)",
-                    utest_data::dir() / "sight/image/inr/image.inr.gz"
-                );
-
-                // Firstly, we must drag the mouse in the 3D scene so that the camera is "next to" the image
-                helper::scene3d::rotate(
-                    _tester,
-                    helper::selector::from_parent("top_scenes_view/1", "scene_srv"),
-                    {1 / 4., 0
-                    });
-
-                // We want to hide the volume, we must click on the Show/hide volume button to achieve this
-                helper::button::push(_tester, "top_toolbar_left/volume");
-
-                // Then we want to display the negato views, we must click on the restore button from the 3d scene
-                // toolbar
-                helper::button::push(_tester, "top_toolbar_view/Restore");
-
-                // For the test to work, we must first reset all negatos to 0
-                reset_negatos(_tester);
-
-                // We want to move the negato, we must click in the negato slider to do that
-                helper::slider::set(
-                    _tester,
-                    helper::selector::from_parent("bottom_scenes_view/0", "negato_slicer_srv"),
-                    250
-                );
-
-                save_snapshot(_tester, snapshot_path);
-
-                compare_images(snapshot_path, reference_path);
-            },
-            true
-        );
-
-        // Runs on the main thread, after start() has returned: the only doctest assertion for
-        // this scenario. See sight::ui::test::base::start().
-        INFO(failure_message);
-        REQUIRE(failure_message.empty());
-    }
-} // TEST_SUITE
+    reset_negatos(ui);
+    ui.set(negato("sagittal_scene_view"), 250);
+    ui.expect(negato("sagittal_scene_view", "label")).text_contains("250 / ");
+    show_main_scene_alone(ui, alone);
+    ui.expect_image(MAIN_SCENE, reference("sagittal_negato"), edge_on_negatos());
+}
 
 } // namespace sight::sight_viewer::uit

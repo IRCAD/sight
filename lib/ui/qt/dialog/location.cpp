@@ -42,9 +42,24 @@ namespace sight::ui::qt::dialog
 
 core::location::base::sptr location::show()
 {
-    const QString& caption = QString::fromStdString(this->get_title());
-    const QString& path    = QString::fromStdString(this->get_default_location()->to_string());
-    const QString& filter  = this->file_filters();
+    const QString& caption      = QString::fromStdString(this->get_title());
+    const auto default_location = this->get_default_location();
+    QString path;
+    // Keep filesystem paths native: a narrow string loses Unicode on Windows.
+    if(const auto file = std::dynamic_pointer_cast<core::location::single_file>(default_location))
+    {
+        path = QString::fromStdU16String(file->get_file().u16string());
+    }
+    else if(const auto folder = std::dynamic_pointer_cast<core::location::single_folder>(default_location))
+    {
+        path = QString::fromStdU16String(folder->get_folder().u16string());
+    }
+    else if(default_location)
+    {
+        path = QString::fromStdString(default_location->to_string());
+    }
+
+    const QString& filter = this->file_filters();
     core::location::base::sptr location;
 
     QFileDialog dialog;
@@ -54,7 +69,10 @@ core::location::base::sptr location::show()
     // @todo: On Linux with GTK location dialog are stuck on .exec(), it seems that paint event is never posted.
     // Temporary we use qt dialog as a work-around.
 #ifdef _WIN32
-    dialog.setOption(QFileDialog::Option::DontUseNativeDialog, !qgetenv("GUI_TESTS_ARE_RUNNING").isEmpty());
+    dialog.setOption(
+        QFileDialog::Option::DontUseNativeDialog,
+        QCoreApplication::testAttribute(Qt::AA_DontUseNativeDialogs)
+    );
 #else
     dialog.setOption(QFileDialog::Option::DontUseNativeDialog, true);
 #endif
@@ -108,7 +126,7 @@ core::location::base::sptr location::show()
             {
                 const auto& selected_file = selected_files.constFirst();
                 auto file                 = std::make_shared<core::location::single_file>();
-                file->set_file(selected_file.toStdString());
+                file->set_file(std::filesystem::path(selected_file.toStdU16String()));
                 location = file;
             }
             else if(m_type == ui::dialog::location::multi_files)
@@ -117,7 +135,7 @@ core::location::base::sptr location::show()
                 paths.reserve(static_cast<size_t>(selected_files.size()));
                 for(const QString& file : selected_files)
                 {
-                    paths.emplace_back(file.toStdString());
+                    paths.emplace_back(file.toStdU16String());
                 }
 
                 auto multifiles = std::make_shared<core::location::multiple_files>();
@@ -128,7 +146,7 @@ core::location::base::sptr location::show()
             {
                 const auto& selected_directory = selected_files.constFirst();
                 auto folder                    = std::make_shared<core::location::single_folder>();
-                folder->set_folder(selected_directory.toStdString());
+                folder->set_folder(std::filesystem::path(selected_directory.toStdU16String()));
                 location = folder;
             }
         }

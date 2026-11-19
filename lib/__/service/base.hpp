@@ -36,18 +36,10 @@
 
 #include <boost/property_tree/ptree.hpp> // NOLINT(misc-include-cleaner): for config_t
 
-namespace sight::core::thread
-{
-
-class Worker;
-
-} // namespace sight::core::thread
-
 namespace sight::service
 {
 
 class base;
-class manager;
 
 namespace detail
 {
@@ -279,6 +271,16 @@ public:
      * @pre m_globalState == STARTED
      */
     SIGHT_SERVICE_API shared_future_t update();
+
+    /**
+     * @brief The identifier of the service whose start, stop or update runs on the calling thread, the innermost one if
+     * they are nested.
+     *
+     * A custom slot is not recorded. It tells what opens a dialog, which the GUI names after its service.
+     *
+     * @return its base_id(), empty when no service runs on this thread.
+     */
+    [[nodiscard]] SIGHT_SERVICE_API static std::string running_id();
 
     /**
      * @brief Associate the service to another object

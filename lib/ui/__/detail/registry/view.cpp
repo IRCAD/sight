@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,6 +22,8 @@
 
 #include "view.hpp"
 
+#include "xml_name.hpp"
+
 #include "ui/__/container/menubar.hpp"
 #include "ui/__/container/toolbar.hpp"
 #include "ui/__/container/widget.hpp"
@@ -29,8 +31,7 @@
 
 #include <core/ptree.hpp>
 
-#include <service/op.hpp>
-
+#include <string_view>
 #include <utility>
 
 namespace sight::ui::detail::registry
@@ -73,6 +74,13 @@ ui::container::widget::sptr view::get_parent()
     }
 
     return parent_container;
+}
+
+//-----------------------------------------------------------------------------
+
+bool view::needs_own_name(std::string_view _name) const noexcept
+{
+    return !m_parent_wid.empty() && xml_name(m_parent_wid) != _name;
 }
 
 //-----------------------------------------------------------------------------
@@ -166,6 +174,7 @@ void view::manage(std::vector<ui::container::widget::sptr> _sub_views)
             sid.second < _sub_views.size()
         );
         container = _sub_views.at(sid.second);
+        container->set_name(std::string(xml_name(sid.first)));
         ui::registry::register_sid_container(sid.first, container);
     }
 
@@ -177,6 +186,7 @@ void view::manage(std::vector<ui::container::widget::sptr> _sub_views)
             wid.second < _sub_views.size()
         );
         container = _sub_views.at(wid.second);
+        container->set_name(std::string(xml_name(wid.first)));
         ui::registry::register_wid_container(wid.first, container);
     }
 }

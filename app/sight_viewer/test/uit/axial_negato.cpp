@@ -19,113 +19,38 @@
  *
  ***********************************************************************/
 
-#include "test.hpp"
+#include "helper.hpp"
 
-#include <ui/test/helper/button.hpp>
-#include <ui/test/helper/line_edit.hpp>
-#include <ui/test/helper/slider.hpp>
-
-#include <utest_data/data.hpp>
-
-#include <doctest/doctest.h>
+#include <ui/test/gui_test.hpp>
 
 namespace sight::sight_viewer::uit
 {
 
-TEST_SUITE("sight_viewer")
+SIGHT_GUI_TEST_CASE("axial_negato")
 {
-//------------------------------------------------------------------------------
+    const auto label = negato("axial_scene_view", "label");
 
-    TEST_CASE_FIXTURE(test, "axial_negato")
-    {
-        namespace helper = sight::ui::test::helper;
+    open_image(ui);
+    const auto alone = ui.read(MAIN_SCENE, &QWidget::size);
+    ui.click("top_toolbar_left/volume");
+    ui.click("top_toolbar_view/Restore");
+    ui.expect(label).text("67 / 133");
 
-        const std::string test_name               = "sightViewerAxialNegatoTest";
-        const std::string image_name              = test_name + ".png";
-        const std::filesystem::path snapshot_path = sight::ui::test::tester::get_image_output_path(test_name)
-                                                    / image_name;
-        std::filesystem::remove(snapshot_path);
+    reset_negatos(ui);
+    ui.expect(label).text("0 / 133");
 
-        const std::filesystem::path reference_path = utest_data::dir() / "sight/ui/sight_viewer" / image_name;
+    ui.set(negato("axial_scene_view"), 133);
+    ui.expect(label).text("133 / 133");
+    show_main_scene_alone(ui, alone);
+    ui.expect_image(MAIN_SCENE, reference("axial_negato"));
+    ui.click("top_toolbar_view/Restore");
 
-        const std::string failure_message = start(
-            test_name,
-            [&snapshot_path, &reference_path](sight::ui::test::tester& _tester)
-            {
-                open_file(
-                    _tester,
-                    "Inr (.inr) (*.inr *.inr.gz)",
-                    utest_data::dir() / "sight/image/inr/image.inr.gz"
-                );
+    // The label also tells the position, in millimetres.
+    ui.click(negato("axial_scene_view", "label/toggle"));
+    ui.expect(label).text("S : 212.80 mm");
 
-                // We want to hide the volume, we must click on the Show/hide volume button to achieve this
-                helper::button::push(_tester, "top_toolbar_left/volume");
-
-                // Then we want to display the negato views, we must click on the restore button from the 3d scene
-                // toolbar
-                helper::button::push(_tester, "top_toolbar_view/Restore");
-
-                helper::line_edit::match(
-                    _tester,
-                    helper::selector::from_parent("top_scenes_view/0", "Label"),
-                    "67 / 133"
-                );
-
-                // For the test to work, we must first reset all negatos to 0
-                reset_negatos(_tester);
-
-                helper::line_edit::match(
-                    _tester,
-                    helper::selector::from_parent("top_scenes_view/0", "Label"),
-                    "0 / 133"
-                );
-
-                // We want to move the negato, we must click in the negato slider to do that
-                helper::slider::set(
-                    _tester,
-                    helper::selector::from_parent("top_scenes_view/0", "negato_slicer_srv"),
-                    133
-                );
-
-                save_snapshot(_tester, snapshot_path);
-
-                compare_images(snapshot_path, reference_path);
-
-                helper::line_edit::match(
-                    _tester,
-                    helper::selector::from_parent("top_scenes_view/0", "Label"),
-                    "133 / 133"
-                );
-
-                helper::button::push(_tester, helper::selector::from_parent("top_scenes_view/0", "LabelButton"));
-
-                // we should observe the position of index 133 at QLineEdit after click.
-                helper::line_edit::match(
-                    _tester,
-                    helper::selector::from_parent("top_scenes_view/0", "Label"),
-                    "S : 212.80 mm"
-                );
-
-                helper::slider::set(
-                    _tester,
-                    helper::selector::from_parent("top_scenes_view/0", "negato_slicer_srv"),
-                    12
-                );
-
-                helper::line_edit::match(
-                    _tester,
-                    helper::selector::from_parent("top_scenes_view/0", "Label"),
-                    "S : 19.20 mm"
-                );
-            },
-            true
-        );
-
-        // Runs on the main thread, after start() has returned: the only doctest assertion for
-        // this scenario. See sight::ui::test::base::start().
-        INFO(failure_message);
-        REQUIRE(failure_message.empty());
-    }
-} // TEST_SUITE
+    ui.set(negato("axial_scene_view"), 12);
+    ui.expect(label).text("S : 19.20 mm");
+}
 
 } // namespace sight::sight_viewer::uit

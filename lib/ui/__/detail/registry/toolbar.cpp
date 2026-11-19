@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,9 @@
 
 #include "toolbar.hpp"
 
-#include "ui/__/action.hpp"
+#include "xml_name.hpp"
+
+#include "ui/__/action_callback_base.hpp"
 #include "ui/__/registry.hpp"
 
 #include <service/op.hpp>
@@ -30,6 +32,7 @@
 #include <boost/range/iterator_range_core.hpp>
 #include <boost/range/join.hpp>
 
+#include <string>
 #include <utility>
 
 namespace sight::ui::detail::registry
@@ -58,7 +61,7 @@ ui::container::menu_item::sptr toolbar::get_menu_item(
 {
     SIGHT_ASSERT(
         "The action '" + _action_sid + "' declared by the toolbar '" + m_sid + "' is not found",
-        m_action_sids.find(_action_sid) != m_action_sids.end()
+        m_action_sids.contains(_action_sid)
     );
     ui::container::menu_item::sptr menu_item = _menu_items.at(m_action_sids[_action_sid]);
     return menu_item;
@@ -85,7 +88,7 @@ void toolbar::initialize(const ui::config_t& _configuration)
         {
             SIGHT_ASSERT(
                 "The action '" + sid.value() + "' already exists for '" + m_sid + "' menu.",
-                m_action_sids.find(sid.value()) == m_action_sids.end()
+                !m_action_sids.contains(sid.value())
             );
             m_action_sids[sid.value()] = index;
 
@@ -112,7 +115,7 @@ void toolbar::initialize(const ui::config_t& _configuration)
         {
             SIGHT_ASSERT(
                 "menu '" + sid.value() + "' already exists for '" + m_sid + "' toolbar",
-                m_menu_sids.find(sid.value()) == m_menu_sids.end()
+                !m_menu_sids.contains(sid.value())
             );
 
             m_menu_sids[sid.value()] = index;
@@ -135,7 +138,7 @@ void toolbar::initialize(const ui::config_t& _configuration)
         {
             SIGHT_ASSERT(
                 "Editor '" + sid.value() + "' already exists for '" + m_sid + "'  toolbar",
-                m_editor_sids.find(sid.value()) == m_editor_sids.end()
+                !m_editor_sids.contains(sid.value())
             );
             m_editor_sids[sid.value()] = index;
         }
@@ -143,7 +146,7 @@ void toolbar::initialize(const ui::config_t& _configuration)
         {
             SIGHT_ASSERT(
                 "Editor '" + wid.value() + "' already exists for '" + m_sid + "'  toolbar",
-                m_editor_wids.find(wid.value()) == m_editor_wids.end()
+                !m_editor_wids.contains(wid.value())
             );
             m_editor_wids[wid.value()] = index;
         }
@@ -209,6 +212,7 @@ void toolbar::manage(std::vector<ui::container::widget::sptr> _containers)
             sid.second < _containers.size()
         );
         container = _containers.at(sid.second);
+        container->set_name(std::string(xml_name(sid.first)));
         ui::registry::register_sid_container(sid.first, container);
     }
 
@@ -220,6 +224,7 @@ void toolbar::manage(std::vector<ui::container::widget::sptr> _containers)
             wid.second < _containers.size()
         );
         container = _containers.at(wid.second);
+        container->set_name(std::string(xml_name(wid.first)));
         ui::registry::register_wid_container(wid.first, container);
     }
 }

@@ -50,10 +50,7 @@ void shader_parameter_editor::starting()
 
     this->create();
 
-    const QString service_id = QString::fromStdString(base_id());
-
     auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->get_container());
-    qt_container->get_qt_container()->setObjectName(service_id);
 
     m_sizer = new QVBoxLayout();
     m_sizer->setContentsMargins(0, 0, 0, 0);
@@ -89,6 +86,7 @@ void shader_parameter_editor::updating()
 }
 
 //------------------------------------------------------------------------------
+
 void shader_parameter_editor::clear()
 {
     service::base::sptr obj_service = m_editor_info.srv.lock();

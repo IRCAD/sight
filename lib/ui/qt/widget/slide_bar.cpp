@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2025 IRCAD France
+ * Copyright (C) 2016-2026 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,10 +21,6 @@
  ***********************************************************************/
 
 #include "ui/qt/widget/slide_bar.hpp"
-
-#include "ui/qt/main_frame.hpp"
-
-#include <core/spy_log.hpp>
 
 #include <QParallelAnimationGroup>
 #include <QPropertyAnimation>
@@ -73,8 +69,6 @@ slide_bar::slide_bar(
 
 void slide_bar::init()
 {
-    this->setObjectName("slide_bar");
-
     // Set the widget position
     this->update_position();
 

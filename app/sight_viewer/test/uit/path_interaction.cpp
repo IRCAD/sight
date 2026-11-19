@@ -19,245 +19,146 @@
  *
  ***********************************************************************/
 
-#include "test.hpp"
+#include "helper.hpp"
 
 #include <data/image_series.hpp>
 #include <data/matrix4.hpp>
 
-#include <service/registry.hpp>
-
-#include <ui/test/helper/button.hpp>
-
-#include <utest_data/data.hpp>
-
-#include <doctest/doctest.h>
-
-#include <QAction>
+#include <ui/test/gui_test.hpp>
 
 #include <algorithm>
+#include <array>
 #include <cmath>
+#include <cstddef>
 #include <string>
 
 namespace sight::sight_viewer::uit
 {
 
-TEST_SUITE("sight_viewer")
+namespace
 {
-    TEST_CASE_FIXTURE(test, "path_interaction")
-    {
-        namespace helper = sight::ui::test::helper;
 
-        const std::string failure_message = start(
-            "sightViewerPathInteractionTest",
-            [&](sight::ui::test::tester& _tester)
+using pose_t = std::array<double, 16>;
+
+constexpr std::string_view CAMERA  = "global_camera";
+constexpr std::string_view TOOLBAR = "fly_through_camera_toolbar/";
+
+} // namespace
+
+//------------------------------------------------------------------------------
+
+/// An item of the fly through camera toolbar.
+static std::string fly(std::string_view _item)
+{
+    return std::string(TOOLBAR) + std::string(_item);
+}
+
+//------------------------------------------------------------------------------
+
+static bool same_pose(const pose_t& _first, const pose_t& _second)
+{
+    return std::ranges::equal(_first, _second, [](double _a, double _b){return std::abs(_a - _b) < 1e-4;});
+}
+
+//------------------------------------------------------------------------------
+
+static pose_t pose_of(const data::matrix4& _matrix)
+{
+    pose_t pose {};
+    std::ranges::copy(_matrix.values(), pose.begin());
+    return pose;
+}
+
+//------------------------------------------------------------------------------
+
+/// The points of the path, 0 once it is gone.
+static std::size_t path_points(const data::image_series& _series)
+{
+    const auto fiducials = _series.get_fiducials();
+    const auto groups    = fiducials->get_point_fiducials_group_names();
+    return std::ranges::find(
+        groups,
+        "Path"
+    ) == groups.end() ? 0 : fiducials->get_number_of_points_in_group("Path").value_or(0);
+}
+
+//------------------------------------------------------------------------------
+
+SIGHT_GUI_TEST_CASE("path_interaction")
+{
+    using ui::test::at;
+
+    const auto pose = [&ui]
+                      {
+                          const auto camera = ui.data<data::matrix4>(CAMERA);
+                          const data::mt::locked_ptr lock(camera);
+                          return pose_of(*lock);
+                      };
+    const auto expect_pose = [&ui](std::string_view _what, auto _predicate)
+                             {
+                                 ui.expect_data<data::matrix4>(CAMERA).that(
+                                     _what,
+                                     [_predicate](const data::matrix4& _camera){return _predicate(pose_of(_camera));});
+                             };
+    const auto expect_path = [&ui](std::string_view _what, std::size_t _points)
+                             {
+                                 ui.expect_data<data::image_series>("image").that(
+                                     _what,
+                                     [_points](const data::image_series& _series)
             {
-                open_file(
-                    _tester,
-                    "Inr (.inr) (*.inr *.inr.gz)",
-                    utest_data::dir() / "sight/image/inr/image.inr.gz"
-                );
-                helper::button::push(_tester, "top_toolbar_left/volume");
+                return path_points(_series) == _points;
+            });
+                             };
 
-                sight::service::base::sptr path_service;
-                _tester.take("3D scene", "top_scenes_view/1");
-                _tester.doubt<QWidget*>(
-                    "The path service is started",
-                    [&](QWidget*)
-                {
-                    for(const auto& service : sight::service::get_services(
-                            "sight::module::viz::scene3d_qt::adaptor::fiducials::path"
-                    ))
-                    {
-                        if(service->started()
-                           && service->get_id().find("volumeRendering") != std::string::npos
-                           && service->get_id().ends_with("-path_adp"))
-                        {
-                            path_service = service;
-                            return true;
-                        }
-                    }
+    open_image(ui);
+    ui.click("top_toolbar_left/volume");
 
-                    return false;
-                });
+    ui.set("parameter_toolbar_view/Fly through camera", true);
+    ui.set(fly("Draw path"), true);
 
-                auto image = path_service->inout<sight::data::image_series>("data.image_series").lock().get_shared();
-                if(!image)
-                {
-                    sight::ui::test::tester::fail("The path service has no image series");
-                }
+    ui.click(MAIN_SCENE);
+    ui.expect(fly("Clear path")).disabled();
+    expect_path("has a path of one point", 1);
 
-                helper::button::push(_tester, "parameter_toolbar_view/Fly through camera");
-                helper::button::push(_tester, "fly_through_camera_toolbar/Draw path");
+    ui.click(MAIN_SCENE, at(0.65, 0.66));
+    ui.expect(fly("Clear path")).enabled();
+    expect_path("has a path of two points", 2);
 
-                helper::selector::from_parent("top_scenes_view/1", "scene_srv").select(_tester);
-                const QPoint scene_center = sight::ui::test::tester::center_of(_tester.get<QWidget*>());
-                _tester.interact(
-                    std::make_unique<sight::ui::test::mouse_click>(Qt::LeftButton, Qt::NoModifier, scene_center)
-                );
+    // Interaction mode stays off before Play.
+    ui.expect(fly("Interaction mode")).disabled();
+    ui.expect(fly("Interaction mode")).unchecked();
 
-                _tester.take("Clear path action", "fly_through_camera_toolbar/Clear path");
-                _tester.doubt<QAction*>(
-                    "One point does not create a path",
-                    [](QAction* _action){return !_action->isEnabled();});
-                _tester.doubt<QAction*>(
-                    "The Path group contains one point",
-                    [image](QAction*)
-                {
-                    return image->get_fiducials()->get_number_of_points_in_group("Path") == 1;
-                });
+    const auto normal = pose();
+    ui.click(fly("Play"));
+    ui.expect(fly("Interaction mode")).enabled();
+    ui.expect(fly("Interaction mode")).checked();
+    expect_pose("moves along the path", [normal](const pose_t& _pose){return !same_pose(_pose, normal);});
 
-                helper::selector::from_parent("top_scenes_view/1", "scene_srv").select(_tester);
-                _tester.interact(
-                    std::make_unique<sight::ui::test::mouse_click>(
-                        Qt::LeftButton,
-                        Qt::NoModifier,
-                        scene_center + QPoint(100, 100)
-                    )
-                );
+    ui.click(fly("Pause"));
+    ui.expect(fly("Play")).enabled();
+    ui.expect(fly("Interaction mode")).checked();
 
-                _tester.take("Clear path action", "fly_through_camera_toolbar/Clear path");
-                _tester.doubt<QAction*>(
-                    "Two points create a path",
-                    [](QAction* _action){return _action->isEnabled();});
-                _tester.doubt<QAction*>(
-                    "The Path group contains two points",
-                    [image](QAction*)
-                {
-                    return image->get_fiducials()->get_number_of_points_in_group("Path") == 2;
-                });
-                _tester.take("Interaction mode action", "fly_through_camera_toolbar/Interaction mode");
-                _tester.doubt<QAction*>(
-                    "Interaction mode stays disabled before Play",
-                    [](QAction* _action){return !_action->isEnabled() && !_action->isChecked();});
+    // The mouse turns the paused fly camera.
+    const auto paused = pose();
+    ui.drag(MAIN_SCENE, at(0.5, 0.5), at(0.56, 0.53));
+    expect_pose("turns with the mouse", [paused](const pose_t& _pose){return !same_pose(_pose, paused);});
 
-                sight::service::base::sptr camera_service;
-                _tester.doubt<QAction*>(
-                    "The normal camera exposes its pose",
-                    [&](QAction*)
-                {
-                    for(const auto& service : sight::service::get_services(
-                            "sight::module::viz::scene3d::adaptor::camera"
-                    ))
-                    {
-                        if(service->started()
-                           && service->get_id().find("volumeRendering") != std::string::npos
-                           && service->get_id().ends_with("-global_camera_adp"))
-                        {
-                            camera_service = service;
-                            return true;
-                        }
-                    }
+    // Leaving the interaction mode puts the normal camera back, and the mouse moves it again.
+    ui.set(fly("Interaction mode"), false);
+    expect_pose("is back to normal", [normal](const pose_t& _pose){return same_pose(_pose, normal);});
+    ui.drag(MAIN_SCENE, at(0.05, 0.13), at(0.11, 0.16));
+    expect_pose("moves with the mouse", [normal](const pose_t& _pose){return !same_pose(_pose, normal);});
 
-                    return false;
-                });
+    // Play enters the interaction mode again, and leaving it stops the playback.
+    ui.click(fly("Play"));
+    ui.expect(fly("Interaction mode")).checked();
+    ui.set(fly("Interaction mode"), false);
+    ui.expect(fly("Play")).enabled();
+    ui.expect(fly("Pause")).disabled();
 
-                const auto camera_pose = [&camera_service]
-                                         {
-                                             const auto pose = camera_service->inout<sight::data::matrix4>(
-                                                 "data.transform_out"
-                                             ).const_lock();
-                                             return pose->values();
-                                         };
-                const auto poses_match = [](const auto& _first, const auto& _second)
-                                         {
-                                             return std::ranges::equal(
-                                                 _first,
-                                                 _second,
-                                                 [](double _left, double _right)
-                    {
-                        return std::abs(_left - _right) < 1e-4;
-                    });
-                                         };
-                const auto normal_pose = camera_pose();
-
-                helper::button::push(_tester, "fly_through_camera_toolbar/Play");
-                _tester.take("Interaction mode action", "fly_through_camera_toolbar/Interaction mode");
-                _tester.doubt<QAction*>(
-                    "Play checks interaction mode",
-                    [](QAction* _action)
-                {
-                    return _action->isEnabled() && _action->isCheckable() && _action->isChecked();
-                });
-                _tester.doubt<QAction*>(
-                    "Playback moves the camera",
-                    [&](QAction*){return !poses_match(camera_pose(), normal_pose);});
-
-                helper::button::push(_tester, "fly_through_camera_toolbar/Pause");
-                _tester.take("Play action", "fly_through_camera_toolbar/Play");
-                _tester.doubt<QAction*>(
-                    "Pause enables Play",
-                    [](QAction* _action){return _action->isEnabled();});
-                _tester.take("Interaction mode action", "fly_through_camera_toolbar/Interaction mode");
-                _tester.doubt<QAction*>(
-                    "Pause keeps fly interaction enabled",
-                    [](QAction* _action){return _action->isChecked();});
-
-                const auto paused_pose = camera_pose();
-                helper::selector::from_parent("top_scenes_view/1", "scene_srv").select(_tester);
-                _tester.interact(
-                    std::make_unique<sight::ui::test::mouse_drag>(scene_center, scene_center + QPoint(40, 20))
-                );
-                _tester.doubt<QWidget*>(
-                    "The mouse rotates the paused fly camera",
-                    [&](QWidget*){return !poses_match(camera_pose(), paused_pose);});
-
-                helper::button::push(_tester, "fly_through_camera_toolbar/Interaction mode");
-                _tester.take("Interaction mode action", "fly_through_camera_toolbar/Interaction mode");
-                _tester.doubt<QAction*>(
-                    "Interaction mode can be unchecked manually",
-                    [](QAction* _action){return !_action->isChecked();});
-                _tester.doubt<QAction*>(
-                    "Disabling fly interaction restores the normal camera pose",
-                    [&](QAction*){return poses_match(camera_pose(), normal_pose);});
-
-                helper::selector::from_parent("top_scenes_view/1", "scene_srv").select(_tester);
-                _tester.interact(
-                    std::make_unique<sight::ui::test::mouse_drag>(QPoint(30, 80), QPoint(70, 100))
-                );
-                _tester.doubt<QWidget*>(
-                    "Normal camera interaction works again",
-                    [&](QWidget*){return !poses_match(camera_pose(), normal_pose);});
-
-                helper::button::push(_tester, "fly_through_camera_toolbar/Play");
-                _tester.take("Interaction mode action", "fly_through_camera_toolbar/Interaction mode");
-                _tester.doubt<QAction*>(
-                    "Play reactivates fly interaction",
-                    [](QAction* _action){return _action->isChecked();});
-                helper::button::push(_tester, "fly_through_camera_toolbar/Interaction mode");
-                _tester.take("Play action", "fly_through_camera_toolbar/Play");
-                _tester.doubt<QAction*>(
-                    "Leaving fly interaction stops playback and enables Play",
-                    [](QAction* _action){return _action->isEnabled();});
-                _tester.take("Pause action", "fly_through_camera_toolbar/Pause");
-                _tester.doubt<QAction*>(
-                    "Leaving fly interaction disables Pause",
-                    [](QAction* _action){return !_action->isEnabled();});
-
-                helper::button::push(_tester, "fly_through_camera_toolbar/Clear path");
-                _tester.take("Clear path action", "fly_through_camera_toolbar/Clear path");
-                _tester.doubt<QAction*>(
-                    "Clearing the path disables the action",
-                    [](QAction* _action){return !_action->isEnabled();});
-                _tester.doubt<QAction*>(
-                    "Clearing the path removes its points",
-                    [image](QAction*)
-                {
-                    const auto fiducials = image->get_fiducials();
-                    const auto groups    = fiducials->get_point_fiducials_group_names();
-                    if(std::ranges::find(groups, "Path") == groups.end())
-                    {
-                        return true;
-                    }
-
-                    return fiducials->get_number_of_points_in_group("Path") == 0;
-                });
-            },
-            true
-        );
-
-        INFO(failure_message);
-        REQUIRE(failure_message.empty());
-    }
+    ui.click(fly("Clear path"));
+    ui.expect(fly("Clear path")).disabled();
+    expect_path("has no path", 0);
 }
 
 } // namespace sight::sight_viewer::uit

@@ -49,8 +49,6 @@ void text_status::configuring()
 
     const auto config = this->get_config();
 
-    const QString service_id = QString::fromStdString(base_id());
-
     const auto size      = config.get<std::string>("size", "14pt");
     const auto weight    = config.get<std::string>("weight", "normal");
     const auto word_wrap = config.get<bool>("word_wrap", false);
@@ -72,7 +70,6 @@ void text_status::configuring()
                                + "font-weight: " + QString::fromStdString(weight) + ";";
 
     m_label_value = new QLabel();
-    m_label_value->setObjectName(service_id);
     m_label_value->setStyleSheet(m_label_value->styleSheet() + stylesheet);
 
     m_label_value->setWordWrap(word_wrap);

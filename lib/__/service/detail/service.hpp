@@ -26,13 +26,6 @@
 
 #include <core/com/helper/sig_slot_connection.hpp>
 
-namespace sight::core::thread
-{
-
-class Worker;
-
-} // namespace sight::core::thread
-
 namespace sight::service::detail
 {
 
@@ -75,6 +68,9 @@ public:
 
     // Slot: updates the service
     base::shared_future_t update(bool _async);
+
+    /// The service whose start, stop or update runs on this thread, or none.
+    [[nodiscard]] static const base* running() noexcept;
 
     /// Connects the service with its data
     void auto_connect();

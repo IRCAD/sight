@@ -164,7 +164,6 @@ int toolbox::insert_item(int _index, QWidget* _widget, const QString& _text)
     };
     c.widget = _widget;
     c.button = new QPushButton(this);
-    c.button->setObjectName("QfwToolBoxButton");
     c.button->setProperty("class", "toolbox_button");
     c.button->setBackgroundRole(QPalette::Window);
     c.button->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
@@ -312,6 +311,18 @@ QWidget* toolbox::widget(int _index) const
     }
 
     return this->m_page_list.at(_index).widget;
+}
+
+//-----------------------------------------------------------------------------
+
+QPushButton* toolbox::item_button(int _index) const
+{
+    if(_index < 0 || _index >= this->m_page_list.size())
+    {
+        return nullptr;
+    }
+
+    return this->m_page_list.at(_index).button;
 }
 
 //-----------------------------------------------------------------------------

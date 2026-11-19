@@ -65,12 +65,9 @@ void light_editor::starting()
 {
     this->create();
 
-    const QString service_id = QString::fromStdString(base_id());
-
     const auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
         this->get_container()
     );
-    qt_container->get_qt_container()->setObjectName(service_id);
 
     m_light_name_label = new QLabel("No light selected");
     m_light_name_label->setAlignment(Qt::AlignHCenter);
@@ -84,70 +81,51 @@ void light_editor::starting()
     m_light_type_box->setEnabled(false);
 
     m_visual_feedback = new QPushButton("Feedback");
-    m_visual_feedback->setObjectName(service_id + "/" + m_visual_feedback->text());
     m_visual_feedback->setCheckable(true);
     m_visual_feedback->setEnabled(false);
 
     m_diffuse_color_btn = new QPushButton("Diffuse color");
-    m_diffuse_color_btn->setObjectName(service_id + "/" + m_diffuse_color_btn->text());
     m_diffuse_color_btn->setEnabled(false);
 
     m_specular_color_btn = new QPushButton("Specular color");
-    m_specular_color_btn->setObjectName(service_id + "/" + m_specular_color_btn->text());
     m_specular_color_btn->setEnabled(false);
 
     m_theta_slider = new QSlider(Qt::Horizontal);
-    m_theta_slider = new QSlider(Qt::Horizontal);
-    m_theta_slider->setObjectName(service_id + "/thetaSlider");
     m_theta_slider->setMinimum(0);
     m_theta_slider->setMaximum(light_adaptor::OFFSET_RANGE);
     m_theta_slider->setEnabled(false);
-
     m_phi_slider = new QSlider(Qt::Horizontal);
-    m_phi_slider->setObjectName(service_id + "/phiSlider");
     m_phi_slider->setMinimum(0);
     m_phi_slider->setMaximum(light_adaptor::OFFSET_RANGE);
     m_phi_slider->setEnabled(false);
-
     m_x_translation = new QSlider(Qt::Horizontal);
-    m_x_translation->setObjectName(service_id + "/xTranslation");
     m_x_translation->setMinimum(-2000);
     m_x_translation->setMaximum(2000);
     m_x_translation->setEnabled(false);
-
     m_y_translation = new QSlider(Qt::Horizontal);
-    m_y_translation->setObjectName(service_id + "/yTranslation");
     m_y_translation->setMinimum(-2000);
     m_y_translation->setMaximum(2000);
     m_y_translation->setEnabled(false);
-
     m_z_translation = new QSlider(Qt::Horizontal);
-    m_z_translation->setObjectName(service_id + "/zTranslation");
     m_z_translation->setMinimum(-2000);
     m_z_translation->setMaximum(2000);
     m_z_translation->setEnabled(false);
 
     m_x_label = new QLineEdit("X: 0");
-    m_x_label->setObjectName(service_id + "/xLabel");
     m_x_label->setReadOnly(true);
     m_x_label->setMaximumWidth(70);
     m_y_label = new QLineEdit("Y: 0");
-    m_y_label->setObjectName(service_id + "/yLabel");
     m_y_label->setReadOnly(true);
     m_y_label->setMaximumWidth(70);
     m_z_label = new QLineEdit("Z: 0");
-    m_z_label->setObjectName(service_id + "/zLabel");
     m_z_label->setReadOnly(true);
     m_z_label->setMaximumWidth(70);
 
     m_x_reset = new QPushButton("Reset");
-    m_x_reset->setObjectName(service_id + "/xReset");
     m_x_reset->setEnabled(false);
     m_y_reset = new QPushButton("Reset");
-    m_y_reset->setObjectName(service_id + "/yReset");
     m_y_reset->setEnabled(false);
     m_z_reset = new QPushButton("Reset");
-    m_z_reset->setObjectName(service_id + "/zReset");
     m_z_reset->setEnabled(false);
 
     // Name of the selected light and its type

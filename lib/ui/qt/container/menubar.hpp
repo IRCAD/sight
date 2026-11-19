@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,16 +24,12 @@
 
 #include <sight/ui/qt/config.hpp>
 
-#include <core/base.hpp>
-#include <core/object.hpp>
+#include <core/macros.hpp>
 
 #include <ui/__/container/menubar.hpp>
 
+#include <QMenuBar>
 #include <QPointer>
-
-QT_BEGIN_NAMESPACE
-class QMenuBar;
-QT_END_NAMESPACE
 
 namespace sight::ui::qt::container
 {

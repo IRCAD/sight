@@ -48,6 +48,7 @@ namespace sight::module::ui::viz
 static const std::string MATERIAL_RESOURCEGROUP_NAME = "materialsTemplate";
 
 //------------------------------------------------------------------------------
+
 material_selector::material_selector() noexcept
 {
     new_signal<signals::selected_t>(signals::SELECTED);
@@ -70,17 +71,13 @@ void material_selector::starting()
 {
     this->create();
 
-    const QString service_id = QString::fromStdString(base_id());
-
     auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->get_container());
-    qt_container->get_qt_container()->setObjectName(service_id);
 
     // Selection
     auto* current_material = new QLabel();
     current_material->setText("Current material : ");
 
     m_material_box = new QComboBox();
-    m_material_box->setObjectName(service_id + "/materialBox");
 
     std::pair<std::string, std::string> elt;
     Ogre::ResourceManager::ResourceMapIterator iter = Ogre::MaterialManager::getSingleton().getResourceIterator();
@@ -102,7 +99,6 @@ void material_selector::starting()
 
     // Reload
     m_reload_button = new QPushButton("Reload");
-    m_reload_button->setObjectName(service_id + "/" + m_reload_button->text());
 
     auto* layout = new QVBoxLayout();
     layout->addLayout(label_layout);

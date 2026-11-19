@@ -27,6 +27,14 @@
 
 #include <ui/__/preferences.hpp>
 
+#include <filesystem>
+#include <iomanip>
+#include <memory>
+#include <optional>
+#include <sstream>
+#include <string>
+#include <system_error>
+
 namespace sight::ui::dialog
 {
 
@@ -78,6 +86,67 @@ inline static std::string get_directory_key(const std::string& _title)
     return get_frame_key(_title) + "." + location_base::DLG_DEFAULT_DIRECTORY;
 }
 
+//------------------------------------------------------------------------------
+
+/// Quoted, as a path was always written, but in UTF-8: the code page of a machine cannot hold every path.
+inline static void put_path(ui::preferences& _preferences, const std::string& _key, const std::filesystem::path& _path)
+{
+    const std::u8string utf8 = _path.u8string();
+    std::ostringstream text;
+    text << std::quoted(std::string(utf8.begin(), utf8.end()));
+    _preferences.put(_key, text.str());
+}
+
+//------------------------------------------------------------------------------
+
+/// A path written by put_path(), or by an older version in the code page of the machine; none when absent.
+inline static std::optional<std::filesystem::path> get_path(ui::preferences& _preferences, const std::string& _key)
+{
+    const auto stored = _preferences.get_optional<std::string>(_key);
+    if(!stored)
+    {
+        return std::nullopt;
+    }
+
+    std::string text;
+    std::istringstream(*stored) >> std::quoted(text);
+    try
+    {
+        return std::filesystem::path(std::u8string(text.begin(), text.end()));
+    }
+    catch(const std::system_error&)
+    {
+        // Not UTF-8: it was written in the code page of this machine, by an older version.
+        return std::filesystem::path(text);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+/// The location stored under these keys, a file before a folder; none when neither is.
+inline static core::location::base::sptr stored_location(
+    ui::preferences& _preferences,
+    const std::string& _file_key,
+    const std::string& _directory_key
+)
+{
+    if(const auto file = get_path(_preferences, _file_key); file)
+    {
+        auto single_file = std::make_shared<core::location::single_file>();
+        single_file->set_file(*file);
+        return single_file;
+    }
+
+    if(const auto directory = get_path(_preferences, _directory_key); directory)
+    {
+        auto single_directory = std::make_shared<core::location::single_folder>();
+        single_directory->set_folder(*directory);
+        return single_directory;
+    }
+
+    return nullptr;
+}
+
 //-----------------------------------------------------------------------------
 
 location_base::location_base()
@@ -127,43 +196,16 @@ core::location::base::sptr location_base::get_default_location()
     {
         ui::preferences preferences;
 
-        if(const auto& default_file = preferences.get_optional<std::filesystem::path>(
-               get_preferences_file_key(preference_key)
+        location = stored_location(
+            preferences,
+            get_preferences_file_key(preference_key),
+            get_preferences_directory_key(preference_key)
         );
-           default_file)
-        {
-            auto single_file = std::make_shared<core::location::single_file>();
-            single_file->set_file(*default_file);
-            location = single_file;
-        }
-        else if(const auto& default_directory =
-                    preferences.get_optional<std::filesystem::path>(
-                        get_preferences_directory_key(preference_key)
-                    ); default_directory)
-        {
-            auto single_directory = std::make_shared<core::location::single_folder>();
-            single_directory->set_folder(*default_directory);
-            location = single_directory;
-        }
 
         // Migrate legacy title-based preferences only when no service-specific value exists.
         if(!location && !m_preferences_key.empty() && m_preferences_key != get_title())
         {
-            if(const auto& default_file = preferences.get_optional<std::filesystem::path>(get_file_key(get_title()));
-               default_file)
-            {
-                auto single_file = std::make_shared<core::location::single_file>();
-                single_file->set_file(*default_file);
-                location = single_file;
-            }
-            else if(const auto& default_directory =
-                        preferences.get_optional<std::filesystem::path>(get_directory_key(get_title()));
-                    default_directory)
-            {
-                auto single_directory = std::make_shared<core::location::single_folder>();
-                single_directory->set_folder(*default_directory);
-                location = single_directory;
-            }
+            location = stored_location(preferences, get_file_key(get_title()), get_directory_key(get_title()));
         }
     }
     catch(const ui::preferences_disabled&)
@@ -192,12 +234,12 @@ void location_base::save_default_location(core::location::base::sptr _loc)
             if(auto single_file = std::dynamic_pointer_cast<core::location::single_file>(_loc))
             {
                 const std::string preference_key = m_preferences_key.empty() ? get_title() : m_preferences_key;
-                preferences.put(get_preferences_file_key(preference_key), single_file->get_file());
+                put_path(preferences, get_preferences_file_key(preference_key), single_file->get_file());
             }
             else if(auto single_directory = std::dynamic_pointer_cast<core::location::single_folder>(_loc))
             {
                 const std::string preference_key = m_preferences_key.empty() ? get_title() : m_preferences_key;
-                preferences.put(get_preferences_directory_key(preference_key), single_directory->get_folder());
+                put_path(preferences, get_preferences_directory_key(preference_key), single_directory->get_folder());
             }
         }
         catch(const ui::preferences_disabled&)

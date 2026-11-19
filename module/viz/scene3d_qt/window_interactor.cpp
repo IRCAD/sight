@@ -25,6 +25,7 @@
 #include "module/viz/scene3d_qt/open_gl_worker.hpp"
 
 #include <ui/qt/container/widget.hpp>
+#include <ui/qt/naming.hpp>
 
 #include <viz/scene3d/registry/macros.hpp>
 #include <viz/scene3d/render.hpp>
@@ -88,8 +89,8 @@ void window_interactor::create_container(
     m_parent_container = std::dynamic_pointer_cast<ui::qt::container::widget>(_parent);
 
     m_ogre_widget = new module::viz::scene3d_qt::window();
-
-    m_ogre_widget->setObjectName(QString::fromStdString(_id));
+    // Keep the render surface distinct from the service container named by its XML sid.
+    ui::qt::detail::set_name(*m_ogre_widget, QString::fromStdString(_id + "/view"));
 
     m_ogre_widget->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
     m_ogre_widget->setMouseTracking(true);
@@ -250,7 +251,8 @@ void window_interactor::set_fullscreen(bool _fullscreen, int _screen_number)
             screen_geometry = QGuiApplication::primaryScreen()->geometry();
         }
 
-        m_ogre_widget->setParent(nullptr);
+        // Keep the XML widget ancestry while presenting the render surface as a separate window.
+        m_ogre_widget->setParent(container, Qt::Window);
         m_ogre_widget->showFullScreen();
         m_ogre_widget->setGeometry(screen_geometry);
 
@@ -284,6 +286,7 @@ void window_interactor::set_fullscreen(bool _fullscreen, int _screen_number)
     }
     else if(auto* layout = container->layout(); layout != nullptr && layout->isEmpty())
     {
+        m_ogre_widget->setParent(container);
         layout->addWidget(m_ogre_widget);
     }
 }

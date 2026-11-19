@@ -14,6 +14,8 @@ and slots, and applications and components are described with XML.
 - Use `#pragma once` for header guards.
 - Keep includes minimal and follow the existing `.clang-tidy` configuration.
 - Use namespaces matching the repository tree.
+- Use C++20 concepts in `requires` clauses, not `static_assert` or `enable_if`.
+- Never include Qt private headers: some CI images lack them.
 
 ## Repository layout
 
@@ -27,7 +29,8 @@ and slots, and applications and components are described with XML.
 
 ## Tests
 
-Unit tests live below the target's `test/ut` directory and use Doctest.
+Unit tests live below the target's `test/ut` directory and use Doctest. Those that need a real display (the native
+platform of each system, or a real OpenGL window) live in `test/uit`, as a `GUI_TEST` target with a display of its own.
 Use the following order for build and test work:
 
 1. If the project has no configured build, ask the user to configure it once
@@ -60,6 +63,9 @@ they create. Test observable behaviour rather than protected member variables.
 For service-specific creation and testing guidance, use the repository skill
 at `.agents/skills/sight-service/SKILL.md`.
 
+For GUI functional tests (`test/uit`, `SIGHT_GUI_TEST_CASE`), use the repository
+skill at `.agents/skills/sight-gui-test/SKILL.md`.
+
 For filling an existing GitLab merge request, use the repository skill at
 `.agents/skills/fill-mr/SKILL.md`. It must resolve repository roots from the
 current workspace and must not contain machine-specific paths or user data.
@@ -68,7 +74,30 @@ For creating a GitLab issue from a project template, use the repository skill
 at `.agents/skills/create-issue/SKILL.md`. It must resolve the project
 from the current workspace and require confirmation before remote creation.
 
-Useful documentation:
+## Bugs, fixes and robustness
+
+- Never guess a cause: use a debugger, else instrument the code. A cause read
+  in the logs alone is a guess and must be called one.
+- A fix comes with a test that fails without it and passes with it; when only
+  a pause can force a race, that temporary pause is the proof. Name every
+  behaviour change of a fix in its commit.
+- A race read in the code, a review's included, is a hypothesis until a run
+  shows it.
+- Tests wait on conditions, never on delays; a deadline only bounds a hang, so
+  no outcome may depend on speed. Prove it with repeated runs next to CPU
+  burners: a failure under load is a bug, never noise.
+
+## Before pushing
+
+- Build and test on Windows and on Linux with gcc and clang: MSVC accepts code
+  they refuse with `-Werror`.
+- Lint with sheldon in commit mode, and its clang-tidy hook with the build
+  directory on the whole branch as `sheldon <merge base> HEAD` (`A..B` drops
+  files), with the tool versions of CI.
+- Push only once these checks passed, then read every job of the merge request
+  pipeline.
+
+## Useful documentation
 
 - https://sight.pages.ircad.fr/sight-doc/
 - https://sight.pages.ircad.fr/sight-doc/HowTos/ServiceCreation.html

@@ -34,7 +34,7 @@
 namespace sight::ui::qt::widget
 {
 
-/// This class allows to display a tickmarks widget. The tickmarks widget can be displayed over settings widgets.
+/// A tickmarks widget for settings. Its inner slider is named `<objectName>/slider` when the widget is named.
 
 class SIGHT_UI_QT_CLASS_API_QT tickmarks_slider : public QWidget
 {

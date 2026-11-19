@@ -23,6 +23,7 @@
 #include "slider.hpp"
 
 #include <ui/qt/container/widget.hpp>
+#include <ui/qt/namer.hpp>
 
 #include <QHBoxLayout>
 #include <QString>
@@ -70,23 +71,19 @@ void slider::starting()
     this->create();
     auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->get_container());
 
-    const QString service_id = QString::fromStdString(base_id());
-
     QPointer<QHBoxLayout> layout = new QHBoxLayout();
-    layout->setObjectName(service_id);
     m_position_slider = new QSlider(Qt::Horizontal);
-    m_position_slider->setObjectName(service_id + "/positionSlider");
     m_position_slider->setRange(0, 0);
 
     QObject::connect(m_position_slider, &QSlider::sliderPressed, this, &self_t::slider_pressed);
     QObject::connect(m_position_slider, &QSlider::sliderReleased, this, &self_t::change_position);
 
     m_current_position = new QLabel();
-    m_current_position->setObjectName(service_id + "/currentPosition");
+    sight::ui::qt::name_part(*m_current_position, "current_position");
     m_current_position->setText(s_unknown_time);
 
     m_total_duration = new QLabel();
-    m_total_duration->setObjectName(service_id + "/totalDuration");
+    sight::ui::qt::name_part(*m_total_duration, "total_duration");
     m_total_duration->setText(s_unknown_time);
 
     layout->addWidget(m_current_position);

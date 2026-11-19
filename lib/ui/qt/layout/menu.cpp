@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,6 +22,8 @@
 
 #include "ui/qt/container/menu.hpp"
 #include "ui/qt/layout/menu.hpp"
+#include "ui/qt/layout/object_name.hpp"
+#include "ui/qt/naming.hpp"
 
 #include "ui/qt/action_callback.hpp"
 #include "ui/qt/container/menu_item.hpp"
@@ -31,8 +33,6 @@
 #include <QAction>
 #include <QActionGroup>
 #include <QMenu>
-
-#include <functional>
 
 SIGHT_REGISTER_GUI(sight::ui::qt::layout::menu, sight::ui::layout::menu_manager::REGISTRY_KEY);
 
@@ -49,7 +49,7 @@ void menu::create_layout(ui::container::menu::sptr _parent, const std::string& _
     const QString q_id = QString::fromStdString(_id);
 
     QMenu* menu = m_parent->get_qt_menu();
-    menu->setObjectName(q_id);
+    ui::qt::detail::set_name(*menu, q_id);
 
     QActionGroup* action_group   = nullptr;
     unsigned int menu_item_index = 0;
@@ -58,7 +58,10 @@ void menu::create_layout(ui::container::menu::sptr _parent, const std::string& _
         ui::qt::container::menu_item::sptr menu_item = ui::qt::container::menu_item::make();
 
         QAction* action = menu->addAction(QString::fromStdString(action_info.m_name));
-        action->setObjectName(q_id + '/' + action_info.m_name.c_str());
+        ui::qt::detail::set_name(
+            *action,
+            detail::composed_object_name(q_id, QString::fromStdString(action_info.m_name))
+        );
 
         action->setSeparator(action_info.m_is_separator);
 

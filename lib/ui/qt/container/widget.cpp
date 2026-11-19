@@ -21,6 +21,9 @@
  ***********************************************************************/
 
 #include "ui/qt/container/widget.hpp"
+#include "ui/qt/naming.hpp"
+
+#include "ui/qt/namer.hpp"
 
 #include <QDockWidget>
 #include <QGraphicsBlurEffect>
@@ -182,6 +185,16 @@ void widget::set_blurred(bool _is_blurred)
     {
         m_container->setGraphicsEffect(nullptr);
     }
+}
+
+//-----------------------------------------------------------------------------
+
+void widget::set_name(const std::string& _name)
+{
+    QWidget* const root = get_qt_root();
+    SIGHT_ASSERT("The container must be initialized before setting its name.", root);
+    ui::qt::detail::set_name(*root, QString::fromStdString(_name));
+    ui::qt::name_widgets_below(*root);
 }
 
 } // namespace sight::ui::qt::container

@@ -22,13 +22,18 @@
 #include "ex_collapsible_section_editor.hpp"
 
 #include <ui/qt/container/widget.hpp>
+#include <ui/qt/namer.hpp>
 #include <ui/qt/widget/collapsible_section.hpp>
 
 #include <QCheckBox>
 #include <QLabel>
+#include <QPointer>
 #include <QPushButton>
 #include <QString>
 #include <QVBoxLayout>
+
+#include <memory>
+#include <vector>
 
 namespace ex_collapsible_section
 {
@@ -39,9 +44,8 @@ void ex_collapsible_section_editor::starting()
 {
     this->create();
 
-    const QString service_id = QString::fromStdString(base_id());
-    auto qt_container        = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->get_container());
-    qt_container->get_qt_container()->setObjectName(service_id);
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->get_container());
+    auto added_labels = std::make_shared<std::vector<QPointer<QLabel> > >();
 
     auto* layout = new QVBoxLayout();
     layout->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
@@ -52,7 +56,7 @@ void ex_collapsible_section_editor::starting()
         200,
         layout->widget()
     );
-    section->setObjectName("collapsible_section");
+    sight::ui::qt::name_part(*section, "section");
 
     // Create the container to add inside the collapsible section.
     auto* box_section = new QVBoxLayout();
@@ -63,37 +67,42 @@ void ex_collapsible_section_editor::starting()
 
     // Button to add dynamically a new label inside collapsible section.
     auto* add_label_button = new QPushButton("Add new label");
-    add_label_button->setObjectName("add_label_button");
+    sight::ui::qt::name_part(*add_label_button, "add_label");
     QObject::connect(
         add_label_button,
         &QPushButton::clicked,
-        [section, box_section]()
+        [section, box_section, added_labels]()
         {
             auto* label_to_add = new QLabel("New label added", section);
-            label_to_add->setObjectName(QString::fromStdString("name/QLabel"));
+            added_labels->emplace_back(label_to_add);
             box_section->addWidget(label_to_add);
             section->update_heights(true);
         });
 
     // Button to delete dynamically a label inside collapsible section.
     auto* remove_label_button = new QPushButton("Remove label");
-    remove_label_button->setObjectName("remove_label_button");
+    sight::ui::qt::name_part(*remove_label_button, "remove_label");
     QObject::connect(
         remove_label_button,
         &QPushButton::clicked,
-        [section, box_section, qt_container]()
+        [section, box_section, added_labels]()
         {
-            auto* label_to_remove =
-                qt_container->get_qt_container()->findChild<QLabel*>(QString::fromStdString("name/QLabel"));
-            box_section->removeWidget(label_to_remove);
-            delete label_to_remove;
+            if(added_labels->empty())
+            {
+                return;
+            }
+
+            const QPointer<QLabel> label_to_remove = added_labels->back();
+            added_labels->pop_back();
+            box_section->removeWidget(label_to_remove.data());
+            delete label_to_remove.data();
             section->update_heights(true);
         });
 
     section->set_content_layout(box_section);
 
     auto* under_label = new QLabel("An under section label");
-    under_label->setObjectName("under_section_label");
+    sight::ui::qt::name_part(*under_label, "under_label");
 
     layout->addWidget(section);
     layout->addWidget(under_label);

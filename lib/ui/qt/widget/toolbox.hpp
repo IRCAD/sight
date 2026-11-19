@@ -120,6 +120,9 @@ public:
 
     [[nodiscard]] SIGHT_UI_QT_API_QT QWidget* widget(int _index) const;
 
+    /// The button that expands and collapses an item.
+    [[nodiscard]] SIGHT_UI_QT_API_QT QPushButton* item_button(int _index) const;
+
     SIGHT_UI_QT_API_QT int index_of(QWidget* _widget) const;
     [[nodiscard]] SIGHT_UI_QT_API_QT int count() const;
 

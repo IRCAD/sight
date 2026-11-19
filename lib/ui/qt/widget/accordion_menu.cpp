@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -46,7 +46,6 @@ accordion_menu::accordion_menu(QWidget* _parent, Qt::Orientation _orientation) :
     QWidget(_parent),
     m_orientation(_orientation)
 {
-    m_bracket->setObjectName("Bracket");
     m_bracket->setProperty("class", "Bracket");
     // TODO: load bracket.svg or bracket_white following current stylesheet ?
     m_pixmap =
@@ -327,7 +326,7 @@ std::vector<QWidget*> accordion_menu::children_widgets() const
         children(),
         [&res](QObject* _o)
         {
-            if(_o->objectName() == "Bracket")
+            if(_o->property("class").toString() == "Bracket")
             {
                 // Do not count the bracket in this list
                 return;

@@ -116,12 +116,12 @@ void wizard::starting()
     layout->setContentsMargins(0, 0, 0, 0);
 
     m_title = new QLabel("");
-    m_title->setObjectName("SActivityWizard_title");
+    m_title->setProperty("class", "activity_wizard_title");
     m_title->setAlignment(Qt::AlignHCenter);
     layout->addWidget(m_title);
 
     m_description = new QLabel("");
-    m_description->setObjectName("SActivityWizard_description");
+    m_description->setProperty("class", "activity_wizard_description");
     m_description->setAlignment(Qt::AlignHCenter);
     layout->addWidget(m_description);
 

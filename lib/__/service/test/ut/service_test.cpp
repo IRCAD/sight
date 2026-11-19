@@ -34,6 +34,7 @@
 #include <data/ptr.hpp>
 
 #include <service/extension/factory.hpp>
+#include <service/macros.hpp>
 #include <service/op.hpp>
 
 #include <utest/wait.hpp>
@@ -42,6 +43,64 @@
 
 #include <memory>
 #include <string>
+
+namespace sight::service::ut
+{
+
+/// Records which service base::running_id() reports while it runs.
+// NOLINTNEXTLINE(misc-use-internal-linkage) The factory registers it under this name.
+class running_recorder final : public sight::service::base
+{
+public:
+
+    SIGHT_DECLARE_SERVICE(running_recorder, sight::service::base);
+
+    std::string m_running_in_start;
+    std::string m_running_in_update;
+    std::string m_running_after_inner;
+    std::string m_running_in_stop;
+    sight::service::base::sptr m_inner;
+
+protected:
+
+    //------------------------------------------------------------------------------
+
+    void configuring() override
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void starting() override
+    {
+        m_running_in_start = running_id();
+    }
+
+    //------------------------------------------------------------------------------
+
+    void updating() override
+    {
+        m_running_in_update = running_id();
+        if(m_inner != nullptr)
+        {
+            m_inner->update().get();
+            m_running_after_inner = running_id();
+        }
+    }
+
+    //------------------------------------------------------------------------------
+
+    void stopping() override
+    {
+        m_running_in_stop = running_id();
+    }
+};
+
+SIGHT_REGISTER_SERVICE(sight::service::base, sight::service::ut::running_recorder);
+
+} // namespace sight::service::ut
+
+using sight::service::ut::running_recorder;
 
 namespace
 {
@@ -368,6 +427,44 @@ TEST_SUITE("sight::service::service")
     }
 
 //------------------------------------------------------------------------------
+
+    TEST_CASE("knows_the_service_that_runs_on_a_thread")
+    {
+        const auto service = sight::service::add<running_recorder>("sight::service::ut::running_recorder");
+        service->set_worker(nullptr);
+        service->configure();
+        CHECK(sight::service::base::running_id().empty());
+
+        service->start().get();
+        CHECK(service->m_running_in_start == service->base_id());
+        CHECK(sight::service::base::running_id().empty());
+
+        service->update().get();
+        CHECK(service->m_running_in_update == service->base_id());
+        CHECK(sight::service::base::running_id().empty());
+
+        // A service updated from another one's update: back to the outer one afterwards.
+        const auto inner = sight::service::add<running_recorder>("sight::service::ut::running_recorder");
+        inner->set_worker(nullptr);
+        inner->configure();
+        inner->start().get();
+        service->m_inner = inner;
+        service->update().get();
+        CHECK(inner->m_running_in_update == inner->base_id());
+        CHECK(service->m_running_after_inner == service->base_id());
+        service->m_inner.reset();
+
+        inner->stop().get();
+        sight::service::remove(inner);
+
+        service->stop().get();
+        CHECK(service->m_running_in_stop == service->base_id());
+        sight::service::remove(service);
+
+        CHECK(sight::service::base::running_id().empty());
+    }
+
+    //------------------------------------------------------------------------------
 
     TEST_CASE("start_stop_update")
     {

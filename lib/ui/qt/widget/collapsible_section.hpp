@@ -38,6 +38,7 @@ namespace sight::ui::qt::widget
  *
  * It's possible to set a layout that contains all widgets that we want to add in collapsible section.
  * Then we can fold and unfold the section.
+ * The toggle button is named `<section object name>/toggle` when the section has an object name.
  *
  */
 class SIGHT_UI_QT_CLASS_API_QT collapsible_section : public QWidget

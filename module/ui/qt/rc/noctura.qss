@@ -591,18 +591,6 @@ QGroupBox::title
 }
 
 /************************************************************************/
-/***************************** slide_bar *********************************/
-/************************************************************************/
-
-QGroupBox#slide_bar
-{
-    margin: 0px;
-    background: transparent;
-    padding: 3px;
-    border: none;
-}
-
-/************************************************************************/
 /*************************** QAbstractSpinBox ***************************/
 /************************************************************************/
 
@@ -1460,7 +1448,7 @@ QProgressBar::chunk
 /************************** SActivityWizard *****************************/
 /************************************************************************/
 
-#SActivityWizard_title
+QLabel[class="activity_wizard_title"]
 {
     font: bold;
     border: none;
@@ -1468,7 +1456,7 @@ QProgressBar::chunk
     padding: 3px;
 }
 
-#SActivityWizard_description
+QLabel[class="activity_wizard_description"]
 {
     font-weight: italic;
 }
@@ -1522,7 +1510,7 @@ QProgressBar::chunk
 /********************** Notification Popups *****************************/
 /************************************************************************/
 
-#NotificationDialog_Instruction
+*[class="notification_dialog_instruction"]
 {
     background-color: #51AF3B;
     color: rgb(255, 255, 255);
@@ -1531,7 +1519,7 @@ QProgressBar::chunk
     border-radius: 4px;
 }
 
-#NotificationDialog_Error
+*[class="notification_dialog_error"]
 {
     background-color: #BA292A;
     color: rgb(255, 255, 255);
@@ -1540,7 +1528,7 @@ QProgressBar::chunk
     border-radius: 4px;
 }
 
-#NotificationDialog_Information
+*[class="notification_dialog_information"]
 {
     background-color: #51566b;
     color: rgb(255, 255, 255);
@@ -1549,7 +1537,7 @@ QProgressBar::chunk
     border-radius: 4px;
 }
 
-#NotificationDialog_Warning
+*[class="notification_dialog_warning"]
 {
     background-color: #D98C22;
     color: rgb(255, 255, 255);
@@ -1562,7 +1550,7 @@ QProgressBar::chunk
 /************************ Notification zone *****************************/
 /************************************************************************/
 
-#notification_label_instruction
+QLabel[class="notification_label_instruction"]
 {
     background-color: #56608B;
     color: rgb(255, 255, 255);
@@ -1573,7 +1561,7 @@ QProgressBar::chunk
     qproperty-alignment: AlignCenter;
 }
 
-#notification_label_information
+QLabel[class="notification_label_information"]
 {
     background-color: #51566b;
     color: rgb(255, 255, 255);
@@ -1584,7 +1572,7 @@ QProgressBar::chunk
     qproperty-alignment: AlignCenter;
 }
 
-#notification_label_warning
+QLabel[class="notification_label_warning"]
 {
     background-color: #D98C22;
     color: rgb(255, 255, 255);
@@ -1595,7 +1583,7 @@ QProgressBar::chunk
     qproperty-alignment: AlignCenter;
 }
 
-#notification_label_error
+QLabel[class="notification_label_error"]
 {
     background-color: #BA292A;
     color: rgb(255, 255, 255);

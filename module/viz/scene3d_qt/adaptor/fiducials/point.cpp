@@ -38,6 +38,8 @@
 #include <module/viz/scene3d_qt/screen_position.hpp>
 #include <module/viz/scene3d_qt/window_interactor.hpp>
 
+#include <ui/qt/naming.hpp>
+
 #include <QHBoxLayout>
 #include <QPushButton>
 
@@ -371,7 +373,11 @@ void point::starting()
     ));
     auto* bin_button             = new QPushButton(trash_bin_icon, "");
     const std::string service_id = base_id();
-    bin_button->setObjectName(QString::fromStdString(service_id) + "/binButton");
+    sight::ui::qt::detail::set_part_name(
+        *bin_button,
+        QString::fromStdString(service_id),
+        QStringLiteral("bin_button")
+    );
     bin_button->setCursor(Qt::ArrowCursor);
     bin_button->adjustSize();
     if(bin_button->width() < 40)
@@ -395,7 +401,11 @@ void point::starting()
                            ).string()
         ));
         auto* pen_button = new QPushButton(pen_icon, "");
-        pen_button->setObjectName(QString::fromStdString(service_id) + "/penButton");
+        sight::ui::qt::detail::set_part_name(
+            *pen_button,
+            QString::fromStdString(service_id),
+            QStringLiteral("pen_button")
+        );
         pen_button->setCursor(Qt::ArrowCursor);
         pen_button->adjustSize();
         if(pen_button->width() < 40)
@@ -1967,7 +1977,7 @@ void point::button_release_event(mouse_button _button, modifier /*_mods*/, int /
             const bool placed   = place_near(*m_contextual_menu, *parent_widget, screen_pos);
             m_contextual_menu->raise();
             const QString service_id = QString::fromStdString(base_id());
-            auto* bin_button         = m_contextual_menu->findChild<QPushButton*>(service_id + "/binButton");
+            auto* bin_button         = m_contextual_menu->findChild<QPushButton*>(service_id + "/bin_button");
             SIGHT_ASSERT("The contextual menu should have the bin button", bin_button);
             bin_button->disconnect();
             QObject::connect(
@@ -2002,7 +2012,7 @@ void point::button_release_event(mouse_button _button, modifier /*_mods*/, int /
                 });
             if(m_renaming_allowed)
             {
-                auto* pen_button = m_contextual_menu->findChild<QPushButton*>(service_id + "/penButton");
+                auto* pen_button = m_contextual_menu->findChild<QPushButton*>(service_id + "/pen_button");
                 SIGHT_ASSERT("The contextual menu should have the pen button", pen_button);
                 pen_button->disconnect();
                 QObject::connect(

@@ -110,9 +110,6 @@ void signal_button::starting()
     m_button = new QPushButton(QString::fromStdString(m_text));
     m_button->setEnabled(m_enable);
 
-    const QString service_id = QString::fromStdString(base_id());
-    m_button->setObjectName(service_id + "/signal_button");
-
     m_button->setProperty("class", "signal-button");
     layout->addWidget(m_button);
     qt_container->set_layout(layout);

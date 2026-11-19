@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,16 +22,15 @@
 
 #include "ui/qt/layout/tab.hpp"
 
-#include "ui/qt/app.hpp"
-
-#include <core/base.hpp>
-
 #include <data/tools/color.hpp>
 
 #include <ui/__/macros.hpp>
+#include <ui/qt/namer.hpp>
 
+#include <QApplication>
 #include <QBoxLayout>
 #include <QScrollArea>
+#include <QTabBar>
 #include <QTabWidget>
 
 SIGHT_REGISTER_GUI(sight::ui::qt::layout::tab, sight::ui::layout::tab::REGISTRY_KEY);
@@ -41,16 +40,17 @@ namespace sight::ui::qt::layout
 
 //-----------------------------------------------------------------------------
 
-void tab::create_layout(ui::container::widget::sptr _parent, const std::string& _id)
+void tab::create_layout(ui::container::widget::sptr _parent, const std::string& /*_id*/)
 {
     m_parent_container = std::dynamic_pointer_cast<ui::qt::container::widget>(_parent);
     SIGHT_ASSERT("dynamicCast widget to widget failed", m_parent_container);
-    m_parent_container->get_qt_container()->setObjectName(QString::fromStdString(_id));
 
     auto* layout = new QBoxLayout(QBoxLayout::TopToBottom);
     m_parent_container->set_layout(layout);
 
     m_tab_widget = new QTabWidget();
+    // Qt names its tab bar, and the namer never renames: the role is given as a part.
+    sight::ui::qt::name_part(*m_tab_widget->tabBar(), "tab_bar");
     layout->addWidget(m_tab_widget);
 
     const std::list<view_info>& views = this->get_views_info();

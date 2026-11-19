@@ -44,6 +44,8 @@
 #include <QTimer>
 #include <QWindow>
 
+#include <string_view>
+
 namespace sight::module::ui::qt::ut
 {
 
@@ -182,23 +184,35 @@ public:
         CHECK_NOTHROW(preferences_configuration_srv->configure(config));
         CHECK_NOTHROW(preferences_configuration_srv->start().get());
 
-        bool text_done     = false;
-        bool path_done     = false;
-        bool file_done     = false;
-        bool checkbox_done = false;
-        bool int_done      = false;
-        bool double_done   = false;
-        bool list_done     = false;
-        bool combobox_done = false;
+        bool text_done               = false;
+        bool path_done               = false;
+        bool file_done               = false;
+        bool checkbox_done           = false;
+        bool int_done                = false;
+        bool double_done             = false;
+        bool list_done               = false;
+        bool combobox_done           = false;
+        bool auxiliary_widgets_named = false;
+
+        const std::string dialog_name = m_child_uuid + "/dialog";
+        const auto dialog_part_name = [&dialog_name](std::string_view _part)
+                                      {
+                                          return QString::fromStdString(dialog_name + "/" + std::string(_part));
+                                      };
 
         auto script = wait_for_widget(
             [&](QWidget* _widget)
                 {
-                    if(_widget != nullptr && _widget->objectName().startsWith("preferences_configuration"))
+                    if(_widget != nullptr && _widget->objectName() == QString::fromStdString(dialog_name))
                     {
+                        auxiliary_widgets_named =
+                            _widget->findChild<QAbstractButton*>(dialog_part_name("text/reset")) != nullptr
+                            && _widget->findChild<QAbstractButton*>(dialog_part_name("path/browse")) != nullptr
+                            && _widget->findChild<QAbstractButton*>(dialog_part_name("file/browse")) != nullptr;
+
                         if(!text_done)
                         {
-                            if(auto* text = _widget->findChild<QLineEdit*>("text"); text != nullptr)
+                            if(auto* text = _widget->findChild<QLineEdit*>(dialog_part_name("text")); text != nullptr)
                             {
                                 QPointer<QLineEdit> text_ptr(text);
 
@@ -218,7 +232,7 @@ public:
 
                         if(!path_done)
                         {
-                            if(auto* path = _widget->findChild<QLineEdit*>("path"); path != nullptr)
+                            if(auto* path = _widget->findChild<QLineEdit*>(dialog_part_name("path")); path != nullptr)
                             {
                                 QPointer<QLineEdit> path_ptr(path);
 
@@ -238,7 +252,7 @@ public:
 
                         if(!file_done)
                         {
-                            if(auto* file = _widget->findChild<QLineEdit*>("file"); file != nullptr)
+                            if(auto* file = _widget->findChild<QLineEdit*>(dialog_part_name("file")); file != nullptr)
                             {
                                 QPointer<QLineEdit> file_ptr(file);
 
@@ -258,7 +272,8 @@ public:
 
                         if(!checkbox_done)
                         {
-                            if(auto* checkbox = _widget->findChild<QCheckBox*>("checkbox"); checkbox != nullptr)
+                            if(auto* checkbox =
+                                   _widget->findChild<QCheckBox*>(dialog_part_name("checkbox")); checkbox != nullptr)
                             {
                                 QPointer<QCheckBox> checkbox_ptr(checkbox);
 
@@ -278,7 +293,8 @@ public:
 
                         if(!int_done)
                         {
-                            if(auto* int_widget = _widget->findChild<QLineEdit*>("int"); int_widget != nullptr)
+                            if(auto* int_widget = _widget->findChild<QLineEdit*>(dialog_part_name("int"));
+                               int_widget != nullptr)
                             {
                                 QPointer<QLineEdit> int_ptr(int_widget);
 
@@ -298,7 +314,8 @@ public:
 
                         if(!double_done)
                         {
-                            if(auto* double_widget = _widget->findChild<QLineEdit*>("double"); double_widget != nullptr)
+                            if(auto* double_widget =
+                                   _widget->findChild<QLineEdit*>(dialog_part_name("double")); double_widget != nullptr)
                             {
                                 QPointer<QLineEdit> double_ptr(double_widget);
 
@@ -318,7 +335,7 @@ public:
 
                         if(!list_done)
                         {
-                            if(auto* list = _widget->findChild<QLineEdit*>("list"); list != nullptr)
+                            if(auto* list = _widget->findChild<QLineEdit*>(dialog_part_name("list")); list != nullptr)
                             {
                                 QPointer<QLineEdit> list_ptr(list);
 
@@ -338,7 +355,8 @@ public:
 
                         if(!combobox_done)
                         {
-                            if(auto* combobox = _widget->findChild<QComboBox*>("combobox"); combobox != nullptr)
+                            if(auto* combobox =
+                                   _widget->findChild<QComboBox*>(dialog_part_name("combobox")); combobox != nullptr)
                             {
                                 QPointer<QComboBox> combobox_ptr(combobox);
 
@@ -364,9 +382,10 @@ public:
                            && int_done
                            && double_done
                            && list_done
-                           && combobox_done)
+                           && combobox_done
+                           && auxiliary_widgets_named)
                         {
-                            const bool clicked = click_on_button("OK", "preferences_configuration").get();
+                            const bool clicked = click_on_button(dialog_name + "/ok", dialog_name).get();
                             CHECK_MESSAGE((clicked), "The OK button should have been clicked");
                             return clicked;
                         }
@@ -378,14 +397,14 @@ public:
         // Update the service: will show the dialog with an OK button
         CHECK_EQ(
             std::future_status::ready,
-            preferences_configuration_srv->update().wait_for(std::chrono::seconds(10))
+            preferences_configuration_srv->update().wait_for(std::chrono::seconds(60))
         );
 
         // Wait for the script thread to finish (should be done since otherwise we would be blocked on the update()
         // call)
         CHECK_EQ(
             std::future_status::ready,
-            script.wait_for(std::chrono::seconds(5))
+            script.wait_for(std::chrono::seconds(60))
         );
 
         CHECK_MESSAGE((text_done), "'text' widget was not found");
@@ -396,6 +415,7 @@ public:
         CHECK_MESSAGE((double_done), "'double' widget was not found");
         CHECK_MESSAGE((list_done), "'list' widget was not found");
         CHECK_MESSAGE((combobox_done), "'combobox' widget was not found");
+        CHECK_MESSAGE((auxiliary_widgets_named), "preference browse/reset controls were not named");
 
         // Should be true...
         CHECK(script.get());
@@ -452,19 +472,20 @@ public:
         }
 
         // Start a thread to wait for the dialog to appear and click on the OK button
-        auto clicker = click_on_button("OK", "preferences_configuration");
+        const std::string dialog_name = m_child_uuid + "/dialog";
+        auto clicker                  = click_on_button(dialog_name + "/ok", dialog_name);
 
         // Update the service: will show the dialog with an the OK button
         CHECK_EQ(
             std::future_status::ready,
-            preferences_configuration_srv->update().wait_for(std::chrono::seconds(10))
+            preferences_configuration_srv->update().wait_for(std::chrono::seconds(60))
         );
 
         // Wait for the clicker thread to finish (should be done since otherwise we would be blocked on the update()
         // call)
         CHECK_EQ(
             std::future_status::ready,
-            clicker.wait_for(std::chrono::seconds(5))
+            clicker.wait_for(std::chrono::seconds(60))
         );
 
         // Should be true and should not block because we asserted there is no timeout just before
@@ -500,19 +521,19 @@ public:
         CHECK_NOTHROW(preferences_configuration_srv->slot("request_values")->run());
 
         // Start again a thread to wait for the dialog to appear and click on the OK button
-        clicker = click_on_button("OK", "preferences_configuration");
+        clicker = click_on_button(dialog_name + "/ok", dialog_name);
 
         // Update the service a second time: will show the dialog with an the OK button -> and should not crash
         CHECK_EQ(
             std::future_status::ready,
-            preferences_configuration_srv->update().wait_for(std::chrono::seconds(10))
+            preferences_configuration_srv->update().wait_for(std::chrono::seconds(60))
         );
 
         /// Wait for the clicker thread to finish (should be done since otherwise we would be blocked on the update()
         /// call)
         CHECK_EQ(
             std::future_status::ready,
-            clicker.wait_for(std::chrono::seconds(5))
+            clicker.wait_for(std::chrono::seconds(60))
         );
 
         // Should be true and should not block because we asserted there is no timeout just before

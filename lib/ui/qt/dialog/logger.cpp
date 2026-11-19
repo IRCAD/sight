@@ -123,19 +123,16 @@ bool logger::show()
 
     // Create OK button
     auto* ok_button = new QPushButton(tr("Ok"));
-    ok_button->setObjectName(ok_button->text());
     ok_button->setSizePolicy(policy);
     button_layout->addWidget(ok_button);
 
     // Create CANCEL button
     auto* cancel_button = new QPushButton(tr("Cancel"));
-    cancel_button->setObjectName(cancel_button->text());
     cancel_button->setSizePolicy(policy);
     button_layout->addWidget(cancel_button);
 
     // Create a checkbox to display the logs
-    auto* checkbox = new QCheckBox("Details");
-    checkbox->setObjectName(checkbox->text());
+    auto* checkbox           = new QCheckBox("Details");
     const auto detailshidden =
         core::runtime::get_library_resource_file_path("sight::ui::qt/details-hidden.png").string();
     const auto detailsshown =

@@ -19,123 +19,62 @@
  *
  ***********************************************************************/
 
-#include "fixture.hpp"
+#include "helper.hpp"
 
-#include <ui/test/helper/button.hpp>
-#include <ui/test/helper/dialog.hpp>
-#include <ui/test/helper/label.hpp>
-#include <ui/test/helper/list_widget.hpp>
-#include <ui/test/helper/tool_button.hpp>
-#include <ui/test/helper/video_controls.hpp>
-#include <ui/test/tester.hpp>
+#include <ui/test/gui_test.hpp>
 
-#include <utest_data/data.hpp>
-
-#include <QLabel>
-#include <QSpinBox>
-
-#include <doctest/doctest.h>
+#include <string>
 
 namespace sight::sight_calibrator::uit
 {
 
-TEST_SUITE("sight_calibrator")
+SIGHT_GUI_TEST_CASE("intrinsic_calibration")
 {
-//------------------------------------------------------------------------------
+    const std::string captures = "calibrationInfoEditorSrv/nb_captures";
+    const std::string list     = "calibrationInfoEditorSrv/captures_list";
+    const std::string status   = "detectionStatusSrv/button";
+    const std::string state    = "cameraInfoSrv/is_calibrated";
 
-    TEST_CASE_FIXTURE(fixture, "intrinsic_calibration")
+    open_calibration(ui);
+
+    // The chessboard of the video has 10x8 squares of 20 mm.
+    ui.click("toolBarView/Chessboard size");
+    ui.set("chessboard_settings/board_width", 10);
+    ui.set("chessboard_settings/board_height", 8);
+    ui.set("chessboard_settings/board_square_size", 20.);
+    ui.set("chessboard_settings/board_scale", 0.25);
+    ui.close(ui::test::dialog());
+    ui.expect("chessboard_settings/board_width").gone();
+
+    // Without a chessboard, a capture adds nothing.
+    ui.expect(status).tooltip("Red");
+    ui.expect(state).text_contains("The camera is not calibrated.");
+    for(int i = 0 ; i < 3 ; ++i)
     {
-        using namespace std::literals::string_literals;
-        namespace helper = sight::ui::test::helper;
-
-        const std::filesystem::path video_path = utest_data::dir()
-                                                 / "sight/ui/sight_calibrator/chessboard_calibration_test.mp4";
-
-        const std::string failure_message = start(
-            "intrinsic_calibration",
-            [&video_path](sight::ui::test::tester& _tester)
-            {
-                // Access the calibration activity
-                helper::button::push(_tester, "activityCreatorSrv/Calibration");
-
-                // Configure the chessboard size (the size of the example chessboard is 10*8)
-                helper::button::push(_tester, "toolBarView/Chessboard size");
-
-                auto bt = _tester.add_in_backtrace("fill chessboard configuration window");
-                helper::dialog::take(_tester, "Chessboard settings");
-                QPointer<QWidget> window = _tester.get<QWidget*>();
-                _tester.take("Chessboard settings", window);
-                _tester.yields("'Chessboard width' field", "sight::data::integer_0");
-                _tester.get<QSpinBox*>()->setValue(10);
-                _tester.take("Chessboard settings", window);
-                _tester.yields("'Chessboard height' field", "sight::data::integer_1");
-                _tester.get<QSpinBox*>()->setValue(8);
-                _tester.take("Chessboard settings", window);
-                _tester.yields("'Chessboard square size (mm)' field", "sight::data::real_1");
-                _tester.get<QDoubleSpinBox*>()->setValue(20);
-                _tester.take("Chessboard settings", window);
-                _tester.yields("'Input scaling for chessboard detection' field", "sight::data::real_0");
-                _tester.get<QDoubleSpinBox*>()->setValue(0.25);
-                _tester.take("Chessboard settings", window);
-                _tester.do_something_asynchronously<QWidget*>([](QWidget* _window){_window->close();});
-                _tester.doubt(
-                    "the preferences configuration window is closed",
-                    [&window](QObject*) -> bool
-                {
-                    return window == nullptr || !window->isVisible();
-                });
-
-                // We didn't load the chessboard yet: trying to add captures gives no result
-                helper::tool_button::tool_tip_matches(_tester, "detectionStatusSrv/status_button", "Red");
-                helper::label::contain(_tester, "cameraInfoSrv/isCalibrated", "The camera is not calibrated.");
-                for(int i = 0 ; i < 3 ; i++)
-                {
-                    helper::button::push(_tester, "intrinsicCameraView/Add");
-                }
-
-                helper::label::exactly_match(_tester, "calibrationInfoEditorSrv/nbCapturesLabel", "0");
-                helper::list_widget::count_equals(_tester, "calibrationInfoEditorSrv/capturesListWidget", 0);
-
-                // We load the chessboard
-                helper::video_controls::load(_tester, "videoToolbarView", video_path);
-
-                // The chessboard is loaded, trying to add captures effectively add them to the list
-                helper::tool_button::tool_tip_matches(_tester, "detectionStatusSrv/status_button", "Green");
-                helper::button::push(_tester, "intrinsicCameraView/Add");
-                helper::label::exactly_match(_tester, "calibrationInfoEditorSrv/nbCapturesLabel", "1");
-                for(int i = 0 ; i < 3 ; i++)
-                {
-                    helper::button::push(_tester, "intrinsicCameraView/Add");
-                    helper::label::exactly_match(
-                        _tester,
-                        "calibrationInfoEditorSrv/nbCapturesLabel",
-                        std::to_string(i + 2)
-                    );
-                }
-
-                helper::label::exactly_match(_tester, "calibrationInfoEditorSrv/nbCapturesLabel", "4");
-                helper::list_widget::count_equals(_tester, "calibrationInfoEditorSrv/capturesListWidget", 4);
-
-                // To click on the remove button should effectively remove a capture
-                helper::list_widget::set_current_row(_tester, "calibrationInfoEditorSrv/capturesListWidget", 0);
-                helper::button::push(_tester, "intrinsicCameraView/Remove");
-                helper::label::exactly_match(_tester, "calibrationInfoEditorSrv/nbCapturesLabel", "3");
-                helper::list_widget::count_equals(_tester, "calibrationInfoEditorSrv/capturesListWidget", 3);
-
-                // Clicking the calibrate button should start the calibration procedure and the calibration info must
-                // become
-                // available
-                helper::button::push(_tester, "intrinsicCameraView/Calibrate");
-                helper::label::contain(_tester, "cameraInfoSrv/isCalibrated", "The camera is calibrated.");
-            },
-            true
-        );
-
-        // Runs on the main thread, after start() has returned: the only doctest assertion for
-        // this scenario. See sight::ui::test::base::start().
-        INFO(failure_message);
-        REQUIRE(failure_message.empty());
+        ui.click("intrinsicCameraView/Add");
     }
-} // TEST_SUITE
+
+    ui.expect(captures).text("0");
+    ui.expect(list).rows(0);
+
+    // With one, each capture is listed.
+    load_video(ui, chessboard_video());
+    ui.expect(status).tooltip("Green");
+    for(int i = 1 ; i <= 4 ; ++i)
+    {
+        ui.click("intrinsicCameraView/Add");
+        ui.expect(captures).text(std::to_string(i));
+    }
+
+    ui.expect(list).rows(4);
+
+    ui.select(ui::test::item_at(list, "0"));
+    ui.click("intrinsicCameraView/Remove");
+    ui.expect(captures).text("3");
+    ui.expect(list).rows(3);
+
+    ui.click("intrinsicCameraView/Calibrate");
+    ui.expect(state).text_contains("The camera is calibrated.");
+}
 
 } // namespace sight::sight_calibrator::uit

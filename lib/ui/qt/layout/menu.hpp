@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 
 #include "ui/qt/container/menu.hpp"
 
-#include <core/base.hpp>
+#include <core/macros.hpp>
 
 #include <ui/__/container/menu.hpp>
 #include <ui/__/layout/menu_manager.hpp>
@@ -77,7 +77,7 @@ public:
      */
     SIGHT_UI_QT_API void menu_item_set_checked(ui::container::menu_item::sptr /*menu_item*/, bool _is_checked) override;
 
-protected:
+private:
 
     ui::qt::container::menu::sptr m_parent;
 };

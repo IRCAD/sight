@@ -43,8 +43,6 @@ void progress_bar::starting()
     const auto widget_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->get_container());
     auto* const qt_container    = widget_container->get_qt_container();
 
-    const auto service_id = QString::fromStdString(base_id());
-    qt_container->setObjectName(service_id);
     qt_container->setContentsMargins(0, 0, 0, 0);
 
     // Get the progress bar configuration.
@@ -83,7 +81,6 @@ void progress_bar::starting()
 
     // Create the layout.
     auto* const layout = new QHBoxLayout();
-    layout->setObjectName(service_id + QString::fromLatin1("/QHBoxLayout"));
     layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(m_progress_bar_widget->widget());
 

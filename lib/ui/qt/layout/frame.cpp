@@ -28,6 +28,7 @@
 #include <core/enum_flag_operators.hxx>
 
 #include <ui/__/macros.hpp>
+#include <ui/qt/naming.hpp>
 
 #include <QApplication>
 #include <QGuiApplication>
@@ -83,7 +84,7 @@ void frame::create_frame()
 
     if(frame_info.m_name && !frame_info.m_name->empty())
     {
-        m_qt_window->setObjectName(QString::fromStdString(*frame_info.m_name));
+        ui::qt::detail::set_name(*m_qt_window, QString::fromStdString(*frame_info.m_name));
     }
 
     if(frame_info.m_qss_class && !frame_info.m_qss_class->empty())

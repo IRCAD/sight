@@ -30,6 +30,11 @@
 
 #include <doctest/doctest.h>
 
+#ifdef WIN32
+#include <cstdlib>
+#include <string_view>
+#endif
+
 //------------------------------------------------------------------------------
 
 static std::string load_adaptors()
@@ -115,6 +120,18 @@ struct negato_settings_fixture : sight::utest::service_fixture
 
 TEST_SUITE("sight::module::viz::scene3d::adaptor::image_series")
 {
+    TEST_CASE("leaves_the_foreground_of_the_user_alone")
+    {
+#ifdef WIN32
+        // Its render window needs a real display: its own desktop, unless a developer asks to watch the run.
+        // NOLINTNEXTLINE(concurrency-mt-unsafe): nothing here writes the environment.
+        const char* const variable     = std::getenv("SIGHT_UI_TEST_VISIBLE");
+        const std::string_view visible = variable != nullptr ? variable : "";
+        // NOLINTNEXTLINE(concurrency-mt-unsafe): nothing here writes the environment.
+        CHECK((std::getenv("SIGHT_GUI_TEST_DESKTOP") != nullptr || (!visible.empty() && visible != "0")));
+#endif
+    }
+
     TEST_CASE_FIXTURE(negato_settings_fixture, "negato_children_share_transparency_after_addition_and_restart")
     {
         add_image();

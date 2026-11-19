@@ -24,6 +24,7 @@
 
 #include <ui/__/dialog/message.hpp>
 #include <ui/qt/container/widget.hpp>
+#include <ui/qt/namer.hpp>
 
 #include <QApplication>
 #include <QFrame>
@@ -178,7 +179,7 @@ void sequencer::starting()
     const auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(get_container());
 
     m_widget = new QWidget();
-    m_widget->setObjectName(base_id() + "/sequencer");
+    sight::ui::qt::name_part(*m_widget, "sequencer");
     m_widget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     m_widget->setProperty("class", "sequencer");
 
@@ -200,7 +201,6 @@ void sequencer::starting()
         );
 
         auto* const button = new sequencer_button(button_label, m_widget);
-        button->setObjectName(m_widget->objectName() + "/" + button_label + "_button");
         button->setProperty("class", "sequencer_button");
         button->setCheckable(true);
         button->setEnabled(false);
@@ -222,7 +222,6 @@ void sequencer::starting()
         if(i != last)
         {
             auto* const sequencer_spacer = new QFrame(m_widget);
-            sequencer_spacer->setObjectName(m_widget->objectName() + "/" + button_label + "_spacer");
             sequencer_spacer->setProperty("class", "sequencer_spacer");
             sequencer_spacer->setFrameShape(QFrame::Shape::HLine);
             sequencer_spacer->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
@@ -323,6 +322,7 @@ void sequencer::enable_user_warning()
 }
 
 //------------------------------------------------------------------------------
+
 void sequencer::disable_user_warning()
 {
     this->set_user_warning(false);

@@ -243,39 +243,39 @@ void notification::update()
     );
 
     // If we must reapply the style sheet or not
-    const auto& old_object_name = m_sub_widget->objectName();
+    const QVariant old_class = m_sub_widget->property("class");
 
-    static constexpr auto s_INSTRUCTION_NAME {"NotificationDialog_Instruction"};
-    static constexpr auto s_ERROR_NAME {"NotificationDialog_Error"};
-    static constexpr auto s_INFORMATION_NAME {"NotificationDialog_Information"};
-    static constexpr auto s_WARNING_NAME {"NotificationDialog_Warning"};
+    static constexpr auto s_INSTRUCTION_CLASS {"notification_dialog_instruction"};
+    static constexpr auto s_ERROR_CLASS {"notification_dialog_error"};
+    static constexpr auto s_INFORMATION_CLASS {"notification_dialog_information"};
+    static constexpr auto s_WARNING_CLASS {"notification_dialog_warning"};
 
-    // Set object names
+    // Set the style class
     switch(m_notification.m_type)
     {
         case notification_base::type::instruction:
-            m_sub_widget->setObjectName(s_INSTRUCTION_NAME);
-            m_msg_box->setObjectName(s_INSTRUCTION_NAME);
+            m_sub_widget->setProperty("class", s_INSTRUCTION_CLASS);
+            m_msg_box->setProperty("class", s_INSTRUCTION_CLASS);
             break;
 
         case notification_base::type::error:
-            m_sub_widget->setObjectName(s_ERROR_NAME);
-            m_msg_box->setObjectName(s_ERROR_NAME);
+            m_sub_widget->setProperty("class", s_ERROR_CLASS);
+            m_msg_box->setProperty("class", s_ERROR_CLASS);
             break;
 
         case notification_base::type::warning:
-            m_sub_widget->setObjectName(s_WARNING_NAME);
-            m_msg_box->setObjectName(s_WARNING_NAME);
+            m_sub_widget->setProperty("class", s_WARNING_CLASS);
+            m_msg_box->setProperty("class", s_WARNING_CLASS);
             break;
 
         default:
-            m_sub_widget->setObjectName(s_INFORMATION_NAME);
-            m_msg_box->setObjectName(s_INFORMATION_NAME);
+            m_sub_widget->setProperty("class", s_INFORMATION_CLASS);
+            m_msg_box->setProperty("class", s_INFORMATION_CLASS);
             break;
     }
 
     // If different, then we must (re)apply the style sheet
-    if(old_object_name != m_sub_widget->objectName())
+    if(old_class != m_sub_widget->property("class"))
     {
         if(const auto& global_stylesheet = qApp->styleSheet(); !global_stylesheet.isEmpty())
         {

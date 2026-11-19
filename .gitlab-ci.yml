@@ -34,7 +34,7 @@ lint:ubuntu-26.04:
         SIGHT_ENABLE_REALSENSE: "OFF"
         # A crashing test leaves its dump here, see doctest_main.cpp.in
         SIGHT_TEST_DUMP_DIR: "${CI_PROJECT_DIR}/.build/test-dumps"
-        TEST_DATA_REF: "7e68743ecc30b3642aa753a84af94b4130168e93"
+        TEST_DATA_REF: "9c1e10531151299c370a9722a2d2b46bca1b5560"
         # An unusable test log directory must fail the tests, not hide the logs elsewhere
         SIGHT_TEST_LOG_FALLBACK_DIR: "none"
         # Every CTest run of a job uploads its logs
@@ -288,7 +288,7 @@ deploy:apps-linux-release:
         SIGHT_BUILD_SDK: "OFF"
         MSVC_VERSION: "17"
         CUDA_VERSION: "12_5"
-        TEST_DATA_REF: "7e68743ecc30b3642aa753a84af94b4130168e93"
+        TEST_DATA_REF: "9c1e10531151299c370a9722a2d2b46bca1b5560"
         # An unusable test log directory must fail the tests, not hide the logs elsewhere
         SIGHT_TEST_LOG_FALLBACK_DIR: "none"
         # Every CTest run of a job uploads its logs

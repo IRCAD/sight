@@ -27,6 +27,7 @@
 
 #include <ui/__/action.hpp>
 #include <ui/qt/container/widget.hpp>
+#include <ui/qt/naming.hpp>
 
 #include <boost/range/iterator_range_core.hpp>
 
@@ -147,12 +148,9 @@ void icon_speed_dial::starting()
 {
     create();
 
-    const std::string service_id = base_id();
-
     auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->get_container());
     auto* layout      = new QBoxLayout(QBoxLayout::TopToBottom);
     m_speed_dial = new sight::ui::qt::widget::speed_dial(m_direction);
-    m_speed_dial->setObjectName(QString::fromStdString(service_id));
     if(m_spacing >= 0)
     {
         m_speed_dial->set_spacing(m_spacing);
@@ -186,7 +184,10 @@ void icon_speed_dial::starting()
     {
         auto* q_action = new QPushButton;
         q_action->setFixedSize(m_speed_dial->size());
-        q_action->setObjectName(QString::fromStdString(action.name.empty() ? action.sid : action.name));
+        sight::ui::qt::detail::set_name(
+            *q_action,
+            QString::fromStdString(action.name.empty() ? action.sid : action.name)
+        );
         std::string sid = action.sid;
         auto service    = std::dynamic_pointer_cast<sight::ui::action>(sight::service::get(sid));
         SIGHT_ASSERT("icon_speed_dial only supports action", service != nullptr);

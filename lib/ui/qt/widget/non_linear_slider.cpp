@@ -23,6 +23,8 @@
 
 #include <core/spy_log.hpp>
 
+#include <ui/qt/naming.hpp>
+
 #include <QResizeEvent>
 
 namespace sight::ui::qt::widget
@@ -31,6 +33,7 @@ namespace sight::ui::qt::widget
 non_linear_slider::non_linear_slider(QWidget* _parent) :
     QWidget(_parent)
 {
+    ui::qt::detail::bind_part_name(*m_slider, *this, u"slider");
     m_slider->setOrientation(Qt::Horizontal);
     m_slider->setSingleStep(1);
     m_slider->setPageStep(1);
@@ -122,6 +125,13 @@ std::size_t non_linear_slider::index()
 const std::vector<int>& non_linear_slider::values() const
 {
     return m_values;
+}
+
+//------------------------------------------------------------------------------
+
+QList<int> non_linear_slider::value_list() const
+{
+    return {m_values.begin(), m_values.end()};
 }
 
 //------------------------------------------------------------------------------

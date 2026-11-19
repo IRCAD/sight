@@ -223,6 +223,14 @@ base::shared_future_t base::stop()
 
 //-----------------------------------------------------------------------------
 
+std::string base::running_id()
+{
+    const base* const running = detail::service::running();
+    return running == nullptr ? std::string() : running->base_id();
+}
+
+//-----------------------------------------------------------------------------
+
 base::shared_future_t base::update()
 {
     if(!m_pimpl->m_worker || core::thread::get_current_thread_id() == m_pimpl->m_worker->get_thread_id())

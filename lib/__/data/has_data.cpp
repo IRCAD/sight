@@ -78,6 +78,21 @@ void has_data::set_inout(
 
 //-----------------------------------------------------------------------------
 
+data::object::csptr has_data::deferred_object(std::string_view _id) const
+{
+    for(const auto& [key, pointer] : m_data_container)
+    {
+        if(pointer->deferred_id() == _id)
+        {
+            return pointer->get();
+        }
+    }
+
+    return nullptr;
+}
+
+//-----------------------------------------------------------------------------
+
 void has_data::set_output(data::object::sptr _obj, std::string_view _key, std::optional<std::size_t> _index)
 {
     auto data = find_object(_key, _obj);

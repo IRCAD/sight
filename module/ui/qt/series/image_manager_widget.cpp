@@ -122,6 +122,7 @@ service::connections_t image_manager_widget::auto_connections() const
 }
 
 //------------------------------------------------------------------------------
+
 inline static std::string format_date(const std::string& _date)
 {
     if(_date.size() < 8)
@@ -133,6 +134,7 @@ inline static std::string format_date(const std::string& _date)
 }
 
 //------------------------------------------------------------------------------
+
 inline static std::string image_extension(const data::image_series& _image)
 {
     if(_image.num_instances() > 0)
@@ -148,6 +150,7 @@ inline static std::string image_extension(const data::image_series& _image)
 }
 
 //------------------------------------------------------------------------------
+
 inline static std::string image_dimensions(const data::image_series& _image)
 {
     const auto size = _image.size();
@@ -155,6 +158,7 @@ inline static std::string image_dimensions(const data::image_series& _image)
 }
 
 //------------------------------------------------------------------------------
+
 inline static std::string mesh_extension(const data::model_series& _model_series)
 {
     if(_model_series.num_instances() > 0)
@@ -166,6 +170,7 @@ inline static std::string mesh_extension(const data::model_series& _model_series
 }
 
 //------------------------------------------------------------------------------
+
 void image_manager_widget::update_image_widgets()
 {
     if(m_image_layout == nullptr)
@@ -347,7 +352,7 @@ void image_manager_widget::add_card(
 )
 {
     auto* card_widget = new QFrame(m_cards_container);
-    card_widget->setObjectName(QString("image_card_%1").arg(QString::fromStdString(_id)));
+    card_widget->setProperty("sight_card_id", QString::fromStdString(_id));
     card_widget->setProperty("sight_card_type", QStringLiteral("image_card"));
     card_widget->setMinimumHeight(180);
     card_widget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
@@ -385,9 +390,6 @@ void image_manager_widget::add_card(
         card_layout->addWidget(content_widget);
 
         auto* thumbnail_host = new QWidget(content_widget);
-        thumbnail_host->setObjectName(
-            QString("thumbnail_%1").arg(QString::fromStdString(_id))
-        );
         thumbnail_host->setFixedSize(
             static_cast<int>(m_thumbnail_width),
             static_cast<int>(m_thumbnail_height)
@@ -457,7 +459,8 @@ void image_manager_widget::add_card(
     if(_image_series)
     {
         auto* visibility = new QCheckBox(card_widget);
-        visibility->setObjectName(QString("image_visibility_%1").arg(QString::fromStdString(_id)));
+        visibility->setProperty("sight_card_field", QStringLiteral("image_visibility"));
+        card.image_visibility = visibility;
         visibility->setChecked(m_selected_image_id == _id);
         visibility->setToolTip(QString("Display this image in the scenes."));
         m_image_selection_group->addButton(visibility);
@@ -490,10 +493,7 @@ void image_manager_widget::add_card(
                                 continue;
                             }
 
-                            const auto object_name = QString("image_visibility_%1").arg(
-                                QString::fromStdString(other_id)
-                            );
-                            auto* checkbox = other_card.widget->findChild<QCheckBox*>(object_name);
+                            auto* checkbox = other_card.image_visibility.data();
                             if(checkbox != nullptr && checkbox->isChecked())
                             {
                                 m_selected_image_id = other_id;
@@ -510,7 +510,6 @@ void image_manager_widget::add_card(
     if(_model_series)
     {
         auto* visibility = new QCheckBox(card_widget);
-        visibility->setObjectName(QString("mesh_visibility_%1").arg(QString::fromStdString(_id)));
         visibility->setToolTip(QString("Display this mesh in the scene."));
 
         const auto& reconstructions = _model_series->get_reconstruction_db();
@@ -535,7 +534,6 @@ void image_manager_widget::add_card(
     }
 
     auto* alias = new QLineEdit(QString::fromStdString(_label), card_widget);
-    alias->setObjectName(QString("image_alias_%1").arg(QString::fromStdString(_id)));
     alias->setProperty("sight_card_field", QStringLiteral("true"));
     alias->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
     alias->setCursorPosition(0);
@@ -650,10 +648,7 @@ void image_manager_widget::add_card(
                 {
                     if(other_id != _id && other_card.widget)
                     {
-                        const auto object_name = QString("image_visibility_%1").arg(
-                            QString::fromStdString(other_id)
-                        );
-                        if(auto* checkbox = other_card.widget->findChild<QCheckBox*>(object_name); checkbox != nullptr)
+                        if(auto* checkbox = other_card.image_visibility.data(); checkbox != nullptr)
                         {
                             const QSignalBlocker blocker(checkbox);
                             checkbox->setChecked(true);
@@ -687,6 +682,7 @@ void image_manager_widget::add_card(
 }
 
 //------------------------------------------------------------------------------
+
 void image_manager_widget::remove_card(const std::string& _id)
 {
     auto node = m_image_cards.extract(_id);

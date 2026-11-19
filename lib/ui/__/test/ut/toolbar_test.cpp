@@ -19,9 +19,19 @@
  *
  ***********************************************************************/
 
+#include "named_widget.hpp"
+
 #include <ui/__/builder/toolbar.hpp>
+#include <ui/__/detail/registry/toolbar.hpp>
+
+#include <boost/property_tree/xml_parser.hpp>
 
 #include <doctest/doctest.h>
+
+#include <array>
+#include <memory>
+#include <sstream>
+#include <string>
 
 namespace sight::ui::ut
 {
@@ -55,6 +65,31 @@ public:
 
 } // namespace
 
+//------------------------------------------------------------------------------
+
+/// Returns the names a toolbar gives the containers of its editors, in the order of its layout.
+static std::array<std::string, 3> editor_names(const std::string& _sid, const std::string& _wid)
+{
+    std::stringstream xml;
+    xml << "<registry><editor sid=\"" << _sid << "\"/><editor wid=\"" << _wid << "\"/></registry>";
+    boost::property_tree::ptree config;
+    boost::property_tree::read_xml(xml, config);
+
+    ui::detail::registry::toolbar toolbar("toolbar_srv");
+    toolbar.initialize(config.get_child("registry"));
+
+    // A third container that no editor of the XML takes.
+    const std::array containers {
+        std::make_shared<named_widget>(),
+        std::make_shared<named_widget>(),
+        std::make_shared<named_widget>()
+    };
+    toolbar.manage(std::vector<ui::container::widget::sptr>(containers.begin(), containers.end()));
+    toolbar.unmanage();
+
+    return {containers[0]->m_name, containers[1]->m_name, containers[2]->m_name};
+}
+
 TEST_SUITE("sight::ui::ut::toolbar")
 {
 //------------------------------------------------------------------------------
@@ -79,6 +114,23 @@ TEST_SUITE("sight::ui::ut::toolbar")
         config.put("<xmlattr>.align", "left");
         toolbar.initialize(config);
         CHECK(toolbar.get_alignment() == ui::builder::toolbar::left);
+    }
+
+    //------------------------------------------------------------------------------
+
+    TEST_CASE("names_editors_after_their_xml_id")
+    {
+        // An editor of a toolbar is a service view: it bears its XML uid, as a sub-view of a view does.
+        CHECK(
+            editor_names("video_selector_srv", "slot_view")
+            == std::array<std::string, 3> {"video_selector_srv", "slot_view", ""
+            });
+
+        // Ids qualified by a launched configuration instance keep their XML uid only.
+        CHECK(
+            editor_names("controls-3-video_selector_srv", "controls-3-slot_view")
+            == std::array<std::string, 3> {"video_selector_srv", "slot_view", ""
+            });
     }
 } // TEST_SUITE
 

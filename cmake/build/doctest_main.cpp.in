@@ -32,24 +32,32 @@
 #include <array>
 #include <atomic>
 #include <charconv>
+#include <chrono>
+#include <cstdio>
 #include <cstdlib>
 #include <exception>
+#include <filesystem>
 #include <format>
+#include <fstream>
 #include <iostream>
 #include <iterator>
 #include <limits>
 #include <optional>
 #include <ranges>
 #include <string>
+#include <string_view>
+#include <system_error>
+#include <thread>
 #include <utility>
 #include <vector>
 
-// Substituted by the sight_gui_test() CMake macro: enables the self-supervision code path below
+// Substituted by sight_generic_test(): enables the self-supervision code path below
 // for GUI tests only (REQUIRE_X ON, one QApplication/profile per scenario). Regular doctest unit
 // tests run several TEST_CASEs in a single process and never need this.
-#define SIGHT_GUI_TEST @SIGHT_GUI_TEST@
+#define SIGHT_IS_GUI_TEST @SIGHT_IS_GUI_TEST@
+#define SIGHT_REQUIRES_DISPLAY @SIGHT_REQUIRES_DISPLAY@
 
-#if SIGHT_GUI_TEST
+#if SIGHT_IS_GUI_TEST
 #include <QProcess>
 #include <QStringList>
 #endif
@@ -698,7 +706,7 @@ DOCTEST_REGISTER_LISTENER("sight_test_log", 1, test_log_listener);
 
 //------------------------------------------------------------------------------
 
-#if SIGHT_GUI_TEST
+#if SIGHT_IS_GUI_TEST
 
 namespace
 {
@@ -868,6 +876,317 @@ QStringList forwarded_arguments_without_test_filters(int _argc, char** _argv)
     return args;
 }
 
+/// How long a process may take to exit once its scenario has reported its result.
+std::chrono::seconds exit_grace()
+{
+    bool valid        = false;
+    const int seconds = qEnvironmentVariableIntValue("SIGHT_GUI_TEST_EXIT_GRACE", &valid);
+    return std::chrono::seconds(valid && seconds > 0 ? seconds : 120);
+}
+
+//------------------------------------------------------------------------------
+
+#ifdef WIN32
+std::wstring desktop_name(DWORD _process_id)
+{
+    return L"sight_gui_test_" + std::to_wstring(_process_id);
+}
+
+//------------------------------------------------------------------------------
+
+std::wstring finished_event_name(const std::wstring& _desktop_name)
+{
+    return _desktop_name + L"_finished";
+}
+
+//------------------------------------------------------------------------------
+
+/// Tells the process that started this one, the run on its own desktop or the supervisor, that the scenario has
+/// reported its result: each names its own event in SIGHT_GUI_TEST_FINISHED_EVENT.
+void report_scenario_finished()
+{
+    const std::wstring name = qEnvironmentVariable("SIGHT_GUI_TEST_FINISHED_EVENT").toStdWString();
+    if(name.empty())
+    {
+        return;
+    }
+
+    if(HANDLE const finished = ::OpenEventW(EVENT_MODIFY_STATE, FALSE, name.c_str()); finished != nullptr)
+    {
+        ::SetEvent(finished);
+        ::CloseHandle(finished);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+/// Writes the threads of a run that does not exit, in the folder of the crash dumps if there is one.
+std::string write_run_dump(const PROCESS_INFORMATION& _process)
+{
+    std::array<wchar_t, MAX_PATH + 1> temporary {};
+    ::GetTempPathW(static_cast<DWORD>(temporary.size()), temporary.data());
+    const wchar_t* const folder = ::_wgetenv(L"SIGHT_TEST_DUMP_DIR");
+    const std::string_view target(sight_test_target);
+    const std::filesystem::path path = std::filesystem::path(folder != nullptr ? folder : temporary.data())
+                                       / std::format(
+        L"{}_{}_no_exit.dmp",
+        std::wstring(target.begin(), target.end()),
+        _process.dwProcessId
+                                       );
+    HANDLE const file = ::CreateFileW(path.c_str(), GENERIC_WRITE, 0, nullptr, CREATE_ALWAYS, 0, nullptr);
+    if(file == INVALID_HANDLE_VALUE)
+    {
+        return std::format("could not create a dump (error {})", ::GetLastError());
+    }
+
+    const BOOL written = ::MiniDumpWriteDump(
+        _process.hProcess,
+        _process.dwProcessId,
+        file,
+        static_cast<MINIDUMP_TYPE>(MiniDumpWithThreadInfo),
+        nullptr,
+        nullptr,
+        nullptr
+    );
+    ::CloseHandle(file);
+    return written != FALSE ? "threads in " + path.string() : std::format(
+        "could not write a dump (error {})",
+        ::GetLastError()
+    );
+}
+
+//------------------------------------------------------------------------------
+
+/// Waits for a run, which ends at most one grace period after its scenario has reported. Windows has held a finished
+/// process forever in ExitProcess, unkillable: it is not waited for after that.
+int wait_for_the_run(const PROCESS_INFORMATION& _process, HANDLE _finished)
+{
+    const std::array handles {_process.hProcess, _finished};
+    const DWORD first = ::WaitForMultipleObjects(static_cast<DWORD>(handles.size()), handles.data(), FALSE, INFINITE);
+    if(first == WAIT_OBJECT_0 + 1)
+    {
+        const auto grace = std::chrono::duration_cast<std::chrono::milliseconds>(exit_grace());
+        if(::WaitForSingleObject(_process.hProcess, static_cast<DWORD>(grace.count())) == WAIT_TIMEOUT)
+        {
+            std::cerr << "[sight] scenario finished, process did not exit within " << exit_grace().count() << " s; "
+                      << write_run_dump(_process) << std::endl;
+            ::TerminateProcess(_process.hProcess, EXIT_FAILURE);
+            return EXIT_FAILURE;
+        }
+    }
+
+    DWORD code = EXIT_FAILURE;
+    ::GetExitCodeProcess(_process.hProcess, &code);
+    return static_cast<int>(code);
+}
+
+//------------------------------------------------------------------------------
+
+/// Runs one scenario of a supervised run, as the run on its own desktop is run: it ends at most one grace period after
+/// its scenario has reported, so that a scenario that never exits is reported and the next one still runs.
+int run_supervised_scenario(const QString& _program, const QStringList& _arguments, std::size_t _index)
+{
+    const std::wstring name = std::format(L"sight_gui_test_{}_{}_finished", ::GetCurrentProcessId(), _index);
+    HANDLE const finished   = ::CreateEventW(nullptr, TRUE, FALSE, name.c_str());
+    if(finished == nullptr)
+    {
+        std::cerr << "[sight] could not create the finished event of a scenario (error " << ::GetLastError() << ")"
+                  << std::endl;
+        return EXIT_FAILURE;
+    }
+
+    qputenv("SIGHT_GUI_TEST_FINISHED_EVENT", QString::fromStdWString(name).toUtf8());
+
+    QProcess scenario;
+    scenario.setProcessChannelMode(QProcess::ForwardedChannels);
+    scenario.start(_program, _arguments);
+    int result = EXIT_FAILURE;
+    if(!scenario.waitForStarted(-1))
+    {
+        std::cerr << "[sight] could not start a scenario: " << scenario.errorString().toStdString() << std::endl;
+    }
+    else
+    {
+        PROCESS_INFORMATION process {};
+        process.dwProcessId = static_cast<DWORD>(scenario.processId());
+        process.hProcess    = ::OpenProcess(
+            SYNCHRONIZE | PROCESS_QUERY_INFORMATION | PROCESS_VM_READ | PROCESS_TERMINATE,
+            FALSE,
+            process.dwProcessId
+        );
+        if(process.hProcess == nullptr)
+        {
+            std::cerr << "[sight] could not watch a scenario (error " << ::GetLastError() << ")" << std::endl;
+            scenario.kill();
+        }
+        else
+        {
+            result = wait_for_the_run(process, finished);
+            ::CloseHandle(process.hProcess);
+        }
+
+        scenario.waitForFinished();
+    }
+
+    ::CloseHandle(finished);
+    return result;
+}
+#else
+
+//------------------------------------------------------------------------------
+
+/// Ends a process that stays stuck after its scenario has reported, in a static destructor or an exit handler: nothing
+/// outside it watches on Linux, and its threads keep running during exit().
+void report_scenario_finished()
+{
+    std::thread(
+        []
+        {
+            const std::chrono::seconds grace = exit_grace();
+            std::this_thread::sleep_for(grace);
+            std::cerr << "[sight] scenario finished, process did not exit within " << grace.count() << " s; threads:\n";
+            for(const auto& task : std::filesystem::directory_iterator("/proc/self/task"))
+            {
+                std::string thread_name;
+                std::string waiting_in;
+                std::ifstream(task.path() / "comm") >> thread_name;
+                std::ifstream(task.path() / "wchan") >> waiting_in;
+                std::cerr << "  " << task.path().filename().string() << ' ' << thread_name << ' ' << waiting_in << '\n';
+            }
+
+            std::cerr << std::flush;
+            std::_Exit(EXIT_FAILURE);
+        }).detach();
+}
+#endif
+
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+
+#ifdef WIN32
+/// Runs this same command again on a desktop of its own, so that no other window, a concurrent test's or the user's,
+/// covers the application or takes its focus; supervised children inherit the desktop. A Linux GUI test gets its own
+/// Xvfb from its launcher script instead.
+/// @return the exit code of that run, or std::nullopt when this process already runs on its own desktop or when
+///         SIGHT_UI_TEST_VISIBLE, unless empty or 0, asks to watch the run on the user's desktop.
+std::optional<int> run_on_own_desktop()
+{
+    const QString visible = qEnvironmentVariable("SIGHT_UI_TEST_VISIBLE");
+    if(qEnvironmentVariableIsSet("SIGHT_GUI_TEST_DESKTOP") || (!visible.isEmpty() && visible != "0"))
+    {
+        return std::nullopt;
+    }
+
+    const auto fail = [](std::string_view _what)
+                      {
+                          std::cerr << "[sight] " << _what << " for the GUI test (error " << ::GetLastError()
+                                    << "); SIGHT_UI_TEST_VISIBLE=1 runs it on the user's desktop" << std::endl;
+                          return EXIT_FAILURE;
+                      };
+
+    std::array<wchar_t, 256> station {};
+    if(::GetUserObjectInformationW(
+           ::GetProcessWindowStation(),
+           UOI_NAME,
+           station.data(),
+           static_cast<DWORD>(station.size() * sizeof(wchar_t)),
+           nullptr
+       ) == FALSE)
+    {
+        return fail("could not name the window station");
+    }
+
+    const std::wstring name = desktop_name(::GetCurrentProcessId());
+    HDESK const desktop     = ::CreateDesktopW(name.c_str(), nullptr, nullptr, 0, GENERIC_ALL, nullptr);
+    if(desktop == nullptr)
+    {
+        return fail("could not create a desktop");
+    }
+
+    // A CTest timeout kills this process only: the job takes the run down with it, so nothing is left behind.
+    HANDLE const job = ::CreateJobObjectW(nullptr, nullptr);
+    JOBOBJECT_EXTENDED_LIMIT_INFORMATION limits {};
+    limits.BasicLimitInformation.LimitFlags = JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
+    if(job == nullptr
+       || ::SetInformationJobObject(job, JobObjectExtendedLimitInformation, &limits, sizeof(limits)) == FALSE)
+    {
+        const int result = fail("could not create a job");
+        if(job != nullptr)
+        {
+            ::CloseHandle(job);
+        }
+
+        ::CloseDesktop(desktop);
+        return result;
+    }
+
+    qputenv("SIGHT_GUI_TEST_DESKTOP", QString::fromStdWString(name).toUtf8());
+    qputenv("SIGHT_TEST_PARENT", QByteArray::fromStdString(sight::core::log::test_log::execution_id()));
+    qputenv("SIGHT_GUI_TEST_FINISHED_EVENT", QString::fromStdWString(finished_event_name(name)).toUtf8());
+
+    // The run tells when its scenario has reported, so a process that then never exits is not a bare CTest timeout.
+    HANDLE const finished = ::CreateEventW(nullptr, TRUE, FALSE, finished_event_name(name).c_str());
+    if(finished == nullptr)
+    {
+        const int result = fail("could not create its finished event");
+        ::CloseHandle(job);
+        ::CloseDesktop(desktop);
+        return result;
+    }
+
+    std::wstring desktop_path = std::wstring(station.data()) + L"\\" + name;
+    std::wstring command_line = ::GetCommandLineW();
+    STARTUPINFOW startup {};
+    startup.cb         = sizeof(startup);
+    startup.lpDesktop  = desktop_path.data();
+    startup.dwFlags    = STARTF_USESTDHANDLES;
+    startup.hStdInput  = ::GetStdHandle(STD_INPUT_HANDLE);
+    startup.hStdOutput = ::GetStdHandle(STD_OUTPUT_HANDLE);
+    startup.hStdError  = ::GetStdHandle(STD_ERROR_HANDLE);
+    PROCESS_INFORMATION process {};
+    int result = EXIT_FAILURE;
+    if(::CreateProcessW(
+           nullptr,
+           command_line.data(),
+           nullptr,
+           nullptr,
+           TRUE,
+           CREATE_SUSPENDED,
+           nullptr,
+           nullptr,
+           &startup,
+           &process
+       ) == FALSE)
+    {
+        result = fail("could not start the run on its desktop");
+    }
+    else
+    {
+        if(::AssignProcessToJobObject(job, process.hProcess) == FALSE)
+        {
+            result = fail("could not attach the run to its job");
+            ::TerminateProcess(process.hProcess, EXIT_FAILURE);
+        }
+        else
+        {
+            ::ResumeThread(process.hThread);
+            sight::core::log::test_log::phase("own desktop run begin");
+            result = wait_for_the_run(process, finished);
+            sight::core::log::test_log::phase(std::format("own desktop run end exit={}", result));
+        }
+
+        ::CloseHandle(process.hThread);
+        ::CloseHandle(process.hProcess);
+    }
+
+    ::CloseHandle(finished);
+    ::CloseHandle(job);
+    ::CloseDesktop(desktop);
+    return result;
+}
+#endif
+
 //------------------------------------------------------------------------------
 
 /// Re-executes this binary once per test case matching the command-line filters, and aggregates
@@ -944,6 +1263,9 @@ std::optional<int> supervise(int _argc, char** _argv)
     qputenv("SIGHT_TEST_PARENT", QByteArray::fromStdString(sight::core::log::test_log::execution_id()));
 
     std::size_t failed = 0;
+#ifdef WIN32
+    std::size_t index = 0;
+#endif
 
     for(const auto& test_case : cases)
     {
@@ -958,7 +1280,12 @@ std::optional<int> supervise(int _argc, char** _argv)
         std::cout << "[sight] running " << test_case.suite << "::" << test_case.name << std::endl;
 
         sight::core::log::test_log::phase("child begin " + test_case.suite + "::" + test_case.name);
+#ifdef WIN32
+        const int code = run_supervised_scenario(self, args, index++);
+#else
+        // Each scenario process ends itself one grace period after its result: see report_scenario_finished().
         const int code = QProcess::execute(self, args);
+#endif
         sight::core::log::test_log::phase(
             std::format("child end {}::{} exit={}", test_case.suite, test_case.name, code)
         );
@@ -979,7 +1306,7 @@ std::optional<int> supervise(int _argc, char** _argv)
 
 } // namespace
 
-#endif // SIGHT_GUI_TEST
+#endif // SIGHT_IS_GUI_TEST
 
 //------------------------------------------------------------------------------
 
@@ -1109,6 +1436,15 @@ int main(int argc, char** argv)
 
     test_log::phase("main entered");
 
+#if defined(WIN32) && !SIGHT_REQUIRES_DISPLAY
+    // As the Linux launcher does: closing a real window brings the applications of the user to the front.
+    if(::_wgetenv(L"QT_QPA_PLATFORM") == nullptr && ::_wputenv_s(L"QT_QPA_PLATFORM", L"offscreen") != 0)
+    {
+        std::cerr << "Could not select the offscreen Qt platform" << std::endl;
+        return EXIT_FAILURE;
+    }
+#endif
+
 #ifdef WIN32
     never_wait_for_a_click();
 #endif
@@ -1122,12 +1458,28 @@ int main(int argc, char** argv)
     const recovered_dump_cleanup cleanup;
 #endif
 
-#if SIGHT_GUI_TEST
+#if SIGHT_IS_GUI_TEST
+    // Read by Qt when the application object is built; the supervised children inherit it.
+    if(!qputenv("QT_ENABLE_HIGHDPI_SCALING", "0") || !qputenv("QT_FONT_DPI", "96"))
+    {
+        std::cerr << "Could not configure the GUI test scaling and font DPI" << std::endl;
+        return EXIT_FAILURE;
+    }
+
     // Must run before any runtime/profile/QApplication setup: a supervised run re-executes this
     // same binary once per matching test case and never touches any of that itself. It also must
     // never trigger during --list-test-cases, which the CMake-time test discovery relies on.
     if(!query)
     {
+#ifdef WIN32
+        if(const auto isolated = run_on_own_desktop(); isolated.has_value())
+        {
+            const int result = check_test_logs(*isolated);
+            test_log::phase(std::format("main returned {}", result));
+            return result;
+        }
+#endif
+
         if(const auto supervised = supervise(argc, argv); supervised.has_value())
         {
             const int result = check_test_logs(*supervised);
@@ -1141,6 +1493,12 @@ int main(int argc, char** argv)
     {
         const runtime_scope runtime(!query);
         result = context.run();
+#if SIGHT_IS_GUI_TEST
+        if(!query)
+        {
+            report_scenario_finished();
+        }
+#endif
     }
 
     // A case log could not be created or written; later writes are checked when core is unloaded

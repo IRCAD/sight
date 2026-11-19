@@ -35,6 +35,46 @@
 namespace sight::service::detail
 {
 
+/// The service whose start, stop or update runs on this thread; a dialog it opens runs nested ones on the same thread.
+static thread_local const base* s_running = nullptr;
+
+namespace
+{
+
+/// Records a service for the time of a call, and restores the one it interrupted.
+class running_scope final
+{
+public:
+
+    explicit running_scope(const base& _service) noexcept
+    {
+        s_running = &_service;
+    }
+
+    running_scope(const running_scope&)            = delete;
+    running_scope(running_scope&&)                 = delete;
+    running_scope& operator=(const running_scope&) = delete;
+    running_scope& operator=(running_scope&&)      = delete;
+
+    ~running_scope()
+    {
+        s_running = m_interrupted;
+    }
+
+private:
+
+    const base* m_interrupted {s_running};
+};
+
+} // namespace
+
+//------------------------------------------------------------------------------
+
+const base* service::running() noexcept
+{
+    return s_running;
+}
+
 // To avoid any conflict with other slots
 const auto MAKE_PROPERTY_SLOT_NAME = [](const std::string& _property)
                                      {
@@ -653,7 +693,7 @@ base::shared_future_t service::start(bool _async)
 
     m_global_state = base::global_status::starting;
 
-    packaged_task_t task([this](auto&& ...){m_service.starting();});
+    packaged_task_t task([this](auto&& ...){const running_scope scope(m_service); m_service.starting();});
     base::shared_future_t future = task.get_future();
     task();
 
@@ -711,7 +751,7 @@ base::shared_future_t service::stop(bool _async)
 
     this->auto_disconnect();
 
-    packaged_task_t task([this](auto&& ...){m_service.stopping();});
+    packaged_task_t task([this](auto&& ...){const running_scope scope(m_service); m_service.stopping();});
     base::shared_future_t future = task.get_future();
 
     m_global_state = base::global_status::stopping;
@@ -843,7 +883,7 @@ base::shared_future_t service::update(bool _async)
         m_updating_state == base::updating_status::notupdating
     );
 
-    packaged_task_t task([this](auto&& ...){m_service.updating();});
+    packaged_task_t task([this](auto&& ...){const running_scope scope(m_service); m_service.updating();});
     base::shared_future_t future = task.get_future();
     m_updating_state = base::updating_status::updating;
     task();

@@ -26,6 +26,8 @@
 
 #include "ui/__/object.hpp"
 
+#include <string>
+
 namespace sight::ui::container
 {
 
@@ -46,6 +48,8 @@ public:
     SIGHT_UI_API virtual void set_visible(bool _is_visible) = 0;
     SIGHT_UI_API virtual void set_enabled(bool _is_enabled) = 0;
     SIGHT_UI_API virtual void set_blurred(bool _is_blurred) = 0;
+    /// Names this container with the identifier declared by its parent view.
+    SIGHT_UI_API virtual void set_name(const std::string& _name) = 0;
 };
 
 } // namespace sight::ui::container

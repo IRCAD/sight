@@ -33,6 +33,7 @@
 #include <service/base.hpp>
 
 #include <ui/qt/container/widget.hpp>
+#include <ui/qt/namer.hpp>
 
 #include <QAction>
 #include <QCheckBox>
@@ -85,10 +86,7 @@ void model_series_list::starting()
 {
     this->create();
 
-    const QString service_id = QString::fromStdString(base_id());
-
     auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->get_container());
-    qt_container->get_qt_container()->setObjectName(service_id);
 
     auto* layout        = new QVBoxLayout;
     auto* layout_button = new QHBoxLayout;
@@ -103,18 +101,16 @@ void model_series_list::starting()
     {
         // check box "show"
         m_show_check_box = new QCheckBox(tr("Hide all organs"));
-        m_show_check_box->setObjectName(service_id + "/" + m_show_check_box->text());
+        sight::ui::qt::name_part(*m_show_check_box, "hide_all_organs");
         m_show_check_box->setToolTip(tr("Show or hide all organs"));
         layout_button->addWidget(m_show_check_box, 0);
         QObject::connect(m_show_check_box, &QCheckBox::toggled, this, &self_t::on_show_reconstructions);
 
         m_check_all_button = new QPushButton(tr("Check all"));
-        m_check_all_button->setObjectName(service_id + "/" + m_check_all_button->text());
         layout_button->addWidget(m_check_all_button, 0);
         QObject::connect(m_check_all_button, &QPushButton::clicked, this, &self_t::on_check_all_check_box);
 
         m_un_check_all_button = new QPushButton(tr("UnCheck all"));
-        m_un_check_all_button->setObjectName(service_id + "/" + m_un_check_all_button->text());
         layout_button->addWidget(m_un_check_all_button, 0);
         QObject::connect(m_un_check_all_button, &QPushButton::clicked, this, &self_t::on_un_check_all_check_box);
     }
@@ -122,7 +118,6 @@ void model_series_list::starting()
     if(m_enable_delete)
     {
         m_delete_all_button = new QPushButton(tr("Delete all"));
-        m_delete_all_button->setObjectName(service_id + "/" + m_delete_all_button->text());
         layout_button->addWidget(m_delete_all_button, 0);
         QObject::connect(m_delete_all_button, &QPushButton::clicked, this, &self_t::on_delete_all_check_box);
     }

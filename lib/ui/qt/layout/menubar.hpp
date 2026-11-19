@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 
 #include "ui/qt/container/menubar.hpp"
 
-#include <core/base.hpp>
+#include <core/macros.hpp>
 
 #include <ui/__/container/menu.hpp>
 #include <ui/__/container/menubar.hpp>
@@ -73,7 +73,7 @@ public:
      */
     SIGHT_UI_QT_API void menu_is_enabled(ui::container::menu::sptr _menu, bool _is_enabled) override;
 
-protected:
+private:
 
     ui::qt::container::menubar::sptr m_parent;
 };

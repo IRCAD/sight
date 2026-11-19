@@ -75,7 +75,7 @@ foreach(line ${output})
     set(test ${CMAKE_MATCH_1})
     if(NOT ${CMAKE_MATCH_3} STREQUAL "")
         set(suite "${CMAKE_MATCH_3}")
-        set(prefix "${suite}::")
+        set(prefix "${TEST_PREFIX}${suite}::")
     endif()
     set(FILENAME ${CMAKE_MATCH_4})
     set(LINE_NUMBER ${CMAKE_MATCH_5})
@@ -126,7 +126,7 @@ foreach(line ${output})
     # Append before clearing prefix: prefix is part of the test name we just registered.
     list(APPEND tests "${prefix}${test}${suffix}")
     unset(labels)
-    unset(prefix)
+    set(prefix "${TEST_PREFIX}")
 endforeach()
 
 # Create a list of all discovered tests, which users may use to e.g. set

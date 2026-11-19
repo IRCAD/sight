@@ -27,6 +27,7 @@
 #include <ui/__/dialog/message.hpp>
 #include <ui/__/registry.hpp>
 #include <ui/qt/container/widget.hpp>
+#include <ui/qt/namer.hpp>
 
 #include <QVBoxLayout>
 #include <QWidget>
@@ -64,10 +65,7 @@ void view::starting()
 {
     this->sight::ui::service::create();
 
-    const QString service_id = QString::fromStdString(base_id());
-
     auto parent_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->get_container());
-    parent_container->get_qt_container()->setObjectName(service_id);
 
     auto* layout = new QVBoxLayout();
     if(m_border >= 0)
@@ -77,7 +75,7 @@ void view::starting()
 
     auto* widget = new QWidget();
     layout->addWidget(widget);
-    widget->setObjectName(service_id + "/container");
+    sight::ui::qt::name_part(*widget, "container");
 
     auto sub_container = sight::ui::qt::container::widget::make();
 

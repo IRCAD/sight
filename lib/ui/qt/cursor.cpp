@@ -25,6 +25,8 @@
 #include <ui/__/macros.hpp>
 
 #include <QApplication>
+#include <QCoreApplication>
+#include <QGuiApplication>
 
 SIGHT_REGISTER_GUI(sight::ui::qt::cursor, sight::ui::cursor_base::REGISTRY_KEY);
 
@@ -33,8 +35,21 @@ namespace sight::ui::qt
 
 //-----------------------------------------------------------------------------
 
+/// A process without a GUI application, as a unit test or a command line tool, has no cursor: Qt aborts on one.
+static bool has_gui_application()
+{
+    return qobject_cast<QGuiApplication*>(QCoreApplication::instance()) != nullptr;
+}
+
+//-----------------------------------------------------------------------------
+
 void cursor::set_cursor(ui::cursor_base::state_t _cursor, bool _set_overriden_as_default)
 {
+    if(!has_gui_application())
+    {
+        return;
+    }
+
     QCursor qt_cursor(Qt::ArrowCursor);
     switch(_cursor)
     {
@@ -73,6 +88,11 @@ void cursor::set_cursor(ui::cursor_base::state_t _cursor, bool _set_overriden_as
 
 void cursor::set_default_cursor()
 {
+    if(!has_gui_application())
+    {
+        return;
+    }
+
     qApp->restoreOverrideCursor();
 }
 

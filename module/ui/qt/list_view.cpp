@@ -71,21 +71,21 @@ bool list_view::eventFilter(QObject* _watched, QEvent* _event)
 }
 
 //------------------------------------------------------------------------------
+
 void list_view::configuring()
 {
     this->initialize();
 }
 
 //------------------------------------------------------------------------------
+
 void list_view::starting()
 {
     this->create();
     auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->get_container());
 
     QPointer<QHBoxLayout> layout = new QHBoxLayout();
-    layout->setObjectName("list_viewLayout");
     m_list_widget = new(QListWidget);
-    m_list_widget->setObjectName("list_viewWidget");
     m_list_widget->installEventFilter(this);
     layout->addWidget(m_list_widget);
 
@@ -108,6 +108,7 @@ void list_view::updating()
 }
 
 //------------------------------------------------------------------------------
+
 void list_view::insert_item(int _index, std::string _value)
 {
     // insert item at the index position of the list
@@ -119,6 +120,7 @@ void list_view::insert_item(int _index, std::string _value)
 }
 
 //------------------------------------------------------------------------------
+
 void list_view::remove_item(int _index)
 {
     // remove item at index position

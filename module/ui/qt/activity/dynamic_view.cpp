@@ -28,8 +28,10 @@
 
 #include <ui/__/dialog/message.hpp>
 #include <ui/__/registry.hpp>
+#include <ui/qt/namer.hpp>
 
 #include <QBoxLayout>
+#include <QTabBar>
 
 namespace sight::module::ui::qt::activity
 {
@@ -70,6 +72,8 @@ void dynamic_view::starting()
     auto parent_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->get_container());
 
     m_tab_widget = new QTabWidget();
+    // Qt names its tab bar, and the namer never renames: the role is given as a part.
+    sight::ui::qt::name_part(*m_tab_widget->tabBar(), "tab_bar");
     m_tab_widget->setTabsClosable(true);
     m_tab_widget->setDocumentMode(m_document_mode);
     m_tab_widget->setMovable(true);

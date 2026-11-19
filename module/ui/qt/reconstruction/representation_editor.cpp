@@ -49,70 +49,56 @@ void representation_editor::starting()
 {
     this->create();
 
-    const QString service_id = QString::fromStdString(base_id());
-
     auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->get_container());
-    qt_container->get_qt_container()->setObjectName(service_id);
 
     auto* layout = new QVBoxLayout();
 
-    auto* group_box = new QGroupBox(tr("Representation"));
-    group_box->setObjectName(service_id + "/" + group_box->title());
+    auto* group_box        = new QGroupBox(tr("Representation"));
     auto* layout_group_box = new QVBoxLayout();
     group_box->setLayout(layout_group_box);
 
     m_button_group = new QButtonGroup(group_box);
-    m_button_group->setObjectName(service_id + "/buttonGroup");
 
     auto* button_surface = new QRadioButton(tr("Surface"), group_box);
-    button_surface->setObjectName(service_id + "/" + button_surface->text());
     button_surface->setMinimumSize(button_surface->sizeHint());
     m_button_group->addButton(button_surface, 0);
     layout_group_box->addWidget(button_surface);
     button_surface->setChecked(true);
 
     auto* button_point = new QRadioButton(tr("Point"), group_box);
-    button_point->setObjectName(service_id + "/" + button_point->text());
     button_point->setMinimumSize(button_point->sizeHint());
     m_button_group->addButton(button_point, 1);
     layout_group_box->addWidget(button_point);
 
     auto* button_wireframe = new QRadioButton(tr("Wireframe"), group_box);
-    button_wireframe->setObjectName(service_id + "/" + button_wireframe->text());
     button_wireframe->setMinimumSize(button_wireframe->sizeHint());
     m_button_group->addButton(button_wireframe, 2);
     layout_group_box->addWidget(button_wireframe);
 
     auto* button_edge = new QRadioButton(tr("Edge"), group_box);
-    button_edge->setObjectName(service_id + "/" + button_edge->text());
     button_edge->setMinimumSize(button_edge->sizeHint());
     m_button_group->addButton(button_edge, 3);
     layout_group_box->addWidget(button_edge);
 
     // shading group box
-    auto* group_box_shading = new QGroupBox(tr("shading"));
-    group_box_shading->setObjectName(service_id + "/" + group_box_shading->title());
+    auto* group_box_shading        = new QGroupBox(tr("shading"));
     auto* layout_group_box_shading = new QVBoxLayout();
     group_box_shading->setLayout(layout_group_box_shading);
     m_button_group_shading = new QButtonGroup(group_box_shading);
-    m_button_group_shading->setObjectName(service_id + "/buttonGroupShading");
 
     auto* button_ambient = new QRadioButton(tr("Ambient"), group_box_shading);
-    button_ambient->setObjectName(service_id + "/" + button_ambient->text());
     button_ambient->setMinimumSize(button_ambient->sizeHint());
     m_button_group_shading->addButton(button_ambient, 0);
     layout_group_box_shading->addWidget(button_ambient);
     button_ambient->setChecked(true);
 
     auto* button_flat = new QRadioButton(tr("Flat"), group_box_shading);
-    button_flat->setObjectName(service_id + "/" + button_flat->text());
     button_flat->setMinimumSize(button_flat->sizeHint());
     m_button_group_shading->addButton(button_flat, 1);
     layout_group_box_shading->addWidget(button_flat);
     button_flat->setChecked(true);
 
     auto* button_phong = new QRadioButton(tr("Phong"), group_box_shading);
-    button_phong->setObjectName(service_id + "/" + button_phong->text());
     button_phong->setMinimumSize(button_phong->sizeHint());
     m_button_group_shading->addButton(button_phong, 2);
     layout_group_box_shading->addWidget(button_phong);
@@ -120,19 +106,13 @@ void representation_editor::starting()
     layout->addWidget(group_box);
     layout->addWidget(group_box_shading);
 
-    auto* group_box_normals = new QGroupBox(tr("Normals"));
-    group_box_normals->setObjectName(service_id + "/" + group_box_normals->title());
+    auto* group_box_normals        = new QGroupBox(tr("Normals"));
     auto* layout_group_box_normals = new QVBoxLayout(group_box_normals);
     m_options_radio_box = new QButtonGroup();
-    m_options_radio_box->setObjectName(service_id + "/normalsRadioBox");
     auto* point_normals_button = new QRadioButton(tr("Show point normals"));
-    point_normals_button->setObjectName(service_id + "/" + point_normals_button->text());
-    auto* cell_normals_button = new QRadioButton(tr("Show cell normals"));
-    cell_normals_button->setObjectName(service_id + "/" + cell_normals_button->text());
-    auto* selected_button = new QRadioButton(tr("Selected"));
-    selected_button->setObjectName(service_id + "/" + selected_button->text());
-    auto* hide_normals_button = new QRadioButton(tr("Hide normals"));
-    hide_normals_button->setObjectName(service_id + "/" + hide_normals_button->text());
+    auto* cell_normals_button  = new QRadioButton(tr("Show cell normals"));
+    auto* selected_button      = new QRadioButton(tr("Selected"));
+    auto* hide_normals_button  = new QRadioButton(tr("Hide normals"));
 
     m_options_radio_box->addButton(point_normals_button, 1);
     m_options_radio_box->addButton(cell_normals_button, 2);

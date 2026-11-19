@@ -502,6 +502,16 @@ private:
     /// Return the widget of the parameter with the given key, or nullptr if it does not exist
     QObject* get_param_widget(const std::string& _key);
 
+    /**
+     * @brief The object name of the widget of a key, or of one of its parts, which GUI tests and this service use to
+     * find it.
+     *
+     * @param _key  the key of the parameter.
+     * @param _part the part of its widget, or empty.
+     * @return "<uid>/<key>[/<part>]".
+     */
+    [[nodiscard]] QString widget_name(std::string_view _key, std::string_view _part = {}) const;
+
     /// Compute the double slider value from a slider position.
     static double get_double_slider_value(const QSlider* _slider);
 

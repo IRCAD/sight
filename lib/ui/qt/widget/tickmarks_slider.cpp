@@ -21,7 +21,7 @@
 
 #include "tickmarks_slider.hpp"
 
-#include <core/spy_log.hpp>
+#include "ui/qt/naming.hpp"
 
 #include <QGraphicsOpacityEffect>
 #include <QPropertyAnimation>
@@ -55,8 +55,8 @@ tickmarks_slider::tickmarks_slider(QWidget* _parent) :
             Q_EMIT value_changed(_value);
         });
 
-    m_slider->setObjectName("tickmarks_slider");
     m_slider->setProperty("class", "tickmarks_slider");
+    ui::qt::detail::bind_part_name(*m_slider, *this, u"slider");
 }
 
 //---------------------------------------------------------------------------
@@ -149,7 +149,7 @@ void tickmarks_slider::set_current_value(const std::string& _value)
 
 [[nodiscard]] std::string tickmarks_slider::current_value() const
 {
-    return m_tick_values[std::size_t(m_current_tick)];
+    return m_tick_values[static_cast<std::size_t>(m_current_tick)];
 }
 
 //-----------------------------------------------------------------------------
@@ -220,7 +220,7 @@ void tickmarks_slider::paintEvent(QPaintEvent* /*event*/)
     QPainter painter_label(this);
     const auto display_tick = std::clamp(
         static_cast<std::size_t>(std::round(m_animated_tick)),
-        std::size_t(0),
+        std::size_t {0},
         m_tick_values.size() - 1
     );
     const auto current_label = QString::fromStdString(m_tick_values[display_tick]);
@@ -228,6 +228,7 @@ void tickmarks_slider::paintEvent(QPaintEvent* /*event*/)
 }
 
 //------------------------------------------------------------------------------
+
 void tickmarks_slider::mousePressEvent(QMouseEvent* _event)
 {
     if(_event->button() == Qt::LeftButton)
@@ -244,6 +245,7 @@ void tickmarks_slider::mousePressEvent(QMouseEvent* _event)
 }
 
 //-------------------------------------------------------------------------------
+
 void tickmarks_slider::mouseMoveEvent(QMouseEvent* _event)
 {
     if(!(_event->buttons() & Qt::LeftButton))
@@ -265,7 +267,7 @@ void tickmarks_slider::mouseMoveEvent(QMouseEvent* _event)
         return;
     }
 
-    auto max_idx = double(m_tick_values.size() - 1);
+    auto max_idx = static_cast<double>(m_tick_values.size() - 1);
     double dx    = _event->pos().x() - m_press_pos.x();
 
     const double sensitivity = 0.6;
@@ -294,16 +296,16 @@ void tickmarks_slider::mouseReleaseEvent(QMouseEvent* _event)
     }
 
     m_dragging = false;
-    const int target = int(std::round(m_animated_tick));
+    const int target = static_cast<int>(std::round(m_animated_tick));
 
     const double speed = 3.0;
 
     const double distance = std::abs(target - m_animated_tick);
 
-    const int duration_ms = int((distance / speed) * 1000);
+    const int duration_ms = static_cast<int>((distance / speed) * 1000);
 
     m_drag_anim->setStartValue(m_animated_tick);
-    m_drag_anim->setEndValue(double(target));
+    m_drag_anim->setEndValue(static_cast<double>(target));
     m_drag_anim->setDuration(duration_ms);
     m_drag_anim->setEasingCurve(QEasingCurve::InOutQuad);
     connect(

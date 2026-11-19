@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,8 @@
 
 #include "ui/qt/dialog/selector.hpp"
 
-#include <core/base.hpp>
-
-#include <ui/__/macros.hpp>
+#include <ui/qt/namer.hpp>
+#include <ui/qt/naming.hpp>
 
 #include <QApplication>
 #include <QDialog>
@@ -66,10 +65,11 @@ selector::selections_t selector::show()
 
     auto* dialog = new QDialog(parent);
     dialog->setWindowTitle(QString::fromStdString(m_title));
-    dialog->setObjectName("selector");
+    sight::ui::qt::detail::set_name(*dialog, "selector");
+    sight::ui::qt::name_widgets_below(*dialog);
 
     auto* selection_list = new QListWidget(dialog);
-    selection_list->setObjectName("selectionList");
+    sight::ui::qt::name_part(*selection_list, "selection_list");
     int selected_item = 0;
     for(const auto& choice : m_choices)
     {
@@ -93,9 +93,9 @@ selector::selections_t selector::show()
     selection_list->setCurrentItem(first_item);
 
     auto* ok_button = new QPushButton(QObject::tr("Ok"));
-    ok_button->setObjectName("Ok");
+    sight::ui::qt::name_part(*ok_button, "ok");
     auto* cancel_button = new QPushButton(QObject::tr("Cancel"));
-    cancel_button->setObjectName("Cancel");
+    sight::ui::qt::name_part(*cancel_button, "cancel");
 
     auto* h_layout = new QHBoxLayout();
     h_layout->addWidget(ok_button);

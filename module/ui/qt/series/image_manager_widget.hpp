@@ -33,6 +33,7 @@
 #include <ui/__/editor.hpp>
 
 #include <QButtonGroup>
+#include <QCheckBox>
 #include <QFrame>
 #include <QObject>
 #include <QPointer>
@@ -136,6 +137,7 @@ private:
     struct image_card
     {
         QPointer<QFrame> widget;
+        QPointer<QCheckBox> image_visibility;
         sight::service::base::sptr thumbnail_service;
         sight::ui::container::widget::sptr thumbnail_container;
         std::string thumbnail_service_id;

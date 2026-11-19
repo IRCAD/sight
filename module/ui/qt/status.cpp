@@ -89,9 +89,6 @@ void status::starting()
     // Keep the button visually enabled (no gray icon), but ignore user mouse interaction.
     m_status_button->setAttribute(Qt::WA_TransparentForMouseEvents, true);
     m_status_button->setFocusPolicy(Qt::NoFocus);
-    const QString service_id = QString::fromStdString(base_id());
-    m_status_button->setObjectName(service_id + "/status_button");
-
     if(!m_label.empty())
     {
         m_status_button->setText(QString::fromStdString(m_label));

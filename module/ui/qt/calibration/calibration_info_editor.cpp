@@ -24,6 +24,7 @@
 
 #include <ui/__/dialog/message.hpp>
 #include <ui/qt/container/widget.hpp>
+#include <ui/qt/namer.hpp>
 
 #include <QHBoxLayout>
 
@@ -128,16 +129,14 @@ void calibration_info_editor::starting()
     auto* label = new QLabel("nb captures:");
     nb_items_h_box->addWidget(label);
 
-    const QString service_id = QString::fromStdString(base_id());
-
     m_nb_captures_label = new QLabel("-");
-    m_nb_captures_label->setObjectName(service_id + "/nbCapturesLabel");
+    sight::ui::qt::name_part(*m_nb_captures_label, "nb_captures");
     nb_items_h_box->addWidget(m_nb_captures_label);
     nb_items_h_box->addStretch();
 
     //   The ListWidget
     m_captures_list_widget = new QListWidget();
-    m_captures_list_widget->setObjectName(service_id + "/capturesListWidget");
+    sight::ui::qt::name_part(*m_captures_list_widget, "captures_list");
     QObject::connect(
         m_captures_list_widget,
         SIGNAL(itemDoubleClicked(QListWidgetItem*)),

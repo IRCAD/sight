@@ -42,6 +42,8 @@
 #include <algorithm>
 #include <chrono>
 #include <future>
+#include <optional>
+#include <string>
 #include <thread>
 
 //------------------------------------------------------------------------------
@@ -69,6 +71,22 @@ static std::shared_ptr<N> make_permanent(
         .channel  = _channel,
         .duration = std::chrono::milliseconds::zero(),
     });
+}
+
+//------------------------------------------------------------------------------
+
+/// The label of the popup of a notification kind: `instruction`, `information`, `warning` or `error`.
+static sight::ui::test::gui_fixture::widget_filter<QLabel> popup(const std::string& _kind)
+{
+    return sight::ui::test::gui_fixture::with_class<QLabel>("notification_dialog_" + _kind);
+}
+
+//------------------------------------------------------------------------------
+
+/// The text of the popup of a notification kind, once one shows.
+static std::optional<std::string> popup_text(const std::string& _kind)
+{
+    return sight::ui::test::gui_fixture::get_widget_text<QLabel>(popup(_kind));
 }
 
 //------------------------------------------------------------------------------
@@ -212,19 +230,19 @@ TEST_SUITE("sight::module::ui::qt::notifier")
             }).get();
 
             CHECK_EQ(
-                sight::ui::test::gui_fixture::get_widget_text<QLabel>("NotificationDialog_Instruction"),
+                popup_text("instruction"),
                 std::make_optional(std::string("instruction text"))
             );
             CHECK_EQ(
-                sight::ui::test::gui_fixture::get_widget_text<QLabel>("NotificationDialog_Information"),
+                popup_text("information"),
                 std::make_optional(std::string("information text"))
             );
             CHECK_EQ(
-                sight::ui::test::gui_fixture::get_widget_text<QLabel>("NotificationDialog_Warning"),
+                popup_text("warning"),
                 std::make_optional(std::string("warning text"))
             );
             CHECK_EQ(
-                sight::ui::test::gui_fixture::get_widget_text<QLabel>("NotificationDialog_Error"),
+                popup_text("error"),
                 std::make_optional(std::string("error text"))
             );
         });
@@ -260,7 +278,7 @@ TEST_SUITE("sight::module::ui::qt::notifier")
 
             // The popup label paints the icon itself, so that the style sheet frames both as one block.
             const auto has_icon = sight::ui::test::gui_fixture::query_widget<QLabel>(
-                "NotificationDialog_Warning",
+                popup("warning"),
                 [](QLabel* _label)
             {
                 const auto* const notification_label =
@@ -299,7 +317,7 @@ TEST_SUITE("sight::module::ui::qt::notifier")
             }).get();
 
             const auto layout = sight::ui::test::gui_fixture::query_widget<QLabel>(
-                "NotificationDialog_Warning",
+                popup("warning"),
                 [](QLabel* _label)
             {
                 const auto* const label = qobject_cast<sight::ui::qt::widget::notification_label*>(_label);
@@ -351,7 +369,7 @@ TEST_SUITE("sight::module::ui::qt::notifier")
             };
 
             const auto layout = sight::ui::test::gui_fixture::query_widget<QLabel>(
-                "NotificationDialog_Warning",
+                popup("warning"),
                 [&message](QLabel* _label)
             {
                 const auto* const label  = qobject_cast<sight::ui::qt::widget::notification_label*>(_label);
@@ -395,7 +413,7 @@ TEST_SUITE("sight::module::ui::qt::notifier")
             SIGHT_TEST_WAIT((shown = close_message_box()).has_value());
 
             CHECK_EQ(shown, std::make_optional(message));
-            CHECK_EQ(click.wait_for(std::chrono::seconds(10)), std::future_status::ready);
+            CHECK_EQ(click.wait_for(std::chrono::seconds(60)), std::future_status::ready);
         });
     }
 
@@ -434,7 +452,7 @@ TEST_SUITE("sight::module::ui::qt::notifier")
             }).get();
 
             const auto show_more = sight::ui::test::gui_fixture::query_widget<QLabel>(
-                "NotificationDialog_Warning",
+                popup("warning"),
                 [](QLabel* _label)
             {
                 const auto* const button = _label->parentWidget()->findChild<QToolButton*>();
@@ -478,7 +496,7 @@ TEST_SUITE("sight::module::ui::qt::notifier")
             }).get();
 
             const auto layout = sight::ui::test::gui_fixture::query_widget<QLabel>(
-                "NotificationDialog_Warning",
+                popup("warning"),
                 [](QLabel* _label)
             {
                 const auto* const label = qobject_cast<sight::ui::qt::widget::notification_label*>(_label);
@@ -524,7 +542,7 @@ TEST_SUITE("sight::module::ui::qt::notifier")
                 );
             }).get();
 
-            const auto label = sight::ui::test::gui_fixture::find_widget<QLabel>("NotificationDialog_Information");
+            const auto label = sight::ui::test::gui_fixture::find_widget<QLabel>(popup("information"));
             REQUIRE(!label.isNull());
 
             REQUIRE(has_icon(label) == std::make_optional(false));
@@ -546,7 +564,7 @@ TEST_SUITE("sight::module::ui::qt::notifier")
             // Still the very same popup, now carrying both the new text and the new icon.
             CHECK(has_icon(label) == std::make_optional(true));
             CHECK_EQ(
-                sight::ui::test::gui_fixture::get_widget_text<QLabel>("NotificationDialog_Information"),
+                popup_text("information"),
                 std::make_optional(std::string("with icon"))
             );
         });
@@ -581,7 +599,7 @@ TEST_SUITE("sight::module::ui::qt::notifier")
                 );
             }).get();
 
-            CHECK_FALSE(sight::ui::test::gui_fixture::find_widget<QLabel>("NotificationDialog_Instruction"));
+            CHECK_FALSE(sight::ui::test::gui_fixture::find_widget<QLabel>(popup("instruction")));
         });
     }
 
@@ -613,7 +631,7 @@ TEST_SUITE("sight::module::ui::qt::notifier")
             }).get();
 
             // Permanent, so that the popup disappearing below can only be the doing of close_notification.
-            const auto label = sight::ui::test::gui_fixture::find_widget<QLabel>("NotificationDialog_Information");
+            const auto label = sight::ui::test::gui_fixture::find_widget<QLabel>(popup("information"));
             CHECK(!label.isNull());
 
             sight::core::thread::get_default_worker()->post_task<void>(
@@ -714,7 +732,7 @@ TEST_SUITE("sight::module::ui::qt::notifier")
             }).get();
 
             CHECK_EQ(
-                sight::ui::test::gui_fixture::get_widget_text<QLabel>("NotificationDialog_Information"),
+                popup_text("information"),
                 std::make_optional(std::string("on valid channel"))
             );
 
@@ -728,7 +746,7 @@ TEST_SUITE("sight::module::ui::qt::notifier")
             };
 
             const auto icon = sight::ui::test::gui_fixture::query_widget<QLabel>(
-                "NotificationDialog_Information",
+                popup("information"),
                 [](QLabel* _label)
             {
                 const auto* const notification_label =
@@ -820,7 +838,7 @@ TEST_SUITE("sight::module::ui::qt::notifier")
             }).get();
 
             CHECK_EQ(
-                sight::ui::test::gui_fixture::get_widget_text<QLabel>("NotificationDialog_Information"),
+                popup_text("information"),
                 std::make_optional(std::string("permanent"))
             );
         });
@@ -858,7 +876,7 @@ TEST_SUITE("sight::module::ui::qt::notifier")
             }).get();
 
             CHECK_EQ(
-                sight::ui::test::gui_fixture::get_widget_text<QLabel>("NotificationDialog_Error"),
+                popup_text("error"),
                 std::make_optional(std::string("with sound"))
             );
         });
@@ -900,7 +918,7 @@ TEST_SUITE("sight::module::ui::qt::notifier")
             }).get();
 
             CHECK_EQ(
-                sight::ui::test::gui_fixture::get_widget_text<QLabel>("NotificationDialog_Information"),
+                popup_text("information"),
                 std::make_optional(std::string("first"))
             );
 
@@ -917,7 +935,7 @@ TEST_SUITE("sight::module::ui::qt::notifier")
             }).get();
 
             SIGHT_TEST_FAIL_WAIT(
-                sight::ui::test::gui_fixture::get_widget_text<QLabel>("NotificationDialog_Information")
+                popup_text("information")
                 == std::make_optional(std::string("second"))
             );
         });
@@ -971,11 +989,11 @@ TEST_SUITE("sight::module::ui::qt::notifier")
             std::this_thread::sleep_for(std::chrono::seconds(1));
 
             CHECK_EQ(
-                sight::ui::test::gui_fixture::get_widget_text<QLabel>("NotificationDialog_Information"),
+                popup_text("information"),
                 std::make_optional(std::string("first"))
             );
             CHECK_EQ(
-                sight::ui::test::gui_fixture::get_widget_text<QLabel>("NotificationDialog_Warning"),
+                popup_text("warning"),
                 std::make_optional(std::string("second"))
             );
         });

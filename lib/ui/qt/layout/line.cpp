@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,14 +22,11 @@
 
 #include "ui/qt/layout/line.hpp"
 
-#include "ui/qt/app.hpp"
-
-#include <core/base.hpp>
-
 #include <data/tools/color.hpp>
 
 #include <ui/__/macros.hpp>
 
+#include <QApplication>
 #include <QBoxLayout>
 #include <QGroupBox>
 #include <QScrollArea>
@@ -44,13 +41,10 @@ namespace sight::ui::qt::layout
 
 //-----------------------------------------------------------------------------
 
-void line::create_layout(ui::container::widget::sptr _parent, const std::string& _id)
+void line::create_layout(ui::container::widget::sptr _parent, const std::string& /*_id*/)
 {
     m_parent_container = std::dynamic_pointer_cast<ui::qt::container::widget>(_parent);
     SIGHT_ASSERT("dynamicCast widget to widget failed", m_parent_container);
-
-    const QString q_id = QString::fromStdString(_id);
-    m_parent_container->get_qt_container()->setObjectName(q_id);
 
     auto* layout = new QBoxLayout(QBoxLayout::LeftToRight);
     m_parent_container->set_layout(layout);
@@ -66,7 +60,7 @@ void line::create_layout(ui::container::widget::sptr _parent, const std::string&
         layout->setSpacing(spacing);
     }
 
-    for(std::size_t idx = 0 ; const view_info& view_info : this->get_views_info())
+    for(const view_info& view_info : this->get_views_info())
     {
         if(view_info.m_is_spacer)
         {
@@ -110,7 +104,6 @@ void line::create_layout(ui::container::widget::sptr _parent, const std::string&
             {
                 const QString& title = QString::fromStdString(view_info.m_caption.second);
                 auto* const groupbox = new QGroupBox();
-                groupbox->setObjectName(q_id + '/' + title);
                 groupbox->setTitle(title);
                 mid_panel = groupbox;
 
@@ -124,7 +117,6 @@ void line::create_layout(ui::container::widget::sptr _parent, const std::string&
             else
             {
                 mid_panel = new QWidget();
-                mid_panel->setObjectName(q_id + '/' + QString::number(idx));
             }
 
             // Add the top_panel to the mid_panel layout
@@ -215,8 +207,6 @@ void line::create_layout(ui::container::widget::sptr _parent, const std::string&
                 sub_view->set_visible(false);
             }
         }
-
-        idx++;
     }
 }
 

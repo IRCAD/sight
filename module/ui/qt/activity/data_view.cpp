@@ -46,6 +46,8 @@
 #include <service/op.hpp>
 #include <service/registry.hpp>
 
+#include <ui/qt/namer.hpp>
+
 #include <QApplication>
 #include <QDropEvent>
 #include <QHBoxLayout>
@@ -57,6 +59,7 @@
 #include <QPixmap>
 #include <QPushButton>
 #include <QStandardItem>
+#include <QTabBar>
 #include <QTableWidget>
 #include <QVBoxLayout>
 
@@ -75,6 +78,8 @@ using sight::activity::extension::activity_requirement;
 data_view::data_view(QWidget* _parent) :
     QTabWidget(_parent)
 {
+    // Qt names its tab bar, and the namer never renames: the role is given as a part.
+    sight::ui::qt::name_part(*tabBar(), "tab_bar");
 }
 
 //-----------------------------------------------------------------------------

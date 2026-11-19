@@ -24,11 +24,11 @@
 
 #include <sight/ui/__/config.hpp>
 
-#include "ui/__/action_callback_base.hpp"
 #include "ui/__/container/menu.hpp"
 #include "ui/__/container/menu_item.hpp"
 #include "ui/__/container/toolbar.hpp"
 #include "ui/__/container/widget.hpp"
+#include "ui/__/menu_item_callback.hpp"
 #include "ui/__/object.hpp"
 
 namespace sight::ui::detail::registry
@@ -37,7 +37,7 @@ namespace sight::ui::detail::registry
 /**
  * @brief   Defines the toolbar registry for UI.
  */
-class toolbar : public ui::object
+class SIGHT_UI_CLASS_API toolbar : public ui::object
 {
 public:
 
@@ -53,7 +53,7 @@ public:
     using callbacks_t = std::vector<ui::menu_item_callback::sptr>;
 
     /// Constructor.
-    toolbar(std::string _sid);
+    SIGHT_UI_API explicit toolbar(std::string _sid);
 
     /// Destructor. Do nothing
     ~toolbar() override = default;
@@ -115,7 +115,7 @@ public:
      *   with \<parent wid="editorWindow" /\>.
      *   - \b wid  (mandatory): the window identifier.
      */
-    virtual void initialize(const ui::config_t& _configuration);
+    SIGHT_UI_API virtual void initialize(const ui::config_t& _configuration);
 
     /**
      * @brief manages action service associated with menuItem of toolbar.
@@ -154,13 +154,13 @@ public:
      * @pre tool_bar must be initialized before.
      * @pre sub toolbar items must be instanced before.
      */
-    virtual void manage(std::vector<ui::container::widget::sptr> _containers);
+    SIGHT_UI_API virtual void manage(std::vector<ui::container::widget::sptr> _containers);
 
     /**
      * @brief Stopping toolbar items manager.
      * All services managed in local toolbar items will be stopped.
      */
-    virtual void unmanage();
+    SIGHT_UI_API virtual void unmanage();
 
     /**
      * @brief This method is called when an action is clicked.

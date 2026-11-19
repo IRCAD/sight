@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,18 +22,16 @@
 
 #include "ui/qt/layout/cardinal.hpp"
 
-#include "ui/qt/app.hpp"
-
-#include <core/base.hpp>
-
 #include <data/tools/color.hpp>
 
 #include <ui/__/macros.hpp>
 #include <ui/__/registry.hpp>
 #include <ui/qt/container/widget.hpp>
 
+#include <QApplication>
 #include <QBoxLayout>
 #include <QDockWidget>
+#include <QEvent>
 #include <QGroupBox>
 #include <QMainWindow>
 #include <QScrollArea>
@@ -44,6 +42,9 @@
 SIGHT_REGISTER_GUI(sight::ui::qt::layout::cardinal, sight::ui::layout::cardinal::REGISTRY_KEY);
 
 namespace sight::ui::qt::layout
+{
+
+namespace
 {
 
 class paint_filter final : public QObject
@@ -60,8 +61,6 @@ public:
         qApp->removeEventFilter(this);
     }
 
-protected:
-
     //------------------------------------------------------------------------------
 
     bool eventFilter(QObject* /*_watched*/, QEvent* _event) final
@@ -70,14 +69,14 @@ protected:
     }
 };
 
+} // namespace
+
 //-----------------------------------------------------------------------------
 
-void cardinal::create_layout(ui::container::widget::sptr _parent, const std::string& _id)
+void cardinal::create_layout(ui::container::widget::sptr _parent, const std::string& /*_id*/)
 {
     m_parent_container = std::dynamic_pointer_cast<ui::qt::container::widget>(_parent);
     SIGHT_ASSERT("dynamicCast widget to widget failed", m_parent_container);
-    const QString q_id = QString::fromStdString(_id);
-    m_parent_container->get_qt_container()->setObjectName(q_id);
 
     m_qt_window = new QMainWindow();
 
@@ -91,7 +90,7 @@ void cardinal::create_layout(ui::container::widget::sptr _parent, const std::str
 
     [[maybe_unused]] bool has_central = false;
 
-    for(std::size_t idx = 0 ; const view_info& view_info : views)
+    for(const view_info& view_info : views)
     {
         // top_widget is the child container
         QWidget* top_widget = nullptr;
@@ -109,13 +108,11 @@ void cardinal::create_layout(ui::container::widget::sptr _parent, const std::str
             has_central = true;
 
             top_widget = new QWidget(m_qt_window);
-            top_widget->setObjectName(q_id + '/' + QString("%1").arg(idx));
             QWidget* mid_widget = top_widget;
 
             if(view_info.m_caption.first)
             {
                 auto* group_box = new QGroupBox(m_qt_window);
-                group_box->setObjectName(q_id + '/' + view_info.m_caption.second.c_str());
                 group_box->setTitle(QString::fromStdString(view_info.m_caption.second));
 
                 auto* group_box_layout = new QVBoxLayout(group_box);
@@ -209,7 +206,6 @@ void cardinal::create_layout(ui::container::widget::sptr _parent, const std::str
             if(view_info.m_caption.first)
             {
                 dock_widget->setWindowTitle(QString::fromStdString(view_info.m_caption.second));
-                dock_widget->setObjectName(q_id + '/' + view_info.m_caption.second.c_str());
                 dock_widget->setMinimumSize(0, 0);
             }
             else
@@ -223,11 +219,9 @@ void cardinal::create_layout(ui::container::widget::sptr _parent, const std::str
                 another_layout->setContentsMargins(0, 0, 0, 0);
 
                 auto* widget = new QWidget;
-                widget->setObjectName(q_id + '/' + QString("%1").arg(idx));
                 widget->setLayout(another_layout);
 
                 dock_widget->setTitleBarWidget(widget);
-                dock_widget->setObjectName(q_id + "/QDockWidget/" + QString("%1").arg(idx));
             }
 
             // Use an intermediate widget to avoid unwanted interaction with other child layout when resizing
@@ -300,8 +294,6 @@ void cardinal::create_layout(ui::container::widget::sptr _parent, const std::str
                     });
             }
         }
-
-        idx++;
 
         //TODO
         // - viewInfo.m_position

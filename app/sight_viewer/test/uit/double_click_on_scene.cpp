@@ -19,70 +19,29 @@
  *
  ***********************************************************************/
 
-#include "test.hpp"
+#include <ui/test/gui_test.hpp>
 
-#include <QAction>
-
-#include <doctest/doctest.h>
-
-namespace sight::sight_viewer::uit
+SIGHT_GUI_TEST_CASE("double_click_on_scene")
 {
+    // scene_srv is in each of the four scene views: the view scope picks the main one.
+    const std::string scene = "main_scene_view >> scene_srv/view";
 
-TEST_SUITE("sight_viewer")
-{
-//------------------------------------------------------------------------------
+    // Keep a copy of the initial geometry; no QWidget crosses onto the scenario thread.
+    const auto maximized_size = ui.read(scene, &QWidget::size);
 
-    TEST_CASE_FIXTURE(test, "double_click_on_scene")
+    ui.double_click(scene);
+    ui.expect(scene).that(
+        "is restored",
+        [maximized_size](const QWidget& _widget)
     {
-        const std::string failure_message = start(
-            "double_click_on_scene",
-            [](sight::ui::test::tester& _tester)
-            {
-                // Initial situation: the 3D scene is maximized
-                _tester.take("main 3D view", "top_scenes_view/1");
-                _tester.yields(std::to_string(__LINE__) + ": ogre scene", "scene_srv");
+        const QSize current_size = _widget.size();
+        return current_size.width() * current_size.height()
+               < maximized_size.width() * maximized_size.height();
+    });
 
-                QSize size;
-
-                _tester.doubt<QWidget*>(
-                    std::to_string(__LINE__) + ": Get initial maximized size",
-                    [&size](QWidget* _obj)
-                {
-                    size = _obj->size();
-                    return size.isValid();
-                });
-
-                // Double click on the main scene
-                _tester.interact(std::make_unique<sight::ui::test::mouse_double_click>());
-
-                // The 3D scene is restored
-                _tester.doubt<QWidget*>(
-                    std::to_string(__LINE__) + ": Check current size < initial size",
-                    [&size](QWidget* _obj)
-                {
-                    const auto& current_size = _obj->size();
-                    return current_size.width() * current_size.height() < size.width() * size.height();
-                });
-
-                // Double click on the main scene
-                _tester.interact(std::make_unique<sight::ui::test::mouse_double_click>());
-
-                // The 3D scene is maximized again
-                _tester.doubt<QWidget*>(
-                    std::to_string(__LINE__) + ": Check current size == initial size",
-                    [&size](QWidget* _obj)
-                {
-                    return size == _obj->size();
-                });
-            },
-            true
-        );
-
-        // Runs on the main thread, after start() has returned: the only doctest assertion for
-        // this scenario. See sight::ui::test::base::start().
-        INFO(failure_message);
-        REQUIRE(failure_message.empty());
-    }
-} // TEST_SUITE
-
-} // namespace sight::sight_viewer::uit
+    // The second double-click returns the view to the size we recorded.
+    ui.double_click(scene);
+    ui.expect(scene).that(
+        "is maximized again",
+        [maximized_size](const QWidget& _widget){return _widget.size() == maximized_size;});
+}

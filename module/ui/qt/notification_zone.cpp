@@ -43,7 +43,6 @@ namespace
 
 constexpr const char* QSS_CLASS           = "class";
 const auto NOTIFICATION_LABEL             = QString::fromLatin1("notification_label");
-const auto NOTIFICATION_STACK             = QString::fromLatin1("notification_stack");
 const auto NOTIFICATION_LABEL_INSTRUCTION = NOTIFICATION_LABEL + "_instruction";
 const auto NOTIFICATION_LABEL_INFORMATION = NOTIFICATION_LABEL + "_information";
 const auto NOTIFICATION_LABEL_WARNING     = NOTIFICATION_LABEL + "_warning";
@@ -186,7 +185,6 @@ void notification_zone::starting()
     }
 
     m_stack = new QStackedWidget(qt_container);
-    m_stack->setObjectName(NOTIFICATION_STACK);
 
     main_layout->addWidget(m_stack);
 }
@@ -378,8 +376,7 @@ void notification_zone::handle_instruction(const sight::core::notification::inst
                     shared_this->watch(_instruction, /*_own=*/ true, shared_this->weak_from_this());
                 }
 
-                if(auto* const label = found_page->first->findChild<QLabel*>(NOTIFICATION_LABEL_INSTRUCTION);
-                   label != nullptr)
+                if(auto* const label = found_page->second.m_label.data(); label != nullptr)
                 {
                     label->setText(QString::fromStdString(_instruction->text()));
                 }
@@ -644,7 +641,6 @@ std::map<QWidget*, notification_zone::page>::iterator notification_zone::create_
 
         page.m_widget = new QWidget(m_stack);
         page.m_widget->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
-        page.m_widget->setObjectName("progress_page");
 
         auto* const layout = new QHBoxLayout(page.m_widget);
         layout->setContentsMargins(0, 0, 0, 0);
@@ -691,7 +687,6 @@ std::map<QWidget*, notification_zone::page>::iterator notification_zone::create_
 
         page.m_widget = new QWidget(m_stack);
         page.m_widget->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
-        page.m_widget->setObjectName("notification_page");
 
         auto* const box = new QHBoxLayout(page.m_widget);
         box->setContentsMargins(0, 0, 0, 0);
@@ -704,22 +699,18 @@ std::map<QWidget*, notification_zone::page>::iterator notification_zone::create_
 
         if(std::dynamic_pointer_cast<sight::core::notification::instruction>(_notification))
         {
-            page.m_label->setObjectName(NOTIFICATION_LABEL_INSTRUCTION);
             page.m_label->setProperty(QSS_CLASS, NOTIFICATION_LABEL_INSTRUCTION);
         }
         else if(std::dynamic_pointer_cast<sight::core::notification::information>(_notification))
         {
-            page.m_label->setObjectName(NOTIFICATION_LABEL_INFORMATION);
             page.m_label->setProperty(QSS_CLASS, NOTIFICATION_LABEL_INFORMATION);
         }
         else if(std::dynamic_pointer_cast<sight::core::notification::warning>(_notification))
         {
-            page.m_label->setObjectName(NOTIFICATION_LABEL_WARNING);
             page.m_label->setProperty(QSS_CLASS, NOTIFICATION_LABEL_WARNING);
         }
         else if(std::dynamic_pointer_cast<sight::core::notification::error>(_notification))
         {
-            page.m_label->setObjectName(NOTIFICATION_LABEL_ERROR);
             page.m_label->setProperty(QSS_CLASS, NOTIFICATION_LABEL_ERROR);
 
             page.m_label->installEventFilter(

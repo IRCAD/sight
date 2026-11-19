@@ -37,6 +37,7 @@
 
 #include <ui/__/dialog/location.hpp>
 #include <ui/qt/container/widget.hpp>
+#include <ui/qt/naming.hpp>
 #include <ui/qt/widget/non_linear_slider.hpp>
 
 #include <boost/tokenizer.hpp>
@@ -69,6 +70,26 @@
 
 namespace sight::module::ui::qt
 {
+
+//-----------------------------------------------------------------------------
+
+/// The key of an item, as GUI test locators name it: its `key`, else the map entry it edits (`data="${map}.entry"`,
+/// resolved as `map.entry`), else the object's uid.
+static std::string item_key(const service::config_t& _item, const sight::data::object& _object)
+{
+    if(const auto key = _item.get_optional<std::string>("<xmlattr>.key"); key.has_value())
+    {
+        return *key;
+    }
+
+    const std::string data = _item.get<std::string>("<xmlattr>.data", "");
+    if(const auto entry = data.rfind('.'); entry != std::string::npos)
+    {
+        return data.substr(entry + 1);
+    }
+
+    return _object.get_id();
+}
 
 // Use border around buttons, when selection is made using joysticks.
 static constexpr std::string_view S_BUTTON_WITHOUT_BORDER = "border : 1px solid transparent;";
@@ -151,8 +172,8 @@ void settings::starting()
         "text", "file", "dir", "file_read", "file_write", "dir_write", "dir_read"
     };
 
+    // The containing view names the service container (ui::detail::registry::view::manage()).
     auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->get_container());
-    qt_container->get_qt_container()->setObjectName(QString::fromStdString(base_id()));
 
     QScrollArea* scroll_area = nullptr;
 
@@ -220,7 +241,7 @@ void settings::starting()
                 sight::data::object::csptr obj;
                 lock       = m_settings[widget.data_index].const_lock();
                 obj        = lock.get_shared();
-                widget.key = cfg.get<std::string>("<xmlattr>.key", obj->get_id());
+                widget.key = item_key(cfg, *obj);
 
                 auto serializable_data = std::dynamic_pointer_cast<const sight::data::string_serializable>(obj);
                 widget.default_value = serializable_data->to_string();
@@ -239,9 +260,9 @@ void settings::starting()
         );
 
         auto* const param_box = new QWidget;
-        const auto qt_key     = QString::fromStdString(widget.key) + "_box";
+        const auto qt_key     = widget_name(widget.key, "box");
         param_box->setProperty(qt_property::s_key, qt_key);
-        param_box->setObjectName(qt_key);
+        sight::ui::qt::detail::set_name(*param_box, qt_key);
         param_box->setContentsMargins(0, 0, 0, 0);
 
         if(orientation == Qt::Vertical)
@@ -529,7 +550,7 @@ void settings::starting()
         sight::data::object::sptr obj;
         lock = m_settings[data_index].lock();
         obj  = lock.get_shared();
-        key  = cfg.get<std::string>("<xmlattr>.key", obj->get_id());
+        key  = item_key(cfg, *obj);
 
         const std::string depends       = cfg.get<std::string>("<xmlattr>.depends", "");
         const std::string depends_value = cfg.get<std::string>("<xmlattr>.depends_value", "");
@@ -543,7 +564,7 @@ void settings::starting()
             // some parameter create several widgets (3 spinboxes, etc.)
             const auto widget_container_it = std::ranges::find_if(
                 m_param_boxes,
-                [qt_key = QString::fromStdString(key) + "_box"](const QWidget* const _w)
+                [qt_key = widget_name(key, "box")](const QWidget* const _w)
                 {
                     return _w->objectName() == qt_key;
                 });
@@ -621,7 +642,7 @@ void settings::starting()
                 )->second;
                 const auto value_lock = m_settings[index].const_lock();
                 const auto value      = value_lock.get_shared();
-                const auto key        = cfg.get<std::string>("<xmlattr>.key", value->get_id());
+                const auto key        = item_key(cfg, *value);
 
                 _update(data->value(), key);
 
@@ -1116,9 +1137,8 @@ void settings::on_reset_string(QWidget* _widget)
 [[nodiscard]]
 QPushButton* settings::create_reset_button(const std::string& _key, std::function<void()> _on_click) const
 {
-    std::string service_id = base_id();
-    auto* reset_button     = new QPushButton("R");
-    reset_button->setObjectName(QString::fromStdString(service_id + "/Reset " + _key));
+    auto* reset_button = new QPushButton("R");
+    sight::ui::qt::detail::set_name(*reset_button, widget_name(_key, "reset"));
     reset_button->setFocusPolicy(Qt::NoFocus);
     reset_button->setToolTip("Reset to the default value.");
     reset_button->setMaximumWidth(20);
@@ -1144,7 +1164,7 @@ QPushButton* settings::create_bool_widget(
         auto* checkbox = new QCheckBox();
         // Base properties
         const auto key = QString::fromStdString(_setup.key);
-        checkbox->setObjectName(key);
+        sight::ui::qt::detail::set_name(*checkbox, widget_name(_setup.key));
         checkbox->setProperty(qt_property::s_key, key);
         checkbox->setProperty(qt_property::s_data_index, static_cast<uint>(_setup.data_index));
 
@@ -1187,7 +1207,7 @@ QPushButton* settings::create_bool_widget(
         auto* switch_button = new sight::ui::qt::widget::switch_button();
         const auto key      = QString::fromStdString(_setup.key);
         auto path           = core::runtime::get_module_resource_path("sight::module::ui::icons");
-        switch_button->setObjectName(key);
+        sight::ui::qt::detail::set_name(*switch_button, widget_name(_setup.key));
         switch_button->setProperty(qt_property::s_key, key);
 
         switch_button->setProperty(qt_property::s_data_index, static_cast<uint>(_setup.data_index));
@@ -1230,7 +1250,7 @@ QPushButton* settings::create_color_widget(QBoxLayout* _layout, const param_widg
     auto* colour_button = new QPushButton();
     {
         // Base properties
-        colour_button->setObjectName(QString::fromStdString(_setup.key));
+        sight::ui::qt::detail::set_name(*colour_button, widget_name(_setup.key));
         colour_button->setProperty(qt_property::s_key, QString::fromStdString(_setup.key));
         colour_button->setToolTip(tr("Selected color"));
         colour_button->setProperty(qt_property::s_data_index, static_cast<uint>(_setup.data_index));
@@ -1315,7 +1335,7 @@ QPushButton* settings::create_double_spin_widget(
         auto* spinbox = new QDoubleSpinBox();
 
         // Base properties
-        spinbox->setObjectName(QString::fromStdString(_setup.key + "/" + std::to_string(i)));
+        sight::ui::qt::detail::set_name(*spinbox, widget_name(_setup.key, std::to_string(i)));
         spinbox->setProperty(qt_property::s_key, QString::fromStdString(_setup.key));
         spinbox->setProperty(qt_property::s_count, _count);
         spinbox->setProperty(qt_property::s_index, static_cast<unsigned int>(i));
@@ -1359,7 +1379,7 @@ QPushButton* settings::create_double_spin_widget(
     }
 
     QDoubleSpinBox* spinbox = spinboxes[0];
-    spinbox->setObjectName(QString::fromStdString(_setup.key));
+    sight::ui::qt::detail::set_name(*spinbox, widget_name(_setup.key));
 
     // Set a property with a pointer on each member of the group
     for(std::size_t i = 0 ; std::cmp_less(i, _count) ; ++i)
@@ -1401,8 +1421,8 @@ QPushButton* settings::create_double_slider_widget(
     // Base properties
     const double value_range = _setup.max - _setup.min;
     slider->setOrientation(_orientation);
-    slider->setObjectName(QString::fromStdString(_setup.key));
-    slider->setProperty(qt_property::s_key, slider->objectName());
+    sight::ui::qt::detail::set_name(*slider, widget_name(_setup.key));
+    slider->setProperty(qt_property::s_key, QString::fromStdString(_setup.key));
     slider->setProperty(qt_property::s_count, 1);
     slider->setProperty(qt_property::s_data_index, static_cast<uint>(_setup.data_index));
 
@@ -1444,7 +1464,7 @@ QPushButton* settings::create_double_slider_widget(
     min_value_label->setFont(min_max_labels_font);
     min_value_label->setText(QString::number(_setup.min, 'f', decimals));
     min_value_label->setToolTip("Minimum value.");
-    min_value_label->setObjectName(QString::fromStdString(_setup.key + "/minValueLabel"));
+    sight::ui::qt::detail::set_name(*min_value_label, widget_name(_setup.key, "min_label"));
     min_value_label->setAlignment(Qt::AlignCenter);
     min_value_label->setStyleSheet(qApp->styleSheet());
 
@@ -1452,7 +1472,7 @@ QPushButton* settings::create_double_slider_widget(
     max_value_label->setFont(min_max_labels_font);
     max_value_label->setText(QString::number(_setup.max, 'f', decimals));
     max_value_label->setToolTip("Maximum value.");
-    max_value_label->setObjectName(QString::fromStdString(_setup.key + "/maxValueLabel"));
+    sight::ui::qt::detail::set_name(*max_value_label, widget_name(_setup.key, "max_label"));
     max_value_label->setAlignment(Qt::AlignCenter);
     max_value_label->setStyleSheet(qApp->styleSheet());
 
@@ -1461,7 +1481,7 @@ QPushButton* settings::create_double_slider_widget(
     value_label->setText(QString::number(init_value, 'f', decimals));
     value_label->setToolTip("Current value.");
     sight::module::ui::qt::settings::set_label_minimum_size(value_label, _setup.min, _setup.max, decimals);
-    value_label->setObjectName(QString::fromStdString(_setup.key + "/valueLabel"));
+    sight::ui::qt::detail::set_name(*value_label, widget_name(_setup.key, "value_label"));
     value_label->setAlignment(Qt::AlignCenter);
     value_label->setStyleSheet(qApp->styleSheet());
 
@@ -1534,7 +1554,7 @@ QPushButton* settings::create_integer_slider_widget(
     auto* slider = new QSlider();
 
     // Base properties
-    slider->setObjectName(QString::fromStdString(_setup.key));
+    sight::ui::qt::detail::set_name(*slider, widget_name(_setup.key));
     slider->setProperty(qt_property::s_key, QString::fromStdString(_setup.key));
     slider->setProperty(qt_property::s_count, 1);
     slider->setProperty(qt_property::s_data_index, static_cast<uint>(_setup.data_index));
@@ -1563,7 +1583,7 @@ QPushButton* settings::create_integer_slider_widget(
     min_value_label->setFont(min_max_labels_font);
     min_value_label->setText(QString::number(slider->minimum()));
     min_value_label->setToolTip("Minimum value.");
-    min_value_label->setObjectName(QString::fromStdString(_setup.key + "/minValueLabel"));
+    sight::ui::qt::detail::set_name(*min_value_label, widget_name(_setup.key, "min_label"));
     min_value_label->setAlignment(Qt::AlignCenter);
     min_value_label->setStyleSheet(qApp->styleSheet());
 
@@ -1571,7 +1591,7 @@ QPushButton* settings::create_integer_slider_widget(
     max_value_label->setFont(min_max_labels_font);
     max_value_label->setText(QString::number(slider->maximum()));
     max_value_label->setToolTip("Maximum value.");
-    max_value_label->setObjectName(QString::fromStdString(_setup.key + "/maxValueLabel"));
+    sight::ui::qt::detail::set_name(*max_value_label, widget_name(_setup.key, "max_label"));
     max_value_label->setAlignment(Qt::AlignCenter);
     max_value_label->setStyleSheet(qApp->styleSheet());
 
@@ -1580,7 +1600,7 @@ QPushButton* settings::create_integer_slider_widget(
     value_label->setText(QString("%1").arg(slider->value()));
     value_label->setToolTip("Current value.");
     sight::module::ui::qt::settings::set_label_minimum_size(value_label, _setup.min, _setup.max);
-    value_label->setObjectName(QString::fromStdString(_setup.key + "/valueLabel"));
+    sight::ui::qt::detail::set_name(*value_label, widget_name(_setup.key, "value_label"));
     value_label->setAlignment(Qt::AlignCenter);
     value_label->setStyleSheet(qApp->styleSheet());
 
@@ -1680,7 +1700,7 @@ QPushButton* settings::create_integer_spin_widget(
         spinboxes[i] = spinbox;
 
         // Base properties
-        spinbox->setObjectName(QString::fromStdString(_setup.key + "/" + std::to_string(i)));
+        sight::ui::qt::detail::set_name(*spinbox, widget_name(_setup.key, std::to_string(i)));
         spinbox->setProperty(qt_property::s_key, QString::fromStdString(_setup.key));
         spinbox->setProperty(qt_property::s_count, _count);
         spinbox->setProperty(qt_property::s_index, static_cast<unsigned int>(i));
@@ -1701,7 +1721,7 @@ QPushButton* settings::create_integer_spin_widget(
     }
 
     QSpinBox* first_spinbox = spinboxes[0];
-    first_spinbox->setObjectName(QString::fromStdString(_setup.key));
+    sight::ui::qt::detail::set_name(*first_spinbox, widget_name(_setup.key));
 
     // Set a property with a pointer on each member of the group
     for(std::size_t i = 0 ; std::cmp_less(i, _count) ; ++i)
@@ -1764,7 +1784,7 @@ void settings::create_enum_combobox_widget(
 )
 {
     auto* combo_box = new QComboBox();
-    combo_box->setObjectName(QString::fromStdString(_setup.key));
+    sight::ui::qt::detail::set_name(*combo_box, widget_name(_setup.key));
     combo_box->setStyleSheet(qApp->styleSheet());
 
     combo_box->setProperty(qt_property::s_key, QString::fromStdString(_setup.key));
@@ -1897,7 +1917,7 @@ void settings::create_enum_slider_widget(
     auto* const slider = new sight::ui::qt::widget::non_linear_slider();
     slider->set_orientation(_orientation);
     set_minimum_size(slider, _setup);
-    slider->setObjectName(QString::fromStdString(_setup.key));
+    sight::ui::qt::detail::set_name(*slider, widget_name(_setup.key));
     slider->setProperty(qt_property::s_key, QString::fromStdString(_setup.key));
     slider->setProperty(qt_property::s_data_index, static_cast<uint>(_setup.data_index));
     slider->setProperty(qt_property::s_use_index, _setup.use_index);
@@ -1940,7 +1960,7 @@ void settings::create_enum_slider_widget(
     min_value_label->setFont(min_max_labels_font);
     min_value_label->setText(QString::fromStdString(std::to_string(min_value)));
     min_value_label->setToolTip("Minimum value.");
-    min_value_label->setObjectName(QString::fromStdString(_setup.key + "/minValueLabel"));
+    sight::ui::qt::detail::set_name(*min_value_label, widget_name(_setup.key, "min_label"));
     min_value_label->setAlignment(Qt::AlignCenter);
     min_value_label->setStyleSheet(qApp->styleSheet());
 
@@ -1949,7 +1969,7 @@ void settings::create_enum_slider_widget(
     max_value_label->setFont(min_max_labels_font);
     max_value_label->setText(QString::fromStdString(std::to_string(max_value)));
     max_value_label->setToolTip("Maximum value.");
-    max_value_label->setObjectName(QString::fromStdString(_setup.key + "/maxValueLabel"));
+    sight::ui::qt::detail::set_name(*max_value_label, widget_name(_setup.key, "max_label"));
     max_value_label->setAlignment(Qt::AlignCenter);
     max_value_label->setStyleSheet(qApp->styleSheet());
 
@@ -1959,7 +1979,7 @@ void settings::create_enum_slider_widget(
     value_label->setText(QString::number(slider->value()));
     value_label->setToolTip("Current value.");
     set_label_minimum_size(value_label, min_value, max_value);
-    value_label->setObjectName(QString::fromStdString(_setup.key + "/valueLabel"));
+    sight::ui::qt::detail::set_name(*value_label, widget_name(_setup.key, "value_label"));
     value_label->setAlignment(Qt::AlignCenter);
 
     // Sub layout setup
@@ -2038,7 +2058,7 @@ void settings::create_tickmarks_widget(
         static_cast<uint>(_setup.data_index)
     );
 
-    tick_widget->setObjectName(QString::fromStdString(_setup.key));
+    sight::ui::qt::detail::set_name(*tick_widget, widget_name(_setup.key));
     tick_widget->set_tick_values(_values);
     tick_widget->set_current_tick(0);
     tick_widget->setMinimumSize(100, 50);
@@ -2103,7 +2123,7 @@ void settings::create_enum_button_bar_widget(
 
     // create a button group to deactivate the buttons on selection
     auto* button_bar_group = new QButtonGroup(sub_layout);
-    button_bar_group->setObjectName(QString::fromStdString(_setup.key));
+    sight::ui::qt::detail::set_name(*button_bar_group, widget_name(_setup.key));
 
     // create the buttons from the provided list
     int button_index                = 0;
@@ -2114,8 +2134,8 @@ void settings::create_enum_button_bar_widget(
         auto* enum_button = new QToolButton();
         button_bar_group->addButton(enum_button);
 
-        // The name needs to be the key_value, to find it when the service is updated through a slot
-        enum_button->setObjectName((QString::fromStdString(_setup.key + "_" + button_param.value)));
+        // Named after its value, to find it when the service is updated through a slot
+        sight::ui::qt::detail::set_name(*enum_button, widget_name(_setup.key, button_param.value));
         enum_button->setProperty(qt_property::s_key, QString::fromStdString(_setup.key));
         enum_button->setProperty(qt_property::s_data_index, static_cast<uint>(_setup.data_index));
 
@@ -2296,7 +2316,7 @@ QPushButton* settings::create_text_widget(QBoxLayout* _layout, const param_widge
 {
     auto* edit     = new QLineEdit();
     const auto key = QString::fromStdString(_setup.key);
-    edit->setObjectName(key);
+    sight::ui::qt::detail::set_name(*edit, widget_name(_setup.key));
 
     // Base properties
     edit->setProperty(qt_property::s_key, key);
@@ -2812,7 +2832,7 @@ void settings::set_double_slider_range(QSlider* _slider, double _current_value)
 
 void settings::update_read_only(bool _read_only, const std::string& _key)
 {
-    const auto box_key = QString::fromStdString(_key) + "_box";
+    const auto box_key = widget_name(_key, "box");
     for(const auto& box : m_param_boxes)
     {
         if(box->objectName() != box_key)
@@ -2834,13 +2854,26 @@ void settings::update_read_only(bool _read_only, const std::string& _key)
 
 //-----------------------------------------------------------------------------
 
+QString settings::widget_name(std::string_view _key, std::string_view _part) const
+{
+    std::string name = base_id() + "/" + std::string(_key);
+    if(!_part.empty())
+    {
+        name += "/" + std::string(_part);
+    }
+
+    return QString::fromStdString(name);
+}
+
+//-----------------------------------------------------------------------------
+
 QObject* settings::get_param_widget(const std::string& _key)
 {
     const auto key = QString::fromStdString(_key);
 
     const auto it = std::ranges::find_if(
         m_param_boxes,
-        [box_key = key + "_box"](const QWidget* const _w){return _w->objectName() == box_key;});
+        [box_key = widget_name(_key, "box")](const QWidget* const _w){return _w->objectName() == box_key;});
 
     if(it == m_param_boxes.cend())
     {
@@ -2848,7 +2881,7 @@ QObject* settings::get_param_widget(const std::string& _key)
         return nullptr;
     }
 
-    auto* widget = (*it)->findChild<QObject*>(key);
+    auto* widget = (*it)->findChild<QObject*>(widget_name(_key));
 
     // The child widget *MUST* exist if a parameter exists with this name, if it does not exist, this is a regression
     // caused by modifications in create_xxx_widgets.
@@ -2988,7 +3021,7 @@ void settings::set_parameter<sight::data::string>(const std::string& _val, std::
     else if(auto* button_group = qobject_cast<QButtonGroup*>(widget);
             button_group != nullptr)
     {
-        const auto enum_key = QString::fromStdString(_key + "_" + _val);
+        const auto enum_key = widget_name(_key, _val);
 
         const auto& buttons = button_group->buttons();
         auto button_it      = std::ranges::find_if(

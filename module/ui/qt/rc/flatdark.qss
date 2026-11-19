@@ -535,18 +535,6 @@ QGroupBox::title
 }
 
 /************************************************************************/
-/***************************** slide_bar *********************************/
-/************************************************************************/
-
-QGroupBox#slide_bar
-{
-    margin: 0px;
-    background: transparent;
-    padding: 3px;
-    border: none;
-}
-
-/************************************************************************/
 /*************************** QAbstractSpinBox ***************************/
 /************************************************************************/
 
@@ -1361,7 +1349,7 @@ QProgressBar::chunk
 /************************** SActivityWizard *****************************/
 /************************************************************************/
 
-#SActivityWizard_title
+QLabel[class="activity_wizard_title"]
 {
     font: bold;
     border: none;
@@ -1369,7 +1357,7 @@ QProgressBar::chunk
     padding: 3px;
 }
 
-#SActivityWizard_description
+QLabel[class="activity_wizard_description"]
 {
     font: italic;
 }
@@ -1392,7 +1380,7 @@ QProgressBar::chunk
 /********************** Notification Popups *****************************/
 /************************************************************************/
 
-#NotificationDialog_Instruction
+*[class="notification_dialog_instruction"]
 {
     background-color: rgb(119, 183, 103);
     color: rgb(255, 255, 255);
@@ -1401,7 +1389,7 @@ QProgressBar::chunk
     border-radius: 4px;
 }
 
-#NotificationDialog_Error
+*[class="notification_dialog_error"]
 {
     background-color: rgb(255, 107, 104);
     color: rgb(255, 255, 255);
@@ -1410,7 +1398,7 @@ QProgressBar::chunk
     border-radius: 4px;
 }
 
-#NotificationDialog_Information
+*[class="notification_dialog_information"]
 {
     background-color: rgb(104, 151, 187);
     color: rgb(255, 255, 255);
@@ -1419,7 +1407,7 @@ QProgressBar::chunk
     border-radius: 4px;
 }
 
-#NotificationDialog_Warning
+*[class="notification_dialog_warning"]
 {
     background-color: #D98C22;
     color: rgb(255, 255, 255);
@@ -1427,51 +1415,6 @@ QProgressBar::chunk
     font-size: 16px;
     border-radius: 4px;
 }
-
-/************************************************************************/
-/*************************** SQuestions *********************************/
-/************************************************************************/
-
-#SQuestions_Header
-{
-    background-color: rgb(54, 57, 62);
-}
-
-#SQuestions_Button
-{
-    font-size: 25pt;
-    color: rgb(119, 183, 103);
-    background: rgba(119, 183, 103, 30%);
-    border-color: rgb(119, 183, 103);
-    padding: 10px;
-}
-
-#SQuestions_Button:hover
-{
-    background: rgba(119, 183, 103, 50%);
-}
-
-#SQuestions_Button:pressed,
-#SQuestions_Button:checked
-{
-    background: rgba(119, 183, 103, 70%);
-}
-
-#SQuestions_GroupBox
-{
-    border: none;
-    margin-top: 0px;
-    margin-bottom: 0px;
-}
-
-#SQuestions_Spacer
-{
-    margin: 0px 150px 0px 150px;
-    border: none;
-    border-bottom: 4px solid rgb(46, 48, 52);
-    border-radius: 0px;
-}
-
 
 /************************** Custom class *****************************/
 

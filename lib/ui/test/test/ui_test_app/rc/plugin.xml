@@ -1,0 +1,89 @@
+<!--
+The application of the tests of the GUI test engine: a 3D scene for the image checks, and the same panel in two views
+for an ambiguous name.
+-->
+<plugin id="ui_test_app">
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::ui" />
+    <requirement id="sight::module::ui::qt" />
+    <requirement id="sight::module::viz::scene3d" />
+    <requirement id="sight::module::viz::scene3d_qt" />
+
+    <extension implements="sight::app::extension::config">
+        <id>ui_test_app_panel_cfg</id>
+        <parameters>
+            <param name="WID_PARENT" />
+        </parameters>
+        <config>
+            <service uid="panel_view" type="sight::module::ui::view">
+                <gui>
+                    <layout type="sight::ui::layout::line">
+                        <orientation value="vertical" />
+                        <view proportion="0" />
+                    </layout>
+                </gui>
+                <registry>
+                    <parent wid="${WID_PARENT}" />
+                    <view sid="panel_button" />
+                </registry>
+            </service>
+
+            <service uid="panel_button" type="sight::module::ui::qt::com::signal_button">
+                <config>
+                    <checkable>false</checkable>
+                    <text>Button</text>
+                </config>
+            </service>
+        </config>
+    </extension>
+
+    <extension implements="sight::app::extension::config">
+        <id>ui_test_app_cfg</id>
+        <config>
+            <service uid="main_frame" type="sight::module::ui::frame">
+                <gui>
+                    <frame>
+                        <name>ui_test_app</name>
+                        <min_size width="800" height="600" />
+                    </frame>
+                </gui>
+                <registry>
+                    <view sid="main_view" />
+                </registry>
+            </service>
+
+            <service uid="main_view" type="sight::module::ui::view">
+                <gui>
+                    <layout type="sight::ui::layout::line">
+                        <orientation value="horizontal" />
+                        <view proportion="0" />
+                        <view proportion="0" />
+                        <view proportion="1" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view wid="left_view" />
+                    <view wid="right_view" />
+                    <view sid="scene_srv" />
+                </registry>
+            </service>
+
+            <service uid="left_panel_cfg" type="sight::app::config_launcher">
+                <config id="ui_test_app_panel_cfg" />
+                <param name="WID_PARENT" value="left_view" />
+            </service>
+
+            <service uid="right_panel_cfg" type="sight::app::config_launcher">
+                <config id="ui_test_app_panel_cfg" />
+                <param name="WID_PARENT" value="right_view" />
+            </service>
+
+            <service uid="scene_srv" type="sight::viz::scene3d::render">
+                <scene>
+                    <background topColor="#36393E" bottomColor="#36393E" />
+                    <layer id="default" />
+                </scene>
+            </service>
+        </config>
+    </extension>
+</plugin>

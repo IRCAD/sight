@@ -379,9 +379,16 @@ macro(sight_generic_test SIGHT_TARGET)
     # Substituted into doctest_main.cpp.in: enables the self-supervision code path (re-executing
     # the binary once per test case when more than one is selected) for GUI tests only.
     if(SIGHT_GENERIC_TEST_ARG_GUI)
-        set(SIGHT_GUI_TEST 1)
+        set(SIGHT_IS_GUI_TEST 1)
     else()
-        set(SIGHT_GUI_TEST 0)
+        set(SIGHT_IS_GUI_TEST 0)
+    endif()
+
+    # Substituted there too: a test without a display must not open a window on the desktop of the user.
+    if(SIGHT_GENERIC_TEST_ARG_REQUIRE_X)
+        set(SIGHT_REQUIRES_DISPLAY 1)
+    else()
+        set(SIGHT_REQUIRES_DISPLAY 0)
     endif()
 
     if(SIGHT_ENABLE_PCH AND MSVC AND NOT ${SIGHT_TARGET}_DISABLE_PCH)
@@ -523,9 +530,47 @@ endmacro()
 # with the "gui" CTest label. One CTest entry is generated per doctest test case, so each GUI
 # scenario runs in its own process.
 macro(sight_gui_test SIGHT_TARGET)
+    set(options)
+    set(oneValueArgs PROFILE TIMEOUT PREFIX)
+    set(multiValueArgs)
+    cmake_parse_arguments(SIGHT_GUI_TEST_ARG "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
     sight_generic_test(${SIGHT_TARGET} REQUIRE_X ON GUI ON)
 
     target_link_libraries(${SIGHT_TARGET} PRIVATE doctest::doctest)
+
+    # A scenario sees the signals of Sight, and Qt would define emit and signals in them.
+    target_compile_definitions(${SIGHT_TARGET} PRIVATE QT_NO_KEYWORDS)
+
+    # The application under test, by default the target name without "_uit". Its profile is found relative to the
+    # test executable (<bin>/../<rc prefix>/<app>/profile.xml), which holds in build trees and for downstream projects.
+    # PROFILE NONE: real windows on an own display, but no application, as a test of the GUI test engine itself.
+    if(NOT SIGHT_GUI_TEST_ARG_PROFILE)
+        set(SIGHT_GUI_TEST_ARG_PROFILE "${BASE_TARGET}")
+    endif()
+    if("${SIGHT_GUI_TEST_ARG_PROFILE}" STREQUAL "NONE")
+        # Nothing to check, nor to load.
+    elseif(TARGET ${SIGHT_GUI_TEST_ARG_PROFILE})
+        get_target_property(SIGHT_GUI_TEST_PROFILE_TYPE ${SIGHT_GUI_TEST_ARG_PROFILE} SIGHT_TARGET_TYPE)
+        if(NOT "${SIGHT_GUI_TEST_PROFILE_TYPE}" STREQUAL "APP")
+            message(
+                FATAL_ERROR "${SIGHT_TARGET}: PROFILE '${SIGHT_GUI_TEST_ARG_PROFILE}' is not an application target."
+            )
+        endif()
+    else()
+        message(FATAL_ERROR "${SIGHT_TARGET}: PROFILE '${SIGHT_GUI_TEST_ARG_PROFILE}' is not a target of this project.")
+    endif()
+    if(NOT "${SIGHT_GUI_TEST_ARG_PROFILE}" STREQUAL "NONE")
+        target_compile_definitions(
+            ${SIGHT_TARGET}
+            PRIVATE SIGHT_GUI_TEST_PROFILE="${SIGHT_MODULE_RC_PREFIX}/${SIGHT_GUI_TEST_ARG_PROFILE}/profile.xml"
+                    SIGHT_GUI_TEST_PROFILE_NAME="${SIGHT_GUI_TEST_ARG_PROFILE}"
+        )
+    endif()
+
+    if(NOT SIGHT_GUI_TEST_ARG_TIMEOUT)
+        set(SIGHT_GUI_TEST_ARG_TIMEOUT 300)
+    endif()
 
     # Mandatory for VSCode to trace the test location and debug it from the IDE.
     sight_doctest_discover_tests(
@@ -537,11 +582,13 @@ macro(sight_gui_test SIGHT_TARGET)
         TEST_ENV
         "${SIGHT_VCPKG_RUNTIME_DIR}"
         "${FW_SIGHT_EXTERNAL_LIBRARIES_DIR}"
+        TEST_PREFIX
+        "${SIGHT_GUI_TEST_ARG_PREFIX}"
         ADD_LABELS
         gui
         PROPERTIES
         TIMEOUT
-        300
+        ${SIGHT_GUI_TEST_ARG_TIMEOUT}
     )
 endmacro()
 
@@ -1017,6 +1064,9 @@ macro(sight_add_target)
         FAST_DEBUG
         REQUIRE_X
         REQUIRE_ADMIN
+        PROFILE
+        PREFIX
+        TIMEOUT
     )
     set(multiValueArgs)
     cmake_parse_arguments(SIGHT_TARGET "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
@@ -1064,7 +1114,15 @@ macro(sight_add_target)
     elseif("${SIGHT_TARGET_TYPE}" STREQUAL "TEST")
         sight_test(${SIGHT_TARGET} REQUIRE_X ${SIGHT_TARGET_REQUIRE_X} "${OPTIONS}")
     elseif("${SIGHT_TARGET_TYPE}" STREQUAL "GUI_TEST")
-        sight_gui_test(${SIGHT_TARGET} "${OPTIONS}")
+        sight_gui_test(
+            ${SIGHT_TARGET}
+            PROFILE
+            "${SIGHT_TARGET_PROFILE}"
+            TIMEOUT
+            "${SIGHT_TARGET_TIMEOUT}"
+            PREFIX
+            "${SIGHT_TARGET_PREFIX}"
+        )
     elseif("${SIGHT_TARGET_TYPE}" STREQUAL "APP")
         get_last_git_tag(${SIGHT_TARGET})
         set(${SIGHT_TARGET}_VERSION ${GIT_TAG})

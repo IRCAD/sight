@@ -35,6 +35,7 @@
 #include <ui/__/dialog/location.hpp>
 #include <ui/__/preferences.hpp>
 #include <ui/qt/container/widget.hpp>
+#include <ui/qt/namer.hpp>
 
 #include <QByteArray>
 #include <QCameraDevice>
@@ -111,10 +112,7 @@ void camera::starting()
         layout->addWidget(source_label);
     }
 
-    const QString service_id = QString::fromStdString(base_id());
-
     m_devices_combo_box = new QComboBox();
-    m_devices_combo_box->setObjectName(service_id);
     layout->addWidget(m_devices_combo_box);
 
     m_devices_combo_box->addItem("Device...", "device");
@@ -142,6 +140,7 @@ void camera::starting()
     }
 
     qt_container->set_layout(layout);
+    sight::ui::qt::name_part(*m_devices_combo_box, "device_selector");
 
     QObject::connect(m_devices_combo_box, qOverload<int>(&QComboBox::activated), this, &camera::on_activated);
     QObject::connect(m_devices_combo_box, qOverload<int>(&QComboBox::currentIndexChanged), this, &camera::on_apply);
@@ -212,6 +211,7 @@ void camera::on_apply(int _index)
 }
 
 //------------------------------------------------------------------------------
+
 void camera::on_activated(int _index)
 {
     // If the current index did change, onCurrentIndexChanged will be called, we wouldn't want onApply to be called

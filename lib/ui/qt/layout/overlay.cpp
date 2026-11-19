@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2025 IRCAD France
+ * Copyright (C) 2023-2026 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -67,6 +67,9 @@ static int calculate_size(coord _configured_size, int _parent_size)
 }
 
 /// This class makes the widget transparent for mouse events and restores visibility when destroyed
+namespace
+{
+
 class widget_hider
 {
 public:
@@ -94,6 +97,11 @@ private:
     const bool m_was_transparent;
     const QPointer<QWidget> m_widget;
 };
+
+} // namespace
+
+namespace
+{
 
 class event_forwarder : public QObject
 {
@@ -215,7 +223,12 @@ private:
     }
 };
 
+} // namespace
+
 /// Event filter which resizes the overlay if its parent size changed
+namespace
+{
+
 class overlay_resize_filter : public QObject
 {
 private:
@@ -276,16 +289,15 @@ public:
     }
 };
 
+} // namespace
+
 //------------------------------------------------------------------------------
 
-void overlay::create_layout(ui::container::widget::sptr _parent, const std::string& _id)
+void overlay::create_layout(ui::container::widget::sptr _parent, const std::string& /*_id*/)
 {
     m_parent_container = std::dynamic_pointer_cast<ui::qt::container::widget>(_parent);
     SIGHT_ASSERT("dynamicCast widget to widget failed", m_parent_container);
-    const QString q_id       = QString::fromStdString(_id);
     auto* const qt_container = m_parent_container->get_qt_container();
-
-    qt_container->setObjectName(q_id);
 
     auto* layout = new QBoxLayout(QBoxLayout::LeftToRight);
     m_parent_container->set_layout(layout);

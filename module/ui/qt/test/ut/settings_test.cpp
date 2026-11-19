@@ -42,9 +42,19 @@
 #include <atomic>
 #include <limits>
 #include <memory>
+#include <string>
+#include <string_view>
 
 namespace sight::module::ui::qt::ut
 {
+
+//------------------------------------------------------------------------------
+
+/// The name settings gives the widget of _key, or one of its parts: "<service uid>/<key>[/<part>]".
+static std::string name(const service::base::sptr& _service, std::string_view _key)
+{
+    return _service->base_id() + "/" + std::string(_key);
+}
 
 //------------------------------------------------------------------------------
 
@@ -132,8 +142,9 @@ TEST_SUITE("sight::module::ui::qt::settings")
             _service->set_input(choices, "item.values", true, false, 0);
             _service->set_inout(plain, "item.data", true, false, 1);
             worker->post_task<void>([&]{_service->configure(config); _service->start().get();}).get();
-            const auto combo       = find_widget<QComboBox>("mode");
-            const auto plain_combo = find_widget<QComboBox>("plain");
+            const std::string mode_name = sight::module::ui::qt::ut::name(_service, "mode");
+            const auto combo            = find_widget<QComboBox>(mode_name);
+            const auto plain_combo      = find_widget<QComboBox>(sight::module::ui::qt::ut::name(_service, "plain"));
             REQUIRE_FALSE(combo.isNull());
             REQUIRE_FALSE(plain_combo.isNull());
             qint64 off_icon      = 0;
@@ -167,14 +178,14 @@ TEST_SUITE("sight::module::ui::qt::settings")
                 mode->set_value("Off");
                 mode->async_emit(sight::data::signals::MODIFIED);
             }).get();
-            SIGHT_TEST_FAIL_WAIT(query_widget<QComboBox>("mode", [](auto* _w){return _w->currentText();}) == "Off");
+            SIGHT_TEST_FAIL_WAIT(query_widget<QComboBox>(mode_name, [](auto* _w){return _w->currentText();}) == "Off");
             worker->post_task<void>(
                 [&]
             {
                 choices->set_value("Rot=Rotation;Off=Off;Free=Free;Other=Other");
                 choices->async_emit(sight::data::signals::MODIFIED);
             }).get();
-            SIGHT_TEST_FAIL_WAIT(query_widget<QComboBox>("mode", [](auto* _w){return _w->count();}) == 4);
+            SIGHT_TEST_FAIL_WAIT(query_widget<QComboBox>(mode_name, [](auto* _w){return _w->count();}) == 4);
             worker->post_task<void>(
                 [&]
             {
@@ -188,8 +199,8 @@ TEST_SUITE("sight::module::ui::qt::settings")
                 _service->stop().get();
                 _service->start().get();
             }).get();
-            CHECK(query_widget<QComboBox>("mode", [](auto* _w){return _w->currentText();}) == "Rot");
-            CHECK(query_widget<QComboBox>("mode", [](auto* _w){return _w->itemIcon(0).isNull();}) == false);
+            CHECK(query_widget<QComboBox>(mode_name, [](auto* _w){return _w->currentText();}) == "Rot");
+            CHECK(query_widget<QComboBox>(mode_name, [](auto* _w){return _w->itemIcon(0).isNull();}) == false);
         });
     }
 
@@ -212,7 +223,8 @@ TEST_SUITE("sight::module::ui::qt::settings")
             _service->set_inout(value, "item.data", true, false, 0);
             _service->set_input(locked, "item.read_only", true, false, 0);
             worker->post_task<void>([&]{_service->configure(config); _service->start().get();}).get();
-            auto spin = find_widget<QDoubleSpinBox>("length");
+            const std::string length_name = sight::module::ui::qt::ut::name(_service, "length");
+            auto spin                     = find_widget<QDoubleSpinBox>(length_name);
             REQUIRE_FALSE(spin.isNull());
             worker->post_task<void>(
                 [&]
@@ -227,7 +239,7 @@ TEST_SUITE("sight::module::ui::qt::settings")
             }).get();
             SIGHT_TEST_FAIL_WAIT(
                 query_widget<QDoubleSpinBox>(
-                    "length",
+                    length_name,
                     [](auto* _w)
             {
                 return _w->isReadOnly();
@@ -242,9 +254,9 @@ TEST_SUITE("sight::module::ui::qt::settings")
                 _service->stop().get();
                 _service->start().get();
             }).get();
-            spin = find_widget<QDoubleSpinBox>("length");
+            spin = find_widget<QDoubleSpinBox>(length_name);
             REQUIRE_FALSE(spin.isNull());
-            CHECK(query_widget<QDoubleSpinBox>("length", [](auto* _w){return _w->isReadOnly();}) == true);
+            CHECK(query_widget<QDoubleSpinBox>(length_name, [](auto* _w){return _w->isReadOnly();}) == true);
             worker->post_task<void>(
                 [&]
             {
@@ -253,7 +265,7 @@ TEST_SUITE("sight::module::ui::qt::settings")
             }).get();
             SIGHT_TEST_FAIL_WAIT(
                 query_widget<QDoubleSpinBox>(
-                    "length",
+                    length_name,
                     [](auto* _w)
             {
                 return _w->isReadOnly();
@@ -283,7 +295,14 @@ TEST_SUITE("sight::module::ui::qt::settings")
             _service->set_inout(value, "item.data", true, false, 0);
             _service->set_input(enabled, "config.enabled", true);
             worker->post_task<void>([&]{_service->configure(config); _service->start().get();}).get();
-            CHECK(query_widget<QCheckBox>("group_value", [](auto* _w){return _w->isEnabled();}) == false);
+            CHECK(
+                query_widget<QCheckBox>(
+                    sight::module::ui::qt::ut::name(_service, "group_value"),
+                    [](auto* _w)
+            {
+                return _w->isEnabled();
+            }) == false
+            );
             for(const bool state : {true, false, true})
             {
                 worker->post_task<void>(
@@ -293,7 +312,12 @@ TEST_SUITE("sight::module::ui::qt::settings")
                     enabled->async_emit(sight::data::signals::MODIFIED);
                 }).get();
                 SIGHT_TEST_FAIL_WAIT(
-                    query_widget<QCheckBox>("group_value", [](auto* _w){return _w->isEnabled();}) == state
+                    query_widget<QCheckBox>(
+                        sight::module::ui::qt::ut::name(_service, "group_value"),
+                        [](auto* _w)
+                {
+                    return _w->isEnabled();
+                }) == state
                 );
                 CHECK(value->value());
             }
@@ -319,8 +343,22 @@ TEST_SUITE("sight::module::ui::qt::settings")
             _service->set_inout(value, "item.data", true, false, 0);
             _service->set_input(choices, "item.values", true, false, 0);
             worker->post_task<void>([&]{_service->configure(config); _service->start().get();}).get();
-            CHECK(query_widget<QLabel>("nonlin/minValueLabel", [](auto* _w){return _w->text();}) == "25");
-            CHECK(query_widget<QLabel>("nonlin/maxValueLabel", [](auto* _w){return _w->text();}) == "150");
+            CHECK(
+                query_widget<QLabel>(
+                    sight::module::ui::qt::ut::name(_service, "nonlin/min_label"),
+                    [](auto* _w)
+            {
+                return _w->text();
+            }) == "25"
+            );
+            CHECK(
+                query_widget<QLabel>(
+                    sight::module::ui::qt::ut::name(_service, "nonlin/max_label"),
+                    [](auto* _w)
+            {
+                return _w->text();
+            }) == "150"
+            );
             worker->post_task<void>(
                 [&]
             {
@@ -328,9 +366,21 @@ TEST_SUITE("sight::module::ui::qt::settings")
                 choices->async_emit(sight::data::signals::MODIFIED);
             }).get();
             SIGHT_TEST_FAIL_WAIT(
-                query_widget<QLabel>("nonlin/minValueLabel", [](auto* _w){return _w->text();}) == "37"
+                query_widget<QLabel>(
+                    sight::module::ui::qt::ut::name(_service, "nonlin/min_label"),
+                    [](auto* _w)
+            {
+                return _w->text();
+            }) == "37"
             );
-            CHECK(query_widget<QLabel>("nonlin/maxValueLabel", [](auto* _w){return _w->text();}) == "160");
+            CHECK(
+                query_widget<QLabel>(
+                    sight::module::ui::qt::ut::name(_service, "nonlin/max_label"),
+                    [](auto* _w)
+            {
+                return _w->text();
+            }) == "160"
+            );
             worker->post_task<void>(
                 [&]
             {
@@ -338,7 +388,12 @@ TEST_SUITE("sight::module::ui::qt::settings")
                 value->async_emit(sight::data::signals::MODIFIED);
             }).get();
             SIGHT_TEST_FAIL_WAIT(
-                query_widget<QLabel>("nonlin/valueLabel", [](auto* _w){return _w->text();}) == "135"
+                query_widget<QLabel>(
+                    sight::module::ui::qt::ut::name(_service, "nonlin/value_label"),
+                    [](auto* _w)
+            {
+                return _w->text();
+            }) == "135"
             );
             worker->post_task<void>([&]{_service->stop().get();}).get();
         });
@@ -370,7 +425,13 @@ TEST_SUITE("sight::module::ui::qt::settings")
             _service->set_inout(selected, "item.data", true, false, 0);
             _service->set_input(choices, "item.values", true, false, 0);
             worker->post_task<void>([&]{_service->configure(config); _service->start().get();}).get();
-            const auto combo = sight::ui::test::gui_fixture::find_widget<QComboBox>("preview");
+            const auto combo =
+                sight::ui::test::gui_fixture::find_widget<QComboBox>(
+                    sight::module::ui::qt::ut::name(
+                        _service,
+                        "preview"
+                    )
+                );
             REQUIRE(combo);
             SIGHT_TEST_FAIL_WAIT(notifications >= 1);
             worker->post_task<void>(
@@ -383,7 +444,14 @@ TEST_SUITE("sight::module::ui::qt::settings")
                 choices->set_value("Raw");
                 choices->async_emit(sight::data::signals::MODIFIED);
             }).get();
-            SIGHT_TEST_FAIL_WAIT(query_widget<QComboBox>("preview", [](auto* _w){return _w->count();}) == 1);
+            SIGHT_TEST_FAIL_WAIT(
+                query_widget<QComboBox>(
+                    sight::module::ui::qt::ut::name(
+                        _service,
+                        "preview"
+                    ),
+                    [](auto* _w){return _w->count();}) == 1
+            );
             worker->post_task<void>([&]{CHECK(selected->value() == 0); CHECK(combo->currentIndex() == 0);}).get();
             CHECK_FALSE(invalid_notification);
 
@@ -403,7 +471,7 @@ TEST_SUITE("sight::module::ui::qt::settings")
                 }).get();
                 SIGHT_TEST_FAIL_WAIT(
                     query_widget<QComboBox>(
-                        "preview",
+                        sight::module::ui::qt::ut::name(_service, "preview"),
                         [&](auto*){return selected->value();}) == 0
                 );
             }
@@ -417,7 +485,14 @@ TEST_SUITE("sight::module::ui::qt::settings")
                     sight::data::signals::MODIFIED
                 );
             }).get();
-            SIGHT_TEST_FAIL_WAIT(query_widget<QComboBox>("preview", [](auto* _w){return _w->count();}) == 3);
+            SIGHT_TEST_FAIL_WAIT(
+                query_widget<QComboBox>(
+                    sight::module::ui::qt::ut::name(
+                        _service,
+                        "preview"
+                    ),
+                    [](auto* _w){return _w->count();}) == 3
+            );
             worker->post_task<void>(
                 [&]
             {
@@ -426,7 +501,14 @@ TEST_SUITE("sight::module::ui::qt::settings")
                     sight::data::signals::MODIFIED
                 );
             }).get();
-            SIGHT_TEST_FAIL_WAIT(query_widget<QComboBox>("preview", [](auto* _w){return _w->currentIndex();}) == 1);
+            SIGHT_TEST_FAIL_WAIT(
+                query_widget<QComboBox>(
+                    sight::module::ui::qt::ut::name(
+                        _service,
+                        "preview"
+                    ),
+                    [](auto* _w){return _w->currentIndex();}) == 1
+            );
             worker->post_task<void>([&]{choices->async_emit(sight::data::signals::MODIFIED);}).get();
             worker->post_task<void>([&]{CHECK(selected->value() == 1); CHECK(combo->currentIndex() == 1);}).get();
             CHECK(notifications < 30);
@@ -438,8 +520,19 @@ TEST_SUITE("sight::module::ui::qt::settings")
                     sight::data::signals::MODIFIED
                 );
             }).get();
-            SIGHT_TEST_FAIL_WAIT(query_widget<QComboBox>("preview", [](auto* _w){return _w->count();}) == 0);
-            SIGHT_TEST_FAIL_WAIT(query_widget<QComboBox>("preview", [&](auto*){return selected->value();}) == -1);
+            SIGHT_TEST_FAIL_WAIT(
+                query_widget<QComboBox>(
+                    sight::module::ui::qt::ut::name(
+                        _service,
+                        "preview"
+                    ),
+                    [](auto* _w){return _w->count();}) == 0
+            );
+            SIGHT_TEST_FAIL_WAIT(
+                query_widget<QComboBox>(
+                    sight::module::ui::qt::ut::name(_service, "preview"),
+                    [&](auto*){return selected->value();}) == -1
+            );
             worker->post_task<void>([&]{connection.disconnect(); _service->stop().get();}).get();
         });
     }
@@ -467,8 +560,22 @@ TEST_SUITE("sight::module::ui::qt::settings")
             _service->set_inout(text, "item.data", true, false, 1);
             auto worker = sight::core::thread::get_default_worker();
             worker->post_task<void>([&]{_service->configure(config); _service->start().get();}).get();
-            CHECK(query_widget<QComboBox>("numeric", [](auto* _w){return _w->currentText();}) == "20");
-            CHECK(query_widget<QComboBox>("text", [](auto* _w){return _w->currentText();}) == "Beta");
+            CHECK(
+                query_widget<QComboBox>(
+                    sight::module::ui::qt::ut::name(_service, "numeric"),
+                    [](auto* _w)
+            {
+                return _w->currentText();
+            }) == "20"
+            );
+            CHECK(
+                query_widget<QComboBox>(
+                    sight::module::ui::qt::ut::name(_service, "text"),
+                    [](auto* _w)
+            {
+                return _w->currentText();
+            }) == "Beta"
+            );
             worker->post_task<void>(
                 [&]
             {
@@ -526,16 +633,16 @@ TEST_SUITE("sight::module::ui::qt::settings")
                 _service->start().get();
             }).get();
 
-            const auto enabled = [](const std::string& _name)
+            const auto enabled = [&_service](const std::string& _name)
                                  {
                                      return sight::ui::test::gui_fixture::query_widget<QWidget>(
-                                         _name + "_box",
+                                         sight::module::ui::qt::ut::name(_service, _name + "/box"),
                                          [](QWidget* _widget){return _widget->isEnabled();});
                                  };
 
             CHECK_EQ(
                 sight::ui::test::gui_fixture::query_widget<QComboBox>(
-                    "plain",
+                    sight::module::ui::qt::ut::name(_service, "plain"),
                     [](QComboBox* _widget){return _widget->currentText().toStdString();}),
                 "Beta"
             );
@@ -543,11 +650,17 @@ TEST_SUITE("sight::module::ui::qt::settings")
             CHECK_EQ(enabled("nested"), false);
             CHECK_EQ(enabled("leaf"), false);
 
-            const auto combo = sight::ui::test::gui_fixture::find_widget<QComboBox>("mode");
+            const auto combo =
+                sight::ui::test::gui_fixture::find_widget<QComboBox>(
+                    sight::module::ui::qt::ut::name(
+                        _service,
+                        "mode"
+                    )
+                );
             REQUIRE_FALSE(combo.isNull());
             CHECK_EQ(
                 sight::ui::test::gui_fixture::query_widget<QComboBox>(
-                    "mode",
+                    sight::module::ui::qt::ut::name(_service, "mode"),
                     [](QComboBox* _widget){return _widget->currentData().toString().toStdString();}),
                 "gamma"
             );
@@ -556,7 +669,13 @@ TEST_SUITE("sight::module::ui::qt::settings")
             CHECK_EQ(enabled("nested"), true);
             CHECK_EQ(enabled("leaf"), true);
 
-            const auto check = sight::ui::test::gui_fixture::find_widget<QCheckBox>("selected");
+            const auto check =
+                sight::ui::test::gui_fixture::find_widget<QCheckBox>(
+                    sight::module::ui::qt::ut::name(
+                        _service,
+                        "selected"
+                    )
+                );
             REQUIRE_FALSE(check.isNull());
             worker->post_task<void>([check]{check->setChecked(false);}).get();
             CHECK_EQ(enabled("nested"), false);
@@ -619,7 +738,7 @@ TEST_SUITE("sight::module::ui::qt::settings")
             sight::core::thread::get_default_worker()->post_task<void>(
                 [&]{_service->configure(config); _service->start().get();}).get();
 
-            const auto slider = find_widget<QSlider>("length");
+            const auto slider = find_widget<QSlider>(sight::module::ui::qt::ut::name(_service, "length"));
             REQUIRE_FALSE(slider.isNull());
             sight::core::thread::get_default_worker()->post_task<void>(
                 [slider]

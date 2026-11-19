@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,15 +22,14 @@
 
 #include "ui/qt/layout/toolbox.hpp"
 
-#include "ui/qt/app.hpp"
 #include "ui/qt/container/widget.hpp"
-
-#include <core/base.hpp>
+#include "ui/qt/naming.hpp"
 
 #include <data/tools/color.hpp>
 
 #include <ui/__/macros.hpp>
 
+#include <QApplication>
 #include <QScrollArea>
 #include <QStyle>
 #include <QVBoxLayout>
@@ -44,12 +43,10 @@ namespace sight::ui::qt::layout
 
 //-----------------------------------------------------------------------------
 
-void toolbox::create_layout(ui::container::widget::sptr _parent, const std::string& _id)
+void toolbox::create_layout(ui::container::widget::sptr _parent, const std::string& /*_id*/)
 {
-    const QString q_id                               = QString::fromStdString(_id);
     ui::qt::container::widget::sptr parent_container =
         std::dynamic_pointer_cast<ui::qt::container::widget>(_parent);
-    parent_container->get_qt_container()->setObjectName(q_id);
 
     auto* layout = new QVBoxLayout();
     parent_container->set_layout(layout);
@@ -82,7 +79,6 @@ void toolbox::create_layout(ui::container::widget::sptr _parent, const std::stri
         }
 
         auto* panel = new QWidget();
-        panel->setObjectName(q_id + '/' + view_info.m_caption.c_str());
         panel->setMinimumSize(std::max(view_info.m_min_size.first, 0), std::max(view_info.m_min_size.second, 0));
         panel->setMaximumSize(
             std::min(view_info.m_max_size.first, QWIDGETSIZE_MAX),
@@ -136,6 +132,9 @@ void toolbox::create_layout(ui::container::widget::sptr _parent, const std::stri
         {
             index = toolbox->add_item(panel, QString::fromStdString(view_info.m_caption));
         }
+
+        // A caption is no name: the toggle of a section is named after its view.
+        ui::qt::detail::bind_part_name(*toolbox->item_button(index), *panel, u"toggle");
 
         if(view_info.m_expanded)
         {

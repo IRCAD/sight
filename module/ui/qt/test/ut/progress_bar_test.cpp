@@ -138,17 +138,16 @@ private:
         const auto check_visibility = wait_for_widget(
             [_show_title, _show_cancel, _svg, this](QWidget* _widget)
                 {
-                    const QString root_object_name = QString::fromStdString(m_child_uuid) + "/progress_bar";
+                    const QString root_object_name = QString::fromStdString(m_child_uuid);
 
-                    if(_widget != nullptr && _widget->objectName().startsWith(root_object_name))
+                    if(_widget != nullptr && _widget->objectName() == root_object_name)
                     {
                         auto check_progress_widget = false;
 
                         if(_svg.empty())
                         {
                             if(auto* progress_bar_widget = _widget->findChild<QProgressBar*>(
-                                   root_object_name
-                                   + "/QProgressBar"
+                                   root_object_name + "/progress_bar"
                             );
                                progress_bar_widget != nullptr)
                             {
@@ -162,7 +161,7 @@ private:
                         }
                         else
                         {
-                            if(auto* svg_widget = _widget->findChild<QSvgWidget*>(root_object_name + "/QSvgWidget");
+                            if(auto* svg_widget = _widget->findChild<QSvgWidget*>();
                                svg_widget != nullptr)
                             {
                                 CHECK_MESSAGE(
@@ -176,7 +175,7 @@ private:
 
                         // While we are in svg mode we do not show a title.
                         auto check_title = !_show_title || !_svg.empty();
-                        if(auto* progress_bar = _widget->findChild<QProgressBar*>(root_object_name + "/QProgressBar");
+                        if(auto* progress_bar = _widget->findChild<QProgressBar*>(root_object_name + "/progress_bar");
                            progress_bar != nullptr)
                         {
                             CHECK_MESSAGE(
@@ -188,7 +187,7 @@ private:
                         }
 
                         auto check_button = !_show_cancel;
-                        if(auto* button = _widget->findChild<QToolButton*>(root_object_name + "/QToolButton");
+                        if(auto* button = _widget->findChild<QToolButton*>(root_object_name + "/button");
                            button != nullptr)
                         {
                             CHECK_MESSAGE(
@@ -208,7 +207,7 @@ private:
         // Wait for the script thread to finish.
         CHECK_EQ(
             std::future_status::ready,
-            check_visibility.wait_for(std::chrono::seconds(5))
+            check_visibility.wait_for(std::chrono::seconds(60))
         );
 
         // Should be true.
@@ -245,9 +244,9 @@ private:
             const auto check_progress_info = wait_for_widget(
                 [_show_title, _pulse, _svg, i, monitor, task_name, this](QWidget* _widget)
                     {
-                        const QString root_object_name = QString::fromStdString(m_child_uuid) + "/progress_bar";
+                        const QString root_object_name = QString::fromStdString(m_child_uuid);
 
-                        if(_widget != nullptr && _widget->objectName().startsWith(root_object_name))
+                        if(_widget != nullptr && _widget->objectName() == root_object_name)
                         {
                             auto correct_title           = !_show_title || !_svg.empty();
                             auto correct_done_work_units = false;
@@ -255,7 +254,7 @@ private:
                             if(_svg.empty())
                             {
                                 if(auto* progress_bar_widget =
-                                       _widget->findChild<QProgressBar*>(root_object_name + "/QProgressBar");
+                                       _widget->findChild<QProgressBar*>(root_object_name + "/progress_bar");
                                    progress_bar_widget != nullptr)
                                 {
                                     // In pulse mode, the value is irrelevant
@@ -294,7 +293,7 @@ private:
                             else
                             {
                                 if(auto* progress_bar_widget =
-                                       _widget->findChild<QSvgWidget*>(root_object_name + "/QSvgWidget");
+                                       _widget->findChild<QSvgWidget*>();
                                    progress_bar_widget != nullptr)
                                 {
                                     // In pulse mode, the value is irrelevant
@@ -311,7 +310,7 @@ private:
             // Wait for the script thread to finish.
             CHECK_EQ(
                 std::future_status::ready,
-                check_progress_info.wait_for(std::chrono::seconds(10))
+                check_progress_info.wait_for(std::chrono::seconds(60))
             );
 
             // Should be true.

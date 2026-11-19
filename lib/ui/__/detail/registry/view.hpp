@@ -24,24 +24,14 @@
 
 #include <sight/ui/__/config.hpp>
 
+#include <string_view>
+
 #include "ui/__/container/menubar.hpp"
 #include "ui/__/container/toolbar.hpp"
 #include "ui/__/container/widget.hpp"
 #include "ui/__/object.hpp"
 
-namespace sight::ui
-{
-
-namespace container
-{
-
-class widget;
-class menubar;
-class toolbar;
-
-} // namespace container
-
-namespace detail::registry
+namespace sight::ui::detail::registry
 {
 
 /**
@@ -70,6 +60,10 @@ public:
     SIGHT_UI_API virtual sight::sptr<ui::container::widget> get_parent();
 
     SIGHT_UI_API virtual void set_parent(std::string _wid);
+
+    /// Whether a service of this name has to name its own container: a <view sid="..."/> names it in the parent view,
+    /// a <parent wid="..."/> only when the wid bears the same name.
+    [[nodiscard]] SIGHT_UI_API bool needs_own_name(std::string_view _name) const noexcept;
 
     /**
      * @brief Initialize managers.
@@ -190,6 +184,4 @@ protected:
     // NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 };
 
-} // namespace detail::registry
-
-} // namespace sight::ui
+} // namespace sight::ui::detail::registry

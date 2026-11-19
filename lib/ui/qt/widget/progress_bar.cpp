@@ -47,12 +47,10 @@ progress_bar::progress_bar(
     m_container(new QWidget(_parent)),
     m_finished_callback(std::move(_finished_callback))
 {
-    const QString object_name = _parent != nullptr ? _parent->objectName() + "/progress_bar" : "progress_bar";
-    m_container->setObjectName(object_name);
+    // Not named here: the namer gives its widgets their roles below the service that shows it.
 
     // Create the layout.
     auto* const layout = new QHBoxLayout();
-    layout->setObjectName(QString::fromLatin1("/QHBoxLayout"));
     layout->setContentsMargins(0, 0, 0, 0);
 
     // Create the progress bar.
@@ -61,7 +59,6 @@ progress_bar::progress_bar(
         // ...or an svg widget.
         const auto& resource_path = core::runtime::get_module_resource_file_path(*m_svg_path);
         m_svg_widget = new QSvgWidget(QString::fromStdString(resource_path.string()), m_container);
-        m_svg_widget->setObjectName(object_name + QString::fromLatin1("/QSvgWidget"));
         m_svg_widget->renderer()->setAspectRatioMode(Qt::KeepAspectRatio);
 
         if(m_svg_size)
@@ -74,7 +71,6 @@ progress_bar::progress_bar(
     else
     {
         m_progress_bar = new QProgressBar(m_container);
-        m_progress_bar->setObjectName(object_name + QString::fromLatin1("/QProgressBar"));
         m_progress_bar->setTextVisible(false);
 
         if(m_pulse.value_or(false))
@@ -98,7 +94,6 @@ progress_bar::progress_bar(
     if(m_show_cancel.value_or(false))
     {
         m_cancel_button = new QToolButton(m_container);
-        m_cancel_button->setObjectName(object_name + QString::fromLatin1("/QToolButton"));
         m_cancel_button->setText("Cancel");
 
         const auto& resource_path = core::runtime::get_module_resource_path("sight::module::ui::icons");

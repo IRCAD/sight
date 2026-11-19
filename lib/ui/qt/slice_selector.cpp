@@ -24,6 +24,8 @@
 
 #include <core/runtime/path.hpp>
 
+#include <ui/qt/naming.hpp>
+
 #include <QApplication>
 #include <QColor>
 #include <QComboBox>
@@ -66,7 +68,7 @@ public:
             "border-bottom-right-radius: 30px; "
             "}"
         );
-        m_button->setObjectName("LabelButton");
+        ui::qt::detail::bind_part_name(*m_button, *this, u"toggle");
 
         connect(m_button, &QToolButton::clicked, this, &slice_text_editor::call_update_label);
     }
@@ -370,6 +372,7 @@ slice_selector::slice_selector(
 
         m_slice_type = new QComboBox(this);
         m_slice_type->addItems(slice_types_array);
+        ui::qt::detail::bind_part_name(*m_slice_type, *this, u"slice_type");
         layout->addWidget(m_slice_type, 0);
         QObject::connect(m_slice_type, SIGNAL(currentIndexChanged(int)), this, SLOT(on_slice_type_change(int)));
     }
@@ -378,7 +381,8 @@ slice_selector::slice_selector(
 
     m_slice_index_text->setReadOnly(true);
     m_slice_index_text->setAlignment(Qt::AlignVCenter | Qt::AlignRight | Qt::AlignAbsolute);
-    m_slice_index_text->setObjectName("Label");
+    ui::qt::detail::bind_part_name(*m_slice_index_text, *this, u"label");
+    ui::qt::detail::bind_part_name(*m_slider, *this, u"slider");
 
     layout->addWidget(m_slider, 1);
     layout->addWidget(m_slice_index_text, 0);
@@ -388,7 +392,8 @@ slice_selector::slice_selector(
         layout->addSpacerItem(new QSpacerItem(16, 0, QSizePolicy::Expanding, QSizePolicy::Minimum));
 
         auto* step_backward = new QToolButton(this);
-        auto path           = core::runtime::get_module_resource_path("sight::module::ui::icons");
+        ui::qt::detail::bind_part_name(*step_backward, *this, u"step_backward");
+        auto path = core::runtime::get_module_resource_path("sight::module::ui::icons");
         step_backward->setIcon(QIcon(QString::fromStdString((path / "left.svg").string())));
         step_backward->setToolTip(tr("Step backward"));
 
@@ -407,6 +412,7 @@ slice_selector::slice_selector(
         layout->addSpacerItem(new QSpacerItem(16, 0, QSizePolicy::Expanding, QSizePolicy::Minimum));
 
         auto* step_forward = new QToolButton(this);
+        ui::qt::detail::bind_part_name(*step_forward, *this, u"step_forward");
         step_forward->setIcon(QIcon(QString::fromStdString((path / "right.svg").string())));
         step_forward->setToolTip(tr("Step forward"));
 
@@ -460,6 +466,7 @@ slice_selector::slice_selector(
 
         m_slice_type = new QComboBox(this);
         m_slice_type->addItems(slice_types_array);
+        ui::qt::detail::bind_part_name(*m_slice_type, *this, u"slice_type");
         layout->addWidget(m_slice_type, 0);
         QObject::connect(m_slice_type, SIGNAL(currentIndexChanged(int)), this, SLOT(on_slice_type_change(int)));
     }
@@ -467,7 +474,8 @@ slice_selector::slice_selector(
     static_cast<slice_text_editor*>(m_slice_position_text.data())->set_digits_position(_pos_digits);
     m_slice_position_text->setReadOnly(true);
     m_slice_position_text->setAlignment(Qt::AlignVCenter | Qt::AlignRight | Qt::AlignAbsolute);
-    m_slice_position_text->setObjectName("Label");
+    ui::qt::detail::bind_part_name(*m_slice_position_text, *this, u"label");
+    ui::qt::detail::bind_part_name(*m_slice_position_slider, *this, u"slider");
 
     layout->addWidget(m_slice_position_slider, 1);
     layout->addWidget(m_slice_position_text, 0);
@@ -477,7 +485,8 @@ slice_selector::slice_selector(
         layout->addSpacerItem(new QSpacerItem(16, 0, QSizePolicy::Expanding, QSizePolicy::Minimum));
 
         auto* step_backward_p = new QToolButton(this);
-        auto path             = core::runtime::get_module_resource_path("sight::module::ui::icons");
+        ui::qt::detail::bind_part_name(*step_backward_p, *this, u"step_backward");
+        auto path = core::runtime::get_module_resource_path("sight::module::ui::icons");
         step_backward_p->setIcon(QIcon(QString::fromStdString((path / "left.svg").string())));
         step_backward_p->setToolTip(tr("Step backward"));
 
@@ -499,6 +508,7 @@ slice_selector::slice_selector(
         layout->addSpacerItem(new QSpacerItem(16, 0, QSizePolicy::Expanding, QSizePolicy::Minimum));
 
         auto* step_forward_p = new QToolButton(this);
+        ui::qt::detail::bind_part_name(*step_forward_p, *this, u"step_forward");
         step_forward_p->setIcon(QIcon(QString::fromStdString((path / "right.svg").string())));
         step_forward_p->setToolTip(tr("Step forward"));
 

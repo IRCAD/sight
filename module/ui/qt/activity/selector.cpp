@@ -29,6 +29,7 @@
 #include <core/runtime/path.hpp>
 
 #include <ui/qt/container/widget.hpp>
+#include <ui/qt/naming.hpp>
 
 #include <boost/foreach.hpp>
 
@@ -128,7 +129,6 @@ void selector::starting()
     const QString service_id = QString::fromStdString(base_id());
 
     QWidget* const container = qt_container->get_qt_container();
-    container->setObjectName(service_id);
     const std::string style_grid("QGridLayout#activities {"
                                  "border-width: 4px;"
                                  "}");
@@ -156,7 +156,14 @@ void selector::starting()
         auto* button = new QPushButton(QIcon(info.icon.c_str()), QString::fromStdString(" " + info.title));
         button->setToolTip(QString::fromStdString(info.description));
         button->setIconSize(QSize(80, 80));
-        button->setObjectName(service_id + '/' + info.title.c_str());
+        if(!info.id.empty())
+        {
+            sight::ui::qt::detail::set_name(
+                *button,
+                service_id + u'/' + QString::fromStdString(info.id)
+            );
+        }
+
         button->setFont(font);
 
         button->setStyleSheet(QString::fromUtf8(style.c_str()));

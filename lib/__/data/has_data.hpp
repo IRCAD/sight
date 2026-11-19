@@ -103,6 +103,14 @@ public:
         std::optional<std::size_t> _index = {}) const;
 
     /**
+     * @brief Returns the object bound to a key declared with this deferred identifier.
+     *
+     * @param _id deferred identifier of the object, as the configuration declares it.
+     * @return data object, nullptr when no key has this identifier or when the object does not exist yet.
+     */
+    [[nodiscard]] SIGHT_DATA_API data::object::csptr deferred_object(std::string_view _id) const;
+
+    /**
      * @brief Set an input object, and overrides the default auto_connect and optional settings.
      *
      * @param[in] _obj input object used by the service

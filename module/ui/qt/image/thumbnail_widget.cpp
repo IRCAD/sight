@@ -20,6 +20,7 @@
  ***********************************************************************/
 
 #include "thumbnail_widget.hpp"
+
 #include "thumbnail_mesh_helper.hpp"
 
 #include <core/type.hpp>
@@ -366,7 +367,6 @@ void thumbnail_widget::configuring()
 void thumbnail_widget::create_widget()
 {
     m_thumbnail_widget = new QWidget();
-    m_thumbnail_widget->setObjectName(QString::fromStdString(this->base_id()));
     m_thumbnail_widget->setAttribute(Qt::WA_StyledBackground, true);
 
     m_main_layout = new QBoxLayout(m_vertical ? QBoxLayout::TopToBottom : QBoxLayout::LeftToRight);

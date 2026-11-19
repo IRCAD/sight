@@ -69,25 +69,19 @@ void organ_material_editor::starting()
 {
     this->create();
 
-    const QString service_id = QString::fromStdString(base_id());
-
     auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->get_container());
-    qt_container->get_qt_container()->setObjectName(service_id);
 
     m_diffuse_colour_button = new QPushButton(tr("Diffuse"));
-    m_diffuse_colour_button->setObjectName(service_id + "/" + m_diffuse_colour_button->text());
     m_diffuse_colour_button->setToolTip(tr("Selected organ's diffuse color"));
     m_diffuse_colour_button->setMinimumSize(m_diffuse_colour_button->sizeHint());
 
     m_ambient_colour_button = new QPushButton(tr("Ambient"));
-    m_ambient_colour_button->setObjectName(service_id + "/" + m_ambient_colour_button->text());
     m_ambient_colour_button->setToolTip(tr("Selected organ's ambient color"));
     m_ambient_colour_button->setMinimumSize(m_ambient_colour_button->sizeHint());
 
     const char* transparency       = "Opacity";
     auto* const transparency_label = new QLabel(tr((std::string(transparency) + " : ").c_str()));
     m_opacity_slider = new QSlider(Qt::Horizontal);
-    m_opacity_slider->setObjectName(service_id + "/" + transparency);
     m_opacity_slider->setToolTip(tr("Selected organ's opacity"));
     m_opacity_slider->setRange(0, 100);
     m_opacity_slider->setTickInterval(20);
@@ -95,7 +89,6 @@ void organ_material_editor::starting()
     m_opacity_slider->setMinimumSize(m_opacity_slider->sizeHint());
 
     m_transparency_value = new QLabel("");
-    m_transparency_value->setObjectName(service_id + "/transparencyValue");
     m_transparency_value->setMinimumSize(m_transparency_value->sizeHint());
 
     auto* const main_layout = new QVBoxLayout();

@@ -29,10 +29,56 @@
 #include <data/series_set.hpp>
 #include <utest/wait.hpp>
 
+#include <QApplication>
 #include <QCheckBox>
+#include <QFrame>
 #include <QPushButton>
 
 #include <atomic>
+
+//------------------------------------------------------------------------------
+
+static QPointer<QFrame> find_card(const std::string& _id)
+{
+    const QString id = QString::fromStdString(_id);
+    return sight::core::thread::get_default_worker()->post_task<QPointer<QFrame> >(
+        [id]
+    {
+        for(QWidget* widget : qApp->allWidgets())
+        {
+            if(widget->property("sight_card_id").toString() == id)
+            {
+                return QPointer<QFrame>(qobject_cast<QFrame*>(widget));
+            }
+        }
+
+        return QPointer<QFrame>();
+    }).get();
+}
+
+//------------------------------------------------------------------------------
+
+static QPointer<QCheckBox> find_image_visibility(QFrame* _card)
+{
+    return sight::core::thread::get_default_worker()->post_task<QPointer<QCheckBox> >(
+        [_card]
+    {
+        if(_card == nullptr)
+        {
+            return QPointer<QCheckBox>();
+        }
+
+        for(auto* checkbox : _card->findChildren<QCheckBox*>())
+        {
+            if(checkbox->property("sight_card_field").toString() == "image_visibility")
+            {
+                return QPointer<QCheckBox>(checkbox);
+            }
+        }
+
+        return QPointer<QCheckBox>();
+    }).get();
+}
 
 TEST_SUITE("sight::module::ui::qt::series::image_manager_widget")
 {
@@ -90,23 +136,13 @@ TEST_SUITE("sight::module::ui::qt::series::image_manager_widget")
             CHECK(_service->started());
             SIGHT_TEST_WAIT(first_selected.load());
             CHECK(first_selected.load());
-            CHECK(
-                !sight::ui::test::gui_fixture::find_widget(
-                    "image_card_" + first->get_id()
-                ).isNull()
-            );
-            CHECK(
-                !sight::ui::test::gui_fixture::find_widget(
-                    "image_card_" + second->get_id()
-                ).isNull()
-            );
+            const auto first_card  = find_card(first->get_id());
+            const auto second_card = find_card(second->get_id());
+            CHECK(!first_card.isNull());
+            CHECK(!second_card.isNull());
 
-            const auto first_checkbox = sight::ui::test::gui_fixture::find_widget<QCheckBox>(
-                "image_visibility_" + first->get_id()
-            );
-            const auto second_checkbox = sight::ui::test::gui_fixture::find_widget<QCheckBox>(
-                "image_visibility_" + second->get_id()
-            );
+            const auto first_checkbox  = find_image_visibility(first_card.data());
+            const auto second_checkbox = find_image_visibility(second_card.data());
             REQUIRE(!first_checkbox.isNull());
             REQUIRE(!second_checkbox.isNull());
             CHECK(first_checkbox->isChecked());
@@ -163,9 +199,6 @@ TEST_SUITE("sight::module::ui::qt::series::image_manager_widget")
             }).get();
             SIGHT_TEST_WAIT(second_selected.load());
 
-            const auto second_card = sight::ui::test::gui_fixture::find_widget(
-                "image_card_" + second->get_id()
-            );
             REQUIRE(!second_card.isNull());
 
             const bool closed = sight::core::thread::get_default_worker()->post_task<bool>(
@@ -205,8 +238,7 @@ TEST_SUITE("sight::module::ui::qt::series::image_manager_widget")
                 _service->start().wait();
             }).get();
 
-            const std::string card_name = "image_card_" + image->get_id();
-            const auto card             = sight::ui::test::gui_fixture::find_widget(card_name);
+            const auto card = find_card(image->get_id());
             REQUIRE(!card.isNull());
 
             sight::core::thread::get_default_worker()->post_task<void>(

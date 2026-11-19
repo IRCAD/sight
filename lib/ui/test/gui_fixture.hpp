@@ -31,6 +31,7 @@
 #include <QWidget>
 
 #include <chrono>
+#include <functional>
 #include <future>
 #include <optional>
 #include <string>
@@ -74,31 +75,43 @@ public:
             });
     }
 
-    /// Find a widget by name and type.
-    template<class W = QWidget>
-    static QPointer<W> find_widget(const std::string& _name)
-    {
-        const QString name = QString::fromStdString(_name);
+    /// Accepts or rejects a widget of a type, on the GUI thread.
+    template<class W>
+    using widget_filter = std::function<bool (const W&)>;
 
+    /// Accepts the widgets of a style class, the `class` property a style sheet selects.
+    template<class W = QWidget>
+    static widget_filter<W> with_class(const std::string& _class)
+    {
+        return [style_class = QString::fromStdString(_class)](const W& _widget)
+               {
+                   return _widget.property("class").toString() == style_class;
+               };
+    }
+
+    /// Find a widget by type and filter, waiting for it.
+    template<class W = QWidget>
+    static QPointer<W> find_widget(widget_filter<W> _accepts)
+    {
         for(const auto start = std::chrono::steady_clock::now() ;
             std::chrono::steady_clock::now() - start < SECONDS_TO_WAIT ; )
         {
+            // Widgets live on the GUI thread: look for them there.
             auto posted_task = sight::core::thread::get_default_worker()->post_task<QPointer<W> >(
-                [name]
+                [_accepts]
                 {
                     for(auto* const widget : qApp->allWidgets())
                     {
-                        if(auto* const typed_widget = qobject_cast<W*>(widget); typed_widget != nullptr)
+                        if(auto* const typed_widget = qobject_cast<W*>(widget);
+                           typed_widget != nullptr && _accepts(*typed_widget))
                         {
-                            if(name.isEmpty() || typed_widget->objectName() == name)
-                            {
-                                return QPointer<W>(typed_widget);
-                            }
+                            return QPointer<W>(typed_widget);
                         }
 
+                        // A widget's own children first: the order the first match has always followed.
                         for(auto* const child : widget->findChildren<W*>())
                         {
-                            if(name.isEmpty() || child->objectName() == name)
+                            if(_accepts(*child))
                             {
                                 return QPointer<W>(child);
                             }
@@ -124,6 +137,23 @@ public:
         return QPointer<W>(nullptr);
     }
 
+    /// Accepts the widgets of a name, any widget for an empty name.
+    template<class W = QWidget>
+    static widget_filter<W> named(const std::string& _name)
+    {
+        return [name = QString::fromStdString(_name)](const W& _widget)
+               {
+                   return name.isEmpty() || _widget.objectName() == name;
+               };
+    }
+
+    /// Find a widget by name and type, any widget of that type for an empty name.
+    template<class W = QWidget>
+    static QPointer<W> find_widget(const std::string& _name)
+    {
+        return find_widget<W>(named<W>(_name));
+    }
+
     //------------------------------------------------------------------------------
 
     /**
@@ -133,12 +163,12 @@ public:
      * thread, where it may be destroyed concurrently (a notification popup fading out, for instance). Only the
      * extracted value crosses the thread boundary, which lets the caller assert on it safely.
      *
-     * @param _name name of the widget to look for.
+     * @param _accepts filter of the widget to look for.
      * @param _extractor callable taking the found widget and returning the value to test.
      * @return the extracted value, std::nullopt if the widget could not be found.
      */
     template<class W = QWidget, class F>
-    static auto query_widget(const std::string& _name, F _extractor)
+    static auto query_widget(widget_filter<W> _accepts, F _extractor)
     -> std::optional<std::invoke_result_t<F, W*> >
     {
         using result_t = std::invoke_result_t<F, W*>;
@@ -146,7 +176,7 @@ public:
         for(const auto start = std::chrono::steady_clock::now() ;
             std::chrono::steady_clock::now() - start < SECONDS_TO_WAIT ; )
         {
-            const auto& widget = find_widget<W>(_name);
+            const auto& widget = find_widget<W>(_accepts);
 
             auto posted_task = sight::core::thread::get_default_worker()->post_task<std::optional<result_t> >(
                 [widget, _extractor]
@@ -177,11 +207,30 @@ public:
 
     //------------------------------------------------------------------------------
 
+    /// Find a widget by name and type, then extract a value from it, in the UI thread.
+    template<class W = QWidget, class F>
+    static auto query_widget(const std::string& _name, F _extractor)
+    {
+        return query_widget<W>(named<W>(_name), std::move(_extractor));
+    }
+
+    //------------------------------------------------------------------------------
+
+    /// The text of the widget of this name and type, in the UI thread; std::nullopt when it could not be found.
     template<class W = QWidget>
     static std::optional<std::string> get_widget_text(const std::string& _name)
     {
+        return get_widget_text<W>(named<W>(_name));
+    }
+
+    //------------------------------------------------------------------------------
+
+    /// The text of the first widget of this type that _accepts, in the UI thread; std::nullopt when none is found.
+    template<class W = QWidget>
+    static std::optional<std::string> get_widget_text(widget_filter<W> _accepts)
+    {
         return query_widget<W>(
-            _name,
+            std::move(_accepts),
             [](W* _widget)
             {
                 return _widget->text().toStdString();

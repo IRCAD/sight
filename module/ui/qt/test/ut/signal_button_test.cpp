@@ -92,17 +92,23 @@ public:
         slot->set_worker(m_worker);
         context.signal_button_srv->signal("clicked")->connect(slot);
 
-        QString button_name = QString::fromStdString(m_child_uid) + "/signal_button";
-
+        // This test never shows the service, nor runs an event loop: its button, unnamed until shown, is reached
+        // below the view and clicked from here, as before the naming contract.
+        const QString view_name = QString::fromStdString(m_child_uid);
+        bool clicked            = false;
         for(auto* widget : qApp->allWidgets())
         {
-            if(auto* button = widget->findChild<QAbstractButton*>(button_name); button != nullptr)
+            if(widget->objectName() == view_name)
             {
-                QPointer<QAbstractButton> button_ptr(button);
-
-                button_ptr->clicked();
+                if(auto* button = widget->findChild<QAbstractButton*>(); button != nullptr)
+                {
+                    Q_EMIT button->clicked();
+                    clicked = true;
+                }
             }
         }
+
+        REQUIRE(clicked);
 
         SIGHT_TEST_WAIT(called->load());
         CHECK(called->load());

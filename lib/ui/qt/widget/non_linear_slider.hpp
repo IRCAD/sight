@@ -31,10 +31,13 @@ namespace sight::ui::qt::widget
 class SIGHT_UI_QT_CLASS_API_QT non_linear_slider : public QWidget
 {
 Q_OBJECT
+/// The values, in order: the inner QSlider moves over their indices. GUI tests read it to set a value by input.
+Q_PROPERTY(QList<int> values READ value_list)
 
 public:
 
-    SIGHT_UI_QT_API_QT non_linear_slider(QWidget* _parent = nullptr);
+    /// Creates a horizontal slider without values; its inner QSlider is named after it, as its "slider" part.
+    SIGHT_UI_QT_API_QT explicit non_linear_slider(QWidget* _parent = nullptr);
 
     SIGHT_UI_QT_API_QT void set_orientation(Qt::Orientation _orientation);
 
@@ -48,6 +51,8 @@ public:
     SIGHT_UI_QT_API_QT std::size_t index();
 
     [[nodiscard]] SIGHT_UI_QT_API_QT const std::vector<int>& values() const;
+    /// The values as a QList, for the "values" property.
+    [[nodiscard]] SIGHT_UI_QT_API_QT QList<int> value_list() const;
     [[nodiscard]] SIGHT_UI_QT_API_QT std::size_t num_values() const;
 
     [[nodiscard]] QSize minimumSizeHint() const override;

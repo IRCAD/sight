@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,6 +21,8 @@
  ***********************************************************************/
 
 #include "ui/qt/layout/menubar.hpp"
+#include "ui/qt/layout/object_name.hpp"
+#include "ui/qt/naming.hpp"
 
 #include "ui/qt/container/menu.hpp"
 
@@ -45,13 +47,13 @@ void menubar::create_layout(ui::container::menubar::sptr _parent, const std::str
     const QString q_id = QString::fromStdString(_id);
 
     QMenuBar* menu_bar = m_parent->get_qt_menu_bar();
-    menu_bar->setObjectName(q_id);
+    ui::qt::detail::set_name(*menu_bar, q_id);
 
     for(const std::string& name : m_menu_names)
     {
         ui::qt::container::menu::sptr menu = ui::qt::container::menu::make();
         QMenu* qt_menu                     = menu_bar->addMenu(QString::fromStdString(name));
-        qt_menu->setObjectName(q_id + '/' + name.c_str());
+        ui::qt::detail::set_name(*qt_menu, detail::composed_object_name(q_id, QString::fromStdString(name)));
         menu->set_qt_menu(qt_menu);
         m_menus.push_back(menu);
     }

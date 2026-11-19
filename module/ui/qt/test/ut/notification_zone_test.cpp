@@ -28,6 +28,7 @@
 #include <QIcon>
 #include <QLabel>
 #include <QMouseEvent>
+#include <QProgressBar>
 #include <QStackedWidget>
 
 #include <ui/qt/widget/notification_label.hpp>
@@ -88,6 +89,37 @@ static void send_mouse_release(QWidget* _widget)
     qApp->sendEvent(_widget, &mouse_event);
     qApp->processEvents();
 }
+
+/// The stack of pages of the zone, the only one of the test.
+static QPointer<QStackedWidget> find_stack()
+{
+    return sight::ui::test::gui_fixture::find_widget<QStackedWidget>(std::string());
+}
+
+//------------------------------------------------------------------------------
+
+/// The label of a notification of a kind: `instruction`, `information`, `warning` or `error`.
+static QPointer<QLabel> find_label(const std::string& _kind)
+{
+    return sight::ui::test::gui_fixture::find_widget<QLabel>(
+        sight::ui::test::gui_fixture::with_class<QLabel>("notification_label_" + _kind)
+    );
+}
+
+//------------------------------------------------------------------------------
+
+/// The page of the zone that shows a progress.
+static QPointer<QWidget> find_progress_page()
+{
+    return sight::ui::test::gui_fixture::find_widget<QWidget>(
+        [](const QWidget& _page)
+    {
+        return qobject_cast<const QStackedWidget*>(_page.parentWidget()) != nullptr
+               && _page.findChild<QProgressBar*>() != nullptr;
+    });
+}
+
+//------------------------------------------------------------------------------
 
 /// The icon a notification label paints inside its own frame, null when it has none.
 static QIcon icon_of(const QPointer<QLabel>& _label)
@@ -150,7 +182,7 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
             CHECK(_service->started());
 
             const auto stacked_widget =
-                sight::ui::test::gui_fixture::find_widget<QStackedWidget>("notification_stack");
+                find_stack();
             CHECK(!stacked_widget.isNull());
         });
     }
@@ -174,7 +206,7 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
             CHECK(_service->started());
 
             const auto stacked_widget =
-                sight::ui::test::gui_fixture::find_widget<QStackedWidget>("notification_stack");
+                find_stack();
             CHECK(!stacked_widget.isNull());
 
             // Add in increasing priority order: each one should become the new top.
@@ -189,7 +221,7 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
             }).get();
 
             const auto instruction_label =
-                sight::ui::test::gui_fixture::find_widget<QLabel>("notification_label_instruction");
+                find_label("instruction");
             CHECK(!instruction_label.isNull());
 
             sight::core::thread::get_default_worker()->post_task<void>(
@@ -209,7 +241,7 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
             }).get();
 
             const auto information_label =
-                sight::ui::test::gui_fixture::find_widget<QLabel>("notification_label_information");
+                find_label("information");
             CHECK(!information_label.isNull());
 
             CHECK(!icon_of(information_label).isNull());
@@ -228,7 +260,7 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
                 _service->slot("add_notification")->run(std::static_pointer_cast<sight::core::notification::base>(job));
             }).get();
 
-            const auto progress_page = sight::ui::test::gui_fixture::find_widget("progress_page");
+            const auto progress_page = find_progress_page();
             CHECK(!progress_page.isNull());
             CHECK_EQ(stacked_widget->currentWidget(), progress_page.data());
 
@@ -242,7 +274,7 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
                 );
             }).get();
 
-            const auto warning_label = sight::ui::test::gui_fixture::find_widget<QLabel>("notification_label_warning");
+            const auto warning_label = find_label("warning");
             CHECK(!warning_label.isNull());
 
             sight::core::thread::get_default_worker()->post_task<void>(
@@ -261,7 +293,7 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
                 );
             }).get();
 
-            const auto error_label = sight::ui::test::gui_fixture::find_widget<QLabel>("notification_label_error");
+            const auto error_label = find_label("error");
             CHECK(!error_label.isNull());
 
             sight::core::thread::get_default_worker()->post_task<void>(
@@ -300,7 +332,7 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
             CHECK(_service->started());
 
             const auto stacked_widget =
-                sight::ui::test::gui_fixture::find_widget<QStackedWidget>("notification_stack");
+                find_stack();
             CHECK(!stacked_widget.isNull());
 
             sight::core::thread::get_default_worker()->post_task<void>(
@@ -314,7 +346,7 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
             }).get();
 
             const auto instruction_label =
-                sight::ui::test::gui_fixture::find_widget<QLabel>("notification_label_instruction");
+                find_label("instruction");
             CHECK(!instruction_label.isNull());
 
             sight::core::thread::get_default_worker()->post_task<void>(
@@ -422,7 +454,7 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
             }).get();
 
             const auto information_label =
-                sight::ui::test::gui_fixture::find_widget<QLabel>("notification_label_information");
+                find_label("information");
             CHECK(!information_label.isNull());
 
             sight::core::thread::get_default_worker()->post_task<void>(
@@ -438,8 +470,8 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
             SIGHT_TEST_FAIL_WAIT(signal_tester.error_emitted);
 
             const auto stacked_widget =
-                sight::ui::test::gui_fixture::find_widget<QStackedWidget>("notification_stack");
-            const auto error_label = sight::ui::test::gui_fixture::find_widget<QLabel>("notification_label_error");
+                find_stack();
+            const auto error_label = find_label("error");
             CHECK(!error_label.isNull());
 
             sight::core::thread::get_default_worker()->post_task<void>(
@@ -495,7 +527,7 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
                 _service->slot("add_notification")->run(std::static_pointer_cast<sight::core::notification::base>(job));
             }).get();
 
-            const auto progress_page = sight::ui::test::gui_fixture::find_widget("progress_page");
+            const auto progress_page = find_progress_page();
             CHECK(!progress_page.isNull());
 
             sight::core::thread::get_default_worker()->post_task<void>(
@@ -549,7 +581,7 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
                 _service->slot("add_notification")->run(std::static_pointer_cast<sight::core::notification::base>(job));
             }).get();
 
-            const auto progress_page = sight::ui::test::gui_fixture::find_widget("progress_page");
+            const auto progress_page = find_progress_page();
             CHECK(!progress_page.isNull());
 
             // Without any click, finishing the job must still close the page on its own
@@ -587,7 +619,7 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
                 _service->slot("add_notification")->run(std::static_pointer_cast<sight::core::notification::base>(job));
             }).get();
 
-            const auto progress_page = sight::ui::test::gui_fixture::find_widget("progress_page");
+            const auto progress_page = find_progress_page();
             CHECK(!progress_page.isNull());
 
             // Real callers never call finish(): they just drop their sptr and let the destructor do it
@@ -624,7 +656,7 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
                 _service->slot("add_monitor")->run(std::static_pointer_cast<sight::core::notification::base>(job));
             }).get();
 
-            const auto progress_page = sight::ui::test::gui_fixture::find_widget("progress_page");
+            const auto progress_page = find_progress_page();
             CHECK(!progress_page.isNull());
 
             job->done();
@@ -664,7 +696,7 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
             }).get();
 
             const auto information_label =
-                sight::ui::test::gui_fixture::find_widget<QLabel>("notification_label_information");
+                find_label("information");
             CHECK(!information_label.isNull());
 
             // Simulate the emitting service closing its own notification's widget from another thread.
@@ -703,7 +735,7 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
             }).get();
 
             const auto information_label =
-                sight::ui::test::gui_fixture::find_widget<QLabel>("notification_label_information");
+                find_label("information");
             CHECK(!information_label.isNull());
 
             sight::core::thread::get_default_worker()->post_task<void>(
@@ -738,7 +770,7 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
             CHECK(_service->started());
 
             const auto stacked_widget =
-                sight::ui::test::gui_fixture::find_widget<QStackedWidget>("notification_stack");
+                find_stack();
             CHECK(!stacked_widget.isNull());
 
             sight::core::thread::get_default_worker()->post_task<void>(
@@ -780,7 +812,7 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
             CHECK(_service->started());
 
             const auto stacked_widget =
-                sight::ui::test::gui_fixture::find_widget<QStackedWidget>("notification_stack");
+                find_stack();
             CHECK(!stacked_widget.isNull());
 
             sight::core::thread::get_default_worker()->post_task<void>(
@@ -822,7 +854,7 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
             CHECK(_service->started());
 
             const auto stacked_widget =
-                sight::ui::test::gui_fixture::find_widget<QStackedWidget>("notification_stack");
+                find_stack();
             CHECK(!stacked_widget.isNull());
 
             auto job1 = std::make_shared<dummy_job>("job1");
@@ -837,7 +869,7 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
                 );
             }).get();
 
-            const auto progress_page = sight::ui::test::gui_fixture::find_widget("progress_page");
+            const auto progress_page = find_progress_page();
             CHECK(!progress_page.isNull());
 
             auto job2 = std::make_shared<dummy_job>("job2");
@@ -930,7 +962,7 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
             }).get();
 
             const auto information_label =
-                sight::ui::test::gui_fixture::find_widget<QLabel>("notification_label_information");
+                find_label("information");
             CHECK(!information_label.isNull());
 
             SIGHT_TEST_FAIL_WAIT(information_label.isNull());
@@ -972,9 +1004,7 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
 
             sight::core::thread::get_default_worker()->post_task<void>(add_notification).get();
 
-            auto information_label = sight::ui::test::gui_fixture::find_widget<QLabel>(
-                "notification_label_information"
-            );
+            auto information_label = find_label("information");
             CHECK(!information_label.isNull());
 
             SIGHT_TEST_FAIL_WAIT(information_label.isNull());
@@ -982,9 +1012,7 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
             // A later announcement recreates the page after its previous timeout.
             sight::core::thread::get_default_worker()->post_task<void>(add_notification).get();
 
-            information_label = sight::ui::test::gui_fixture::find_widget<QLabel>(
-                "notification_label_information"
-            );
+            information_label = find_label("information");
             CHECK(!information_label.isNull());
             CHECK_EQ(information_label->text().toStdString(), "reappearing");
         });
@@ -1025,9 +1053,7 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
                 );
             }).get();
 
-            auto information_label = sight::ui::test::gui_fixture::find_widget<QLabel>(
-                "notification_label_information"
-            );
+            auto information_label = find_label("information");
             CHECK(!information_label.isNull());
 
             SIGHT_TEST_FAIL_WAIT(information_label.isNull());
@@ -1036,10 +1062,10 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
             information->set_text("second contribution");
 
             SIGHT_TEST_FAIL_WAIT(
-                !sight::ui::test::gui_fixture::find_widget<QLabel>("notification_label_information").isNull()
+                !find_label("information").isNull()
             );
 
-            information_label = sight::ui::test::gui_fixture::find_widget<QLabel>("notification_label_information");
+            information_label = find_label("information");
             REQUIRE(!information_label.isNull());
             CHECK_EQ(information_label->text().toStdString(), "second contribution");
 
@@ -1081,7 +1107,7 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
                 );
             }).get();
 
-            const auto error_label = sight::ui::test::gui_fixture::find_widget<QLabel>("notification_label_error");
+            const auto error_label = find_label("error");
             CHECK(!error_label.isNull());
         });
     }
@@ -1119,7 +1145,7 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
             }).get();
 
             const auto information_label =
-                sight::ui::test::gui_fixture::find_widget<QLabel>("notification_label_information");
+                find_label("information");
             CHECK(!information_label.isNull());
 
             CHECK(icon_of(information_label).isNull());
@@ -1158,7 +1184,7 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
             }).get();
 
             const auto information_label =
-                sight::ui::test::gui_fixture::find_widget<QLabel>("notification_label_information");
+                find_label("information");
             REQUIRE(!information_label.isNull());
             CHECK(!icon_of(information_label).isNull());
 
@@ -1208,11 +1234,11 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
             }).get();
 
             const auto stacked_widget =
-                sight::ui::test::gui_fixture::find_widget<QStackedWidget>("notification_stack");
+                find_stack();
             CHECK(!stacked_widget.isNull());
 
             const auto information_label =
-                sight::ui::test::gui_fixture::find_widget<QLabel>("notification_label_information");
+                find_label("information");
             CHECK(!information_label.isNull());
 
             sight::core::thread::get_default_worker()->post_task<void>(
@@ -1272,7 +1298,7 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
             }).get();
 
             const auto instruction_label =
-                sight::ui::test::gui_fixture::find_widget<QLabel>("notification_label_instruction");
+                find_label("instruction");
             CHECK(!instruction_label.isNull());
 
             // An update is dispatched by type too: the instruction keeps its singleton page, it does not get
@@ -1282,7 +1308,7 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
             SIGHT_TEST_FAIL_WAIT(instruction_label->text().toStdString() == std::string("after"));
 
             const auto stacked_widget =
-                sight::ui::test::gui_fixture::find_widget<QStackedWidget>("notification_stack");
+                find_stack();
 
             sight::core::thread::get_default_worker()->post_task<void>(
                 [stacked_widget]
@@ -1325,7 +1351,7 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
             }).get();
 
             const auto information_label =
-                sight::ui::test::gui_fixture::find_widget<QLabel>("notification_label_information");
+                find_label("information");
             CHECK(!information_label.isNull());
 
             // Updated every 400ms, it outlives its own 1000ms delay: each update starts it over.
@@ -1376,7 +1402,7 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
 
             // Without a duration of its own, it is dismissed on the zone's, shortened above.
             const auto transient_label =
-                sight::ui::test::gui_fixture::find_widget<QLabel>("notification_label_information");
+                find_label("information");
             CHECK(!transient_label.isNull());
             SIGHT_TEST_FAIL_WAIT(transient_label.isNull());
 
@@ -1397,7 +1423,7 @@ TEST_SUITE("sight::module::ui::qt::notification_zone")
             }).get();
 
             const auto pinned_label =
-                sight::ui::test::gui_fixture::find_widget<QLabel>("notification_label_information");
+                find_label("information");
             CHECK(!pinned_label.isNull());
 
             std::this_thread::sleep_for(std::chrono::milliseconds(2500));

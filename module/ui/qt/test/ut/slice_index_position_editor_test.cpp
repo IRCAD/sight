@@ -21,6 +21,8 @@
 
 #include <core/thread/worker.hpp>
 #include <data/image_series.hpp>
+#include <ui/__/service.hpp>
+#include <ui/qt/container/widget.hpp>
 #include <ui/qt/slice_selector.hpp>
 #include <ui/test/gui_fixture.hpp>
 
@@ -132,7 +134,19 @@ TEST_SUITE("sight::module::ui::qt::image::slice_index_position_editor")
                     _service->start().get();
                 }).get();
 
-                const auto selector = find_widget<sight::ui::qt::slice_selector>(_service->get_id());
+                // The selector of this service, not the one of a previous orientation still being deleted.
+                const auto service = std::dynamic_pointer_cast<sight::ui::service>(_service);
+                REQUIRE(service != nullptr);
+                const auto container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
+                    service->get_container()
+                );
+                REQUIRE(container != nullptr);
+                const QPointer<QWidget> root = container->get_qt_container();
+                const auto selector          = find_widget<sight::ui::qt::slice_selector>(
+                    [root](const sight::ui::qt::slice_selector& _selector)
+                {
+                    return !root.isNull() && root->isAncestorOf(&_selector);
+                });
                 REQUIRE(!selector.isNull());
                 sight::core::thread::get_default_worker()->post_task<void>(
                     [_service, first, second, selector, orientation, sparse]

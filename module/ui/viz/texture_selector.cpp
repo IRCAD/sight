@@ -57,20 +57,14 @@ void texture_selector::starting()
 {
     this->create();
 
-    const QString service_id = QString::fromStdString(base_id());
-
     auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
         this->get_container()
     );
-    qt_container->get_qt_container()->setObjectName(service_id);
 
     m_load_button = new QPushButton(QString("Load texture"));
-    m_load_button->setObjectName(service_id + "/" + m_load_button->text());
     m_load_button->setToolTip(QString("Selected organ's texture"));
     m_load_button->setMinimumSize(m_load_button->sizeHint());
-
     m_delete_button = new QPushButton(QString("Remove texture"));
-    m_delete_button->setObjectName(service_id + "/" + m_delete_button->text());
     m_delete_button->setToolTip(QString("Remove organ's texture"));
     m_delete_button->setMinimumSize(m_delete_button->sizeHint());
 

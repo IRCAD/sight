@@ -21,6 +21,8 @@
 
 #include "collapsible_section.hpp"
 
+#include "ui/qt/naming.hpp"
+
 #include <QPropertyAnimation>
 
 namespace sight::ui::qt::widget
@@ -62,6 +64,8 @@ collapsible_section::collapsible_section(const QString& _title, const int _anima
 
     connect(m_toggle_button, &QToolButton::toggled, this, &collapsible_section::toggle);
     connect(m_toggle_animation, &QAbstractAnimation::finished, this, &collapsible_section::animation_finished);
+
+    ui::qt::detail::bind_part_name(*m_toggle_button, *this, u"toggle");
 }
 
 //------------------------------------------------------------------------------

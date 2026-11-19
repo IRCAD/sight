@@ -47,14 +47,23 @@ if [ -n "$listing" ]; then
     xvfb_run=""
     export QT_QPA_PLATFORM="offscreen"
 elif [ "$require_x" = "ON" ]; then
-    if xprop -root &> /dev/null ; then
+    # Each GUI test gets its own X server, so that no other window, a concurrent test's or the user's, covers it.
+    # SIGHT_UI_TEST_VISIBLE, unless empty or 0, keeps the current display to watch a run.
+    if [ -n "$SIGHT_UI_TEST_VISIBLE" ] && [ "$SIGHT_UI_TEST_VISIBLE" != "0" ] && xprop -root &> /dev/null ; then
         xvfb_run=""
     elif xvfb-run --help &>/dev/null ; then
         xvfb_run="$bindir/safe-xvfb-run"
+    elif xprop -root &> /dev/null ; then
+        echo "Warning: xvfb-run is missing, this GUI test shares the current display and may be covered by other windows." >&2
+        xvfb_run=""
     else
         echo "Warning: This test requires some kind of graphical environment to run, but none was found or could be created. The test will probably fail." >&2
         xvfb_run=""
     fi
+
+    # An X client: in a Wayland session, Qt would otherwise pick the session's compositor, whatever the display above.
+    export QT_QPA_PLATFORM="xcb"
+    unset WAYLAND_DISPLAY
 else
     xvfb_run=""
     export QT_QPA_PLATFORM="offscreen"

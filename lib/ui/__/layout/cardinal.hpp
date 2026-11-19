@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2009-2026 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,8 +26,9 @@
 
 #include "ui/__/layout/view.hpp"
 
-#include <core/base.hpp>
+#include <core/macros.hpp>
 
+#include <cstdint>
 #include <list>
 #include <map>
 
@@ -44,7 +45,7 @@ public:
     SIGHT_DECLARE_CLASS(cardinal, ui::layout::view);
 
     /// Defines all possible positions for a CardinalLayout
-    enum align
+    enum align : std::uint8_t
     {
         center,
         right,

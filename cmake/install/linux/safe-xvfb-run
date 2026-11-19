@@ -4,6 +4,8 @@
 : "${xvfb_lockdir:=$HOME/.xvfb-locks}"
 : "${xvfb_display_min:=99}"
 : "${xvfb_display_max:=599}"
+# xvfb-run defaults to 1280x1024: a window that needs more, as sight_calibrator does, would lie partly off screen
+: "${xvfb_screen:=2560x1600x24}"
 
 # assuming only one user will use this, let's put the locks in our own home directory
 # avoids vulnerability to symlink attacks.
@@ -17,7 +19,9 @@ while (( i < xvfb_display_max )); do
   
   exec 5>"$xvfb_lockdir/$i" || continue           # open a lockfile
   if flock -x -n 5; then                          # try to lock it
-    exec xvfb-run --server-num="$i" "$@" || exit  # if locked, run xvfb-run
+    # -noreset: by default Xvfb resets when its last client leaves, and refuses or never answers a client coming
+    # meanwhile, as a test process creating its next application.
+    exec xvfb-run --server-num="$i" --server-args="-noreset -screen 0 $xvfb_screen" "$@" || exit  # if locked, run xvfb-run
   fi
   (( i++ ))
 

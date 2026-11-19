@@ -26,6 +26,7 @@
 #include <data/fiducials_series.hpp>
 #include <data/image_series.hpp>
 #include <ui/qt/container/widget.hpp>
+#include <ui/qt/namer.hpp>
 
 #include <QColorDialog>
 #include <QLabel>
@@ -194,41 +195,34 @@ void landmarks::starting()
 {
     this->sight::ui::service::create();
 
-    const QString service_id = QString::fromStdString(base_id());
-
     const auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
         this->get_container()
     );
-    qt_container->get_qt_container()->setObjectName(service_id);
 
     auto* const layout      = new QVBoxLayout();
     auto* const grid_layout = new QGridLayout();
 
     m_visibility_checkbox = new QCheckBox();
     auto* const visibility_label = new QLabel(QString("Visibility"));
-    m_visibility_checkbox->setObjectName(service_id + "/" + visibility_label->text());
     m_size_slider = new QSlider(Qt::Horizontal);
     m_size_slider->setMinimum(1);
     m_size_slider->setMaximum(100);
+    sight::ui::qt::name_part(*m_size_slider, "size");
     auto* const size_label = new QLabel(QString("Size"));
-    m_size_slider->setObjectName(service_id + "/" + size_label->text());
     m_opacity_slider = new QSlider(Qt::Horizontal);
     auto* const opacity_label = new QLabel("Opacity");
-    m_opacity_slider->setObjectName(service_id + "/" + opacity_label->text());
     m_shape_selector = new QComboBox();
     m_shape_selector->addItem(QString("Cube"));
     m_shape_selector->addItem(QString("Sphere"));
     auto* const shape_label = new QLabel("Shape");
-    m_shape_selector->setObjectName(service_id + "/" + shape_label->text());
 
     if(m_advanced_mode)
     {
         m_new_group_button = new QPushButton("New Group");
-        m_new_group_button->setObjectName(service_id + "/" + m_new_group_button->text());
+        sight::ui::qt::name_part(*m_new_group_button, "new_group");
     }
 
     m_remove_button = new QPushButton("Delete");
-    m_remove_button->setObjectName(service_id + "/" + m_remove_button->text());
     m_remove_button->setShortcut(QKeySequence::Delete);
 
     grid_layout->addWidget(visibility_label, 0, 0);
@@ -244,7 +238,7 @@ void landmarks::starting()
     m_group_editor_widget->setLayout(grid_layout);
 
     m_tree_widget = new QTreeWidget();
-    m_tree_widget->setObjectName(service_id + "/treeWidget");
+    sight::ui::qt::name_part(*m_tree_widget, "tree");
     if(!m_text.empty())
     {
         auto* helper_text_label = new QLabel(QString::fromStdString(m_text));
