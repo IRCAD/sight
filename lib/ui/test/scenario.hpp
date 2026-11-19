@@ -841,6 +841,25 @@ public:
     ) const;
 
     /**
+     * @brief Clicks an action that saves a PNG through a file dialog, chooses the file, and returns its image once
+     * the application has written it completely.
+     *
+     * @code{.cpp}
+     * const QImage snapshot = ui.save_png("top_toolbar_view/Snapshot", ui.output_directory() / "snapshot.png", 60s);
+     * @endcode
+     *
+     * @param _expression the locator of the action: a name, a scoped string or a locator_expression.
+     * @param _path       the absolute path of the file to write.
+     * @param _timeout    how long each of the click, the choice and the writing may take before the step fails.
+     * @return the image of the file.
+     */
+    SIGHT_UI_TEST_API QImage save_png(
+        std::string_view _expression,
+        const std::filesystem::path& _path,
+        duration_t _timeout = DEFAULT_TIMEOUT
+    );
+
+    /**
      * @brief Waits for one visible widget, of type Widget, and returns what a short, read-only getter copies from it on
      * the GUI thread.
      *
@@ -1050,6 +1069,19 @@ public:
     SIGHT_UI_TEST_API std::string dump();
 
     /**
+     * @brief Places a window as a GUI test needs it: shown at the top left of its screen, at the size of the tests.
+     *
+     * SIGHT_GUI_TEST_CASE does it for the main window: a scenario rarely does.
+     *
+     * @code{.cpp}
+     * ui.prepare_window(main_window);
+     * @endcode
+     *
+     * @param _window the window, which may still be showing.
+     */
+    SIGHT_UI_TEST_API void prepare_window(QPointer<QWidget> _window);
+
+    /**
      * @brief Returns one diagnostic for each visible object that breaks the naming contract: no name, or a name no
      * sanctioned path gave it.
      *
@@ -1123,8 +1155,6 @@ private:
         std::string_view _expression,
         duration_t _timeout
     ) const;
-
-    SIGHT_UI_TEST_API void prepare_window(QPointer<QWidget> _window);
 
     /// Connects the watched signal of a widget, on the GUI thread, to a notification.
     using signal_connector = std::function<QMetaObject::Connection(const QWidget&, std::function<void()>)>;

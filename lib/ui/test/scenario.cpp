@@ -2763,6 +2763,17 @@ QImage scenario::read_png(const std::filesystem::path& _path, duration_t _timeou
 
 //------------------------------------------------------------------------------
 
+QImage scenario::save_png(std::string_view _expression, const std::filesystem::path& _path, duration_t _timeout)
+{
+    const std::string path = detail::qt_path(_path).toStdString();
+    const implementation::step_scope step(*m_implementation, "save_png", _expression, path);
+    this->click(_expression, relative_position {}, _timeout);
+    this->choose_file(_path, {}, _timeout);
+    return this->read_png(_path, _timeout);
+}
+
+//------------------------------------------------------------------------------
+
 std::filesystem::path scenario::output_directory()
 {
     return m_implementation->output_directory();

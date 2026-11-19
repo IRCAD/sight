@@ -58,6 +58,22 @@ XML fails at once, with the closest names. Every scenario ends with `ui.expect_v
 fixture. Qt's own dialogs are out of the contract. Add a part with `ui::qt::name_part()` only when a test needs a name
 the role does not give.
 
+## Exploring a running application
+
+An MCP client can drive the application: see "Exploring with an AI agent" in `lib/ui/test/README.md`. When its `ui`
+tool is available, try each step of a new scenario on the running application before writing it, so that every name
+and verb is checked. The tool takes the same locators, but its verbs and states are a subset of the API, and a call
+that acts then waits is several scenario lines: check each verb and assertion in the headers before writing it.
+
+```json
+{"locator": "properties1_srv/bool_1", "do": "click", "expect": {"checked": true}}
+```
+
+```cpp
+ui.click("properties1_srv/bool_1");
+ui.expect("properties1_srv/bool_1").checked();
+```
+
 ## Locators
 
 ```cpp

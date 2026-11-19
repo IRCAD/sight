@@ -35,17 +35,6 @@ namespace sight::sight_viewer::uit
 using namespace std::chrono_literals;
 using ui::test::detail::qt_path;
 
-/// Clicks the real Snapshot button and returns the image it writes, once complete.
-static QImage save_snapshot(ui::test::scenario& _ui, const std::filesystem::path& _snapshot)
-{
-    std::filesystem::create_directories(_snapshot.parent_path());
-    _ui.click("top_toolbar_view/Snapshot");
-    _ui.choose_file(_snapshot);
-    return _ui.read_png(_snapshot, 60s);
-}
-
-//------------------------------------------------------------------------------
-
 /// Snapshot omits the on-screen background and overlays, so it has its own reference of a fixed size.
 static void expect_snapshot(
     const QImage& _saved,
@@ -77,7 +66,7 @@ SIGHT_GUI_TEST_CASE("zoom_out")
 {
     ui.expect_image_changes(MAIN_SCENE, [&]{open_mesh(ui);});
     ui.expect_image_changes(MAIN_SCENE, [&]{ui.wheel(MAIN_SCENE, -7);});
-    const auto snapshot = save_snapshot(ui, ui.output_directory() / "snapshot.png");
+    const auto snapshot = ui.save_png("top_toolbar_view/Snapshot", ui.output_directory() / "snapshot.png", 60s);
 
     ui.expect_image(MAIN_SCENE, reference("zoom_out"));
     expect_snapshot(snapshot, reference("zoom_out_snapshot"), ui.output_directory());

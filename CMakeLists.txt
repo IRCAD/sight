@@ -123,6 +123,12 @@ option(SIGHT_BUILD_EXAMPLES "Build examples and tutorials" ON)
 
 option(SIGHT_BUILD_MANPAGES "Generate man pages for applications" OFF)
 
+# sightrun --mcp: an AI agent drives the GUI through the GUI test engine. Never in a release.
+option(SIGHT_ENABLE_UI_MCP "Let sightrun serve the GUI to an MCP client" OFF)
+if(SIGHT_ENABLE_UI_MCP AND CMAKE_BUILD_TYPE STREQUAL "Release")
+    message(FATAL_ERROR "SIGHT_ENABLE_UI_MCP is for development builds only")
+endif()
+
 ########################################################################################################################
 # Warn user of install dir isn't empty
 ########################################################################################################################

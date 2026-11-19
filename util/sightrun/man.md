@@ -22,6 +22,10 @@ sightrun - launcher for _Sight_ applications.
 **-B**
 :   Adds a module path.
 
+**\--mcp**
+:   Serves the GUI to an MCP client on the standard input and output, which then belong to the protocol; the
+    application ends when the client closes its input. Only in a build with `SIGHT_ENABLE_UI_MCP`.
+
 **\--clog**
 :   Enable log output to console.
 

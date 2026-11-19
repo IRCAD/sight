@@ -33,6 +33,14 @@
 #include <core/tools/os.hpp>
 #include <core/tools/system.hpp>
 
+#ifdef SIGHT_ENABLE_UI_MCP
+#include <ui/test/mcp_server.hpp>
+
+#include <QApplication>
+
+#include <stdexcept>
+#endif
+
 #include <boost/program_options/options_description.hpp>
 #include <boost/program_options/parsers.hpp>
 #include <boost/program_options/positional_options.hpp>
@@ -43,6 +51,7 @@
 #include <csignal>
 #include <filesystem>
 #include <fstream>
+#include <memory>
 #include <ostream>
 #include <string>
 #include <vector>
@@ -173,12 +182,16 @@ int main(int argc, char* argv[])
     std::vector<std::filesystem::path> module_paths;
     std::filesystem::path profile_file;
     sight::core::runtime::profile::params_container profile_args;
+    [[maybe_unused]] bool mcp = false;
 
     // Runner options
     po::options_description options("Sight application launcher options");
     options.add_options()
     ("help,h", "Show help message")
     ("module-path,B", po::value(&module_paths), "Adds a module path")
+#ifdef SIGHT_ENABLE_UI_MCP
+    ("mcp", po::bool_switch(&mcp), "Serve the GUI to an MCP client on the standard input and output")
+#endif
     ;
 
     // Log options
@@ -346,6 +359,14 @@ int main(int argc, char* argv[])
         return 0;
     }
 
+#ifdef SIGHT_ENABLE_UI_MCP
+    // Before anything prints or the profile starts: standard output belongs to the protocol, and the preferences of
+    // the user stay out of reach.
+    if(mcp)
+    {
+        sight::ui::test::mcp_stdio::prepare();
+    }
+#endif
     // If we enable console log, but not file log, we disable file log (which is enabled by default)
     if(console_log)
     {
@@ -520,7 +541,23 @@ int main(int argc, char* argv[])
         profile->set_params(profile_args);
 
         profile->start();
+#ifdef SIGHT_ENABLE_UI_MCP
+        std::unique_ptr<sight::ui::test::mcp_stdio> server;
+        if(mcp)
+        {
+            auto* const application = qobject_cast<QApplication*>(QCoreApplication::instance());
+            if(application == nullptr)
+            {
+                throw std::runtime_error("--mcp needs a profile with a GUI");
+            }
+
+            server = std::make_unique<sight::ui::test::mcp_stdio>(*application);
+        }
+#endif
         profile->run();
+#ifdef SIGHT_ENABLE_UI_MCP
+        server.reset();
+#endif
         if(g_signal_status == 0)
         {
             profile->stop();

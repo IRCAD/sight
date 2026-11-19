@@ -21,8 +21,8 @@
 
 #include "gui_session.hpp"
 
-#include "detail/deadline.hpp"
 #include "detail/locator.hpp"
+#include "detail/main_window.hpp"
 
 #include "scenario.hpp"
 
@@ -43,13 +43,11 @@
 #include <QWidget>
 #include <QWindow>
 
-#include <algorithm>
 #include <atomic>
 #include <chrono>
 #include <condition_variable>
 #include <cstdlib>
 #include <exception>
-#include <future>
 #include <iostream>
 #include <memory>
 #include <mutex>
@@ -63,111 +61,6 @@ namespace sight::ui::test
 {
 
 using clock = std::chrono::steady_clock;
-
-/// Runs _query on the GUI thread; nothing once _deadline passes or the event loop stops, which would never run it.
-template<typename T>
-static std::optional<T> query_gui_thread(
-    std::function<T()> _query,
-    clock::time_point _deadline,
-    const std::atomic_bool& _stop
-)
-{
-    // Shared: the call may still be queued once this function has given up.
-    auto result = std::make_shared<std::promise<T> >();
-    auto future = result->get_future();
-    QMetaObject::invokeMethod(
-        qApp,
-        [result, query = std::move(_query)]{result->set_value(query());},
-        Qt::QueuedConnection
-    );
-    while(future.wait_for(std::chrono::milliseconds(10)) != std::future_status::ready)
-    {
-        if(_stop || clock::now() >= _deadline)
-        {
-            return std::nullopt;
-        }
-    }
-
-    return future.get();
-}
-
-//------------------------------------------------------------------------------
-
-/// How long the GUI thread may take to answer a look: the application starts on it, as slowly as the machine is loaded.
-/// It only bounds a hang, so a scale below 1 never shortens it.
-static clock::duration answer_timeout()
-{
-    constexpr auto timeout = std::chrono::minutes(2);
-    return std::max<clock::duration>(timeout, detail::scaled(timeout));
-}
-
-//------------------------------------------------------------------------------
-
-/// The visible main window, once the platform has exposed it. Its 30 s start with the first answer of the GUI thread,
-/// which starts the application first.
-static QPointer<QWidget> wait_for_main_window(const std::atomic_bool& _loop_stopped)
-{
-    struct sighting
-    {
-        QPointer<QWidget> window;
-        bool exposed {false};
-    };
-
-    std::optional<clock::time_point> deadline;
-    bool shown = false;
-    while(!_loop_stopped && (!deadline || clock::now() < *deadline))
-    {
-        const auto seen = query_gui_thread<sighting>(
-            []
-            {
-                for(QWidget* const widget : QApplication::topLevelWidgets())
-                {
-                    if(qobject_cast<QMainWindow*>(widget) != nullptr && widget->isVisible())
-                    {
-                        const QWindow* const handle = widget->windowHandle();
-                        return sighting {.window    = widget, .exposed = handle != nullptr && handle->isExposed()};
-                    }
-                }
-
-                return sighting {};
-            },
-            clock::now() + answer_timeout(),
-            _loop_stopped
-        );
-        if(!seen)
-        {
-            if(_loop_stopped)
-            {
-                break;
-            }
-
-            const auto seconds = std::chrono::duration_cast<std::chrono::seconds>(answer_timeout()).count();
-            throw std::runtime_error(
-                      "the GUI thread did not answer for " + std::to_string(seconds)
-                      + " s while the application started"
-            );
-        }
-
-        if(!deadline)
-        {
-            deadline = detail::deadline_after(std::chrono::seconds(30));
-        }
-
-        if(seen->window != nullptr)
-        {
-            if(seen->exposed)
-            {
-                return seen->window;
-            }
-
-            shown = true;
-        }
-
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
-    }
-
-    throw std::runtime_error(shown ? "the main window was never exposed" : "the main window never showed up");
-}
 
 //------------------------------------------------------------------------------
 
@@ -230,7 +123,7 @@ static std::string close_application(
     bool closed = false;
     while(!closed && !blocking_dialog && !_stop && clock::now() < close_deadline)
     {
-        blocking_dialog = query_gui_thread<std::optional<std::string> >(
+        blocking_dialog = detail::query_gui_thread<std::optional<std::string> >(
             [state]() -> std::optional<std::string>
             {
                 QWidget* const modal = QApplication::activeModalWidget();
@@ -267,7 +160,7 @@ static std::string close_application(
                                 QCoreApplication::exit(return_code);
                                 return true;
                             };
-    static_cast<void>(query_gui_thread<bool>(exit_loop, clock::now() + std::chrono::seconds(30), _stop));
+    static_cast<void>(detail::query_gui_thread<bool>(exit_loop, clock::now() + std::chrono::seconds(30), _stop));
     return failure;
 }
 
@@ -411,7 +304,7 @@ std::string gui_session::run(const std::string& _name, const std::function<void(
             QPointer<QWidget> main_window;
             try
             {
-                main_window = wait_for_main_window(_loop_stopped);
+                main_window = detail::wait_for_main_window(_loop_stopped);
                 ui.prepare_window(main_window);
                 _body(ui);
             }

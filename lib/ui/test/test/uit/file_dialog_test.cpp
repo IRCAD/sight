@@ -30,16 +30,24 @@
 #include <doctest/doctest.h>
 
 #include <QAbstractItemView>
+#include <QBuffer>
+#include <QByteArray>
+#include <QColor>
 #include <QCompleter>
 #include <QDialog>
 #include <QDir>
+#include <QFile>
 #include <QFileDialog>
 #include <QFileSystemModel>
+#include <QIODevice>
+#include <QImage>
 #include <QLineEdit>
 #include <QMenu>
 #include <QMessageBox>
 #include <QMetaObject>
 #include <QPushButton>
+#include <QSize>
+#include <QString>
 #include <QStringList>
 #include <QTimer>
 #include <QVBoxLayout>
@@ -48,6 +56,7 @@
 #include <chrono>
 #include <filesystem>
 #include <fstream>
+#include <memory>
 #include <stdexcept>
 #include <string>
 #include <thread>
@@ -600,6 +609,55 @@ TEST_SUITE("sight::ui::test::file_dialog")
                 actions.finish();
             });
         CHECK(file.result == QDialog::Rejected);
+    }
+
+    TEST_CASE_FIXTURE(gui_dispatch_fixture, "saves_a_png_through_its_real_dialog")
+    {
+        core::os::temp_dir temporary;
+        const auto path = temporary / std::filesystem::path(u"snapshot_é.png");
+
+        QImage written(4, 3, QImage::Format_RGB32);
+        written.fill(Qt::red);
+        QByteArray bytes;
+        {
+            QBuffer buffer(&bytes);
+            REQUIRE(buffer.open(QIODevice::WriteOnly));
+            REQUIRE(written.save(&buffer, "PNG"));
+        }
+
+        // Like a snapshot, the file is written in two parts, the second one later.
+        QWidget window;
+        QPushButton save("Save", &window);
+        save.setObjectName("save");
+        QObject::connect(
+            &save,
+            &QPushButton::clicked,
+            [&]
+            {
+                QFileDialog dialog(&window);
+                dialog.setOption(QFileDialog::DontUseNativeDialog);
+                dialog.setAcceptMode(QFileDialog::AcceptSave);
+                dialog.setDirectory(QString::fromStdU16String(temporary.path().u16string()));
+                if(dialog.exec() != QDialog::Accepted)
+                {
+                    return;
+                }
+
+                auto file = std::make_shared<QFile>(dialog.selectedFiles().front());
+                if(file->open(QIODevice::WriteOnly))
+                {
+                    file->write(bytes.left(bytes.size() - 12));
+                    file->flush();
+                    QTimer::singleShot(0, &window, [file, &bytes]{file->write(bytes.right(12)); file->close();});
+                }
+            });
+        window.show();
+
+        scenario actions(application);
+        QImage read;
+        run_scenario(*this, [&]{read = actions.save_png("save", path);});
+        CHECK(read.size() == QSize(4, 3));
+        CHECK(read.pixelColor(0, 0) == QColor(Qt::red));
     }
 }
 

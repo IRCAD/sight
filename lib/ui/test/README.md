@@ -50,6 +50,18 @@ SIGHT_GUI_TEST_CASE("my_scenario")
 | `SIGHT_TEST_DUMP_DIR` | Where a test writes the dump of a crash |
 | `IMAGE_OUTPUT_PATH` | Where failure artifacts and image candidates go, by binary, scenario and run. By default `sight_ui_test` in the temporary directory of the system, kept after the run |
 
+## Exploring with an AI agent
+
+In a build configured with `SIGHT_ENABLE_UI_MCP=ON` (not in Release), `sightrun <profile> --mcp` serves the application
+to an MCP client on its standard input and output, which then belong to the protocol. Declare it as a stdio server of
+the client, with the `sightrun` of the build and the profile as arguments: the client starts the application, and
+closing the client ends it.
+
+Its one tool, `ui`, takes the locators of a scenario, with the names of the XML, and a subset of its verbs and states:
+`{}` returns the tree of `ui.dump()`, `{"locator": "x"}` the state of `x`, `"do"` acts first (`click`, `set`,
+`type`...) and `"expect"` waits for a state.
+A failed step answers with the failure a scenario would show. `mcp_server.hpp` holds the server.
+
 ## Engine tests
 
 - `ui_test_ut`: the parts of the engine that need no real window, on the offscreen platform.
