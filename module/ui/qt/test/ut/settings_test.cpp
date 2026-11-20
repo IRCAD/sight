@@ -28,6 +28,10 @@
 
 #include <core/com/slot.hpp>
 #include <core/thread/worker.hpp>
+#include <core/tools/uuid.hpp>
+
+#include <service/op.hpp>
+
 #include <utest/wait.hpp>
 
 #include <doctest/doctest.h>
@@ -746,6 +750,63 @@ TEST_SUITE("sight::module::ui::qt::settings")
                 // 10^9 steps per unit over 1000 units are more than an int counts: the slider keeps its whole range.
                 CHECK(slider->maximum() == std::numeric_limits<int>::max());
                 CHECK(slider->value() > 0);
+            }).get();
+        });
+    }
+
+    TEST_CASE_FIXTURE(sight::ui::test::gui_fixture, "widgets_left_by_a_stopped_or_destroyed_service_are_ignored")
+    {
+        // The settings live in a view of the test, so that the test holds their only reference.
+        test_service(
+            "sight::module::ui::view",
+            [](const sight::service::base::sptr& _view)
+        {
+            const auto worker = sight::core::thread::get_default_worker();
+            const auto value  = std::make_shared<sight::data::string>("alpha");
+            std::string uid   = sight::core::tools::uuid::generate();
+            std::erase(uid, '-');
+
+            sight::service::config_t view_config;
+            view_config.put("gui.layout.<xmlattr>.type", "sight::ui::layout::line");
+            view_config.put("gui.layout.orientation.<xmlattr>.value", "vertical");
+            view_config.put("gui.layout.view.<xmlattr>.proportion", "0");
+            view_config.put("registry.view.<xmlattr>.sid", uid);
+
+            auto settings = sight::service::add("sight::module::ui::qt::settings", uid);
+            REQUIRE(settings);
+            sight::service::config_t config;
+            sight::module::ui::qt::ut::add_item(config, "mode", "combobox");
+            settings->set_inout(value, "item.data", true, false, 0);
+            worker->post_task<void>(
+                [&]
+            {
+                _view->configure(view_config);
+                _view->start().get();
+                settings->configure(config);
+                settings->start().get();
+            }).get();
+
+            const auto combo = find_widget<QComboBox>(sight::module::ui::qt::ut::name(settings, "mode"));
+            REQUIRE_FALSE(combo.isNull());
+
+            // Stopping deletes the widgets later, from the event loop: until then, they must no longer reach the data,
+            // even once the service is destroyed. Everything runs in one task, so that the event loop never runs.
+            worker->post_task<void>(
+                [&]
+            {
+                CHECK(combo->currentData().toString() == "alpha");
+                settings->stop().get();
+                REQUIRE_FALSE(combo.isNull());
+                combo->setCurrentIndex(2);
+                CHECK(value->value() == "alpha");
+
+                const std::weak_ptr<sight::service::base> weak_settings = settings;
+                sight::service::remove(settings);
+                settings.reset();
+                REQUIRE(weak_settings.expired());
+                REQUIRE_FALSE(combo.isNull());
+                combo->setCurrentIndex(1);
+                CHECK(value->value() == "alpha");
             }).get();
         });
     }

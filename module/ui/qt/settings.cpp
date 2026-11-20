@@ -716,6 +716,18 @@ void settings::stopping()
     m_max_slots.clear();
     m_read_only_slots.clear();
     m_param_boxes.clear(); // Avoid keeping dangling pointers
+
+    // The container is deleted later, from the event loop: until then, its widgets must not reach this service,
+    // which may be destroyed by then.
+    if(const auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->get_container());
+       qt_container)
+    {
+        for(auto* const child : qt_container->get_qt_container()->findChildren<QObject*>())
+        {
+            child->disconnect(this);
+        }
+    }
+
     this->destroy();
 }
 
@@ -1191,6 +1203,7 @@ QPushButton* settings::create_bool_widget(
         QObject::connect(
             checkbox,
             &QCheckBox::toggled,
+            this,
             [this, checkbox](bool _checked)
             {
                 update_data<sight::data::boolean>(checkbox, _checked);
@@ -1228,6 +1241,7 @@ QPushButton* settings::create_bool_widget(
         QObject::connect(
             switch_button,
             &sight::ui::qt::widget::switch_button::state_changed,
+            this,
             [this, switch_button](int _state)
             {
                 update_data<sight::data::boolean>(switch_button, _state == Qt::Checked);
@@ -1850,6 +1864,7 @@ void settings::create_enum_combobox_widget(
         QObject::connect(
             combo_box,
             QOverload<int>::of(&QComboBox::currentIndexChanged),
+            this,
             [this, combo_box](int _value)
             {
                 const std::string data = combo_box->itemData(_value).toString().toStdString();
@@ -1867,6 +1882,7 @@ void settings::create_enum_combobox_widget(
             QObject::connect(
                 combo_box,
                 QOverload<int>::of(&QComboBox::currentIndexChanged),
+                this,
                 [this, combo_box](int _value)
                 {
                     update_data<sight::data::integer, std::int64_t>(combo_box, _value);
@@ -1879,6 +1895,7 @@ void settings::create_enum_combobox_widget(
             QObject::connect(
                 combo_box,
                 &QComboBox::currentTextChanged,
+                this,
                 [this, combo_box](const QString& _value)
                 {
                     update_data<sight::data::integer, std::int64_t>(combo_box, _value.toLongLong());
@@ -2007,6 +2024,7 @@ void settings::create_enum_slider_widget(
         QObject::connect(
             slider,
             &sight::ui::qt::widget::non_linear_slider::value_changed,
+            this,
             [this, key = _setup.key, slider, value_label, use_index = _setup.use_index](int _value)
             {
                 if(const auto string_obj = data<sight::data::string>(slider); string_obj)
@@ -2212,6 +2230,7 @@ void settings::create_enum_button_bar_widget(
         QObject::connect(
             enum_button,
             &QToolButton::clicked,
+            this,
             [this, button_param, enum_button, button_index]
             {
                 if(const auto string_obj = data<sight::data::string>(enum_button); string_obj == nullptr)
@@ -2338,6 +2357,7 @@ QPushButton* settings::create_text_widget(QBoxLayout* _layout, const param_widge
     QObject::connect(
         edit,
         &QLineEdit::textChanged,
+        this,
         [this, key = _setup.key, edit](QString _value)
         {
             update_data<sight::data::string>(edit, _value.toStdString());
