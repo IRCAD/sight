@@ -61,6 +61,7 @@ static const std::string FLAT          = "Flat";
 static const std::string PIXELLIGHTING = "PixelLit";
 
 //-----------------------------------------------------------------------------
+
 std::string shading::get_permutation(data::material::shading_t _mode, bool _diffuse_texture, bool _vertex_color)
 {
     std::string suffix;
@@ -296,7 +297,10 @@ shading::shader_constants_t shading::find_shader_constants(
 
 //-----------------------------------------------------------------------------
 
-data::object::sptr shading::create_object_from_shader_parameter(Ogre::GpuConstantType _type, constant_value_t _value)
+data::object::sptr shading::create_object_from_shader_parameter(
+    Ogre::GpuConstantType _type,
+    const constant_value_t& _value
+)
 {
     data::object::sptr object;
 

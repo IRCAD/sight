@@ -135,7 +135,7 @@ public:
      */
     SIGHT_VIZ_SCENE3D_API static sight::sptr<data::object> create_object_from_shader_parameter(
         Ogre::GpuConstantType _type,
-        constant_value_t _value
+        const constant_value_t& _value
     );
 
     /**
