@@ -103,8 +103,10 @@ struct location_fixture
 
                 driver.stop();
                 driven                      = true;
-                default_directory_preserved =
-                    std::filesystem::path(dialog->directory().absolutePath().toStdU16String()) == directory;
+                default_directory_preserved = std::filesystem::equivalent(
+                    std::filesystem::path(dialog->directory().absolutePath().toStdU16String()),
+                    directory
+                );
                 if(_cancel)
                 {
                     dialog->reject();
@@ -168,7 +170,7 @@ TEST_SUITE("sight::ui::qt::dialog::location")
                 show(sight::ui::dialog::location_base::single_file, {first})
             );
             REQUIRE(result);
-            CHECK(result->get_file() == first);
+            CHECK(std::filesystem::equivalent(result->get_file(), first));
         }
         SUBCASE("multiple files")
         {
@@ -176,7 +178,10 @@ TEST_SUITE("sight::ui::qt::dialog::location")
                 show(sight::ui::dialog::location_base::multi_files, {first, second})
             );
             REQUIRE(result);
-            CHECK(result->get_files() == std::vector<std::filesystem::path> {first, second});
+            const auto files = result->get_files();
+            REQUIRE(files.size() == 2);
+            CHECK(std::filesystem::equivalent(files[0], first));
+            CHECK(std::filesystem::equivalent(files[1], second));
         }
     }
 
@@ -186,7 +191,7 @@ TEST_SUITE("sight::ui::qt::dialog::location")
             show(sight::ui::dialog::location_base::folder, {directory})
         );
         REQUIRE(result);
-        CHECK(result->get_folder() == directory);
+        CHECK(std::filesystem::equivalent(result->get_folder(), directory));
     }
 
     TEST_CASE_FIXTURE(location_fixture, "remembers_a_unicode_location")

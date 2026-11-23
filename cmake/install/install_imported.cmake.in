@@ -31,3 +31,8 @@ if(LIBS)
         endforeach()
     endif()
 endif()
+
+set(runtime_files "@IMPORTED_RUNTIME_FILES@")
+if(runtime_files)
+    file(INSTALL DESTINATION "@CMAKE_INSTALL_PREFIX@/@SIGHT_MODULE_LIB_PREFIX@" TYPE FILE FILES ${runtime_files})
+endif()

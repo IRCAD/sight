@@ -44,7 +44,7 @@ if(DEPENDS MATCHES "_qt")
     )
 endif()
 
-if("viz_scene3d" IN_LIST DEPENDS)
+if("viz_scene3d" IN_LIST DEPENDS OR "sight::viz_scene3d" IN_LIST DEPENDS)
     message(STATUS "Install Ogre plugins from '${OGRE_PLUGINS_SOURCE_DIR}'")
     file(INSTALL DESTINATION ${CMAKE_INSTALL_PREFIX}/${PLUGINS_DESTINATION}
          TYPE DIRECTORY FILES ${OGRE_PLUGINS_SOURCE_DIR} ${_plugin_file_filters}

@@ -63,9 +63,6 @@ core::location::base::sptr location::show()
     core::location::base::sptr location;
 
     QFileDialog dialog;
-    dialog.setDirectory(path);
-    dialog.setNameFilter(filter);
-    dialog.setWindowTitle(caption);
     // @todo: On Linux with GTK location dialog are stuck on .exec(), it seems that paint event is never posted.
     // Temporary we use qt dialog as a work-around.
 #ifdef _WIN32
@@ -76,6 +73,9 @@ core::location::base::sptr location::show()
 #else
     dialog.setOption(QFileDialog::Option::DontUseNativeDialog, true);
 #endif
+    dialog.setDirectory(path);
+    dialog.setNameFilter(filter);
+    dialog.setWindowTitle(caption);
 
     if(((m_style& ui::dialog::location::read) != 0) || m_type == ui::dialog::location::folder)
     {

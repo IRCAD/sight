@@ -1241,6 +1241,23 @@ function(find_target_dependencies TARGET TARGETS_FILTER RESULT_VAR)
             get_target_property(DEPENDS ${DEPENDENCY} LINK_LIBRARIES)
             get_target_property(INTERFACE_DEPENDS ${DEPENDENCY} INTERFACE_LINK_LIBRARIES)
             list(APPEND DEPENDS ${INTERFACE_DEPENDS})
+
+            # Private links of installed shared libraries are exported separately from the link interface.
+            get_property(IS_IMPORTED TARGET ${DEPENDENCY} PROPERTY IMPORTED)
+            if(IS_IMPORTED)
+                get_property(PRIVATE_DEPENDS TARGET ${DEPENDENCY} PROPERTY IMPORTED_LINK_DEPENDENT_LIBRARIES)
+                get_property(IMPORT_CONFIG TARGET ${DEPENDENCY} PROPERTY IMPORTED_CONFIGURATIONS)
+                if(IMPORT_CONFIG)
+                    get_target_property(
+                        CONFIG_PRIVATE_DEPENDS ${DEPENDENCY} IMPORTED_LINK_DEPENDENT_LIBRARIES_${IMPORT_CONFIG}
+                    )
+                    if(NOT CONFIG_PRIVATE_DEPENDS STREQUAL "CONFIG_PRIVATE_DEPENDS-NOTFOUND")
+                        set(PRIVATE_DEPENDS "${CONFIG_PRIVATE_DEPENDS}")
+                    endif()
+                endif()
+                list(APPEND DEPENDS ${PRIVATE_DEPENDS})
+            endif()
+
             set(DEPENDS_COPY ${DEPENDS})
             foreach(dep ${DEPENDS})
                 if(NOT ${dep} IN_LIST TARGETS_FILTER AND NOT "${dep}" MATCHES "_obj$")
@@ -1274,6 +1291,31 @@ function(find_target_dependencies TARGET TARGETS_FILTER RESULT_VAR)
     list(REMOVE_DUPLICATES RESULT)
     list(REMOVE_ITEM RESULT ${TARGET})
     set(${RESULT_VAR} ${RESULT} PARENT_SCOPE)
+endfunction()
+
+# Install runtime files from the target's directory so its component install also includes them.
+# Export only file names so consumers can resolve them after relocating the SDK.
+function(sight_install_runtime_files target)
+    cmake_parse_arguments(PARSE_ARGV 1 runtime "" "SOURCE_DIR" "FILES")
+    if(NOT runtime_SOURCE_DIR OR NOT runtime_FILES OR runtime_UNPARSED_ARGUMENTS)
+        message(FATAL_ERROR "sight_install_runtime_files requires SOURCE_DIR and FILES for ${target}")
+    endif()
+
+    set(sources "")
+    foreach(name IN LISTS runtime_FILES)
+        get_filename_component(filename "${name}" NAME)
+        if(NOT name STREQUAL filename OR name STREQUAL "." OR name STREQUAL "..")
+            message(FATAL_ERROR "Runtime file '${name}' for ${target} must be a file name without a directory")
+        endif()
+        list(APPEND sources "${runtime_SOURCE_DIR}/${name}")
+    endforeach()
+    install(FILES ${sources} DESTINATION "${SIGHT_MODULE_LIB_PREFIX}")
+
+    set_property(TARGET ${target} APPEND PROPERTY SIGHT_RUNTIME_FILES ${runtime_FILES})
+    get_property(export_properties TARGET ${target} PROPERTY EXPORT_PROPERTIES)
+    if(NOT "SIGHT_RUNTIME_FILES" IN_LIST export_properties)
+        set_property(TARGET ${target} APPEND PROPERTY EXPORT_PROPERTIES SIGHT_RUNTIME_FILES)
+    endif()
 endfunction()
 
 # This function must be called at the end of the main CMakeLists.txt
@@ -1316,6 +1358,7 @@ function(sight_create_package_targets SIGHT_COMPONENTS SIGHT_IMPORTED_COMPONENTS
         # Compute all dependencies to find the imported components we need to copy
         set(IMPORTED_RC_DIRS "")
         set(IMPORTED_LIBS "")
+        set(IMPORTED_RUNTIME_FILES "")
         set(IMPORTED_DEPENDS "")
 
         find_target_dependencies(${APP} "${SIGHT_COMPONENTS};${SIGHT_IMPORTED_COMPONENTS}" ALL_DEPENDS)
@@ -1334,6 +1377,17 @@ function(sight_create_package_targets SIGHT_COMPONENTS SIGHT_IMPORTED_COMPONENTS
                 list(APPEND IMPORTED_LIBS ${LIB})
             endif()
 
+            get_property(runtime_files TARGET ${DEP} PROPERTY SIGHT_RUNTIME_FILES)
+            if(runtime_files)
+                if(NOT LIB)
+                    message(FATAL_ERROR "Cannot locate runtime files for ${DEP}: no imported library location")
+                endif()
+                get_filename_component(library_dir "${LIB}" DIRECTORY)
+                foreach(name IN LISTS runtime_files)
+                    list(APPEND IMPORTED_RUNTIME_FILES "${library_dir}/${name}")
+                endforeach()
+            endif()
+
             get_target_property(RC_DIR ${DEP} SIGHT_MODULE_RC_DIR)
             if(RC_DIR)
                 string(REGEX REPLACE "(.*)::.*" "\\1" FOLDER ${DEP})
@@ -1343,8 +1397,9 @@ function(sight_create_package_targets SIGHT_COMPONENTS SIGHT_IMPORTED_COMPONENTS
 
         list(REMOVE_DUPLICATES IMPORTED_RC_DIRS)
         list(REMOVE_DUPLICATES IMPORTED_LIBS)
+        list(REMOVE_DUPLICATES IMPORTED_RUNTIME_FILES)
 
-        if(IMPORTED_RC_DIRS OR IMPORTED_LIBS)
+        if(IMPORTED_RC_DIRS OR IMPORTED_LIBS OR IMPORTED_RUNTIME_FILES)
             configure_file(
                 ${FWCMAKE_RESOURCE_PATH}/install/install_imported.cmake.in ${APP_BINARY_DIR}/install_imported.cmake
                 @ONLY
