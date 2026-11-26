@@ -10,10 +10,10 @@ variables:
 
 include:
     - project: "sight/sight-gitlab"
-      ref: "e787a62094b423edda0e56da40fc7e4afb742e55"
+      ref: "c2874a82e98b43e21da77c34cb18f778ba989643"
       file: "/.templates/deploy.yml"
     - project: "sight/sight-gitlab"
-      ref: "e787a62094b423edda0e56da40fc7e4afb742e55"
+      ref: "c2874a82e98b43e21da77c34cb18f778ba989643"
       file: "/.templates/build.yml"
 
 lint:ubuntu-26.04:
